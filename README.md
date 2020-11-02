@@ -62,7 +62,7 @@ Clone the repository and run below command on the root of your project.
 | meta | Function / String / Object | Any data directly to be sent to middlewares and vice versa without putting to global store. ex: function callback |
 
 ## Boilerplate Repo credit
-[IonicReactBaseplate] (https://github.com/nirus/Ionic-React-Baseplate)
+[IonicReactBaseplate](https://github.com/nirus/Ionic-React-Baseplate)
 
 ## Repo inspired by
 
