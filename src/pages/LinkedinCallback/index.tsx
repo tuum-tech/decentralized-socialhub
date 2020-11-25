@@ -12,8 +12,7 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  IonButton,
-  IonInput
+  IonButton
 } from '@ionic/react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -21,18 +20,16 @@ import { createStructuredSelector } from 'reselect';
 import injector from 'src/baseplate/injectorWrap';
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
 import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo, useState, useCallback } from 'react';
+import React, { memo, useState } from 'react';
 import style from './style.module.scss';
 import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
-import { fetchSimpleApi, requestLinkedinLogin } from './fetchapi';
-import history from 'src/baseplate/history'
-import { Link } from 'react-router-dom';
-import { BaseplateResp } from 'src/baseplate/request';
+import { requestLinkedinToken } from './fetchapi';
+import { RouteComponentProps, useParams } from 'react-router-dom';
 
-const LoginPage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
+const LinkedinCallback: React.FC<RouteComponentProps> = (props) => {
 
   /** 
    * Direct method implementation without SAGA 
@@ -40,21 +37,16 @@ const LoginPage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMapped
    * incoming from Server API calls. Maintain a local state.
   */
   const [msg, setMsg] = useState('');
-  const simpleAjaxDirect = async () => {
-    const msg = await fetchSimpleApi() as string;
-    setMsg(msg);
+  const getToken = async (code: string, state: string): Promise<string> => {
+    return await requestLinkedinToken(code, state) as string;
   }
 
-  const linkedinlogin = async () => {
-    type MyType = { meta: string; data: string; }
+  let code: string = new URLSearchParams(props.location.search).get("code") || "";
+  let state: string = new URLSearchParams(props.location.search).get("state") || "";
 
-    // gets the linkedin auth endpoint
-    const url = await requestLinkedinLogin() as MyType;
-    console.log(url.data);
-
-    // redirects 
-    window.location.href = url.data;
-  }
+  getToken(code, state).then(x => {
+    alert(JSON.stringify(x));
+  });
 
   return (
     <IonPage className={style["loginpage"]}>
@@ -66,11 +58,10 @@ const LoginPage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMapped
       <IonContent>
         <IonCard className="welcome-card">
           <IonCardHeader>
-            <IonCardSubtitle>Authentication</IonCardSubtitle>
+            <IonCardSubtitle>{code}</IonCardSubtitle>
           </IonCardHeader>
           <IonCardContent>
-            <IonInput type="text" placeholder="youremail@elastos.internet" className={style['input']} />
-            <IonInput type="password" placeholder="P@ssw0rd" className={style['input']} />
+
             <IonButton routerLink="/home"
               expand="full"
               color="primary">Login</IonButton>
@@ -79,36 +70,10 @@ const LoginPage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMapped
               color="medium">Register</IonButton>
           </IonCardContent>
         </IonCard>
-
-        <IonCard>
-          <IonCardHeader>
-            <IonCardSubtitle>Social Login</IonCardSubtitle>
-            <IonCardTitle className={style['simple-resp']}>{props.msg}</IonCardTitle>
-          </IonCardHeader>
-          <IonCardContent>
-            <IonButton
-
-              expand="full"
-              color="danger">Login with Google</IonButton>
-            <IonButton
-              expand="full"
-              color="secondary">Login with Twitter</IonButton>
-            <IonButton
-              onClick={linkedinlogin}
-              expand="full"
-              color="tertiary">
-              Login with LinkedIn
-            </IonButton>
-
-            <IonButton
-              expand="full"
-              color="success">Login with Elastos</IonButton>
-          </IonCardContent>
-        </IonCard>
-
       </IonContent>
-    </IonPage >
-  );
+
+    </IonPage>
+  )
 };
 
 /** @returns {object} Contains state props from selectors */
@@ -133,7 +98,7 @@ export function mapDispatchToProps(dispatch: any) {
  * useInjectReducer & useInjectSaga
  */
 const withInjectedMode = injector(
-  LoginPage,
+  LinkedinCallback,
   {
     key: NameSpace,
     reducer,
@@ -151,4 +116,4 @@ export default compose(
   memo,
 )(withInjectedMode) as React.ComponentType<InferMappedProps>;
 
-      // export default Tab1;
+// export default Tab1;

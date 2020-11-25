@@ -12,7 +12,10 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  IonButton
+  IonButton,
+  IonGrid,
+  IonRow,
+  IonCol
 } from '@ionic/react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -27,8 +30,12 @@ import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 import { fetchSimpleApi } from './fetchapi';
+import FollowingList from 'src/components/FollowingList';
+import Pages from 'src/components/Pages';
+import ProfileCompletion from 'src/components/ProfileCompletion';
+import ProfileComponent from 'src/components/ProfileComponent';
 
-const ProfilePage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
+const ProfilePage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
 
   /** 
    * Direct method implementation without SAGA 
@@ -36,7 +43,7 @@ const ProfilePage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMap
    * incoming from Server API calls. Maintain a local state.
   */
   const [msg, setMsg] = useState('');
-  const simpleAjaxDirect = async ()=>{
+  const simpleAjaxDirect = async () => {
     const msg = await fetchSimpleApi() as string;
     setMsg(msg);
   }
@@ -44,12 +51,23 @@ const ProfilePage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMap
   return (
     <IonPage className={style["profilepage"]}>
       <IonHeader>
-        <IonToolbar>
-          <IonTitle>Profile Page</IonTitle>
-        </IonToolbar>
+
       </IonHeader>
       <IonContent>
+        <IonGrid>
+          <IonRow className={style["profilecontent"]}>
+            <IonCol size="3" className={style["left-panel"]}>
+              <FollowingList />
 
+            </IonCol>
+            <IonCol size="6" className={style["center-panel"]}>
+              <ProfileComponent />
+            </IonCol>
+            <IonCol size="3" className={style["right-panel"]}>
+              <ProfileCompletion />
+            </IonCol>
+          </IonRow>
+        </IonGrid>
       </IonContent>
     </IonPage>
   );

@@ -1,0 +1,14 @@
+/** All your component stuyles */
+.profileheader{
+    min-height: 100px;
+    max-height: 200px;
+    background-color: green;
+
+    .name {
+        text-align: left;
+        font-family: normal normal 600 19px/26px Open Sans;
+        color: #363291;
+        opacity: 1;
+    }
+}
+
