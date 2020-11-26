@@ -25,9 +25,11 @@ import style from './style.module.scss';
 import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
-import { InferMappedProps, SubState } from './types';
-import { requestLinkedinToken } from './fetchapi';
+import { InferMappedProps, ProfileResponse, SubState, TokenResponse } from './types';
+import { requestLinkedinProfile, requestLinkedinToken } from './fetchapi';
 import { RouteComponentProps, useParams } from 'react-router-dom';
+import { Interface } from 'readline';
+import { createConstructSignature } from 'typescript';
 
 const LinkedinCallback: React.FC<RouteComponentProps> = (props) => {
 
@@ -37,15 +39,26 @@ const LinkedinCallback: React.FC<RouteComponentProps> = (props) => {
    * incoming from Server API calls. Maintain a local state.
   */
   const [msg, setMsg] = useState('');
-  const getToken = async (code: string, state: string): Promise<string> => {
-    return await requestLinkedinToken(code, state) as string;
+  const getToken = async (code: string, state: string): Promise<TokenResponse> => {
+    return await requestLinkedinToken(code, state) as TokenResponse;
+  }
+
+  const getProfile = async (token: string): Promise<ProfileResponse> => {
+    return await requestLinkedinProfile(token) as ProfileResponse;
   }
 
   let code: string = new URLSearchParams(props.location.search).get("code") || "";
   let state: string = new URLSearchParams(props.location.search).get("state") || "";
 
-  getToken(code, state).then(x => {
-    alert(JSON.stringify(x));
+
+
+  getToken(code, state).then((x: TokenResponse) => {
+    console.log(x.data.request_token);
+
+    getProfile(x.data.request_token).then((x: ProfileResponse) => {
+      alert(JSON.stringify(x.data));
+    });
+
   });
 
   return (
