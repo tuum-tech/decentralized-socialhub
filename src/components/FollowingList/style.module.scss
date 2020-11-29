@@ -9,7 +9,28 @@
         font-size: 16px;
         font-weight: bold;
         color: #000000DE;
-        margin-left: 10px;
+        margin-left: 19px;
     }
 
+    .thumbnail {
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+    }
+
+    .name{
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        letter-spacing: 0.25px;
+        color: #00000099;
+
+    }
+    .invite {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.13px;
+        color: #363291;
+
+    }
 }

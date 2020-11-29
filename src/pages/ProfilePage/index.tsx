@@ -58,7 +58,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
         setProfile(p);
       }).catch((error) => {
         //alert(JSON.stringify(error));
-        let fallback = { profile: { lastName: { localized: { fr_FR: "FallBack" } }, firstName: { localized: { fr_FR: "Chagastelles" } } } }
+        let fallback = { profile: { lastName: { localized: { fr_FR: "Diego" } }, firstName: { localized: { fr_FR: "Chagastelles" } } } }
         setProfile(fallback);
       })
     })();
