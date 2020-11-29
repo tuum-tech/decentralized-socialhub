@@ -2,8 +2,13 @@ import React from 'react';
 import { IonSpinner, IonContent, IonCard, IonCardTitle, IonCardContent } from '@ionic/react';
 import ProfileBanner from '../ProfileBanner';
 import ProfileHeader from '../ProfileHeader';
+import { ProfileContent } from 'src/pages/ProfilePage/types';
 
-const ProfileComponent: React.FC = () => {
+interface IProps {
+  profile: ProfileContent
+}
+
+const ProfileComponent: React.FC<IProps> = ({ profile }: IProps) => {
   return (
     <IonContent className={"profilecomponent"}>
       {/*-- Default ProfileComponent --*/}
@@ -11,7 +16,7 @@ const ProfileComponent: React.FC = () => {
 
       <IonCard>
         <IonCardContent>
-          <ProfileHeader />
+          <ProfileHeader profile={profile} />
         </IonCardContent>
       </IonCard>
     </IonContent>

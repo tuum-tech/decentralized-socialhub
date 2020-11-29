@@ -10,7 +10,6 @@ export type InferMappedProps = ReturnType<typeof mapStateToProps> & ReturnType<t
 
 export type ActionType = typeof Actions;
 
-//export type TokenResponse = 
 
 export interface TokenContent {
     request_token: string,
@@ -21,10 +20,3 @@ export interface TokenResponse {
     data: TokenContent
 }
 
-export interface ProfileContent {
-
-}
-
-export interface ProfileResponse {
-    data: ProfileContent
-}

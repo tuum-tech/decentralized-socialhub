@@ -23,30 +23,47 @@ import { createStructuredSelector } from 'reselect';
 import injector from 'src/baseplate/injectorWrap';
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
 import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
-import { InferMappedProps, SubState } from './types';
-import { fetchSimpleApi } from './fetchapi';
+import { InferMappedProps, ProfileContent, ProfileResponse, SubState } from './types';
+import { fetchSimpleApi, requestLinkedinProfile } from './fetchapi';
 import FollowingList from 'src/components/FollowingList';
 import Pages from 'src/components/Pages';
 import ProfileCompletion from 'src/components/ProfileCompletion';
 import ProfileComponent from 'src/components/ProfileComponent';
+import { RouteComponentProps } from 'react-router';
+import { BaseplateResp } from 'src/baseplate/request';
 
-const ProfilePage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
+const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
 
   /** 
    * Direct method implementation without SAGA 
    * This was to show you dont need to put everything to global state 
    * incoming from Server API calls. Maintain a local state.
   */
-  const [msg, setMsg] = useState('');
-  const simpleAjaxDirect = async () => {
-    const msg = await fetchSimpleApi() as string;
-    setMsg(msg);
+  const [profile, setProfile] = useState({ profile: { lastName: { localized: { fr_FR: "" } }, firstName: { localized: { fr_FR: "" } } } } as ProfileContent);
+
+  const getProfile = async (token: string): Promise<ProfileResponse> => {
+    return await requestLinkedinProfile(token) as ProfileResponse;
   }
+
+  useEffect(() => {
+    let token: string = new URLSearchParams(props.location.search).get("token") || "";
+    (async () => {
+      getProfile(token).then((x: ProfileResponse) => {
+        let p = x.data as ProfileContent;
+        setProfile(p);
+      }).catch((error) => {
+        //alert(JSON.stringify(error));
+        let fallback = { profile: { lastName: { localized: { fr_FR: "FallBack" } }, firstName: { localized: { fr_FR: "Chagastelles" } } } }
+        setProfile(fallback);
+      })
+    })();
+  }, []);
+
 
   return (
     <IonPage className={style["profilepage"]}>
@@ -61,7 +78,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMapp
 
             </IonCol>
             <IonCol size="6" className={style["center-panel"]}>
-              <ProfileComponent />
+              <ProfileComponent profile={profile} />
             </IonCol>
             <IonCol size="3" className={style["right-panel"]}>
               <ProfileCompletion />

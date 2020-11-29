@@ -20,16 +20,17 @@ import { createStructuredSelector } from 'reselect';
 import injector from 'src/baseplate/injectorWrap';
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
 import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
-import { InferMappedProps, ProfileResponse, SubState, TokenResponse } from './types';
-import { requestLinkedinProfile, requestLinkedinToken } from './fetchapi';
-import { RouteComponentProps, useParams } from 'react-router-dom';
+import { InferMappedProps, SubState, TokenResponse } from './types';
+import { requestLinkedinToken } from './fetchapi';
+import { Redirect, RouteComponentProps, useParams } from 'react-router-dom';
 import { Interface } from 'readline';
 import { createConstructSignature } from 'typescript';
+import { strict } from 'assert';
 
 const LinkedinCallback: React.FC<RouteComponentProps> = (props) => {
 
@@ -38,54 +39,36 @@ const LinkedinCallback: React.FC<RouteComponentProps> = (props) => {
    * This was to show you dont need to put everything to global state 
    * incoming from Server API calls. Maintain a local state.
   */
-  const [msg, setMsg] = useState('');
+  const [token, setToken] = useState('');
   const getToken = async (code: string, state: string): Promise<TokenResponse> => {
     return await requestLinkedinToken(code, state) as TokenResponse;
   }
 
-  const getProfile = async (token: string): Promise<ProfileResponse> => {
-    return await requestLinkedinProfile(token) as ProfileResponse;
-  }
-
-  let code: string = new URLSearchParams(props.location.search).get("code") || "";
-  let state: string = new URLSearchParams(props.location.search).get("state") || "";
 
 
+  useEffect(() => {
+    let code: string = new URLSearchParams(props.location.search).get("code") || "";
+    let state: string = new URLSearchParams(props.location.search).get("state") || "";
 
-  getToken(code, state).then((x: TokenResponse) => {
-    console.log(x.data.request_token);
-
-    getProfile(x.data.request_token).then((x: ProfileResponse) => {
-      alert(JSON.stringify(x.data));
-    });
-
+    (async () => {
+      let t = await getToken(code, state);
+      setToken(t.data.request_token);
+    })();
   });
 
+
+
+
+
   return (
-    <IonPage className={style["loginpage"]}>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Login Page</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent>
-        <IonCard className="welcome-card">
-          <IonCardHeader>
-            <IonCardSubtitle>{code}</IonCardSubtitle>
-          </IonCardHeader>
-          <IonCardContent>
 
-            <IonButton routerLink="/home"
-              expand="full"
-              color="primary">Login</IonButton>
-            <IonButton routerLink="/register"
-              expand="full"
-              color="medium">Register</IonButton>
-          </IonCardContent>
-        </IonCard>
-      </IonContent>
+    <Redirect
+      to={{
+        pathname: "/profile",
+        search: `?token=${token}`
 
-    </IonPage>
+      }}
+    />
   )
 };
 
