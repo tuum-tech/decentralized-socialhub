@@ -1,16 +1,43 @@
 import React from 'react';
-import { IonSpinner, IonCard, IonContent, IonGrid, IonCardTitle, IonCardContent } from '@ionic/react';
+import { IonSpinner, IonCard, IonContent, IonGrid, IonCardTitle, IonCardContent, IonProgressBar, IonRow, IonCol } from '@ionic/react';
 import style from './style.module.scss';
+import check from '../../theme/images/checkmark-circle-outline.svg'
 
 const ProfileCompletion: React.FC = () => {
   return (
-    <IonContent className={style["profilecompletion"]}>
+    <div className={style["profilecompletion"]}>
       {/*-- Default ProfileCompletion --*/}
-      <IonCard>
-        <IonCardTitle><h1>Profile Completion</h1></IonCardTitle>
-        <IonCardContent></IonCardContent>
-      </IonCard>
-    </IonContent >
+      <h1>Profile Completion</h1>
+      <IonGrid>
+        <IonRow>
+          <IonCol size="7">
+            <IonProgressBar value={0.78}>
+
+            </IonProgressBar>
+          </IonCol>
+          <IonCol size="5">
+            <span>78% complete</span>
+          </IonCol>
+        </IonRow>
+        <IonRow>
+          <IonCol size="1.5">
+            <img src={check} />
+          </IonCol>
+          <IonCol size="10.5">
+            <span>Complete your profile</span>
+          </IonCol>
+        </IonRow>
+        <IonRow>
+          <IonCol size="1.5">
+            <img src={check} />
+          </IonCol>
+          <IonCol size="10.5">
+            <span>Publish your profile</span>
+          </IonCol>
+        </IonRow>
+      </IonGrid>
+
+    </div >
   )
 };
 

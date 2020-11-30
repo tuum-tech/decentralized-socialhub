@@ -34,6 +34,7 @@ import FollowingList from 'src/components/FollowingList';
 import Pages from 'src/components/Pages';
 import ProfileCompletion from 'src/components/ProfileCompletion';
 import ProfileComponent from 'src/components/ProfileComponent';
+import PagesComponent from 'src/components/PagesComponent';
 import { RouteComponentProps } from 'react-router';
 import { BaseplateResp } from 'src/baseplate/request';
 
@@ -57,8 +58,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
         let p = x.data as ProfileContent;
         setProfile(p);
       }).catch((error) => {
-        //alert(JSON.stringify(error));
-        let fallback = { profile: { lastName: { localized: { fr_FR: "Diego" } }, firstName: { localized: { fr_FR: "Chagastelles" } } } }
+        let fallback = { profile: { lastName: { localized: { fr_FR: "Chagastelles" } }, firstName: { localized: { fr_FR: "Diego" } } } }
         setProfile(fallback);
       })
     })();
@@ -75,7 +75,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
           <IonRow className={style["profilecontent"]}>
             <IonCol size="3" className={style["left-panel"]}>
               <FollowingList />
-
+              <PagesComponent />
             </IonCol>
             <IonCol size="6" className={style["center-panel"]}>
               <ProfileComponent profile={profile} />

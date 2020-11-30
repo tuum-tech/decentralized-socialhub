@@ -3,6 +3,7 @@ import { IonSpinner, IonContent, IonCard, IonCardTitle, IonCardContent } from '@
 import ProfileBanner from '../ProfileBanner';
 import ProfileHeader from '../ProfileHeader';
 import { ProfileContent } from 'src/pages/ProfilePage/types';
+import style from './style.module.scss'
 
 interface IProps {
   profile: ProfileContent
@@ -10,16 +11,12 @@ interface IProps {
 
 const ProfileComponent: React.FC<IProps> = ({ profile }: IProps) => {
   return (
-    <IonContent className={"profilecomponent"}>
+    <div className={"profilecomponent"}>
       {/*-- Default ProfileComponent --*/}
       {/* <IonSpinner /> */}
-
-      <IonCard>
-        <IonCardContent>
-          <ProfileHeader profile={profile} />
-        </IonCardContent>
-      </IonCard>
-    </IonContent>
+      <ProfileBanner></ProfileBanner>
+      <ProfileHeader profile={profile} />
+    </div >
   )
 };
 

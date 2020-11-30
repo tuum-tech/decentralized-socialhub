@@ -24,10 +24,10 @@ import { Link } from 'react-router-dom';
 
 const FollowingList: React.FC = () => {
   return (
-    <div className={style["followinglist"]}>
+    <div className={style["pagesList"]}>
       {/*-- Default FollowingList --*/}
 
-      <h1>Following (10)</h1>
+      <h1>Pages</h1>
       <IonGrid>
         <IonRow>
           <IonCol size="2"><img className={style["thumbnail"]} src={charles} /></IonCol>
@@ -42,11 +42,8 @@ const FollowingList: React.FC = () => {
           <IonCol size="10"><span className={style["name"]}>Anthony Pompliano</span></IonCol>
         </IonRow>
       </IonGrid>
-      <span className={style["invite"]}>+ Invite friends to join</span>
 
-
-
-    </div>
+    </div >
   )
 };
 

@@ -15,17 +15,32 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
 
   return (
     <IonGrid className={style["profileheader"]}>
-      <IonRow>
-        <IonCol size="2">
+      <IonRow className={style["header"]}>
+        <IonCol size="1.5">
           <img src={chagastelles} className={style["profile-img"]} />
         </IonCol>
-        <IonCol size="8">
+        <IonCol size="8.5">
           <IonGrid>
             <IonRow><span className={style["name"]}>{firstName} {lastName}</span></IonRow>
-            <IonRow><span className={"name"}>Student </span><span>@</span><span className={"name"}> University of California, USA</span></IonRow>
+            <IonRow><span className={style["details"]}>Student </span><span> - </span><span className={"name"}> University of California, USA</span></IonRow>
           </IonGrid>
         </IonCol>
         <IonCol size="2">completion</IonCol>
+      </IonRow>
+      <IonRow>
+        <IonCol>
+          <div className={style["tip"]}>
+            <IonGrid>
+              <IonRow>
+                <IonCol size="1"></IonCol>
+                <IonCol size="9">
+                  Recommendation: Connect your DID and publish it to Blockchain
+                </IonCol>
+                <IonCol size="2" className={style["action"]}>Start Service ></IonCol>
+              </IonRow>
+            </IonGrid>
+          </div>
+        </IonCol>
       </IonRow>
       <IonRow>
         <IonCol><h2>About</h2></IonCol>
