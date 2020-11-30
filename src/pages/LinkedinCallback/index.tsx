@@ -45,31 +45,40 @@ const LinkedinCallback: React.FC<RouteComponentProps> = (props) => {
   }
 
 
+  let code: string = new URLSearchParams(props.location.search).get("code") || "";
+  let state: string = new URLSearchParams(props.location.search).get("state") || "";
 
   useEffect(() => {
-    let code: string = new URLSearchParams(props.location.search).get("code") || "";
-    let state: string = new URLSearchParams(props.location.search).get("state") || "";
 
     (async () => {
-      let t = await getToken(code, state);
-      setToken(t.data.request_token);
+      if (code != "" && state != "") {
+
+        let t = await getToken(code, state);
+        setToken(t.data.request_token);
+      }
     })();
   });
 
+  const getRedirect = () => {
+    if (token != null) {
+      return (<Redirect
+        to={{
+          pathname: "/profile",
+          search: `?token=${token}`
+
+        }}
+      />)
+    } else
+      return <div></div>
+
+
+  }
 
 
 
+  return getRedirect();
 
-  return (
 
-    <Redirect
-      to={{
-        pathname: "/profile",
-        search: `?token=${token}`
-
-      }}
-    />
-  )
 };
 
 /** @returns {object} Contains state props from selectors */

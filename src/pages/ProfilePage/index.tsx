@@ -50,19 +50,23 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
   const getProfile = async (token: string): Promise<ProfileResponse> => {
     return await requestLinkedinProfile(token) as ProfileResponse;
   }
+  let token: string = new URLSearchParams(props.location.search).get("token") || "";
 
   useEffect(() => {
-    let token: string = new URLSearchParams(props.location.search).get("token") || "";
     (async () => {
-      getProfile(token).then((x: ProfileResponse) => {
-        let p = x.data as ProfileContent;
-        setProfile(p);
-      }).catch((error) => {
-        let fallback = { profile: { lastName: { localized: { fr_FR: "Chagastelles" } }, firstName: { localized: { fr_FR: "Diego" } } } }
-        setProfile(fallback);
-      })
+      if (token != "") {
+        getProfile(token).then((x: ProfileResponse) => {
+          let p = x.data as ProfileContent;
+          setProfile(p);
+        }).catch((error) => {
+          console.error(error);
+          let fallback = { profile: { lastName: { localized: { fr_FR: "Chagastelles*" } }, firstName: { localized: { fr_FR: "Diego" } } } }
+          setProfile(fallback);
+        });
+      }
+
     })();
-  }, []);
+  }, [token]);
 
 
   return (
