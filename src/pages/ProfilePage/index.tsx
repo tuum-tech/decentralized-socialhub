@@ -45,7 +45,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
    * This was to show you dont need to put everything to global state 
    * incoming from Server API calls. Maintain a local state.
   */
-  const [profile, setProfile] = useState({ profile: { lastName: { localized: { fr_FR: "" } }, firstName: { localized: { fr_FR: "" } } } } as ProfileContent);
+  const [profile, setProfile] = useState({ profile: { localizedFirstName: "", localizedLastName: "" } } as ProfileContent);
 
   const getProfile = async (token: string): Promise<ProfileResponse> => {
     return await requestLinkedinProfile(token) as ProfileResponse;
@@ -56,11 +56,12 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
     (async () => {
       if (token != "") {
         getProfile(token).then((x: ProfileResponse) => {
+          console.log(x.data);
           let p = x.data as ProfileContent;
           setProfile(p);
         }).catch((error) => {
           console.error(error);
-          let fallback = { profile: { lastName: { localized: { fr_FR: "Chagastelles*" } }, firstName: { localized: { fr_FR: "Diego" } } } }
+          let fallback = { profile: { localizedFirstName: "Diego", localizedLastName: "Chagastelles*" } }
           setProfile(fallback);
         });
       }

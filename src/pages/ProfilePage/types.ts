@@ -18,8 +18,10 @@ export interface Name {
 }
 
 export interface ProfileInfo {
-    lastName: Name,
-    firstName: Name
+    lastName?: Name,
+    firstName?: Name,
+    localizedFirstName: string,
+    localizedLastName: string
 }
 
 export interface ProfileContent {
