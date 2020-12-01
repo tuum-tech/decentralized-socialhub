@@ -1,4 +1,16 @@
 .profilepage {
+
+  background-color: #fafaff;
+  min-height: 200px;
+  height: 100%;
+  margin-top: 100px;
+
+  .profilecontent {
+    min-height: 800px;  
+    background-color: #fafaff;
+  }
+
+ 
   .counter {
     text-align: center;
     font-size: 56px;
@@ -7,5 +19,14 @@
   .simple-resp {
     color: #899092;
     font-style: italic;
+  }
+
+  .left-panel {
+   
+    background-color: #fafaff;
+  }
+
+  .right-panel {
+    background-color: #fafaff;
   }
 }

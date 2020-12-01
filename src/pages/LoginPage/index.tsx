@@ -27,10 +27,12 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
-import { fetchSimpleApi } from './fetchapi';
+import { fetchSimpleApi, requestLinkedinLogin } from './fetchapi';
 import history from 'src/baseplate/history'
+import { Link } from 'react-router-dom';
+import { BaseplateResp } from 'src/baseplate/request';
 
-const LoginPage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
+const LoginPage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
 
   /** 
    * Direct method implementation without SAGA 
@@ -38,9 +40,20 @@ const LoginPage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappe
    * incoming from Server API calls. Maintain a local state.
   */
   const [msg, setMsg] = useState('');
-  const simpleAjaxDirect = async ()=>{
+  const simpleAjaxDirect = async () => {
     const msg = await fetchSimpleApi() as string;
     setMsg(msg);
+  }
+
+  const linkedinlogin = async () => {
+    type MyType = { meta: string; data: string; }
+
+    // gets the linkedin auth endpoint
+    const url = await requestLinkedinLogin() as MyType;
+    console.log(url.data);
+
+    // redirects 
+    window.location.href = url.data;
   }
 
   return (
@@ -68,28 +81,33 @@ const LoginPage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappe
         </IonCard>
 
         <IonCard>
-        <IonCardHeader>
-          <IonCardSubtitle>Social Login</IonCardSubtitle>
-          <IonCardTitle className={style['simple-resp']}>{props.msg}</IonCardTitle>
-        </IonCardHeader>
-        <IonCardContent>
-          <IonButton 
+          <IonCardHeader>
+            <IonCardSubtitle>Social Login</IonCardSubtitle>
+            <IonCardTitle className={style['simple-resp']}>{props.msg}</IonCardTitle>
+          </IonCardHeader>
+          <IonCardContent>
+            <IonButton
+
               expand="full"
               color="danger">Login with Google</IonButton>
-          <IonButton 
+            <IonButton
               expand="full"
               color="secondary">Login with Twitter</IonButton>
-          <IonButton 
+            <IonButton
+              onClick={linkedinlogin}
               expand="full"
-              color="tertiary">Login with LinkedIn</IonButton>
-          <IonButton 
+              color="tertiary">
+              Login with LinkedIn
+            </IonButton>
+
+            <IonButton
               expand="full"
               color="success">Login with Elastos</IonButton>
-        </IonCardContent>
-      </IonCard>
+          </IonCardContent>
+        </IonCard>
 
       </IonContent>
-    </IonPage>
+    </IonPage >
   );
 };
 
@@ -133,4 +151,4 @@ export default compose(
   memo,
 )(withInjectedMode) as React.ComponentType<InferMappedProps>;
 
-// export default Tab1;
+      // export default Tab1;
