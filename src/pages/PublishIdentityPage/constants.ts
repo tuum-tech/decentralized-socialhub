@@ -7,7 +7,7 @@ import baseConst from '../../shared-base/xconstants';
  * Base Namespace for the page
  * Use it wisely, as it affects your pagename
  */
-export const NameSpace = 'ElastosLoginPage';
+export const NameSpace = 'PublishIdentityPage';
 
 /*** 
  * Action Definitions - START 

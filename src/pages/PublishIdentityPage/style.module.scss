@@ -1,7 +1,7 @@
-.createidentitypage {
+.publishidentitypage {
   .main-container {
     width: 502px;
-    height: 680px;
+    height: 550px;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 3px 3px #00000015;
     opacity: 1;
@@ -48,16 +48,17 @@
     line-height: 1.58;
     letter-spacing: normal;
     text-align: center;
-    color: #0f358e;
+    color: #363291;
+    --padding-start: 0;
 
-    .number {
+    .number-dark {
       position: absolute;
       left: -16px;
       top: 7px;
       width: 28px;
       height: 28px;
-      background-color: #F5F5FA;
-      color: #0f358e;
+      background-color: #363291;
+      color: #fff;
       border-radius: 50%;
       border: 1px solid #bfc4ce;
       text-align: center;
@@ -66,49 +67,27 @@
     }    
   }
 
-  .warning-emphasis {
-    width: 397px;
-    height: 114px;
-    background: rgba(201, 72, 188, 0.25) 0% 0% no-repeat padding-box;
-    border-radius: 16px;
+  .text {
+    text-align: center;
+    font: normal normal 600 16px/19px Open Sans;
+    letter-spacing: 0px;
+    color: #595F6F;
+    opacity: 1;
+  }     
 
-    .text {
-      text-align: center;
-      font: normal normal 600 16px/19px Open Sans;
-      letter-spacing: 0px;
-      color: #595F6F;
-      opacity: 1;
-    }    
-  }
+  // .consent {
+  //   --border-style: none;
 
-  .warning-light {
-    width: 397px;
-    height: 114px;
-    background: none 0% 0% no-repeat padding-box;
-    border-radius: 16px;    
-    
-    .text {
-      text-align: center;
-      font: normal normal 600 16px/19px Open Sans;
-      letter-spacing: 0px;
-      color: #595F6F;
-      opacity: 1;
-    }
-  }  
+  //   .text {
+  //     text-align: center;
+  //     font: normal normal 600 16px/19px Open Sans;
+  //     letter-spacing: 0px;
+  //     color: #595F6F;
+  //     opacity: 1;
+  //   }
 
-  .consent {
-    --border-style: none;
-
-    .text {
-      text-align: center;
-      font: normal normal 600 16px/19px Open Sans;
-      letter-spacing: 0px;
-      color: #595F6F;
-      opacity: 1;
-    }
-
-    .checkbox-label {
-      margin-inline-end: 0;
-    }
-  }
+  //   .checkbox-label {
+  //     margin-inline-end: 0;
+  //   }
+  // }
 }

@@ -2,24 +2,11 @@
  * Page
  */
 import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonContent,
   IonHeader,
   IonPage,
-  IonTitle,
-  IonToolbar,
-  IonButton,
   IonRow,
-  IonInput,
   IonCol,
-  IonCheckbox,
-  IonLabel,
-  IonList,
-  IonItem
+  IonInput
 } from '@ionic/react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -38,7 +25,7 @@ import ClearlyMeContent from 'src/components/ClearlyMeContent';
 import Header from 'src/components/Header';
 import ButtonDefault from 'src/components/ButtonDefault';
 
-const CreateIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
+const PublishIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
 
   /** 
    * Direct method implementation without SAGA 
@@ -46,109 +33,99 @@ const CreateIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: I
    * incoming from Server API calls. Maintain a local state.
   */
   const [msg, setMsg] = useState('');
-  const [encrypt, setEncrypt] = useState(true);
-
   const simpleAjaxDirect = async ()=>{
     const msg = await fetchSimpleApi() as string;
     setMsg(msg);
   }
 
   return (
-    <IonPage className={style["createidentitypage"]}>
+    <IonPage className={style["publishidentitypage"]}>
       <ClearlyMeContent>
         <IonHeader style={{height: '80px'}}>
           <Header />
         </IonHeader>
         <div className={style["main-container"]}>
-          <h1>Create Identity</h1>
+          <h1>Publish Identity</h1>
 
           <div>
             <IonRow style={{marginTop: '10px'}}>
               <IonCol>
                 <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>1</span>
+                  <span className={style["number-dark"]}>1</span>
                 </IonInput>
               </IonCol>
               <IonCol>
                 <IonInput className={style["mnemonic"]} value="butter" readonly>
-                  <span className={style["number"]}>2</span>
+                  <span className={style["number-dark"]}>2</span>
                 </IonInput>
               </IonCol>
               <IonCol>
                 <IonInput className={style["mnemonic"]} value="jam" readonly>
-                  <span className={style["number"]}>3</span>
+                  <span className={style["number-dark"]}>3</span>
                 </IonInput>
               </IonCol>              
             </IonRow>
             <IonRow style={{marginTop: '10px'}}>
               <IonCol>
                 <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>4</span>
+                  <span className={style["number-dark"]}>4</span>
                 </IonInput>
               </IonCol>
               <IonCol>
                 <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>5</span>
+                  <span className={style["number-dark"]}>5</span>
                 </IonInput>
               </IonCol>
               <IonCol>
                 <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>6</span>
+                  <span className={style["number-dark"]}>6</span>
                 </IonInput>
               </IonCol>              
             </IonRow>
             <IonRow style={{marginTop: '10px'}}>
               <IonCol>
                 <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>7</span>
+                  <span className={style["number-dark"]}>7</span>
                 </IonInput>
               </IonCol>
               <IonCol>
                 <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>8</span>
+                  <span className={style["number-dark"]}>8</span>
                 </IonInput>
               </IonCol>
               <IonCol>
                 <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>9</span>
+                  <span className={style["number-dark"]}>9</span>
                 </IonInput>
               </IonCol>              
             </IonRow>            
             <IonRow style={{marginTop: '10px'}}>
               <IonCol>
                 <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>10</span>
+                  <span className={style["number-dark"]}>10</span>
                 </IonInput>
               </IonCol>
               <IonCol>
                 <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>11</span>
+                  <span className={style["number-dark"]}>11</span>
                 </IonInput>
               </IonCol>
               <IonCol>
                 <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>12</span>
+                  <span className={style["number-dark"]}>12</span>
                 </IonInput>
               </IonCol>              
             </IonRow>
           </div><br/><br/>
 
-          <div className={encrypt ? style["warning-light"] : style["warning-emphasis"]}>
+          <div>
             <p className={style["text"]}>
-            These are your security words (like a password).<br/><br />
-            Lose these words and you will lose the identity. Keep them written down, in order, and safe. Write them down now.
+            Publish your newly created identity to the blockchain.<br/><br />
             </p>
           </div>
 
-          <IonList>
-            <IonItem className={style["consent"]}>
-              <IonLabel className={style["text"]}>Encrypt and save security words to my vault</IonLabel>
-              <IonCheckbox checked={encrypt} slot="start" className={style["checkbox-label"]} onIonChange={e => setEncrypt(!encrypt)}></IonCheckbox>
-            </IonItem>
-          </IonList>
-          <br/>
           <div style={{textAlign: 'center'}}>
-            <ButtonDefault href="/confirm">Next</ButtonDefault>
+            <ButtonDefault href="/confirm">Publish to Blockchain</ButtonDefault>
           </div>
 
         </div>
@@ -179,7 +156,7 @@ export function mapDispatchToProps(dispatch: any) {
  * useInjectReducer & useInjectSaga
  */
 const withInjectedMode = injector(
-  CreateIdentityPage,
+  PublishIdentityPage,
   {
     key: NameSpace,
     reducer,

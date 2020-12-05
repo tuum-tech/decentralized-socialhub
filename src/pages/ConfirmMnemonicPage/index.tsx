@@ -14,12 +14,9 @@ import {
   IonToolbar,
   IonButton,
   IonRow,
-  IonInput,
   IonCol,
-  IonCheckbox,
-  IonLabel,
-  IonList,
-  IonItem
+  IonInput,
+  IonList
 } from '@ionic/react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -37,8 +34,9 @@ import { fetchSimpleApi } from './fetchapi';
 import ClearlyMeContent from 'src/components/ClearlyMeContent';
 import Header from 'src/components/Header';
 import ButtonDefault from 'src/components/ButtonDefault';
+import ButtonDisabled from 'src/components/ButtonDisabled';
 
-const CreateIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
+const ConfirmMnemonicPage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
 
   /** 
    * Direct method implementation without SAGA 
@@ -46,21 +44,19 @@ const CreateIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: I
    * incoming from Server API calls. Maintain a local state.
   */
   const [msg, setMsg] = useState('');
-  const [encrypt, setEncrypt] = useState(true);
-
   const simpleAjaxDirect = async ()=>{
     const msg = await fetchSimpleApi() as string;
     setMsg(msg);
   }
 
   return (
-    <IonPage className={style["createidentitypage"]}>
+    <IonPage className={style["confirmmnemonicpage"]}>
       <ClearlyMeContent>
         <IonHeader style={{height: '80px'}}>
           <Header />
         </IonHeader>
         <div className={style["main-container"]}>
-          <h1>Create Identity</h1>
+          <h1>Re-enter security words</h1>
 
           <div>
             <IonRow style={{marginTop: '10px'}}>
@@ -131,24 +127,80 @@ const CreateIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: I
                 </IonInput>
               </IonCol>              
             </IonRow>
-          </div><br/><br/>
+          </div>
 
-          <div className={encrypt ? style["warning-light"] : style["warning-emphasis"]}>
+          <div>
             <p className={style["text"]}>
-            These are your security words (like a password).<br/><br />
-            Lose these words and you will lose the identity. Keep them written down, in order, and safe. Write them down now.
+              Select the security words in the right order.
             </p>
           </div>
 
-          <IonList>
-            <IonItem className={style["consent"]}>
-              <IonLabel className={style["text"]}>Encrypt and save security words to my vault</IonLabel>
-              <IonCheckbox checked={encrypt} slot="start" className={style["checkbox-label"]} onIonChange={e => setEncrypt(!encrypt)}></IonCheckbox>
-            </IonItem>
-          </IonList>
+          <div>
+            <p className={style["error"]}>
+              Invalid order, please enter correct order.
+            </p>
+          </div>
+
+          <div>
+            <IonRow>
+              <IonCol>
+                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                </IonInput>
+              </IonCol>
+              <IonCol>
+                <IonInput className={style["mnemonic"]} value="butter" readonly>
+                </IonInput>
+              </IonCol>
+              <IonCol>
+                <IonInput className={style["mnemonic"]} value="jam" readonly>
+                </IonInput>
+              </IonCol>              
+              <IonCol>
+                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                </IonInput>
+              </IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>
+                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                </IonInput>
+              </IonCol>
+              <IonCol>
+                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                </IonInput>
+              </IonCol>
+              <IonCol>
+                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                </IonInput>
+              </IonCol>
+              <IonCol>
+                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                </IonInput>
+              </IonCol>                            
+            </IonRow>
+            <IonRow>
+              <IonCol>
+                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                </IonInput>
+              </IonCol>
+              <IonCol>
+                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                </IonInput>
+              </IonCol>
+              <IonCol>
+                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                </IonInput>
+              </IonCol> 
+              <IonCol>
+                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                </IonInput>
+              </IonCol>                           
+            </IonRow>            
+          </div>
+
           <br/>
           <div style={{textAlign: 'center'}}>
-            <ButtonDefault href="/confirm">Next</ButtonDefault>
+            <ButtonDisabled href="/publish" disabled>Publish DID to Blockchain</ButtonDisabled>
           </div>
 
         </div>
@@ -179,7 +231,7 @@ export function mapDispatchToProps(dispatch: any) {
  * useInjectReducer & useInjectSaga
  */
 const withInjectedMode = injector(
-  CreateIdentityPage,
+  ConfirmMnemonicPage,
   {
     key: NameSpace,
     reducer,
