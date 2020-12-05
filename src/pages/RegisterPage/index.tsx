@@ -68,6 +68,27 @@ const RegisterPage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMa
           </IonCardContent>
         </IonCard>
 
+        <IonCard>
+        <IonCardHeader>
+          <IonCardSubtitle>Social Login</IonCardSubtitle>
+          <IonCardTitle className={style['simple-resp']}>{props.msg}</IonCardTitle>
+        </IonCardHeader>
+        <IonCardContent>
+        <IonButton 
+              expand="full"
+              color="success">Signup with Elastos</IonButton>          
+          <IonButton 
+              expand="full"
+              color="danger">Signup with Google</IonButton>
+          <IonButton 
+              expand="full"
+              color="secondary">Signup with Twitter</IonButton>
+          <IonButton 
+              expand="full"
+              color="tertiary">Signup with LinkedIn</IonButton>
+        </IonCardContent>
+      </IonCard>
+
       </IonContent>
     </IonPage>
   );

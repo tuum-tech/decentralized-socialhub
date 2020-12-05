@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import configureStore from './baseplate/configureStore';
 import history from './baseplate/history';
-import { Menu } from './Menu';
+// import { Menu } from './Menu';
 
 const initialState = {}; // Empty | LocalStorage | SessionStorage
 const store = configureStore(initialState, history);
@@ -13,7 +13,7 @@ const MOUNT_NODE = document.getElementById('root');
 
 ReactDOM.render(
     <Provider store={store}>
-        <Menu />
+        {/* <Menu /> */}
         <App />
     </Provider>
     , MOUNT_NODE

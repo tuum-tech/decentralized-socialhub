@@ -73,6 +73,9 @@ const LoginPage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappe
           <IonCardTitle className={style['simple-resp']}>{props.msg}</IonCardTitle>
         </IonCardHeader>
         <IonCardContent>
+        <IonButton routerLink="/login/elastos"
+              expand="full"
+              color="success">Login with Elastos</IonButton>          
           <IonButton 
               expand="full"
               color="danger">Login with Google</IonButton>
@@ -82,9 +85,6 @@ const LoginPage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappe
           <IonButton 
               expand="full"
               color="tertiary">Login with LinkedIn</IonButton>
-          <IonButton 
-              expand="full"
-              color="success">Login with Elastos</IonButton>
         </IonCardContent>
       </IonCard>
 

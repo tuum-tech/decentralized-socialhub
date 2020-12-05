@@ -17,7 +17,9 @@ import {
   IonMenuButton,
   IonList,
   IonItem,
-  IonMenu
+  IonMenu,
+  IonImg,
+  IonNav
 } from '@ionic/react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -33,6 +35,11 @@ import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 import { fetchSimpleApi } from './fetchapi';
 import { menuController } from '@ionic/core';
+import Header from 'src/components/Header';
+import ClearlyMeContent from 'src/components/ClearlyMeContent';
+import ButtonDefault from 'src/components/ButtonDefault';
+import ButtonLight from 'src/components/ButtonLight';
+import SocialLoginLink from 'src/components/SocialLoginLink';
 
 const HomePage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
 
@@ -53,56 +60,44 @@ const HomePage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMapped
 
   return (
     <IonPage className={style["homepage"]}>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <IonMenuButton></IonMenuButton>
-          </IonButtons>
-          <IonTitle>Home</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent>
-        <IonButton expand="block" onClick={() => openMenu()}>Open Menu</IonButton>
-        <IonCard className="welcome-card">
-          <IonCardHeader>
-            <IonCardSubtitle>Redux data flow</IonCardSubtitle>
-            <IonCardTitle className={style['counter']}>{props.counter}</IonCardTitle>
-          </IonCardHeader>
-          <IonCardContent>
-            <IonButton
-              expand="full"
-              onClick={() => eProps.onCount({ counter: props.counter + 1 })}
-              color="primary">Increment Counter</IonButton>
-          </IonCardContent>
-        </IonCard>
+      <ClearlyMeContent>
+        <IonHeader style={{height: '80px'}}>
+          <Header />
+        </IonHeader>
+        <div className={style["main-container"]}>
+          <h2>Digital Identity<br/> Your Profile, Your Data</h2>
+          <br/><br/>
+          <div style={{textAlign: 'center'}}>
+            <ButtonDefault href="/login/elastos/mnemonic">Sign in with DID</ButtonDefault>
+          </div>
 
-        <IonCard>
-        <IonCardHeader>
-          <IonCardSubtitle>Redux - Saga data flow</IonCardSubtitle>
-          <IonCardTitle className={style['simple-resp']}>{props.msg}</IonCardTitle>
-        </IonCardHeader>
-        <IonCardContent>
-          <IonButton
-            expand="full"
-            onClick={() => eProps.onSimpleAjax()}
-            color="primary">Fetch Response</IonButton>
-        </IonCardContent>
-      </IonCard>
+          <div style={{textAlign: 'center'}}>
+            <ButtonLight href="/create">Create New DID</ButtonLight>
+          </div>
 
-      <IonCard>
-        <IonCardHeader>
-          <IonCardSubtitle>Direct Ajax data flow</IonCardSubtitle>
-          <IonCardTitle className={style['simple-resp']}>{msg}</IonCardTitle>
-        </IonCardHeader>
-        <IonCardContent>
-          <IonButton
-            expand="full"
-            onClick={() => simpleAjaxDirect()}
-            color="primary">Fetch Response</IonButton>
-        </IonCardContent>
-      </IonCard>
+          {/* <ButtonGhost /> */}
+          <br/>
+          <p>Continue with</p>
+          <div className="social-login">
+            <SocialLoginLink href="/login/elastos/qrcode">
+              <IonImg src="../../assets/logo_elastos.svg" style={{minWidth: "24px"}} />
+            </SocialLoginLink>
+            <SocialLoginLink>
+              <IonImg src="../../assets/logo_google.svg" style={{minWidth: "24px"}} />
+            </SocialLoginLink>
+            <SocialLoginLink>
+              <IonImg src="../../assets/logo_linkedin.svg" style={{minWidth: "24px"}} />
+            </SocialLoginLink>
+            <SocialLoginLink>
+              <IonImg src="../../assets/logo_twitter.svg" style={{minWidth: "24px"}} />
+            </SocialLoginLink>                                    
+            <SocialLoginLink>
+              <IonImg src="../../assets/logo_facebook.svg" style={{minWidth: "24px"}} />
+            </SocialLoginLink>
+          </div>
 
-      </IonContent>
+        </div>
+      </ClearlyMeContent>
     </IonPage>
   );
 };
