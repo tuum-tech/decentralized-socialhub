@@ -27,7 +27,7 @@ import './theme/variables.css';
 // import './theme/theme-clearlyme.css';
 
 /* Pages */
-import LoginPage from './pages/_LoginPage/Loadable';
+// import LoginPage from './pages/LoginPage/Loadable';
 // import ElastosLoginPage from './pages/ElastosLoginPage/Loadable';
 // import MnemonicPage from './pages/MnemonicPage/Loadable';
 import ProfilePage from './pages/ProfilePage/Loadable';
@@ -43,7 +43,7 @@ const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonRouterOutlet>
-        <Route path="/login" component={LoginPage} exact={true} />
+        {/* <Route path="/login" component={LoginPage} exact={true} /> */}
         <Route path="/login/elastos/mnemonic" component={ElastosMnemonicPage} exact={true} />
         <Route path="/login/elastos/qrcode" component={ElastosLoginQRPage} exact={true} />
         {/* <Route path="/register" component={RegisterPage} exact={true} />         */}
