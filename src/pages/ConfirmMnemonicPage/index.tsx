@@ -35,6 +35,7 @@ import ClearlyMeContent from 'src/components/ClearlyMeContent';
 import Header from 'src/components/Header';
 import ButtonDefault from 'src/components/ButtonDefault';
 import ButtonDisabled from 'src/components/ButtonDisabled';
+import IdentityProgressComponent from 'src/components/IdentityProgressComponent';
 
 const ConfirmMnemonicPage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
 
@@ -55,6 +56,8 @@ const ConfirmMnemonicPage : React.FC<InferMappedProps> = ({ eProps, ...props }: 
         <IonHeader style={{height: '80px'}}>
           <Header />
         </IonHeader>
+
+        <IdentityProgressComponent stage="confirm"></IdentityProgressComponent>
         <div className={style["main-container"]}>
           <h1>Re-enter security words</h1>
 

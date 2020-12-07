@@ -24,6 +24,7 @@ import { fetchSimpleApi } from './fetchapi';
 import ClearlyMeContent from 'src/components/ClearlyMeContent';
 import Header from 'src/components/Header';
 import ButtonDefault from 'src/components/ButtonDefault';
+import IdentityProgressComponent from 'src/components/IdentityProgressComponent';
 
 const PublishIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
 
@@ -44,6 +45,8 @@ const PublishIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: 
         <IonHeader style={{height: '80px'}}>
           <Header />
         </IonHeader>
+
+        <IdentityProgressComponent stage="publish"></IdentityProgressComponent>
         <div className={style["main-container"]}>
           <h1>Publish Identity</h1>
 

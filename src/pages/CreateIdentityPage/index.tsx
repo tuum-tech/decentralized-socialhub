@@ -37,6 +37,7 @@ import { fetchSimpleApi } from './fetchapi';
 import ClearlyMeContent from 'src/components/ClearlyMeContent';
 import Header from 'src/components/Header';
 import ButtonDefault from 'src/components/ButtonDefault';
+import IdentityProgressComponent from 'src/components/IdentityProgressComponent';
 
 const CreateIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
 
@@ -59,6 +60,8 @@ const CreateIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: I
         <IonHeader style={{height: '80px'}}>
           <Header />
         </IonHeader>
+
+        <IdentityProgressComponent stage="create"></IdentityProgressComponent>
         <div className={style["main-container"]}>
           <h1>Create Identity</h1>
 
