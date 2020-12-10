@@ -5,9 +5,11 @@ import {
   IonRouterOutlet,
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+
 import LoginPage from './pages/LoginPage/Loadable';
 import ProfilePage from './pages/ProfilePage/Loadable';
 import LinkedinCallback from './pages/LinkedinCallback/Loadable';
+
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -27,19 +29,45 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import RegisterPage from './pages/RegisterPage';
+// import './theme/theme-clearlyme.css';
+
+/* Pages */
+// import LoginPage from './pages/LoginPage/Loadable';
+// import ElastosLoginPage from './pages/ElastosLoginPage/Loadable';
+// import MnemonicPage from './pages/MnemonicPage/Loadable';
+// import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
+import ElastosMnemonicPage from './pages/ElastosMnemonicPage';
+import ElastosLoginQRPage from './pages/ElastosLoginQRPage';
+import CreateIdentityPage from './pages/CreateIdentityPage';
+import ConfirmMnemonicPage from './pages/ConfirmMnemonicPage';
+import PublishIdentityPage from './pages/PublishIdentityPage';
+import ChooseVaultPage from './pages/ChooseVaultPage';
+import RegisterPage from './pages/RegisterPage';
 
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonRouterOutlet>
         <Route path="/login" component={LoginPage} exact={true} />
+        <Route path="/login/elastos/mnemonic" component={ElastosMnemonicPage} exact={true} />
+        <Route path="/login/elastos/qrcode" component={ElastosLoginQRPage} exact={true} />
         <Route path="/register" component={RegisterPage} exact={true} />
+        
+        <Route path="/create" component={CreateIdentityPage} exact={true} />        
+        <Route path="/confirm" component={ConfirmMnemonicPage} exact={true} />        
+        <Route path="/publish" component={PublishIdentityPage} exact={true} />        
+
+        <Route path="/choosevault" component={ChooseVaultPage} exact={true} />        
+
         <Route path="/home" component={HomePage} exact={true} />
         <Route path="/profile" component={ProfilePage} exact={true} />
+        {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
+        {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
+        <Route exact path="/" render={() => <Redirect to="/home" />} />
         <Route path="/linkedin_callback" component={LinkedinCallback} exact={false} />
-        <Route exact path="/" render={() => <Redirect to="/login" />} />
+        {/* <Route exact path="/" render={() => <Redirect to="/login" />} /> */}
+
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>

@@ -87,7 +87,6 @@ const LoginPage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMapped
           </IonCardHeader>
           <IonCardContent>
             <IonButton
-
               expand="full"
               color="danger">Login with Google</IonButton>
             <IonButton
@@ -105,7 +104,6 @@ const LoginPage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMapped
               color="success">Login with Elastos</IonButton>
           </IonCardContent>
         </IonCard>
-
       </IonContent>
     </IonPage >
   );
