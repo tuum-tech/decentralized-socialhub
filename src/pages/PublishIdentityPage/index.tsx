@@ -128,7 +128,7 @@ const PublishIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: 
           </div>
 
           <div style={{textAlign: 'center'}}>
-            <ButtonDefault href="/confirm">Publish to Blockchain</ButtonDefault>
+            <ButtonDefault href="/choosevault">Publish to Blockchain</ButtonDefault>
           </div>
 
         </div>

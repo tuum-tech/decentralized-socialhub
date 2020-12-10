@@ -13,7 +13,8 @@ import {
   IonTitle,
   IonToolbar,
   IonButton,
-  IonImg
+  IonImg,
+  IonRouterLink
 } from '@ionic/react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -55,7 +56,9 @@ const ElastosLoginQRPage : React.FC<InferMappedProps> = ({ eProps, ...props }: I
 
           <br/><br/><br/>
           <div className={style["qr-frame"]}>
-            <IonImg src="../../assets/qr-code.svg" style={{width: '98.5%', marginTop: '2px', padding: 'auto'}}/>
+            <IonRouterLink href="/profile" routerDirection="forward">
+              <IonImg src="../../assets/qr-code.svg" style={{width: '98.5%', marginTop: '2px', padding: 'auto'}}/>
+            </IonRouterLink>
           </div>
 
            <br/>

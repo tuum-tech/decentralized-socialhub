@@ -35,7 +35,6 @@ import './theme/variables.css';
 // import LoginPage from './pages/LoginPage/Loadable';
 // import ElastosLoginPage from './pages/ElastosLoginPage/Loadable';
 // import MnemonicPage from './pages/MnemonicPage/Loadable';
-import ProfilePage from './pages/ProfilePage/Loadable';
 // import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
 import ElastosMnemonicPage from './pages/ElastosMnemonicPage';
@@ -44,6 +43,7 @@ import CreateIdentityPage from './pages/CreateIdentityPage';
 import ConfirmMnemonicPage from './pages/ConfirmMnemonicPage';
 import PublishIdentityPage from './pages/PublishIdentityPage';
 import ChooseVaultPage from './pages/ChooseVaultPage';
+import RegisterPage from './pages/RegisterPage';
 
 const App: React.FC = () => (
   <IonApp>

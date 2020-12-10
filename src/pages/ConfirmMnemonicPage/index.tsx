@@ -138,64 +138,64 @@ const ConfirmMnemonicPage : React.FC<InferMappedProps> = ({ eProps, ...props }: 
             </p>
           </div>
 
-          <div>
+          {/* <div>
             <p className={style["error"]}>
               Invalid order, please enter correct order.
             </p>
-          </div>
+          </div> */}
 
           <div>
             <IonRow>
               <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                <IonInput className={style["mnemonic"]} value="" readonly>
                 </IonInput>
               </IonCol>
               <IonCol>
-                <IonInput className={style["mnemonic"]} value="butter" readonly>
+                <IonInput className={style["mnemonic"]} value="" readonly>
                 </IonInput>
               </IonCol>
               <IonCol>
-                <IonInput className={style["mnemonic"]} value="jam" readonly>
+                <IonInput className={style["mnemonic"]} value="" readonly>
                 </IonInput>
               </IonCol>              
               <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                <IonInput className={style["mnemonic"]} value="" readonly>
                 </IonInput>
               </IonCol>
             </IonRow>
             <IonRow>
               <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                <IonInput className={style["mnemonic"]} value="" readonly>
                 </IonInput>
               </IonCol>
               <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                <IonInput className={style["mnemonic"]} value="" readonly>
                 </IonInput>
               </IonCol>
               <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                <IonInput className={style["mnemonic"]} value="" readonly>
                 </IonInput>
               </IonCol>
               <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                <IonInput className={style["mnemonic"]} value="" readonly>
                 </IonInput>
               </IonCol>                            
             </IonRow>
             <IonRow>
               <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                <IonInput className={style["mnemonic"]} value="" readonly>
                 </IonInput>
               </IonCol>
               <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                <IonInput className={style["mnemonic"]} value="" readonly>
                 </IonInput>
               </IonCol>
               <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                <IonInput className={style["mnemonic"]} value="" readonly>
                 </IonInput>
               </IonCol> 
               <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                <IonInput className={style["mnemonic"]} value="" readonly>
                 </IonInput>
               </IonCol>                           
             </IonRow>            
