@@ -16,7 +16,9 @@ import {
   IonRow,
   IonCol,
   IonInput,
-  IonList
+  IonList,
+  IonRouterLink,
+  IonLabel
 } from '@ionic/react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -125,7 +127,7 @@ const ConfirmMnemonicPage : React.FC<InferMappedProps> = ({ eProps, ...props }: 
                 </IonInput>
               </IonCol>
               <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
+                <IonInput className={style["mnemonic"]} value="" readonly>
                   <span className={style["number"]}>12</span>
                 </IonInput>
               </IonCol>              
@@ -177,8 +179,10 @@ const ConfirmMnemonicPage : React.FC<InferMappedProps> = ({ eProps, ...props }: 
                 </IonInput>
               </IonCol>
               <IonCol>
-                <IonInput className={style["mnemonic"]} value="" readonly>
+                <IonRouterLink href="/publish">
+                  <IonInput className={style["mnemonic"]} value="bread" readonly>
                 </IonInput>
+                </IonRouterLink>
               </IonCol>                            
             </IonRow>
             <IonRow>
