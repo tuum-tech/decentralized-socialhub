@@ -38,6 +38,7 @@ import ElastosLoginQRPage from './pages/ElastosLoginQRPage';
 import CreateIdentityPage from './pages/CreateIdentityPage';
 import ConfirmMnemonicPage from './pages/ConfirmMnemonicPage';
 import PublishIdentityPage from './pages/PublishIdentityPage';
+import ChooseVaultPage from './pages/ChooseVaultPage';
 
 const App: React.FC = () => (
   <IonApp>
@@ -51,6 +52,8 @@ const App: React.FC = () => (
         <Route path="/create" component={CreateIdentityPage} exact={true} />        
         <Route path="/confirm" component={ConfirmMnemonicPage} exact={true} />        
         <Route path="/publish" component={PublishIdentityPage} exact={true} />        
+
+        <Route path="/choosevault" component={ChooseVaultPage} exact={true} />        
 
         <Route path="/home" component={HomePage} exact={true} />
         <Route path="/profile" component={ProfilePage} exact={true} />

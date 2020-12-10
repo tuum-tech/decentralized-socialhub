@@ -1,0 +1,34 @@
+/** All your component stuyles */
+.vaultprogresscomponent{
+    top: 10%;
+
+    .header {
+        text-align: right;
+        width: 86.5%;
+
+        .header-container {
+            justify-content: center;
+            padding-left: 45px;
+            vertical-align: middle;
+            line-height: 60px;
+
+            font: normal normal bold 16px/19px Open Sans;
+            letter-spacing: 0px;    
+    
+            .header-item {
+                margin-top: 15px;
+                font-size: 16px;
+                position: relative;
+                margin-right: 30px;
+                line-height: 60px;
+                color: #454545;  
+            }
+
+            .active {
+                font-weight: 700;
+                color: #363291;
+            }                  
+        }         
+    }
+
+}
