@@ -180,7 +180,7 @@ const ConfirmMnemonicPage : React.FC<InferMappedProps> = ({ eProps, ...props }: 
               </IonCol>
               <IonCol>
                 <IonRouterLink href="/publish">
-                  <IonInput className={style["mnemonic"]} value="bread" readonly>
+                  <IonInput className={style["mnemonic"] + ' ' + style["link"] } value="bread" readonly>
                 </IonInput>
                 </IonRouterLink>
               </IonCol>                            

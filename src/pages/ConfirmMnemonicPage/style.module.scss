@@ -64,8 +64,16 @@
       text-align: center;
       line-height: 25px;
       font-size: 12px;
-    }    
+    } 
   }
+
+  /* dummy for now, remove it once functional */
+  .link {
+    cursor: pointer;
+    input {
+      cursor: pointer!important;
+    }
+  }  
 
   // .warning-emphasis {
   //   width: 397px;
