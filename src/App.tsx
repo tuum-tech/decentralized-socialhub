@@ -6,6 +6,11 @@ import {
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
+import LoginPage from './pages/LoginPage/Loadable';
+import ProfilePage from './pages/ProfilePage/Loadable';
+import LinkedinCallback from './pages/LinkedinCallback/Loadable';
+
+
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
@@ -44,10 +49,10 @@ const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonRouterOutlet>
-        {/* <Route path="/login" component={LoginPage} exact={true} /> */}
+        <Route path="/login" component={LoginPage} exact={true} />
         <Route path="/login/elastos/mnemonic" component={ElastosMnemonicPage} exact={true} />
         <Route path="/login/elastos/qrcode" component={ElastosLoginQRPage} exact={true} />
-        {/* <Route path="/register" component={RegisterPage} exact={true} />         */}
+        <Route path="/register" component={RegisterPage} exact={true} />
         
         <Route path="/create" component={CreateIdentityPage} exact={true} />        
         <Route path="/confirm" component={ConfirmMnemonicPage} exact={true} />        
@@ -60,6 +65,9 @@ const App: React.FC = () => (
         {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
         {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
         <Route exact path="/" render={() => <Redirect to="/home" />} />
+        <Route path="/linkedin_callback" component={LinkedinCallback} exact={false} />
+        {/* <Route exact path="/" render={() => <Redirect to="/login" />} /> */}
+
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>

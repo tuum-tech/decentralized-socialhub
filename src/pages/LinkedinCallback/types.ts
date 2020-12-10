@@ -11,23 +11,12 @@ export type InferMappedProps = ReturnType<typeof mapStateToProps> & ReturnType<t
 export type ActionType = typeof Actions;
 
 
-export interface Name {
-    localized: {
-        fr_FR: string
-    };
+export interface TokenContent {
+    request_token: string,
+    expires_in: string
 }
 
-export interface ProfileInfo {
-    lastName?: Name,
-    firstName?: Name,
-    localizedFirstName: string,
-    localizedLastName: string
+export interface TokenResponse {
+    data: TokenContent
 }
 
-export interface ProfileContent {
-    profile: ProfileInfo
-}
-
-export interface ProfileResponse {
-    data: ProfileContent
-}

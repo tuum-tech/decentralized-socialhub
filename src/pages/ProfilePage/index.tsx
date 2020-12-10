@@ -12,7 +12,10 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  IonButton
+  IonButton,
+  IonGrid,
+  IonRow,
+  IonCol
 } from '@ionic/react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -20,36 +23,73 @@ import { createStructuredSelector } from 'reselect';
 import injector from 'src/baseplate/injectorWrap';
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
 import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
-import { InferMappedProps, SubState } from './types';
-import { fetchSimpleApi } from './fetchapi';
+import { InferMappedProps, ProfileContent, ProfileResponse, SubState } from './types';
+import { fetchSimpleApi, requestLinkedinProfile } from './fetchapi';
+import FollowingList from 'src/components/FollowingList';
+import Pages from 'src/components/Pages';
+import ProfileCompletion from 'src/components/ProfileCompletion';
+import ProfileComponent from 'src/components/ProfileComponent';
+import PagesComponent from 'src/components/PagesComponent';
+import { RouteComponentProps } from 'react-router';
+import { BaseplateResp } from 'src/baseplate/request';
 
-const ProfilePage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
+const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
 
   /** 
    * Direct method implementation without SAGA 
    * This was to show you dont need to put everything to global state 
    * incoming from Server API calls. Maintain a local state.
   */
-  const [msg, setMsg] = useState('');
-  const simpleAjaxDirect = async ()=>{
-    const msg = await fetchSimpleApi() as string;
-    setMsg(msg);
+  const [profile, setProfile] = useState({ profile: { localizedFirstName: "", localizedLastName: "" } } as ProfileContent);
+
+  const getProfile = async (token: string): Promise<ProfileResponse> => {
+    return await requestLinkedinProfile(token) as ProfileResponse;
   }
+  let token: string = new URLSearchParams(props.location.search).get("token") || "";
+
+  useEffect(() => {
+    (async () => {
+      if (token != "") {
+        getProfile(token).then((x: ProfileResponse) => {
+          console.log(x.data);
+          let p = x.data as ProfileContent;
+          setProfile(p);
+        }).catch((error) => {
+          console.error(error);
+          let fallback = { profile: { localizedFirstName: "Diego", localizedLastName: "Chagastelles*" } }
+          setProfile(fallback);
+        });
+      }
+
+    })();
+  }, [token]);
+
 
   return (
     <IonPage className={style["profilepage"]}>
       <IonHeader>
-        <IonToolbar>
-          <IonTitle>Profile Page</IonTitle>
-        </IonToolbar>
+
       </IonHeader>
       <IonContent>
-
+        <IonGrid>
+          <IonRow className={style["profilecontent"]}>
+            <IonCol size="3" className={style["left-panel"]}>
+              <FollowingList />
+              <PagesComponent />
+            </IonCol>
+            <IonCol size="6" className={style["center-panel"]}>
+              <ProfileComponent profile={profile} />
+            </IonCol>
+            <IonCol size="3" className={style["right-panel"]}>
+              <ProfileCompletion />
+            </IonCol>
+          </IonRow>
+        </IonGrid>
       </IonContent>
     </IonPage>
   );

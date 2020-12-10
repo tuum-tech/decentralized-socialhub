@@ -7,8 +7,10 @@ export function fetchSimpleApi(): Promise<BaseplateResp> {
     });
 }
 
-export function requestLinkedinLogin(): Promise<BaseplateResp> {
-    return request("http://localhost:8081/v1/auth/linkedin_request", {
+export function requestLinkedinToken(code: string, state: string): Promise<BaseplateResp> {
+
+    return request(`http://localhost:8081/v1/auth/linkedin_callback?code=${code}&state=${state}`, {
+        method: 'GET',
         headers: {
             'content-type': 'text/plain',
             'Authorization': 'didcreds-validator-secret-key',
@@ -16,3 +18,4 @@ export function requestLinkedinLogin(): Promise<BaseplateResp> {
         }
     });
 }
+

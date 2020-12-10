@@ -1,0 +1,47 @@
+/** All your component stuyles */
+.followinglist{
+    min-height: 200px;
+    box-shadow: 2px 10px 4px 10px #00000005;
+    border-radius: 19px 19px 19px 19px;
+    background-color: white;
+    padding: 8px 8px 15px 8px;
+    opacity: 1;
+    margin: 5px 10px 15px 15px;
+    
+
+    ion-row {
+        align-items: center;
+    }
+
+    h1 {
+        text-align: left;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 16px;
+        font-weight: bold;
+        color: #000000DE;
+        margin-left: 12px;
+    }
+
+    .thumbnail {
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+    }
+
+    .name{
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        letter-spacing: 0.25px;
+        color: #00000099;
+      
+
+    }
+    .invite {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.13px;
+        color: #363291;
+        margin-left: 5px;
+    }
+}
