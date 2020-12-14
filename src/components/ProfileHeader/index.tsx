@@ -3,6 +3,7 @@ import { IonSpinner, IonContent, IonGrid, IonRow, IonCol } from '@ionic/react';
 import { ProfileContent } from 'src/pages/ProfilePage/types';
 import style from './style.module.scss';
 import chagastelles from '../../theme/images/chagastelles.jpeg'
+import bulb from '../../assets/bulb.svg'
 
 interface IProps {
   profile: ProfileContent
@@ -32,7 +33,9 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
           <div className={style["tip"]}>
             <IonGrid>
               <IonRow>
-                <IonCol size="1"></IonCol>
+                <IonCol size="1">
+                  <img src={bulb} />
+                </IonCol>
                 <IonCol size="9">
                   Recommendation: Connect your DID and publish it to Blockchain
                 </IonCol>
