@@ -1,0 +1,102 @@
+/** All your component stuyles */
+.profileheader{
+    min-height: 100px;
+    background-color: white;
+  
+    ion-row {
+        align-items: center;
+        padding-top: 8px;;
+    }
+   
+    
+
+    .header {
+        border-bottom: 2px solid #EFEFEF;
+        padding-bottom: 10px;
+    }
+
+
+    .addbutton {
+        background: rgba(1, 230, 252, 0.14);
+    
+        border-radius: 12px;
+        padding: 5px 8px 5px 5px;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 11px;
+        letter-spacing: 0.11px;
+        color: #000000DE;
+
+        img {
+            margin-bottom: -5px;
+            margin-right: 4px;
+        }
+    }
+    .name {
+        text-align: left;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 19x;
+        color: #363291;
+        opacity: 1;
+    }
+
+    .details {
+        text-align: left;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14x;
+        opacity: 1;
+    }
+
+    .percent-completed-verified {
+        text-align: left;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 12x;
+        opacity: 1;   
+    }
+
+    .profile-img {
+        border-radius: 50%;
+        width: 66px;
+        height: 66px;
+    }
+
+    .tip {
+        color: #00000099;
+        background-color: #E3F3FD;
+        border-radius: 10px;
+        opacity: 1;
+        margin: 10px 0px 5px 0px;
+        border: 1px solid #A7DCFD;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        letter-spacing: 0.25px;
+    }
+
+    .action {
+        text-align: right;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        letter-spacing: 0.25px;
+        color: #363291;
+        opacity: 1;
+    }
+
+    h2 {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 16px;
+        font-weight: bold;
+        letter-spacing: 0.14px;
+        color: #000000DE;
+        margin-bottom: 0px;
+    }
+    
+    p {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        font-weight: normal;
+        letter-spacing: 0.25px;
+        color: #000000DE;
+    }
+}
+
+
+
