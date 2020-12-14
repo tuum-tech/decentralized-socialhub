@@ -15,7 +15,9 @@ import {
   IonButton,
   IonGrid,
   IonRow,
-  IonCol
+  IonCol,
+  IonInput,
+  IonSearchbar
 } from '@ionic/react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -37,6 +39,8 @@ import ProfileComponent from 'src/components/ProfileComponent';
 import PagesComponent from 'src/components/PagesComponent';
 import { RouteComponentProps } from 'react-router';
 import { BaseplateResp } from 'src/baseplate/request';
+import logo from '../../assets/Logo-Vertical.svg';
+import home from '../../assets/home.svg';
 
 const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
 
@@ -61,7 +65,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
           setProfile(p);
         }).catch((error) => {
           console.error(error);
-          let fallback = { profile: { localizedFirstName: "Diego", localizedLastName: "Chagastelles*" } }
+          let fallback = { profile: { localizedFirstName: "Jane", localizedLastName: "Fallback" } }
           setProfile(fallback);
         });
       }
@@ -73,7 +77,17 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
   return (
     <IonPage className={style["profilepage"]}>
       <IonHeader>
-
+        <IonGrid>
+          <IonRow>
+            <IonCol size="1"><img src={logo} /></IonCol>
+            <IonCol size="3">
+              <IonSearchbar placeholder="Search Profiles, Pages, Validators" className={style["search-input"]}></IonSearchbar>
+            </IonCol>
+            <IonCol size="3">
+              <img src={home} />
+            </IonCol>
+          </IonRow>
+        </IonGrid>
       </IonHeader>
       <IonContent>
         <IonGrid>

@@ -1,9 +1,10 @@
 import React from 'react';
-import { IonSpinner, IonContent, IonGrid, IonRow, IonCol } from '@ionic/react';
+import { IonSpinner, IonContent, IonGrid, IonRow, IonCol, IonProgressBar } from '@ionic/react';
 import { ProfileContent } from 'src/pages/ProfilePage/types';
 import style from './style.module.scss';
-import chagastelles from '../../theme/images/chagastelles.jpeg'
-import bulb from '../../assets/bulb.svg'
+import photo from '../../assets/photo.png';
+import bulb from '../../assets/bulb.svg';
+import edit from '../../assets/icon-edit.svg';
 
 interface IProps {
   profile: ProfileContent
@@ -18,7 +19,7 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
     <IonGrid className={style["profileheader"]}>
       <IonRow className={style["header"]}>
         <IonCol size="1.5">
-          <img src={chagastelles} className={style["profile-img"]} />
+          <img src={photo} className={style["profile-img"]} />
         </IonCol>
         <IonCol size="8.5">
           <IonGrid>
@@ -26,7 +27,11 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
             <IonRow><span className={style["details"]}>Student </span><span> - </span><span className={"name"}> University of California, USA</span></IonRow>
           </IonGrid>
         </IonCol>
-        <IonCol size="2">completion</IonCol>
+        <IonCol size="2">
+          <img src={edit} />
+          <IonProgressBar value={0.78}></IonProgressBar>
+          <span className={style["percent-completed-verified"]}>85% verified</span>
+        </IonCol>
       </IonRow>
       <IonRow>
         <IonCol>
