@@ -83,7 +83,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
       <IonHeader>
         <IonGrid>
           <IonRow>
-            <IonCol size="1"><img src={logo} /></IonCol>
+            <IonCol size="0.5"><img className={style["logo"]} src={logo} /></IonCol>
             <IonCol size="3">
               <IonSearchbar placeholder="Search Profiles, Pages, Validators" className={style["search-input"]}></IonSearchbar>
             </IonCol>

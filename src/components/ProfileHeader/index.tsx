@@ -5,6 +5,7 @@ import style from './style.module.scss';
 import photo from '../../assets/photo.png';
 import bulb from '../../assets/bulb.svg';
 import edit from '../../assets/icon-edit.svg';
+import addbutton from '../../assets/addbutton.svg'
 
 interface IProps {
   profile: ProfileContent
@@ -52,6 +53,21 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
       </IonRow>
       <IonRow>
         <IonCol><h2>About</h2></IonCol>
+      </IonRow>
+      <IonRow className={style["header"]}>
+        <IonCol><p>
+          Experienced Chief Technology Officer with a demonstrated history of working in the financial services industry. Skilled in PHP, Android Development, HTML, Cascading Style Sheets (CSS), and Microsoft PowerPoint. Strong information technology
+          professional with a Bachelor’s degree focused in Computer Software Engineering from University of Management and Technology - UMT.
+          </p></IonCol>
+      </IonRow>
+      <IonRow>
+        <IonCol size="8"><h2>Education</h2></IonCol>
+        <IonCol size="2"><span className={style["addbutton"]}> <img src={addbutton} />Add new</span></IonCol>
+        <IonCol size="2">
+          <img src={edit} />
+          <IonProgressBar value={0.78}></IonProgressBar>
+          <span className={style["percent-completed-verified"]}>85% verified</span>
+        </IonCol>
       </IonRow>
       <IonRow>
         <IonCol><p>

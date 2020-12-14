@@ -45,6 +45,7 @@ const ProfileCompletion: React.FC = () => {
           </IonCol>
         </IonRow>
       </IonGrid>
+      <span className={style["explore"]}>Explore all</span>
 
     </div >
   )

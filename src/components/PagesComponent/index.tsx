@@ -17,9 +17,9 @@ import {
   IonCol
 } from '@ionic/react';
 import style from './style.module.scss';
-import charles from '../../theme/images/charles.jpeg'
-import vitalik from '../../theme/images/vitalik.jpeg'
-import pomp from '../../theme/images/pomp.jpg'
+import tuum from '../../assets/tuum.png';
+import intel from '../../assets/intel.png';
+import ibm from '../../assets/ibm.png';
 import { Link } from 'react-router-dom';
 
 const FollowingList: React.FC = () => {
@@ -30,19 +30,28 @@ const FollowingList: React.FC = () => {
       <h1>Pages</h1>
       <IonGrid>
         <IonRow>
-          <IonCol size="2"><img className={style["thumbnail"]} src={charles} /></IonCol>
-          <IonCol size="10"><span className={style["name"]}>Charles Hoskinson</span></IonCol>
+          <IonCol size="*"><img className={style["thumbnail"]} src={tuum} /></IonCol>
+          <IonCol size="10">
+            <div><span className={style["name"]}>Tuum Tech</span></div>
+            <div><span className={style["number-followers"]}>50M followers</span></div>
+          </IonCol>
         </IonRow>
         <IonRow>
-          <IonCol size="2"><img className={style["thumbnail"]} src={vitalik} /></IonCol>
-          <IonCol size="10"><span className={style["name"]}>Vitalik Buterin</span></IonCol>
+          <IonCol size="*"><img className={style["thumbnail"]} src={intel} /></IonCol>
+          <IonCol size="10">
+            <div><span className={style["name"]}>Intel Corporation</span></div>
+            <div><span className={style["number-followers"]}>119K followers</span></div>
+          </IonCol>
         </IonRow>
         <IonRow>
-          <IonCol size="2"><img className={style["thumbnail"]} src={pomp} /></IonCol>
-          <IonCol size="10"><span className={style["name"]}>Anthony Pompliano</span></IonCol>
+          <IonCol size="*"><img className={style["thumbnail"]} src={ibm} /></IonCol>
+          <IonCol size="10">
+            <span className={style["name"]}>IBM Technologies</span>
+            <div><span className={style["number-followers"]}>119K followers</span></div>
+          </IonCol>
         </IonRow>
       </IonGrid>
-
+      <span className={style["explore"]}>Explore all</span>
     </div >
   )
 };
