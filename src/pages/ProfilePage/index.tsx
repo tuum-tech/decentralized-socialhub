@@ -41,6 +41,10 @@ import { RouteComponentProps } from 'react-router';
 import { BaseplateResp } from 'src/baseplate/request';
 import logo from '../../assets/Logo-Vertical.svg';
 import home from '../../assets/home.svg';
+import community from '../../assets/people-outline.svg';
+import pages from '../../assets/person-search-outline.svg';
+import messages from '../../assets/message-circle-outline.svg';
+
 
 const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
 
@@ -84,7 +88,14 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
               <IonSearchbar placeholder="Search Profiles, Pages, Validators" className={style["search-input"]}></IonSearchbar>
             </IonCol>
             <IonCol size="3">
-              <img src={home} />
+              <IonGrid>
+                <IonRow className="ion-justify-content-start">
+                  <IonCol><div className={style["home"]}><img src={home} /> <span>Home</span></div></IonCol>
+                  <IonCol><div className={style["community"]}><img src={community} /><span>Community</span></div></IonCol>
+                  <IonCol><div className={style["pages"]}><img src={pages} /><span>Pages</span></div></IonCol>
+                  <IonCol><div className={style["messages"]}><img src={messages} /><span>Messages</span></div></IonCol>
+                </IonRow>
+              </IonGrid>
             </IonCol>
           </IonRow>
         </IonGrid>
@@ -105,7 +116,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
           </IonRow>
         </IonGrid>
       </IonContent>
-    </IonPage>
+    </IonPage >
   );
 };
 
@@ -149,4 +160,4 @@ export default compose(
   memo,
 )(withInjectedMode) as React.ComponentType<InferMappedProps>;
 
-// export default Tab1;
+      // export default Tab1;
