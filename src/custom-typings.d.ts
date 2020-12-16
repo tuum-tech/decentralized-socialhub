@@ -1,0 +1,1 @@
+declare module '@elastos/elastos-js-sdk';
