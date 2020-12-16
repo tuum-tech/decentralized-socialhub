@@ -6,6 +6,7 @@ import photo from '../../assets/photo.png';
 import bulb from '../../assets/bulb.svg';
 import edit from '../../assets/icon-edit.svg';
 import addbutton from '../../assets/addbutton.svg'
+import university from '../../assets/university.png'
 
 interface IProps {
   profile: ProfileContent
@@ -13,13 +14,13 @@ interface IProps {
 
 const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
 
-  let lastName = profile.profile.localizedLastName;
-  let firstName = profile.profile.localizedFirstName;
+  let lastName = profile.profile.localizedLastName || "Doodie";
+  let firstName = profile.profile.localizedFirstName || "Sarah";
 
   return (
     <IonGrid className={style["profileheader"]}>
       <IonRow className={style["header"]}>
-        <IonCol size="1.5">
+        <IonCol size="auto">
           <img src={photo} className={style["profile-img"]} />
         </IonCol>
         <IonCol size="8.5">
@@ -39,7 +40,7 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
           <div className={style["tip"]}>
             <IonGrid>
               <IonRow>
-                <IonCol size="1">
+                <IonCol size="auto">
                   <img src={bulb} />
                 </IonCol>
                 <IonCol size="9">
@@ -70,10 +71,10 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
         </IonCol>
       </IonRow>
       <IonRow>
-        <IonCol><p>
-          Experienced Chief Technology Officer with a demonstrated history of working in the financial services industry. Skilled in PHP, Android Development, HTML, Cascading Style Sheets (CSS), and Microsoft PowerPoint. Strong information technology
-          professional with a Bachelor’s degree focused in Computer Software Engineering from University of Management and Technology - UMT.
-          </p></IonCol>
+        <IonCol size="auto"><img src={university} /></IonCol>
+        <IonCol size="4" className={style["title-university"]}>University of Management and Technology - UMT</IonCol>
+
+
       </IonRow>
 
     </IonGrid>

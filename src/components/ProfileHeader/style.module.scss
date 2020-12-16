@@ -5,7 +5,7 @@
   
     ion-row {
         align-items: center;
-        padding-top: 8px;;
+        //padding-top: 8px;
     }
    
     
@@ -34,6 +34,7 @@
     .name {
         text-align: left;
         font-family: 'Open Sans', sans-serif;
+        font-weight: 600;
         font-size: 19x;
         color: #363291;
         opacity: 1;
@@ -49,7 +50,7 @@
     .percent-completed-verified {
         text-align: left;
         font-family: 'Open Sans', sans-serif;
-        font-size: 12x;
+        font-size: 14px;
         opacity: 1;   
     }
 
@@ -69,6 +70,7 @@
         font-family: 'Open Sans', sans-serif;
         font-size: 14px;
         letter-spacing: 0.25px;
+        padding-top: 0px !important;
     }
 
     .action {
@@ -95,6 +97,12 @@
         font-weight: normal;
         letter-spacing: 0.25px;
         color: #000000DE;
+    }
+
+    .title-university {
+
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
     }
 }
 

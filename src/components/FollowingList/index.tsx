@@ -46,7 +46,10 @@ const FollowingList: React.FC = () => {
         </IonRow>
         <IonRow>
           <IonCol size="*"><img className={style["thumbnail"]} src={pomp} /></IonCol>
-          <IonCol size="10"><span className={style["name"]}>Anthony Pompliano</span></IonCol>
+          <IonCol size="10">
+            <div><span className={style["name"]}>Anthony Pompliano</span></div>
+            <div><span className={style["number-followers"]}>550K followers</span></div>
+          </IonCol>
         </IonRow>
       </IonGrid>
       <span className={style["invite"]}>+ Invite friends to join</span>
