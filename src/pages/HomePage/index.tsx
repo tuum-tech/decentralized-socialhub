@@ -40,6 +40,7 @@ import ClearlyMeContent from 'src/components/ClearlyMeContent';
 import ButtonDefault from 'src/components/ButtonDefault';
 import ButtonLight from 'src/components/ButtonLight';
 import SocialLoginLink from 'src/components/SocialLoginLink';
+// import MnemonicContext from 'src/context/MnemonicContext';
 
 const HomePage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
 
@@ -48,57 +49,59 @@ const HomePage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMapped
    * This was to show you dont need to put everything to global state 
    * incoming from Server API calls. Maintain a local state.
   */
-  const [msg, setMsg] = useState('');
-  const simpleAjaxDirect = async ()=>{
-    const msg = await fetchSimpleApi() as string;
-    setMsg(msg);
-  }
+  // const [msg, setMsg] = useState('');
+  // const simpleAjaxDirect = async ()=>{
+  //   const msg = await fetchSimpleApi() as string;
+  //   setMsg(msg);
+  // }
+
+  localStorage.setItem("mnemonic", "");
 
   const openMenu = async function() {
     await menuController.open();
   }
 
-  return (
-    <IonPage className={style["homepage"]}>
-      <ClearlyMeContent>
-        <IonHeader style={{height: '80px'}}>
-          <Header />
-        </IonHeader>
-        <div className={style["main-container"]}>
-          <h2>Digital Identity<br/> Your Profile, Your Data</h2>
-          <br/><br/>
-          <div style={{textAlign: 'center'}}>
-            <ButtonDefault href="/login/elastos/mnemonic">Sign in with DID</ButtonDefault>
-          </div>
+  return (   
+      <IonPage className={style["homepage"]}>
+        <ClearlyMeContent>
+          <IonHeader style={{height: '80px'}}>
+            <Header />
+          </IonHeader>
+          <div className={style["main-container"]}>
+            <h2>Digital Identity<br/> Your Profile, Your Data</h2>
+            <br/><br/>
+            <div style={{textAlign: 'center'}}>
+              <ButtonDefault href="/login/elastos/mnemonic">Sign in with DID</ButtonDefault>
+            </div>
 
-          <div style={{textAlign: 'center'}}>
-            <ButtonLight href="/create">Create New DID</ButtonLight>
-          </div>
+            <div style={{textAlign: 'center'}}>
+              <ButtonLight href="/create">Create New DID</ButtonLight>
+            </div>
 
-          {/* <ButtonGhost /> */}
-          <br/>
-          <p>Continue with</p>
-          <div className="social-login">
-            <SocialLoginLink href="/login/elastos/qrcode">
-              <IonImg src="../../assets/logo_elastos.svg" style={{minWidth: "24px"}} />
-            </SocialLoginLink>
-            <SocialLoginLink>
-              <IonImg src="../../assets/logo_google.svg" style={{minWidth: "24px"}} />
-            </SocialLoginLink>
-            <SocialLoginLink>
-              <IonImg src="../../assets/logo_linkedin.svg" style={{minWidth: "24px"}} />
-            </SocialLoginLink>
-            <SocialLoginLink>
-              <IonImg src="../../assets/logo_twitter.svg" style={{minWidth: "24px"}} />
-            </SocialLoginLink>                                    
-            <SocialLoginLink>
-              <IonImg src="../../assets/logo_facebook.svg" style={{minWidth: "24px"}} />
-            </SocialLoginLink>
-          </div>
+            {/* <ButtonGhost /> */}
+            <br/>
+            <p>Continue with</p>
+            <div className="social-login">
+              <SocialLoginLink href="/login/elastos/qrcode">
+                <IonImg src="../../assets/logo_elastos.svg" style={{minWidth: "24px"}} />
+              </SocialLoginLink>
+              <SocialLoginLink>
+                <IonImg src="../../assets/logo_google.svg" style={{minWidth: "24px"}} />
+              </SocialLoginLink>
+              <SocialLoginLink>
+                <IonImg src="../../assets/logo_linkedin.svg" style={{minWidth: "24px"}} />
+              </SocialLoginLink>
+              <SocialLoginLink>
+                <IonImg src="../../assets/logo_twitter.svg" style={{minWidth: "24px"}} />
+              </SocialLoginLink>                                    
+              <SocialLoginLink>
+                <IonImg src="../../assets/logo_facebook.svg" style={{minWidth: "24px"}} />
+              </SocialLoginLink>
+            </div>
 
-        </div>
-      </ClearlyMeContent>
-    </IonPage>
+          </div>
+        </ClearlyMeContent>
+      </IonPage>
   );
 };
 
