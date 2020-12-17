@@ -21,23 +21,24 @@ import {
   IonList,
   IonItem
 } from '@ionic/react';
-import { connect } from 'react-redux';
+import { connect, useStore } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import injector from 'src/baseplate/injectorWrap';
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
 import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo, useState } from 'react';
+import React, { memo, useContext, useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
-import { fetchSimpleApi } from './fetchapi';
+import { generateMnemonic } from './fetchapi';
 import ClearlyMeContent from 'src/components/ClearlyMeContent';
 import Header from 'src/components/Header';
 import ButtonDefault from 'src/components/ButtonDefault';
 import IdentityProgressComponent from 'src/components/IdentityProgressComponent';
+// import MnemonicContext from 'src/context/MnemonicContext';
 
 const CreateIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
 
@@ -46,15 +47,80 @@ const CreateIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: I
    * This was to show you dont need to put everything to global state 
    * incoming from Server API calls. Maintain a local state.
   */
-  const [msg, setMsg] = useState('');
+  // const [msg, setMsg] = useState('');
   const [encrypt, setEncrypt] = useState(true);
+  // const {mnemonic, setMnemonic, setDid} = useContext(MnemonicContext)
+  // const simpleAjaxDirect = async ()=>{
+  //   const msg = await fetchSimpleApi() as string;
+  //   setMsg(msg);
+  // }
 
-  const simpleAjaxDirect = async ()=>{
-    const msg = await fetchSimpleApi() as string;
-    setMsg(msg);
+  useEffect(() => {
+    
+    async function generateDid()
+    {
+      let savedMnemonic = localStorage.getItem("mnemonic");
+      // console.log("savedMnemonic from generateDid");
+      // console.log(savedMnemonic);
+      
+      if(savedMnemonic) {
+        setMnemonic(JSON.parse(savedMnemonic));
+        // console.log("setMnemonic");
+      } else {
+        /*eslint-disable no-undef*/
+        const mnemonicObject = await generateMnemonic() as any;
+        setMnemonic(mnemonicObject.mnemonic.split(' '));
+        // console.log("saving in localStorage");
+        localStorage.setItem("mnemonic", JSON.stringify(mnemonicObject.mnemonic.split(' ')));
+        // setDid(mnemonicObject.did.replace('did:elastos:', ''));
+        /*eslint-disable no-undef*/        
+      }
+
+    }
+
+    if (!mnemonic || mnemonic[0] === "-") generateDid();
+
+  }, []);
+
+  // const [isLogged, setIsLogged] = useState(false);
+  
+  const [mnemonic, setMnemonic] = useState([
+    "-",
+    "-",
+    "-",
+    "-",
+    "-",
+    "-",
+    "-",
+    "-",
+    "-",
+    "-",
+    "-",
+    "-",
+  ]);
+  const [did, setDid] = useState(null);
+
+  const MnemonicItem = (mnemonic:any) => {
+    return (
+      <>
+        <div className={style["mnemonic"]}>
+          <span className={style["number"]}>{mnemonic.number}</span>
+          {mnemonic.title}
+        </div>
+      </>
+    )
   }
 
   return (
+    // <MnemonicContext.Provider
+    // value={{
+    //   mnemonic,
+    //   setMnemonic: (generatedMnemonic:any) => setMnemonic(generatedMnemonic),
+    //   did,
+    //   setDid: (generatedDid:any) => setDid(generatedDid),
+    //   isLogged
+    // }}
+    // >    
     <IonPage className={style["createidentitypage"]}>
       <ClearlyMeContent>
         <IonHeader style={{height: '80px'}}>
@@ -65,75 +131,10 @@ const CreateIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: I
         <div className={style["main-container"]}>
           <h1>Create Identity</h1>
 
-          <div>
-            <IonRow style={{marginTop: '10px'}}>
-              <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>1</span>
-                </IonInput>
-              </IonCol>
-              <IonCol>
-                <IonInput className={style["mnemonic"]} value="butter" readonly>
-                  <span className={style["number"]}>2</span>
-                </IonInput>
-              </IonCol>
-              <IonCol>
-                <IonInput className={style["mnemonic"]} value="jam" readonly>
-                  <span className={style["number"]}>3</span>
-                </IonInput>
-              </IonCol>              
-            </IonRow>
-            <IonRow style={{marginTop: '10px'}}>
-              <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>4</span>
-                </IonInput>
-              </IonCol>
-              <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>5</span>
-                </IonInput>
-              </IonCol>
-              <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>6</span>
-                </IonInput>
-              </IonCol>              
-            </IonRow>
-            <IonRow style={{marginTop: '10px'}}>
-              <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>7</span>
-                </IonInput>
-              </IonCol>
-              <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>8</span>
-                </IonInput>
-              </IonCol>
-              <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>9</span>
-                </IonInput>
-              </IonCol>              
-            </IonRow>            
-            <IonRow style={{marginTop: '10px'}}>
-              <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>10</span>
-                </IonInput>
-              </IonCol>
-              <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>11</span>
-                </IonInput>
-              </IonCol>
-              <IonCol>
-                <IonInput className={style["mnemonic"]} value="bread" readonly>
-                  <span className={style["number"]}>12</span>
-                </IonInput>
-              </IonCol>              
-            </IonRow>
+          <div className={style["mnemonic-wrapper"]}>
+            {
+              mnemonic.map((item:any, key:any) => <MnemonicItem key={`mnemonic-key-${key}`} number={key + 1} title={item} />)
+            }
           </div><br/><br/>
 
           <div className={encrypt ? style["warning-light"] : style["warning-emphasis"]}>
@@ -157,6 +158,7 @@ const CreateIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: I
         </div>
       </ClearlyMeContent>
     </IonPage>
+    // </MnemonicContext.Provider>
   );
 };
 
