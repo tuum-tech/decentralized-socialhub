@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "@elastos/elastos-js-sdk": "github:elastos/Elastos.DID.JS.SDK#v1.0.0",
+    "@elastos/elastos-hive-js-sdk": "file:../HiveJS",
     "@types/styled-components": "^5.1.4",
     "connected-react-router": "^6.6.1",
     "hoist-non-react-statics": "^3.3.1",

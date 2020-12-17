@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import {
   IonApp,
@@ -44,33 +44,46 @@ import ConfirmMnemonicPage from './pages/ConfirmMnemonicPage';
 import PublishIdentityPage from './pages/PublishIdentityPage';
 import ChooseVaultPage from './pages/ChooseVaultPage';
 import RegisterPage from './pages/RegisterPage';
+import SessionContext from './context/session.context'
 
-const App: React.FC = () => (
+
+const App: React.FC = () => {
+  const [session, setSession] = useState({});
+  
+  return (
   <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route path="/login" component={LoginPage} exact={true} />
-        <Route path="/login/elastos/mnemonic" component={ElastosMnemonicPage} exact={true} />
-        <Route path="/login/elastos/qrcode" component={ElastosLoginQRPage} exact={true} />
-        <Route path="/register" component={RegisterPage} exact={true} />
-        
-        <Route path="/create" component={CreateIdentityPage} exact={true} />        
-        <Route path="/confirm" component={ConfirmMnemonicPage} exact={true} />        
-        <Route path="/publish" component={PublishIdentityPage} exact={true} />        
+    <SessionContext.Provider
+      value={{
+        session,
+        setSession: (sessionItem: any) => setSession(sessionItem)
+      }}
+    >
+      <IonReactRouter>
 
-        <Route path="/choosevault" component={ChooseVaultPage} exact={true} />        
+        <IonRouterOutlet>
+          <Route path="/login" component={LoginPage} exact={true} />
+          <Route path="/login/elastos/mnemonic" component={ElastosMnemonicPage} exact={true} />
+          <Route path="/login/elastos/qrcode" component={ElastosLoginQRPage} exact={true} />
+          <Route path="/register" component={RegisterPage} exact={true} />
 
-        <Route path="/home" component={HomePage} exact={true} />
-        <Route path="/profile" component={ProfilePage} exact={true} />
-        {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
-        {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
-        <Route exact path="/" render={() => <Redirect to="/home" />} />
-        <Route path="/linkedin_callback" component={LinkedinCallback} exact={false} />
-        {/* <Route exact path="/" render={() => <Redirect to="/login" />} /> */}
+          <Route path="/create" component={CreateIdentityPage} exact={true} />
+          <Route path="/confirm" component={ConfirmMnemonicPage} exact={true} />
+          <Route path="/publish" component={PublishIdentityPage} exact={true} />
 
-      </IonRouterOutlet>
-    </IonReactRouter>
+          <Route path="/choosevault" component={ChooseVaultPage} exact={true} />
+
+          <Route path="/home" component={HomePage} exact={true} />
+          <Route path="/profile" component={ProfilePage} exact={true} />
+          {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
+          {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
+          <Route exact path="/" render={() => <Redirect to="/home" />} />
+          <Route path="/linkedin_callback" component={LinkedinCallback} exact={false} />
+          {/* <Route exact path="/" render={() => <Redirect to="/login" />} /> */}
+
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </SessionContext.Provider>
   </IonApp>
-);
+)};
 
 export default App;
