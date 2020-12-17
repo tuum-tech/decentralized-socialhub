@@ -44,7 +44,8 @@ import home from '../../assets/home.svg';
 import community from '../../assets/people-outline.svg';
 import pages from '../../assets/person-search-outline.svg';
 import messages from '../../assets/message-circle-outline.svg';
-
+import photo from '../../assets/photo.png';
+import StartServiceComponent from 'src/components/StartServiceComponent';
 
 const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
 
@@ -80,22 +81,25 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
 
   return (
     <IonPage className={style["profilepage"]}>
-      <IonHeader>
+      <IonHeader className={style["header"]}>
         <IonGrid>
           <IonRow>
             <IonCol size="0.5"><img className={style["logo"]} src={logo} /></IonCol>
-            <IonCol size="3">
+            <IonCol size="2.5">
               <IonSearchbar placeholder="Search Profiles, Pages, Validators" className={style["search-input"]}></IonSearchbar>
             </IonCol>
-            <IonCol size="3">
+            <IonCol size="6">
               <IonGrid>
-                <IonRow className="ion-justify-content-start">
-                  <IonCol><div className={style["home"]}><img src={home} /> <span>Home</span></div></IonCol>
-                  <IonCol><div className={style["community"]}><img src={community} /><span>Community</span></div></IonCol>
-                  <IonCol><div className={style["pages"]}><img src={pages} /><span>Pages</span></div></IonCol>
-                  <IonCol><div className={style["messages"]}><img src={messages} /><span>Messages</span></div></IonCol>
+                <IonRow className="ion-justify-content-center">
+                  <IonCol size="auto"><div className={style["home"]}><img src={home} /> <span>Home</span></div></IonCol>
+                  <IonCol size="auto"><div className={style["community"]}><img src={community} /><span>Community</span></div></IonCol>
+                  <IonCol size="auto"><div className={style["pages"]}><img src={pages} /><span>Pages</span></div></IonCol>
+                  <IonCol size="auto"><div className={style["messages"]}><img src={messages} /><span>Messages</span></div></IonCol>
                 </IonRow>
               </IonGrid>
+            </IonCol>
+            <IonCol size="3">
+              <img src={photo} className={style["profile-img"]} />
             </IonCol>
           </IonRow>
         </IonGrid>
@@ -103,15 +107,17 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
       <IonContent>
         <IonGrid>
           <IonRow className={style["profilecontent"]}>
-            <IonCol size="3" className={style["left-panel"]}>
+            <IonCol size="2.5" className={style["left-panel"]}>
               <FollowingList />
               <PagesComponent />
             </IonCol>
-            <IonCol size="6" className={style["center-panel"]}>
+            <IonCol size="7" className={style["center-panel"]}>
               <ProfileComponent profile={profile} />
             </IonCol>
-            <IonCol size="3" className={style["right-panel"]}>
+            <IonCol size="2.5" className={style["right-panel"]}>
+              <StartServiceComponent />
               <ProfileCompletion />
+
             </IonCol>
           </IonRow>
         </IonGrid>
