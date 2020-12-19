@@ -148,7 +148,7 @@ const ConfirmMnemonicPage : React.FC<InferMappedProps> = ({ eProps, ...props }: 
   return (
     <IonPage className={style["confirmmnemonicpage"]}>
       <ClearlyMeContent>
-        <IonHeader style={{height: '80px'}}>
+        <IonHeader style={{height: '80px', backgroundImage: 'none'}}>
           <Header />
         </IonHeader>
 
