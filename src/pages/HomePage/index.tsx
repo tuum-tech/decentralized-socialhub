@@ -40,6 +40,7 @@ import ClearlyMeContent from 'src/components/ClearlyMeContent';
 import ButtonDefault from 'src/components/ButtonDefault';
 import ButtonLight from 'src/components/ButtonLight';
 import SocialLoginLink from 'src/components/SocialLoginLink';
+// import MnemonicContext from 'src/context/MnemonicContext';
 
 const HomePage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
 
@@ -48,11 +49,13 @@ const HomePage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedP
    * This was to show you dont need to put everything to global state 
    * incoming from Server API calls. Maintain a local state.
   */
-  const [msg, setMsg] = useState('');
-  const simpleAjaxDirect = async () => {
-    const msg = await fetchSimpleApi() as string;
-    setMsg(msg);
-  }
+  // const [msg, setMsg] = useState('');
+  // const simpleAjaxDirect = async ()=>{
+  //   const msg = await fetchSimpleApi() as string;
+  //   setMsg(msg);
+  // }
+
+  localStorage.setItem("mnemonic", "");
 
   const linkedinlogin = async () => {
     type MyType = { meta: string; data: string; }
@@ -96,8 +99,8 @@ const HomePage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedP
             <SocialLoginLink>
               <IonImg src="../../assets/logo_google.svg" style={{ minWidth: "24px" }} />
             </SocialLoginLink>
-            <SocialLoginLink >
-              <IonImg onClick={linkedinlogin} src="../../assets/logo_linkedin.svg" style={{ minWidth: "24px" }} />
+            <SocialLoginLink>
+              <IonImg src="../../assets/logo_linkedin.svg" style={{ minWidth: "24px" }} />
             </SocialLoginLink>
             <SocialLoginLink>
               <IonImg src="../../assets/logo_twitter.svg" style={{ minWidth: "24px" }} />

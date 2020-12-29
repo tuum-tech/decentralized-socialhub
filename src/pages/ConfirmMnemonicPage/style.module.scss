@@ -1,4 +1,11 @@
 .confirmmnemonicpage {
+
+  .header-md{ 
+    &:after {
+      background-image: none;
+    }
+  }
+  
   .main-container {
     width: 502px;
     height: 680px;
@@ -31,6 +38,64 @@
     letter-spacing: 0px;
     color: #595F6F;
     opacity: 1;
+  }
+
+  .hide {
+    visibility: hidden;
+  }
+
+  .mnemonic-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 1em;
+    margin-top: 10px;
+
+    .mnemonic {
+      width: 90%;
+      position: relative;
+      height: 41px;
+      border-radius: 5px;
+      border: 1px solid #bfc4ce;
+      padding-top: 9px;
+      font: normal normal 600 16px/19px Open Sans;
+      font-weight: 600;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.58;
+      letter-spacing: normal;
+      text-align: center;
+      color: #0f358e;
+  
+      .number {
+        position: absolute;
+        left: -16px;
+        top: 7px;
+        width: 28px;
+        height: 28px;
+        background-color: #F5F5FA;
+        color: #0f358e;
+        border-radius: 50%;
+        border: 1px solid #bfc4ce;
+        text-align: center;
+        line-height: 25px;
+        font-size: 12px;
+      }
+      
+      .number-dark {
+        position: absolute;
+        left: -16px;
+        top: 7px;
+        width: 28px;
+        height: 28px;
+        background-color: #363291;
+        color: #fff;
+        border-radius: 50%;
+        border: 1px solid #bfc4ce;
+        text-align: center;
+        line-height: 25px;
+        font-size: 12px;
+      }       
+    }   
   }
 
   .mnemonic {
@@ -67,13 +132,24 @@
     } 
   }
 
-  /* dummy for now, remove it once functional */
-  .link {
+  .shuffled {
+    width: 30%;
+    display: inline-block;
+    margin: 0.2em;
     cursor: pointer;
-    input {
-      cursor: pointer!important;
-    }
-  }  
+    &:hover {
+      background: #363291;
+      color: #fff;
+    }    
+  }
+
+  /* dummy for now, remove it once functional */
+  // .link {
+  //   cursor: pointer;
+  //   input {
+  //     cursor: pointer!important;
+  //   }
+  // }  
 
   // .warning-emphasis {
   //   width: 397px;
@@ -121,6 +197,11 @@
     letter-spacing: 0px;
     color: #D92323;
     opacity: 1;
+  }
+
+  .btn-disabled {
+      --background: none !important;        
+      background: #C9C9C9 0% 0% no-repeat padding-box !important;
   }
 
 }
