@@ -1,12 +1,12 @@
 /** All your component stuyles */
 .profilecompletion{
-
-    box-shadow: 2px 10px 4px 10px #00000005;
+    box-shadow: 0px 3px 3px #00000005;
     border-radius: 19px 19px 19px 19px;
     background-color: white;
     padding: 8px 8px 15px 8px;
     opacity: 1;
     margin: 5px 15px 5px 10px;
+    font-size: 12px;
 
     ion-row {
         align-items: center;
@@ -30,5 +30,26 @@
         font-size: 14px;
         letter-spacing: 0.13px;
         color: #000000DE;
+    }
+
+    .explore {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        margin-left: 10px;
+        margin-top: 5px;
+        font-weight: 600;
+        letter-spacing: 0.13px;
+        color: #363291;
+
+    }
+
+    .green {
+
+        span {
+
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            color: #00B715;
+        }
     }
 }

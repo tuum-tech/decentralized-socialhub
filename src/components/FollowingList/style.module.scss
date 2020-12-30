@@ -1,7 +1,7 @@
 /** All your component stuyles */
 .followinglist{
     min-height: 200px;
-    box-shadow: 2px 10px 4px 10px #00000005;
+    box-shadow: 0px 3px 3px #00000005;
     border-radius: 19px 19px 19px 19px;
     background-color: white;
     padding: 8px 8px 15px 8px;
@@ -22,6 +22,10 @@
         margin-left: 12px;
     }
 
+    .verified {
+        margin: 0px 0px 3px 3px;
+    }
+
     .thumbnail {
         border-radius: 50%;
         width: 28px;
@@ -33,9 +37,17 @@
         font-size: 14px;
         letter-spacing: 0.25px;
         color: #00000099;
-      
-
     }
+
+    .number-followers {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 11px;
+        letter-spacing: 0.2px;
+        color: #00000099;
+        opacity: 1;
+    }
+
+
     .invite {
         font-family: 'Open Sans', sans-serif;
         font-size: 14px;
