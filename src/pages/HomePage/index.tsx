@@ -100,7 +100,7 @@ const HomePage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedP
               <IonImg src="../../assets/logo_google.svg" style={{ minWidth: "24px" }} />
             </SocialLoginLink>
             <SocialLoginLink>
-              <IonImg src="../../assets/logo_linkedin.svg" style={{ minWidth: "24px" }} />
+              <IonImg onClick={linkedinlogin} src="../../assets/logo_linkedin.svg" style={{ minWidth: "24px" }} />
             </SocialLoginLink>
             <SocialLoginLink>
               <IonImg src="../../assets/logo_twitter.svg" style={{ minWidth: "24px" }} />
