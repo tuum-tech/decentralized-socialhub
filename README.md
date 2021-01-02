@@ -28,6 +28,19 @@ Clone the repository and run below command on the root of your project.
  
  `ionic serve`
 
+ ## Service Dependencies
+
+For locally testing Linkedin authenticaton, one should:
+1) Run profile app on localhost:3000 (return url configured in linkedin OAuth provider)
+2) Didcred-validator service must be running with example .env configuration
+
+**Note:** profile app .env has the following configuration by default: 
+
+- **REACT_APP_DIDCREDS_URL**=http://localhost:8081
+- **REACT_APP_DIDCREDS_KEY**=didcreds-validator-secret-key
+
+so make sure the configurations match those of the didcreds-validator service used
+
 ## CLi for page & component generation
 
 **For page:**  `npm run gen-page TestPage`
