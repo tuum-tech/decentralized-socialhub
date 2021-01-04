@@ -1,4 +1,11 @@
 .confirmmnemonicpage {
+
+  .header-md{ 
+    &:after {
+      background-image: none;
+    }
+  }
+  
   .main-container {
     width: 502px;
     height: 680px;

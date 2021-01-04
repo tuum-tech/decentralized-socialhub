@@ -28,6 +28,49 @@ Clone the repository and run below command on the root of your project.
  
  `ionic serve`
 
+ ## Service Dependencies
+
+# Linkedin
+
+For locally testing Linkedin authentication, one should:
+1) Didcred-validator linkedin .env configurations must be set
+    
+    - LINKEDIN_API_KEY=**key**
+    - LINKEDIN_API_SECRET=**secret**
+    - LINKEDIN_CALLBACK_URL=**[local ip address]**/linkedin_callback
+
+     **Note** : You can use the configuration in .env.example for testing, it should work if you run on localhost:3000  (return url configured in example linkedin OAuth provider)
+
+2) Run profile app 
+
+**Note:** profile app .env has the following configuration by default: 
+
+- **REACT_APP_DIDCREDS_URL**=http://localhost:8081
+- **REACT_APP_DIDCREDS_KEY**=didcreds-validator-secret-key
+
+so make sure the configurations match those of the didcreds-validator service used
+
+# Twitter
+
+For locally testing Twitter authenticaton, one should:
+1) Didcred-validator twitter .env configurations must be set:
+
+    - TWITTER_CUSTOMER_KEY=**key**
+    - TWITTER_CUSTOMER_SECRET=**secret**
+    - TWITTER_CALLBACK_URL=**[local ip address]**/twitter_callback
+
+    **Note** : You may try to use the configuration in .env.example but you need anyway to be whitelisted  
+
+2) Whitelist your local IP address in twitter OAuth Server 
+3) Run profile app locally
+
+**Note:** profile app .env has the following configuration by default: 
+
+- **REACT_APP_DIDCREDS_URL**=http://localhost:8081
+- **REACT_APP_DIDCREDS_KEY**=didcreds-validator-secret-key
+
+so make sure the configurations match those of the didcreds-validator service used
+
 ## CLi for page & component generation
 
 **For page:**  `npm run gen-page TestPage`
