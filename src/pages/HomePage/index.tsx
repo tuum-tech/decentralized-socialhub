@@ -40,6 +40,7 @@ import ClearlyMeContent from 'src/components/ClearlyMeContent';
 import ButtonDefault from 'src/components/ButtonDefault';
 import ButtonLight from 'src/components/ButtonLight';
 import SocialLoginLink from 'src/components/SocialLoginLink';
+import TwitterApi from 'src/shared-base/api/twitter-api';
 // import MnemonicContext from 'src/context/MnemonicContext';
 
 const HomePage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
@@ -66,6 +67,17 @@ const HomePage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedP
 
     // redirects 
     window.location.href = url.data;
+  }
+
+  const twitterlogin = async () => {
+    type MyType = { meta: string; data: { request_token: string; } }
+
+    // gets the linkedin auth endpoint
+    const response = await TwitterApi.GetRequestToken() as MyType;
+    console.log(response.data.request_token);
+
+    // redirects 
+    window.location.replace(`https://api.twitter.com/oauth/authorize?oauth_token=${response.data.request_token}`);
   }
 
   const openMenu = async function () {
@@ -100,10 +112,10 @@ const HomePage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedP
               <IonImg src="../../assets/logo_google.svg" style={{ minWidth: "24px" }} />
             </SocialLoginLink>
             <SocialLoginLink>
-              <IonImg src="../../assets/logo_linkedin.svg" style={{ minWidth: "24px" }} />
+              <IonImg onClick={linkedinlogin} src="../../assets/logo_linkedin.svg" style={{ minWidth: "24px" }} />
             </SocialLoginLink>
             <SocialLoginLink>
-              <IonImg src="../../assets/logo_twitter.svg" style={{ minWidth: "24px" }} />
+              <IonImg onClick={twitterlogin} src="../../assets/logo_twitter.svg" style={{ minWidth: "24px" }} />
             </SocialLoginLink>
             <SocialLoginLink>
               <IonImg src="../../assets/logo_facebook.svg" style={{ minWidth: "24px" }} />
