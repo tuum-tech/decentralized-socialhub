@@ -53,18 +53,19 @@ const App: React.FC = () => (
         <Route path="/login/elastos/mnemonic" component={ElastosMnemonicPage} exact={true} />
         <Route path="/login/elastos/qrcode" component={ElastosLoginQRPage} exact={true} />
         <Route path="/register" component={RegisterPage} exact={true} />
-        
-        <Route path="/create" component={CreateIdentityPage} exact={true} />        
-        <Route path="/confirm" component={ConfirmMnemonicPage} exact={true} />        
-        <Route path="/publish" component={PublishIdentityPage} exact={true} />        
 
-        <Route path="/choosevault" component={ChooseVaultPage} exact={true} />        
+        <Route path="/create" component={CreateIdentityPage} exact={true} />
+        <Route path="/confirm" component={ConfirmMnemonicPage} exact={true} />
+        <Route path="/publish" component={PublishIdentityPage} exact={true} />
+
+        <Route path="/choosevault" component={ChooseVaultPage} exact={true} />
 
         <Route path="/home" component={HomePage} exact={true} />
         <Route path="/profile" component={ProfilePage} exact={true} />
         {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
         {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
         <Route exact path="/" render={() => <Redirect to="/home" />} />
+        <Route exact path="/twitter_callback" render={() => <Redirect to="/profile" />} />
         <Route path="/linkedin_callback" component={LinkedinCallback} exact={false} />
         {/* <Route exact path="/" render={() => <Redirect to="/login" />} /> */}
 
