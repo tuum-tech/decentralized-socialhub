@@ -11,7 +11,7 @@ Clone the repository and run below command on the root of your project.
 - `npm i`
 - `cp .env.example .env` 
 - Update .env file with your own IP
-- `ionic serve`
+- `npm start`
 
 # Documentation:
 
