@@ -9,10 +9,10 @@ export function fetchSimpleApi(): Promise<BaseplateResp> {
 
 
 export function requestLinkedinLogin(): Promise<BaseplateResp> {
-    return request(`${process.env.REACT_APP_DIDCREDS_URL}/v1/auth/linkedin_request`, {
+    return request(`${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/linkedin_request`, {
         headers: {
             'content-type': 'text/plain',
-            'Authorization': `${process.env.REACT_APP_DIDCREDS_KEY}`,
+            'Authorization': `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
             'Accept': 'application/json'
         }
     });

@@ -5,11 +5,11 @@ import request, { BaseplateResp } from 'src/baseplate/request';
 const TwitterApi = {
 
     GetRequestToken: async () => {
-        let response = await request(`${process.env.REACT_APP_DIDCREDS_URL}/v1/auth/twitter_request`, {
+        let response = await request(`${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/twitter_request`, {
             method: "GET",
             headers: {
                 'content-Type': 'application/json',
-                'Authorization': `${process.env.REACT_APP_DIDCREDS_KEY}`,
+                'Authorization': `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
             }
         });
         // if (response) { // if HTTP-status is 200-299
@@ -24,11 +24,11 @@ const TwitterApi = {
 
 
     // GetRequestToken: async () => {
-    //     let url = `${process.env.REACT_APP_DIDCRED_URL}/v1/auth/twitter_request`
+    //     let url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/twitter_request`
     //     let response = request(url, {
     //         headers: {
     //             'content-Type': 'application/json',
-    //             "Authorization": process.env.REACT_APP_DIDCRED_KEY
+    //             "Authorization": process.env.REACT_APP_PROFILE_API_SERVICE_KEY
     //         }
     //     });
 
@@ -43,11 +43,11 @@ const TwitterApi = {
     // },
     // CallbackTwitter: async (oauth_token, oauth_verifier) => {
 
-    //     let response = await fetch(`${process.env.REACT_APP_DIDCRED_URL}/v1/auth/twitter_callback`, {
+    //     let response = await fetch(`${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/twitter_callback`, {
     //         method: 'POST',
     //         headers: {
     //             'Content-Type': 'application/json',
-    //             "Authorization": process.env.REACT_APP_DIDCRED_KEY
+    //             "Authorization": process.env.REACT_APP_PROFILE_API_SERVICE_KEY
     //         },
     //         body: JSON.stringify({
     //             token: oauth_token,
