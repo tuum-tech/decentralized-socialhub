@@ -1,16 +1,17 @@
 {
-  "name": "baseplate-starter",
+  "name": "profile-web",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "@elastos/elastos-js-sdk": "github:elastos/Elastos.DID.JS.SDK#v1.0.0",
-    "@elastos/elastos-hive-js-sdk": "file:../HiveJS",
+    "@elastos/elastos-hive-js-sdk": "github:tuum-tech/Elastos.NET.Hive.JS.SDK",
+    "@elastosfoundation/elastos-js-sdk": "^1.0.0",
     "@types/styled-components": "^5.1.5",
     "connected-react-router": "^6.8.0",
     "hoist-non-react-statics": "^3.3.2",
     "immer": "^5.3.6",
     "invariant": "^2.2.4",
     "ionicons": "^4.6.3",
+    "jose": "^3.5.0",
     "node-sass": "^4.14.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
@@ -47,7 +48,7 @@
       "last 1 safari version"
     ]
   },
-  "description": "An Ionic React project",
+  "description": "Profile",
   "devDependencies": {
     "@ionic/react": "^4.11.13",
     "@ionic/react-router": "^4.11.13",

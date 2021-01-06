@@ -52,7 +52,7 @@ const App: React.FC = () => {
   
   return (
   <IonApp>
-    <IonReactRouter>
+      <IonReactRouter>
       <IonRouterOutlet>
         <Route path="/login" component={LoginPage} exact={true} />
         <Route path="/login/elastos/mnemonic" component={ElastosMnemonicPage} exact={true} />
@@ -76,7 +76,6 @@ const App: React.FC = () => {
 
         </IonRouterOutlet>
       </IonReactRouter>
-    </SessionContext.Provider>
   </IonApp>
 )};
 

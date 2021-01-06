@@ -35,11 +35,11 @@ import Header from 'src/components/Header';
 import ButtonDefault from 'src/components/ButtonDefault';
 import ButtonLight from 'src/components/ButtonLight';
 import { toNumber } from 'lodash';
-import { ElastosClient } from '@elastos/elastos-js-sdk';
+import { ElastosClient } from '@elastosfoundation/elastos-js-sdk';
 import SessionContext from 'src/context/session.context';
 import { Redirect } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-// import { HiveClient, OptionsBuilder } from "@elastos/elastos-hive-js-sdk";
+import { HiveClient, OptionsBuilder } from "@elastos/elastos-hive-js-sdk";
 
 
 const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
@@ -117,13 +117,13 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
   }
 
   const connectHive = async (hiveAddress: string) => {
-    // let builder = new OptionsBuilder()
-    // await builder.setApp("clearlyme.com", "razor where crunch foot outer universe news cannon october clinic ski apart")
-    // await builder.setUser(mnemonic.join(""))
+    let builder = new OptionsBuilder()
+    await builder.setApp("clearlyme.com", "razor where crunch foot outer universe news cannon october clinic ski apart")
+    await builder.setUser(mnemonic.join(""))
 
-    // builder.setHiveInstance({
-    //   urlHost: hiveAddress
-    // })
+    builder.setHiveInstance({
+      urlHost: hiveAddress
+    })
 
   }
 

@@ -1,7 +1,7 @@
 import request, { BaseplateResp } from 'src/baseplate/request';
 import { Api } from './constants';
 
-import { ElastosClient } from "@elastos/elastos-js-sdk";
+import { ElastosClient } from "@elastosfoundation/elastos-js-sdk";
 
 export function generateMnemonic() : Promise<BaseplateResp> {
     console.log("generating Mnemonic");    
