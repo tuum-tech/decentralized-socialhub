@@ -1,1 +1,26 @@
-<svg xmlns='http://www.w3.org/2000/svg' class='ionicon' viewBox='0 0 512 512'><title>Checkmark Circle</title><path d='M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z' fill='none' stroke='currentColor' stroke-miterlimit='10' stroke-width='32'/><path fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='32' d='M352 176L217.6 336 160 272'/></svg>
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="416"
+  height="416"
+  viewBox="0 0 416 416"
+  class='ionicon'
+>
+  <title>Checkmark Circle</title>
+  <path
+    d="M399.99999940395355,207.9999960064888 c0,-106 -86,-192 -192,-192 S15.999999403953552,101.9999960064888 15.999999403953552,207.9999960064888 s86,192 192,192 s192,-86 192,-192 z"
+    fill="none"
+    stroke="currentColor"
+    stroke-miterlimit="10"
+    stroke-width="32"
+    id="svg_1"
+  />
+  <path
+    fill="none"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="32"
+    d="M308.37908387184143,127.34640073776245 L173.97908387184142,287.34640073776245 L116.37908387184143,223.34640073776245"
+    id="svg_2"
+  />
+</svg>
