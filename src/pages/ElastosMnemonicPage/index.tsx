@@ -117,13 +117,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
   }
 
   const connectHive = async (hiveAddress: string) => {
-    let builder = new OptionsBuilder()
-    await builder.setApp("clearlyme.com", "razor where crunch foot outer universe news cannon october clinic ski apart")
-    await builder.setUser(mnemonic.join(""))
-
-    builder.setHiveInstance({
-      urlHost: hiveAddress
-    })
+   
 
   }
 
