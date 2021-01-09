@@ -40,6 +40,9 @@ import SessionContext from 'src/context/session.context';
 import { Redirect } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { HiveClient, OptionsBuilder } from "@elastos/elastos-hive-js-sdk";
+import { HiveService } from 'src/services/hive.service';
+import { DidService } from 'src/services/did.service';
+import { UserService } from 'src/services/user.service';
 
 
 const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
@@ -54,6 +57,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
   const [msg, setMsg] = useState('');
   const [did, setDID] = useState('');
   const [vaultAddress, setVaultAddress] = useState('');
+  const [storagePassword, setStoragePassword] = useState('');
 
   const [indexPage, setIndexPage] = useState(0);
 
@@ -101,23 +105,37 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
     }
   }
 
-  const otherVault = async () => {
-
-    history.push("/profile", session)
+  const otherVault = async (hostUrl: string) => {
+    try {
+      connectHive(hostUrl)
+      history.push("/profile", session)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const ownVault = () => {
     console.log(session)
     setIndexPage(2)
+
     //history.push("/profile", session)
   }
 
   const validateOwnVault = async () => {
-    history.push("/profile", session)
+    try {
+      connectHive(vaultAddress)  
+      history.push("/profile", session)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const connectHive = async (hiveAddress: string) => {
-   
+     let challenge = await HiveService.getHiveChallenge(hiveAddress)
+     let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(mnemonic.join(" "), "", challenge.issuer, challenge.nonce)
+     let userToken = await HiveService.getUserHiveToken(hiveAddress, presentation) 
+
+     await UserService.SignIn(did, hiveAddress, userToken, "")
 
   }
 
@@ -179,12 +197,12 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
         <div className={style["vault-list"]}>
           <IonRow style={{ marginTop: '10px' }}>
             <IonCol>
-              <ButtonLight>Tuum Tech</ButtonLight>
+              <ButtonLight onClick={() => otherVault('http://localhost:5000')}>Tuum Tech</ButtonLight>
             </IonCol>
           </IonRow>
           <IonRow style={{ marginTop: '10px' }}>
             <IonCol>
-              <ButtonLight>Trinity Tech</ButtonLight>
+              <ButtonLight onClick={() => otherVault('http://localhost:5000')}>Trinity Tech</ButtonLight>
             </IonCol>
           </IonRow>
           <IonRow style={{ marginTop: '10px' }}>
