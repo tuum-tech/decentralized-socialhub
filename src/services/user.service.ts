@@ -2,7 +2,7 @@
 
 const CryptoJS = require("crypto-js");
 
-export interface ISessionItem{
+export interface ISessionItem {
     hiveHost: string,
     userToken: string
 }
@@ -16,7 +16,21 @@ export class UserService {
         return `user_${did.replace("did:elastos:", "")}`
     }
 
-    public static SignIn(did: string, hiveHost: string, userToken: string, storePassword: string){
+    public static getSignedUsers(): string[] {
+        let response: string[] = []
+
+        for (var i = 0, len =  window.localStorage.length; i < len; ++i) {
+            let key = window.localStorage.key(i);
+            if (key && key.startsWith("user_"))
+            {
+                response.push(key.replace("user_", "did:elastos:"))
+            }
+        }
+        return response
+    }
+
+
+    public static SignIn(did: string, hiveHost: string, userToken: string, storePassword: string) {
 
         let item: ISessionItem = {
             hiveHost: hiveHost,
@@ -25,14 +39,14 @@ export class UserService {
 
         let instance = JSON.stringify(item, null, "")
         let encrypted = CryptoJS.AES.encrypt(instance, storePassword).toString();
-        
+
         window.sessionStorage.clear()
-        window.localStorage.setItem(this.key(did), encrypted )
+        window.localStorage.setItem(this.key(did), encrypted)
         window.sessionStorage.setItem("session_instance", instance)
     }
 
 
-    public static Login(did: string, storePassword: string){
+    public static Login(did: string, storePassword: string) {
 
         let item = window.localStorage.getItem(this.key(did))
 
@@ -46,7 +60,7 @@ export class UserService {
 
         window.sessionStorage.clear()
         window.sessionStorage.setItem("session_instance", instance)
-        
+
     }
 
     public static Logout() {

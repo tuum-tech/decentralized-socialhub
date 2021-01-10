@@ -2,20 +2,13 @@
  * Page
  */
 import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonContent,
   IonHeader,
   IonPage,
-  IonTitle,
-  IonToolbar,
-  IonButton,
   IonInput,
   IonCol,
-  IonRow
+  IonRow,
+  IonSelect,
+  IonSelectOption
 } from '@ionic/react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -29,7 +22,6 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
-import { fetchSimpleApi } from './fetchapi';
 import ClearlyMeContent from 'src/components/ClearlyMeContent';
 import Header from 'src/components/Header';
 import ButtonDefault from 'src/components/ButtonDefault';
@@ -37,9 +29,7 @@ import ButtonLight from 'src/components/ButtonLight';
 import { toNumber } from 'lodash';
 import { ElastosClient } from '@elastosfoundation/elastos-js-sdk';
 import SessionContext from 'src/context/session.context';
-import { Redirect } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import { HiveClient, OptionsBuilder } from "@elastos/elastos-hive-js-sdk";
 import { HiveService } from 'src/services/hive.service';
 import { DidService } from 'src/services/did.service';
 import { UserService } from 'src/services/user.service';
@@ -55,13 +45,20 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
    * incoming from Server API calls. Maintain a local state.
   */
   const [msg, setMsg] = useState('');
-  const [did, setDID] = useState('');
-  const [vaultAddress, setVaultAddress] = useState('');
+  const [did, setDID] = useState(UserService.getSignedUsers().length > 0? UserService.getSignedUsers()[0]: '');
+  const [ownAddress, setOwnAddress] = useState('');
+  
+  const [loggedUsers, setLoggedUsers] = useState(UserService.getSignedUsers())
+
+  const [hiveAddress, setHiveAddress] = useState('');
+  const [userToken, setUserToken] = useState('');
+
   const [storagePassword, setStoragePassword] = useState('');
+  const [repeatStoragePassword, setRepeatStoragePassword] = useState('');
 
-  const [indexPage, setIndexPage] = useState(0);
+  const [indexPage, setIndexPage] = useState(UserService.getSignedUsers().length == 0 ? 0 : 4);
 
-  const [mnemonic, setMnemonic] = useState(['meat', 'wet', 'aim', 'laugh', 'episode', 'scatter', 'nurse', 'enemy', 'course', 'pair', 'bread', ''])
+  const [mnemonic, setMnemonic] = useState(['', '', '', '', '', '', '', '', '', '', '', ''])
 
   const updateMnemonic = (event: any) => {
     let index: number = toNumber(event.target.outerText) - 1
@@ -104,7 +101,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
   const otherVault = async (hostUrl: string) => {
     try {
       await connectHive(hostUrl)
-      history.push("/profile", session)
+      setIndexPage(3)
     } catch (error) {
       console.error(error)
     }
@@ -119,23 +116,53 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
 
   const validateOwnVault = async () => {
     try {
-      await connectHive(vaultAddress)  
-      history.push("/profile", session)
+      await connectHive(ownAddress)
+      setIndexPage(3)
     } catch (error) {
       console.error(error)
     }
   }
 
-  const connectHive = async (hiveAddress: string) => {
-    console.log(hiveAddress)
-     let challenge = await HiveService.getHiveChallenge(hiveAddress)
-     console.log(challenge)
-     let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(mnemonic.join(" "), "", challenge.issuer, challenge.nonce)
-     console.log(presentation)
-     let userToken = await HiveService.getUserHiveToken(hiveAddress, presentation) 
+  const connectHive = async (address: string) => {
+    let challenge = await HiveService.getHiveChallenge(address)
+    let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(mnemonic.join(" "), "", challenge.issuer, challenge.nonce)
+    let token = await HiveService.getUserHiveToken(address, presentation)
+    setHiveAddress(address)
+    setUserToken(token)
+  }
 
-     await UserService.SignIn(did, hiveAddress, userToken, "")
+  const encryptProfile = async () => {
+    if (storagePassword !== repeatStoragePassword) {
+      console.log("Password is different")
 
+    } else {
+      await loginProfile(storagePassword)
+    }
+  }
+
+  const skipEncryption = async () => {
+    await loginProfile("")
+  }
+
+  const loginProfile = async (pwd: string) => {
+
+    try {
+
+      await UserService.SignIn(did, hiveAddress, userToken, pwd)
+      history.replace("/profile")
+    } catch (error) {
+      console.error(error)
+    }
+
+  }
+
+  const signInLocalUser = async () => {
+    if (did == '') return
+    await loginProfile(storagePassword)
+  }
+
+  const useAnotherDID = async () => {
+    setIndexPage(0)
   }
 
   const isMnemonicWordValid = (index: number): boolean => {
@@ -211,7 +238,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
           </IonRow>
         </div><br /><br />
         <p>{did}</p>
-        
+
 
       </div>
     }
@@ -223,22 +250,96 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
       return <div>
         <h1>Enter Your Vault</h1>
 
-       
+
 
         <div >
           <IonRow style={{ marginTop: '150px' }}>
             <IonCol >
 
-              <IonInput className={style["addressInput"]} value={vaultAddress} onIonChange={(event) => setVaultAddress((event.target as HTMLInputElement).value)} placeholder="Vault ip address" >
+              <IonInput className={style["addressInput"]} value={ownAddress} onIonChange={(event) => setOwnAddress((event.target as HTMLInputElement).value)} placeholder="Vault ip address" >
               </IonInput>
             </IonCol>
           </IonRow>
 
         </div>
-       
-      
+
+
         <div style={{ textAlign: 'center', marginTop: '150px' }}>
-          <ButtonDefault onClick={validateOwnVault}>Connect</ButtonDefault>
+          <ButtonDefault onClick={validateOwnVault}>Next &gt;</ButtonDefault>
+        </div>
+
+      </div>
+    }
+
+
+    if (indexPage == 3) {
+      return <div>
+        <h1>Storage Password</h1>
+
+        <div className={style["warning-light"]}>
+          <p className={style["text"]}>
+            Create a password to storage your profile
+          </p>
+        </div>
+
+        <div >
+          <IonRow style={{ marginTop: '100px' }}>
+            <IonCol >
+
+              <IonInput type="password" className={style["addressInput"]} value={storagePassword} onIonChange={(event) => setStoragePassword((event.target as HTMLInputElement).value)} placeholder="New password" >
+              </IonInput>
+              <br />
+              <IonInput type="password" className={style["addressInput"]} value={repeatStoragePassword} onIonChange={(event) => setRepeatStoragePassword((event.target as HTMLInputElement).value)} placeholder="Retype your password" >
+              </IonInput>
+            </IonCol>
+          </IonRow>
+
+        </div>
+
+
+        <div style={{ textAlign: 'center', marginTop: '100px' }}>
+          <ButtonDefault onClick={encryptProfile}>Encrypt and Save</ButtonDefault>
+          <ButtonLight onClick={skipEncryption}>Skip</ButtonLight>
+        </div>
+
+      </div>
+    }
+
+
+    if (indexPage == 4) {
+      return <div>
+        <h1>Welcome back</h1>
+
+        <div className={style["warning-light"]}>
+          <p className={style["text"]}>
+            Use your storage password to login
+          </p>
+        </div>
+
+        <div >
+          <IonRow style={{ marginTop: '100px' }}>
+            <IonCol >
+
+              <select className={style["loginInput"]} value={did} onChange={(event) => setDID((event.target as HTMLSelectElement).value)}  >
+              {
+                 loggedUsers.map((userDid:string, index: number) => <option value={userDid}>{userDid}</option> ) 
+              }
+              </select>
+
+              <br />
+
+              <input type="password" className={style["loginInput"]} value={storagePassword} onChange={(event) => setStoragePassword((event.target as HTMLInputElement).value)} placeholder="Storage password" >
+              </input>
+              
+            </IonCol>
+          </IonRow>
+
+        </div>
+
+
+        <div style={{ textAlign: 'center', marginTop: '100px' }}>
+          <ButtonDefault onClick={signInLocalUser}>Login</ButtonDefault>
+          <ButtonLight onClick={useAnotherDID}>Use another DID</ButtonLight>
         </div>
 
       </div>
