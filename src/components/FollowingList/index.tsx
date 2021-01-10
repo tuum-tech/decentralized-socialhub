@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   IonCard,
   IonCardContent,
@@ -22,14 +22,33 @@ import vitalik from '../../theme/images/vitalik.jpeg'
 import pomp from '../../theme/images/pomp.jpg'
 import verified from '../../assets/verified.svg'
 import { Link } from 'react-router-dom';
+import { ProfileService } from 'src/services/profile.service';
+
+
 
 const FollowingList: React.FC = () => {
+
+  const [listContacts, setListContacts] = useState([]);
+  useEffect(() => {
+    (async () => {
+      let instance: ProfileService = await ProfileService.getProfileServiceInstance();
+      let list: any = await instance.hiveClient.Scripting.RunScript({ "name": "get_following" });
+
+      setListContacts(list);
+
+      console.log(JSON.stringify(listContacts));
+    })()
+  })
+
+
+
   return (
     <div className={style["followinglist"]}>
       {/*-- Default FollowingList --*/}
 
       <h1>Following (10)</h1>
       <IonGrid>
+
         <IonRow>
           <IonCol size="*"><img className={style["thumbnail"]} src={charles} /></IonCol>
           <IonCol size="10">

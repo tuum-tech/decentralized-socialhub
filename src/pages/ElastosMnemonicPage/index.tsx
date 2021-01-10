@@ -94,6 +94,12 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
       let userDid = await ElastosClient.did.loadFromMnemonic(mnemonic.join(" "))
       setDID(userDid.did)
       setIndexPage(1)
+<<<<<<< Updated upstream
+=======
+      //setSession({ userDid: userDid })
+
+
+>>>>>>> Stashed changes
     }
     else {
       console.log("invalid")
@@ -119,7 +125,11 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
 
   const validateOwnVault = async () => {
     try {
+<<<<<<< Updated upstream
       await connectHive(vaultAddress)  
+=======
+      connectHive(vaultAddress)
+>>>>>>> Stashed changes
       history.push("/profile", session)
     } catch (error) {
       console.error(error)
@@ -127,14 +137,20 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
   }
 
   const connectHive = async (hiveAddress: string) => {
+<<<<<<< Updated upstream
     console.log(hiveAddress)
      let challenge = await HiveService.getHiveChallenge(hiveAddress)
      console.log(challenge)
      let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(mnemonic.join(" "), "", challenge.issuer, challenge.nonce)
      console.log(presentation)
      let userToken = await HiveService.getUserHiveToken(hiveAddress, presentation) 
+=======
+    let challenge = await HiveService.getHiveChallenge(hiveAddress)
+    let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(mnemonic.join(" "), "", challenge.issuer, challenge.nonce)
+    let userToken = await HiveService.getUserHiveToken(hiveAddress, presentation)
+>>>>>>> Stashed changes
 
-     await UserService.SignIn(did, hiveAddress, userToken, "")
+    await UserService.SignIn(did, hiveAddress, userToken, "")
 
   }
 
@@ -211,7 +227,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
           </IonRow>
         </div><br /><br />
         <p>{did}</p>
-        
+
 
       </div>
     }
@@ -223,7 +239,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
       return <div>
         <h1>Enter Your Vault</h1>
 
-       
+
 
         <div >
           <IonRow style={{ marginTop: '150px' }}>
@@ -235,8 +251,8 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
           </IonRow>
 
         </div>
-       
-      
+
+
         <div style={{ textAlign: 'center', marginTop: '150px' }}>
           <ButtonDefault onClick={validateOwnVault}>Connect</ButtonDefault>
         </div>
