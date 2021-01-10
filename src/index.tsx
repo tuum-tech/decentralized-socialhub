@@ -11,6 +11,8 @@ const initialState = {}; // Empty | LocalStorage | SessionStorage
 const store = configureStore(initialState, history);
 const MOUNT_NODE = document.getElementById('root');
 
+
+
 ReactDOM.render(
     <Provider store={store}>
         {/* <Menu /> */}

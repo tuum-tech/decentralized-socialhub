@@ -61,7 +61,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
 
   const [indexPage, setIndexPage] = useState(0);
 
-  const [mnemonic, setMnemonic] = useState(['', '', '', '', '', '', '', '', '', '', '', ''])
+  const [mnemonic, setMnemonic] = useState(['meat', 'wet', 'aim', 'laugh', 'episode', 'scatter', 'nurse', 'enemy', 'course', 'pair', 'bread', ''])
 
   const updateMnemonic = (event: any) => {
     let index: number = toNumber(event.target.outerText) - 1
@@ -93,11 +93,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
       isMnemonicWordValid(11)) {
       let userDid = await ElastosClient.did.loadFromMnemonic(mnemonic.join(" "))
       setDID(userDid.did)
-
       setIndexPage(1)
-      setSession({ userDid: userDid })
-
-
     }
     else {
       console.log("invalid")
@@ -107,7 +103,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
 
   const otherVault = async (hostUrl: string) => {
     try {
-      connectHive(hostUrl)
+      await connectHive(hostUrl)
       history.push("/profile", session)
     } catch (error) {
       console.error(error)
@@ -123,7 +119,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
 
   const validateOwnVault = async () => {
     try {
-      connectHive(vaultAddress)  
+      await connectHive(vaultAddress)  
       history.push("/profile", session)
     } catch (error) {
       console.error(error)
@@ -131,8 +127,11 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
   }
 
   const connectHive = async (hiveAddress: string) => {
+    console.log(hiveAddress)
      let challenge = await HiveService.getHiveChallenge(hiveAddress)
+     console.log(challenge)
      let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(mnemonic.join(" "), "", challenge.issuer, challenge.nonce)
+     console.log(presentation)
      let userToken = await HiveService.getUserHiveToken(hiveAddress, presentation) 
 
      await UserService.SignIn(did, hiveAddress, userToken, "")

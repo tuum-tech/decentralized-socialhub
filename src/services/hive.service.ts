@@ -1,8 +1,8 @@
-import { HiveClient, OptionsBuilder } from "@elastos/elastos-hive-js-sdk"
-import { IOptions } from "@elastos/elastos-hive-js-sdk/dist/Interfaces/IOptions";
+import { HiveClient, OptionsBuilder, IOptions } from "@elastos/elastos-hive-js-sdk"
+
 import { DidService } from "./did.service"
 
-const jwt_decode = require('jwt-decode');
+import jwt_decode from 'jwt-decode';
 
 export interface IHiveChallenge{
     issuer: string,
@@ -12,7 +12,7 @@ export interface IHiveChallenge{
 export class HiveService{
 
     
-    static async getSessionInstance(did: string) : Promise<HiveClient>{
+    static async getSessionInstance() : Promise<HiveClient>{
 
         let item = window.sessionStorage.getItem("session_instance")
 
@@ -29,9 +29,9 @@ export class HiveService{
         //TODO: change to appInstance
         let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`
         let appId = `${process.env.REACT_APP_APPLICATION_ID}`
-
+        let appDid = await DidService.getDid(mnemonic)
         let builder = new OptionsBuilder()
-        await builder.setApp(appId, mnemonic)
+        await builder.setAppInstance(appId, appDid)
         builder.setHiveHost(hiveHost)
         return builder.build()
     }
@@ -45,7 +45,7 @@ export class HiveService{
         let appDocument = await DidService.getDocument(appDid)
         let response = await HiveClient.getApplicationChallenge(options, appDocument)
 
-        let jwt = jwt_decode(response.challenge);
+        let jwt = jwt_decode<any>(response.challenge);
 
         return {
             issuer: jwt.iss,
