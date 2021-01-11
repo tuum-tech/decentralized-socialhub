@@ -33,7 +33,7 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
-import { fetchSimpleApi, requestLinkedinLogin } from './fetchapi';
+import { fetchSimpleApi, requestLinkedinLogin, requestGoogleLogin } from './fetchapi';
 import { menuController } from '@ionic/core';
 import Header from 'src/components/Header';
 import ClearlyMeContent from 'src/components/ClearlyMeContent';
@@ -63,6 +63,17 @@ const HomePage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedP
 
     // gets the linkedin auth endpoint
     const url = await requestLinkedinLogin() as MyType;
+    console.log(url.data);
+
+    // redirects 
+    window.location.href = url.data;
+  }
+
+  const googlelogin = async () => {
+    type MyType = { meta: string; data: string; }
+
+    // gets the linkedin auth endpoint
+    const url = await requestGoogleLogin() as MyType;
     console.log(url.data);
 
     // redirects 
@@ -109,7 +120,7 @@ const HomePage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedP
               <IonImg src="../../assets/logo_elastos.svg" style={{ minWidth: "24px" }} />
             </SocialLoginLink>
             <SocialLoginLink>
-              <IonImg src="../../assets/logo_google.svg" style={{ minWidth: "24px" }} />
+              <IonImg onClick={googlelogin} src="../../assets/logo_google.svg" style={{ minWidth: "24px" }} />
             </SocialLoginLink>
             <SocialLoginLink>
               <IonImg onClick={linkedinlogin} src="../../assets/logo_linkedin.svg" style={{ minWidth: "24px" }} />

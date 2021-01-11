@@ -27,7 +27,11 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
-import { fetchSimpleApi, requestLinkedinLogin } from './fetchapi';
+import {
+  fetchSimpleApi,
+  requestLinkedinLogin,
+  requestGoogleinLogin
+} from './fetchapi';
 import history from 'src/baseplate/history'
 import { Link } from 'react-router-dom';
 import { BaseplateResp } from 'src/baseplate/request';
@@ -51,6 +55,15 @@ const LoginPage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMapped
     // gets the linkedin auth endpoint
     const url = await requestLinkedinLogin() as MyType;
     console.log(url.data);
+
+    // redirects 
+    window.location.href = url.data;
+  }
+
+  const googleLogin = async () => {
+    type MyType = { meta: string; data: string; }
+    // gets the google auth endpoint
+    const url = await requestGoogleinLogin() as MyType;
 
     // redirects 
     window.location.href = url.data;
@@ -87,6 +100,7 @@ const LoginPage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMapped
           </IonCardHeader>
           <IonCardContent>
             <IonButton
+              onClick={googleLogin}
               expand="full"
               color="danger">Login with Google</IonButton>
             <IonButton
