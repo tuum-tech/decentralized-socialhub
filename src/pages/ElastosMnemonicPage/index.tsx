@@ -45,9 +45,9 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
    * incoming from Server API calls. Maintain a local state.
   */
   const [msg, setMsg] = useState('');
-  const [did, setDID] = useState(UserService.getSignedUsers().length > 0? UserService.getSignedUsers()[0]: '');
+  const [did, setDID] = useState(UserService.getSignedUsers().length > 0 ? UserService.getSignedUsers()[0] : '');
   const [ownAddress, setOwnAddress] = useState('');
-  
+
   const [loggedUsers, setLoggedUsers] = useState(UserService.getSignedUsers())
 
   const [hiveAddress, setHiveAddress] = useState('');
@@ -158,7 +158,14 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
 
   const signInLocalUser = async () => {
     if (did == '') return
-    await loginProfile(storagePassword)
+    try {
+      await UserService.Login(did, storagePassword)
+
+      history.replace("/profile")
+
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const useAnotherDID = async () => {
@@ -321,16 +328,16 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
             <IonCol >
 
               <select className={style["loginInput"]} value={did} onChange={(event) => setDID((event.target as HTMLSelectElement).value)}  >
-              {
-                 loggedUsers.map((userDid:string, index: number) => <option value={userDid}>{userDid}</option> ) 
-              }
+                {
+                  loggedUsers.map((userDid: string, index: number) => <option value={userDid}>{userDid}</option>)
+                }
               </select>
 
               <br />
 
               <input type="password" className={style["loginInput"]} value={storagePassword} onChange={(event) => setStoragePassword((event.target as HTMLInputElement).value)} placeholder="Storage password" >
               </input>
-              
+
             </IonCol>
           </IonRow>
 
