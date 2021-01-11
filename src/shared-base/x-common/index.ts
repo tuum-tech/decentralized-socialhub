@@ -2,7 +2,7 @@
  * example file
  */
 
-// import { ElastosClient } from '@elastos/elastos-js-sdk';
+// import { ElastosClient } from '@elastosfoundation/elastos-js-sdk';
 
 // const Elastos = {
 //     generateDocument: async (didelement:any, profile:any) => {

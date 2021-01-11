@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import {
   IonApp,
@@ -45,10 +45,15 @@ import ConfirmMnemonicPage from './pages/ConfirmMnemonicPage';
 import PublishIdentityPage from './pages/PublishIdentityPage';
 import ChooseVaultPage from './pages/ChooseVaultPage';
 import RegisterPage from './pages/RegisterPage';
+import SessionContext from './context/session.context'
 
-const App: React.FC = () => (
+
+const App: React.FC = () => {
+  const [session, setSession] = useState({});
+  
+  return (
   <IonApp>
-    <IonReactRouter>
+      <IonReactRouter>
       <IonRouterOutlet>
         <Route path="/login" component={LoginPage} exact={true} />
         <Route path="/login/elastos/mnemonic" component={ElastosMnemonicPage} exact={true} />
@@ -71,9 +76,9 @@ const App: React.FC = () => (
         <Route path="/google_callback" component={GoogleCallback} exact={false} />
         {/* <Route exact path="/" render={() => <Redirect to="/login" />} /> */}
 
-      </IonRouterOutlet>
-    </IonReactRouter>
+        </IonRouterOutlet>
+      </IonReactRouter>
   </IonApp>
-);
+)};
 
 export default App;

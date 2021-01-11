@@ -65,5 +65,43 @@
       line-height: 25px;
       font-size: 12px;
     }    
-  }  
+  }
+  
+  .addressInput{
+    width: 90%;
+    position: relative;
+    height: 41px;
+    border-radius: 5px;
+    border: 1px solid #bfc4ce;
+    // border-left: none;
+    padding-top: 9px;
+    font: normal normal 600 16px/19px Open Sans;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.58;
+    letter-spacing: normal;
+    text-align: left;
+    color: #0f358e;
+  }
+
+  .loginInput{
+    width: 100%;
+    position: relative;
+    height: 41px;
+    border-radius: 5px;
+    border: 1px solid #bfc4ce;
+    // border-left: none;
+    padding-left: 5px;
+    font: normal normal 600 15px/16px Open Sans;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.58;
+    letter-spacing: normal;
+    text-align: left;
+    vertical-align: middle;
+    color: #0f358e;
+    margin-bottom: 15px;
+  }
 }

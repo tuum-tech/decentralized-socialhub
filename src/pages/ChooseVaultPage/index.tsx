@@ -68,7 +68,7 @@ const ChooseVault : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMap
           <div className={style["vault-list"]}>
             <IonRow style={{marginTop: '10px'}}>
               <IonCol>
-                <ButtonLight>Tuum Tech</ButtonLight>
+                <ButtonLight >Tuum Tech</ButtonLight>
               </IonCol>
             </IonRow>
             <IonRow style={{marginTop: '10px'}}>
@@ -91,7 +91,7 @@ const ChooseVault : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMap
           </IonList> */}
           <br/>
           <div style={{textAlign: 'center'}}>
-            <ButtonDefault href="/">Next</ButtonDefault>
+            <ButtonDefault href="/profile">Next</ButtonDefault>
           </div>
 
         </div>
