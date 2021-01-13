@@ -10,7 +10,7 @@ export class ProfileService {
     static async getProfileServiceInstance(): Promise<ProfileService> {
 
         let profileService: ProfileService = new ProfileService();
-        profileService.hiveClient = await HiveService.getSessionInstance("");;
+        profileService.hiveClient = await HiveService.getSessionInstance();
         return profileService;
     }
 

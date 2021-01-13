@@ -32,6 +32,8 @@ const FollowingList: React.FC = () => {
   useEffect(() => {
     (async () => {
       let instance: ProfileService = await ProfileService.getProfileServiceInstance();
+
+      //await instance.registerScripts();
       let list: any = await instance.hiveClient.Scripting.RunScript({ "name": "get_following" });
 
       setListContacts(list);

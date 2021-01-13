@@ -33,6 +33,7 @@ import { useHistory } from "react-router-dom";
 import { HiveService } from 'src/services/hive.service';
 import { DidService } from 'src/services/did.service';
 import { UserService } from 'src/services/user.service';
+import { ProfileService } from 'src/services/profile.service';
 
 
 const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
@@ -45,9 +46,9 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
    * incoming from Server API calls. Maintain a local state.
   */
   const [msg, setMsg] = useState('');
-  const [did, setDID] = useState(UserService.getSignedUsers().length > 0? UserService.getSignedUsers()[0]: '');
+  const [did, setDID] = useState(UserService.getSignedUsers().length > 0 ? UserService.getSignedUsers()[0] : '');
   const [ownAddress, setOwnAddress] = useState('');
-  
+
   const [loggedUsers, setLoggedUsers] = useState(UserService.getSignedUsers())
 
   const [hiveAddress, setHiveAddress] = useState('');
@@ -91,12 +92,9 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
       let userDid = await ElastosClient.did.loadFromMnemonic(mnemonic.join(" "))
       setDID(userDid.did)
       setIndexPage(1)
-<<<<<<< Updated upstream
-=======
       //setSession({ userDid: userDid })
 
 
->>>>>>> Stashed changes
     }
     else {
       console.log("invalid")
@@ -133,6 +131,8 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
     let challenge = await HiveService.getHiveChallenge(address)
     let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(mnemonic.join(" "), "", challenge.issuer, challenge.nonce)
     let token = await HiveService.getUserHiveToken(address, presentation)
+    let profileService = await ProfileService.getProfileServiceInstance();
+    profileService.registerScripts();
     setHiveAddress(address)
     setUserToken(token)
   }
@@ -327,16 +327,16 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
             <IonCol >
 
               <select className={style["loginInput"]} value={did} onChange={(event) => setDID((event.target as HTMLSelectElement).value)}  >
-              {
-                 loggedUsers.map((userDid:string, index: number) => <option value={userDid}>{userDid}</option> ) 
-              }
+                {
+                  loggedUsers.map((userDid: string, index: number) => <option value={userDid}>{userDid}</option>)
+                }
               </select>
 
               <br />
 
               <input type="password" className={style["loginInput"]} value={storagePassword} onChange={(event) => setStoragePassword((event.target as HTMLInputElement).value)} placeholder="Storage password" >
               </input>
-              
+
             </IonCol>
           </IonRow>
 
