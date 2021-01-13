@@ -164,7 +164,14 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
 
   const signInLocalUser = async () => {
     if (did == '') return
-    await loginProfile(storagePassword)
+    try {
+      await UserService.Login(did, storagePassword)
+
+      history.replace("/profile")
+
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const useAnotherDID = async () => {
