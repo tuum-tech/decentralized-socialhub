@@ -35,7 +35,7 @@ export class UserService {
             hiveHost: hiveHost,
             userToken: userToken
         }
-
+        debugger;
         let instance = JSON.stringify(item, null, "")
         let encrypted = CryptoJS.AES.encrypt(instance, storePassword);
         window.sessionStorage.clear()
@@ -47,7 +47,7 @@ export class UserService {
     public static Login(did: string, storePassword: string) {
 
         let item = window.localStorage.getItem(this.key(did))
-        
+
         if (!item) throw new Error("User not found")
 
         let decrypted = CryptoJS.AES.decrypt(item, storePassword);

@@ -131,10 +131,14 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
     let challenge = await HiveService.getHiveChallenge(address)
     let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(mnemonic.join(" "), "", challenge.issuer, challenge.nonce)
     let token = await HiveService.getUserHiveToken(address, presentation)
-    let profileService = await ProfileService.getProfileServiceInstance();
-    profileService.registerScripts();
+    //let profileService = await ProfileService.getProfileServiceInstance();
+    //profileService.registerScripts();
+    debugger;
     setHiveAddress(address)
     setUserToken(token)
+
+
+
   }
 
   const encryptProfile = async () => {

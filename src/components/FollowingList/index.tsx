@@ -22,25 +22,42 @@ import vitalik from '../../theme/images/vitalik.jpeg'
 import pomp from '../../theme/images/pomp.jpg'
 import verified from '../../assets/verified.svg'
 import { Link } from 'react-router-dom';
-import { ProfileService } from 'src/services/profile.service';
+import { IFollowingResponse, IFollowingItem, ProfileService } from 'src/services/profile.service';
+import { parseJsonSourceFileConfigFileContent } from 'typescript';
 
 
 
 const FollowingList: React.FC = () => {
 
-  const [listContacts, setListContacts] = useState([]);
+  const [listContacts, setListContacts] = useState<IFollowingResponse>({ get_following: { items: [] } });
+  const [profileService, setProfileService] = useState(new ProfileService());
+
+  const getInstance = async (): Promise<ProfileService> => {
+    return ProfileService.getProfileServiceInstance();
+  }
+
+  const follow = async () => {
+    let list: any = await profileService.addFollowing("adsdsadssdasdasdd");
+    setListContacts(list);
+  }
+
+  const reset = async () => {
+    let list: any = await profileService.resetFollowing();
+    setListContacts(list);
+  }
+
+
+
   useEffect(() => {
     (async () => {
-      let instance: ProfileService = await ProfileService.getProfileServiceInstance();
+      let profileService = await getInstance();
+      setProfileService(profileService);
 
-      //await instance.registerScripts();
-      let list: any = await instance.hiveClient.Scripting.RunScript({ "name": "get_following" });
-
+      let list: IFollowingResponse = await profileService.getFollowings();
       setListContacts(list);
 
-      console.log(JSON.stringify(listContacts));
     })()
-  })
+  }, [])
 
 
 
@@ -48,32 +65,23 @@ const FollowingList: React.FC = () => {
     <div className={style["followinglist"]}>
       {/*-- Default FollowingList --*/}
 
-      <h1>Following (10)</h1>
-      <IonGrid>
+      <h1>Following ({listContacts.get_following.items.length})</h1><h1 onClick={reset}>Reset</h1>
 
-        <IonRow>
-          <IonCol size="*"><img className={style["thumbnail"]} src={charles} /></IonCol>
-          <IonCol size="10">
-            <div><span className={style["name"]}>Charles Hoskinson</span><img src={verified} className={style["verified"]} /></div>
-            <div><span className={style["number-followers"]}>100K followers</span></div>
-          </IonCol>
-        </IonRow>
-        <IonRow>
-          <IonCol size="*"><img className={style["thumbnail"]} src={vitalik} /></IonCol>
-          <IonCol size="10">
-            <div><span className={style["name"]}>Vitalik Buterin</span><img src={verified} className={style["verified"]} /></div>
-            <div><span className={style["number-followers"]}>2M followers</span></div>
-          </IonCol>
-        </IonRow>
-        <IonRow>
-          <IonCol size="*"><img className={style["thumbnail"]} src={pomp} /></IonCol>
-          <IonCol size="10">
-            <div><span className={style["name"]}>Anthony Pompliano</span></div>
-            <div><span className={style["number-followers"]}>550K followers</span></div>
-          </IonCol>
-        </IonRow>
+      <IonGrid>
+        {
+          listContacts.get_following.items.map(((item: IFollowingItem) => (
+            <IonRow>
+              <IonCol size="*"><img className={style["thumbnail"]} src={charles} /></IonCol>
+              <IonCol size="10">
+                <div><span className={style["name"]}>did {item.did}</span><img src={verified} className={style["verified"]} /></div>
+                <div><span className={style["number-followers"]}>100K followers</span></div>
+              </IonCol>
+            </IonRow>
+          )))
+        }
+
       </IonGrid>
-      <span className={style["invite"]}>+ Invite friends to join</span>
+      <span className={style["invite"]} onClick={follow}>+ Invite friends to join</span>
 
 
 
