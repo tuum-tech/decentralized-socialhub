@@ -18,9 +18,22 @@ export class DidService{
         let appId = `${process.env.REACT_APP_APPLICATION_ID}`
 
         let appDid =  await this.getDid(appMnemonic)
-        let userDid =  await this.getDid(userMnemonic)
+        let userDid =  await this.getDid(userMnemonic, password)
 
         let vc = ElastosClient.didDocuments.createVerifiableCredentialVP(appDid, userDid, appId)
         return ElastosClient.didDocuments.createVerifiablePresentation(appDid, "VerifiablePresentation", vc, issuer, nonce)
+    }
+
+    static async generatePublishRequest(diddocument: any) : Promise<any>{
+        let appMnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`
+        let appDid =  await this.getDid(appMnemonic)
+        let isValid = false;
+        let tx: any
+        while(!isValid){
+          tx = ElastosClient.idChainRequest.generateCreateRequest(diddocument, appDid)
+          isValid = ElastosClient.idChainRequest.isValid(tx, appDid)
+        }
+
+        return tx
     }
 }

@@ -3,6 +3,8 @@ import { HiveClient, OptionsBuilder, IOptions } from "@elastos/elastos-hive-js-s
 import { DidService } from "./did.service"
 
 import jwt_decode from 'jwt-decode';
+import { UserService } from "./user.service";
+
 
 export interface IHiveChallenge{
     issuer: string,
@@ -14,18 +16,12 @@ export class HiveService{
     
     static async getSessionInstance() : Promise<HiveClient>{
 
-        let item = window.sessionStorage.getItem("session_instance")
-
-        if (!item){
-            throw Error("Not logged in")
-        } 
-
-        let instance = JSON.parse(item)
+        let instance = await UserService.getLoggedUser()
 
         return await HiveClient.createInstance(instance.userToken, instance.hiveHost)
     }
 
-    private static async getHiveOptions(hiveHost: string, ): Promise<IOptions>{
+    private static async getHiveOptions(hiveHost: string ): Promise<IOptions>{
         //TODO: change to appInstance
         let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`
         let appId = `${process.env.REACT_APP_APPLICATION_ID}`

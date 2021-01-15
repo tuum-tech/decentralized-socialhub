@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "@elastos/elastos-hive-js-sdk": "github:tuum-tech/Elastos.NET.Hive.JS.SDK",
+    "@elastos/elastos-hive-js-sdk": "file:../Elastos.NET.Hive.JS.SDK",
     "@elastosfoundation/elastos-js-sdk": "^1.0.0",
     "@types/styled-components": "^5.1.5",
     "connected-react-router": "^6.8.0",
