@@ -14,7 +14,8 @@ import {
   IonButton,
   IonGrid,
   IonRow,
-  IonCol
+  IonCol,
+  IonInput
 } from '@ionic/react';
 import style from './style.module.scss';
 import charles from '../../theme/images/charles.jpeg'
@@ -31,14 +32,16 @@ const FollowingList: React.FC = () => {
 
   const [listContacts, setListContacts] = useState<IFollowingResponse>({ get_following: { items: [] } });
   const [profileService, setProfileService] = useState(new ProfileService());
+  const [didFollow, setDidFollow] = useState('');
 
   const getInstance = async (): Promise<ProfileService> => {
     return ProfileService.getProfileServiceInstance();
   }
 
   const follow = async () => {
-    let list: any = await profileService.addFollowing("adsdsadssdasdasdd");
+    let list: any = await profileService.addFollowing(didFollow);
     setListContacts(list);
+    setDidFollow('');
   }
 
   const reset = async () => {
@@ -81,7 +84,8 @@ const FollowingList: React.FC = () => {
         }
 
       </IonGrid>
-      <span className={style["invite"]} onClick={follow}>+ Invite friends to join</span>
+      <IonInput placeholder="did" value={didFollow} onIonChange={(event) => setDidFollow((event.target as HTMLInputElement).value)}></IonInput>
+      <span className={style["invite"]} onClick={follow}>+ Follow someone</span>
 
 
 
