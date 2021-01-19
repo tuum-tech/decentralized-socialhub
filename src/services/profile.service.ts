@@ -35,23 +35,6 @@ export class ProfileService {
         return profileService;
     }
 
-    async registerScripts() {
-
-        await this.hiveClient.Database.createCollection("following");
-
-        await this.hiveClient.Scripting.SetScript({
-            "name": "get_following",
-            "executable": {
-                "type": "find",
-                "name": "get_following",
-                "output": true,
-                "body": {
-                    "collection": "following"
-                }
-            }
-        });
-    }
-
     async getFollowings(): Promise<IFollowingResponse> {
         let followings: IFollowingResponse = await this.hiveClient.Scripting.RunScript({ "name": "get_following" });
 

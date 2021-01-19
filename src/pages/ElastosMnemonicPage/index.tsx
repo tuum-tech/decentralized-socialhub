@@ -34,6 +34,7 @@ import { HiveService } from 'src/services/hive.service';
 import { DidService } from 'src/services/did.service';
 import { UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
+import { UserVaultScripts } from 'src/scripts/uservault.script';
 
 
 const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
@@ -160,8 +161,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
 
       debugger;
       // Handle all the script registering somewhere 
-      let profileService = await ProfileService.getProfileServiceInstance();
-      profileService.registerScripts();
+      UserVaultScripts.Execute(await HiveService.getSessionInstance());
       history.replace("/profile")
     } catch (error) {
       console.error(error)
