@@ -18,3 +18,8 @@ export interface TokenContent {
 export interface TokenResponse {
   data: TokenContent
 }
+
+export interface GoogleId{
+  id: string,
+  name: string
+}

@@ -19,7 +19,7 @@ export interface TokenResponse {
   data: TokenContent
 }
 
-export interface FacebookId{
+export interface TwitterId{
   id: string,
   name: string
 }

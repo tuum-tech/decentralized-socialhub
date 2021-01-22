@@ -15,7 +15,10 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState, TokenResponse } from './types';
-import { fetchSimpleApi, requestFacebookToken } from './fetchapi';
+import { fetchSimpleApi, requestFacebookId, requestFacebookToken } from './fetchapi';
+import { UserService } from 'src/services/user.service';
+
+
 
 const FacebookCallback : React.FC<RouteComponentProps> = (props) => {
   /** 
@@ -36,6 +39,10 @@ const FacebookCallback : React.FC<RouteComponentProps> = (props) => {
     (async () => {
       if (code != "" && state != "") {
         let t = await getToken(code, state);
+        let facebookId = await requestFacebookId(t.data.request_token)
+
+        await UserService.SignInWithFacebook(facebookId.id, facebookId.name, t.data.request_token)
+
         setToken(t.data.request_token);
       }
     })();
@@ -43,7 +50,7 @@ const FacebookCallback : React.FC<RouteComponentProps> = (props) => {
 
   const getRedirect = () => {
     if (token != null) {
-      return (<Redirect to={{ pathname: "/profile", search: `?token=${token}` }} />)
+      return (<Redirect to={{ pathname: "/profile"}} />)
     } else
       return <div></div>
   }

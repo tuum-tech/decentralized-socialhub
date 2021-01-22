@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@elastos/elastos-hive-js-sdk": "file:../Elastos.NET.Hive.JS.SDK",
-    "@elastosfoundation/elastos-js-sdk": "^1.0.0",
+    "@elastosfoundation/elastos-js-sdk": "file:../../Elastos/Elastos.DID.JS.SDK",
     "@types/styled-components": "^5.1.5",
     "connected-react-router": "^6.8.0",
     "crypto-js": "^4.0.0",

@@ -20,3 +20,7 @@ export interface TokenResponse {
     data: TokenContent
 }
 
+export interface LinkedinId{
+    id: string,
+    name: string
+  }

@@ -1,86 +1,62 @@
 /**
  * Page
  */
-import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonButton
-} from '@ionic/react';
-import { connect } from 'react-redux';
+import React, { memo, useEffect, useState } from 'react';
+ import { connect } from 'react-redux';
+ import { Redirect, RouteComponentProps, useParams } from 'react-router-dom';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import injector from 'src/baseplate/injectorWrap';
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
 import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo, useEffect, useState } from 'react';
+
 import style from './style.module.scss';
 import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState, TokenResponse } from './types';
-import { requestLinkedinId, requestLinkedinToken } from './fetchapi';
-import { Redirect, RouteComponentProps, useParams } from 'react-router-dom';
-import { Interface } from 'readline';
-import { createConstructSignature } from 'typescript';
-import { strict } from 'assert';
+
 import { UserService } from 'src/services/user.service';
+import { requestTwitterToken } from './fetchapi';
 
-const LinkedinCallback: React.FC<RouteComponentProps> = (props) => {
 
+
+const FacebookCallback : React.FC<RouteComponentProps> = (props) => {
   /** 
    * Direct method implementation without SAGA 
    * This was to show you dont need to put everything to global state 
    * incoming from Server API calls. Maintain a local state.
   */
-  const [token, setToken] = useState('');
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const getToken = async (code: string, state: string): Promise<TokenResponse> => {
-    return await requestLinkedinToken(code, state) as TokenResponse;
+    return await requestTwitterToken(code, state) as TokenResponse;
   }
 
-
-  let code: string = new URLSearchParams(props.location.search).get("code") || "";
-  let state: string = new URLSearchParams(props.location.search).get("state") || "";
+  let code: string = new URLSearchParams(props.location.search).get("oauth_token") || "";
+  let state: string = new URLSearchParams(props.location.search).get("oauth_verifier") || "";
 
   useEffect(() => {
-
     (async () => {
       if (code != "" && state != "") {
-
         let t = await getToken(code, state);
-        let linkedinId = await requestLinkedinId(t.data.request_token)
+        let items: string[] = atob(t.data.request_token).split(";")
+        console.log(items)
 
-        await UserService.SignInWithLinkedin(linkedinId.id, linkedinId.name, t.data.request_token)
-        setToken(t.data.request_token);
+        await UserService.SignInWithTwitter(items[1], items[0], `${code}[-]${state}`)
+
+        setIsLoggedIn(true);
       }
     })();
   });
 
   const getRedirect = () => {
-    if (token != null) {
-      return (<Redirect
-        to={{
-          pathname: "/profile"
-        }}
-      />)
+    if (isLoggedIn) {
+      return (<Redirect to={{ pathname: "/profile"}} />)
     } else
       return <div></div>
-
-
   }
-
-
-
   return getRedirect();
-
-
 };
 
 /** @returns {object} Contains state props from selectors */
@@ -105,7 +81,7 @@ export function mapDispatchToProps(dispatch: any) {
  * useInjectReducer & useInjectSaga
  */
 const withInjectedMode = injector(
-  LinkedinCallback,
+  FacebookCallback,
   {
     key: NameSpace,
     reducer,

@@ -1,10 +1,17 @@
+import { combineReducers } from "redux";
+import { AssistService } from "./assist.service";
+import { DidService } from "./did.service";
+
 
 const CryptoJS = require("crypto-js");
 
 
 export enum AccountType{
     DID = "DID",
-    AnotherService = "AnotherService"
+    Linkedin = "Linkedin",
+    Facebook = "Facebook",
+    Google = "Google",
+    Twitter = "Twitter"
 }
 
 export interface ISessionItem {
@@ -13,7 +20,12 @@ export interface ISessionItem {
     accountType: AccountType,
     did: string,
     userName: string,
-    isAccountPublished: boolean
+    isDIDPublished: boolean
+}
+
+export interface ITemporaryDID{
+    mnemonic: string,
+    confirmationId: string
 }
 
 export interface UserData{
@@ -47,38 +59,121 @@ export class UserService {
         return response
     }
 
+    private static getOtherUsers(appName: string): string[]{
+        let appKey = appName + "_"
+        let response: string[] = []
+        for (var i = 0, len = window.localStorage.length; i < len; ++i) {
+
+            let key = window.localStorage.key(i);
+            if (key && key.startsWith(appKey)) {
+                response.push(key.replace(appKey, ""))
+            }
+        }
+        return response
+    }
+
+   
+
 
     public static SignInWithDID(data: SignInDIDData, storePassword: string) {
         let sessionItem: ISessionItem = {
             did: data.did,
             accountType: AccountType.DID,
-            isAccountPublished: data.isDIDPublished,
+            isDIDPublished: data.isDIDPublished,
             userName: data.name,
             hiveHost: data.hiveHost,
             userToken: data.userToken
         }
 
-        let encrypted = CryptoJS.AES.encrypt(JSON.stringify(sessionItem, null, ""), storePassword);
-
-        let localUserData: UserData = {
-            name: data.name,
-            did: data.did,
-            data: encrypted
-        }
-
-        window.localStorage.setItem(this.key(data.did), JSON.stringify(localUserData, null, ""))
+        this.lockUser(this.key(data.did), sessionItem, storePassword)
         
         SessionService.saveSessionItem(sessionItem)
+    }
+
+    public static async SignInWithFacebook(id: string, name: string, token: string){
+        await this.SignIn3rdParty(id, name, token, AccountType.Facebook)
+    }
+
+    public static async SignInWithLinkedin(id: string, name: string, token: string){
+        await this.SignIn3rdParty(id, name, token, AccountType.Linkedin)
+    }
+
+    public static async SignInWithGoogle(id: string, name: string, token: string){
+        await this.SignIn3rdParty(id, name, token, AccountType.Google)
+    }
+
+    public static async SignInWithTwitter(id: string, name: string, token: string){
+        await this.SignIn3rdParty(id, name, token, AccountType.Twitter)
+    }
+
+    private static async SignIn3rdParty(id: string, name: string, token: string, service: AccountType){
+        console.log("Sign in with", service.toString())
+        let otherUsers = UserService.getOtherUsers(service.toString())
+        let key = `${service.toString()}_${id}`
+        let storePassword = key
+        let sessionItem: ISessionItem
+        if (!otherUsers.includes(id)){
+            let did = await this.generateTemporaryDID() 
+            sessionItem = {
+                did: did,
+                accountType: service,
+                isDIDPublished: false,
+                userName: name,
+                hiveHost: "http://localhost:5000",
+                userToken: token
+            }
+        }
+        else {
+            sessionItem =  this.unlockUser(key, "")
+            sessionItem.userToken = token
+            sessionItem.userName = name
+        }
+
+        this.lockUser(key, sessionItem, storePassword)
+        SessionService.saveSessionItem(sessionItem)
+    }
+
+    private static async  generateTemporaryDID() : Promise<string>{
+        console.log("Generating temporary DID")
+        let newDID = await DidService.generateNew()
+        let temporaryDocument = await DidService.temporaryDidDocument(newDID)
+        let requestPub = await DidService.generatePublishRequest(temporaryDocument)
+
+        let response = await AssistService.publishDocument(newDID.did, requestPub)
+        console.log("Publish document confirmation id", response.confirmationId)
+
+        window.localStorage.setItem(`temporary_${newDID.did.replace("did:elastos:", "")}`, JSON.stringify({
+            mnemonic: newDID.mnemonic
+        }))
+
+        window.localStorage.setItem(`publish_${response.confirmationId}`, JSON.stringify({
+            did: newDID.did,
+            status: response.requestStatus
+        }))
+
+
+        return newDID.did
     }
 
     static async getLoggedUser(): Promise<ISessionItem>{
         return SessionService.getSession()
     }
 
-    
-    public static Login(did: string, storePassword: string) {
+    private static lockUser(key: string, instance: ISessionItem, storePassword: string){
 
-        let item = window.localStorage.getItem(this.key(did))
+        let encrypted = CryptoJS.AES.encrypt(JSON.stringify(instance, null, ""), storePassword).toString();
+        let localUserData: UserData = {
+            name: instance.userName,
+            did: instance.did,
+            data: encrypted
+        }
+        let json = JSON.stringify(localUserData, null, "")
+        window.localStorage.setItem(key, json)
+    }
+
+    private static unlockUser(key: string, storePassword: string): ISessionItem{
+        console.log("Unlocking user", key)
+        let item = window.localStorage.getItem(key)
         
         if (!item) throw new Error("User not found")
         
@@ -87,11 +182,17 @@ export class UserService {
             let decrypted = CryptoJS.AES.decrypt(userData.data, storePassword);
             let instance = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
             if (!instance && !instance.userToken) throw new Error("Incorrect password")
-            SessionService.saveSessionItem(instance)
+            return instance
         } catch (error) {
-            console.log(error)
-            throw new Error("Incorrect password")
+            console.error(error)
+            throw error
         }
+    }
+
+    
+    public static Login(did: string, storePassword: string) {
+        let instance = this.unlockUser(this.key(did), storePassword)
+        SessionService.saveSessionItem(instance)
     }
 
    
@@ -99,7 +200,7 @@ export class UserService {
 }
 
 
-
+//To be 
 class SessionService{
 
    static async getSession() : Promise<ISessionItem>{

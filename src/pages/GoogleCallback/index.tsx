@@ -15,7 +15,8 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState, TokenResponse } from './types';
-import { fetchSimpleApi, requestGoogleToken } from './fetchapi';
+import { requestGoogleId, requestGoogleToken } from './fetchapi';
+import { UserService } from 'src/services/user.service';
 
 const GoogleCallback : React.FC<RouteComponentProps> = (props) => {
   /** 
@@ -36,6 +37,9 @@ const GoogleCallback : React.FC<RouteComponentProps> = (props) => {
     (async () => {
       if (code != "" && state != "") {
         let t = await getToken(code, state);
+        let googleId = await requestGoogleId(t.data.request_token)
+
+        await UserService.SignInWithGoogle(googleId.id, googleId.name, t.data.request_token)
         setToken(t.data.request_token);
       }
     })();
