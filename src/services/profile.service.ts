@@ -1,5 +1,5 @@
 import { HiveClient } from "@elastos/elastos-hive-js-sdk";
-import { noConflict } from "lodash";
+import { floor, noConflict } from "lodash";
 import { HiveService } from "./hive.service";
 
 
@@ -20,20 +20,31 @@ export interface IFollowingItem {
 
 }
 
+export interface IFollowerResponse {
+    _status?: string;
+    get_followers: IFollowerItem[];
+}
+
+export interface IFollowerItem {
+    did: string;
+    followers: string[];
+}
+
 
 
 export class ProfileService {
 
     hiveClient!: HiveClient;
+    appHiveClient!: HiveClient;
 
     static async getProfileServiceInstance(): Promise<ProfileService> {
 
         let profileService: ProfileService = new ProfileService();
-        let hiveClient = await HiveService.getSessionInstance();
-        profileService.hiveClient = hiveClient;
-
+        profileService.hiveClient = await HiveService.getSessionInstance();
+        profileService.appHiveClient = await HiveService.getAppHiveClient();
         return profileService;
     }
+
 
     async getFollowings(): Promise<IFollowingResponse> {
         let followings: IFollowingResponse = await this.hiveClient.Scripting.RunScript({ "name": "get_following" });
@@ -47,8 +58,35 @@ export class ProfileService {
         return this.getFollowings();
     }
 
+    getSessionDid(): string {
+        return "my_session_did";
+    }
+
     async addFollowing(did: string): Promise<any> {
         await this.hiveClient.Database.insertOne("following", { "did": did }, undefined);
+        debugger;
+
+
+        let followersResponse: IFollowerResponse = await this.appHiveClient.Scripting.RunScript({
+            "name": "get_followers",
+            "params": {
+                "did": did
+            }
+        });
+
+        let followersList: string[] = [];
+        if (followersResponse.get_followers.length > 0)  // TODO: handle this better
+            followersList = followersResponse.get_followers[0].followers;
+
+        followersList.push(this.getSessionDid());
+        await this.appHiveClient.Scripting.RunScript({
+            "name": "set_followers",
+            "params": {
+                "did": did,
+                "followers": followersList
+            }
+        })
+
         return this.getFollowings();
     }
 

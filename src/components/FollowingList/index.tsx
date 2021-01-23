@@ -25,6 +25,8 @@ import verified from '../../assets/verified.svg'
 import { Link } from 'react-router-dom';
 import { IFollowingResponse, IFollowingItem, ProfileService } from 'src/services/profile.service';
 import { parseJsonSourceFileConfigFileContent } from 'typescript';
+import { HiveService } from 'src/services/hive.service';
+import { DidService } from 'src/services/did.service';
 
 
 
@@ -34,11 +36,12 @@ const FollowingList: React.FC = () => {
   const [profileService, setProfileService] = useState(new ProfileService());
   const [didFollow, setDidFollow] = useState('');
 
-  const getInstance = async (): Promise<ProfileService> => {
+  const getUserHiveInstance = async (): Promise<ProfileService> => {
     return ProfileService.getProfileServiceInstance();
   }
 
   const follow = async () => {
+
     let list: any = await profileService.addFollowing(didFollow);
     setListContacts(list);
     setDidFollow('');
@@ -49,11 +52,29 @@ const FollowingList: React.FC = () => {
     setListContacts(list);
   }
 
+  const resolveUserInfo = (did: string) => {
+    var image = "data:image/png;base64, ";
+    return image;
+  }
+
+  // const connectCentralHive = async () => {
+
+
+  //   let challenge = await HiveService.getHiveChallenge(address)
+  //   let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(mnemonic.join(" "), "", challenge.issuer, challenge.nonce)
+  //   let token = await HiveService.getUserHiveToken(address, presentation)
+
+  //   //setHiveAddress(address)
+  //   //setUserToken(token)
+
+
+
+  // }
 
 
   useEffect(() => {
     (async () => {
-      let profileService = await getInstance();
+      let profileService = await getUserHiveInstance();
       setProfileService(profileService);
 
       let list: IFollowingResponse = await profileService.getFollowings();
@@ -74,7 +95,9 @@ const FollowingList: React.FC = () => {
         {
           listContacts.get_following.items.map(((item: IFollowingItem) => (
             <IonRow>
-              <IonCol size="*"><img className={style["thumbnail"]} src={charles} /></IonCol>
+              <IonCol size="*"><img className={style["thumbnail"]} src={resolveUserInfo(item.did)} /></IonCol>
+
+
               <IonCol size="10">
                 <div><span className={style["name"]}>did {item.did}</span><img src={verified} className={style["verified"]} /></div>
                 <div><span className={style["number-followers"]}>100K followers</span></div>

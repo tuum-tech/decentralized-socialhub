@@ -28,6 +28,26 @@ export class HiveService {
         return hiveClient;
     }
 
+    static async getToken(address: string): Promise<string> {
+
+        let mnemonic = `${process.env.REACT_APP_TUUM_TECH_MNEMONICS}`
+        let challenge = await HiveService.getHiveChallenge(address)
+        let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(mnemonic, "", challenge.issuer, challenge.nonce)
+        let token = await HiveService.getUserHiveToken(address, presentation)
+        return token
+    }
+
+    static async getAppHiveClient(): Promise<HiveClient> {
+        debugger;
+        let host = `${process.env.REACT_APP_TUUM_TECH_HIVE}`
+        let appToken = await HiveService.getToken(host);
+        let hiveClient = await HiveClient.createInstance(appToken, host)
+        await hiveClient.Payment.CreateFreeVault();
+        return hiveClient;
+    }
+
+
+
     private static async getHiveOptions(hiveHost: string,): Promise<IOptions> {
         //TODO: change to appInstance
         let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`

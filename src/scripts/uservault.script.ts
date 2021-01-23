@@ -28,4 +28,18 @@ export class UserVaultScripts {
             }
         });
     }
+
+    static async SetGetPublicInfo(hiveClient: HiveClient) {
+        hiveClient.Scripting.SetScript({
+            "name": "get_public_info",
+            "executable": {
+                "type": "find",
+                "name": "get_public_info",
+                "output": true,
+                "body": {
+                    "collection": "following"
+                }
+            }
+        });
+    }
 }
