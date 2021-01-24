@@ -1,6 +1,7 @@
 import { HiveClient } from "@elastos/elastos-hive-js-sdk";
 import { floor, noConflict } from "lodash";
 import { HiveService } from "./hive.service";
+import { UserService } from "./user.service";
 
 
 export interface IFollowingResponse {
@@ -17,12 +18,16 @@ export interface IFollowingItem {
     created?: { $date: string };
     did: string;
     modified?: { $date: string };
-
+    followers?: string;
 }
 
 export interface IFollowerResponse {
     _status?: string;
-    get_followers: IFollowerItem[];
+    get_followers: IGetFollowersBody;
+}
+
+export interface IGetFollowersBody {
+    items: IFollowerItem[];
 }
 
 export interface IFollowerItem {
@@ -49,6 +54,15 @@ export class ProfileService {
     async getFollowings(): Promise<IFollowingResponse> {
         let followings: IFollowingResponse = await this.hiveClient.Scripting.RunScript({ "name": "get_following" });
 
+        // let followingItems: IFollowingItem[] = [];
+        // followings.get_following.items.map(async (item) => {
+        //     item.followers = await this.getFollowersCount(item.did)
+        //     followingItems.push(item);
+
+        // });
+        // followings.get_following.items = followingItems;
+
+        console.log("followings :" + JSON.stringify(followings));
         return followings;
     }
 
@@ -59,24 +73,43 @@ export class ProfileService {
     }
 
     getSessionDid(): string {
-        return "my_session_did";
+        return UserService.GetUserSession().did;
     }
+
+    async getFollowers(dids: string[]): Promise<IFollowerResponse> {
+        console.log(JSON.stringify(dids));
+        let followersResponse: IFollowerResponse = await this.appHiveClient.Scripting.RunScript({
+            "name": "get_followers",
+            "params": {
+                "did": dids
+            }
+        });
+
+        return followersResponse
+
+    }
+
+    // async getFollowersCount(did: string): Promise<string> {
+    //     let followersResponse: IFollowerResponse = await this.getFollowers(did);
+    //     //if (followersResponse.get_followers[0].followerslength > 0)
+
+    //     console.log("count :" + followersResponse.get_followers.items[0].followers.length.toString());
+    //     return followersResponse.get_followers.items[0].followers.length.toString();
+    //     //return 0
+    // }
+
 
     async addFollowing(did: string): Promise<any> {
         await this.hiveClient.Database.insertOne("following", { "did": did }, undefined);
         debugger;
 
 
-        let followersResponse: IFollowerResponse = await this.appHiveClient.Scripting.RunScript({
-            "name": "get_followers",
-            "params": {
-                "did": did
-            }
-        });
+        let followersResponse: IFollowerResponse = await this.getFollowers([did]);
+
 
         let followersList: string[] = [];
-        if (followersResponse.get_followers.length > 0)  // TODO: handle this better
-            followersList = followersResponse.get_followers[0].followers;
+        if (followersResponse.get_followers.items.length > 0)  // TODO: handle this better
+            followersList = followersResponse.get_followers.items[0].followers;
 
         followersList.push(this.getSessionDid());
         await this.appHiveClient.Scripting.RunScript({

@@ -15,7 +15,8 @@ import {
   IonGrid,
   IonRow,
   IonCol,
-  IonInput
+  IonInput,
+  IonFabList
 } from '@ionic/react';
 import style from './style.module.scss';
 import charles from '../../theme/images/charles.jpeg'
@@ -23,7 +24,7 @@ import vitalik from '../../theme/images/vitalik.jpeg'
 import pomp from '../../theme/images/pomp.jpg'
 import verified from '../../assets/verified.svg'
 import { Link } from 'react-router-dom';
-import { IFollowingResponse, IFollowingItem, ProfileService } from 'src/services/profile.service';
+import { IFollowingResponse, IFollowingItem, ProfileService, IFollowerResponse } from 'src/services/profile.service';
 import { parseJsonSourceFileConfigFileContent } from 'typescript';
 import { HiveService } from 'src/services/hive.service';
 import { DidService } from 'src/services/did.service';
@@ -33,6 +34,7 @@ import { DidService } from 'src/services/did.service';
 const FollowingList: React.FC = () => {
 
   const [listContacts, setListContacts] = useState<IFollowingResponse>({ get_following: { items: [] } });
+  const [listFollowers, setListFollowers] = useState<IFollowerResponse>({ get_followers: { items: [] } });
   const [profileService, setProfileService] = useState(new ProfileService());
   const [didFollow, setDidFollow] = useState('');
 
@@ -57,19 +59,12 @@ const FollowingList: React.FC = () => {
     return image;
   }
 
-  // const connectCentralHive = async () => {
-
-
-  //   let challenge = await HiveService.getHiveChallenge(address)
-  //   let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(mnemonic.join(" "), "", challenge.issuer, challenge.nonce)
-  //   let token = await HiveService.getUserHiveToken(address, presentation)
-
-  //   //setHiveAddress(address)
-  //   //setUserToken(token)
-
-
-
-  // }
+  const getFollowersCount = (did: string): string => {
+    if (listFollowers.get_followers.items.length > 0)
+      return listFollowers.get_followers.items[0].followers.length.toString();
+    else
+      return "";
+  }
 
 
   useEffect(() => {
@@ -78,7 +73,16 @@ const FollowingList: React.FC = () => {
       setProfileService(profileService);
 
       let list: IFollowingResponse = await profileService.getFollowings();
+      debugger;
+      let listDids = list.get_following.items.map(p => p.did);
+      console.log(JSON.stringify(listDids));
+      let followers: IFollowerResponse = await profileService.getFollowers(listDids);
+
+      console.log(JSON.stringify(list));
+      console.log(JSON.stringify(followers));
+
       setListContacts(list);
+      setListFollowers(followers);
 
     })()
   }, [])
@@ -100,7 +104,7 @@ const FollowingList: React.FC = () => {
 
               <IonCol size="10">
                 <div><span className={style["name"]}>did {item.did}</span><img src={verified} className={style["verified"]} /></div>
-                <div><span className={style["number-followers"]}>100K followers</span></div>
+                <div><span className={style["number-followers"]}>followers {getFollowersCount(item.did)}</span></div>
               </IonCol>
             </IonRow>
           )))
