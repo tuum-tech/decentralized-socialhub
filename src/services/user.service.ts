@@ -73,6 +73,15 @@ export class UserService {
     }
 
    
+    public static GetUserSession(): ISessionItem {
+        let item = window.sessionStorage.getItem("session_instance")
+
+        if (!item) {
+            throw Error("Not logged in")
+        }
+
+        return JSON.parse(item);
+    }
 
 
     public static SignInWithDID(data: SignInDIDData, storePassword: string) {

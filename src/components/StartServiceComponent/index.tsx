@@ -5,7 +5,7 @@ import { IonSpinner, IonContent } from '@ionic/react';
 const StartServiceComponent: React.FC = () => {
     return (
         <div>
-            jsdhad
+
         </div>
     )
 }

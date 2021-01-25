@@ -33,6 +33,8 @@ import { useHistory } from "react-router-dom";
 import { HiveService } from 'src/services/hive.service';
 import { DidService } from 'src/services/did.service';
 import { UserService } from 'src/services/user.service';
+import { ProfileService } from 'src/services/profile.service';
+import { UserVaultScripts } from 'src/scripts/uservault.script';
 
 
 const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
@@ -91,6 +93,9 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
       let userDid = await ElastosClient.did.loadFromMnemonic(mnemonic.join(" "))
       setDID(userDid.did)
       setIndexPage(1)
+      //setSession({ userDid: userDid })
+
+
     }
     else {
       console.log("invalid")
@@ -135,8 +140,12 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
     let challenge = await HiveService.getHiveChallenge(address)
     let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(mnemonic.join(" "), "", challenge.issuer, challenge.nonce)
     let token = await HiveService.getUserHiveToken(address, presentation)
+
     setHiveAddress(address)
     setUserToken(token)
+
+
+
   }
 
   const encryptProfile = async () => {
@@ -163,6 +172,10 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
         name: "",
         isDIDPublished: false
       }, pwd)
+
+      debugger;
+      // Handle all the script registering somewhere 
+      UserVaultScripts.Execute(await HiveService.getSessionInstance());
       history.replace("/profile")
     } catch (error) {
       console.error(error)

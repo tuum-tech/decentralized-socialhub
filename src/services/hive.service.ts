@@ -6,22 +6,44 @@ import jwt_decode from 'jwt-decode';
 import { UserService } from "./user.service";
 
 
-export interface IHiveChallenge{
+export interface IHiveChallenge {
     issuer: string,
     nonce: string
 }
 
-export class HiveService{
+export class HiveService {
 
-    
-    static async getSessionInstance() : Promise<HiveClient>{
+
+    static async getSessionInstance(): Promise<HiveClient> {
 
         let instance = await UserService.getLoggedUser()
 
-        return await HiveClient.createInstance(instance.userToken, instance.hiveHost)
+        let hiveClient = await HiveClient.createInstance(instance.userToken, instance.hiveHost)
+        await hiveClient.Payment.CreateFreeVault();
+        return hiveClient;
     }
 
-    private static async getHiveOptions(hiveHost: string ): Promise<IOptions>{
+    static async getToken(address: string): Promise<string> {
+
+        let mnemonic = `${process.env.REACT_APP_TUUM_TECH_MNEMONICS}`
+        let challenge = await HiveService.getHiveChallenge(address)
+        let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(mnemonic, "", challenge.issuer, challenge.nonce)
+        let token = await HiveService.getUserHiveToken(address, presentation)
+        return token
+    }
+
+    static async getAppHiveClient(): Promise<HiveClient> {
+        debugger;
+        let host = `${process.env.REACT_APP_TUUM_TECH_HIVE}`
+        let appToken = await HiveService.getToken(host);
+        let hiveClient = await HiveClient.createInstance(appToken, host)
+        await hiveClient.Payment.CreateFreeVault();
+        return hiveClient;
+    }
+
+
+
+    private static async getHiveOptions(hiveHost: string,): Promise<IOptions> {
         //TODO: change to appInstance
         let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`
         let appId = `${process.env.REACT_APP_APPLICATION_ID}`
@@ -32,9 +54,9 @@ export class HiveService{
         return builder.build()
     }
 
-    
 
-    static async getHiveChallenge(hiveHost: string) : Promise<IHiveChallenge>{
+
+    static async getHiveChallenge(hiveHost: string): Promise<IHiveChallenge> {
         let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`
         let options = await this.getHiveOptions(hiveHost)
         let appDid = await DidService.loadDid(mnemonic)
@@ -49,10 +71,10 @@ export class HiveService{
         }
     }
 
-    static async getUserHiveToken(hiveHost: string, presentation: any) : Promise<string>{
+    static async getUserHiveToken(hiveHost: string, presentation: any): Promise<string> {
         let options = await this.getHiveOptions(hiveHost)
         return await HiveClient.getAuthenticationToken(options, presentation)
     }
-    
+
 
 }
