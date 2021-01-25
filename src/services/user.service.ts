@@ -4,7 +4,8 @@ const CryptoJS = require("crypto-js");
 
 export interface ISessionItem {
     hiveHost: string,
-    userToken: string
+    userToken: string,
+    did: string
 }
 
 interface Users {
@@ -33,7 +34,8 @@ export class UserService {
 
         let item: ISessionItem = {
             hiveHost: hiveHost,
-            userToken: userToken
+            userToken: userToken,
+            did: did
         }
 
         let instance = JSON.stringify(item, null, "")
@@ -43,11 +45,21 @@ export class UserService {
         window.sessionStorage.setItem("session_instance", instance)
     }
 
+    public static GetUserSession(): ISessionItem {
+        let item = window.sessionStorage.getItem("session_instance")
+
+        if (!item) {
+            throw Error("Not logged in")
+        }
+
+        return JSON.parse(item);
+    }
+
 
     public static Login(did: string, storePassword: string) {
 
         let item = window.localStorage.getItem(this.key(did))
-        
+
         if (!item) throw new Error("User not found")
 
         let decrypted = CryptoJS.AES.decrypt(item, storePassword);
