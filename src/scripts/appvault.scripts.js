@@ -44,7 +44,7 @@ let run = async () => {
             "body": {
                 "collection": "followers",
                 "filter": {
-                    "did": "\$params.did",
+                    "did": { $in: "\$params.did" },
                 },
                 "options": {
                     "projection": {
