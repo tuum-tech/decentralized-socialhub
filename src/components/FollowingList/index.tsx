@@ -55,15 +55,27 @@ const FollowingList: React.FC = () => {
   }
 
   const resolveUserInfo = (did: string) => {
+
+    //let didDocument = DidService.getDocument(did);
+    //console.log(didDocument);
     var image = "data:image/png;base64, ";
     return image;
   }
 
   const getFollowersCount = (did: string): string => {
-    if (listFollowers.get_followers.items.length > 0)
-      return listFollowers.get_followers.items[0].followers.length.toString();
-    else
-      return "";
+    let val: string = "0";
+    if (listFollowers.get_followers.items.length > 0) {
+      console.log("did: " + did);
+      console.log(JSON.stringify(listFollowers));
+
+      listFollowers.get_followers.items.forEach((item) => {
+        if (item.did === did) {
+          val = item.followers.length.toString();
+        }
+
+      });
+    }
+    return val;
   }
 
 
@@ -85,7 +97,7 @@ const FollowingList: React.FC = () => {
       setListFollowers(followers);
 
     })()
-  }, [])
+  }, [listFollowers])
 
 
 
@@ -99,8 +111,8 @@ const FollowingList: React.FC = () => {
         {
           listContacts.get_following.items.map(((item: IFollowingItem) => (
             <IonRow>
-              <IonCol size="*"><img className={style["thumbnail"]} src={resolveUserInfo(item.did)} /></IonCol>
-
+              {/* <IonCol size="*"><img className={style["thumbnail"]} src={resolveUserInfo(item.did)} /></IonCol> */}
+              <IonCol size="*"><img className={style["thumbnail"]} src={vitalik} /></IonCol>
 
               <IonCol size="10">
                 <div><span className={style["name"]}>did {item.did}</span><img src={verified} className={style["verified"]} /></div>
