@@ -12,7 +12,7 @@
     "immer": "^5.3.6",
     "invariant": "^2.2.4",
     "ionicons": "^4.6.3",
-    "jose": "^3.5.3",
+    "jose": "^3.5.4",
     "jwt-decode": "^3.1.2",
     "node-fetch": "^2.6.1",
     "node-sass": "^4.14.1",

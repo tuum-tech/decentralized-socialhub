@@ -56,7 +56,7 @@ const FollowingList: React.FC = () => {
 
   const resolveUserInfo = (did: string) => {
 
-    //let didDocument = DidService.getDocument(did);
+    //let didDocument = await DidService.getDocument(did);
     //console.log(didDocument);
     var image = "data:image/png;base64, ";
     return image;
@@ -78,26 +78,43 @@ const FollowingList: React.FC = () => {
     return val;
   }
 
+  const fetch = async () => {
+    let profileService = await getUserHiveInstance();
+    setProfileService(profileService);
+
+    let list: IFollowingResponse = await profileService.getFollowings();
+
+    let listDids = list.get_following.items.map(p => p.did);
+
+    let followers: IFollowerResponse = await profileService.getFollowers(listDids);
+
+    setListContacts(list);
+    setListFollowers(followers);
+  }
 
   useEffect(() => {
+
     (async () => {
       let profileService = await getUserHiveInstance();
       setProfileService(profileService);
 
+
       let list: IFollowingResponse = await profileService.getFollowings();
-      debugger;
       let listDids = list.get_following.items.map(p => p.did);
-      console.log(JSON.stringify(listDids));
+
       let followers: IFollowerResponse = await profileService.getFollowers(listDids);
 
-      console.log(JSON.stringify(list));
-      console.log(JSON.stringify(followers));
+      if (listContacts.get_following.items.length !== list.get_following.items.length) {
 
-      setListContacts(list);
+        setListContacts(list);
+
+      }
       setListFollowers(followers);
 
     })()
-  }, [listFollowers])
+
+  }, [listContacts])
+
 
 
 
@@ -111,8 +128,8 @@ const FollowingList: React.FC = () => {
         {
           listContacts.get_following.items.map(((item: IFollowingItem) => (
             <IonRow>
-              {/* <IonCol size="*"><img className={style["thumbnail"]} src={resolveUserInfo(item.did)} /></IonCol> */}
-              <IonCol size="*"><img className={style["thumbnail"]} src={vitalik} /></IonCol>
+              <IonCol size="*"><img className={style["thumbnail"]} src={resolveUserInfo(item.did)} /></IonCol>
+              {/* <IonCol size="*"><img className={style["thumbnail"]} src={vitalik} /></IonCol> */}
 
               <IonCol size="10">
                 <div><span className={style["name"]}>did {item.did}</span><img src={verified} className={style["verified"]} /></div>

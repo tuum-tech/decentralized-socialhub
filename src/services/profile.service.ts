@@ -101,7 +101,7 @@ export class ProfileService {
 
     async addFollowing(did: string): Promise<any> {
         await this.hiveClient.Database.insertOne("following", { "did": did }, undefined);
-        debugger;
+
 
 
         let followersResponse: IFollowerResponse = await this.getFollowers([did]);
@@ -112,11 +112,13 @@ export class ProfileService {
             followersList = followersResponse.get_followers.items[0].followers;
 
         followersList.push(this.getSessionDid());
+
+        let uniqueItems = [...new Set(followersList)]; // distinct
         await this.appHiveClient.Scripting.RunScript({
             "name": "set_followers",
             "params": {
                 "did": did,
-                "followers": followersList
+                "followers": uniqueItems
             }
         })
 
