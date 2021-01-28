@@ -175,7 +175,9 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
 
       debugger;
       // Handle all the script registering somewhere 
-      UserVaultScripts.Execute(await HiveService.getSessionInstance());
+      console.log("script execute")
+      let instance = await HiveService.getSessionInstance()
+      UserVaultScripts.Execute(instance);
       history.replace("/profile")
     } catch (error) {
       console.error(error)

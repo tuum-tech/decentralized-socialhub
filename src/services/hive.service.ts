@@ -18,7 +18,10 @@ export class HiveService {
 
         let instance = await UserService.getLoggedUser()
 
+        console.log("Session user", instance)
+
         let hiveClient = await HiveClient.createInstance(instance.userToken, instance.hiveHost)
+
         await hiveClient.Payment.CreateFreeVault();
         return hiveClient;
     }

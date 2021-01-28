@@ -170,7 +170,8 @@ export class UserService {
 
     private static lockUser(key: string, instance: ISessionItem, storePassword: string){
 
-        let encrypted = CryptoJS.AES.encrypt(JSON.stringify(instance), storePassword).toString(CryptoJS.enc.Utf8);
+        let encrypted = CryptoJS.AES.encrypt(JSON.stringify(instance), storePassword).toString();
+        console.log("encripted value", encrypted)
         let localUserData: UserData = {
             name: instance.userName,
             did: instance.did,
@@ -188,8 +189,11 @@ export class UserService {
         
         try {
             let userData: UserData = JSON.parse(item)
+            console.log("user data", userData)
             let decrypted = CryptoJS.AES.decrypt(userData.data, storePassword);
+            console.log("decrypted", decrypted)
             let instance = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
+            console.log("instance", instance)
             if (!instance && !instance.userToken) throw new Error("Incorrect password")
             return instance
         } catch (error) {
