@@ -137,7 +137,7 @@ export class UserService {
             sessionItem.userToken = token
             sessionItem.userName = name
         }
-
+        console.log(sessionItem)
         this.lockUser(key, sessionItem, storePassword)
         SessionService.saveSessionItem(sessionItem)
     }
@@ -170,7 +170,7 @@ export class UserService {
 
     private static lockUser(key: string, instance: ISessionItem, storePassword: string){
 
-        let encrypted = CryptoJS.AES.encrypt(JSON.stringify(instance, null, ""), storePassword).toString();
+        let encrypted = CryptoJS.AES.encrypt(JSON.stringify(instance), storePassword).toString(CryptoJS.enc.Utf8);
         let localUserData: UserData = {
             name: instance.userName,
             did: instance.did,
