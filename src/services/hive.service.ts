@@ -20,7 +20,7 @@ export class HiveService {
             throw Error("Not logged in")
         }
 
-        debugger;
+
         let instance = JSON.parse(item)
 
         let hiveClient = await HiveClient.createInstance(instance.userToken, instance.hiveHost)
@@ -38,7 +38,7 @@ export class HiveService {
     }
 
     static async getAppHiveClient(): Promise<HiveClient> {
-        debugger;
+
         let host = `${process.env.REACT_APP_TUUM_TECH_HIVE}`
         let appToken = await HiveService.getToken(host);
         let hiveClient = await HiveClient.createInstance(appToken, host)

@@ -32,6 +32,7 @@ export interface IGetFollowersBody {
 
 export interface IFollowerItem {
     did: string;
+    name: string;
     followers: string[];
 }
 
@@ -99,24 +100,50 @@ export class ProfileService {
     // }
 
 
-    async addFollowing(did: string): Promise<any> {
-        await this.hiveClient.Database.insertOne("following", { "did": did }, undefined);
-        debugger;
+    async unfollow(did: string): Promise<any> {
+        console.log("unfollow: " + did);
 
+        let deleteResponse = await this.hiveClient.Database.deleteOne("following", { "did": did });
+        console.log(JSON.stringify(deleteResponse));
 
         let followersResponse: IFollowerResponse = await this.getFollowers([did]);
 
+        let followersList: string[] = [];
+        if (followersResponse.get_followers.items.length > 0)  // TODO: handle this better
+            followersList = followersResponse.get_followers.items[0].followers;
+
+        followersList = followersList.filter(item => item !== did);
+
+        let uniqueItems = [...new Set(followersList)]; // distinct
+        await this.appHiveClient.Scripting.RunScript({
+            "name": "set_followers",
+            "params": {
+                "did": did,
+                "followers": uniqueItems
+            }
+        })
+
+        return this.getFollowings();
+
+    }
+
+    async addFollowing(did: string): Promise<any> {
+        await this.hiveClient.Database.insertOne("following", { "did": did }, undefined);
+
+        let followersResponse: IFollowerResponse = await this.getFollowers([did]);
 
         let followersList: string[] = [];
         if (followersResponse.get_followers.items.length > 0)  // TODO: handle this better
             followersList = followersResponse.get_followers.items[0].followers;
 
         followersList.push(this.getSessionDid());
+
+        let uniqueItems = [...new Set(followersList)]; // distinct
         await this.appHiveClient.Scripting.RunScript({
             "name": "set_followers",
             "params": {
                 "did": did,
-                "followers": followersList
+                "followers": uniqueItems
             }
         })
 

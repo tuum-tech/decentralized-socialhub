@@ -28,8 +28,42 @@ import { IFollowingResponse, IFollowingItem, ProfileService, IFollowerResponse }
 import { parseJsonSourceFileConfigFileContent } from 'typescript';
 import { HiveService } from 'src/services/hive.service';
 import { DidService } from 'src/services/did.service';
+import { Interface } from 'readline';
 
+export interface IDidDocument {
+  id: string;
+  publicKey?: (PublicKeyEntity)[] | null;
+  verifiableCredential: (VerifiableCredentialEntity)[];
+  expires: string;
 
+}
+export interface PublicKeyEntity {
+  id: string;
+  type: string;
+  controller: string;
+
+}
+export interface VerifiableCredentialEntity {
+  id: string;
+  type?: (string)[] | null;
+  issuer: string;
+  issuanceDate: string;
+  expirationDate: string;
+  credentialSubject: CredentialSubject;
+
+}
+export interface CredentialSubject {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  avatar?: string | null;
+  birthdate?: string | null;
+}
+
+export interface AvatarCredential {
+  "content-type": string;
+  data: string;
+}
 
 const FollowingList: React.FC = () => {
 
@@ -37,6 +71,7 @@ const FollowingList: React.FC = () => {
   const [listFollowers, setListFollowers] = useState<IFollowerResponse>({ get_followers: { items: [] } });
   const [profileService, setProfileService] = useState(new ProfileService());
   const [didFollow, setDidFollow] = useState('');
+  const [didDocuments, setDidDocuments] = useState<IDidDocument[]>([]);
 
   const getUserHiveInstance = async (): Promise<ProfileService> => {
     return ProfileService.getProfileServiceInstance();
@@ -46,7 +81,7 @@ const FollowingList: React.FC = () => {
 
     let list: any = await profileService.addFollowing(didFollow);
     setListContacts(list);
-    setDidFollow('');
+
   }
 
   const reset = async () => {
@@ -54,17 +89,60 @@ const FollowingList: React.FC = () => {
     setListContacts(list);
   }
 
-  const resolveUserInfo = (did: string) => {
-    var image = "data:image/png;base64, ";
-    return image;
+  const resolveUserInfo = (did: string): any => {
+    let name: string | null = did;
+    let avatar: AvatarCredential | null;
+    let image: string = "";
+    didDocuments.forEach((didDoc: IDidDocument) => {
+
+      if (didDoc === undefined) return;
+      console.log(JSON.stringify(didDoc));
+      if (did === didDoc.id && didDoc.verifiableCredential !== undefined) {
+
+        didDoc.verifiableCredential.forEach((item: VerifiableCredentialEntity) => {
+          if (item.credentialSubject.name !== undefined) {
+            name = item.credentialSubject.name;
+            console.log(name);
+
+          }
+          if (item.credentialSubject.avatar !== undefined) {
+            avatar = item.credentialSubject.avatar as unknown as AvatarCredential;
+            console.log("avatar " + JSON.stringify(avatar.data));
+            let type = avatar["content-type"];
+            image = `data:${type};base64, ${avatar.data}`;
+          }
+
+        })
+      }
+    })
+
+
+    return { "name": name, "image": image };
+
+  }
+
+  const unfollow = async (did: string) => {
+    let list: any = await profileService.unfollow(did);
+    setListContacts(list);
+
   }
 
   const getFollowersCount = (did: string): string => {
-    if (listFollowers.get_followers.items.length > 0)
-      return listFollowers.get_followers.items[0].followers.length.toString();
-    else
-      return "";
+    let val: string = "";
+    if (listFollowers.get_followers.items !== undefined && listFollowers.get_followers.items.length > 0) {
+      console.log("did: " + did);
+      console.log(JSON.stringify(listFollowers));
+
+      listFollowers.get_followers.items.forEach((item) => {
+        if (item.did === did) {
+          val = item.followers.length.toString();
+        }
+
+      });
+    }
+    return val;
   }
+
 
 
   useEffect(() => {
@@ -72,20 +150,32 @@ const FollowingList: React.FC = () => {
       let profileService = await getUserHiveInstance();
       setProfileService(profileService);
 
+
       let list: IFollowingResponse = await profileService.getFollowings();
-      debugger;
       let listDids = list.get_following.items.map(p => p.did);
-      console.log(JSON.stringify(listDids));
+
       let followers: IFollowerResponse = await profileService.getFollowers(listDids);
 
-      console.log(JSON.stringify(list));
-      console.log(JSON.stringify(followers));
+      if (listContacts.get_following.items.length !== list.get_following.items.length) {
 
-      setListContacts(list);
+        setListContacts(list);
+
+      }
       setListFollowers(followers);
 
+      let docs: IDidDocument[] = [];
+      await Promise.all(listDids.map(async (did) => {
+        let doc = await DidService.getDidDocument(did);
+        docs.push(doc);
+      }));
+
+      console.log("docs " + JSON.stringify(docs))
+      setDidDocuments(docs)
+
     })()
-  }, [])
+  }, [listContacts]);
+
+
 
 
 
@@ -97,15 +187,16 @@ const FollowingList: React.FC = () => {
 
       <IonGrid>
         {
-          listContacts.get_following.items.map(((item: IFollowingItem) => (
-            <IonRow>
-              <IonCol size="*"><img className={style["thumbnail"]} src={resolveUserInfo(item.did)} /></IonCol>
+          listContacts.get_following.items.map(((item: IFollowingItem, index) => (
+            <IonRow key={index}>
+              <IonCol size="*"><img className={style["thumbnail"]} src={resolveUserInfo(item.did).image} /></IonCol>
+              {/* <IonCol size="*"><img className={style["thumbnail"]} src={vitalik} /></IonCol> */}
 
-
-              <IonCol size="10">
-                <div><span className={style["name"]}>did {item.did}</span><img src={verified} className={style["verified"]} /></div>
+              <IonCol size="8">
+                <div><span className={style["name"]}>{resolveUserInfo(item.did).name}</span><img src={verified} className={style["verified"]} /></div>
                 <div><span className={style["number-followers"]}>followers {getFollowersCount(item.did)}</span></div>
               </IonCol>
+              <IonCol size="2"><IonButton onClick={() => unfollow(item.did)}>Unfollow</IonButton></IonCol>
             </IonRow>
           )))
         }
@@ -116,7 +207,7 @@ const FollowingList: React.FC = () => {
 
 
 
-    </div>
+    </div >
   )
 };
 
