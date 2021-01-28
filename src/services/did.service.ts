@@ -15,7 +15,7 @@ export class DidService {
 
     static async getDidDocument(did: any): Promise<any> {
         //TEMPORARY: The real method will get the document fom blockchain or cache
-        let document = ElastosClient.didDocuments.getDocument(did)
+        let document = ElastosClient.didDocuments.getMostRecentDIDDocument(did)
         //ElastosClient.didDocuments.sealDocument(did, document)
         return document
     }
