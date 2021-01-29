@@ -192,12 +192,13 @@ const FollowingList: React.FC = () => {
               <IonCol size="*"><img className={style["thumbnail"]} src={resolveUserInfo(item.did).image} /></IonCol>
               {/* <IonCol size="*"><img className={style["thumbnail"]} src={vitalik} /></IonCol> */}
 
-              <IonCol size="8">
+              <IonCol size="7">
                 <div><span className={style["name"]}>{resolveUserInfo(item.did).name}</span><img src={verified} className={style["verified"]} /></div>
                 <div><span className={style["number-followers"]}>followers {getFollowersCount(item.did)}</span></div>
               </IonCol>
-              <IonCol size="2"><IonButton onClick={() => unfollow(item.did)}>Unfollow</IonButton></IonCol>
+              <IonCol size="3"><IonButton size="small" onClick={() => unfollow(item.did)}>Unfollow</IonButton></IonCol>
             </IonRow>
+
           )))
         }
 

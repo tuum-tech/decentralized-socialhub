@@ -14,8 +14,8 @@ interface IProps {
 
 const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
 
-  let lastName = profile.profile.localizedLastName || "Doodie";
-  let firstName = profile.profile.localizedFirstName || "Sarah";
+  let lastName = profile.profile.lastName || "Doodie";
+  let firstName = profile.profile.firstName || "Sarah";
 
   return (
     <IonGrid className={style["profileheader"]}>

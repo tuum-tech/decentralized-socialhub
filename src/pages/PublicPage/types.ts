@@ -13,8 +13,8 @@ export type ActionType = typeof Actions;
 
 
 export interface ProfileInfo {
-    lastName?: string,
-    firstName?: string,
+    localizedFirstName: string,
+    localizedLastName: string
 }
 
 export interface ProfileContent {

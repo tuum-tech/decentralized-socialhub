@@ -31,7 +31,7 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, ProfileContent, ProfileResponse, SubState } from './types';
-import { fetchSimpleApi, requestLinkedinProfile } from './fetchapi';
+import { requestVaultProfile } from './fetchapi';
 import FollowingList from 'src/components/FollowingList';
 import Pages from 'src/components/Pages';
 import ProfileCompletion from 'src/components/ProfileCompletion';
@@ -46,37 +46,41 @@ import pages from '../../assets/person-search-outline.svg';
 import messages from '../../assets/message-circle-outline.svg';
 import photo from '../../assets/photo.png';
 import StartServiceComponent from 'src/components/StartServiceComponent';
+import { ProfileInfo } from '../ProfilePage/types';
 
-const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
+interface MatchParams {
+  did: string;
+}
+
+interface Props extends RouteComponentProps<MatchParams> {
+}
+
+const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (props: RouteComponentProps<MatchParams>) => {
 
   /** 
    * Direct method implementation without SAGA 
    * This was to show you dont need to put everything to global state 
    * incoming from Server API calls. Maintain a local state.
   */
-  const [profile, setProfile] = useState({ profile: { firstName: "", lastName: "" } } as ProfileContent);
+  const [profile, setProfile] = useState({ profile: {} });
 
-  const getProfile = async (token: string): Promise<ProfileResponse> => {
-    return await requestLinkedinProfile(token) as ProfileResponse;
+  const getProfile = async (did: string): Promise<ProfileContent> => {
+    return await requestVaultProfile(did) as ProfileContent;
   }
-  let token: string = new URLSearchParams(props.location.search).get("token") || "";
+  let did: string = props.match.params.did || "";
 
   useEffect(() => {
     (async () => {
-      if (token != "") {
-        getProfile(token).then((x: ProfileResponse) => {
-          console.log(x.data);
-          let p = x.data as ProfileContent;
-          setProfile(p);
-        }).catch((error) => {
-          console.error(error);
-          let fallback = { profile: { "firstName": "Jane", "lastName": "Fallback" } }
-          setProfile(fallback);
-        });
+      debugger;
+      if (did !== "") {
+
+        console.log("did: " + did);
+        let profile = await getProfile(did);
+        setProfile(profile);
       }
 
     })();
-  }, [token]);
+  }, []);
 
 
   return (
@@ -148,7 +152,7 @@ export function mapDispatchToProps(dispatch: any) {
  * useInjectReducer & useInjectSaga
  */
 const withInjectedMode = injector(
-  ProfilePage,
+  PublicPage,
   {
     key: NameSpace,
     reducer,

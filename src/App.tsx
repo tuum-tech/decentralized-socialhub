@@ -8,6 +8,8 @@ import { IonReactRouter } from '@ionic/react-router';
 
 import LoginPage from './pages/LoginPage/Loadable';
 import ProfilePage from './pages/ProfilePage/Loadable';
+import PublicPage from './pages/PublicPage/Loadable';
+
 import LinkedinCallback from './pages/LinkedinCallback/Loadable';
 import GoogleCallback from './pages/GoogleCallback/Loadable';
 import FacebookCallback from './pages/FacebookCallback/Loadable';
@@ -51,36 +53,39 @@ import SessionContext from './context/session.context'
 
 const App: React.FC = () => {
   const [session, setSession] = useState({});
-  
+
   return (
-  <IonApp>
+    <IonApp>
       <IonReactRouter>
-      <IonRouterOutlet>
-        <Route path="/login" component={LoginPage} exact={true} />
-        <Route path="/login/elastos/mnemonic" component={ElastosMnemonicPage} exact={true} />
-        <Route path="/login/elastos/qrcode" component={ElastosLoginQRPage} exact={true} />
-        <Route path="/register" component={RegisterPage} exact={true} />
+        <IonRouterOutlet>
+          <Route path="/login" component={LoginPage} exact={true} />
+          <Route path="/login/elastos/mnemonic" component={ElastosMnemonicPage} exact={true} />
+          <Route path="/login/elastos/qrcode" component={ElastosLoginQRPage} exact={true} />
+          <Route path="/register" component={RegisterPage} exact={true} />
 
-        <Route path="/create" component={CreateIdentityPage} exact={true} />
-        <Route path="/confirm" component={ConfirmMnemonicPage} exact={true} />
-        <Route path="/publish" component={PublishIdentityPage} exact={true} />
+          <Route path="/create" component={CreateIdentityPage} exact={true} />
+          <Route path="/confirm" component={ConfirmMnemonicPage} exact={true} />
+          <Route path="/publish" component={PublishIdentityPage} exact={true} />
 
-        <Route path="/choosevault" component={ChooseVaultPage} exact={true} />
+          <Route path="/choosevault" component={ChooseVaultPage} exact={true} />
 
-        <Route path="/home" component={HomePage} exact={true} />
-        <Route path="/profile" component={ProfilePage} exact={true} />
-        {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
-        {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
-        <Route exact path="/" render={() => <Redirect to="/home" />} />
-        <Route exact path="/twitter_callback" render={() => <Redirect to="/profile" />} />
-        {/* <Route path="/linkedin_callback" component={LinkedinCallback} exact={false} /> */}
-        <Route path="/google_callback" component={GoogleCallback} exact={false} />
-        <Route path="/facebook_callback" component={FacebookCallback} exact={false} />
-        {/* <Route exact path="/" render={() => <Redirect to="/login" />} /> */}
+          <Route path="/home" component={HomePage} exact={true} />
+          <Route path="/profile" component={ProfilePage} exact={true} />
+          <Route path="/did/:did" component={PublicPage} exact={true} />
+
+          {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
+          {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
+          <Route exact path="/" render={() => <Redirect to="/home" />} />
+          <Route exact path="/twitter_callback" render={() => <Redirect to="/profile" />} />
+          {/* <Route path="/linkedin_callback" component={LinkedinCallback} exact={false} /> */}
+          <Route path="/google_callback" component={GoogleCallback} exact={false} />
+          <Route path="/facebook_callback" component={FacebookCallback} exact={false} />
+          {/* <Route exact path="/" render={() => <Redirect to="/login" />} /> */}
 
         </IonRouterOutlet>
       </IonReactRouter>
-  </IonApp>
-)};
+    </IonApp>
+  )
+};
 
 export default App;

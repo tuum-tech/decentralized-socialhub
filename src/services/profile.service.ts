@@ -51,6 +51,13 @@ export class ProfileService {
         return profileService;
     }
 
+    static async getProfileServiceAppOnlyInstance(): Promise<ProfileService> {
+
+        let profileService: ProfileService = new ProfileService();
+        profileService.appHiveClient = await HiveService.getAppHiveClient();
+        return profileService;
+    }
+
 
     async getFollowings(): Promise<IFollowingResponse> {
         let followings: IFollowingResponse = await this.hiveClient.Scripting.RunScript({ "name": "get_following" });
