@@ -46,6 +46,7 @@ import pages from '../../assets/person-search-outline.svg';
 import messages from '../../assets/message-circle-outline.svg';
 import photo from '../../assets/photo.png';
 import StartServiceComponent from 'src/components/StartServiceComponent';
+import SearchComponent from 'src/components/SearchComponent';
 
 const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
 
@@ -86,7 +87,8 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
           <IonRow>
             <IonCol size="0.5"><img className={style["logo"]} src={logo} /></IonCol>
             <IonCol size="2.5">
-              <IonSearchbar placeholder="Search Profiles, Pages, Validators" className={style["search-input"]}></IonSearchbar>
+              <SearchComponent />
+              {/* <IonSearchbar placeholder="Search Profiles, Pages, Validators" className={style["search-input"]}></IonSearchbar> */}
             </IonCol>
             <IonCol size="6">
               <IonGrid>

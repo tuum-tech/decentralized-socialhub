@@ -1,0 +1,12 @@
+/** All your component stuyles */
+.searchcomponent{
+    .search-input {
+        margin-top: 5px;
+        height: 40px;
+        --background: #F5F5F5 0% 0% no-repeat padding-box;
+        --placeholder-font-style: "Open Sans";
+        font-size: 12px;
+        border: none;
+        --box-shadow: none;
+      }
+}
