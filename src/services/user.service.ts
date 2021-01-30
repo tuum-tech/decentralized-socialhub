@@ -133,7 +133,7 @@ export class UserService {
             }
         }
         else {
-            sessionItem =  this.unlockUser(key, "")
+            sessionItem =  this.unlockUser(key, key)
             sessionItem.userToken = token
             sessionItem.userName = name
         }

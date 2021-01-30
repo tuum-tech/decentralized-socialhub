@@ -60,7 +60,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
 
   const [indexPage, setIndexPage] = useState(UserService.getSignedUsers().length == 0 ? 0 : 4);
 
-  const [mnemonic, setMnemonic] = useState(['meat', 'wet', 'aim', 'laugh', 'episode', 'scatter', 'nurse', 'enemy', 'course', 'pair', 'bread', ''])
+  const [mnemonic, setMnemonic] = useState(['garage', 'stadium', 'stand', 'toy', 'swap', 'fish', 'include', 'animal', 'leave', 'van', 'moment', ''])
 
   const updateMnemonic = (event: any) => {
     let index: number = toNumber(event.target.outerText) - 1
