@@ -106,7 +106,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
           </IonRow>
         </IonGrid>
       </IonHeader>
-      <IonContent>
+      <IonContent className="search-transition" style={{transition: '0.25s all ease-in-out'}}>
         <IonGrid>
           <IonRow className={style["profilecontent"]}>
             <IonCol size="2.5" className={style["left-panel"]}>

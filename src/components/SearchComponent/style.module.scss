@@ -1,5 +1,6 @@
 /** All your component stuyles */
 .searchcomponent{
+    position: relative;
     .search-input {
         margin-top: 5px;
         height: 40px;
@@ -9,4 +10,20 @@
         border: none;
         --box-shadow: none;
       }
+
+      // .search-result {
+        // position: fixed;
+        // z-index: 99999;
+        // background: '#fff';
+        // width: '300px';
+        // margin-top: '-7px';
+        // border-radius: '10px';
+      // }
+
+      // .search-item {
+      //   font-family: 'Open Sans', sans-serif;
+      //   font-size: 14px;
+      // }                
+
+
 }
