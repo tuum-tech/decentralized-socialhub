@@ -21,13 +21,14 @@ export function requestFacebookToken(code: string, state: string): Promise<Basep
 }
 
 export async function requestFacebookId(token: string) : Promise<FacebookId>{
-    let url = `https://graph.facebook.com/me?fields=id,name&access_token=${token}`
+    let url = `https://graph.facebook.com/me?access_token=${token}`
 
     let response = await fetch(url, {
       method: "GET"
     })
 
     let json = await response.json()
+    console.log("faceponse",json)
     return {
         id: json.id,
         name: json.name

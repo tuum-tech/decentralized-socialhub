@@ -1,4 +1,6 @@
 import { ElastosClient } from "@elastosfoundation/elastos-js-sdk"
+import { DidcredsService } from "./didcreds.service"
+import { AccountType } from "./user.service"
 
 export interface IDID {
     mnemonic: string,
@@ -30,8 +32,16 @@ export class DidService {
     static async temporaryDidDocument(did: IDID): Promise<any> {
         //TEMPORARY: The real method will get the document fom blockchain or cache
         let document = ElastosClient.didDocuments.newDIDDocument(did)
+        return document
+    }
+
+    static sealDIDDocument(did: IDID, diddocument: any){
         ElastosClient.didDocuments.sealDocument(did, document)
         return document
+    }
+
+    static async addVerfiableCredentialToDIDDocument(diddocument: any, vc: any){
+        ElastosClient.didDocuments.addVerfiableCredentialToDIDDocument(diddocument, vc)
     }
 
     static async generateVerifiablePresentationFromUserMnemonics(userMnemonic: string, password: string, issuer: string, nonce: string): Promise<any> {

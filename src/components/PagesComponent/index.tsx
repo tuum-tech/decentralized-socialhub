@@ -26,6 +26,8 @@ import { Link } from 'react-router-dom';
 import { useStore } from 'react-redux';
 import { DidService } from 'src/services/did.service';
 import { UserService } from 'src/services/user.service';
+import { AssistService, IPublishDocumentResponse, RequestStatus } from 'src/services/assist.service';
+import { stat } from 'fs';
 
 const FollowingList: React.FC = () => {
 
@@ -33,7 +35,7 @@ const FollowingList: React.FC = () => {
   const [facebookCredential, setFacebookCredential] = useState("")
   const [twitterCredential, setTwitterCredential] = useState("")
   const [linkedinCredential, setLinkedinCredential] = useState("")
-
+  const [ publishStatus, setPublishStatus] = useState({requestStatus:""})
   const updateValues = async () =>{
     let user = await UserService.getLoggedUser()
     let document = await DidService.getDidDocument(user.did)
@@ -50,14 +52,79 @@ const FollowingList: React.FC = () => {
     });
   }
 
+  const setTimer = ()=>{
+    const timer = setTimeout(async () => {
+      await refreshStatus()
+    }, 15 * 1000);
+    return () => clearTimeout(timer);
+  }
+
+  const refreshStatus = async () => {
+    let publishWaiting = getWaitingPublishItens()
+    if (publishWaiting.length <= 0) return
+    publishWaiting.forEach(async(confirmationId) => {
+      console.log("checking assist confirmationId", confirmationId)
+      let status =  await AssistService.getRequestStatus(confirmationId);
+      setPublishStatus(status)
+      console.log(confirmationId, status)
+      let actual = getActualStatus(confirmationId)
+      if (actual.requestStatus === RequestStatus.NotFound) return
+
+      if (status.requestStatus !== actual.requestStatus){
+         if (status.requestStatus === RequestStatus.Completed)
+         {
+
+         } else {
+           window.localStorage.setItem("publish_" + confirmationId, JSON.stringify(status))
+         }
+
+      }
+
+    });
+    setTimer()
+  }
+  const getActualStatus = (confirmationId: string) : IPublishDocumentResponse =>{
+    let item = window.localStorage.getItem("publish_" + confirmationId)
+    if (item) return JSON.parse(item)
+    return {
+      confirmationId : confirmationId,
+      requestStatus : RequestStatus.NotFound
+    }
+  }
+
+  const getWaitingPublishItens = () =>{
+    let response: string[] = []
+    for (var i = 0, len = window.localStorage.length; i < len; ++i) {
+      let key = window.localStorage.key(i);
+      if (key && key.startsWith("publish")) {
+          response.push(key.replace("publish_", ""))
+      }
+    }
+    return response
+  }
+
+  const showPublishStatus = () =>{
+    if (publishStatus["requestStatus"]){
+      return <div> <span className={style["explore"]}>DID Publish {publishStatus.requestStatus}</span>
+      </div>
+    }
+    else {
+      return <div></div>
+    }
+  }
+
   const openTwitter = () =>{
     
   }
 
   useEffect(() => {
+    
     (async () => {
         await updateValues()
+        //await refreshStatus()
+        
     })();
+    setTimer()
   }, []);
 
   return (
@@ -95,7 +162,10 @@ const FollowingList: React.FC = () => {
           </IonCol>
         </IonRow>
       </IonGrid>
-      <span className={style["explore"]}>Explore all</span>
+      {
+        showPublishStatus()
+      }
+      
     </div >
   )
 };

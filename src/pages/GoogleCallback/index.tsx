@@ -39,7 +39,7 @@ const GoogleCallback : React.FC<RouteComponentProps> = (props) => {
         let t = await getToken(code, state);
         let googleId = await requestGoogleId(t.data.request_token)
 
-        await UserService.SignInWithGoogle(googleId.id, googleId.name, t.data.request_token)
+        //await UserService.SignInWithGoogle(googleId.id, googleId.name, t.data.request_token)
         setToken(t.data.request_token);
       }
     })();

@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
 import { AssistService } from "./assist.service";
 import { DidService } from "./did.service";
+import { CredentialType, DidcredsService } from "./didcreds.service";
 
 
 const CryptoJS = require("crypto-js");
@@ -99,30 +100,33 @@ export class UserService {
         SessionService.saveSessionItem(sessionItem)
     }
 
-    public static async SignInWithFacebook(id: string, name: string, token: string){
-        await this.SignIn3rdParty(id, name, token, AccountType.Facebook)
+    public static async SignInWithFacebook(id: string, name: string, token: string, credential: string){
+        await this.SignIn3rdParty(id, name, token, AccountType.Facebook, credential)
     }
 
-    public static async SignInWithLinkedin(id: string, name: string, token: string){
-        await this.SignIn3rdParty(id, name, token, AccountType.Linkedin)
+    public static async SignInWithLinkedin(id: string, name: string, token: string, credential: string){
+        await this.SignIn3rdParty(id, name, token, AccountType.Linkedin, credential)
     }
 
-    public static async SignInWithGoogle(id: string, name: string, token: string){
-        await this.SignIn3rdParty(id, name, token, AccountType.Google)
+    public static async SignInWithGoogle(id: string, name: string, token: string, credential: string){
+        await this.SignIn3rdParty(id, name, token, AccountType.Google, credential)
     }
 
-    public static async SignInWithTwitter(id: string, name: string, token: string){
-        await this.SignIn3rdParty(id, name, token, AccountType.Twitter)
+    public static async SignInWithTwitter(id: string, name: string, token: string, credential: string){
+        await this.SignIn3rdParty(id, name, token, AccountType.Twitter, credential)
     }
 
-    private static async SignIn3rdParty(id: string, name: string, token: string, service: AccountType){
+    private static async SignIn3rdParty(id: string, name: string, token: string, service: AccountType, credential: string){
         console.log("Sign in with", service.toString())
         let otherUsers = UserService.getOtherUsers(service.toString())
         let key = `${service.toString()}_${id}`
         let storePassword = key
         let sessionItem: ISessionItem
         if (!otherUsers.includes(id)){
-            let did = await this.generateTemporaryDID() 
+            let did = await this.generateTemporaryDID(service, credential) 
+
+
+
             sessionItem = {
                 did: did,
                 accountType: service,
@@ -142,21 +146,35 @@ export class UserService {
         SessionService.saveSessionItem(sessionItem)
     }
 
-    private static async  generateTemporaryDID() : Promise<string>{
+    private static getCredentialType(service: AccountType) : CredentialType{
+        if (service === AccountType.Facebook) return CredentialType.Facebook;
+        if (service === AccountType.Twitter) return CredentialType.Twitter;
+        if (service === AccountType.Google) return CredentialType.Google;
+        if (service === AccountType.Linkedin) return CredentialType.Linkedin;
+        throw Error("Invalid account type")
+    }
+
+    private static async  generateTemporaryDID(service: AccountType, credential: string) : Promise<string>{
         console.log("Generating temporary DID")
         let newDID = await DidService.generateNew()
         let temporaryDocument = await DidService.temporaryDidDocument(newDID)
+        
+        let vc = DidcredsService.generateVerifiableCredential(newDID.did, this.getCredentialType(service), credential)
+
+        DidService.addVerfiableCredentialToDIDDocument(temporaryDocument,vc)
+
+        DidService.sealDIDDocument(newDID, temporaryDocument)
+
         let requestPub = await DidService.generatePublishRequest(temporaryDocument)
 
         let response = await AssistService.publishDocument(newDID.did, requestPub)
-        console.log("Publish document confirmation id", response.confirmationId)
 
         window.localStorage.setItem(`temporary_${newDID.did.replace("did:elastos:", "")}`, JSON.stringify({
             mnemonic: newDID.mnemonic
         }))
 
         window.localStorage.setItem(`publish_${response.confirmationId}`, JSON.stringify({
-            did: newDID.did,
+            confirmationId: response.confirmationId,
             status: response.requestStatus
         }))
 

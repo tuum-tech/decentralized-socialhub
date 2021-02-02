@@ -2,7 +2,8 @@ export enum RequestStatus{
     Pending = "Pending",
     Processing = "Processing",
     Completed = "Completed",
-    Quarantined = "Quarantined"
+    Quarantined = "Quarantined",
+    NotFound = "NotFound"
 }
 
 export interface IPublishDocumentResponse {
@@ -46,7 +47,7 @@ export class AssistService {
             method: 'GET',
             headers: {
                'Content-Type': 'application/json',
-               "Authorization": process.env.REACT_APP_ASSIST_KEY
+               "Authorization": process.env.REACT_APP_ASSIST_API_SERVICE_KEY
             }
        }
 

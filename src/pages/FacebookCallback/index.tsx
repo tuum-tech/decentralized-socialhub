@@ -41,9 +41,11 @@ const FacebookCallback : React.FC<RouteComponentProps> = (props) => {
         let t = await getToken(code, state);
         let facebookId = await requestFacebookId(t.data.request_token)
 
-        await UserService.SignInWithFacebook(facebookId.id, facebookId.name, t.data.request_token)
+        console.log("facebook data", facebookId)
 
-        setToken(t.data.request_token);
+        //await UserService.SignInWithFacebook(facebookId.id, facebookId.name, t.data.request_token)
+
+      //  setToken(t.data.request_token);
       }
     })();
   });

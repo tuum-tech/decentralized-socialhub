@@ -43,7 +43,7 @@ const FacebookCallback : React.FC<RouteComponentProps> = (props) => {
         let items: string[] = atob(t.data.request_token).split(";")
         console.log(items)
 
-        await UserService.SignInWithTwitter(items[1], items[0], `${code}[-]${state}`)
+        await UserService.SignInWithTwitter(items[1], items[0], `${code}[-]${state}`, items[1])
 
         setIsLoggedIn(true);
       }

@@ -57,7 +57,7 @@ const LinkedinCallback: React.FC<RouteComponentProps> = (props) => {
         let t = await getToken(code, state);
         let linkedinId = await requestLinkedinId(t.data.request_token)
 
-        await UserService.SignInWithLinkedin(linkedinId.id, linkedinId.name, t.data.request_token)
+        //await UserService.SignInWithLinkedin(linkedinId.id, linkedinId.name, t.data.request_token)
         setToken(t.data.request_token);
       }
     })();
