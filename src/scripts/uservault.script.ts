@@ -16,8 +16,10 @@ export class UserVaultScripts {
     }
 
     static async SetScriptGetFollowing(hiveClient: HiveClient) {
-        hiveClient.Scripting.SetScript({
+        await hiveClient.Scripting.SetScript({
             "name": "get_following",
+            "allowAnonymousUser": true,
+            "allowAnonymousApp": true,
             "executable": {
                 "type": "find",
                 "name": "get_following",

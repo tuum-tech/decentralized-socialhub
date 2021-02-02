@@ -112,7 +112,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (props: RouteComp
         <IonGrid>
           <IonRow className={style["profilecontent"]}>
             <IonCol size="2.5" className={style["left-panel"]}>
-              <FollowingList />
+              <FollowingList did={did} />
               <PagesComponent />
             </IonCol>
             <IonCol size="7" className={style["center-panel"]}>

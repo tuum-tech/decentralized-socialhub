@@ -58,17 +58,32 @@ export class ProfileService {
         return profileService;
     }
 
+    async getMyFollowings(): Promise<IFollowingResponse> {
+        return this.hiveClient.Scripting.RunScript(
+            { "name": "get_following" }
+        );
 
-    async getFollowings(): Promise<IFollowingResponse> {
-        let followings: IFollowingResponse = await this.hiveClient.Scripting.RunScript({ "name": "get_following" });
+    }
 
-        // let followingItems: IFollowingItem[] = [];
-        // followings.get_following.items.map(async (item) => {
-        //     item.followers = await this.getFollowersCount(item.did)
-        //     followingItems.push(item);
+    async getUserFollowings(did: string): Promise<IFollowingResponse> {
+        return await this.appHiveClient.Scripting.RunScript(
+            {
+                "name": "get_following",
+                "context": {
+                    "target_did": did,
+                    "target_app_did": `${process.env.REACT_APP_APPLICATION_ID}`
+                }
+            }
+        );
+    }
 
-        // });
-        // followings.get_following.items = followingItems;
+    async getFollowings(did?: string): Promise<IFollowingResponse> {
+        let followings: IFollowingResponse;
+        if (did === undefined) {
+            followings = await this.getMyFollowings();
+        } else {
+            followings = await this.getUserFollowings(did);
+        }
 
         console.log("followings :" + JSON.stringify(followings));
         return followings;
