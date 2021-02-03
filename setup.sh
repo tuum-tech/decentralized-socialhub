@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-declare -a Containers=("tuum-mongo" "assist-restapi-node" "vouch-restapi-node" "vouch-redis" "didcreds-validator-node")
+declare -a Containers=("hive-node" "assist-restapi-node" "vouch-restapi-node" "didcreds-validator-node" "hive-mongo" "tuum-mongo" "vouch-redis")
 
 function stop () {
     for container in ${Containers[@]}

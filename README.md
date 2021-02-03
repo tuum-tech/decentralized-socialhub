@@ -14,7 +14,7 @@ Run the following command to ensure all the dependencies are installed and backg
 
 The following dependent services are now started:
 
-- [Profile API Service](https://github.com/tuum-tech/profile-api-service)
+- [Hive Vault](https://github.com/elastos/Elastos.NET.Hive.Node)
 - [Assist RestAPI Backend](https://github.com/tuum-tech/assist-restapi-backend)
 - [Vouch RestAPI Backend](https://github.com/tuum-tech/vouch-restapi-backend)
 - [DIDcreds Validator Service](https://github.com/tuum-tech/didcreds-validator)

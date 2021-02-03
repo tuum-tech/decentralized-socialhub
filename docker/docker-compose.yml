@@ -1,6 +1,19 @@
 version: "3.3"
 
 services:
+  hive-node:
+    container_name: hive-node
+    image: tuumtech/hive-node:latest
+    user: "${UID}:${GID}"
+    volumes:
+      - ${HOME}/.hive-data:/src/data
+      - ${PWD}/docker/hive.env:/src/.env
+    ports:
+      - 5000:5000
+    networks:
+      - profile
+    tty: true
+
   assist-restapi-node:
     container_name: assist-restapi-node
     image: tuumtech/assist-restapi-node:latest
@@ -10,6 +23,7 @@ services:
     networks:
       - profile
     tty: true
+
   vouch-restapi-node:
     container_name: vouch-restapi-node
     image: tuumtech/vouch-restapi-node:latest
@@ -19,6 +33,7 @@ services:
     networks:
       - profile
     tty: true
+
   didcreds-validator-node:
     container_name: didcreds-validator-node
     image: tuumtech/didcreds-validator-node:latest
@@ -28,6 +43,19 @@ services:
     networks:
       - profile
     tty: true
+
+  hive-mongo:
+    container_name: hive-mongo
+    image: mongo
+    user: "${UID}:${GID}"
+    volumes:
+      - ${HOME}/.hive-mongodb-data:/data/db
+    ports:
+      - 27022:27017
+    networks:
+      - profile
+    tty: true
+
   tuum-mongo:
     container_name: tuum-mongo
     image: mongo
@@ -42,6 +70,7 @@ services:
     networks:
       - profile
     tty: true
+
   vouch-redis:
     container_name: vouch-redis
     image: redis
