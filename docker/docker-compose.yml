@@ -6,7 +6,7 @@ services:
     image: tuumtech/hive-node:latest
     user: "${UID}:${GID}"
     volumes:
-      - ${HOME}/.hive-data:/src/data
+      - ${HOME}/.profile-data/hive-data:/src/data
       - ${PWD}/docker/hive.env:/src/.env
     ports:
       - 5000:5000
@@ -50,6 +50,7 @@ services:
     image: tuumtech/didcreds-validator-node:latest
     user: "${UID}:${GID}"
     volumes:
+      - ${HOME}/.profile-data/didcreds-didstore:/src/data
       - ${PWD}/docker/didcreds-validator.env:/src/.env
     ports:
       - 8081:5000
@@ -66,7 +67,7 @@ services:
     image: mongo
     user: "${UID}:${GID}"
     volumes:
-      - ${HOME}/.hive-mongodb-data:/data/db
+      - ${HOME}/.profile-data/hive-mongo-data:/data/db
     ports:
       - 27020:27017
     networks:
@@ -78,7 +79,7 @@ services:
     image: mongo
     user: "${UID}:${GID}"
     volumes:
-      - ${HOME}/.tuum-mongodb-data:/data/db
+      - ${HOME}/.profile-data/tuum-mongo-data:/data/db
     ports:
       - 27017:27017
     environment:
@@ -92,6 +93,8 @@ services:
     container_name: vouch-redis
     image: redis
     user: "${UID}:${GID}"
+    volumes:
+      - ${HOME}/.profile-data/vouch-redis-data:/data
     ports:
       - 6379:6379
     networks:
