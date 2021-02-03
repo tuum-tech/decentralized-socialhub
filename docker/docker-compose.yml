@@ -10,6 +10,8 @@ services:
       - ${PWD}/docker/hive.env:/src/.env
     ports:
       - 5000:5000
+    depends_on:
+      - hive-mongo
     networks:
       - profile
     tty: true
@@ -18,8 +20,12 @@ services:
     container_name: assist-restapi-node
     image: tuumtech/assist-restapi-node:latest
     user: "${UID}:${GID}"
+    volumes:
+      - ${PWD}/docker/assist-restapi.env:/src/.env
     ports:
       - 8000:5000
+    depends_on:
+      - tuum-mongo
     networks:
       - profile
     tty: true
@@ -28,8 +34,13 @@ services:
     container_name: vouch-restapi-node
     image: tuumtech/vouch-restapi-node:latest
     user: "${UID}:${GID}"
+    volumes:
+      - ${PWD}/docker/vouch-restapi.env:/src/.env
     ports:
       - 8080:5000
+    depends_on:
+      - tuum-mongo
+      - vouch-redis
     networks:
       - profile
     tty: true
@@ -38,8 +49,14 @@ services:
     container_name: didcreds-validator-node
     image: tuumtech/didcreds-validator-node:latest
     user: "${UID}:${GID}"
+    volumes:
+      - ${PWD}/docker/didcreds-validator.env:/src/.env
     ports:
       - 8081:5000
+    depends_on:
+      - tuum-mongo
+      - vouch-redis
+      - vouch-restapi-node
     networks:
       - profile
     tty: true
@@ -51,7 +68,7 @@ services:
     volumes:
       - ${HOME}/.hive-mongodb-data:/data/db
     ports:
-      - 27022:27017
+      - 27020:27017
     networks:
       - profile
     tty: true
