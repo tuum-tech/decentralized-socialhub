@@ -1,0 +1,56 @@
+version: "3.3"
+
+services:
+  assist-restapi-node:
+    container_name: assist-restapi-node
+    image: tuumtech/assist-restapi-node:latest
+    user: "${UID}:${GID}"
+    ports:
+      - 8000:5000
+    networks:
+      - profile
+    tty: true
+  vouch-restapi-node:
+    container_name: vouch-restapi-node
+    image: tuumtech/vouch-restapi-node:latest
+    user: "${UID}:${GID}"
+    ports:
+      - 8080:5000
+    networks:
+      - profile
+    tty: true
+  didcreds-validator-node:
+    container_name: didcreds-validator-node
+    image: tuumtech/didcreds-validator-node:latest
+    user: "${UID}:${GID}"
+    ports:
+      - 8081:5000
+    networks:
+      - profile
+    tty: true
+  tuum-mongo:
+    container_name: tuum-mongo
+    image: mongo
+    user: "${UID}:${GID}"
+    volumes:
+      - ${HOME}/.tuum-mongodb-data:/data/db
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=mongopass
+    networks:
+      - profile
+    tty: true
+  vouch-redis:
+    container_name: vouch-redis
+    image: redis
+    user: "${UID}:${GID}"
+    ports:
+      - 6379:6379
+    networks:
+      - profile
+    tty: true
+
+networks:
+  profile:
