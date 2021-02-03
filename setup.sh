@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+declare -a Images=("hive-node" "assist-restapi-node" "vouch-restapi-node" "didcreds-validator-node")
 declare -a Containers=("hive-node" "assist-restapi-node" "vouch-restapi-node" "didcreds-validator-node" "hive-mongo" "tuum-mongo" "vouch-redis")
 
 function stop () {
@@ -18,6 +19,14 @@ function start () {
     docker-compose -f docker/docker-compose.yml up --remove-orphans --force-recreate -d 
 }
 
+function cleanup () {
+    stop
+    for image in ${Images[@]}
+    do
+        docker image rm -f tuumtech/${image}:latest
+    done
+}
+
 case "$1" in
     start)
         start
@@ -25,7 +34,10 @@ case "$1" in
     stop)
         stop
         ;;
+    cleanup)
+        cleanup
+        ;;
     *)
-    echo "Usage: run.sh {start|stop}"
+    echo "Usage: run.sh {start|stop|cleanup}"
     exit 1
 esac
