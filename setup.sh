@@ -38,6 +38,6 @@ case "$1" in
         cleanup
         ;;
     *)
-    echo "Usage: run.sh {start|stop|cleanup}"
+    echo "Usage: setup.sh {start|stop|cleanup}"
     exit 1
 esac
