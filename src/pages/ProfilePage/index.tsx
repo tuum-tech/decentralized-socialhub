@@ -46,6 +46,8 @@ import pages from '../../assets/person-search-outline.svg';
 import messages from '../../assets/message-circle-outline.svg';
 import photo from '../../assets/photo.png';
 import StartServiceComponent from 'src/components/StartServiceComponent';
+import ProfileTemplateManager from 'src/components/ProfileTemplateManager';
+import { Link } from 'react-router-dom';
 
 const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
 
@@ -60,6 +62,20 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
     return await requestLinkedinProfile(token) as ProfileResponse;
   }
   let token: string = new URLSearchParams(props.location.search).get("token") || "";
+
+  const getPublicUrl = (): string => {
+
+    let item = window.sessionStorage.getItem("session_instance")
+
+    if (!item) {
+      throw Error("Not logged in")
+    }
+
+
+    let instance = JSON.parse(item)
+
+    return "/did/" + instance.did
+  }
 
   useEffect(() => {
     (async () => {
@@ -109,6 +125,8 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
           <IonRow className={style["profilecontent"]}>
             <IonCol size="2.5" className={style["left-panel"]}>
               <FollowingList />
+              <Link to={getPublicUrl()}>My public page</Link>
+              <ProfileTemplateManager />
               <PagesComponent />
             </IonCol>
             <IonCol size="7" className={style["center-panel"]}>

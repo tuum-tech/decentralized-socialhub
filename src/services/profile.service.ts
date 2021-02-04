@@ -77,6 +77,32 @@ export class ProfileService {
         );
     }
 
+    async getUserBasicProfile(did: string): Promise<any> {
+
+        return this.appHiveClient.Scripting.RunScript(
+            {
+                "name": "get_basic_profile",
+                "context": {
+                    "target_did": did,
+                    "target_app_did": `${process.env.REACT_APP_APPLICATION_ID}`
+                }
+            }
+        );
+    }
+
+    async getUserEducationProfile(did: string): Promise<any> {
+
+        return this.appHiveClient.Scripting.RunScript(
+            {
+                "name": "get_education_profile",
+                "context": {
+                    "target_did": did,
+                    "target_app_did": `${process.env.REACT_APP_APPLICATION_ID}`
+                }
+            }
+        );
+    }
+
     async getFollowings(did?: string): Promise<IFollowingResponse> {
         let followings: IFollowingResponse;
         if (did === undefined) {
