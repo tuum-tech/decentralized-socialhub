@@ -10,18 +10,16 @@ export type InferMappedProps = ReturnType<typeof mapStateToProps> & ReturnType<t
 
 export type ActionType = typeof Actions;
 
-
 export interface TokenContent {
-    request_token: string,
-    expires_in: string
+  request_token: string,
+  expires_in: string
 }
 
 export interface TokenResponse {
-    data: TokenContent
+  data: TokenContent
 }
 
-export interface LinkedinId{
-    id: string,
-    name: string,
-    credential: string
-  }
+export interface TwitterId{
+  id: string,
+  name: string
+}

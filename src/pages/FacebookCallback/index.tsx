@@ -15,7 +15,10 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState, TokenResponse } from './types';
-import { fetchSimpleApi, requestFacebookToken } from './fetchapi';
+import { fetchSimpleApi, requestFacebookId, requestFacebookToken } from './fetchapi';
+import { UserService } from 'src/services/user.service';
+
+
 
 const FacebookCallback : React.FC<RouteComponentProps> = (props) => {
   /** 
@@ -24,7 +27,7 @@ const FacebookCallback : React.FC<RouteComponentProps> = (props) => {
    * incoming from Server API calls. Maintain a local state.
   */
 
-  const [token, setToken] = useState('');
+ const [isLogged, setisLogged] = useState(false);
   const getToken = async (code: string, state: string): Promise<TokenResponse> => {
     return await requestFacebookToken(code, state) as TokenResponse;
   }
@@ -36,14 +39,20 @@ const FacebookCallback : React.FC<RouteComponentProps> = (props) => {
     (async () => {
       if (code != "" && state != "") {
         let t = await getToken(code, state);
-        setToken(t.data.request_token);
+        let facebookId = await requestFacebookId(t.data.request_token)
+
+        console.log("facebook data", facebookId)
+
+        await UserService.SignInWithFacebook(facebookId.id, facebookId.name, t.data.request_token, facebookId.credential)
+
+        setisLogged(true);
       }
     })();
   });
 
   const getRedirect = () => {
-    if (token != null) {
-      return (<Redirect to={{ pathname: "/profile", search: `?token=${token}` }} />)
+    if (isLogged) {
+      return (<Redirect to={{ pathname: "/profile"}} />)
     } else
       return <div></div>
   }

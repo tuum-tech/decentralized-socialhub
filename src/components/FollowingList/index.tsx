@@ -151,10 +151,16 @@ const FollowingList: React.FC = () => {
       setProfileService(profileService);
 
 
-      let list: IFollowingResponse = await profileService.getFollowings();
+      let list = await profileService.getFollowings();
+
+      if (!list) return
+
       let listDids = list.get_following.items.map(p => p.did);
 
-      let followers: IFollowerResponse = await profileService.getFollowers(listDids);
+
+      let followers = await profileService.getFollowers(listDids);
+
+      if (!followers) return
 
       if (listContacts.get_following.items.length !== list.get_following.items.length) {
 

@@ -60,7 +60,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
 
   const [indexPage, setIndexPage] = useState(UserService.getSignedUsers().length == 0 ? 0 : 4);
 
-  const [mnemonic, setMnemonic] = useState(['', '', '', '', '', '', '', '', '', '', '', ''])
+  const [mnemonic, setMnemonic] = useState(['garage', 'stadium', 'stand', 'toy', 'swap', 'fish', 'include', 'animal', 'leave', 'van', 'moment', ''])
 
   const updateMnemonic = (event: any) => {
     let index: number = toNumber(event.target.outerText) - 1
@@ -129,6 +129,14 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
   }
 
   const connectHive = async (address: string) => {
+    
+    let isDIDPublished = await DidService.isDIDPublished(did)
+
+    if (!isDIDPublished) {
+      console.log("DID is not published")
+      return
+    }
+    
     let challenge = await HiveService.getHiveChallenge(address)
     let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(mnemonic.join(" "), "", challenge.issuer, challenge.nonce)
     let token = await HiveService.getUserHiveToken(address, presentation)
@@ -157,11 +165,19 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
 
     try {
 
-      await UserService.SignIn(did, hiveAddress, userToken, pwd)
+      await UserService.SignInWithDID({
+        did: did,
+        hiveHost: hiveAddress,
+        userToken: userToken,
+        name: "",
+        isDIDPublished: false
+      }, pwd)
 
       debugger;
       // Handle all the script registering somewhere 
-      UserVaultScripts.Execute(await HiveService.getSessionInstance());
+      console.log("script execute")
+      let instance = await HiveService.getSessionInstance()
+      if (instance) UserVaultScripts.Execute(instance);
       history.replace("/profile")
     } catch (error) {
       console.error(error)

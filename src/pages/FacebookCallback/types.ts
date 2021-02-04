@@ -18,3 +18,9 @@ export interface TokenContent {
 export interface TokenResponse {
   data: TokenContent
 }
+
+export interface FacebookId{
+  id: string,
+  name: string,
+  credential: string
+}

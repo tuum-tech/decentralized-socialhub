@@ -47,6 +47,7 @@ import PublishIdentityPage from './pages/PublishIdentityPage';
 import ChooseVaultPage from './pages/ChooseVaultPage';
 import RegisterPage from './pages/RegisterPage';
 import SessionContext from './context/session.context'
+import TwitterCallback from './pages/TwitterCallback';
 
 
 const App: React.FC = () => {
@@ -72,8 +73,8 @@ const App: React.FC = () => {
         {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
         {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
         <Route exact path="/" render={() => <Redirect to="/home" />} />
-        <Route exact path="/twitter_callback" render={() => <Redirect to="/profile" />} />
-        {/* <Route path="/linkedin_callback" component={LinkedinCallback} exact={false} /> */}
+        <Route path="/twitter_callback" component={TwitterCallback} exact={false}  />
+        <Route path="/linkedin_callback" component={LinkedinCallback} exact={false} />
         <Route path="/google_callback" component={GoogleCallback} exact={false} />
         <Route path="/facebook_callback" component={FacebookCallback} exact={false} />
         {/* <Route exact path="/" render={() => <Redirect to="/login" />} /> */}
