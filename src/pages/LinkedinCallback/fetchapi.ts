@@ -21,22 +21,22 @@ export function requestLinkedinToken(code: string, state: string): Promise<Basep
 }
 
 export async function requestLinkedinId(token: string) : Promise<LinkedinId>{
-    let url = `https://api.linkedin.com/v2/me`
+    let url = `https://api.linkedin.com/v2/me?projection=(id,firstName,lastName,emailAddress)`
     let data : any = {
         method: "GET",
         header: {
           Authorization: `Bearer ${token}`
         }
       }
-      console.log(data)
     let response = await fetch(url, data)
-    console.log("response", response) 
-    let json = await response.json()
 
-    console.log(json)
+    let json = await response.json()
+    console.log("linkedin json", response) 
+    
     return {
         id: json.id,
-        name: json.name
+        name: `${json.firstName} ${json.lastName}` ,
+        credential: json.emailAddress
     } 
 
 }

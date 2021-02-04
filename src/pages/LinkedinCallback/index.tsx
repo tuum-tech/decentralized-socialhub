@@ -40,7 +40,7 @@ const LinkedinCallback: React.FC<RouteComponentProps> = (props) => {
    * This was to show you dont need to put everything to global state 
    * incoming from Server API calls. Maintain a local state.
   */
-  const [token, setToken] = useState('');
+  const [isLogged, setisLogged] = useState(false);
   const getToken = async (code: string, state: string): Promise<TokenResponse> => {
     return await requestLinkedinToken(code, state) as TokenResponse;
   }
@@ -57,14 +57,14 @@ const LinkedinCallback: React.FC<RouteComponentProps> = (props) => {
         let t = await getToken(code, state);
         let linkedinId = await requestLinkedinId(t.data.request_token)
 
-        //await UserService.SignInWithLinkedin(linkedinId.id, linkedinId.name, t.data.request_token)
-        setToken(t.data.request_token);
+        //await UserService.SignInWithLinkedin(linkedinId.id, linkedinId.name, t.data.request_token, linkedinId.credential)
+      //  setisLogged(true);
       }
     })();
   });
 
   const getRedirect = () => {
-    if (token != null) {
+    if (isLogged) {
       return (<Redirect
         to={{
           pathname: "/profile"

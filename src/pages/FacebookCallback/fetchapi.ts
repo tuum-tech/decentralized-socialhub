@@ -28,10 +28,11 @@ export async function requestFacebookId(token: string) : Promise<FacebookId>{
     })
 
     let json = await response.json()
-    console.log("faceponse",json)
+    
     return {
         id: json.id,
-        name: json.name
+        name: json.name,
+        credential: json.name //TODO: Change to real credential when api is updated
     } 
 
 }

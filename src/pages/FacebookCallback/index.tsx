@@ -27,7 +27,7 @@ const FacebookCallback : React.FC<RouteComponentProps> = (props) => {
    * incoming from Server API calls. Maintain a local state.
   */
 
-  const [token, setToken] = useState('');
+ const [isLogged, setisLogged] = useState(false);
   const getToken = async (code: string, state: string): Promise<TokenResponse> => {
     return await requestFacebookToken(code, state) as TokenResponse;
   }
@@ -43,15 +43,15 @@ const FacebookCallback : React.FC<RouteComponentProps> = (props) => {
 
         console.log("facebook data", facebookId)
 
-        //await UserService.SignInWithFacebook(facebookId.id, facebookId.name, t.data.request_token)
+        await UserService.SignInWithFacebook(facebookId.id, facebookId.name, t.data.request_token, facebookId.credential)
 
-      //  setToken(t.data.request_token);
+        setisLogged(true);
       }
     })();
   });
 
   const getRedirect = () => {
-    if (token != null) {
+    if (isLogged) {
       return (<Redirect to={{ pathname: "/profile"}} />)
     } else
       return <div></div>

@@ -21,5 +21,6 @@ export interface TokenResponse {
 
 export interface GoogleId{
   id: string,
-  name: string
+  name: string,
+  email: string
 }

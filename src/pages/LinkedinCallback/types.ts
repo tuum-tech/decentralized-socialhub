@@ -22,5 +22,6 @@ export interface TokenResponse {
 
 export interface LinkedinId{
     id: string,
-    name: string
+    name: string,
+    credential: string
   }

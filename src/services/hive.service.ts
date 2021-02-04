@@ -3,7 +3,7 @@ import { HiveClient, OptionsBuilder, IOptions } from "@elastos/elastos-hive-js-s
 import { DidService } from "./did.service"
 
 import jwt_decode from 'jwt-decode';
-import { UserService } from "./user.service";
+import { AccountType, UserService } from "./user.service";
 
 
 export interface IHiveChallenge {
@@ -14,15 +14,16 @@ export interface IHiveChallenge {
 export class HiveService {
 
 
-    static async getSessionInstance(): Promise<HiveClient> {
+    static async getSessionInstance(): Promise<HiveClient | undefined> {
 
         let instance = await UserService.getLoggedUser()
 
-        console.log("Session user", instance)
+        if (!instance.isDIDPublished || instance.accountType !== AccountType.DID) return
 
         let hiveClient = await HiveClient.createInstance(instance.userToken, instance.hiveHost)
-
-        await hiveClient.Payment.CreateFreeVault();
+        if (hiveClient.isConnected){
+            await hiveClient.Payment.CreateFreeVault();
+        }
         return hiveClient;
     }
 

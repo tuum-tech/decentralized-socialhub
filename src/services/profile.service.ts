@@ -1,4 +1,5 @@
 import { HiveClient } from "@elastos/elastos-hive-js-sdk";
+import { IRunScriptResponse } from "@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service";
 import { floor, noConflict } from "lodash";
 import { HiveService } from "./hive.service";
 import { UserService } from "./user.service";
@@ -46,14 +47,17 @@ export class ProfileService {
     static async getProfileServiceInstance(): Promise<ProfileService> {
 
         let profileService: ProfileService = new ProfileService();
-        profileService.hiveClient = await HiveService.getSessionInstance();
+        let hiveClient = await HiveService.getSessionInstance();
+
+        if (hiveClient) profileService.hiveClient = hiveClient
         profileService.appHiveClient = await HiveService.getAppHiveClient();
         return profileService;
     }
 
 
-    async getFollowings(): Promise<IFollowingResponse> {
-        let followings: IFollowingResponse = await this.hiveClient.Scripting.RunScript({ "name": "get_following" });
+    async getFollowings(): Promise<IFollowingResponse | undefined> {
+        if (!this.hiveClient) return
+        let followings  = await this.hiveClient.Scripting.RunScript<IFollowingResponse>({ "name": "get_following" });
 
         // let followingItems: IFollowingItem[] = [];
         // followings.get_following.items.map(async (item) => {
@@ -63,11 +67,19 @@ export class ProfileService {
         // });
         // followings.get_following.items = followingItems;
 
-        console.log("followings :" + JSON.stringify(followings));
-        return followings;
+        if (followings.isSuccess)
+        {
+            console.log("followings :" + JSON.stringify(followings));
+            return followings.response;
+        }
+
+        return
+        
     }
 
+
     async resetFollowing(): Promise<any> {
+        if (!this.hiveClient) return
         await this.hiveClient.Database.deleteCollection("following");
         await this.hiveClient.Database.createCollection("following");
         return this.getFollowings();
@@ -77,17 +89,21 @@ export class ProfileService {
         return UserService.GetUserSession().did;
     }
 
-    async getFollowers(dids: string[]): Promise<IFollowerResponse> {
+    async getFollowers(dids: string[]): Promise<IFollowerResponse | undefined> {
+
         console.log(JSON.stringify(dids));
-        let followersResponse: IFollowerResponse = await this.appHiveClient.Scripting.RunScript({
+        let followersResponse: IRunScriptResponse<IFollowerResponse> = await this.appHiveClient.Scripting.RunScript({
             "name": "get_followers",
             "params": {
                 "did": dids
             }
         });
 
-        return followersResponse
-
+        if (followersResponse.isSuccess)
+        {
+            return followersResponse.response
+        }
+        return 
     }
 
     // async getFollowersCount(did: string): Promise<string> {
@@ -101,15 +117,15 @@ export class ProfileService {
 
 
     async unfollow(did: string): Promise<any> {
+        if (!this.hiveClient) return
         console.log("unfollow: " + did);
 
         let deleteResponse = await this.hiveClient.Database.deleteOne("following", { "did": did });
         console.log(JSON.stringify(deleteResponse));
 
-        let followersResponse: IFollowerResponse = await this.getFollowers([did]);
-
+        let followersResponse = await this.getFollowers([did]);
         let followersList: string[] = [];
-        if (followersResponse.get_followers.items.length > 0)  // TODO: handle this better
+        if (followersResponse && followersResponse.get_followers.items.length > 0)  // TODO: handle this better
             followersList = followersResponse.get_followers.items[0].followers;
 
         followersList = followersList.filter(item => item !== did);
@@ -128,12 +144,13 @@ export class ProfileService {
     }
 
     async addFollowing(did: string): Promise<any> {
+        if (!this.hiveClient) return
         await this.hiveClient.Database.insertOne("following", { "did": did }, undefined);
 
-        let followersResponse: IFollowerResponse = await this.getFollowers([did]);
+        let followersResponse = await this.getFollowers([did]);
 
         let followersList: string[] = [];
-        if (followersResponse.get_followers.items.length > 0)  // TODO: handle this better
+        if (followersResponse && followersResponse.get_followers.items.length > 0)  // TODO: handle this better
             followersList = followersResponse.get_followers.items[0].followers;
 
         followersList.push(this.getSessionDid());

@@ -34,7 +34,8 @@ export async function requestGoogleId(token: string) : Promise<GoogleId>{
 
     return {
         id: json.id,
-        name: json.name
+        name: json.name,
+        email: json.email
     } 
 
 }
