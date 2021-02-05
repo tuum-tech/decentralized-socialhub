@@ -16,14 +16,15 @@ import {
   IonRow,
   IonCol,
   IonInput,
-  IonFabList
+  IonFabList,
+  IonRouterLink
 } from '@ionic/react';
 import style from './style.module.scss';
 import charles from '../../theme/images/charles.jpeg'
 import vitalik from '../../theme/images/vitalik.jpeg'
 import pomp from '../../theme/images/pomp.jpg'
 import verified from '../../assets/verified.svg'
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { IFollowingResponse, IFollowingItem, ProfileService, IFollowerResponse } from 'src/services/profile.service';
 import { parseJsonSourceFileConfigFileContent } from 'typescript';
 import { HiveService } from 'src/services/hive.service';
@@ -65,16 +66,27 @@ export interface AvatarCredential {
   data: string;
 }
 
-const FollowingList: React.FC = () => {
+export interface IError {
+  hasError: boolean,
+  errorDescription?: string
+}
+
+const FollowingList: React.FC<any> = (props?: any) => {
 
   const [listContacts, setListContacts] = useState<IFollowingResponse>({ get_following: { items: [] } });
   const [listFollowers, setListFollowers] = useState<IFollowerResponse>({ get_followers: { items: [] } });
   const [profileService, setProfileService] = useState(new ProfileService());
   const [didFollow, setDidFollow] = useState('');
   const [didDocuments, setDidDocuments] = useState<IDidDocument[]>([]);
+  const [error, setError] = useState<IError>({ hasError: false });
+
 
   const getUserHiveInstance = async (): Promise<ProfileService> => {
     return ProfileService.getProfileServiceInstance();
+  }
+
+  const getappHiveInstance = async (): Promise<ProfileService> => {
+    return ProfileService.getProfileServiceAppOnlyInstance();
   }
 
   const follow = async () => {
@@ -127,6 +139,12 @@ const FollowingList: React.FC = () => {
 
   }
 
+  const getLink = (did: string) => {
+    //console.log(window.location.host + "/did/" + did);
+    return "/did/" + did;
+
+  }
+
   const getFollowersCount = (did: string): string => {
     let val: string = "";
     if (listFollowers.get_followers.items !== undefined && listFollowers.get_followers.items.length > 0) {
@@ -143,78 +161,117 @@ const FollowingList: React.FC = () => {
     return val;
   }
 
+  const getPage = (error: IError) => {
+    if (error.hasError) {
+      return <div className={style["followinglist"]}>
+        <span>{error.errorDescription}</span>
+      </div>
+    } else {
+      return (
+        <div className={style["followinglist"]}>
+          {/*-- Default FollowingList --*/}
+
+
+
+          <h1>Following ({listContacts.get_following.items.length})</h1><h1 onClick={reset}>Reset</h1>
+
+          <IonGrid>
+            {
+              listContacts.get_following.items.map(((item: IFollowingItem, index) => (
+                <IonRow key={index} >
+                  <IonCol size="*"><img className={style["thumbnail"]} src={resolveUserInfo(item.did).image} /></IonCol>
+                  {/* <IonCol size="*"><img className={style["thumbnail"]} src={vitalik} /></IonCol> */}
+
+                  <IonCol size="7" >
+                    <Link to={getLink(item.did)} >
+                      <div><span className={style["name"]}>{resolveUserInfo(item.did).name}</span><img src={verified} className={style["verified"]} /></div>
+                      <div><span className={style["number-followers"]}>followers {getFollowersCount(item.did)}</span></div>
+
+                    </Link>
+                  </IonCol>
+                  <IonCol size="3"><IonButton size="small" onClick={() => unfollow(item.did)}>Unfollow</IonButton></IonCol>
+                </IonRow>
+
+              )))
+            }
+
+          </IonGrid>
+          <IonInput placeholder="did" value={didFollow} onIonChange={(event) => setDidFollow((event.target as HTMLInputElement).value)}></IonInput>
+          <span className={style["invite"]} onClick={follow}>+ Follow someone</span>
+        </div >
+      )
+    }
+  }
+
+  const loadData = async (did: string) => {
+    let profileService: ProfileService;
+
+    debugger;
+    if (did === undefined) {
+      profileService = await getUserHiveInstance();
+      console.log("get user instance");
+
+
+    } else {
+      profileService = await getappHiveInstance();
+      console.log("get app instance");
+    }
+    setProfileService(profileService);
+
+    let list: IFollowingResponse;
+    try {
+      list = await profileService.getFollowings(did);
+
+    } catch (e) {
+      list = { get_following: { items: [] } };
+      console.error("cant load followings");
+      setError({ hasError: true, errorDescription: "cant load followings" });
+      debugger;
+      return;
+    }
+    debugger;
+    let listDids = list.get_following.items.map(p => p.did);
+
+    let followers = await profileService.getFollowers(listDids);
+
+    if (listContacts.get_following.items.length !== list.get_following.items.length) {
+
+      setListContacts(list);
+
+    }
+    setListFollowers(followers as IFollowerResponse);
+
+    let docs: IDidDocument[] = [];
+    await Promise.all(listDids.map(async (did) => {
+      let doc = await DidService.getDidDocument(did);
+      docs.push(doc);
+    }));
+
+    console.log("docs " + JSON.stringify(docs))
+    setDidDocuments(docs)
+
+  }
 
 
   useEffect(() => {
     (async () => {
-      let profileService = await getUserHiveInstance();
-      setProfileService(profileService);
-
-
-      let list = await profileService.getFollowings();
-
-      if (!list) return
-
-      let listDids = list.get_following.items.map(p => p.did);
-
-
-      let followers = await profileService.getFollowers(listDids);
-
-      if (!followers) return
-
-      if (listContacts.get_following.items.length !== list.get_following.items.length) {
-
-        setListContacts(list);
-
-      }
-      setListFollowers(followers);
-
-      let docs: IDidDocument[] = [];
-      await Promise.all(listDids.map(async (did) => {
-        let doc = await DidService.getDidDocument(did);
-        docs.push(doc);
-      }));
-
-      console.log("docs " + JSON.stringify(docs))
-      setDidDocuments(docs)
+      await loadData(props.did);
 
     })()
   }, [listContacts]);
 
 
 
-
-
   return (
-    <div className={style["followinglist"]}>
-      {/*-- Default FollowingList --*/}
-
-      <h1>Following ({listContacts.get_following.items.length})</h1><h1 onClick={reset}>Reset</h1>
-
-      <IonGrid>
-        {
-          listContacts.get_following.items.map(((item: IFollowingItem, index) => (
-            <IonRow key={index}>
-              <IonCol size="*"><img className={style["thumbnail"]} src={resolveUserInfo(item.did).image} /></IonCol>
-              {/* <IonCol size="*"><img className={style["thumbnail"]} src={vitalik} /></IonCol> */}
-
-              <IonCol size="8">
-                <div><span className={style["name"]}>{resolveUserInfo(item.did).name}</span><img src={verified} className={style["verified"]} /></div>
-                <div><span className={style["number-followers"]}>followers {getFollowersCount(item.did)}</span></div>
-              </IonCol>
-              <IonCol size="2"><IonButton onClick={() => unfollow(item.did)}>Unfollow</IonButton></IonCol>
-            </IonRow>
-          )))
-        }
-
-      </IonGrid>
-      <IonInput placeholder="did" value={didFollow} onIonChange={(event) => setDidFollow((event.target as HTMLInputElement).value)}></IonInput>
-      <span className={style["invite"]} onClick={follow}>+ Follow someone</span>
+    <div>
+      {getPage(error)}
+    </div>
+  );
 
 
 
-    </div >
-  )
-};
+
+}
+
 
 export default FollowingList;

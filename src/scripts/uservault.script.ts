@@ -1,11 +1,12 @@
 import { HiveClient } from "@elastos/elastos-hive-js-sdk";
+import { all } from "redux-saga/effects";
 
 export class UserVaultScripts {
 
     static async Execute(hiveClient: HiveClient) {
         console.log("Enter uservaultscripts")
 
-        
+
 
         await this.CreateCollections(hiveClient);
         await this.SetScripts(hiveClient);
@@ -20,7 +21,7 @@ export class UserVaultScripts {
     }
 
     static async SetScriptGetFollowing(hiveClient: HiveClient) {
-        hiveClient.Scripting.SetScript({
+        await hiveClient.Scripting.SetScript({
             "name": "get_following",
             "executable": {
                 "type": "find",
@@ -32,6 +33,45 @@ export class UserVaultScripts {
             }
         });
     }
+
+
+    static async SetScriptGetBasicProfile(hiveClient: HiveClient, publicAccess = true) {
+        if (publicAccess === true)
+            await hiveClient.Scripting.SetScript({
+                "name": "get_basic_profile",
+                "executable": {
+                    "type": "find",
+                    "name": "get_basic_profile",
+                    "output": true,
+                    "body": {
+                        "collection": "basic_profile"
+                    }
+                }
+            });
+        else
+            await hiveClient.Scripting.SetScript({
+                "name": "get_basic_profile",
+                "executable": {
+                    "type": "find",
+                    "name": "get_basic_profile",
+                    "output": true,
+                    "body": {
+                        "collection": "basic_profile"
+                    }
+                },
+                "condition": {
+                    "type": "queryHasResults",
+                    "name": "verify_user_permission",
+                    "body": {
+                        "collection": "basic_profile",
+                        "filter": {
+                            "did": "\$caller_did",
+                        }
+                    }
+                }
+            });
+    }
+
 
     static async SetGetPublicInfo(hiveClient: HiveClient) {
         hiveClient.Scripting.SetScript({

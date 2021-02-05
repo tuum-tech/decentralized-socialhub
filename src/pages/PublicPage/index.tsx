@@ -31,7 +31,7 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, ProfileContent, ProfileResponse, SubState } from './types';
-import { fetchSimpleApi, requestLinkedinProfile } from './fetchapi';
+import { requestBasicProfile, requestEducationProfile, requestVaultProfile } from './fetchapi';
 import FollowingList from 'src/components/FollowingList';
 import Pages from 'src/components/Pages';
 import ProfileCompletion from 'src/components/ProfileCompletion';
@@ -46,96 +46,74 @@ import pages from '../../assets/person-search-outline.svg';
 import messages from '../../assets/message-circle-outline.svg';
 import photo from '../../assets/photo.png';
 import StartServiceComponent from 'src/components/StartServiceComponent';
-import ProfileTemplateManager from 'src/components/ProfileTemplateManager';
-import { Link } from 'react-router-dom';
+import { ProfileInfo } from '../ProfilePage/types';
+import { HiveService } from 'src/services/hive.service';
 
-const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
+interface MatchParams {
+  did: string;
+}
+
+interface Props extends RouteComponentProps<MatchParams> {
+}
+
+const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (props: RouteComponentProps<MatchParams>) => {
 
   /** 
    * Direct method implementation without SAGA 
    * This was to show you dont need to put everything to global state 
    * incoming from Server API calls. Maintain a local state.
   */
-  const [profile, setProfile] = useState({ profile: { firstName: "", lastName: "" } } as ProfileContent);
+  const [profile, setProfile] = useState({ profile: {} });
+  const [basic_profile, setbasic_profile] = useState({});
+  const [education_profile, seteducation_profile] = useState({});
 
-  const getProfile = async (token: string): Promise<ProfileResponse> => {
-    return await requestLinkedinProfile(token) as ProfileResponse;
+  const getProfile = async (did: string): Promise<ProfileContent> => {
+    return await requestVaultProfile(did) as ProfileContent;
   }
-  let token: string = new URLSearchParams(props.location.search).get("token") || "";
 
-  const getPublicUrl = (): string => {
-
-    let item = window.sessionStorage.getItem("session_instance")
-
-    if (!item) {
-      throw Error("Not logged in")
-    }
-
-
-    let instance = JSON.parse(item)
-
-    return "/did/" + instance.did
+  const getBasicProfile = async (did: string): Promise<any> => {
+    return await requestBasicProfile(did);
   }
+
+  const getEducationProfile = async (did: string): Promise<any> => {
+    return await requestEducationProfile(did);
+  }
+
+
+  let did: string = props.match.params.did || "";
 
   useEffect(() => {
     (async () => {
-      if (token != "") {
-        getProfile(token).then((x: ProfileResponse) => {
-          console.log(x.data);
-          let p = x.data as ProfileContent;
-          setProfile(p);
-        }).catch((error) => {
-          console.error(error);
-          let fallback = { profile: { "firstName": "Jane", "lastName": "Fallback" } }
-          setProfile(fallback);
-        });
-      }
+
+
+      let basic_profile = await getBasicProfile(did);
+      setbasic_profile(basic_profile);
+
+      let education_profile = await getEducationProfile(did);
+      seteducation_profile(education_profile);
+
 
     })();
-  }, [token]);
+  }, []);
 
 
   return (
     <IonPage className={style["profilepage"]}>
-      <IonHeader className={style["header"]}>
-        <IonGrid>
-          <IonRow>
-            <IonCol size="0.5"><img className={style["logo"]} src={logo} /></IonCol>
-            <IonCol size="2.5">
-              <IonSearchbar placeholder="Search Profiles, Pages, Validators" className={style["search-input"]}></IonSearchbar>
-            </IonCol>
-            <IonCol size="6">
-              <IonGrid>
-                <IonRow className="ion-justify-content-center">
-                  <IonCol size="auto"><div className={style["home"]}><img src={home} /> <span>Home</span></div></IonCol>
-                  <IonCol size="auto"><div className={style["community"]}><img src={community} /><span>Community</span></div></IonCol>
-                  <IonCol size="auto"><div className={style["pages"]}><img src={pages} /><span>Pages</span></div></IonCol>
-                  <IonCol size="auto"><div className={style["messages"]}><img src={messages} /><span>Messages</span></div></IonCol>
-                </IonRow>
-              </IonGrid>
-            </IonCol>
-            <IonCol size="3">
-              <img src={photo} className={style["profile-img"]} />
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </IonHeader>
       <IonContent>
         <IonGrid>
-          <IonRow className={style["profilecontent"]}>
-            <IonCol size="2.5" className={style["left-panel"]}>
-              <FollowingList />
-              <Link to={getPublicUrl()}>My public page</Link>
-              <ProfileTemplateManager />
-              <PagesComponent />
+          <IonRow>
+            <IonCol size="6">
+              <FollowingList did={did} />
             </IonCol>
-            <IonCol size="7" className={style["center-panel"]}>
-              <ProfileComponent profile={profile} />
+          </IonRow>
+          <IonRow>
+            <IonCol size="6">
+              <h1>basic profile</h1>
+              <span>{JSON.stringify(basic_profile)}</span>
             </IonCol>
-            <IonCol size="2.5" className={style["right-panel"]}>
-              <StartServiceComponent />
-              <ProfileCompletion />
-
+            <IonCol size="6">
+              <h1>education profile</h1>
+              <span>{JSON.stringify(education_profile)}</span>
             </IonCol>
           </IonRow>
         </IonGrid>
@@ -166,7 +144,7 @@ export function mapDispatchToProps(dispatch: any) {
  * useInjectReducer & useInjectSaga
  */
 const withInjectedMode = injector(
-  ProfilePage,
+  PublicPage,
   {
     key: NameSpace,
     reducer,

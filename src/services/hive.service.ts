@@ -28,12 +28,17 @@ export class HiveService {
     }
 
     static async getToken(address: string): Promise<string> {
+        let token = window.sessionStorage.getItem("app_token");
 
-        let mnemonic = `${process.env.REACT_APP_TUUM_TECH_MNEMONICS}`
-        let challenge = await HiveService.getHiveChallenge(address)
-        let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(mnemonic, "", challenge.issuer, challenge.nonce)
-        let token = await HiveService.getUserHiveToken(address, presentation)
-        return token
+        if (!token) {
+            debugger;
+            let mnemonic = `${process.env.REACT_APP_TUUM_TECH_MNEMONICS}`
+            let challenge = await HiveService.getHiveChallenge(address)
+            let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(mnemonic, "", challenge.issuer, challenge.nonce)
+            let token = await HiveService.getUserHiveToken(address, presentation)
+            window.sessionStorage.setItem("app_token", token);
+        }
+        return token || "";
     }
 
     static async getAppHiveClient(): Promise<HiveClient> {

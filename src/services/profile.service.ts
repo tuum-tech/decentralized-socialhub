@@ -54,27 +54,68 @@ export class ProfileService {
         return profileService;
     }
 
+    static async getProfileServiceAppOnlyInstance(): Promise<ProfileService> {
 
-    async getFollowings(): Promise<IFollowingResponse | undefined> {
-        if (!this.hiveClient) return
-        let followings  = await this.hiveClient.Scripting.RunScript<IFollowingResponse>({ "name": "get_following" });
+        let profileService: ProfileService = new ProfileService();
+        profileService.appHiveClient = await HiveService.getAppHiveClient();
+        return profileService;
+    }
 
-        // let followingItems: IFollowingItem[] = [];
-        // followings.get_following.items.map(async (item) => {
-        //     item.followers = await this.getFollowersCount(item.did)
-        //     followingItems.push(item);
+    async getMyFollowings(): Promise<IRunScriptResponse<IFollowingResponse>> {
+        return this.hiveClient.Scripting.RunScript(
+            { "name": "get_following" }
+        );
 
-        // });
-        // followings.get_following.items = followingItems;
+    }
 
-        if (followings.isSuccess)
-        {
-            console.log("followings :" + JSON.stringify(followings));
-            return followings.response;
+    async getUserFollowings(did: string): Promise<IRunScriptResponse<IFollowingResponse>> {
+        return await this.appHiveClient.Scripting.RunScript(
+            {
+                "name": "get_following",
+                "context": {
+                    "target_did": did,
+                    "target_app_did": `${process.env.REACT_APP_APPLICATION_ID}`
+                }
+            }
+        );
+    }
+
+    async getUserBasicProfile(did: string): Promise<any> {
+
+        return this.appHiveClient.Scripting.RunScript(
+            {
+                "name": "get_basic_profile",
+                "context": {
+                    "target_did": did,
+                    "target_app_did": `${process.env.REACT_APP_APPLICATION_ID}`
+                }
+            }
+        );
+    }
+
+    async getUserEducationProfile(did: string): Promise<any> {
+
+        return this.appHiveClient.Scripting.RunScript(
+            {
+                "name": "get_education_profile",
+                "context": {
+                    "target_did": did,
+                    "target_app_did": `${process.env.REACT_APP_APPLICATION_ID}`
+                }
+            }
+        );
+    }
+
+    async getFollowings(did?: string): Promise<IFollowingResponse> {
+        let followings: IFollowingResponse;
+        if (did === undefined) {
+            followings = (await this.getMyFollowings()).response as IFollowingResponse;
+        } else {
+            followings = (await this.getUserFollowings(did)).response as IFollowingResponse;
         }
 
-        return
-        
+        console.log("followings :" + JSON.stringify(followings));
+        return followings;
     }
 
 
@@ -99,11 +140,10 @@ export class ProfileService {
             }
         });
 
-        if (followersResponse.isSuccess)
-        {
+        if (followersResponse.isSuccess) {
             return followersResponse.response
         }
-        return 
+        return
     }
 
     // async getFollowersCount(did: string): Promise<string> {
