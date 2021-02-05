@@ -15,7 +15,8 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState, TokenResponse } from './types';
-import { fetchSimpleApi, requestGoogleToken } from './fetchapi';
+import { requestGoogleId, requestGoogleToken } from './fetchapi';
+import { UserService } from 'src/services/user.service';
 
 const GoogleCallback : React.FC<RouteComponentProps> = (props) => {
   /** 
@@ -24,7 +25,7 @@ const GoogleCallback : React.FC<RouteComponentProps> = (props) => {
    * incoming from Server API calls. Maintain a local state.
   */
 
-  const [token, setToken] = useState('');
+  const [isLogged, setisLogged] = useState(false);
   const getToken = async (code: string, state: string): Promise<TokenResponse> => {
     return await requestGoogleToken(code, state) as TokenResponse;
   }
@@ -36,18 +37,20 @@ const GoogleCallback : React.FC<RouteComponentProps> = (props) => {
     (async () => {
       if (code != "" && state != "") {
         let t = await getToken(code, state);
-        setToken(t.data.request_token);
+        let googleId = await requestGoogleId(t.data.request_token)
+
+        await UserService.SignInWithGoogle(googleId.id, googleId.name, t.data.request_token, googleId.email)
+       
+        setisLogged(true);
       }
     })();
   });
 
   const getRedirect = () => {
-    if (token != null) {
+    if (isLogged) {
       return (<Redirect
         to={{
-          pathname: "/profile",
-          search: `?token=${token}`
-
+          pathname: "/profile"
         }}
       />)
     } else

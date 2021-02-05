@@ -1,5 +1,6 @@
 import request, { BaseplateResp } from 'src/baseplate/request';
 import { Api } from './constants';
+import { GoogleId } from './types';
 
 export function fetchSimpleApi() : Promise<BaseplateResp> {
     return request(Api.sample, {
@@ -18,4 +19,23 @@ export function requestGoogleToken(code: string, state: string): Promise<Basepla
             'Accept': 'application/json'
         }
     });
+}
+
+export async function requestGoogleId(token: string) : Promise<GoogleId>{
+    let url = `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${token}`
+
+    let response = await fetch(url, {
+      method: "GET"
+    })
+
+    let json = await response.json()
+
+    console.log(json)
+
+    return {
+        id: json.id,
+        name: json.name,
+        email: json.email
+    } 
+
 }

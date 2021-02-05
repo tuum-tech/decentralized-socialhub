@@ -3,6 +3,8 @@ import { HiveClient, OptionsBuilder, IOptions } from "@elastos/elastos-hive-js-s
 import { DidService } from "./did.service"
 
 import jwt_decode from 'jwt-decode';
+import { AccountType, UserService } from "./user.service";
+
 
 export interface IHiveChallenge {
     issuer: string,
@@ -12,19 +14,16 @@ export interface IHiveChallenge {
 export class HiveService {
 
 
-    static async getSessionInstance(): Promise<HiveClient> {
+    static async getSessionInstance(): Promise<HiveClient | undefined> {
 
-        let item = window.sessionStorage.getItem("session_instance")
+        let instance = await UserService.getLoggedUser()
 
-        if (!item) {
-            throw Error("Not logged in")
-        }
-
-
-        let instance = JSON.parse(item)
+        if (!instance.isDIDPublished || instance.accountType !== AccountType.DID) return
 
         let hiveClient = await HiveClient.createInstance(instance.userToken, instance.hiveHost)
-        await hiveClient.Payment.CreateFreeVault();
+        if (hiveClient.isConnected){
+            await hiveClient.Payment.CreateFreeVault();
+        }
         return hiveClient;
     }
 
@@ -57,7 +56,7 @@ export class HiveService {
         //TODO: change to appInstance
         let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`
         let appId = `${process.env.REACT_APP_APPLICATION_ID}`
-        let appDid = await DidService.getDid(mnemonic)
+        let appDid = await DidService.loadDid(mnemonic)
         let builder = new OptionsBuilder()
         await builder.setAppInstance(appId, appDid)
         builder.setHiveHost(hiveHost)
@@ -69,8 +68,8 @@ export class HiveService {
     static async getHiveChallenge(hiveHost: string): Promise<IHiveChallenge> {
         let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`
         let options = await this.getHiveOptions(hiveHost)
-        let appDid = await DidService.getDid(mnemonic)
-        let appDocument = await DidService.getDocument(appDid)
+        let appDid = await DidService.loadDid(mnemonic)
+        let appDocument = await DidService.getDidDocument(appDid.did)
         let response = await HiveClient.getApplicationChallenge(options, appDocument)
 
         let jwt = jwt_decode<any>(response.challenge);
