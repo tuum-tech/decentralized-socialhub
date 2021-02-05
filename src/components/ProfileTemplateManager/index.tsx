@@ -3,6 +3,7 @@ import { IonSpinner, IonContent, IonGrid, IonRow, IonCol, IonCheckbox } from '@i
 import { ProfileService } from 'src/services/profile.service';
 import { UserVaultScripts } from 'src/scripts/uservault.script';
 import { HiveService } from 'src/services/hive.service';
+import { HiveClient } from '@elastos/elastos-hive-js-sdk';
 
 
 const ProfileTemplateManager: React.FC = () => {
@@ -10,7 +11,8 @@ const ProfileTemplateManager: React.FC = () => {
   const updateTemplate = async (configName: string, checked: boolean) => {
     console.log(configName + " : " + checked);
 
-    UserVaultScripts.SetScriptGetBasicProfile(await HiveService.getSessionInstance(), checked)
+    let sessionInstance = await HiveService.getSessionInstance();
+    UserVaultScripts.SetScriptGetBasicProfile(sessionInstance as HiveClient, checked);
   }
 
   return (

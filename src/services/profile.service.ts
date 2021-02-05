@@ -61,14 +61,14 @@ export class ProfileService {
         return profileService;
     }
 
-    async getMyFollowings(): Promise<IFollowingResponse> {
+    async getMyFollowings(): Promise<IRunScriptResponse<IFollowingResponse>> {
         return this.hiveClient.Scripting.RunScript(
             { "name": "get_following" }
         );
 
     }
 
-    async getUserFollowings(did: string): Promise<IFollowingResponse> {
+    async getUserFollowings(did: string): Promise<IRunScriptResponse<IFollowingResponse>> {
         return await this.appHiveClient.Scripting.RunScript(
             {
                 "name": "get_following",
@@ -109,9 +109,9 @@ export class ProfileService {
     async getFollowings(did?: string): Promise<IFollowingResponse> {
         let followings: IFollowingResponse;
         if (did === undefined) {
-            followings = await this.getMyFollowings();
+            followings = (await this.getMyFollowings()).response as IFollowingResponse;
         } else {
-            followings = await this.getUserFollowings(did);
+            followings = (await this.getUserFollowings(did)).response as IFollowingResponse;
         }
 
         console.log("followings :" + JSON.stringify(followings));
@@ -140,11 +140,10 @@ export class ProfileService {
             }
         });
 
-        if (followersResponse.isSuccess)
-        {
+        if (followersResponse.isSuccess) {
             return followersResponse.response
         }
-        return 
+        return
     }
 
     // async getFollowersCount(did: string): Promise<string> {

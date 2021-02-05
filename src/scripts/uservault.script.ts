@@ -6,7 +6,7 @@ export class UserVaultScripts {
     static async Execute(hiveClient: HiveClient) {
         console.log("Enter uservaultscripts")
 
-        
+
 
         await this.CreateCollections(hiveClient);
         await this.SetScripts(hiveClient);
@@ -23,8 +23,6 @@ export class UserVaultScripts {
     static async SetScriptGetFollowing(hiveClient: HiveClient) {
         await hiveClient.Scripting.SetScript({
             "name": "get_following",
-            "allowAnonymousUser": true,
-            "allowAnonymousApp": true,
             "executable": {
                 "type": "find",
                 "name": "get_following",
@@ -53,8 +51,6 @@ export class UserVaultScripts {
         else
             await hiveClient.Scripting.SetScript({
                 "name": "get_basic_profile",
-                "allowAnonymousUser": false,
-                "allowAnonymousApp": false,
                 "executable": {
                     "type": "find",
                     "name": "get_basic_profile",

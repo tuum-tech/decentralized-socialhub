@@ -232,14 +232,14 @@ const FollowingList: React.FC<any> = (props?: any) => {
     debugger;
     let listDids = list.get_following.items.map(p => p.did);
 
-    let followers: IFollowerResponse = await profileService.getFollowers(listDids);
+    let followers = await profileService.getFollowers(listDids);
 
     if (listContacts.get_following.items.length !== list.get_following.items.length) {
 
       setListContacts(list);
 
     }
-    setListFollowers(followers);
+    setListFollowers(followers as IFollowerResponse);
 
     let docs: IDidDocument[] = [];
     await Promise.all(listDids.map(async (did) => {
