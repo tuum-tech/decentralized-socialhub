@@ -47,6 +47,7 @@ import messages from '../../assets/message-circle-outline.svg';
 import photo from '../../assets/photo.png';
 import StartServiceComponent from 'src/components/StartServiceComponent';
 import ProfileTemplateManager from 'src/components/ProfileTemplateManager';
+import { BackgroundService } from '../../services/background.service';
 import { Link } from 'react-router-dom';
 
 const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
@@ -122,6 +123,17 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
       </IonHeader>
       <IonContent>
         <IonGrid>
+          <IonRow>
+            <IonButton onClick={async() => {
+              await BackgroundService.run();
+            }}> run background process </IonButton>
+            <IonButton onClick={async() => {
+              await BackgroundService.migrate();
+            }}> forcly set flag of this user record on tuum vault </IonButton>
+            <IonButton onClick={async() => {
+              await BackgroundService.addDataToUserDetails('skills', 'Python, Django, Ruby');
+            }}> add skills to the database </IonButton>
+          </IonRow>
           <IonRow className={style["profilecontent"]}>
             <IonCol size="2.5" className={style["left-panel"]}>
               <FollowingList />
@@ -135,7 +147,6 @@ const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) 
             <IonCol size="2.5" className={style["right-panel"]}>
               <StartServiceComponent />
               <ProfileCompletion />
-
             </IonCol>
           </IonRow>
         </IonGrid>

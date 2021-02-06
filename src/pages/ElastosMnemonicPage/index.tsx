@@ -173,7 +173,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
         isDIDPublished: false
       }, pwd)
 
-      debugger;
+      // debugger;
       // Handle all the script registering somewhere 
       console.log("script execute")
       let instance = await HiveService.getSessionInstance()
@@ -317,7 +317,6 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
             Create a password to storage your profile
           </p>
         </div>
-
         <div >
           <IonRow style={{ marginTop: '100px' }}>
             <IonCol >
@@ -329,7 +328,6 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({ eProps, ...props }: I
               </IonInput>
             </IonCol>
           </IonRow>
-
         </div>
 
 

@@ -1,25 +1,20 @@
 import { HiveClient, OptionsBuilder, IOptions } from "@elastos/elastos-hive-js-sdk"
+import jwt_decode from 'jwt-decode';
 
 import { DidService } from "./did.service"
-
-import jwt_decode from 'jwt-decode';
 import { AccountType, UserService } from "./user.service";
-
-
 export interface IHiveChallenge {
     issuer: string,
     nonce: string
 }
-
 export class HiveService {
-
-
     static async getSessionInstance(): Promise<HiveClient | undefined> {
-
         let instance = await UserService.getLoggedUser()
-
-        if (!instance.isDIDPublished || instance.accountType !== AccountType.DID) return
-
+        console.log('======>instance', instance)
+        if (!instance.isDIDPublished || instance.accountType !== AccountType.DID) {
+            console.log('======>  DID User is not published or AccountTYpe is not available type')
+            return
+        }
         let hiveClient = await HiveClient.createInstance(instance.userToken, instance.hiveHost)
         if (hiveClient.isConnected){
             await hiveClient.Payment.CreateFreeVault();
@@ -29,20 +24,17 @@ export class HiveService {
 
     static async getToken(address: string): Promise<string> {
         let token = window.sessionStorage.getItem("app_token");
-
         if (!token) {
-            debugger;
             let mnemonic = `${process.env.REACT_APP_TUUM_TECH_MNEMONICS}`
             let challenge = await HiveService.getHiveChallenge(address)
             let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(mnemonic, "", challenge.issuer, challenge.nonce)
-            let token = await HiveService.getUserHiveToken(address, presentation)
+            token = await HiveService.getUserHiveToken(address, presentation)
             window.sessionStorage.setItem("app_token", token);
         }
         return token || "";
     }
 
     static async getAppHiveClient(): Promise<HiveClient> {
-
         let host = `${process.env.REACT_APP_TUUM_TECH_HIVE}`
         let appToken = await HiveService.getToken(host);
         let hiveClient = await HiveClient.createInstance(appToken, host)

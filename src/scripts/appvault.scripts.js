@@ -57,7 +57,57 @@ let run = async () => {
     });
 
 
-
+    // userrecord scripts on tuum vault
+    await client.Database.createCollection("userrecords")
+    await client.Scripting.SetScript({
+        "name": "add_userrecord",
+        "executable": {
+            "type": "insert",
+            "name": "add_userrecord",
+            "body": {
+                "collection": "userrecords",
+                "document": {
+                    "username": "$params.username",
+                    "did": "\$params.did",
+                    "vaulturl": "$params.vaulturl",
+                    "migrated": false,
+                },
+            }
+        }
+    });
+    await client.Scripting.SetScript({
+        "name": "get_userrecord",
+        "executable": {
+            "type": "find",
+            "name": "get_userrecord",
+            "output": true,
+            "body": {
+                "collection": "userrecords",
+                "filter": {
+                    "did": "\$params.did"
+                }
+            }
+        }
+    });
+    await client.Scripting.SetScript({
+        "name": "migrate_userrecord",
+        "executable": {
+            "type": "update",
+            "name": "migrate_userrecord",
+            "output": true,
+            "body": {
+                "collection": "userrecords",
+                "filter": {
+                    "did": "\$params.did",
+                },
+                "update": {
+                    "\$set": {
+                        "migrated": true,
+                    },
+                },
+            }
+        }
+    });
     console.log("All scripts OK")
 }
 

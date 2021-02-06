@@ -6,18 +6,18 @@ export class UserVaultScripts {
     static async Execute(hiveClient: HiveClient) {
         console.log("Enter uservaultscripts")
 
-
-
         await this.CreateCollections(hiveClient);
         await this.SetScripts(hiveClient);
     }
 
     static async CreateCollections(hiveClient: HiveClient) {
         await hiveClient.Database.createCollection("following");
+        await hiveClient.Database.createCollection("userdetails");
     }
 
     static async SetScripts(hiveClient: HiveClient) {
         await this.SetScriptGetFollowing(hiveClient);
+        await this.SetScriptsForUserDetails(hiveClient);
     }
 
     static async SetScriptGetFollowing(hiveClient: HiveClient) {
@@ -85,5 +85,67 @@ export class UserVaultScripts {
                 }
             }
         });
+    }
+
+    static async SetScriptsForUserDetails(hiveClient: HiveClient) {
+        hiveClient.Scripting.SetScript({
+            "name": "add_userdetails",
+            "executable": {
+                "type": "insert",
+                "name": "add_userdetails",
+                "body": {
+                    "collection": "userdetails",
+                    "document": {
+                        "category": "\$params.category",
+                        "data": "\$params.data",
+                    },
+                    "options": {"bypass_document_validation": false}
+                },
+            }
+        });
+        hiveClient.Scripting.SetScript({
+            "name": "get_all_userdetails",
+            "executable": {
+                "type": "find",
+                "name": "get_all_userdetails",
+                "output": true,
+                "body": {
+                    "collection": "userdetails",
+                }
+            }
+        });
+        hiveClient.Scripting.SetScript({
+            "name": "find_category_data",
+            "executable": {
+                "type": "find",
+                "name": "find_category_data",
+                "output": true,
+                "body": {
+                    "collection": "userdetails",
+                    "filter": {
+                        "category": "\$params.category"
+                    }
+                }
+            }
+        });
+        hiveClient.Scripting.SetScript({
+            "name": "update_category_data",
+            "executable": {
+                "type": "update",
+                "name": "update_category_data",
+                "output": true,
+                "body": {
+                    "collection": "userdetails",
+                    "filter": {
+                        "category": "\$params.category"
+                    },
+                    "update": {
+                        "\$set": {
+                            "data": "\$params.data"
+                        }
+                    }
+                }
+            }
+        });        
     }
 }

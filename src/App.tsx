@@ -9,11 +9,9 @@ import { IonReactRouter } from '@ionic/react-router';
 import LoginPage from './pages/LoginPage/Loadable';
 import ProfilePage from './pages/ProfilePage/Loadable';
 import PublicPage from './pages/PublicPage/Loadable';
-
 import LinkedinCallback from './pages/LinkedinCallback/Loadable';
 import GoogleCallback from './pages/GoogleCallback/Loadable';
 import FacebookCallback from './pages/FacebookCallback/Loadable';
-
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -80,10 +78,7 @@ const App: React.FC = () => {
         <Route path="/google_callback" component={GoogleCallback} exact={false} />
         <Route path="/facebook_callback" component={FacebookCallback} exact={false} />
         {/* <Route exact path="/" render={() => <Redirect to="/login" />} /> */}
-          <Route path="/did/:did" component={PublicPage} exact={true} />
-
-      
-
+        <Route path="/did/:did" component={PublicPage} exact={true} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
