@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 import { AssistService } from "./assist.service";
 import { DidService } from "./did.service";
 import { CredentialType, DidcredsService } from "./didcreds.service";
+import { HiveService } from './hive.service';
 
 
 const CryptoJS = require("crypto-js");
@@ -100,33 +101,30 @@ export class UserService {
         SessionService.saveSessionItem(sessionItem)
     }
 
-    public static async SignInWithFacebook(id: string, name: string, token: string, credential: string){
-        await this.SignIn3rdParty(id, name, token, AccountType.Facebook, credential)
+    public static async SignInWithFacebook(id: string, name: string, token: string, credential: string, password: string = ''){
+        await this.SignIn3rdParty(id, name, token, AccountType.Facebook, credential, password)
     }
 
-    public static async SignInWithLinkedin(id: string, name: string, token: string, credential: string){
-        await this.SignIn3rdParty(id, name, token, AccountType.Linkedin, credential)
+    public static async SignInWithLinkedin(id: string, name: string, token: string, credential: string, password: string = ''){
+        await this.SignIn3rdParty(id, name, token, AccountType.Linkedin, credential, password)
     }
 
-    public static async SignInWithGoogle(id: string, name: string, token: string, credential: string){
-        await this.SignIn3rdParty(id, name, token, AccountType.Google, credential)
+    public static async SignInWithGoogle(id: string, name: string, token: string, credential: string, password: string = ''){
+        await this.SignIn3rdParty(id, name, token, AccountType.Google, credential, password)
     }
 
-    public static async SignInWithTwitter(id: string, name: string, token: string, credential: string){
-        await this.SignIn3rdParty(id, name, token, AccountType.Twitter, credential)
+    public static async SignInWithTwitter(id: string, name: string, token: string, credential: string, password: string = ''){
+        await this.SignIn3rdParty(id, name, token, AccountType.Twitter, credential, password)
     }
 
-    private static async SignIn3rdParty(id: string, name: string, token: string, service: AccountType, credential: string){
+    private static async SignIn3rdParty(id: string, name: string, token: string, service: AccountType, credential: string, password: string){
         console.log("Sign in with", service.toString())
         let otherUsers = UserService.getOtherUsers(service.toString())
         let key = `${service.toString()}_${id}`
-        let storePassword = key
+        let storePassword = (password && password !== '') ? password : key
         let sessionItem: ISessionItem
         if (!otherUsers.includes(id)){
-            let did = await this.generateTemporaryDID(service, credential) 
-
-
-
+            let did = await this.generateTemporaryDID(service, credential)
             sessionItem = {
                 did: did,
                 accountType: service,
@@ -135,6 +133,16 @@ export class UserService {
                 hiveHost: "http://localhost:5000",
                 userToken: token
             }
+            // run tuumtech vault script to record user
+            const appHiveClient = await HiveService.getAppHiveClient();
+            await appHiveClient.Scripting.RunScript({
+                "name": "add_userrecord_to_end",
+                "params": {
+                    "name": sessionItem.userName,
+                    "vaulturl": sessionItem.hiveHost,
+                }
+            });
+
         }
         else {
             sessionItem =  this.unlockUser(key, key)
