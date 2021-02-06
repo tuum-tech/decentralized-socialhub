@@ -25,6 +25,7 @@ function cleanup () {
     do
         docker image rm -f tuumtech/${image}:latest
     done
+    sudo rm -rf ${HOME}/.profile-data
 }
 
 case "$1" in
