@@ -1,0 +1,15 @@
+REACT_APP_PROFILE_API_SERVICE_URL=http://localhost:8082
+REACT_APP_PROFILE_API_SERVICE_KEY=profile-api-secret-key
+
+REACT_APP_ASSIST_API_SERVICE_URL=http://localhost:8000
+REACT_APP_ASSIST_API_SERVICE_KEY=assist-restapi-secret-key
+
+REACT_APP_DIDCREDS_API_SERVICE_URL=http://localhost:8081
+REACT_APP_DIDCREDS_API_SERVICE_KEY=didcreds-validator-secret-key
+
+REACT_APP_APPLICATION_ID="tech.tuum.profile"
+REACT_APP_APPLICATION_MNEMONICS="razor where crunch foot outer universe news cannon october clinic ski apart"
+REACT_APP_ELASTOS_CALLBACK=http://localhost:5000/elastos_callback
+
+REACT_APP_TUUM_TECH_HIVE=http://localhost:5000
+REACT_APP_TUUM_TECH_MNEMONICS="curious push water point border mutual install govern message ordinary fish small"

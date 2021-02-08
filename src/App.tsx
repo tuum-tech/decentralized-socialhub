@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import {
-  IonApp,
-  IonRouterOutlet,
-} from '@ionic/react';
+import { IonApp, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
 import LoginPage from './pages/LoginPage/Loadable';
@@ -33,6 +30,8 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 // import './theme/theme-clearlyme.css';
 
+import './styles/app.scss';
+
 /* Pages */
 // import LoginPage from './pages/LoginPage/Loadable';
 // import ElastosLoginPage from './pages/ElastosLoginPage/Loadable';
@@ -46,9 +45,11 @@ import ConfirmMnemonicPage from './pages/ConfirmMnemonicPage';
 import PublishIdentityPage from './pages/PublishIdentityPage';
 import ChooseVaultPage from './pages/ChooseVaultPage';
 import RegisterPage from './pages/RegisterPage';
-import SessionContext from './context/session.context'
+import SessionContext from './context/session.context';
 import TwitterCallback from './pages/TwitterCallback';
 
+import CreateProfilePage from './pages/CreateProfilePage';
+import AssociatedProfilePage from './pages/AssociatedProfilePage';
 
 const App: React.FC = () => {
   const [session, setSession] = useState({});
@@ -57,32 +58,67 @@ const App: React.FC = () => {
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
-          <Route path="/login" component={LoginPage} exact={true} />
-          <Route path="/login/elastos/mnemonic" component={ElastosMnemonicPage} exact={true} />
-          <Route path="/login/elastos/qrcode" component={ElastosLoginQRPage} exact={true} />
-          <Route path="/register" component={RegisterPage} exact={true} />
+          <Route path='/login' component={LoginPage} exact={true} />
+          <Route
+            path='/login/elastos/mnemonic'
+            component={ElastosMnemonicPage}
+            exact={true}
+          />
+          <Route
+            path='/login/elastos/qrcode'
+            component={ElastosLoginQRPage}
+            exact={true}
+          />
+          <Route path='/register' component={RegisterPage} exact={true} />
 
-          <Route path="/create" component={CreateIdentityPage} exact={true} />
-          <Route path="/confirm" component={ConfirmMnemonicPage} exact={true} />
-          <Route path="/publish" component={PublishIdentityPage} exact={true} />
+          <Route path='/create' component={CreateIdentityPage} exact={true} />
+          <Route path='/confirm' component={ConfirmMnemonicPage} exact={true} />
+          <Route path='/publish' component={PublishIdentityPage} exact={true} />
 
-          <Route path="/choosevault" component={ChooseVaultPage} exact={true} />
+          <Route path='/choosevault' component={ChooseVaultPage} exact={true} />
 
-        <Route path="/home" component={HomePage} exact={true} />
-        <Route path="/profile" component={ProfilePage} exact={true} />
-        {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
-        {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
-        <Route exact path="/" render={() => <Redirect to="/home" />} />
-        <Route path="/twitter_callback" component={TwitterCallback} exact={false}  />
-        <Route path="/linkedin_callback" component={LinkedinCallback} exact={false} />
-        <Route path="/google_callback" component={GoogleCallback} exact={false} />
-        <Route path="/facebook_callback" component={FacebookCallback} exact={false} />
-        {/* <Route exact path="/" render={() => <Redirect to="/login" />} /> */}
-        <Route path="/did/:did" component={PublicPage} exact={true} />
+          <Route path='/home' component={HomePage} exact={true} />
+          <Route path='/profile' component={ProfilePage} exact={true} />
+          {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
+          {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
+          <Route exact path='/' render={() => <Redirect to='/home' />} />
+          <Route
+            path='/twitter_callback'
+            component={TwitterCallback}
+            exact={false}
+          />
+          <Route
+            path='/linkedin_callback'
+            component={LinkedinCallback}
+            exact={false}
+          />
+          <Route
+            path='/google_callback'
+            component={GoogleCallback}
+            exact={false}
+          />
+          <Route
+            path='/facebook_callback'
+            component={FacebookCallback}
+            exact={false}
+          />
+          {/* <Route exact path="/" render={() => <Redirect to="/login" />} /> */}
+          <Route path='/did/:did' component={PublicPage} exact={true} />
+
+          <Route
+            path='/create-profile'
+            component={CreateProfilePage}
+            exact={true}
+          />
+          <Route
+            path='/associated-profile'
+            component={AssociatedProfilePage}
+            exact={true}
+          />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
-  )
+  );
 };
 
 export default App;

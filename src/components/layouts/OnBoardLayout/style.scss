@@ -1,0 +1,14 @@
+/** All your component stuyles */
+.onboardlayout {
+  display: flex;
+  .leftside {
+    background: var(--theme-primary-blue);
+    border-radius: 0px;
+    width: 40%;
+  }
+  .rightside {
+    background: #fbfbfd;
+    border-radius: 0px;
+    width: 60%;
+  }
+}
