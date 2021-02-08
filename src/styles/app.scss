@@ -1,0 +1,28 @@
+@import '_fonts.scss';
+
+.my-25px {
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.mt-25px {
+  margin-top: 25px;
+}
+
+.mt-18px {
+  margin-top: 18px;
+}
+
+.mt-12px {
+  margin-top: 12px;
+}
+
+html,
+body {
+  font-family: 'SF Pro Display';
+  font-style: normal;
+}
+
+p {
+  margin: 0;
+}

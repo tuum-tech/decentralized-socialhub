@@ -1,0 +1,28 @@
+.social-btn {
+  width: 68px;
+  height: 53.32px;
+  background: #ffffff;
+  cursor: pointer;
+
+  box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24),
+    0px 3px 8px -1px rgba(50, 50, 71, 0.05);
+  border-radius: 8px;
+  margin: 8px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .linkedin {
+    width: 26px;
+  }
+  .google {
+    width: 23.18px;
+  }
+  .twitter {
+    width: 23px;
+  }
+  .facebook {
+    width: 14px;
+  }
+}
