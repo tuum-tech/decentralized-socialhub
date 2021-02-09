@@ -1,0 +1,15 @@
+.arrow-btn {
+  width: 26px;
+  height: 26px;
+  border: 1px solid white;
+  background-color: transparent;
+  border-radius: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
+  img {
+    width: 7px;
+  }
+}
