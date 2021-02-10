@@ -17,7 +17,7 @@ import { Text16, Text14, Title40, Text12 } from 'src/elements/texts';
 
 export const LeftContent = styled.div`
   width: 114px;
-  margin: 41px auto 34px;
+  margin: 0 auto;
   position: absolute;
   left: calc(50% - 57px);
   bottom: 90px;
