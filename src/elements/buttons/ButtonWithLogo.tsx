@@ -24,7 +24,7 @@ const ButtonWithLogo: React.FC<Props> = ({ onClick, text, mt, dark }) => {
         marginTop: mt && `${mt}px`,
       }}
     >
-      <IonImg src={whitelogo} />
+      <IonImg src={whitelogo} style={{ maxWidth: '25.29px' }} />
       <IonText className={style['logo-btn_txt']}>{text}</IonText>
     </div>
   );

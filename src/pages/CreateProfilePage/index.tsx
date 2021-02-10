@@ -22,7 +22,7 @@ import ArrowButton from 'src/elements/buttons/ArrowButton';
 import ButtonWithLogo from 'src/elements/buttons/ButtonWithLogo';
 import SocialButton from 'src/elements/buttons/SocialButton';
 import TextInput from 'src/elements/inputs/TextInput';
-import { Text16 } from 'src/elements/text';
+import { Text16 } from 'src/elements/texts';
 
 import style from './style.module.scss';
 

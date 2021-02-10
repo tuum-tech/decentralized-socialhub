@@ -1,15 +1,19 @@
 .arrow-btn {
-  width: 26px;
-  height: 26px;
+  cursor: pointer;
   border: 1px solid white;
   background-color: transparent;
   border-radius: 3px;
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
+  position: relative;
 
-  img {
-    width: 7px;
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.3;
   }
+}
+
+.bg-white {
+  background-color: white !important;
 }

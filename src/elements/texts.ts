@@ -6,6 +6,12 @@ export const Text12 = styled.p`
   line-height: 20px;
 `;
 
+export const Text14 = styled.p`
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 24px;
+`;
+
 export const Text16 = styled.p`
   font-style: normal;
   font-weight: 400;
