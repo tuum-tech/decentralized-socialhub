@@ -50,6 +50,7 @@ import TwitterCallback from './pages/TwitterCallback';
 
 import CreateProfilePage from './pages/CreateProfilePage';
 import AssociatedProfilePage from './pages/AssociatedProfilePage';
+import TutorialPage from './pages/TutorialPage';
 
 const App: React.FC = () => {
   const [session, setSession] = useState({});
@@ -115,6 +116,7 @@ const App: React.FC = () => {
             component={AssociatedProfilePage}
             exact={true}
           />
+          <Route path='/tutorial' component={TutorialPage} exact={true} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>

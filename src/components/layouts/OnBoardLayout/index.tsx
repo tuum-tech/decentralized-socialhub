@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { IonPage, IonImg } from '@ionic/react';
 
-import { Title40, Text18, Text12, Text28, Text16 } from 'src/elements/text';
+import { Title40, Text18, Text12, Text28, Text16 } from 'src/elements/texts';
 
 export const OnBoardLayoutLogo = styled(IonImg)`
   margin: 35.23px 39.95px;
@@ -19,10 +19,11 @@ export const OnBoardLayout = styled(IonPage)`
 `;
 
 export const OnBoardLayoutLeft = styled.div`
-  background: var(--theme-primary-blue);
+  background-color: var(--theme-primary-blue);
   border-radius: 0px;
   width: 40%;
   color: #ffffff;
+  position: relative;
 `;
 
 export const OnBoardLayoutLeftContent = styled.div`

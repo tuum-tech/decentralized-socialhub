@@ -20,8 +20,7 @@ import {
 
 import ArrowButton from 'src/elements/buttons/ArrowButton';
 import ButtonWithLogo from 'src/elements/buttons/ButtonWithLogo';
-import TextInput from 'src/elements/inputs/TextInput';
-import { Text16 } from 'src/elements/text';
+import { Text16 } from 'src/elements/texts';
 
 import style from './style.module.scss';
 
@@ -57,12 +56,6 @@ const CreateProfile: React.FC = () => {
             Sign into the associated profile
           </OnBoardLayoutRightContentTitle>
           <Text16>Decentalized Identity (DID):</Text16>
-          {/* <TextInput
-            value={fname}
-            label='First Name'
-            onChange={(n) => setFName(n)}
-            placeholder='Enter your first name'
-          /> */}
           <div className={style['new-did-address']}>{didAddress}</div>
           <Text16 style={{ marginTop: '17px' }}>
             Has been already linked to this social media account, sign into this
