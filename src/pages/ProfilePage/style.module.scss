@@ -2,7 +2,7 @@
   // background-color: #fafaff;
   min-height: 200px;
   height: 100%;
-  background-color: #efefef;
+  background-color: #f7fafc;
 
   .profilepagegrid {
     padding: 0;
@@ -55,15 +55,17 @@
   }
 
   .left-panel {
-    background-color: #111;
-    border-top-left-radius: 5em;
-    border-bottom-left-radius: 5em;
+    background-color: #f7fafc;
+    // border-top-left-radius: 5em;
+    // border-bottom-left-radius: 5em;
     border-right: 1px solid #edf2f7;
+    margin: 0;
+    padding: 0;
   }
 
   .right-panel {
-    background: #e5e5e5;
-    border-bottom-right-radius: 5em;
+    background: #f7fafc;
+    // border-bottom-right-radius: 5em;
     padding: 0;
     margin: 0;
     // background-color: #fafaff;

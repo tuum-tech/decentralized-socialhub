@@ -55,6 +55,9 @@ import StartServiceComponent from 'src/components/StartServiceComponent';
 import ProfileTemplateManager from 'src/components/ProfileTemplateManager';
 import { BackgroundService } from '../../services/background.service';
 import { Link } from 'react-router-dom';
+import Logo from 'src/components/Logo';
+import Navbar from 'src/components/Navbar';
+import DashboardNav from 'src/components/DashboardNav';
 
 const ProfilePage: React.FC<RouteComponentProps> = (
   props: RouteComponentProps
@@ -67,6 +70,8 @@ const ProfilePage: React.FC<RouteComponentProps> = (
   const [profile, setProfile] = useState({
     profile: { firstName: '', lastName: '' },
   } as ProfileContent);
+
+  const [active, setActive] = useState('dashboard');
 
   const getProfile = async (token: string): Promise<ProfileResponse> => {
     return (await requestLinkedinProfile(token)) as ProfileResponse;
@@ -111,32 +116,16 @@ const ProfilePage: React.FC<RouteComponentProps> = (
       <IonContent>
         <IonGrid className={style['profilepagegrid']}>
           <IonRow className={style['profilecontent']}>
-            <IonCol size='2.5' className={style['left-panel']}>
-              Logo goes here
-              <br />
-              Navigation goes here
-              <br />
+            <IonCol size='2' className={style['left-panel']}>
+              <Logo />
+              <Navbar />
             </IonCol>
             {/* <IonCol size='7' className={style['center-panel']}>              
               <ProfileComponent profile={profile} />
             </IonCol> */}
-            <IonCol size='9.5' className={style['right-panel']}>
+            <IonCol size='10' className={style['right-panel']}>
               <ProfileHeader profile={profile} />
-              {/* Header goes here */}
-              <br />
-              Home | Status | Badges
-              <br />
-              <IonGrid>
-                <IonRow>
-                  <IonCol size='4'>
-                    Welcome back Adam
-                    <br />
-                    Social badges goes here
-                    <br />
-                  </IonCol>
-                  <IonCol size='8'>Overview</IonCol>
-                </IonRow>
-              </IonGrid>
+              <DashboardNav />
               {/* <StartServiceComponent />
               <ProfileCompletion /> */}
             </IonCol>
