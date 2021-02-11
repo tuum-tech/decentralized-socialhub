@@ -17,8 +17,8 @@ import {
   WavingHandImg,
 } from 'src/components/layouts/OnBoardLayout';
 
-import ButtonWithLogo from 'src/elements/buttons/ButtonWithLogo';
-import TextInput from 'src/elements/inputs/TextInput';
+import ButtonWithLogo from 'src/components/buttons/ButtonWithLogo';
+import TextInput from 'src/components/inputs/TextInput';
 
 import whitelogo from '../../../assets/logo/whitetextlogo.png';
 import wavinghand from '../../../assets/icon/wavinghand.png';

@@ -15,19 +15,19 @@ import { IonButton } from '@ionic/react';
 import styled from 'styled-components';
 
 const ButtonDisabled = styled(IonButton)`
-    width: 273px;
-    height: 49px;
+  width: 273px;
+  height: 49px;
 
-    background: #C9C9C9 0% 0% no-repeat padding-box;
-    --background: #C9C9C9;
-    border-radius: 8px;
-    opacity: 1;
+  background: #c9c9c9 0% 0% no-repeat padding-box;
+  --background: #c9c9c9;
+  border-radius: 8px;
+  opacity: 1;
 
-    text-align: center;
-    font: normal normal 600 18px/21px "Open Sans";
-    text-transform: none;
-    letter-spacing: 0px;
-    color: #FFFFFF;
+  text-align: center;
+  font: normal normal 600 18px/21px 'Open Sans';
+  text-transform: none;
+  letter-spacing: 0px;
+  color: #ffffff;
 `;
 
 export default ButtonDisabled;

@@ -15,10 +15,10 @@ interface Props {
 const SocialButton: React.FC<Props> = ({ type = 'linkedin', onClick }) => {
   return (
     <div onClick={onClick} className={style['social-btn']}>
-      {type === 'linkedin' && <img src={linkedin} />}
-      {type === 'twitter' && <img src={twitter} />}
-      {type === 'google' && <img src={google} />}
-      {type === 'facebook' && <img src={facebook} />}
+      {type === 'linkedin' && <img src={linkedin} alt='linkedin' />}
+      {type === 'twitter' && <img src={twitter} alt='twitter' />}
+      {type === 'google' && <img src={google} alt='google' />}
+      {type === 'facebook' && <img src={facebook} alt='facebook' />}
     </div>
   );
 };

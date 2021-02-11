@@ -18,8 +18,8 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg,
 } from 'src/components/layouts/OnBoardLayout';
-import ArrowButton from 'src/elements/buttons/ArrowButton';
-import { Text16, Text12 } from 'src/elements/texts';
+import { ButtonLink, ArrowButton } from 'src/components/buttons';
+import { Text16, Text12 } from 'src/components/texts';
 
 import whitelogo from '../../../assets/logo/whitetextlogo.png';
 import markimg from '../../../assets/icon/mark.png';
@@ -48,7 +48,9 @@ const CreateProfile = () => {
           <OnBoardLayoutLeftContentIntro className='my-25px'>
             Have an elastOS QR code? Sign in here
           </OnBoardLayoutLeftContentIntro>
-          <ArrowButton />
+          <ButtonLink width={26} to='/sign/qr'>
+            <ArrowButton />
+          </ButtonLink>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
     );
@@ -76,6 +78,9 @@ const CreateProfile = () => {
           <OnBoardLayoutLeftContentIntro className='my-25px'>
             Forgot your security words? Create a brand new profile here
           </OnBoardLayoutLeftContentIntro>
+          <ButtonLink width={26} to='/sign/qr'>
+            <ArrowButton />
+          </ButtonLink>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
     );

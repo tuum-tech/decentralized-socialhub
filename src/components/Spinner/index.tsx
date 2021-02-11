@@ -7,7 +7,7 @@ const Spinner: React.FC = () => {
       {/*-- Default Spinner --*/}
       <IonSpinner />
     </IonContent>
-  )
+  );
 };
 
 export default Spinner;

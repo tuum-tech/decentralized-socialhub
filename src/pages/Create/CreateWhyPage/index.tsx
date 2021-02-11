@@ -13,7 +13,7 @@ import {
   OnBoardLayoutRight,
   WavingHandImg,
 } from 'src/components/layouts/OnBoardLayout';
-import ArrowButton from 'src/elements/buttons/ArrowButton';
+import { ButtonLink, ArrowButton } from 'src/components/buttons';
 
 import whitelogo from '../../../assets/logo/whitetextlogo.png';
 import weird from '../../../assets/icon/weird.png';
@@ -32,7 +32,9 @@ const CreateWhyPage: React.FC = () => {
           >
             Why has this happened?
           </OnBoardLayoutLeftContentTitle>
-          <ArrowButton />
+          <ButtonLink width={26} to='/create/associated-profile'>
+            <ArrowButton />
+          </ButtonLink>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight></OnBoardLayoutRight>

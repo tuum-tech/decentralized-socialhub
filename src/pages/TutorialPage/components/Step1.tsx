@@ -13,8 +13,8 @@ import {
   OnBoardLayoutRightContentTitle,
 } from 'src/components/layouts/OnBoardLayout';
 
-import ArrowButton from 'src/elements/buttons/ArrowButton';
-import { Text16, Text14, Title40, Text12 } from 'src/elements/texts';
+import ArrowButton from 'src/components/buttons/ArrowButton';
+import { Text16, Text14, Title40, Text12 } from 'src/components/texts';
 
 import whitelogo from '../../../assets/logo/whitelogo.png';
 

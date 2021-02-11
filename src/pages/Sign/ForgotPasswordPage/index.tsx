@@ -17,8 +17,11 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg,
 } from 'src/components/layouts/OnBoardLayout';
-import ArrowButton from 'src/elements/buttons/ArrowButton';
-import ButtonWithLogo from 'src/elements/buttons/ButtonWithLogo';
+import {
+  ButtonLink,
+  ArrowButton,
+  ButtonWithLogo,
+} from 'src/components/buttons';
 
 import whitelogo from '../../../assets/logo/whitetextlogo.png';
 import weird from '../../../assets/icon/weird.png';
@@ -47,7 +50,9 @@ const CreateProfile: React.FC = () => {
           <OnBoardLayoutLeftContentIntro className='my-25px'>
             Why has this happened? Help
           </OnBoardLayoutLeftContentIntro>
-          <ArrowButton />
+          <ButtonLink width={26} to='/create/why'>
+            <ArrowButton />
+          </ButtonLink>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>

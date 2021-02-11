@@ -4,10 +4,10 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { IonGrid, IonRow, IonCol, IonContent } from '@ionic/react';
+import { IonGrid, IonRow, IonCol } from '@ionic/react';
 
-import ButtonWithLogo from 'src/elements/buttons/ButtonWithLogo';
-import TextInput from 'src/elements/inputs/TextInput';
+import ButtonWithLogo from 'src/components/buttons/ButtonWithLogo';
+import TextInput from 'src/components/inputs/TextInput';
 
 import style from './DidSignForm.module.scss';
 

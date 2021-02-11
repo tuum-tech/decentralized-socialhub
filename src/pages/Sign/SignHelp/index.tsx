@@ -15,7 +15,7 @@ import {
   OnBoardLayoutRight,
   WavingHandImg,
 } from 'src/components/layouts/OnBoardLayout';
-import ArrowButton from 'src/elements/buttons/ArrowButton';
+import { ButtonLink, ArrowButton } from 'src/components/buttons';
 
 import whitelogo from '../../../assets/logo/whitetextlogo.png';
 import wavinghand from '../../../assets/icon/wavinghand.png';
@@ -40,7 +40,9 @@ const SignHelp = () => {
           <OnBoardLayoutLeftContentIntro className='my-25px'>
             Download for iOS here or Android here
           </OnBoardLayoutLeftContentIntro>
-          <ArrowButton />
+          <ButtonLink width={26} to='/sign/qr'>
+            <ArrowButton />
+          </ButtonLink>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight></OnBoardLayoutRight>

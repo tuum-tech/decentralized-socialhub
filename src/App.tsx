@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
@@ -45,7 +45,7 @@ import ConfirmMnemonicPage from './pages/ConfirmMnemonicPage';
 import PublishIdentityPage from './pages/PublishIdentityPage';
 import ChooseVaultPage from './pages/ChooseVaultPage';
 import RegisterPage from './pages/RegisterPage';
-import SessionContext from './context/session.context';
+// import SessionContext from './context/session.context';
 import TwitterCallback from './pages/TwitterCallback';
 
 import LoadingPage from './pages/LoadingPage';
@@ -64,7 +64,7 @@ import ForgotPasswordPage from './pages/Sign/ForgotPasswordPage';
 import TutorialPage from './pages/TutorialPage';
 
 const App: React.FC = () => {
-  const [session, setSession] = useState({});
+  // const [session, setSession] = useState({});
 
   return (
     <IonApp>

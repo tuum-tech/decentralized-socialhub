@@ -2,7 +2,8 @@
  * Page
  */
 
-import React, { useState } from 'react';
+import React from 'react';
+import styled from 'styled-components';
 
 import {
   OnBoardLayout,
@@ -17,21 +18,33 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg,
 } from 'src/components/layouts/OnBoardLayout';
-
-import ArrowButton from 'src/elements/buttons/ArrowButton';
-import ButtonWithLogo from 'src/elements/buttons/ButtonWithLogo';
-import { Text16 } from 'src/elements/texts';
+import {
+  ButtonLink,
+  ButtonWithLogo,
+  ArrowButton,
+} from 'src/components/buttons';
+import { Text16 } from 'src/components/texts';
 
 import whitelogo from '../../../assets/logo/whitetextlogo.png';
 import eye from '../../../assets/icon/eye.png';
 
-import style from './style.module.scss';
+const DidAddress = styled.div`
+  background: #edf2f7;
+  border-radius: 6px;
+  padding: 14.5px 16.5px;
+  margin-top: 11px;
+
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 15px;
+  color: #8492a6;
+`;
 
 const CreateProfile: React.FC = () => {
   const didAddress = '39fgdfkdsflgl404503400fgkdfgll45030450fgkkdflgl';
 
   return (
-    <OnBoardLayout className={style['associated-profile']}>
+    <OnBoardLayout>
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>
@@ -47,7 +60,9 @@ const CreateProfile: React.FC = () => {
           <OnBoardLayoutLeftContentIntro className='my-25px'>
             Why has this happened? Help
           </OnBoardLayoutLeftContentIntro>
-          <ArrowButton />
+          <ButtonLink width={26} to='/create/why'>
+            <ArrowButton />
+          </ButtonLink>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -56,7 +71,7 @@ const CreateProfile: React.FC = () => {
             Sign into the associated profile
           </OnBoardLayoutRightContentTitle>
           <Text16>Decentalized Identity (DID):</Text16>
-          <div className={style['new-did-address']}>{didAddress}</div>
+          <DidAddress>{didAddress}</DidAddress>
           <Text16 style={{ marginTop: '17px' }}>
             Has been already linked to this social media account, sign into this
             profile below.

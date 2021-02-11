@@ -12,8 +12,8 @@ import {
   OnBoardLayoutRightContentTitle,
 } from 'src/components/layouts/OnBoardLayout';
 
-import ArrowButton from 'src/elements/buttons/ArrowButton';
-import { Text16, Text14, Title40, Text12 } from 'src/elements/texts';
+import ArrowButton from 'src/components/buttons/ArrowButton';
+import { Text16, Text12 } from 'src/components/texts';
 
 export const LeftContent = styled.div`
   width: 114px;
