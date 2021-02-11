@@ -18,16 +18,20 @@ import {
   WavingHandImg,
 } from 'src/components/layouts/OnBoardLayout';
 
-import ArrowButton from 'src/elements/buttons/ArrowButton';
-import ButtonWithLogo from 'src/elements/buttons/ButtonWithLogo';
-import SocialButton from 'src/elements/buttons/SocialButton';
-import TextInput from 'src/elements/inputs/TextInput';
-import { Text16 } from 'src/elements/texts';
+import {
+  SocialButton,
+  ButtonWithLogo,
+  ArrowButton,
+  ButtonLink,
+} from 'src/components/buttons';
+
+import TextInput from 'src/components/inputs/TextInput';
+import { Text16 } from 'src/components/texts';
+
+import whitelogo from '../../../assets/logo/whitetextlogo.png';
+import wavinghand from '../../../assets/icon/wavinghand.png';
 
 import style from './style.module.scss';
-
-import whitelogo from '../../assets/logo/whitetextlogo.png';
-import wavinghand from '../../assets/icon/wavinghand.png';
 
 const CreateProfile: React.FC = () => {
   const [fname, setFName] = useState('');
@@ -52,7 +56,9 @@ const CreateProfile: React.FC = () => {
           <OnBoardLayoutLeftContentIntro className='my-25px'>
             Already have a profile? Sign in
           </OnBoardLayoutLeftContentIntro>
-          <ArrowButton />
+          <ButtonLink width={26} to='/sign/did'>
+            <ArrowButton />
+          </ButtonLink>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -81,7 +87,9 @@ const CreateProfile: React.FC = () => {
             onChange={(n) => setEmail(n)}
             placeholder='Enter your e-mail'
           />
-          <ButtonWithLogo text='Create new profile' onClick={() => {}} />
+          <ButtonLink to='/create/associated-profile'>
+            <ButtonWithLogo text='Create new profile' onClick={() => {}} />
+          </ButtonLink>
           <div className={style['connect-divider']}>
             <hr className={style['connect-divider_line']} />
             <div className={style['connect-divider_txt']}>or connect with</div>

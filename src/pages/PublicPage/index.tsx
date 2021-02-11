@@ -42,21 +42,7 @@ import {
   requestVaultProfile,
 } from './fetchapi';
 import FollowingList from 'src/components/FollowingList';
-import Pages from 'src/components/Pages';
-import ProfileCompletion from 'src/components/ProfileCompletion';
-import ProfileComponent from 'src/components/ProfileComponent';
-import PagesComponent from 'src/components/PagesComponent';
 import { RouteComponentProps } from 'react-router';
-import { BaseplateResp } from 'src/baseplate/request';
-import logo from '../../assets/Logo-Vertical.svg';
-import home from '../../assets/home.svg';
-import community from '../../assets/people-outline.svg';
-import pages from '../../assets/person-search-outline.svg';
-import messages from '../../assets/message-circle-outline.svg';
-import photo from '../../assets/photo.png';
-import StartServiceComponent from 'src/components/StartServiceComponent';
-import { ProfileInfo } from '../ProfilePage/types';
-import { HiveService } from 'src/services/hive.service';
 
 interface MatchParams {
   did: string;

@@ -1,13 +1,7 @@
 /**
  * Page
  */
-import {
-  IonHeader,
-  IonPage,
-  IonRow,
-  IonCol,
-  IonInput
-} from '@ionic/react';
+import { IonHeader, IonPage } from '@ionic/react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
@@ -20,19 +14,20 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
-import { fetchSimpleApi } from './fetchapi';
 import ClearlyMeContent from 'src/components/ClearlyMeContent';
 import Header from 'src/components/Header';
 import ButtonDefault from 'src/components/ButtonDefault';
 import IdentityProgressComponent from 'src/components/IdentityProgressComponent';
 
-const PublishIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
-
-  /** 
-   * Direct method implementation without SAGA 
-   * This was to show you dont need to put everything to global state 
+const PublishIdentityPage: React.FC<InferMappedProps> = ({
+  eProps,
+  ...props
+}: InferMappedProps) => {
+  /**
+   * Direct method implementation without SAGA
+   * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
-  */
+   */
   // const [msg, setMsg] = useState('');
   // const simpleAjaxDirect = async ()=>{
   //   const msg = await fetchSimpleApi() as string;
@@ -40,67 +35,71 @@ const PublishIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: 
   // }
 
   const [mnemonic, setMnemonic] = useState([
-    "-",
-    "-",
-    "-",
-    "-",
-    "-",
-    "-",
-    "-",
-    "-",
-    "-",
-    "-",
-    "-",
-    "-",
-  ]);  
+    '-',
+    '-',
+    '-',
+    '-',
+    '-',
+    '-',
+    '-',
+    '-',
+    '-',
+    '-',
+    '-',
+    '-',
+  ]);
 
   const publishDocument = async () => {
     // let confirmation = await PublishDocument(mnemonic, {})
-  }
+  };
 
-  const MnemonicItem = (mnemonic:any) => {
+  const MnemonicItem = (mnemonic: any) => {
     return (
       <>
-        <div className={style["mnemonic"] + " " + style["mnemonic-item"]}>
-          <span className={style["number-dark"]}>{mnemonic.number}</span>
+        <div className={style['mnemonic'] + ' ' + style['mnemonic-item']}>
+          <span className={style['number-dark']}>{mnemonic.number}</span>
           {mnemonic.title}
         </div>
       </>
-    )
-  }
+    );
+  };
 
   useEffect(() => {
-    
-    async function getMnemonic()
-    {
-      let savedMnemonic = localStorage.getItem("mnemonic");
-      
-      if(savedMnemonic) {
+    async function getMnemonic() {
+      let savedMnemonic = localStorage.getItem('mnemonic');
+
+      if (savedMnemonic) {
         setMnemonic(JSON.parse(savedMnemonic));
       }
     }
 
-    if (!mnemonic || mnemonic[0] === "-") getMnemonic();
+    if (!mnemonic || mnemonic[0] === '-') getMnemonic();
   }, []);
 
   return (
-    <IonPage className={style["publishidentitypage"]}>
+    <IonPage className={style['publishidentitypage']}>
       <ClearlyMeContent>
-        <IonHeader style={{height: '80px'}}>
+        <IonHeader style={{ height: '80px' }}>
           <Header />
         </IonHeader>
 
-        <IdentityProgressComponent stage="publish"></IdentityProgressComponent>
-        <div className={style["main-container"]}>
+        <IdentityProgressComponent stage='publish'></IdentityProgressComponent>
+        <div className={style['main-container']}>
           <h1>Publish Identity</h1>
 
-          <div className={style["mnemonic-wrapper"]}>
-            {
-              mnemonic.map((item:any, key:any) => <MnemonicItem key={`mnemonic-key-${key}`} number={key + 1} title={item} />)
-            }
-          </div><br/><br/>
+          <div className={style['mnemonic-wrapper']}>
+            {mnemonic.map((item: any, key: any) => (
+              <MnemonicItem
+                key={`mnemonic-key-${key}`}
+                number={key + 1}
+                title={item}
+              />
+            ))}
+          </div>
+          <br />
+          <br />
 
-            {/*            
+          {/*            
             <IonRow style={{marginTop: '10px'}}>
               <IonCol>
                 <IonInput className={style["mnemonic"]} value="bread" readonly>
@@ -121,16 +120,19 @@ const PublishIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: 
           {/* </div><br/><br/> */}
 
           <div>
-            <p className={style["text"]}>
-            Publish your newly created identity to the blockchain.<br/><br />
+            <p className={style['text']}>
+              Publish your newly created identity to the blockchain.
+              <br />
+              <br />
             </p>
           </div>
 
-          <div style={{textAlign: 'center'}}>
-            <ButtonDefault href="/choosevault">Publish to Blockchain</ButtonDefault>
+          <div style={{ textAlign: 'center' }}>
+            <ButtonDefault href='/choosevault'>
+              Publish to Blockchain
+            </ButtonDefault>
           </div>
         </div>
-
       </ClearlyMeContent>
     </IonPage>
   );
@@ -139,17 +141,18 @@ const PublishIdentityPage : React.FC<InferMappedProps> = ({ eProps, ...props }: 
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg()
+  msg: makeSelectAjaxMsg(),
 });
 
 /** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
   return {
-    eProps: { // eProps - Emitter proptypes thats binds to dispatch
+    eProps: {
+      // eProps - Emitter proptypes thats binds to dispatch
       /** dispatch for counter to increment */
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax())
-    }
+      onSimpleAjax: () => dispatch(getSimpleAjax()),
+    },
   };
 }
 
@@ -157,23 +160,17 @@ export function mapDispatchToProps(dispatch: any) {
  * Injects prop and saga bindings done via
  * useInjectReducer & useInjectSaga
  */
-const withInjectedMode = injector(
-  PublishIdentityPage,
-  {
-    key: NameSpace,
-    reducer,
-    saga
-  }
-);
+const withInjectedMode = injector(PublishIdentityPage, {
+  key: NameSpace,
+  reducer,
+  saga,
+});
 
-const withConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-);
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
 export default compose(
   withConnect,
-  memo,
+  memo
 )(withInjectedMode) as React.ComponentType<InferMappedProps>;
 
 // export default Tab1;

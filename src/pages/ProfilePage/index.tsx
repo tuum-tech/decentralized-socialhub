@@ -2,16 +2,9 @@
  * Page
  */
 import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
   IonContent,
   IonHeader,
   IonPage,
-  IonTitle,
-  IonToolbar,
   IonButton,
   IonGrid,
   IonRow,
@@ -44,7 +37,6 @@ import ProfileCompletion from 'src/components/ProfileCompletion';
 import ProfileComponent from 'src/components/ProfileComponent';
 import PagesComponent from 'src/components/PagesComponent';
 import { RouteComponentProps } from 'react-router';
-import { BaseplateResp } from 'src/baseplate/request';
 import logo from '../../assets/Logo-Vertical.svg';
 import home from '../../assets/home.svg';
 import community from '../../assets/people-outline.svg';

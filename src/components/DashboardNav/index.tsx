@@ -20,10 +20,10 @@ import {
   IonButton,
 } from '@ionic/react';
 import style from './style.module.scss';
-import SpotlightCard from 'src/elements/cards/SpotlightCard';
-import BadgesCard from 'src/elements/cards/BadgesCard';
-import OverviewCard from 'src/elements/cards/OverviewCard';
-import ButtonWhite from 'src/elements/buttons/ButtonWhite';
+import SpotlightCard from 'src/components/cards/SpotlightCard';
+import BadgesCard from 'src/components/cards/BadgesCard';
+import OverviewCard from 'src/components/cards/OverviewCard';
+import ButtonWhite from 'src/components/buttons/ButtonWhite';
 
 const DashboardHome: React.FC = () => {
   return (

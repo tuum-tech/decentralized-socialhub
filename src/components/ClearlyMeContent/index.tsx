@@ -1,4 +1,4 @@
-import { IonContent } from "@ionic/react";
+import { IonContent } from '@ionic/react';
 import styled from 'styled-components';
 
 const ClearlyMeContent = styled(IonContent)`

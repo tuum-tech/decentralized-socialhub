@@ -5,7 +5,7 @@ import {
   IonCardHeader,
   IonCardTitle,
 } from '@ionic/react';
-import ButtonWhite from 'src/elements/buttons/ButtonWhite';
+import ButtonWhite from 'src/components/buttons/ButtonWhite';
 import style from './SpotlightCard.module.scss';
 
 interface Props {
