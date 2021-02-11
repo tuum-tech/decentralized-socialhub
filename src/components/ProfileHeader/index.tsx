@@ -8,7 +8,7 @@ import bulb from '../../assets/bulb.svg';
 import edit from '../../assets/icon-edit.svg';
 import addbutton from '../../assets/addbutton.svg';
 import university from '../../assets/university.png';
-import ButtonWithUpArrow from 'src/elements/buttons/ButtonWithUpArrow';
+import ButtonWithUpArrow from 'src/components/buttons/ButtonWithUpArrow';
 
 interface IProps {
   profile: ProfileContent;
