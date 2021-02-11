@@ -205,17 +205,22 @@ const FollowingList: React.FC<any> = (props?: any) => {
 
   const loadData = async (did: string) => {
     let profileService: ProfileService;
+
     let list: IFollowingResponse;
     try {
       if (did === undefined) {
         profileService = await getUserHiveInstance();
         console.log("get user instance");
+
+
       } else {
         profileService = await getappHiveInstance();
         console.log("get app instance");
       }
       setProfileService(profileService);
+
       list = await profileService.getFollowings(did);
+
     } catch (e) {
       list = { get_following: { items: [] } };
       console.error("cant load followings");
@@ -223,21 +228,26 @@ const FollowingList: React.FC<any> = (props?: any) => {
       return;
     }
     let listDids = list.get_following.items.map(p => p.did);
+
     let followers = await profileService.getFollowers(listDids);
+
     if (listContacts.get_following.items.length !== list.get_following.items.length) {
+
       setListContacts(list);
+
     }
     setListFollowers(followers as IFollowerResponse);
+
     let docs: IDidDocument[] = [];
     await Promise.all(listDids.map(async (did) => {
       let doc = await DidService.getDidDocument(did);
       docs.push(doc);
     }));
+
     console.log("docs " + JSON.stringify(docs))
     setDidDocuments(docs)
+
   }
-
-
 
 
   useEffect(() => {
