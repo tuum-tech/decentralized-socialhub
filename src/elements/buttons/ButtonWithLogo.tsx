@@ -8,13 +8,18 @@ interface Props {
   onClick?: () => void;
   text?: string;
   mt?: number;
-  dark?: boolean;
+  mode?: string;
+  hasLogo?: boolean;
 }
 
-const ButtonWithLogo: React.FC<Props> = ({ onClick, text, mt, dark }) => {
-  let cName = dark
-    ? `${style['dark-mode']} ${style['logo-btn']}`
-    : style['logo-btn'];
+const ButtonWithLogo: React.FC<Props> = ({
+  onClick,
+  text,
+  mt,
+  mode = 'blue',
+  hasLogo = true,
+}) => {
+  const cName = style['logo-btn'] + ' ' + style[`${mode}-mode`];
 
   return (
     <div
@@ -24,7 +29,9 @@ const ButtonWithLogo: React.FC<Props> = ({ onClick, text, mt, dark }) => {
         marginTop: mt && `${mt}px`,
       }}
     >
-      <IonImg src={whitelogo} style={{ maxWidth: '25.29px' }} />
+      {mode !== 'danger' && hasLogo && (
+        <IonImg src={whitelogo} style={{ maxWidth: '25.29px' }} />
+      )}
       <IonText className={style['logo-btn_txt']}>{text}</IonText>
     </div>
   );

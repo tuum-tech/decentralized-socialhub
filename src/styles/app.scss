@@ -21,6 +21,13 @@
   margin-top: 12px;
 }
 
+.mt-86px {
+  margin-top: 86px;
+}
+.mb-20px {
+  margin-bottom: 20px;
+}
+
 html,
 body {
   font-family: 'SF Pro Display';
@@ -29,4 +36,8 @@ body {
 
 p {
   margin: 0;
+}
+
+.bg-danger {
+  background-color: var(--theme-danger-blue);
 }

@@ -22,10 +22,10 @@ import ArrowButton from 'src/elements/buttons/ArrowButton';
 import ButtonWithLogo from 'src/elements/buttons/ButtonWithLogo';
 import { Text16 } from 'src/elements/texts';
 
-import style from './style.module.scss';
+import whitelogo from '../../../assets/logo/whitetextlogo.png';
+import eye from '../../../assets/icon/eye.png';
 
-import whitelogo from '../../assets/logo/whitetextlogo.png';
-import eye from '../../assets/icon/eye.png';
+import style from './style.module.scss';
 
 const CreateProfile: React.FC = () => {
   const didAddress = '39fgdfkdsflgl404503400fgkdfgll45030450fgkkdflgl';
@@ -62,7 +62,7 @@ const CreateProfile: React.FC = () => {
             profile below.
           </Text16>
           <ButtonWithLogo
-            dark
+            mode='dark'
             mt={32}
             text='Sign in to profile'
             onClick={() => {}}

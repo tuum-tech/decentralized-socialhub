@@ -11,6 +11,8 @@ interface Props {
   placeholder?: string;
   label?: string;
   value?: string;
+  flexDirection?: string;
+  hasError?: boolean;
   onChange: (e: string) => void;
 }
 
@@ -19,10 +21,22 @@ const TextInput: React.FC<Props> = ({
   label,
   value,
   onChange,
+  flexDirection = 'row',
+  hasError = false,
 }) => {
+  let cName = style['textinput'];
+  if (flexDirection === 'column') {
+    cName += ` ${style['flex-row']}`;
+  }
+  if (hasError) {
+    cName += ' hasError';
+  }
+
   return (
-    <div className={style['textinput']}>
-      <IonLabel className={style['textinput_label']}>{label}</IonLabel>
+    <div className={cName}>
+      {label && label !== '' && (
+        <IonLabel className={style['textinput_label']}>{label}</IonLabel>
+      )}
       <IonInput
         value={value}
         className={style['textinput_field']}

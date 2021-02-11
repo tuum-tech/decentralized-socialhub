@@ -20,5 +20,24 @@
     --placeholder-color: var(--input-muted-placeholder);
   }
 }
-// .textinput-label {
-// }
+
+.flex-row {
+  display: flex;
+  align-items: center;
+  .textinput {
+    margin-top: 12px;
+  }
+
+  .textinput_label {
+    margin: 0 12px 0 0;
+  }
+  .textinput_field {
+    margin: 0 25px 0 0;
+  }
+}
+
+.hasError {
+  input {
+    border-bottom: 1px solid red !important;
+  }
+}

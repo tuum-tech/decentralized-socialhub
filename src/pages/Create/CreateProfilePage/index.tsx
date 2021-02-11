@@ -24,10 +24,10 @@ import SocialButton from 'src/elements/buttons/SocialButton';
 import TextInput from 'src/elements/inputs/TextInput';
 import { Text16 } from 'src/elements/texts';
 
-import style from './style.module.scss';
+import whitelogo from '../../../assets/logo/whitetextlogo.png';
+import wavinghand from '../../../assets/icon/wavinghand.png';
 
-import whitelogo from '../../assets/logo/whitetextlogo.png';
-import wavinghand from '../../assets/icon/wavinghand.png';
+import style from './style.module.scss';
 
 const CreateProfile: React.FC = () => {
   const [fname, setFName] = useState('');

@@ -1,13 +1,13 @@
 .logo-btn {
   margin-top: 53.84px;
   width: 100%;
-  background-color: var(--theme-primary-blue);
   border-radius: 8px;
   padding: 12.68px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  height: 45.63px;
 
   img {
     width: 25.29px;
@@ -22,8 +22,20 @@
   }
 }
 
+.blue-mode {
+  &.logo-btn {
+    background-color: var(--theme-primary-blue) !important;
+  }
+}
+
 .dark-mode {
   &.logo-btn {
     background-color: var(--txt-heading-dark) !important;
+  }
+}
+
+.danger-mode {
+  &.logo-btn {
+    background-color: var(--theme-danger-blue) !important;
   }
 }

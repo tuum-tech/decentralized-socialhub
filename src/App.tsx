@@ -48,8 +48,19 @@ import RegisterPage from './pages/RegisterPage';
 import SessionContext from './context/session.context';
 import TwitterCallback from './pages/TwitterCallback';
 
-import CreateProfilePage from './pages/CreateProfilePage';
-import AssociatedProfilePage from './pages/AssociatedProfilePage';
+import LoadingPage from './pages/LoadingPage';
+
+import CreateProfilePage from './pages/Create/CreateProfilePage';
+import CreatePasswordPage from './pages/Create/CreatePassword';
+import AssociatedProfilePage from './pages/Create/AssociatedProfilePage';
+
+import CreateWhyPage from './pages/Create/CreateWhyPage';
+import PasswordSignPage from './pages/Sign/PasswordSignPage';
+import DIDSingPage from './pages/Sign/DIDSignPage';
+import QRSignPage from './pages/Sign/QRSignPage';
+import SignHelpPage from './pages/Sign/SignHelp';
+import ForgotPasswordPage from './pages/Sign/ForgotPasswordPage';
+
 import TutorialPage from './pages/TutorialPage';
 
 const App: React.FC = () => {
@@ -106,16 +117,37 @@ const App: React.FC = () => {
           {/* <Route exact path="/" render={() => <Redirect to="/login" />} /> */}
           <Route path='/did/:did' component={PublicPage} exact={true} />
 
+          <Route path='/loading' component={LoadingPage} exact={true} />
+          <Route path='/sign/help' component={SignHelpPage} exact={true} />
           <Route
-            path='/create-profile'
+            path='/sign/password'
+            component={PasswordSignPage}
+            exact={true}
+          />
+          <Route path='/sign/did' component={DIDSingPage} exact={true} />
+          <Route path='/sign/qr' component={QRSignPage} exact={true} />
+          <Route
+            path='/forgot-password'
+            component={ForgotPasswordPage}
+            exact={true}
+          />
+          <Route
+            path='/create/profile'
             component={CreateProfilePage}
             exact={true}
           />
           <Route
-            path='/associated-profile'
+            path='/create/associated-profile'
             component={AssociatedProfilePage}
             exact={true}
           />
+          <Route
+            path='/create/password'
+            component={CreatePasswordPage}
+            exact={true}
+          />
+          <Route path='/create/why' component={CreateWhyPage} exact={true} />
+
           <Route path='/tutorial' component={TutorialPage} exact={true} />
         </IonRouterOutlet>
       </IonReactRouter>
