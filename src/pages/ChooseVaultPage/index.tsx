@@ -1,21 +1,7 @@
 /**
  * Page
  */
-import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonButton,
-  IonRow,
-  IonCol
-} from '@ionic/react';
+import { IonHeader, IonPage, IonRow, IonCol } from '@ionic/react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
@@ -35,53 +21,59 @@ import VaultProgressComponent from 'src/components/VaultProgressComponent';
 import ButtonDefault from 'src/components/ButtonDefault';
 import ButtonLight from 'src/components/ButtonLight';
 
-const ChooseVault : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
-
-  /** 
-   * Direct method implementation without SAGA 
-   * This was to show you dont need to put everything to global state 
+const ChooseVault: React.FC<InferMappedProps> = ({
+  eProps,
+  ...props
+}: InferMappedProps) => {
+  /**
+   * Direct method implementation without SAGA
+   * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
-  */
+   */
   const [msg, setMsg] = useState('');
-  const simpleAjaxDirect = async ()=>{
-    const msg = await fetchSimpleApi() as string;
+  const simpleAjaxDirect = async () => {
+    const msg = (await fetchSimpleApi()) as string;
     setMsg(msg);
-  }
+  };
 
   return (
-    <IonPage className={style["choosevault"]}>
+    <IonPage className={style['choosevault']}>
       <ClearlyMeContent>
-        <IonHeader style={{height: '80px'}}>
+        <IonHeader style={{ height: '80px' }}>
           <Header />
         </IonHeader>
 
-        <VaultProgressComponent stage="choose"></VaultProgressComponent>
-        <div className={style["main-container"]}>
+        <VaultProgressComponent stage='choose'></VaultProgressComponent>
+        <div className={style['main-container']}>
           <h1>Choose Your Vault</h1>
 
-          <div className={style["warning-light"]}>
-            <p className={style["text"]}>
-            Vault options<br/><br />
+          <div className={style['warning-light']}>
+            <p className={style['text']}>
+              Vault options
+              <br />
+              <br />
             </p>
           </div>
 
-          <div className={style["vault-list"]}>
-            <IonRow style={{marginTop: '10px'}}>
+          <div className={style['vault-list']}>
+            <IonRow style={{ marginTop: '10px' }}>
               <IonCol>
-                <ButtonLight >Tuum Tech</ButtonLight>
+                <ButtonLight>Tuum Tech</ButtonLight>
               </IonCol>
             </IonRow>
-            <IonRow style={{marginTop: '10px'}}>
+            <IonRow style={{ marginTop: '10px' }}>
               <IonCol>
                 <ButtonLight>Trinity Tech</ButtonLight>
               </IonCol>
             </IonRow>
-            <IonRow style={{marginTop: '10px'}}>
+            <IonRow style={{ marginTop: '10px' }}>
               <IonCol>
                 <ButtonLight>My own vault</ButtonLight>
               </IonCol>
             </IonRow>
-          </div><br/><br/>
+          </div>
+          <br />
+          <br />
 
           {/* <IonList>
             <IonItem className={style["consent"]}>
@@ -89,11 +81,10 @@ const ChooseVault : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMap
               <IonCheckbox checked={encrypt} slot="start" className={style["checkbox-label"]} onIonChange={e => setEncrypt(!encrypt)}></IonCheckbox>
             </IonItem>
           </IonList> */}
-          <br/>
-          <div style={{textAlign: 'center'}}>
-            <ButtonDefault href="/profile">Next</ButtonDefault>
+          <br />
+          <div style={{ textAlign: 'center' }}>
+            <ButtonDefault href='/profile'>Next</ButtonDefault>
           </div>
-
         </div>
       </ClearlyMeContent>
     </IonPage>
@@ -103,17 +94,18 @@ const ChooseVault : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMap
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg()
+  msg: makeSelectAjaxMsg(),
 });
 
 /** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
   return {
-    eProps: { // eProps - Emitter proptypes thats binds to dispatch
+    eProps: {
+      // eProps - Emitter proptypes thats binds to dispatch
       /** dispatch for counter to increment */
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax())
-    }
+      onSimpleAjax: () => dispatch(getSimpleAjax()),
+    },
   };
 }
 
@@ -121,23 +113,17 @@ export function mapDispatchToProps(dispatch: any) {
  * Injects prop and saga bindings done via
  * useInjectReducer & useInjectSaga
  */
-const withInjectedMode = injector(
-  ChooseVault,
-  {
-    key: NameSpace,
-    reducer,
-    saga
-  }
-);
+const withInjectedMode = injector(ChooseVault, {
+  key: NameSpace,
+  reducer,
+  saga,
+});
 
-const withConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-);
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
 export default compose(
   withConnect,
-  memo,
+  memo
 )(withInjectedMode) as React.ComponentType<InferMappedProps>;
 
 // export default Tab1;

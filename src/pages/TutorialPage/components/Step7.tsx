@@ -10,9 +10,9 @@ import {
   OnBoardLayoutRightContent,
   OnBoardLayoutRightContentTitle,
 } from 'src/components/layouts/OnBoardLayout';
+import ArrowButton from 'src/components/buttons/ArrowButton';
+import { Text16 } from 'src/components/texts';
 
-import ArrowButton from 'src/elements/buttons/ArrowButton';
-import { Text16, Text14, Title40, Text12 } from 'src/elements/texts';
 import { LeftContent, NavigateButtons, BackToDashbaord } from './Step2';
 
 interface Props {

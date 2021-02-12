@@ -6,13 +6,12 @@ import {
   IonCardContent,
   IonCardHeader,
   IonCardSubtitle,
-  IonCardTitle,
   IonContent,
   IonHeader,
   IonPage,
   IonTitle,
   IonToolbar,
-  IonButton
+  IonButton,
 } from '@ionic/react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -28,41 +27,42 @@ import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 import { fetchSimpleApi } from './fetchapi';
 
-const MnemonicPage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
-
-  /** 
-   * Direct method implementation without SAGA 
-   * This was to show you dont need to put everything to global state 
+const MnemonicPage: React.FC<InferMappedProps> = ({
+  eProps,
+  ...props
+}: InferMappedProps) => {
+  /**
+   * Direct method implementation without SAGA
+   * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
-  */
+   */
   const [msg, setMsg] = useState('');
-  const simpleAjaxDirect = async ()=>{
-    const msg = await fetchSimpleApi() as string;
+  const simpleAjaxDirect = async () => {
+    const msg = (await fetchSimpleApi()) as string;
     setMsg(msg);
-  }
+  };
 
   return (
-    <IonPage className={style["mnemonicpage"]}>
+    <IonPage className={style['mnemonicpage']}>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Mnemonic</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-      <IonCard className="welcome-card">
+        <IonCard className='welcome-card'>
           <IonCardHeader>
             <IonCardSubtitle>Mnemonic</IonCardSubtitle>
           </IonCardHeader>
           <IonCardContent>
-            <IonButton routerLink="/home"
-              expand="full"
-              color="primary">Use Elastos</IonButton>
-            <IonButton routerLink="/mnemonic"
-              expand="full"
-              color="medium">Enter Mnemonic</IonButton>
+            <IonButton routerLink='/home' expand='full' color='primary'>
+              Use Elastos
+            </IonButton>
+            <IonButton routerLink='/mnemonic' expand='full' color='medium'>
+              Enter Mnemonic
+            </IonButton>
           </IonCardContent>
         </IonCard>
-
       </IonContent>
     </IonPage>
   );
@@ -71,17 +71,18 @@ const MnemonicPage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMa
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg()
+  msg: makeSelectAjaxMsg(),
 });
 
 /** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
   return {
-    eProps: { // eProps - Emitter proptypes thats binds to dispatch
+    eProps: {
+      // eProps - Emitter proptypes thats binds to dispatch
       /** dispatch for counter to increment */
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax())
-    }
+      onSimpleAjax: () => dispatch(getSimpleAjax()),
+    },
   };
 }
 
@@ -89,23 +90,17 @@ export function mapDispatchToProps(dispatch: any) {
  * Injects prop and saga bindings done via
  * useInjectReducer & useInjectSaga
  */
-const withInjectedMode = injector(
-  MnemonicPage,
-  {
-    key: NameSpace,
-    reducer,
-    saga
-  }
-);
+const withInjectedMode = injector(MnemonicPage, {
+  key: NameSpace,
+  reducer,
+  saga,
+});
 
-const withConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-);
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
 export default compose(
   withConnect,
-  memo,
+  memo
 )(withInjectedMode) as React.ComponentType<InferMappedProps>;
 
 // export default Tab1;

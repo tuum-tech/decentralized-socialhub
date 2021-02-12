@@ -1,14 +1,16 @@
 .logo {
-    height: 70px;
+  height: 5em;
 
-    div {
-        width: 100%;
-        height: 70px;
+  div {
+    width: 100%;
+    min-height: 5em;
+    padding: 16px;
 
-        img {
-            width: 200px; 
-            margin: 0 auto;
-            height: 100%;
-        }        
+    img {
+      width: 9em;
+      // width: 200px;
+      margin: 0 auto;
+      height: 100%;
     }
+  }
 }

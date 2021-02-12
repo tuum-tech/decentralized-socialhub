@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { IonPage, IonImg } from '@ionic/react';
 
-import { Title40, Text18, Text12, Text28, Text16 } from 'src/elements/texts';
+import { Title40, Text18, Text12, Text28 } from 'src/components/texts';
 
 export const OnBoardLayoutLogo = styled(IonImg)`
   margin: 35.23px 39.95px;
