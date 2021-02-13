@@ -32,11 +32,47 @@ import whitelogo from '../../../assets/logo/whitetextlogo.png';
 import wavinghand from '../../../assets/icon/wavinghand.png';
 
 import style from './style.module.scss';
+import { requestCreateUser } from './fetchapi';
+import { Redirect } from 'react-router';
+import Modal from 'react-bootstrap/esm/Modal';
+import Button from 'react-bootstrap/esm/Button';
+
+
+export interface ICreateUserResponse {
+  "data": {
+    "return_code": string,
+    "did": string
+  }
+}
 
 const CreateProfile: React.FC = () => {
   const [fname, setFName] = useState('');
   const [lname, setLName] = useState('');
   const [email, setEmail] = useState('');
+  const [showModal, setShowModal] = useState(false);
+
+  const createUser = async () => {
+    let response = await requestCreateUser(fname, lname, email) as ICreateUserResponse;
+    if (response.data.return_code === "REGISTERED_USER") {
+      return (<Redirect
+        to={{
+          pathname: "/create/associated-profile",
+          state: { did: response.data.did }
+        }}
+      />)
+    }
+
+    if (response.data.return_code === "WAITING_CONFIRMATION") {
+      setShowModal(true);
+      setEmail("");
+      setFName("");
+      setLName("");
+    }
+  }
+
+  const handleClose = async () => {
+    setShowModal(false);
+  }
 
   return (
     <OnBoardLayout className={style['create-profile']}>
@@ -87,9 +123,9 @@ const CreateProfile: React.FC = () => {
             onChange={(n) => setEmail(n)}
             placeholder='Enter your e-mail'
           />
-          <ButtonLink to='/create/associated-profile'>
-            <ButtonWithLogo text='Create new profile' onClick={() => {}} />
-          </ButtonLink>
+
+          <ButtonWithLogo text='Create new profile' onClick={createUser} />
+
           <div className={style['connect-divider']}>
             <hr className={style['connect-divider_line']} />
             <div className={style['connect-divider_txt']}>or connect with</div>
@@ -100,6 +136,18 @@ const CreateProfile: React.FC = () => {
             <SocialButton type='twitter' />
             <SocialButton type='facebook' />
           </div>
+
+          <Modal show={showModal} centered>
+            <Modal.Header closeButton>
+              <Modal.Title>Request Sent</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>We sent you an email! please follow the email instructions to proceed.</Modal.Body>
+            <Modal.Footer>
+              <Button variant="primary" onClick={handleClose}>
+                Close
+                </Button>
+            </Modal.Footer>
+          </Modal>
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>
