@@ -208,6 +208,7 @@ const FollowingList: React.FC<any> = (props?: any) => {
 
   const loadData = async (did: string) => {
     let profileService: ProfileService;
+
     let list: IFollowingResponse;
     try {
       if (did === undefined) {
@@ -218,7 +219,9 @@ const FollowingList: React.FC<any> = (props?: any) => {
         console.log('get app instance');
       }
       setProfileService(profileService);
+
       list = await profileService.getFollowings(did);
+
     } catch (e) {
       list = { get_following: { items: [] } };
       console.error('cant load followings');
@@ -232,8 +235,10 @@ const FollowingList: React.FC<any> = (props?: any) => {
       list.get_following.items.length
     ) {
       setListContacts(list);
+
     }
     setListFollowers(followers as IFollowerResponse);
+
     let docs: IDidDocument[] = [];
     await Promise.all(
       listDids.map(async (did) => {

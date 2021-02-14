@@ -26,6 +26,8 @@ import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
+
+
 /* Theme variables */
 import './theme/variables.css';
 // import './theme/theme-clearlyme.css';
@@ -62,6 +64,7 @@ import SignHelpPage from './pages/Sign/SignHelp';
 import ForgotPasswordPage from './pages/Sign/ForgotPasswordPage';
 
 import TutorialPage from './pages/TutorialPage';
+import VerifyEmailPage from './pages/VerifyEmailPage';
 
 const App: React.FC = () => {
   // const [session, setSession] = useState({});
@@ -149,6 +152,12 @@ const App: React.FC = () => {
           <Route path='/create/why' component={CreateWhyPage} exact={true} />
 
           <Route path='/tutorial' component={TutorialPage} exact={true} />
+
+          <Route
+            path='/verify/email/:code'
+            component={VerifyEmailPage}
+            exact={true}
+          />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
