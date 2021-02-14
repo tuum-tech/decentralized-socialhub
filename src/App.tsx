@@ -63,6 +63,10 @@ import ForgotPasswordPage from './pages/Sign/ForgotPasswordPage';
 
 import TutorialPage from './pages/TutorialPage';
 
+import AccessCodePage from './pages/AlphaAccess/AccessCode';
+import RequestCodePage from './pages/AlphaAccess/RequestCode';
+
+
 const App: React.FC = () => {
   // const [session, setSession] = useState({});
 
@@ -93,7 +97,7 @@ const App: React.FC = () => {
           <Route path='/profile' component={ProfilePage} exact={true} />
           {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
           {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
-          <Route exact path='/' render={() => <Redirect to='/home' />} />
+          <Route exact path='/' render={() => <Redirect to='/Alpha/access' />} />
           <Route
             path='/twitter_callback'
             component={TwitterCallback}
@@ -147,6 +151,9 @@ const App: React.FC = () => {
             exact={true}
           />
           <Route path='/create/why' component={CreateWhyPage} exact={true} />
+
+          <Route path='/Alpha/access' component={AccessCodePage} exact={true} />
+          <Route path='/Alpha/request' component={RequestCodePage} exact={true} />
 
           <Route path='/tutorial' component={TutorialPage} exact={true} />
         </IonRouterOutlet>

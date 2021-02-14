@@ -5,6 +5,7 @@
     font-size: 14px;
     line-height: 17px;
     color: var(--text-body-light);
+    
   }
   &_field {
     margin-top: 8px;
@@ -19,6 +20,10 @@
     --padding-start: 16px;
     --placeholder-color: var(--input-muted-placeholder);
   }
+
+  ion-label{
+    text-align: left;
+  }
 }
 
 .flex-row {
@@ -29,6 +34,7 @@
   }
 
   .textinput_label {
+    
     margin: 0 12px 0 0;
   }
   .textinput_field {

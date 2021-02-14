@@ -1,0 +1,80 @@
+.alpha-div {
+    width: 541px;
+    height: 655px;
+    background-color: #ffffff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+    border-radius: 16px;
+    padding: 72px 56px;
+
+    text-align: center;
+
+    box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24), 0px 3px 8px -1px rgba(50, 50, 71, 0.05);
+
+    .div-input {
+        text-align: left;
+
+        ion-label {
+            font-family: "SF Pro Display";
+            font-style: normal;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 17px;
+        }
+    }
+
+    .logo {
+        
+        margin-bottom: 25px;
+    }
+
+    h1 {
+        font-family: "SF Pro Display";
+        font-style: normal;
+        font-weight: bold;
+        font-size: 36px;
+        line-height: 136.02%;
+        /* or 49px */
+
+        text-align: center;
+
+        /* Theme/Dark/Dark */
+
+        color: #101225;
+    }
+    p {
+        font-family: "SF Pro Display";
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 23px;
+        margin-top: 35px;
+        margin-bottom: 35px;
+        /* or 164% */
+
+        text-align: center;
+        font-feature-settings: "salt" on;
+
+        /* Text/Body/Light */
+
+        color: #425466;
+    }
+    span {
+        font-size: 40px;
+        
+    }
+    ion-input {
+        text-align: left;
+    }
+    ion-label {
+        text-align: left;
+    }
+
+    ion-button {
+        width: 100%;
+        margin-top: 35px;
+    }
+}
