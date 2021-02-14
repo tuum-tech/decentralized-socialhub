@@ -12,6 +12,9 @@ export interface IHiveChallenge {
   nonce: string;
 }
 export class HiveService {
+
+  
+
   static async getSessionInstance(): Promise<HiveClient | undefined> {
     let instance = await UserService.getLoggedUser();
     console.log('======>instance', instance);
@@ -50,9 +53,7 @@ export class HiveService {
 
   static async getAppHiveClient(): Promise<HiveClient> {
     let host = `${process.env.REACT_APP_TUUM_TECH_HIVE}`;
-    let appToken = await HiveService.getToken(host);
-    let hiveClient = await HiveClient.createInstance(appToken, host);
-    await hiveClient.Payment.CreateFreeVault();
+    let hiveClient = await HiveClient.createAnonymousInstance(host)
     return hiveClient;
   }
 

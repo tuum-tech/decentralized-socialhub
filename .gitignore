@@ -2,7 +2,6 @@
 
 # dependencies
 /node_modules
-/docker
 /internals
 /.pnp
 .pnp.js

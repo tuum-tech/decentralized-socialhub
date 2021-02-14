@@ -4,18 +4,55 @@
 
 import React, { useState } from 'react';
 import AlphaContent from 'src/components/AlphaContent';
-import ButtonDefault from 'src/components/ButtonDefault';
-import { ButtonLink } from 'src/components/buttons';
 import TextInput from 'src/components/inputs/TextInput';
 import style from '../style.module.scss';
 import logo from '../../../assets/logo/blacklogo.svg';
 import AlphaButtonDefault from 'src/components/AlphaContent/alphabutton';
+import { useHistory } from 'react-router';
 
 
 
 const AccessCodePage: React.FC = () => {
-
+  const history = useHistory();
   const [accessCode, setAccessCode] = useState('');
+
+  const [message, setMessage] = useState('');
+
+  const [hasError, setHasError] = useState(false)
+
+  const messageDiv = () => {
+    if (message && message !== '') {
+      return <div >
+        <p className={hasError ? style["message-error"] : style["message"]}>{message}</p>
+      </div>
+    }
+    return <div></div>
+  }
+
+  const isAccessCodeValid = async () : Promise<boolean> => {
+    if (!accessCode || accessCode.length === 0) return false
+
+    return true
+  }
+
+  const setMessageAction = (error: boolean, newMessage: string) =>{
+    setHasError(error);
+    setMessage(newMessage)
+  }
+
+  
+
+  const continueAction = async () => {
+
+    if (await isAccessCodeValid()) {
+      //window.sessionStorage.setItem("invitationcode", accessCode)
+      history.replace('/login?invitationcode=' + accessCode);
+      
+    } else {
+      setMessageAction(true, "Invalid invite code")
+    }
+  }
+
   return (
     <AlphaContent>
       
@@ -30,13 +67,16 @@ const AccessCodePage: React.FC = () => {
         <TextInput
           value={accessCode}
           label=''
-          onChange={(n) => setAccessCode(n)}
+          onChange={(n) => setAccessCode(n.toUpperCase())}
           placeholder='Please enter your invite code here'
         />
 
-        <AlphaButtonDefault >
+        <AlphaButtonDefault onClick={continueAction}>
           Continue
         </AlphaButtonDefault>
+
+        {messageDiv()} 
+
         <p>
           No invite yet? You can still request one! <a href="/Alpha/request">Join the wait list</a>
         </p>

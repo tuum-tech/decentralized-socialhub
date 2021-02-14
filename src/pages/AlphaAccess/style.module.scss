@@ -61,7 +61,20 @@
         /* Text/Body/Light */
 
         color: #425466;
+
+      
     }
+
+    .message-error{
+        color: #ff5a5a;
+        font-weight: bold;
+    }
+
+    .message{
+        color: #2fd5dd;
+        font-weight: bold;
+    }
+
     span {
         font-size: 40px;
         
