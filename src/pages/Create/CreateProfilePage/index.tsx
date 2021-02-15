@@ -2,7 +2,7 @@
  * Page
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   OnBoardLayout,
@@ -36,7 +36,8 @@ import { requestCreateUser } from './fetchapi';
 import { Redirect } from 'react-router';
 import Modal from 'react-bootstrap/esm/Modal';
 import Button from 'react-bootstrap/esm/Button';
-
+import { AlphaService } from 'src/services/alpha.service';
+import { useHistory } from 'react-router';
 
 export interface ICreateUserResponse {
   "data": {
@@ -50,6 +51,17 @@ const CreateProfile: React.FC = () => {
   const [lname, setLName] = useState('');
   const [email, setEmail] = useState('');
   const [showModal, setShowModal] = useState(false);
+
+  const history = useHistory();
+  useEffect(() => {
+    AlphaService.isSessionValid().then((isSessionValid) => {
+      console.log("is session valid", isSessionValid)
+      if (!isSessionValid) {
+        window.location.href = "/"
+      }
+    });
+
+  });
 
   const createUser = async () => {
     let response = await requestCreateUser(fname, lname, email) as ICreateUserResponse;
