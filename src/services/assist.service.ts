@@ -16,7 +16,7 @@ export class AssistService {
     did: string,
     request: any
   ): Promise<IPublishDocumentResponse> {
-    let url = `${process.env.REACT_APP_ASSIST_API_SERVICE_URL}/v1/didtx/create`;
+    let url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/assist_router/didtx/create`;
     let data = {
       didRequest: request,
       requestFrom: `${process.env.REACT_APP_APPLICATION_ID}`,
@@ -28,7 +28,7 @@ export class AssistService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: process.env.REACT_APP_ASSIST_API_SERVICE_KEY,
+        Authorization: process.env.REACT_APP_PROFILE_API_SERVICE_KEY,
       },
       body: JSON.stringify(data),
     };
@@ -45,13 +45,13 @@ export class AssistService {
   static async getRequestStatus(
     confirmationId: string
   ): Promise<IPublishDocumentResponse> {
-    let url = `${process.env.REACT_APP_ASSIST_API_SERVICE_URL}/v1/didtx/confirmation_id/${confirmationId}`;
+    let url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/assist_router/didtx/confirmation_id/${confirmationId}`;
 
     let postData: any = {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: process.env.REACT_APP_ASSIST_API_SERVICE_KEY,
+        Authorization: process.env.REACT_APP_PROFILE_API_SERVICE_KEY,
       },
     };
 
