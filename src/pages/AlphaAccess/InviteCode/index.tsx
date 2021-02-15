@@ -14,7 +14,7 @@ import { useHistory } from 'react-router';
 const InviteCodePage: React.FC = () => {
     const history = useHistory();
     let continueAction = () =>{
-        history.push(`${process.env.REACT_APP_PROFILE_LANDING_PAGE}`);
+       window.location.href = `${process.env.REACT_APP_PROFILE_LANDING_PAGE}`;
     }
 
     return (
