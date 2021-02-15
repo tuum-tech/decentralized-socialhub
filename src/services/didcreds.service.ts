@@ -11,7 +11,7 @@ export class DidcredsService {
     credential_type: CredentialType,
     credential_value: string
   ): Promise<any> {
-    let url = `${process.env.REACT_APP_DIDCREDS_API_SERVICE_URL}/v1/validation/internet_account`;
+    let url = `${process.env.REACT_APP_DIDCREDS_API_SERVICE_URL}/validation/internet_account`;
     let data = {
       did: did,
       credential_type: credential_type.toLowerCase(),
