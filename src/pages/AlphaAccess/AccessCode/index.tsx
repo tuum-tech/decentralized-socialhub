@@ -9,12 +9,14 @@ import style from '../style.module.scss';
 import logo from '../../../assets/logo/blacklogo.svg';
 import AlphaButtonDefault from 'src/components/AlphaContent/alphabutton';
 import { useHistory } from 'react-router';
+import { AlphaService } from 'src/services/alpha.service';
 
 
 
 const AccessCodePage: React.FC = () => {
   const history = useHistory();
   const [accessCode, setAccessCode] = useState('');
+ 
 
   const [message, setMessage] = useState('');
 
@@ -32,7 +34,9 @@ const AccessCodePage: React.FC = () => {
   const isAccessCodeValid = async () : Promise<boolean> => {
     if (!accessCode || accessCode.length === 0) return false
 
-    return true
+    let response = await AlphaService.isCodeValid(accessCode);
+
+    return response
   }
 
   const setMessageAction = (error: boolean, newMessage: string) =>{
@@ -45,9 +49,8 @@ const AccessCodePage: React.FC = () => {
   const continueAction = async () => {
 
     if (await isAccessCodeValid()) {
-      history.replace('/create/profile?invitecode=' + accessCode);
-      window.location.reload();
-      
+      AlphaService.addSession(accessCode)
+      history.push('/create/profile')
     } else {
       setMessageAction(true, "Invalid invite code")
     }

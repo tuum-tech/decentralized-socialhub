@@ -8,13 +8,13 @@ import TextInput from 'src/components/inputs/TextInput';
 import AlphaButtonDefault from 'src/components/AlphaContent/alphabutton';
 import style from '../style.module.scss';
 import { AlphaService } from 'src/services/alpha.service';
-
+import { useHistory } from 'react-router';
 
 
 const InviteCodePage: React.FC = () => {
-
+    const history = useHistory();
     let continueAction = () =>{
-        
+        history.push(`${process.env.REACT_APP_PROFILE_LANDING_PAGE}`);
     }
 
     return (

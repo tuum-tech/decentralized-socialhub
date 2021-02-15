@@ -26,6 +26,19 @@ export class AlphaService {
 
     }
 
+    private static SessionKey: string = "invitecode"
+
+    static addSession(accessCode: string){
+        window.sessionStorage.setItem(this.SessionKey, accessCode)
+    }
+
+    static async isSessionValid() : Promise<boolean> {
+        let sessionItem = window.sessionStorage.getItem(this.SessionKey)
+        if (!sessionItem) return false
+
+        return await this.isCodeValid(sessionItem)
+    }
+
     static async useCode(accesscode: string): Promise<boolean> {
         let client = await HiveService.getAppHiveClient();
 
