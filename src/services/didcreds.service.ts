@@ -11,7 +11,7 @@ export class DidcredsService {
     credential_type: CredentialType,
     credential_value: string
   ): Promise<any> {
-    let url = `${process.env.REACT_APP_DIDCREDS_API_SERVICE_URL}/validation/internet_account`;
+    let url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/didcreds_router/validation/internet_account`;
     let data = {
       did: did,
       credential_type: credential_type.toLowerCase(),
@@ -22,7 +22,7 @@ export class DidcredsService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: process.env.REACT_APP_DIDCREDS_API_SERVICE_KEY,
+        Authorization: process.env.REACT_APP_PROFILE_API_SERVICE_KEY,
       },
       body: JSON.stringify(data),
     };
