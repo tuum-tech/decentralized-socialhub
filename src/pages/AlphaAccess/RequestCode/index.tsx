@@ -8,11 +8,12 @@ import TextInput from 'src/components/inputs/TextInput';
 import AlphaButtonDefault from 'src/components/AlphaContent/alphabutton';
 import style from '../style.module.scss';
 import { AlphaService } from 'src/services/alpha.service';
+import { useHistory } from 'react-router';
 
 
 
 const RequestCodePage: React.FC = () => {
-
+  const history = useHistory();
   const [email, setEmail] = useState('');
 
   const [message, setMessage] = useState('');
@@ -34,8 +35,8 @@ const RequestCodePage: React.FC = () => {
     return regexp.test(email);
   }
 
-  const setMessageAction = (error: boolean, newMessage: string) =>{
-    setHasError(error);
+  const setErrorMessage = (newMessage: string) =>{
+    setHasError(true);
     setMessage(newMessage)
   }
 
@@ -46,14 +47,13 @@ const RequestCodePage: React.FC = () => {
     if (isEmailValid()) {
       let emailResponse = await AlphaService.requestAccess(email);
       if (emailResponse) {
-        setMessageAction( false,"Thank you for request, we will send your invite code when is ready" )
-      
+        history.replace('/Alpha/invite');
+        window.location.reload();
       } else {
-        setMessageAction( true,"We are not able to process your request at moment. Please try again later" )
+        setErrorMessage("We are not able to process your request at moment. Please try again later" )
       }
-      
     } else {
-      setMessageAction(true, "Your email address is invalid")
+      setErrorMessage("Your email address is invalid")
     }
   }
 
@@ -82,7 +82,7 @@ const RequestCodePage: React.FC = () => {
         {messageDiv()}
 
         <p>
-          Have invite code? <a href="/Alpha/access">Enter code</a>
+          Have invite code? <a href="/Alpha">Enter code</a>
         </p>
       </div>
     </AlphaContent>

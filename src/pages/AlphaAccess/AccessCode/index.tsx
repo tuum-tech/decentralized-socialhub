@@ -45,8 +45,8 @@ const AccessCodePage: React.FC = () => {
   const continueAction = async () => {
 
     if (await isAccessCodeValid()) {
-      //window.sessionStorage.setItem("invitationcode", accessCode)
-      history.replace('/login?invitationcode=' + accessCode);
+      history.replace('/create/profile?invitecode=' + accessCode);
+      window.location.reload();
       
     } else {
       setMessageAction(true, "Invalid invite code")
