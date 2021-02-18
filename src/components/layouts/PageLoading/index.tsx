@@ -6,8 +6,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { IonImg } from '@ionic/react';
 
-import whitelogo from '../../assets/logo/whitetextlogo.png';
-import loadingimg from '../../assets/icon/loading.png';
+import whitelogo from '../../../assets/logo/whitetextlogo.png';
+import loadingimg from '../../../assets/icon/loading.png';
 
 const LoadingContainer = styled.div`
   background: #4c6fff;
@@ -44,13 +44,17 @@ const LoadingText = styled.p`
   width: 100%;
 `;
 
-const LoadingPage: React.FC = () => {
+interface Props {
+  loadingText?: string;
+}
+
+const LoadingPage: React.FC<Props> = ({ loadingText = 'Loading...' }) => {
   return (
     <LoadingContainer>
       <WhiteLogo src={whitelogo} />
       <Loading>
         <Indicator src={loadingimg} />
-        <LoadingText>Loading…</LoadingText>
+        <LoadingText>{loadingText}</LoadingText>
       </Loading>
     </LoadingContainer>
   );

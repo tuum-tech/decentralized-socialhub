@@ -2,10 +2,11 @@
  * Page
  */
 import React, { useEffect, useState } from 'react';
-import { Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
+import { Redirect, RouteComponentProps } from 'react-router-dom';
 
+import { UserService, AccountType } from 'src/services/user.service';
 import PageLoading from 'src/components/layouts/PageLoading';
-import { AccountType } from 'src/services/user.service';
+import SetPassword from 'src/components/SetPassword';
 
 import { TokenResponse } from './types';
 import { requestGoogleId, requestGoogleToken } from './fetchapi';
@@ -17,6 +18,8 @@ const GoogleCallback: React.FC<RouteComponentProps> = (props) => {
    * incoming from Server API calls. Maintain a local state.
    */
 
+  const [isLogged, setIsLogged] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [credentials, setCredentials] = useState({
     id: '',
     email: '',
@@ -50,26 +53,39 @@ const GoogleCallback: React.FC<RouteComponentProps> = (props) => {
     })();
   }, []);
 
+  const loginToProfile = async (pwd: string = '') => {
+    // await UserService.SignInWithGoogle(googleId.id, googleId.name, t.data.request_token, googleId.email)
+    await UserService.getPrevDiD(credentials.id, AccountType.Google);
+
+    // await UserService.SignInWithGoogle(
+    //   credentials.id,
+    //   credentials.name,
+    //   credentials.request_token,
+    //   credentials.email,
+    //   pwd
+    // );
+    // setLoading(false);
+    // setIsLogged(true);
+  };
+
   const getRedirect = () => {
-    if (credentials.request_token !== '') {
+    if (isLogged) {
+      return <Redirect to={{ pathname: '/profile' }} />;
+    } else if (credentials.request_token === '') {
+      return <PageLoading />;
+    } else {
       return (
-        <Redirect
-          to={{
-            pathname: '/google_did',
-            state: {
-              id: credentials.id,
-              name: credentials.name,
-              request_token: credentials.request_token,
-              email: credentials.email,
-              service: AccountType.Google,
-            },
+        <SetPassword
+          next={async (pwd) => {
+            setLoading(true);
+            await loginToProfile(pwd);
           }}
+          displayText={loading ? 'Encrypting now.......' : ''}
         />
       );
     }
-    return <PageLoading />;
   };
   return getRedirect();
 };
 
-export default withRouter(GoogleCallback);
+export default GoogleCallback;

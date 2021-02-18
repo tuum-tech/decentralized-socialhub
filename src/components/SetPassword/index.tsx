@@ -23,8 +23,8 @@ import ButtonWithLogo from 'src/components/buttons/ButtonWithLogo';
 import TextInput from 'src/components/inputs/TextInput';
 import { Text16 } from 'src/components/texts';
 
-import whitelogo from '../../../assets/logo/whitetextlogo.png';
-import keyimg from '../../../assets/icon/key.png';
+import whitelogo from '../../assets/logo/whitetextlogo.png';
+import keyimg from '../../assets/icon/key.png';
 
 const ErrorText = styled(Text16)`
   text-align: center;
@@ -32,10 +32,16 @@ const ErrorText = styled(Text16)`
   margin-top: 8px;
 `;
 
-const CreateProfile: React.FC = () => {
+interface Props {
+  next: (password: string) => void;
+  displayText?: string;
+}
+
+const SetPassword: React.FC<Props> = ({ next, displayText = '' }) => {
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const [error, setError] = useState('');
+  const disabled = displayText !== '';
 
   return (
     <OnBoardLayout>
@@ -84,13 +90,15 @@ const CreateProfile: React.FC = () => {
           <ButtonWithLogo
             mt={34}
             hasLogo={false}
-            text='Continue'
+            text={displayText !== '' ? displayText : 'Continue'}
             onClick={() => {
+              if (disabled) return;
               if (password === '' || repeatPassword === '') {
                 setError('You should fill the input fields');
               } else if (password !== repeatPassword) {
                 setError('Password is different');
               } else {
+                next(password);
               }
             }}
           />
@@ -101,4 +109,4 @@ const CreateProfile: React.FC = () => {
   );
 };
 
-export default CreateProfile;
+export default SetPassword;

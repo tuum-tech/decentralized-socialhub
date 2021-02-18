@@ -3,6 +3,9 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { Redirect, useHistory } from 'react-router';
+import Modal from 'react-bootstrap/esm/Modal';
+import Button from 'react-bootstrap/esm/Button';
 
 import {
   OnBoardLayout,
@@ -17,14 +20,12 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg,
 } from 'src/components/layouts/OnBoardLayout';
-
 import {
   SocialButton,
   ButtonWithLogo,
   ArrowButton,
   ButtonLink,
 } from 'src/components/buttons';
-
 import TextInput from 'src/components/inputs/TextInput';
 import { Text16 } from 'src/components/texts';
 
@@ -32,18 +33,19 @@ import whitelogo from '../../../assets/logo/whitetextlogo.png';
 import wavinghand from '../../../assets/icon/wavinghand.png';
 
 import style from './style.module.scss';
-import { requestCreateUser } from './fetchapi';
-import { Redirect } from 'react-router';
-import Modal from 'react-bootstrap/esm/Modal';
-import Button from 'react-bootstrap/esm/Button';
 import { AlphaService } from 'src/services/alpha.service';
-import { useHistory } from 'react-router';
+import {
+  requestCreateUser,
+  requestGoogleLogin,
+  // requestLinkedinLogin,
+  // requestFacebookLogin,
+} from './fetchapi';
 
 export interface ICreateUserResponse {
-  "data": {
-    "return_code": string,
-    "did": string
-  }
+  data: {
+    return_code: string;
+    did: string;
+  };
 }
 
 const CreateProfile: React.FC = () => {
@@ -55,36 +57,52 @@ const CreateProfile: React.FC = () => {
   const history = useHistory();
   useEffect(() => {
     AlphaService.isSessionValid().then((isSessionValid) => {
-      console.log("is session valid", isSessionValid)
+      console.log('is session valid', isSessionValid);
       if (!isSessionValid) {
-        window.location.href = "/"
+        window.location.href = '/';
       }
     });
-
   });
 
   const createUser = async () => {
-    let response = await requestCreateUser(fname, lname, email) as ICreateUserResponse;
-    if (response.data.return_code === "REGISTERED_USER") {
-      return (<Redirect
-        to={{
-          pathname: "/create/associated-profile",
-          state: { did: response.data.did }
-        }}
-      />)
+    let response = (await requestCreateUser(
+      fname,
+      lname,
+      email
+    )) as ICreateUserResponse;
+    if (response.data.return_code === 'REGISTERED_USER') {
+      return (
+        <Redirect
+          to={{
+            pathname: '/create/associated-profile',
+            state: { did: response.data.did },
+          }}
+        />
+      );
     }
 
-    if (response.data.return_code === "WAITING_CONFIRMATION") {
+    if (response.data.return_code === 'WAITING_CONFIRMATION') {
       setShowModal(true);
-      setEmail("");
-      setFName("");
-      setLName("");
+      setEmail('');
+      setFName('');
+      setLName('');
     }
-  }
+  };
 
   const handleClose = async () => {
     setShowModal(false);
-  }
+  };
+
+  const googlelogin = async () => {
+    type MyType = { meta: string; data: string };
+
+    // gets the linkedin auth endpoint
+    const url = (await requestGoogleLogin()) as MyType;
+    console.log(url.data);
+
+    // redirects
+    window.location.href = url.data;
+  };
 
   return (
     <OnBoardLayout className={style['create-profile']}>
@@ -144,7 +162,7 @@ const CreateProfile: React.FC = () => {
           </div>
           <div className={style['social-btn-group']}>
             <SocialButton type='linkedin' />
-            <SocialButton type='google' />
+            <SocialButton type='google' onClick={googlelogin} />
             <SocialButton type='twitter' />
             <SocialButton type='facebook' />
           </div>
@@ -153,11 +171,14 @@ const CreateProfile: React.FC = () => {
             <Modal.Header closeButton>
               <Modal.Title>Request Sent</Modal.Title>
             </Modal.Header>
-            <Modal.Body>We sent you an email! please follow the email instructions to proceed.</Modal.Body>
+            <Modal.Body>
+              We sent you an email! please follow the email instructions to
+              proceed.
+            </Modal.Body>
             <Modal.Footer>
-              <Button variant="primary" onClick={handleClose}>
+              <Button variant='primary' onClick={handleClose}>
                 Close
-                </Button>
+              </Button>
             </Modal.Footer>
           </Modal>
         </OnBoardLayoutRightContent>

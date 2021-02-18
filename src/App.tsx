@@ -7,8 +7,10 @@ import LoginPage from './pages/LoginPage/Loadable';
 import ProfilePage from './pages/ProfilePage/Loadable';
 import PublicPage from './pages/PublicPage/Loadable';
 import LinkedinCallback from './pages/LinkedinCallback/Loadable';
-import GoogleCallback from './pages/GoogleCallback/Loadable';
 import FacebookCallback from './pages/FacebookCallback/Loadable';
+
+import GoogleCallback from './pages/GoogleCallback';
+import GenerateDID from './pages/GenerateDID';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -48,7 +50,7 @@ import RegisterPage from './pages/RegisterPage';
 // import SessionContext from './context/session.context';
 import TwitterCallback from './pages/TwitterCallback';
 
-import LoadingPage from './pages/LoadingPage';
+// import LoadingPage from './pages/LoadingPage';
 
 import CreateProfilePage from './pages/Create/CreateProfilePage';
 import CreatePasswordPage from './pages/Create/CreatePassword';
@@ -117,6 +119,8 @@ const App: React.FC = () => {
             component={GoogleCallback}
             exact={false}
           />
+          <Route path='/google_did' component={GenerateDID} exact={true} />
+
           <Route
             path='/facebook_callback'
             component={FacebookCallback}
@@ -125,7 +129,7 @@ const App: React.FC = () => {
           {/* <Route exact path="/" render={() => <Redirect to="/login" />} /> */}
           <Route path='/did/:did' component={PublicPage} exact={true} />
 
-          <Route path='/loading' component={LoadingPage} exact={true} />
+          {/* <Route path='/loading' component={LoadingPage} exact={true} /> */}
           <Route path='/sign/help' component={SignHelpPage} exact={true} />
           <Route
             path='/sign/password'

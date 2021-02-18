@@ -2,8 +2,10 @@
  * Page
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { RouteComponentProps, withRouter, Redirect } from 'react-router-dom';
+import { StaticContext } from 'react-router';
 
 import {
   OnBoardLayout,
@@ -40,8 +42,43 @@ const DidAddress = styled.div`
   color: #8492a6;
 `;
 
-const CreateProfile: React.FC = () => {
-  const didAddress = '39fgdfkdsflgl404503400fgkdfgll45030450fgkkdflgl';
+type LocationState = {
+  from: Location;
+  did: string;
+  id: string;
+  name: string;
+  request_token: String;
+  email: string;
+  service: string;
+};
+
+const AssociatedProfile: React.FC<
+  RouteComponentProps<{}, StaticContext, LocationState>
+> = (props) => {
+  const { did, id, name, request_token, email, service } = props.location.state;
+  const [createAnother, setCreateAnother] = useState(false);
+  const [sign, setSign] = useState(false);
+
+  if (sign) {
+    return <Redirect to={{ pathname: '/sign/did' }} />;
+  }
+  if (createAnother) {
+    return (
+      <Redirect
+        to={{
+          pathname: '/google_did',
+          state: {
+            id,
+            name,
+            request_token,
+            email,
+            service,
+            create_new: 1,
+          },
+        }}
+      />
+    );
+  }
 
   return (
     <OnBoardLayout>
@@ -71,7 +108,7 @@ const CreateProfile: React.FC = () => {
             Sign into the associated profile
           </OnBoardLayoutRightContentTitle>
           <Text16>Decentalized Identity (DID):</Text16>
-          <DidAddress>{didAddress}</DidAddress>
+          <DidAddress>{did}</DidAddress>
           <Text16 style={{ marginTop: '17px' }}>
             Has been already linked to this social media account, sign into this
             profile below.
@@ -80,7 +117,9 @@ const CreateProfile: React.FC = () => {
             mode='dark'
             mt={32}
             text='Sign in to profile'
-            onClick={() => {}}
+            onClick={() => {
+              setSign(true);
+            }}
           />
 
           <OnBoardLayoutRightContentTitle style={{ marginTop: '96px' }}>
@@ -92,7 +131,9 @@ const CreateProfile: React.FC = () => {
 
           <ButtonWithLogo
             text='Create new profile'
-            onClick={() => {}}
+            onClick={() => {
+              setCreateAnother(true);
+            }}
             mt={42}
           />
         </OnBoardLayoutRightContent>
@@ -101,4 +142,4 @@ const CreateProfile: React.FC = () => {
   );
 };
 
-export default CreateProfile;
+export default withRouter(AssociatedProfile);

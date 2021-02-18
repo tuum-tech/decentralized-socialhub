@@ -59,6 +59,21 @@ export class UserService {
     return response;
   }
 
+  public static getPrevDiD(id: string, appName: string): UserData[] {
+    let userKey = appName + '_' + id;
+    let response: UserData[] = [];
+    for (var i = 0, len = window.localStorage.length; i < len; ++i) {
+      let key = window.localStorage.key(i);
+      if (key === userKey) {
+        const localData = window.localStorage.getItem(key);
+        if (localData) {
+          response.push(JSON.parse(localData));
+        }
+      }
+    }
+    return response;
+  }
+
   private static getOtherUsers(appName: string): string[] {
     let appKey = appName + '_';
     let response: string[] = [];
@@ -164,7 +179,50 @@ export class UserService {
     );
   }
 
-  private static async SignIn3rdParty(
+  public static async NewSignIn3rdParty(
+    id: string,
+    name: string,
+    token: string,
+    service: AccountType,
+    credential: string,
+    password: string,
+    another: boolean
+  ) {
+    console.log('Sign in with', service.toString());
+    let key = `${service.toString()}_${id}`;
+    let storePassword = password && password !== '' ? password : key;
+    let sessionItem: ISessionItem;
+
+    if (another) {
+      let did = await this.generateTemporaryDID(service, credential);
+      sessionItem = {
+        did: did,
+        accountType: service,
+        isDIDPublished: false,
+        userName: name,
+        hiveHost: 'http://localhost:5000',
+        userToken: token,
+      };
+      // run tuumtech vault script to record user
+      const appHiveClient = await HiveService.getAppHiveClient();
+      await appHiveClient.Scripting.RunScript({
+        name: 'add_userrecord_to_end',
+        params: {
+          name: sessionItem.userName,
+          vaulturl: sessionItem.hiveHost,
+        },
+      });
+    } else {
+      sessionItem = this.unlockUser(key, storePassword);
+      sessionItem.userToken = token;
+      sessionItem.userName = name;
+    }
+    console.log(sessionItem);
+    this.lockUser(key, sessionItem, storePassword);
+    SessionService.saveSessionItem(sessionItem);
+  }
+
+  public static async SignIn3rdParty(
     id: string,
     name: string,
     token: string,
@@ -197,7 +255,7 @@ export class UserService {
         },
       });
     } else {
-      sessionItem = this.unlockUser(key, key);
+      sessionItem = this.unlockUser(key, storePassword);
       sessionItem.userToken = token;
       sessionItem.userName = name;
     }
