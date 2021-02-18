@@ -66,7 +66,7 @@ const AssociatedProfile: React.FC<
     return (
       <Redirect
         to={{
-          pathname: '/google_did',
+          pathname: '/social_login_success',
           state: {
             id,
             name,

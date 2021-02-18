@@ -34,11 +34,12 @@ import wavinghand from '../../../assets/icon/wavinghand.png';
 
 import style from './style.module.scss';
 import { AlphaService } from 'src/services/alpha.service';
+import TwitterApi from 'src/shared-base/api/twitter-api';
 import {
   requestCreateUser,
   requestGoogleLogin,
-  // requestLinkedinLogin,
-  // requestFacebookLogin,
+  requestLinkedinLogin,
+  requestFacebookLogin,
 } from './fetchapi';
 
 export interface ICreateUserResponse {
@@ -54,15 +55,15 @@ const CreateProfile: React.FC = () => {
   const [email, setEmail] = useState('');
   const [showModal, setShowModal] = useState(false);
 
-  const history = useHistory();
-  useEffect(() => {
-    AlphaService.isSessionValid().then((isSessionValid) => {
-      console.log('is session valid', isSessionValid);
-      if (!isSessionValid) {
-        window.location.href = '/';
-      }
-    });
-  });
+  // const history = useHistory();
+  // useEffect(() => {
+  //   AlphaService.isSessionValid().then((isSessionValid) => {
+  //     console.log('is session valid', isSessionValid);
+  //     if (!isSessionValid) {
+  //       window.location.href = '/';
+  //     }
+  //   });
+  // });
 
   const createUser = async () => {
     let response = (await requestCreateUser(
@@ -93,15 +94,39 @@ const CreateProfile: React.FC = () => {
     setShowModal(false);
   };
 
-  const googlelogin = async () => {
+  const sociallogin = async (socialType: string) => {
+    if (socialType === 'twitter') {
+      type MyType = { meta: string; data: { request_token: string } };
+      // gets the linkedin auth endpoint
+      const response = (await TwitterApi.GetRequestToken()) as MyType;
+      console.log(response.data.request_token);
+
+      // redirects
+      window.location.replace(
+        `https://api.twitter.com/oauth/authorize?oauth_token=${response.data.request_token}`
+      );
+      return;
+    }
+
     type MyType = { meta: string; data: string };
+    let url: MyType = {} as MyType;
 
-    // gets the linkedin auth endpoint
-    const url = (await requestGoogleLogin()) as MyType;
-    console.log(url.data);
+    if (socialType === 'google') {
+      // gets the linkedin auth endpoint
+      url = (await requestGoogleLogin()) as MyType;
+    } else if (socialType === 'facebook') {
+      // gets the linkedin auth endpoint
+      url = (await requestFacebookLogin()) as MyType;
+    } else if (socialType === 'linkedin') {
+      // gets the linkedin auth endpoint
+      url = (await requestLinkedinLogin()) as MyType;
+    }
 
-    // redirects
-    window.location.href = url.data;
+    if (url) {
+      console.log(url.data);
+      // redirects
+      window.location.href = url.data;
+    }
   };
 
   return (
@@ -161,10 +186,22 @@ const CreateProfile: React.FC = () => {
             <div className={style['connect-divider_txt']}>or connect with</div>
           </div>
           <div className={style['social-btn-group']}>
-            <SocialButton type='linkedin' />
-            <SocialButton type='google' onClick={googlelogin} />
-            <SocialButton type='twitter' />
-            <SocialButton type='facebook' />
+            <SocialButton
+              type='linkedin'
+              onClick={async () => await sociallogin('linkedin')}
+            />
+            <SocialButton
+              type='google'
+              onClick={async () => await sociallogin('google')}
+            />
+            <SocialButton
+              type='twitter'
+              onClick={async () => await sociallogin('twitter')}
+            />
+            <SocialButton
+              type='facebook'
+              onClick={async () => await sociallogin('facebook')}
+            />
           </div>
 
           <Modal show={showModal} centered>

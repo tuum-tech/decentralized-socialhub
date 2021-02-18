@@ -42,9 +42,7 @@ const CreateProfile: React.FC = () => {
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
         <OnBoardLayoutRightContent>
-          <OnBoardLayoutRightContentTitle
-            style={{ marginBottom: '46px', paddingTop: '120px' }}
-          >
+          <OnBoardLayoutRightContentTitle style={{ marginBottom: '46px' }}>
             Enter your password
           </OnBoardLayoutRightContentTitle>
           <TextInput

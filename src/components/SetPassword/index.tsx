@@ -63,9 +63,7 @@ const SetPassword: React.FC<Props> = ({ next, displayText = '' }) => {
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
         <OnBoardLayoutRightContent>
-          <OnBoardLayoutRightContentTitle
-            style={{ marginBottom: '46px', paddingTop: '120px' }}
-          >
+          <OnBoardLayoutRightContentTitle style={{ marginBottom: '46px' }}>
             Create your profile
           </OnBoardLayoutRightContentTitle>
           <TextInput

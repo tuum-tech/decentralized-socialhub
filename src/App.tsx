@@ -6,11 +6,11 @@ import { IonReactRouter } from '@ionic/react-router';
 import LoginPage from './pages/LoginPage/Loadable';
 import ProfilePage from './pages/ProfilePage/Loadable';
 import PublicPage from './pages/PublicPage/Loadable';
-import LinkedinCallback from './pages/LinkedinCallback/Loadable';
-import FacebookCallback from './pages/FacebookCallback/Loadable';
 
-import GoogleCallback from './pages/GoogleCallback';
-import GenerateDID from './pages/GenerateDID';
+// import LinkedinCallback from './pages/LinkedinCallback/Loadable';
+// import FacebookCallback from './pages/FacebookCallback/Loadable';
+// import GoogleCallback from './pages/SocialCallback/GoogleCallback';
+// import GenerateDID from './pages/GenerateDID';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -48,7 +48,15 @@ import PublishIdentityPage from './pages/PublishIdentityPage';
 import ChooseVaultPage from './pages/ChooseVaultPage';
 import RegisterPage from './pages/RegisterPage';
 // import SessionContext from './context/session.context';
-import TwitterCallback from './pages/TwitterCallback';
+// import TwitterCallback from './pages/TwitterCallback';
+
+import {
+  GoogleCallback,
+  TwitterCallback,
+  LinkedinCallback,
+  GenerateDID,
+  FacebookCallback,
+} from './pages/SocialCallback';
 
 // import LoadingPage from './pages/LoadingPage';
 
@@ -70,7 +78,6 @@ import ExplorePage from './pages/ExplorePage';
 import AccessCodePage from './pages/AlphaAccess/AccessCode';
 import RequestCodePage from './pages/AlphaAccess/RequestCode';
 import InviteCodePage from './pages/AlphaAccess/InviteCode';
-
 
 const App: React.FC = () => {
   // const [session, setSession] = useState({});
@@ -103,7 +110,7 @@ const App: React.FC = () => {
           <Route path='/explore' component={ExplorePage} exact={true} />
           {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
           {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
-          <Route exact path='/' render={() => <Redirect to='/Alpha' />} />
+          {/* <Route exact path='/' render={() => <Redirect to='/Alpha' />} /> */}
           <Route
             path='/twitter_callback'
             component={TwitterCallback}
@@ -119,7 +126,11 @@ const App: React.FC = () => {
             component={GoogleCallback}
             exact={false}
           />
-          <Route path='/google_did' component={GenerateDID} exact={true} />
+          <Route
+            path='/social_login_success'
+            component={GenerateDID}
+            exact={true}
+          />
 
           <Route
             path='/facebook_callback'
@@ -161,7 +172,11 @@ const App: React.FC = () => {
           <Route path='/create/why' component={CreateWhyPage} exact={true} />
 
           <Route path='/Alpha' component={AccessCodePage} exact={true} />
-          <Route path='/Alpha/request' component={RequestCodePage} exact={true} />
+          <Route
+            path='/Alpha/request'
+            component={RequestCodePage}
+            exact={true}
+          />
           <Route path='/Alpha/invite' component={InviteCodePage} exact={true} />
 
           <Route path='/tutorial' component={TutorialPage} exact={true} />

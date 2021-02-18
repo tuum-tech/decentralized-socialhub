@@ -64,9 +64,11 @@ export class UserService {
     let response: UserData[] = [];
     for (var i = 0, len = window.localStorage.length; i < len; ++i) {
       let key = window.localStorage.key(i);
+      console.log('====>key, userKey', key, userKey);
       if (key === userKey) {
         const localData = window.localStorage.getItem(key);
         if (localData) {
+          console.log('====>JSON.parse(localData)', JSON.parse(localData));
           response.push(JSON.parse(localData));
         }
       }
@@ -321,16 +323,19 @@ export class UserService {
     instance: ISessionItem,
     storePassword: string
   ) {
+    console.log('======>localUserData', instance);
     let encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(instance),
       storePassword
     ).toString();
+    console.log('======>localUserData', encrypted);
     console.log('encripted value', encrypted);
     let localUserData: UserData = {
       name: instance.userName,
       did: instance.did,
       data: encrypted,
     };
+    console.log('======>localUserData', localUserData);
     let json = JSON.stringify(localUserData, null, '');
     window.localStorage.setItem(key, json);
   }

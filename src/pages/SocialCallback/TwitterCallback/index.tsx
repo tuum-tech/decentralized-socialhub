@@ -7,10 +7,10 @@ import { Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
 import PageLoading from 'src/components/layouts/PageLoading';
 import { AccountType } from 'src/services/user.service';
 
+import { requestTwitterToken } from './fetchapi';
 import { TokenResponse } from './types';
-import { requestGoogleId, requestGoogleToken } from './fetchapi';
 
-const GoogleCallback: React.FC<RouteComponentProps> = (props) => {
+const TwitterCallback: React.FC<RouteComponentProps> = (props) => {
   /**
    * Direct method implementation without SAGA
    * This was to show you dont need to put everything to global state
@@ -22,33 +22,43 @@ const GoogleCallback: React.FC<RouteComponentProps> = (props) => {
     email: '',
     name: '',
     request_token: '',
+    crednetial: '',
   });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const getToken = async (
-    code: string,
-    state: string
+    oauth_token: string,
+    oauth_verifier: string
   ): Promise<TokenResponse> => {
-    return (await requestGoogleToken(code, state)) as TokenResponse;
+    return (await requestTwitterToken(
+      oauth_token,
+      oauth_verifier
+    )) as TokenResponse;
   };
 
-  let code: string =
-    new URLSearchParams(props.location.search).get('code') || '';
-  let state: string =
-    new URLSearchParams(props.location.search).get('state') || '';
+  let oauth_token: string =
+    new URLSearchParams(props.location.search).get('oauth_token') || '';
+  let oauth_verifier: string =
+    new URLSearchParams(props.location.search).get('oauth_verifier') || '';
 
   useEffect(() => {
     (async () => {
-      if (code !== '' && state !== '' && credentials.request_token === '') {
-        let t = await getToken(code, state);
-        let googleId = await requestGoogleId(t.data.request_token);
+      if (oauth_token !== '' && oauth_verifier !== '') {
+        let t = await getToken(oauth_token, oauth_verifier);
+        let items: string[] = atob(t.data.response).split(';');
+        const id = items[1];
+        const name = items[0];
+        const request_token = `${oauth_token}[-]${oauth_verifier}`;
+        const crednetial = items[1];
         setCredentials({
-          id: googleId.id,
-          name: googleId.name,
-          request_token: t.data.request_token,
-          email: googleId.email,
+          id,
+          name,
+          request_token,
+          email: '',
+          crednetial,
         });
       }
     })();
-  }, []);
+  });
 
   const getRedirect = () => {
     if (credentials.request_token !== '') {
@@ -61,7 +71,8 @@ const GoogleCallback: React.FC<RouteComponentProps> = (props) => {
               name: credentials.name,
               request_token: credentials.request_token,
               email: credentials.email,
-              service: AccountType.Google,
+              crednetial: credentials.crednetial,
+              service: AccountType.Twitter,
             },
           }}
         />
@@ -72,4 +83,4 @@ const GoogleCallback: React.FC<RouteComponentProps> = (props) => {
   return getRedirect();
 };
 
-export default withRouter(GoogleCallback);
+export default withRouter(TwitterCallback);
