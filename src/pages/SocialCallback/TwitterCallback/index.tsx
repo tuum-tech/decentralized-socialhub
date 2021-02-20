@@ -42,7 +42,11 @@ const TwitterCallback: React.FC<RouteComponentProps> = (props) => {
 
   useEffect(() => {
     (async () => {
-      if (oauth_token !== '' && oauth_verifier !== '') {
+      if (
+        oauth_token !== '' &&
+        oauth_verifier !== '' &&
+        credentials.request_token === ''
+      ) {
         let t = await getToken(oauth_token, oauth_verifier);
         let items: string[] = atob(t.data.response).split(';');
         const id = items[1];

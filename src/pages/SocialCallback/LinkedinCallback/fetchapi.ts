@@ -27,11 +27,13 @@ export function requestLinkedinToken(
 
 export async function requestLinkedinId(token: string): Promise<LinkedinId> {
   let corsavoidhost = 'https://cors-anywhere.herokuapp.com/';
-  let url = `${corsavoidhost}https://api.linkedin.com/v2/me?projection=(firstName,lastName)`;
+  let url = `${corsavoidhost}https://api.linkedin.com/v2/me?projection=(id,firstName,lastName)`;
   let data: any = {
     method: 'GET',
     headers: {
+      'content-type': 'text/plain',
       Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
     },
   };
   let response = await fetch(url, data);
@@ -44,9 +46,4 @@ export async function requestLinkedinId(token: string): Promise<LinkedinId> {
     name: `${json.firstName} ${json.lastName}`,
     credential: json.emailAddress,
   };
-  // return {
-  //   id: '1',
-  //   name: '1',
-  //   credential: '1',
-  // };
 }

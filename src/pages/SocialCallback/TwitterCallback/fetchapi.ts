@@ -4,13 +4,13 @@ import { Api } from './constant';
 import { TwitterId } from './types';
 
 export function requestTwitterToken(
-  oauth_token: string,
-  oauth_verifier: string
+  code: string,
+  state: string
 ): Promise<BaseplateResp> {
   let body = JSON.stringify(
     {
-      token: oauth_token,
-      verifier: oauth_verifier,
+      token: code,
+      verifier: state,
     },
     null,
     ''
@@ -27,27 +27,4 @@ export function requestTwitterToken(
       body: body,
     }
   );
-}
-
-export async function requestTwitterId(token: string): Promise<BaseplateResp> {
-  // let response = await fetch(
-  //   `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/twitter_callback`,
-  //   {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       Authorization: process.env.REACT_APP_DIDCRED_KEY,
-  //     },
-  //     body: JSON.stringify({
-  //       token: oauth_token,
-  //       verifier: oauth_verifier,
-  //     }),
-  //   }
-  // );
-
-  // if (response.ok) {
-  //   return await response.json();
-  // }
-
-  return null;
 }
