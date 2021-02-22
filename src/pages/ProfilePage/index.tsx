@@ -25,11 +25,10 @@ import reducer from './reducer';
 import saga from './saga';
 import {
   InferMappedProps,
-  ProfileContent,
   ProfileResponse,
   SubState,
 } from './types';
-import { fetchSimpleApi, requestLinkedinProfile } from './fetchapi';
+import { requestFullProfile, requestLinkedinProfile } from './fetchapi';
 import FollowingList from 'src/components/FollowingList';
 import Pages from 'src/components/Pages';
 import ProfileHeader from 'src/components/ProfileHeader';
@@ -50,6 +49,7 @@ import { Link } from 'react-router-dom';
 import Logo from 'src/components/Logo';
 import Navbar from 'src/components/Navbar';
 import DashboardNav from 'src/components/DashboardNav';
+import { EducationItem, ExperienceItem, ProfileDTO } from '../PublicPage/types';
 
 const ProfilePage: React.FC<RouteComponentProps> = (
   props: RouteComponentProps
@@ -59,9 +59,26 @@ const ProfilePage: React.FC<RouteComponentProps> = (
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
-  const [profile, setProfile] = useState({
-    profile: { firstName: '', lastName: '' },
-  } as ProfileContent);
+  const [full_profile, setfull_profile] = useState({
+    basicDTO:
+    {
+      isEnabled: false,
+      first_name: "",
+      last_name: "",
+      did: "",
+      title: "",
+      about: "",
+      address: { number: "", street_name: "", postal_code: "", state: "", country: "" }
+    },
+    educationDTO: {
+      isEnabled: true,
+      items: ([] as EducationItem[])
+    },
+    experienceDTO: {
+      isEnabled: true,
+      items: ([] as ExperienceItem[])
+    }
+  });
 
   const [active, setActive] = useState('dashboard');
 
@@ -70,6 +87,10 @@ const ProfilePage: React.FC<RouteComponentProps> = (
   };
   let token: string =
     new URLSearchParams(props.location.search).get('token') || '';
+
+  const getFullProfile = async (did: string): Promise<any> => {
+    return await requestFullProfile(did);
+  };
 
   const getPublicUrl = (): string => {
     let item = window.sessionStorage.getItem('session_instance');
@@ -86,26 +107,15 @@ const ProfilePage: React.FC<RouteComponentProps> = (
   useEffect(() => {
     (async () => {
       if (token != '') {
-        getProfile(token)
-          .then((x: ProfileResponse) => {
-            console.log(x.data);
-            let p = x.data as ProfileContent;
-            setProfile(p);
-          })
-          .catch((error) => {
-            console.error(error);
-            let fallback = {
-              profile: { firstName: 'Jane', lastName: 'Fallback' },
-            };
-            setProfile(fallback);
-          });
+        let profile: ProfileDTO = await getFullProfile("did");
+        setfull_profile(profile);
       }
     })();
   }, [token]);
 
   return (
-    <IonPage className={style['profilepage']}>
-      <IonContent>
+    <IonPage>
+      <IonContent className={style['profilepage']}>
         <IonGrid className={style['profilepagegrid']}>
           <IonRow className={style['profilecontent']}>
             <IonCol size='2' className={style['left-panel']}>
@@ -116,7 +126,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
               <ProfileComponent profile={profile} />
             </IonCol> */}
             <IonCol size='10' className={style['right-panel']}>
-              <ProfileHeader profile={profile} />
+              <ProfileHeader profile={full_profile} />
               <DashboardNav />
               {/* <StartServiceComponent />
               <ProfileCompletion /> */}
@@ -125,61 +135,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
         </IonGrid>
       </IonContent>
     </IonPage>
-    // <IonPage className={style["profilepage"]}>
-    //   <IonHeader className={style["header"]}>
-    //     <IonGrid>
-    //       <IonRow>
-    //         <IonCol size="0.5"><img className={style["logo"]} src={logo} /></IonCol>
-    //         <IonCol size="2.5">
-    //           <IonSearchbar placeholder="Search Profiles, Pages, Validators" className={style["search-input"]}></IonSearchbar>
-    //         </IonCol>
-    //         <IonCol size="6">
-    //           <IonGrid>
-    //             <IonRow className="ion-justify-content-center">
-    //               <IonCol size="auto"><div className={style["home"]}><img src={home} /> <span>Home</span></div></IonCol>
-    //               <IonCol size="auto"><div className={style["community"]}><img src={community} /><span>Community</span></div></IonCol>
-    //               <IonCol size="auto"><div className={style["pages"]}><img src={pages} /><span>Pages</span></div></IonCol>
-    //               <IonCol size="auto"><div className={style["messages"]}><img src={messages} /><span>Messages</span></div></IonCol>
-    //             </IonRow>
-    //           </IonGrid>
-    //         </IonCol>
-    //         <IonCol size="3">
-    //           <img src={photo} className={style["profile-img"]} />
-    //         </IonCol>
-    //       </IonRow>
-    //     </IonGrid>
-    //   </IonHeader>
-    //   <IonContent>
-    //     <IonGrid>
-    //       <IonRow>
-    //         <IonButton onClick={async() => {
-    //           await BackgroundService.run();
-    //         }}> run background process </IonButton>
-    //         <IonButton onClick={async() => {
-    //           await BackgroundService.migrate();
-    //         }}> forcly set flag of this user record on tuum vault </IonButton>
-    //         <IonButton onClick={async() => {
-    //           await BackgroundService.addDataToUserDetails('skills', 'Python, Django, Ruby');
-    //         }}> add skills to the database </IonButton>
-    //       </IonRow>
-    //       <IonRow className={style["profilecontent"]}>
-    //         <IonCol size="2.5" className={style["left-panel"]}>
-    //           <FollowingList />
-    //           <Link to={getPublicUrl()}>My public page</Link>
-    //           <ProfileTemplateManager />
-    //           <PagesComponent />
-    //         </IonCol>
-    //         <IonCol size="7" className={style["center-panel"]}>
-    //           <ProfileComponent profile={profile} />
-    //         </IonCol>
-    //         <IonCol size="2.5" className={style["right-panel"]}>
-    //           <StartServiceComponent />
-    //           <ProfileCompletion />
-    //         </IonCol>
-    //       </IonRow>
-    //     </IonGrid>
-    //   </IonContent>
-    // </IonPage >
+
   );
 };
 

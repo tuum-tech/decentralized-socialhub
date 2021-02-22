@@ -1,13 +1,24 @@
 .profilepage {
-
-  background-color: #fafaff;
-  min-height: 200px;
-  height: 100%;
  
+  background-color: #f7fafc;
+  
+  // .profilecontent {
+  //   min-height: 800px;  
+  //   background-color: #f7fafc;
+  // }
 
-  .profilecontent {
-    min-height: 800px;  
-    background-color: #fafaff;
+  
+  .profilepagegrid {
+    background-color: #f7fafc;
+    height: 100%;
+  }
+
+  
+  .navigation-bar {
+    width: 100%;
+    height: 83px;
+    padding: 21px 0 0;
+    background-color: #ffffff;
   }
 
   .header {

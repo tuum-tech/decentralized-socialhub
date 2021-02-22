@@ -1,6 +1,7 @@
 import { HiveClient } from '@elastos/elastos-hive-js-sdk';
 import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 import { floor, noConflict } from 'lodash';
+import { ProfileResponse } from 'src/pages/ProfilePage/types';
 import { HiveService } from './hive.service';
 import { UserService } from './user.service';
 
@@ -71,9 +72,9 @@ export class ProfileService {
     });
   }
 
-  async getUserBasicProfile(did: string): Promise<any> {
+  async getFullProfile(did: string): Promise<IRunScriptResponse<ProfileResponse>> {
     return this.appHiveClient.Scripting.RunScript({
-      name: 'get_basic_profile',
+      name: 'get_full_profile',
       context: {
         target_did: did,
         target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
@@ -81,15 +82,15 @@ export class ProfileService {
     });
   }
 
-  async getUserEducationProfile(did: string): Promise<any> {
-    return this.appHiveClient.Scripting.RunScript({
-      name: 'get_education_profile',
-      context: {
-        target_did: did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-      },
-    });
-  }
+  // async getUserEducationProfile(did: string): Promise<any> {
+  //   return this.appHiveClient.Scripting.RunScript({
+  //     name: 'get_education_profile',
+  //     context: {
+  //       target_did: did,
+  //       target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+  //     },
+  //   });
+  // }
 
   async getFollowings(did?: string): Promise<IFollowingResponse> {
     let followings: IFollowingResponse;
