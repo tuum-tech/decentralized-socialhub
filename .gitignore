@@ -29,3 +29,5 @@ package-lock.json*
 .env 
 .env.prod 
 .mongodb-data
+
+src/scripts/config.json.prod
