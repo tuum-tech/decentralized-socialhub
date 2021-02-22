@@ -9,8 +9,8 @@ export async function checkIfThisUserOnTuumVault(
       email: email,
     },
     context: {
-      target_did: 'did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX',
-      target_app_did: 'did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX',
+      target_did: process.env.REACT_APP_APPLICATION_DID,
+      target_app_did: process.env.REACT_APP_APPLICATION_ID,
     },
   };
 
