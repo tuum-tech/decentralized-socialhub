@@ -19,7 +19,8 @@ const FacebookCallback: React.FC<RouteComponentProps> = (props) => {
   const [credentials, setCredentials] = useState({
     id: '',
     email: '',
-    name: '',
+    fname: '',
+    lname: '',
     request_token: '',
     credential: '',
   });
@@ -43,9 +44,10 @@ const FacebookCallback: React.FC<RouteComponentProps> = (props) => {
         console.log('facebook data', facebookId);
         setCredentials({
           id: facebookId.id,
-          name: facebookId.name,
+          fname: facebookId.fname,
+          lname: facebookId.lname,
           request_token: t.data.request_token,
-          email: '',
+          email: facebookId.email,
           credential: '',
         });
       }
@@ -60,7 +62,8 @@ const FacebookCallback: React.FC<RouteComponentProps> = (props) => {
             pathname: '/social_login_success',
             state: {
               id: credentials.id,
-              name: credentials.name,
+              fname: credentials.fname,
+              lname: credentials.lname,
               request_token: credentials.request_token,
               email: credentials.email,
               credential: credentials.credential,

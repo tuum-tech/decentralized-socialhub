@@ -12,23 +12,23 @@ import { ProfileContent } from 'src/pages/ProfilePage/types';
 import style from './style.module.scss';
 
 import ButtonWithUpArrow from 'src/components/buttons/ButtonWithUpArrow';
-import RegisterNewUserButton from '../../RegisterNewUserButton';
-import ProfileDescription from '../../ProfileDescription';
-import ProfileName from '../../ProfileName';
-import ProfileLocationWidget from '../../ProfileLocationWidget';
+import RegisterNewUserButton from '../RegisterNewUserButton';
+import ProfileDescription from '../ProfileDescription';
+import ProfileName from '../ProfileName';
+import ProfileLocationWidget from '../ProfileLocationWidget';
 import styled from 'styled-components';
-import ButtonDefault from '../../ButtonDefault';
-import ButtonLight from '../../ButtonLight';
-import DashboardNav from '../../DashboardNav';
+import ButtonDefault from '../ButtonDefault';
+import ButtonLight from '../ButtonLight';
+import DashboardNav from '../DashboardNav';
 import { ProfileDTO } from 'src/pages/PublicPage/types';
-import DidSnippet from '../../DidSnippet';
+import DidSnippet from '../DidSnippet';
 
 // import photo from '../../assets/photo.png';
-import photo from '../../../assets/dp.jpeg';
-import bulb from '../../../assets/bulb.svg';
-import edit from '../../../assets/icon-edit.svg';
-import addbutton from '../../../assets/addbutton.svg';
-import university from '../../../assets/university.png';
+import photo from '../../assets/dp.jpeg';
+import bulb from '../../assets/bulb.svg';
+import edit from '../../assets/icon-edit.svg';
+import addbutton from '../../assets/addbutton.svg';
+import university from '../../assets/university.png';
 interface IProps {
   profile: ProfileDTO;
 }

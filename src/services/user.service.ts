@@ -59,6 +59,8 @@ export class UserService {
     return response;
   }
 
+  public static checkUserOnTuumTechVault() {}
+
   public static getPrevDiD(id: string, appName: string): UserData[] {
     let userKey = appName + '_' + id;
     let response: UserData[] = [];
@@ -109,7 +111,6 @@ export class UserService {
     };
 
     this.lockUser(this.key(data.did), sessionItem, storePassword);
-
     SessionService.saveSessionItem(sessionItem);
   }
 
@@ -328,14 +329,11 @@ export class UserService {
       JSON.stringify(instance),
       storePassword
     ).toString();
-    console.log('======>localUserData', encrypted);
-    console.log('encripted value', encrypted);
     let localUserData: UserData = {
       name: instance.userName,
       did: instance.did,
       data: encrypted,
     };
-    console.log('======>localUserData', localUserData);
     let json = JSON.stringify(localUserData, null, '');
     window.localStorage.setItem(key, json);
   }
@@ -365,6 +363,10 @@ export class UserService {
   public static Login(did: string, storePassword: string) {
     let instance = this.unlockUser(this.key(did), storePassword);
     SessionService.saveSessionItem(instance);
+  }
+
+  public static logout() {
+    SessionService.Logout();
   }
 }
 

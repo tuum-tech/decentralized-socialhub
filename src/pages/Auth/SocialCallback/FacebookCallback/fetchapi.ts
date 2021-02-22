@@ -26,18 +26,22 @@ export function requestFacebookToken(
 }
 
 export async function requestFacebookId(token: string): Promise<FacebookId> {
-  let url = `https://graph.facebook.com/me?access_token=${token}`;
+  const url = `https://graph.facebook.com/me?access_token=${token}`;
 
-  let response = await fetch(url, {
+  const response = await fetch(url, {
     method: 'GET',
   });
 
-  let json = await response.json();
+  const json = await response.json();
+  const orgName = json.name;
+
   console.log('====>face book response', json);
 
   return {
     id: json.id,
-    name: json.name,
-    credential: json.name, //TODO: Change to real credential when api is updated
+    fname: orgName.splite(' ')[0],
+    lname: orgName.splite(' ')[1] || '',
+    credential: json.name,
+    email: `${orgName.replace(' ', '')}@facebook.com`,
   };
 }

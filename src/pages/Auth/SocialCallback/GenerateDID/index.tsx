@@ -7,15 +7,17 @@ import { StaticContext } from 'react-router';
 
 import { UserService, AccountType, UserData } from 'src/services/user.service';
 import SetPassword from 'src/components/SetPassword';
+import { checkIfThisUserOnTuumVault } from './fetchapi';
 
 type LocationState = {
   from: Location;
   id: string;
-  name: string;
-  request_token: string;
+  fname: string;
+  lname: string;
   email: string;
   create_new?: number;
-  credential?: string;
+  request_token: string;
+  credential: string;
   service:
     | AccountType.DID
     | AccountType.Linkedin
@@ -38,36 +40,41 @@ const GenerateDID: React.FC<
   const [prevUsers, setPrevUsers] = useState<UserData[]>([]);
 
   const {
-    id,
-    name,
-    request_token,
+    fname,
+    lname,
     email,
-    credential,
+    id,
+    request_token,
     create_new = 0,
     service,
   } = props.location.state;
 
   useEffect(() => {
     (async () => {
-      if (id !== '' && name !== '' && request_token !== '') {
-        const pUsers = await UserService.getPrevDiD(id, service);
-        setPrevUsers(pUsers);
+      if (fname !== '' && lname !== '' && email !== '') {
+        console.log('=====>email', email);
+        const d: any = await checkIfThisUserOnTuumVault(email);
+        console.log('======>jajan', d);
+        // UserService.check
+        // const pUsers = await UserService.getPrevDiD(id, service);
+        // setPrevUsers(pUsers);
       }
     })();
   }, []);
 
   const loginToProfile = async (pwd: string = '') => {
-    await UserService.NewSignIn3rdParty(
-      id,
-      name,
-      request_token,
-      service,
-      email,
-      pwd,
-      true
-    );
-    setLoading(false);
-    setIsLogged(true);
+    // await UserService.NewSignIn3rdParty(
+    //   id,
+    //   fname,
+    //   lname,
+    //   request_token,
+    //   service,
+    //   email,
+    //   pwd,
+    //   true
+    // );
+    // setLoading(false);
+    // setIsLogged(true);
   };
 
   const getRedirect = () => {
@@ -86,7 +93,7 @@ const GenerateDID: React.FC<
             state: {
               did: didUserStr,
               id,
-              name,
+              fname,
               request_token,
               email,
               service: AccountType.Google,

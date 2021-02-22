@@ -61,12 +61,10 @@ const DidForm: React.FC<Props> = ({ error = false, setError }) => {
       validate = isMnemonicWordValid(i);
     }
     setError(validate === false);
-    console.log('=====>mnemonic', mnemonic);
     if (validate) {
       let userDid = await ElastosClient.did.loadFromMnemonic(
         mnemonic.join(' ')
       );
-      console.log('=====>', userDid);
       setDID(userDid.did);
     }
   };

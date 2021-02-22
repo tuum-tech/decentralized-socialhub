@@ -1,7 +1,7 @@
 import React from 'react';
 import style from './style.module.scss';
 
-import TodoList from '../../TodoList';
+import TodoList from '../TodoList';
 
 const ProfileCompletion: React.FC = () => {
   return (

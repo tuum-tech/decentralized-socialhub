@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import banner from '../../../assets/banner.png';
+import banner from '../../assets/banner.png';
 import style from './style.module.scss';
 
 const ProfileBanner: React.FC = () => {

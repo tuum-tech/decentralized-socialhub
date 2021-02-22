@@ -13,7 +13,6 @@ import style from './style.module.scss';
 import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
-<<<<<<< HEAD
 import {
   EducationItem,
   ExperienceItem,
@@ -21,13 +20,7 @@ import {
   ProfileDTO,
   SubState,
 } from './types';
-=======
-import { InferMappedProps, ProfileContent, SubState } from './types';
->>>>>>> 5ee943f... architecture cleaned
-import {
-  requestFullProfile
-
-} from './fetchapi';
+import { requestFullProfile } from './fetchapi';
 import FollowingList from 'src/components/FollowingList';
 import { RouteComponentProps } from 'react-router';
 import Logo from 'src/components/Logo';
@@ -43,7 +36,7 @@ interface MatchParams {
   did: string;
 }
 
-interface Props extends RouteComponentProps<MatchParams> { }
+interface Props extends RouteComponentProps<MatchParams> {}
 
 const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   props: RouteComponentProps<MatchParams>
@@ -54,32 +47,34 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
    * incoming from Server API calls. Maintain a local state.
    */
   const [full_profile, setfull_profile] = useState({
-    basicDTO:
-    {
+    basicDTO: {
       isEnabled: false,
-      first_name: "",
-      last_name: "",
-      did: "",
-      title: "",
-      about: "",
-      address: { number: "", street_name: "", postal_code: "", state: "", country: "" }
+      first_name: '',
+      last_name: '',
+      did: '',
+      title: '',
+      about: '',
+      address: {
+        number: '',
+        street_name: '',
+        postal_code: '',
+        state: '',
+        country: '',
+      },
     },
     educationDTO: {
       isEnabled: true,
-      items: ([] as EducationItem[])
+      items: [] as EducationItem[],
     },
     experienceDTO: {
       isEnabled: true,
-      items: ([] as ExperienceItem[])
-    }
+      items: [] as ExperienceItem[],
+    },
   });
-
 
   const getFullProfile = async (did: string): Promise<any> => {
     return await requestFullProfile(did);
   };
-
-
 
   let did: string = props.match.params.did || '';
 
@@ -87,8 +82,6 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     (async () => {
       let profile: ProfileDTO = await getFullProfile(did);
       setfull_profile(profile);
-
-
     })();
   }, []);
 
@@ -96,34 +89,32 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     <IonPage className={style['profilepage']}>
       <IonContent>
         <IonGrid className={style['profilepagegrid']}>
-          <PublicNavbar className="ion-justify-content-between">
-            <IonCol size="auto">
+          <PublicNavbar className='ion-justify-content-between'>
+            <IonCol size='auto'>
               <img src='../../assets/logo_profile_black.svg' />
             </IonCol>
-            <IonCol size="auto">
+            <IonCol size='auto'>
               <IonRow>
                 <IonCol>
-                  <RegisterNewUserButton to="/create/profile">Register new user</RegisterNewUserButton>
+                  <RegisterNewUserButton to='/create/profile'>
+                    Register new user
+                  </RegisterNewUserButton>
                 </IonCol>
                 <IonCol>
-                  <SignInButton to="/create/profile">Sign In</SignInButton>
+                  <SignInButton to='/create/profile'>Sign In</SignInButton>
                 </IonCol>
               </IonRow>
             </IonCol>
           </PublicNavbar>
 
-          <IonRow className="ion-justify-content-around">
-            <IonCol size="12">
+          <IonRow className='ion-justify-content-around'>
+            <IonCol size='12'>
               <ProfileComponent profile={full_profile} />
-
             </IonCol>
           </IonRow>
-
-
         </IonGrid>
       </IonContent>
     </IonPage>
-
 
     // <IonPage className={style['profilepage']}>
     //   <IonContent>

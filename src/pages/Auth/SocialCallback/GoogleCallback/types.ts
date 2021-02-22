@@ -9,6 +9,8 @@ export interface TokenResponse {
 
 export interface GoogleId {
   id: string;
-  name: string;
+  fname: string;
+  lname: string;
   email: string;
+  credential: string;
 }

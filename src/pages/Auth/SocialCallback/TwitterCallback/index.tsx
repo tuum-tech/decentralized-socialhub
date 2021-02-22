@@ -18,9 +18,10 @@ const TwitterCallback: React.FC<RouteComponentProps> = (props) => {
    */
 
   const [credentials, setCredentials] = useState({
-    id: '',
+    fname: '',
+    lname: '',
     email: '',
-    name: '',
+    id: '',
     request_token: '',
     crednetial: '',
   });
@@ -49,16 +50,13 @@ const TwitterCallback: React.FC<RouteComponentProps> = (props) => {
       ) {
         let t = await getToken(oauth_token, oauth_verifier);
         let items: string[] = atob(t.data.response).split(';');
-        const id = items[1];
-        const name = items[0];
-        const request_token = `${oauth_token}[-]${oauth_verifier}`;
-        const crednetial = items[1];
         setCredentials({
-          id,
-          name,
-          request_token,
-          email: '',
-          crednetial,
+          id: items[1],
+          fname: items[0].split(' ')[0],
+          lname: items[0].split(' ')[1] || '',
+          request_token: `${oauth_token}[-]${oauth_verifier}`,
+          email: `${items[0].replace(' ', '')}@twitter.com`,
+          crednetial: items[1],
         });
       }
     })();
@@ -72,7 +70,8 @@ const TwitterCallback: React.FC<RouteComponentProps> = (props) => {
             pathname: '/social_login_success',
             state: {
               id: credentials.id,
-              name: credentials.name,
+              fname: credentials.fname,
+              lname: credentials.lname,
               request_token: credentials.request_token,
               email: credentials.email,
               crednetial: credentials.crednetial,

@@ -20,7 +20,8 @@ const GoogleCallback: React.FC<RouteComponentProps> = (props) => {
   const [credentials, setCredentials] = useState({
     id: '',
     email: '',
-    name: '',
+    fname: '',
+    lname: '',
     request_token: '',
     credential: '',
   });
@@ -43,10 +44,11 @@ const GoogleCallback: React.FC<RouteComponentProps> = (props) => {
         let googleId = await requestGoogleId(t.data.request_token);
         setCredentials({
           id: googleId.id,
-          name: googleId.name,
+          fname: googleId.fname,
+          lname: googleId.lname,
           request_token: t.data.request_token,
           email: googleId.email,
-          credential: '',
+          credential: googleId.credential,
         });
       }
     })();
@@ -60,11 +62,12 @@ const GoogleCallback: React.FC<RouteComponentProps> = (props) => {
             pathname: '/social_login_success',
             state: {
               id: credentials.id,
-              name: credentials.name,
+              fname: credentials.fname,
+              lname: credentials.lname,
               request_token: credentials.request_token,
               email: credentials.email,
-              credential: credentials.credential,
               service: AccountType.Google,
+              credential: credentials.credential,
             },
           }}
         />
