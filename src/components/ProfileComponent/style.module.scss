@@ -1,8 +1,27 @@
 /** All your component stuyles */
 .profilecomponent{
     min-height: 200px;
+    height: auto;
     background-color: white;
     box-shadow: 0px 3px 3px #00000005;
     border-radius: 19px 19px 0px 0px;
   
+}
+
+.fixed {
+    position:fixed;
+    top:90px;
+    z-index: 1000;
+}
+
+.scroll {
+    width: 1400px;
+    margin-top: 460px;
+    z-index: 100;
+}
+
+
+.dashboard {
+    
+    background-color: rgb(206, 129, 28);
 }
