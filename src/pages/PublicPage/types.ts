@@ -12,15 +12,67 @@ export type ActionType = typeof Actions;
 
 
 
-export interface ProfileInfo {
-    localizedFirstName: string,
-    localizedLastName: string
+
+
+export interface ProfileDTO {
+    basicDTO: BasicDTO,
+    experienceDTO: ExperienceDTO,
+    educationDTO: EducationDTO,
 }
 
-export interface ProfileContent {
-    profile: ProfileInfo
+export interface Entity {
+    name: string,
+    did?: string
 }
 
-export interface ProfileResponse {
-    data: ProfileContent
+export interface ExperienceItem {
+    isEnabled: boolean,
+    entity: Entity,
+    period: Period,
+    title: string,
+    description: string,
+    order: string
+}
+
+export interface BasicDTO {
+    isEnabled: boolean,
+    first_name: string,
+    last_name: string,
+    did: string,
+    about: string,
+    title: string,
+    address: AddressDTO
+}
+
+export interface AddressDTO {
+    street_name: string,
+    number: string,
+    state: string,
+    country: string,
+    postal_code: string
+}
+
+export interface ExperienceDTO {
+    isEnabled: boolean,
+    items: ExperienceItem[]
+}
+
+export interface Period {
+    start: string,
+    end: string
+}
+
+export interface EducationItem {
+    isEnabled: boolean,
+    institution: string,
+    program: string,
+    period: Period,
+    title: string,
+    description: string,
+    order: string
+}
+
+export interface EducationDTO {
+    isEnabled: boolean,
+    items: EducationItem[]
 }

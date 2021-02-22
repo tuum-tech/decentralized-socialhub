@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonGrid, IonRow, IonCol, IonProgressBar } from '@ionic/react';
+import { IonGrid, IonRow, IonCol, IonProgressBar, IonButton } from '@ionic/react';
 import { ProfileContent } from 'src/pages/ProfilePage/types';
 import style from './style.module.scss';
 // import photo from '../../assets/photo.png';
@@ -9,16 +9,26 @@ import edit from '../../assets/icon-edit.svg';
 import addbutton from '../../assets/addbutton.svg';
 import university from '../../assets/university.png';
 import ButtonWithUpArrow from 'src/components/buttons/ButtonWithUpArrow';
+import RegisterNewUserButton from '../RegisterNewUserButton';
+import ProfileDescription from '../ProfileDescription';
+import ProfileName from '../ProfileName';
+import ProfileLocationWidget from '../ProfileLocationWidget';
+import styled from 'styled-components';
+import ButtonDefault from '../ButtonDefault';
+import ButtonLight from '../ButtonLight';
+import DashboardNav from '../DashboardNav';
+import { ProfileDTO } from 'src/pages/PublicPage/types';
+import DidSnippet from '../DidSnippet';
+
 
 interface IProps {
-  profile: ProfileContent;
+  profile: ProfileDTO;
 }
 
 const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
-  let lastName = profile.profile.lastName || 'Keywood';
-  let firstName = profile.profile.firstName || 'Adam';
 
   return (
+
     <IonGrid className={style['profileheader']}>
       <IonRow className={style['header']}>
         <IonCol size='auto'>
@@ -27,27 +37,26 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
         <IonCol size='8'>
           <IonGrid>
             <IonRow>
-              <h2>
-                {firstName} {lastName}
-              </h2>
-              {/* <span className={style['name']}>
-                {firstName} {lastName}
-              </span> */}
+              <ProfileName>{profile.basicDTO.first_name} {profile.basicDTO.last_name}</ProfileName>
             </IonRow>
             <IonRow>
-              <span className={style['details']}>Profile is ready</span>
+              <ProfileDescription>{profile.basicDTO.title}</ProfileDescription>
+            </IonRow>
+            <IonRow className="ion-justify-content-start">
+              <IonCol size="auto"><ProfileLocationWidget address={profile.basicDTO.address} /></IonCol>
+              <IonCol><DidSnippet basicDTO={profile.basicDTO} /></IonCol>
             </IonRow>
           </IonGrid>
         </IonCol>
         <IonCol size='2'>
-          <img src={edit} alt='edit' />
-          <IonProgressBar value={0.78}></IonProgressBar>
-          <span className={style['percent-completed-verified']}>
-            85% verified
-          </span>
+          <FollowButton>Sign in to Follow</FollowButton>
         </IonCol>
       </IonRow>
-      <IonRow>
+
+
+
+
+      {/* <IonRow>
         <IonCol>
           <div className={style['tip']}>
             <IonGrid>
@@ -65,8 +74,8 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
             </IonGrid>
           </div>
         </IonCol>
-      </IonRow>
-      <IonRow>
+      </IonRow> */}
+      {/* <IonRow>
         <IonCol>
           <h2>About</h2>
         </IonCol>
@@ -109,9 +118,31 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
         <IonCol size='4' className={style['title-university']}>
           University of Management and Technology - UMT
         </IonCol>
-      </IonRow>
+      </IonRow> */}
     </IonGrid>
   );
 };
 
 export default ProfileHeader;
+
+
+const FollowButton = styled(IonButton)`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  --background: #4c6fff;
+  --border-radius: 9px;
+  height:40px;
+  opacity: 1;
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0px;
+  color: #ffffff;
+  font-family: 'SF Pro Display';
+  font-size: 12px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+`;

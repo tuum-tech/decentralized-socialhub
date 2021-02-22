@@ -12,12 +12,101 @@ export class UserVaultScripts {
   static async CreateCollections(hiveClient: HiveClient) {
     await hiveClient.Database.createCollection('following');
     await hiveClient.Database.createCollection('userdetails');
+    await hiveClient.Database.createCollection("basic_profile");
+    await hiveClient.Database.createCollection("education_profile");
+    await hiveClient.Database.createCollection("experience_profile");
+
   }
 
   static async SetScripts(hiveClient: HiveClient) {
     await this.SetScriptGetFollowing(hiveClient);
     await this.SetScriptsForUserDetails(hiveClient);
+    await this.SetScriptsForProfile(hiveClient);
   }
+
+  static async SetScriptsForProfile(hiveClient: HiveClient) {
+
+    await hiveClient.Scripting.SetScript({
+      name: 'get_basic_profile',
+      executable: {
+        type: 'find',
+        name: 'get_basic_profile',
+        output: true,
+        body: {
+          collection: 'basic_profile',
+        },
+      },
+    });
+
+    await hiveClient.Scripting.SetScript({
+      name: 'get_education_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_education_profile',
+        output: true,
+        body: {
+          collection: 'education_profile'
+        }
+      }
+    });
+
+    await hiveClient.Scripting.SetScript({
+      name: 'get_experience_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_experience_profile',
+        output: true,
+        body: {
+          collection: 'experience_profile'
+        }
+      }
+    });
+
+    await hiveClient.Scripting.SetScript({
+      name: 'get_full_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'aggregated',
+        name: 'get_full_profile',
+        body: [
+          {
+            type: 'find',
+            name: 'get_basic',
+            output: true,
+            body: {
+              collection: 'basic_profile'
+            }
+          }
+          ,
+          {
+            type: 'find',
+            name: 'get_education_profile',
+            output: true,
+            body: {
+              collection: 'education_profile'
+            }
+          }
+          ,
+          {
+            type: 'find',
+            name: 'get_experience_profile',
+            output: true,
+            body: {
+              collection: 'experience_profile'
+            }
+          }
+        ]
+      }
+    });
+
+
+  }
+
 
   static async SetScriptGetFollowing(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({

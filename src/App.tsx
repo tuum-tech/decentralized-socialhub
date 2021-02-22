@@ -65,6 +65,11 @@ import TutorialPage from './pages/TutorialPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
 import ExplorePage from './pages/ExplorePage';
 
+import AccessCodePage from './pages/AlphaAccess/AccessCode';
+import RequestCodePage from './pages/AlphaAccess/RequestCode';
+import InviteCodePage from './pages/AlphaAccess/InviteCode';
+
+
 const App: React.FC = () => {
   // const [session, setSession] = useState({});
 
@@ -72,7 +77,7 @@ const App: React.FC = () => {
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
-          <Route path='/login' component={LoginPage} exact={true} />
+          {/* <Route path='/login' component={LoginPage} exact={true} />
           <Route
             path='/login/elastos/mnemonic'
             component={ElastosMnemonicPage}
@@ -89,14 +94,14 @@ const App: React.FC = () => {
           <Route path='/confirm' component={ConfirmMnemonicPage} exact={true} />
           <Route path='/publish' component={PublishIdentityPage} exact={true} />
 
-          <Route path='/choosevault' component={ChooseVaultPage} exact={true} />
+          <Route path='/choosevault' component={ChooseVaultPage} exact={true} /> */}
 
-          <Route path='/home' component={HomePage} exact={true} />
+          {/* <Route path='/home' component={HomePage} exact={true} /> */}
           <Route path='/profile' component={ProfilePage} exact={true} />
           <Route path='/explore' component={ExplorePage} exact={true} />
           {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
           {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
-          <Route exact path='/' render={() => <Redirect to='/home' />} />
+          <Route exact path='/' render={() => <Redirect to='/Alpha' />} />
           <Route
             path='/twitter_callback'
             component={TwitterCallback}
@@ -150,6 +155,10 @@ const App: React.FC = () => {
             exact={true}
           />
           <Route path='/create/why' component={CreateWhyPage} exact={true} />
+
+          <Route path='/Alpha' component={AccessCodePage} exact={true} />
+          <Route path='/Alpha/request' component={RequestCodePage} exact={true} />
+          <Route path='/Alpha/invite' component={InviteCodePage} exact={true} />
 
           <Route path='/tutorial' component={TutorialPage} exact={true} />
 
