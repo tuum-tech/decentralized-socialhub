@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 import { IonContent, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react';
 import style from './style.module.scss';
+import SearchComponent from 'src/components/SearchComponent';
+// import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 
-const Navbar: React.FC = () => {
-  const [active, setActive] = useState('dashboard');
+interface Props {
+  tab?: string;
+}
+
+const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
+  const [active, setActive] = useState(tab);
+  const history = useHistory();
 
   return (
     <IonContent>
@@ -62,7 +70,10 @@ const Navbar: React.FC = () => {
             className={
               active == 'search' ? style['item-active'] : style['item-link']
             }
-            onClick={() => setActive('search')}
+            onClick={() => {
+              setActive('search');
+              history.push('/explore');
+            }}
           >
             <IonIcon
               slot='start'
@@ -71,6 +82,7 @@ const Navbar: React.FC = () => {
             ></IonIcon>
             <IonLabel>
               <h3>Explore</h3>
+              {/* {active == 'search' && <SearchComponent />} */}
             </IonLabel>
           </IonItem>
           <hr className={style['divider']} />

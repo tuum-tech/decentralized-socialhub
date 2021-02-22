@@ -52,8 +52,11 @@ export class HiveService {
   }
 
   static async getAppHiveClient(): Promise<HiveClient> {
+    console.log('search service client grab1');
+
     let host = `${process.env.REACT_APP_TUUM_TECH_HIVE}`;
     let hiveClient = await HiveClient.createAnonymousInstance(host);
+    console.log('search service client grab2');
     return hiveClient;
   }
 

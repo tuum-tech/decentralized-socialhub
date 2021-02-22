@@ -24,7 +24,7 @@ let run = async () => {
           did: '$params.did',
         },
         update: {
-          '$set': {
+          $set: {
             did: '$params.did',
             followers: '$params.followers',
           },
@@ -102,7 +102,7 @@ let run = async () => {
           did: '$params.did',
         },
         update: {
-          '$set': {
+          $set: {
             migrated: true,
           },
         },
@@ -112,7 +112,7 @@ let run = async () => {
 
   // user scripts on tuum vault
   // TODO: possibility of consolidate user et userrecords collection in a sinigle collection
-  await client.Database.createCollection('user');
+  await client.Database.createCollection('users');
   await client.Scripting.SetScript({
     name: 'get_users',
     allowAnonymousUser: true,
@@ -124,12 +124,17 @@ let run = async () => {
       body: {
         collection: 'users',
         filter: {
-          email: '\$params.email',
+          email: '$params.email',
+        },
+        options: {
+          projection: {
+            _id: false,
+            created: false,
+          },
         },
       },
-    }
+    },
   });
-
 
   await client.Scripting.SetScript({
     name: 'add_user',
@@ -142,14 +147,14 @@ let run = async () => {
       body: {
         collection: 'users',
         document: {
-          first_name: '\$params.first_name',
-          last_name: '\$params.last_name',
-          email: '\$params.email',
-          status: '\$params.status',
-          code: '\$params.code',
+          first_name: '$params.first_name',
+          last_name: '$params.last_name',
+          email: '$params.email',
+          status: '$params.status',
+          code: '$params.code',
         },
       },
-    }
+    },
   });
 
   await client.Scripting.SetScript({
@@ -167,8 +172,8 @@ let run = async () => {
           body: {
             collection: 'users',
             filter: {
-              code: '\$params.code',
-              status: 'WAITING_CONFIRMATION'
+              code: '$params.code',
+              status: 'WAITING_CONFIRMATION',
             },
           },
         },
@@ -179,8 +184,8 @@ let run = async () => {
           body: {
             collection: 'users',
             filter: {
-              code: '\$params.code',
-              status: 'WAITING_CONFIRMATION'
+              code: '$params.code',
+              status: 'WAITING_CONFIRMATION',
             },
             update: {
               $set: {
@@ -189,8 +194,57 @@ let run = async () => {
             },
           },
         },
-      ]
-    }
+      ],
+    },
+  });
+
+  //store and retrieve universities data from tuum-tech vault
+  await client.Database.createCollection('universities');
+  const fs = require('fs');
+
+  fs.readFile('./src/data/world_universities_and_domains.json', (err, data) => {
+    if (err) throw err;
+    let universityList = JSON.parse(data);
+    console.log(universityList[0]);
+    client.Database.insertMany('universities', universityList);
+  });
+
+  await client.Scripting.SetScript({
+    name: 'get_universities',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_universities',
+      output: true,
+      body: {
+        collection: 'universities',
+        filter: {
+          name: { $regex: '$params.name' },
+          // $regex: { name: '.*$params.name.*' },
+          // name: '$params.name',
+        },
+      },
+    },
+  });
+
+  await client.Scripting.SetScript({
+    name: 'get_users',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_users',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          // $regex: { name: '.*$params.name.*' },
+          name: { $regex: '$params.name' },
+          // name: '$params.name',
+        },
+      },
+    },
   });
 
   console.log('All scripts OK');
