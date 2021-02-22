@@ -26,8 +26,6 @@ import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
-
-
 /* Theme variables */
 import './theme/variables.css';
 // import './theme/theme-clearlyme.css';
@@ -65,6 +63,7 @@ import ForgotPasswordPage from './pages/Sign/ForgotPasswordPage';
 
 import TutorialPage from './pages/TutorialPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
+import ExplorePage from './pages/ExplorePage';
 
 const App: React.FC = () => {
   // const [session, setSession] = useState({});
@@ -94,6 +93,7 @@ const App: React.FC = () => {
 
           <Route path='/home' component={HomePage} exact={true} />
           <Route path='/profile' component={ProfilePage} exact={true} />
+          <Route path='/explore' component={ExplorePage} exact={true} />
           {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
           {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
           <Route exact path='/' render={() => <Redirect to='/home' />} />
