@@ -1,24 +1,7 @@
 /**
  * Page
  */
-import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonButton,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonInput,
-  IonSearchbar,
-} from '@ionic/react';
+import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
@@ -30,6 +13,7 @@ import style from './style.module.scss';
 import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
+<<<<<<< HEAD
 import {
   EducationItem,
   ExperienceItem,
@@ -37,6 +21,9 @@ import {
   ProfileDTO,
   SubState,
 } from './types';
+=======
+import { InferMappedProps, ProfileContent, SubState } from './types';
+>>>>>>> 5ee943f... architecture cleaned
 import {
   requestFullProfile
 

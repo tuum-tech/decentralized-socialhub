@@ -1,13 +1,13 @@
 /**
  * Shared constants
  */
-import baseConst from '../../shared-base/xconstants';
+import baseConst from '../../../shared-base/xconstants';
 
 /**
  * Base Namespace for the page
  * Use it wisely, as it affects your pagename
  */
-export const NameSpace = 'ChooseVault';
+export const NameSpace = 'ElastosMnemonicPage';
 
 /***
  * Action Definitions - START
