@@ -1,14 +1,4 @@
-/** All your component stuyles */
-.followinglist{
-    min-height: 200px;
-    box-shadow: 0px 3px 3px #00000005;
-    border-radius: 19px 19px 19px 19px;
-    background-color: white;
-    padding: 8px 8px 15px 8px;
-    opacity: 1;
-    margin: 5px 10px 15px 15px;
-    
-
+.following-widget {
     ion-row {
         align-items: center;
     }
@@ -24,12 +14,14 @@
 
     .verified {
         margin: 0px 0px 3px 3px;
+        width:  14px;
+        height: 14px;
     }
 
     .thumbnail {
         border-radius: 50%;
-        width: 28px;
-        height: 28px;
+        width: 32px;
+        height: 32px;
     }
 
     .name{

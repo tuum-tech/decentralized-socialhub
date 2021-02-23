@@ -1,24 +1,37 @@
 import React from 'react';
 import { IonText } from '@ionic/react';
 import styled from 'styled-components';
-import did from '../../assets/icon/did.svg';
+import did_icon from '../../assets/icon/did.svg';
 import { AddressDTO, BasicDTO } from 'src/pages/PublicPage/types';
 
 interface IProp {
-  basicDTO: BasicDTO
+  did: string
 }
 
-const DidSnippet: React.FC<IProp> = ({ basicDTO }: IProp) => {
+const DidSnippet: React.FC<IProp> = ({ did }: IProp) => {
   return (
 
     <ProfileDesignation>
-      <img src={did} alt="pin" />&nbsp;<span>{basicDTO.did}</span>
+      <SmallIcon src={did_icon} alt="did" />&nbsp;<TruncatedSpan>{did}</TruncatedSpan>
     </ProfileDesignation>
   )
 };
 
 export default DidSnippet;
 
+
+const SmallIcon = styled.img`
+width:10px;
+height:11px;
+display: inline !important; 
+`;
+
+const TruncatedSpan = styled.span`
+width:100px;
+white-space:nowrap;
+overflow:hidden; 
+text-overflow: ellipsis; 
+`;
 
 const ProfileDesignation = styled(IonText)`
 font-family: 'SF Pro Display';

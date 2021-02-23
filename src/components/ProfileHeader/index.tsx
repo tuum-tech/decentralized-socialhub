@@ -50,13 +50,9 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
             <IonRow>
               <ProfileDescription>{profile.basicDTO.title}</ProfileDescription>
             </IonRow>
-            <IonRow className='ion-justify-content-start'>
-              <IonCol size='auto'>
-                <ProfileLocationWidget address={profile.basicDTO.address} />
-              </IonCol>
-              <IonCol>
-                <DidSnippet basicDTO={profile.basicDTO} />
-              </IonCol>
+            <IonRow className="ion-justify-content-start">
+              <IonCol size="auto"><ProfileLocationWidget address={profile.basicDTO.address} /></IonCol>
+              <IonCol><DidSnippet did={profile.basicDTO.did} /></IonCol>
             </IonRow>
           </IonGrid>
         </IonCol>

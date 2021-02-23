@@ -12,7 +12,7 @@ const FollowersWidget: React.FC = () => {
 
       </IonCardHeader>
 
-      <IonCardContent>ebdiqw</IonCardContent>
+      <IonCardContent></IonCardContent>
     </IonCard>
   )
 };

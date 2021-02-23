@@ -13,19 +13,6 @@ import { EducationDTO, EducationItem } from 'src/pages/PublicPage/types';
 import styled from 'styled-components';
 
 
-// export interface EducationItem {
-//   isEnabled: boolean,
-//   entity: string,
-//   period: string,
-//   title: string,
-//   description: string,
-//   order: string
-// }
-
-// export interface EducationDTO {
-//   isEnabled: boolean,
-//   items: EducationItem[]
-// }
 
 interface IEducationProps {
   educationDTO: EducationDTO;

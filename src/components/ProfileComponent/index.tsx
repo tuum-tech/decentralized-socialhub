@@ -107,8 +107,8 @@ const ProfileComponent: React.FC<IProps> = ({ profile }: IProps) => {
           <IonCol size="3">
 
             <SocialProfiles />
+            <FollowingList did={profile.basicDTO.did} />
             <FollowersWidget />
-            <FollowingList />
           </IonCol>
         </IonRow >
       </IonGrid >
