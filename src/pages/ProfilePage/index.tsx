@@ -46,6 +46,8 @@ import Logo from 'src/components/Logo';
 import Navbar from 'src/components/Navbar';
 import DashboardNav from 'src/components/DashboardNav';
 import { EducationItem, ExperienceItem, ProfileDTO } from '../PublicPage/types';
+import OnBoarding from 'src/components/OnBoarding';
+import { UserService } from 'src/services/user.service';
 
 const ProfilePage: React.FC<RouteComponentProps> = (
   props: RouteComponentProps
@@ -80,6 +82,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
       items: [] as ExperienceItem[],
     },
   });
+  const [onboardingCompleted, setOnboardingStatus] = useState(false);
 
   const [active, setActive] = useState('dashboard');
 
@@ -95,13 +98,10 @@ const ProfilePage: React.FC<RouteComponentProps> = (
 
   const getPublicUrl = (): string => {
     let item = window.sessionStorage.getItem('session_instance');
-
     if (!item) {
       throw Error('Not logged in');
     }
-
     let instance = JSON.parse(item);
-
     return '/did/' + instance.did;
   };
 
@@ -114,6 +114,19 @@ const ProfilePage: React.FC<RouteComponentProps> = (
     })();
   }, [token]);
 
+  useEffect(() => {
+    (() => {
+      if (!onboardingCompleted) {
+        let instance = UserService.getLoggedUser();
+        setOnboardingStatus(instance.onBoardingCompleted);
+      }
+    })();
+  }, [onboardingCompleted]);
+
+  if (!onboardingCompleted) {
+    return <OnBoarding />;
+  }
+
   return (
     <IonPage>
       <IonContent className={style['profilepage']}>
@@ -123,7 +136,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
               <Logo />
               <Navbar />
             </IonCol>
-            {/* <IonCol size='7' className={style['center-panel']}>              
+            {/* <IonCol size='7' className={style['center-panel']}>
               <ProfileComponent profile={profile} />
             </IonCol> */}
             <IonCol size='10' className={style['right-panel']}>

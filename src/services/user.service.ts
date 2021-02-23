@@ -22,6 +22,7 @@ export interface ISessionItem {
   firstName: string;
   lastName: string;
   isDIDPublished: boolean;
+  onBoardingCompleted: boolean;
 }
 
 export interface ITemporaryDID {
@@ -109,6 +110,7 @@ export class UserService {
       lastName: data.lastName,
       hiveHost: data.hiveHost,
       userToken: data.userToken,
+      onBoardingCompleted: false,
     };
 
     this.lockUser(this.key(data.did), sessionItem, storePassword);
@@ -137,6 +139,7 @@ export class UserService {
       lastName: lname,
       hiveHost: 'http://localhost:5000',
       userToken: token,
+      onBoardingCompleted: false,
     };
 
     // add new user to the tuum.tech vault
@@ -224,7 +227,7 @@ export class UserService {
     return newDID.did;
   }
 
-  static async getLoggedUser(): Promise<ISessionItem> {
+  static getLoggedUser(): ISessionItem {
     return SessionService.getSession();
   }
 
@@ -282,6 +285,18 @@ export class UserService {
     }
   }
 
+  public static setOnBoardingComplted() {
+    let item = window.sessionStorage.getItem('session_instance');
+    if (item) {
+      const sessionItem = JSON.parse(item);
+      sessionItem.onBoardingCompleted = true;
+      window.sessionStorage.setItem(
+        'session_instance',
+        JSON.stringify(sessionItem, null, '')
+      );
+    }
+  }
+
   public static Login(did: string, storePassword: string) {
     let instance = this.unlockUser(this.key(did), storePassword);
     SessionService.saveSessionItem(instance);
@@ -294,7 +309,7 @@ export class UserService {
 
 //To be
 class SessionService {
-  static async getSession(): Promise<ISessionItem> {
+  static getSession(): ISessionItem {
     let item = window.sessionStorage.getItem('session_instance');
 
     if (!item) {
@@ -302,11 +317,10 @@ class SessionService {
     }
 
     let instance = JSON.parse(item);
-
     return instance;
   }
 
-  static async saveSessionItem(item: ISessionItem) {
+  static saveSessionItem(item: ISessionItem) {
     window.sessionStorage.clear();
     window.sessionStorage.setItem(
       'session_instance',

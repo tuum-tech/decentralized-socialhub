@@ -12,11 +12,8 @@ export interface IHiveChallenge {
   nonce: string;
 }
 export class HiveService {
-
-
-
   static async getSessionInstance(): Promise<HiveClient | undefined> {
-    let instance = await UserService.getLoggedUser();
+    let instance = UserService.getLoggedUser();
     console.log('======>instance', instance);
     if (!instance.isDIDPublished || instance.accountType !== AccountType.DID) {
       console.log(

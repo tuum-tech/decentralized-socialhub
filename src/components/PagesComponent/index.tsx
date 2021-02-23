@@ -21,7 +21,7 @@ const FollowingList: React.FC = () => {
   const [linkedinCredential, setLinkedinCredential] = useState('');
   const [publishStatus, setPublishStatus] = useState({ requestStatus: '' });
   const updateValues = async () => {
-    let user = await UserService.getLoggedUser();
+    let user = UserService.getLoggedUser();
     let document = await DidService.getDidDocument(user.did);
 
     if (!document) {

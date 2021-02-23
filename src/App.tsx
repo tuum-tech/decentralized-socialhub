@@ -109,7 +109,7 @@ const App: React.FC = () => {
           <Route path='/explore' component={ExplorePage} exact={true} />
           {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
           {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
-          {/* <Route exact path='/' render={() => <Redirect to='/Alpha' />} /> */}
+          <Route exact path='/' render={() => <Redirect to='/Alpha' />} />
 
           {/* // login workflow */}
           <Route path='/profile' component={ProfilePage} exact={true} />
