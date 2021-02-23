@@ -1,17 +1,17 @@
 // import { combineReducers } from 'redux';
-import { AssistService } from './assist.service';
-import { DidService } from './did.service';
-import { CredentialType, DidcredsService } from './didcreds.service';
-import { HiveService } from './hive.service';
+import { AssistService } from "./assist.service";
+import { DidService } from "./did.service";
+import { CredentialType, DidcredsService } from "./didcreds.service";
+import { HiveService } from "./hive.service";
 
-const CryptoJS = require('crypto-js');
+const CryptoJS = require("crypto-js");
 
 export enum AccountType {
-  DID = 'DID',
-  Linkedin = 'Linkedin',
-  Facebook = 'Facebook',
-  Google = 'Google',
-  Twitter = 'Twitter',
+  DID = "DID",
+  Linkedin = "Linkedin",
+  Facebook = "Facebook",
+  Google = "Google",
+  Twitter = "Twitter",
 }
 
 export interface ISessionItem {
@@ -47,7 +47,7 @@ export interface SignInDIDData {
 
 export class UserService {
   private static key(did: string): string {
-    return `user_${did.replace('did:elastos:', '')}`;
+    return `user_${did.replace("did:elastos:", "")}`;
   }
 
   public static getSignedUsers(): string[] {
@@ -55,23 +55,23 @@ export class UserService {
 
     for (var i = 0, len = window.localStorage.length; i < len; ++i) {
       let key = window.localStorage.key(i);
-      if (key && key.startsWith('user_')) {
-        response.push(key.replace('user_', 'did:elastos:'));
+      if (key && key.startsWith("user_")) {
+        response.push(key.replace("user_", "did:elastos:"));
       }
     }
     return response;
   }
 
   public static getPrevDiD(id: string, appName: string): UserData[] {
-    let userKey = appName + '_' + id;
+    let userKey = appName + "_" + id;
     let response: UserData[] = [];
     for (var i = 0, len = window.localStorage.length; i < len; ++i) {
       let key = window.localStorage.key(i);
-      console.log('====>key, userKey', key, userKey);
+      console.log("====>key, userKey", key, userKey);
       if (key === userKey) {
         const localData = window.localStorage.getItem(key);
         if (localData) {
-          console.log('====>JSON.parse(localData)', JSON.parse(localData));
+          console.log("====>JSON.parse(localData)", JSON.parse(localData));
           response.push(JSON.parse(localData));
         }
       }
@@ -92,10 +92,10 @@ export class UserService {
   // }
 
   public static GetUserSession(): ISessionItem {
-    let item = window.sessionStorage.getItem('session_instance');
+    let item = window.sessionStorage.getItem("session_instance");
 
     if (!item) {
-      throw Error('Not logged in');
+      throw Error("Not logged in");
     }
 
     return JSON.parse(item);
@@ -127,7 +127,7 @@ export class UserService {
     credential: string,
     storePassword: string
   ) {
-    console.log('Sign in with', service.toString());
+    console.log("Sign in with", service.toString());
     let sessionItem: ISessionItem;
 
     let did = await this.generateTemporaryDID(service, credential);
@@ -137,20 +137,20 @@ export class UserService {
       isDIDPublished: false,
       firstName: fname,
       lastName: lname,
-      hiveHost: 'http://localhost:5000',
+      hiveHost: "http://localhost:5000",
       userToken: token,
       onBoardingCompleted: false,
     };
 
     // add new user to the tuum.tech vault
     const get_users_scripts = {
-      name: 'add_user',
+      name: "add_user",
       params: {
         first_name: fname,
         last_name: lname,
-        full_name: fname + ' ' + lname,
+        full_name: fname + " " + lname,
         email: email,
-        status: 'CONFIRMED',
+        status: "CONFIRMED",
         code: 1,
         did: did,
         vaulturl: sessionItem.hiveHost,
@@ -160,19 +160,19 @@ export class UserService {
         target_app_did: process.env.REACT_APP_APPLICATION_ID,
       },
     };
-    const url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/api/tuumvault_router/scripting/run_script`;
+    const url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/tuumvault_router/scripting/run_script`;
     const postData: any = {
-      method: 'POST',
+      method: "POST",
       headers: {
         Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
-        Accept: 'application/json',
-        charset: 'utf8',
-        'content-type': 'application/json',
+        Accept: "application/json",
+        charset: "utf8",
+        "content-type": "application/json",
       },
       body: JSON.stringify(get_users_scripts),
     };
     let response = await fetch(url, postData);
-    console.log('=====>response', response);
+    console.log("=====>response", response);
 
     console.log(sessionItem);
     this.lockUser(this.key(did), sessionItem, storePassword);
@@ -184,14 +184,14 @@ export class UserService {
     if (service === AccountType.Twitter) return CredentialType.Twitter;
     if (service === AccountType.Google) return CredentialType.Google;
     if (service === AccountType.Linkedin) return CredentialType.Linkedin;
-    throw Error('Invalid account type');
+    throw Error("Invalid account type");
   }
 
   private static async generateTemporaryDID(
     service: AccountType,
     credential: string
   ): Promise<string> {
-    console.log('Generating temporary DID');
+    console.log("Generating temporary DID");
     let newDID = await DidService.generateNew();
     let temporaryDocument = await DidService.temporaryDidDocument(newDID);
 
@@ -210,7 +210,7 @@ export class UserService {
     let response = await AssistService.publishDocument(newDID.did, requestPub);
 
     window.localStorage.setItem(
-      `temporary_${newDID.did.replace('did:elastos:', '')}`,
+      `temporary_${newDID.did.replace("did:elastos:", "")}`,
       JSON.stringify({
         mnemonic: newDID.mnemonic,
       })
@@ -236,35 +236,35 @@ export class UserService {
     instance: ISessionItem,
     storePassword: string
   ) {
-    console.log('======>localUserData', key, instance, storePassword);
+    console.log("======>localUserData", key, instance, storePassword);
     let encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(instance),
       storePassword
     ).toString();
     let localUserData: UserData = {
-      name: instance.firstName + ' ' + instance.lastName,
+      name: instance.firstName + " " + instance.lastName,
       did: instance.did,
       data: encrypted,
     };
-    let json = JSON.stringify(localUserData, null, '');
+    let json = JSON.stringify(localUserData, null, "");
     window.localStorage.setItem(key, json);
   }
 
   private static unlockUser(key: string, storePassword: string): ISessionItem {
-    console.log('Unlocking user', key);
+    console.log("Unlocking user", key);
     let item = window.localStorage.getItem(key);
 
-    if (!item) throw new Error('User not found');
+    if (!item) throw new Error("User not found");
 
     try {
       let userData: UserData = JSON.parse(item);
-      console.log('user data', userData);
+      console.log("user data", userData);
       let decrypted = CryptoJS.AES.decrypt(userData.data, storePassword);
-      console.log('decrypted', decrypted);
+      console.log("decrypted", decrypted);
       let instance = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
-      console.log('instance', instance);
+      console.log("instance", instance);
       if (!instance && !instance.userToken)
-        throw new Error('Incorrect password');
+        throw new Error("Incorrect password");
       return instance;
     } catch (error) {
       console.error(error);
@@ -286,13 +286,13 @@ export class UserService {
   }
 
   public static setOnBoardingComplted() {
-    let item = window.sessionStorage.getItem('session_instance');
+    let item = window.sessionStorage.getItem("session_instance");
     if (item) {
       const sessionItem = JSON.parse(item);
       sessionItem.onBoardingCompleted = true;
       window.sessionStorage.setItem(
-        'session_instance',
-        JSON.stringify(sessionItem, null, '')
+        "session_instance",
+        JSON.stringify(sessionItem, null, "")
       );
     }
   }
@@ -310,10 +310,10 @@ export class UserService {
 //To be
 class SessionService {
   static getSession(): ISessionItem {
-    let item = window.sessionStorage.getItem('session_instance');
+    let item = window.sessionStorage.getItem("session_instance");
 
     if (!item) {
-      throw Error('Not logged in');
+      throw Error("Not logged in");
     }
 
     let instance = JSON.parse(item);
@@ -323,8 +323,8 @@ class SessionService {
   static saveSessionItem(item: ISessionItem) {
     window.sessionStorage.clear();
     window.sessionStorage.setItem(
-      'session_instance',
-      JSON.stringify(item, null, '')
+      "session_instance",
+      JSON.stringify(item, null, "")
     );
   }
 
