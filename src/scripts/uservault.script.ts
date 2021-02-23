@@ -38,8 +38,8 @@ export class UserVaultScripts {
 
     await hiveClient.Scripting.SetScript({
       name: 'get_education_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
+      // allowAnonymousUser: true,
+      // allowAnonymousApp: true,
       executable: {
         type: 'find',
         name: 'get_education_profile',

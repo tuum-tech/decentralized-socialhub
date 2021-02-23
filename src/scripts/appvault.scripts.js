@@ -5,7 +5,7 @@ const { testHelper } = require('./testsHelper');
 
 let run = async () => {
   let client = await testHelper.getHiveInstance(
-    config.app1,
+    config.tuum_tech_mnemonic,
     config.tuum_tech_mnemonic,
     config.hive_host,
     config.appId

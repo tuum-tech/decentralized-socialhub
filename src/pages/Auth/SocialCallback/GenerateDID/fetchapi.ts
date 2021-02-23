@@ -3,10 +3,25 @@ import request, { BaseplateResp } from 'src/baseplate/request';
 export async function checkIfThisUserOnTuumVault(
   email: string
 ): Promise<BaseplateResp> {
+  // const script = {
+  //   name: 'get_users',
+  //   params: {
+  //     email: email,
+  //   },
+  //   context: {
+  //     target_did: process.env.REACT_APP_APPLICATION_DID,
+  //     target_app_did: process.env.REACT_APP_APPLICATION_ID,
+  //   },
+  // };
   const script = {
-    name: 'get_users',
+    name: 'add_user',
     params: {
-      email: email,
+      // email: email,
+      first_name: '$params.first_name',
+      last_name: '$params.last_name',
+      email: '$params.email',
+      status: '$params.status',
+      code: '$params.code',
     },
     context: {
       target_did: process.env.REACT_APP_APPLICATION_DID,
