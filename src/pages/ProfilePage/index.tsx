@@ -23,11 +23,7 @@ import style from './style.module.scss';
 import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
-import {
-  InferMappedProps,
-  ProfileResponse,
-  SubState,
-} from './types';
+import { InferMappedProps, ProfileResponse, SubState } from './types';
 import { requestFullProfile, requestLinkedinProfile } from './fetchapi';
 import FollowingList from 'src/components/FollowingList';
 import Pages from 'src/components/Pages';
@@ -60,24 +56,29 @@ const ProfilePage: React.FC<RouteComponentProps> = (
    * incoming from Server API calls. Maintain a local state.
    */
   const [full_profile, setfull_profile] = useState({
-    basicDTO:
-    {
+    basicDTO: {
       isEnabled: false,
-      first_name: "",
-      last_name: "",
-      did: "",
-      title: "",
-      about: "",
-      address: { number: "", street_name: "", postal_code: "", state: "", country: "" }
+      first_name: '',
+      last_name: '',
+      did: '',
+      title: '',
+      about: '',
+      address: {
+        number: '',
+        street_name: '',
+        postal_code: '',
+        state: '',
+        country: '',
+      },
     },
     educationDTO: {
       isEnabled: true,
-      items: ([] as EducationItem[])
+      items: [] as EducationItem[],
     },
     experienceDTO: {
       isEnabled: true,
-      items: ([] as ExperienceItem[])
-    }
+      items: [] as ExperienceItem[],
+    },
   });
 
   const [active, setActive] = useState('dashboard');
@@ -107,7 +108,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
   useEffect(() => {
     (async () => {
       if (token != '') {
-        let profile: ProfileDTO = await getFullProfile("did");
+        let profile: ProfileDTO = await getFullProfile('did');
         setfull_profile(profile);
       }
     })();
@@ -135,7 +136,6 @@ const ProfilePage: React.FC<RouteComponentProps> = (
         </IonGrid>
       </IonContent>
     </IonPage>
-
   );
 };
 

@@ -12,16 +12,17 @@ export const WavingHandImg = styled(IonImg)`
   width: 38px;
 `;
 
-export const OnBoardLayout = styled(IonPage)`
-  display: flex;
-  flex-direction: row;
+export const OnBoardLayout = styled.div`
   font-style: normal;
+  height: 100%;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 40% 60%;
 `;
 
 export const OnBoardLayoutLeft = styled.div`
   background-color: var(--theme-primary-blue);
   border-radius: 0px;
-  width: 40%;
   color: #ffffff;
   position: relative;
 `;
@@ -49,13 +50,16 @@ export const OnBoardLayoutLeftContentIntro = styled(Text12)`
 export const OnBoardLayoutRight = styled.div`
   background: #fbfbfd;
   border-radius: 0px;
-  width: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const OnBoardLayoutRightContent = styled.div`
   width: 62%;
   margin: 161px auto;
   color: var(--txt-heading-dark);
+  margin: 50px auto;
 `;
 
 export const OnBoardLayoutRightContentTitle = styled(Text28)`

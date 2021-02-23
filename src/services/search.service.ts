@@ -96,7 +96,7 @@ export class SearchService {
 
     let usersResponse: IRunScriptResponse<IUserResponse> = await this.appHiveClient.Scripting.RunScript(
       {
-        name: 'get_users',
+        name: 'get_users_by_name',
         params: {
           name: '.*' + name + '.*',
         },

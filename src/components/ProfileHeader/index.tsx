@@ -1,13 +1,16 @@
 import React from 'react';
-import { IonGrid, IonRow, IonCol, IonProgressBar, IonButton } from '@ionic/react';
+import {
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonProgressBar,
+  IonButton,
+} from '@ionic/react';
+
 import { ProfileContent } from 'src/pages/ProfilePage/types';
+
 import style from './style.module.scss';
-// import photo from '../../assets/photo.png';
-import photo from '../../assets/dp.jpeg';
-import bulb from '../../assets/bulb.svg';
-import edit from '../../assets/icon-edit.svg';
-import addbutton from '../../assets/addbutton.svg';
-import university from '../../assets/university.png';
+
 import ButtonWithUpArrow from 'src/components/buttons/ButtonWithUpArrow';
 import RegisterNewUserButton from '../RegisterNewUserButton';
 import ProfileDescription from '../ProfileDescription';
@@ -20,15 +23,18 @@ import DashboardNav from '../DashboardNav';
 import { ProfileDTO } from 'src/pages/PublicPage/types';
 import DidSnippet from '../DidSnippet';
 
-
+// import photo from '../../assets/photo.png';
+import photo from '../../assets/dp.jpeg';
+import bulb from '../../assets/bulb.svg';
+import edit from '../../assets/icon-edit.svg';
+import addbutton from '../../assets/addbutton.svg';
+import university from '../../assets/university.png';
 interface IProps {
   profile: ProfileDTO;
 }
 
 const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
-
   return (
-
     <IonGrid className={style['profileheader']}>
       <IonRow className={style['header']}>
         <IonCol size='auto'>
@@ -37,14 +43,20 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
         <IonCol size='8'>
           <IonGrid>
             <IonRow>
-              <ProfileName>{profile.basicDTO.first_name} {profile.basicDTO.last_name}</ProfileName>
+              <ProfileName>
+                {profile.basicDTO.first_name} {profile.basicDTO.last_name}
+              </ProfileName>
             </IonRow>
             <IonRow>
               <ProfileDescription>{profile.basicDTO.title}</ProfileDescription>
             </IonRow>
-            <IonRow className="ion-justify-content-start">
-              <IonCol size="auto"><ProfileLocationWidget address={profile.basicDTO.address} /></IonCol>
-              <IonCol><DidSnippet basicDTO={profile.basicDTO} /></IonCol>
+            <IonRow className='ion-justify-content-start'>
+              <IonCol size='auto'>
+                <ProfileLocationWidget address={profile.basicDTO.address} />
+              </IonCol>
+              <IonCol>
+                <DidSnippet basicDTO={profile.basicDTO} />
+              </IonCol>
             </IonRow>
           </IonGrid>
         </IonCol>
@@ -52,9 +64,6 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
           <FollowButton>Sign in to Follow</FollowButton>
         </IonCol>
       </IonRow>
-
-
-
 
       {/* <IonRow>
         <IonCol>
@@ -125,7 +134,6 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
 
 export default ProfileHeader;
 
-
 const FollowButton = styled(IonButton)`
   display: flex;
   flex-direction: column;
@@ -134,7 +142,7 @@ const FollowButton = styled(IonButton)`
   gap: 10px;
   --background: #4c6fff;
   --border-radius: 9px;
-  height:40px;
+  height: 40px;
   opacity: 1;
   text-align: center;
   text-transform: none;

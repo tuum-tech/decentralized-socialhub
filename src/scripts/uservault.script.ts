@@ -12,10 +12,9 @@ export class UserVaultScripts {
   static async CreateCollections(hiveClient: HiveClient) {
     await hiveClient.Database.createCollection('following');
     await hiveClient.Database.createCollection('userdetails');
-    await hiveClient.Database.createCollection("basic_profile");
-    await hiveClient.Database.createCollection("education_profile");
-    await hiveClient.Database.createCollection("experience_profile");
-
+    await hiveClient.Database.createCollection('basic_profile');
+    await hiveClient.Database.createCollection('education_profile');
+    await hiveClient.Database.createCollection('experience_profile');
   }
 
   static async SetScripts(hiveClient: HiveClient) {
@@ -25,7 +24,6 @@ export class UserVaultScripts {
   }
 
   static async SetScriptsForProfile(hiveClient: HiveClient) {
-
     await hiveClient.Scripting.SetScript({
       name: 'get_basic_profile',
       executable: {
@@ -47,9 +45,9 @@ export class UserVaultScripts {
         name: 'get_education_profile',
         output: true,
         body: {
-          collection: 'education_profile'
-        }
-      }
+          collection: 'education_profile',
+        },
+      },
     });
 
     await hiveClient.Scripting.SetScript({
@@ -61,9 +59,9 @@ export class UserVaultScripts {
         name: 'get_experience_profile',
         output: true,
         body: {
-          collection: 'experience_profile'
-        }
-      }
+          collection: 'experience_profile',
+        },
+      },
     });
 
     await hiveClient.Scripting.SetScript({
@@ -79,34 +77,29 @@ export class UserVaultScripts {
             name: 'get_basic',
             output: true,
             body: {
-              collection: 'basic_profile'
-            }
-          }
-          ,
+              collection: 'basic_profile',
+            },
+          },
           {
             type: 'find',
             name: 'get_education_profile',
             output: true,
             body: {
-              collection: 'education_profile'
-            }
-          }
-          ,
+              collection: 'education_profile',
+            },
+          },
           {
             type: 'find',
             name: 'get_experience_profile',
             output: true,
             body: {
-              collection: 'experience_profile'
-            }
-          }
-        ]
-      }
+              collection: 'experience_profile',
+            },
+          },
+        ],
+      },
     });
-
-
   }
-
 
   static async SetScriptGetFollowing(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({

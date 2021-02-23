@@ -19,7 +19,7 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
         <IonList>
           <IonItem
             className={
-              active == 'dashboard' ? style['item-active'] : style['item-link']
+              active === 'dashboard' ? style['item-active'] : style['item-link']
             }
             onClick={() => setActive('dashboard')}
           >
@@ -34,7 +34,7 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           </IonItem>
           <IonItem
             className={
-              active == 'profile_manager'
+              active === 'profile_manager'
                 ? style['item-active']
                 : style['item-link']
             }
@@ -51,7 +51,7 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           </IonItem>
           <IonItem
             className={
-              active == 'connections'
+              active === 'connections'
                 ? style['item-active']
                 : style['item-link']
             }
@@ -68,7 +68,7 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           </IonItem>
           <IonItem
             className={
-              active == 'search' ? style['item-active'] : style['item-link']
+              active === 'search' ? style['item-active'] : style['item-link']
             }
             onClick={() => {
               setActive('search');
@@ -88,7 +88,7 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           <hr className={style['divider']} />
           <IonItem
             className={
-              active == 'settings' ? style['item-active'] : style['item-link']
+              active === 'settings' ? style['item-active'] : style['item-link']
             }
             onClick={() => setActive('settings')}
           >
@@ -103,7 +103,7 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           </IonItem>
           <IonItem
             className={
-              active == 'notifications'
+              active === 'notifications'
                 ? style['item-active']
                 : style['item-link']
             }

@@ -3,12 +3,13 @@ import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
-import LoginPage from './pages/LoginPage/Loadable';
 import ProfilePage from './pages/ProfilePage/Loadable';
 import PublicPage from './pages/PublicPage/Loadable';
-import LinkedinCallback from './pages/LinkedinCallback/Loadable';
-import GoogleCallback from './pages/GoogleCallback/Loadable';
-import FacebookCallback from './pages/FacebookCallback/Loadable';
+
+// import LinkedinCallback from './pages/LinkedinCallback/Loadable';
+// import FacebookCallback from './pages/FacebookCallback/Loadable';
+// import GoogleCallback from './pages/SocialCallback/GoogleCallback';
+// import GenerateDID from './pages/GenerateDID';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -33,33 +34,41 @@ import './theme/variables.css';
 import './styles/app.scss';
 
 /* Pages */
-// import LoginPage from './pages/LoginPage/Loadable';
-// import ElastosLoginPage from './pages/ElastosLoginPage/Loadable';
-// import MnemonicPage from './pages/MnemonicPage/Loadable';
-// import RegisterPage from './pages/RegisterPage';
+import LoginPage from './pages/OldPages/LoginPage/Loadable';
 import HomePage from './pages/HomePage';
-import ElastosMnemonicPage from './pages/ElastosMnemonicPage';
-import ElastosLoginQRPage from './pages/ElastosLoginQRPage';
-import CreateIdentityPage from './pages/CreateIdentityPage';
-import ConfirmMnemonicPage from './pages/ConfirmMnemonicPage';
+// import LoginPage from './pages/LoginPage/Loadable';
+// import ElastosLoginPage from './pages/OldPages/ElastosLoginPage/Loadable';
+// import MnemonicPage from './pages/OldPages/pages/MnemonicPage/Loadable';
+import RegisterPage from './pages/OldPages/RegisterPage/Loadable';
+import ElastosMnemonicPage from './pages/OldPages/ElastosMnemonicPage';
+import ElastosLoginQRPage from './pages/OldPages/ElastosLoginQRPage';
+import CreateIdentityPage from './pages/OldPages/CreateIdentityPage';
+import ConfirmMnemonicPage from './pages/OldPages/ConfirmMnemonicPage';
 import PublishIdentityPage from './pages/PublishIdentityPage';
 import ChooseVaultPage from './pages/ChooseVaultPage';
-import RegisterPage from './pages/RegisterPage';
 // import SessionContext from './context/session.context';
-import TwitterCallback from './pages/TwitterCallback';
+// import TwitterCallback from './pages/TwitterCallback';
 
-import LoadingPage from './pages/LoadingPage';
+import {
+  GoogleCallback,
+  TwitterCallback,
+  LinkedinCallback,
+  GenerateDID,
+  FacebookCallback,
+} from './pages/Auth/SocialCallback';
 
-import CreateProfilePage from './pages/Create/CreateProfilePage';
-import CreatePasswordPage from './pages/Create/CreatePassword';
-import AssociatedProfilePage from './pages/Create/AssociatedProfilePage';
+// import LoadingPage from './pages/LoadingPage';
 
-import CreateWhyPage from './pages/Create/CreateWhyPage';
-import PasswordSignPage from './pages/Sign/PasswordSignPage';
-import DIDSingPage from './pages/Sign/DIDSignPage';
-import QRSignPage from './pages/Sign/QRSignPage';
-import SignHelpPage from './pages/Sign/SignHelp';
-import ForgotPasswordPage from './pages/Sign/ForgotPasswordPage';
+import CreateProfilePage from './pages/Auth/Create/CreateProfilePage';
+import CreatePasswordPage from './pages/Auth/Create/CreatePassword';
+import AssociatedProfilePage from './pages/Auth/Create/AssociatedProfilePage';
+
+import CreateWhyPage from './pages/Auth/Create/CreateWhyPage';
+import PasswordSignPage from './pages/Auth/Sign/PasswordSignPage';
+import DIDSingPage from './pages/Auth/Sign/DIDSignPage';
+import QRSignPage from './pages/Auth/Sign/QRSignPage';
+import SignHelpPage from './pages/Auth/Sign/SignHelp';
+import ForgotPasswordPage from './pages/Auth/Sign/ForgotPasswordPage';
 
 import TutorialPage from './pages/TutorialPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
@@ -69,7 +78,6 @@ import AccessCodePage from './pages/AlphaAccess/AccessCode';
 import RequestCodePage from './pages/AlphaAccess/RequestCode';
 import InviteCodePage from './pages/AlphaAccess/InviteCode';
 
-
 const App: React.FC = () => {
   // const [session, setSession] = useState({});
 
@@ -77,7 +85,7 @@ const App: React.FC = () => {
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
-          {/* <Route path='/login' component={LoginPage} exact={true} />
+          <Route path='/login' component={LoginPage} exact={true} />
           <Route
             path='/login/elastos/mnemonic'
             component={ElastosMnemonicPage}
@@ -94,38 +102,22 @@ const App: React.FC = () => {
           <Route path='/confirm' component={ConfirmMnemonicPage} exact={true} />
           <Route path='/publish' component={PublishIdentityPage} exact={true} />
 
-          <Route path='/choosevault' component={ChooseVaultPage} exact={true} /> */}
+          <Route path='/choosevault' component={ChooseVaultPage} exact={true} />
 
           {/* <Route path='/home' component={HomePage} exact={true} /> */}
           <Route path='/profile' component={ProfilePage} exact={true} />
           <Route path='/explore' component={ExplorePage} exact={true} />
           {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
           {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
-          <Route exact path='/' render={() => <Redirect to='/Alpha' />} />
-          <Route
-            path='/twitter_callback'
-            component={TwitterCallback}
-            exact={false}
-          />
-          <Route
-            path='/linkedin_callback'
-            component={LinkedinCallback}
-            exact={false}
-          />
-          <Route
-            path='/google_callback'
-            component={GoogleCallback}
-            exact={false}
-          />
-          <Route
-            path='/facebook_callback'
-            component={FacebookCallback}
-            exact={false}
-          />
-          {/* <Route exact path="/" render={() => <Redirect to="/login" />} /> */}
-          <Route path='/did/:did' component={PublicPage} exact={true} />
+          {/* <Route exact path='/' render={() => <Redirect to='/Alpha' />} /> */}
 
-          <Route path='/loading' component={LoadingPage} exact={true} />
+          {/* // login workflow */}
+          <Route path='/profile' component={ProfilePage} exact={true} />
+          <Route path='/twitter_callback' component={TwitterCallback} />
+          <Route path='/linkedin_callback' component={LinkedinCallback} />
+          <Route path='/google_callback' component={GoogleCallback} />
+          <Route path='/facebook_callback' component={FacebookCallback} />
+          <Route path='/social_login_success' component={GenerateDID} />
           <Route path='/sign/help' component={SignHelpPage} exact={true} />
           <Route
             path='/sign/password'
@@ -155,9 +147,16 @@ const App: React.FC = () => {
             exact={true}
           />
           <Route path='/create/why' component={CreateWhyPage} exact={true} />
+          <Route path='/did/:did' component={PublicPage} exact={true} />
+
+          {/* <Route path='/loading' component={LoadingPage} exact={true} /> */}
 
           <Route path='/Alpha' component={AccessCodePage} exact={true} />
-          <Route path='/Alpha/request' component={RequestCodePage} exact={true} />
+          <Route
+            path='/Alpha/request'
+            component={RequestCodePage}
+            exact={true}
+          />
           <Route path='/Alpha/invite' component={InviteCodePage} exact={true} />
 
           <Route path='/tutorial' component={TutorialPage} exact={true} />

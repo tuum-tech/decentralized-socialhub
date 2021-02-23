@@ -1,6 +1,6 @@
 import { HiveClient } from '@elastos/elastos-hive-js-sdk';
 import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
-import { floor, noConflict } from 'lodash';
+// import { floor, noConflict } from 'lodash';
 import { ProfileResponse } from 'src/pages/ProfilePage/types';
 import { HiveService } from './hive.service';
 import { UserService } from './user.service';
@@ -72,7 +72,9 @@ export class ProfileService {
     });
   }
 
-  async getFullProfile(did: string): Promise<IRunScriptResponse<ProfileResponse>> {
+  async getFullProfile(
+    did: string
+  ): Promise<IRunScriptResponse<ProfileResponse>> {
     return this.appHiveClient.Scripting.RunScript({
       name: 'get_full_profile',
       context: {
