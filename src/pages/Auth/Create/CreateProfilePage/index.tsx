@@ -2,8 +2,8 @@
  * Page
  */
 
-import React, { useState } from 'react';
-import { Redirect } from 'react-router';
+import React, { useState, useEffect } from 'react';
+import { Redirect, useHistory } from 'react-router';
 import Modal from 'react-bootstrap/esm/Modal';
 import Button from 'react-bootstrap/esm/Button';
 
@@ -55,15 +55,15 @@ const CreateProfile: React.FC = () => {
   const [email, setEmail] = useState('');
   const [showModal, setShowModal] = useState(false);
 
-  // const history = useHistory();
-  // useEffect(() => {
-  //   AlphaService.isSessionValid().then((isSessionValid) => {
-  //     console.log('is session valid', isSessionValid);
-  //     if (!isSessionValid) {
-  //       window.location.href = '/';
-  //     }
-  //   });
-  // });
+  const history = useHistory();
+  useEffect(() => {
+    AlphaService.isSessionValid().then((isSessionValid) => {
+      console.log('is session valid', isSessionValid);
+      if (!isSessionValid) {
+        window.location.href = '/';
+      }
+    });
+  });
 
   const createUser = async () => {
     let response = (await requestCreateUser(

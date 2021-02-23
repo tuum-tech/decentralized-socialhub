@@ -40,14 +40,6 @@ const DidSignPage: React.FC<
   const [error, setError] = useState(false);
   const { did } = props.location.state || '';
 
-  // useEffect(() => {
-  //   (async () => {
-  //     if (did && did !== '') {
-  //       console.log('====>did', did);
-  //     }
-  //   })();
-  // }, []);
-
   const renderBasicContents = () => {
     return (
       <OnBoardLayoutLeft>

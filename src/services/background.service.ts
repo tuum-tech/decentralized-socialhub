@@ -22,7 +22,7 @@ export interface IUserRecord {
 export class BackgroundService {
   static async checkIfUserRecordIsAdded() {
     // can set 'migrated' field True in db forcely for testing
-    const sessionItem = await UserService.getLoggedUser();
+    const sessionItem = UserService.getLoggedUser();
     const appHiveClient = await HiveService.getAppHiveClient();
 
     let runScriptRes: any = await appHiveClient.Scripting.RunScript({
@@ -65,7 +65,7 @@ export class BackgroundService {
   }
 
   static async migrate() {
-    const sessionItem = await UserService.getLoggedUser();
+    const sessionItem = UserService.getLoggedUser();
     const appHiveClient = await HiveService.getAppHiveClient();
 
     await this.checkIfUserRecordIsAdded();
