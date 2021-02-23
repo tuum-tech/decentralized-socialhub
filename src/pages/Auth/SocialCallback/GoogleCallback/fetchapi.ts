@@ -26,14 +26,14 @@ export async function requestGoogleId(token: string): Promise<GoogleId> {
   });
 
   let json = await response.json();
-
-  console.log(json);
+  const fname = json.given_name;
+  const lname = json.family_name;
 
   return {
     id: json.id,
-    fname: json.given_name,
-    lname: json.family_name,
+    fname,
+    lname,
     email: json.email,
-    credential: '',
+    credential: json.id,
   };
 }

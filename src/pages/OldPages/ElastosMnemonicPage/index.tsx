@@ -188,7 +188,8 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
           did: did,
           hiveHost: hiveAddress,
           userToken: userToken,
-          name: '',
+          firstName: '',
+          lastName: '',
           isDIDPublished: false,
         },
         pwd

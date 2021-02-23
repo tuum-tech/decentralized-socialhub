@@ -2,10 +2,11 @@
  * Page
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { RouteComponentProps, withRouter, Redirect } from 'react-router-dom';
 import { StaticContext } from 'react-router';
+import { UserService } from 'src/services/user.service';
 
 import {
   OnBoardLayout,
@@ -25,8 +26,10 @@ import {
   ButtonWithLogo,
   ArrowButton,
 } from 'src/components/buttons';
-import { Text16 } from 'src/components/texts';
+import { Text16, Text12 } from 'src/components/texts';
+import TextInput from 'src/components/inputs/TextInput';
 
+import wavinghand from '../../../../assets/icon/wavinghand.png';
 import whitelogo from '../../../../assets/logo/whitetextlogo.png';
 import eye from '../../../../assets/icon/eye.png';
 
@@ -42,11 +45,18 @@ const DidAddress = styled.div`
   color: #8492a6;
 `;
 
+const ErrorTxt = styled(Text12)`
+  color: red;
+  text-align: center;
+  margin-top: 5px;
+`;
+
 type LocationState = {
   from: Location;
   did: string;
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   request_token: String;
   email: string;
   service: string;
@@ -55,33 +65,75 @@ type LocationState = {
 const AssociatedProfile: React.FC<
   RouteComponentProps<{}, StaticContext, LocationState>
 > = (props) => {
-  const { did, id, name, request_token, email, service } = props.location.state;
-  const [createAnother, setCreateAnother] = useState(false);
+  const {
+    did,
+    id,
+    firstName,
+    lastName,
+    request_token,
+    email,
+    service,
+  } = props.location.state;
+  const [redirect, setRedirect] = useState('');
   const [sign, setSign] = useState(false);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  if (sign) {
-    return <Redirect to={{ pathname: '/sign/did' }} />;
-  }
-  if (createAnother) {
+  if (redirect === 'createAnother') {
     return (
       <Redirect
         to={{
           pathname: '/social_login_success',
           state: {
             id,
-            name,
+            firstName: firstName,
+            lastName: lastName,
             request_token,
             email,
             service,
-            create_new: 1,
           },
         }}
       />
     );
   }
+  if (redirect === 'profile') {
+    return <Redirect to='/profile' />;
+  }
 
-  return (
-    <OnBoardLayout>
+  const continueWithPassword = () => {
+    if (password === '') {
+      setError('You should fill the password');
+      return;
+    } else {
+      setError('');
+      const res: any = UserService.LoginWithPassword(did, password);
+      if (!res) {
+        setError('User Not found secured by this password');
+        return;
+      } else {
+        setRedirect('profile');
+      }
+    }
+  };
+
+  const renderLeftSide = () => {
+    if (sign) {
+      return (
+        <OnBoardLayoutLeft>
+          <OnBoardLayoutLogo src={whitelogo} />
+          <OnBoardLayoutLeftContent>
+            <WavingHandImg src={wavinghand} />
+            <OnBoardLayoutLeftContentTitle className='mt-18px'>
+              Continue with your password
+            </OnBoardLayoutLeftContentTitle>
+            <OnBoardLayoutLeftContentIntro className='my-25px'>
+              Forgot your password? Help
+            </OnBoardLayoutLeftContentIntro>
+          </OnBoardLayoutLeftContent>
+        </OnBoardLayoutLeft>
+      );
+    }
+    return (
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>
@@ -102,6 +154,36 @@ const AssociatedProfile: React.FC<
           </ButtonLink>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
+    );
+  };
+
+  const renderRightSide = () => {
+    if (sign) {
+      return (
+        <OnBoardLayoutRight>
+          <OnBoardLayoutRightContent style={{ marginTop: 0 }}>
+            <OnBoardLayoutRightContentTitle>
+              Enter your password
+            </OnBoardLayoutRightContentTitle>
+
+            <TextInput
+              value={password}
+              label='Password'
+              onChange={(n) => setPassword(n)}
+              placeholder='Enter your password'
+            />
+            {error !== '' && <ErrorTxt>{error}</ErrorTxt>}
+            <ButtonWithLogo
+              mt={34}
+              hasLogo={false}
+              text='Continue'
+              onClick={continueWithPassword}
+            />
+          </OnBoardLayoutRightContent>
+        </OnBoardLayoutRight>
+      );
+    }
+    return (
       <OnBoardLayoutRight>
         <OnBoardLayoutRightContent>
           <OnBoardLayoutRightContentTitle>
@@ -121,7 +203,6 @@ const AssociatedProfile: React.FC<
               setSign(true);
             }}
           />
-
           <OnBoardLayoutRightContentTitle style={{ marginTop: '96px' }}>
             Create new profile
           </OnBoardLayoutRightContentTitle>
@@ -132,12 +213,19 @@ const AssociatedProfile: React.FC<
           <ButtonWithLogo
             text='Create new profile'
             onClick={() => {
-              setCreateAnother(true);
+              setRedirect('CreateAnother');
             }}
             mt={42}
           />
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
+    );
+  };
+
+  return (
+    <OnBoardLayout>
+      {renderLeftSide()}
+      {renderRightSide()}
     </OnBoardLayout>
   );
 };

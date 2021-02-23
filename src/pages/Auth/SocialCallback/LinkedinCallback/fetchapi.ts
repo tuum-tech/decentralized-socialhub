@@ -29,8 +29,7 @@ export function requestLinkedinToken(
 // let corsavoidhost = 'https://cors-anywhere.herokuapp.com/';
 
 export async function requestLinkedinId(token: string): Promise<LinkedinId> {
-  // let url = `https://api.linkedin.com/v2/me?projection=(id,firstName,lastName,emailAddress)`;
-  let url = `https://api.linkedin.com/v2/me`;
+  let url = `https://api.linkedin.com/v2/me?projection=(id,firstName,lastName,emailAddress)`;
   let data: any = {
     method: 'GET',
     headers: {

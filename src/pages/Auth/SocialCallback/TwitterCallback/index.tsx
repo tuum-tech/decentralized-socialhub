@@ -50,12 +50,15 @@ const TwitterCallback: React.FC<RouteComponentProps> = (props) => {
       ) {
         let t = await getToken(oauth_token, oauth_verifier);
         let items: string[] = atob(t.data.response).split(';');
+        const fname = items[0].split(' ')[0];
+        const lname = items[0].split(' ')[1] || '';
+        const uniqueEmail = fname + lname + items[1] + '@twitter.com';
         setCredentials({
           id: items[1],
-          fname: items[0].split(' ')[0],
-          lname: items[0].split(' ')[1] || '',
+          fname,
+          lname,
           request_token: `${oauth_token}[-]${oauth_verifier}`,
-          email: `${items[0].replace(' ', '')}@twitter.com`,
+          email: uniqueEmail.toLocaleLowerCase(),
           crednetial: items[1],
         });
       }

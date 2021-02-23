@@ -24,9 +24,11 @@ const DidInputRow = styled(IonRow)`
 interface Props {
   setError: (error: boolean) => void;
   error: boolean;
+  compareDid?: string;
 }
 
-const DidForm: React.FC<Props> = ({ error = false, setError }) => {
+const DidForm: React.FC<Props> = ({ error = false, setError, compareDid }) => {
+  console.log('=====>compareDid', compareDid);
   const [mnemonic, setMnemonic] = useState([
     'razor',
     'where',
@@ -41,6 +43,7 @@ const DidForm: React.FC<Props> = ({ error = false, setError }) => {
     'ski',
     'apart',
   ]);
+
   const [did, setDID] = useState(
     UserService.getSignedUsers().length > 0
       ? UserService.getSignedUsers()[0]
@@ -65,7 +68,8 @@ const DidForm: React.FC<Props> = ({ error = false, setError }) => {
       let userDid = await ElastosClient.did.loadFromMnemonic(
         mnemonic.join(' ')
       );
-      setDID(userDid.did);
+      console.log('=======>', userDid);
+      // setDID(userDid.did);
     }
   };
 

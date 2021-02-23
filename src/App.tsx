@@ -34,19 +34,18 @@ import './theme/variables.css';
 import './styles/app.scss';
 
 /* Pages */
-// import LoginPage from './pages/OldPages/LoginPage/Loadable';
+import LoginPage from './pages/OldPages/LoginPage/Loadable';
+import HomePage from './pages/HomePage';
 // import LoginPage from './pages/LoginPage/Loadable';
-// import ElastosLoginPage from './pages/ElastosLoginPage/Loadable';
-// import MnemonicPage from './pages/MnemonicPage/Loadable';
-// import RegisterPage from './pages/RegisterPage';
-// import HomePage from './pages/HomePage';
-// import ElastosMnemonicPage from './pages/OldPages/ElastosMnemonicPage';
-// import ElastosLoginQRPage from './pages/OldPages/ElastosLoginQRPage';
-// import CreateIdentityPage from './pages/OldPages/CreateIdentityPage';
-// import ConfirmMnemonicPage from './pages/OldPages/ConfirmMnemonicPage';
-// import PublishIdentityPage from './pages/PublishIdentityPage';
-// import ChooseVaultPage from './pages/ChooseVaultPage';
-// import RegisterPage from './pages/OldPages/RegisterPage';
+// import ElastosLoginPage from './pages/OldPages/ElastosLoginPage/Loadable';
+// import MnemonicPage from './pages/OldPages/pages/MnemonicPage/Loadable';
+import RegisterPage from './pages/OldPages/RegisterPage/Loadable';
+import ElastosMnemonicPage from './pages/OldPages/ElastosMnemonicPage';
+import ElastosLoginQRPage from './pages/OldPages/ElastosLoginQRPage';
+import CreateIdentityPage from './pages/OldPages/CreateIdentityPage';
+import ConfirmMnemonicPage from './pages/OldPages/ConfirmMnemonicPage';
+import PublishIdentityPage from './pages/PublishIdentityPage';
+import ChooseVaultPage from './pages/ChooseVaultPage';
 // import SessionContext from './context/session.context';
 // import TwitterCallback from './pages/TwitterCallback';
 
@@ -86,7 +85,7 @@ const App: React.FC = () => {
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
-          {/* <Route path='/login' component={LoginPage} exact={true} />
+          <Route path='/login' component={LoginPage} exact={true} />
           <Route
             path='/login/elastos/mnemonic'
             component={ElastosMnemonicPage}
@@ -103,7 +102,7 @@ const App: React.FC = () => {
           <Route path='/confirm' component={ConfirmMnemonicPage} exact={true} />
           <Route path='/publish' component={PublishIdentityPage} exact={true} />
 
-          <Route path='/choosevault' component={ChooseVaultPage} exact={true} /> */}
+          <Route path='/choosevault' component={ChooseVaultPage} exact={true} />
 
           {/* <Route path='/home' component={HomePage} exact={true} /> */}
           <Route path='/profile' component={ProfilePage} exact={true} />

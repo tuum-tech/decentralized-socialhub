@@ -2,8 +2,10 @@
  * Page
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IonRow } from '@ionic/react';
+import { RouteComponentProps, withRouter, Redirect } from 'react-router-dom';
+import { StaticContext } from 'react-router';
 
 import {
   OnBoardLayout,
@@ -28,8 +30,23 @@ import DidSignForm from '../components/DidSignForm/DidSignForm';
 
 import style from './style.module.scss';
 
-const CreateProfile = () => {
+type LocationState = {
+  did: string;
+};
+
+const DidSignPage: React.FC<
+  RouteComponentProps<{}, StaticContext, LocationState>
+> = (props) => {
   const [error, setError] = useState(false);
+  const { did } = props.location.state || '';
+
+  // useEffect(() => {
+  //   (async () => {
+  //     if (did && did !== '') {
+  //       console.log('====>did', did);
+  //     }
+  //   })();
+  // }, []);
 
   const renderBasicContents = () => {
     return (
@@ -99,11 +116,11 @@ const CreateProfile = () => {
             <Text12>What are these?</Text12>
             <Text12>&nbsp;Help</Text12>
           </IonRow>
-          <DidSignForm error={error} setError={setError} />
+          <DidSignForm error={error} setError={setError} compareDid={did} />
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>
   );
 };
 
-export default CreateProfile;
+export default withRouter(DidSignPage);

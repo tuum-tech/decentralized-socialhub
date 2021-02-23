@@ -12,6 +12,7 @@ let run = async () => {
   );
   client.Payment.CreateFreeVault();
 
+  // ===== followers section start =====
   await client.Database.createCollection('followers');
   await client.Scripting.SetScript({
     name: 'set_followers',
@@ -36,7 +37,6 @@ let run = async () => {
       },
     },
   });
-
   await client.Scripting.SetScript({
     name: 'get_followers',
     executable: {
@@ -57,64 +57,35 @@ let run = async () => {
       },
     },
   });
+  // ===== followers section end =====
 
-  // userrecord scripts on tuum vault
-  await client.Database.createCollection('userrecords');
-  await client.Scripting.SetScript({
-    name: 'add_userrecord',
-    executable: {
-      type: 'insert',
-      name: 'add_userrecord',
-      body: {
-        collection: 'userrecords',
-        document: {
-          username: '$params.username',
-          did: '$params.did',
-          vaulturl: '$params.vaulturl',
-          migrated: false,
-        },
-      },
-    },
-  });
-  await client.Scripting.SetScript({
-    name: 'get_userrecord',
-    executable: {
-      type: 'find',
-      name: 'get_userrecord',
-      output: true,
-      body: {
-        collection: 'userrecords',
-        filter: {
-          did: '$params.did',
-        },
-      },
-    },
-  });
-  await client.Scripting.SetScript({
-    name: 'migrate_userrecord',
-    executable: {
-      type: 'update',
-      name: 'migrate_userrecord',
-      output: true,
-      body: {
-        collection: 'userrecords',
-        filter: {
-          did: '$params.did',
-        },
-        update: {
-          $set: {
-            migrated: true,
-          },
-        },
-      },
-    },
-  });
-
-  // user scripts on tuum vault
-  // TODO: possibility of consolidate user et userrecords collection in a sinigle collection
+  // ===== users section start =====
   await client.Database.createCollection('users');
   await client.Scripting.SetScript({
-    name: 'get_users',
+    name: 'add_user',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'insert',
+      name: 'add_user',
+      output: true,
+      body: {
+        collection: 'users',
+        document: {
+          first_name: '$params.first_name',
+          last_name: '$params.last_name',
+          name: '$params.full_name',
+          email: '$params.email',
+          status: '$params.status',
+          code: '$params.code',
+          did: '$params.did',
+          vaulturl: '$params.vaulturl',
+        },
+      },
+    },
+  });
+  await client.Scripting.SetScript({
+    name: 'get_users', // by email
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
@@ -135,28 +106,48 @@ let run = async () => {
       },
     },
   });
-
   await client.Scripting.SetScript({
-    name: 'add_user',
+    name: 'get_users_by_did', // by email
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
-      type: 'insert',
-      name: 'add_user',
+      type: 'find',
+      name: 'get_users',
       output: true,
       body: {
         collection: 'users',
-        document: {
-          first_name: '$params.first_name',
-          last_name: '$params.last_name',
-          email: '$params.email',
-          status: '$params.status',
-          code: '$params.code',
+        filter: {
+          did: '$params.did',
+        },
+        options: {
+          projection: {
+            _id: false,
+            created: false,
+          },
         },
       },
     },
   });
-
+  await client.Scripting.SetScript({
+    name: 'update_user_by_did',
+    executable: {
+      type: 'update',
+      name: 'update_user_by_did',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          did: '$params.did',
+        },
+        update: {
+          $set: {
+            did: '$params.did',
+            status: '$params.status',
+          },
+        },
+      },
+    },
+  });
   await client.Scripting.SetScript({
     name: 'verify_code',
     allowAnonymousUser: true,
@@ -197,7 +188,27 @@ let run = async () => {
       ],
     },
   });
+  await client.Scripting.SetScript({
+    name: 'get_users_by_name',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_users_by_name',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          // $regex: { name: '.*$params.name.*' },
+          name: { $regex: '$params.name' },
+          // name: '$params.name',
+        },
+      },
+    },
+  });
+  // ===== users section end =====
 
+  // ===== universities section start =====
   //store and retrieve universities data from tuum-tech vault
   await client.Database.createCollection('universities');
   const fs = require('fs');
@@ -227,26 +238,7 @@ let run = async () => {
       },
     },
   });
-
-  await client.Scripting.SetScript({
-    name: 'get_users',
-    allowAnonymousUser: true,
-    allowAnonymousApp: true,
-    executable: {
-      type: 'find',
-      name: 'get_users',
-      output: true,
-      body: {
-        collection: 'users',
-        filter: {
-          // $regex: { name: '.*$params.name.*' },
-          name: { $regex: '$params.name' },
-          // name: '$params.name',
-        },
-      },
-    },
-  });
-
+  // ===== universities section end =====
   console.log('All scripts OK');
 };
 

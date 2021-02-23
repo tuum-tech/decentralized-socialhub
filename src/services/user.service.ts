@@ -19,7 +19,8 @@ export interface ISessionItem {
   userToken: string;
   accountType: AccountType;
   did: string;
-  userName: string;
+  firstName: string;
+  lastName: string;
   isDIDPublished: boolean;
 }
 
@@ -35,7 +36,8 @@ export interface UserData {
 }
 
 export interface SignInDIDData {
-  name: string;
+  firstName: string;
+  lastName: string;
   did: string;
   hiveHost: string;
   userToken: string;
@@ -59,8 +61,6 @@ export class UserService {
     return response;
   }
 
-  public static checkUserOnTuumTechVault() {}
-
   public static getPrevDiD(id: string, appName: string): UserData[] {
     let userKey = appName + '_' + id;
     let response: UserData[] = [];
@@ -78,17 +78,17 @@ export class UserService {
     return response;
   }
 
-  private static getOtherUsers(appName: string): string[] {
-    let appKey = appName + '_';
-    let response: string[] = [];
-    for (var i = 0, len = window.localStorage.length; i < len; ++i) {
-      let key = window.localStorage.key(i);
-      if (key && key.startsWith(appKey)) {
-        response.push(key.replace(appKey, ''));
-      }
-    }
-    return response;
-  }
+  // public static getOtherUsers(appName: string): string[] {
+  //   let appKey = appName + '_';
+  //   let response: string[] = [];
+  //   for (var i = 0, len = window.localStorage.length; i < len; ++i) {
+  //     let key = window.localStorage.key(i);
+  //     if (key && key.startsWith(appKey)) {
+  //       response.push(key.replace(appKey, ''));
+  //     }
+  //   }
+  //   return response;
+  // }
 
   public static GetUserSession(): ISessionItem {
     let item = window.sessionStorage.getItem('session_instance');
@@ -105,7 +105,8 @@ export class UserService {
       did: data.did,
       accountType: AccountType.DID,
       isDIDPublished: data.isDIDPublished,
-      userName: data.name,
+      firstName: data.firstName,
+      lastName: data.lastName,
       hiveHost: data.hiveHost,
       userToken: data.userToken,
     };
@@ -114,156 +115,64 @@ export class UserService {
     SessionService.saveSessionItem(sessionItem);
   }
 
-  public static async SignInWithFacebook(
-    id: string,
-    name: string,
-    token: string,
-    credential: string,
-    password: string = ''
-  ) {
-    await this.SignIn3rdParty(
-      id,
-      name,
-      token,
-      AccountType.Facebook,
-      credential,
-      password
-    );
-  }
-
-  public static async SignInWithLinkedin(
-    id: string,
-    name: string,
-    token: string,
-    credential: string,
-    password: string = ''
-  ) {
-    await this.SignIn3rdParty(
-      id,
-      name,
-      token,
-      AccountType.Linkedin,
-      credential,
-      password
-    );
-  }
-
-  public static async SignInWithGoogle(
-    id: string,
-    name: string,
-    token: string,
-    credential: string,
-    password: string = ''
-  ) {
-    await this.SignIn3rdParty(
-      id,
-      name,
-      token,
-      AccountType.Google,
-      credential,
-      password
-    );
-  }
-
-  public static async SignInWithTwitter(
-    id: string,
-    name: string,
-    token: string,
-    credential: string,
-    password: string = ''
-  ) {
-    await this.SignIn3rdParty(
-      id,
-      name,
-      token,
-      AccountType.Twitter,
-      credential,
-      password
-    );
-  }
-
-  public static async NewSignIn3rdParty(
-    id: string,
-    name: string,
-    token: string,
-    service: AccountType,
-    credential: string,
-    password: string,
-    another: boolean
-  ) {
-    console.log('Sign in with', service.toString());
-    let key = `${service.toString()}_${id}`;
-    let storePassword = password && password !== '' ? password : key;
-    let sessionItem: ISessionItem;
-
-    if (another) {
-      let did = await this.generateTemporaryDID(service, credential);
-      sessionItem = {
-        did: did,
-        accountType: service,
-        isDIDPublished: false,
-        userName: name,
-        hiveHost: 'http://localhost:5000',
-        userToken: token,
-      };
-      // run tuumtech vault script to record user
-      const appHiveClient = await HiveService.getAppHiveClient();
-      await appHiveClient.Scripting.RunScript({
-        name: 'add_userrecord_to_end',
-        params: {
-          name: sessionItem.userName,
-          vaulturl: sessionItem.hiveHost,
-        },
-      });
-    } else {
-      sessionItem = this.unlockUser(key, storePassword);
-      sessionItem.userToken = token;
-      sessionItem.userName = name;
-    }
-    console.log(sessionItem);
-    this.lockUser(key, sessionItem, storePassword);
-    SessionService.saveSessionItem(sessionItem);
-  }
-
   public static async SignIn3rdParty(
     id: string,
-    name: string,
+    fname: string,
+    lname: string,
     token: string,
     service: AccountType,
+    email: string,
     credential: string,
-    password: string
+    storePassword: string
   ) {
     console.log('Sign in with', service.toString());
-    let otherUsers = UserService.getOtherUsers(service.toString());
-    let key = `${service.toString()}_${id}`;
-    let storePassword = password && password !== '' ? password : key;
     let sessionItem: ISessionItem;
-    if (!otherUsers.includes(id)) {
-      let did = await this.generateTemporaryDID(service, credential);
-      sessionItem = {
+
+    let did = await this.generateTemporaryDID(service, credential);
+    sessionItem = {
+      did: did,
+      accountType: service,
+      isDIDPublished: false,
+      firstName: fname,
+      lastName: lname,
+      hiveHost: 'http://localhost:5000',
+      userToken: token,
+    };
+
+    // add new user to the tuum.tech vault
+    const get_users_scripts = {
+      name: 'add_user',
+      params: {
+        first_name: fname,
+        last_name: lname,
+        full_name: fname + ' ' + lname,
+        email: email,
+        status: 'CONFIRMED',
+        code: 1,
         did: did,
-        accountType: service,
-        isDIDPublished: false,
-        userName: name,
-        hiveHost: 'http://localhost:5000',
-        userToken: token,
-      };
-      // run tuumtech vault script to record user
-      const appHiveClient = await HiveService.getAppHiveClient();
-      await appHiveClient.Scripting.RunScript({
-        name: 'add_userrecord_to_end',
-        params: {
-          name: sessionItem.userName,
-          vaulturl: sessionItem.hiveHost,
-        },
-      });
-    } else {
-      sessionItem = this.unlockUser(key, storePassword);
-      sessionItem.userToken = token;
-      sessionItem.userName = name;
-    }
+        vaulturl: sessionItem.hiveHost,
+      },
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID,
+      },
+    };
+    const url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/api/tuumvault_router/scripting/run_script`;
+    const postData: any = {
+      method: 'POST',
+      headers: {
+        Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
+        Accept: 'application/json',
+        charset: 'utf8',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify(get_users_scripts),
+    };
+    let response = await fetch(url, postData);
+    console.log('=====>response', response);
+
     console.log(sessionItem);
-    this.lockUser(key, sessionItem, storePassword);
+    this.lockUser(this.key(did), sessionItem, storePassword);
     SessionService.saveSessionItem(sessionItem);
   }
 
@@ -324,13 +233,13 @@ export class UserService {
     instance: ISessionItem,
     storePassword: string
   ) {
-    console.log('======>localUserData', instance);
+    console.log('======>localUserData', key, instance, storePassword);
     let encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(instance),
       storePassword
     ).toString();
     let localUserData: UserData = {
-      name: instance.userName,
+      name: instance.firstName + ' ' + instance.lastName,
       did: instance.did,
       data: encrypted,
     };
@@ -357,6 +266,19 @@ export class UserService {
     } catch (error) {
       console.error(error);
       throw error;
+    }
+  }
+
+  public static LoginWithPassword(
+    did: string,
+    storePassword: string
+  ): ISessionItem | null {
+    try {
+      let instance = this.unlockUser(this.key(did), storePassword);
+      SessionService.saveSessionItem(instance);
+      return instance;
+    } catch (error) {
+      return null;
     }
   }
 

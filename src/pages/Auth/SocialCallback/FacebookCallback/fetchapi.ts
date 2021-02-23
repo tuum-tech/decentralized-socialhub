@@ -27,21 +27,19 @@ export function requestFacebookToken(
 
 export async function requestFacebookId(token: string): Promise<FacebookId> {
   const url = `https://graph.facebook.com/me?access_token=${token}`;
-
   const response = await fetch(url, {
     method: 'GET',
   });
-
   const json = await response.json();
-  const orgName = json.name;
-
-  console.log('====>face book response', json);
+  const fname = json.name.split(' ')[0];
+  const lname = json.name.split(' ')[1] || '';
+  const uniqueEmail = fname + lname + json.id + '@facebook.com';
 
   return {
     id: json.id,
-    fname: orgName.splite(' ')[0],
-    lname: orgName.splite(' ')[1] || '',
+    fname,
+    lname,
     credential: json.name,
-    email: `${orgName.replace(' ', '')}@facebook.com`,
+    email: uniqueEmail.toLocaleLowerCase(),
   };
 }

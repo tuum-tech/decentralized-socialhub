@@ -7,7 +7,7 @@ import { StaticContext } from 'react-router';
 
 import { UserService, AccountType, UserData } from 'src/services/user.service';
 import SetPassword from 'src/components/SetPassword';
-import { checkIfThisUserOnTuumVault } from './fetchapi';
+import { checkIfEmailAlreadyRegistered } from './fetchapi';
 
 type LocationState = {
   from: Location;
@@ -15,7 +15,6 @@ type LocationState = {
   fname: string;
   lname: string;
   email: string;
-  create_new?: number;
   request_token: string;
   credential: string;
   service:
@@ -37,7 +36,7 @@ const GenerateDID: React.FC<
 
   const [isLogged, setIsLogged] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [prevUsers, setPrevUsers] = useState<UserData[]>([]);
+  const [prevUser, setPrevUser] = useState<UserData>();
 
   const {
     fname,
@@ -45,47 +44,40 @@ const GenerateDID: React.FC<
     email,
     id,
     request_token,
-    create_new = 0,
     service,
+    credential,
   } = props.location.state;
 
   useEffect(() => {
     (async () => {
       if (fname !== '' && lname !== '' && email !== '') {
-        console.log('=====>email', email);
-        const d: any = await checkIfThisUserOnTuumVault(email);
-        console.log('======>jajan', d);
-        // UserService.check
-        // const pUsers = await UserService.getPrevDiD(id, service);
-        // setPrevUsers(pUsers);
+        const prevUser = await checkIfEmailAlreadyRegistered(email, service);
+        setPrevUser(prevUser);
       }
     })();
   }, []);
 
   const loginToProfile = async (pwd: string = '') => {
-    // await UserService.NewSignIn3rdParty(
-    //   id,
-    //   fname,
-    //   lname,
-    //   request_token,
-    //   service,
-    //   email,
-    //   pwd,
-    //   true
-    // );
-    // setLoading(false);
-    // setIsLogged(true);
+    await UserService.SignIn3rdParty(
+      id,
+      fname,
+      lname,
+      request_token,
+      service,
+      email,
+      credential,
+      pwd
+    );
+    setLoading(false);
+    setIsLogged(true);
   };
 
   const getRedirect = () => {
     if (isLogged) {
       return <Redirect to={{ pathname: '/profile' }} />;
     }
-    if (!create_new && prevUsers.length > 0) {
-      const didUserStr = prevUsers[prevUsers.length - 1].did.replace(
-        'did:elastos:',
-        ''
-      );
+    if (prevUser) {
+      const didUserStr = prevUser.did.replace('did:elastos:', '');
       return (
         <Redirect
           to={{
@@ -93,10 +85,11 @@ const GenerateDID: React.FC<
             state: {
               did: didUserStr,
               id,
-              fname,
+              firstName: fname,
+              lastName: lname,
               request_token,
               email,
-              service: AccountType.Google,
+              service,
             },
           }}
           push={true}
