@@ -38,7 +38,6 @@ Clone the repository and run below command on the root of your project.
 
 ## ALPHA VERSION
 
-
 Before execute alpha version, you have to:
 
 ```
@@ -57,5 +56,23 @@ node ./src/scripts/alpha/generateAccessCodes.js
 
 ```
 
+## Deploy to production
 
+- First time only: Initialize AWS elasticbeanstalk
 
+```
+eb init
+```
+
+- First time only: Create the environment
+
+```
+eb create
+```
+
+- Deploy
+
+```
+# Prerequisite: make sure react-scripts is installed globally on the instance
+eb deploy
+```
