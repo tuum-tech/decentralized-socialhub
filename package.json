@@ -54,8 +54,7 @@
     ]
   },
   "engines": {
-    "node": ">=v12.0.0",
-    "npm": ">=6.0.0"
+    "node": "v12.20.0"
   },
   "description": "Profile",
   "devDependencies": {
