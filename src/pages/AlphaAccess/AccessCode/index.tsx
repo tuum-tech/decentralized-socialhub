@@ -74,6 +74,10 @@ const AccessCodePage: React.FC = () => {
     }
   }
 
+  const goToTwitter = async () => {
+    window.location.href = `${process.env.REACT_APP_PROFILE_TWITTER}`
+  }
+
   const changePage = (newPage: number) => {
     setEmail('');
     setAccessCode('')
@@ -146,14 +150,14 @@ const AccessCodePage: React.FC = () => {
       <p>
         We’ve reserved your spot and will email you a code as soon as your account is ready!
         <br /><br />
-        To learn more about Profile you can read below. Thank you!
+        To learn more about Profile you can join our Twitter. Thank You!
     </p>
 
 
 
 
-      <AlphaButtonDefault onClick={continueAction}>
-        About Profile
+      <AlphaButtonDefault onClick={goToTwitter}>
+        Profile Twitter
 </AlphaButtonDefault>
 
 
