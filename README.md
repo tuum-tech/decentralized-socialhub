@@ -72,10 +72,16 @@ npm install netlify-cli -g
 npm run build
 ```
 
-- Deploy
+- Deploy staging
 
 ```
 netlify deploy
+```
+
+- Deploy to production
+
+```
+netlify deploy --prod
 ```
 
 ### Deploy to AWS Elasticbeanstalk
