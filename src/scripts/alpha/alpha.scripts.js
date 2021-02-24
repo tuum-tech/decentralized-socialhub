@@ -126,6 +126,7 @@ let createAccessCodeScripts = async (client) =>{
                         },
                         "update": {
                             "\$set": {
+                                "did": "\$params.did",
                                 "isUsed": true
                             }
                         },
