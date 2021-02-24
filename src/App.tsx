@@ -75,8 +75,6 @@ import VerifyEmailPage from './pages/VerifyEmailPage';
 import ExplorePage from './pages/ExplorePage';
 
 import AccessCodePage from './pages/AlphaAccess/AccessCode';
-import RequestCodePage from './pages/AlphaAccess/RequestCode';
-import InviteCodePage from './pages/AlphaAccess/InviteCode';
 
 const App: React.FC = () => {
   // const [session, setSession] = useState({});
@@ -152,12 +150,7 @@ const App: React.FC = () => {
           {/* <Route path='/loading' component={LoadingPage} exact={true} /> */}
 
           <Route path='/Alpha' component={AccessCodePage} exact={true} />
-          <Route
-            path='/Alpha/request'
-            component={RequestCodePage}
-            exact={true}
-          />
-          <Route path='/Alpha/invite' component={InviteCodePage} exact={true} />
+         
 
           <Route path='/tutorial' component={TutorialPage} exact={true} />
 

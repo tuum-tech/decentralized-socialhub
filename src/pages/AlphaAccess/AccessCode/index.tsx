@@ -14,10 +14,10 @@ import logo from '../../../assets/logo/blacklogo.svg';
 const AccessCodePage: React.FC = () => {
   const history = useHistory();
   const [accessCode, setAccessCode] = useState('');
-
+  const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-
   const [hasError, setHasError] = useState(false);
+  const [page, setPage] = useState(1);
 
   const messageDiv = () => {
     if (message && message !== '') {
@@ -40,48 +40,140 @@ const AccessCodePage: React.FC = () => {
     return response;
   };
 
-  const setMessageAction = (error: boolean, newMessage: string) => {
-    setHasError(error);
-    setMessage(newMessage);
-  };
+  const setErrorMessage = (newMessage: string) => {
+    setHasError(true);
+    setMessage(newMessage)
+  }
+
+  const isEmailValid = () => {
+    if (!email || email.length == 0) return false;
+    let regexp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+    return regexp.test(email);
+  }
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (isEmailValid()) {
+      let emailResponse = await AlphaService.requestAccess(email);
+      if (emailResponse) {
+        changePage(3)
+      } else {
+        setErrorMessage("We are not able to process your request at moment. Please try again later")
+      }
+    } else {
+      setErrorMessage("Your email address is invalid")
+    }
+  }
 
   const continueAction = async () => {
     if (await isAccessCodeValid()) {
       AlphaService.addSession(accessCode);
       history.push('/create/profile');
     } else {
-      setMessageAction(true, 'Invalid invite code');
+      setErrorMessage('Invalid invite code');
     }
-  };
+  }
+
+  const changePage = (newPage: number) => {
+    setEmail('');
+    setAccessCode('')
+    setErrorMessage('')
+    setPage(newPage)
+  }
+
+
+  const page1 = () => {
+    return <div className={style['alpha-div']}>
+      <img className={style['logo']} src={logo} />
+      <h1>Welcome to Profile</h1>
+      <p>
+        We are invitation only at the moment. <br />
+      Have a code? Enter it below to join Profile
+    </p>
+
+      <TextInput
+        value={accessCode}
+        label=''
+        onChange={(n) => setAccessCode(n.toUpperCase())}
+        placeholder='Please enter your invite code here'
+      />
+
+      <AlphaButtonDefault onClick={continueAction}>
+        Continue
+    </AlphaButtonDefault>
+
+      {messageDiv()}
+
+      <p>
+        No invite yet? You can still request one!{' '}
+        <a href="#" onClick={(event ) => {  event.preventDefault();changePage(2) }}>Join the wait list</a>
+      </p>
+    </div>
+  }
+
+  const page2 = () => {
+    return <div className={style["alpha-div"]}>
+      <span>🤗</span>
+      <h1>Invitation request</h1>
+      <p>&nbsp;</p>
+
+      <form className={style["div-input"]} onSubmit={handleSubmit}>
+        <TextInput
+          value={email}
+          label='Email address'
+          onChange={(n) => setEmail(n)}
+          placeholder='Please enter your e-mail'
+        />
+
+
+
+        <AlphaButtonDefault type="submit" >
+          Continue
+      </AlphaButtonDefault>
+      </form>
+      {messageDiv()}
+
+      <p>
+        Have invite code? <a href="#" onClick={(event) =>  { event.preventDefault(); changePage(1) }}>Enter code</a>
+      </p>
+    </div>
+  }
+
+  const page3 = () => {
+    return <div className={style["alpha-div"]}>
+      <span>🤗</span>
+      <h1>All Set!</h1>
+      <p>
+        We’ve reserved your spot and will email you a code as soon as your account is ready!
+        <br /><br />
+        To learn more about Profile you can read below. Thank you!
+    </p>
+
+
+
+
+      <AlphaButtonDefault onClick={continueAction}>
+        About Profile
+</AlphaButtonDefault>
+
+
+
+      <p>
+        Note: You may close this window.
+    </p>
+    </div>
+  }
+
+  const showPage = () => {
+    if (page == 2) return page2();
+    if (page == 3) return page3();
+
+    return page1()
+  }
 
   return (
     <AlphaContent>
-      <div className={style['alpha-div']}>
-        <img className={style['logo']} src={logo} />
-        <h1>Welcome to Profile</h1>
-        <p>
-          We are invitation only at the moment. <br />
-          Have a code? Enter it below to join Profile
-        </p>
-
-        <TextInput
-          value={accessCode}
-          label=''
-          onChange={(n) => setAccessCode(n.toUpperCase())}
-          placeholder='Please enter your invite code here'
-        />
-
-        <AlphaButtonDefault onClick={continueAction}>
-          Continue
-        </AlphaButtonDefault>
-
-        {messageDiv()}
-
-        <p>
-          No invite yet? You can still request one!{' '}
-          <a href='/Alpha/request'>Join the wait list</a>
-        </p>
-      </div>
+      {showPage()}
     </AlphaContent>
   );
 };
