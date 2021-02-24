@@ -73,7 +73,7 @@
     "@types/webpack-env": "^1.16.0",
     "fs-extra": "^9.1.0",
     "handlebars": "^4.7.7",
-    "react-scripts": "3.4.4",
+    "react-scripts": "^3.4.4",
     "tslint-react": "^4.1.0"
   }
 }
