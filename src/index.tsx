@@ -7,20 +7,25 @@ import configureStore from "./baseplate/configureStore";
 import history from "./baseplate/history";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
+import packageJson from "../package.json";
 // import { Menu } from './Menu';
 
 const initialState = {}; // Empty | LocalStorage | SessionStorage
 const store = configureStore(initialState, history);
-const tracesSampleRate = process.env.NODE_ENV === "production" ? 0.5 : 1;
+const projectName =
+  process.env.NODE_ENV === "production"
+    ? packageJson.name
+    : packageJson.name + "-test";
 const MOUNT_NODE = document.getElementById("root");
 
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
+  release: projectName + "@" + packageJson.version,
   integrations: [new Integrations.BrowserTracing()],
 
   // We recommend adjusting this value in production, or using tracesSampler
   // for finer control
-  tracesSampleRate: tracesSampleRate,
+  tracesSampleRate: 1.0,
 });
 
 ReactDOM.render(
