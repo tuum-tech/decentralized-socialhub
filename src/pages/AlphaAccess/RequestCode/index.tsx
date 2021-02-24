@@ -9,8 +9,7 @@ import AlphaButtonDefault from 'src/components/AlphaContent/alphabutton';
 import style from '../style.module.scss';
 import { AlphaService } from 'src/services/alpha.service';
 import { useHistory } from 'react-router';
-
-
+import Mailchimp from 'react-mailchimp-form'
 
 const RequestCodePage: React.FC = () => {
   const history = useHistory();
@@ -40,11 +39,12 @@ const RequestCodePage: React.FC = () => {
     setMessage(newMessage)
   }
 
-  
-
-  const continueAction = async () => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) =>{
+    event.preventDefault();
 
     if (isEmailValid()) {
+    
+
       let emailResponse = await AlphaService.requestAccess(email);
       if (emailResponse) {
         history.replace('/Alpha/invite');
@@ -55,7 +55,13 @@ const RequestCodePage: React.FC = () => {
     } else {
       setErrorMessage("Your email address is invalid")
     }
+    
+    
+    //await continueAction();
+
   }
+
+  
 
   return (
     <AlphaContent>
@@ -65,20 +71,20 @@ const RequestCodePage: React.FC = () => {
         <h1>Invitation request</h1>
         <p>&nbsp;</p>
 
-        <div className={style["div-input"]}>
+        <form className={style["div-input"]} onSubmit={handleSubmit}>
           <TextInput
             value={email}
             label='Email address'
             onChange={(n) => setEmail(n)}
             placeholder='Please enter your e-mail'
           />
-        </div>
+        
 
 
-        <AlphaButtonDefault onClick={continueAction}>
-          Continue
-        </AlphaButtonDefault>
-
+          <AlphaButtonDefault type="submit" >
+            Continue
+          </AlphaButtonDefault>
+        </form>
         {messageDiv()}
 
         <p>
