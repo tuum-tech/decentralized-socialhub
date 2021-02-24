@@ -58,6 +58,28 @@ node ./src/scripts/alpha/generateAccessCodes.js
 
 ## Deploy to production
 
+### Deploy to netlify
+
+- First time only: Install netlify-cli
+
+```
+npm install netlify-cli -g
+```
+
+- Build for production ready environment
+
+```
+npm run build
+```
+
+- Deploy
+
+```
+netlify deploy
+```
+
+### Deploy to AWS Elasticbeanstalk
+
 - First time only: Initialize AWS elasticbeanstalk
 
 ```
