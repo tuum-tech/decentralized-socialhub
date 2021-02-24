@@ -60,16 +60,17 @@ export class AlphaService {
 
         try {
 
-            let fields = `EMAIL=${encodeURIComponent(email)}&b_8d74b221b8912cf1478a69f37_1eb3890eaf=`
-            console.log(fields)
-            await fetch(`${process.env.REACT_APP_MAILCHIMP_URL}`, {
+            let URL = `${process.env.REACT_APP_MAILCHIMP_URL}&EMAIL=${encodeURIComponent(email)}&b_8d74b221b8912cf1478a69f37_1eb3890eaf=`
+            console.log(URL)
+            let response = await fetch(URL, {
               method: 'POST',
               mode: "no-cors",
               headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+                    'Content-Type': 'application/json'
               },
-              body: fields
             })
+
+            console.log(response)
       
             let client = await HiveService.getAppHiveClient();
 
@@ -87,6 +88,7 @@ export class AlphaService {
             return scriptResponse.isSuccess
             
         } catch (error) {
+            console.error(error)
             return false
         }
 
