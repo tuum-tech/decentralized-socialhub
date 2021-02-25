@@ -52,7 +52,6 @@ import {
 import AssociatedProfile from './pages/AssociatedProfilePage/Loadable'
 import CreateProfilePage from './pages/CreateProfilePage/Loadable'
 import CreateWhyPage from './pages/CreateWhyPage/Loadable'
-import EnterPasswordPage from './pages/EnterPasswordPage/Loadable'
 import CreatePasswordPage from './pages/CreatePasswordPage/Loadable'
 import GenerateDidPage from './pages/GenerateDidPage/Loadable'
 import SignDidPage from './pages/SignDidPage/Loadable'
@@ -123,11 +122,6 @@ const App: React.FC = () => {
           <Route
             path='/set-password'
             component={CreatePasswordPage}
-            exact={true}
-          />
-          <Route
-            path='/enter-password'
-            component={EnterPasswordPage}
             exact={true}
           />
           <Route path='/sign/help' component={SignHelpPage} exact={true} />

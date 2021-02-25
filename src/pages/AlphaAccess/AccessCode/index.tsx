@@ -72,7 +72,7 @@ const AccessCodePage: React.FC = () => {
   const continueAction = async () => {
     if (await isAccessCodeValid()) {
       AlphaService.addSession(accessCode)
-      history.push('/create/profile')
+      window.location.href = '/create-profile'
     } else {
       setErrorMessage('Invalid invite code')
     }

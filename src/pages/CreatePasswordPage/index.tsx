@@ -48,7 +48,6 @@ const CreatePasswordPage: React.FC<
    */
   const [loading, setLoading] = useState(false)
   const [session, setSession] = useState<ISessionItem | null>(null)
-  const [nextPage, setNextPage] = useState('')
 
   const {
     hiveHost,
@@ -76,25 +75,20 @@ const CreatePasswordPage: React.FC<
     }
   })
 
-  const getRedirect = () => {
-    if (nextPage) {
-      return <Redirect to='/profile' />
-    }
-    return (
-      <SetPassword
-        next={async (pwd) => {
-          if (session) {
-            setLoading(true)
-            await UserService.SignInWithDIDAndPWd(session, pwd)
-            setLoading(false)
-            setNextPage('/profile')
-          }
-        }}
-        displayText={loading ? 'Encrypting now.......' : ''}
-      />
-    )
-  }
-  return getRedirect()
+  return (
+    <SetPassword
+      next={async (pwd) => {
+        if (session) {
+          setLoading(true)
+          await UserService.SignInWithDIDAndPWd(session, pwd)
+          setLoading(false)
+          // setNextPage('/profile')
+          window.location.href = '/profile'
+        }
+      }}
+      displayText={loading ? 'Encrypting now.......' : ''}
+    />
+  )
 }
 
 /** @returns {object} Contains state props from selectors */
