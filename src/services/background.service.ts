@@ -1,36 +1,36 @@
-import { HiveService } from './hive.service';
-import { UserService } from './user.service';
-import { UserVaultScripts } from '../scripts/uservault.script';
+import { HiveService } from './hive.service'
+import { UserService } from './user.service'
+import { UserVaultScripts } from '../scripts/uservault.script'
 // import { DidService } from './did.service';
 
 export interface IGetUserRecordResponse {
-  isSuccess: boolean;
+  isSuccess: boolean
   response: {
-    _status?: string;
+    _status?: string
     get_userrecord: {
-      items: IUserRecord[];
-    };
-  };
+      items: IUserRecord[]
+    }
+  }
 }
 export interface IUserRecord {
-  username: string;
-  did: string;
-  vaulturl: string;
-  migrated: boolean;
+  username: string
+  did: string
+  hiveHost: string
+  migrated: boolean
 }
 
 export class BackgroundService {
   static async checkIfUserRecordIsAdded() {
     // can set 'migrated' field True in db forcely for testing
-    const sessionItem = UserService.getLoggedUser();
-    const appHiveClient = await HiveService.getAppHiveClient();
+    const sessionItem = UserService.getLoggedUser()
+    const appHiveClient = await HiveService.getAppHiveClient()
 
     let runScriptRes: any = await appHiveClient.Scripting.RunScript({
       name: 'get_userrecord',
       params: {
         did: sessionItem.did,
       },
-    });
+    })
 
     // if (runScriptRes) {
     //   const { isSuccess, response } = runScriptRes;
@@ -49,7 +49,7 @@ export class BackgroundService {
     //       name: 'add_userrecord',
     //       params: {
     //         username: sessionItem.userName,
-    //         vaulturl: sessionItem.hiveHost,
+    //         hiveHost: sessionItem.hiveHost,
     //         migrated: false,
     //         did: sessionItem.did,
     //       },
@@ -65,22 +65,22 @@ export class BackgroundService {
   }
 
   static async migrate() {
-    const sessionItem = UserService.getLoggedUser();
-    const appHiveClient = await HiveService.getAppHiveClient();
+    const sessionItem = UserService.getLoggedUser()
+    const appHiveClient = await HiveService.getAppHiveClient()
 
-    await this.checkIfUserRecordIsAdded();
+    await this.checkIfUserRecordIsAdded()
     await appHiveClient.Scripting.RunScript({
       name: 'migrate_userrecord',
       params: {
         did: sessionItem.did,
       },
-    });
-    console.log('====>flag is set');
+    })
+    console.log('====>flag is set')
   }
 
   static async addDataToUserDetails(category: string, data: string) {
-    let hiveClient = await HiveService.getSessionInstance();
-    console.log('=====>hiveClient', hiveClient);
+    let hiveClient = await HiveService.getSessionInstance()
+    console.log('=====>hiveClient', hiveClient)
     if (hiveClient) {
       await hiveClient.Scripting.RunScript({
         name: 'add_userdetails',
@@ -88,7 +88,7 @@ export class BackgroundService {
           category: category,
           data: data,
         },
-      });
+      })
     }
   }
 

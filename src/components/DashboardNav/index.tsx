@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   IonContent,
   IonList,
@@ -7,12 +7,12 @@ import {
   IonCol,
   IonGrid,
   IonRow,
-} from '@ionic/react';
-import style from './style.module.scss';
-import SpotlightCard from 'src/components/cards/SpotlightCard';
-import BadgesCard from 'src/components/cards/BadgesCard';
-import OverviewCard from 'src/components/cards/OverviewCard';
-import ButtonWhite from 'src/components/buttons/ButtonWhite';
+} from '@ionic/react'
+import style from './style.module.scss'
+import SpotlightCard from 'src/components/cards/SpotlightCard'
+import BadgesCard from 'src/components/cards/BadgesCard'
+import OverviewCard from 'src/components/cards/OverviewCard'
+import ButtonWhite from 'src/components/buttons/ButtonWhite'
 
 const DashboardHome: React.FC = () => {
   return (
@@ -32,8 +32,8 @@ const DashboardHome: React.FC = () => {
         </IonCol>
       </IonRow>
     </IonGrid>
-  );
-};
+  )
+}
 
 const DashboardStatus: React.FC = () => {
   return (
@@ -50,8 +50,8 @@ const DashboardStatus: React.FC = () => {
         </IonCol>
       </IonRow>
     </IonGrid>
-  );
-};
+  )
+}
 
 const DashboardBadges: React.FC = () => {
   return (
@@ -69,11 +69,11 @@ const DashboardBadges: React.FC = () => {
         </IonCol>
       </IonRow>
     </IonGrid>
-  );
-};
+  )
+}
 
 const DashboardNav: React.FC = () => {
-  const [active, setActive] = useState('home');
+  const [active, setActive] = useState('home')
 
   return (
     <IonContent className={style['dashboardnav']}>
@@ -113,7 +113,7 @@ const DashboardNav: React.FC = () => {
       {active === 'status' && <DashboardStatus />}
       {active === 'badges' && <DashboardBadges />}
     </IonContent>
-  );
-};
+  )
+}
 
-export default DashboardNav;
+export default DashboardNav

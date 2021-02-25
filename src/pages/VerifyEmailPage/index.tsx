@@ -2,7 +2,7 @@
  * Page
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 
 import {
   OnBoardLayout,
@@ -14,24 +14,24 @@ import {
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
   OnBoardLayoutRightContentTitle,
-} from 'src/components/layouts/OnBoardLayout';
+} from 'src/components/layouts/OnBoardLayout'
 
-import { ArrowButton, ButtonLink } from 'src/components/buttons';
+import { ArrowButton, ButtonLink } from 'src/components/buttons'
 
-import { Text16 } from 'src/components/texts';
+import { Text16 } from 'src/components/texts'
 
-import style from './style.module.scss';
-import { Redirect, RouteComponentProps } from 'react-router';
-import { requestVerifyCode } from './fetchapi';
+import style from './style.module.scss'
+import { Redirect, RouteComponentProps } from 'react-router'
+import { requestVerifyCode } from './fetchapi'
 
 interface MatchParams {
-  code: string;
+  code: string
 }
 
 interface IVerifyCodeResponse {
   data: {
-    return_code: string;
-  };
+    return_code: string
+  }
 }
 
 interface Props extends RouteComponentProps<MatchParams> {}
@@ -39,15 +39,15 @@ interface Props extends RouteComponentProps<MatchParams> {}
 const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
   props: RouteComponentProps<MatchParams>
 ) => {
-  let code: string = props.match.params.code;
-  const [status, setStatus] = useState('');
+  let code: string = props.match.params.code
+  const [status, setStatus] = useState('')
 
   useEffect(() => {
-    (async () => {
-      let response = (await requestVerifyCode(code)) as IVerifyCodeResponse;
-      setStatus(response.data.return_code);
-    })();
-  }, []);
+    ;(async () => {
+      let response = (await requestVerifyCode(code)) as IVerifyCodeResponse
+      setStatus(response.data.return_code)
+    })()
+  }, [])
 
   const getRedirect = () => {
     if (status === '') {
@@ -62,7 +62,7 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
                 Will take a moment
               </OnBoardLayoutLeftContentDescription>
 
-              <ButtonLink width={26} to='/sign/did'>
+              <ButtonLink width={26} to='/sign-did'>
                 <ArrowButton />
               </ButtonLink>
             </OnBoardLayoutLeftContent>
@@ -71,7 +71,7 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
             <OnBoardLayoutRightContent>Loading</OnBoardLayoutRightContent>
           </OnBoardLayoutRight>
         </OnBoardLayout>
-      );
+      )
     }
     if (status === 'CODE_CONFIRMED') {
       return (
@@ -80,7 +80,7 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
             pathname: '/profile',
           }}
         />
-      );
+      )
     } else
       return (
         <OnBoardLayout className={style['create-profile']}>
@@ -98,7 +98,7 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
               <OnBoardLayoutLeftContentIntro className='my-25px'>
                 Already have a profile? Sign in
               </OnBoardLayoutLeftContentIntro>
-              <ButtonLink width={26} to='/sign/did'>
+              <ButtonLink width={26} to='/sign-did'>
                 <ArrowButton />
               </ButtonLink>
             </OnBoardLayoutLeftContent>
@@ -110,15 +110,15 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
               </OnBoardLayoutRightContentTitle>
               <Text16 style={{ marginBottom: '54px' }}>
                 The verification code is not right or is expired. Let's try
-                again <ButtonLink to='/create/profile'>here</ButtonLink>
+                again <ButtonLink to='create-profile'>here</ButtonLink>
               </Text16>
             </OnBoardLayoutRightContent>
           </OnBoardLayoutRight>
         </OnBoardLayout>
-      );
-  };
+      )
+  }
 
-  return getRedirect();
-};
+  return getRedirect()
+}
 
-export default VerifyEmailPage;
+export default VerifyEmailPage

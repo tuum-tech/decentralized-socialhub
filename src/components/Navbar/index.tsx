@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { IonContent, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react';
-import style from './style.module.scss';
-import SearchComponent from 'src/components/SearchComponent';
-// import { useHistory } from 'react-router';
-import { useHistory } from 'react-router-dom';
+import React, { useState } from 'react'
+import { IonContent, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react'
+import style from './style.module.scss'
+import SearchComponent from 'src/components/SearchComponent'
+import { useHistory } from 'react-router'
+import { UserService } from 'src/services/user.service'
 
 interface Props {
-  tab?: string;
+  tab?: string
 }
 
 const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
-  const [active, setActive] = useState(tab);
-  const history = useHistory();
+  const [active, setActive] = useState(tab)
+  const history = useHistory()
 
   return (
     <IonContent>
@@ -71,8 +71,8 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
               active === 'search' ? style['item-active'] : style['item-link']
             }
             onClick={() => {
-              setActive('search');
-              history.push('/explore');
+              setActive('search')
+              history.push('/explore')
             }}
           >
             <IonIcon
@@ -118,6 +118,22 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
               <h3>Notifications</h3>
             </IonLabel>
           </IonItem>
+          <IonItem
+            className={style['item-link']}
+            onClick={async () => {
+              await UserService.logout()
+              history.push('/Alpha')
+            }}
+          >
+            <IonIcon
+              slot='start'
+              src='../../assets/icon_dashboard.svg'
+              className={style['img']}
+            ></IonIcon>
+            <IonLabel>
+              <h3>Sign Out</h3>
+            </IonLabel>
+          </IonItem>
         </IonList>
         {/* <img src="../../assets/icon_dashboard.svg" /> Dashboard<br />
           <img src="../../assets/icon_profile_manager.svg" /> Profile Manager<br />
@@ -130,7 +146,7 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           <img src="../../assets/icon_notifications.svg" /> Notifications<br />           */}
       </div>
     </IonContent>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
