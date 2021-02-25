@@ -24,7 +24,6 @@ type LocationState = {
   email: string
   request_token: string
   credential: string
-  createForcly?: boolean
   service:
     | AccountType.DID
     | AccountType.Linkedin
@@ -53,14 +52,11 @@ const GenerateDidPage: React.FC<
     request_token,
     service,
     credential,
-    createForcly,
   } = props.location.state
 
   useEffect(() => {
     ;(async () => {
-      if (createForcly) {
-        setPrevUsers([])
-      } else if (fname !== '' && lname !== '' && email !== '') {
+      if (fname !== '' && lname !== '' && email !== '') {
         const pUsers = await checkIfEmailAlreadyRegistered(email)
         setPrevUsers(pUsers)
       }
@@ -71,7 +67,7 @@ const GenerateDidPage: React.FC<
     if (isLogged) {
       return <Redirect to={{ pathname: '/profile' }} />
     }
-    if (createForcly || prevUsers.length === 0) {
+    if (prevUsers.length === 0) {
       return (
         <SetPassword
           next={async (pwd) => {

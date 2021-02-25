@@ -13,7 +13,7 @@ import {
   useHistory,
 } from 'react-router'
 
-import { UserService } from 'src/services/user.service'
+import { UserService, AccountType } from 'src/services/user.service'
 import {
   OnBoardLayout,
   OnBoardLayoutLeft,
@@ -38,18 +38,26 @@ import { NameSpace } from './constants'
 import reducer from './reducer'
 import saga from './saga'
 import { InferMappedProps, SubState } from './types'
-import { fetchSimpleApi } from './fetchapi'
 
-type LocationState = {
+import EnterPassword from './components/EnterPassword'
+import SignWithDid from './components/SignWithDid'
+import GenerateDid from './components/GenerateDid'
+
+export type LocationState = {
   from: Location
+  id: string
   dids: Array<string>
   fname: string
   lname: string
   email: string
-  id: string
   request_token: string
-  service: string
   credential: string
+  service:
+    | AccountType.DID
+    | AccountType.Linkedin
+    | AccountType.Facebook
+    | AccountType.Google
+    | AccountType.Twitter
 }
 
 const AssociatedProfilePage: React.FC<
@@ -58,10 +66,10 @@ const AssociatedProfilePage: React.FC<
   const history = useHistory()
 
   const {
-    dids,
     fname,
     lname,
     email,
+    dids,
     id,
     request_token,
     service,
@@ -72,25 +80,19 @@ const AssociatedProfilePage: React.FC<
 
   const getRedirect = () => {
     if (screen === '/enter-password') {
-      return <Redirect to={{ pathname: '/enter-password', state: { did } }} />
+      return <EnterPassword did={did} />
     } else if (screen === '/sign-did') {
-      return <Redirect to={{ pathname: '/sign-did', state: { did } }} />
+      return <SignWithDid />
     } else if (screen === '/generate-did') {
       return (
-        <Redirect
-          to={{
-            pathname: '/generate-did',
-            state: {
-              fname,
-              lname,
-              email,
-              id,
-              request_token,
-              service,
-              credential,
-              createForcly: true,
-            },
-          }}
+        <GenerateDid
+          id={id}
+          fname={fname}
+          lname={lname}
+          email={email}
+          request_token={request_token}
+          credential={credential}
+          service={service}
         />
       )
     }
@@ -171,19 +173,7 @@ const AssociatedProfilePage: React.FC<
             <ButtonWithLogo
               text='Create new profile'
               onClick={() => {
-                // setScreen('/generate-did')
-                history.push('/generate-did', {
-                  state: {
-                    fname,
-                    lname,
-                    email,
-                    id,
-                    request_token,
-                    service,
-                    credential,
-                    createForcly: true,
-                  },
-                })
+                setScreen('/generate-did')
               }}
               mt={42}
             />

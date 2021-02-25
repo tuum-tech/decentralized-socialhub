@@ -30,19 +30,20 @@ interface Props {
 const DidForm: React.FC<Props> = ({ error = false, setError }) => {
   // const [nextPage, setNextPage] = useState('')
   const [session, setSession] = useState<ISessionItem | null>(null)
+  const [alreadySigned, setAlreadySigned] = useState(true)
   const [mnemonic, setMnemonic] = useState([
-    'area',
-    'armor',
-    'tooth',
-    'south',
-    'toilet',
-    'ill',
+    'anchor',
+    'noodle',
+    'proof',
+    'scatter',
+    'chat',
+    'assault',
+    'expose',
+    'spy',
     'beach',
-    'today',
-    'seven',
-    'stairs',
-    'shop',
-    'grape',
+    'oil',
+    'plate',
+    'capable',
   ])
 
   const isMnemonicWordValid = (index: number): boolean => {

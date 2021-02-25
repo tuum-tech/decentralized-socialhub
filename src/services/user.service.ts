@@ -51,7 +51,6 @@ export class UserService {
 
   public static getSignedUsers(): string[] {
     let response: string[] = []
-
     for (var i = 0, len = window.localStorage.length; i < len; ++i) {
       let key = window.localStorage.key(i)
       if (key && key.startsWith('user_')) {
@@ -60,35 +59,6 @@ export class UserService {
     }
     return response
   }
-
-  public static getPrevDiD(id: string, appName: string): UserData[] {
-    let userKey = appName + '_' + id
-    let response: UserData[] = []
-    for (var i = 0, len = window.localStorage.length; i < len; ++i) {
-      let key = window.localStorage.key(i)
-      console.log('====>key, userKey', key, userKey)
-      if (key === userKey) {
-        const localData = window.localStorage.getItem(key)
-        if (localData) {
-          console.log('====>JSON.parse(localData)', JSON.parse(localData))
-          response.push(JSON.parse(localData))
-        }
-      }
-    }
-    return response
-  }
-
-  // public static getOtherUsers(appName: string): string[] {
-  //   let appKey = appName + '_';
-  //   let response: string[] = [];
-  //   for (var i = 0, len = window.localStorage.length; i < len; ++i) {
-  //     let key = window.localStorage.key(i);
-  //     if (key && key.startsWith(appKey)) {
-  //       response.push(key.replace(appKey, ''));
-  //     }
-  //   }
-  //   return response;
-  // }
 
   public static GetUserSession(): ISessionItem {
     let item = window.sessionStorage.getItem('session_instance')
@@ -261,6 +231,14 @@ export class UserService {
     instance: ISessionItem,
     storePassword: string
   ) {
+    // clear prev data
+    for (var i = 0, len = window.localStorage.length; i < len; ++i) {
+      let key = window.localStorage.key(i)
+      if (key && key.startsWith('user_')) {
+        window.localStorage.removeItem(key)
+      }
+    }
+
     console.log('======>localUserData', key, instance, storePassword)
     let encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(instance),
@@ -370,6 +348,6 @@ class SessionService {
   }
 
   static Logout() {
-    window.sessionStorage.clear()
+    window.sessionStorage.removeItem('session_instance')
   }
 }

@@ -1,17 +1,6 @@
-import { connect } from 'react-redux'
-import { compose } from 'redux'
-import { createStructuredSelector } from 'reselect'
-import injector from 'src/baseplate/injectorWrap'
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
-import { incrementAction, getSimpleAjax } from './actions'
-import React, { memo, useState } from 'react'
+import React, { useState } from 'react'
 
-import { NameSpace } from './constants'
-import reducer from './reducer'
-import saga from './saga'
-import { InferMappedProps, SubState } from './types'
-
-import { Redirect, RouteComponentProps, StaticContext } from 'react-router'
+import { Redirect } from 'react-router'
 import styled from 'styled-components'
 
 import { UserService } from 'src/services/user.service'
@@ -40,20 +29,17 @@ const ErrorTxt = styled(Text12)`
   margin-top: 5px;
 `
 
-type LocationState = {
-  from: Location
+interface Props {
   did: string
 }
 
-const EnterPasswordPage: React.FC<
-  RouteComponentProps<{}, StaticContext, LocationState>
-> = (props) => {
+const EnterPassword: React.FC<Props> = (props) => {
   /**
    * Direct method implementation without SAGA
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
-  const { did } = props.location.state
+  const { did } = props
 
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -112,39 +98,4 @@ const EnterPasswordPage: React.FC<
   )
 }
 
-/** @returns {object} Contains state props from selectors */
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg(),
-})
-
-/** @returns {object} Contains dispatchable props */
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      // eProps - Emitter proptypes thats binds to dispatch
-      /** dispatch for counter to increment */
-      onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax()),
-    },
-  }
-}
-
-/**
- * Injects prop and saga bindings done via
- * useInjectReducer & useInjectSaga
- */
-const withInjectedMode = injector(EnterPasswordPage, {
-  key: NameSpace,
-  reducer,
-  saga,
-})
-
-const withConnect = connect(mapStateToProps, mapDispatchToProps)
-
-export default compose(
-  withConnect,
-  memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>
-
-// export default Tab1;
+export default EnterPassword
