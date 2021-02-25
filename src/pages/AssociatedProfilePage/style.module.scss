@@ -1,0 +1,18 @@
+.did-select {
+  background: #edf2f7;
+  border-radius: 6px;
+  padding: 14.5px 16.5px;
+  margin-top: 11px;
+
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 15px;
+  color: #8492a6;
+
+  select {
+    border: none;
+    outline: none;
+    width: 100%;
+    background: transparent;
+  }
+}

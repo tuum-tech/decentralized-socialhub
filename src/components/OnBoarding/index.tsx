@@ -2,33 +2,30 @@
  * Page
  */
 
-import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
-import { IonButton, IonImg } from '@ionic/react';
-import { UserService } from 'src/services/user.service';
+import React, { useState } from 'react'
+import { IonButton, IonImg } from '@ionic/react'
 
-import AlphaContent from '../AlphaContent';
-import transparentlogo from '../../assets/logo/transparentlogo.png';
-import wavinghand from '../../assets/icon/wavinghand.png';
-import defaultAdamAvatar from '../../assets/icon/defaultAdamAvatar.png';
-import emojiCool from '../../assets/icon/emoji-cool.png';
+import AlphaContent from '../AlphaContent'
+import transparentlogo from '../../assets/logo/transparentlogo.png'
+import wavinghand from '../../assets/icon/wavinghand.png'
+import defaultAdamAvatar from '../../assets/icon/defaultAdamAvatar.png'
+import emojiCool from '../../assets/icon/emoji-cool.png'
 
-import style from './style.module.scss';
+import style from './style.module.scss'
 
-const OnBoardingPage: React.FC = () => {
-  const [stage, setStage] = useState(1);
+interface Props {
+  completed: () => void
+}
+
+const OnBoardingPage: React.FC<Props> = ({ completed }) => {
+  const [stage, setStage] = useState(1)
 
   const next = () => {
     if (stage === 4) {
-      UserService.setOnBoardingComplted();
-      setStage(stage + 1);
+      completed()
     } else {
-      setStage(stage + 1);
+      setStage(stage + 1)
     }
-  };
-
-  if (stage === 5) {
-    return <Redirect to='/profile' />;
   }
 
   return (
@@ -139,7 +136,7 @@ const OnBoardingPage: React.FC = () => {
         </div>
       )}
     </AlphaContent>
-  );
-};
+  )
+}
 
-export default OnBoardingPage;
+export default OnBoardingPage
