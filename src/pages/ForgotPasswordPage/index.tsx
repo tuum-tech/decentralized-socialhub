@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { useHistory } from 'react-router-dom'
 import { createStructuredSelector } from 'reselect'
 import injector from 'src/baseplate/injectorWrap'
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
@@ -38,6 +39,7 @@ const ForgotPasswordPage: React.FC<InferMappedProps> = ({
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
+  const history = useHistory()
   return (
     <OnBoardLayout className={style['associated-profile']}>
       <OnBoardLayoutLeft>
@@ -59,21 +61,26 @@ const ForgotPasswordPage: React.FC<InferMappedProps> = ({
           <OnBoardLayoutLeftContentIntro className='my-25px'>
             Why has this happened? Help
           </OnBoardLayoutLeftContentIntro>
-          <ButtonLink width={26} to='/create-why'>
+          <ButtonLink width={26} to='/unlock-user'>
             <ArrowButton />
           </ButtonLink>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
         <OnBoardLayoutRightContent>
-          <OnBoardLayoutRightContentTitle style={{ paddingTop: '110px' }}>
+          <OnBoardLayoutRightContentTitle>
             Sign in
           </OnBoardLayoutRightContentTitle>
           <ButtonWithLogo
             mode='dark'
             mt={32}
             text='Sign in to profile'
-            onClick={() => {}}
+            onClick={() => {
+              window.localStorage.clear()
+              history.push({
+                pathname: '/sign-did',
+              })
+            }}
           />
 
           <OnBoardLayoutRightContentTitle style={{ marginTop: '96px' }}>
@@ -81,7 +88,11 @@ const ForgotPasswordPage: React.FC<InferMappedProps> = ({
           </OnBoardLayoutRightContentTitle>
           <ButtonWithLogo
             text='Create new profile'
-            onClick={() => {}}
+            onClick={() => {
+              history.push({
+                pathname: '/create-profile',
+              })
+            }}
             mt={48}
           />
         </OnBoardLayoutRightContent>
