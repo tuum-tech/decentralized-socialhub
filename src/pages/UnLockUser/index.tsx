@@ -1,17 +1,5 @@
-import { connect } from 'react-redux'
-import { compose } from 'redux'
-import { createStructuredSelector } from 'reselect'
-import injector from 'src/baseplate/injectorWrap'
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
-import { incrementAction, getSimpleAjax } from './actions'
-import React, { memo, useState } from 'react'
-
-import { NameSpace } from './constants'
-import reducer from './reducer'
-import saga from './saga'
-import { InferMappedProps, SubState } from './types'
-
-import { Redirect, RouteComponentProps, StaticContext } from 'react-router'
+import React, { useState } from 'react'
+import { StaticContext, RouteComponentProps } from 'react-router'
 import styled from 'styled-components'
 
 import { UserService } from 'src/services/user.service'
@@ -33,6 +21,7 @@ import TextInput from 'src/components/inputs/TextInput'
 
 import wavinghand from 'src/assets/icon/wavinghand.png'
 import whitelogo from 'src/assets/logo/whitetextlogo.png'
+import { LocationState } from './types'
 
 const ErrorTxt = styled(Text12)`
   color: red;
@@ -40,23 +29,32 @@ const ErrorTxt = styled(Text12)`
   margin-top: 5px;
 `
 
-type LocationState = {
-  from: Location
-  did: string
-}
-
-const EnterPasswordPage: React.FC<
+const UnlocUserPage: React.FC<
   RouteComponentProps<{}, StaticContext, LocationState>
 > = (props) => {
-  /**
-   * Direct method implementation without SAGA
-   * This was to show you dont need to put everything to global state
-   * incoming from Server API calls. Maintain a local state.
-   */
-  const { did } = props.location.state
-
+  const { dids } = props.location.state
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+
+  const unlockUser = () => {
+    if (!dids || dids.length === 0) return
+    let res = null
+    if (dids.length === 1) {
+      res = UserService.LoginWithPassword(dids[0], password)
+    } else {
+      for (let i = 0; i < dids.length; i++) {
+        const did = dids[i]
+        res = UserService.LoginWithPassword(did, password)
+      }
+    }
+
+    if (res) {
+      window.location.href = '/profile'
+      return
+    } else {
+      setError('User Not found secured by this password')
+    }
+  }
 
   return (
     <OnBoardLayout>
@@ -94,15 +92,7 @@ const EnterPasswordPage: React.FC<
                 return
               } else {
                 setError('')
-                console.log('====>did', password, did)
-                const res: any = UserService.LoginWithPassword(did, password)
-
-                if (!res) {
-                  setError('User Not found secured by this password')
-                  return
-                } else {
-                  window.location.href = '/profile'
-                }
+                unlockUser()
               }
             }}
           />
@@ -112,39 +102,4 @@ const EnterPasswordPage: React.FC<
   )
 }
 
-/** @returns {object} Contains state props from selectors */
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg(),
-})
-
-/** @returns {object} Contains dispatchable props */
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      // eProps - Emitter proptypes thats binds to dispatch
-      /** dispatch for counter to increment */
-      onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax()),
-    },
-  }
-}
-
-/**
- * Injects prop and saga bindings done via
- * useInjectReducer & useInjectSaga
- */
-const withInjectedMode = injector(EnterPasswordPage, {
-  key: NameSpace,
-  reducer,
-  saga,
-})
-
-const withConnect = connect(mapStateToProps, mapDispatchToProps)
-
-export default compose(
-  withConnect,
-  memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>
-
-// export default Tab1;
+export default UnlocUserPage

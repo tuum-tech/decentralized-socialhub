@@ -1,36 +1,26 @@
 import { connect } from 'react-redux'
+import { StaticContext, RouteComponentProps, useHistory } from 'react-router'
 import { compose } from 'redux'
 import { createStructuredSelector } from 'reselect'
 import injector from 'src/baseplate/injectorWrap'
+
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
 import { incrementAction, getSimpleAjax } from './actions'
 import React, { memo, useState, useEffect } from 'react'
 import { NameSpace } from './constants'
 import reducer from './reducer'
 import saga from './saga'
-import { InferMappedProps, SubState } from './types'
+import {
+  InferMappedProps,
+  SubState,
+  LocationState,
+  UserSessionProp,
+} from './types'
 import { checkIfEmailAlreadyRegistered } from './fetchapi'
 
-import { Redirect, StaticContext, RouteComponentProps } from 'react-router'
-
-import { UserService, AccountType, UserData } from 'src/services/user.service'
+import { UserService, UserData } from 'src/services/user.service'
 import SetPassword from 'src/components/SetPassword'
-
-type LocationState = {
-  from: Location
-  id: string
-  fname: string
-  lname: string
-  email: string
-  request_token: string
-  credential: string
-  service:
-    | AccountType.DID
-    | AccountType.Linkedin
-    | AccountType.Facebook
-    | AccountType.Google
-    | AccountType.Twitter
-}
+import PageLoading from 'src/components/layouts/PageLoading'
 
 const GenerateDidPage: React.FC<
   RouteComponentProps<{}, StaticContext, LocationState>
@@ -40,74 +30,64 @@ const GenerateDidPage: React.FC<
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
-  const [isLogged, setIsLogged] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [prevUsers, setPrevUsers] = useState<UserData[]>([])
 
-  const {
-    fname,
-    lname,
-    email,
-    id,
-    request_token,
-    service,
-    credential,
-  } = props.location.state
+  const history = useHistory()
+
+  const [loading, setLoading] = useState(false)
+  const [session, setSession] = useState<UserSessionProp | null>(null)
 
   useEffect(() => {
     ;(async () => {
-      if (fname !== '' && lname !== '' && email !== '') {
-        const pUsers = await checkIfEmailAlreadyRegistered(email)
-        setPrevUsers(pUsers)
+      if (!session && props.location.state && props.location.state.email) {
+        const pUsers = await checkIfEmailAlreadyRegistered(
+          props.location.state.email
+        )
+        if (pUsers.length > 0) {
+          history.push({
+            pathname: '/a-profile',
+            state: {
+              dids: pUsers,
+              fname: props.location.state.fname,
+              lname: props.location.state.lname,
+              email: props.location.state.email,
+              id: props.location.state.id,
+              request_token: props.location.state.request_token,
+              service: props.location.state.service,
+              credential: props.location.state.credential,
+            },
+          })
+        }
+        setSession(props.location.state)
       }
     })()
-  }, [])
+  }, [session])
 
-  const getRedirect = () => {
-    if (isLogged) {
-      return <Redirect to={{ pathname: '/profile' }} />
-    }
-    if (prevUsers.length === 0) {
-      return (
-        <SetPassword
-          next={async (pwd) => {
-            setLoading(true)
+  if (session && session.id) {
+    return (
+      <SetPassword
+        next={async (pwd) => {
+          setLoading(true)
+          if (session) {
             await UserService.SignIn3rdParty(
-              id,
-              fname,
-              lname,
-              request_token,
-              service,
-              email,
-              credential,
+              session.id,
+              session.fname,
+              session.lname,
+              session.request_token,
+              session.service,
+              session.email,
+              session.credential,
               pwd
             )
-            setLoading(false)
-            setIsLogged(true)
-          }}
-          displayText={loading ? 'Encrypting now.......' : ''}
-        />
-      )
-    }
-    return (
-      <Redirect
-        to={{
-          pathname: '/a-profile',
-          state: {
-            dids: prevUsers,
-            fname,
-            lname,
-            email,
-            id,
-            request_token,
-            service,
-            credential,
-          },
+          }
+          setLoading(false)
+          window.location.href = '/profile'
         }}
+        displayText={loading ? 'Encrypting now.......' : ''}
       />
     )
   }
-  return getRedirect()
+
+  return <PageLoading />
 }
 
 /** @returns {object} Contains state props from selectors */

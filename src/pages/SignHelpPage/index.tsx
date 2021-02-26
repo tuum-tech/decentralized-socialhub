@@ -71,7 +71,7 @@ const SignHelpPage: React.FC<InferMappedProps> = ({
           <OnBoardLayoutLeftContentIntro className='my-25px'>
             Download for iOS here or Android here
           </OnBoardLayoutLeftContentIntro>
-          <ButtonLink width={26} to='/sign/qr'>
+          <ButtonLink width={26} to='/sign-qr'>
             <ArrowButton />
           </ButtonLink>
         </OnBoardLayoutLeftContent>

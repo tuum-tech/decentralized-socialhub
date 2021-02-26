@@ -6,9 +6,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { IonGrid, IonRow, IonCol } from '@ionic/react'
 import { ElastosClient } from '@elastosfoundation/elastos-js-sdk'
-import { Redirect } from 'react-router-dom'
 
-import { ISessionItem, UserService } from 'src/services/user.service'
 import ButtonWithLogo from 'src/components/buttons/ButtonWithLogo'
 import TextInput from 'src/components/inputs/TextInput'
 
@@ -25,25 +23,23 @@ const DidInputRow = styled(IonRow)`
 interface Props {
   setError: (error: boolean) => void
   error: boolean
+  onSuccess: (did: string) => void
 }
 
-const DidForm: React.FC<Props> = ({ error = false, setError }) => {
-  // const [nextPage, setNextPage] = useState('')
-  const [session, setSession] = useState<ISessionItem | null>(null)
-  const [alreadySigned, setAlreadySigned] = useState(true)
+const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
   const [mnemonic, setMnemonic] = useState([
-    'anchor',
-    'noodle',
-    'proof',
-    'scatter',
-    'chat',
-    'assault',
-    'expose',
-    'spy',
-    'beach',
-    'oil',
-    'plate',
-    'capable',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
   ])
 
   const isMnemonicWordValid = (index: number): boolean => {
@@ -62,22 +58,7 @@ const DidForm: React.FC<Props> = ({ error = false, setError }) => {
     setError(validate === false)
     if (validate) {
       let userDid = await ElastosClient.did.loadFromMnemonic(mnemonic.join(' '))
-      const res = await UserService.DIDlogin(userDid.did)
-      if (!res) {
-        setError(true)
-        setSession(null)
-      } else {
-        setSession({
-          hiveHost: res.hiveHost,
-          userToken: res.userToken,
-          did: res.did,
-          firstName: res.firstName,
-          lastName: res.lastName,
-          accountType: res.accountType,
-          isDIDPublished: true, // this can be updated
-          onBoardingCompleted: true,
-        })
-      }
+      onSuccess(userDid.did)
     }
   }
 
@@ -100,16 +81,6 @@ const DidForm: React.FC<Props> = ({ error = false, setError }) => {
     )
   }
 
-  if (session && session.did) {
-    return (
-      <Redirect
-        to={{
-          pathname: '/set-password',
-          state: session,
-        }}
-      />
-    )
-  }
   const cName = style['didsignform'] + ' ion-no-padding'
   return (
     <DidSignFormContainer className={cName}>

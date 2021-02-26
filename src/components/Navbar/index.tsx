@@ -122,7 +122,7 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
             className={style['item-link']}
             onClick={async () => {
               await UserService.logout()
-              window.location.href = '/home'
+              window.location.href = '/'
             }}
           >
             <IonIcon

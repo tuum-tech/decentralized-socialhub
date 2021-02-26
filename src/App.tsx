@@ -52,6 +52,7 @@ import {
 import AssociatedProfile from './pages/AssociatedProfilePage/Loadable'
 import CreateProfilePage from './pages/CreateProfilePage/Loadable'
 import CreateWhyPage from './pages/CreateWhyPage/Loadable'
+import UnlockUserPage from './pages/UnLockUser/Lodable'
 import CreatePasswordPage from './pages/CreatePasswordPage/Loadable'
 import GenerateDidPage from './pages/GenerateDidPage/Loadable'
 import SignDidPage from './pages/SignDidPage/Loadable'
@@ -113,22 +114,22 @@ const App: React.FC = () => {
           <Route path='/linkedin_callback' component={LinkedinCallback} />
           <Route path='/google_callback' component={GoogleCallback} />
           <Route path='/facebook_callback' component={FacebookCallback} />
-
-          <Route
-            path='/generate-did'
-            component={GenerateDidPage}
-            exact={true}
-          />
           <Route
             path='/set-password'
             component={CreatePasswordPage}
             exact={true}
           />
-          <Route path='/sign/help' component={SignHelpPage} exact={true} />
+          <Route path='/unlock-user' component={UnlockUserPage} exact={true} />
+          <Route
+            path='/generate-did'
+            component={GenerateDidPage}
+            exact={true}
+          />
+          <Route path='/sign-help' component={SignHelpPage} exact={true} />
           <Route path='/sign-did' component={SignDidPage} exact={true} />
-          <Route path='/sign/qr' component={SignQRPage} exact={true} />
+          <Route path='/sign-qr' component={SignQRPage} exact={true} />
           <Route path='/a-profile' component={AssociatedProfile} exact={true} />
-          <Route path='/create/why' component={CreateWhyPage} exact={true} />
+          <Route path='/create-why' component={CreateWhyPage} exact={true} />
           <Route
             path='/create-profile'
             component={CreateProfilePage}

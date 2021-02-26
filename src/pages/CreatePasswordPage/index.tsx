@@ -1,67 +1,76 @@
 import { connect } from 'react-redux'
+import { StaticContext, RouteComponentProps } from 'react-router'
 import { compose } from 'redux'
 import { createStructuredSelector } from 'reselect'
 import injector from 'src/baseplate/injectorWrap'
+
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
 import { incrementAction, getSimpleAjax } from './actions'
 import React, { memo, useState, useEffect } from 'react'
 import { NameSpace } from './constants'
 import reducer from './reducer'
 import saga from './saga'
-import { InferMappedProps, SubState } from './types'
+import { InferMappedProps, SubState, LocationState } from './types'
 
-import { StaticContext, Redirect, RouteComponentProps } from 'react-router'
+import { UserService, ISessionItem } from 'src/services/user.service'
+
+import styled from 'styled-components'
 
 import {
-  UserService,
-  AccountType,
-  ISessionItem,
-} from 'src/services/user.service'
-import SetPassword from 'src/components/SetPassword'
+  OnBoardLayout,
+  OnBoardLayoutLeft,
+  OnBoardLayoutLeftContent,
+  OnBoardLayoutLeftContentTitle,
+  OnBoardLayoutLeftContentDescription,
+  OnBoardLayoutLeftContentIntro,
+  OnBoardLayoutLogo,
+  OnBoardLayoutRight,
+  OnBoardLayoutRightContent,
+  OnBoardLayoutRightContentTitle,
+  WavingHandImg,
+} from 'src/components/layouts/OnBoardLayout'
 
-type LocationState = {
-  from: Location
-  firstName: string
-  lastName: string
-  userToken: string
-  accountType:
-    | AccountType.DID
-    | AccountType.Linkedin
-    | AccountType.Facebook
-    | AccountType.Google
-    | AccountType.Twitter
-  did: string
-  hiveHost: string
-  isDIDPublished: boolean
-  onBoardingCompleted: boolean
-}
+import ButtonWithLogo from 'src/components/buttons/ButtonWithLogo'
+import TextInput from 'src/components/inputs/TextInput'
+import { Text16 } from 'src/components/texts'
+
+import whitelogo from 'src/assets/logo/whitetextlogo.png'
+import keyimg from 'src/assets/icon/key.png'
+
+const ErrorText = styled(Text16)`
+  text-align: center;
+  color: red;
+  margin-top: 8px;
+`
 
 const CreatePasswordPage: React.FC<
   RouteComponentProps<{}, StaticContext, LocationState>
 > = (props) => {
-  // const CreatePasswordPage : React.FC<InferMappedProps> = ({ eProps, ...props }: InferMappedProps) => {
-
   /**
    * Direct method implementation without SAGA
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
-  const [loading, setLoading] = useState(false)
-  const [session, setSession] = useState<ISessionItem | null>(null)
 
-  const {
-    hiveHost,
-    userToken,
-    accountType,
-    did,
-    firstName,
-    lastName,
-    isDIDPublished,
-    onBoardingCompleted,
-  } = props.location.state
+  const [loading, setLoading] = useState(false)
+  const [password, setPassword] = useState('')
+  const [repeatPassword, setRepeatPassword] = useState('')
+  const [error, setError] = useState('')
+  const [session, setSession] = useState<ISessionItem | null>(null)
+  console.log('====>session', session)
 
   useEffect(() => {
     if (!session && props.location.state && props.location.state.did) {
+      const {
+        hiveHost,
+        userToken,
+        accountType,
+        did,
+        firstName,
+        lastName,
+        isDIDPublished,
+        onBoardingCompleted,
+      } = props.location.state
       setSession({
         hiveHost,
         userToken,
@@ -75,19 +84,75 @@ const CreatePasswordPage: React.FC<
     }
   })
 
+  const afterPasswordSet = async () => {
+    if (!session) return
+    setLoading(true)
+    await UserService.SignInWithDIDAndPWd(session, password)
+    setLoading(false)
+    console.log('=====>here?')
+    window.location.href = '/profile'
+  }
+
   return (
-    <SetPassword
-      next={async (pwd) => {
-        if (session) {
-          setLoading(true)
-          await UserService.SignInWithDIDAndPWd(session, pwd)
-          setLoading(false)
-          // setNextPage('/profile')
-          window.location.href = '/profile'
-        }
-      }}
-      displayText={loading ? 'Encrypting now.......' : ''}
-    />
+    <OnBoardLayout>
+      <OnBoardLayoutLeft>
+        <OnBoardLayoutLogo src={whitelogo} />
+        <OnBoardLayoutLeftContent>
+          <WavingHandImg src={keyimg} />
+          <OnBoardLayoutLeftContentTitle className='mt-18px'>
+            Your password is not stored by us.
+          </OnBoardLayoutLeftContentTitle>
+          <OnBoardLayoutLeftContentDescription className='mt-25px'>
+            This is a locally stored password. This password protects your main
+            profile account (decentralized identity).
+          </OnBoardLayoutLeftContentDescription>
+          <OnBoardLayoutLeftContentIntro className='my-25px'>
+            More information on why I need a password? Help
+          </OnBoardLayoutLeftContentIntro>
+        </OnBoardLayoutLeftContent>
+      </OnBoardLayoutLeft>
+      <OnBoardLayoutRight>
+        <OnBoardLayoutRightContent>
+          <OnBoardLayoutRightContentTitle style={{ marginBottom: '46px' }}>
+            Create your profile
+          </OnBoardLayoutRightContentTitle>
+          <TextInput
+            value={password}
+            label='Password'
+            onChange={(n) => {
+              setError('')
+              setPassword(n)
+            }}
+            placeholder='Enter your password'
+          />
+          <TextInput
+            value={repeatPassword}
+            label='Re-enter Password'
+            onChange={(n) => {
+              setError('')
+              setRepeatPassword(n)
+            }}
+            placeholder='Enter your password'
+          />
+
+          <ButtonWithLogo
+            mt={34}
+            hasLogo={false}
+            text={loading ? 'Encrypting now.......' : 'Continue'}
+            onClick={async () => {
+              if (password === '' || repeatPassword === '') {
+                setError('You should fill the input fields')
+              } else if (password !== repeatPassword) {
+                setError('Password is different')
+              } else {
+                await afterPasswordSet()
+              }
+            }}
+          />
+          {error !== '' && <ErrorText>{error}</ErrorText>}
+        </OnBoardLayoutRightContent>
+      </OnBoardLayoutRight>
+    </OnBoardLayout>
   )
 }
 

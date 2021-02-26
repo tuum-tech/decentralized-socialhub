@@ -12,7 +12,7 @@ export const WavingHandImg = styled(IonImg)`
   width: 38px;
 `
 
-export const OnBoardLayout = styled.div`
+export const OnBoardLayout = styled(IonPage)`
   font-style: normal;
   height: 100%;
   overflow-y: auto;

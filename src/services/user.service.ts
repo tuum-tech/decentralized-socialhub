@@ -74,7 +74,6 @@ export class UserService {
     sessionItem: ISessionItem,
     storePassword: string
   ) {
-    console.log('======>sessionItem', sessionItem, storePassword)
     this.lockUser(this.key(sessionItem.did), sessionItem, storePassword)
     SessionService.saveSessionItem(sessionItem)
   }
@@ -235,6 +234,9 @@ export class UserService {
     for (var i = 0, len = window.localStorage.length; i < len; ++i) {
       let key = window.localStorage.key(i)
       if (key && key.startsWith('user_')) {
+        window.localStorage.removeItem(key)
+      }
+      if (key && key.startsWith('temporary_')) {
         window.localStorage.removeItem(key)
       }
     }
