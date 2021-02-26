@@ -111,26 +111,26 @@ const App: React.FC = () => {
           <Route path="/did/:did" component={PublicPage} exact={true} />
 
           {/* // login workflow */}
-          <Route path="/twitter_callback" component={TwitterCallback} />
-          <Route path="/linkedin_callback" component={LinkedinCallback} />
-          <Route path="/google_callback" component={GoogleCallback} />
-          <Route path="/facebook_callback" component={FacebookCallback} />
-
+          <Route path='/twitter_callback' component={TwitterCallback} />
+          <Route path='/linkedin_callback' component={LinkedinCallback} />
+          <Route path='/google_callback' component={GoogleCallback} />
+          <Route path='/facebook_callback' component={FacebookCallback} />
           <Route
-            path="/generate-did"
-            component={GenerateDidPage}
-            exact={true}
-          />
-          <Route
-            path="/set-password"
+            path='/set-password'
             component={CreatePasswordPage}
             exact={true}
           />
-          <Route path="/sign/help" component={SignHelpPage} exact={true} />
-          <Route path="/sign-did" component={SignDidPage} exact={true} />
-          <Route path="/sign/qr" component={SignQRPage} exact={true} />
-          <Route path="/a-profile" component={AssociatedProfile} exact={true} />
-          <Route path="/create/why" component={CreateWhyPage} exact={true} />
+          <Route path='/unlock-user' component={UnlockUserPage} exact={true} />
+          <Route
+            path='/generate-did'
+            component={GenerateDidPage}
+            exact={true}
+          />
+          <Route path='/sign-help' component={SignHelpPage} exact={true} />
+          <Route path='/sign-did' component={SignDidPage} exact={true} />
+          <Route path='/sign-qr' component={SignQRPage} exact={true} />
+          <Route path='/a-profile' component={AssociatedProfile} exact={true} />
+          <Route path='/create-why' component={CreateWhyPage} exact={true} />
           <Route
             path="/create-profile"
             component={CreateProfilePage}

@@ -1,8 +1,8 @@
-import { Redirect } from 'react-router'
 import React, { useState } from 'react'
+import { AccountType } from 'src/services/user.service'
 
-import { UserService, AccountType } from 'src/services/user.service'
 import SetPassword from 'src/components/SetPassword'
+import { UserService } from 'src/services/user.service'
 
 interface Props {
   id: string
@@ -25,9 +25,8 @@ const GenerateDid: React.FC<Props> = (props) => {
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
-  const [isLogged, setIsLogged] = useState(false)
-  const [loading, setLoading] = useState(false)
 
+  const [loading, setLoading] = useState(false)
   const { fname, lname, email, id, request_token, service, credential } = props
 
   return (
@@ -45,7 +44,6 @@ const GenerateDid: React.FC<Props> = (props) => {
           pwd
         )
         setLoading(false)
-
         window.location.href = '/profile'
       }}
       displayText={loading ? 'Encrypting now.......' : ''}

@@ -4,7 +4,7 @@ import { createStructuredSelector } from 'reselect'
 import injector from 'src/baseplate/injectorWrap'
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
 import { incrementAction, getSimpleAjax } from './actions'
-import React, { memo, useState } from 'react'
+import React, { memo } from 'react'
 import style from './style.module.scss'
 import { NameSpace } from './constants'
 import reducer from './reducer'
@@ -59,7 +59,7 @@ const ForgotPasswordPage: React.FC<InferMappedProps> = ({
           <OnBoardLayoutLeftContentIntro className='my-25px'>
             Why has this happened? Help
           </OnBoardLayoutLeftContentIntro>
-          <ButtonLink width={26} to='/create/why'>
+          <ButtonLink width={26} to='/create-why'>
             <ArrowButton />
           </ButtonLink>
         </OnBoardLayoutLeftContent>

@@ -53,7 +53,7 @@ const SignQRPage: React.FC<InferMappedProps> = ({
           <OnBoardLayoutLeftContentIntro className='mt-86px mb-20px'>
             What is elastOS? Help
           </OnBoardLayoutLeftContentIntro>
-          <ButtonLink width={26} to='/sign/help'>
+          <ButtonLink width={26} to='/sign-help'>
             <ArrowButton />
           </ButtonLink>
         </OnBoardLayoutLeftContent>

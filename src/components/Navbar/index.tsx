@@ -124,8 +124,8 @@ const Navbar: React.FC<Props> = ({ tab = "dashboard" }) => {
           <IonItem
             className={style["item-link"]}
             onClick={async () => {
-              await UserService.logout();
-              window.location.href = "/home";
+              await UserService.logout()
+              window.location.href = '/'
             }}
           >
             <IonIcon
