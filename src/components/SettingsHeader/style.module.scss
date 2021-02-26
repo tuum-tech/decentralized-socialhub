@@ -1,0 +1,40 @@
+/** All your component stuyles */
+.settingsheader {
+  min-height: 100px;
+  background-color: white;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+
+  h2 {
+    margin-top: 0;
+  }
+
+  ion-row {
+    align-items: center;
+    //padding-top: 8px;
+  }
+
+  .header {
+    border-bottom: 2px solid #efefef;
+    padding-bottom: 5px;
+  }
+
+  .details {
+    text-align: left;
+    //   font-family: 'Open Sans', sans-serif;
+    font-size: 14x;
+    opacity: 1;
+    color: var(--theme-primary-blue);
+  }
+  .profile-img {
+    max-width: 5.5em;
+    border: 3px solid var(--theme-primary-blue);
+    border-radius: 1.5em 2em 1.5em 2em;
+    padding: 3px;
+  }
+
+  .view-profile-btn {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

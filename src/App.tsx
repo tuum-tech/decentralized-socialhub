@@ -57,6 +57,7 @@ import GenerateDidPage from "./pages/GenerateDidPage/Loadable";
 import SignDidPage from "./pages/SignDidPage/Loadable";
 import SignQRPage from "./pages/SignQRPage/Loadable";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage/Loadable";
+import UnlockUserPage from "./pages/UnlockUserPage/Loadable";
 import SignHelpPage from "./pages/SignHelpPage/Loadable";
 
 import VerifyEmailPage from "./pages/VerifyEmailPage";
@@ -64,7 +65,7 @@ import AccessCodePage from "./pages/AlphaAccess/AccessCode";
 
 import TutorialPage from "./pages/TutorialPage";
 import ExplorePage from "./pages/ExplorePage";
-import SettingsPage from "./pages/SettingsPage";
+import SettingsPage from "./pages/SettingsPage/Loadable";
 import ProfilePage from "./pages/ProfilePage/Loadable";
 import PublicPage from "./pages/PublicPage/Loadable";
 
@@ -111,26 +112,26 @@ const App: React.FC = () => {
           <Route path="/did/:did" component={PublicPage} exact={true} />
 
           {/* // login workflow */}
-          <Route path='/twitter_callback' component={TwitterCallback} />
-          <Route path='/linkedin_callback' component={LinkedinCallback} />
-          <Route path='/google_callback' component={GoogleCallback} />
-          <Route path='/facebook_callback' component={FacebookCallback} />
+          <Route path="/twitter_callback" component={TwitterCallback} />
+          <Route path="/linkedin_callback" component={LinkedinCallback} />
+          <Route path="/google_callback" component={GoogleCallback} />
+          <Route path="/facebook_callback" component={FacebookCallback} />
           <Route
-            path='/set-password'
+            path="/set-password"
             component={CreatePasswordPage}
             exact={true}
           />
-          <Route path='/unlock-user' component={UnlockUserPage} exact={true} />
+          <Route path="/unlock-user" component={UnlockUserPage} exact={true} />
           <Route
-            path='/generate-did'
+            path="/generate-did"
             component={GenerateDidPage}
             exact={true}
           />
-          <Route path='/sign-help' component={SignHelpPage} exact={true} />
-          <Route path='/sign-did' component={SignDidPage} exact={true} />
-          <Route path='/sign-qr' component={SignQRPage} exact={true} />
-          <Route path='/a-profile' component={AssociatedProfile} exact={true} />
-          <Route path='/create-why' component={CreateWhyPage} exact={true} />
+          <Route path="/sign-help" component={SignHelpPage} exact={true} />
+          <Route path="/sign-did" component={SignDidPage} exact={true} />
+          <Route path="/sign-qr" component={SignQRPage} exact={true} />
+          <Route path="/a-profile" component={AssociatedProfile} exact={true} />
+          <Route path="/create-why" component={CreateWhyPage} exact={true} />
           <Route
             path="/create-profile"
             component={CreateProfilePage}
