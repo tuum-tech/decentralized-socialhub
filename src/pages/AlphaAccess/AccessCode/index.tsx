@@ -2,7 +2,7 @@
  * Page
  */
 import { useHistory } from 'react-router'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import AlphaContent from 'src/components/AlphaContent'
 import TextInput from 'src/components/inputs/TextInput'
 import style from '../style.module.scss'
@@ -19,6 +19,15 @@ const AccessCodePage: React.FC = () => {
   const [hasError, setHasError] = useState(false)
   const [page, setPage] = useState(1)
 
+  useEffect(() => {
+    ;(async () => {
+      const alreadyHaveCode = await AlphaService.isSessionValid()
+      if (alreadyHaveCode) {
+        history.push({ pathname: '/profile' })
+      }
+    })()
+  }, [])
+
   const messageDiv = () => {
     if (message && message !== '') {
       return (
@@ -34,9 +43,7 @@ const AccessCodePage: React.FC = () => {
 
   const isAccessCodeValid = async (): Promise<boolean> => {
     if (!accessCode || accessCode.length === 0) return false
-
     let response = await AlphaService.isCodeValid(accessCode)
-
     return response
   }
 
