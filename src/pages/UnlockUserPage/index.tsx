@@ -44,11 +44,11 @@ const UnlockUserPage: React.FC<
     if (!dids || dids.length === 0) return
     let res = null
     if (dids.length === 1) {
-      res = UserService.LoginWithPassword(dids[0], password)
+      res = UserService.Login(dids[0], password)
     } else {
       for (let i = 0; i < dids.length; i++) {
         const did = dids[i]
-        res = UserService.LoginWithPassword(did, password)
+        res = UserService.Login(did, password)
       }
     }
 

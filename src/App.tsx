@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { memo, useEffect, useState } from 'react'
+
 import { Redirect, Route } from 'react-router-dom'
 import { IonApp, IonRouterOutlet } from '@ionic/react'
 import { IonReactRouter } from '@ionic/react-router'
@@ -69,7 +70,7 @@ import SettingsPage from './pages/SettingsPage/Loadable'
 import ProfilePage from './pages/ProfilePage/Loadable'
 import PublicPage from './pages/PublicPage/Loadable'
 
-import PrivateRoute from './components/PrivateRoute'
+import ProtectedRoute from './components/ProtectedRoute'
 
 const App: React.FC = () => {
   // const [session, setSession] = useState({});
@@ -107,7 +108,13 @@ const App: React.FC = () => {
             exact={true}
           />
           <Route path='/Alpha' component={AccessCodePage} exact={true} />
-          <PrivateRoute path='/profile' component={ProfilePage} exact={true} />
+
+          <ProtectedRoute
+            path='/profile'
+            component={ProfilePage}
+            exact={true}
+            proctedby='password'
+          />
           <Route path='/explore' component={ExplorePage} exact={true} />
           <Route path='/settings' component={SettingsPage} exact={true} />
           <Route path='/tutorial' component={TutorialPage} exact={true} />
@@ -118,34 +125,54 @@ const App: React.FC = () => {
           <Route path='/linkedin_callback' component={LinkedinCallback} />
           <Route path='/google_callback' component={GoogleCallback} />
           <Route path='/facebook_callback' component={FacebookCallback} />
-          <Route
+          <ProtectedRoute
             path='/set-password'
             component={CreatePasswordPage}
             exact={true}
           />
-          <Route path='/unlock-user' component={UnlockUserPage} exact={true} />
-          <Route
+          <ProtectedRoute
+            path='/unlock-user'
+            component={UnlockUserPage}
+            exact={true}
+          />
+          <ProtectedRoute
             path='/generate-did'
             component={GenerateDidPage}
             exact={true}
           />
-          <Route path='/sign-help' component={SignHelpPage} exact={true} />
-          <Route path='/sign-did' component={SignDidPage} exact={true} />
-          <Route path='/sign-qr' component={SignQRPage} exact={true} />
-          <Route path='/a-profile' component={AssociatedProfile} exact={true} />
-          <Route path='/create-why' component={CreateWhyPage} exact={true} />
-          <Route
+          <ProtectedRoute
+            path='/sign-help'
+            component={SignHelpPage}
+            exact={true}
+          />
+          <ProtectedRoute
+            path='/sign-did'
+            component={SignDidPage}
+            exact={true}
+          />
+          <ProtectedRoute path='/sign-qr' component={SignQRPage} exact={true} />
+          <ProtectedRoute
+            path='/a-profile'
+            component={AssociatedProfile}
+            exact={true}
+          />
+          <ProtectedRoute
+            path='/create-why'
+            component={CreateWhyPage}
+            exact={true}
+          />
+          <ProtectedRoute
             path='/create-profile'
             component={CreateProfilePage}
             exact={true}
           />
-          <Route
+          <ProtectedRoute
             path='/forgot-password'
             component={ForgotPasswordPage}
             exact={true}
           />
 
-          <Route
+          <ProtectedRoute
             path='/verify/email/:code'
             component={VerifyEmailPage}
             exact={true}
