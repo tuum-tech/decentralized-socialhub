@@ -77,7 +77,7 @@ const Pages: React.FC<IProps> = ({
   const totalPages = pages && pages.items ? pages.items.length / perPage : 1;
 
   const [pagesPageOffset, setPagesPageOffset] = useState(0);
-  const [listPages, setListPages] = useState([]);
+  const [listPages, setListPages] = useState<any[]>([]); //useState([]);
 
   useEffect(() => {
     let listPagesLocal: any =
@@ -107,7 +107,7 @@ const Pages: React.FC<IProps> = ({
           <IonCardTitle className={style['card-title']}>Pages</IonCardTitle>
         </IonCardHeader>
         {listPages}
-        {listPages.length > 0 && (
+        {listPages && (
           <ReactPaginate
             previousLabel={'<'}
             nextLabel={'>'}
@@ -123,7 +123,7 @@ const Pages: React.FC<IProps> = ({
           />
         )}
 
-        {listPages.length <= 0 && (
+        {!listPages && (
           <IonCardContent>
             No page found with the {isSearchKeywordDID ? 'DID' : 'keyword'}:{' '}
             <strong>{searchKeyword}</strong>
@@ -174,7 +174,7 @@ const People: React.FC<IProps> = ({
           <IonCardTitle className={style['card-title']}>People</IonCardTitle>
         </IonCardHeader>
         {listPeople}
-        {listPeople.length > 0 && (
+        {listPeople && listPeople.length > 0 && (
           <ReactPaginate
             previousLabel={'<'}
             nextLabel={'>'}
