@@ -216,6 +216,7 @@ let run = async () => {
 
   // ===== universities section start =====
   //store and retrieve universities data from tuum-tech vault
+  await client.Database.deleteCollection('universities');
   await client.Database.createCollection('universities');
   const fs = require('fs');
 
@@ -224,6 +225,14 @@ let run = async () => {
     let universityList = JSON.parse(data);
     console.log(universityList[0]);
     client.Database.insertMany('universities', universityList);
+  });
+
+  await client.Database.createCollection('users');
+  fs.readFile('./src/data/dummy_users.json', (err, data) => {
+    if (err) throw err;
+    let dummyUsersList = JSON.parse(data);
+    console.log(dummyUsersList[0]);
+    client.Database.insertMany('users', dummyUsersList);
   });
 
   await client.Scripting.SetScript({
