@@ -59,8 +59,18 @@ let run = async () => {
   });
   // ===== followers section end =====
 
+  const fs = require('fs');
+
   // ===== users section start =====
   await client.Database.createCollection('users');
+
+  fs.readFile('./src/data/dummy_users.json', (err, data) => {
+    if (err) throw err;
+    let dummyUsersList = JSON.parse(data);
+    console.log(dummyUsersList[0]);
+    client.Database.insertMany('users', dummyUsersList);
+  });
+
   await client.Scripting.SetScript({
     name: 'add_user',
     allowAnonymousUser: true,
@@ -218,21 +228,12 @@ let run = async () => {
   //store and retrieve universities data from tuum-tech vault
   await client.Database.deleteCollection('universities');
   await client.Database.createCollection('universities');
-  const fs = require('fs');
 
   fs.readFile('./src/data/world_universities_and_domains.json', (err, data) => {
     if (err) throw err;
     let universityList = JSON.parse(data);
     console.log(universityList[0]);
     client.Database.insertMany('universities', universityList);
-  });
-
-  await client.Database.createCollection('users');
-  fs.readFile('./src/data/dummy_users.json', (err, data) => {
-    if (err) throw err;
-    let dummyUsersList = JSON.parse(data);
-    console.log(dummyUsersList[0]);
-    client.Database.insertMany('users', dummyUsersList);
   });
 
   await client.Scripting.SetScript({
