@@ -11,45 +11,42 @@ import {
   IonCol,
   IonInput,
   IonSearchbar,
-} from '@ionic/react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { createStructuredSelector } from 'reselect';
-import injector from 'src/baseplate/injectorWrap';
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
-import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo, useEffect, useState } from 'react';
-import style from './style.module.scss';
-import { NameSpace } from './constants';
-import reducer from './reducer';
-import saga from './saga';
-import {
-  InferMappedProps,
-  ProfileResponse,
-  SubState,
-} from './types';
-import { requestFullProfile, requestLinkedinProfile } from './fetchapi';
-import FollowingList from 'src/components/FollowingList';
-import Pages from 'src/components/Pages';
-import ProfileHeader from 'src/components/ProfileHeader';
-import ProfileCompletion from 'src/components/ProfileCompletion';
-import ProfileComponent from 'src/components/ProfileComponent';
-import PagesComponent from 'src/components/PagesComponent';
-import { RouteComponentProps } from 'react-router';
-import logo from '../../assets/Logo-Vertical.svg';
-import home from '../../assets/home.svg';
-import community from '../../assets/people-outline.svg';
-import pages from '../../assets/person-search-outline.svg';
-import messages from '../../assets/message-circle-outline.svg';
-import photo from '../../assets/photo.png';
-import StartServiceComponent from 'src/components/StartServiceComponent';
-import ProfileTemplateManager from 'src/components/ProfileTemplateManager';
-import { BackgroundService } from '../../services/background.service';
-import { Link } from 'react-router-dom';
-import Logo from 'src/components/Logo';
-import Navbar from 'src/components/Navbar';
-import DashboardNav from 'src/components/DashboardNav';
-import { EducationItem, ExperienceItem, ProfileDTO } from '../PublicPage/types';
+} from '@ionic/react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { createStructuredSelector } from 'reselect'
+import injector from 'src/baseplate/injectorWrap'
+import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
+import { incrementAction, getSimpleAjax } from './actions'
+import React, { memo, useEffect, useState } from 'react'
+import style from './style.module.scss'
+import { NameSpace } from './constants'
+import reducer from './reducer'
+import saga from './saga'
+import { InferMappedProps, ProfileResponse, SubState } from './types'
+import { requestFullProfile, requestLinkedinProfile } from './fetchapi'
+import FollowingList from 'src/components/FollowingList'
+import Pages from 'src/components/Pages'
+import ProfileHeader from 'src/components/ProfileHeader'
+import ProfileCompletion from 'src/components/ProfileCompletion'
+import ProfileComponent from 'src/components/ProfileComponent'
+import PagesComponent from 'src/components/PagesComponent'
+import { RouteComponentProps } from 'react-router'
+import logo from '../../assets/Logo-Vertical.svg'
+import home from '../../assets/home.svg'
+import community from '../../assets/people-outline.svg'
+import pages from '../../assets/person-search-outline.svg'
+import messages from '../../assets/message-circle-outline.svg'
+import photo from '../../assets/photo.png'
+import StartServiceComponent from 'src/components/StartServiceComponent'
+import ProfileTemplateManager from 'src/components/ProfileTemplateManager'
+import { Link } from 'react-router-dom'
+import Logo from 'src/components/Logo'
+import Navbar from 'src/components/Navbar'
+import DashboardNav from 'src/components/DashboardNav'
+import { EducationItem, ExperienceItem, ProfileDTO } from '../PublicPage/types'
+import OnBoarding from 'src/components/OnBoarding'
+import { UserService } from 'src/services/user.service'
 
 const ProfilePage: React.FC<RouteComponentProps> = (
   props: RouteComponentProps
@@ -59,59 +56,91 @@ const ProfilePage: React.FC<RouteComponentProps> = (
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
+  const [willExpire, setWillExpire] = useState(false)
   const [full_profile, setfull_profile] = useState({
-    basicDTO:
-    {
+    basicDTO: {
       isEnabled: false,
-      first_name: "",
-      last_name: "",
-      did: "",
-      title: "",
-      about: "",
-      address: { number: "", street_name: "", postal_code: "", state: "", country: "" }
+      firstName: '',
+      lastName: '',
+      did: '',
+      title: '',
+      about: '',
+      address: {
+        number: '',
+        street_name: '',
+        postal_code: '',
+        state: '',
+        country: '',
+      },
     },
     educationDTO: {
       isEnabled: true,
-      items: ([] as EducationItem[])
+      items: [] as EducationItem[],
     },
     experienceDTO: {
       isEnabled: true,
-      items: ([] as ExperienceItem[])
-    }
-  });
+      items: [] as ExperienceItem[],
+    },
+  })
+  const [onboardingCompleted, setOnboardingStatus] = useState(false)
 
-  const [active, setActive] = useState('dashboard');
+  const [active, setActive] = useState('dashboard')
 
-  const getProfile = async (token: string): Promise<ProfileResponse> => {
-    return (await requestLinkedinProfile(token)) as ProfileResponse;
-  };
-  let token: string =
-    new URLSearchParams(props.location.search).get('token') || '';
+  // const getProfile = async (token: string): Promise<ProfileResponse> => {
+  //   return (await requestLinkedinProfile(token)) as ProfileResponse
+  // }
+  // let token: string =
+  //   new URLSearchParams(props.location.search).get('token') || ''
 
   const getFullProfile = async (did: string): Promise<any> => {
-    return await requestFullProfile(did);
-  };
+    return await requestFullProfile(did)
+  }
 
-  const getPublicUrl = (): string => {
-    let item = window.sessionStorage.getItem('session_instance');
-
-    if (!item) {
-      throw Error('Not logged in');
-    }
-
-    let instance = JSON.parse(item);
-
-    return '/did/' + instance.did;
-  };
+  // const getPublicUrl = (): string => {
+  //   let item = window.sessionStorage.getItem('session_instance')
+  //   if (!item) {
+  //     throw Error('Not logged in')
+  //   }
+  //   let instance = JSON.parse(item)
+  //   return '/did/' + instance.did
+  // }
 
   useEffect(() => {
-    (async () => {
-      if (token != '') {
-        let profile: ProfileDTO = await getFullProfile("did");
-        setfull_profile(profile);
+    ;(async () => {
+      let instance = UserService.getLoggedUser()
+      if (!instance || !instance.userToken) return
+
+      // let profile: ProfileDTO = await getFullProfile('did')
+      // setfull_profile(profile)
+
+      if (instance.onBoardingCompleted && !willExpire) {
+        setWillExpire(true)
+        setTimeout(() => {
+          UserService.logout()
+          window.location.href = '/'
+        }, 60 * 60 * 1000)
       }
-    })();
-  }, [token]);
+      setOnboardingStatus(instance.onBoardingCompleted)
+    })()
+  }, [])
+
+  if (!onboardingCompleted) {
+    return (
+      <OnBoarding
+        completed={() => {
+          UserService.setOnBoardingComplted()
+          setOnboardingStatus(true)
+          if (!willExpire) {
+            setWillExpire(true)
+            setTimeout(() => {
+              UserService.logout()
+              window.location.href = '/'
+            }, 60 * 60 * 1000)
+          }
+        }}
+      />
+    )
+  }
 
   return (
     <IonPage>
@@ -122,7 +151,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
               <Logo />
               <Navbar />
             </IonCol>
-            {/* <IonCol size='7' className={style['center-panel']}>              
+            {/* <IonCol size='7' className={style['center-panel']}>
               <ProfileComponent profile={profile} />
             </IonCol> */}
             <IonCol size='10' className={style['right-panel']}>
@@ -135,15 +164,14 @@ const ProfilePage: React.FC<RouteComponentProps> = (
         </IonGrid>
       </IonContent>
     </IonPage>
-
-  );
-};
+  )
+}
 
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   counter: makeSelectCounter(),
   msg: makeSelectAjaxMsg(),
-});
+})
 
 /** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
@@ -154,7 +182,7 @@ export function mapDispatchToProps(dispatch: any) {
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
       onSimpleAjax: () => dispatch(getSimpleAjax()),
     },
-  };
+  }
 }
 
 /**
@@ -165,13 +193,13 @@ const withInjectedMode = injector(ProfilePage, {
   key: NameSpace,
   reducer,
   saga,
-});
+})
 
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
+const withConnect = connect(mapStateToProps, mapDispatchToProps)
 
 export default compose(
   withConnect,
   memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>;
+)(withInjectedMode) as React.ComponentType<InferMappedProps>
 
 // export default Tab1;

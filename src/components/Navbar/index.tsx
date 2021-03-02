@@ -1,7 +1,8 @@
+import { useHistory } from 'react-router-dom';
 import React, { useState } from 'react';
 import { IonContent, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react';
 import style from './style.module.scss';
-import { useHistory } from 'react-router-dom';
+import { UserService } from 'src/services/user.service';
 
 interface Props {
   tab?: string;
@@ -17,7 +18,7 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
         <IonList>
           <IonItem
             className={
-              active == 'dashboard' ? style['item-active'] : style['item-link']
+              active === 'dashboard' ? style['item-active'] : style['item-link']
             }
             onClick={() => setActive('dashboard')}
           >
@@ -32,7 +33,7 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           </IonItem>
           <IonItem
             className={
-              active == 'profile_manager'
+              active === 'profile_manager'
                 ? style['item-active']
                 : style['item-link']
             }
@@ -49,7 +50,7 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           </IonItem>
           <IonItem
             className={
-              active == 'connections'
+              active === 'connections'
                 ? style['item-active']
                 : style['item-link']
             }
@@ -66,7 +67,7 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           </IonItem>
           <IonItem
             className={
-              active == 'search' ? style['item-active'] : style['item-link']
+              active === 'search' ? style['item-active'] : style['item-link']
             }
             onClick={() => {
               setActive('search');
@@ -85,9 +86,12 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           <hr className={style['divider']} />
           <IonItem
             className={
-              active == 'settings' ? style['item-active'] : style['item-link']
+              active === 'settings' ? style['item-active'] : style['item-link']
             }
-            onClick={() => setActive('settings')}
+            onClick={() => {
+              setActive('settings');
+              history.push('/settings');
+            }}
           >
             <IonIcon
               slot='start'
@@ -100,7 +104,7 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           </IonItem>
           <IonItem
             className={
-              active == 'notifications'
+              active === 'notifications'
                 ? style['item-active']
                 : style['item-link']
             }
@@ -113,6 +117,22 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
             ></IonIcon>
             <IonLabel>
               <h3>Notifications</h3>
+            </IonLabel>
+          </IonItem>
+          <IonItem
+            className={style['item-link']}
+            onClick={async () => {
+              await UserService.logout();
+              window.location.href = '/';
+            }}
+          >
+            <IonIcon
+              slot='start'
+              src='../../assets/icon_dashboard.svg'
+              className={style['img']}
+            ></IonIcon>
+            <IonLabel>
+              <h3>Sign Out</h3>
             </IonLabel>
           </IonItem>
         </IonList>

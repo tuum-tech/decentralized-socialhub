@@ -7,6 +7,17 @@
 // import edit from '../../assets/icon-edit.svg';
 // import addbutton from '../../assets/addbutton.svg'
 // import university from '../../assets/university.png'
+import React from 'react';
+import { IonGrid, IonRow, IonCol, IonProgressBar } from '@ionic/react';
+import { ProfileContent } from 'src/pages/ProfilePage/types';
+
+import style from './style.module.scss';
+
+import photo from '../../../assets/photo.png';
+import bulb from '../../../assets/bulb.svg';
+import edit from '../../../assets/icon-edit.svg';
+import addbutton from '../../../assets/addbutton.svg';
+import university from '../../../assets/university.png';
 
 // interface IProps {
 //   profile: ProfileContent
@@ -73,7 +84,6 @@
 //       <IonRow>
 //         <IonCol size="auto"><img src={university} /></IonCol>
 //         <IonCol size="4" className={style["title-university"]}>University of Management and Technology - UMT</IonCol>
-
 
 //       </IonRow>
 

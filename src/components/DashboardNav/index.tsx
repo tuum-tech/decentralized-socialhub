@@ -1,29 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
-  IonTabs,
-  IonTabBar,
-  IonTabButton,
-  IonIcon,
   IonContent,
-  IonSpinner,
   IonList,
   IonLabel,
   IonItem,
   IonCol,
   IonGrid,
   IonRow,
-  IonCard,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonCardContent,
-  IonButton,
-} from '@ionic/react';
-import style from './style.module.scss';
-import SpotlightCard from 'src/components/cards/SpotlightCard';
-import BadgesCard from 'src/components/cards/BadgesCard';
-import OverviewCard from 'src/components/cards/OverviewCard';
-import ButtonWhite from 'src/components/buttons/ButtonWhite';
+} from '@ionic/react'
+import style from './style.module.scss'
+import SpotlightCard from 'src/components/cards/SpotlightCard'
+import BadgesCard from 'src/components/cards/BadgesCard'
+import OverviewCard from 'src/components/cards/OverviewCard'
+import ButtonWhite from 'src/components/buttons/ButtonWhite'
 
 const DashboardHome: React.FC = () => {
   return (
@@ -43,8 +32,8 @@ const DashboardHome: React.FC = () => {
         </IonCol>
       </IonRow>
     </IonGrid>
-  );
-};
+  )
+}
 
 const DashboardStatus: React.FC = () => {
   return (
@@ -61,8 +50,8 @@ const DashboardStatus: React.FC = () => {
         </IonCol>
       </IonRow>
     </IonGrid>
-  );
-};
+  )
+}
 
 const DashboardBadges: React.FC = () => {
   return (
@@ -80,18 +69,18 @@ const DashboardBadges: React.FC = () => {
         </IonCol>
       </IonRow>
     </IonGrid>
-  );
-};
+  )
+}
 
 const DashboardNav: React.FC = () => {
-  const [active, setActive] = useState('home');
+  const [active, setActive] = useState('home')
 
   return (
     <IonContent className={style['dashboardnav']}>
       <IonList className={style['tab-list']}>
         <IonItem
           className={
-            (active == 'home' ? style['tab-active'] : '') +
+            (active === 'home' ? style['tab-active'] : '') +
             ' ' +
             style['tab-item']
           }
@@ -101,7 +90,7 @@ const DashboardNav: React.FC = () => {
         </IonItem>
         <IonItem
           className={
-            (active == 'status' ? style['tab-active'] : '') +
+            (active === 'status' ? style['tab-active'] : '') +
             ' ' +
             style['tab-item']
           }
@@ -111,7 +100,7 @@ const DashboardNav: React.FC = () => {
         </IonItem>
         <IonItem
           className={
-            (active == 'badges' ? style['tab-active'] : '') +
+            (active === 'badges' ? style['tab-active'] : '') +
             ' ' +
             style['tab-item']
           }
@@ -120,11 +109,11 @@ const DashboardNav: React.FC = () => {
           <IonLabel className={style['tab-label']}>Badges</IonLabel>
         </IonItem>
       </IonList>
-      {active == 'home' && <DashboardHome />}
-      {active == 'status' && <DashboardStatus />}
-      {active == 'badges' && <DashboardBadges />}
+      {active === 'home' && <DashboardHome />}
+      {active === 'status' && <DashboardStatus />}
+      {active === 'badges' && <DashboardBadges />}
     </IonContent>
-  );
-};
+  )
+}
 
-export default DashboardNav;
+export default DashboardNav

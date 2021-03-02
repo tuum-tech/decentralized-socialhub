@@ -1,62 +1,42 @@
 /**
  * Page
  */
-import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonButton,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonInput,
-  IonSearchbar,
-} from '@ionic/react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { createStructuredSelector } from 'reselect';
-import injector from 'src/baseplate/injectorWrap';
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
-import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo, useEffect, useState } from 'react';
-import style from './style.module.scss';
-import { NameSpace } from './constants';
-import reducer from './reducer';
-import saga from './saga';
+import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { createStructuredSelector } from 'reselect'
+import injector from 'src/baseplate/injectorWrap'
+import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
+import { incrementAction, getSimpleAjax } from './actions'
+import React, { memo, useEffect, useState } from 'react'
+import style from './style.module.scss'
+import { NameSpace } from './constants'
+import reducer from './reducer'
+import saga from './saga'
 import {
   EducationItem,
   ExperienceItem,
   InferMappedProps,
   ProfileDTO,
   SubState,
-} from './types';
-import {
-  requestFullProfile
-
-} from './fetchapi';
-import FollowingList from 'src/components/FollowingList';
-import { RouteComponentProps } from 'react-router';
-import Logo from 'src/components/Logo';
-import Navbar from 'src/components/Navbar';
-import ProfileHeader from 'src/components/ProfileHeader';
-import DashboardNav from 'src/components/DashboardNav';
-import PublicNavbar from 'src/components/PublicNavbar';
-import RegisterNewUserButton from 'src/components/RegisterNewUserButton';
-import SignInButton from 'src/components/SignInButton';
-import ProfileComponent from 'src/components/ProfileComponent';
+} from './types'
+import { requestFullProfile } from './fetchapi'
+import FollowingList from 'src/components/FollowingList'
+import { RouteComponentProps } from 'react-router'
+import Logo from 'src/components/Logo'
+import Navbar from 'src/components/Navbar'
+import ProfileHeader from 'src/components/ProfileHeader'
+import DashboardNav from 'src/components/DashboardNav'
+import PublicNavbar from 'src/components/PublicNavbar'
+import RegisterNewUserButton from 'src/components/RegisterNewUserButton'
+import SignInButton from 'src/components/SignInButton'
+import ProfileComponent from 'src/components/ProfileComponent'
 
 interface MatchParams {
-  did: string;
+  did: string
 }
 
-interface Props extends RouteComponentProps<MatchParams> { }
+interface Props extends RouteComponentProps<MatchParams> {}
 
 const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   props: RouteComponentProps<MatchParams>
@@ -67,76 +47,74 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
    * incoming from Server API calls. Maintain a local state.
    */
   const [full_profile, setfull_profile] = useState({
-    basicDTO:
-    {
+    basicDTO: {
       isEnabled: false,
-      first_name: "",
-      last_name: "",
-      did: "",
-      title: "",
-      about: "",
-      address: { number: "", street_name: "", postal_code: "", state: "", country: "" }
+      firstName: '',
+      lastName: '',
+      did: '',
+      title: '',
+      about: '',
+      address: {
+        number: '',
+        street_name: '',
+        postal_code: '',
+        state: '',
+        country: '',
+      },
     },
     educationDTO: {
       isEnabled: true,
-      items: ([] as EducationItem[])
+      items: [] as EducationItem[],
     },
     experienceDTO: {
       isEnabled: true,
-      items: ([] as ExperienceItem[])
-    }
-  });
-
+      items: [] as ExperienceItem[],
+    },
+  })
 
   const getFullProfile = async (did: string): Promise<any> => {
-    return await requestFullProfile(did);
-  };
+    return await requestFullProfile(did)
+  }
 
-
-
-  let did: string = props.match.params.did || '';
+  let did: string = props.match.params.did || ''
 
   useEffect(() => {
-    (async () => {
-      let profile: ProfileDTO = await getFullProfile(did);
-      setfull_profile(profile);
-
-
-    })();
-  }, []);
+    ;(async () => {
+      let profile: ProfileDTO = await getFullProfile(did)
+      setfull_profile(profile)
+    })()
+  }, [])
 
   return (
     <IonPage className={style['profilepage']}>
       <IonContent>
         <IonGrid className={style['profilepagegrid']}>
-          <PublicNavbar className="ion-justify-content-between">
-            <IonCol size="auto">
+          <PublicNavbar className='ion-justify-content-between'>
+            <IonCol size='auto'>
               <img src='../../assets/logo_profile_black.svg' />
             </IonCol>
-            <IonCol size="auto">
+            <IonCol size='auto'>
               <IonRow>
                 <IonCol>
-                  <RegisterNewUserButton to="/create/profile">Register new user</RegisterNewUserButton>
+                  <RegisterNewUserButton to='create-profile'>
+                    Register new user
+                  </RegisterNewUserButton>
                 </IonCol>
                 <IonCol>
-                  <SignInButton to="/create/profile">Sign In</SignInButton>
+                  <SignInButton to='create-profile'>Sign In</SignInButton>
                 </IonCol>
               </IonRow>
             </IonCol>
           </PublicNavbar>
 
-          <IonRow className="ion-justify-content-around">
-            <IonCol size="12">
+          <IonRow className='ion-justify-content-around'>
+            <IonCol size='12'>
               <ProfileComponent profile={full_profile} />
-
             </IonCol>
           </IonRow>
-
-
         </IonGrid>
       </IonContent>
     </IonPage>
-
 
     // <IonPage className={style['profilepage']}>
     //   <IonContent>
@@ -159,14 +137,14 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     //     </IonGrid>
     //   </IonContent>
     // </IonPage>
-  );
-};
+  )
+}
 
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   counter: makeSelectCounter(),
   msg: makeSelectAjaxMsg(),
-});
+})
 
 /** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
@@ -177,7 +155,7 @@ export function mapDispatchToProps(dispatch: any) {
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
       onSimpleAjax: () => dispatch(getSimpleAjax()),
     },
-  };
+  }
 }
 
 /**
@@ -188,13 +166,13 @@ const withInjectedMode = injector(PublicPage, {
   key: NameSpace,
   reducer,
   saga,
-});
+})
 
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
+const withConnect = connect(mapStateToProps, mapDispatchToProps)
 
 export default compose(
   withConnect,
   memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>;
+)(withInjectedMode) as React.ComponentType<InferMappedProps>
 
 // export default Tab1;

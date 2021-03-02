@@ -52,9 +52,9 @@
 
 // const ProfilePage: React.FC<RouteComponentProps> = (props: RouteComponentProps) => {
 
-//   /** 
-//    * Direct method implementation without SAGA 
-//    * This was to show you dont need to put everything to global state 
+//   /**
+//    * Direct method implementation without SAGA
+//    * This was to show you dont need to put everything to global state
 //    * incoming from Server API calls. Maintain a local state.
 //   */
 //   const [profile, setProfile] = useState({ profile: { firstName: "", lastName: "" } } as ProfileContent);
@@ -71,7 +71,6 @@
 //     if (!item) {
 //       throw Error("Not logged in")
 //     }
-
 
 //     let instance = JSON.parse(item)
 
@@ -94,7 +93,6 @@
 
 //     })();
 //   }, [token]);
-
 
 //   return (
 //     <IonPage className={style["profilepage"]}>

@@ -1,10 +1,12 @@
 {
-  "name": "profile-web",
-  "version": "0.0.1",
+  "name": "profile",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@elastos/elastos-hive-js-sdk": "github:tuum-tech/Elastos.NET.Hive.JS.SDK",
     "@elastosfoundation/elastos-js-sdk": "^1.1.0",
+    "@sentry/react": "^6.2.0",
+    "@sentry/tracing": "^6.2.0",
     "@types/styled-components": "^5.1.5",
     "bootstrap": "^4.6.0",
     "connected-react-router": "^6.8.0",
@@ -54,6 +56,9 @@
       "last 1 safari version"
     ]
   },
+  "engines": {
+    "node": "12.20.1"
+  },
   "description": "Profile",
   "devDependencies": {
     "@ionic/react": "^4.11.13",
@@ -72,7 +77,7 @@
     "@types/webpack-env": "^1.16.0",
     "fs-extra": "^9.1.0",
     "handlebars": "^4.7.7",
-    "react-scripts": "3.4.4",
+    "react-scripts": "^3.4.4",
     "tslint-react": "^4.1.0"
   }
 }
