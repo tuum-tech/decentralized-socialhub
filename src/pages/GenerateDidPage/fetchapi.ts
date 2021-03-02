@@ -19,6 +19,7 @@ export async function checkIfEmailAlreadyRegistered(email: string) {
       target_app_did: process.env.REACT_APP_APPLICATION_ID,
     },
   }
+  console.log('=======>get_users_scripts', get_users_scripts)
   let get_users_script_response: any = await ScriptService.runTuumTechScript(
     get_users_scripts
   )

@@ -40,7 +40,6 @@ import messages from '../../assets/message-circle-outline.svg'
 import photo from '../../assets/photo.png'
 import StartServiceComponent from 'src/components/StartServiceComponent'
 import ProfileTemplateManager from 'src/components/ProfileTemplateManager'
-import { BackgroundService } from '../../services/background.service'
 import { Link } from 'react-router-dom'
 import Logo from 'src/components/Logo'
 import Navbar from 'src/components/Navbar'
@@ -57,6 +56,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
+  const [willExpire, setWillExpire] = useState(false)
   const [full_profile, setfull_profile] = useState({
     basicDTO: {
       isEnabled: false,
@@ -86,40 +86,43 @@ const ProfilePage: React.FC<RouteComponentProps> = (
 
   const [active, setActive] = useState('dashboard')
 
-  const getProfile = async (token: string): Promise<ProfileResponse> => {
-    return (await requestLinkedinProfile(token)) as ProfileResponse
-  }
-  let token: string =
-    new URLSearchParams(props.location.search).get('token') || ''
+  // const getProfile = async (token: string): Promise<ProfileResponse> => {
+  //   return (await requestLinkedinProfile(token)) as ProfileResponse
+  // }
+  // let token: string =
+  //   new URLSearchParams(props.location.search).get('token') || ''
 
   const getFullProfile = async (did: string): Promise<any> => {
     return await requestFullProfile(did)
   }
 
-  const getPublicUrl = (): string => {
-    let item = window.sessionStorage.getItem('session_instance')
-    if (!item) {
-      throw Error('Not logged in')
-    }
-    let instance = JSON.parse(item)
-    return '/did/' + instance.did
-  }
+  // const getPublicUrl = (): string => {
+  //   let item = window.sessionStorage.getItem('session_instance')
+  //   if (!item) {
+  //     throw Error('Not logged in')
+  //   }
+  //   let instance = JSON.parse(item)
+  //   return '/did/' + instance.did
+  // }
 
   useEffect(() => {
     ;(async () => {
-      if (token != '') {
-        let profile: ProfileDTO = await getFullProfile('did')
-        setfull_profile(profile)
-      }
-    })()
-  }, [token])
-
-  useEffect(() => {
-    ;(() => {
       let instance = UserService.getLoggedUser()
+      if (!instance || !instance.userToken) return
+
+      // let profile: ProfileDTO = await getFullProfile('did')
+      // setfull_profile(profile)
+
+      if (instance.onBoardingCompleted && !willExpire) {
+        setWillExpire(true)
+        setTimeout(() => {
+          UserService.logout()
+          window.location.href = '/'
+        }, 60 * 60 * 1000)
+      }
       setOnboardingStatus(instance.onBoardingCompleted)
     })()
-  }, [onboardingCompleted])
+  }, [])
 
   if (!onboardingCompleted) {
     return (
@@ -127,6 +130,13 @@ const ProfilePage: React.FC<RouteComponentProps> = (
         completed={() => {
           UserService.setOnBoardingComplted()
           setOnboardingStatus(true)
+          if (!willExpire) {
+            setWillExpire(true)
+            setTimeout(() => {
+              UserService.logout()
+              window.location.href = '/'
+            }, 60 * 60 * 1000)
+          }
         }}
       />
     )

@@ -80,6 +80,8 @@ let run = async () => {
           code: '$params.code',
           did: '$params.did',
           hiveHost: '$params.hiveHost',
+          accountType: '$params.accountType',
+          userToken: '$params.userToken',
         },
       },
     },

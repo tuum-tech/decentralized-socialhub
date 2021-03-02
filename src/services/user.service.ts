@@ -112,7 +112,7 @@ export class UserService {
           lastName: userData.lastName,
           hiveHost: userData.hiveHost,
           email: userData.email,
-          userToken: '',
+          userToken: userData.userToken,
           alreadySigned:
             pSignedUsers &&
             pSignedUsers.length > 0 &&
@@ -164,6 +164,8 @@ export class UserService {
         code: 1,
         did: newDID.did,
         hiveHost: sessionItem.hiveHost,
+        accountType: service,
+        userToken: token,
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
@@ -236,15 +238,15 @@ export class UserService {
     storePassword: string
   ) {
     // clear prev data
-    for (var i = 0, len = window.localStorage.length; i < len; ++i) {
-      let key = window.localStorage.key(i)
-      if (key && key.startsWith('user_')) {
-        window.localStorage.removeItem(key)
-      }
-      if (key && key.startsWith('temporary_')) {
-        window.localStorage.removeItem(key)
-      }
-    }
+    // for (var i = 0, len = window.localStorage.length; i < len; ++i) {
+    //   let key = window.localStorage.key(i)
+    //   if (key && key.startsWith('user_')) {
+    //     window.localStorage.removeItem(key)
+    //   }
+    //   if (key && key.startsWith('temporary_')) {
+    //     window.localStorage.removeItem(key)
+    //   }
+    // }
 
     console.log('======>localUserData', key, instance, storePassword)
     let encrypted = CryptoJS.AES.encrypt(
@@ -282,19 +284,6 @@ export class UserService {
     }
   }
 
-  public static LoginWithPassword(
-    did: string,
-    storePassword: string
-  ): ISessionItem | null {
-    try {
-      let instance = this.unlockUser(this.key(did), storePassword)
-      SessionService.saveSessionItem(instance)
-      return instance
-    } catch (error) {
-      return null
-    }
-  }
-
   public static setOnBoardingComplted() {
     let sessionItem = this.getLoggedUser()
     if (sessionItem) {
@@ -307,8 +296,15 @@ export class UserService {
   }
 
   public static Login(did: string, storePassword: string) {
-    let instance = this.unlockUser(this.key(did), storePassword)
-    SessionService.saveSessionItem(instance)
+    // let instance = this.unlockUser(this.key(did), storePassword)
+    // SessionService.saveSessionItem(instance)
+    try {
+      let instance = this.unlockUser(this.key(did), storePassword)
+      SessionService.saveSessionItem(instance)
+      return instance
+    } catch (error) {
+      return null
+    }
   }
 
   public static async logout() {
@@ -347,7 +343,7 @@ class SessionService {
   }
 
   static saveSessionItem(item: ISessionItem) {
-    window.sessionStorage.clear()
+    // window.sessionStorage.clear()
     window.sessionStorage.setItem(
       'session_instance',
       JSON.stringify(item, null, '')
