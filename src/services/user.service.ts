@@ -1,6 +1,7 @@
 import { AssistService } from './assist.service'
-import { DidService } from './did.service'
+import { DidService, IDID } from './did.service'
 import { CredentialType, DidcredsService } from './didcreds.service'
+import { DidDocumentService } from './diddocument.service'
 import { ScriptService } from './script.service'
 
 const CryptoJS = require('crypto-js')
@@ -20,7 +21,9 @@ export interface ISessionItem {
   did: string
   firstName: string
   lastName: string
+  email?: string
   isDIDPublished: boolean
+  mnemonics: string
   onBoardingCompleted: boolean
 }
 
@@ -135,15 +138,17 @@ export class UserService {
   ) {
     let sessionItem: ISessionItem
 
-    let did = await this.generateTemporaryDID(service, credential)
+    let newDID = await this.generateTemporaryDID(service, credential)
     sessionItem = {
-      did: did,
+      did: newDID.did,
       accountType: service,
       isDIDPublished: false,
       firstName: fname,
       lastName: lname,
-      hiveHost: 'http://localhost:5000',
+      hiveHost: `${process.env.REACT_APP_TUUM_TECH_HIVE}`,
       userToken: token,
+      mnemonics: newDID.mnemonic,
+      email: email,
       onBoardingCompleted: false,
     }
 
@@ -157,7 +162,7 @@ export class UserService {
         email: email,
         status: 'CONFIRMED',
         code: 1,
-        did: did,
+        did: newDID.did,
         hiveHost: sessionItem.hiveHost,
       },
       context: {
@@ -169,7 +174,7 @@ export class UserService {
     console.log('=====>response', response)
 
     console.log(sessionItem)
-    this.lockUser(this.key(did), sessionItem, storePassword)
+    this.lockUser(this.key(newDID.did), sessionItem, storePassword)
     SessionService.saveSessionItem(sessionItem)
   }
 
@@ -184,7 +189,7 @@ export class UserService {
   private static async generateTemporaryDID(
     service: AccountType,
     credential: string
-  ): Promise<string> {
+  ): Promise<IDID> {
     console.log('Generating temporary DID')
     let newDID = await DidService.generateNew()
     let temporaryDocument = await DidService.temporaryDidDocument(newDID)
@@ -197,28 +202,28 @@ export class UserService {
 
     DidService.addVerfiableCredentialToDIDDocument(temporaryDocument, vc)
 
-    DidService.sealDIDDocument(newDID, temporaryDocument)
+    DidDocumentService.updateUserDocument(temporaryDocument)
 
-    let requestPub = await DidService.generatePublishRequest(temporaryDocument)
+    // let requestPub = await DidService.generatePublishRequest(temporaryDocument)
 
-    let response = await AssistService.publishDocument(newDID.did, requestPub)
+    // let response = await AssistService.publishDocument(newDID.did, requestPub)
 
-    window.localStorage.setItem(
-      `temporary_${newDID.did.replace('did:elastos:', '')}`,
-      JSON.stringify({
-        mnemonic: newDID.mnemonic,
-      })
-    )
+    // window.localStorage.setItem(
+    //   `temporary_${newDID.did.replace('did:elastos:', '')}`,
+    //   JSON.stringify({
+    //     mnemonic: newDID.mnemonic,
+    //   })
+    // )
 
-    window.localStorage.setItem(
-      `publish_${response.confirmationId}`,
-      JSON.stringify({
-        confirmationId: response.confirmationId,
-        status: response.requestStatus,
-      })
-    )
+    // window.localStorage.setItem(
+    //   `publish_${response.confirmationId}`,
+    //   JSON.stringify({
+    //     confirmationId: response.confirmationId,
+    //     status: response.requestStatus,
+    //   })
+    // )
 
-    return newDID.did
+    return newDID
   }
 
   static getLoggedUser(): ISessionItem {

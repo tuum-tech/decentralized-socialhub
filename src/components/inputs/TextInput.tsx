@@ -13,6 +13,7 @@ interface Props {
   value?: string;
   flexDirection?: string;
   hasError?: boolean;
+  readonly?: boolean,
   onChange: (e: string) => void;
   type?:
     | 'number'
@@ -35,6 +36,7 @@ const TextInput: React.FC<Props> = ({
   flexDirection = 'row',
   hasError = false,
   type = 'text',
+  readonly = false,
 }) => {
   let cName = style['textinput'];
   if (flexDirection === 'column') {
@@ -54,6 +56,7 @@ const TextInput: React.FC<Props> = ({
         value={value}
         className={style['textinput_field']}
         placeholder={placeholder}
+        readonly={readonly}
         onIonChange={(e) => onChange(e.detail.value!)}
       />
     </div>

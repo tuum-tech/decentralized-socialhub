@@ -9,6 +9,8 @@ export interface IDID {
   did: string;
 }
 
+
+
 export class DidService {
   static async loadDid(mnemonic: string, password: string = ''): Promise<IDID> {
     return await ElastosClient.did.loadFromMnemonic(mnemonic, password);
@@ -30,6 +32,10 @@ export class DidService {
     return document && document !== undefined;
   }
 
+  static isSignedDIDDocumentValid(signedDocument: any, did:IDID): boolean {
+     return ElastosClient.didDocuments.isValid(signedDocument, did)
+  }
+
   static async temporaryDidDocument(did: IDID): Promise<any> {
     //TEMPORARY: The real method will get the document fom blockchain or cache
     let document = ElastosClient.didDocuments.newDIDDocument(did);
@@ -37,15 +43,28 @@ export class DidService {
   }
 
   static sealDIDDocument(did: IDID, diddocument: any) {
-    ElastosClient.didDocuments.sealDocument(did, document);
-    return document;
+    ElastosClient.didDocuments.sealDocument(did, diddocument);
+    return diddocument;
   }
 
   static async addVerfiableCredentialToDIDDocument(diddocument: any, vc: any) {
+    
+    if (diddocument.hasOwnProperty("proof")) {
+      console.log("Remove proof")
+      delete diddocument.proof
+      console.log("Proof removed")
+    }
+
     ElastosClient.didDocuments.addVerfiableCredentialToDIDDocument(
       diddocument,
       vc
     );
+  }
+
+
+
+  static generateSelfVerifiableCredential(did: IDID, subjectName: string, subjectTypes: string[], subjectValue: any){
+    return ElastosClient.didDocuments.createVerifiableCredential(did, did.did, subjectName, subjectTypes, subjectValue)
   }
 
   static async generateVerifiablePresentationFromUserMnemonics(
@@ -73,6 +92,7 @@ export class DidService {
       nonce
     );
   }
+
 
   static async generatePublishRequest(diddocument: any): Promise<any> {
     let appMnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
