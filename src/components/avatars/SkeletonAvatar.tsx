@@ -11,7 +11,7 @@ const SkeletonAvatar: React.FC<Props> = ({ fill = '#EDF2F7' }) => {
       height='0'
       viewBox='0 0 77 73'
       fill='none'
-      display='none'
+      display=''
       xmlns='http://www.w3.org/2000/svg'
     >
       <defs>
