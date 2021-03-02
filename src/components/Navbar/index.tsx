@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { IonContent, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react';
 import style from './style.module.scss';
-import SearchComponent from 'src/components/SearchComponent';
-// import { useHistory } from 'react-router';
 import { useHistory } from 'react-router-dom';
 
 interface Props {
@@ -82,7 +80,6 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
             ></IonIcon>
             <IonLabel>
               <h3>Explore</h3>
-              {/* {active == 'search' && <SearchComponent />} */}
             </IonLabel>
           </IonItem>
           <hr className={style['divider']} />

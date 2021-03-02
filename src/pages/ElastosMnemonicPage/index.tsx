@@ -285,7 +285,9 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
             <IonRow style={{ marginTop: '10px' }}>
               <IonCol>
                 <ButtonLight
-                  onClick={() => otherVault('http://localhost:5000')}
+                  onClick={() =>
+                    otherVault(`${process.env.REACT_APP_TUUM_TECH_HIVE}`)
+                  }
                 >
                   Tuum Tech
                 </ButtonLight>
@@ -294,7 +296,9 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
             <IonRow style={{ marginTop: '10px' }}>
               <IonCol>
                 <ButtonLight
-                  onClick={() => otherVault('http://localhost:5000')}
+                  onClick={() =>
+                    otherVault(`${process.env.REACT_APP_TUUM_TECH_HIVE}`)
+                  }
                 >
                   Trinity Tech
                 </ButtonLight>

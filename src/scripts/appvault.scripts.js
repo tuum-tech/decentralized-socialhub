@@ -210,7 +210,25 @@ let run = async () => {
   });
 
   await client.Scripting.SetScript({
-    name: 'get_universities',
+    name: 'get_all_universities',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_universities',
+      output: true,
+      body: {
+        collection: 'universities',
+        options: {
+          limit: 150, //'$params.limit',
+          skip: 0, //'$params.skip',
+        },
+      },
+    },
+  });
+
+  await client.Scripting.SetScript({
+    name: 'get_universities_by_name',
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
@@ -220,16 +238,36 @@ let run = async () => {
       body: {
         collection: 'universities',
         filter: {
-          name: { $regex: '$params.name' },
-          // $regex: { name: '.*$params.name.*' },
-          // name: '$params.name',
+          name: { $regex: '$params.name', $options: 'i' },
+        },
+        options: {
+          limit: 150, //'$params.limit',
+          skip: 0, //'$params.skip',
         },
       },
     },
   });
 
   await client.Scripting.SetScript({
-    name: 'get_users',
+    name: 'get_all_users',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_users',
+      output: true,
+      body: {
+        collection: 'users',
+        options: {
+          limit: 150, //'$params.limit',
+          skip: 0, //'$params.skip',
+        },
+      },
+    },
+  });
+
+  await client.Scripting.SetScript({
+    name: 'get_users_by_name',
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
@@ -239,9 +277,32 @@ let run = async () => {
       body: {
         collection: 'users',
         filter: {
-          // $regex: { name: '.*$params.name.*' },
-          name: { $regex: '$params.name' },
-          // name: '$params.name',
+          name: { $regex: '$params.name', $options: 'i' },
+        },
+        options: {
+          limit: 150, //'$params.limit',
+          skip: 0, //'$params.skip',
+        },
+      },
+    },
+  });
+
+  await client.Scripting.SetScript({
+    name: 'get_users_by_did',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_users',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          did: { $regex: '$params.did' },
+        },
+        options: {
+          limit: 150, //'$params.limit',
+          skip: 0, //'$params.skip',
         },
       },
     },

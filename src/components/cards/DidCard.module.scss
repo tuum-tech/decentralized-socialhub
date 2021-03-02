@@ -36,17 +36,42 @@
     border-radius: 16px;
     border: 1px solid #efefef;
     --inner-border-width: 0;
-    margin: 1em;
-
+    margin: 0em 1em;
     font-family: 'SF Pro Display';
-    font-size: 14px;
-    font-weight: 500;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    text-align: left;
-    color: #7a7a9d;
+
+    .card-data {
+      padding: 0.5em;
+      width: 60%;
+
+      .name-value {
+        font-size: 16px;
+        font-weight: 600;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.56;
+        letter-spacing: normal;
+        text-align: left;
+        color: #27272e;
+        display: block;
+      }
+
+      .did-value {
+        font-size: 14px;
+        font-weight: 500;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.79;
+        letter-spacing: normal;
+        text-align: left;
+        color: rgba(50, 50, 71, 0.3);
+        display: block;
+      }
+    }
+
+    img {
+      width: auto;
+      background-color: #edf2f7;
+    }
   }
 
   .badge-bg {
@@ -62,7 +87,8 @@
 
   .card-link {
     flex: auto;
-    float: right;
+    // float: right;
+    margin: auto;
     font-family: 'SF Pro Display';
     font-size: 12px;
     font-weight: bold;
@@ -72,11 +98,18 @@
     letter-spacing: normal;
     text-align: right;
     color: var(--theme-primary-blue);
-    cursor: pointer;
-    opacity: 1;
 
-    &_hover {
-      opacity: 0.5;
+    .card-link-inner {
+      border-radius: 8px;
+      border: solid 1px #4c6fff;
+      flex-grow: 0;
+      padding: 0.5em 1.5em;
+      cursor: pointer;
+      opacity: 1;
+
+      &:hover {
+        background: #f7fafc;
+      }
     }
   }
 }
