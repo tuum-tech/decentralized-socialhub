@@ -14,42 +14,25 @@ import { NameSpace } from "./constants";
 import reducer from "./reducer";
 import saga from "./saga";
 import { InferMappedProps, SubState } from "./types";
-import { RouteComponentProps } from "react-router";
-import { fetchSimpleApi } from "./fetchapi";
 import Logo from "src/components/Logo";
 import Navbar from "src/components/Navbar";
-import SettingsHeader from "src/components/SettingsHeader";
-import DashboardNav from "src/components/DashboardNav";
+import SettingsBody from "src/components/SettingsBody";
 
-const SettingsPage: React.FC<RouteComponentProps> = (
-  props: RouteComponentProps
-) => {
-  /**
-   * Direct method implementation without SAGA
-   * This was to show you dont need to put everything to global state
-   * incoming from Server API calls. Maintain a local state.
-   */
-  const [msg, setMsg] = useState("");
-  const simpleAjaxDirect = async () => {
-    const msg = (await fetchSimpleApi()) as string;
-    setMsg(msg);
-  };
-
+const SettingsPage: React.FC<InferMappedProps> = ({
+  eProps,
+  ...props
+}: InferMappedProps) => {
   return (
-    <IonPage>
-      <IonContent className={style["settingspage"]}>
+    <IonPage className={style["settingspage"]}>
+      <IonContent>
         <IonGrid className={style["settingspagegrid"]}>
           <IonRow className={style["settingscontent"]}>
             <IonCol size="2" className={style["left-panel"]}>
               <Logo />
-              <Navbar />
+              <Navbar tab="settings" />
             </IonCol>
-            {/* <IonCol size='7' className={style['center-panel']}>
-              <ProfileComponent profile={profile} />
-            </IonCol> */}
             <IonCol size="10" className={style["right-panel"]}>
-              <SettingsHeader />
-              <DashboardNav />
+              <SettingsBody />
             </IonCol>
           </IonRow>
         </IonGrid>

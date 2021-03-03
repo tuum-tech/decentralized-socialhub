@@ -1,0 +1,68 @@
+/** All your component stuyles */
+.settingsbody {
+  background: #f7fafc;
+
+  .settingspagegrid {
+    padding: 0;
+    margin: 0;
+    min-height: 100%;
+    height: 100%;
+  }
+
+  .settingscontent {
+    min-height: 100%;
+    background-color: #fafaff;
+  }
+
+  .left-panel {
+    background-color: #f7fafc;
+    // border-top-left-radius: 5em;
+    // border-bottom-left-radius: 5em;
+    border-right: 1px solid #edf2f7;
+    margin: 0;
+    padding: 0;
+  }
+
+  .right-panel {
+    background: #f7fafc;
+    // border-bottom-right-radius: 5em;
+    padding: 0;
+    margin: 0;
+    // background-color: #fafaff;
+  }
+
+  .settingsbodynavbar {
+    .item-active {
+      border-left: 3px solid var(--theme-primary-blue);
+      border-bottom: 1px solid #edf2f7;
+      --inner-border-width: 0;
+      color: var(--theme-primary-blue);
+    }
+
+    .item-link {
+      // border-left: 3px solid var(--theme-primary-blue);
+      border-bottom: 1px solid #edf2f7;
+      --inner-border-width: 0;
+      cursor: pointer;
+      color: var(--text-body-light);
+    }
+
+    h3 {
+      font-weight: 600;
+    }
+
+    a {
+      padding-left: 15px;
+    }
+
+    p {
+      height: 100%;
+      margin-left: 680px;
+      letter-spacing: 0px;
+      color: #fff !important;
+      opacity: 1;
+      line-height: 50px;
+      font: "normal normal 600 14px/34px Open Sans";
+    }
+  }
+}
