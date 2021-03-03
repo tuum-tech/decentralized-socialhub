@@ -72,6 +72,15 @@ import PublicPage from './pages/PublicPage/Loadable'
 
 import ProtectedRoute from './components/ProtectedRoute'
 
+import TutorialPage from './pages/TutorialPage';
+import VerifyEmailPage from './pages/VerifyEmailPage';
+import ExplorePage from './pages/ExplorePage';
+
+import AccessCodePage from './pages/AlphaAccess/AccessCode';
+import RequestCodePage from './pages/AlphaAccess/RequestCode';
+import InviteCodePage from './pages/AlphaAccess/InviteCode';
+import ManagerPage from './pages/ManagerPage';
+
 const App: React.FC = () => {
   // const [session, setSession] = useState({});
 
@@ -119,6 +128,8 @@ const App: React.FC = () => {
           <Route path='/settings' component={SettingsPage} exact={true} />
           <Route path='/tutorial' component={TutorialPage} exact={true} />
           <Route path='/did/:did' component={PublicPage} exact={true} />
+          <Route path='/manager' component={ManagerPage} exact={true} />
+          <Route exact path='/' render={() => <Redirect to='/Alpha' />} />
 
           {/* // login workflow */}
           <Route path='/twitter_callback' component={TwitterCallback} />

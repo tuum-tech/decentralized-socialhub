@@ -5,15 +5,16 @@
 import React from 'react';
 
 import { IonInput, IonLabel } from '@ionic/react';
-import style from './TextInput.module.scss';
+import style from './SmallTextInput.module.scss';
 
 interface Props {
   placeholder?: string;
   label?: string;
   value?: string;
+  name?: string;
   flexDirection?: string;
   hasError?: boolean;
-  onChange: (e: string) => void;
+  onChange: (e: any) => void;
   type?:
   | 'number'
   | 'text'
@@ -27,9 +28,10 @@ interface Props {
   | undefined;
 }
 
-const TextInput: React.FC<Props> = ({
+const SmallTextInput: React.FC<Props> = ({
   placeholder,
   label,
+  name,
   value,
   onChange,
   flexDirection = 'row',
@@ -52,12 +54,13 @@ const TextInput: React.FC<Props> = ({
       <IonInput
         type={type}
         value={value}
+        name={name}
         className={style['textinput_field']}
         placeholder={placeholder}
-        onIonChange={(e) => onChange(e.detail.value!)}
+        onIonChange={(e) => onChange(e)}
       />
     </div>
   );
 };
 
-export default TextInput;
+export default SmallTextInput;

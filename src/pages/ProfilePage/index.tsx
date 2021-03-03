@@ -63,6 +63,8 @@ const ProfilePage: React.FC<RouteComponentProps> = (
       firstName: '',
       lastName: '',
       did: '',
+      email: '',
+      vault_url: '',
       title: '',
       about: '',
       address: {

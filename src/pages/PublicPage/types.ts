@@ -32,13 +32,15 @@ export interface ExperienceItem {
 }
 
 export interface BasicDTO {
-  isEnabled: boolean
-  firstName: string
-  lastName: string
-  did: string
-  about: string
-  title: string
-  address: AddressDTO
+    isEnabled: boolean,
+    first_name: string,
+    last_name: string,
+    email: string,
+    vault_url: string,
+    did: string,
+    about: string,
+    title: string,
+    address: AddressDTO
 }
 
 export interface AddressDTO {
@@ -55,18 +57,20 @@ export interface ExperienceDTO {
 }
 
 export interface Period {
-  start: string
-  end: string
+    start: string,
+    end?: string
 }
 
 export interface EducationItem {
-  isEnabled: boolean
-  institution: string
-  program: string
-  period: Period
-  title: string
-  description: string
-  order: string
+    isEmpty: boolean,
+    _id: string,
+    institution: string,
+    program: string,
+    start: string,
+    end: string,
+    title: string,
+    description: string,
+    order: string
 }
 
 export interface EducationDTO {

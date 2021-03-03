@@ -37,7 +37,10 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
                 ? style['item-active']
                 : style['item-link']
             }
-            onClick={() => setActive('profile_manager')}
+            onClick={() => {
+              setActive('profile_manager');
+              history.push('/manager');
+            }}
           >
             <IonIcon
               slot='start'

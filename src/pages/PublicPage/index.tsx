@@ -36,7 +36,7 @@ interface MatchParams {
   did: string
 }
 
-interface Props extends RouteComponentProps<MatchParams> {}
+interface Props extends RouteComponentProps<MatchParams> { }
 
 const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   props: RouteComponentProps<MatchParams>
@@ -53,6 +53,8 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
       lastName: '',
       did: '',
       title: '',
+      email: '',
+      vault_url: '',
       about: '',
       address: {
         number: '',
