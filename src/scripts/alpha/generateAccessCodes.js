@@ -20,7 +20,7 @@ let run = async () => {
 
     maillist.emails.forEach(email => {
         let code = generateCode()
-        emails.push({ "email": email, "accesscode": code, "isUsed": false })
+        emails.push({ "email": email, "accesscode": code, "isUsed": false, did: "" })
     });
 
     await collection.insertMany(emails)

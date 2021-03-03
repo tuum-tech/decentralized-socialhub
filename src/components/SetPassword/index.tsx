@@ -2,11 +2,10 @@
  * Page
  */
 
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useState } from 'react'
+import styled from 'styled-components'
 
 import {
-  OnBoardLayout,
   OnBoardLayoutLeft,
   OnBoardLayoutLeftContent,
   OnBoardLayoutLeftContentTitle,
@@ -17,31 +16,37 @@ import {
   OnBoardLayoutRightContent,
   OnBoardLayoutRightContentTitle,
   WavingHandImg,
-} from 'src/components/layouts/OnBoardLayout';
+} from 'src/components/layouts/OnBoardLayout'
+import ButtonWithLogo from 'src/components/buttons/ButtonWithLogo'
+import TextInput from 'src/components/inputs/TextInput'
+import { Text16 } from 'src/components/texts'
+import whitelogo from 'src/assets/logo/whitetextlogo.png'
+import keyimg from 'src/assets/icon/key.png'
 
-import ButtonWithLogo from 'src/components/buttons/ButtonWithLogo';
-import TextInput from 'src/components/inputs/TextInput';
-import { Text16 } from 'src/components/texts';
-
-import whitelogo from '../../assets/logo/whitetextlogo.png';
-import keyimg from '../../assets/icon/key.png';
+const OnBoardLayout = styled.div`
+  font-style: normal;
+  height: 100%;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 40% 60%;
+`
 
 const ErrorText = styled(Text16)`
   text-align: center;
   color: red;
   margin-top: 8px;
-`;
+`
 
 interface Props {
-  next: (password: string) => void;
-  displayText?: string;
+  next: (password: string) => void
+  displayText?: string
 }
 
 const SetPassword: React.FC<Props> = ({ next, displayText = '' }) => {
-  const [password, setPassword] = useState('');
-  const [repeatPassword, setRepeatPassword] = useState('');
-  const [error, setError] = useState('');
-  const disabled = displayText !== '';
+  const [password, setPassword] = useState('')
+  const [repeatPassword, setRepeatPassword] = useState('')
+  const [error, setError] = useState('')
+  const disabled = displayText !== ''
 
   return (
     <OnBoardLayout>
@@ -70,8 +75,8 @@ const SetPassword: React.FC<Props> = ({ next, displayText = '' }) => {
             value={password}
             label='Password'
             onChange={(n) => {
-              setError('');
-              setPassword(n);
+              setError('')
+              setPassword(n)
             }}
             placeholder='Enter your password'
           />
@@ -79,8 +84,8 @@ const SetPassword: React.FC<Props> = ({ next, displayText = '' }) => {
             value={repeatPassword}
             label='Re-enter Password'
             onChange={(n) => {
-              setError('');
-              setRepeatPassword(n);
+              setError('')
+              setRepeatPassword(n)
             }}
             placeholder='Enter your password'
           />
@@ -90,13 +95,13 @@ const SetPassword: React.FC<Props> = ({ next, displayText = '' }) => {
             hasLogo={false}
             text={displayText !== '' ? displayText : 'Continue'}
             onClick={() => {
-              if (disabled) return;
+              if (disabled) return
               if (password === '' || repeatPassword === '') {
-                setError('You should fill the input fields');
+                setError('You should fill the input fields')
               } else if (password !== repeatPassword) {
-                setError('Password is different');
+                setError('Password is different')
               } else {
-                next(password);
+                next(password)
               }
             }}
           />
@@ -104,7 +109,7 @@ const SetPassword: React.FC<Props> = ({ next, displayText = '' }) => {
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>
-  );
-};
+  )
+}
 
-export default SetPassword;
+export default SetPassword

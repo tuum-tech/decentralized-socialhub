@@ -1,0 +1,22 @@
+/** All your component stuyles */
+.pageheader {
+  position: relative;
+  height: 5em;
+  border-bottom: 1px solid #edf2f7;
+
+  .headertext {
+    margin-left: 15px;
+  }
+
+  .subheadertext {
+    font-family: "SF Pro Display";
+    font-size: 18px;
+    font-weight: 500;
+    font-style: normal;
+    line-height: 1.36;
+    letter-spacing: normal;
+    text-align: left;
+    color: #425466;
+    margin-left: 15px;
+  }
+}
