@@ -53,7 +53,7 @@ const EducationSection: React.FC<IProps> = ({ profile }: IProps) => {
     <IonGrid className={style['tab-grid']}>
       <IonRow>
         <IonCol>
-          <EducationCard educationDTO={profile.educationDTO} />
+          <EducationCard educationDTO={profile.educationDTO} updateFunc={() => { }} mode="readonly" />
         </IonCol>
       </IonRow>
     </IonGrid>

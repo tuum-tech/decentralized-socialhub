@@ -1,36 +1,36 @@
-import React from 'react';
+import React from 'react'
 import {
   IonGrid,
   IonRow,
   IonCol,
   IonProgressBar,
   IonButton,
-} from '@ionic/react';
+} from '@ionic/react'
 
-import { ProfileContent } from 'src/pages/ProfilePage/types';
+import { ProfileContent } from 'src/pages/ProfilePage/types'
 
-import style from './style.module.scss';
+import style from './style.module.scss'
 
-import ButtonWithUpArrow from 'src/components/buttons/ButtonWithUpArrow';
-import RegisterNewUserButton from '../RegisterNewUserButton';
-import ProfileDescription from '../ProfileDescription';
-import ProfileName from '../ProfileName';
-import ProfileLocationWidget from '../ProfileLocationWidget';
-import styled from 'styled-components';
-import ButtonDefault from '../ButtonDefault';
-import ButtonLight from '../ButtonLight';
-import DashboardNav from '../DashboardNav';
-import { ProfileDTO } from 'src/pages/PublicPage/types';
-import DidSnippet from '../DidSnippet';
+import ButtonWithUpArrow from 'src/components/buttons/ButtonWithUpArrow'
+import RegisterNewUserButton from '../RegisterNewUserButton'
+import ProfileDescription from '../ProfileDescription'
+import ProfileName from '../ProfileName'
+import ProfileLocationWidget from '../ProfileLocationWidget'
+import styled from 'styled-components'
+import ButtonDefault from '../ButtonDefault'
+import ButtonLight from '../ButtonLight'
+import DashboardNav from '../DashboardNav'
+import { ProfileDTO } from 'src/pages/PublicPage/types'
+import DidSnippet from '../DidSnippet'
 
 // import photo from '../../assets/photo.png';
-import photo from '../../assets/dp.jpeg';
-import bulb from '../../assets/bulb.svg';
-import edit from '../../assets/icon-edit.svg';
-import addbutton from '../../assets/addbutton.svg';
-import university from '../../assets/university.png';
+import photo from '../../assets/dp.jpeg'
+import bulb from '../../assets/bulb.svg'
+import edit from '../../assets/icon-edit.svg'
+import addbutton from '../../assets/addbutton.svg'
+import university from '../../assets/university.png'
 interface IProps {
-  profile: ProfileDTO;
+  profile: ProfileDTO
 }
 
 const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
@@ -44,7 +44,7 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
           <IonGrid>
             <IonRow>
               <ProfileName>
-                {profile.basicDTO.first_name} {profile.basicDTO.last_name}
+                {profile.basicDTO.firstName} {profile.basicDTO.lastName}
               </ProfileName>
             </IonRow>
             <IonRow>
@@ -125,10 +125,10 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
         </IonCol>
       </IonRow> */}
     </IonGrid>
-  );
-};
+  )
+}
 
-export default ProfileHeader;
+export default ProfileHeader
 
 const FollowButton = styled(IonButton)`
   display: flex;
@@ -149,4 +149,4 @@ const FollowButton = styled(IonButton)`
   font-weight: 600;
   font-stretch: normal;
   font-style: normal;
-`;
+`

@@ -1,64 +1,64 @@
 /**
  * Page
  */
-import { IonHeader, IonPage, IonInput, IonCol, IonRow } from '@ionic/react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { createStructuredSelector } from 'reselect';
-import injector from 'src/baseplate/injectorWrap';
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
-import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo, useContext, useState } from 'react';
-import style from './style.module.scss';
-import { NameSpace } from './constants';
-import reducer from './reducer';
-import saga from './saga';
-import { InferMappedProps, SubState } from './types';
-import ClearlyMeContent from 'src/components/ClearlyMeContent';
-import Header from 'src/components/Header';
-import ButtonDefault from 'src/components/ButtonDefault';
-import ButtonLight from 'src/components/ButtonLight';
-import { toNumber } from 'lodash';
-import { ElastosClient } from '@elastosfoundation/elastos-js-sdk';
-import SessionContext from 'src/context/session.context';
-import { useHistory } from 'react-router-dom';
-import { HiveService } from 'src/services/hive.service';
-import { DidService } from 'src/services/did.service';
-import { UserService } from 'src/services/user.service';
+import { IonHeader, IonPage, IonInput, IonCol, IonRow } from '@ionic/react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { createStructuredSelector } from 'reselect'
+import injector from 'src/baseplate/injectorWrap'
+import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
+import { incrementAction, getSimpleAjax } from './actions'
+import React, { memo, useContext, useState } from 'react'
+import style from './style.module.scss'
+import { NameSpace } from './constants'
+import reducer from './reducer'
+import saga from './saga'
+import { InferMappedProps, SubState } from './types'
+import ClearlyMeContent from 'src/components/ClearlyMeContent'
+import Header from 'src/components/Header'
+import ButtonDefault from 'src/components/ButtonDefault'
+import ButtonLight from 'src/components/ButtonLight'
+import { toNumber } from 'lodash'
+import { ElastosClient } from '@elastosfoundation/elastos-js-sdk'
+import SessionContext from 'src/context/session.context'
+import { useHistory } from 'react-router-dom'
+import { HiveService } from 'src/services/hive.service'
+import { DidService } from 'src/services/did.service'
+import { UserService, AccountType } from 'src/services/user.service'
 // import { ProfileService } from 'src/services/profile.service';
-import { UserVaultScripts } from 'src/scripts/uservault.script';
+import { UserVaultScripts } from 'src/scripts/uservault.script'
 
 const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
-  const history = useHistory();
+  const history = useHistory()
 
-  const { session, setSession } = useContext(SessionContext);
+  const { session, setSession } = useContext(SessionContext)
   /**
    * Direct method implementation without SAGA
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
-  const [msg, setMsg] = useState('');
+  const [msg, setMsg] = useState('')
   const [did, setDID] = useState(
     UserService.getSignedUsers().length > 0
       ? UserService.getSignedUsers()[0]
       : ''
-  );
-  const [ownAddress, setOwnAddress] = useState('');
+  )
+  const [ownAddress, setOwnAddress] = useState('')
 
-  const [loggedUsers, setLoggedUsers] = useState(UserService.getSignedUsers());
+  const [loggedUsers, setLoggedUsers] = useState(UserService.getSignedUsers())
 
-  const [hiveAddress, setHiveAddress] = useState('');
-  const [userToken, setUserToken] = useState('');
+  const [hiveAddress, setHiveAddress] = useState('')
+  const [userToken, setUserToken] = useState('')
 
-  const [storagePassword, setStoragePassword] = useState('');
-  const [repeatStoragePassword, setRepeatStoragePassword] = useState('');
+  const [storagePassword, setStoragePassword] = useState('')
+  const [repeatStoragePassword, setRepeatStoragePassword] = useState('')
 
   const [indexPage, setIndexPage] = useState(
     UserService.getSignedUsers().length === 0 ? 0 : 4
-  );
+  )
 
   const [mnemonic, setMnemonic] = useState([
     'garage',
@@ -73,13 +73,13 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
     'van',
     'moment',
     '',
-  ]);
+  ])
 
   const updateMnemonic = (event: any) => {
-    let index: number = toNumber(event.target.outerText) - 1;
-    mnemonic[index] = event.target.value;
-    setMnemonic(mnemonic);
-  };
+    let index: number = toNumber(event.target.outerText) - 1
+    mnemonic[index] = event.target.value
+    setMnemonic(mnemonic)
+  }
 
   const mnemonicInput = (index: number) => {
     return (
@@ -92,11 +92,11 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
           <span className={style['number']}>{index + 1}</span>
         </IonInput>
       </IonCol>
-    );
-  };
+    )
+  }
 
   const signIn = async () => {
-    console.log(session);
+    console.log(session)
     if (
       isMnemonicWordValid(0) &&
       isMnemonicWordValid(1) &&
@@ -111,121 +111,120 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
       isMnemonicWordValid(10) &&
       isMnemonicWordValid(11)
     ) {
-      let userDid = await ElastosClient.did.loadFromMnemonic(
-        mnemonic.join(' ')
-      );
-      setDID(userDid.did);
-      setIndexPage(1);
+      let userDid = await ElastosClient.did.loadFromMnemonic(mnemonic.join(' '))
+      setDID(userDid.did)
+      setIndexPage(1)
       //setSession({ userDid: userDid })
     } else {
-      console.log('invalid');
-      setMsg('Invalid mnemonics');
+      console.log('invalid')
+      setMsg('Invalid mnemonics')
     }
-  };
+  }
 
   const otherVault = async (hostUrl: string) => {
     try {
-      await connectHive(hostUrl);
-      setIndexPage(3);
+      await connectHive(hostUrl)
+      setIndexPage(3)
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   const ownVault = () => {
-    console.log(session);
-    setIndexPage(2);
-
+    console.log(session)
+    setIndexPage(2)
     //history.push("/profile", session)
-  };
+  }
 
   const validateOwnVault = async () => {
     try {
-      await connectHive(ownAddress);
-      setIndexPage(3);
+      await connectHive(ownAddress)
+      setIndexPage(3)
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   const connectHive = async (address: string) => {
-    let isDIDPublished = await DidService.isDIDPublished(did);
+    let isDIDPublished = await DidService.isDIDPublished(did)
 
     if (!isDIDPublished) {
-      console.log('DID is not published');
-      return;
+      console.log('DID is not published')
+      return
     }
 
-    let challenge = await HiveService.getHiveChallenge(address);
+    let challenge = await HiveService.getHiveChallenge(address)
     let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(
       mnemonic.join(' '),
       '',
       challenge.issuer,
       challenge.nonce
-    );
-    let token = await HiveService.getUserHiveToken(address, presentation);
+    )
+    let token = await HiveService.getUserHiveToken(address, presentation)
 
-    setHiveAddress(address);
-    setUserToken(token);
-  };
+    setHiveAddress(address)
+    setUserToken(token)
+  }
 
   const encryptProfile = async () => {
     if (storagePassword !== repeatStoragePassword) {
-      console.log('Password is different');
+      console.log('Password is different')
     } else {
-      await loginProfile(storagePassword);
+      await loginProfile(storagePassword)
     }
-  };
+  }
 
   const skipEncryption = async () => {
-    await loginProfile('');
-  };
+    await loginProfile('')
+  }
 
   const loginProfile = async (pwd: string) => {
     try {
-      await UserService.SignInWithDID(
+      await UserService.SignInWithDIDAndPWd(
         {
-          did: did,
           hiveHost: hiveAddress,
           userToken: userToken,
+          did: did,
           firstName: '',
           lastName: '',
+          accountType: AccountType.DID,
           isDIDPublished: false,
+          onBoardingCompleted: true,
         },
         pwd
-      );
+      )
 
       // debugger;
       // Handle all the script registering somewhere
-      console.log('script execute');
-      let instance = await HiveService.getSessionInstance();
-      if (instance) UserVaultScripts.Execute(instance);
-      history.replace('/profile');
+      console.log('script execute')
+      let instance = await HiveService.getSessionInstance()
+      if (instance) UserVaultScripts.Execute(instance)
+      history.replace('/profile')
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   const signInLocalUser = async () => {
-    if (did === '') return;
+    if (did === '') return
     try {
-      await UserService.Login(did, storagePassword);
+      await UserService.Login(did, storagePassword)
 
-      history.replace('/profile');
+      history.replace('/profile')
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   const useAnotherDID = async () => {
-    setIndexPage(0);
-  };
+    setIndexPage(0)
+  }
 
   const isMnemonicWordValid = (index: number): boolean => {
-    let word: string = mnemonic[0];
-    if (!word) return false;
-    return word.trim() !== '';
-  };
+    let word: string = mnemonic[0]
+    if (!word) return false
+    return word.trim() !== ''
+  }
 
   const divSelection = () => {
     if (indexPage === 0) {
@@ -266,7 +265,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
 
           <p>{msg}</p>
         </div>
-      );
+      )
     }
 
     if (indexPage === 1) {
@@ -286,7 +285,9 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
             <IonRow style={{ marginTop: '10px' }}>
               <IonCol>
                 <ButtonLight
-                  onClick={() => otherVault('http://localhost:5000')}
+                  onClick={() =>
+                    otherVault(`${process.env.REACT_APP_TUUM_TECH_HIVE}`)
+                  }
                 >
                   Tuum Tech
                 </ButtonLight>
@@ -295,7 +296,9 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
             <IonRow style={{ marginTop: '10px' }}>
               <IonCol>
                 <ButtonLight
-                  onClick={() => otherVault('http://localhost:5000')}
+                  onClick={() =>
+                    otherVault(`${process.env.REACT_APP_TUUM_TECH_HIVE}`)
+                  }
                 >
                   Trinity Tech
                 </ButtonLight>
@@ -311,7 +314,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
           <br />
           <p>{did}</p>
         </div>
-      );
+      )
     }
 
     if (indexPage === 2) {
@@ -338,7 +341,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
             <ButtonDefault onClick={validateOwnVault}>Next &gt;</ButtonDefault>
           </div>
         </div>
-      );
+      )
     }
 
     if (indexPage === 3) {
@@ -386,7 +389,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
             <ButtonLight onClick={skipEncryption}>Skip</ButtonLight>
           </div>
         </div>
-      );
+      )
     }
 
     if (indexPage === 4) {
@@ -433,9 +436,9 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
             <ButtonLight onClick={useAnotherDID}>Use another DID</ButtonLight>
           </div>
         </div>
-      );
+      )
     }
-  };
+  }
 
   return (
     <IonPage className={style['elastosmnemonicpage']}>
@@ -446,14 +449,14 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
         <div className={style['main-container']}>{divSelection()}</div>
       </ClearlyMeContent>
     </IonPage>
-  );
-};
+  )
+}
 
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   counter: makeSelectCounter(),
   msg: makeSelectAjaxMsg(),
-});
+})
 
 /** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
@@ -464,7 +467,7 @@ export function mapDispatchToProps(dispatch: any) {
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
       onSimpleAjax: () => dispatch(getSimpleAjax()),
     },
-  };
+  }
 }
 
 /**
@@ -475,13 +478,13 @@ const withInjectedMode = injector(ElastosMnemonicPage, {
   key: NameSpace,
   reducer,
   saga,
-});
+})
 
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
+const withConnect = connect(mapStateToProps, mapDispatchToProps)
 
 export default compose(
   withConnect,
   memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>;
+)(withInjectedMode) as React.ComponentType<InferMappedProps>
 
 // export default Tab1;

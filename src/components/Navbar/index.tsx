@@ -1,9 +1,8 @@
+import { useHistory } from 'react-router-dom';
 import React, { useState } from 'react';
 import { IonContent, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react';
 import style from './style.module.scss';
-import SearchComponent from 'src/components/SearchComponent';
-// import { useHistory } from 'react-router';
-import { useHistory } from 'react-router-dom';
+import { UserService } from 'src/services/user.service';
 
 interface Props {
   tab?: string;
@@ -38,7 +37,10 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
                 ? style['item-active']
                 : style['item-link']
             }
-            onClick={() => setActive('profile_manager')}
+            onClick={() => {
+              setActive('profile_manager');
+              history.push('/manager');
+            }}
           >
             <IonIcon
               slot='start'
@@ -82,7 +84,6 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
             ></IonIcon>
             <IonLabel>
               <h3>Explore</h3>
-              {/* {active == 'search' && <SearchComponent />} */}
             </IonLabel>
           </IonItem>
           <hr className={style['divider']} />
@@ -90,7 +91,10 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
             className={
               active === 'settings' ? style['item-active'] : style['item-link']
             }
-            onClick={() => setActive('settings')}
+            onClick={() => {
+              setActive('settings');
+              history.push('/settings');
+            }}
           >
             <IonIcon
               slot='start'
@@ -116,6 +120,22 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
             ></IonIcon>
             <IonLabel>
               <h3>Notifications</h3>
+            </IonLabel>
+          </IonItem>
+          <IonItem
+            className={style['item-link']}
+            onClick={async () => {
+              await UserService.logout();
+              window.location.href = '/';
+            }}
+          >
+            <IonIcon
+              slot='start'
+              src='../../assets/icon_dashboard.svg'
+              className={style['img']}
+            ></IonIcon>
+            <IonLabel>
+              <h3>Sign Out</h3>
             </IonLabel>
           </IonItem>
         </IonList>

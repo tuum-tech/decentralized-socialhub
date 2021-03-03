@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { ButtonLink } from '../buttons';
 
 const RegisterNewUserButton = styled(ButtonLink)`
-width: 135px;
 height: 40px;
 display: flex;
 flex-direction: column;
@@ -22,8 +21,6 @@ line-height: 1;
 letter-spacing: normal;
 text-align: left;
 color: #4c6fff;
-
-
 `;
 
 

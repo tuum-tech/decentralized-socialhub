@@ -38,7 +38,6 @@ Clone the repository and run below command on the root of your project.
 
 ## ALPHA VERSION
 
-
 Before execute alpha version, you have to:
 
 ```
@@ -57,5 +56,51 @@ node ./src/scripts/alpha/generateAccessCodes.js
 
 ```
 
+## Deploy to production
 
+### Deploy to netlify
 
+- First time only: Install netlify-cli
+
+```
+npm install netlify-cli -g
+```
+
+- Build for production ready environment
+
+```
+npm run build
+```
+
+- Deploy staging
+
+```
+netlify deploy
+```
+
+- Deploy to production
+
+```
+netlify deploy --prod
+```
+
+### Deploy to AWS Elasticbeanstalk
+
+- First time only: Initialize AWS elasticbeanstalk
+
+```
+eb init
+```
+
+- First time only: Create the environment
+
+```
+eb create
+```
+
+- Deploy
+
+```
+# Prerequisite: make sure react-scripts is installed globally on the instance
+eb deploy
+```
