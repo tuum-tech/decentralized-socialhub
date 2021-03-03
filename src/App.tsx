@@ -72,13 +72,9 @@ import PublicPage from './pages/PublicPage/Loadable'
 
 import ProtectedRoute from './components/ProtectedRoute'
 
-import TutorialPage from './pages/TutorialPage';
-import VerifyEmailPage from './pages/VerifyEmailPage';
-import ExplorePage from './pages/ExplorePage';
 
-import AccessCodePage from './pages/AlphaAccess/AccessCode';
-import RequestCodePage from './pages/AlphaAccess/RequestCode';
-import InviteCodePage from './pages/AlphaAccess/InviteCode';
+// import RequestCodePage from './pages/AlphaAccess/RequestCode';
+// import InviteCodePage from './pages/AlphaAccess/InviteCode';
 import ManagerPage from './pages/ManagerPage';
 
 const App: React.FC = () => {

@@ -40,7 +40,7 @@ const ExperienceSection: React.FC<IProps> = ({ profile }: IProps) => {
     <IonGrid className={style['tab-grid']}>
       <IonRow>
         <IonCol>
-          <ExperienceCard experiences={profile.experienceDTO} />
+          <ExperienceCard experienceDTO={profile.experienceDTO} updateFunc={() => { }} mode="readonly" />
         </IonCol>
       </IonRow>
     </IonGrid>

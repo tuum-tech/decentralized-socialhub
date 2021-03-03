@@ -49,8 +49,8 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   const [full_profile, setfull_profile] = useState({
     basicDTO: {
       isEnabled: false,
-      firstName: '',
-      lastName: '',
+      first_name: '',
+      last_name: '',
       did: '',
       title: '',
       email: '',
@@ -81,7 +81,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   let did: string = props.match.params.did || ''
 
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       let profile: ProfileDTO = await getFullProfile(did)
       setfull_profile(profile)
     })()

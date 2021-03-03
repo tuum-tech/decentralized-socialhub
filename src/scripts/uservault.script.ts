@@ -99,7 +99,95 @@ export class UserVaultScripts {
         ],
       },
     });
+    await hiveClient.Scripting.SetScript({
+      name: 'update_basic_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_basic_profile',
+        body: {
+          collection: 'basic_profile',
+          filter: {
+            did: '$params.did',
+          },
+          update: {
+            $set: {
+              first_name: '$params.first_name',
+              last_name: '$params.last_name',
+              email: '$params.email',
+              vault_url: '$params.vault_url',
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    })
+
+    await hiveClient.Scripting.SetScript({
+      name: 'update_education_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_education_profile',
+        body: {
+          collection: 'education_profile',
+          filter: {
+            _id: '$params._id',
+          },
+          update: {
+            $set: {
+              program: '$params.program',
+              institution: '$params.institution',
+              start: '$params.start',
+              end: '$params.end',
+              description: '$params.description',
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    })
+
+    await hiveClient.Scripting.SetScript({
+      name: 'update_experience_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_experience_profile',
+        body: {
+          collection: 'experience_profile',
+          filter: {
+            _id: '$params._id',
+          },
+          update: {
+            $set: {
+              title: '$params.title',
+              institution: '$params.institution',
+              start: '$params.start',
+              end: '$params.end',
+              description: '$params.description',
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    })
   }
+
+
+
 
   static async SetScriptGetFollowing(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({

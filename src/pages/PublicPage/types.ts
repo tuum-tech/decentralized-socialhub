@@ -7,28 +7,32 @@ import { Actions } from './constants'
 
 export type SubState = typeof initialState
 export type InferMappedProps = ReturnType<typeof mapStateToProps> &
-  ReturnType<typeof mapDispatchToProps>
+    ReturnType<typeof mapDispatchToProps>
 
 export type ActionType = typeof Actions
 
 export interface ProfileDTO {
-  basicDTO: BasicDTO
-  experienceDTO: ExperienceDTO
-  educationDTO: EducationDTO
+    basicDTO: BasicDTO
+    experienceDTO: ExperienceDTO
+    educationDTO: EducationDTO
 }
 
 export interface Entity {
-  name: string
-  did?: string
+    name: string
+    did?: string
 }
 
 export interface ExperienceItem {
-  isEnabled: boolean
-  entity: Entity
-  period: Period
-  title: string
-  description: string
-  order: string
+    _id: string;
+    isEnabled: boolean
+    institution: string,
+    program: string,
+    start: string,
+    end: string,
+    title: string
+    description: string,
+    order: string,
+    isEmpty: boolean
 }
 
 export interface BasicDTO {
@@ -44,16 +48,16 @@ export interface BasicDTO {
 }
 
 export interface AddressDTO {
-  street_name: string
-  number: string
-  state: string
-  country: string
-  postal_code: string
+    street_name: string
+    number: string
+    state: string
+    country: string
+    postal_code: string
 }
 
 export interface ExperienceDTO {
-  isEnabled: boolean
-  items: ExperienceItem[]
+    isEnabled: boolean
+    items: ExperienceItem[]
 }
 
 export interface Period {
@@ -74,6 +78,6 @@ export interface EducationItem {
 }
 
 export interface EducationDTO {
-  isEnabled: boolean
-  items: EducationItem[]
+    isEnabled: boolean
+    items: EducationItem[]
 }

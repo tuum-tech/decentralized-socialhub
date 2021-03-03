@@ -1,13 +1,12 @@
 /** All your component stuyles */
 .profileeditor{
-    height: 100%;
+    height: calc(100%);
     width: 100%;
     
     background: #f7fafc;
     
     .profileeditorgrid{ 
         padding: 10px 35px 20px 35px;
-        height: 100%;
         background: #f7fafc;
     }
 }

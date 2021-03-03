@@ -11,6 +11,7 @@ import { profile } from 'console';
 import ProfileTemplateManager from '../ProfileTemplateManager';
 import TemplateManagerCard, { TemplateDTO } from '../cards/TemplateManagerCard';
 import EducationCard from '../cards/EducationCard';
+import ExperienceCard from '../cards/ExperienceCard';
 
 const ProfileEditor: React.FC = () => {
 
@@ -93,6 +94,20 @@ const ProfileEditor: React.FC = () => {
     return mapProfileResponseToProfileDTO({} as ProfileResponse);
   }
 
+  async function callUpdateExperienceProfile(educationItem: ExperienceItem): Promise<any> {
+    let profileService: ProfileService = await ProfileService.getProfileServiceAppOnlyInstance();
+    let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
+    try {
+      getFullProfileResponse = await profileService.updateExperienceProfile(educationItem);
+      console.log(JSON.stringify(getFullProfileResponse));
+      return "" //mapProfileResponseToProfileDTO(getFullProfileResponse.response as ProfileResponse);
+
+    } catch (error) {
+      console.error(JSON.stringify(error));
+    }
+    return mapProfileResponseToProfileDTO({} as ProfileResponse);
+  }
+
 
   const mapProfileResponseToProfileDTO = (fullProfileResponse: ProfileResponse): ProfileDTO => {
 
@@ -125,6 +140,12 @@ const ProfileEditor: React.FC = () => {
     callUpdateEducationProfile(educationItem);
   }
 
+  const updateExperienceProfile = async (experienceItem: ExperienceItem): Promise<any> => {
+    console.log(">>>>>>>>> update experience_profile called ");
+    console.log(">>>>>>>>>  " + JSON.stringify(experienceItem));
+    callUpdateExperienceProfile(experienceItem);
+  }
+
   useEffect(() => {
     (async () => {
       let did = "did:elastos:iVy37oQuQ77L6SfXyNiBmdW2TSoyJQmBU1";
@@ -132,7 +153,7 @@ const ProfileEditor: React.FC = () => {
       setfull_profile(profile);
       setloaded(true);
     })();
-  }, [full_profile]);
+  }, []);
 
   let templateDTO: TemplateDTO = {
     id: "1"
@@ -151,6 +172,7 @@ const ProfileEditor: React.FC = () => {
           <IonCol size="8">
             {loaded ? <BasicCard basicDTO={full_profile.basicDTO} updateFunc={updateBasicProfile}></BasicCard> : <div>Loading...</div>}
             {loaded ? <EducationCard educationDTO={full_profile.educationDTO} updateFunc={updateEducationProfile} mode="edit" ></EducationCard> : <div>Loading...</div>}
+            {loaded ? <ExperienceCard experienceDTO={full_profile.experienceDTO} updateFunc={updateExperienceProfile} mode="edit" ></ExperienceCard> : <div>Loading...</div>}
 
 
           </IonCol>

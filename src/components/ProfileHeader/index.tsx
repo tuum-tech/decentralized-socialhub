@@ -44,7 +44,7 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
           <IonGrid>
             <IonRow>
               <ProfileName>
-                {profile.basicDTO.firstName} {profile.basicDTO.lastName}
+                {profile.basicDTO.first_name} {profile.basicDTO.last_name}
               </ProfileName>
             </IonRow>
             <IonRow>

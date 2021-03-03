@@ -22,7 +22,10 @@ import { ButtonLink } from '../buttons';
 import SmallTextInput from '../inputs/SmallTextInput';
 import AlphaContent from '../AlphaContent';
 import Button from 'react-bootstrap/esm/Button';
-
+import SkeletonAvatar from '../avatars/SkeletonAvatar';
+//import avatar from 'https://media-exp1.licdn.com/dms/image/C4D03AQHJrVWT1os_uQ/profile-displayphoto-shrink_100_100/0/1613330591466?e=1619654400&v=beta&t=oE-BJ4-vYiefNuEYQTaKeVDaJWh8coNOUypjIwHoY2s'
+import style from './DidCard.module.scss';
+import harvard from '../../assets/logo/Harvard-Logo.png'
 
 
 interface IEducationProps {
@@ -176,32 +179,42 @@ const EducationItems: React.FC<EducationItemsProps> = ({ educationItem, handleCh
     <>
 
       <IonGrid>
-        <IonRow>
+        <IonRow className="ion-justify-content-between">
           <IonCol size="2">
+            <div>
+              <SkeletonAvatar />
+              <img alt="avatar"
+                src={harvard}
+                width='80'
+                height='80'
+                className={style['clip-avatar-svg']}
+              />
+            </div>
           </IonCol>
           <IonCol size="9">
             <IonGrid>
-              <IonRow>
-                <IonCol><Institution>{educationItem.institution}</Institution></IonCol>
-                <IonCol>
-                  <SmallLightButton onClick={() => setEditMode("edit")}>Edit</SmallLightButton>
-
-                </IonCol>
-              </IonRow>
+              <IonRow><Institution>{educationItem.institution}</Institution></IonRow>
               <IonRow><Program>{educationItem.title}</Program></IonRow>
               <IonRow><Period>{educationItem.start} - {educationItem.end}</Period></IonRow>
               <IonRow><Description>{educationItem.description}</Description></IonRow>
             </IonGrid>
           </IonCol>
+          <IonCol size="auto">
+            <span onClick={() => setEditMode("edit")}>...</span>
+          </IonCol>
         </IonRow>
       </IonGrid>
       <MyModal isOpen={editMode === 'add' || editMode === 'edit'} cssClass='my-custom-class'>
-        <EducationCardEdit educationItem={educationItem} handleChange={handleChange} index={index} />
+        <EducationCardEdit educationItem={educationItem} handleChange={handleChange} index={index} mode={editMode} />
         <ModalFooter className="ion-no-border">
           <IonRow className="ion-justify-content-around">
             <IonCol size="auto" >
-              <IonButton onClick={cancel}>Cancel</IonButton>
-              <IonButton onClick={() => { updateFunc(index); setEditMode("readonly") }}>Save</IonButton>
+              <IonButton fill="outline" onClick={cancel}>Cancel</IonButton>
+              <IonButton onClick={() => { updateFunc(index); setEditMode("readonly") }}>
+                {
+                  editMode === 'add' ? "Add new Education" : "Edit Education"
+                }
+              </IonButton>
             </IonCol>
           </IonRow>
         </ModalFooter>
@@ -230,9 +243,10 @@ const EducationCard: React.FC<IEducationProps> = ({ educationDTO, updateFunc, mo
 
   const handleChange = (evt: any, index: number) => {
 
-    console.log("name: " + evt.target.name);
-    console.log("value: " + evt.target.value);
-    console.log("index: " + index);
+    // console.log("name: " + evt.target.name);
+    // console.log("value: " + evt.target.value);
+    // console.log("index: " + index);
+
 
     // 1. Make a shallow copy of the items
     let items = [...currentEducationDTO.items];
@@ -290,7 +304,7 @@ const EducationCard: React.FC<IEducationProps> = ({ educationDTO, updateFunc, mo
   }
 
 
-  const listExperiences = currentEducationDTO.items.map((x, i) => {
+  const listEducation = currentEducationDTO.items.map((x, i) => {
     return (
       <>
         <EducationItems educationItem={x} handleChange={handleChange} updateFunc={saveChanges} index={i} removeFunc={removeItem} />
@@ -308,13 +322,13 @@ const EducationCard: React.FC<IEducationProps> = ({ educationDTO, updateFunc, mo
           <IonGrid>
             <IonRow className="ion-justify-content-between">
               <IonCol><IonCardTitle>Education</IonCardTitle></IonCol>
-              <IonCol size="3"><LinkStyleSpan onClick={(e) => addItem()}>+ Add Education</LinkStyleSpan></IonCol>
+              <IonCol size="auto"><LinkStyleSpan onClick={(e) => addItem()}>+ Add Education</LinkStyleSpan></IonCol>
             </IonRow>
           </IonGrid>
         </IonCardHeader>
         <IonCardContent>
           {
-            listExperiences
+            listEducation
           }
         </IonCardContent>
       </IonCard>
@@ -330,6 +344,7 @@ interface EducationItemProps {
   educationItem: EducationItem;
   handleChange: any;
   index: number;
+  mode: string;
 }
 
 
@@ -361,7 +376,7 @@ color: #6b829a;
 --placeholder-color: var(--input - muted - placeholder);
 `;
 
-const EducationCardEdit: React.FC<EducationItemProps> = ({ educationItem, handleChange, index }: EducationItemProps) => {
+const EducationCardEdit: React.FC<EducationItemProps> = ({ educationItem, handleChange, index, mode }: EducationItemProps) => {
 
 
   const handleChangeIndex = (evt: any) => {
@@ -372,7 +387,7 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({ educationItem, handle
 
     <MyGrid>
       <IonRow>
-        <IonCardTitle>Edit Education</IonCardTitle>
+        <IonCardTitle>{mode === "edit" ? 'Edit Education' : 'Add new Education'}</IonCardTitle>
       </IonRow>
       <IonRow class="ion-justify-content-start">
         <IonCol size="5">
@@ -386,16 +401,16 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({ educationItem, handle
       </IonRow>
       <IonRow class="ion-justify-content-start">
         <IonCol size="3.5">
-          <SmallTextInput label="start" value={educationItem.start} onChange={handleChangeIndex} />
+          <SmallTextInput label="Duration" name="start" value={educationItem.start} onChange={handleChangeIndex} />
         </IonCol>
         <IonCol size="3.5">
-          <SmallTextInput label="end" value={educationItem.end} onChange={handleChangeIndex} />
+          <SmallTextInput label="&nbsp;" name="end" value={educationItem.end} onChange={handleChangeIndex} />
         </IonCol>
       </IonRow>
       <IonRow class="ion-justify-content-start">
         <IonCol size="8">
           <IonLabel>Description</IonLabel>
-          <MyTextarea rows={3} value={educationItem.description} onChange={handleChangeIndex} />
+          <MyTextarea rows={3} name="description" value={educationItem.description} onIonChange={handleChangeIndex} />
         </IonCol>
       </IonRow>
     </MyGrid>

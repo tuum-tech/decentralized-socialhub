@@ -75,7 +75,7 @@ const ManagerPage: React.FC<InferMappedProps> = ({
   return (
     <>
       <IonPage className={style['managerpage']}>
-        <IonContent>
+        <IonContent className={style['content-page']}>
           <IonGrid className={style['profilepagegrid']}>
             <IonRow className={style['profilecontent']}>
               <IonCol size='2' className={style['left-panel']}>

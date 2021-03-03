@@ -2,7 +2,7 @@ import { HiveClient } from '@elastos/elastos-hive-js-sdk';
 import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 // import { floor, noConflict } from 'lodash';
 import { ProfileResponse } from 'src/pages/ProfilePage/types';
-import { BasicDTO, EducationDTO, EducationItem } from 'src/pages/PublicPage/types';
+import { BasicDTO, EducationDTO, EducationItem, ExperienceItem } from 'src/pages/PublicPage/types';
 import { HiveService } from './hive.service';
 import { UserService } from './user.service';
 
@@ -112,16 +112,20 @@ export class ProfileService {
     });
   }
 
+  async updateExperienceProfile(
+    experienceItem: ExperienceItem
+  ): Promise<IRunScriptResponse<ProfileResponse>> {
+    return this.appHiveClient.Scripting.RunScript({
+      name: 'update_experience_profile',
+      context: {
+        target_did: "did:elastos:iVy37oQuQ77L6SfXyNiBmdW2TSoyJQmBU1", // just to test, in real life use userHiveClient
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+      },
+      params: experienceItem
+    });
+  }
 
-  // async getUserEducationProfile(did: string): Promise<any> {
-  //   return this.appHiveClient.Scripting.RunScript({
-  //     name: 'get_education_profile',
-  //     context: {
-  //       target_did: did,
-  //       target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-  //     },
-  //   });
-  // }
+
 
   async getFollowings(did?: string): Promise<IFollowingResponse> {
     let followings: IFollowingResponse;
