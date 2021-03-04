@@ -36,7 +36,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // protected by invite code
   const local_invitecode = window.localStorage.getItem('invitecode')
-  console.log('=======>local_invitecode', local_invitecode)
   let hasCode = true
   if (!local_invitecode) {
     hasCode = false

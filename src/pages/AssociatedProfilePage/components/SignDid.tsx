@@ -42,12 +42,10 @@ const SignDid: React.FC<Props> = ({ did }) => {
             error={error}
             setError={setError}
             onSuccess={async (uDid: string) => {
-              console.log('====>1', `did:elastos:${did}`, uDid)
               if (`did:elastos:${did}` === uDid) {
                 const res = await UserService.SearchUserWithDID(
                   `did:elastos:${did}`
                 )
-                console.log('====>2', res)
                 if (!res) {
                   setError(true)
                 } else {

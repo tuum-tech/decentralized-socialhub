@@ -104,7 +104,7 @@ export class UserService {
     instance: ISessionItem,
     storePassword: string
   ) {
-    console.log('======>localUserData', key, instance, storePassword)
+    console.log('localUserData', key, instance, storePassword)
     let encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(instance),
       storePassword
@@ -193,6 +193,8 @@ export class UserService {
       ) {
         const userData = get_user_by_did.items[0]
         const pSignedUsers = this.getSignedUsers()
+        const isDIDPublished = await DidService.isDIDPublished(userData.did)
+
         return {
           accountType: userData.accountType,
           did: userData.did,
@@ -201,7 +203,7 @@ export class UserService {
           hiveHost: userData.hiveHost,
           email: userData.email,
           userToken: userData.userToken,
-          isDIDPublished: await DidService.isDIDPublished(userData.did),
+          isDIDPublished: isDIDPublished ? isDIDPublished : false,
           alreadySigned:
             pSignedUsers &&
             pSignedUsers.length > 0 &&
@@ -234,7 +236,7 @@ export class UserService {
       isDIDPublished: await DidService.isDIDPublished(did),
       firstName: fname,
       lastName: lname,
-      hiveHost: 'http://localhost:5000',
+      hiveHost: 'http://localhost:9001',
       userToken: token,
       onBoardingCompleted: false,
     }
@@ -257,7 +259,7 @@ export class UserService {
         },
       }
       let response = await ScriptService.runTuumTechScript(add_user_script)
-      console.log('=====>response', response)
+      console.log('update_user_did_info script response', response)
     } else {
       const add_user_script = {
         name: 'add_user',
@@ -279,7 +281,7 @@ export class UserService {
         },
       }
       let response = await ScriptService.runTuumTechScript(add_user_script)
-      console.log('=====>response', response)
+      console.log('add_user script response', response)
     }
 
     console.log(sessionItem)
@@ -323,7 +325,7 @@ export class UserService {
         },
       }
       let response = await ScriptService.runTuumTechScript(delete_user_by_did)
-      console.log('=====>response', response)
+      console.log('delete_user_by_did script response', response)
     }
 
     const did = sessionItem.did.replace('did:elastos:', '')
@@ -331,7 +333,6 @@ export class UserService {
     for (let i = 0; i < removeKeys.length; i++) {
       window.localStorage.removeItem(removeKeys[i])
     }
-    console.log('====> local storage data cleared', window.localStorage)
     SessionService.Logout()
   }
 }
@@ -358,7 +359,6 @@ class SessionService {
 
   static Logout() {
     window.sessionStorage.clear()
-    console.log('====> session data cleared')
     window.location.href = '/create-profile'
   }
 }

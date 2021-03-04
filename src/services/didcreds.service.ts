@@ -18,7 +18,6 @@ export class DidcredsService {
       credential_type: credential_type.toLowerCase(),
       credential_value: credential_value,
     }
-    console.log('===>data', data)
 
     let postData: any = {
       method: 'POST',

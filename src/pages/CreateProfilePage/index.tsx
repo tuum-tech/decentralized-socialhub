@@ -82,7 +82,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
       lname,
       email
     )) as ICreateUserResponse
-    console.log('=====>response', response)
+    console.log('requestCreateUser api response', response)
     setLoading(false)
     if (
       response &&

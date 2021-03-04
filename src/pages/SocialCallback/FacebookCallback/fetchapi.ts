@@ -24,7 +24,6 @@ export async function requestFacebookId(token: string): Promise<FacebookId> {
     method: 'GET',
   })
   const json = await response.json()
-  console.log('=====>json', json)
   const fname = json.name.split(' ')[0]
   const lname = json.name.split(' ')[1] || ''
   const uniqueEmail = fname + lname + '@facebook.com'

@@ -64,7 +64,6 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
           credential: code,
         })
       }
-      console.log('========>response', response)
       setStatus(response.data.return_code)
     })()
   }, [])

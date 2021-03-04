@@ -14,7 +14,7 @@ export class AlphaService {
         accesscode: accesscode,
       },
     })
-    console.log('=====>scriptResponse', scriptResponse)
+    console.log('get_requestcode_status scriptResponse', scriptResponse)
     if (
       !scriptResponse.isSuccess ||
       !scriptResponse.response.requeststatus ||

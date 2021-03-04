@@ -14,10 +14,9 @@ export interface IHiveChallenge {
 export class HiveService {
   static async getSessionInstance(): Promise<HiveClient | undefined> {
     let instance = UserService.GetUserSession()
-    console.log('======>instance', instance)
     if (!instance.isDIDPublished || instance.accountType !== AccountType.DID) {
       console.log(
-        '======>  DID User is not published or AccountTYpe is not available type'
+        'DID User is not published or AccountTYpe is not available type'
       )
       return
     }

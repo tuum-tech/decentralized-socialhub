@@ -75,7 +75,6 @@ const SignDidPage: React.FC<InferMappedProps> = ({
                     mnemonic: mnemonic,
                   })
                 )
-
                 history.push({
                   pathname: '/set-password',
                   state: {
