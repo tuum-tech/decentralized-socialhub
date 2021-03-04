@@ -1,19 +1,11 @@
+import React, { memo, useEffect, useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { createStructuredSelector } from 'reselect'
-import injector from 'src/baseplate/injectorWrap'
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
-import { incrementAction, getSimpleAjax } from './actions'
-import React, { memo, useEffect, useState } from 'react'
-import style from './style.module.scss'
-import { NameSpace } from './constants'
-import reducer from './reducer'
-import saga from './saga'
-import { InferMappedProps, SubState } from './types'
-
-import { Redirect } from 'react-router'
 import Modal from 'react-bootstrap/esm/Modal'
 import Button from 'react-bootstrap/esm/Button'
+import styled from 'styled-components'
 
 import {
   OnBoardLayout,
@@ -28,18 +20,22 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg,
 } from 'src/components/layouts/OnBoardLayout'
-import {
-  SocialButton,
-  ButtonWithLogo,
-  ArrowButton,
-  ButtonLink,
-} from 'src/components/buttons'
+import { SocialButton, ButtonWithLogo } from 'src/components/buttons'
 import TextInput from 'src/components/inputs/TextInput'
-import { Text16 } from 'src/components/texts'
+import { Text16, TextLink } from 'src/components/texts'
 import whitelogo from 'src/assets/logo/whitetextlogo.png'
 import wavinghand from 'src/assets/icon/wavinghand.png'
 import { AlphaService } from 'src/services/alpha.service'
 import TwitterApi from 'src/shared-base/api/twitter-api'
+import injector from 'src/baseplate/injectorWrap'
+
+import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
+import { incrementAction, getSimpleAjax } from './actions'
+import style from './style.module.scss'
+import { NameSpace } from './constants'
+import reducer from './reducer'
+import saga from './saga'
+import { InferMappedProps, SubState } from './types'
 
 import {
   requestCreateUser,
@@ -47,6 +43,12 @@ import {
   requestLinkedinLogin,
   requestFacebookLogin,
 } from './fetchapi'
+
+const ErrorText = styled(Text16)`
+  text-align: center;
+  color: red;
+  margin-top: 8px;
+`
 
 export interface ICreateUserResponse {
   data: {
@@ -62,35 +64,49 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   const [fname, setFName] = useState('')
   const [lname, setLName] = useState('')
   const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
+  const [error, setError] = useState('')
+  const history = useHistory()
 
   useEffect(() => {
-    AlphaService.isSessionValid().then((isSessionValid) => {
-      console.log('is session valid', isSessionValid)
-      if (!isSessionValid) {
+    AlphaService.isLocalCodeValid().then((isLocalCodeValid) => {
+      console.log('is session valid', isLocalCodeValid)
+      if (!isLocalCodeValid) {
         window.location.href = '/Alpha'
       }
     })
   })
 
   const createUser = async () => {
+    if (!fname || !lname || !email) {
+      setError('You should fill this field')
+      return
+    }
+    setLoading(true)
     let response = (await requestCreateUser(
       fname,
       lname,
       email
     )) as ICreateUserResponse
-    if (response.data.return_code === 'REGISTERED_USER') {
-      return (
-        <Redirect
-          to={{ pathname: '/a-profile', state: { did: response.data.did } }}
-        />
-      )
-    }
-    if (response.data.return_code === 'WAITING_CONFIRMATION') {
+    console.log('requestCreateUser api response', response)
+    setLoading(false)
+    if (
+      response &&
+      response.data &&
+      response.data.return_code === 'WAITING_CONFIRMATION'
+    ) {
       setShowModal(true)
       setEmail('')
       setFName('')
       setLName('')
+      return
+    } else if (response.data.return_code === 'REGISTERED_USER') {
+      setError('This email is already registered')
+      // history.push({
+      //   pathname: '/a-profile',
+      //   state: { did: response.data.did },
+      // })
     }
   }
 
@@ -146,12 +162,12 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
             your digital world, in one place. Finally unlock the power of your
             content online.
           </OnBoardLayoutLeftContentDescription>
-          <OnBoardLayoutLeftContentIntro className='my-25px'>
-            Already have a profile? Sign in
+          <OnBoardLayoutLeftContentIntro className='mt-25px mb-0'>
+            Already have a profile?
           </OnBoardLayoutLeftContentIntro>
-          <ButtonLink width={26} to='/sign-did'>
-            <ArrowButton />
-          </ButtonLink>
+          <TextLink width={100} to='/sign-did'>
+            Sign in Here
+          </TextLink>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -165,23 +181,41 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
           <TextInput
             value={fname}
             label='First Name'
-            onChange={(n) => setFName(n)}
+            onChange={(n) => {
+              setError('')
+              setFName(n)
+            }}
             placeholder='Enter your first name'
+            hasError={error !== '' && fname === ''}
           />
           <TextInput
             value={lname}
             label='Last Name'
-            onChange={(n) => setLName(n)}
+            onChange={(n) => {
+              setError('')
+              setLName(n)
+            }}
             placeholder='Enter your Last name'
+            hasError={error !== '' && lname === ''}
           />
           <TextInput
             value={email}
             label='E-mail'
-            onChange={(n) => setEmail(n)}
+            onChange={(n) => {
+              setError('')
+              setEmail(n)
+            }}
             placeholder='Enter your e-mail'
+            hasError={error !== '' && email === ''}
+            type='email'
           />
 
-          <ButtonWithLogo text='Create new profile' onClick={createUser} />
+          {error !== '' && <ErrorText>{error}</ErrorText>}
+
+          <ButtonWithLogo
+            text={loading ? 'Creating your profile now' : 'Create new profile'}
+            onClick={createUser}
+          />
 
           <div className={style['connect-divider']}>
             <hr className={style['connect-divider_line']} />

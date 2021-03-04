@@ -17,7 +17,6 @@ const FacebookCallback: React.FC<RouteComponentProps> = (props) => {
    */
 
   const [credentials, setCredentials] = useState({
-    id: '',
     email: '',
     fname: '',
     lname: '',
@@ -43,7 +42,6 @@ const FacebookCallback: React.FC<RouteComponentProps> = (props) => {
         let facebookId = await requestFacebookId(t.data.request_token)
         console.log('facebook data', facebookId)
         setCredentials({
-          id: facebookId.id,
           fname: facebookId.fname,
           lname: facebookId.lname,
           request_token: t.data.request_token,
@@ -61,7 +59,6 @@ const FacebookCallback: React.FC<RouteComponentProps> = (props) => {
           to={{
             pathname: '/generate-did',
             state: {
-              id: credentials.id,
               fname: credentials.fname,
               lname: credentials.lname,
               request_token: credentials.request_token,

@@ -84,7 +84,6 @@ const AssociatedProfilePage: React.FC<
   } else if (screen === '/generate-did') {
     return (
       <GenerateDid
-        id={associatedInfo.id}
         fname={associatedInfo.fname}
         lname={associatedInfo.lname}
         email={associatedInfo.email}

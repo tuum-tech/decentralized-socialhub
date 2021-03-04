@@ -3,6 +3,7 @@ export enum CredentialType {
   Facebook = 'Facebook',
   Google = 'Google',
   Twitter = 'Twitter',
+  Email = 'Email',
 }
 
 export class DidcredsService {
@@ -17,7 +18,6 @@ export class DidcredsService {
       credential_type: credential_type.toLowerCase(),
       credential_value: credential_value,
     }
-    console.log('===>data', data)
 
     let postData: any = {
       method: 'POST',

@@ -9,7 +9,7 @@ import {
   OnBoardLayoutLogo,
   WavingHandImg,
 } from 'src/components/layouts/OnBoardLayout'
-import { ButtonLink, ArrowButton } from 'src/components/buttons'
+import { TextLink } from 'src/components/texts'
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png'
 import markimg from 'src/assets/icon/mark.png'
@@ -39,12 +39,22 @@ const DidLeftSide: React.FC<Props> = ({ error = false }) => {
             words. In a decentralized world we all must be responsable for our
             identity.
           </OnBoardLayoutLeftContentDescription>
-          <OnBoardLayoutLeftContentIntro className='my-25px'>
-            Forgot your security words? Create a brand new profile here
+          <OnBoardLayoutLeftContentIntro
+            style={{ marginTop: '25px', marginBottom: '5px' }}
+          >
+            New to Profile?
           </OnBoardLayoutLeftContentIntro>
-          <ButtonLink width={26} to='/sign-qr'>
-            <ArrowButton />
-          </ButtonLink>
+          <TextLink width={100} to='/create-profile'>
+            Craete a new Profile
+          </TextLink>
+          <OnBoardLayoutLeftContentIntro
+            style={{ marginTop: '25px', marginBottom: '5px' }}
+          >
+            Have a last QR code?
+          </OnBoardLayoutLeftContentIntro>
+          <TextLink width={100} to='/sign-qr'>
+            Sign in here
+          </TextLink>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
     )
@@ -62,12 +72,22 @@ const DidLeftSide: React.FC<Props> = ({ error = false }) => {
           earn badges and be set up for the future - where you can earn off your
           data, under your control!
         </OnBoardLayoutLeftContentDescription>
-        <OnBoardLayoutLeftContentIntro className='my-25px'>
-          Have an elastOS QR code? Sign in here
+        <OnBoardLayoutLeftContentIntro
+          style={{ marginTop: '38px', marginBottom: '5px' }}
+        >
+          New to Profile?
         </OnBoardLayoutLeftContentIntro>
-        <ButtonLink width={26} to='/sign-qr'>
-          <ArrowButton />
-        </ButtonLink>
+        <TextLink width={100} to='/create-profile'>
+          Craete a new Profile
+        </TextLink>
+        <OnBoardLayoutLeftContentIntro
+          style={{ marginTop: '44px', marginBottom: '5px' }}
+        >
+          Have a last QR code?
+        </OnBoardLayoutLeftContentIntro>
+        <TextLink width={100} to='/sign-qr'>
+          Sign in here
+        </TextLink>
       </OnBoardLayoutLeftContent>
     </OnBoardLayoutLeft>
   )

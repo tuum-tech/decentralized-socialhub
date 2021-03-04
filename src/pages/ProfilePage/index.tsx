@@ -108,8 +108,8 @@ const ProfilePage: React.FC<RouteComponentProps> = (
   // }
 
   useEffect(() => {
-    ; (async () => {
-      let instance = UserService.getLoggedUser()
+    ;(async () => {
+      let instance = UserService.GetUserSession()
       if (!instance || !instance.userToken) return
 
       // let profile: ProfileDTO = await getFullProfile('did')
