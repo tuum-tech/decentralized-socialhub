@@ -1,12 +1,17 @@
+import React, { memo, useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { StaticContext, RouteComponentProps, useHistory } from 'react-router'
 import { compose } from 'redux'
+
 import { createStructuredSelector } from 'reselect'
 import injector from 'src/baseplate/injectorWrap'
+import { UserService, UserData } from 'src/services/user.service'
+import SetPassword from 'src/components/SetPassword'
+import PageLoading from 'src/components/layouts/PageLoading'
+import { AccountType } from 'src/services/user.service'
 
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
 import { incrementAction, getSimpleAjax } from './actions'
-import React, { memo, useState, useEffect } from 'react'
 import { NameSpace } from './constants'
 import reducer from './reducer'
 import saga from './saga'
@@ -17,10 +22,6 @@ import {
   UserSessionProp,
 } from './types'
 import { checkIfEmailAlreadyRegistered } from './fetchapi'
-
-import { UserService, UserData } from 'src/services/user.service'
-import SetPassword from 'src/components/SetPassword'
-import PageLoading from 'src/components/layouts/PageLoading'
 
 const GenerateDidPage: React.FC<
   RouteComponentProps<{}, StaticContext, LocationState>
@@ -38,38 +39,39 @@ const GenerateDidPage: React.FC<
 
   useEffect(() => {
     ;(async () => {
-      if (!session && props.location.state && props.location.state.email) {
-        const pUsers = await checkIfEmailAlreadyRegistered(
-          props.location.state.email
-        )
-        if (pUsers.length > 0) {
-          history.push({
-            pathname: '/a-profile',
-            state: {
-              dids: pUsers,
-              fname: props.location.state.fname,
-              lname: props.location.state.lname,
-              email: props.location.state.email,
-              id: props.location.state.id,
-              request_token: props.location.state.request_token,
-              service: props.location.state.service,
-              credential: props.location.state.credential,
-            },
-          })
+      if (!session && props.location.state && props.location.state.service) {
+        const { service } = props.location.state
+        if (service !== AccountType.Email && service !== AccountType.DID) {
+          const pUsers = await checkIfEmailAlreadyRegistered(
+            props.location.state.email
+          )
+          if (pUsers.length > 0) {
+            history.push({
+              pathname: '/a-profile',
+              state: {
+                dids: pUsers,
+                fname: props.location.state.fname,
+                lname: props.location.state.lname,
+                email: props.location.state.email,
+                request_token: props.location.state.request_token,
+                service: props.location.state.service,
+                credential: props.location.state.credential,
+              },
+            })
+          }
         }
         setSession(props.location.state)
       }
     })()
   }, [session])
 
-  if (session && session.id) {
+  if (session && session.request_token) {
     return (
       <SetPassword
         next={async (pwd) => {
           setLoading(true)
           if (session) {
-            await UserService.SignIn3rdParty(
-              session.id,
+            await UserService.CreateNewDidUser(
               session.fname,
               session.lname,
               session.request_token,

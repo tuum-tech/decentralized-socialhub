@@ -1,8 +1,9 @@
 .overview {
   background-color: #fff;
-  border-radius: 18px;
+  border-radius: 15px;
   min-height: 250px;
-  max-height: 350px;
+  box-shadow: none;
+  padding-bottom: 15px;
 
   ion-card-title {
     font-family: 'SF Pro Display';

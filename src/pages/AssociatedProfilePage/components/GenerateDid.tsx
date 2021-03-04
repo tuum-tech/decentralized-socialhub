@@ -5,7 +5,6 @@ import SetPassword from 'src/components/SetPassword'
 import { UserService } from 'src/services/user.service'
 
 interface Props {
-  id: string
   fname: string
   lname: string
   email: string
@@ -17,6 +16,7 @@ interface Props {
     | AccountType.Facebook
     | AccountType.Google
     | AccountType.Twitter
+    | AccountType.Email
 }
 
 const GenerateDid: React.FC<Props> = (props) => {
@@ -27,14 +27,13 @@ const GenerateDid: React.FC<Props> = (props) => {
    */
 
   const [loading, setLoading] = useState(false)
-  const { fname, lname, email, id, request_token, service, credential } = props
+  const { fname, lname, email, request_token, service, credential } = props
 
   return (
     <SetPassword
       next={async (pwd) => {
         setLoading(true)
-        await UserService.SignIn3rdParty(
-          id,
+        await UserService.CreateNewDidUser(
           fname,
           lname,
           request_token,

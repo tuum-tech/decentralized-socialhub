@@ -21,7 +21,7 @@ const AccessCodePage: React.FC = () => {
 
   useEffect(() => {
     ;(async () => {
-      const alreadyHaveCode = await AlphaService.isSessionValid()
+      const alreadyHaveCode = await AlphaService.isLocalCodeValid()
       if (alreadyHaveCode) {
         history.push({ pathname: '/profile' })
       }
@@ -78,7 +78,7 @@ const AccessCodePage: React.FC = () => {
 
   const continueAction = async () => {
     if (await isAccessCodeValid()) {
-      AlphaService.addSession(accessCode)
+      AlphaService.addInviteCodeToLocal(accessCode)
       history.push('/create-profile')
     } else {
       setErrorMessage('Invalid invite code')

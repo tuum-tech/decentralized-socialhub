@@ -180,7 +180,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
 
   const loginProfile = async (pwd: string) => {
     try {
-      await UserService.SignInWithDIDAndPWd(
+      await UserService.LockWithDIDAndPWd(
         {
           hiveHost: hiveAddress,
           userToken: userToken,
@@ -209,7 +209,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
   const signInLocalUser = async () => {
     if (did === '') return
     try {
-      await UserService.Login(did, storagePassword)
+      await UserService.UnLockWithDIDAndPWd(did, storagePassword)
 
       history.replace('/profile')
     } catch (error) {
@@ -286,7 +286,9 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
             <IonRow style={{ marginTop: '10px' }}>
               <IonCol>
                 <ButtonLight
-                  onClick={() => otherVault('http://localhost:5000')}
+                  onClick={() =>
+                    otherVault(`${process.env.REACT_APP_TUUM_TECH_HIVE}`)
+                  }
                 >
                   Tuum Tech
                 </ButtonLight>
@@ -295,7 +297,9 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
             <IonRow style={{ marginTop: '10px' }}>
               <IonCol>
                 <ButtonLight
-                  onClick={() => otherVault('http://localhost:5000')}
+                  onClick={() =>
+                    otherVault(`${process.env.REACT_APP_TUUM_TECH_HIVE}`)
+                  }
                 >
                   Trinity Tech
                 </ButtonLight>

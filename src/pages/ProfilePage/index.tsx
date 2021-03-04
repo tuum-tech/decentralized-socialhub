@@ -64,9 +64,11 @@ const ProfilePage: React.FC<RouteComponentProps> = (
   const [full_profile, setfull_profile] = useState({
     basicDTO: {
       isEnabled: false,
-      firstName: '',
-      lastName: '',
+      first_name: '',
+      last_name: '',
       did: '',
+      email: '',
+      vault_url: '',
       title: '',
       about: '',
       address: {
@@ -111,7 +113,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
 
   useEffect(() => {
     ;(async () => {
-      let instance = UserService.getLoggedUser()
+      let instance = UserService.GetUserSession()
       if (!instance || !instance.userToken) return
 
       // let profile: ProfileDTO = await getFullProfile('did')
