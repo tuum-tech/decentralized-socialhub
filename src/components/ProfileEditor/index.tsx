@@ -12,6 +12,7 @@ import ProfileTemplateManager from '../ProfileTemplateManager';
 import TemplateManagerCard, { TemplateDTO } from '../cards/TemplateManagerCard';
 import EducationCard from '../cards/EducationCard';
 import ExperienceCard from '../cards/ExperienceCard';
+import { UserService } from 'src/services/user.service';
 
 const ProfileEditor: React.FC = () => {
 
@@ -52,7 +53,7 @@ const ProfileEditor: React.FC = () => {
 
 
   async function requestFullProfile(did: string): Promise<ProfileDTO> {
-    let profileService: ProfileService = await ProfileService.getProfileServiceAppOnlyInstance();
+    let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
     let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
     try {
       getFullProfileResponse = await profileService.getFullProfile(did);
@@ -67,7 +68,7 @@ const ProfileEditor: React.FC = () => {
 
 
   async function callUpdateProfile(basicDTO: BasicDTO): Promise<any> {
-    let profileService: ProfileService = await ProfileService.getProfileServiceAppOnlyInstance();
+    let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
     let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
     try {
       getFullProfileResponse = await profileService.updateBasicProfile(basicDTO);
@@ -81,7 +82,7 @@ const ProfileEditor: React.FC = () => {
   }
 
   async function callUpdateEducationProfile(educationItem: EducationItem): Promise<any> {
-    let profileService: ProfileService = await ProfileService.getProfileServiceAppOnlyInstance();
+    let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
     let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
     try {
       getFullProfileResponse = await profileService.updateEducationProfile(educationItem);
@@ -95,7 +96,7 @@ const ProfileEditor: React.FC = () => {
   }
 
   async function callUpdateExperienceProfile(educationItem: ExperienceItem): Promise<any> {
-    let profileService: ProfileService = await ProfileService.getProfileServiceAppOnlyInstance();
+    let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
     let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
     try {
       getFullProfileResponse = await profileService.updateExperienceProfile(educationItem);
@@ -148,7 +149,7 @@ const ProfileEditor: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      let did = "did:elastos:iVy37oQuQ77L6SfXyNiBmdW2TSoyJQmBU1";
+      let did = UserService.getLoggedUser().did;
       let profile: ProfileDTO = await getFullProfile(did);
       setfull_profile(profile);
       setloaded(true);
