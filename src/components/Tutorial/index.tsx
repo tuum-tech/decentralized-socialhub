@@ -21,7 +21,7 @@ export interface TutorialComponentProps {
 const TutorialComponent: React.FC<TutorialComponentProps> = ({ onClose }) => {
 
     const [step, setStep] = useState(TutorialService.getTutorialStage());
-    const [mnemonics] = useState<string[]>(UserService.getLoggedUser().mnemonics.split(" "))
+    const [mnemonics] = useState<string[]>(UserService.GetUserSession().mnemonics.split(" "))
 
     
 

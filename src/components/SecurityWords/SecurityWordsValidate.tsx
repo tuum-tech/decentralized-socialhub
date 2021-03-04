@@ -107,10 +107,10 @@ const SecurityWordsValidate: React.FC<Props> = ({ mnemonics, onError, onSuccess,
     const renderMnemonicInput = (index: number) => {
         return (
             <IonCol className='ion-no-padding'>
-                <div className={style["security-view-col"]}>
+                <div className={style["security-view-col"]+ " " + (isOnError? style["security-view-col-error"]:  "")} >
                     <span className={style["security-view-number"]}>{(index + 1).toString()}</span>
                     <IonInput
-                        className={style["security-view-textinput"]}
+                        className={style["security-view-textinput"] }
                         value={mnemonic[index]}
                         readonly={isReadOnly}
                         onIonChange={(n) => updateMnemonic(index, n.detail.value!)}
@@ -151,21 +151,9 @@ const SecurityWordsValidate: React.FC<Props> = ({ mnemonics, onError, onSuccess,
             {
                 isOnError && (
                     <SecurityWordsViewRow >
-
-
                         <IonCol class="ion-align-self-center">
-                            <div className={style["mnemonics-verification-error"]}>
-                                <IonItem>
-                                    <IonThumbnail slot="start">
-                                        <IonImg src={alertIcon}  />
-                                    </IonThumbnail>
-                                    <IonLabel className={style["item-text"]}>
-                                        <h2>Invalid words or order</h2>
-                                        <p>Try entering then again</p>
-                                    </IonLabel>
-                                    <IonLabel slot="end" onClick={clear} className={style["item-clear"]} >Clear all</IonLabel>
-                                </IonItem>
-                            </div>
+                            <IonButton className={style["security-view-error"]} onClick={clear}>Clear All</IonButton>
+                            
                         </IonCol>
                     </SecurityWordsViewRow>
                 )

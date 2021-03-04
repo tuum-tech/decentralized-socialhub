@@ -12,6 +12,18 @@
         padding-left: 30px;
     }
 
+    .security-view-error {
+        --background: #FF5A5A;
+        font-family: "SF Pro Display";
+        font-style: normal;
+        font-weight: 600;
+        font-size: 12px;
+        line-height: 12px;
+        color: #ffffff;
+        float: right;
+        
+    }
+
     .security-view-col {
         height: 36px;
         width: 275px;
@@ -20,6 +32,10 @@
         padding-top: 8px;
         margin-bottom: 8px;
         padding-bottom: 8px;
+        
+    }
+    .security-view-col-error{
+        background: #FFECEC !important;
     }
 
     .security-view-number {

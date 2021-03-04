@@ -25,11 +25,12 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({onContinue, mnemon
 
     const back=()=>{
         setIsVerifying(false);
+        setIsOnError(false);
     }
 
     const verifyWords = () =>{
         return (<div>
-            <img src={arrowback} onClick={()=>{back()}} />
+            {!isValid && (<img src={arrowback} onClick={()=>{back()}} />)}   
             <h2>Re-enter your Security passwords</h2>
             {!isOnError && (<p>Please enter your security words in the right order</p>)}
             {isOnError && (<p className={style["tutorial-words-error"]}>Invalid words or wrong order. Try entering them again</p>)}

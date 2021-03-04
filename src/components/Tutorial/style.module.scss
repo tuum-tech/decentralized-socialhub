@@ -140,6 +140,10 @@
       margin-top: 15px;
       margin-bottom: 15px;
     }
+
+    .tutorial-words-error{
+      color: #FF5A5A;
+    }
   }
 }
 
@@ -225,12 +229,30 @@
 .tutorial-hive {
   margin-top: 20px;
   width: 100%;
+
+  ion-radio{
+    --ion-color-primary: #4c6fff;
+  }
   .tutorial-hive-row {
+    display: flex;
     width: 100%;
+    padding: 15px;
+
     ion-radio {
+      
       float: left;
+      margin-right: 15px;
+      
     }
+
+    ion-input{
+      border-radius: 9px;
+      border: 1px solid #dfdfdf;
+      margin-left: 15px;
+    }
+   
     .tutorial-hive-item {
+      margin-left: 15px;
       position: relative;
       border: 1px solid #dfdfdf4f;
       border-radius: 16px;

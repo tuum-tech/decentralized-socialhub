@@ -49,7 +49,8 @@ export class DidDocumentService {
     }
 
     static async getUserDocument(): Promise<IDIDDocumentState> {
-        let userSession = UserService.getLoggedUser()
+        let userSession = UserService.GetUserSession() 
+
         if (!userSession) {
             throw Error("Not logged")
         }
@@ -90,7 +91,7 @@ export class DidDocumentService {
     }
 
     static async publishUserDocument(diddocument: any) : Promise<IDIDDocumentState>  {
-        let userSession = UserService.getLoggedUser()
+        let userSession = UserService.GetUserSession()
         if (!userSession) {
             throw Error("Not logged")
         }
@@ -129,7 +130,7 @@ export class DidDocumentService {
       }
 
     static async reloadUserDocument() : Promise<IDIDDocumentState>{
-        let userSession = UserService.getLoggedUser()
+        let userSession = UserService.GetUserSession()
         if (!userSession) {
             throw Error("Not logged")
         }
