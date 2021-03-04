@@ -329,8 +329,8 @@ export class UserService {
     }
 
     const removeKeys = []
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i)
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const key = window.localStorage.key(i)
       if (
         key &&
         key !== '' &&
