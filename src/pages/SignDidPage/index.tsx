@@ -63,12 +63,19 @@ const SignDidPage: React.FC<InferMappedProps> = ({
           <DidSignForm
             error={error}
             setError={setError}
-            onSuccess={async (uDid: string) => {
+            onSuccess={async (uDid: string, mnemonic: string) => {
               const res = await UserService.SearchUserWithDID(uDid)
 
               if (!res) {
                 setError(true)
               } else {
+                window.localStorage.setItem(
+                  `temporary_${uDid.replace('did:elastos:', '')}`,
+                  JSON.stringify({
+                    mnemonic: mnemonic,
+                  })
+                )
+
                 history.push({
                   pathname: '/set-password',
                   state: {

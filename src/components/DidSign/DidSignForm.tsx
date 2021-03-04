@@ -23,7 +23,7 @@ const DidInputRow = styled(IonRow)`
 interface Props {
   setError: (error: boolean) => void
   error: boolean
-  onSuccess: (did: string) => void
+  onSuccess: (did: string, mnemonic: string) => void
 }
 
 const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
@@ -58,7 +58,7 @@ const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
     setError(validate === false)
     if (validate) {
       let userDid = await ElastosClient.did.loadFromMnemonic(mnemonic.join(' '))
-      onSuccess(userDid.did)
+      onSuccess(userDid.did, mnemonic.join(' '))
     }
   }
 
