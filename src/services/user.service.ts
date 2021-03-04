@@ -328,8 +328,19 @@ export class UserService {
       console.log('delete_user_by_did script response', response)
     }
 
-    const did = sessionItem.did.replace('did:elastos:', '')
-    const removeKeys = [`temporary_${did}`, `user_${did}`, `publish_${did}`]
+    const removeKeys = []
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i)
+      if (
+        key &&
+        key !== '' &&
+        (key.startsWith('temporary_') ||
+          key.startsWith('user_') ||
+          key.startsWith('publish_'))
+      ) {
+        removeKeys.push(key)
+      }
+    }
     for (let i = 0; i < removeKeys.length; i++) {
       window.localStorage.removeItem(removeKeys[i])
     }
