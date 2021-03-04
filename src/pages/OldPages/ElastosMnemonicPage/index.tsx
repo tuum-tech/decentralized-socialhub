@@ -189,6 +189,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
           lastName: '',
           accountType: AccountType.DID,
           isDIDPublished: false,
+          mnemonics: "",
           onBoardingCompleted: true,
         },
         pwd

@@ -1,7 +1,7 @@
 /**
  * Page
  */
-import { IonPage, IonContent, IonGrid, IonRow, IonCol } from "@ionic/react";
+import { IonPage, IonContent, IonGrid, IonRow, IonCol, IonModal } from "@ionic/react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { createStructuredSelector } from "reselect";
@@ -16,12 +16,27 @@ import saga from "./saga";
 import { InferMappedProps, SubState } from "./types";
 import Logo from "src/components/Logo";
 import Navbar from "src/components/Navbar";
+import DashboardNav from "src/components/DashboardNav";
 import SettingsBody from "src/components/SettingsBody";
 
-const SettingsPage: React.FC<InferMappedProps> = ({
-  eProps,
-  ...props
-}: InferMappedProps) => {
+
+const SettingsPage: React.FC<InferMappedProps> = (
+  props: InferMappedProps
+) => {
+  /**
+   * Direct method implementation without SAGA
+   * This was to show you dont need to put everything to global state
+   * incoming from Server API calls. Maintain a local state.
+   */
+  const [msg, setMsg] = useState("");
+  const [showTutorial, setShowTutorial] = useState(false);
+
+
+  const onTutorialStart = () =>{
+    console.log("On tutorial start")
+    setShowTutorial(true)
+  }
+
   return (
     <IonPage className={style["settingspage"]}>
       <IonContent>
@@ -32,11 +47,13 @@ const SettingsPage: React.FC<InferMappedProps> = ({
               <Navbar tab="settings" />
             </IonCol>
             <IonCol size="10" className={style["right-panel"]}>
+              <DashboardNav onTutorialStart={onTutorialStart} />
               <SettingsBody />
             </IonCol>
           </IonRow>
         </IonGrid>
       </IonContent>
+     
     </IonPage>
   );
 };

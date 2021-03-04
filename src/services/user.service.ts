@@ -1,6 +1,7 @@
 import { AssistService } from './assist.service'
-import { DidService } from './did.service'
+import { DidService, IDID } from './did.service'
 import { CredentialType, DidcredsService } from './didcreds.service'
+import { DidDocumentService } from './diddocument.service'
 import { ScriptService } from './script.service'
 
 const CryptoJS = require('crypto-js')
@@ -21,7 +22,9 @@ export interface ISessionItem {
   did: string
   firstName: string
   lastName: string
+  email?: string
   isDIDPublished: boolean
+  mnemonics: string
   onBoardingCompleted: boolean
 }
 
@@ -62,7 +65,7 @@ export class UserService {
   private static async generateTemporaryDID(
     service: AccountType,
     credential: string
-  ): Promise<string> {
+  ): Promise<IDID> {
     console.log('Generating temporary DID')
     let newDID = await DidService.generateNew()
     let temporaryDocument = await DidService.temporaryDidDocument(newDID)
@@ -96,7 +99,7 @@ export class UserService {
       })
     )
 
-    return newDID.did
+    return newDID
   }
 
   private static lockUser(
@@ -228,16 +231,18 @@ export class UserService {
   ) {
     let sessionItem: ISessionItem
 
-    let did = await this.generateTemporaryDID(service, credential)
+    let newDID = await this.generateTemporaryDID(service, credential)
 
     sessionItem = {
-      did: did,
+      did: newDID.did,
       accountType: service,
-      isDIDPublished: await DidService.isDIDPublished(did),
+      isDIDPublished: await DidService.isDIDPublished(newDID.did),
       firstName: fname,
       lastName: lname,
       hiveHost: 'http://localhost:9001',
       userToken: token,
+      mnemonics: newDID.mnemonic,
+      email: email,
       onBoardingCompleted: false,
     }
 
@@ -248,7 +253,7 @@ export class UserService {
         params: {
           email: email,
           code: credential,
-          did: did,
+          did: newDID.did,
           hiveHost: sessionItem.hiveHost,
           accountType: service,
           userToken: token,
@@ -270,7 +275,7 @@ export class UserService {
           email: email,
           status: 'CONFIRMED',
           code: 1,
-          did: did,
+          did: newDID.did,
           hiveHost: sessionItem.hiveHost,
           accountType: service,
           userToken: token,
@@ -285,7 +290,7 @@ export class UserService {
     }
 
     console.log(sessionItem)
-    this.lockUser(this.key(did), sessionItem, storePassword)
+    this.lockUser(this.key(newDID.did), sessionItem, storePassword)
     SessionService.saveSessionItem(sessionItem)
   }
 

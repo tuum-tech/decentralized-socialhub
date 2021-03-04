@@ -11,6 +11,7 @@ import {
   IonCol,
   IonInput,
   IonSearchbar,
+  IonModal,
 } from '@ionic/react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -47,6 +48,7 @@ import DashboardNav from 'src/components/DashboardNav'
 import { EducationItem, ExperienceItem, ProfileDTO } from '../PublicPage/types'
 import OnBoarding from 'src/components/OnBoarding'
 import { UserService } from 'src/services/user.service'
+import TutorialComponent from 'src/components/Tutorial'
 
 const ProfilePage: React.FC<RouteComponentProps> = (
   props: RouteComponentProps
@@ -56,6 +58,8 @@ const ProfilePage: React.FC<RouteComponentProps> = (
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
+
+  const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false)
   const [full_profile, setfull_profile] = useState({
     basicDTO: {
@@ -126,6 +130,11 @@ const ProfilePage: React.FC<RouteComponentProps> = (
     })()
   }, [])
 
+  const onTutorialStart = () =>{
+    console.log("Start tutorial")
+    setShowTutorial(true)
+  }
+
   if (!onboardingCompleted) {
     return (
       <OnBoarding
@@ -158,13 +167,18 @@ const ProfilePage: React.FC<RouteComponentProps> = (
             </IonCol> */}
             <IonCol size='10' className={style['right-panel']}>
               <ProfileHeader profile={full_profile} />
-              <DashboardNav />
+              <DashboardNav onTutorialStart={onTutorialStart} />
               {/* <StartServiceComponent />
               <ProfileCompletion /> */}
             </IonCol>
           </IonRow>
         </IonGrid>
+
+        <IonModal isOpen={showTutorial} cssClass={style["tutorialpage"]} backdropDismiss={false} >
+              <TutorialComponent onClose={() => setShowTutorial(false)} /> 
+        </IonModal>
       </IonContent>
+      
     </IonPage>
   )
 }

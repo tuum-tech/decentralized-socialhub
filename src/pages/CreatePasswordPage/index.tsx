@@ -77,6 +77,7 @@ const CreatePasswordPage: React.FC<
         firstName,
         lastName,
         isDIDPublished,
+        mnemonics: "",
         onBoardingCompleted,
       })
     }
