@@ -310,6 +310,7 @@ export class UserService {
 
   public static async logout() {
     let sessionItem = this.GetUserSession()
+    console.log('====>logout1', sessionItem)
     if (!sessionItem.onBoardingCompleted) {
       // remove this DID from tuum.tech vault
       const delete_user_by_did = {
@@ -326,19 +327,19 @@ export class UserService {
       console.log('=====>response', response)
     }
 
-    // clear local starge data except inviteCode
     for (var i = 0, len = window.localStorage.length; i < len; ++i) {
       let key = window.localStorage.key(i)
-      console.log('====>key', key)
-      if (!key) return
+      console.log('======>key', key)
       if (
-        key.startsWith('user_') ||
-        key.startsWith('temporary_') ||
-        key.startsWith('publish_')
+        key &&
+        (key.startsWith('user_') ||
+          key.startsWith('temporary_') ||
+          key.startsWith('publish_'))
       ) {
         window.localStorage.removeItem(key)
       }
     }
+    console.log('====> local storage data cleared')
     SessionService.Logout()
   }
 }
@@ -357,7 +358,7 @@ class SessionService {
   }
 
   static saveSessionItem(item: ISessionItem) {
-    window.sessionStorage.clear()
+    // window.sessionStorage.clear()
     window.sessionStorage.setItem(
       'session_instance',
       JSON.stringify(item, null, '')
@@ -365,6 +366,9 @@ class SessionService {
   }
 
   static Logout() {
-    window.sessionStorage.removeItem('session_instance')
+    window.sessionStorage.clear()
+    // window.sessionStorage.removeItem('session_instance')
+    console.log('====> session data cleared')
+    window.location.href = '/create-profile'
   }
 }
