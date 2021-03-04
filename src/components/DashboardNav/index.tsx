@@ -14,7 +14,11 @@ import BadgesCard from 'src/components/cards/BadgesCard'
 import OverviewCard from 'src/components/cards/OverviewCard'
 import ButtonWhite from 'src/components/buttons/ButtonWhite'
 
-const DashboardHome: React.FC = () => {
+export interface DashboardProps{
+  onTutorialStart: () => void
+}
+
+const DashboardHome: React.FC<DashboardProps> = (props) => {
   return (
     <IonGrid className={style['tab-grid']}>
       <IonRow>
@@ -23,7 +27,7 @@ const DashboardHome: React.FC = () => {
             title='Welcome to Profile'
             content='To get you familiar with the platform you can start our tutorial which
         will go through some basics. You will receive a badge for completing it.'
-            component={<ButtonWhite>Start beginners tutorial</ButtonWhite>}
+            component={<div><br /> <ButtonWhite onClick={() => props.onTutorialStart()} >Start beginners tutorial</ButtonWhite></div>}
           />
           <BadgesCard title='Badges' />
         </IonCol>
@@ -72,7 +76,7 @@ const DashboardBadges: React.FC = () => {
   )
 }
 
-const DashboardNav: React.FC = () => {
+const DashboardNav: React.FC<DashboardProps> = (props) => {
   const [active, setActive] = useState('home')
 
   return (
@@ -109,7 +113,7 @@ const DashboardNav: React.FC = () => {
           <IonLabel className={style['tab-label']}>Badges</IonLabel>
         </IonItem>
       </IonList>
-      {active === 'home' && <DashboardHome />}
+      {active === 'home' && <DashboardHome onTutorialStart={props.onTutorialStart} />}
       {active === 'status' && <DashboardStatus />}
       {active === 'badges' && <DashboardBadges />}
     </IonContent>

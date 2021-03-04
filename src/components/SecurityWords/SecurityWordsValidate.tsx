@@ -8,14 +8,14 @@ import { IonGrid, IonRow, IonCol, IonLabel, IonInput, IonImg, IonItem, IonThumbn
 import alertIcon from '../../assets/alert.png';
 
 import style from './style.module.scss'
+import { clear } from 'console';
 
 const SecurityWordsViewContainer = styled(IonGrid)`
   width: 100%;
   margin: 5px auto;
 `
 const SecurityWordsViewRow = styled(IonRow)`
-  margin-left: 70px;
-  width: 460px;
+  width: 100%;
 `
 
 interface Props {

@@ -1,7 +1,7 @@
 /**
  * Page
  */
-import { IonPage, IonContent, IonGrid, IonRow, IonCol } from "@ionic/react";
+import { IonPage, IonContent, IonGrid, IonRow, IonCol, IonModal } from "@ionic/react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { createStructuredSelector } from "reselect";
@@ -30,10 +30,16 @@ const SettingsPage: React.FC<RouteComponentProps> = (
    * incoming from Server API calls. Maintain a local state.
    */
   const [msg, setMsg] = useState("");
+  const [showTutorial, setShowTutorial] = useState(false);
   const simpleAjaxDirect = async () => {
     const msg = (await fetchSimpleApi()) as string;
     setMsg(msg);
   };
+
+  const onTutorialStart = () =>{
+    console.log("On tutorial start")
+    setShowTutorial(true)
+  }
 
   return (
     <IonPage>
@@ -49,11 +55,12 @@ const SettingsPage: React.FC<RouteComponentProps> = (
             </IonCol> */}
             <IonCol size="10" className={style["right-panel"]}>
               <SettingsHeader />
-              <DashboardNav />
+              <DashboardNav onTutorialStart={onTutorialStart} />
             </IonCol>
           </IonRow>
         </IonGrid>
       </IonContent>
+     
     </IonPage>
   );
 };
