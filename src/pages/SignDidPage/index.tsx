@@ -53,7 +53,9 @@ const SignDidPage: React.FC<InferMappedProps> = ({
           <OnBoardLayoutRightContentTitle>
             Sign into with Decentrialized ID (DID)
           </OnBoardLayoutRightContentTitle>
-          <Text16>Have an elastOS QR code? Sign in here</Text16>
+          <Text16>
+            Enter your 12 security passwords in the correct order.
+          </Text16>
           <IonRow style={{ marginTop: '12px' }}>
             <Text12>What are these?</Text12>
             <Text12>&nbsp;Help</Text12>
@@ -62,8 +64,8 @@ const SignDidPage: React.FC<InferMappedProps> = ({
             error={error}
             setError={setError}
             onSuccess={async (uDid: string) => {
-              const res = await UserService.DIDlogin(uDid)
-              console.log('=====>uDid', uDid, res)
+              const res = await UserService.SearchUserWithDID(uDid)
+
               if (!res) {
                 setError(true)
               } else {
@@ -76,7 +78,7 @@ const SignDidPage: React.FC<InferMappedProps> = ({
                     firstName: res.firstName,
                     lastName: res.lastName,
                     accountType: res.accountType,
-                    isDIDPublished: true, // this can be updated
+                    isDIDPublished: res.isDIDPublished,
                     onBoardingCompleted: true,
                   },
                 })

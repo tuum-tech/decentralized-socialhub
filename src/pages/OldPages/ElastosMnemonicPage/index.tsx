@@ -180,7 +180,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
 
   const loginProfile = async (pwd: string) => {
     try {
-      await UserService.SignInWithDIDAndPWd(
+      await UserService.LockWithDIDAndPWd(
         {
           hiveHost: hiveAddress,
           userToken: userToken,
@@ -208,7 +208,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
   const signInLocalUser = async () => {
     if (did === '') return
     try {
-      await UserService.Login(did, storagePassword)
+      await UserService.UnLockWithDIDAndPWd(did, storagePassword)
 
       history.replace('/profile')
     } catch (error) {

@@ -31,7 +31,9 @@ const SignDid: React.FC<Props> = ({ did }) => {
           <OnBoardLayoutRightContentTitle>
             Sign into with Decentrialized ID (DID)
           </OnBoardLayoutRightContentTitle>
-          <Text16>Have an elastOS QR code? Sign in here</Text16>
+          <Text16>
+            Enter your 12 security passwords in the correct order.
+          </Text16>
           <IonRow style={{ marginTop: '12px' }}>
             <Text12>What are these?</Text12>
             <Text12>&nbsp;Help</Text12>
@@ -42,7 +44,9 @@ const SignDid: React.FC<Props> = ({ did }) => {
             onSuccess={async (uDid: string) => {
               console.log('====>1', `did:elastos:${did}`, uDid)
               if (`did:elastos:${did}` === uDid) {
-                const res = await UserService.DIDlogin(`did:elastos:${did}`)
+                const res = await UserService.SearchUserWithDID(
+                  `did:elastos:${did}`
+                )
                 console.log('====>2', res)
                 if (!res) {
                   setError(true)
@@ -56,7 +60,7 @@ const SignDid: React.FC<Props> = ({ did }) => {
                       firstName: res.firstName,
                       lastName: res.lastName,
                       accountType: res.accountType,
-                      isDIDPublished: true, // this can be updated
+                      isDIDPublished: res.isDIDPublished,
                       onBoardingCompleted: true,
                     },
                   })

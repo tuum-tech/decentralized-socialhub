@@ -22,7 +22,6 @@ import {
   OnBoardLayoutLeftContent,
   OnBoardLayoutLeftContentTitle,
   OnBoardLayoutLeftContentDescription,
-  OnBoardLayoutLeftContentIntro,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
@@ -57,7 +56,6 @@ const CreatePasswordPage: React.FC<
   const [repeatPassword, setRepeatPassword] = useState('')
   const [error, setError] = useState('')
   const [session, setSession] = useState<ISessionItem | null>(null)
-  console.log('====>session', session)
 
   useEffect(() => {
     if (!session && props.location.state && props.location.state.did) {
@@ -87,9 +85,8 @@ const CreatePasswordPage: React.FC<
   const afterPasswordSet = async () => {
     if (!session) return
     setLoading(true)
-    await UserService.SignInWithDIDAndPWd(session, password)
+    await UserService.LockWithDIDAndPWd(session, password)
     setLoading(false)
-    console.log('=====>here?')
     window.location.href = '/profile'
   }
 
@@ -106,9 +103,6 @@ const CreatePasswordPage: React.FC<
             This is a locally stored password. This password protects your main
             profile account (decentralized identity).
           </OnBoardLayoutLeftContentDescription>
-          <OnBoardLayoutLeftContentIntro className='my-25px'>
-            More information on why I need a password? Help
-          </OnBoardLayoutLeftContentIntro>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>

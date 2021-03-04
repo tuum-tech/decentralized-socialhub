@@ -33,30 +33,3 @@ export function requestLinkedinProfile(
     }
   )
 }
-
-// export async function requestLinkedinId(token: string): Promise<LinkedinId> {
-// let corsavoidhost = 'https://cors-anywhere.herokuapp.com/';
-
-// export async function requestLinkedinProfile(
-//   token: string
-// ): Promise<LinkedinId> {
-//   let url = `https://api.linkedin.com/v2/me?projection=(id,firstName,lastName,emailAddress)`
-//   let data: any = {
-//     method: 'GET',
-//     headers: {
-//       'content-type': 'application/json',
-//       Authorization: `Bearer ${token}`,
-//       Accept: 'application/json',
-//     },
-//   }
-//   let response = await fetch(url, data)
-
-//   let json = await response.json()
-//   console.log('linkedin json', response)
-
-//   return {
-//     id: json.id,
-//     name: `${json.firstName} ${json.lastName}`,
-//     credential: json.emailAddress,
-//   }
-// }

@@ -14,7 +14,6 @@ export type ActionType = typeof Actions
 
 export type LocationState = {
   from: Location
-  id: string
   fname: string
   lname: string
   email: string
@@ -26,10 +25,10 @@ export type LocationState = {
     | AccountType.Facebook
     | AccountType.Google
     | AccountType.Twitter
+    | AccountType.Email
 }
 
 export type UserSessionProp = {
-  id: string
   fname: string
   lname: string
   email: string
@@ -41,4 +40,5 @@ export type UserSessionProp = {
     | AccountType.Facebook
     | AccountType.Google
     | AccountType.Twitter
+    | AccountType.Email
 }

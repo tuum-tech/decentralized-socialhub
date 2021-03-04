@@ -2,29 +2,29 @@
  * Page
  */
 
-import React from 'react';
+import React from 'react'
 
-import { IonInput, IonLabel } from '@ionic/react';
-import style from './TextInput.module.scss';
+import { IonInput, IonLabel } from '@ionic/react'
+import style from './TextInput.module.scss'
 
 interface Props {
-  placeholder?: string;
-  label?: string;
-  value?: string;
-  flexDirection?: string;
-  hasError?: boolean;
-  onChange: (e: string) => void;
+  placeholder?: string
+  label?: string
+  value?: string
+  flexDirection?: string
+  hasError?: boolean
+  onChange: (e: string) => void
   type?:
-  | 'number'
-  | 'text'
-  | 'time'
-  | 'date'
-  | 'email'
-  | 'password'
-  | 'search'
-  | 'tel'
-  | 'url'
-  | undefined;
+    | 'number'
+    | 'text'
+    | 'time'
+    | 'date'
+    | 'email'
+    | 'password'
+    | 'search'
+    | 'tel'
+    | 'url'
+    | undefined
 }
 
 const TextInput: React.FC<Props> = ({
@@ -36,12 +36,12 @@ const TextInput: React.FC<Props> = ({
   hasError = false,
   type = 'text',
 }) => {
-  let cName = style['textinput'];
+  let cName = style['textinput']
   if (flexDirection === 'column') {
-    cName += ` ${style['flex-row']}`;
+    cName += ` ${style['flex-row']}`
   }
   if (hasError) {
-    cName += ' hasError';
+    cName += ` ${style['hasError']}`
   }
 
   return (
@@ -57,7 +57,7 @@ const TextInput: React.FC<Props> = ({
         onIonChange={(e) => onChange(e.detail.value!)}
       />
     </div>
-  );
-};
+  )
+}
 
-export default TextInput;
+export default TextInput

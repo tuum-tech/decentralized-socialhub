@@ -13,18 +13,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   proctedby = 'accesscode',
   ...routeProps
 }) => {
-  if (proctedby === 'password') {
-    const session = window.sessionStorage.getItem('session_instance')
-    let isLoggedIn = true
-    if (!session) {
-      isLoggedIn = false
-    } else {
-      const sessionObj = JSON.parse(session)
-      if (!sessionObj.userToken || sessionObj.userToken === '') {
-        isLoggedIn = false
-      }
-    }
+  const session_instance = window.sessionStorage.getItem('session_instance')
+  let isLoggedIn = true
+  if (!session_instance) {
+    isLoggedIn = false
+  }
 
+  if (proctedby === 'password') {
     return (
       <Route
         {...routeProps}
@@ -40,9 +35,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   // protected by invite code
-  const session = window.sessionStorage.getItem('invitecode')
+  const local_invitecode = window.localStorage.getItem('invitecode')
+  console.log('=======>local_invitecode', local_invitecode)
   let hasCode = true
-  if (!session) {
+  if (!local_invitecode) {
     hasCode = false
   }
 
@@ -50,7 +46,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     <Route
       {...routeProps}
       render={(props) => {
-        if (hasCode) {
+        if (isLoggedIn) {
+          return <Redirect to='/profile' />
+        } else if (hasCode) {
           return <Component {...props} />
         } else {
           return <Redirect to='/Alpha' />

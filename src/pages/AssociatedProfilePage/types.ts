@@ -27,6 +27,7 @@ export type UserSessionProp = {
     | AccountType.Facebook
     | AccountType.Google
     | AccountType.Twitter
+    | AccountType.Email
 }
 
 export type LocationState = {
@@ -44,4 +45,5 @@ export type LocationState = {
     | AccountType.Facebook
     | AccountType.Google
     | AccountType.Twitter
+    | AccountType.Email
 }

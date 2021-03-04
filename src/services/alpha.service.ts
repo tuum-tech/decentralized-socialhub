@@ -14,10 +14,11 @@ export class AlphaService {
         accesscode: accesscode,
       },
     })
-
+    console.log('=====>scriptResponse', scriptResponse)
     if (
       !scriptResponse.isSuccess ||
       !scriptResponse.response.requeststatus ||
+      !scriptResponse.response.requeststatus.items ||
       scriptResponse.response.requeststatus.items.length == 0
     ) {
       return false
@@ -26,17 +27,17 @@ export class AlphaService {
     return !scriptResponse.response.requeststatus.items[0].isUsed
   }
 
-  private static SessionKey: string = 'invitecode'
+  private static LocalStorageKey: string = 'invitecode'
 
-  static addSession(accessCode: string) {
-    window.sessionStorage.setItem(this.SessionKey, accessCode)
+  static addInviteCodeToLocal(accessCode: string) {
+    window.localStorage.setItem(this.LocalStorageKey, accessCode)
   }
 
-  static async isSessionValid(): Promise<boolean> {
-    let sessionItem = window.sessionStorage.getItem(this.SessionKey)
-    if (!sessionItem) return false
+  static async isLocalCodeValid(): Promise<boolean> {
+    let localItem = window.localStorage.getItem(this.LocalStorageKey)
+    if (!localItem) return false
 
-    return await this.isCodeValid(sessionItem)
+    return await this.isCodeValid(localItem)
   }
 
   static async useCode(accesscode: string, did: string): Promise<boolean> {
