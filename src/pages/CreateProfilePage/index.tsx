@@ -5,6 +5,7 @@ import { compose } from 'redux'
 import { createStructuredSelector } from 'reselect'
 import Modal from 'react-bootstrap/esm/Modal'
 import Button from 'react-bootstrap/esm/Button'
+import styled from 'styled-components'
 
 import {
   OnBoardLayout,
@@ -42,6 +43,12 @@ import {
   requestLinkedinLogin,
   requestFacebookLogin,
 } from './fetchapi'
+
+const ErrorText = styled(Text16)`
+  text-align: center;
+  color: red;
+  margin-top: 8px;
+`
 
 export interface ICreateUserResponse {
   data: {
@@ -94,13 +101,12 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
       setFName('')
       setLName('')
       return
-    }
-
-    if (response.data.return_code === 'REGISTERED_USER') {
-      history.push({
-        pathname: '/a-profile',
-        state: { did: response.data.did },
-      })
+    } else if (response.data.return_code === 'REGISTERED_USER') {
+      setError('This email is already registered')
+      // history.push({
+      //   pathname: '/a-profile',
+      //   state: { did: response.data.did },
+      // })
     }
   }
 
@@ -175,25 +181,36 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
           <TextInput
             value={fname}
             label='First Name'
-            onChange={(n) => setFName(n)}
+            onChange={(n) => {
+              setError('')
+              setFName(n)
+            }}
             placeholder='Enter your first name'
             hasError={error !== '' && fname === ''}
           />
           <TextInput
             value={lname}
             label='Last Name'
-            onChange={(n) => setLName(n)}
+            onChange={(n) => {
+              setError('')
+              setLName(n)
+            }}
             placeholder='Enter your Last name'
             hasError={error !== '' && lname === ''}
           />
           <TextInput
             value={email}
             label='E-mail'
-            onChange={(n) => setEmail(n)}
+            onChange={(n) => {
+              setError('')
+              setEmail(n)
+            }}
             placeholder='Enter your e-mail'
             hasError={error !== '' && email === ''}
             type='email'
           />
+
+          {error !== '' && <ErrorText>{error}</ErrorText>}
 
           <ButtonWithLogo
             text={loading ? 'Creating your profile now' : 'Create new profile'}
