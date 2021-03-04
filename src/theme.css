@@ -166,6 +166,7 @@
   --ion-color-food: #3bc7c4;
   --ion-color-documentation: #b16be3;
   --ion-color-navigation: #6600cc;
+  
 }
 
 .md {
@@ -173,3 +174,4 @@
   --ion-toolbar-color: #fff;
   --ion-toolbar-color-activated: #fff;
 }
+

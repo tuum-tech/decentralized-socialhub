@@ -40,7 +40,7 @@ const ExperienceSection: React.FC<IProps> = ({ profile }: IProps) => {
     <IonGrid className={style['tab-grid']}>
       <IonRow>
         <IonCol>
-          <ExperienceCard experiences={profile.experienceDTO} />
+          <ExperienceCard experienceDTO={profile.experienceDTO} updateFunc={() => { }} mode="readonly" />
         </IonCol>
       </IonRow>
     </IonGrid>
@@ -53,7 +53,7 @@ const EducationSection: React.FC<IProps> = ({ profile }: IProps) => {
     <IonGrid className={style['tab-grid']}>
       <IonRow>
         <IonCol>
-          <EducationCard educationDTO={profile.educationDTO} />
+          <EducationCard educationDTO={profile.educationDTO} updateFunc={() => { }} mode="readonly" />
         </IonCol>
       </IonRow>
     </IonGrid>
@@ -107,8 +107,8 @@ const ProfileComponent: React.FC<IProps> = ({ profile }: IProps) => {
           <IonCol size="3">
 
             <SocialProfiles />
+            <FollowingList did={profile.basicDTO.did} />
             <FollowersWidget />
-            <FollowingList />
           </IonCol>
         </IonRow >
       </IonGrid >

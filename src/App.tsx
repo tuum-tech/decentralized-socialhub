@@ -32,7 +32,7 @@ import './styles/app.scss'
 // import LoginPage from './pages/OldPages/LoginPage/Loadable'
 // import LoginPage from './pages/LoginPage/Loadable';
 // import ElastosLoginPage from './pages/OldPages/ElastosLoginPage/Loadable';
-// import MnemonicPage from './pages/OldPages/pages/MnemonicPage/Loadable';
+//import MnemonicPage from './pages/OldPages/pages/MnemonicPage(Obsolete)/Loadable';
 // import RegisterPage from './pages/OldPages/RegisterPage/Loadable'
 // import ElastosMnemonicPage from './pages/OldPages/ElastosMnemonicPage'
 // import ElastosLoginQRPage from './pages/OldPages/ElastosLoginQRPage'
@@ -72,6 +72,12 @@ import PublicPage from './pages/PublicPage/Loadable'
 
 import ProtectedRoute from './components/ProtectedRoute'
 
+
+// import RequestCodePage from './pages/AlphaAccess/RequestCode';
+// import InviteCodePage from './pages/AlphaAccess/InviteCode';
+import ManagerPage from './pages/ManagerPage';
+import ElastosMnemonicPage from './pages/OldPages/ElastosMnemonicPage'
+
 const App: React.FC = () => {
   // const [session, setSession] = useState({});
 
@@ -79,22 +85,22 @@ const App: React.FC = () => {
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
-          {/* <Route path='/login' component={LoginPage} exact={true} />
-          <Route path="/login/mnemonic" component={MnemonicPage} exact={true} />
-          <Route path="/register/mnemonic" component={MnemonicPage} exact={true} />
-          <Route
+
+          {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
+          {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
+          {/* <Route
             path='/login/elastos/mnemonic'
             component={ElastosMnemonicPage}
             exact
-          />
-          <Route
+          /> */}
+          {/* <Route
             path='/login/elastos/qrcode'
             component={ElastosLoginQRPage}
             exact
           />
           <Route path='/register' component={RegisterPage} exact={true} />
-          <Route path='/home' component={HomePage} exact={true} />
-          */}
+          <Route path='/home' component={HomePage} exact={true} /> */}
+
 
           <Route path='/create' component={CreateIdentityPage} exact={true} />
           <Route path='/confirm' component={ConfirmMnemonicPage} exact={true} />
@@ -119,6 +125,8 @@ const App: React.FC = () => {
           <Route path='/settings' component={SettingsPage} exact={true} />
           <Route path='/tutorial' component={TutorialPage} exact={true} />
           <Route path='/did/:did' component={PublicPage} exact={true} />
+          <Route path='/manager' component={ManagerPage} exact={true} />
+          <Route exact path='/' render={() => <Redirect to='/Alpha' />} />
 
           {/* // login workflow */}
           <Route path='/twitter_callback' component={TwitterCallback} />

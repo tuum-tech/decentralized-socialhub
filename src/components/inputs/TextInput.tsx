@@ -15,16 +15,16 @@ interface Props {
   hasError?: boolean;
   onChange: (e: string) => void;
   type?:
-    | 'number'
-    | 'text'
-    | 'time'
-    | 'date'
-    | 'email'
-    | 'password'
-    | 'search'
-    | 'tel'
-    | 'url'
-    | undefined;
+  | 'number'
+  | 'text'
+  | 'time'
+  | 'date'
+  | 'email'
+  | 'password'
+  | 'search'
+  | 'tel'
+  | 'url'
+  | undefined;
 }
 
 const TextInput: React.FC<Props> = ({
