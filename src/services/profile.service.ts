@@ -102,7 +102,7 @@ export class ProfileService {
   async updateEducationProfile(
     educationItem: EducationItem
   ): Promise<IRunScriptResponse<ProfileResponse>> {
-    return this.appHiveClient.Scripting.RunScript({
+    return this.hiveClient.Scripting.RunScript({
       name: 'update_education_profile',
       // context: {
       //   target_did: "did:elastos:iVy37oQuQ77L6SfXyNiBmdW2TSoyJQmBU1", // just to test, in real life use userHiveClient
@@ -111,6 +111,16 @@ export class ProfileService {
       params: educationItem
     });
   }
+
+  async removeEducationItem(
+    educationItem: EducationItem
+  ): Promise<IRunScriptResponse<ProfileResponse>> {
+    return this.hiveClient.Scripting.RunScript({
+      name: 'remove_education_item',
+      params: educationItem
+    });
+  }
+
 
   async updateExperienceProfile(
     experienceItem: ExperienceItem

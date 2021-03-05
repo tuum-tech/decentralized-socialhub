@@ -5,6 +5,7 @@ import {
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
+  IonCheckbox,
   IonCol,
   IonFooter,
   IonGrid,
@@ -334,11 +335,15 @@ const ExperienceCardEdit: React.FC<ExperienceItemProps> = ({ experienceItem, han
         </IonCol>
       </IonRow>
       <IonRow class="ion-justify-content-start">
-        <IonCol size="3.5">
-          <SmallTextInput label="Duration" name="start" value={experienceItem.start} onChange={handleChangeIndex} />
+        <IonCol size="4.5">
+          <SmallTextInput label="Duration" name="start" type="date" value={experienceItem.start} onChange={handleChangeIndex} />
         </IonCol>
-        <IonCol size="3.5">
-          <SmallTextInput label="&nbsp;" name="end" value={experienceItem.end} onChange={handleChangeIndex} />
+        <IonCol size="4.5">
+          <SmallTextInput label="&nbsp;" name="end" type="date" value={experienceItem.end} onChange={handleChangeIndex} />
+
+        </IonCol>
+        <IonCol size="auto" class="ion-align-self-end">
+          <IonCheckbox onIonChange={handleChangeIndex} />
         </IonCol>
       </IonRow>
       <IonRow class="ion-justify-content-start">

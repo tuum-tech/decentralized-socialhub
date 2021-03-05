@@ -88,11 +88,11 @@ const App: React.FC = () => {
 
           {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
           {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
-          {/* <Route
+          <Route
             path='/login/elastos/mnemonic'
             component={ElastosMnemonicPage}
             exact
-          /> */}
+          />
           {/* <Route
             path='/login/elastos/qrcode'
             component={ElastosLoginQRPage}
