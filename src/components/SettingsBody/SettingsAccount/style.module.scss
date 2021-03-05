@@ -5,19 +5,67 @@
   }
 
   .tab-card {
+    font-family: "SF Pro Display";
     border-radius: 16px;
     background: #fff;
   }
 
   .card-title {
-    font-family: "SF Pro Display";
     font-size: 18px;
     font-weight: bold;
-    font-style: normal;
-    line-height: 1.36;
-    letter-spacing: normal;
-    text-align: left;
+    letter-spacing: -0.005em;
     color: #27272e;
-    margin-left: 15px;
+  }
+
+  .section {
+    margin: 0em 1.5em 0em 0em;
+
+    .section-data {
+      padding: 1.5em 1.5em 1.5em 0em;
+      width: 80%;
+
+      .section-title {
+        font-size: 14px;
+        font-weight: bold;
+        line-height: 1.6;
+        font-feature-settings: "salt" on;
+        color: #425466;
+        display: block;
+      }
+
+      .section-description {
+        font-size: 13px;
+        line-height: 1.6;
+        font-feature-settings: "salt" on;
+        color: #425466;
+        display: block;
+      }
+
+      .section-button {
+        margin-right: 2em;
+        width: 113px;
+        height: 32px;
+        font: normal normal 600 12px/12px "SF Pro Display";
+      }
+
+      .coming-soon {
+        font-size: 12px;
+        font-weight: 600;
+        color: #4c6fff;
+      }
+    }
+
+    .section-action {
+      padding: 1em 1em 1em 0em;
+      width: 60%;
+
+      .section-action-inner {
+        font-size: 14px;
+        font-weight: bold;
+        line-height: 1.6;
+        font-feature-settings: "salt" on;
+        color: #425466;
+      }
+    }
   }
 }
