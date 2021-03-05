@@ -3,8 +3,21 @@
     background: #f7fafc;
     min-height: 100%;
   }
+
   .tab-card {
     border-radius: 16px;
     background: #fff;
+  }
+
+  .card-title {
+    font-family: "SF Pro Display";
+    font-size: 18px;
+    font-weight: bold;
+    font-style: normal;
+    line-height: 1.36;
+    letter-spacing: normal;
+    text-align: left;
+    color: #27272e;
+    margin-left: 15px;
   }
 }
