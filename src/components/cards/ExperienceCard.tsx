@@ -165,7 +165,7 @@ const ExperienceItems: React.FC<ExperienceItemsProps> = ({ experienceItem, handl
 
 interface IExperienceProps {
   experienceDTO: ExperienceDTO;
-  updateFunc: any;
+  updateFunc?: any;
   mode: string;
 }
 const ExperienceCard: React.FC<IExperienceProps> = ({ experienceDTO, updateFunc, mode }: IExperienceProps) => {

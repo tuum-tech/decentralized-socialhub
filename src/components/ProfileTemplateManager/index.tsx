@@ -43,7 +43,7 @@ const ProfileTemplateManager: React.FC = () => {
     <IonContent className={style['profiletemplatemanager']}>
       {/*-- Default ProfileTemplateManager --*/}
 
-      <IonRadioGroup>
+      <IonRadioGroup value="general">
 
         <IonGrid>
           <IonRow className="ion-justify-content-between">
@@ -53,13 +53,13 @@ const ProfileTemplateManager: React.FC = () => {
             </IonCol>
 
             <IonCol size="2">
-              <IonRadio name="general"></IonRadio>
+              <IonRadio name="general" value="general"></IonRadio>
             </IonCol>
 
 
           </IonRow>
           <Divider />
-          <IonRow className="ion-justify-content-between">
+          {/* <IonRow className="ion-justify-content-between">
             <IonCol size="*">
               <Header3>Academic Profile</Header3>
               <h4>Education based</h4></IonCol>
@@ -69,7 +69,7 @@ const ProfileTemplateManager: React.FC = () => {
               </IonRadio>
 
             </IonCol>
-          </IonRow>
+          </IonRow> */}
 
         </IonGrid>
       </IonRadioGroup>

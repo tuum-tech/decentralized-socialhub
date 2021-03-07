@@ -9,6 +9,7 @@ import ButtonDefault from 'src/components/ButtonDefault';
 import ButtonDisabled from 'src/components/ButtonDisabled';
 import { ButtonLink, ButtonWithLogo } from 'src/components/buttons';
 import styled from 'styled-components';
+import { ISessionItem } from 'src/services/user.service';
 
 
 
@@ -60,16 +61,16 @@ color: #4c6fff;
 
 
 interface IProps {
-  basicDTO: BasicDTO,
+  sessionItem: ISessionItem,
   updateFunc: any
 }
 
-const BasicCard: React.FC<IProps> = ({ basicDTO, updateFunc }: IProps) => {
+const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
 
-  const [currentBasicDTO, setCurrentBasicDTO] = useState(basicDTO);
+  const [currentBasicDTO, setCurrentBasicDTO] = useState(sessionItem);
 
   const handleChange = (evt: any) => {
-
+    debugger;
     const value =
       evt.target.type === "checkbox" ? evt.target.checked : evt.target.value;
     setCurrentBasicDTO({
@@ -90,7 +91,7 @@ const BasicCard: React.FC<IProps> = ({ basicDTO, updateFunc }: IProps) => {
             <IonCol><IonCardTitle>Basic Information</IonCardTitle></IonCol>
             <IonCol>
               <SmallLightButton>Cancel</SmallLightButton>&nbsp;&nbsp;
-              <SmallLightButton onClick={() => updateFunc(currentBasicDTO)}>Save</SmallLightButton></IonCol>
+              <SmallLightButton disabled={sessionItem.onBoardingCompleted === false} onClick={() => updateFunc(currentBasicDTO)}>Save</SmallLightButton></IonCol>
           </IonRow>
         </IonGrid>
       </IonCardHeader>
@@ -98,25 +99,25 @@ const BasicCard: React.FC<IProps> = ({ basicDTO, updateFunc }: IProps) => {
         <IonGrid>
           <IonRow class="ion-justify-content-start">
             <IonCol size="5">
-              <SmallTextInput label="First name" name="first_name" value={currentBasicDTO.first_name} onChange={handleChange} />
+              <SmallTextInput disabled={!sessionItem.onBoardingCompleted} label="First name" name="firstName" value={currentBasicDTO.firstName} onChange={handleChange} />
             </IonCol>
             <IonCol size="5">
-              <SmallTextInput label="Last name" name="last_name" value={currentBasicDTO.last_name} onChange={handleChange} />
+              <SmallTextInput disabled={!sessionItem.onBoardingCompleted} label="Last name" name="lastName" value={currentBasicDTO.lastName} onChange={handleChange} />
             </IonCol>
           </IonRow>
           <IonRow class="ion-justify-content-start">
             <IonCol size="5">
-              <SmallTextInput label="Email" name="email" value={currentBasicDTO.email} onChange={handleChange} />
+              <SmallTextInput disabled={!sessionItem.onBoardingCompleted} label="Email" name="email" value={currentBasicDTO.email} onChange={handleChange} />
             </IonCol>
           </IonRow>
           <IonRow class="ion-justify-content-start">
             <IonCol size="7">
-              <SmallTextInput label="DID" value={currentBasicDTO.did} onChange={handleChange} />
+              <SmallTextInput disabled={!sessionItem.onBoardingCompleted} label="DID" value={currentBasicDTO.did} onChange={handleChange} />
             </IonCol>
           </IonRow>
           <IonRow class="ion-justify-content-start">
             <IonCol size="7">
-              <SmallTextInput label="Vault URL" name="vault_url" value={currentBasicDTO.vault_url} onChange={handleChange} />
+              <SmallTextInput disabled={!sessionItem.onBoardingCompleted} label="Vault URL" value={currentBasicDTO.hiveHost} onChange={handleChange} />
             </IonCol>
             <IonCol size="2">
               <SmallLightButton>Migrate Vault</SmallLightButton>

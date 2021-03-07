@@ -20,6 +20,7 @@ export interface ISessionItem {
   did: string
   firstName: string
   lastName: string
+  email?: string
   isDIDPublished: boolean
   onBoardingCompleted: boolean
 }

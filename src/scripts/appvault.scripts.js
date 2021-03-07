@@ -295,6 +295,33 @@ let run = async () => {
       },
     },
   });
+
+  await client.Scripting.SetScript({
+    name: "update_user",
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'update',
+      name: 'update_user',
+      body: {
+        collection: 'users',
+        filter: {
+          did: '$params.did',
+        },
+        update: {
+          $set: {
+            firstName: '$params.firstName',
+            lastName: '$params.lastName',
+            email: '$params.email'
+          }
+        },
+        options: {
+          upsert: true,
+          bypass_document_validation: false
+        }
+      }
+    }
+  })
   // ===== universities section end =====
   console.log('All scripts OK');
 };

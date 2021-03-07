@@ -69,7 +69,8 @@ const CreatePasswordPage: React.FC<
         firstName,
         lastName,
         isDIDPublished,
-        onBoardingCompleted,
+        onBoardingCompleted
+
       } = props.location.state
       setSession({
         hiveHost,
@@ -79,7 +80,8 @@ const CreatePasswordPage: React.FC<
         firstName,
         lastName,
         isDIDPublished,
-        onBoardingCompleted,
+        onBoardingCompleted
+
       })
     }
   })

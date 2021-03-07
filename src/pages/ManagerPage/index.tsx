@@ -126,18 +126,7 @@ justify-content: space-between;
 `;
 
 
-const EducationCardEdit: React.FC = () => {
-  return (
-    <AlphaContent>
-      <Popup>
-        <h2>ajhsdjw</h2>
-        sdknasknd
-        asdkfnasd
-        askdnkasjd
-      </Popup>
-    </AlphaContent>
-  )
-}
+
 
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({

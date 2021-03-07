@@ -13,11 +13,26 @@ import SpotlightCard from 'src/components/cards/SpotlightCard'
 import BadgesCard from 'src/components/cards/BadgesCard'
 import OverviewCard from 'src/components/cards/OverviewCard'
 import ButtonWhite from 'src/components/buttons/ButtonWhite'
+import AboutCard from '../cards/AboutCard'
+import ExperienceCard from '../cards/ExperienceCard'
+import EducationCard from '../cards/EducationCard'
+import { ProfileDTO } from 'src/pages/PublicPage/types'
+import { ISessionItem } from 'src/services/user.service'
 
-const DashboardHome: React.FC = () => {
+interface IProps {
+  profile?: ProfileDTO
+  sessionItem: ISessionItem
+}
+
+const DashboardHome: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
   return (
     <IonGrid className={style['tab-grid']}>
       <IonRow>
+        <IonCol size='8'>
+          <AboutCard basicDTO={profile!.basicDTO} ></AboutCard>
+          <ExperienceCard experienceDTO={profile!.experienceDTO} mode=""></ExperienceCard>
+          <EducationCard educationDTO={profile!.educationDTO} mode=""></EducationCard>
+        </IonCol>
         <IonCol size='4'>
           <SpotlightCard
             title='Welcome to Profile'
@@ -26,9 +41,6 @@ const DashboardHome: React.FC = () => {
             component={<ButtonWhite>Start beginners tutorial</ButtonWhite>}
           />
           <BadgesCard title='Badges' />
-        </IonCol>
-        <IonCol size='8'>
-          <OverviewCard />
         </IonCol>
       </IonRow>
     </IonGrid>
@@ -72,7 +84,12 @@ const DashboardBadges: React.FC = () => {
   )
 }
 
-const DashboardNav: React.FC = () => {
+interface IProps {
+  profile?: ProfileDTO
+  sessionItem: ISessionItem
+}
+
+const DashboardNav: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
   const [active, setActive] = useState('home')
 
   return (
@@ -109,7 +126,7 @@ const DashboardNav: React.FC = () => {
           <IonLabel className={style['tab-label']}>Badges</IonLabel>
         </IonItem>
       </IonList>
-      {active === 'home' && <DashboardHome />}
+      {active === 'home' && <DashboardHome sessionItem={sessionItem} profile={profile} />}
       {active === 'status' && <DashboardStatus />}
       {active === 'badges' && <DashboardBadges />}
     </IonContent>

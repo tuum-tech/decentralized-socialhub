@@ -1,3 +1,4 @@
+import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 import request, { BaseplateResp } from 'src/baseplate/request';
 import { ProfileService } from 'src/services/profile.service';
 import { EducationDTO, EducationItem, ProfileDTO } from '../PublicPage/types';
@@ -12,17 +13,7 @@ export function fetchSimpleApi(): Promise<BaseplateResp> {
 
 
 
-export function requestLinkedinProfile(request_token: string): Promise<BaseplateResp> {
-
-    return request(`http://localhost:8081/v1/auth/linkedin_profile?request_token=${request_token}`, {
-        method: 'GET',
-        headers: {
-            'content-type': 'text/plain',
-            'Authorization': 'didcreds-validator-secret-key',
-            'Accept': 'application/json'
-        }
-    });
-}
+// 
 
 export async function requestFullProfile(did: string): Promise<ProfileDTO> {
     let profileService: ProfileService = await ProfileService.getProfileServiceAppOnlyInstance();
@@ -36,11 +27,10 @@ export async function requestFullProfile(did: string): Promise<ProfileDTO> {
     return mapProfileResponseToProfileDTO(getFullProfileResponse);
 }
 
-const mapProfileResponseToProfileDTO = (fullProfileResponse: ProfileResponse): ProfileDTO => {
-
-    let basicProfile = fullProfileResponse.get_basic.items![0];
-    let educationProfile = fullProfileResponse.get_education_profile;
-    let experienceProfile = fullProfileResponse.get_experience_profile;
+const mapProfileResponseToProfileDTO = (fullProfileResponse: IRunScriptResponse<ProfileResponse>): ProfileDTO => {
+    let basicProfile = fullProfileResponse.response!.get_basic.items![0];
+    let educationProfile = fullProfileResponse.response!.get_education_profile;
+    let experienceProfile = fullProfileResponse.response!.get_experience_profile;
 
     return {
         basicDTO: basicProfile,
