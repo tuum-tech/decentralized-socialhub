@@ -14,6 +14,7 @@ interface Props {
   name?: string;
   flexDirection?: string;
   hasError?: boolean;
+  disabled?: boolean;
   onChange: (e: any) => void;
   type?:
   | 'number'
@@ -37,6 +38,7 @@ const SmallTextInput: React.FC<Props> = ({
   flexDirection = 'row',
   hasError = false,
   type = 'text',
+  disabled = false
 }) => {
   let cName = style['textinput'];
   if (flexDirection === 'column') {
@@ -58,6 +60,7 @@ const SmallTextInput: React.FC<Props> = ({
         className={style['textinput_field']}
         placeholder={placeholder}
         onIonChange={(e) => onChange(e)}
+        disabled={disabled}
       />
     </div>
   );

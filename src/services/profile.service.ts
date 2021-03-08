@@ -4,7 +4,8 @@ import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/S
 import { ProfileResponse } from 'src/pages/ProfilePage/types';
 import { BasicDTO, EducationDTO, EducationItem, ExperienceItem } from 'src/pages/PublicPage/types';
 import { HiveService } from './hive.service';
-import { UserService } from './user.service';
+import { ScriptService } from './script.service';
+import { ISessionItem, UserService } from './user.service';
 
 export interface IFollowingResponse {
   _status?: string;
@@ -87,22 +88,30 @@ export class ProfileService {
 
 
   async updateBasicProfile(
-    basicDTO: BasicDTO
-  ): Promise<IRunScriptResponse<ProfileResponse>> {
-    return this.appHiveClient.Scripting.RunScript({
-      name: 'update_basic_profile',
-      // context: {
-      //   target_did: basicDTO.did,
-      //   target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-      // },
-      params: basicDTO
-    });
+    basicDTO: ISessionItem
+  ): Promise<any> {
+
+    const update_user_script = {
+      name: 'update_user',
+      params: basicDTO,
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID,
+      },
+    }
+    let response: any = await ScriptService.runTuumTechScript(
+      update_user_script
+    )
+    const { data, meta } = response
+    if (meta.code === 200 && meta.message === 'OK') {
+
+    }
   }
 
   async updateEducationProfile(
     educationItem: EducationItem
   ): Promise<IRunScriptResponse<ProfileResponse>> {
-    return this.appHiveClient.Scripting.RunScript({
+    return this.hiveClient.Scripting.RunScript({
       name: 'update_education_profile',
       // context: {
       //   target_did: "did:elastos:iVy37oQuQ77L6SfXyNiBmdW2TSoyJQmBU1", // just to test, in real life use userHiveClient
@@ -111,6 +120,16 @@ export class ProfileService {
       params: educationItem
     });
   }
+
+  async removeEducationItem(
+    educationItem: EducationItem
+  ): Promise<IRunScriptResponse<ProfileResponse>> {
+    return this.hiveClient.Scripting.RunScript({
+      name: 'remove_education_item',
+      params: educationItem
+    });
+  }
+
 
   async updateExperienceProfile(
     experienceItem: ExperienceItem

@@ -22,7 +22,10 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
             className={
               active === 'dashboard' ? style['item-active'] : style['item-link']
             }
-            onClick={() => setActive('dashboard')}
+            onClick={() => {
+              setActive('dashboard');
+              history.push('/profile');
+            }}
           >
             <IonIcon
               slot='start'

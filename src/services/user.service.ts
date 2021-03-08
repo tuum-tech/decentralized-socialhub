@@ -305,6 +305,16 @@ export class UserService {
     }
   }
 
+  public static updateSession(sessionItem: ISessionItem) {
+
+    window.sessionStorage.setItem(
+      'session_instance',
+      JSON.stringify(sessionItem, null, '')
+    )
+  }
+
+    // let instance = this.unlockUser(this.key(did), storePassword)
+    // SessionService.saveSessionItem(instance)
   public static UnLockWithDIDAndPWd(did: string, storePassword: string) {
     try {
       let instance = this.unlockUser(this.key(did), storePassword)

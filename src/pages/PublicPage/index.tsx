@@ -31,6 +31,7 @@ import PublicNavbar from 'src/components/PublicNavbar'
 import RegisterNewUserButton from 'src/components/RegisterNewUserButton'
 import SignInButton from 'src/components/SignInButton'
 import ProfileComponent from 'src/components/ProfileComponent'
+import { AccountType } from 'src/services/user.service'
 
 interface MatchParams {
   did: string
@@ -46,6 +47,20 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
+
+  const [userInfo, setUserInfo] = useState({
+    hiveHost: "",
+    userToken: "",
+    accountType: AccountType.DID,
+    did: "",
+    firstName: "",
+    lastName: "",
+    isDIDPublished: false,
+    mnemonics: "",
+    onBoardingCompleted: false
+  });
+
+
   const [full_profile, setfull_profile] = useState({
     basicDTO: {
       isEnabled: false,
@@ -111,7 +126,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 
           <IonRow className='ion-justify-content-around'>
             <IonCol size='12'>
-              <ProfileComponent profile={full_profile} />
+              <ProfileComponent profile={full_profile} sessionItem={userInfo} />
             </IonCol>
           </IonRow>
         </IonGrid>
