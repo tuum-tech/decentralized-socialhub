@@ -8,8 +8,7 @@ import { ProfileService } from 'src/services/profile.service';
 import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 import { ProfileResponse } from 'src/pages/ProfilePage/types';
 import { profile } from 'console';
-import ProfileTemplateManager from '../ProfileTemplateManager';
-import TemplateManagerCard, { TemplateDTO } from '../cards/TemplateManagerCard';
+import TemplateManagerCard from '../cards/TemplateManagerCard';
 import EducationCard from '../cards/EducationCard';
 import ExperienceCard from '../cards/ExperienceCard';
 import { AccountType, ISessionItem, UserService } from 'src/services/user.service';
@@ -207,9 +206,6 @@ const ProfileEditor: React.FC = () => {
     })();
   }, []);
 
-  let templateDTO: TemplateDTO = {
-    id: "1"
-  }
 
   return (
     <IonContent className={style["profileeditor"]}>
@@ -219,7 +215,7 @@ const ProfileEditor: React.FC = () => {
         <IonRow>
 
           <IonCol size="4">
-            <TemplateManagerCard templateDTO={templateDTO} />
+            <TemplateManagerCard sessionItem={userInfo} />
           </IonCol>
           <IonCol size="8">
             {loaded ? <BasicCard sessionItem={userInfo} updateFunc={updateBasicProfile}></BasicCard> : ""}

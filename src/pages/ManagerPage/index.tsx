@@ -80,7 +80,7 @@ const ManagerPage: React.FC<InferMappedProps> = ({
             <IonRow className={style['profilecontent']}>
               <IonCol size='2' className={style['left-panel']}>
                 <Logo />
-                <Navbar tab='explore' />
+                <Navbar tab='profile_manager' />
               </IonCol>
               <IonCol size='10' className={style['right-panel']}>
                 <Header>

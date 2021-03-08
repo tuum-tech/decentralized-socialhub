@@ -172,7 +172,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
           <IonRow className={style['profilecontent']}>
             <IonCol size='2' className={style['left-panel']}>
               <Logo />
-              <Navbar />
+              <Navbar tab="dashboard" />
             </IonCol>
             {/* <IonCol size='7' className={style['center-panel']}>
               <ProfileComponent profile={profile} />

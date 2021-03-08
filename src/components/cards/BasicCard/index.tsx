@@ -58,6 +58,9 @@ text-align: left;
 color: #4c6fff;
 `;
 
+const MigrateButton = styled(SmallLightButton)`
+margin-top:40px;
+`;
 
 
 interface IProps {
@@ -80,6 +83,8 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
 
 
   }
+
+
 
   return (
 
@@ -119,14 +124,15 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
             <IonCol size="7">
               <SmallTextInput disabled={!sessionItem.onBoardingCompleted} label="Vault URL" value={currentBasicDTO.hiveHost} onChange={handleChange} />
             </IonCol>
-            <IonCol size="2">
-              <SmallLightButton>Migrate Vault</SmallLightButton>
+            <IonCol size="auto">
+
+              <MigrateButton>Migrate Vault</MigrateButton>
             </IonCol>
           </IonRow>
         </IonGrid>
         {/* {basicDTO.about} */}
       </IonCardContent>
-    </IonCard>
+    </IonCard >
   );
 };
 
