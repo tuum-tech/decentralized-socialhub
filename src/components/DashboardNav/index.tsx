@@ -13,15 +13,27 @@ import SpotlightCard from 'src/components/cards/SpotlightCard'
 import BadgesCard from 'src/components/cards/BadgesCard'
 import OverviewCard from 'src/components/cards/OverviewCard'
 import ButtonWhite from 'src/components/buttons/ButtonWhite'
+import AboutCard from '../cards/AboutCard'
+import ExperienceCard from '../cards/ExperienceCard'
+import EducationCard from '../cards/EducationCard'
+import { ProfileDTO } from 'src/pages/PublicPage/types'
+import { ISessionItem } from 'src/services/user.service'
 
-export interface DashboardProps{
-  onTutorialStart: () => void
+export interface DashboardProps {
+  onTutorialStart: () => void,
+  profile: ProfileDTO,
+  sessionItem: ISessionItem
 }
 
 const DashboardHome: React.FC<DashboardProps> = (props) => {
   return (
     <IonGrid className={style['tab-grid']}>
       <IonRow>
+        <IonCol size='8'>
+          <AboutCard basicDTO={props.profile!.basicDTO} ></AboutCard>
+          <ExperienceCard experienceDTO={props.profile!.experienceDTO} mode=""></ExperienceCard>
+          <EducationCard educationDTO={props.profile!.educationDTO} mode=""></EducationCard>
+        </IonCol>
         <IonCol size='4'>
           <SpotlightCard
             title='Welcome to Profile'
@@ -30,9 +42,6 @@ const DashboardHome: React.FC<DashboardProps> = (props) => {
             component={<div><br /> <ButtonWhite onClick={() => props.onTutorialStart()} >Start beginners tutorial</ButtonWhite></div>}
           />
           <BadgesCard title='Badges' />
-        </IonCol>
-        <IonCol size='8'>
-          <OverviewCard />
         </IonCol>
       </IonRow>
     </IonGrid>
@@ -113,7 +122,7 @@ const DashboardNav: React.FC<DashboardProps> = (props) => {
           <IonLabel className={style['tab-label']}>Badges</IonLabel>
         </IonItem>
       </IonList>
-      {active === 'home' && <DashboardHome onTutorialStart={props.onTutorialStart} />}
+      {active === 'home' && <DashboardHome sessionItem={props.sessionItem} profile={props.profile} onTutorialStart={props.onTutorialStart} />}
       {active === 'status' && <DashboardStatus />}
       {active === 'badges' && <DashboardBadges />}
     </IonContent>

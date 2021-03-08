@@ -10,6 +10,7 @@ import ButtonDisabled from 'src/components/ButtonDisabled';
 import { ButtonLink, ButtonWithLogo } from 'src/components/buttons';
 import styled from 'styled-components';
 import ProfileTemplateManager from 'src/components/ProfileTemplateManager';
+import { ISessionItem } from 'src/services/user.service';
 
 
 
@@ -69,35 +70,17 @@ background-color: #f7fafc;;
 `;
 
 
-export interface TemplateDTO {
-  id: string;
-}
 
 interface IProps {
-  templateDTO: TemplateDTO,
+  sessionItem: ISessionItem
 }
 
-const TemplateManagerCard: React.FC<IProps> = ({ templateDTO }: IProps) => {
-
-  //const [currentBasicDTO, setCurrentBasicDTO] = useState(basicDTO);
-
-  // const handleChange = (evt: any) => {
-
-  //   const value =
-  //     evt.target.type === "checkbox" ? evt.target.checked : evt.target.value;
-  //   setCurrentBasicDTO({
-  //     ...currentBasicDTO,
-  //     [evt.target.name]: value
-  //   });
-
-
-  // }
+const TemplateManagerCard: React.FC<IProps> = ({ sessionItem }: IProps) => {
 
   return (
 
     <IonCard className={styleWidget['overview']}>
       <IonCardHeader>
-        {/* <IonCardSubtitle>Card Subtitle</IonCardSubtitle> */}
         <IonGrid>
           <IonRow>
             <IonCol><IonCardTitle>Profile Template Selection</IonCardTitle></IonCol>
@@ -107,9 +90,7 @@ const TemplateManagerCard: React.FC<IProps> = ({ templateDTO }: IProps) => {
       <IonCardContent>
         <IonText>You have 2 profile templates you can choose from. Switching will change your public profile.</IonText>
         <Divider />
-        <ProfileTemplateManager />
-
-
+        <ProfileTemplateManager sessionItem={sessionItem} />
       </IonCardContent>
     </IonCard>
   );

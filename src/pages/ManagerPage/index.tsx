@@ -80,7 +80,7 @@ const ManagerPage: React.FC<InferMappedProps> = ({
             <IonRow className={style['profilecontent']}>
               <IonCol size='2' className={style['left-panel']}>
                 <Logo />
-                <Navbar tab='explore' />
+                <Navbar tab='profile_manager' />
               </IonCol>
               <IonCol size='10' className={style['right-panel']}>
                 <Header>
@@ -126,18 +126,7 @@ justify-content: space-between;
 `;
 
 
-const EducationCardEdit: React.FC = () => {
-  return (
-    <AlphaContent>
-      <Popup>
-        <h2>ajhsdjw</h2>
-        sdknasknd
-        asdkfnasd
-        askdnkasjd
-      </Popup>
-    </AlphaContent>
-  )
-}
+
 
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({

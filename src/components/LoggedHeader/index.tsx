@@ -29,11 +29,28 @@ import bulb from '../../assets/bulb.svg'
 import edit from '../../assets/icon-edit.svg'
 import addbutton from '../../assets/addbutton.svg'
 import university from '../../assets/university.png'
+import { ISessionItem } from 'src/services/user.service'
 interface IProps {
-  profile: ProfileDTO
+  profile?: ProfileDTO
+  sessionItem: ISessionItem
 }
 
-const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
+const PublishingLabel = styled.span`
+font-family: 'SF Pro Display';
+font-size: 9px;
+font-weight: bold;
+font-stretch: normal;
+font-style: normal;
+line-height: 1.62;
+letter-spacing: normal;
+text-align: left;
+color: #ffffff;
+padding: 3px 5px 3px 7px;
+border-radius: 8px;
+background-color: #ff5a5a;
+`;
+
+const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
   return (
     <IonGrid className={style['profileheader']}>
       <IonRow className={style['header']}>
@@ -42,29 +59,31 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
         </IonCol>
         <IonCol size='8'>
           <IonGrid>
-            <IonRow>
-              <ProfileName>
-                {profile.basicDTO.first_name} {profile.basicDTO.last_name}
-              </ProfileName>
-            </IonRow>
-            <IonRow>
-              <ProfileDescription>{profile.basicDTO.title}</ProfileDescription>
+            <IonRow className="ion-justify-content-start">
+              <IonCol size="auto">
+                <ProfileName>
+                  {sessionItem.firstName} {sessionItem.lastName}
+                </ProfileName>
+              </IonCol>
+              <IonCol>
+                {sessionItem.isDIDPublished === false ? <PublishingLabel>Publishing ...</PublishingLabel> : ""}
+              </IonCol>
             </IonRow>
             <IonRow className="ion-justify-content-start">
-              <IonCol size="auto"><ProfileLocationWidget address={profile.basicDTO.address} /></IonCol>
-              <IonCol><DidSnippet did={profile.basicDTO.did} /></IonCol>
+              <IonCol><DidSnippet did={sessionItem.did} /></IonCol>
             </IonRow>
           </IonGrid>
         </IonCol>
         <IonCol size='2'>
-          <FollowButton>Sign in to Follow</FollowButton>
+          <FollowButton>View profile</FollowButton>
         </IonCol>
       </IonRow>
+
     </IonGrid>
   )
 }
 
-export default ProfileHeader
+export default LoggedHeader
 
 const FollowButton = styled(IonButton)`
   display: flex;

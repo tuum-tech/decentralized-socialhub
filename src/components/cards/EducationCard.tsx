@@ -10,6 +10,7 @@ import {
   IonGrid,
   IonLabel,
   IonModal,
+  IonPopover,
   IonRow,
   IonTextarea,
   IonTitle,
@@ -26,11 +27,13 @@ import SkeletonAvatar from '../avatars/SkeletonAvatar';
 //import avatar from 'https://media-exp1.licdn.com/dms/image/C4D03AQHJrVWT1os_uQ/profile-displayphoto-shrink_100_100/0/1613330591466?e=1619654400&v=beta&t=oE-BJ4-vYiefNuEYQTaKeVDaJWh8coNOUypjIwHoY2s'
 import style from './DidCard.module.scss';
 import harvard from '../../assets/logo/Harvard-Logo.png'
+import { remove } from 'lodash';
 
 
 interface IEducationProps {
   educationDTO: EducationDTO;
-  updateFunc: any;
+  updateFunc?: any;
+  removeFunc?: any;
   mode: string;
 }
 
@@ -145,12 +148,36 @@ const Divider = styled.hr`
 width: 100%;
 height: 1px;
 text-align: center;
-margin-top: 1.5em;
-margin-bottom: 1.5em;
 background-color: #f7fafc;;
 `;
 
 
+const TreeDotsButton = styled.div`
+writing-mode: vertical-rl;
+text-orientation: mixed;
+line-height: 0.5;
+margin: 1px 3px 2px 7px;
+padding: 5px 3px 5px 10px;
+border-radius: 22px;
+font-weight: bold;
+background-color: rgba(221, 221, 221, 0.24);
+color: #000;
+`;
+
+const PopoverMenuItem = styled.div`
+  display: block;
+  font-family: 'SF Pro Display';
+  padding: 10px 10px 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.07px;
+  text-align: left;
+  color: #000;
+  cursor: pointer;
+`;
 
 interface EducationItemsProps {
   educationItem: EducationItem;
@@ -166,13 +193,21 @@ const EducationItems: React.FC<EducationItemsProps> = ({ educationItem, handleCh
 
 
   const [editMode, setEditMode] = useState(educationItem.isEmpty ? 'add' : 'readonly');
+  const [popoverState, setShowPopover] = useState({ showPopover: false, event: undefined });
+
 
 
   const cancel = () => {
     if (editMode === 'add')
-      removeFunc();
+      removeFunc(index);
 
     setEditMode("readonly");
+  }
+
+
+  const remove = () => {
+    removeFunc(index);
+
   }
 
   return (
@@ -200,7 +235,25 @@ const EducationItems: React.FC<EducationItemsProps> = ({ educationItem, handleCh
             </IonGrid>
           </IonCol>
           <IonCol size="auto">
-            <span onClick={() => setEditMode("edit")}>...</span>
+            <IonPopover
+              showBackdrop={false}
+              cssClass={styleWidget['popover-class']}
+              event={popoverState.event}
+              isOpen={popoverState.showPopover}
+              onDidDismiss={() => setShowPopover({ showPopover: false, event: undefined })}
+            >
+              <PopoverMenuItem onClick={(e) => { setShowPopover({ showPopover: false, event: undefined }); setEditMode("edit") }}>Edit</PopoverMenuItem>
+              <PopoverMenuItem onClick={() => { setShowPopover({ showPopover: false, event: undefined }); remove(); }}>Remove</PopoverMenuItem>
+            </IonPopover>
+            <TreeDotsButton onClick={
+              (e: any) => {
+                e.persist();
+                setShowPopover({ showPopover: true, event: e })
+              }}
+            >
+              ...
+           </TreeDotsButton>
+
           </IonCol>
         </IonRow>
       </IonGrid>
@@ -236,7 +289,7 @@ const LinkStyleSpan = styled.span`
   color: #4c6fff;`
   ;
 
-const EducationCard: React.FC<IEducationProps> = ({ educationDTO, updateFunc, mode }: IEducationProps) => {
+const EducationCard: React.FC<IEducationProps> = ({ educationDTO, updateFunc, removeFunc, mode }: IEducationProps) => {
 
 
   const [currentEducationDTO, setCurrentEducationDTO] = useState(educationDTO);
@@ -295,12 +348,14 @@ const EducationCard: React.FC<IEducationProps> = ({ educationDTO, updateFunc, mo
     setCurrentEducationDTO({ isEnabled: true, items: items });
   }
 
-  const removeItem = () => {
+  const removeItem = (index: number) => {
+    debugger;
     let items = [...currentEducationDTO.items];
 
-    items.pop()
+    let itemToDelete = items.splice(index, 1);
 
     setCurrentEducationDTO({ isEnabled: true, items: items });
+    removeFunc(itemToDelete[0]);
   }
 
 
@@ -400,11 +455,11 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({ educationItem, handle
         </IonCol>
       </IonRow>
       <IonRow class="ion-justify-content-start">
-        <IonCol size="3.5">
-          <SmallTextInput label="Duration" name="start" value={educationItem.start} onChange={handleChangeIndex} />
+        <IonCol size="4.5">
+          <SmallTextInput label="Duration" type="date" name="start" value={educationItem.start} onChange={handleChangeIndex} />
         </IonCol>
-        <IonCol size="3.5">
-          <SmallTextInput label="&nbsp;" name="end" value={educationItem.end} onChange={handleChangeIndex} />
+        <IonCol size="4.5">
+          <SmallTextInput label="&nbsp;" type="date" name="end" value={educationItem.end} onChange={handleChangeIndex} />
         </IonCol>
       </IonRow>
       <IonRow class="ion-justify-content-start">
