@@ -1,31 +1,11 @@
 /**
  * Page
  */
-import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonButton,
-} from '@ionic/react'
+
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { createStructuredSelector } from 'reselect'
-import injector from 'src/baseplate/injectorWrap'
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
-import { incrementAction, getSimpleAjax } from './actions'
-import React, { memo, useState } from 'react'
-import { NameSpace } from './constants'
-import reducer from './reducer'
-import saga from './saga'
-import { InferMappedProps, SubState } from './types'
-import { fetchSimpleApi } from './fetchapi'
+import React, { memo } from 'react'
 
 import {
   OnBoardLayout,
@@ -40,6 +20,14 @@ import { ButtonLink, ArrowButton } from 'src/components/buttons'
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png'
 import weird from 'src/assets/icon/weird.png'
+
+import injector from 'src/baseplate/injectorWrap'
+import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
+import { incrementAction, getSimpleAjax } from './actions'
+import { NameSpace } from './constants'
+import reducer from './reducer'
+import saga from './saga'
+import { InferMappedProps, SubState } from './types'
 
 import style from './style.module.scss'
 

@@ -11,6 +11,7 @@
     "bootstrap": "^4.6.0",
     "connected-react-router": "^6.8.0",
     "crypto-js": "^4.0.0",
+    "guid-typescript": "^1.0.9",
     "hoist-non-react-statics": "^3.3.2",
     "immer": "^5.3.6",
     "invariant": "^2.2.4",

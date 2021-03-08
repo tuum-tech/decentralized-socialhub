@@ -1,17 +1,9 @@
+import { IonImg } from '@ionic/react'
+import React, { memo } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { createStructuredSelector } from 'reselect'
-import injector from 'src/baseplate/injectorWrap'
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
 import { incrementAction, getSimpleAjax } from './actions'
-import React, { memo, useState } from 'react'
-import style from './style.module.scss'
-import { NameSpace } from './constants'
-import reducer from './reducer'
-import saga from './saga'
-import { InferMappedProps, SubState } from './types'
-
-import { IonImg } from '@ionic/react'
 
 import {
   OnBoardLayout,
@@ -25,11 +17,18 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg,
 } from 'src/components/layouts/OnBoardLayout'
-import { Text16 } from 'src/components/texts'
-import { ButtonLink, ArrowButton } from 'src/components/buttons'
+import { Text16, TextLink } from 'src/components/texts'
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png'
 import phone from 'src/assets/icon/phone.png'
+import injector from 'src/baseplate/injectorWrap'
+
+import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
+import style from './style.module.scss'
+import { NameSpace } from './constants'
+import reducer from './reducer'
+import saga from './saga'
+import { InferMappedProps, SubState } from './types'
 
 const SignQRPage: React.FC<InferMappedProps> = ({
   eProps,
@@ -50,12 +49,22 @@ const SignQRPage: React.FC<InferMappedProps> = ({
           <OnBoardLayoutLeftContentTitle className='mt-18px'>
             elastOS Sign in
           </OnBoardLayoutLeftContentTitle>
-          <OnBoardLayoutLeftContentIntro className='mt-86px mb-20px'>
-            What is elastOS? Help
+          <OnBoardLayoutLeftContentIntro
+            style={{ marginTop: '38px', marginBottom: '5px' }}
+          >
+            New to Profile?
           </OnBoardLayoutLeftContentIntro>
-          <ButtonLink width={26} to='/sign-help'>
-            <ArrowButton />
-          </ButtonLink>
+          <TextLink width={100} to='/create-profile'>
+            Craete a new Profile
+          </TextLink>
+          <OnBoardLayoutLeftContentIntro
+            style={{ marginTop: '44px', marginBottom: '5px' }}
+          >
+            Have secrete Mnemonic words?
+          </OnBoardLayoutLeftContentIntro>
+          <TextLink width={100} to='/sign-did'>
+            Sign in here
+          </TextLink>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>

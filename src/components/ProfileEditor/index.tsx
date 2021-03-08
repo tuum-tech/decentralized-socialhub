@@ -1,17 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { IonSpinner, IonContent, IonGrid, IonCol, IonRow } from '@ionic/react';
-import AboutCard from '../cards/AboutCard';
-import BasicCard from '../cards/BasicCard';
-import { BasicDTO, EducationDTO, EducationItem, ExperienceItem, ProfileDTO } from 'src/pages/PublicPage/types';
-import style from './style.module.scss';
-import { ProfileService } from 'src/services/profile.service';
-import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
-import { ProfileResponse } from 'src/pages/ProfilePage/types';
-import { profile } from 'console';
-import TemplateManagerCard from '../cards/TemplateManagerCard';
-import EducationCard from '../cards/EducationCard';
-import ExperienceCard from '../cards/ExperienceCard';
-import { AccountType, ISessionItem, UserService } from 'src/services/user.service';
+import React, { useEffect, useState } from 'react'
+import { IonSpinner, IonContent, IonGrid, IonCol, IonRow } from '@ionic/react'
+import AboutCard from '../cards/AboutCard'
+import BasicCard from '../cards/BasicCard'
+import {
+  BasicDTO,
+  EducationDTO,
+  EducationItem,
+  ExperienceItem,
+  ProfileDTO,
+} from 'src/pages/PublicPage/types'
+import style from './style.module.scss'
+import { ProfileService } from 'src/services/profile.service'
+import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service'
+import { ProfileResponse } from 'src/pages/ProfilePage/types'
+import { profile } from 'console'
+import ProfileTemplateManager from '../ProfileTemplateManager'
+import TemplateManagerCard, { TemplateDTO } from '../cards/TemplateManagerCard'
+import EducationCard from '../cards/EducationCard'
+import ExperienceCard from '../cards/ExperienceCard'
+import { UserService } from 'src/services/user.service'
 
 const ProfileEditor: React.FC = () => {
 
@@ -68,22 +75,21 @@ const ProfileEditor: React.FC = () => {
       isEnabled: true,
       items: [] as ExperienceItem[],
     },
-  });
-
-
+  })
 
   async function requestFullProfile(did: string): Promise<ProfileDTO> {
-    let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
-    let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
+    let profileService: ProfileService = await ProfileService.getProfileServiceInstance()
+    let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>
     try {
-      getFullProfileResponse = await profileService.getFullProfile(did);
-      console.log(JSON.stringify(getFullProfileResponse));
-      return mapProfileResponseToProfileDTO(getFullProfileResponse.response as ProfileResponse);
-
+      getFullProfileResponse = await profileService.getFullProfile(did)
+      console.log(JSON.stringify(getFullProfileResponse))
+      return mapProfileResponseToProfileDTO(
+        getFullProfileResponse.response as ProfileResponse
+      )
     } catch (error) {
-      console.error(JSON.stringify(error));
+      console.error(JSON.stringify(error))
     }
-    return mapProfileResponseToProfileDTO({} as ProfileResponse);
+    return mapProfileResponseToProfileDTO({} as ProfileResponse)
   }
 
 
@@ -95,25 +101,25 @@ const ProfileEditor: React.FC = () => {
       console.log(JSON.stringify(getFullProfileResponse));
 
     } catch (error) {
-      console.error(JSON.stringify(error));
+      console.error(JSON.stringify(error))
     }
     return ""
   }
 
-  async function callUpdateEducationProfile(educationItem: EducationItem): Promise<any> {
-    let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
-    let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
+  async function callUpdateEducationProfile(
+    educationItem: EducationItem
+  ): Promise<any> {
+    let profileService: ProfileService = await ProfileService.getProfileServiceInstance()
+    let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>
     try {
-      debugger;
       getFullProfileResponse = await profileService.updateEducationProfile(educationItem);
       console.log(JSON.stringify(getFullProfileResponse));
       return "" //mapProfileResponseToProfileDTO(getFullProfileResponse.response as ProfileResponse);
 
     } catch (error) {
-      debugger;
       console.error(JSON.stringify(error));
     }
-    return mapProfileResponseToProfileDTO({} as ProfileResponse);
+    return mapProfileResponseToProfileDTO({} as ProfileResponse)
   }
 
   async function callUpdateExperienceProfile(experienceItem: ExperienceItem): Promise<any> {
@@ -125,16 +131,15 @@ const ProfileEditor: React.FC = () => {
       return "" //mapProfileResponseToProfileDTO(getFullProfileResponse.response as ProfileResponse);
 
     } catch (error) {
-      console.error(JSON.stringify(error));
+      console.error(JSON.stringify(error))
     }
-    return mapProfileResponseToProfileDTO({} as ProfileResponse);
+    return mapProfileResponseToProfileDTO({} as ProfileResponse)
   }
 
   async function callRemoveEducationItem(educationItem: EducationItem): Promise<any> {
     let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
     let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
     try {
-      debugger;
       getFullProfileResponse = await profileService.removeEducationItem(educationItem);
       console.log(JSON.stringify(getFullProfileResponse));
       return "" //mapProfileResponseToProfileDTO(getFullProfileResponse.response as ProfileResponse);
@@ -154,14 +159,13 @@ const ProfileEditor: React.FC = () => {
     return {
       basicDTO: basicProfile,
       educationDTO: educationProfile,
-      experienceDTO: experienceProfile
-    };
+      experienceDTO: experienceProfile,
+    }
   }
 
-
   const getFullProfile = async (did: string): Promise<ProfileDTO> => {
-    return await requestFullProfile(did);
-  };
+    return await requestFullProfile(did)
+  }
 
   const updateBasicProfile = async (userInfo: ISessionItem): Promise<any> => {
     console.log(">>>>>>>>> update basic_profile called ");
@@ -171,16 +175,20 @@ const ProfileEditor: React.FC = () => {
     UserService.updateSession(userInfo);
   }
 
-  const updateEducationProfile = async (educationItem: EducationItem): Promise<any> => {
-    console.log(">>>>>>>>> update education_profile called ");
-    console.log(">>>>>>>>>  " + JSON.stringify(educationItem));
-    callUpdateEducationProfile(educationItem);
+  const updateEducationProfile = async (
+    educationItem: EducationItem
+  ): Promise<any> => {
+    console.log('>>>>>>>>> update education_profile called ')
+    console.log('>>>>>>>>>  ' + JSON.stringify(educationItem))
+    callUpdateEducationProfile(educationItem)
   }
 
-  const updateExperienceProfile = async (experienceItem: ExperienceItem): Promise<any> => {
-    console.log(">>>>>>>>> update experience_profile called ");
-    console.log(">>>>>>>>>  " + JSON.stringify(experienceItem));
-    callUpdateExperienceProfile(experienceItem);
+  const updateExperienceProfile = async (
+    experienceItem: ExperienceItem
+  ): Promise<any> => {
+    console.log('>>>>>>>>> update experience_profile called ')
+    console.log('>>>>>>>>>  ' + JSON.stringify(experienceItem))
+    callUpdateExperienceProfile(experienceItem)
   }
 
   const removeEducation = async (educationItem: EducationItem): Promise<any> => {
@@ -209,10 +217,10 @@ const ProfileEditor: React.FC = () => {
 
 
   return (
-    <IonContent className={style["profileeditor"]}>
+    <IonContent className={style['profileeditor']}>
       {/*-- Default ProfileEditor --*/}
       {/* <IonSpinner /> */}
-      <IonGrid className={style["profileeditorgrid"]}>
+      <IonGrid className={style['profileeditorgrid']}>
         <IonRow>
 
           <IonCol size="4">
@@ -226,11 +234,8 @@ const ProfileEditor: React.FC = () => {
           </IonCol>
         </IonRow>
       </IonGrid>
-
-
-
     </IonContent>
   )
-};
+}
 
-export default ProfileEditor;
+export default ProfileEditor

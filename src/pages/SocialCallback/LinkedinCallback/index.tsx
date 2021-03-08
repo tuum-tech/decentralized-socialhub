@@ -21,7 +21,6 @@ const LinkedinCallback: React.FC<RouteComponentProps> = (props) => {
     fname: '',
     lname: '',
     email: '',
-    id: '',
     request_token: '',
     credential: '',
   })
@@ -50,7 +49,6 @@ const LinkedinCallback: React.FC<RouteComponentProps> = (props) => {
         const lname = linkedinprofile.data.profile.localizedLastName.toLowerCase()
         const uniqueEmail = fname + lname + '@linkedin.com'
         setCredentials({
-          id: linkedinprofile.data.profile.id,
           fname,
           lname,
           request_token: t.data.request_token,
@@ -68,7 +66,6 @@ const LinkedinCallback: React.FC<RouteComponentProps> = (props) => {
           to={{
             pathname: '/generate-did',
             state: {
-              id: credentials.id,
               fname: credentials.fname,
               lname: credentials.lname,
               request_token: credentials.request_token,

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react'
+import React from 'react'
 
 import { Redirect, Route } from 'react-router-dom'
 import { IonApp, IonRouterOutlet } from '@ionic/react'
@@ -59,7 +59,7 @@ import SignDidPage from './pages/SignDidPage/Loadable'
 import SignQRPage from './pages/SignQRPage/Loadable'
 import ForgotPasswordPage from './pages/ForgotPasswordPage/Loadable'
 import UnlockUserPage from './pages/UnlockUserPage/Loadable'
-import SignHelpPage from './pages/SignHelpPage/Loadable'
+// import SignHelpPage from './pages/SignHelpPage/Loadable'
 
 import VerifyEmailPage from './pages/VerifyEmailPage'
 import AccessCodePage from './pages/AlphaAccess/AccessCode'
@@ -149,11 +149,6 @@ const App: React.FC = () => {
             exact={true}
           />
           <ProtectedRoute
-            path='/sign-help'
-            component={SignHelpPage}
-            exact={true}
-          />
-          <ProtectedRoute
             path='/sign-did'
             component={SignDidPage}
             exact={true}
@@ -179,12 +174,7 @@ const App: React.FC = () => {
             component={ForgotPasswordPage}
             exact={true}
           />
-
-          <ProtectedRoute
-            path='/verify/email/:code'
-            component={VerifyEmailPage}
-            exact={true}
-          />
+          <Route path='/verify/email/:code' component={VerifyEmailPage} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>

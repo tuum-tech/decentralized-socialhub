@@ -11,6 +11,7 @@ import {
   IonCol,
   IonInput,
   IonSearchbar,
+  IonModal,
 } from '@ionic/react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -58,6 +59,8 @@ const ProfilePage: React.FC<RouteComponentProps> = (
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
+
+  const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false)
   const [userInfo, setUserInfo] = useState<ISessionItem>({
     hiveHost: "",
@@ -147,6 +150,11 @@ const ProfilePage: React.FC<RouteComponentProps> = (
     })()
   }, [])
 
+  const onTutorialStart = () =>{
+    console.log("Start tutorial")
+    setShowTutorial(true)
+  }
+
   if (!onboardingCompleted) {
     return (
       <OnBoarding
@@ -185,7 +193,12 @@ const ProfilePage: React.FC<RouteComponentProps> = (
             </IonCol>
           </IonRow>
         </IonGrid>
+
+        <IonModal isOpen={showTutorial} cssClass={style["tutorialpage"]} backdropDismiss={false} >
+              <TutorialComponent onClose={() => setShowTutorial(false)} /> 
+        </IonModal>
       </IonContent>
+      
     </IonPage>
   )
 }

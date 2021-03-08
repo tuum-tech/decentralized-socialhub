@@ -23,7 +23,7 @@ const DidInputRow = styled(IonRow)`
 interface Props {
   setError: (error: boolean) => void
   error: boolean
-  onSuccess: (did: string) => void
+  onSuccess: (did: string, mnemonic: string) => void
 }
 
 const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
@@ -58,7 +58,7 @@ const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
     setError(validate === false)
     if (validate) {
       let userDid = await ElastosClient.did.loadFromMnemonic(mnemonic.join(' '))
-      onSuccess(userDid.did)
+      onSuccess(userDid.did, mnemonic.join(' '))
     }
   }
 
@@ -71,7 +71,6 @@ const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
     return (
       <IonCol className='ion-no-padding'>
         <TextInput
-          hasError
           value={mnemonic[index]}
           flexDirection='column'
           label={(index + 1).toString()}
@@ -115,26 +114,36 @@ const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
           />
         </IonCol>
       </DidInputRow>
-      <IonRow>
-        {error ? (
-          <ButtonWithLogo
-            mode='danger'
-            mt={67}
-            text='clear'
-            onClick={() => {
-              setMnemonic(['', '', '', '', '', '', '', '', '', '', '', ''])
-              setError(false)
-            }}
-          />
-        ) : (
-          <ButtonWithLogo
-            mode='dark'
-            mt={67}
-            text='Sign in to profile'
-            onClick={signin}
-          />
-        )}
-      </IonRow>
+      {error ? (
+        <IonRow>
+          <IonCol>
+            <ButtonWithLogo
+              mode='danger'
+              mt={67}
+              text='clear all'
+              onClick={() => {
+                setMnemonic(['', '', '', '', '', '', '', '', '', '', '', ''])
+                setError(false)
+              }}
+            />
+          </IonCol>
+          <IonCol>
+            <ButtonWithLogo
+              mode='dark'
+              mt={67}
+              text='Sign in to profile'
+              onClick={signin}
+            />
+          </IonCol>
+        </IonRow>
+      ) : (
+        <ButtonWithLogo
+          mode='dark'
+          mt={67}
+          text='Sign in to profile'
+          onClick={signin}
+        />
+      )}
     </DidSignFormContainer>
   )
 }

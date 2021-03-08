@@ -19,12 +19,11 @@ import EducationCard from '../cards/EducationCard'
 import { ProfileDTO } from 'src/pages/PublicPage/types'
 import { ISessionItem } from 'src/services/user.service'
 
-interface IProps {
-  profile?: ProfileDTO
-  sessionItem: ISessionItem
+export interface DashboardProps{
+  onTutorialStart: () => void
 }
 
-const DashboardHome: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
+const DashboardHome: React.FC<DashboardProps> = (props) => {
   return (
     <IonGrid className={style['tab-grid']}>
       <IonRow>
@@ -38,7 +37,7 @@ const DashboardHome: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
             title='Welcome to Profile'
             content='To get you familiar with the platform you can start our tutorial which
         will go through some basics. You will receive a badge for completing it.'
-            component={<ButtonWhite>Start beginners tutorial</ButtonWhite>}
+            component={<div><br /> <ButtonWhite onClick={() => props.onTutorialStart()} >Start beginners tutorial</ButtonWhite></div>}
           />
           <BadgesCard title='Badges' />
         </IonCol>
@@ -84,12 +83,7 @@ const DashboardBadges: React.FC = () => {
   )
 }
 
-interface IProps {
-  profile?: ProfileDTO
-  sessionItem: ISessionItem
-}
-
-const DashboardNav: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
+const DashboardNav: React.FC<DashboardProps> = (props) => {
   const [active, setActive] = useState('home')
 
   return (
@@ -126,7 +120,7 @@ const DashboardNav: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
           <IonLabel className={style['tab-label']}>Badges</IonLabel>
         </IonItem>
       </IonList>
-      {active === 'home' && <DashboardHome sessionItem={sessionItem} profile={profile} />}
+      {active === 'home' && <DashboardHome onTutorialStart={props.onTutorialStart} />}
       {active === 'status' && <DashboardStatus />}
       {active === 'badges' && <DashboardBadges />}
     </IonContent>

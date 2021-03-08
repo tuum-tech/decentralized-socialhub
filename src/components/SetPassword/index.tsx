@@ -61,9 +61,6 @@ const SetPassword: React.FC<Props> = ({ next, displayText = '' }) => {
             This is a locally stored password. This password protects your main
             profile account (decentralized identity).
           </OnBoardLayoutLeftContentDescription>
-          <OnBoardLayoutLeftContentIntro className='my-25px'>
-            More information on why I need a password? Help
-          </OnBoardLayoutLeftContentIntro>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
