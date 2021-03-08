@@ -56,6 +56,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     firstName: "",
     lastName: "",
     isDIDPublished: false,
+    mnemonics: "",
     onBoardingCompleted: false
   });
 

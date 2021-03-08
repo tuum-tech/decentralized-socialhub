@@ -15,10 +15,10 @@ import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/S
 import { ProfileResponse } from 'src/pages/ProfilePage/types'
 import { profile } from 'console'
 import ProfileTemplateManager from '../ProfileTemplateManager'
-import TemplateManagerCard, { TemplateDTO } from '../cards/TemplateManagerCard'
+import TemplateManagerCard from '../cards/TemplateManagerCard'
 import EducationCard from '../cards/EducationCard'
 import ExperienceCard from '../cards/ExperienceCard'
-import { UserService } from 'src/services/user.service'
+import { AccountType, ISessionItem, UserService } from 'src/services/user.service'
 
 const ProfileEditor: React.FC = () => {
 
@@ -47,6 +47,7 @@ const ProfileEditor: React.FC = () => {
     email: "",
     lastName: "",
     isDIDPublished: false,
+    mnemonics: "",
     onBoardingCompleted: false
   });
   const [loaded, setloaded] = useState(false);
@@ -201,7 +202,7 @@ const ProfileEditor: React.FC = () => {
     (async () => {
 
 
-      let instance = UserService.getLoggedUser()
+      let instance = UserService.GetUserSession()
       if (!instance || !instance.userToken) return
 
 

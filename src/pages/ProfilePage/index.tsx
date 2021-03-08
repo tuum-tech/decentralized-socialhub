@@ -50,6 +50,7 @@ import OnBoarding from 'src/components/OnBoarding'
 import { AccountType, ISessionItem, UserData, UserService } from 'src/services/user.service'
 import { userInfo } from 'os'
 import LoggedHeader from 'src/components/LoggedHeader'
+import TutorialComponent from 'src/components/Tutorial'
 
 const ProfilePage: React.FC<RouteComponentProps> = (
   props: RouteComponentProps
@@ -71,6 +72,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
     email: "",
     lastName: "",
     isDIDPublished: false,
+    mnemonics: "",
     onBoardingCompleted: false
   });
 
@@ -132,7 +134,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
   useEffect(() => {
     ; (async () => {
 
-      let instance = UserService.getLoggedUser()
+      let instance = UserService.GetUserSession()
       if (!instance || !instance.userToken) return
 
 
@@ -150,7 +152,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
     })()
   }, [])
 
-  const onTutorialStart = () =>{
+  const onTutorialStart = () => {
     console.log("Start tutorial")
     setShowTutorial(true)
   }
@@ -187,7 +189,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
             </IonCol> */}
             <IonCol size='10' className={style['right-panel']}>
               <LoggedHeader profile={full_profile} sessionItem={userInfo} />
-              <DashboardNav profile={full_profile} sessionItem={userInfo} />
+              <DashboardNav onTutorialStart={onTutorialStart} profile={full_profile} sessionItem={userInfo} />
               {/* <StartServiceComponent />
               <ProfileCompletion /> */}
             </IonCol>
@@ -195,10 +197,10 @@ const ProfilePage: React.FC<RouteComponentProps> = (
         </IonGrid>
 
         <IonModal isOpen={showTutorial} cssClass={style["tutorialpage"]} backdropDismiss={false} >
-              <TutorialComponent onClose={() => setShowTutorial(false)} /> 
+          <TutorialComponent onClose={() => setShowTutorial(false)} />
         </IonModal>
       </IonContent>
-      
+
     </IonPage>
   )
 }
