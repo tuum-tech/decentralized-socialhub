@@ -38,6 +38,8 @@ const ProfileEditor: React.FC = () => {
     onBoardingCompleted: true
 
   } as ISessionItem);
+
+  const [error, setError] = useState(false);
   const [userInfo, setUserInfo] = useState<ISessionItem>({
     hiveHost: "",
     userToken: "",
@@ -81,16 +83,12 @@ const ProfileEditor: React.FC = () => {
   async function requestFullProfile(did: string): Promise<ProfileDTO> {
     let profileService: ProfileService = await ProfileService.getProfileServiceInstance()
     let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>
-    try {
-      getFullProfileResponse = await profileService.getFullProfile(did)
-      console.log(JSON.stringify(getFullProfileResponse))
-      return mapProfileResponseToProfileDTO(
-        getFullProfileResponse.response as ProfileResponse
-      )
-    } catch (error) {
-      console.error(JSON.stringify(error))
-    }
-    return mapProfileResponseToProfileDTO({} as ProfileResponse)
+
+    getFullProfileResponse = await profileService.getFullProfile(did)
+    console.log(JSON.stringify(getFullProfileResponse))
+    return mapProfileResponseToProfileDTO(
+      getFullProfileResponse.response as ProfileResponse
+    )
   }
 
 
@@ -209,8 +207,14 @@ const ProfileEditor: React.FC = () => {
       setUserInfo(instance);
 
       if (instance.onBoardingCompleted) {
-        let profile: ProfileDTO = await getFullProfile(instance.did);
-        setfull_profile(profile);
+
+        try {
+          let profile: ProfileDTO = await getFullProfile(instance.did);
+          setfull_profile(profile);
+
+        } catch (e) {
+          setError(true);
+        }
       }
       setloaded(true);
     })();
@@ -229,8 +233,8 @@ const ProfileEditor: React.FC = () => {
           </IonCol>
           <IonCol size="8">
             {loaded ? <BasicCard sessionItem={userInfo} updateFunc={updateBasicProfile}></BasicCard> : ""}
-            {loaded && userInfo.onBoardingCompleted === true ? <EducationCard educationDTO={full_profile.educationDTO} updateFunc={updateEducationProfile} removeFunc={removeEducation} mode="edit" ></EducationCard> : ""}
-            {loaded && userInfo.onBoardingCompleted === true ? <ExperienceCard experienceDTO={full_profile.experienceDTO} updateFunc={updateExperienceProfile} mode="edit" ></ExperienceCard> : ""}
+            {!error && loaded && userInfo.onBoardingCompleted === true ? <EducationCard educationDTO={full_profile.educationDTO} updateFunc={updateEducationProfile} removeFunc={removeEducation} mode="edit" ></EducationCard> : ""}
+            {!error && loaded && userInfo.onBoardingCompleted === true ? <ExperienceCard experienceDTO={full_profile.experienceDTO} updateFunc={updateExperienceProfile} mode="edit" ></ExperienceCard> : ""}
 
           </IonCol>
         </IonRow>

@@ -64,7 +64,7 @@ let run = async () => {
   // ===== users section start =====
   await client.Database.createCollection('users')
 
-  fs.readFile('./src/data/dummy_users.json', (err, data) => {
+  fs.readFile('../data/dummy_users.json', (err, data) => {
     if (err) throw err
     let dummyUsersList = JSON.parse(data)
     console.log(dummyUsersList[0])
@@ -276,7 +276,7 @@ let run = async () => {
   await client.Database.deleteCollection('universities')
   await client.Database.createCollection('universities')
 
-  fs.readFile('./src/data/world_universities_and_domains.json', (err, data) => {
+  fs.readFile('../data/world_universities_and_domains.json', (err, data) => {
     if (err) throw err
     let universityList = JSON.parse(data)
     console.log(universityList[0])
