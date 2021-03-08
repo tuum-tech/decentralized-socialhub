@@ -31,7 +31,7 @@ const SecurityWordsValidate: React.FC<Props> = ({ mnemonics, onError, onSuccess,
 
     const [securityWords] = useState(mnemonics)
     const [isOnError, setIsOnError] = useState(false)
-    const [isReadOnly, setIsReadOnly] = useState(false)
+    const [isValid, setIsValid] = useState(false)
     const [mnemonic, setMnemonic] = useState([
         '',
         '',
@@ -68,23 +68,28 @@ const SecurityWordsValidate: React.FC<Props> = ({ mnemonics, onError, onSuccess,
             onReset()
         }
 
+        if (isValid) {
+            setIsValid(false)
+            onReset()
+        } 
+
         let allFilled = mnemonic.every((word, wordIndex) => {
             return word.length > 0;
         });
 
         if (allFilled) {
-            let isValid = mnemonic.every((word, wordIndex) => {
+            let isValidMnemonics = mnemonic.every((word, wordIndex) => {
                 return word == securityWords[wordIndex];
             });
 
-            if (isValid) {
-                setIsReadOnly(true)
+            if (isValidMnemonics) {
+                setIsValid(true)
                 onSuccess()
             } else {
                 setIsOnError(true)
                 onError()
             }
-        }
+        } 
     }
 
     const clear = () => {
@@ -112,7 +117,6 @@ const SecurityWordsValidate: React.FC<Props> = ({ mnemonics, onError, onSuccess,
                     <IonInput
                         className={style["security-view-textinput"] }
                         value={mnemonic[index]}
-                        readonly={isReadOnly}
                         onIonChange={(n) => updateMnemonic(index, n.detail.value!)}
                     />
                 </div>
@@ -123,6 +127,16 @@ const SecurityWordsValidate: React.FC<Props> = ({ mnemonics, onError, onSuccess,
     const cName = style['security-view'] + ' ion-no-padding'
     return (
         <SecurityWordsViewContainer className={cName}>
+             {
+                isOnError && (
+                    <SecurityWordsViewRow >
+                        <IonCol class="ion-align-self-center">
+                            <p className={style["tutorial-words-error"]}>Invalid words or wrong order. Try entering them again</p>
+                            <IonButton  className={style["security-view-error"]} onClick={clear}>Clear All</IonButton>
+                        </IonCol>
+                    </SecurityWordsViewRow>
+                )
+            }
             <SecurityWordsViewRow className={style["security-view-row"]} >
                 {renderMnemonicInput(0)}
                 {renderMnemonicInput(1)}
@@ -148,16 +162,7 @@ const SecurityWordsValidate: React.FC<Props> = ({ mnemonics, onError, onSuccess,
                 {renderMnemonicInput(11)}
             </SecurityWordsViewRow>
 
-            {
-                isOnError && (
-                    <SecurityWordsViewRow >
-                        <IonCol class="ion-align-self-center">
-                            <IonButton className={style["security-view-error"]} onClick={clear}>Clear All</IonButton>
-                            
-                        </IonCol>
-                    </SecurityWordsViewRow>
-                )
-            }
+           
 
         </SecurityWordsViewContainer>
     )

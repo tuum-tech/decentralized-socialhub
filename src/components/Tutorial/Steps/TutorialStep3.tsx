@@ -6,8 +6,17 @@ import style from '../style.module.scss'
 import tuumlogo from '../../../assets/tuumtech.png'
 const TutorialStep3Component: React.FC<ITutorialStepProp> = ({ onContinue }) => {
 
-    const [selected, setSelected] = useState("tuum")
+    
     const [hiveUrl, sethiveUrl] = useState("")
+    const [hiveDocument] = useState("")
+
+    const [selected, setSelected] = useState( hiveDocument === "" ? "tuum": "document")
+
+
+    const saveSelection = ()=>{
+        onContinue()
+    }
+
 
     return (
         <div>
@@ -19,13 +28,28 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({ onContinue }) => 
 
             <div className={style["tutorial-hive"]}>
                 <IonRadioGroup value={selected} onIonChange={(e) => { e.preventDefault(); setSelected(e.detail.value!); e.cancelBubble = true }}>
+                    {hiveDocument !== "" && (
+                        <div className={style["tutorial-hive-row"]}>
+                        <IonRadio value="document"></IonRadio>
+                        
+                        <div className={style["tutorial-hive-item"]}>
+                            <p>
+                                <h3>{hiveDocument}</h3>
+                                <span>Using the default detected vault</span>
+                            </p>
+                        </div>
+                    </div>
+                    )}
+
+               
+
                     <div className={style["tutorial-hive-row"]}>
                         <IonRadio value="tuum"></IonRadio>
+                        
                         <div className={style["tutorial-hive-item"]}>
                             <img src={tuumlogo} />
                             <p>
                                 <h2>Tuum Tech</h2>
-                                <span>Standard Storage Package</span>
                             </p>
                         </div>
                     </div>
@@ -36,7 +60,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({ onContinue }) => 
                 </IonRadioGroup>
             </div>
 
-            <IonButton onClick={onContinue} className={style["tutorial-button"]}>Continue</IonButton>
+            <IonButton onClick={saveSelection} className={style["tutorial-button"]}>Continue</IonButton>
         </div>
     );
 }
