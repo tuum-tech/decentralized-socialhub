@@ -132,14 +132,15 @@ const ProfilePage: React.FC<RouteComponentProps> = (
 
 
   useEffect(() => {
-    ; (async () => {
-
+    (async () => {
+      debugger;
       let instance = UserService.GetUserSession()
-      if (!instance || !instance.userToken) return
+      if (!instance) return
 
 
+      setUserInfo(instance);
+      console.error(JSON.stringify(userInfo));
       if (instance.onBoardingCompleted && !willExpire) {
-        setUserInfo(instance);
         let profile: ProfileDTO = await getFullProfile(instance.did);
         setfull_profile(profile)
         setWillExpire(true)
@@ -188,7 +189,10 @@ const ProfilePage: React.FC<RouteComponentProps> = (
               <ProfileComponent profile={profile} />
             </IonCol> */}
             <IonCol size='10' className={style['right-panel']}>
+
+
               <LoggedHeader profile={full_profile} sessionItem={userInfo} />
+
               <DashboardNav onTutorialStart={onTutorialStart} profile={full_profile} sessionItem={userInfo} />
               {/* <StartServiceComponent />
               <ProfileCompletion /> */}
