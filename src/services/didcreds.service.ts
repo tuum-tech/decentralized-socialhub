@@ -3,7 +3,8 @@ export enum CredentialType {
   Facebook = 'Facebook',
   Google = 'Google',
   Twitter = 'Twitter',
-  Email = 'Email'
+  Email = 'Email',
+  DID = 'Did',
 }
 
 export class DidcredsService {

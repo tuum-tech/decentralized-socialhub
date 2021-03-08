@@ -127,7 +127,7 @@ const SettingsNavbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           >
             <IonIcon
               slot='start'
-              src='../../assets/icon_dashboard.svg'
+              src='../../assets/sign-out.svg'
               className={style['img']}
             ></IonIcon>
             <IonLabel>
