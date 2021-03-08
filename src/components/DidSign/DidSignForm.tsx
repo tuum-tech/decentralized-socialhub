@@ -57,15 +57,14 @@ const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
     }
     setError(validate === false)
     if (validate) {
-      let mnemonicStr = mnemonic.join(' ')
-      if (ElastosClient.did.isMnemonicValid(mnemonicStr)) {
-        let userDid = await ElastosClient.did.loadFromMnemonic(
-          mnemonic.join(' ')
-        )
-        onSuccess(userDid.did, mnemonic.join(' '))
-      } else {
+      let userDid = await ElastosClient.did.loadFromMnemonic(
+        mnemonic.join(' ')
+      )
+      if (!userDid || !userDid.did) {
         setError(true)
+        return;
       }
+      onSuccess(userDid.did, mnemonic.join(' '))
     }
   }
 

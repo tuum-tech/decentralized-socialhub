@@ -105,13 +105,7 @@ const App: React.FC = () => {
           <Route path='/choosevault' component={ChooseVaultPage} exact={true} />
           {/* <Route path='/home' component={HomePage} exact={true} /> */}
 
-          <Route
-            path='/'
-            render={() => <Redirect to='/Alpha' />}
-            exact={true}
-          />
           <Route path='/Alpha' component={AccessCodePage} exact={true} />
-
           <ProtectedRoute
             path='/profile'
             component={ProfilePage}
@@ -182,6 +176,11 @@ const App: React.FC = () => {
             exact={true}
           />
           <Route path='/verify/email/:code' component={VerifyEmailPage} />
+
+          <Route
+            path='*'
+            render={() => <Redirect to='/Alpha' />}
+          />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
