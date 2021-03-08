@@ -372,21 +372,23 @@ const EducationCard: React.FC<IEducationProps> = ({ educationDTO, updateFunc, re
 
   return (
     <>
-      <IonCard className={styleWidget['overview']}>
-        <IonCardHeader>
-          <IonGrid>
-            <IonRow className="ion-justify-content-between">
-              <IonCol><IonCardTitle>Education</IonCardTitle></IonCol>
-              <IonCol size="auto"><LinkStyleSpan onClick={(e) => addItem()}>+ Add Education</LinkStyleSpan></IonCol>
-            </IonRow>
-          </IonGrid>
-        </IonCardHeader>
-        <IonCardContent>
-          {
-            listEducation
-          }
-        </IonCardContent>
-      </IonCard>
+      { educationDTO.isEnabled === true ?
+        <IonCard className={styleWidget['overview']}>
+          <IonCardHeader>
+            <IonGrid>
+              <IonRow className="ion-justify-content-between">
+                <IonCol><IonCardTitle>Education</IonCardTitle></IonCol>
+                <IonCol size="auto"><LinkStyleSpan onClick={(e) => addItem()}>+ Add Education</LinkStyleSpan></IonCol>
+              </IonRow>
+            </IonGrid>
+          </IonCardHeader>
+          <IonCardContent>
+            {
+              listEducation
+            }
+          </IonCardContent>
+        </IonCard>
+        : ""}
 
     </>
   );

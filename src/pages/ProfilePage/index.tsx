@@ -60,7 +60,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
-
+  const [error, setError] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false)
   const [userInfo, setUserInfo] = useState<ISessionItem>({
@@ -95,11 +95,11 @@ const ProfilePage: React.FC<RouteComponentProps> = (
       },
     },
     educationDTO: {
-      isEnabled: true,
+      isEnabled: false,
       items: [] as EducationItem[],
     },
     experienceDTO: {
-      isEnabled: true,
+      isEnabled: false,
       items: [] as ExperienceItem[],
     },
   })
@@ -141,8 +141,17 @@ const ProfilePage: React.FC<RouteComponentProps> = (
       setUserInfo(instance);
       console.error(JSON.stringify(userInfo));
       if (instance.onBoardingCompleted && !willExpire) {
-        let profile: ProfileDTO = await getFullProfile(instance.did);
-        setfull_profile(profile)
+
+        try {
+          let profile: ProfileDTO = await getFullProfile(instance.did);
+          profile.experienceDTO.isEnabled = true;
+          profile.educationDTO.isEnabled = true;
+          setfull_profile(profile);
+
+        } catch (e) {
+          setError(true);
+        }
+
         setWillExpire(true)
         setTimeout(() => {
           UserService.logout()
