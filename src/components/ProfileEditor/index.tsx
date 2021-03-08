@@ -168,6 +168,7 @@ const ProfileEditor: React.FC = () => {
     console.log(">>>>>>>>>  " + JSON.stringify(userInfo));
 
     callUpdateProfile(userInfo);
+    UserService.updateSession(userInfo);
   }
 
   const updateEducationProfile = async (educationItem: EducationItem): Promise<any> => {
