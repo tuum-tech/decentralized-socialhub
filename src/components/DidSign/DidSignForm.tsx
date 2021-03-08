@@ -57,8 +57,15 @@ const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
     }
     setError(validate === false)
     if (validate) {
-      let userDid = await ElastosClient.did.loadFromMnemonic(mnemonic.join(' '))
-      onSuccess(userDid.did, mnemonic.join(' '))
+      let mnemonicStr = mnemonic.join(' ')
+      if (ElastosClient.did.isMnemonicValid(mnemonicStr)) {
+        let userDid = await ElastosClient.did.loadFromMnemonic(
+          mnemonic.join(' ')
+        )
+        onSuccess(userDid.did, mnemonic.join(' '))
+      } else {
+        setError(true)
+      }
     }
   }
 
@@ -120,7 +127,7 @@ const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
             <ButtonWithLogo
               mode='danger'
               mt={67}
-              text='clear all'
+              text='Clear all'
               onClick={() => {
                 setMnemonic(['', '', '', '', '', '', '', '', '', '', '', ''])
                 setError(false)
