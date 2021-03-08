@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@elastos/elastos-hive-js-sdk": "github:tuum-tech/Elastos.NET.Hive.JS.SDK",
-    "@elastosfoundation/elastos-js-sdk": "git@github.com:elastos/Elastos.DID.JS.SDK.git",
+    "@elastosfoundation/elastos-js-sdk": "git@github.com:tuum-tech/Elastos.DID.JS.SDK.git",
     "@sentry/react": "^6.2.1",
     "@sentry/tracing": "^6.2.1",
     "@types/styled-components": "^5.1.5",
