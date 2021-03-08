@@ -12,6 +12,8 @@ let run = async () => {
   );
   client.Payment.CreateFreeVault();
 
+  const fs = require('fs');
+
   // ===== followers section start =====
   await client.Database.createCollection('followers');
   await client.Scripting.SetScript({
@@ -57,9 +59,15 @@ let run = async () => {
       },
     },
   });
-  // ===== followers section end =====
 
-  const fs = require('fs');
+  fs.readFile('./src/data/dummy_followers.json', (err, data) => {
+    if (err) throw err;
+    let followerList = JSON.parse(data);
+    console.log(followerList[0]);
+    client.Database.insertMany('followers', followerList);
+  });
+
+  // ===== followers section end =====
 
   // ===== users section start =====
   await client.Database.createCollection('users');
@@ -208,10 +216,10 @@ let run = async () => {
     allowAnonymousApp: true,
     executable: {
       type: 'find',
-      name: 'get_users_by_name',
+      name: 'get_universities',
       output: true,
       body: {
-        collection: 'users',
+        collection: 'universities',
         filter: {
           name: { $regex: '$params.name', $options: 'i' },
         },
@@ -281,10 +289,10 @@ let run = async () => {
     allowAnonymousApp: true,
     executable: {
       type: 'find',
-      name: 'get_universities',
+      name: 'get_users',
       output: true,
       body: {
-        collection: 'universities',
+        collection: 'users',
         filter: {
           did: { $regex: '$params.did' },
         },

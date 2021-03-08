@@ -41,7 +41,7 @@ const DidCard: React.FC<Props> = ({
           </span>
         </div>
         <div className={style['card-link']}>
-          <span className={style['card-link-inner']}>+ Follow</span>
+          <span className={style['card-link-inner']}>+Follow</span>
         </div>
       </IonItem>
     </IonList>

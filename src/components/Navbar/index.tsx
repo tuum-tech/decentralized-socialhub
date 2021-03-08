@@ -50,11 +50,15 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           </IonItem>
           <IonItem
             className={
-              active === 'connections'
+              active === 'connections-followers' ||
+              active === 'connections-followings'
                 ? style['item-active']
                 : style['item-link']
             }
-            onClick={() => setActive('connections')}
+            onClick={() => {
+              setActive('connections-followers');
+              history.push('/connections/followers');
+            }}
           >
             <IonIcon
               slot='start'
@@ -65,6 +69,60 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
               <h3>Connections</h3>
             </IonLabel>
           </IonItem>
+
+          {['connections-followers', 'connections-followings'].some(function (
+            v
+          ) {
+            return active.indexOf(v) >= 0;
+          }) && (
+            <>
+              <IonItem
+                className={
+                  active === 'connections-followers'
+                    ? style['item-active'] +
+                      ' ' +
+                      style['item-connections-active']
+                    : style['item-link'] + ' ' + style['item-connections-link']
+                }
+                onClick={() => {
+                  setActive('connections-followers');
+                  history.push('/connections/followers');
+                }}
+              >
+                <IonIcon
+                  slot='start'
+                  src='../../assets/icon_connections.svg'
+                  className={style['img']}
+                ></IonIcon>
+                <IonLabel>
+                  <h3>Followers</h3>
+                </IonLabel>
+              </IonItem>
+              <IonItem
+                className={
+                  active === 'connections-followings'
+                    ? style['item-active'] +
+                      ' ' +
+                      style['item-connections-active']
+                    : style['item-link'] + ' ' + style['item-connections-link']
+                }
+                onClick={() => {
+                  setActive('connections-followings');
+                  history.push('/connections/followings');
+                }}
+              >
+                <IonIcon
+                  slot='start'
+                  src='../../assets/icon_connections.svg'
+                  className={style['img']}
+                ></IonIcon>
+                <IonLabel>
+                  <h3>Followings</h3>
+                </IonLabel>
+              </IonItem>
+            </>
+          )}
+
           <IonItem
             className={
               active === 'search' ? style['item-active'] : style['item-link']
