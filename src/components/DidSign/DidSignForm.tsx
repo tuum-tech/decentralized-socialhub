@@ -10,8 +10,8 @@ import { ElastosClient } from '@elastosfoundation/elastos-js-sdk'
 import ButtonWithLogo from 'src/components/buttons/ButtonWithLogo'
 import TextInput from 'src/components/inputs/TextInput'
 import { Text16 } from 'src/components/texts'
-import { DidService } from 'src/services/did.service';
- 
+import { DidService } from 'src/services/did.service'
+
 import style from './DidSignForm.module.scss'
 
 const DidSignFormContainer = styled(IonGrid)`
@@ -30,19 +30,18 @@ interface Props {
 
 const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
   const [mnemonic, setMnemonic] = useState([
-    'elephant', 'differ', 'dentist', 'always', 'slab', 'initial', 'avocado', 'poet', 'magic', 'hamster', 'mix', 'diagram',
-    // '',
-    // '',
-    // '',
-    // '',
-    // '',
-    // '',
-    // '',
-    // '',
-    // '',
-    // '',
-    // '',
-    // '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
   ])
 
   const [passphrase, setPassphrase] = useState('')
@@ -68,7 +67,7 @@ const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
       )
       if (!userDid || !userDid.did) {
         setError(true)
-        return;
+        return
       }
       onSuccess(userDid.did, mnemonic.join(' '))
     }
