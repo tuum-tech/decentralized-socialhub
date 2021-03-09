@@ -3,8 +3,7 @@ import GoogleCallback from './SocialCallback/GoogleCallback'
 import LinkedinCallback from './SocialCallback/LinkedinCallback'
 import FacebookCallback from './SocialCallback/FacebookCallback'
 
-import AssociatedProfile from './AssociatedProfilePage/Loadable'
-import EmailAssociatedProfile from './EmailAssociatedProfilePage/Loadable'
+import AssociatedProfilePage from './AssociatedProfilePage/Loadable'
 import CreateProfilePage from './CreateProfilePage/Loadable'
 import CreateWhyPage from './CreateWhyPage/Loadable'
 import CreatePasswordPage from './CreatePasswordPage/Loadable'
@@ -21,8 +20,7 @@ export {
   TwitterCallback,
   LinkedinCallback,
   FacebookCallback,
-  AssociatedProfile,
-  EmailAssociatedProfile,
+  AssociatedProfilePage,
   CreateProfilePage,
   CreateWhyPage,
   CreatePasswordPage,

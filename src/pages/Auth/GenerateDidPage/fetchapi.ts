@@ -19,7 +19,7 @@ export async function getUsersWithRegisteredEmail(email: string) {
       target_app_did: process.env.REACT_APP_APPLICATION_ID,
     },
   }
-  console.log('get_users_scripts result', get_users_scripts)
+
   let get_users_script_response: any = await ScriptService.runTuumTechScript(
     get_users_scripts
   )
@@ -33,14 +33,19 @@ export async function getUsersWithRegisteredEmail(email: string) {
       get_users_by_email.items &&
       get_users_by_email.items.length > 0
     ) {
-      prevUsers = get_users_by_email.items.map((userItem: any) => userItem.did)
+      prevUsers = get_users_by_email.items.map((userItem: any) => {
+        const newUserItem = {
+          status: userItem.status || '',
+          did: userItem.did || '',
+          email: userItem.email || '',
+          _id: userItem._id.$oid || '',
+        }
+        return newUserItem
+      })
     }
   } else {
     throw new Error('Error while running get_users script')
   }
 
-  return prevUsers.map((did: string) => {
-    const onlyDid = did.replace('did:elastos:', '')
-    return onlyDid
-  })
+  return prevUsers
 }

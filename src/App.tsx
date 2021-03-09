@@ -49,8 +49,7 @@ import {
   TwitterCallback,
   LinkedinCallback,
   FacebookCallback,
-  AssociatedProfile,
-  EmailAssociatedProfile,
+  AssociatedProfilePage,
   CreateProfilePage,
   CreateWhyPage,
   CreatePasswordPage,
@@ -148,12 +147,7 @@ const App: React.FC = () => {
           <ProtectedRoute path='/sign-qr' component={SignQRPage} exact={true} />
           <ProtectedRoute
             path='/associated-profile'
-            component={AssociatedProfile}
-            exact={true}
-          />
-          <ProtectedRoute
-            path='/email-associated-profile'
-            component={EmailAssociatedProfile}
+            component={AssociatedProfilePage}
             exact={true}
           />
           <ProtectedRoute

@@ -30,18 +30,19 @@ interface Props {
 
 const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
   const [mnemonic, setMnemonic] = useState([
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
+    'elephant', 'differ', 'dentist', 'always', 'slab', 'initial', 'avocado', 'poet', 'magic', 'hamster', 'mix', 'diagram',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
   ])
 
   const [passphrase, setPassphrase] = useState('')
