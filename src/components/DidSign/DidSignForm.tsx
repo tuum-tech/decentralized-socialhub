@@ -9,12 +9,14 @@ import { ElastosClient } from '@elastosfoundation/elastos-js-sdk'
 
 import ButtonWithLogo from 'src/components/buttons/ButtonWithLogo'
 import TextInput from 'src/components/inputs/TextInput'
-
+import { Text16 } from 'src/components/texts'
+import { DidService } from 'src/services/did.service';
+ 
 import style from './DidSignForm.module.scss'
 
 const DidSignFormContainer = styled(IonGrid)`
   width: 100%;
-  margin: 35px auto;
+  margin: 25px auto;
 `
 const DidInputRow = styled(IonRow)`
   margin-right: -25px;
@@ -28,19 +30,22 @@ interface Props {
 
 const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
   const [mnemonic, setMnemonic] = useState([
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
+    'elephant', 'differ', 'dentist', 'always', 'slab', 'initial', 'avocado', 'poet', 'magic', 'hamster', 'mix', 'diagram',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
   ])
+
+  const [passphrase, setPassphrase] = useState('')
 
   const isMnemonicWordValid = (index: number): boolean => {
     let word: string = mnemonic[index]
@@ -58,7 +63,8 @@ const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
     setError(validate === false)
     if (validate) {
       let userDid = await ElastosClient.did.loadFromMnemonic(
-        mnemonic.join(' ')
+        mnemonic.join(' '),
+        passphrase || ''
       )
       if (!userDid || !userDid.did) {
         setError(true)
@@ -111,12 +117,22 @@ const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
       </DidInputRow>
       <DidInputRow>
         {renderMnemonicInput(10)}
+        {renderMnemonicInput(11)}
+      </DidInputRow>
+
+      <DidInputRow>
+        <IonCol className='ion-no-padding mt-25px'>
+          <Text16> Enter your Passphrase. </Text16>
+        </IonCol>
+      </DidInputRow>
+
+      <DidInputRow>
         <IonCol className='ion-no-padding'>
           <TextInput
-            value={mnemonic[11]}
             flexDirection='column'
-            label={(11 + 1).toString()}
-            onChange={(n) => updateMnemonic(11, n)}
+            className='mt-12px'
+            value={passphrase}
+            onChange={(n) => setPassphrase(n)}
           />
         </IonCol>
       </DidInputRow>
@@ -125,8 +141,8 @@ const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
           <IonCol>
             <ButtonWithLogo
               mode='danger'
-              mt={67}
-              text='Clear all'
+              mt={27}
+              text='Clear'
               onClick={() => {
                 setMnemonic(['', '', '', '', '', '', '', '', '', '', '', ''])
                 setError(false)
@@ -136,7 +152,7 @@ const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
           <IonCol>
             <ButtonWithLogo
               mode='dark'
-              mt={67}
+              mt={27}
               text='Sign in to profile'
               onClick={signin}
             />
@@ -145,7 +161,7 @@ const DidForm: React.FC<Props> = ({ error = false, setError, onSuccess }) => {
       ) : (
         <ButtonWithLogo
           mode='dark'
-          mt={67}
+          mt={27}
           text='Sign in to profile'
           onClick={signin}
         />

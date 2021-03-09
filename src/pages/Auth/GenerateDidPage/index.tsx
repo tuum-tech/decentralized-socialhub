@@ -49,7 +49,7 @@ const GenerateDidPage: React.FC<
             history.push({
               pathname: '/associated-profile',
               state: {
-                dids: pUsers,
+                users: pUsers,
                 fname: props.location.state.fname,
                 lname: props.location.state.lname,
                 email: props.location.state.email,
@@ -79,6 +79,7 @@ const GenerateDidPage: React.FC<
               session.email,
               session.credential,
               pwd,
+              '',
               '',
               ''
             )

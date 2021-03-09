@@ -3,9 +3,12 @@ import { StaticContext, RouteComponentProps, useHistory } from 'react-router'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { createStructuredSelector } from 'reselect'
+import Modal from 'react-bootstrap/esm/Modal'
+import Button from 'react-bootstrap/esm/Button'
+import styled from 'styled-components'
 
 import injector from 'src/baseplate/injectorWrap'
-import { UserService } from 'src/services/user.service'
+import { AccountType, UserService } from 'src/services/user.service'
 import {
   OnBoardLayout,
   OnBoardLayoutLeft,
@@ -22,7 +25,6 @@ import {
 import { ButtonLink, ButtonWithLogo, ArrowButton } from 'src/components/buttons'
 import { Text16 } from 'src/components/texts'
 import PageLoading from 'src/components/layouts/PageLoading'
-
 import whitelogo from 'src/assets/logo/whitetextlogo.png'
 import eye from 'src/assets/icon/eye.png'
 
@@ -34,53 +36,60 @@ import saga from './saga'
 import {
   InferMappedProps,
   SubState,
-  UserSessionProp,
+  UserProps,
+  SessionProp,
   LocationState,
 } from './types'
+import { requestForceCreateUser } from './fetchapi'
+// import SignDid from './components/SignDid'
 import GenerateDid from './components/GenerateDid'
-import SignDid from './components/SignDid'
 import style from './style.module.scss'
+
+export interface ICreateUserResponse {
+  data: {
+    return_code: string
+    did: string
+  }
+}
+
+const DisplayText = styled(Text16)`
+  text-align: center;
+  color: green;
+  margin-top: 8px;
+`
 
 const AssociatedProfilePage: React.FC<
   RouteComponentProps<{}, StaticContext, LocationState>
 > = (props) => {
   const history = useHistory()
-  const [did, setDid] = useState('')
+  const [showModal, setShowModal] = useState(false)
+  const [user, setUser] = useState<UserProps | null>(null)
   const [screen, setScreen] = useState('')
-  const [associatedInfo, setAssociatedIfno] = useState<UserSessionProp | null>(
+  const [associatedInfo, setAssociatedIfno] = useState<SessionProp | null>(
     null
   )
+  const [loading, setLoading] = useState(false)
+  const [displayText, setDisplayText] = useState('')
 
   useEffect(() => {
     if (!associatedInfo && props.location.state && props.location.state.fname) {
-      const {
-        fname,
-        lname,
-        email,
-        dids,
-        id,
-        request_token,
-        service,
-        credential,
-      } = props.location.state
+      const { fname, lname, email, users, id, request_token, service, credential } = props.location.state
       setAssociatedIfno({
         fname,
         lname,
         email,
-        dids,
+        users,
         id,
         request_token,
         service,
         credential,
       })
-      setDid(dids[0])
+      setUser(users[0])
     }
   }, [associatedInfo])
 
-  if (!associatedInfo) {
+  if (!associatedInfo || !user) {
     return <PageLoading />
-  } else if (screen === '/sign-did') {
-    return <SignDid did={did} />
   } else if (screen === '/generate-did') {
     return (
       <GenerateDid
@@ -123,17 +132,21 @@ const AssociatedProfilePage: React.FC<
           <Text16>Decentalized Identity (DID):</Text16>
           <div className={style['did-select']}>
             <select
-              value={did}
-              onChange={(event) =>
-                setDid((event.target as HTMLSelectElement).value)
-              }
+              value={user._id}
+              onChange={(event) => {
+                const selectedId = (event.target as HTMLSelectElement).value
+                const selectedIndex = associatedInfo.users.findIndex(
+                  (item: UserProps) => item._id === selectedId
+                )
+                setUser(associatedInfo.users[selectedIndex])
+              }}
             >
               {associatedInfo &&
-                associatedInfo.dids &&
-                associatedInfo.dids.length > 0 &&
-                associatedInfo.dids.map((userDid: string, index: number) => (
-                  <option key={userDid} value={userDid}>
-                    {userDid}
+                associatedInfo.users &&
+                associatedInfo.users.length > 0 &&
+                associatedInfo.users.map((user: UserProps) => (
+                  <option key={user._id} value={user._id}>
+                    {user.did || `${user._id}(Email not verified)`}
                   </option>
                 ))}
             </select>
@@ -149,37 +162,73 @@ const AssociatedProfilePage: React.FC<
             text='Sign in to profile'
             onClick={() => {
               const signedUserDids = UserService.getSignedUsers()
-              if (
+              if (user.did === '') {
+                setShowModal(true)
+              } else if (
                 signedUserDids &&
                 signedUserDids.length > 0 &&
-                signedUserDids.includes(`did:elastos:${did}`)
+                signedUserDids.includes(user.did)
               ) {
                 history.push({
                   pathname: '/unlock-user',
                   state: {
-                    dids: [did],
+                    dids: [user.did],
                   },
                 })
               } else {
-                setScreen('/sign-did')
+                history.push('/sign-did')
               }
             }}
           />
           <OnBoardLayoutRightContentTitle style={{ marginTop: '96px' }}>
             Create new profile
           </OnBoardLayoutRightContentTitle>
-          <Text16>
-            Use your already associated social account to create a new profile.
-          </Text16>
+          <Text16>Use your email to create a new profile.</Text16>
 
           <ButtonWithLogo
-            text='Create new profile'
-            onClick={() => {
-              setScreen('/generate-did')
+            text={loading ? 'Creating your profile now' : 'Create new profile'}
+            onClick={async () => {
+              const { fname, lname, email, service } = associatedInfo
+              if (service === AccountType.Email) {
+                setLoading(true)
+                let response = (await requestForceCreateUser(
+                  fname,
+                  lname,
+                  email
+                )) as ICreateUserResponse
+                setLoading(false)
+                if (
+                  response &&
+                  response.data &&
+                  response.data.return_code === 'WAITING_CONFIRMATION'
+                ) {
+                  setDisplayText(
+                    'Verification email is sent to you. Please confirm to complete your registration.'
+                  )
+                }
+              } else {
+                setScreen('/generate-did')
+              }
             }}
             mt={42}
           />
+          {displayText !== '' && <DisplayText>{displayText}</DisplayText>}
         </OnBoardLayoutRightContent>
+
+        <Modal show={showModal} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Not verified user</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            This email is not verified yet. We already sent verification email,
+            so please verify first and continue process.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant='primary' onClick={() => setShowModal(false)}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </OnBoardLayoutRight>
     </OnBoardLayout>
   )

@@ -57,9 +57,9 @@ const ProfileEditor: React.FC = () => {
   const [full_profile, setfull_profile] = useState({
     basicDTO: {
       isEnabled: false,
-      first_name: '',
-      last_name: '',
-      vault_url: '',
+      firstName: '',
+      lastName: '',
+      hiveHost: '',
       did: '',
       title: '',
       about: '',

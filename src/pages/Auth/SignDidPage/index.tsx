@@ -98,12 +98,6 @@ const SignDidPage: React.FC<InferMappedProps> = ({
               }
             }}
           />
-
-          {/* <UserDetails
-            showModal={showModal && did !== ''}
-            did={did}
-            closeModal={() => setShowModal(false)}
-          /> */}
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>

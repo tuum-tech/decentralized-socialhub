@@ -41,7 +41,7 @@ const SignDid: React.FC<Props> = ({ did }) => {
           <DidSignForm
             error={error}
             setError={setError}
-            onSuccess={async (uDid: string) => {
+            onSuccess={async (uDid: string, mnemonic: string) => {
               if (`did:elastos:${did}` === uDid) {
                 const res = await UserService.SearchUserWithDID(
                   `did:elastos:${did}`

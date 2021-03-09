@@ -65,12 +65,12 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   const [full_profile, setfull_profile] = useState({
     basicDTO: {
       isEnabled: false,
-      first_name: '',
-      last_name: '',
+      firstName: '',
+      lastName: '',
       did: '',
       title: '',
       email: '',
-      vault_url: '',
+      hiveHost: '',
       about: '',
       address: {
         number: '',

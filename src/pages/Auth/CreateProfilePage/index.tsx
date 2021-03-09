@@ -21,7 +21,7 @@ import {
 import { SocialButton, ButtonWithLogo } from 'src/components/buttons'
 import TextInput from 'src/components/inputs/TextInput'
 import { Text16, TextLink } from 'src/components/texts'
-import { UserService } from 'src/services/user.service'
+import { AccountType, UserService } from 'src/services/user.service'
 
 import { AlphaService } from 'src/services/alpha.service'
 import TwitterApi from 'src/shared-base/api/twitter-api'
@@ -112,12 +112,15 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
       const pUsers = await getUsersWithRegisteredEmail(email)
 
       history.push({
-        pathname: '/email-associated-profile',
+        pathname: '/associated-profile',
         state: {
           users: pUsers,
           fname,
           lname,
           email,
+          request_token: '',
+          service: AccountType.Email,
+          credential: fname + lname + email,
         },
       })
     }
@@ -130,10 +133,6 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
     if (fieldName === 'lastName') setLName(fieldValue)
     if (fieldName === 'email') setEmail(fieldValue)
   }
-
-  // const handleClose = async () => {
-  //   setShowModal(false)
-  // }
 
   const sociallogin = async (socialType: string) => {
     if (socialType === 'twitter') {

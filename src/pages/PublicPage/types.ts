@@ -37,10 +37,10 @@ export interface ExperienceItem {
 
 export interface BasicDTO {
     isEnabled: boolean,
-    first_name: string,
-    last_name: string,
+    firstName: string,
+    lastName: string,
     email: string,
-    vault_url: string,
+    hiveHost: string,
     did: string,
     about: string,
     title: string,
