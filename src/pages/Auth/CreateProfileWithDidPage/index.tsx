@@ -28,7 +28,7 @@ const CreateProfileWithDidPage: React.FC<
     mnemonic: '',
     lname: '',
     email: '',
-    vault_url: '',
+    hiveHost: '',
   })
   const [loading, setLoading] = useState(false)
 
@@ -42,7 +42,7 @@ const CreateProfileWithDidPage: React.FC<
         fname: doc.name.split(' ')[0] || '',
         lname: doc.name.split(' ')[1] || '',
         email: doc.email || '',
-        vault_url: doc.vault_url || '',
+        hiveHost: doc.hiveHost || '',
       })
     }
     if (userInfo.did === '') {
@@ -81,7 +81,7 @@ const CreateProfileWithDidPage: React.FC<
           pwd,
           userInfo.did,
           userInfo.mnemonic,
-          userInfo.vault_url
+          userInfo.hiveHost
         )
         setLoading(false)
         window.location.href = '/profile'
