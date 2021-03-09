@@ -113,10 +113,10 @@ export class UserVaultScripts {
           },
           update: {
             $set: {
-              first_name: '$params.first_name',
-              last_name: '$params.last_name',
+              firstName: '$params.firstName',
+              lastName: '$params.lastName',
               email: '$params.email',
-              vault_url: '$params.vault_url',
+              hiveHost: '$params.hiveHost',
             }
           },
           options: {

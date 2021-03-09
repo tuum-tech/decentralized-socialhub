@@ -80,11 +80,11 @@ const ProfilePage: React.FC<RouteComponentProps> = (
   const [full_profile, setfull_profile] = useState({
     basicDTO: {
       isEnabled: false,
-      first_name: '',
-      last_name: '',
+      firstName: '',
+      lastName: '',
       did: '',
       email: '',
-      vault_url: '',
+      hiveHost: '',
       title: '',
       about: '',
       address: {
