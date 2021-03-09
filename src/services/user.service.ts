@@ -26,6 +26,7 @@ export interface ISessionItem {
   isDIDPublished: boolean
   mnemonics: string
   onBoardingCompleted: boolean
+  tutorialCompleted: boolean
 }
 
 export interface ITemporaryDID {
@@ -95,13 +96,7 @@ export class UserService {
       })
     )
 
-    window.localStorage.setItem(
-      `publish_${response.confirmationId}`,
-      JSON.stringify({
-        confirmationId: response.confirmationId,
-        status: response.requestStatus,
-      })
-    )
+    
 
     return newDID
   }
@@ -243,7 +238,7 @@ export class UserService {
     if (!did || did === '') {
       const newDid = await this.generateTemporaryDID(service, credential)
       did = newDid.did
-      mnemonic = newDid.did
+      mnemonic = newDid.mnemonic
     }
 
     sessionItem = {
@@ -252,11 +247,12 @@ export class UserService {
       isDIDPublished: await DidService.isDIDPublished(did),
       firstName: fname,
       lastName: lname,
-      hiveHost: 'http://localhost:9001',
+      hiveHost: `${process.env.REACT_APP_TUUM_TECH_HIVE}`,
       userToken: token,
       mnemonics: mnemonic,
       email: email,
       onBoardingCompleted: false,
+      tutorialCompleted: false
     }
 
     // add new user to the tuum.tech vault
@@ -270,6 +266,7 @@ export class UserService {
           hiveHost: sessionItem.hiveHost,
           accountType: service,
           userToken: token,
+          tutorialCompleted: false
         },
         context: {
           target_did: process.env.REACT_APP_APPLICATION_DID,
@@ -292,6 +289,7 @@ export class UserService {
           hiveHost: sessionItem.hiveHost,
           accountType: service,
           userToken: token,
+          tutorialCompleted: false
         },
         context: {
           target_did: process.env.REACT_APP_APPLICATION_DID,

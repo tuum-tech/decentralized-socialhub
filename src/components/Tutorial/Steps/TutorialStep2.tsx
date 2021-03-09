@@ -28,13 +28,28 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({onContinue, mnemon
         setIsOnError(false);
     }
 
+    const onReset = ()=>{
+        setIsValid(false)
+        setIsOnError(false)
+    }
+
+    const onError = ()=>{
+        setIsValid(false)
+        setIsOnError(true)
+    }
+    const onValid = ()=>{
+        setIsValid(true)
+        setIsOnError(false)
+    }
+
+
     const verifyWords = () =>{
         return (<div>
-            {!isValid && (<img src={arrowback} onClick={()=>{back()}} />)}   
+            <img src={arrowback} onClick={()=>{back()}} />  
             <h2>Re-enter your Security passwords</h2>
             {!isOnError && (<p>Please enter your security words in the right order</p>)}
-            {isOnError && (<p className={style["tutorial-words-error"]}>Invalid words or wrong order. Try entering them again</p>)}
-            <SecurityWordsValidate mnemonics={mnemonics} onSuccess={() => setIsValid(true)} onError={()=>{setIsOnError(true)}} onReset={()=>{setIsOnError(false)}}   />
+            
+            <SecurityWordsValidate mnemonics={mnemonics} onSuccess={() => onValid()} onError={()=>{onError()}} onReset={()=>{onReset()}}   />
                                    
             <IonButton onClick={onContinue} className={style["tutorial-button"]} disabled={!isValid} >Continue</IonButton>
         </div>)

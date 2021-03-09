@@ -57,7 +57,8 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     lastName: "",
     isDIDPublished: false,
     mnemonics: "",
-    onBoardingCompleted: false
+    onBoardingCompleted: false,
+    tutorialCompleted: false
   });
 
 

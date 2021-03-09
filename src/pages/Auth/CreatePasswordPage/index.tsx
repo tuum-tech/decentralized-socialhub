@@ -69,6 +69,7 @@ const CreatePasswordPage: React.FC<
         lastName,
         isDIDPublished,
         onBoardingCompleted
+        
 
       } = props.location.state
       setSession({
@@ -81,6 +82,7 @@ const CreatePasswordPage: React.FC<
         isDIDPublished,
         mnemonics: "",
         onBoardingCompleted,
+        tutorialCompleted: false
       })
     }
   })

@@ -73,7 +73,8 @@ const ProfilePage: React.FC<RouteComponentProps> = (
     lastName: "",
     isDIDPublished: false,
     mnemonics: "",
-    onBoardingCompleted: false
+    onBoardingCompleted: false,
+    tutorialCompleted: false
   });
 
   const [full_profile, setfull_profile] = useState({

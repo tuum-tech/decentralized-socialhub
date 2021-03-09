@@ -37,6 +37,8 @@
     width: 300px;
   }
 
+  
+
   .tutorial-col-left {
     border-radius: 19px 0px 0px 19px;
 
@@ -141,9 +143,7 @@
       margin-bottom: 15px;
     }
 
-    .tutorial-words-error{
-      color: #FF5A5A;
-    }
+   
   }
 }
 
@@ -235,32 +235,35 @@
   }
   .tutorial-hive-row {
     display: flex;
-    width: 100%;
+    width: 450px;
     padding: 15px;
-
+    
+    
     ion-radio {
-      
       float: left;
-      margin-right: 15px;
-      
+      vertical-align: middle;
+      margin-top: auto;
+      margin-bottom: auto;
     }
 
     ion-input{
       border-radius: 9px;
       border: 1px solid #dfdfdf;
       margin-left: 15px;
+      width: 375px !important;
     }
    
     .tutorial-hive-item {
       margin-left: 15px;
       position: relative;
+      background: #F7FAFC;
       border: 1px solid #dfdfdf4f;
       border-radius: 16px;
       width: 380px;
-      height: 105px;
+      height: 81px;
       display: flex;
       justify-content: center;
-      padding: 25px 35px;
+      padding: 10px 15px;
       box-shadow: 1px 1px #dfdfdf4f;
       img {
         float: left;
@@ -271,6 +274,7 @@
         padding: 2px;
       }
       h2 {
+        
         display: block;
         font-family: "SF Pro Display";
         font-style: normal;
@@ -278,20 +282,57 @@
         font-size: 22px;
         //line-height: 136.02%;
         color: #27272e;
+        margin-top: 15px;
+        margin-left: 10px;
+      }
+      h3{
+        font-style: normal;
+        font-weight: bold;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        font-feature-settings: 'salt' on;
+        color: #000000;
+        margin-top: 5px;
       }
       span {
         display: block;
-        font-family: "SF Pro Display";
         font-style: normal;
         font-weight: normal;
-        font-size: 16px;
-        //  line-height: 162.02%;
-        color: #ff9840;
+        font-size: 13px;
+        line-height: 162.02%;
+        /* identical to box height, or 21px */
+        
+        display: flex;
+        align-items: center;
+        font-feature-settings: 'salt' on;
+        
+        color: #000000;
       }
       p {
         width: 100%;
-        margin-left: 30px;
+        
       }
     }
   }
+}
+
+.tutorial-badge{
+  margin: 0;
+  position: absolute;
+  top: 40%;
+  bottom: 50%;
+  
+  img{
+    display: block;
+  }
+  span{
+    display: block;
+  }
+}
+
+.tutorial-complete{
+  position: absolute;
+  left: 85px;
+  bottom: 102px;
 }
