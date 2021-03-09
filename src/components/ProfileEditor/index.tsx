@@ -207,7 +207,7 @@ const ProfileEditor: React.FC = () => {
 
       setUserInfo(instance);
 
-      if (instance.onBoardingCompleted) {
+      if (instance.tutorialCompleted) {
 
         try {
           let profile: ProfileDTO = await getFullProfile(instance.did);

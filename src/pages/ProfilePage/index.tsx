@@ -141,7 +141,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
 
       setUserInfo(instance);
       console.error(JSON.stringify(userInfo));
-      if (instance.onBoardingCompleted && !willExpire) {
+      if (instance.onBoardingCompleted && instance.tutorialCompleted && !willExpire) {
 
         try {
           let profile: ProfileDTO = await getFullProfile(instance.did);

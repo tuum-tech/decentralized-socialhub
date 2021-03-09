@@ -51,6 +51,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({ onContinue }) => 
         }
 
         try {
+
             let user = UserService.GetUserSession()
             let userDid = await DidService.loadDid(user.mnemonics)
             let hivesvc = DidService.generateService(userDid, "hive", endpoint)
