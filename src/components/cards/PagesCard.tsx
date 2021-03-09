@@ -27,6 +27,7 @@ const pageItem = (pageItem: any, indexItem: number, colSize: any) => {
       did={pageItem.did}
       avatar={pageItem.avatar}
       colSize={colSize}
+      type='page'
       key={'did-page-card-' + indexItem}
     />
   );

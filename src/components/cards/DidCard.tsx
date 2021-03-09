@@ -9,6 +9,7 @@ interface Props {
   avatar?: string;
   indexItem?: number;
   colSize?: string;
+  type?: string;
 }
 
 const DidCard: React.FC<Props> = ({
@@ -17,6 +18,7 @@ const DidCard: React.FC<Props> = ({
   avatar,
   indexItem,
   colSize = '100%',
+  type = 'user',
 }) => {
   return (
     <IonList
@@ -40,9 +42,11 @@ const DidCard: React.FC<Props> = ({
             {'DID:' + did.replace('did:elastos:', '')}
           </span>
         </div>
-        <div className={style['card-link']}>
-          <span className={style['card-link-inner']}>+Follow</span>
-        </div>
+        {type == 'user' && (
+          <div className={style['card-link']}>
+            <span className={style['card-link-inner']}>+Follow</span>
+          </div>
+        )}
       </IonItem>
     </IonList>
   );

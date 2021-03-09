@@ -18,6 +18,8 @@ let run = async () => {
   await client.Database.createCollection('followers');
   await client.Scripting.SetScript({
     name: 'set_followers',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
     executable: {
       type: 'update',
       name: 'set_followers',
@@ -41,6 +43,8 @@ let run = async () => {
   });
   await client.Scripting.SetScript({
     name: 'get_followers',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
     executable: {
       type: 'find',
       name: 'get_followers',
@@ -316,6 +320,28 @@ let run = async () => {
       },
     },
   });
+
+  await client.Scripting.SetScript({
+    name: 'get_users_by_dids',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_users',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          did: { $in: '$params.dids' },
+        },
+        options: {
+          limit: 150, //'$params.limit',
+          skip: 0, //'$params.skip',
+        },
+      },
+    },
+  });
+
   // ===== users section end =====
 
   // ===== universities section start =====
@@ -358,7 +384,7 @@ let run = async () => {
       name: 'get_universities',
       output: true,
       body: {
-        collection: 'users',
+        collection: 'universities',
         filter: {
           name: { $regex: '$params.name', $options: 'i' },
         },

@@ -1,0 +1,63 @@
+/** All your component stuyles */
+// .connections-header {
+//   position: relative;
+//   height: 5em;
+
+//   .header-content {
+//     margin-left: 1em;
+//     margin-top: 0.7em;
+
+//     h1 {
+//       font-family: 'SF Pro Display';
+//       font-size: 28px;
+//       font-weight: 600;
+//       margin-bottom: 0;
+//     }
+
+//     h2 {
+//       font-family: 'SF Pro Display';
+//       font-size: 18px;
+//       font-weight: normal;
+//     }
+//   }
+// }
+
+.followerssearch {
+  position: relative;
+  height: 5em;
+
+  .search-input {
+    width: 50%;
+    height: 100%;
+    margin-left: 1em;
+    border: none;
+    --box-shadow: none;
+    padding: 0;
+    border-radius: 9px;
+    --placeholder-font-style: 'SF Pro Display';
+    font-family: 'SF Pro Display';
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: normal;
+    text-align: left;
+    color: #16192c;
+    --placeholder-color: #b5b5bd;
+
+    input {
+      box-shadow: none;
+      background: #edf2f7;
+      border: 1px solid #edf2f7;
+      border-radius: 9px;
+
+      &:focus {
+        background: #fff;
+        border: 1px solid #ececec;
+      }
+    }
+
+    .active {
+      color: #16192c;
+    }
+  }
+}

@@ -125,11 +125,21 @@ export class SearchService {
       skip: offset,
     };
 
-    let usersResponse: IRunScriptResponse<IUserResponse>;
+    let usersResponse: IRunScriptResponse<IUserResponse> = {
+      isSuccess: false,
+      response: { get_users: { items: [] } },
+    };
+
+    console.log('Search string: ', searchString);
 
     if (searchString != null && searchString != '') {
+      console.log('Search string inside: ', searchString);
+      console.log('is this DID', this.isDID(searchString));
+
       if (this.isDID(searchString)) {
         params['did'] = '.*' + searchString + '.*';
+
+        console.log('calling get users by did', params);
 
         usersResponse = await this.appHiveClient.Scripting.RunScript({
           name: 'get_users_by_did',
@@ -163,6 +173,44 @@ export class SearchService {
     }
 
     console.log('users :' + JSON.stringify(usersResponse));
+
+    if (usersResponse.isSuccess) {
+      return usersResponse;
+    }
+    return usersResponse.error;
+  }
+
+  async getUsersByDIDs(
+    dids: string[],
+    limit: number,
+    offset: number
+  ): Promise<IRunScriptResponse<IUserResponse | undefined>> {
+    let params: any = {
+      limit: limit,
+      skip: offset,
+    };
+
+    let usersResponse: IRunScriptResponse<IUserResponse> = {
+      isSuccess: false,
+      response: { get_users: { items: [] } },
+    };
+
+    console.log('DIDs: ', dids);
+
+    params['dids'] = dids;
+
+    console.log('calling get users by dids', params);
+
+    usersResponse = await this.appHiveClient.Scripting.RunScript({
+      name: 'get_users_by_dids',
+      params: params,
+      context: {
+        target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`,
+      },
+    });
+
+    // console.log('users :' + JSON.stringify(usersResponse));
 
     if (usersResponse.isSuccess) {
       return usersResponse;

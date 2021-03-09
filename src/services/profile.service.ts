@@ -2,7 +2,12 @@ import { HiveClient } from '@elastos/elastos-hive-js-sdk';
 import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 // import { floor, noConflict } from 'lodash';
 import { ProfileResponse } from 'src/pages/ProfilePage/types';
-import { BasicDTO, EducationDTO, EducationItem, ExperienceItem } from 'src/pages/PublicPage/types';
+import {
+  BasicDTO,
+  EducationDTO,
+  EducationItem,
+  ExperienceItem,
+} from 'src/pages/PublicPage/types';
 import { HiveService } from './hive.service';
 import { ScriptService } from './script.service';
 import { ISessionItem, UserService } from './user.service';
@@ -86,11 +91,7 @@ export class ProfileService {
     });
   }
 
-
-  async updateBasicProfile(
-    basicDTO: ISessionItem
-  ): Promise<any> {
-
+  async updateBasicProfile(basicDTO: ISessionItem): Promise<any> {
     const update_user_script = {
       name: 'update_user',
       params: basicDTO,
@@ -98,13 +99,12 @@ export class ProfileService {
         target_did: process.env.REACT_APP_APPLICATION_DID,
         target_app_did: process.env.REACT_APP_APPLICATION_ID,
       },
-    }
+    };
     let response: any = await ScriptService.runTuumTechScript(
       update_user_script
-    )
-    const { data, meta } = response
+    );
+    const { data, meta } = response;
     if (meta.code === 200 && meta.message === 'OK') {
-
     }
   }
 
@@ -117,7 +117,7 @@ export class ProfileService {
       //   target_did: "did:elastos:iVy37oQuQ77L6SfXyNiBmdW2TSoyJQmBU1", // just to test, in real life use userHiveClient
       //   target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
       // },
-      params: educationItem
+      params: educationItem,
     });
   }
 
@@ -126,10 +126,9 @@ export class ProfileService {
   ): Promise<IRunScriptResponse<ProfileResponse>> {
     return this.hiveClient.Scripting.RunScript({
       name: 'remove_education_item',
-      params: educationItem
+      params: educationItem,
     });
   }
-
 
   async updateExperienceProfile(
     experienceItem: ExperienceItem
@@ -140,11 +139,9 @@ export class ProfileService {
       //   target_did: "did:elastos:iVy37oQuQ77L6SfXyNiBmdW2TSoyJQmBU1", // just to test, in real life use userHiveClient
       //   target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
       // },
-      params: experienceItem
+      params: experienceItem,
     });
   }
-
-
 
   async getFollowings(did?: string): Promise<IFollowingResponse> {
     let followings: IFollowingResponse;
@@ -173,14 +170,27 @@ export class ProfileService {
 
   async getFollowers(dids: string[]): Promise<IFollowerResponse | undefined> {
     console.log(JSON.stringify(dids));
-    let followersResponse: IRunScriptResponse<IFollowerResponse> = await this.appHiveClient.Scripting.RunScript(
+
+    console.log('Grabbing instance');
+    const profileAppHiveClient: ProfileService = await ProfileService.getProfileServiceAppOnlyInstance();
+    console.log('Instance grabbed');
+
+    // let followersResponse: IRunScriptResponse<IFollowerResponse> = await this.appHiveClient.Scripting.RunScript(
+    let followersResponse: IRunScriptResponse<IFollowerResponse> = await profileAppHiveClient.appHiveClient.Scripting.RunScript(
       {
         name: 'get_followers',
         params: {
           did: dids,
         },
+        context: {
+          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`,
+        },
       }
     );
+
+    console.log('PROFILE SERVICE');
+    console.log(followersResponse);
 
     if (followersResponse.isSuccess) {
       return followersResponse.response;

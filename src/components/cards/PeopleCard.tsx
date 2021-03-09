@@ -18,6 +18,7 @@ interface IProps {
   searchKeyword?: string;
   isSearchKeywordDID?: boolean;
   size?: string;
+  showHeader?: boolean;
 }
 
 const peopleItem = (peopleItem: any, indexItem: number, colSize: any) => {
@@ -27,6 +28,7 @@ const peopleItem = (peopleItem: any, indexItem: number, colSize: any) => {
       did={peopleItem.did}
       avatar={peopleItem.avatar}
       colSize={colSize}
+      type='user'
       key={'did-people-card-' + indexItem}
     />
   );
@@ -36,6 +38,7 @@ const PeopleCard: React.FC<IProps> = ({
   people,
   searchKeyword,
   isSearchKeywordDID,
+  showHeader = true,
   size = '12',
 }: IProps) => {
   const perPage = parseInt(size) / 12 == 1 ? 4 : 8;
@@ -69,9 +72,11 @@ const PeopleCard: React.FC<IProps> = ({
       className={style['people']}
     >
       <IonCard className={style['tab-card']}>
-        <IonCardHeader>
-          <IonCardTitle className={style['card-title']}>People</IonCardTitle>
-        </IonCardHeader>
+        {showHeader && (
+          <IonCardHeader>
+            <IonCardTitle className={style['card-title']}>People</IonCardTitle>
+          </IonCardHeader>
+        )}
         {/* <IonSearchbar
           // value={searchQuery}
           // onIonChange={(e) => search(e)}

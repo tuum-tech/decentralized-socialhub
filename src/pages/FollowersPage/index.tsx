@@ -32,6 +32,7 @@ import { InferMappedProps, SubState } from './types';
 import { fetchSimpleApi } from './fetchapi';
 import Logo from 'src/components/Logo';
 import Navbar from 'src/components/Navbar';
+import FollowersSearch from 'src/components/followers/FollowersSearch';
 
 const FollowersPage: React.FC<InferMappedProps> = ({
   eProps,
@@ -47,7 +48,7 @@ const FollowersPage: React.FC<InferMappedProps> = ({
               <Navbar tab='connections-followers' />
             </IonCol>
             <IonCol size='10' className={style['right-panel']}>
-              Followers here
+              <FollowersSearch />
             </IonCol>
           </IonRow>
         </IonGrid>
