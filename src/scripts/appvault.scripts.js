@@ -72,6 +72,10 @@ let run = async () => {
   // ===== users section start =====
   await client.Database.createCollection('users');
 
+  console.log(__dirname);
+  console.log(process.cwd());
+
+  // fs.readFile('../data/dummy_users.json', (err, data) => {
   fs.readFile('./src/data/dummy_users.json', (err, data) => {
     if (err) throw err;
     let dummyUsersList = JSON.parse(data);
@@ -104,6 +108,34 @@ let run = async () => {
       },
     },
   });
+
+  await client.Scripting.SetScript({
+    name: 'update_user',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'update',
+      name: 'update_user',
+      body: {
+        collection: 'users',
+        filter: {
+          did: '$params.did',
+        },
+        update: {
+          $set: {
+            firstName: '$params.firstName',
+            lastName: '$params.lastName',
+            email: '$params.email',
+          },
+        },
+        options: {
+          upsert: true,
+          bypass_document_validation: false,
+        },
+      },
+    },
+  });
+
   await client.Scripting.SetScript({
     name: 'delete_user_by_did',
     allowAnonymousUser: true,
@@ -193,6 +225,113 @@ let run = async () => {
     },
   });
   await client.Scripting.SetScript({
+    name: 'update_user_did_info',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'update',
+      name: 'update_user_did_info',
+      output: false,
+      body: {
+        collection: 'users',
+        filter: {
+          code: '$params.code',
+          email: '$params.email',
+          status: 'CONFIRMED',
+        },
+        update: {
+          $set: {
+            did: '$params.did',
+            hiveHost: '$params.hiveHost',
+            userToken: '$params.userToken',
+            accountType: '$params.accountType',
+            tutorialCompleted: '$params.tutorialCompleted',
+          },
+        },
+      },
+    },
+  });
+
+  //For searching on explore page
+  await client.Scripting.SetScript({
+    name: 'get_all_users',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_users',
+      output: true,
+      body: {
+        collection: 'users',
+        options: {
+          limit: 150, //'$params.limit',
+          skip: 0, //'$params.skip',
+        },
+      },
+    },
+  });
+
+  //For searching on explore page
+  await client.Scripting.SetScript({
+    name: 'get_users_by_name',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_users',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          name: { $regex: '$params.name', $options: 'i' },
+        },
+        options: {
+          limit: 150, //'$params.limit',
+          skip: 0, //'$params.skip',
+        },
+      },
+    },
+  });
+
+  //For searching on explore page
+  //This seems redundant to get_user_by_did but needed for now as the name in executable is different
+  //TODO: Remove it and use `get_user_by_did` instead and handle the result with appropriate output name
+  await client.Scripting.SetScript({
+    name: 'get_users_by_did',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_users',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          did: { $regex: '$params.did' },
+        },
+        options: {
+          limit: 150, //'$params.limit',
+          skip: 0, //'$params.skip',
+        },
+      },
+    },
+  });
+  // ===== users section end =====
+
+  // ===== universities section start =====
+  //store and retrieve universities data from tuum-tech vault
+  await client.Database.deleteCollection('universities');
+  await client.Database.createCollection('universities');
+
+  fs.readFile('./src/data/world_universities_and_domains.json', (err, data) => {
+    // fs.readFile('../data/world_universities_and_domains.json', (err, data) => {
+    if (err) throw err;
+    let universityList = JSON.parse(data);
+    console.log(universityList[0]);
+    client.Database.insertMany('universities', universityList);
+  });
+
+  await client.Scripting.SetScript({
     name: 'get_all_universities',
     allowAnonymousUser: true,
     allowAnonymousApp: true,
@@ -219,82 +358,9 @@ let run = async () => {
       name: 'get_universities',
       output: true,
       body: {
-        collection: 'universities',
-        filter: {
-          name: { $regex: '$params.name', $options: 'i' },
-        },
-        options: {
-          limit: 150, //'$params.limit',
-          skip: 0, //'$params.skip',
-        },
-      },
-    },
-  });
-  // ===== users section end =====
-
-  // ===== universities section start =====
-  //store and retrieve universities data from tuum-tech vault
-  await client.Database.deleteCollection('universities');
-  await client.Database.createCollection('universities');
-
-  fs.readFile('./src/data/world_universities_and_domains.json', (err, data) => {
-    if (err) throw err;
-    let universityList = JSON.parse(data);
-    console.log(universityList[0]);
-    client.Database.insertMany('universities', universityList);
-  });
-
-  await client.Scripting.SetScript({
-    name: 'get_all_users',
-    allowAnonymousUser: true,
-    allowAnonymousApp: true,
-    executable: {
-      type: 'find',
-      name: 'get_users',
-      output: true,
-      body: {
-        collection: 'users',
-        options: {
-          limit: 150, //'$params.limit',
-          skip: 0, //'$params.skip',
-        },
-      },
-    },
-  });
-
-  await client.Scripting.SetScript({
-    name: 'get_users_by_name',
-    allowAnonymousUser: true,
-    allowAnonymousApp: true,
-    executable: {
-      type: 'find',
-      name: 'get_users',
-      output: true,
-      body: {
         collection: 'users',
         filter: {
           name: { $regex: '$params.name', $options: 'i' },
-        },
-        options: {
-          limit: 150, //'$params.limit',
-          skip: 0, //'$params.skip',
-        },
-      },
-    },
-  });
-
-  await client.Scripting.SetScript({
-    name: 'get_users_by_did',
-    allowAnonymousUser: true,
-    allowAnonymousApp: true,
-    executable: {
-      type: 'find',
-      name: 'get_users',
-      output: true,
-      body: {
-        collection: 'users',
-        filter: {
-          did: { $regex: '$params.did' },
         },
         options: {
           limit: 150, //'$params.limit',
@@ -304,6 +370,7 @@ let run = async () => {
     },
   });
   // ===== universities section end =====
+
   console.log('All scripts OK');
 };
 

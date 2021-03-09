@@ -1,16 +1,18 @@
-import { useHistory } from 'react-router-dom';
-import React, { useState } from 'react';
-import { IonContent, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react';
-import style from './style.module.scss';
-import { UserService } from 'src/services/user.service';
+import React, { useState } from 'react'
+import { useHistory } from 'react-router-dom'
+import { IonContent, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react'
+
+import { UserService } from 'src/services/user.service'
+
+import style from './style.module.scss'
 
 interface Props {
-  tab?: string;
+  tab?: string
 }
 
 const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
-  const [active, setActive] = useState(tab);
-  const history = useHistory();
+  const [active, setActive] = useState(tab)
+  const history = useHistory()
 
   return (
     <IonContent>
@@ -20,7 +22,10 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
             className={
               active === 'dashboard' ? style['item-active'] : style['item-link']
             }
-            onClick={() => setActive('dashboard')}
+            onClick={() => {
+              setActive('dashboard');
+              history.push('/profile');
+            }}
           >
             <IonIcon
               slot='start'
@@ -37,7 +42,10 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
                 ? style['item-active']
                 : style['item-link']
             }
-            onClick={() => setActive('profile_manager')}
+            onClick={() => {
+              setActive('profile_manager')
+              history.push('/manager')
+            }}
           >
             <IonIcon
               slot='start'
@@ -128,8 +136,8 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
               active === 'search' ? style['item-active'] : style['item-link']
             }
             onClick={() => {
-              setActive('search');
-              history.push('/explore');
+              setActive('search')
+              history.push('/explore')
             }}
           >
             <IonIcon
@@ -147,8 +155,8 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
               active === 'settings' ? style['item-active'] : style['item-link']
             }
             onClick={() => {
-              setActive('settings');
-              history.push('/settings');
+              setActive('settings')
+              history.push('/settings')
             }}
           >
             <IonIcon
@@ -180,13 +188,12 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           <IonItem
             className={style['item-link']}
             onClick={async () => {
-              await UserService.logout();
-              window.location.href = '/';
+              await UserService.logout()
             }}
           >
             <IonIcon
               slot='start'
-              src='../../assets/icon_dashboard.svg'
+              src='../../assets/sign-out.svg'
               className={style['img']}
             ></IonIcon>
             <IonLabel>
@@ -205,7 +212,7 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           <img src="../../assets/icon_notifications.svg" /> Notifications<br />           */}
       </div>
     </IonContent>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

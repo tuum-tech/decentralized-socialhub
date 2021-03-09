@@ -1,6 +1,7 @@
 import { AssistService } from './assist.service'
-import { DidService } from './did.service'
+import { DidService, IDID } from './did.service'
 import { CredentialType, DidcredsService } from './didcreds.service'
+import { DidDocumentService } from './diddocument.service'
 import { ScriptService } from './script.service'
 
 const CryptoJS = require('crypto-js')
@@ -11,6 +12,7 @@ export enum AccountType {
   Facebook = 'Facebook',
   Google = 'Google',
   Twitter = 'Twitter',
+  Email = 'Email',
 }
 
 export interface ISessionItem {
@@ -20,8 +22,11 @@ export interface ISessionItem {
   did: string
   firstName: string
   lastName: string
+  email?: string
   isDIDPublished: boolean
+  mnemonics: string
   onBoardingCompleted: boolean
+  tutorialCompleted: boolean
 }
 
 export interface ITemporaryDID {
@@ -49,144 +54,23 @@ export class UserService {
     return `user_${did.replace('did:elastos:', '')}`
   }
 
-  public static getSignedUsers(): string[] {
-    let response: string[] = []
-    for (var i = 0, len = window.localStorage.length; i < len; ++i) {
-      let key = window.localStorage.key(i)
-      if (key && key.startsWith('user_')) {
-        response.push(key.replace('user_', 'did:elastos:'))
-      }
-    }
-    return response
-  }
-
-  public static GetUserSession(): ISessionItem {
-    let item = window.sessionStorage.getItem('session_instance')
-
-    if (!item) {
-      throw Error('Not logged in')
-    }
-
-    return JSON.parse(item)
-  }
-
-  public static SignInWithDIDAndPWd(
-    sessionItem: ISessionItem,
-    storePassword: string
-  ) {
-    this.lockUser(this.key(sessionItem.did), sessionItem, storePassword)
-    SessionService.saveSessionItem(sessionItem)
-  }
-
-  public static async DIDlogin(did: string) {
-    const get_user_by_did_script = {
-      name: 'get_user_by_did',
-      params: {
-        did,
-      },
-      context: {
-        target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID,
-      },
-    }
-    let response: any = await ScriptService.runTuumTechScript(
-      get_user_by_did_script
-    )
-    const { data, meta } = response
-    if (meta.code === 200 && meta.message === 'OK') {
-      const { get_user_by_did } = data
-      if (
-        get_user_by_did &&
-        get_user_by_did.items &&
-        get_user_by_did.items.length > 0
-      ) {
-        const userData = get_user_by_did.items[0]
-        const pSignedUsers = this.getSignedUsers()
-        return {
-          accountType: userData.accountType,
-          did: userData.did,
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          hiveHost: userData.hiveHost,
-          email: userData.email,
-          userToken: userData.userToken,
-          alreadySigned:
-            pSignedUsers &&
-            pSignedUsers.length > 0 &&
-            pSignedUsers.includes(data.did),
-        }
-      } else {
-        return null
-      }
-    } else {
-      throw Error('Error while searching user by did')
-    }
-  }
-
-  public static async SignIn3rdParty(
-    id: string,
-    fname: string,
-    lname: string,
-    token: string,
-    service: AccountType,
-    email: string,
-    credential: string,
-    storePassword: string
-  ) {
-    let sessionItem: ISessionItem
-
-    let did = await this.generateTemporaryDID(service, credential)
-    sessionItem = {
-      did: did,
-      accountType: service,
-      isDIDPublished: false,
-      firstName: fname,
-      lastName: lname,
-      hiveHost: 'http://localhost:5000',
-      userToken: token,
-      onBoardingCompleted: false,
-    }
-
-    // add new user to the tuum.tech vault
-    const add_user_script = {
-      name: 'add_user',
-      params: {
-        firstName: fname,
-        lastName: lname,
-        full_name: fname + ' ' + lname,
-        email: email,
-        status: 'CONFIRMED',
-        code: 1,
-        did: did,
-        hiveHost: sessionItem.hiveHost,
-        accountType: service,
-        userToken: token,
-      },
-      context: {
-        target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID,
-      },
-    }
-    let response = await ScriptService.runTuumTechScript(add_user_script)
-    console.log('=====>response', response)
-
-    console.log(sessionItem)
-    this.lockUser(this.key(did), sessionItem, storePassword)
-    SessionService.saveSessionItem(sessionItem)
-  }
-
   private static getCredentialType(service: AccountType): CredentialType {
     if (service === AccountType.Facebook) return CredentialType.Facebook
     if (service === AccountType.Twitter) return CredentialType.Twitter
     if (service === AccountType.Google) return CredentialType.Google
     if (service === AccountType.Linkedin) return CredentialType.Linkedin
+    if (service === AccountType.Email) return CredentialType.Email
+    if (service === AccountType.DID) return CredentialType.DID
     throw Error('Invalid account type')
   }
 
   private static async generateTemporaryDID(
     service: AccountType,
     credential: string
-  ): Promise<string> {
+  ): Promise<IDID> {
+  
+    this.clearPrevLocalData()
+
     console.log('Generating temporary DID')
     let newDID = await DidService.generateNew()
     let temporaryDocument = await DidService.temporaryDidDocument(newDID)
@@ -212,19 +96,9 @@ export class UserService {
       })
     )
 
-    window.localStorage.setItem(
-      `publish_${response.confirmationId}`,
-      JSON.stringify({
-        confirmationId: response.confirmationId,
-        status: response.requestStatus,
-      })
-    )
+    
 
-    return newDID.did
-  }
-
-  static getLoggedUser(): ISessionItem {
-    return SessionService.getSession()
+    return newDID
   }
 
   private static lockUser(
@@ -232,18 +106,7 @@ export class UserService {
     instance: ISessionItem,
     storePassword: string
   ) {
-    // clear prev data
-    // for (var i = 0, len = window.localStorage.length; i < len; ++i) {
-    //   let key = window.localStorage.key(i)
-    //   if (key && key.startsWith('user_')) {
-    //     window.localStorage.removeItem(key)
-    //   }
-    //   if (key && key.startsWith('temporary_')) {
-    //     window.localStorage.removeItem(key)
-    //   }
-    // }
-
-    console.log('======>localUserData', key, instance, storePassword)
+    console.log('localUserData', key, instance, storePassword)
     let encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(instance),
       storePassword
@@ -279,8 +142,171 @@ export class UserService {
     }
   }
 
+  public static getSignedUsers(): string[] {
+    let response: string[] = []
+    for (var i = 0, len = window.localStorage.length; i < len; ++i) {
+      let key = window.localStorage.key(i)
+      if (key && key.startsWith('user_')) {
+        response.push(key.replace('user_', 'did:elastos:'))
+      }
+    }
+    return response
+  }
+
+  public static GetUserSession(): ISessionItem {
+    let item = window.sessionStorage.getItem('session_instance')
+
+    if (!item) {
+      throw Error('Not logged in')
+    }
+
+    return JSON.parse(item)
+  }
+
+  public static LockWithDIDAndPWd(
+    sessionItem: ISessionItem,
+    storePassword: string
+  ) {
+    this.lockUser(this.key(sessionItem.did), sessionItem, storePassword)
+    SessionService.saveSessionItem(sessionItem)
+  }
+
+  public static async SearchUserWithDID(did: string) {
+    const get_user_by_did_script = {
+      name: 'get_user_by_did',
+      params: {
+        did,
+      },
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID,
+      },
+    }
+    let response: any = await ScriptService.runTuumTechScript(
+      get_user_by_did_script
+    )
+    const { data, meta } = response
+    if (meta.code === 200 && meta.message === 'OK') {
+      const { get_user_by_did } = data
+      if (
+        get_user_by_did &&
+        get_user_by_did.items &&
+        get_user_by_did.items.length > 0
+      ) {
+        const userData = get_user_by_did.items[0]
+        const pSignedUsers = this.getSignedUsers()
+        const isDIDPublished = await DidService.isDIDPublished(userData.did)
+
+        return {
+          accountType: userData.accountType,
+          did: userData.did,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          hiveHost: userData.hiveHost,
+          email: userData.email,
+          userToken: userData.userToken,
+          isDIDPublished: isDIDPublished ? isDIDPublished : false,
+          alreadySigned:
+            pSignedUsers &&
+            pSignedUsers.length > 0 &&
+            pSignedUsers.includes(data.did),
+        }
+      } else {
+        return null
+      }
+    } else {
+      throw Error('Error while searching user by did')
+    }
+  }
+
+  public static async CreateNewUser(
+    fname: string,
+    lname: string,
+    token: string,
+    service: AccountType,
+    email: string,
+    credential: string,
+    storePassword: string,
+    newDidStr: string,
+    newMnemonicStr: string,
+  ) {
+    let sessionItem: ISessionItem
+
+    let did = newDidStr;
+    let mnemonic = newMnemonicStr;
+
+    if (!did || did === '') {
+      const newDid = await this.generateTemporaryDID(service, credential)
+      did = newDid.did
+      mnemonic = newDid.mnemonic
+    }
+
+    sessionItem = {
+      did: did,
+      accountType: service,
+      isDIDPublished: await DidService.isDIDPublished(did),
+      firstName: fname,
+      lastName: lname,
+      hiveHost: `${process.env.REACT_APP_TUUM_TECH_HIVE}`,
+      userToken: token,
+      mnemonics: mnemonic,
+      email: email,
+      onBoardingCompleted: false,
+      tutorialCompleted: false
+    }
+
+    // add new user to the tuum.tech vault
+    if (service === AccountType.Email) {
+      const add_user_script = {
+        name: 'update_user_did_info',
+        params: {
+          email: email,
+          code: credential,
+          did: did,
+          hiveHost: sessionItem.hiveHost,
+          accountType: service,
+          userToken: token,
+          tutorialCompleted: false
+        },
+        context: {
+          target_did: process.env.REACT_APP_APPLICATION_DID,
+          target_app_did: process.env.REACT_APP_APPLICATION_ID,
+        },
+      }
+      let response = await ScriptService.runTuumTechScript(add_user_script)
+      console.log('update_user_did_info script response', response)
+    } else {
+      const add_user_script = {
+        name: 'add_user',
+        params: {
+          firstName: fname,
+          lastName: lname,
+          full_name: fname + ' ' + lname,
+          email: email,
+          status: 'CONFIRMED',
+          code: 1,
+          did: did,
+          hiveHost: sessionItem.hiveHost,
+          accountType: service,
+          userToken: token,
+          tutorialCompleted: false
+        },
+        context: {
+          target_did: process.env.REACT_APP_APPLICATION_DID,
+          target_app_did: process.env.REACT_APP_APPLICATION_ID,
+        },
+      }
+      let response = await ScriptService.runTuumTechScript(add_user_script)
+      console.log('add_user script response', response)
+    }
+
+    console.log(sessionItem)
+    this.lockUser(this.key(did), sessionItem, storePassword)
+    SessionService.saveSessionItem(sessionItem)
+  }
+
   public static setOnBoardingComplted() {
-    let sessionItem = this.getLoggedUser()
+    let sessionItem = this.GetUserSession()
     if (sessionItem) {
       sessionItem.onBoardingCompleted = true
       window.sessionStorage.setItem(
@@ -290,9 +316,33 @@ export class UserService {
     }
   }
 
-  public static Login(did: string, storePassword: string) {
-    // let instance = this.unlockUser(this.key(did), storePassword)
-    // SessionService.saveSessionItem(instance)
+  public static updateSession(sessionItem: ISessionItem) {
+    window.sessionStorage.setItem(
+      'session_instance',
+      JSON.stringify(sessionItem, null, '')
+    )
+  }
+
+  public static clearPrevLocalData() {
+    const removeKeys = []
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const key = window.localStorage.key(i)
+      if (
+        key &&
+        key !== '' &&
+        (key.startsWith('temporary_') ||
+          key.startsWith('user_') ||
+          key.startsWith('publish_'))
+      ) {
+        removeKeys.push(key)
+      }
+    }
+    for (let i = 0; i < removeKeys.length; i++) {
+      window.localStorage.removeItem(removeKeys[i])
+    }
+  }
+
+  public static UnLockWithDIDAndPWd(did: string, storePassword: string) {
     try {
       let instance = this.unlockUser(this.key(did), storePassword)
       SessionService.saveSessionItem(instance)
@@ -303,7 +353,7 @@ export class UserService {
   }
 
   public static async logout() {
-    let sessionItem = this.getLoggedUser()
+    let sessionItem = this.GetUserSession()
     if (!sessionItem.onBoardingCompleted) {
       // remove this DID from tuum.tech vault
       const delete_user_by_did = {
@@ -317,9 +367,10 @@ export class UserService {
         },
       }
       let response = await ScriptService.runTuumTechScript(delete_user_by_did)
-      console.log('=====>response', response)
+      console.log('delete_user_by_did script response', response)
     }
-    window.localStorage.clear()
+
+    this.clearPrevLocalData()
     SessionService.Logout()
   }
 }
@@ -338,7 +389,6 @@ class SessionService {
   }
 
   static saveSessionItem(item: ISessionItem) {
-    // window.sessionStorage.clear()
     window.sessionStorage.setItem(
       'session_instance',
       JSON.stringify(item, null, '')
@@ -346,6 +396,7 @@ class SessionService {
   }
 
   static Logout() {
-    window.sessionStorage.removeItem('session_instance')
+    window.sessionStorage.clear()
+    window.location.href = '/create-profile'
   }
 }

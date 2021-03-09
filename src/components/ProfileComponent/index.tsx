@@ -2,6 +2,7 @@ import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react';
 import React from 'react';
 
 import { ExperienceItem, ProfileDTO } from 'src/pages/PublicPage/types';
+import { ISessionItem } from 'src/services/user.service';
 import AboutCard from '../cards/AboutCard';
 import EducationCard from '../cards/EducationCard';
 import ExperienceCard from '../cards/ExperienceCard';
@@ -9,6 +10,7 @@ import OverviewCard from '../cards/OverviewCard';
 import DashboardNav from '../DashboardNav';
 import FollowersWidget from '../FollowersWidget';
 import FollowingList from '../FollowingList';
+import LoggedHeader from '../LoggedHeader';
 
 import ProfileBanner from '../ProfileBanner';
 import ProfileHeader from '../ProfileHeader';
@@ -20,13 +22,18 @@ interface IProps {
   profile: ProfileDTO;
 }
 
+interface IPropsSession {
+  profile: ProfileDTO;
+  sessionItem: ISessionItem;
+}
+
 const AboutSection: React.FC<IProps> = ({ profile }: IProps) => {
 
   return (
     <IonGrid className={style['tab-grid']}>
       <IonRow>
         <IonCol>
-          <AboutCard basicDTO={profile.basicDTO} />
+          {/* <AboutCard basicDTO={profile.basicDTO} /> */}
         </IonCol>
       </IonRow>
     </IonGrid>
@@ -40,7 +47,7 @@ const ExperienceSection: React.FC<IProps> = ({ profile }: IProps) => {
     <IonGrid className={style['tab-grid']}>
       <IonRow>
         <IonCol>
-          <ExperienceCard experiences={profile.experienceDTO} />
+          <ExperienceCard experienceDTO={profile.experienceDTO} updateFunc={() => { }} mode="readonly" />
         </IonCol>
       </IonRow>
     </IonGrid>
@@ -53,7 +60,7 @@ const EducationSection: React.FC<IProps> = ({ profile }: IProps) => {
     <IonGrid className={style['tab-grid']}>
       <IonRow>
         <IonCol>
-          <EducationCard educationDTO={profile.educationDTO} />
+          <EducationCard educationDTO={profile.educationDTO} updateFunc={() => { }} mode="readonly" />
         </IonCol>
       </IonRow>
     </IonGrid>
@@ -84,13 +91,13 @@ const AchievementsSection: React.FC = () => {
   );
 };
 
-const ProfileComponent: React.FC<IProps> = ({ profile }: IProps) => {
+const ProfileComponent: React.FC<IPropsSession> = ({ profile, sessionItem }: IPropsSession) => {
   return (
     <>
       <IonGrid className={style['fixed']}>
         <IonRow className="ion-justify-content-center">
           <IonCol size="9" className="ion-no-padding"><ProfileBanner /></IonCol>
-          <IonCol size="9" className="ion-no-padding"><ProfileHeader profile={profile} /></IonCol>
+          <IonCol size="9" className="ion-no-padding"><LoggedHeader profile={profile} sessionItem={sessionItem} /></IonCol>
           <IonCol size="9" className="ion-no-padding"><PublicProfileNav profile={profile} /></IonCol>
         </IonRow>
       </IonGrid >
@@ -107,8 +114,8 @@ const ProfileComponent: React.FC<IProps> = ({ profile }: IProps) => {
           <IonCol size="3">
 
             <SocialProfiles />
+            <FollowingList did={profile.basicDTO.did} />
             <FollowersWidget />
-            <FollowingList />
           </IonCol>
         </IonRow >
       </IonGrid >

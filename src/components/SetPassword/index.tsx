@@ -10,7 +10,6 @@ import {
   OnBoardLayoutLeftContent,
   OnBoardLayoutLeftContentTitle,
   OnBoardLayoutLeftContentDescription,
-  OnBoardLayoutLeftContentIntro,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
@@ -20,6 +19,7 @@ import {
 import ButtonWithLogo from 'src/components/buttons/ButtonWithLogo'
 import TextInput from 'src/components/inputs/TextInput'
 import { Text16 } from 'src/components/texts'
+
 import whitelogo from 'src/assets/logo/whitetextlogo.png'
 import keyimg from 'src/assets/icon/key.png'
 
@@ -61,9 +61,6 @@ const SetPassword: React.FC<Props> = ({ next, displayText = '' }) => {
             This is a locally stored password. This password protects your main
             profile account (decentralized identity).
           </OnBoardLayoutLeftContentDescription>
-          <OnBoardLayoutLeftContentIntro className='my-25px'>
-            More information on why I need a password? Help
-          </OnBoardLayoutLeftContentIntro>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -74,6 +71,7 @@ const SetPassword: React.FC<Props> = ({ next, displayText = '' }) => {
           <TextInput
             value={password}
             label='Password'
+            type='password'
             onChange={(n) => {
               setError('')
               setPassword(n)
@@ -82,6 +80,7 @@ const SetPassword: React.FC<Props> = ({ next, displayText = '' }) => {
           />
           <TextInput
             value={repeatPassword}
+            type='password'
             label='Re-enter Password'
             onChange={(n) => {
               setError('')

@@ -13,22 +13,35 @@ import SpotlightCard from 'src/components/cards/SpotlightCard'
 import BadgesCard from 'src/components/cards/BadgesCard'
 import OverviewCard from 'src/components/cards/OverviewCard'
 import ButtonWhite from 'src/components/buttons/ButtonWhite'
+import AboutCard from '../cards/AboutCard'
+import ExperienceCard from '../cards/ExperienceCard'
+import EducationCard from '../cards/EducationCard'
+import { ProfileDTO } from 'src/pages/PublicPage/types'
+import { ISessionItem } from 'src/services/user.service'
 
-const DashboardHome: React.FC = () => {
+export interface DashboardProps {
+  onTutorialStart: () => void,
+  profile: ProfileDTO,
+  sessionItem: ISessionItem
+}
+
+const DashboardHome: React.FC<DashboardProps> = (props) => {
   return (
     <IonGrid className={style['tab-grid']}>
       <IonRow>
+        <IonCol size='8'>
+          <AboutCard basicDTO={props.profile!.basicDTO} ></AboutCard>
+          <ExperienceCard experienceDTO={props.profile!.experienceDTO} mode=""></ExperienceCard>
+          <EducationCard educationDTO={props.profile!.educationDTO} mode=""></EducationCard>
+        </IonCol>
         <IonCol size='4'>
           <SpotlightCard
             title='Welcome to Profile'
             content='To get you familiar with the platform you can start our tutorial which
         will go through some basics. You will receive a badge for completing it.'
-            component={<ButtonWhite>Start beginners tutorial</ButtonWhite>}
+            component={<div><br /> <ButtonWhite onClick={() => props.onTutorialStart()} >Start beginners tutorial</ButtonWhite></div>}
           />
           <BadgesCard title='Badges' />
-        </IonCol>
-        <IonCol size='8'>
-          <OverviewCard />
         </IonCol>
       </IonRow>
     </IonGrid>
@@ -72,7 +85,7 @@ const DashboardBadges: React.FC = () => {
   )
 }
 
-const DashboardNav: React.FC = () => {
+const DashboardNav: React.FC<DashboardProps> = (props) => {
   const [active, setActive] = useState('home')
 
   return (
@@ -109,7 +122,7 @@ const DashboardNav: React.FC = () => {
           <IonLabel className={style['tab-label']}>Badges</IonLabel>
         </IonItem>
       </IonList>
-      {active === 'home' && <DashboardHome />}
+      {active === 'home' && <DashboardHome sessionItem={props.sessionItem} profile={props.profile} onTutorialStart={props.onTutorialStart} />}
       {active === 'status' && <DashboardStatus />}
       {active === 'badges' && <DashboardBadges />}
     </IonContent>

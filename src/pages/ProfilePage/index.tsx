@@ -11,6 +11,7 @@ import {
   IonCol,
   IonInput,
   IonSearchbar,
+  IonModal,
 } from '@ionic/react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -24,7 +25,7 @@ import { NameSpace } from './constants'
 import reducer from './reducer'
 import saga from './saga'
 import { InferMappedProps, ProfileResponse, SubState } from './types'
-import { requestFullProfile, requestLinkedinProfile } from './fetchapi'
+import { requestFullProfile } from './fetchapi'
 import FollowingList from 'src/components/FollowingList'
 import Pages from 'src/components/Pages'
 import ProfileHeader from 'src/components/ProfileHeader'
@@ -46,7 +47,10 @@ import Navbar from 'src/components/Navbar'
 import DashboardNav from 'src/components/DashboardNav'
 import { EducationItem, ExperienceItem, ProfileDTO } from '../PublicPage/types'
 import OnBoarding from 'src/components/OnBoarding'
-import { UserService } from 'src/services/user.service'
+import { AccountType, ISessionItem, UserData, UserService } from 'src/services/user.service'
+import { userInfo } from 'os'
+import LoggedHeader from 'src/components/LoggedHeader'
+import TutorialComponent from 'src/components/Tutorial'
 
 const ProfilePage: React.FC<RouteComponentProps> = (
   props: RouteComponentProps
@@ -56,13 +60,31 @@ const ProfilePage: React.FC<RouteComponentProps> = (
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
+  const [error, setError] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false)
+  const [userInfo, setUserInfo] = useState<ISessionItem>({
+    hiveHost: "",
+    userToken: "",
+    accountType: AccountType.DID,
+    did: "",
+    firstName: "",
+    email: "",
+    lastName: "",
+    isDIDPublished: false,
+    mnemonics: "",
+    onBoardingCompleted: false,
+    tutorialCompleted: false
+  });
+
   const [full_profile, setfull_profile] = useState({
     basicDTO: {
       isEnabled: false,
-      firstName: '',
-      lastName: '',
+      first_name: '',
+      last_name: '',
       did: '',
+      email: '',
+      vault_url: '',
       title: '',
       about: '',
       address: {
@@ -74,11 +96,11 @@ const ProfilePage: React.FC<RouteComponentProps> = (
       },
     },
     educationDTO: {
-      isEnabled: true,
+      isEnabled: false,
       items: [] as EducationItem[],
     },
     experienceDTO: {
-      isEnabled: true,
+      isEnabled: false,
       items: [] as ExperienceItem[],
     },
   })
@@ -92,9 +114,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
   // let token: string =
   //   new URLSearchParams(props.location.search).get('token') || ''
 
-  const getFullProfile = async (did: string): Promise<any> => {
-    return await requestFullProfile(did)
-  }
+
 
   // const getPublicUrl = (): string => {
   //   let item = window.sessionStorage.getItem('session_instance')
@@ -105,15 +125,34 @@ const ProfilePage: React.FC<RouteComponentProps> = (
   //   return '/did/' + instance.did
   // }
 
+
+
+  const getFullProfile = async (did: string): Promise<any> => {
+    return await requestFullProfile(did)
+  }
+
+
   useEffect(() => {
-    ;(async () => {
-      let instance = UserService.getLoggedUser()
-      if (!instance || !instance.userToken) return
+    (async () => {
+      debugger;
+      let instance = UserService.GetUserSession()
+      if (!instance) return
 
-      // let profile: ProfileDTO = await getFullProfile('did')
-      // setfull_profile(profile)
 
+      setUserInfo(instance);
+      console.error(JSON.stringify(userInfo));
       if (instance.onBoardingCompleted && !willExpire) {
+
+        try {
+          let profile: ProfileDTO = await getFullProfile(instance.did);
+          profile.experienceDTO.isEnabled = true;
+          profile.educationDTO.isEnabled = true;
+          setfull_profile(profile);
+
+        } catch (e) {
+          setError(true);
+        }
+
         setWillExpire(true)
         setTimeout(() => {
           UserService.logout()
@@ -123,6 +162,11 @@ const ProfilePage: React.FC<RouteComponentProps> = (
       setOnboardingStatus(instance.onBoardingCompleted)
     })()
   }, [])
+
+  const onTutorialStart = () => {
+    console.log("Start tutorial")
+    setShowTutorial(true)
+  }
 
   if (!onboardingCompleted) {
     return (
@@ -149,20 +193,28 @@ const ProfilePage: React.FC<RouteComponentProps> = (
           <IonRow className={style['profilecontent']}>
             <IonCol size='2' className={style['left-panel']}>
               <Logo />
-              <Navbar />
+              <Navbar tab="dashboard" />
             </IonCol>
             {/* <IonCol size='7' className={style['center-panel']}>
               <ProfileComponent profile={profile} />
             </IonCol> */}
             <IonCol size='10' className={style['right-panel']}>
-              <ProfileHeader profile={full_profile} />
-              <DashboardNav />
+
+
+              <LoggedHeader profile={full_profile} sessionItem={userInfo} />
+
+              <DashboardNav onTutorialStart={onTutorialStart} profile={full_profile} sessionItem={userInfo} />
               {/* <StartServiceComponent />
               <ProfileCompletion /> */}
             </IonCol>
           </IonRow>
         </IonGrid>
+
+        <IonModal isOpen={showTutorial} cssClass={style["tutorialpage"]} backdropDismiss={false} >
+          <TutorialComponent onClose={() => setShowTutorial(false)} />
+        </IonModal>
       </IonContent>
+
     </IonPage>
   )
 }

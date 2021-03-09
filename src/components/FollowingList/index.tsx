@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IonButton, IonGrid, IonRow, IonCol, IonInput } from '@ionic/react';
+import { IonButton, IonGrid, IonRow, IonCol, IonInput, IonCard, IonCardTitle, IonCardHeader, IonCardContent } from '@ionic/react';
 import style from './style.module.scss';
 import verified from '../../assets/verified.svg';
 import { Link } from 'react-router-dom';
@@ -10,6 +10,8 @@ import {
   IFollowerResponse,
 } from 'src/services/profile.service';
 import { DidService } from 'src/services/did.service';
+import styleCards from '../cards/OverviewCard.module.scss';
+import styled from 'styled-components';
 
 export interface IDidDocument {
   id: string;
@@ -43,12 +45,129 @@ export interface AvatarCredential {
   data: string;
 }
 
+interface FollowingsWidgetProps {
+  contacts: IFollowingResponse
+  resolveUserFunc: any,
+  getLinkFunc: any
+}
+
+const TruncatedSpan = styled.span`
+white-space:nowrap;
+overflow:hidden; 
+text-overflow: ellipsis; 
+display: block;
+font-family: 'SF Pro Display';
+font-size: 14px;
+font-weight: normal;
+font-stretch: normal;
+font-style: normal;
+line-height: 1.62;
+letter-spacing: normal;
+text-align: left;
+color: #979797;
+`;
+
+const Name = styled.span`
+font-family: 'SF Pro Display';
+font-size: 16px;
+font-weight: 600;
+font-stretch: normal;
+font-style: normal;
+line-height: 1.56;
+letter-spacing: normal;
+text-align: left;
+color: #27272e;
+`;
+
+const ViewAll = styled.span`
+flex-grow: 0;
+font-family: 'SF Pro Display';
+font-size: 14px;
+font-weight: bold;
+font-stretch: normal;
+font-style: normal;
+line-height: normal;
+letter-spacing: normal;
+text-align: right;
+color: #4c6fff;
+`;
+
+const FollowingWidget: React.FC<FollowingsWidgetProps> = ({ contacts, resolveUserFunc, getLinkFunc }: FollowingsWidgetProps) => {
+  return (
+    <IonCard className={styleCards['overview']}>
+      <IonCardHeader>
+        <IonGrid>
+          <IonRow className="ion-justify-content-between">
+            <IonCol size="6"><IonCardTitle id="education">Following ({contacts.get_following.items.length})</IonCardTitle></IonCol>
+            <IonCol size="auto"><ViewAll>View all</ViewAll></IonCol>
+          </IonRow>
+        </IonGrid>
+
+
+      </IonCardHeader>
+      <IonCardContent>
+        <IonGrid className={style["following-widget"]}>
+          {contacts.get_following.items.map(
+            (item: IFollowingItem, index) => (
+              <IonRow key={index}>
+                <IonCol size='*'>
+                  <img
+                    className={style['thumbnail']}
+                    src={resolveUserFunc(item.did).image}
+                    alt='thumbnail'
+                  />
+                </IonCol>
+                <IonCol size='7'>
+                  <Link to={getLinkFunc(item.did)} >
+
+                    <IonGrid>
+                      <IonRow>
+                        <Name>{resolveUserFunc(item.did).name}</Name>
+                      </IonRow>
+                      <IonRow>
+                        <TruncatedSpan>{item.did}</TruncatedSpan>
+                      </IonRow>
+                    </IonGrid>
+                  </Link>
+                </IonCol>
+                {/* <IonCol size='3'>
+                    <IonButton size='small' onClick={() => unfollow(item.did)}>
+                      Unfollow
+                    </IonButton>
+                  </IonCol> */}
+              </IonRow>
+            )
+          )}
+        </IonGrid>
+      </IonCardContent>
+    </IonCard >
+  );
+};
+
+
+const FollowingWidgetError: React.FC<any> = (props: any) => {
+  return (
+    <IonCard className={styleCards['overview']}>
+      <IonCardHeader>
+        <IonCardTitle id="education">Following</IonCardTitle>
+      </IonCardHeader>
+      <IonCardContent>
+        The list of followings is not acessible
+      </IonCardContent>
+    </IonCard>
+  );
+};
+
 export interface IError {
   hasError: boolean;
   errorDescription?: string;
 }
 
-const FollowingList: React.FC<any> = (props?: any) => {
+interface IProps {
+  did: string;
+}
+
+const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
   const [listContacts, setListContacts] = useState<IFollowingResponse>({
     get_following: { items: [] },
   });
@@ -69,6 +188,7 @@ const FollowingList: React.FC<any> = (props?: any) => {
   };
 
   const follow = async () => {
+    debugger;
     let list: any = await profileService.addFollowing(didFollow);
     setListContacts(list);
   };
@@ -97,7 +217,7 @@ const FollowingList: React.FC<any> = (props?: any) => {
                 .avatar as unknown) as AvatarCredential;
               console.log('avatar ' + JSON.stringify(avatar.data));
               let type = avatar['content-type'];
-              image = `data:${type};base64, ${avatar.data}`;
+              image = `data: ${type}; base64, ${avatar.data} `;
             }
           }
         );
@@ -119,18 +239,23 @@ const FollowingList: React.FC<any> = (props?: any) => {
 
   const getFollowersCount = (did: string): string => {
     let val: string = '';
-    if (
-      listFollowers.get_followers.items !== undefined &&
-      listFollowers.get_followers.items.length > 0
-    ) {
-      console.log('did: ' + did);
-      console.log(JSON.stringify(listFollowers));
+    try {
 
-      listFollowers.get_followers.items.forEach((item) => {
-        if (item.did === did) {
-          val = item.followers.length.toString();
-        }
-      });
+      if (
+        listFollowers.get_followers.items !== undefined &&
+        listFollowers.get_followers.items.length > 0
+      ) {
+        console.log('did: ' + did);
+        console.log(JSON.stringify(listFollowers));
+
+        listFollowers.get_followers.items.forEach((item) => {
+          if (item.did === did) {
+            val = item.followers.length.toString();
+          }
+        });
+      }
+    } catch (e) {
+
     }
     return val;
   };
@@ -138,70 +263,13 @@ const FollowingList: React.FC<any> = (props?: any) => {
   const getPage = (error: IError) => {
     if (error.hasError) {
       return (
-        <div className={style['followinglist']}>
-          <span>{error.errorDescription}</span>
-        </div>
+        <FollowingWidgetError></FollowingWidgetError>
       );
     } else {
       return (
-        <div className={style['followinglist']}>
-          {/*-- Default FollowingList --*/}
-
-          <h1>Following ({listContacts.get_following.items.length})</h1>
-          <h1 onClick={reset}>Reset</h1>
-
-          <IonGrid>
-            {listContacts.get_following.items.map(
-              (item: IFollowingItem, index) => (
-                <IonRow key={index}>
-                  <IonCol size='*'>
-                    <img
-                      className={style['thumbnail']}
-                      src={resolveUserInfo(item.did).image}
-                      alt='humbnail'
-                    />
-                  </IonCol>
-                  {/* <IonCol size="*"><img className={style["thumbnail"]} src={vitalik} /></IonCol> */}
-
-                  <IonCol size='7'>
-                    <Link to={getLink(item.did)}>
-                      <div>
-                        <span className={style['name']}>
-                          {resolveUserInfo(item.did).name}
-                        </span>
-                        <img
-                          src={verified}
-                          className={style['verified']}
-                          alt='verified'
-                        />
-                      </div>
-                      <div>
-                        <span className={style['number-followers']}>
-                          followers {getFollowersCount(item.did)}
-                        </span>
-                      </div>
-                    </Link>
-                  </IonCol>
-                  <IonCol size='3'>
-                    <IonButton size='small' onClick={() => unfollow(item.did)}>
-                      Unfollow
-                    </IonButton>
-                  </IonCol>
-                </IonRow>
-              )
-            )}
-          </IonGrid>
-          <IonInput
-            placeholder='did'
-            value={didFollow}
-            onIonChange={(event) =>
-              setDidFollow((event.target as HTMLInputElement).value)
-            }
-          ></IonInput>
-          <span className={style['invite']} onClick={follow}>
-            + Follow someone
-          </span>
-        </div>
+        <FollowingWidget contacts={listContacts}
+          resolveUserFunc={resolveUserInfo}
+          getLinkFunc={getLink} />
       );
     }
   };
@@ -211,6 +279,7 @@ const FollowingList: React.FC<any> = (props?: any) => {
 
     let list: IFollowingResponse;
     try {
+
       if (did === undefined) {
         profileService = await getUserHiveInstance();
         console.log('get user instance');
@@ -228,8 +297,9 @@ const FollowingList: React.FC<any> = (props?: any) => {
       setError({ hasError: true, errorDescription: 'cant load followings' });
       return;
     }
+
     let listDids = list.get_following.items.map((p) => p.did);
-    let followers = await profileService.getFollowers(listDids);
+
     if (
       listContacts.get_following.items.length !==
       list.get_following.items.length
@@ -237,7 +307,13 @@ const FollowingList: React.FC<any> = (props?: any) => {
       setListContacts(list);
 
     }
-    setListFollowers(followers as IFollowerResponse);
+
+    try {
+      let followers = await profileService.getFollowers(listDids);
+      setListFollowers(followers as IFollowerResponse);
+    } catch (e) {
+      console.error("cant get followers count");
+    }
 
     let docs: IDidDocument[] = [];
     await Promise.all(
@@ -252,9 +328,13 @@ const FollowingList: React.FC<any> = (props?: any) => {
 
   useEffect(() => {
     (async () => {
-      await loadData(props.did);
+
+      if (did !== "") {
+        debugger;
+        await loadData(did);
+      }
     })();
-  }, [listContacts]);
+  }, [listContacts, did]);
 
   return <div>{getPage(error)}</div>;
 };

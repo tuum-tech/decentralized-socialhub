@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React from 'react';
 
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet } from '@ionic/react';
@@ -32,7 +32,7 @@ import './styles/app.scss';
 // import LoginPage from './pages/OldPages/LoginPage/Loadable'
 // import LoginPage from './pages/LoginPage/Loadable';
 // import ElastosLoginPage from './pages/OldPages/ElastosLoginPage/Loadable';
-// import MnemonicPage from './pages/OldPages/pages/MnemonicPage/Loadable';
+//import MnemonicPage from './pages/OldPages/pages/MnemonicPage(Obsolete)/Loadable';
 // import RegisterPage from './pages/OldPages/RegisterPage/Loadable'
 // import ElastosMnemonicPage from './pages/OldPages/ElastosMnemonicPage'
 // import ElastosLoginQRPage from './pages/OldPages/ElastosLoginQRPage'
@@ -49,21 +49,21 @@ import {
   TwitterCallback,
   LinkedinCallback,
   FacebookCallback,
-} from './pages/SocialCallback';
-import AssociatedProfile from './pages/AssociatedProfilePage/Loadable';
-import CreateProfilePage from './pages/CreateProfilePage/Loadable';
-import CreateWhyPage from './pages/CreateWhyPage/Loadable';
-import CreatePasswordPage from './pages/CreatePasswordPage/Loadable';
-import GenerateDidPage from './pages/GenerateDidPage/Loadable';
-import SignDidPage from './pages/SignDidPage/Loadable';
-import SignQRPage from './pages/SignQRPage/Loadable';
-import ForgotPasswordPage from './pages/ForgotPasswordPage/Loadable';
-import UnlockUserPage from './pages/UnlockUserPage/Loadable';
-import SignHelpPage from './pages/SignHelpPage/Loadable';
+  AssociatedProfile,
+  EmailAssociatedProfile,
+  CreateProfilePage,
+  CreateWhyPage,
+  CreatePasswordPage,
+  GenerateDidPage,
+  SignDidPage,
+  SignQRPage,
+  ForgotPasswordPage,
+  UnlockUserPage,
+  VerifyEmailPage,
+  CreateProfileWithDidPage,
+} from './pages/Auth';
 
-import VerifyEmailPage from './pages/VerifyEmailPage';
 import AccessCodePage from './pages/AlphaAccess/AccessCode';
-
 import TutorialPage from './pages/TutorialPage';
 import ExplorePage from './pages/ExplorePage';
 import SettingsPage from './pages/SettingsPage/Loadable';
@@ -71,8 +71,13 @@ import ProfilePage from './pages/ProfilePage/Loadable';
 import PublicPage from './pages/PublicPage/Loadable';
 
 import ProtectedRoute from './components/ProtectedRoute';
-import FollowingsPage from './pages/FollowingsPage';
+
+// import RequestCodePage from './pages/AlphaAccess/RequestCode';
+// import InviteCodePage from './pages/AlphaAccess/InviteCode';
+import ManagerPage from './pages/ManagerPage';
+import ElastosMnemonicPage from './pages/OldPages/ElastosMnemonicPage';
 import FollowersPage from './pages/FollowersPage';
+import FollowingsPage from './pages/FollowingsPage';
 
 const App: React.FC = () => {
   // const [session, setSession] = useState({});
@@ -81,36 +86,29 @@ const App: React.FC = () => {
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
-          {/* <Route path='/login' component={LoginPage} exact={true} />
-          <Route path="/login/mnemonic" component={MnemonicPage} exact={true} />
-          <Route path="/register/mnemonic" component={MnemonicPage} exact={true} />
+          {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} /> */}
+          {/* <Route path="/register/mnemonic" component={MnemonicPage} exact={true} /> */}
           <Route
             path='/login/elastos/mnemonic'
             component={ElastosMnemonicPage}
             exact
           />
-          <Route
+          {/* <Route
             path='/login/elastos/qrcode'
             component={ElastosLoginQRPage}
             exact
           />
           <Route path='/register' component={RegisterPage} exact={true} />
-          <Route path='/home' component={HomePage} exact={true} />
-          */}
+          <Route path='/home' component={HomePage} exact={true} /> */}
 
           <Route path='/create' component={CreateIdentityPage} exact={true} />
           <Route path='/confirm' component={ConfirmMnemonicPage} exact={true} />
           <Route path='/publish' component={PublishIdentityPage} exact={true} />
           <Route path='/choosevault' component={ChooseVaultPage} exact={true} />
           {/* <Route path='/home' component={HomePage} exact={true} /> */}
+          <Route exact path='/' render={() => <Redirect to='/Alpha' />} />
 
-          <Route
-            path='/'
-            render={() => <Redirect to='/Alpha' />}
-            exact={true}
-          />
           <Route path='/Alpha' component={AccessCodePage} exact={true} />
-
           <ProtectedRoute
             path='/profile'
             component={ProfilePage}
@@ -132,6 +130,8 @@ const App: React.FC = () => {
           <Route path='/settings' component={SettingsPage} exact={true} />
           <Route path='/tutorial' component={TutorialPage} exact={true} />
           <Route path='/did/:did' component={PublicPage} exact={true} />
+          <Route path='/manager' component={ManagerPage} exact={true} />
+          <Route exact path='/' render={() => <Redirect to='/Alpha' />} />
 
           {/* // login workflow */}
           <Route path='/twitter_callback' component={TwitterCallback} />
@@ -154,19 +154,19 @@ const App: React.FC = () => {
             exact={true}
           />
           <ProtectedRoute
-            path='/sign-help'
-            component={SignHelpPage}
-            exact={true}
-          />
-          <ProtectedRoute
             path='/sign-did'
             component={SignDidPage}
             exact={true}
           />
           <ProtectedRoute path='/sign-qr' component={SignQRPage} exact={true} />
           <ProtectedRoute
-            path='/a-profile'
+            path='/associated-profile'
             component={AssociatedProfile}
+            exact={true}
+          />
+          <ProtectedRoute
+            path='/email-associated-profile'
+            component={EmailAssociatedProfile}
             exact={true}
           />
           <ProtectedRoute
@@ -180,16 +180,16 @@ const App: React.FC = () => {
             exact={true}
           />
           <ProtectedRoute
+            path='/create-profile-with-did'
+            component={CreateProfileWithDidPage}
+            exact={true}
+          />
+          <ProtectedRoute
             path='/forgot-password'
             component={ForgotPasswordPage}
             exact={true}
           />
-
-          <ProtectedRoute
-            path='/verify/email/:code'
-            component={VerifyEmailPage}
-            exact={true}
-          />
+          <Route path='/verify/email/:code' component={VerifyEmailPage} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
