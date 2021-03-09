@@ -239,7 +239,7 @@ export class UserService {
       isDIDPublished: await DidService.isDIDPublished(newDID.did),
       firstName: fname,
       lastName: lname,
-      hiveHost: 'http://localhost:9001',
+      hiveHost: `${process.env.REACT_APP_TUUM_TECH_HIVE}`,
       userToken: token,
       mnemonics: newDID.mnemonic,
       email: email,

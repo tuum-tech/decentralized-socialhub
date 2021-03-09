@@ -4,16 +4,63 @@ import ButtonDefault from 'src/components/ButtonDefault';
 import { ITutorialStepProp } from './TutorialStep1';
 import style from '../style.module.scss'
 import tuumlogo from '../../../assets/tuumtech.png'
+import { DidService } from 'src/services/did.service';
+import { UserService } from 'src/services/user.service';
+import { HiveService } from 'src/services/hive.service';
+import { DidDocumentService } from 'src/services/diddocument.service';
 const TutorialStep3Component: React.FC<ITutorialStepProp> = ({ onContinue }) => {
 
     
     const [hiveUrl, sethiveUrl] = useState("")
     const [hiveDocument] = useState("")
 
+    const [errorMessage, setErrorMessage] = useState("")
+
     const [selected, setSelected] = useState( hiveDocument === "" ? "tuum": "document")
 
+    const getEndpoint = ()=>{
+        if (selected === "document") return hiveDocument;
+        if (selected === "tuum") return `${process.env.REACT_APP_TUUM_TECH_HIVE}`;
+        return hiveUrl
+    }
 
-    const saveSelection = ()=>{
+    const isEndpointValid = (endpoint: string) => {
+        if (!endpoint || endpoint.length == 0) return false
+        let regexp = new RegExp(
+            /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(:[0-9]+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
+        )
+        return regexp.test(endpoint)
+      }
+
+    const saveSelection = async ()=>{
+        setErrorMessage("")
+        let endpoint = getEndpoint();
+        let endpointValid = isEndpointValid(endpoint)
+
+        if (!endpointValid) {
+            setErrorMessage("Invalid hive address")
+            return
+        }
+
+        let isValidHiveAddress = await HiveService.isHiveAddressValid(endpoint)
+        if (!isValidHiveAddress) {
+            setErrorMessage("Invalid hive address")
+            return
+        }
+
+        let user = UserService.GetUserSession() 
+        let userDid = await DidService.loadDid(user.mnemonics)   
+        let hivesvc = DidService.generateService(userDid, "hive", endpoint)
+
+        let userDocument = await DidDocumentService.getUserDocument()
+
+        DidService.addServiceToDIDDocument(userDocument, hivesvc)
+        DidDocumentService.updateUserDocument(userDocument)
+
+        user.hiveHost = endpoint;
+
+        UserService.updateSession(user)
+
         onContinue()
     }
 

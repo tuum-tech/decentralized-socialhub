@@ -30,6 +30,17 @@ export class HiveService {
     return hiveClient
   }
 
+  static async isHiveAddressValid(address: string) : Promise<boolean>{
+
+    try {
+      let challenge = await HiveService.getHiveChallenge(address)  
+      let isValid: boolean = (challenge.nonce !== undefined && challenge.nonce.length > 0)
+      return isValid
+    } catch (error) {
+      return false    
+    }
+  }
+
   static async getToken(address: string): Promise<string> {
     let token = window.sessionStorage.getItem('app_token')
     if (!token) {

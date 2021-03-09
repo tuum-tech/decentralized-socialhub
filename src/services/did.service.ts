@@ -61,10 +61,28 @@ export class DidService {
     );
   }
 
+  static async addServiceToDIDDocument(diddocument: any, service: any) {
+    
+    if (diddocument.hasOwnProperty("proof")) {
+      console.log("Remove proof")
+      delete diddocument.proof
+      console.log("Proof removed")
+    }
+
+    ElastosClient.didDocuments.addServiceToDIDDocument(
+      diddocument,
+      service
+    );
+  }
+
 
 
   static generateSelfVerifiableCredential(did: IDID, subjectName: string, subjectTypes: string[], subjectValue: any){
     return ElastosClient.didDocuments.createVerifiableCredential(did, did.did, subjectName, subjectTypes, subjectValue)
+  }
+
+  static generateService(did: IDID, type: string, endpoint: string){
+    return ElastosClient.didDocuments.createService(did, did.did, type, endpoint)
   }
 
   static async generateVerifiablePresentationFromUserMnemonics(

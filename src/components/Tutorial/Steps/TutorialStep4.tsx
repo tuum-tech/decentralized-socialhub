@@ -5,6 +5,10 @@ import { ITutorialStepProp } from './TutorialStep1';
 import badge from '../../../assets/TutorialBagde.svg'
 
 const TutorialStep4Component: React.FC<ITutorialStepProp> = ({onContinue}) => {
+
+    
+
+
     return (
         <div>
             <h2>✅ Tutorial Complete</h2>
