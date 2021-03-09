@@ -205,6 +205,7 @@ let run = async () => {
             hiveHost: '$params.hiveHost',
             userToken: '$params.userToken',
             accountType: '$params.accountType',
+            tutorialCompleted: '$params.tutorialCompleted'
           },
         },
       },

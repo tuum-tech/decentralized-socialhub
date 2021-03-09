@@ -8,17 +8,19 @@ import { DidService } from 'src/services/did.service';
 import { UserService } from 'src/services/user.service';
 import { HiveService } from 'src/services/hive.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
+import { UserVaultScripts } from 'src/scripts/uservault.script';
+import { AssistService } from 'src/services/assist.service';
 const TutorialStep3Component: React.FC<ITutorialStepProp> = ({ onContinue }) => {
 
-    
+
     const [hiveUrl, sethiveUrl] = useState("")
     const [hiveDocument] = useState("")
 
     const [errorMessage, setErrorMessage] = useState("")
 
-    const [selected, setSelected] = useState( hiveDocument === "" ? "tuum": "document")
+    const [selected, setSelected] = useState(hiveDocument === "" ? "tuum" : "document")
 
-    const getEndpoint = ()=>{
+    const getEndpoint = () => {
         if (selected === "document") return hiveDocument;
         if (selected === "tuum") return `${process.env.REACT_APP_TUUM_TECH_HIVE}`;
         return hiveUrl
@@ -30,9 +32,9 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({ onContinue }) => 
             /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(:[0-9]+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
         )
         return regexp.test(endpoint)
-      }
+    }
 
-    const saveSelection = async ()=>{
+    const saveSelection = async () => {
         setErrorMessage("")
         let endpoint = getEndpoint();
         let endpointValid = isEndpointValid(endpoint)
@@ -48,20 +50,36 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({ onContinue }) => 
             return
         }
 
-        let user = UserService.GetUserSession() 
-        let userDid = await DidService.loadDid(user.mnemonics)   
-        let hivesvc = DidService.generateService(userDid, "hive", endpoint)
+        try {
+            let user = UserService.GetUserSession()
+            let userDid = await DidService.loadDid(user.mnemonics)
+            let hivesvc = DidService.generateService(userDid, "hive", endpoint)
 
-        let userDocument = await DidDocumentService.getUserDocument()
+            let userDocument = await DidDocumentService.getUserDocument()
 
-        DidService.addServiceToDIDDocument(userDocument, hivesvc)
-        DidDocumentService.updateUserDocument(userDocument)
+            DidService.addServiceToDIDDocument(userDocument, hivesvc)
 
-        user.hiveHost = endpoint;
+            userDocument = DidService.sealDIDDocument(userDid, userDid)
 
-        UserService.updateSession(user)
+            DidDocumentService.updateUserDocument(userDocument)
 
-        onContinue()
+            user.hiveHost = endpoint;
+            UserService.updateSession(user)
+
+            let hiveInstance = await HiveService.getSessionInstance()
+            await UserVaultScripts.Execute(hiveInstance!)
+
+            let publishRequest = await DidService.generatePublishRequest(userDocument)
+            AssistService.publishDocument(userDid.did, publishRequest)
+
+            user.tutorialCompleted = true
+            UserService.updateSession(user)
+            onContinue()
+        } catch (error) {
+            setErrorMessage("We are not able to process your request at moment. Please try again later")
+        }
+
+
     }
 
 
@@ -77,22 +95,22 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({ onContinue }) => 
                 <IonRadioGroup value={selected} onIonChange={(e) => { e.preventDefault(); setSelected(e.detail.value!); e.cancelBubble = true }}>
                     {hiveDocument !== "" && (
                         <div className={style["tutorial-hive-row"]}>
-                        <IonRadio value="document"></IonRadio>
-                        
-                        <div className={style["tutorial-hive-item"]}>
-                            <p>
-                                <h3>{hiveDocument}</h3>
-                                <span>Using the default detected vault</span>
-                            </p>
+                            <IonRadio value="document"></IonRadio>
+
+                            <div className={style["tutorial-hive-item"]}>
+                                <p>
+                                    <h3>{hiveDocument}</h3>
+                                    <span>Using the default detected vault</span>
+                                </p>
+                            </div>
                         </div>
-                    </div>
                     )}
 
-               
+
 
                     <div className={style["tutorial-hive-row"]}>
                         <IonRadio value="tuum"></IonRadio>
-                        
+
                         <div className={style["tutorial-hive-item"]}>
                             <img src={tuumlogo} />
                             <p>
@@ -106,7 +124,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({ onContinue }) => 
                     </div>
                 </IonRadioGroup>
             </div>
-
+            {errorMessage !== "" && (<div className={style["tutorial-step3-error"]}>{errorMessage}</div>)}
             <IonButton onClick={saveSelection} className={style["tutorial-button"]}>Continue</IonButton>
         </div>
     );

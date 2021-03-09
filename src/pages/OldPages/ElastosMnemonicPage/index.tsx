@@ -191,6 +191,7 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
           isDIDPublished: false,
           mnemonics: "",
           onBoardingCompleted: true,
+          tutorialCompleted: false
         },
         pwd
       )

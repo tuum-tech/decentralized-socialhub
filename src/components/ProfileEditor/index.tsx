@@ -50,7 +50,8 @@ const ProfileEditor: React.FC = () => {
     lastName: "",
     isDIDPublished: false,
     mnemonics: "",
-    onBoardingCompleted: false
+    onBoardingCompleted: false,
+    tutorialCompleted: false
   });
   const [loaded, setloaded] = useState(false);
   const [full_profile, setfull_profile] = useState({

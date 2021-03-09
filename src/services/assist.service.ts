@@ -36,6 +36,15 @@ export class AssistService {
     let response = await fetch(url, postData);
 
     let json = await response.json();
+
+    window.localStorage.setItem(
+      `publish_${json.confirmationId}`,
+      JSON.stringify({
+        confirmationId: json.confirmationId,
+        status: json.requestStatus,
+      })
+    )
+
     return {
       confirmationId: json.data.confirmation_id,
       requestStatus: RequestStatus.Pending,
