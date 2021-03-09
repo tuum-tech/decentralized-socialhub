@@ -170,7 +170,6 @@ interface IExperienceProps {
 }
 const ExperienceCard: React.FC<IExperienceProps> = ({ experienceDTO, updateFunc, mode }: IExperienceProps) => {
 
-
   const [currentExperienceDTO, setcurrentExperienceDTO] = useState(experienceDTO);
 
   const handleChange = (evt: any, index: number) => {
@@ -249,21 +248,25 @@ const ExperienceCard: React.FC<IExperienceProps> = ({ experienceDTO, updateFunc,
   });
 
   return (
-    <IonCard className={styleWidget['overview']}>
-      <IonCardHeader>
-        <IonGrid>
-          <IonRow className="ion-justify-content-between">
-            <IonCol><IonCardTitle>Experience</IonCardTitle></IonCol>
-            <IonCol size="auto"><LinkStyleSpan onClick={(e) => addItem()}>+ Add Experience</LinkStyleSpan></IonCol>
-          </IonRow>
-        </IonGrid>
-      </IonCardHeader>
-      <IonCardContent>
-        {
-          listExperiences
-        }
-      </IonCardContent>
-    </IonCard>
+    <>
+      { experienceDTO.isEnabled === true ?
+        <IonCard className={styleWidget['overview']}>
+          <IonCardHeader>
+            <IonGrid>
+              <IonRow className="ion-justify-content-between">
+                <IonCol><IonCardTitle>Experience</IonCardTitle></IonCol>
+                <IonCol size="auto"><LinkStyleSpan onClick={(e) => addItem()}>+ Add Experience</LinkStyleSpan></IonCol>
+              </IonRow>
+            </IonGrid>
+          </IonCardHeader>
+          <IonCardContent>
+            {
+              listExperiences
+            }
+          </IonCardContent>
+        </IonCard>
+        : ""}
+    </>
   );
 };
 

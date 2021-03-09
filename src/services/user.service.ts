@@ -59,6 +59,7 @@ export class UserService {
     if (service === AccountType.Google) return CredentialType.Google
     if (service === AccountType.Linkedin) return CredentialType.Linkedin
     if (service === AccountType.Email) return CredentialType.Email
+    if (service === AccountType.DID) return CredentialType.DID
     throw Error('Invalid account type')
   }
 
@@ -66,6 +67,9 @@ export class UserService {
     service: AccountType,
     credential: string
   ): Promise<IDID> {
+  
+    this.clearPrevLocalData()
+
     console.log('Generating temporary DID')
     let newDID = await DidService.generateNew()
     let temporaryDocument = await DidService.temporaryDidDocument(newDID)
@@ -220,28 +224,37 @@ export class UserService {
     }
   }
 
-  public static async CreateNewDidUser(
+  public static async CreateNewUser(
     fname: string,
     lname: string,
     token: string,
     service: AccountType,
     email: string,
     credential: string,
-    storePassword: string
+    storePassword: string,
+    newDidStr: string,
+    newMnemonicStr: string,
   ) {
     let sessionItem: ISessionItem
 
-    let newDID = await this.generateTemporaryDID(service, credential)
+    let did = newDidStr;
+    let mnemonic = newMnemonicStr;
+
+    if (!did || did === '') {
+      const newDid = await this.generateTemporaryDID(service, credential)
+      did = newDid.did
+      mnemonic = newDid.did
+    }
 
     sessionItem = {
-      did: newDID.did,
+      did: did,
       accountType: service,
-      isDIDPublished: await DidService.isDIDPublished(newDID.did),
+      isDIDPublished: await DidService.isDIDPublished(did),
       firstName: fname,
       lastName: lname,
       hiveHost: `${process.env.REACT_APP_TUUM_TECH_HIVE}`,
       userToken: token,
-      mnemonics: newDID.mnemonic,
+      mnemonics: mnemonic,
       email: email,
       onBoardingCompleted: false,
     }
@@ -253,7 +266,7 @@ export class UserService {
         params: {
           email: email,
           code: credential,
-          did: newDID.did,
+          did: did,
           hiveHost: sessionItem.hiveHost,
           accountType: service,
           userToken: token,
@@ -275,7 +288,7 @@ export class UserService {
           email: email,
           status: 'CONFIRMED',
           code: 1,
-          did: newDID.did,
+          did: did,
           hiveHost: sessionItem.hiveHost,
           accountType: service,
           userToken: token,
@@ -290,7 +303,7 @@ export class UserService {
     }
 
     console.log(sessionItem)
-    this.lockUser(this.key(newDID.did), sessionItem, storePassword)
+    this.lockUser(this.key(did), sessionItem, storePassword)
     SessionService.saveSessionItem(sessionItem)
   }
 
@@ -306,15 +319,31 @@ export class UserService {
   }
 
   public static updateSession(sessionItem: ISessionItem) {
-
     window.sessionStorage.setItem(
       'session_instance',
       JSON.stringify(sessionItem, null, '')
     )
   }
 
-    // let instance = this.unlockUser(this.key(did), storePassword)
-    // SessionService.saveSessionItem(instance)
+  public static clearPrevLocalData() {
+    const removeKeys = []
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const key = window.localStorage.key(i)
+      if (
+        key &&
+        key !== '' &&
+        (key.startsWith('temporary_') ||
+          key.startsWith('user_') ||
+          key.startsWith('publish_'))
+      ) {
+        removeKeys.push(key)
+      }
+    }
+    for (let i = 0; i < removeKeys.length; i++) {
+      window.localStorage.removeItem(removeKeys[i])
+    }
+  }
+
   public static UnLockWithDIDAndPWd(did: string, storePassword: string) {
     try {
       let instance = this.unlockUser(this.key(did), storePassword)
@@ -343,22 +372,7 @@ export class UserService {
       console.log('delete_user_by_did script response', response)
     }
 
-    const removeKeys = []
-    for (let i = 0; i < window.localStorage.length; i++) {
-      const key = window.localStorage.key(i)
-      if (
-        key &&
-        key !== '' &&
-        (key.startsWith('temporary_') ||
-          key.startsWith('user_') ||
-          key.startsWith('publish_'))
-      ) {
-        removeKeys.push(key)
-      }
-    }
-    for (let i = 0; i < removeKeys.length; i++) {
-      window.localStorage.removeItem(removeKeys[i])
-    }
+    this.clearPrevLocalData()
     SessionService.Logout()
   }
 }
