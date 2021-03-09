@@ -43,6 +43,7 @@ const GenerateDid: React.FC<Props> = (props) => {
           pwd,
           '',
           '',
+          '',
         )
         setLoading(false)
         window.location.href = '/profile'

@@ -13,9 +13,16 @@ export type InferMappedProps = ReturnType<typeof mapStateToProps> &
 
 export type ActionType = typeof Actions
 
-export type UserSessionProp = {
+export type UserProps = {
+  status: string
+  did: string
+  email: string
+  _id: string
+}
+
+export type SessionProp = {
   id: string
-  dids: Array<string>
+  users: Array<UserProps>
   fname: string
   lname: string
   email: string
@@ -32,8 +39,8 @@ export type UserSessionProp = {
 
 export type LocationState = {
   from: Location
+  users: Array<UserProps>
   id: string
-  dids: Array<string>
   fname: string
   lname: string
   email: string

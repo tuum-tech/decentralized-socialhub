@@ -229,6 +229,7 @@ export class UserService {
     storePassword: string,
     newDidStr: string,
     newMnemonicStr: string,
+    hiveHostStr: string,
   ) {
     let sessionItem: ISessionItem
 
@@ -247,7 +248,7 @@ export class UserService {
       isDIDPublished: await DidService.isDIDPublished(did),
       firstName: fname,
       lastName: lname,
-      hiveHost: `${process.env.REACT_APP_TUUM_TECH_HIVE}`,
+      hiveHost: hiveHostStr === '' ? `${process.env.REACT_APP_TUUM_TECH_HIVE}` : hiveHostStr,
       userToken: token,
       mnemonics: mnemonic,
       email: email,
