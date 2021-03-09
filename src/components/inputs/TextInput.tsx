@@ -15,6 +15,7 @@ interface Props {
   hasError?: boolean;
   readonly?: boolean,
   onChange: (e: string) => void;
+  className?: string;
   type?:
     | 'number'
     | 'text'
@@ -37,6 +38,7 @@ const TextInput: React.FC<Props> = ({
   hasError = false,
   type = 'text',
   readonly = false,
+  className,
 }) => {
   let cName = style['textinput']
   if (flexDirection === 'column') {
@@ -44,6 +46,9 @@ const TextInput: React.FC<Props> = ({
   }
   if (hasError) {
     cName += ` ${style['hasError']}`
+  }
+  if (className) {
+    cName += ` ${className}`
   }
 
   return (

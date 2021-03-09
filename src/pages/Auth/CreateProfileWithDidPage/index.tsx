@@ -8,6 +8,7 @@ import { AccountType, UserService } from 'src/services/user.service'
 import UserInfo from './components/UserInfo'
 import PageLoading from 'src/components/layouts/PageLoading'
 import SetPassword from 'src/components/SetPassword'
+import { DidService } from 'src/services/did.service';
 
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
 import injector from 'src/baseplate/injectorWrap'
@@ -27,19 +28,27 @@ const CreateProfileWithDidPage: React.FC<
     mnemonic: '',
     lname: '',
     email: '',
+    vault_url: '',
   })
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (userInfo.did === '') {
+    const fetchUserInfo = async () => {
       const { did, mnemonic } = props.location.state
+      let doc = await DidService.getDidDocument(did);
       setUserInfo({
-        ...userInfo,
         did,
-        mnemonic
+        mnemonic,
+        fname: doc.name.split(' ')[0] || '',
+        lname: doc.name.split(' ')[1] || '',
+        email: doc.email || '',
+        vault_url: doc.vault_url || '',
       })
     }
-  }, [userInfo.did])
+    if (userInfo.did === '') {
+      fetchUserInfo()
+    }
+  }, [])
 
   if (userInfo.did === '') {
     return <PageLoading />
@@ -71,7 +80,8 @@ const CreateProfileWithDidPage: React.FC<
           userInfo.did,
           pwd,
           userInfo.did,
-          userInfo.mnemonic
+          userInfo.mnemonic,
+          userInfo.vault_url
         )
         setLoading(false)
         window.location.href = '/profile'

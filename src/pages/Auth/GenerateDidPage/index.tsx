@@ -80,6 +80,7 @@ const GenerateDidPage: React.FC<
               session.credential,
               pwd,
               '',
+              '',
               ''
             )
           }
