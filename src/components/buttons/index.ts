@@ -19,4 +19,35 @@ const ButtonLink = styled(Link)<ButtonLinkProps>`
   margin: 0;
 `
 
-export { ButtonLink, ArrowButton, SocialButton, ButtonWithLogo }
+const SigninLinkButton = styled.div`
+  width: 100%;
+  max-width: 100px
+  display: block;
+  margin: 0;
+  text-decoration-line: underline;
+  cursor: pointer;
+
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 20px;
+
+  margin-top: 9px;
+
+  &:hover {
+    color: white;
+    ${(props) => {
+      if (props.color) {
+        return `color: ${props.color};`
+      }
+    }}
+  }
+`
+
+export {
+  ButtonLink,
+  ArrowButton,
+  SocialButton,
+  ButtonWithLogo,
+  SigninLinkButton,
+}

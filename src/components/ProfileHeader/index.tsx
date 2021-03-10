@@ -43,16 +43,18 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
         <IonCol size='8'>
           <IonGrid>
             <IonRow>
-              <ProfileName>
-                {profile.basicDTO.first_name} {profile.basicDTO.last_name}
-              </ProfileName>
+              <ProfileName>{profile.basicDTO.name}</ProfileName>
             </IonRow>
             <IonRow>
               <ProfileDescription>{profile.basicDTO.title}</ProfileDescription>
             </IonRow>
-            <IonRow className="ion-justify-content-start">
-              <IonCol size="auto"><ProfileLocationWidget address={profile.basicDTO.address} /></IonCol>
-              <IonCol><DidSnippet did={profile.basicDTO.did} /></IonCol>
+            <IonRow className='ion-justify-content-start'>
+              <IonCol size='auto'>
+                <ProfileLocationWidget address={profile.basicDTO.address} />
+              </IonCol>
+              <IonCol>
+                <DidSnippet did={profile.basicDTO.did} />
+              </IonCol>
             </IonRow>
           </IonGrid>
         </IonCol>

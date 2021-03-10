@@ -3,14 +3,10 @@
  */
 import {
   IonContent,
-  IonHeader,
   IonPage,
-  IonButton,
   IonGrid,
   IonRow,
   IonCol,
-  IonInput,
-  IonSearchbar,
   IonModal,
 } from '@ionic/react'
 import { connect } from 'react-redux'
@@ -21,7 +17,7 @@ import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
 import { incrementAction, getSimpleAjax } from './actions'
 import React, { memo, useEffect, useState } from 'react'
 import style from './style.module.scss'
-import { NameSpace } from './constants'
+import { NameSpace, ExporeTime } from './constants'
 import reducer from './reducer'
 import saga from './saga'
 import { InferMappedProps, ProfileResponse, SubState } from './types'
@@ -47,7 +43,12 @@ import Navbar from 'src/components/Navbar'
 import DashboardNav from 'src/components/DashboardNav'
 import { EducationItem, ExperienceItem, ProfileDTO } from '../PublicPage/types'
 import OnBoarding from 'src/components/OnBoarding'
-import { AccountType, ISessionItem, UserData, UserService } from 'src/services/user.service'
+import {
+  AccountType,
+  ISessionItem,
+  UserData,
+  UserService,
+} from 'src/services/user.service'
 import { userInfo } from 'os'
 import LoggedHeader from 'src/components/LoggedHeader'
 import TutorialComponent from 'src/components/Tutorial'
@@ -60,31 +61,29 @@ const ProfilePage: React.FC<RouteComponentProps> = (
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
-  const [error, setError] = useState(false);
-  const [showTutorial, setShowTutorial] = useState(false);
+  const [error, setError] = useState(false)
+  const [showTutorial, setShowTutorial] = useState(false)
   const [willExpire, setWillExpire] = useState(false)
   const [userInfo, setUserInfo] = useState<ISessionItem>({
-    hiveHost: "",
-    userToken: "",
+    hiveHost: '',
+    userToken: '',
     accountType: AccountType.DID,
-    did: "",
-    firstName: "",
-    email: "",
-    lastName: "",
+    did: '',
+    name: '',
+    email: '',
     isDIDPublished: false,
-    mnemonics: "",
+    mnemonics: '',
     onBoardingCompleted: false,
-    tutorialCompleted: false
-  });
+    tutorialCompleted: false,
+  })
 
   const [full_profile, setfull_profile] = useState({
     basicDTO: {
       isEnabled: false,
-      first_name: '',
-      last_name: '',
+      name: '',
       did: '',
       email: '',
-      vault_url: '',
+      hiveHost: '',
       title: '',
       about: '',
       address: {
@@ -114,8 +113,6 @@ const ProfilePage: React.FC<RouteComponentProps> = (
   // let token: string =
   //   new URLSearchParams(props.location.search).get('token') || ''
 
-
-
   // const getPublicUrl = (): string => {
   //   let item = window.sessionStorage.getItem('session_instance')
   //   if (!item) {
@@ -125,12 +122,9 @@ const ProfilePage: React.FC<RouteComponentProps> = (
   //   return '/did/' + instance.did
   // }
 
-
-
   const getFullProfile = async (did: string): Promise<any> => {
     return await requestFullProfile(did)
   }
-
 
   useEffect(() => {
     (async () => {
@@ -138,33 +132,30 @@ const ProfilePage: React.FC<RouteComponentProps> = (
       let instance = UserService.GetUserSession()
       if (!instance) return
 
-
-      setUserInfo(instance);
-      console.error(JSON.stringify(userInfo));
+      setUserInfo(instance)
+      console.error(JSON.stringify(userInfo))
       if (instance.onBoardingCompleted && !willExpire) {
-
         try {
-          let profile: ProfileDTO = await getFullProfile(instance.did);
-          profile.experienceDTO.isEnabled = true;
-          profile.educationDTO.isEnabled = true;
-          setfull_profile(profile);
-
+          let profile: ProfileDTO = await getFullProfile(instance.did)
+          profile.experienceDTO.isEnabled = true
+          profile.educationDTO.isEnabled = true
+          setfull_profile(profile)
         } catch (e) {
-          setError(true);
+          setError(true)
         }
 
         setWillExpire(true)
         setTimeout(() => {
           UserService.logout()
           window.location.href = '/'
-        }, 60 * 60 * 1000)
+        }, ExporeTime)
       }
       setOnboardingStatus(instance.onBoardingCompleted)
     })()
   }, [])
 
   const onTutorialStart = () => {
-    console.log("Start tutorial")
+    console.log('Start tutorial')
     setShowTutorial(true)
   }
 
@@ -172,14 +163,14 @@ const ProfilePage: React.FC<RouteComponentProps> = (
     return (
       <OnBoarding
         completed={() => {
-          UserService.setOnBoardingComplted()
+          UserService.setOnBoardingCompleted()
           setOnboardingStatus(true)
           if (!willExpire) {
             setWillExpire(true)
             setTimeout(() => {
               UserService.logout()
               window.location.href = '/'
-            }, 60 * 60 * 1000)
+            }, ExporeTime)
           }
         }}
       />
@@ -193,28 +184,33 @@ const ProfilePage: React.FC<RouteComponentProps> = (
           <IonRow className={style['profilecontent']}>
             <IonCol size='2' className={style['left-panel']}>
               <Logo />
-              <Navbar tab="dashboard" />
+              <Navbar tab='dashboard' />
             </IonCol>
             {/* <IonCol size='7' className={style['center-panel']}>
               <ProfileComponent profile={profile} />
             </IonCol> */}
             <IonCol size='10' className={style['right-panel']}>
-
-
               <LoggedHeader profile={full_profile} sessionItem={userInfo} />
 
-              <DashboardNav onTutorialStart={onTutorialStart} profile={full_profile} sessionItem={userInfo} />
+              <DashboardNav
+                onTutorialStart={onTutorialStart}
+                profile={full_profile}
+                sessionItem={userInfo}
+              />
               {/* <StartServiceComponent />
               <ProfileCompletion /> */}
             </IonCol>
           </IonRow>
         </IonGrid>
 
-        <IonModal isOpen={showTutorial} cssClass={style["tutorialpage"]} backdropDismiss={false} >
+        <IonModal
+          isOpen={showTutorial}
+          cssClass={style['tutorialpage']}
+          backdropDismiss={false}
+        >
           <TutorialComponent onClose={() => setShowTutorial(false)} />
         </IonModal>
       </IonContent>
-
     </IonPage>
   )
 }

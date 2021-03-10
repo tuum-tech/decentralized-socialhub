@@ -1,26 +1,26 @@
-import { HiveClient } from '@elastos/elastos-hive-js-sdk';
+import { HiveClient } from '@elastos/elastos-hive-js-sdk'
 // import { all } from 'redux-saga/effects';
 
 export class UserVaultScripts {
   static async Execute(hiveClient: HiveClient) {
-    console.log('Enter uservaultscripts');
+    console.log('Enter uservaultscripts')
 
-    await this.CreateCollections(hiveClient);
-    await this.SetScripts(hiveClient);
+    await this.CreateCollections(hiveClient)
+    await this.SetScripts(hiveClient)
   }
 
   static async CreateCollections(hiveClient: HiveClient) {
-    await hiveClient.Database.createCollection('following');
-    await hiveClient.Database.createCollection('userdetails');
-    await hiveClient.Database.createCollection('basic_profile');
-    await hiveClient.Database.createCollection('education_profile');
-    await hiveClient.Database.createCollection('experience_profile');
+    await hiveClient.Database.createCollection('following')
+    await hiveClient.Database.createCollection('userdetails')
+    await hiveClient.Database.createCollection('basic_profile')
+    await hiveClient.Database.createCollection('education_profile')
+    await hiveClient.Database.createCollection('experience_profile')
   }
 
   static async SetScripts(hiveClient: HiveClient) {
-    await this.SetScriptGetFollowing(hiveClient);
-    await this.SetScriptsForUserDetails(hiveClient);
-    await this.SetScriptsForProfile(hiveClient);
+    await this.SetScriptGetFollowing(hiveClient)
+    await this.SetScriptsForUserDetails(hiveClient)
+    await this.SetScriptsForProfile(hiveClient)
   }
 
   static async SetScriptsForProfile(hiveClient: HiveClient) {
@@ -34,7 +34,7 @@ export class UserVaultScripts {
           collection: 'basic_profile',
         },
       },
-    });
+    })
 
     await hiveClient.Scripting.SetScript({
       name: 'get_education_profile',
@@ -48,7 +48,7 @@ export class UserVaultScripts {
           collection: 'education_profile',
         },
       },
-    });
+    })
 
     await hiveClient.Scripting.SetScript({
       name: 'get_experience_profile',
@@ -62,7 +62,7 @@ export class UserVaultScripts {
           collection: 'experience_profile',
         },
       },
-    });
+    })
 
     await hiveClient.Scripting.SetScript({
       name: 'get_full_profile',
@@ -98,7 +98,7 @@ export class UserVaultScripts {
           },
         ],
       },
-    });
+    })
     await hiveClient.Scripting.SetScript({
       name: 'update_basic_profile',
       allowAnonymousUser: true,
@@ -113,18 +113,17 @@ export class UserVaultScripts {
           },
           update: {
             $set: {
-              first_name: '$params.first_name',
-              last_name: '$params.last_name',
+              name: '$params.name',
               email: '$params.email',
-              vault_url: '$params.vault_url',
-            }
+              hiveHost: '$params.hiveHost',
+            },
           },
           options: {
             upsert: true,
-            bypass_document_validation: false
-          }
-        }
-      }
+            bypass_document_validation: false,
+          },
+        },
+      },
     })
 
     await hiveClient.Scripting.SetScript({
@@ -146,14 +145,14 @@ export class UserVaultScripts {
               start: '$params.start',
               end: '$params.end',
               description: '$params.description',
-            }
+            },
           },
           options: {
             upsert: true,
-            bypass_document_validation: false
-          }
-        }
-      }
+            bypass_document_validation: false,
+          },
+        },
+      },
     })
 
     await hiveClient.Scripting.SetScript({
@@ -175,19 +174,16 @@ export class UserVaultScripts {
               start: '$params.start',
               end: '$params.end',
               description: '$params.description',
-            }
+            },
           },
           options: {
             upsert: true,
-            bypass_document_validation: false
-          }
-        }
-      }
+            bypass_document_validation: false,
+          },
+        },
+      },
     })
   }
-
-
-
 
   static async SetScriptGetFollowing(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
@@ -200,7 +196,7 @@ export class UserVaultScripts {
           collection: 'following',
         },
       },
-    });
+    })
   }
 
   static async SetScriptGetBasicProfile(
@@ -218,7 +214,7 @@ export class UserVaultScripts {
             collection: 'basic_profile',
           },
         },
-      });
+      })
     else
       await hiveClient.Scripting.SetScript({
         name: 'get_basic_profile',
@@ -240,7 +236,7 @@ export class UserVaultScripts {
             },
           },
         },
-      });
+      })
   }
 
   static async SetGetPublicInfo(hiveClient: HiveClient) {
@@ -254,7 +250,7 @@ export class UserVaultScripts {
           collection: 'following',
         },
       },
-    });
+    })
   }
 
   static async SetScriptsForUserDetails(hiveClient: HiveClient) {
@@ -272,7 +268,7 @@ export class UserVaultScripts {
           options: { bypass_document_validation: false },
         },
       },
-    });
+    })
     hiveClient.Scripting.SetScript({
       name: 'get_all_userdetails',
       executable: {
@@ -283,7 +279,7 @@ export class UserVaultScripts {
           collection: 'userdetails',
         },
       },
-    });
+    })
     hiveClient.Scripting.SetScript({
       name: 'find_category_data',
       executable: {
@@ -297,7 +293,7 @@ export class UserVaultScripts {
           },
         },
       },
-    });
+    })
     hiveClient.Scripting.SetScript({
       name: 'update_category_data',
       executable: {
@@ -316,6 +312,6 @@ export class UserVaultScripts {
           },
         },
       },
-    });
+    })
   }
 }
