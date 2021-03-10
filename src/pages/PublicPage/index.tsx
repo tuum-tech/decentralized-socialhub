@@ -110,7 +110,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 
   return (
     <IonPage className={style['profilepage']}>
-      <IonContent>
+      <IonContent className={style['content-scroll']}>
 
         <IonGrid className={style['profilepagegrid']}>
           <PublicNavbar className='ion-justify-content-between'>
@@ -120,12 +120,12 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
             <IonCol size='auto'>
               <IonRow>
                 <IonCol>
-                  <RegisterNewUserButton to='create-profile'>
+                  <SignInButton href='create-profile'>
                     Register new user
-                  </RegisterNewUserButton>
+                  </SignInButton>
                 </IonCol>
                 <IonCol>
-                  <SignInButton to='create-profile'>Sign In</SignInButton>
+                  <SignInButton href='../sign-did'>Sign In</SignInButton>
                 </IonCol>
               </IonRow>
             </IonCol>
