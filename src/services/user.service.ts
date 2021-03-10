@@ -1,5 +1,5 @@
 import { AssistService } from './assist.service'
-import { DidService, IDID } from './did.service'
+import { DidService, IDID, PublishRequestOperation } from './did.service'
 import { CredentialType, DidcredsService } from './didcreds.service'
 import { DidDocumentService } from './diddocument.service'
 import { ScriptService } from './script.service'
@@ -70,21 +70,12 @@ export class UserService {
 
     console.log('Generating temporary DID')
     let newDID = await DidService.generateNew()
-    let temporaryDocument = await DidService.temporaryDidDocument(newDID)
-
-    let vc = DidcredsService.generateVerifiableCredential(
-      newDID.did,
-      this.getCredentialType(service),
-      credential
-    )
-
-    DidService.addVerfiableCredentialToDIDDocument(temporaryDocument, vc)
-
-    DidService.sealDIDDocument(newDID, temporaryDocument)
-
-    let requestPub = await DidService.generatePublishRequest(temporaryDocument)
-
-    let response = await AssistService.publishDocument(newDID.did, requestPub)
+    let temporaryDocument = await DidService.genereteNewDidDocument(newDID)
+     DidService.sealDIDDocument(newDID, temporaryDocument)
+    DidDocumentService.updateUserDocument(temporaryDocument)
+    
+    let requestPub = await DidService.generatePublishRequest(temporaryDocument, newDID, PublishRequestOperation.Create)
+    await AssistService.publishDocument(newDID.did,requestPub)
 
     window.localStorage.setItem(
       `temporary_${newDID.did.replace('did:elastos:', '')}`,
@@ -95,6 +86,8 @@ export class UserService {
 
     return newDID
   }
+
+
 
   private static lockUser(
     key: string,
