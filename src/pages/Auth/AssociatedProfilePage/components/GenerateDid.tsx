@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { AccountType } from 'src/services/user.service'
 
-import SetPassword from 'src/components/SetPassword'
+import SetPassword from '../../components/SetPassword'
 import { UserService } from 'src/services/user.service'
 
 interface Props {

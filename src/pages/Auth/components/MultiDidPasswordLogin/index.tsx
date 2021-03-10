@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useHistory } from 'react-router'
 import styled from 'styled-components'
 
@@ -14,6 +14,7 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg,
 } from 'src/components/layouts/OnBoardLayout'
+import FieldDivider from '../FieldDivider'
 import { ButtonWithLogo } from 'src/components/buttons'
 import { Text16, ErrorTxt } from 'src/components/texts'
 import whitelogo from 'src/assets/logo/whitetextlogo.png'
@@ -45,7 +46,7 @@ interface Props {
   dids: Array<string>
 }
 
-const AlreadySignedUsers: React.FC<Props> = ({ dids, changeMode }) => {
+const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
   const history = useHistory()
   const [did, setDid] = useState(dids[0])
   const [password, setPassword] = useState('')
@@ -61,7 +62,7 @@ const AlreadySignedUsers: React.FC<Props> = ({ dids, changeMode }) => {
             We have seen your accounts before.
           </OnBoardLayoutLeftContentTitle>
           <OnBoardLayoutLeftContentDescription className='mt-25px'>
-            You can select and login using the local stored user info
+            You can select and login using the password you set
           </OnBoardLayoutLeftContentDescription>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
@@ -80,7 +81,7 @@ const AlreadySignedUsers: React.FC<Props> = ({ dids, changeMode }) => {
             >
               {dids.map((userDid: string) => (
                 <option key={userDid} value={userDid}>
-                  {userDid.replace('did:elastos:', '')}
+                  {userDid}
                 </option>
               ))}
             </select>
@@ -98,7 +99,7 @@ const AlreadySignedUsers: React.FC<Props> = ({ dids, changeMode }) => {
           {error !== '' && <ErrorTxt className='mt-3'>{error}</ErrorTxt>}
           <ButtonWithLogo
             mode='dark'
-            mt={10}
+            mt={20}
             text='Sign in to profile'
             onClick={() => {
               const res = UserService.UnLockWithDIDAndPWd(dids[0], password)
@@ -110,11 +111,10 @@ const AlreadySignedUsers: React.FC<Props> = ({ dids, changeMode }) => {
               }
             }}
           />
-          <OnBoardLayoutRightContentTitle style={{ marginTop: '96px' }}>
-            Create new profile
-          </OnBoardLayoutRightContentTitle>
+
+          <FieldDivider mt={80} />
           <ButtonWithLogo
-            text='Creating your profile now'
+            text='Create your profile now'
             onClick={changeMode}
             mt={42}
           />
@@ -124,4 +124,4 @@ const AlreadySignedUsers: React.FC<Props> = ({ dids, changeMode }) => {
   )
 }
 
-export default AlreadySignedUsers
+export default MultiDidPasswordLogin

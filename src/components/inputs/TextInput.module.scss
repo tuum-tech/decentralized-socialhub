@@ -5,7 +5,6 @@
     font-size: 14px;
     line-height: 17px;
     color: var(--text-body-light);
-    
   }
   &_field {
     margin-top: 8px;
@@ -21,7 +20,7 @@
     --placeholder-color: var(--input-muted-placeholder);
   }
 
-  ion-label{
+  ion-label {
     text-align: left;
   }
 }
@@ -34,7 +33,6 @@
   }
 
   .textinput_label {
-    
     margin: 0 12px 0 0;
   }
   .textinput_field {
@@ -45,5 +43,6 @@
 .hasError {
   input {
     border-bottom: 1px solid red !important;
+    background-color: #ffecec !important;
   }
 }

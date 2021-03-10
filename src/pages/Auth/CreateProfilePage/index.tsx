@@ -30,7 +30,8 @@ import injector from 'src/baseplate/injectorWrap'
 import whitelogo from 'src/assets/logo/whitetextlogo.png'
 import wavinghand from 'src/assets/icon/wavinghand.png'
 
-import AlreadySignedUsers from './components/AlreadySignedUsers'
+import MultiDidPasswordLogin from '../components/MultiDidPasswordLogin'
+import FieldDivider from '../components/FieldDivider'
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
 import { incrementAction, getSimpleAjax } from './actions'
 import style from './style.module.scss'
@@ -180,7 +181,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
 
   if (mode === 1) {
     return (
-      <AlreadySignedUsers dids={signedUsers} changeMode={() => setMode(0)} />
+      <MultiDidPasswordLogin dids={signedUsers} changeMode={() => setMode(0)} />
     )
   }
 
@@ -246,10 +247,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
             onClick={createUser}
           />
 
-          <div className={style['connect-divider']}>
-            <hr className={style['connect-divider_line']} />
-            <div className={style['connect-divider_txt']}>or connect with</div>
-          </div>
+          <FieldDivider text='or connect with' />
           <div className={style['social-btn-group']}>
             <SocialButton
               type='linkedin'

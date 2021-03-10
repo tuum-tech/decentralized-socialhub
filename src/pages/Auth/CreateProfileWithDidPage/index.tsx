@@ -5,9 +5,10 @@ import { createStructuredSelector } from 'reselect'
 import { StaticContext, RouteComponentProps } from 'react-router'
 import { AccountType, UserService } from 'src/services/user.service'
 
-import UserInfo from './components/UserInfo'
+import ProfileFields from '../components/ProfileFields'
+import SetPassword from '../components/SetPassword'
+
 import PageLoading from 'src/components/layouts/PageLoading'
-import SetPassword from 'src/components/SetPassword'
 import { DidService } from 'src/services/did.service'
 
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
@@ -80,7 +81,8 @@ const CreateProfileWithDidPage: React.FC<
     return <PageLoading />
   } else if (userInfo.firstName === '') {
     return (
-      <UserInfo
+      <ProfileFields
+        isCreate={false}
         setUserInfo={(firstName, lastName, email) => {
           setUserInfo({
             ...userInfo,

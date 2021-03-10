@@ -15,7 +15,6 @@ import {
   OnBoardLayoutLeftContent,
   OnBoardLayoutLeftContentTitle,
   OnBoardLayoutLeftContentDescription,
-  OnBoardLayoutLeftContentIntro,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
@@ -126,12 +125,6 @@ const AssociatedProfilePage: React.FC<
             profile. You have two options, sign in to the associated profile or
             create a new one.
           </OnBoardLayoutLeftContentDescription>
-          <OnBoardLayoutLeftContentIntro className='my-25px'>
-            Why has this happened? Help
-          </OnBoardLayoutLeftContentIntro>
-          <ButtonLink width={26} to='/create-why'>
-            <ArrowButton />
-          </ButtonLink>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -161,9 +154,8 @@ const AssociatedProfilePage: React.FC<
                 ))}
             </select>
           </div>
-
           <Text16 style={{ marginTop: '17px' }}>
-            Has been already linked to this social media account, sign into this
+            Has been already linked to profile registered, sign into this
             profile below.
           </Text16>
           <ButtonWithLogo

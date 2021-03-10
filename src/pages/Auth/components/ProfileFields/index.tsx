@@ -19,13 +19,14 @@ import { Text16, TextLink } from 'src/components/texts'
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png'
 import wavinghand from 'src/assets/icon/wavinghand.png'
-import style from '../style.module.scss'
+import style from './style.module.scss'
 
 interface Props {
   setUserInfo: (firstName: string, lastName: string, email: string) => void
+  isCreate?: boolean
 }
 
-const UseDetailsForm: React.FC<Props> = ({ setUserInfo }) => {
+const UseDetailsForm: React.FC<Props> = ({ setUserInfo, isCreate = true }) => {
   const [firstName, setfirstName] = useState('')
   const [lastName, setlastName] = useState('')
   const [email, setEmail] = useState('')
@@ -45,30 +46,37 @@ const UseDetailsForm: React.FC<Props> = ({ setUserInfo }) => {
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={wavinghand} />
           <OnBoardLayoutLeftContentTitle className='mt-18px'>
-            A better way to be online.
+            {isCreate ? 'A better way to be online.' : 'Complete your profile'}
           </OnBoardLayoutLeftContentTitle>
           <OnBoardLayoutLeftContentDescription className='mt-25px'>
-            Having multiple profiles is messy. Your personal information is
-            copied and stored on every app. Profile gives you total control of
-            your digital world, in one place. Finally unlock the power of your
-            content online.
+            {isCreate
+              ? 'Having multiple profiles is messy. Your personal information is copied and stored on every app. Profile gives you total control of your digital world, in one place. Finally unlock the power of your content online.'
+              : 'Complete your profile by filling your first name, last name, and email'}
           </OnBoardLayoutLeftContentDescription>
-          <OnBoardLayoutLeftContentIntro className='mt-25px mb-0'>
-            Already have a profile?
-          </OnBoardLayoutLeftContentIntro>
-          <TextLink width={100} to='/sign-did'>
-            Sign in Here
-          </TextLink>
+          {isCreate && (
+            <OnBoardLayoutLeftContentIntro className='mt-25px mb-0'>
+              Already have a profile?
+            </OnBoardLayoutLeftContentIntro>
+          )}
+          {isCreate && (
+            <TextLink width={100} to='/sign-did'>
+              Sign in Here
+            </TextLink>
+          )}
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
         <OnBoardLayoutRightContent>
-          <OnBoardLayoutRightContentTitle>
-            Create your profile
-          </OnBoardLayoutRightContentTitle>
-          <Text16 style={{ marginBottom: '54px' }}>
-            It’s free and easy to get set up.
-          </Text16>
+          {isCreate && (
+            <OnBoardLayoutRightContentTitle>
+              Create your profile
+            </OnBoardLayoutRightContentTitle>
+          )}
+          {isCreate && (
+            <Text16 style={{ marginBottom: '54px' }}>
+              It’s free and easy to get set up.
+            </Text16>
+          )}
           <TextInput
             value={firstName}
             label='First Name'
@@ -93,7 +101,9 @@ const UseDetailsForm: React.FC<Props> = ({ setUserInfo }) => {
           />
 
           <ButtonWithLogo
-            text='Create your profile now'
+            text={
+              isCreate ? 'Create your profile now' : 'Complete your profile now'
+            }
             onClick={() => {
               if (firstName === '' || lastName === '' || email === '') {
                 setError('You should fill all the blanks')

@@ -5,10 +5,11 @@ import { compose } from 'redux'
 
 import { createStructuredSelector } from 'reselect'
 import injector from 'src/baseplate/injectorWrap'
-import { UserService, UserData } from 'src/services/user.service'
-import SetPassword from 'src/components/SetPassword'
+import { UserService } from 'src/services/user.service'
 import PageLoading from 'src/components/layouts/PageLoading'
 import { AccountType } from 'src/services/user.service'
+
+import SetPassword from '../components/SetPassword'
 
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
 import { incrementAction, getSimpleAjax } from './actions'
