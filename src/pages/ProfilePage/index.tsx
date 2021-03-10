@@ -73,28 +73,26 @@ const ProfilePage: React.FC<RouteComponentProps> = (
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
-  const [error, setError] = useState(false);
-  const [showTutorial, setShowTutorial] = useState(false);
-  const [willExpire, setWillExpire] = useState(false);
+  const [error, setError] = useState(false)
+  const [showTutorial, setShowTutorial] = useState(false)
+  const [willExpire, setWillExpire] = useState(false)
   const [userInfo, setUserInfo] = useState<ISessionItem>({
     hiveHost: '',
     userToken: '',
     accountType: AccountType.DID,
     did: '',
-    firstName: '',
+    name: '',
     email: '',
-    lastName: '',
     isDIDPublished: false,
     mnemonics: '',
     onBoardingCompleted: false,
     tutorialCompleted: false,
-  });
+  })
 
   const [full_profile, setfull_profile] = useState({
     basicDTO: {
       isEnabled: false,
-      firstName: '',
-      lastName: '',
+      name: '',
       did: '',
       email: '',
       hiveHost: '',
@@ -116,10 +114,10 @@ const ProfilePage: React.FC<RouteComponentProps> = (
       isEnabled: false,
       items: [] as ExperienceItem[],
     },
-  });
-  const [onboardingCompleted, setOnboardingStatus] = useState(false);
+  })
+  const [onboardingCompleted, setOnboardingStatus] = useState(false)
 
-  const [active, setActive] = useState('dashboard');
+  const [active, setActive] = useState('dashboard')
 
   // const getProfile = async (token: string): Promise<ProfileResponse> => {
   //   return (await requestLinkedinProfile(token)) as ProfileResponse
@@ -137,8 +135,8 @@ const ProfilePage: React.FC<RouteComponentProps> = (
   // }
 
   const getFullProfile = async (did: string): Promise<any> => {
-    return await requestFullProfile(did);
-  };
+    return await requestFullProfile(did)
+  }
 
   useEffect(() => {
     (async () => {
@@ -150,45 +148,45 @@ const ProfilePage: React.FC<RouteComponentProps> = (
       if (instance.onBoardingCompleted && instance.tutorialCompleted && !willExpire) {
 
         try {
-          let profile: ProfileDTO = await getFullProfile(instance.did);
-          profile.experienceDTO.isEnabled = true;
-          profile.educationDTO.isEnabled = true;
-          setfull_profile(profile);
+          let profile: ProfileDTO = await getFullProfile(instance.did)
+          profile.experienceDTO.isEnabled = true
+          profile.educationDTO.isEnabled = true
+          setfull_profile(profile)
         } catch (e) {
-          setError(true);
+          setError(true)
         }
 
-        setWillExpire(true);
+        setWillExpire(true)
         setTimeout(() => {
-          UserService.logout();
-          window.location.href = '/';
-        }, ExporeTime);
+          UserService.logout()
+          window.location.href = '/'
+        }, ExporeTime)
       }
-      setOnboardingStatus(instance.onBoardingCompleted);
-    })();
-  }, []);
+      setOnboardingStatus(instance.onBoardingCompleted)
+    })()
+  }, [])
 
   const onTutorialStart = () => {
-    console.log('Start tutorial');
-    setShowTutorial(true);
-  };
+    console.log('Start tutorial')
+    setShowTutorial(true)
+  }
 
   if (!onboardingCompleted) {
     return (
       <OnBoarding
         completed={() => {
-          UserService.setOnBoardingComplted();
-          setOnboardingStatus(true);
+          UserService.setOnBoardingCompleted()
+          setOnboardingStatus(true)
           if (!willExpire) {
-            setWillExpire(true);
+            setWillExpire(true)
             setTimeout(() => {
-              UserService.logout();
-              window.location.href = '/';
-            }, ExporeTime);
+              UserService.logout()
+              window.location.href = '/'
+            }, ExporeTime)
           }
         }}
       />
-    );
+    )
   }
 
   return (
@@ -226,14 +224,14 @@ const ProfilePage: React.FC<RouteComponentProps> = (
         </TutorialModal>
       </IonContent>
     </IonPage>
-  );
-};
+  )
+}
 
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   counter: makeSelectCounter(),
   msg: makeSelectAjaxMsg(),
-});
+})
 
 /** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
@@ -244,7 +242,7 @@ export function mapDispatchToProps(dispatch: any) {
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
       onSimpleAjax: () => dispatch(getSimpleAjax()),
     },
-  };
+  }
 }
 
 /**
@@ -255,13 +253,13 @@ const withInjectedMode = injector(ProfilePage, {
   key: NameSpace,
   reducer,
   saga,
-});
+})
 
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
+const withConnect = connect(mapStateToProps, mapDispatchToProps)
 
 export default compose(
   withConnect,
   memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>;
+)(withInjectedMode) as React.ComponentType<InferMappedProps>
 
 // export default Tab1;

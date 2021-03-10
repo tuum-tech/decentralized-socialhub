@@ -15,19 +15,13 @@ import {
   WavingHandImg,
 } from 'src/components/layouts/OnBoardLayout'
 import { ButtonLink, ArrowButton, ButtonWithLogo } from 'src/components/buttons'
-import { Text12 } from 'src/components/texts'
+import { Text12, ErrorTxt } from 'src/components/texts'
 import TextInput from 'src/components/inputs/TextInput'
 import { UserService } from 'src/services/user.service'
 import wavinghand from 'src/assets/icon/wavinghand.png'
 import whitelogo from 'src/assets/logo/whitetextlogo.png'
 
 import { LocationState } from './types'
-
-const ErrorTxt = styled(Text12)`
-  color: red;
-  text-align: center;
-  margin-top: 5px;
-`
 
 const UnlockUserPage: React.FC<
   RouteComponentProps<{}, StaticContext, LocationState>
@@ -40,15 +34,15 @@ const UnlockUserPage: React.FC<
       : []
   )
 
-  const unlockUser = () => {
+  const unlockUser = async () => {
     if (!dids || dids.length === 0) return
     let res = null
     if (dids.length === 1) {
-      res = UserService.UnLockWithDIDAndPWd(dids[0], password)
+      res = await UserService.UnLockWithDIDAndPWd(dids[0], password)
     } else {
       for (let i = 0; i < dids.length; i++) {
         const did = dids[i]
-        res = UserService.UnLockWithDIDAndPWd(did, password)
+        res = await UserService.UnLockWithDIDAndPWd(did, password)
       }
     }
 
@@ -93,13 +87,13 @@ const UnlockUserPage: React.FC<
             mt={34}
             hasLogo={false}
             text='Continue'
-            onClick={() => {
+            onClick={async () => {
               if (password === '') {
                 setError('You should fill the password')
                 return
               } else {
                 setError('')
-                unlockUser()
+                await unlockUser()
               }
             }}
           />

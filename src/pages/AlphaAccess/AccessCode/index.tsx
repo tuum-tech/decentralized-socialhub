@@ -23,7 +23,7 @@ const AccessCodePage: React.FC = () => {
     ;(async () => {
       const alreadyHaveCode = await AlphaService.isLocalCodeValid()
       if (alreadyHaveCode) {
-        history.push({ pathname: '/profile' })
+        history.push({ pathname: '/create-profile' })
       }
     })()
   }, [])

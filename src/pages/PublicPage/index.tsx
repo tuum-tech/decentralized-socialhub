@@ -37,7 +37,7 @@ interface MatchParams {
   did: string
 }
 
-interface Props extends RouteComponentProps<MatchParams> { }
+interface Props extends RouteComponentProps<MatchParams> {}
 
 const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   props: RouteComponentProps<MatchParams>
@@ -50,24 +50,21 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 
   const [loaded, setLoaded] = useState(false);
   const [userInfo, setUserInfo] = useState({
-    hiveHost: "",
-    userToken: "",
+    hiveHost: '',
+    userToken: '',
     accountType: AccountType.DID,
-    did: "",
-    firstName: "",
-    lastName: "",
+    did: '',
+    name: '',
     isDIDPublished: false,
-    mnemonics: "",
+    mnemonics: '',
     onBoardingCompleted: false,
-    tutorialCompleted: false
-  });
-
+    tutorialCompleted: false,
+  })
 
   const [full_profile, setfull_profile] = useState({
     basicDTO: {
       isEnabled: false,
-      firstName: '',
-      lastName: '',
+      name: '',
       did: '',
       title: '',
       email: '',
