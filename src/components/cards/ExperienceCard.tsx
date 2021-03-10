@@ -101,6 +101,8 @@ const MyModal = styled(IonModal)`
 --min-height: 200px;
 --height: 480px;
 --width: 560px;
+height: 480px !important;
+width: 560px !important;
 `;
 
 const TreeDotsButton = styled.div`

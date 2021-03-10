@@ -92,12 +92,14 @@ const AchievementsSection: React.FC = () => {
 };
 
 const ProfileComponent: React.FC<IPropsSession> = ({ profile, sessionItem }: IPropsSession) => {
+
+  debugger;
   return (
     <>
       <IonGrid className={style['fixed']}>
         <IonRow className="ion-justify-content-center">
           <IonCol size="9" className="ion-no-padding"><ProfileBanner /></IonCol>
-          <IonCol size="9" className="ion-no-padding"><LoggedHeader profile={profile} sessionItem={sessionItem} /></IonCol>
+          <IonCol size="9" className="ion-no-padding"><ProfileHeader profile={profile} /></IonCol>
           <IonCol size="9" className="ion-no-padding"><PublicProfileNav profile={profile} /></IonCol>
         </IonRow>
       </IonGrid >
@@ -105,11 +107,9 @@ const ProfileComponent: React.FC<IPropsSession> = ({ profile, sessionItem }: IPr
       <IonGrid className={style['scroll']}>
         <IonRow>
           <IonCol size="9">
-            <AboutSection profile={profile} />
-            <ExperienceSection profile={profile} />
-            <EducationSection profile={profile} />
-            <CerificationsSection />
-            <AchievementsSection />
+            <AboutCard basicDTO={profile.basicDTO} mode="read" />
+            <ExperienceCard experienceDTO={profile.experienceDTO} mode="read" />
+            <EducationCard educationDTO={profile.educationDTO} mode="read" />
           </IonCol>
           <IonCol size="3">
 

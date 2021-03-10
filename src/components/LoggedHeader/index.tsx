@@ -30,6 +30,7 @@ import edit from '../../assets/icon-edit.svg'
 import addbutton from '../../assets/addbutton.svg'
 import university from '../../assets/university.png'
 import { ISessionItem } from 'src/services/user.service'
+import { Link } from 'react-router-dom'
 interface IProps {
   profile?: ProfileDTO
   sessionItem: ISessionItem
@@ -51,6 +52,10 @@ background-color: #ff5a5a;
 `;
 
 const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
+
+  const getLink = (): string => {
+    return `/did/${sessionItem.did}`;
+  }
   return (
     <IonGrid className={style['profileheader']}>
       <IonRow className={style['header']}>
@@ -75,11 +80,13 @@ const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
           </IonGrid>
         </IonCol>
         <IonCol size='2'>
-          <FollowButton>View profile</FollowButton>
+          <Link to={getLink}>
+            <FollowButton>View profile</FollowButton>
+          </Link>
         </IonCol>
       </IonRow>
 
-    </IonGrid>
+    </IonGrid >
   )
 }
 

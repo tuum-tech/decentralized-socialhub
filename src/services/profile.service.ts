@@ -1,5 +1,6 @@
 import { HiveClient } from '@elastos/elastos-hive-js-sdk';
 import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
+import { Session } from 'inspector';
 // import { floor, noConflict } from 'lodash';
 import { ProfileResponse } from 'src/pages/ProfilePage/types';
 import { BasicDTO, EducationDTO, EducationItem, ExperienceItem } from 'src/pages/PublicPage/types';
@@ -170,15 +171,13 @@ export class ProfileService {
 
 
 
-  async getFollowings(did?: string): Promise<IFollowingResponse> {
+  async getFollowings(did: string): Promise<IFollowingResponse> {
+    debugger;
     let followings: IFollowingResponse;
-    if (did === undefined) {
-      followings = (await this.getMyFollowings())
-        .response as IFollowingResponse;
-    } else {
-      followings = (await this.getUserFollowings(did))
-        .response as IFollowingResponse;
-    }
+
+    followings = (await this.getUserFollowings(did))
+      .response as IFollowingResponse;
+
 
     console.log('followings :' + JSON.stringify(followings));
     return followings;
@@ -188,7 +187,7 @@ export class ProfileService {
     if (!this.hiveClient) return;
     await this.hiveClient.Database.deleteCollection('following');
     await this.hiveClient.Database.createCollection('following');
-    return this.getFollowings();
+    return this.getFollowings(UserService.GetUserSession().did);
   }
 
   getSessionDid(): string {
@@ -247,7 +246,7 @@ export class ProfileService {
       },
     });
 
-    return this.getFollowings();
+    return this.getFollowings(UserService.GetUserSession().did);
   }
 
   async addFollowing(did: string): Promise<any> {
@@ -276,6 +275,6 @@ export class ProfileService {
       },
     });
 
-    return this.getFollowings();
+    return this.getFollowings(UserService.GetUserSession().did);
   }
 }

@@ -48,6 +48,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
    * incoming from Server API calls. Maintain a local state.
    */
 
+  const [loaded, setLoaded] = useState(false);
   const [userInfo, setUserInfo] = useState({
     hiveHost: "",
     userToken: "",
@@ -97,15 +98,20 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   let did: string = props.match.params.did || ''
 
   useEffect(() => {
-    ; (async () => {
+    (async () => {
       let profile: ProfileDTO = await getFullProfile(did)
+      profile.educationDTO.isEnabled = true;
+      profile.experienceDTO.isEnabled = true;
+
       setfull_profile(profile)
+      setLoaded(true);
     })()
   }, [])
 
   return (
     <IonPage className={style['profilepage']}>
       <IonContent>
+
         <IonGrid className={style['profilepagegrid']}>
           <PublicNavbar className='ion-justify-content-between'>
             <IonCol size='auto'>
@@ -127,7 +133,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 
           <IonRow className='ion-justify-content-around'>
             <IonCol size='12'>
-              <ProfileComponent profile={full_profile} sessionItem={userInfo} />
+              {loaded ? <ProfileComponent profile={full_profile} sessionItem={userInfo} /> : ""}
             </IonCol>
           </IonRow>
         </IonGrid>

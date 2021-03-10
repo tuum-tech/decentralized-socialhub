@@ -26,7 +26,6 @@ import FollowingList from 'src/components/FollowingList';
 import Pages from 'src/components/Pages';
 import ProfileHeader from 'src/components/ProfileHeader';
 import ProfileCompletion from 'src/components/ProfileCompletion';
-import ProfileComponent from 'src/components/ProfileComponent';
 import PagesComponent from 'src/components/PagesComponent';
 import { RouteComponentProps } from 'react-router';
 import logo from '../../assets/Logo-Vertical.svg';
@@ -52,6 +51,19 @@ import {
 import { userInfo } from 'os';
 import LoggedHeader from 'src/components/LoggedHeader';
 import TutorialComponent from 'src/components/Tutorial';
+import styled from 'styled-components';
+
+
+const TutorialModal = styled(IonModal)`
+--border-radius: 16px;
+--min-height: 200px;
+--height: 100%;
+--width: 100%;
+height: 100% !important;
+width: 100% !important;
+--background: transparent !important;
+--box-shadow: none !important;
+`;
 
 const ProfilePage: React.FC<RouteComponentProps> = (
   props: RouteComponentProps
@@ -205,13 +217,13 @@ const ProfilePage: React.FC<RouteComponentProps> = (
           </IonRow>
         </IonGrid>
 
-        <IonModal
+        <TutorialModal
           isOpen={showTutorial}
           cssClass={style['tutorialpage']}
           backdropDismiss={false}
         >
           <TutorialComponent onClose={() => setShowTutorial(false)} />
-        </IonModal>
+        </TutorialModal>
       </IonContent>
     </IonPage>
   );
