@@ -130,7 +130,6 @@ const ProfilePage: React.FC<RouteComponentProps> = (
 
   useEffect(() => {
     (async () => {
-      // debugger;
       let instance = UserService.GetUserSession();
       if (!instance) return;
 

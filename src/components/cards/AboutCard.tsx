@@ -39,8 +39,35 @@ const LinkStyleSpan = styled.span`
 const MyModal = styled(IonModal)`
 --border-radius: 16px;
 --min-height: 200px;
---height: 480px;
+--height: 280px;
 --width: 560px;
+`;
+
+const MyGrid = styled(IonGrid)`
+margin: 10px 20px 10px 20px;
+height: 100 %;
+`;
+const MyTextarea = styled(IonTextarea)`
+width: 90 %;
+margin-top: 15px;
+background: #edf2f7;
+box-shadow: 0px 1px 2px rgba(50, 50, 71, 0.08),
+  0px 0px 1px rgba(50, 50, 71, 0.2);
+border-radius: 6px;
+font-size: 13px;
+font-weight: 500;
+font-stretch: normal;
+font-style: normal;
+line-height: 1.15;
+font-family: 'SF Pro Display';
+letter-spacing: normal;
+text-align: left;
+color: #6b829a;
+--padding-bottom: 8px;
+--padding-top: 9px;
+--padding-end: 16px;
+--padding-start: 16px;
+--placeholder-color: var(--input - muted - placeholder);
 `;
 
 const ModalFooter = styled(IonFooter)`
@@ -65,7 +92,7 @@ const AboutCard: React.FC<IProps> = ({ basicDTO, mode, updateFunc }: IProps) => 
   const update = () => {
     const newBasicDTO = { ...basicDTO };
     newBasicDTO.about = about;
-    updateFunc(about)
+    updateFunc(newBasicDTO)
   }
 
 
@@ -85,7 +112,16 @@ const AboutCard: React.FC<IProps> = ({ basicDTO, mode, updateFunc }: IProps) => 
         </IonCardContent>
       </IonCard >
       <MyModal isOpen={isEditing} cssClass='my-custom-class'>
-        <IonTextarea value={about} onChange={(evt: any) => setAbout(evt.target.value)}></IonTextarea>
+        <MyGrid>
+          <IonRow>
+            <IonCardTitle>Edit About</IonCardTitle>
+          </IonRow>
+          <IonRow>
+            <IonCol>
+              <MyTextarea rows={5} name="about" value={about} onIonChange={(evt: any) => setAbout(evt.target.value)} />
+            </IonCol>
+          </IonRow>
+        </MyGrid>
         <ModalFooter className="ion-no-border">
           <IonRow className="ion-justify-content-around">
             <IonCol size="auto" >

@@ -60,6 +60,7 @@ const ProfileEditor: React.FC = () => {
       firstName: '',
       lastName: '',
       hiveHost: '',
+      email: '',
       did: '',
       title: '',
       about: '',
@@ -103,6 +104,14 @@ const ProfileEditor: React.FC = () => {
     } catch (error) {
       console.error(JSON.stringify(error))
     }
+    return ""
+  }
+
+  async function callUpdateAbout(basicDTO: BasicDTO): Promise<any> {
+    let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
+    let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
+    getFullProfileResponse = await profileService.updateAbout(basicDTO);
+    console.log(JSON.stringify(getFullProfileResponse));
     return ""
   }
 
@@ -163,6 +172,13 @@ const ProfileEditor: React.FC = () => {
     UserService.updateSession(userInfo);
   }
 
+  const updateAbout = async (basicDTO: BasicDTO): Promise<any> => {
+    console.log(">>>>>>>>> update about called ");
+    console.log(">>>>>>>>>  " + JSON.stringify(basicDTO));
+
+    callUpdateAbout(basicDTO);
+  }
+
   const updateEducationProfile = async (
     educationItem: EducationItem
   ): Promise<any> => {
@@ -198,7 +214,6 @@ const ProfileEditor: React.FC = () => {
       if (instance.tutorialCompleted) {
 
         try {
-          debugger;
           let profile: ProfileDTO = await getFullProfile(instance.did);
           profile.experienceDTO.isEnabled = true;
           profile.educationDTO.isEnabled = true;
@@ -225,9 +240,15 @@ const ProfileEditor: React.FC = () => {
             <TemplateManagerCard sessionItem={userInfo} />
           </IonCol>
           <IonCol size="8">
-            {loaded ? <BasicCard sessionItem={userInfo} updateFunc={updateBasicProfile}></BasicCard> : ""}
-            {!error && loaded && userInfo.tutorialCompleted === true ? <EducationCard educationDTO={full_profile.educationDTO} updateFunc={updateEducationProfile} removeFunc={removeEducation} mode="edit" ></EducationCard> : ""}
-            {!error && loaded && userInfo.tutorialCompleted === true ? <ExperienceCard experienceDTO={full_profile.experienceDTO} updateFunc={updateExperienceProfile} mode="edit" ></ExperienceCard> : ""}
+
+            <BasicCard sessionItem={userInfo} updateFunc={updateBasicProfile}></BasicCard>
+            {!error && loaded && userInfo.tutorialCompleted === true ?
+              <>
+                <AboutCard basicDTO={full_profile.basicDTO} updateFunc={updateAbout} mode="edit" ></AboutCard>
+                <EducationCard educationDTO={full_profile.educationDTO} updateFunc={updateEducationProfile} removeFunc={removeEducation} mode="edit" ></EducationCard>
+                <ExperienceCard experienceDTO={full_profile.experienceDTO} updateFunc={updateExperienceProfile} mode="edit" ></ExperienceCard>
+              </>
+              : ""}
 
           </IonCol>
         </IonRow>

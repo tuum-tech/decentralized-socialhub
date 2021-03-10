@@ -41,7 +41,6 @@ const CreateProfileWithDidPage: React.FC<
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    debugger;
     const fetchUserInfo = async () => {
       const { did, mnemonic } = props.location.state;
       let doc = await DidService.getDidDocument(did);

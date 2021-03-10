@@ -196,7 +196,6 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
         pwd
       )
 
-      // debugger;
       // Handle all the script registering somewhere
       console.log('script execute')
       let instance = await HiveService.getSessionInstance()

@@ -73,7 +73,7 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
   const [currentBasicDTO, setCurrentBasicDTO] = useState(sessionItem);
 
   const handleChange = (evt: any) => {
-    debugger;
+
     const value =
       evt.target.type === "checkbox" ? evt.target.checked : evt.target.value;
     setCurrentBasicDTO({

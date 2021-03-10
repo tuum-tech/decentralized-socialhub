@@ -49,15 +49,6 @@ interface IProps {
 }
 
 const ProfileTemplateManager: React.FC<IProps> = ({ sessionItem }: IProps) => {
-  const updateTemplate = async (configName: string, checked: boolean) => {
-    console.log(configName + ' : ' + checked);
-
-    // let sessionInstance = await HiveService.getSessionInstance();
-    // UserVaultScripts.SetScriptGetBasicProfile(
-    //   sessionInstance as HiveClient,
-    //   checked
-    // );
-  };
 
   return (
 

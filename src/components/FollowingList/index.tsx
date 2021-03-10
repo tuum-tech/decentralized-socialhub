@@ -188,7 +188,6 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
   };
 
   const follow = async () => {
-    debugger;
     let list: any = await profileService.addFollowing(didFollow);
     setListContacts(list);
   };
@@ -330,7 +329,6 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
     (async () => {
 
       if (did !== "") {
-        debugger;
         await loadData(did);
       }
     })();

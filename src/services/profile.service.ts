@@ -108,6 +108,26 @@ export class ProfileService {
     }
   }
 
+  async updateAbout(
+    basicDTO: BasicDTO
+  ): Promise<any> {
+    const update_user_script = {
+      name: 'update_basic_profile',
+      params: basicDTO,
+      context: {
+        target_did: UserService.GetUserSession().did,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID,
+      },
+    }
+    let response: any = await ScriptService.runTuumTechScript(
+      update_user_script
+    )
+    const { data, meta } = response
+    if (meta.code === 200 && meta.message === 'OK') {
+
+    }
+  }
+
   async updateEducationProfile(
     educationItem: EducationItem
   ): Promise<IRunScriptResponse<ProfileResponse>> {
@@ -124,8 +144,12 @@ export class ProfileService {
   async removeEducationItem(
     educationItem: EducationItem
   ): Promise<IRunScriptResponse<ProfileResponse>> {
-    return this.hiveClient.Scripting.RunScript({
+    return this.appHiveClient.Scripting.RunScript({
       name: 'remove_education_item',
+      context: {
+        target_did: UserService.GetUserSession().did,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+      },
       params: educationItem
     });
   }
