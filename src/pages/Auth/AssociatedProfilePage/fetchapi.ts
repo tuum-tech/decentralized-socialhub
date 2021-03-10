@@ -8,8 +8,7 @@ export function fetchSimpleApi(): Promise<BaseplateResp> {
 }
 
 export function requestForceCreateUser(
-  firstName: string,
-  lastName: string,
+  name: string,
   email: string
 ): Promise<BaseplateResp> {
   return request(
@@ -22,8 +21,7 @@ export function requestForceCreateUser(
         Accept: 'application/json',
       },
       body: JSON.stringify({
-        firstName: firstName,
-        lastName: lastName,
+        name: name,
         email: email,
       }),
     }

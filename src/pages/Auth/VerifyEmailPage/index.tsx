@@ -30,9 +30,8 @@ interface MatchParams {
 interface IVerifyCodeResponse {
   data: {
     return_code: string
-    firstName: string
+    name: string
     email: string
-    lastName: string
   }
 }
 
@@ -45,8 +44,7 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
   const [status, setStatus] = useState('')
   const [credentials, setCredentials] = useState({
     email: '',
-    firstName: '',
-    lastName: '',
+    name: '',
     request_token: '',
     credential: '',
   })
@@ -55,12 +53,11 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
     ;(async () => {
       let response = (await requestVerifyCode(code)) as IVerifyCodeResponse
       if (response.data.return_code === 'CODE_CONFIRMED') {
-        const { firstName, lastName, email } = response.data
+        const { name, email } = response.data
         setCredentials({
-          firstName: firstName,
-          lastName: lastName,
+          name,
+          email,
           request_token: code,
-          email: email,
           credential: code,
         })
       }
@@ -98,8 +95,7 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
           to={{
             pathname: '/generate-did',
             state: {
-              firstName: credentials.firstName,
-              lastName: credentials.lastName,
+              name: credentials.name,
               request_token: credentials.request_token,
               email: credentials.email,
               service: AccountType.Email,

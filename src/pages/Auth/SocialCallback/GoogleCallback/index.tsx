@@ -19,8 +19,7 @@ const GoogleCallback: React.FC<RouteComponentProps> = (props) => {
 
   const [credentials, setCredentials] = useState({
     email: '',
-    firstName: '',
-    lastName: '',
+    name: '',
     request_token: '',
     credential: '',
   })
@@ -42,8 +41,7 @@ const GoogleCallback: React.FC<RouteComponentProps> = (props) => {
         let t = await getToken(code, state)
         let googleId = await requestGoogleId(t.data.request_token)
         setCredentials({
-          firstName: googleId.firstName,
-          lastName: googleId.lastName,
+          name: googleId.name,
           request_token: t.data.request_token,
           email: googleId.email,
           credential: googleId.credential,
@@ -59,8 +57,7 @@ const GoogleCallback: React.FC<RouteComponentProps> = (props) => {
           to={{
             pathname: '/generate-did',
             state: {
-              firstName: credentials.firstName,
-              lastName: credentials.lastName,
+              name: credentials.name,
               request_token: credentials.request_token,
               email: credentials.email,
               service: AccountType.Google,

@@ -20,8 +20,7 @@ export interface ISessionItem {
   userToken: string
   accountType: AccountType
   did: string
-  firstName: string
-  lastName: string
+  name: string
   email?: string
   isDIDPublished: boolean
   mnemonics: string
@@ -41,8 +40,7 @@ export interface UserData {
 }
 
 export interface SignInDIDData {
-  firstName: string
-  lastName: string
+  name: string
   did: string
   hiveHost: string
   userToken: string
@@ -109,7 +107,7 @@ export class UserService {
       storePassword
     ).toString()
     let localUserData: UserData = {
-      name: instance.firstName + ' ' + instance.lastName,
+      name: instance.name,
       did: instance.did,
       data: encrypted,
     }
@@ -197,8 +195,7 @@ export class UserService {
         return {
           accountType: userData.accountType,
           did: userData.did,
-          firstName: userData.firstName,
-          lastName: userData.lastName,
+          name: userData.name,
           hiveHost: userData.hiveHost,
           email: userData.email,
           userToken: userData.userToken,
@@ -218,8 +215,7 @@ export class UserService {
   }
 
   public static async CreateNewUser(
-    firstName: string,
-    lastName: string,
+    name: string,
     token: string,
     service: AccountType,
     email: string,
@@ -244,8 +240,7 @@ export class UserService {
       did: did,
       accountType: service,
       isDIDPublished: await DidService.isDIDPublished(did),
-      firstName: firstName,
-      lastName: lastName,
+      name,
       hiveHost:
         hiveHostStr === ''
           ? `${process.env.REACT_APP_TUUM_TECH_HIVE}`
@@ -281,9 +276,7 @@ export class UserService {
       const add_user_script = {
         name: 'add_user',
         params: {
-          firstName: firstName,
-          lastName: lastName,
-          name: firstName + ' ' + lastName,
+          name,
           email: email,
           status: 'CONFIRMED',
           code: 1,
@@ -319,8 +312,7 @@ export class UserService {
         name: 'update_user',
         params: {
           did: sessionItem.did,
-          firstName: sessionItem.firstName,
-          lastName: sessionItem.lastName,
+          name: sessionItem.name,
           email: sessionItem.email,
           onBoardingCompleted: true,
         },

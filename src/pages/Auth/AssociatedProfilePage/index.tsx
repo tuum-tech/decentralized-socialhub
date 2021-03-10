@@ -68,14 +68,9 @@ const AssociatedProfilePage: React.FC<
   const [displayText, setDisplayText] = useState('')
 
   useEffect(() => {
-    if (
-      !associatedInfo &&
-      props.location.state &&
-      props.location.state.firstName
-    ) {
+    if (!associatedInfo && props.location.state && props.location.state.name) {
       const {
-        firstName,
-        lastName,
+        name,
         email,
         users,
         id,
@@ -84,8 +79,7 @@ const AssociatedProfilePage: React.FC<
         credential,
       } = props.location.state
       setAssociatedIfno({
-        firstName,
-        lastName,
+        name,
         email,
         users,
         id,
@@ -102,8 +96,7 @@ const AssociatedProfilePage: React.FC<
   } else if (screen === '/generate-did') {
     return (
       <GenerateDid
-        firstName={associatedInfo.firstName}
-        lastName={associatedInfo.lastName}
+        name={associatedInfo.name}
         email={associatedInfo.email}
         request_token={associatedInfo.request_token}
         credential={associatedInfo.credential}
@@ -181,8 +174,7 @@ const AssociatedProfilePage: React.FC<
                 history.push({
                   pathname: '/sign-did',
                   state: {
-                    firstName: associatedInfo.firstName,
-                    lastName: associatedInfo.lastName,
+                    name: associatedInfo.name,
                     email: associatedInfo.email,
                     service: AccountType.DID,
                   },
@@ -198,12 +190,11 @@ const AssociatedProfilePage: React.FC<
           <ButtonWithLogo
             text={loading ? 'Creating your profile now' : 'Create new profile'}
             onClick={async () => {
-              const { firstName, lastName, email, service } = associatedInfo
+              const { name, email, service } = associatedInfo
               if (service === AccountType.Email) {
                 setLoading(true)
                 let response = (await requestForceCreateUser(
-                  firstName,
-                  lastName,
+                  name,
                   email
                 )) as ICreateUserResponse
                 setLoading(false)

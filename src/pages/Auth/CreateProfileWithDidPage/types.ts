@@ -12,8 +12,7 @@ export type InferMappedProps = ReturnType<typeof mapStateToProps> &
 export type ActionType = typeof Actions
 
 export type UserType = {
-  firstName: string
-  lastName: string
+  name: string
   email: string
 }
 

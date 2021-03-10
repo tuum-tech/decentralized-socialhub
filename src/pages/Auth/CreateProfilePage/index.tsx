@@ -71,8 +71,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
-  const [firstName, setfirstName] = useState('')
-  const [lastName, setlastName] = useState('')
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [displayText, setDisplayText] = useState('')
@@ -100,16 +99,12 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   }, [])
 
   const createUser = async () => {
-    if (!firstName || !lastName || !email) {
+    if (!name || !email) {
       setError('You should fill this field')
       return
     }
     setLoading(true)
-    let response = (await requestCreateUser(
-      firstName,
-      lastName,
-      email
-    )) as ICreateUserResponse
+    let response = (await requestCreateUser(name, email)) as ICreateUserResponse
     console.log('requestCreateUser api response', response)
     setLoading(false)
     if (
@@ -127,12 +122,11 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
         pathname: '/associated-profile',
         state: {
           users: pUsers,
-          firstName,
-          lastName,
+          name,
           email,
           request_token: '',
           service: AccountType.Email,
-          credential: firstName + lastName + email,
+          credential: name.replace(' ', '') + email,
         },
       })
     }
@@ -141,8 +135,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   const setField = (fieldName: string, fieldValue: string) => {
     setError('')
     setDisplayText('')
-    if (fieldName === 'firstName') setfirstName(fieldValue)
-    if (fieldName === 'lastName') setlastName(fieldValue)
+    if (fieldName === 'name') setName(fieldValue)
     if (fieldName === 'email') setEmail(fieldValue)
   }
 
@@ -217,18 +210,11 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
             It’s free and easy to get set up.
           </Text16>
           <TextInput
-            value={firstName}
-            label='First Name'
-            onChange={(n) => setField('firstName', n)}
-            placeholder='Enter your first name'
-            hasError={error !== '' && firstName === ''}
-          />
-          <TextInput
-            value={lastName}
-            label='Last Name'
-            onChange={(n) => setField('lastName', n)}
-            placeholder='Enter your Last name'
-            hasError={error !== '' && lastName === ''}
+            value={name}
+            label='Name'
+            onChange={(n) => setField('name', n)}
+            placeholder='Enter your Full name'
+            hasError={error !== '' && name === ''}
           />
           <TextInput
             value={email}

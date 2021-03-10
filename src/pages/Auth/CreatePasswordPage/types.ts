@@ -14,8 +14,7 @@ export type ActionType = typeof Actions
 
 export type LocationState = {
   from: Location
-  firstName: string
-  lastName: string
+  name: string
   userToken: string
   accountType:
     | AccountType.DID

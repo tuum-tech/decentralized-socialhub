@@ -18,8 +18,7 @@ const LinkedinCallback: React.FC<RouteComponentProps> = (props) => {
    * incoming from Server API calls. Maintain a local state.
    */
   const [credentials, setCredentials] = useState({
-    firstName: '',
-    lastName: '',
+    name: '',
     email: '',
     request_token: '',
     credential: '',
@@ -49,8 +48,7 @@ const LinkedinCallback: React.FC<RouteComponentProps> = (props) => {
         const lastName = linkedinprofile.data.profile.localizedLastName.toLowerCase()
         const uniqueEmail = firstName + lastName + '@linkedin.com'
         setCredentials({
-          firstName,
-          lastName,
+          name: firstName + ' ' + lastName,
           request_token: t.data.request_token,
           email: uniqueEmail,
           credential: linkedinprofile.data.profile.id,
@@ -66,8 +64,7 @@ const LinkedinCallback: React.FC<RouteComponentProps> = (props) => {
           to={{
             pathname: '/generate-did',
             state: {
-              firstName: credentials.firstName,
-              lastName: credentials.lastName,
+              name: credentials.name,
               request_token: credentials.request_token,
               email: credentials.email,
               service: AccountType.Linkedin,

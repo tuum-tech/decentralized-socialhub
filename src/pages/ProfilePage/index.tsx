@@ -69,9 +69,8 @@ const ProfilePage: React.FC<RouteComponentProps> = (
     userToken: '',
     accountType: AccountType.DID,
     did: '',
-    firstName: '',
+    name: '',
     email: '',
-    lastName: '',
     isDIDPublished: false,
     mnemonics: '',
     onBoardingCompleted: false,
@@ -81,8 +80,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
   const [full_profile, setfull_profile] = useState({
     basicDTO: {
       isEnabled: false,
-      firstName: '',
-      lastName: '',
+      name: '',
       did: '',
       email: '',
       hiveHost: '',

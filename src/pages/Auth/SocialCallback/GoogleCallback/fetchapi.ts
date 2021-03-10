@@ -26,13 +26,10 @@ export async function requestGoogleId(token: string): Promise<GoogleId> {
   })
 
   let json = await response.json()
-  const firstName = json.given_name
-  const lastName = json.family_name
 
   return {
     id: json.id,
-    firstName,
-    lastName,
+    name: json.given_name + ' ' + json.family_name,
     email: json.email,
     credential: json.id,
   }

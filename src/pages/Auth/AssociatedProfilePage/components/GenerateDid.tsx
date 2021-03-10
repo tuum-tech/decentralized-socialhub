@@ -5,8 +5,7 @@ import SetPassword from '../../components/SetPassword'
 import { UserService } from 'src/services/user.service'
 
 interface Props {
-  firstName: string
-  lastName: string
+  name: string
   email: string
   request_token: string
   credential: string
@@ -27,22 +26,14 @@ const GenerateDid: React.FC<Props> = (props) => {
    */
 
   const [loading, setLoading] = useState(false)
-  const {
-    firstName,
-    lastName,
-    email,
-    request_token,
-    service,
-    credential,
-  } = props
+  const { name, email, request_token, service, credential } = props
 
   return (
     <SetPassword
       next={async (pwd) => {
         setLoading(true)
         await UserService.CreateNewUser(
-          firstName,
-          lastName,
+          name,
           request_token,
           service,
           email,
