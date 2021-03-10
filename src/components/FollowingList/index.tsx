@@ -188,7 +188,6 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
   };
 
   const follow = async () => {
-    debugger;
     let list: any = await profileService.addFollowing(didFollow);
     setListContacts(list);
   };
@@ -275,27 +274,18 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
   };
 
   const loadData = async (did: string) => {
-    let profileService: ProfileService;
+    let profileService: ProfileService = await getappHiveInstance();
+    setProfileService(profileService);
 
     let list: IFollowingResponse;
     try {
-
-      if (did === undefined) {
-        profileService = await getUserHiveInstance();
-        console.log('get user instance');
-      } else {
-        profileService = await getappHiveInstance();
-        console.log('get app instance');
-      }
-      setProfileService(profileService);
-
       list = await profileService.getFollowings(did);
 
     } catch (e) {
       list = { get_following: { items: [] } };
       console.error('cant load followings');
       setError({ hasError: true, errorDescription: 'cant load followings' });
-      return;
+
     }
 
     let listDids = list.get_following.items.map((p) => p.did);
@@ -330,7 +320,6 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
     (async () => {
 
       if (did !== "") {
-        debugger;
         await loadData(did);
       }
     })();

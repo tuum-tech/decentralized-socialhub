@@ -44,6 +44,7 @@ const ProfileEditor: React.FC = () => {
       isEnabled: false,
       name: '',
       hiveHost: '',
+      email: '',
       did: '',
       title: '',
       about: '',
@@ -88,21 +89,22 @@ const ProfileEditor: React.FC = () => {
     return ''
   }
 
+  async function callUpdateAbout(basicDTO: BasicDTO): Promise<any> {
+    let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
+    let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
+    getFullProfileResponse = await profileService.updateAbout(basicDTO);
+    console.log(JSON.stringify(getFullProfileResponse));
+    return ""
+  }
+
   async function callUpdateEducationProfile(
     educationItem: EducationItem
   ): Promise<any> {
     let profileService: ProfileService = await ProfileService.getProfileServiceInstance()
     let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>
-    try {
-      getFullProfileResponse = await profileService.updateEducationProfile(
-        educationItem
-      )
-      console.log(JSON.stringify(getFullProfileResponse))
-      return '' //mapProfileResponseToProfileDTO(getFullProfileResponse.response as ProfileResponse);
-    } catch (error) {
-      console.error(JSON.stringify(error))
-    }
-    return mapProfileResponseToProfileDTO({} as ProfileResponse)
+    getFullProfileResponse = await profileService.updateEducationProfile(educationItem);
+    console.log(JSON.stringify(getFullProfileResponse));
+    return ""
   }
 
   async function callUpdateExperienceProfile(
@@ -122,21 +124,12 @@ const ProfileEditor: React.FC = () => {
     return mapProfileResponseToProfileDTO({} as ProfileResponse)
   }
 
-  async function callRemoveEducationItem(
-    educationItem: EducationItem
-  ): Promise<any> {
-    let profileService: ProfileService = await ProfileService.getProfileServiceInstance()
-    let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>
-    try {
-      getFullProfileResponse = await profileService.removeEducationItem(
-        educationItem
-      )
-      console.log(JSON.stringify(getFullProfileResponse))
-      return '' //mapProfileResponseToProfileDTO(getFullProfileResponse.response as ProfileResponse);
-    } catch (error) {
-      console.error(JSON.stringify(error))
-    }
-    return mapProfileResponseToProfileDTO({} as ProfileResponse)
+  async function callRemoveEducationItem(educationItem: EducationItem): Promise<any> {
+    let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
+    let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
+    getFullProfileResponse = await profileService.removeEducationItem(educationItem);
+    console.log(JSON.stringify(getFullProfileResponse));
+    return ""
   }
 
   const mapProfileResponseToProfileDTO = (
@@ -165,6 +158,13 @@ const ProfileEditor: React.FC = () => {
     UserService.updateSession(userInfo)
   }
 
+  const updateAbout = async (basicDTO: BasicDTO): Promise<any> => {
+    console.log(">>>>>>>>> update about called ");
+    console.log(">>>>>>>>>  " + JSON.stringify(basicDTO));
+
+    callUpdateAbout(basicDTO);
+  }
+
   const updateEducationProfile = async (
     educationItem: EducationItem
   ): Promise<any> => {
@@ -190,16 +190,22 @@ const ProfileEditor: React.FC = () => {
   }
 
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       let instance = UserService.GetUserSession()
       if (!instance || !instance.userToken) return
 
       setUserInfo(instance)
 
-      if (instance.onBoardingCompleted) {
+
+      if (instance.tutorialCompleted) {
+
         try {
-          let profile: ProfileDTO = await getFullProfile(instance.did)
-          setfull_profile(profile)
+          let profile: ProfileDTO = await getFullProfile(instance.did);
+          profile.experienceDTO.isEnabled = true;
+          profile.educationDTO.isEnabled = true;
+
+          setfull_profile(profile);
+
         } catch (e) {
           setError(true)
         }
@@ -217,34 +223,17 @@ const ProfileEditor: React.FC = () => {
           <IonCol size='4'>
             <TemplateManagerCard sessionItem={userInfo} />
           </IonCol>
-          <IonCol size='8'>
-            {loaded ? (
-              <BasicCard
-                sessionItem={userInfo}
-                updateFunc={updateBasicProfile}
-              ></BasicCard>
-            ) : (
-              ''
-            )}
-            {!error && loaded && userInfo.onBoardingCompleted === true ? (
-              <EducationCard
-                educationDTO={full_profile.educationDTO}
-                updateFunc={updateEducationProfile}
-                removeFunc={removeEducation}
-                mode='edit'
-              ></EducationCard>
-            ) : (
-              ''
-            )}
-            {!error && loaded && userInfo.onBoardingCompleted === true ? (
-              <ExperienceCard
-                experienceDTO={full_profile.experienceDTO}
-                updateFunc={updateExperienceProfile}
-                mode='edit'
-              ></ExperienceCard>
-            ) : (
-              ''
-            )}
+          <IonCol size="8">
+
+            {!error && loaded ? <BasicCard sessionItem={userInfo} updateFunc={updateBasicProfile}></BasicCard> : ""}
+            {!error && loaded && userInfo.tutorialCompleted === true ?
+              <>
+                <AboutCard basicDTO={full_profile.basicDTO} updateFunc={updateAbout} mode="edit" ></AboutCard>
+                <EducationCard educationDTO={full_profile.educationDTO} updateFunc={updateEducationProfile} removeFunc={removeEducation} mode="edit" ></EducationCard>
+                <ExperienceCard experienceDTO={full_profile.experienceDTO} updateFunc={updateExperienceProfile} mode="edit" ></ExperienceCard>
+              </>
+              : ""}
+
           </IonCol>
         </IonRow>
       </IonGrid>

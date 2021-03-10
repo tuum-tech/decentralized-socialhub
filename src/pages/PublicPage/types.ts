@@ -65,15 +65,16 @@ export interface Period {
 }
 
 export interface EducationItem {
-  isEmpty: boolean
-  _id: string
-  institution: string
-  program: string
-  start: string
-  end: string
-  title: string
-  description: string
-  order: string
+    isEmpty: boolean,
+    _id: string,
+    institution: string,
+    program: string,
+    start: string,
+    end: string,
+    stillWorking: boolean,
+    title: string,
+    description: string,
+    order: string
 }
 
 export interface EducationDTO {

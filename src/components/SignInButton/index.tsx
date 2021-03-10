@@ -1,9 +1,10 @@
+import { IonRouterLink } from '@ionic/react';
 import React from 'react';
 import styled from 'styled-components';
 import { ButtonLink } from '../buttons';
 
-const SignInButton = styled(ButtonLink)`
-width: 85px;
+const SignInButton = styled(IonRouterLink)`
+width: 140px;
 height: 40px;
 display: flex;
 flex-direction: column;

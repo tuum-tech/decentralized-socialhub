@@ -8,50 +8,62 @@ import {
   IonRow,
   IonCol,
   IonModal,
-} from '@ionic/react'
-import { connect } from 'react-redux'
-import { compose } from 'redux'
-import { createStructuredSelector } from 'reselect'
-import injector from 'src/baseplate/injectorWrap'
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
-import { incrementAction, getSimpleAjax } from './actions'
-import React, { memo, useEffect, useState } from 'react'
-import style from './style.module.scss'
-import { NameSpace, ExporeTime } from './constants'
-import reducer from './reducer'
-import saga from './saga'
-import { InferMappedProps, ProfileResponse, SubState } from './types'
-import { requestFullProfile } from './fetchapi'
-import FollowingList from 'src/components/FollowingList'
-import Pages from 'src/components/Pages'
-import ProfileHeader from 'src/components/ProfileHeader'
-import ProfileCompletion from 'src/components/ProfileCompletion'
-import ProfileComponent from 'src/components/ProfileComponent'
-import PagesComponent from 'src/components/PagesComponent'
-import { RouteComponentProps } from 'react-router'
-import logo from '../../assets/Logo-Vertical.svg'
-import home from '../../assets/home.svg'
-import community from '../../assets/people-outline.svg'
-import pages from '../../assets/person-search-outline.svg'
-import messages from '../../assets/message-circle-outline.svg'
-import photo from '../../assets/photo.png'
-import StartServiceComponent from 'src/components/StartServiceComponent'
-import ProfileTemplateManager from 'src/components/ProfileTemplateManager'
-import { Link } from 'react-router-dom'
-import Logo from 'src/components/Logo'
-import Navbar from 'src/components/Navbar'
-import DashboardNav from 'src/components/DashboardNav'
-import { EducationItem, ExperienceItem, ProfileDTO } from '../PublicPage/types'
-import OnBoarding from 'src/components/OnBoarding'
+} from '@ionic/react';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { createStructuredSelector } from 'reselect';
+import injector from 'src/baseplate/injectorWrap';
+import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
+import { incrementAction, getSimpleAjax } from './actions';
+import React, { memo, useEffect, useState } from 'react';
+import style from './style.module.scss';
+import { NameSpace, ExporeTime } from './constants';
+import reducer from './reducer';
+import saga from './saga';
+import { InferMappedProps, ProfileResponse, SubState } from './types';
+import { requestFullProfile } from './fetchapi';
+import FollowingList from 'src/components/FollowingList';
+import Pages from 'src/components/Pages';
+import ProfileHeader from 'src/components/ProfileHeader';
+import ProfileCompletion from 'src/components/ProfileCompletion';
+import PagesComponent from 'src/components/PagesComponent';
+import { RouteComponentProps } from 'react-router';
+import logo from '../../assets/Logo-Vertical.svg';
+import home from '../../assets/home.svg';
+import community from '../../assets/people-outline.svg';
+import pages from '../../assets/person-search-outline.svg';
+import messages from '../../assets/message-circle-outline.svg';
+import photo from '../../assets/photo.png';
+import StartServiceComponent from 'src/components/StartServiceComponent';
+import ProfileTemplateManager from 'src/components/ProfileTemplateManager';
+import { Link } from 'react-router-dom';
+import Logo from 'src/components/Logo';
+import Navbar from 'src/components/Navbar';
+import DashboardNav from 'src/components/DashboardNav';
+import { EducationItem, ExperienceItem, ProfileDTO } from '../PublicPage/types';
+import OnBoarding from 'src/components/OnBoarding';
 import {
   AccountType,
   ISessionItem,
   UserData,
   UserService,
-} from 'src/services/user.service'
-import { userInfo } from 'os'
-import LoggedHeader from 'src/components/LoggedHeader'
-import TutorialComponent from 'src/components/Tutorial'
+} from 'src/services/user.service';
+import { userInfo } from 'os';
+import LoggedHeader from 'src/components/LoggedHeader';
+import TutorialComponent from 'src/components/Tutorial';
+import styled from 'styled-components';
+
+
+const TutorialModal = styled(IonModal)`
+--border-radius: 16px;
+--min-height: 200px;
+--height: 100%;
+--width: 100%;
+height: 100% !important;
+width: 100% !important;
+--background: transparent !important;
+--box-shadow: none !important;
+`;
 
 const ProfilePage: React.FC<RouteComponentProps> = (
   props: RouteComponentProps
@@ -132,9 +144,10 @@ const ProfilePage: React.FC<RouteComponentProps> = (
       let instance = UserService.GetUserSession()
       if (!instance) return
 
-      setUserInfo(instance)
-      console.error(JSON.stringify(userInfo))
-      if (instance.onBoardingCompleted && !willExpire) {
+      setUserInfo(instance);
+      console.error(JSON.stringify(userInfo));
+      if (instance.onBoardingCompleted && instance.tutorialCompleted && !willExpire) {
+
         try {
           let profile: ProfileDTO = await getFullProfile(instance.did)
           profile.experienceDTO.isEnabled = true
@@ -203,13 +216,13 @@ const ProfilePage: React.FC<RouteComponentProps> = (
           </IonRow>
         </IonGrid>
 
-        <IonModal
+        <TutorialModal
           isOpen={showTutorial}
           cssClass={style['tutorialpage']}
           backdropDismiss={false}
         >
           <TutorialComponent onClose={() => setShowTutorial(false)} />
-        </IonModal>
+        </TutorialModal>
       </IonContent>
     </IonPage>
   )

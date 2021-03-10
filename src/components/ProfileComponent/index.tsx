@@ -25,97 +25,51 @@ interface IProps {
 interface IPropsSession {
   profile: ProfileDTO;
   sessionItem: ISessionItem;
+  scrollToPosition: any;
 }
 
-const AboutSection: React.FC<IProps> = ({ profile }: IProps) => {
 
-  return (
-    <IonGrid className={style['tab-grid']}>
-      <IonRow>
-        <IonCol>
-          {/* <AboutCard basicDTO={profile.basicDTO} /> */}
-        </IonCol>
-      </IonRow>
-    </IonGrid>
-  );
-};
+const ProfileComponent: React.FC<IPropsSession> = ({ profile, sessionItem, scrollToPosition }: IPropsSession) => {
 
+  const scrollToCard = (cardName: string) => {
+    if (cardName === "about") {
+      scrollToPosition(0);
+    }
+    if (cardName === "experience") {
+      scrollToPosition(280);
+    }
+    if (cardName === "education") {
+      scrollToPosition(525);
+    }
+  }
 
-const ExperienceSection: React.FC<IProps> = ({ profile }: IProps) => {
-
-  return (
-    <IonGrid className={style['tab-grid']}>
-      <IonRow>
-        <IonCol>
-          <ExperienceCard experienceDTO={profile.experienceDTO} updateFunc={() => { }} mode="readonly" />
-        </IonCol>
-      </IonRow>
-    </IonGrid>
-  );
-};
-
-const EducationSection: React.FC<IProps> = ({ profile }: IProps) => {
-
-  return (
-    <IonGrid className={style['tab-grid']}>
-      <IonRow>
-        <IonCol>
-          <EducationCard educationDTO={profile.educationDTO} updateFunc={() => { }} mode="readonly" />
-        </IonCol>
-      </IonRow>
-    </IonGrid>
-  );
-};
-
-const CerificationsSection: React.FC = () => {
-  return (
-    <IonGrid className={style['tab-grid']}>
-      <IonRow>
-        <IonCol>
-          <OverviewCard />
-        </IonCol>
-      </IonRow>
-    </IonGrid>
-  );
-};
-
-const AchievementsSection: React.FC = () => {
-  return (
-    <IonGrid className={style['tab-grid']}>
-      <IonRow>
-        <IonCol>
-          <OverviewCard />
-        </IonCol>
-      </IonRow>
-    </IonGrid>
-  );
-};
-
-const ProfileComponent: React.FC<IPropsSession> = ({ profile, sessionItem }: IPropsSession) => {
   return (
     <>
       <IonGrid className={style['fixed']}>
         <IonRow className="ion-justify-content-center">
           <IonCol size="9" className="ion-no-padding"><ProfileBanner /></IonCol>
-          <IonCol size="9" className="ion-no-padding"><LoggedHeader profile={profile} sessionItem={sessionItem} /></IonCol>
-          <IonCol size="9" className="ion-no-padding"><PublicProfileNav profile={profile} /></IonCol>
+          <IonCol size="9" className="ion-no-padding"><ProfileHeader profile={profile} /></IonCol>
+          <IonCol size="9" className="ion-no-padding"><PublicProfileNav profile={profile} scrollToPosition={scrollToCard} /></IonCol>
         </IonRow>
       </IonGrid >
 
       <IonGrid className={style['scroll']}>
-        <IonRow>
+        <IonRow className="ion-justify-content-center">
           <IonCol size="9">
-            <AboutSection profile={profile} />
-            <ExperienceSection profile={profile} />
-            <EducationSection profile={profile} />
-            <CerificationsSection />
-            <AchievementsSection />
-          </IonCol>
-          <IonCol size="3">
-
-            <SocialProfiles />
-            <FollowingList did={profile.basicDTO.did} />
-            <FollowersWidget />
+            <IonGrid>
+              <IonRow>
+                <IonCol size="9">
+                  <AboutCard basicDTO={profile.basicDTO} mode="read" />
+                  <ExperienceCard experienceDTO={profile.experienceDTO} mode="read" />
+                  <EducationCard educationDTO={profile.educationDTO} mode="read" />
+                </IonCol>
+                <IonCol size="3">
+                  <SocialProfiles />
+                  <FollowingList did={profile.basicDTO.did} />
+                  <FollowersWidget />
+                </IonCol>
+              </IonRow>
+            </IonGrid>
           </IonCol>
         </IonRow >
       </IonGrid >

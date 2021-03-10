@@ -48,6 +48,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
    * incoming from Server API calls. Maintain a local state.
    */
 
+  const [loaded, setLoaded] = useState(false);
   const [userInfo, setUserInfo] = useState({
     hiveHost: '',
     userToken: '',
@@ -94,15 +95,25 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   let did: string = props.match.params.did || ''
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       let profile: ProfileDTO = await getFullProfile(did)
+      profile.educationDTO.isEnabled = true;
+      profile.experienceDTO.isEnabled = true;
+
       setfull_profile(profile)
+      setLoaded(true);
     })()
   }, [])
 
+  const scrollToPosition = (position: number) => {
+    let ionContent = document.querySelector("ion-content");
+    ionContent!.scrollToPoint(0, position);
+  }
+
   return (
     <IonPage className={style['profilepage']}>
-      <IonContent>
+      <IonContent className={style['content-scroll']}>
+
         <IonGrid className={style['profilepagegrid']}>
           <PublicNavbar className='ion-justify-content-between'>
             <IonCol size='auto'>
@@ -111,12 +122,12 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
             <IonCol size='auto'>
               <IonRow>
                 <IonCol>
-                  <RegisterNewUserButton to='create-profile'>
+                  <SignInButton href='create-profile'>
                     Register new user
-                  </RegisterNewUserButton>
+                  </SignInButton>
                 </IonCol>
                 <IonCol>
-                  <SignInButton to='create-profile'>Sign In</SignInButton>
+                  <SignInButton href='../sign-did'>Sign In</SignInButton>
                 </IonCol>
               </IonRow>
             </IonCol>
@@ -124,7 +135,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 
           <IonRow className='ion-justify-content-around'>
             <IonCol size='12'>
-              <ProfileComponent profile={full_profile} sessionItem={userInfo} />
+              {loaded ? <ProfileComponent scrollToPosition={scrollToPosition} profile={full_profile} sessionItem={userInfo} /> : ""}
             </IonCol>
           </IonRow>
         </IonGrid>

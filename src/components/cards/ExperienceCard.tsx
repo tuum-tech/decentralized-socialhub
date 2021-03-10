@@ -11,6 +11,7 @@ import {
   IonGrid,
   IonLabel,
   IonModal,
+  IonPopover,
   IonRow,
   IonTextarea,
 } from '@ionic/react';
@@ -102,6 +103,33 @@ const MyModal = styled(IonModal)`
 --width: 560px;
 `;
 
+const TreeDotsButton = styled.div`
+writing-mode: vertical-rl;
+text-orientation: mixed;
+line-height: 0.5;
+margin: 1px 3px 2px 7px;
+padding: 5px 3px 5px 10px;
+border-radius: 22px;
+font-weight: bold;
+background-color: rgba(221, 221, 221, 0.24);
+color: #000;
+`;
+
+const PopoverMenuItem = styled.div`
+  display: block;
+  font-family: 'SF Pro Display';
+  padding: 10px 10px 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.07px;
+  text-align: left;
+  color: #000;
+  cursor: pointer;
+`;
+
 interface ExperienceItemsProps {
   experienceItem: ExperienceItem;
   handleChange: any;
@@ -109,18 +137,23 @@ interface ExperienceItemsProps {
   index: number;
   initialStatus?: string;
   removeFunc: any;
+  mode: string;
 }
 
-const ExperienceItems: React.FC<ExperienceItemsProps> = ({ experienceItem, handleChange, updateFunc, index, removeFunc }) => {
+const ExperienceItems: React.FC<ExperienceItemsProps> = ({ experienceItem, handleChange, updateFunc, index, removeFunc, mode }) => {
 
   const [editMode, setEditMode] = useState(experienceItem.isEmpty ? 'add' : 'readonly');
-
+  const [popoverState, setShowPopover] = useState({ showPopover: false, event: undefined });
 
   const cancel = () => {
     if (editMode === 'add')
       removeFunc();
 
     setEditMode("readonly");
+  }
+  const remove = () => {
+    removeFunc(index);
+
   }
 
   return (
@@ -139,9 +172,30 @@ const ExperienceItems: React.FC<ExperienceItemsProps> = ({ experienceItem, handl
               <IonRow><Description>{experienceItem.description}</Description></IonRow>
             </IonGrid>
           </IonCol>
-          <IonCol size="auto">
-            <span onClick={() => setEditMode("edit")}>...</span>
-          </IonCol>
+          {mode === "edit" ?
+            <IonCol size="auto">
+              <IonPopover
+                showBackdrop={false}
+                cssClass={styleWidget['popover-class']}
+                event={popoverState.event}
+                isOpen={popoverState.showPopover}
+                onDidDismiss={() => setShowPopover({ showPopover: false, event: undefined })}
+              >
+                <PopoverMenuItem onClick={(e) => { setShowPopover({ showPopover: false, event: undefined }); setEditMode("edit") }}>Edit</PopoverMenuItem>
+                <PopoverMenuItem onClick={() => { setShowPopover({ showPopover: false, event: undefined }); remove(); }}>Remove</PopoverMenuItem>
+              </IonPopover>
+              <TreeDotsButton onClick={
+                (e: any) => {
+                  e.persist();
+                  setShowPopover({ showPopover: true, event: e })
+                }}
+              >
+                ...
+              </TreeDotsButton>
+
+            </IonCol>
+            : ""
+          }
         </IonRow>
       </IonGrid>
       <MyModal isOpen={editMode === 'add' || editMode === 'edit'} cssClass='my-custom-class'>
@@ -173,7 +227,6 @@ const ExperienceCard: React.FC<IExperienceProps> = ({ experienceDTO, updateFunc,
   const [currentExperienceDTO, setcurrentExperienceDTO] = useState(experienceDTO);
 
   const handleChange = (evt: any, index: number) => {
-
     // console.log("name: " + evt.target.name);
     // console.log("value: " + evt.target.value);
     // console.log("index: " + index);
@@ -238,10 +291,10 @@ const ExperienceCard: React.FC<IExperienceProps> = ({ experienceDTO, updateFunc,
 
   const listExperiences = currentExperienceDTO.items.map((x, i) => {
     return (
-      <>
-        <ExperienceItems experienceItem={x} handleChange={handleChange} updateFunc={saveChanges} index={i} removeFunc={removeItem} />
+      <div key={i}>
+        <ExperienceItems experienceItem={x} handleChange={handleChange} updateFunc={saveChanges} index={i} removeFunc={removeItem} mode={mode} />
         {i < currentExperienceDTO.items.length - 1 ? <Divider /> : ""}
-      </>
+      </div>
     )
 
 
@@ -255,7 +308,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({ experienceDTO, updateFunc,
             <IonGrid>
               <IonRow className="ion-justify-content-between">
                 <IonCol><IonCardTitle>Experience</IonCardTitle></IonCol>
-                <IonCol size="auto"><LinkStyleSpan onClick={(e) => addItem()}>+ Add Experience</LinkStyleSpan></IonCol>
+                {mode === "edit" ? <IonCol size="auto"><LinkStyleSpan onClick={(e) => addItem()}>+ Add Experience</LinkStyleSpan></IonCol> : ""}
               </IonRow>
             </IonGrid>
           </IonCardHeader>
@@ -329,20 +382,20 @@ const ExperienceCardEdit: React.FC<ExperienceItemProps> = ({ experienceItem, han
       </IonRow>
       <IonRow class="ion-justify-content-start">
         <IonCol size="5">
-          <SmallTextInput label="Title" name="title" value={experienceItem.title} onChange={handleChangeIndex} />
+          <SmallTextInput placeholder="e.g. Blockchain developer" label="Title" name="title" value={experienceItem.title} onChange={handleChangeIndex} />
         </IonCol>
       </IonRow>
       <IonRow class="ion-justify-content-start">
         <IonCol size="8">
-          <SmallTextInput label="Organization Name" name="institution" value={experienceItem.institution} onChange={handleChangeIndex} />
+          <SmallTextInput placeholder="Google, Elastos Foundation, ..." label="Organization Name" name="institution" value={experienceItem.institution} onChange={handleChangeIndex} />
         </IonCol>
       </IonRow>
       <IonRow class="ion-justify-content-start">
         <IonCol size="4.5">
-          <SmallTextInput label="Duration" name="start" type="date" value={experienceItem.start} onChange={handleChangeIndex} />
+          <SmallTextInput placeholder="start" label="Duration" name="start" type="date" value={experienceItem.start} onChange={handleChangeIndex} />
         </IonCol>
         <IonCol size="4.5">
-          <SmallTextInput label="&nbsp;" name="end" type="date" value={experienceItem.end} onChange={handleChangeIndex} />
+          <SmallTextInput placeholder="end" label="&nbsp;" name="end" type="date" value={experienceItem.end} onChange={handleChangeIndex} />
 
         </IonCol>
         <IonCol size="auto" class="ion-align-self-end">
@@ -352,7 +405,7 @@ const ExperienceCardEdit: React.FC<ExperienceItemProps> = ({ experienceItem, han
       <IonRow class="ion-justify-content-start">
         <IonCol size="8">
           <IonLabel>Description</IonLabel>
-          <MyTextarea rows={3} name="description" value={experienceItem.description} onIonChange={handleChangeIndex} />
+          <MyTextarea placeholder="..." rows={3} name="description" value={experienceItem.description} onIonChange={handleChangeIndex} />
         </IonCol>
       </IonRow>
     </MyGrid>

@@ -51,7 +51,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({ onContinue }) => 
         }
 
         try {
-            
+
             let user = UserService.GetUserSession()
             user.userToken = await generateUserToken(user.mnemonics, endpoint)
             user.tutorialCompleted = true

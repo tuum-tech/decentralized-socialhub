@@ -10,13 +10,19 @@
 
 .fixed {
     position:fixed;
-    top:90px;
+    top:83px;
     z-index: 1000;
+    width: 100%;
+    background-color: #f7fafc;
+    margin: none;
+    --ion-grid-padding: 0px;
+    left:0px;
+    
+   
 }
 
 .scroll {
-    width: 1400px;
-    margin-top: 460px;
+    width: 100%;
     z-index: 100;
 }
 
