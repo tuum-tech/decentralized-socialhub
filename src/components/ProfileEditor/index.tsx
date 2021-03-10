@@ -210,7 +210,11 @@ const ProfileEditor: React.FC = () => {
       if (instance.tutorialCompleted) {
 
         try {
+          debugger;
           let profile: ProfileDTO = await getFullProfile(instance.did);
+          profile.experienceDTO.isEnabled = true;
+          profile.educationDTO.isEnabled = true;
+
           setfull_profile(profile);
 
         } catch (e) {
@@ -234,8 +238,8 @@ const ProfileEditor: React.FC = () => {
           </IonCol>
           <IonCol size="8">
             {loaded ? <BasicCard sessionItem={userInfo} updateFunc={updateBasicProfile}></BasicCard> : ""}
-            {!error && loaded && userInfo.onBoardingCompleted === true ? <EducationCard educationDTO={full_profile.educationDTO} updateFunc={updateEducationProfile} removeFunc={removeEducation} mode="edit" ></EducationCard> : ""}
-            {!error && loaded && userInfo.onBoardingCompleted === true ? <ExperienceCard experienceDTO={full_profile.experienceDTO} updateFunc={updateExperienceProfile} mode="edit" ></ExperienceCard> : ""}
+            {!error && loaded && userInfo.tutorialCompleted === true ? <EducationCard educationDTO={full_profile.educationDTO} updateFunc={updateEducationProfile} removeFunc={removeEducation} mode="edit" ></EducationCard> : ""}
+            {!error && loaded && userInfo.tutorialCompleted === true ? <ExperienceCard experienceDTO={full_profile.experienceDTO} updateFunc={updateExperienceProfile} mode="edit" ></ExperienceCard> : ""}
 
           </IonCol>
         </IonRow>
