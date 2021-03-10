@@ -111,12 +111,12 @@ export class ProfileService {
   async updateEducationProfile(
     educationItem: EducationItem
   ): Promise<IRunScriptResponse<ProfileResponse>> {
-    return this.hiveClient.Scripting.RunScript({
+    return this.appHiveClient.Scripting.RunScript({
       name: 'update_education_profile',
-      // context: {
-      //   target_did: "did:elastos:iVy37oQuQ77L6SfXyNiBmdW2TSoyJQmBU1", // just to test, in real life use userHiveClient
-      //   target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-      // },
+      context: {
+        target_did: UserService.GetUserSession().did,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+      },
       params: educationItem
     });
   }
@@ -136,10 +136,10 @@ export class ProfileService {
   ): Promise<IRunScriptResponse<ProfileResponse>> {
     return this.appHiveClient.Scripting.RunScript({
       name: 'update_experience_profile',
-      // context: {
-      //   target_did: "did:elastos:iVy37oQuQ77L6SfXyNiBmdW2TSoyJQmBU1", // just to test, in real life use userHiveClient
-      //   target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-      // },
+      context: {
+        target_did: UserService.GetUserSession().did,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+      },
       params: experienceItem
     });
   }

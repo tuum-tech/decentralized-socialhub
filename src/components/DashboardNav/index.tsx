@@ -30,7 +30,7 @@ const DashboardHome: React.FC<DashboardProps> = (props) => {
     <IonGrid className={style['tab-grid']}>
       <IonRow>
         <IonCol size='8'>
-          <AboutCard basicDTO={props.profile!.basicDTO} ></AboutCard>
+          <AboutCard basicDTO={props.profile!.basicDTO} mode="" ></AboutCard>
           <ExperienceCard experienceDTO={props.profile!.experienceDTO} mode=""></ExperienceCard>
           <EducationCard educationDTO={props.profile!.educationDTO} mode=""></EducationCard>
         </IonCol>

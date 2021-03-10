@@ -186,9 +186,10 @@ interface EducationItemsProps {
   index: number;
   initialStatus?: string;
   removeFunc: any;
+  mode: string;
 }
 
-const EducationItems: React.FC<EducationItemsProps> = ({ educationItem, handleChange, updateFunc, index, removeFunc }) => {
+const EducationItems: React.FC<EducationItemsProps> = ({ educationItem, handleChange, updateFunc, index, removeFunc, mode }) => {
 
 
 
@@ -234,27 +235,31 @@ const EducationItems: React.FC<EducationItemsProps> = ({ educationItem, handleCh
               <IonRow><Description>{educationItem.description}</Description></IonRow>
             </IonGrid>
           </IonCol>
-          <IonCol size="auto">
-            <IonPopover
-              showBackdrop={false}
-              cssClass={styleWidget['popover-class']}
-              event={popoverState.event}
-              isOpen={popoverState.showPopover}
-              onDidDismiss={() => setShowPopover({ showPopover: false, event: undefined })}
-            >
-              <PopoverMenuItem onClick={(e) => { setShowPopover({ showPopover: false, event: undefined }); setEditMode("edit") }}>Edit</PopoverMenuItem>
-              <PopoverMenuItem onClick={() => { setShowPopover({ showPopover: false, event: undefined }); remove(); }}>Remove</PopoverMenuItem>
-            </IonPopover>
-            <TreeDotsButton onClick={
-              (e: any) => {
-                e.persist();
-                setShowPopover({ showPopover: true, event: e })
-              }}
-            >
-              ...
-           </TreeDotsButton>
 
-          </IonCol>
+          {mode === "edit" ?
+            <IonCol size="auto">
+              <IonPopover
+                showBackdrop={false}
+                cssClass={styleWidget['popover-class']}
+                event={popoverState.event}
+                isOpen={popoverState.showPopover}
+                onDidDismiss={() => setShowPopover({ showPopover: false, event: undefined })}
+              >
+                <PopoverMenuItem onClick={(e) => { setShowPopover({ showPopover: false, event: undefined }); setEditMode("edit") }}>Edit</PopoverMenuItem>
+                <PopoverMenuItem onClick={() => { setShowPopover({ showPopover: false, event: undefined }); remove(); }}>Remove</PopoverMenuItem>
+              </IonPopover>
+              <TreeDotsButton onClick={
+                (e: any) => {
+                  e.persist();
+                  setShowPopover({ showPopover: true, event: e })
+                }}
+              >
+                ...
+              </TreeDotsButton>
+
+            </IonCol>
+            : ""
+          }
         </IonRow>
       </IonGrid>
       <MyModal isOpen={editMode === 'add' || editMode === 'edit'} cssClass='my-custom-class'>
@@ -349,20 +354,21 @@ const EducationCard: React.FC<IEducationProps> = ({ educationDTO, updateFunc, re
   }
 
   const removeItem = (index: number) => {
-    debugger;
     let items = [...currentEducationDTO.items];
 
     let itemToDelete = items.splice(index, 1);
 
     setCurrentEducationDTO({ isEnabled: true, items: items });
-    removeFunc(itemToDelete[0]);
+
+    if (itemToDelete[0]._id !== "")
+      removeFunc(itemToDelete[0]);
   }
 
 
   const listEducation = currentEducationDTO.items.map((x, i) => {
     return (
       <>
-        <EducationItems educationItem={x} handleChange={handleChange} updateFunc={saveChanges} index={i} removeFunc={removeItem} />
+        <EducationItems educationItem={x} handleChange={handleChange} updateFunc={saveChanges} index={i} removeFunc={removeItem} mode={mode} />
         {i < currentEducationDTO.items.length - 1 ? <Divider /> : ""}
       </>
     )
@@ -378,7 +384,7 @@ const EducationCard: React.FC<IEducationProps> = ({ educationDTO, updateFunc, re
             <IonGrid>
               <IonRow className="ion-justify-content-between">
                 <IonCol><IonCardTitle>Education</IonCardTitle></IonCol>
-                <IonCol size="auto"><LinkStyleSpan onClick={(e) => addItem()}>+ Add Education</LinkStyleSpan></IonCol>
+                {mode === "edit" ? <IonCol size="auto"><LinkStyleSpan onClick={(e) => addItem()}>+ Add Education</LinkStyleSpan></IonCol> : ""}
               </IonRow>
             </IonGrid>
           </IonCardHeader>
