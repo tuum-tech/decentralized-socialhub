@@ -23,8 +23,8 @@ export type UserProps = {
 export type SessionProp = {
   id: string
   users: Array<UserProps>
-  fname: string
-  lname: string
+  firstName: string
+  lastName: string
   email: string
   request_token: string
   credential: string
@@ -41,8 +41,8 @@ export type LocationState = {
   from: Location
   users: Array<UserProps>
   id: string
-  fname: string
-  lname: string
+  firstName: string
+  lastName: string
   email: string
   request_token: string
   credential: string

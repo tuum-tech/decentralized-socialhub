@@ -68,8 +68,7 @@ export class UserService {
     service: AccountType,
     credential: string
   ): Promise<IDID> {
-  
-    this.clearPrevLocalData()
+    // this.clearPrevLocalData()
 
     console.log('Generating temporary DID')
     let newDID = await DidService.generateNew()
@@ -95,8 +94,6 @@ export class UserService {
         mnemonic: newDID.mnemonic,
       })
     )
-
-    
 
     return newDID
   }
@@ -220,8 +217,8 @@ export class UserService {
   }
 
   public static async CreateNewUser(
-    fname: string,
-    lname: string,
+    firstName: string,
+    lastName: string,
     token: string,
     service: AccountType,
     email: string,
@@ -229,12 +226,12 @@ export class UserService {
     storePassword: string,
     newDidStr: string,
     newMnemonicStr: string,
-    hiveHostStr: string,
+    hiveHostStr: string
   ) {
     let sessionItem: ISessionItem
 
-    let did = newDidStr;
-    let mnemonic = newMnemonicStr;
+    let did = newDidStr
+    let mnemonic = newMnemonicStr
 
     if (!did || did === '') {
       const newDid = await this.generateTemporaryDID(service, credential)
@@ -246,14 +243,17 @@ export class UserService {
       did: did,
       accountType: service,
       isDIDPublished: await DidService.isDIDPublished(did),
-      firstName: fname,
-      lastName: lname,
-      hiveHost: hiveHostStr === '' ? `${process.env.REACT_APP_TUUM_TECH_HIVE}` : hiveHostStr,
+      firstName: firstName,
+      lastName: lastName,
+      hiveHost:
+        hiveHostStr === ''
+          ? `${process.env.REACT_APP_TUUM_TECH_HIVE}`
+          : hiveHostStr,
       userToken: token,
       mnemonics: mnemonic,
       email: email,
       onBoardingCompleted: false,
-      tutorialCompleted: false
+      tutorialCompleted: false,
     }
 
     // add new user to the tuum.tech vault
@@ -267,7 +267,7 @@ export class UserService {
           hiveHost: sessionItem.hiveHost,
           accountType: service,
           userToken: token,
-          tutorialCompleted: false
+          tutorialCompleted: false,
         },
         context: {
           target_did: process.env.REACT_APP_APPLICATION_DID,
@@ -280,9 +280,9 @@ export class UserService {
       const add_user_script = {
         name: 'add_user',
         params: {
-          firstName: fname,
-          lastName: lname,
-          full_name: fname + ' ' + lname,
+          firstName: firstName,
+          lastName: lastName,
+          name: firstName + ' ' + lastName,
           email: email,
           status: 'CONFIRMED',
           code: 1,
@@ -290,7 +290,7 @@ export class UserService {
           hiveHost: sessionItem.hiveHost,
           accountType: service,
           userToken: token,
-          tutorialCompleted: false
+          tutorialCompleted: false,
         },
         context: {
           target_did: process.env.REACT_APP_APPLICATION_DID,
@@ -325,6 +325,7 @@ export class UserService {
   }
 
   public static clearPrevLocalData() {
+    console.log('=====>clearPrevLocalData')
     const removeKeys = []
     for (let i = 0; i < window.localStorage.length; i++) {
       const key = window.localStorage.key(i)
@@ -371,7 +372,7 @@ export class UserService {
       console.log('delete_user_by_did script response', response)
     }
 
-    this.clearPrevLocalData()
+    // this.clearPrevLocalData()
     SessionService.Logout()
   }
 }

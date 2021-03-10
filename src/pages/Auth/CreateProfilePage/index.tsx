@@ -30,6 +30,7 @@ import injector from 'src/baseplate/injectorWrap'
 import whitelogo from 'src/assets/logo/whitetextlogo.png'
 import wavinghand from 'src/assets/icon/wavinghand.png'
 
+import AlreadySignedUsers from './components/AlreadySignedUsers'
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
 import { incrementAction, getSimpleAjax } from './actions'
 import style from './style.module.scss'
@@ -69,16 +70,18 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
-  const [fname, setFName] = useState('')
-  const [lname, setLName] = useState('')
+  const [firstName, setfirstName] = useState('')
+  const [lastName, setlastName] = useState('')
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [displayText, setDisplayText] = useState('')
   const [error, setError] = useState('')
+  const [signedUsers, setSignedUsers] = useState<string[]>([])
+  const [mode, setMode] = useState(0) // 0: create new, 1: sign in using pre logged
   const history = useHistory()
 
   useEffect(() => {
-    UserService.clearPrevLocalData()
+    // UserService.clearPrevLocalData()
     AlphaService.isLocalCodeValid().then((isLocalCodeValid) => {
       console.log('is session valid', isLocalCodeValid)
       if (!isLocalCodeValid) {
@@ -87,15 +90,23 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
     })
   }, [])
 
+  useEffect(() => {
+    const signedUserDids = UserService.getSignedUsers()
+    if (signedUserDids.length > 0) {
+      setSignedUsers(signedUserDids)
+      setMode(1)
+    }
+  }, [])
+
   const createUser = async () => {
-    if (!fname || !lname || !email) {
+    if (!firstName || !lastName || !email) {
       setError('You should fill this field')
       return
     }
     setLoading(true)
     let response = (await requestCreateUser(
-      fname,
-      lname,
+      firstName,
+      lastName,
       email
     )) as ICreateUserResponse
     console.log('requestCreateUser api response', response)
@@ -115,12 +126,12 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
         pathname: '/associated-profile',
         state: {
           users: pUsers,
-          fname,
-          lname,
+          firstName,
+          lastName,
           email,
           request_token: '',
           service: AccountType.Email,
-          credential: fname + lname + email,
+          credential: firstName + lastName + email,
         },
       })
     }
@@ -129,8 +140,8 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   const setField = (fieldName: string, fieldValue: string) => {
     setError('')
     setDisplayText('')
-    if (fieldName === 'firstName') setFName(fieldValue)
-    if (fieldName === 'lastName') setLName(fieldValue)
+    if (fieldName === 'firstName') setfirstName(fieldValue)
+    if (fieldName === 'lastName') setlastName(fieldValue)
     if (fieldName === 'email') setEmail(fieldValue)
   }
 
@@ -167,6 +178,12 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
     }
   }
 
+  if (mode === 1) {
+    return (
+      <AlreadySignedUsers dids={signedUsers} changeMode={() => setMode(0)} />
+    )
+  }
+
   return (
     <OnBoardLayout className={style['create-profile']}>
       <OnBoardLayoutLeft>
@@ -199,18 +216,18 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
             It’s free and easy to get set up.
           </Text16>
           <TextInput
-            value={fname}
+            value={firstName}
             label='First Name'
             onChange={(n) => setField('firstName', n)}
             placeholder='Enter your first name'
-            hasError={error !== '' && fname === ''}
+            hasError={error !== '' && firstName === ''}
           />
           <TextInput
-            value={lname}
+            value={lastName}
             label='Last Name'
             onChange={(n) => setField('lastName', n)}
             placeholder='Enter your Last name'
-            hasError={error !== '' && lname === ''}
+            hasError={error !== '' && lastName === ''}
           />
           <TextInput
             value={email}

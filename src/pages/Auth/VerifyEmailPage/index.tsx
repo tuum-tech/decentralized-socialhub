@@ -45,8 +45,8 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
   const [status, setStatus] = useState('')
   const [credentials, setCredentials] = useState({
     email: '',
-    fname: '',
-    lname: '',
+    firstName: '',
+    lastName: '',
     request_token: '',
     credential: '',
   })
@@ -57,8 +57,8 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
       if (response.data.return_code === 'CODE_CONFIRMED') {
         const { firstName, lastName, email } = response.data
         setCredentials({
-          fname: firstName,
-          lname: lastName,
+          firstName: firstName,
+          lastName: lastName,
           request_token: code,
           email: email,
           credential: code,
@@ -98,8 +98,8 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
           to={{
             pathname: '/generate-did',
             state: {
-              fname: credentials.fname,
-              lname: credentials.lname,
+              firstName: credentials.firstName,
+              lastName: credentials.lastName,
               request_token: credentials.request_token,
               email: credentials.email,
               service: AccountType.Email,

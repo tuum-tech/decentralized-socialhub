@@ -15,19 +15,13 @@ import {
   WavingHandImg,
 } from 'src/components/layouts/OnBoardLayout'
 import { ButtonLink, ArrowButton, ButtonWithLogo } from 'src/components/buttons'
-import { Text12 } from 'src/components/texts'
+import { Text12, ErrorTxt } from 'src/components/texts'
 import TextInput from 'src/components/inputs/TextInput'
 import { UserService } from 'src/services/user.service'
 import wavinghand from 'src/assets/icon/wavinghand.png'
 import whitelogo from 'src/assets/logo/whitetextlogo.png'
 
 import { LocationState } from './types'
-
-const ErrorTxt = styled(Text12)`
-  color: red;
-  text-align: center;
-  margin-top: 5px;
-`
 
 const UnlockUserPage: React.FC<
   RouteComponentProps<{}, StaticContext, LocationState>

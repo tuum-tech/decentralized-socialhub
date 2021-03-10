@@ -50,8 +50,8 @@ const GenerateDidPage: React.FC<
               pathname: '/associated-profile',
               state: {
                 users: pUsers,
-                fname: props.location.state.fname,
-                lname: props.location.state.lname,
+                firstName: props.location.state.firstName,
+                lastName: props.location.state.lastName,
                 email: props.location.state.email,
                 request_token: props.location.state.request_token,
                 service: props.location.state.service,
@@ -72,8 +72,8 @@ const GenerateDidPage: React.FC<
           setLoading(true)
           if (session) {
             await UserService.CreateNewUser(
-              session.fname,
-              session.lname,
+              session.firstName,
+              session.lastName,
               session.request_token,
               session.service,
               session.email,

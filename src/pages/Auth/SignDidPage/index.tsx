@@ -1,6 +1,7 @@
 import { IonRow } from '@ionic/react'
 import { connect } from 'react-redux'
-import { useHistory } from 'react-router'
+import { StaticContext, RouteComponentProps, useHistory } from 'react-router'
+
 import { compose } from 'redux'
 import { createStructuredSelector } from 'reselect'
 
@@ -12,7 +13,7 @@ import style from './style.module.scss'
 import { NameSpace } from './constants'
 import reducer from './reducer'
 import saga from './saga'
-import { InferMappedProps, SubState } from './types'
+import { InferMappedProps, SubState, UserType, LocationState } from './types'
 
 import {
   OnBoardLayout,
@@ -24,14 +25,14 @@ import {
 import { Text16, Text12 } from 'src/components/texts'
 import DidSignForm from 'src/components/DidSign/DidSignForm'
 import DidLeftSide from 'src/components/DidSign/DidLeftSide'
-import { ISessionItem, UserService } from 'src/services/user.service'
+import { UserService } from 'src/services/user.service'
 
-const SignDidPage: React.FC<InferMappedProps> = ({
-  eProps,
-  ...props
-}: InferMappedProps) => {
+const SignDidPage: React.FC<
+  RouteComponentProps<{}, StaticContext, LocationState>
+> = (props) => {
   const history = useHistory()
   const [error, setError] = useState(false)
+  const [user, setUser] = useState<UserType | null>(null)
 
   useEffect(() => {
     const dids =
@@ -43,6 +44,15 @@ const SignDidPage: React.FC<InferMappedProps> = ({
         pathname: '/unlock-user',
         state: { dids },
       })
+    }
+
+    if (
+      !user &&
+      props.location.state &&
+      props.location.state.user &&
+      props.location.state.user.firstName
+    ) {
+      setUser(props.location.state.user)
     }
   }, [])
 
@@ -94,6 +104,7 @@ const SignDidPage: React.FC<InferMappedProps> = ({
                   state: {
                     did: uDid,
                     mnemonic,
+                    user,
                   },
                 })
               }

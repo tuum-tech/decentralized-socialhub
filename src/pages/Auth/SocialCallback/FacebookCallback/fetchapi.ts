@@ -24,14 +24,14 @@ export async function requestFacebookId(token: string): Promise<FacebookId> {
     method: 'GET',
   })
   const json = await response.json()
-  const fname = json.name.split(' ')[0]
-  const lname = json.name.split(' ')[1] || ''
-  const uniqueEmail = fname + lname + '@facebook.com'
+  const firstName = json.name.split(' ')[0]
+  const lastName = json.name.split(' ')[1] || ''
+  const uniqueEmail = firstName + lastName + '@facebook.com'
 
   return {
     id: json.id,
-    fname,
-    lname,
+    firstName,
+    lastName,
     credential: json.name,
     email: uniqueEmail.toLocaleLowerCase(),
   }
