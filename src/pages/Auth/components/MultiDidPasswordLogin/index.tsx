@@ -101,8 +101,11 @@ const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
             mode='dark'
             mt={20}
             text='Sign in to profile'
-            onClick={() => {
-              const res = UserService.UnLockWithDIDAndPWd(dids[0], password)
+            onClick={async () => {
+              const res = await UserService.UnLockWithDIDAndPWd(
+                dids[0],
+                password
+              )
               if (res) {
                 window.location.href = '/profile'
                 return

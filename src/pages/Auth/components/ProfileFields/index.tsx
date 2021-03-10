@@ -99,7 +99,6 @@ const UseDetailsForm: React.FC<Props> = ({ setUserInfo, isCreate = true }) => {
             hasError={error !== '' && email === ''}
             type='email'
           />
-
           <ButtonWithLogo
             text={
               isCreate ? 'Create your profile now' : 'Complete your profile now'

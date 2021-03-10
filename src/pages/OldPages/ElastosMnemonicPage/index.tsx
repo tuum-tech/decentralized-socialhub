@@ -189,9 +189,9 @@ const ElastosMnemonicPage: React.FC<InferMappedProps> = ({
           lastName: '',
           accountType: AccountType.DID,
           isDIDPublished: false,
-          mnemonics: "",
-          onBoardingCompleted: true,
-          tutorialCompleted: false
+          mnemonics: '',
+          onBoardingCompleted: false,
+          tutorialCompleted: false,
         },
         pwd
       )

@@ -136,7 +136,10 @@ const DidForm: React.FC<Props> = ({
           flexDirection='column'
           label={(index + 1).toString()}
           placeholder={PlaceHolderTexts[index]}
-          onChange={(n) => updateMnemonic(index, n)}
+          onChange={(n) => {
+            setError(false)
+            updateMnemonic(index, n)
+          }}
           hasError={error}
         />
       </IonCol>

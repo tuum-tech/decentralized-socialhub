@@ -25,18 +25,6 @@ import {
 } from 'src/services/user.service'
 
 const ProfileEditor: React.FC = () => {
-  const [sessionItem, setSessionItem] = useState<ISessionItem>({
-    firstName: '',
-    lastName: '',
-    hiveHost: '',
-    did: '',
-    email: '',
-    userToken: '',
-    accountType: AccountType.DID,
-    isDIDPublished: false,
-    onBoardingCompleted: true,
-  } as ISessionItem)
-
   const [error, setError] = useState(false)
   const [userInfo, setUserInfo] = useState<ISessionItem>({
     hiveHost: '',
