@@ -101,8 +101,6 @@ const MyModal = styled(IonModal)`
 --min-height: 200px;
 --height: 480px;
 --width: 560px;
-height: 480px !important;
-width: 560px !important;
 `;
 
 const TreeDotsButton = styled.div`
@@ -229,7 +227,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({ experienceDTO, updateFunc,
   const [currentExperienceDTO, setcurrentExperienceDTO] = useState(experienceDTO);
 
   const handleChange = (evt: any, index: number) => {
-
+    debugger;
     // console.log("name: " + evt.target.name);
     // console.log("value: " + evt.target.value);
     // console.log("index: " + index);
@@ -294,10 +292,10 @@ const ExperienceCard: React.FC<IExperienceProps> = ({ experienceDTO, updateFunc,
 
   const listExperiences = currentExperienceDTO.items.map((x, i) => {
     return (
-      <>
+      <div key={i}>
         <ExperienceItems experienceItem={x} handleChange={handleChange} updateFunc={saveChanges} index={i} removeFunc={removeItem} mode={mode} />
         {i < currentExperienceDTO.items.length - 1 ? <Divider /> : ""}
-      </>
+      </div>
     )
 
 
@@ -385,20 +383,20 @@ const ExperienceCardEdit: React.FC<ExperienceItemProps> = ({ experienceItem, han
       </IonRow>
       <IonRow class="ion-justify-content-start">
         <IonCol size="5">
-          <SmallTextInput label="Title" name="title" value={experienceItem.title} onChange={handleChangeIndex} />
+          <SmallTextInput placeholder="e.g. Blockchain developer" label="Title" name="title" value={experienceItem.title} onChange={handleChangeIndex} />
         </IonCol>
       </IonRow>
       <IonRow class="ion-justify-content-start">
         <IonCol size="8">
-          <SmallTextInput label="Organization Name" name="institution" value={experienceItem.institution} onChange={handleChangeIndex} />
+          <SmallTextInput placeholder="Google, Elastos Foundation, ..." label="Organization Name" name="institution" value={experienceItem.institution} onChange={handleChangeIndex} />
         </IonCol>
       </IonRow>
       <IonRow class="ion-justify-content-start">
         <IonCol size="4.5">
-          <SmallTextInput label="Duration" name="start" type="date" value={experienceItem.start} onChange={handleChangeIndex} />
+          <SmallTextInput placeholder="start" label="Duration" name="start" type="date" value={experienceItem.start} onChange={handleChangeIndex} />
         </IonCol>
         <IonCol size="4.5">
-          <SmallTextInput label="&nbsp;" name="end" type="date" value={experienceItem.end} onChange={handleChangeIndex} />
+          <SmallTextInput placeholder="end" label="&nbsp;" name="end" type="date" value={experienceItem.end} onChange={handleChangeIndex} />
 
         </IonCol>
         <IonCol size="auto" class="ion-align-self-end">
@@ -408,7 +406,7 @@ const ExperienceCardEdit: React.FC<ExperienceItemProps> = ({ experienceItem, han
       <IonRow class="ion-justify-content-start">
         <IonCol size="8">
           <IonLabel>Description</IonLabel>
-          <MyTextarea rows={3} name="description" value={experienceItem.description} onIonChange={handleChangeIndex} />
+          <MyTextarea placeholder="..." rows={3} name="description" value={experienceItem.description} onIonChange={handleChangeIndex} />
         </IonCol>
       </IonRow>
     </MyGrid>

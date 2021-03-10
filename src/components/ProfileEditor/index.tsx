@@ -241,7 +241,7 @@ const ProfileEditor: React.FC = () => {
           </IonCol>
           <IonCol size="8">
 
-            <BasicCard sessionItem={userInfo} updateFunc={updateBasicProfile}></BasicCard>
+            {!error && loaded ? <BasicCard sessionItem={userInfo} updateFunc={updateBasicProfile}></BasicCard> : ""}
             {!error && loaded && userInfo.tutorialCompleted === true ?
               <>
                 <AboutCard basicDTO={full_profile.basicDTO} updateFunc={updateAbout} mode="edit" ></AboutCard>

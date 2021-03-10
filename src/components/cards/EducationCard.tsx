@@ -5,6 +5,7 @@ import {
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
+  IonCheckbox,
   IonCol,
   IonFooter,
   IonGrid,
@@ -306,6 +307,11 @@ const EducationCard: React.FC<IEducationProps> = ({ educationDTO, updateFunc, re
     // console.log("index: " + index);
 
 
+    if (evt.target.name === "stillWorking") {
+      evt.target.name = "end";
+      evt.target.value = "";
+    }
+
     // 1. Make a shallow copy of the items
     let items = [...currentEducationDTO.items];
 
@@ -340,6 +346,7 @@ const EducationCard: React.FC<IEducationProps> = ({ educationDTO, updateFunc, re
       institution: "",
       program: "",
       title: "",
+      stillWorking: false,
       order: "",
       start: "",
       end: "",
@@ -367,10 +374,10 @@ const EducationCard: React.FC<IEducationProps> = ({ educationDTO, updateFunc, re
 
   const listEducation = currentEducationDTO.items.map((x, i) => {
     return (
-      <>
+      <div key={i}>
         <EducationItems educationItem={x} handleChange={handleChange} updateFunc={saveChanges} index={i} removeFunc={removeItem} mode={mode} />
         {i < currentEducationDTO.items.length - 1 ? <Divider /> : ""}
-      </>
+      </div>
     )
 
 
@@ -439,12 +446,19 @@ color: #6b829a;
 --placeholder-color: var(--input - muted - placeholder);
 `;
 
+const Spacer = styled.div`
+margin-top:40px;
+padding: 5px;
+`
+
 const EducationCardEdit: React.FC<EducationItemProps> = ({ educationItem, handleChange, index, mode }: EducationItemProps) => {
 
+  //const [stillWorking, setStillWorking] = useState(educationItem.end === "")
 
   const handleChangeIndex = (evt: any) => {
     handleChange(evt, index);
   }
+
 
   return (
 
@@ -454,26 +468,31 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({ educationItem, handle
       </IonRow>
       <IonRow class="ion-justify-content-start">
         <IonCol size="5">
-          <SmallTextInput label="Program / Degree" name="program" value={educationItem.program} onChange={handleChangeIndex} />
+          <SmallTextInput label="Program / Degree" placeholder="e.g. Blockchain developer" name="program" value={educationItem.program} onChange={handleChangeIndex} />
         </IonCol>
       </IonRow>
       <IonRow class="ion-justify-content-start">
         <IonCol size="8">
-          <SmallTextInput label="University / Institution name" name="institution" value={educationItem.institution} onChange={handleChangeIndex} />
+          <SmallTextInput label="University / Institution name" placeholder="e.g. Harvard, MIT, ..." name="institution" value={educationItem.institution} onChange={handleChangeIndex} />
         </IonCol>
       </IonRow>
       <IonRow class="ion-justify-content-start">
         <IonCol size="4.5">
-          <SmallTextInput label="Duration" type="date" name="start" value={educationItem.start} onChange={handleChangeIndex} />
+          <SmallTextInput label="Duration" placeholder="Start" type="date" name="start" value={educationItem.start} onChange={handleChangeIndex} />
         </IonCol>
         <IonCol size="4.5">
-          <SmallTextInput label="&nbsp;" type="date" name="end" value={educationItem.end} onChange={handleChangeIndex} />
+          <SmallTextInput label="&nbsp;" type="date" placeholder="End" name="end" value={educationItem.end} onChange={handleChangeIndex} />
+        </IonCol>
+        <IonCol size="3">
+          <Spacer>
+            <IonCheckbox checked={educationItem.stillWorking} name="stillWorking" onIonChange={handleChangeIndex} /> Still Working
+          </Spacer>
         </IonCol>
       </IonRow>
       <IonRow class="ion-justify-content-start">
         <IonCol size="8">
           <IonLabel>Description</IonLabel>
-          <MyTextarea rows={3} name="description" value={educationItem.description} onIonChange={handleChangeIndex} />
+          <MyTextarea rows={3} name="description" placeholder="..." value={educationItem.description} onIonChange={handleChangeIndex} />
         </IonCol>
       </IonRow>
     </MyGrid>

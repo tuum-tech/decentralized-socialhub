@@ -72,6 +72,7 @@ export interface EducationItem {
     program: string,
     start: string,
     end: string,
+    stillWorking: boolean,
     title: string,
     description: string,
     order: string

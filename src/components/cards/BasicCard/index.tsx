@@ -92,11 +92,11 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
       <IonCardHeader>
         {/* <IonCardSubtitle>Card Subtitle</IonCardSubtitle> */}
         <IonGrid>
-          <IonRow>
+          <IonRow class="ion-justify-content-between">
             <IonCol><IonCardTitle>Basic Information</IonCardTitle></IonCol>
-            <IonCol>
-              <SmallLightButton>Cancel</SmallLightButton>&nbsp;&nbsp;
-              <SmallLightButton disabled={sessionItem.onBoardingCompleted === false} onClick={() => updateFunc(currentBasicDTO)}>Save</SmallLightButton></IonCol>
+            <IonCol size="auto">
+              <SmallLightButton disabled={sessionItem.onBoardingCompleted === false} onClick={() => updateFunc(currentBasicDTO)}>Save</SmallLightButton>
+            </IonCol>
           </IonRow>
         </IonGrid>
       </IonCardHeader>
@@ -104,25 +104,25 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
         <IonGrid>
           <IonRow class="ion-justify-content-start">
             <IonCol size="5">
-              <SmallTextInput disabled={!sessionItem.onBoardingCompleted} label="First name" name="firstName" value={currentBasicDTO.firstName} onChange={handleChange} />
+              <SmallTextInput disabled={!sessionItem.tutorialCompleted} label="First name" name="firstName" value={currentBasicDTO.firstName} onChange={handleChange} />
             </IonCol>
             <IonCol size="5">
-              <SmallTextInput disabled={!sessionItem.onBoardingCompleted} label="Last name" name="lastName" value={currentBasicDTO.lastName} onChange={handleChange} />
+              <SmallTextInput disabled={!sessionItem.tutorialCompleted} label="Last name" name="lastName" value={currentBasicDTO.lastName} onChange={handleChange} />
             </IonCol>
           </IonRow>
           <IonRow class="ion-justify-content-start">
             <IonCol size="5">
-              <SmallTextInput disabled={!sessionItem.onBoardingCompleted} label="Email" name="email" value={currentBasicDTO.email} onChange={handleChange} />
+              <SmallTextInput disabled={true} label="Email" name="email" value={currentBasicDTO.email} onChange={handleChange} />
             </IonCol>
           </IonRow>
           <IonRow class="ion-justify-content-start">
             <IonCol size="7">
-              <SmallTextInput disabled={!sessionItem.onBoardingCompleted} label="DID" value={currentBasicDTO.did} onChange={handleChange} />
+              <SmallTextInput disabled={true} label="DID" value={currentBasicDTO.did} onChange={handleChange} />
             </IonCol>
           </IonRow>
           <IonRow class="ion-justify-content-start">
             <IonCol size="7">
-              <SmallTextInput disabled={!sessionItem.onBoardingCompleted} label="Vault URL" value={currentBasicDTO.hiveHost} onChange={handleChange} />
+              <SmallTextInput disabled={true} label="Vault URL" value={currentBasicDTO.hiveHost} onChange={handleChange} />
             </IonCol>
             <IonCol size="auto">
 
