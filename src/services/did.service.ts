@@ -130,7 +130,7 @@ export class DidService {
     let isValid = false;
     let tx: any;
     while (!isValid) {
-      tx = ElastosClient.idChainRequest.generateRequest(
+      tx = await ElastosClient.idChainRequest.generateRequest(
         diddocument,
         userDID,
         `${operation}`

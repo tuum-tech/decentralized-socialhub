@@ -58,8 +58,8 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({ onContinue }) => 
             user.hiveHost = endpoint;
 
             let userDid = await DidService.loadDid(user.mnemonics)
-            let hivesvc = DidService.generateService(userDid, "hive", endpoint)
-            let userDocument = await DidDocumentService.getUserDocument()
+            let hivesvc = DidService.generateService(userDid, "HiveVault", endpoint)
+            let userDocument = await (await DidDocumentService.getUserDocument()).diddocument
             DidService.addServiceToDIDDocument(userDocument, hivesvc)
             DidDocumentService.publishUserDocument(userDocument)  
             UserService.updateSession(user)

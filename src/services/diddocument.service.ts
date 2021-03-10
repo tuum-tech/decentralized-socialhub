@@ -105,6 +105,8 @@ export class DidDocumentService {
         }
 
         let userDid = await DidService.loadDid(userSession.mnemonics)
+
+        if (diddocument["proof"]) delete diddocument["proof"]
         
         let isValid = false;
         let signedDocument: any;
@@ -114,6 +116,8 @@ export class DidDocumentService {
             DidService.sealDIDDocument(userDid, signedDocument)
             isValid = DidService.isSignedDIDDocumentValid(signedDocument, userDid)
         }
+
+        console.log(JSON.stringify(signedDocument))
 
          
 
