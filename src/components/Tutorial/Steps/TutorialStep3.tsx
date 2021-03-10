@@ -4,7 +4,7 @@ import ButtonDefault from 'src/components/ButtonDefault';
 import { ITutorialStepProp } from './TutorialStep1';
 import style from '../style.module.scss'
 import tuumlogo from '../../../assets/tuumtech.png'
-import { DidService } from 'src/services/did.service';
+import { DidService, PublishRequestOperation } from 'src/services/did.service';
 import { UserService } from 'src/services/user.service';
 import { HiveService } from 'src/services/hive.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
@@ -51,35 +51,42 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({ onContinue }) => 
         }
 
         try {
+            
             let user = UserService.GetUserSession()
+            user.userToken = await generateUserToken(user.mnemonics, endpoint)
+            user.tutorialCompleted = true
+            user.hiveHost = endpoint;
+
             let userDid = await DidService.loadDid(user.mnemonics)
             let hivesvc = DidService.generateService(userDid, "hive", endpoint)
-
             let userDocument = await DidDocumentService.getUserDocument()
-
             DidService.addServiceToDIDDocument(userDocument, hivesvc)
-
-            userDocument = DidService.sealDIDDocument(userDid, userDid)
-
-            DidDocumentService.updateUserDocument(userDocument)
-
-            user.hiveHost = endpoint;
+            DidDocumentService.publishUserDocument(userDocument)  
             UserService.updateSession(user)
 
             let hiveInstance = await HiveService.getSessionInstance()
             await UserVaultScripts.Execute(hiveInstance!)
-
-            let publishRequest = await DidService.generatePublishRequest(userDocument)
-            AssistService.publishDocument(userDid.did, publishRequest)
-
-            user.tutorialCompleted = true
-            UserService.updateSession(user)
+            
+            
             onContinue()
         } catch (error) {
+            console.log("Error", error)
+            await DidDocumentService.reloadUserDocument()
             setErrorMessage("We are not able to process your request at moment. Please try again later")
         }
 
 
+    }
+
+    const generateUserToken = async (mnemonics: string, address: string)=>{
+        let challenge = await HiveService.getHiveChallenge(address)
+        let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(
+        mnemonics,
+        '',
+        challenge.issuer,
+        challenge.nonce
+        )
+        return await HiveService.getUserHiveToken(address, presentation)
     }
 
 
