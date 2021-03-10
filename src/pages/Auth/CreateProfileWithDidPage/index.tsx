@@ -20,10 +20,9 @@ import saga from './saga'
 import { InferMappedProps, SubState, LocationState } from './types'
 
 type UserType = {
-  firstName: string
   did: string
   mnemonic: string
-  lastName: string
+  name: string
   email: string
   hiveHost: string
 }
@@ -32,10 +31,9 @@ const CreateProfileWithDidPage: React.FC<
   RouteComponentProps<{}, StaticContext, LocationState>
 > = (props) => {
   const [userInfo, setUserInfo] = useState<UserType>({
-    firstName: '',
     did: '',
     mnemonic: '',
-    lastName: '',
+    name: '',
     email: '',
     hiveHost: '',
   })
@@ -48,27 +46,29 @@ const CreateProfileWithDidPage: React.FC<
       let uInfo: UserType = {
         did,
         mnemonic,
-        lastName: '',
-        firstName: '',
+        name: '',
         email: '',
         hiveHost: '',
       }
       if (props.location.state.user) {
-        uInfo.firstName = props.location.state.user.firstName
-        uInfo.lastName = props.location.state.user.lastName
+        uInfo.name = props.location.state.user.name
         uInfo.email = props.location.state.user.email
       }
-      if (doc && doc !== undefined && doc.name) {
-        uInfo.firstName = doc.name.split(' ')[0] || ''
-      }
-      if (doc && doc !== undefined && doc.name) {
-        uInfo.lastName = doc.name.split(' ')[1] || ''
-      }
-      if (doc && doc !== undefined && doc.email) {
-        uInfo.email = doc.email
-      }
-      if (doc && doc !== undefined && doc.email) {
-        uInfo.hiveHost = doc.hiveHost
+      if (doc && doc !== undefined && doc.verifiableCredential) {
+        if (doc.verifiableCredential && doc.verifiableCredential.length > 0) {
+          for (let i = 0; i < doc.verifiableCredential.length; i++) {
+            const cv = doc.verifiableCredential[i]
+            if (cv.credentialSubject && cv.credentialSubject.name) {
+              uInfo.name = cv.credentialSubject.name
+            }
+            if (cv.credentialSubject && cv.credentialSubject.email) {
+              uInfo.email = cv.credentialSubject.email
+            }
+          }
+        }
+        if (doc.service && doc.service.length > 0) {
+          uInfo.hiveHost = doc.service[0].serviceEndpoint
+        }
       }
       setUserInfo(uInfo)
     }
@@ -79,15 +79,14 @@ const CreateProfileWithDidPage: React.FC<
 
   if (userInfo.did === '') {
     return <PageLoading />
-  } else if (userInfo.firstName === '') {
+  } else if (userInfo.name === '') {
     return (
       <ProfileFields
         isCreate={false}
-        setUserInfo={(firstName, lastName, email) => {
+        setUserInfo={(name, email) => {
           setUserInfo({
             ...userInfo,
-            firstName,
-            lastName,
+            name,
             email,
           })
         }}
@@ -100,8 +99,7 @@ const CreateProfileWithDidPage: React.FC<
       next={async (pwd) => {
         setLoading(true)
         await UserService.CreateNewUser(
-          userInfo.firstName,
-          userInfo.lastName,
+          userInfo.name,
           userInfo.did,
           AccountType.DID,
           userInfo.email,

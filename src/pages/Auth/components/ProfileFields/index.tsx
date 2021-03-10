@@ -22,20 +22,18 @@ import wavinghand from 'src/assets/icon/wavinghand.png'
 import style from './style.module.scss'
 
 interface Props {
-  setUserInfo: (firstName: string, lastName: string, email: string) => void
+  setUserInfo: (name: string, email: string) => void
   isCreate?: boolean
 }
 
 const UseDetailsForm: React.FC<Props> = ({ setUserInfo, isCreate = true }) => {
-  const [firstName, setfirstName] = useState('')
-  const [lastName, setlastName] = useState('')
+  const [name, setname] = useState('')
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
 
   const setField = (fieldName: string, fieldValue: string) => {
     setError('')
-    if (fieldName === 'firstName') setfirstName(fieldValue)
-    if (fieldName === 'lastName') setlastName(fieldValue)
+    if (fieldName === 'name') setname(fieldValue)
     if (fieldName === 'email') setEmail(fieldValue)
   }
 
@@ -78,18 +76,11 @@ const UseDetailsForm: React.FC<Props> = ({ setUserInfo, isCreate = true }) => {
             </Text16>
           )}
           <TextInput
-            value={firstName}
-            label='First Name'
-            onChange={(n) => setField('firstName', n)}
-            placeholder='Enter your first name'
-            hasError={error !== '' && firstName === ''}
-          />
-          <TextInput
-            value={lastName}
-            label='Last Name'
-            onChange={(n) => setField('lastName', n)}
-            placeholder='Enter your Last name'
-            hasError={error !== '' && lastName === ''}
+            value={name}
+            label='Name'
+            onChange={(n) => setField('name', n)}
+            placeholder='Enter your full name'
+            hasError={error !== '' && name === ''}
           />
           <TextInput
             value={email}
@@ -104,11 +95,11 @@ const UseDetailsForm: React.FC<Props> = ({ setUserInfo, isCreate = true }) => {
               isCreate ? 'Create your profile now' : 'Complete your profile now'
             }
             onClick={() => {
-              if (firstName === '' || lastName === '' || email === '') {
+              if (name === '' || email === '') {
                 setError('You should fill all the blanks')
                 return
               }
-              setUserInfo(firstName, lastName, email)
+              setUserInfo(name, email)
             }}
           />
         </OnBoardLayoutRightContent>

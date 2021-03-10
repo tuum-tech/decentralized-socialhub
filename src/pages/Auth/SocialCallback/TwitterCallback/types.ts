@@ -14,8 +14,7 @@ export interface TokenResponse {
 
 export interface TwitterId {
   id: string
-  firstName: string
-  lastName: string
+  name: string
   email: string
   credential: string
 }

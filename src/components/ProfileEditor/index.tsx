@@ -31,9 +31,8 @@ const ProfileEditor: React.FC = () => {
     userToken: '',
     accountType: AccountType.DID,
     did: '',
-    firstName: '',
     email: '',
-    lastName: '',
+    name: '',
     isDIDPublished: false,
     mnemonics: '',
     onBoardingCompleted: false,
@@ -43,8 +42,7 @@ const ProfileEditor: React.FC = () => {
   const [full_profile, setfull_profile] = useState({
     basicDTO: {
       isEnabled: false,
-      firstName: '',
-      lastName: '',
+      name: '',
       hiveHost: '',
       did: '',
       title: '',

@@ -14,8 +14,7 @@ export type ActionType = typeof Actions
 
 export type LocationState = {
   from: Location
-  firstName: string
-  lastName: string
+  name: string
   email: string
   request_token: string
   credential: string
@@ -29,8 +28,7 @@ export type LocationState = {
 }
 
 export type UserSessionProp = {
-  firstName: string
-  lastName: string
+  name: string
   email: string
   request_token: string
   credential: string

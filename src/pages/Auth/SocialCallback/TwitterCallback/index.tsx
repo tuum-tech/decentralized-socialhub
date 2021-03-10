@@ -18,8 +18,7 @@ const TwitterCallback: React.FC<RouteComponentProps> = (props) => {
    */
 
   const [credentials, setCredentials] = useState({
-    firstName: '',
-    lastName: '',
+    name: '',
     email: '',
     request_token: '',
     credential: '',
@@ -49,12 +48,10 @@ const TwitterCallback: React.FC<RouteComponentProps> = (props) => {
       ) {
         let t = await getToken(oauth_token, oauth_verifier)
         let items: string[] = atob(t.data.response).split(';')
-        const firstName = items[0].split(' ')[0]
-        const lastName = items[0].split(' ')[1] || ''
-        const uniqueEmail = firstName + lastName + items[1] + '@twitter.com'
+        const name = items[0]
+        const uniqueEmail = name.replace(' ', '') + items[1] + '@twitter.com'
         setCredentials({
-          firstName,
-          lastName,
+          name,
           request_token: `${oauth_token}[-]${oauth_verifier}`,
           email: uniqueEmail.toLocaleLowerCase(),
           credential: items[1].toString(),
@@ -70,8 +67,7 @@ const TwitterCallback: React.FC<RouteComponentProps> = (props) => {
           to={{
             pathname: '/generate-did',
             state: {
-              firstName: credentials.firstName,
-              lastName: credentials.lastName,
+              name: credentials.name,
               request_token: credentials.request_token,
               email: credentials.email,
               credential: credentials.credential,

@@ -86,8 +86,6 @@ let run = async () => {
       body: {
         collection: 'users',
         document: {
-          firstName: '$params.firstName',
-          lastName: '$params.lastName',
           name: '$params.name',
           email: '$params.email',
           status: '$params.status',
@@ -115,8 +113,7 @@ let run = async () => {
         },
         update: {
           $set: {
-            firstName: '$params.firstName',
-            lastName: '$params.lastName',
+            name: '$params.name',
             email: '$params.email',
             onBoardingCompleted: '$params.onBoardingCompleted',
           },

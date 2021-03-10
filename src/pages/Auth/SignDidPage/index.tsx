@@ -38,7 +38,7 @@ const SignDidPage: React.FC<
       !user &&
       props.location.state &&
       props.location.state.user &&
-      props.location.state.user.firstName
+      props.location.state.user.name
     ) {
       setUser(props.location.state.user)
     }
@@ -68,8 +68,7 @@ const SignDidPage: React.FC<
                   hiveHost: res.hiveHost,
                   userToken: res.userToken,
                   did: res.did,
-                  firstName: res.firstName,
-                  lastName: res.lastName,
+                  name: res.name,
                   accountType: res.accountType,
                   isDIDPublished: res.isDIDPublished,
                   onBoardingCompleted: res.onBoardingCompleted,
