@@ -19,7 +19,7 @@ const Banner = styled.div`
   justify-content: center;
   align-items: center;
   gap: 10px;
-  background-color: rgba(255, 110, 110, 0.97);
+  background-color: rgba(255, 110, 110, 1);
   font-family: 'SF Pro Display';
   font-size: 56px;
   font-weight: bold;

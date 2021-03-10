@@ -108,6 +108,11 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     })()
   }, [])
 
+  const scrollToPosition = (position: number) => {
+    let ionContent = document.querySelector("ion-content");
+    ionContent!.scrollToPoint(0, position);
+  }
+
   return (
     <IonPage className={style['profilepage']}>
       <IonContent className={style['content-scroll']}>
@@ -133,7 +138,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 
           <IonRow className='ion-justify-content-around'>
             <IonCol size='12'>
-              {loaded ? <ProfileComponent profile={full_profile} sessionItem={userInfo} /> : ""}
+              {loaded ? <ProfileComponent scrollToPosition={scrollToPosition} profile={full_profile} sessionItem={userInfo} /> : ""}
             </IonCol>
           </IonRow>
         </IonGrid>

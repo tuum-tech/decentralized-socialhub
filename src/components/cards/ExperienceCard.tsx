@@ -227,7 +227,6 @@ const ExperienceCard: React.FC<IExperienceProps> = ({ experienceDTO, updateFunc,
   const [currentExperienceDTO, setcurrentExperienceDTO] = useState(experienceDTO);
 
   const handleChange = (evt: any, index: number) => {
-    debugger;
     // console.log("name: " + evt.target.name);
     // console.log("value: " + evt.target.value);
     // console.log("index: " + index);

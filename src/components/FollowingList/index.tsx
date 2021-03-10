@@ -288,7 +288,6 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
 
     }
 
-    debugger;
     let listDids = list.get_following.items.map((p) => p.did);
 
     if (

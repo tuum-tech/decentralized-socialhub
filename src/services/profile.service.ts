@@ -172,7 +172,6 @@ export class ProfileService {
 
 
   async getFollowings(did: string): Promise<IFollowingResponse> {
-    debugger;
     let followings: IFollowingResponse;
 
     followings = (await this.getUserFollowings(did))
