@@ -89,12 +89,11 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
   return (
     <IonCard className={styleWidget['overview']}>
       <IonCardHeader>
-        {/* <IonCardSubtitle>Card Subtitle</IonCardSubtitle> */}
         <IonGrid>
           <IonRow class="ion-justify-content-between">
             <IonCol><IonCardTitle>Basic Information</IonCardTitle></IonCol>
             <IonCol size="auto">
-              <SmallLightButton disabled={sessionItem.onBoardingCompleted === false} onClick={() => updateFunc(currentBasicDTO)}>Save</SmallLightButton>
+              <SmallLightButton disabled={sessionItem.tutorialCompleted === false} onClick={() => updateFunc(currentBasicDTO)}>Save</SmallLightButton>
             </IonCol>
           </IonRow>
         </IonGrid>
@@ -103,10 +102,7 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
         <IonGrid>
           <IonRow class="ion-justify-content-start">
             <IonCol size="5">
-              <SmallTextInput disabled={!sessionItem.tutorialCompleted} label="First name" name="firstName" value={currentBasicDTO.firstName} onChange={handleChange} />
-            </IonCol>
-            <IonCol size="5">
-              <SmallTextInput disabled={!sessionItem.tutorialCompleted} label="Last name" name="lastName" value={currentBasicDTO.lastName} onChange={handleChange} />
+              <SmallTextInput disabled={!sessionItem.tutorialCompleted} label="Name" name="name" value={currentBasicDTO.name} onChange={handleChange} />
             </IonCol>
           </IonRow>
           <IonRow class="ion-justify-content-start">

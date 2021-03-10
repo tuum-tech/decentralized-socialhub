@@ -46,9 +46,9 @@ export class ProfileService {
 
   static async getProfileServiceInstance(): Promise<ProfileService> {
     let profileService: ProfileService = new ProfileService();
-    let hiveClient = await HiveService.getSessionInstance();
+    //let hiveClient = await HiveService.getSessionInstance();
 
-    if (hiveClient) profileService.hiveClient = hiveClient;
+    //if (hiveClient) profileService.hiveClient = hiveClient;
     profileService.appHiveClient = await HiveService.getAppHiveClient();
     return profileService;
   }
@@ -59,9 +59,9 @@ export class ProfileService {
     return profileService;
   }
 
-  async getMyFollowings(): Promise<IRunScriptResponse<IFollowingResponse>> {
-    return this.hiveClient.Scripting.RunScript({ name: 'get_following' });
-  }
+  // async getMyFollowings(): Promise<IRunScriptResponse<IFollowingResponse>> {
+  //   return this.hiveClient.Scripting.RunScript({ name: 'get_following' });
+  // }
 
   async getUserFollowings(
     did: string

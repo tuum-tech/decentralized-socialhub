@@ -34,6 +34,7 @@ import { AssistService, IPublishDocumentResponse, RequestStatus } from 'src/serv
 import { stat } from 'fs'
 import { DidDocumentService } from 'src/services/diddocument.service'
 import { set } from 'immer/dist/common'
+import { Link } from 'react-router-dom'
 interface IProps {
   profile?: ProfileDTO
   sessionItem: ISessionItem
@@ -70,33 +71,33 @@ const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
 
   const refreshStatus = async () => {
     let publishWaiting = getWaitingPublishItens()
-    
+
     if (publishWaiting.length <= 0) return
     publishWaiting.forEach(async (confirmationId) => {
       let actual = getActualStatus(confirmationId)
       if (actual.requestStatus == RequestStatus.Completed) {
-        setPublishStatus("")    
+        setPublishStatus("")
         window.localStorage.removeItem('publish_' + confirmationId)
         await updateUserToComplete()
         return
       }
       let status = await AssistService.getRequestStatus(confirmationId)
       setPublishStatus(`${status.requestStatus}`)
-      
+
     })
   }
 
-  const updateUserToComplete = async () =>{
-      let userSession = UserService.GetUserSession()
-      userSession.isDIDPublished = true;
-      UserService.updateSession(userSession)
-       await DidDocumentService.reloadUserDocument()
+  const updateUserToComplete = async () => {
+    let userSession = UserService.GetUserSession()
+    userSession.isDIDPublished = true;
+    UserService.updateSession(userSession)
+    await DidDocumentService.reloadUserDocument()
   }
   const getActualStatus = (
     confirmationId: string
   ): IPublishDocumentResponse => {
     let item = window.localStorage.getItem('publish_' + confirmationId)
-    
+
     if (item) return JSON.parse(item)
     return {
       confirmationId: confirmationId,

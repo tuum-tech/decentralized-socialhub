@@ -190,7 +190,7 @@ const ProfileEditor: React.FC = () => {
   }
 
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       let instance = UserService.GetUserSession()
       if (!instance || !instance.userToken) return
 
