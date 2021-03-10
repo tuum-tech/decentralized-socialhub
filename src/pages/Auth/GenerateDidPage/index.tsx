@@ -5,10 +5,11 @@ import { compose } from 'redux'
 
 import { createStructuredSelector } from 'reselect'
 import injector from 'src/baseplate/injectorWrap'
-import { UserService, UserData } from 'src/services/user.service'
-import SetPassword from 'src/components/SetPassword'
+import { UserService } from 'src/services/user.service'
 import PageLoading from 'src/components/layouts/PageLoading'
 import { AccountType } from 'src/services/user.service'
+
+import SetPassword from '../components/SetPassword'
 
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
 import { incrementAction, getSimpleAjax } from './actions'
@@ -50,8 +51,7 @@ const GenerateDidPage: React.FC<
               pathname: '/associated-profile',
               state: {
                 users: pUsers,
-                fname: props.location.state.fname,
-                lname: props.location.state.lname,
+                name: props.location.state.name,
                 email: props.location.state.email,
                 request_token: props.location.state.request_token,
                 service: props.location.state.service,
@@ -72,8 +72,7 @@ const GenerateDidPage: React.FC<
           setLoading(true)
           if (session) {
             await UserService.CreateNewUser(
-              session.fname,
-              session.lname,
+              session.name,
               session.request_token,
               session.service,
               session.email,

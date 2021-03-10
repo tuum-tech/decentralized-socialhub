@@ -20,8 +20,7 @@ export interface ISessionItem {
   userToken: string
   accountType: AccountType
   did: string
-  firstName: string
-  lastName: string
+  name: string
   email?: string
   isDIDPublished: boolean
   mnemonics: string
@@ -41,8 +40,7 @@ export interface UserData {
 }
 
 export interface SignInDIDData {
-  firstName: string
-  lastName: string
+  name: string
   did: string
   hiveHost: string
   userToken: string
@@ -68,8 +66,7 @@ export class UserService {
     service: AccountType,
     credential: string
   ): Promise<IDID> {
-  
-    this.clearPrevLocalData()
+    // this.clearPrevLocalData()
 
     console.log('Generating temporary DID')
     let newDID = await DidService.generateNew()
@@ -96,8 +93,6 @@ export class UserService {
       })
     )
 
-    
-
     return newDID
   }
 
@@ -112,7 +107,7 @@ export class UserService {
       storePassword
     ).toString()
     let localUserData: UserData = {
-      name: instance.firstName + ' ' + instance.lastName,
+      name: instance.name,
       did: instance.did,
       data: encrypted,
     }
@@ -132,7 +127,7 @@ export class UserService {
       let decrypted = CryptoJS.AES.decrypt(userData.data, storePassword)
       console.log('decrypted', decrypted)
       let instance = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
-      console.log('instance', instance)
+      console.log('==================>instance', instance)
       if (!instance && !instance.userToken)
         throw new Error('Incorrect password')
       return instance
@@ -200,12 +195,12 @@ export class UserService {
         return {
           accountType: userData.accountType,
           did: userData.did,
-          firstName: userData.firstName,
-          lastName: userData.lastName,
+          name: userData.name,
           hiveHost: userData.hiveHost,
           email: userData.email,
           userToken: userData.userToken,
           isDIDPublished: isDIDPublished ? isDIDPublished : false,
+          onBoardingCompleted: userData.onBoardingCompleted,
           alreadySigned:
             pSignedUsers &&
             pSignedUsers.length > 0 &&
@@ -220,8 +215,7 @@ export class UserService {
   }
 
   public static async CreateNewUser(
-    fname: string,
-    lname: string,
+    name: string,
     token: string,
     service: AccountType,
     email: string,
@@ -229,12 +223,12 @@ export class UserService {
     storePassword: string,
     newDidStr: string,
     newMnemonicStr: string,
-    hiveHostStr: string,
+    hiveHostStr: string
   ) {
     let sessionItem: ISessionItem
 
-    let did = newDidStr;
-    let mnemonic = newMnemonicStr;
+    let did = newDidStr
+    let mnemonic = newMnemonicStr
 
     if (!did || did === '') {
       const newDid = await this.generateTemporaryDID(service, credential)
@@ -246,14 +240,16 @@ export class UserService {
       did: did,
       accountType: service,
       isDIDPublished: await DidService.isDIDPublished(did),
-      firstName: fname,
-      lastName: lname,
-      hiveHost: hiveHostStr === '' ? `${process.env.REACT_APP_TUUM_TECH_HIVE}` : hiveHostStr,
+      name,
+      hiveHost:
+        hiveHostStr === ''
+          ? `${process.env.REACT_APP_TUUM_TECH_HIVE}`
+          : hiveHostStr,
       userToken: token,
       mnemonics: mnemonic,
       email: email,
       onBoardingCompleted: false,
-      tutorialCompleted: false
+      tutorialCompleted: false,
     }
 
     // add new user to the tuum.tech vault
@@ -267,7 +263,7 @@ export class UserService {
           hiveHost: sessionItem.hiveHost,
           accountType: service,
           userToken: token,
-          tutorialCompleted: false
+          tutorialCompleted: false,
         },
         context: {
           target_did: process.env.REACT_APP_APPLICATION_DID,
@@ -280,9 +276,7 @@ export class UserService {
       const add_user_script = {
         name: 'add_user',
         params: {
-          firstName: fname,
-          lastName: lname,
-          full_name: fname + ' ' + lname,
+          name,
           email: email,
           status: 'CONFIRMED',
           code: 1,
@@ -290,7 +284,7 @@ export class UserService {
           hiveHost: sessionItem.hiveHost,
           accountType: service,
           userToken: token,
-          tutorialCompleted: false
+          tutorialCompleted: false,
         },
         context: {
           target_did: process.env.REACT_APP_APPLICATION_DID,
@@ -306,14 +300,31 @@ export class UserService {
     SessionService.saveSessionItem(sessionItem)
   }
 
-  public static setOnBoardingComplted() {
+  public static async setOnBoardingCompleted() {
     let sessionItem = this.GetUserSession()
-    if (sessionItem) {
+    if (sessionItem && !sessionItem.onBoardingCompleted) {
       sessionItem.onBoardingCompleted = true
       window.sessionStorage.setItem(
         'session_instance',
         JSON.stringify(sessionItem, null, '')
       )
+      const update_user_script = {
+        name: 'update_user',
+        params: {
+          did: sessionItem.did,
+          name: sessionItem.name,
+          email: sessionItem.email,
+          onBoardingCompleted: true,
+        },
+        context: {
+          target_did: process.env.REACT_APP_APPLICATION_DID,
+          target_app_did: process.env.REACT_APP_APPLICATION_ID,
+        },
+      }
+      let response: any = await ScriptService.runTuumTechScript(
+        update_user_script
+      )
+      console.log('======>update_user for onboarding status', response)
     }
   }
 
@@ -325,6 +336,7 @@ export class UserService {
   }
 
   public static clearPrevLocalData() {
+    console.log('=====>clearPrevLocalData')
     const removeKeys = []
     for (let i = 0; i < window.localStorage.length; i++) {
       const key = window.localStorage.key(i)
@@ -343,35 +355,44 @@ export class UserService {
     }
   }
 
-  public static UnLockWithDIDAndPWd(did: string, storePassword: string) {
+  public static async UnLockWithDIDAndPWd(did: string, storePassword: string) {
     try {
       let instance = this.unlockUser(this.key(did), storePassword)
-      SessionService.saveSessionItem(instance)
-      return instance
+      const res = await this.SearchUserWithDID(did)
+
+      if (res && instance) {
+        if (!instance.onBoardingCompleted) {
+          instance.onBoardingCompleted = res.onBoardingCompleted
+          this.lockUser(this.key(instance.did), instance, storePassword)
+        }
+        SessionService.saveSessionItem(instance)
+        return instance
+      }
+      return
     } catch (error) {
       return null
     }
   }
 
   public static async logout() {
-    let sessionItem = this.GetUserSession()
-    if (!sessionItem.onBoardingCompleted) {
-      // remove this DID from tuum.tech vault
-      const delete_user_by_did = {
-        name: 'delete_user_by_did',
-        params: {
-          did: sessionItem.did,
-        },
-        context: {
-          target_did: process.env.REACT_APP_APPLICATION_DID,
-          target_app_did: process.env.REACT_APP_APPLICATION_ID,
-        },
-      }
-      let response = await ScriptService.runTuumTechScript(delete_user_by_did)
-      console.log('delete_user_by_did script response', response)
-    }
+    // let sessionItem = this.GetUserSession()
+    // if (!sessionItem.onBoardingCompleted) {
+    //   // remove this DID from tuum.tech vault
+    //   const delete_user_by_did = {
+    //     name: 'delete_user_by_did',
+    //     params: {
+    //       did: sessionItem.did,
+    //     },
+    //     context: {
+    //       target_did: process.env.REACT_APP_APPLICATION_DID,
+    //       target_app_did: process.env.REACT_APP_APPLICATION_ID,
+    //     },
+    //   }
+    //   let response = await ScriptService.runTuumTechScript(delete_user_by_did)
+    //   console.log('delete_user_by_did script response', response)
+    // }
 
-    this.clearPrevLocalData()
+    // this.clearPrevLocalData()
     SessionService.Logout()
   }
 }

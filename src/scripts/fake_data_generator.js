@@ -19,8 +19,7 @@ let run = async () => {
   let basic_profile = await client.Database.createCollection('basic_profile')
   basic_profile.insertOne({
     did: user.did,
-    firstName: 'Diego',
-    lastName: 'Chagastelles',
+    name: 'Diego Chagastelles',
     about:
       'Experienced Chief Technology Officer with a demonstrated history of working in the financial services industry. Skilled in PHP, Android Development, HTML, Cascading Style Sheets (CSS), and Microsoft PowerPoint. Strong information technology professional with a Bachelor’s degree focused in Computer Software Engineering from University of Management and Technology - UMT. ',
     title: 'Leader, Blockchain ninja, friendly neigbourhood web-developer',

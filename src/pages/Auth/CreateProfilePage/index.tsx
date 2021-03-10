@@ -30,6 +30,8 @@ import injector from 'src/baseplate/injectorWrap'
 import whitelogo from 'src/assets/logo/whitetextlogo.png'
 import wavinghand from 'src/assets/icon/wavinghand.png'
 
+import MultiDidPasswordLogin from '../components/MultiDidPasswordLogin'
+import FieldDivider from '../components/FieldDivider'
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
 import { incrementAction, getSimpleAjax } from './actions'
 import style from './style.module.scss'
@@ -69,16 +71,17 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
-  const [fname, setFName] = useState('')
-  const [lname, setLName] = useState('')
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [displayText, setDisplayText] = useState('')
   const [error, setError] = useState('')
+  const [signedUsers, setSignedUsers] = useState<string[]>([])
+  const [mode, setMode] = useState(0) // 0: create new, 1: sign in using pre logged
   const history = useHistory()
 
   useEffect(() => {
-    UserService.clearPrevLocalData()
+    // UserService.clearPrevLocalData()
     AlphaService.isLocalCodeValid().then((isLocalCodeValid) => {
       console.log('is session valid', isLocalCodeValid)
       if (!isLocalCodeValid) {
@@ -87,17 +90,21 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
     })
   }, [])
 
+  useEffect(() => {
+    const signedUserDids = UserService.getSignedUsers()
+    if (signedUserDids.length > 0) {
+      setSignedUsers(signedUserDids)
+      setMode(1)
+    }
+  }, [])
+
   const createUser = async () => {
-    if (!fname || !lname || !email) {
+    if (!name || !email) {
       setError('You should fill this field')
       return
     }
     setLoading(true)
-    let response = (await requestCreateUser(
-      fname,
-      lname,
-      email
-    )) as ICreateUserResponse
+    let response = (await requestCreateUser(name, email)) as ICreateUserResponse
     console.log('requestCreateUser api response', response)
     setLoading(false)
     if (
@@ -115,12 +122,11 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
         pathname: '/associated-profile',
         state: {
           users: pUsers,
-          fname,
-          lname,
+          name,
           email,
           request_token: '',
           service: AccountType.Email,
-          credential: fname + lname + email,
+          credential: name.replace(' ', '') + email,
         },
       })
     }
@@ -129,8 +135,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   const setField = (fieldName: string, fieldValue: string) => {
     setError('')
     setDisplayText('')
-    if (fieldName === 'firstName') setFName(fieldValue)
-    if (fieldName === 'lastName') setLName(fieldValue)
+    if (fieldName === 'name') setName(fieldValue)
     if (fieldName === 'email') setEmail(fieldValue)
   }
 
@@ -167,6 +172,12 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
     }
   }
 
+  if (mode === 1) {
+    return (
+      <MultiDidPasswordLogin dids={signedUsers} changeMode={() => setMode(0)} />
+    )
+  }
+
   return (
     <OnBoardLayout className={style['create-profile']}>
       <OnBoardLayoutLeft>
@@ -199,18 +210,11 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
             It’s free and easy to get set up.
           </Text16>
           <TextInput
-            value={fname}
-            label='First Name'
-            onChange={(n) => setField('firstName', n)}
-            placeholder='Enter your first name'
-            hasError={error !== '' && fname === ''}
-          />
-          <TextInput
-            value={lname}
-            label='Last Name'
-            onChange={(n) => setField('lastName', n)}
-            placeholder='Enter your Last name'
-            hasError={error !== '' && lname === ''}
+            value={name}
+            label='Name'
+            onChange={(n) => setField('name', n)}
+            placeholder='Enter your Full name'
+            hasError={error !== '' && name === ''}
           />
           <TextInput
             value={email}
@@ -229,10 +233,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
             onClick={createUser}
           />
 
-          <div className={style['connect-divider']}>
-            <hr className={style['connect-divider_line']} />
-            <div className={style['connect-divider_txt']}>or connect with</div>
-          </div>
+          <FieldDivider text='or connect with' />
           <div className={style['social-btn-group']}>
             <SocialButton
               type='linkedin'
