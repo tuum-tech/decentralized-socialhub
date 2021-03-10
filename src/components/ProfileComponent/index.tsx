@@ -36,10 +36,10 @@ const ProfileComponent: React.FC<IPropsSession> = ({ profile, sessionItem, scrol
       scrollToPosition(0);
     }
     if (cardName === "experience") {
-      scrollToPosition(250);
+      scrollToPosition(280);
     }
     if (cardName === "education") {
-      scrollToPosition(450);
+      scrollToPosition(525);
     }
   }
 
