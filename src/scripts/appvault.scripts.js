@@ -118,6 +118,7 @@ let run = async () => {
             firstName: '$params.firstName',
             lastName: '$params.lastName',
             email: '$params.email',
+            onBoardingCompleted: '$params.onBoardingCompleted',
           },
         },
         options: {

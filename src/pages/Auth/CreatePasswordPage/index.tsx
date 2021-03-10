@@ -68,9 +68,7 @@ const CreatePasswordPage: React.FC<
         firstName,
         lastName,
         isDIDPublished,
-        onBoardingCompleted
-        
-
+        onBoardingCompleted,
       } = props.location.state
       setSession({
         hiveHost,
@@ -80,9 +78,9 @@ const CreatePasswordPage: React.FC<
         firstName,
         lastName,
         isDIDPublished,
-        mnemonics: "",
+        mnemonics: '',
         onBoardingCompleted,
-        tutorialCompleted: false
+        tutorialCompleted: false,
       })
     }
   })
@@ -113,7 +111,7 @@ const CreatePasswordPage: React.FC<
       <OnBoardLayoutRight>
         <OnBoardLayoutRightContent>
           <OnBoardLayoutRightContentTitle style={{ marginBottom: '46px' }}>
-            Create your profile
+            Create your password
           </OnBoardLayoutRightContentTitle>
           <TextInput
             value={password}

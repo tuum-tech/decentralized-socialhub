@@ -129,7 +129,7 @@ export class UserService {
       let decrypted = CryptoJS.AES.decrypt(userData.data, storePassword)
       console.log('decrypted', decrypted)
       let instance = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))
-      console.log('instance', instance)
+      console.log('==================>instance', instance)
       if (!instance && !instance.userToken)
         throw new Error('Incorrect password')
       return instance
@@ -203,6 +203,7 @@ export class UserService {
           email: userData.email,
           userToken: userData.userToken,
           isDIDPublished: isDIDPublished ? isDIDPublished : false,
+          onBoardingCompleted: userData.onBoardingCompleted,
           alreadySigned:
             pSignedUsers &&
             pSignedUsers.length > 0 &&
@@ -306,14 +307,32 @@ export class UserService {
     SessionService.saveSessionItem(sessionItem)
   }
 
-  public static setOnBoardingComplted() {
+  public static async setOnBoardingCompleted() {
     let sessionItem = this.GetUserSession()
-    if (sessionItem) {
+    if (sessionItem && !sessionItem.onBoardingCompleted) {
       sessionItem.onBoardingCompleted = true
       window.sessionStorage.setItem(
         'session_instance',
         JSON.stringify(sessionItem, null, '')
       )
+      const update_user_script = {
+        name: 'update_user',
+        params: {
+          did: sessionItem.did,
+          firstName: sessionItem.firstName,
+          lastName: sessionItem.lastName,
+          email: sessionItem.email,
+          onBoardingCompleted: true,
+        },
+        context: {
+          target_did: process.env.REACT_APP_APPLICATION_DID,
+          target_app_did: process.env.REACT_APP_APPLICATION_ID,
+        },
+      }
+      let response: any = await ScriptService.runTuumTechScript(
+        update_user_script
+      )
+      console.log('======>update_user for onboarding status', response)
     }
   }
 
@@ -344,33 +363,42 @@ export class UserService {
     }
   }
 
-  public static UnLockWithDIDAndPWd(did: string, storePassword: string) {
+  public static async UnLockWithDIDAndPWd(did: string, storePassword: string) {
     try {
       let instance = this.unlockUser(this.key(did), storePassword)
-      SessionService.saveSessionItem(instance)
-      return instance
+      const res = await this.SearchUserWithDID(did)
+
+      if (res && instance) {
+        if (!instance.onBoardingCompleted) {
+          instance.onBoardingCompleted = res.onBoardingCompleted
+          this.lockUser(this.key(instance.did), instance, storePassword)
+        }
+        SessionService.saveSessionItem(instance)
+        return instance
+      }
+      return
     } catch (error) {
       return null
     }
   }
 
   public static async logout() {
-    let sessionItem = this.GetUserSession()
-    if (!sessionItem.onBoardingCompleted) {
-      // remove this DID from tuum.tech vault
-      const delete_user_by_did = {
-        name: 'delete_user_by_did',
-        params: {
-          did: sessionItem.did,
-        },
-        context: {
-          target_did: process.env.REACT_APP_APPLICATION_DID,
-          target_app_did: process.env.REACT_APP_APPLICATION_ID,
-        },
-      }
-      let response = await ScriptService.runTuumTechScript(delete_user_by_did)
-      console.log('delete_user_by_did script response', response)
-    }
+    // let sessionItem = this.GetUserSession()
+    // if (!sessionItem.onBoardingCompleted) {
+    //   // remove this DID from tuum.tech vault
+    //   const delete_user_by_did = {
+    //     name: 'delete_user_by_did',
+    //     params: {
+    //       did: sessionItem.did,
+    //     },
+    //     context: {
+    //       target_did: process.env.REACT_APP_APPLICATION_DID,
+    //       target_app_did: process.env.REACT_APP_APPLICATION_ID,
+    //     },
+    //   }
+    //   let response = await ScriptService.runTuumTechScript(delete_user_by_did)
+    //   console.log('delete_user_by_did script response', response)
+    // }
 
     // this.clearPrevLocalData()
     SessionService.Logout()

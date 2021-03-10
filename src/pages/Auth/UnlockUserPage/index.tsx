@@ -34,15 +34,15 @@ const UnlockUserPage: React.FC<
       : []
   )
 
-  const unlockUser = () => {
+  const unlockUser = async () => {
     if (!dids || dids.length === 0) return
     let res = null
     if (dids.length === 1) {
-      res = UserService.UnLockWithDIDAndPWd(dids[0], password)
+      res = await UserService.UnLockWithDIDAndPWd(dids[0], password)
     } else {
       for (let i = 0; i < dids.length; i++) {
         const did = dids[i]
-        res = UserService.UnLockWithDIDAndPWd(did, password)
+        res = await UserService.UnLockWithDIDAndPWd(did, password)
       }
     }
 
@@ -87,13 +87,13 @@ const UnlockUserPage: React.FC<
             mt={34}
             hasLogo={false}
             text='Continue'
-            onClick={() => {
+            onClick={async () => {
               if (password === '') {
                 setError('You should fill the password')
                 return
               } else {
                 setError('')
-                unlockUser()
+                await unlockUser()
               }
             }}
           />

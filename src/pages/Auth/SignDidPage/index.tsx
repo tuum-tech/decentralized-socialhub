@@ -72,7 +72,7 @@ const SignDidPage: React.FC<
                   lastName: res.lastName,
                   accountType: res.accountType,
                   isDIDPublished: res.isDIDPublished,
-                  onBoardingCompleted: true,
+                  onBoardingCompleted: res.onBoardingCompleted,
                 },
               })
             } else {
