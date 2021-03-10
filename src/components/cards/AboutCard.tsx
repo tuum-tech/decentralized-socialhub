@@ -26,9 +26,11 @@ const AboutCard: React.FC<IProps> = ({ basicDTO }: IProps) => {
         {/* <IonCardSubtitle>Card Subtitle</IonCardSubtitle> */}
         <IonCardTitle>About</IonCardTitle>
       </IonCardHeader>
+      {basicDTO && (
       <IonCardContent>
-        {basicDTO.about}
-      </IonCardContent>
+         {basicDTO.about}
+      </IonCardContent>)}
+      
     </IonCard>
   );
 };

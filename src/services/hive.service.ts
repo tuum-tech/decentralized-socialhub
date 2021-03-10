@@ -6,20 +6,30 @@ import {
 import jwt_decode from 'jwt-decode'
 
 import { DidService } from './did.service'
+import { DidDocumentService } from './diddocument.service'
 import { AccountType, UserService } from './user.service'
 export interface IHiveChallenge {
   issuer: string
   nonce: string
 }
 export class HiveService {
+
+  
+
   static async getSessionInstance(): Promise<HiveClient | undefined> {
     let instance = UserService.GetUserSession()
-    if (!instance.isDIDPublished || instance.accountType !== AccountType.DID) {
+
+    let isTest =  await DidDocumentService.isDidDocumentPublished("did:elastos:tesrkajhdaksjdhkjashdka")
+    console.log("teste ", isTest)
+    let isUserDocumentPublished = await DidDocumentService.isDidDocumentPublished(instance.did)
+    console.log("isDocumentPublished", isUserDocumentPublished)
+    if (!isUserDocumentPublished) {
       console.log(
         'DID User is not published or AccountTYpe is not available type'
       )
       return
     }
+
     let hiveClient = await HiveClient.createInstance(
       instance.userToken,
       instance.hiveHost
@@ -41,22 +51,7 @@ export class HiveService {
     }
   }
 
-  static async getToken(address: string): Promise<string> {
-    let token = window.sessionStorage.getItem('app_token')
-    if (!token) {
-      let mnemonic = `${process.env.REACT_APP_TUUM_TECH_MNEMONICS}`
-      let challenge = await HiveService.getHiveChallenge(address)
-      let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(
-        mnemonic,
-        '',
-        challenge.issuer,
-        challenge.nonce
-      )
-      token = await HiveService.getUserHiveToken(address, presentation)
-      window.sessionStorage.setItem('app_token', token)
-    }
-    return token || ''
-  }
+  
 
   static async getAppHiveClient(): Promise<HiveClient> {
     console.log('search service client grab1')

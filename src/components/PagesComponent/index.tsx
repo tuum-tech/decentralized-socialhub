@@ -13,6 +13,7 @@ import {
   IPublishDocumentResponse,
   RequestStatus,
 } from 'src/services/assist.service'
+import { DidDocumentService } from 'src/services/diddocument.service'
 
 const FollowingList: React.FC = () => {
   const [googleCredential, setGoogleCredential] = useState('')
@@ -53,9 +54,17 @@ const FollowingList: React.FC = () => {
       console.log(confirmationId, status)
       let actual = getActualStatus(confirmationId)
       if (actual.requestStatus === RequestStatus.NotFound) return
+      if (actual.requestStatus === RequestStatus.Completed){
+        setPublishStatus({ requestStatus: '' });
+          window.localStorage.removeItem('publish_' + confirmationId)
+          await DidDocumentService.reloadUserDocument()
+      }
 
       if (status.requestStatus !== actual.requestStatus) {
         if (status.requestStatus === RequestStatus.Completed) {
+          setPublishStatus({ requestStatus: '' });
+          window.localStorage.removeItem('publish_' + confirmationId)
+          await DidDocumentService.reloadUserDocument()
         } else {
           window.localStorage.setItem(
             'publish_' + confirmationId,
@@ -64,7 +73,7 @@ const FollowingList: React.FC = () => {
         }
       }
     })
-    setTimer()
+    //setTimer()
   }
   const getActualStatus = (
     confirmationId: string
