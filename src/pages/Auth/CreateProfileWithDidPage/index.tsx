@@ -70,7 +70,6 @@ const CreateProfileWithDidPage: React.FC<
           uInfo.hiveHost = doc.service[0].serviceEndpoint
         }
       }
-      console.log('=====>uInfo', uInfo)
       setUserInfo(uInfo)
     }
     if (userInfo.did === '') {
