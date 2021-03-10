@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   IonGrid,
   IonRow,
@@ -29,8 +29,11 @@ import bulb from '../../assets/bulb.svg'
 import edit from '../../assets/icon-edit.svg'
 import addbutton from '../../assets/addbutton.svg'
 import university from '../../assets/university.png'
-import { ISessionItem } from 'src/services/user.service'
-import { Link } from 'react-router-dom'
+import { ISessionItem, UserService } from 'src/services/user.service'
+import { AssistService, IPublishDocumentResponse, RequestStatus } from 'src/services/assist.service'
+import { stat } from 'fs'
+import { DidDocumentService } from 'src/services/diddocument.service'
+import { set } from 'immer/dist/common'
 interface IProps {
   profile?: ProfileDTO
   sessionItem: ISessionItem
@@ -56,6 +59,71 @@ const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
   const getLink = (): string => {
     return `/did/${sessionItem.did}`;
   }
+  const [publishStatus, setPublishStatus] = useState("")
+  const setTimer = () => {
+    const timer = setTimeout(async () => {
+      await refreshStatus()
+      setTimer()
+    }, 15 * 1000)
+    return () => clearTimeout(timer)
+  }
+
+  const refreshStatus = async () => {
+    let publishWaiting = getWaitingPublishItens()
+    
+    if (publishWaiting.length <= 0) return
+    publishWaiting.forEach(async (confirmationId) => {
+      let actual = getActualStatus(confirmationId)
+      if (actual.requestStatus == RequestStatus.Completed) {
+        setPublishStatus("")    
+        window.localStorage.removeItem('publish_' + confirmationId)
+        await updateUserToComplete()
+        return
+      }
+      let status = await AssistService.getRequestStatus(confirmationId)
+      setPublishStatus(`${status.requestStatus}`)
+      
+    })
+  }
+
+  const updateUserToComplete = async () =>{
+      let userSession = UserService.GetUserSession()
+      userSession.isDIDPublished = true;
+      UserService.updateSession(userSession)
+       await DidDocumentService.reloadUserDocument()
+  }
+  const getActualStatus = (
+    confirmationId: string
+  ): IPublishDocumentResponse => {
+    let item = window.localStorage.getItem('publish_' + confirmationId)
+    
+    if (item) return JSON.parse(item)
+    return {
+      confirmationId: confirmationId,
+      requestStatus: RequestStatus.NotFound,
+    }
+  }
+
+  const getWaitingPublishItens = () => {
+    let response: string[] = []
+    for (var i = 0, len = window.localStorage.length; i < len; ++i) {
+      let key = window.localStorage.key(i)
+      if (key && key.startsWith('publish')) {
+        response.push(key.replace('publish_', ''))
+      }
+    }
+    return response
+  }
+
+
+
+  useEffect(() => {
+    ; (async () => {
+      await refreshStatus()
+    })()
+    setTimer()
+  }, [])
+
   return (
     <IonGrid className={style['profileheader']}>
       <IonRow className={style['header']}>
@@ -69,11 +137,7 @@ const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
                 <ProfileName>{sessionItem.name}</ProfileName>
               </IonCol>
               <IonCol>
-                {sessionItem.isDIDPublished === false ? (
-                  <PublishingLabel>Publishing ...</PublishingLabel>
-                ) : (
-                  ''
-                )}
+                {publishStatus !== "" ? <PublishingLabel>{publishStatus}</PublishingLabel> : ""}
               </IonCol>
             </IonRow>
             <IonRow className='ion-justify-content-start'>

@@ -14,16 +14,17 @@ export interface IPublishDocumentResponse {
 export class AssistService {
   static async publishDocument(
     did: string,
-    request: any
+    request: any, 
   ): Promise<IPublishDocumentResponse> {
     let url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/assist_router/didtx/create`;
     let data = {
       didRequest: request,
-      requestFrom: `${process.env.REACT_APP_APPLICATION_ID}`,
+      requestFrom: `${process.env.REACT_APP_APPLICATION_NAME}`,
       did: did,
       memo: '',
     };
-
+    
+    console.log("ASSIST DATA", data)
     let postData: any = {
       method: 'POST',
       headers: {
@@ -33,15 +34,19 @@ export class AssistService {
       body: JSON.stringify(data),
     };
 
+
+
     let response = await fetch(url, postData);
-
+    console.log("ASSIST RESPONSE", response)
     let json = await response.json();
-
+    console.log("ASSIST JSON", json)
+    
+    
     window.localStorage.setItem(
-      `publish_${json.confirmationId}`,
+      `publish_${json.data.confirmation_id}`,
       JSON.stringify({
-        confirmationId: json.confirmationId,
-        status: json.requestStatus,
+        confirmationId: json.data.confirmation_id,
+        requestStatus: RequestStatus.Pending,
       })
     )
 
@@ -67,6 +72,15 @@ export class AssistService {
     let response = await fetch(url, postData);
 
     let json = await response.json();
+
+    window.localStorage.setItem(
+      `publish_${confirmationId}`,
+      JSON.stringify({
+        confirmationId: confirmationId,
+        requestStatus: RequestStatus.Pending,
+      })
+    )
+
     return {
       confirmationId: confirmationId,
       requestStatus: json.data.status,

@@ -1,6 +1,6 @@
 import { stat } from "fs";
 import { AssistService } from "./assist.service";
-import { DidService } from "./did.service";
+import { DidService, PublishRequestOperation } from "./did.service";
 import { EventsService, IEventCallback } from "./events.service";
 import { UserService } from "./user.service";
 
@@ -42,10 +42,18 @@ export class DidDocumentService {
         return JSON.parse(json)
     }
 
+
+
     private static setDocumentState(documentState: IDIDDocumentState){
         let json = JSON.stringify(documentState)
         window.localStorage.setItem("user_diddocument", json)
         this.triggerDocumentChangeEvent(documentState)
+    }
+
+    static async isDidDocumentPublished(did: string): Promise<boolean>{
+        let documentOnBlockchain = await DidService.getDidDocument(did)
+        console.log(did, documentOnBlockchain)
+        return (documentOnBlockchain)
     }
 
     static async getUserDocument(): Promise<IDIDDocumentState> {
@@ -97,6 +105,8 @@ export class DidDocumentService {
         }
 
         let userDid = await DidService.loadDid(userSession.mnemonics)
+
+        if (diddocument["proof"]) delete diddocument["proof"]
         
         let isValid = false;
         let signedDocument: any;
@@ -107,18 +117,14 @@ export class DidDocumentService {
             isValid = DidService.isSignedDIDDocumentValid(signedDocument, userDid)
         }
 
+        console.log(JSON.stringify(signedDocument))
+
          
 
-        let requestPub = await DidService.generatePublishRequest(signedDocument)
-        let response = await AssistService.publishDocument(userDid.did, requestPub)
+        let requestPub = await DidService.generatePublishRequest(signedDocument, userDid, PublishRequestOperation.Update)
+        await AssistService.publishDocument(userDid.did, requestPub)
     
-        window.localStorage.setItem(
-          `publish_${response.confirmationId}`,
-          JSON.stringify({
-            confirmationId: response.confirmationId,
-            status: response.requestStatus,
-          })
-        )
+      
 
         let documentState = {
             diddocument: signedDocument,

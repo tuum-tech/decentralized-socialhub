@@ -140,8 +140,9 @@ const ProfilePage: React.FC<RouteComponentProps> = (
 
   useEffect(() => {
     (async () => {
-      let instance = UserService.GetUserSession();
-      if (!instance) return;
+      
+      let instance = UserService.GetUserSession()
+      if (!instance) return
 
       setUserInfo(instance);
       console.error(JSON.stringify(userInfo));
