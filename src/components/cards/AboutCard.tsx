@@ -6,6 +6,7 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonCol,
+  IonFooter,
   IonGrid,
   IonModal,
   IonRow,
@@ -13,7 +14,6 @@ import {
 } from '@ionic/react';
 import styleWidget from '../cards/WidgetCards.module.scss';
 import { BasicDTO } from 'src/pages/PublicPage/types';
-import { ModalFooter } from 'react-bootstrap';
 import styled from 'styled-components';
 
 interface BasicInfo {
@@ -43,6 +43,10 @@ const MyModal = styled(IonModal)`
 --width: 560px;
 `;
 
+const ModalFooter = styled(IonFooter)`
+padding:12px;
+
+`;
 interface IProps {
   basicDTO: BasicDTO,
   mode: string,
