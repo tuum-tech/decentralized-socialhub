@@ -11,8 +11,15 @@ export type InferMappedProps = ReturnType<typeof mapStateToProps> &
 
 export type ActionType = typeof Actions
 
+export type UserType = {
+  firstName: string
+  lastName: string
+  email: string
+}
+
 export type LocationState = {
   from: Location
   did: string
   mnemonic: string
+  user?: UserType
 }

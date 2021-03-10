@@ -1,6 +1,8 @@
-import { IonRow } from '@ionic/react'
+import { IonCol, IonRow } from '@ionic/react'
 import { connect } from 'react-redux'
-import { useHistory } from 'react-router'
+import { StaticContext, RouteComponentProps, useHistory } from 'react-router'
+import styled from 'styled-components'
+
 import { compose } from 'redux'
 import { createStructuredSelector } from 'reselect'
 
@@ -12,94 +14,79 @@ import style from './style.module.scss'
 import { NameSpace } from './constants'
 import reducer from './reducer'
 import saga from './saga'
-import { InferMappedProps, SubState } from './types'
+import { InferMappedProps, SubState, UserType, LocationState } from './types'
 
 import {
   OnBoardLayout,
   OnBoardLayoutRight,
-  OnBoardLayoutRightContent,
-  OnBoardLayoutRightContentTitle,
 } from 'src/components/layouts/OnBoardLayout'
+import { UserService } from 'src/services/user.service'
+import DidSignForm from '../components/DidSign/DidSignForm'
+import DidLeftSide from '../components/DidSign/DidLeftSide'
+import PassPhraseHelp from '../components/DidSign/PassPhraseHelp'
 
-import { Text16, Text12 } from 'src/components/texts'
-import DidSignForm from 'src/components/DidSign/DidSignForm'
-import DidLeftSide from 'src/components/DidSign/DidLeftSide'
-import { ISessionItem, UserService } from 'src/services/user.service'
-
-const SignDidPage: React.FC<InferMappedProps> = ({
-  eProps,
-  ...props
-}: InferMappedProps) => {
+const SignDidPage: React.FC<
+  RouteComponentProps<{}, StaticContext, LocationState>
+> = (props) => {
   const history = useHistory()
+  const [showHelp, setShowHelp] = useState(false)
   const [error, setError] = useState(false)
+  const [user, setUser] = useState<UserType | null>(null)
 
   useEffect(() => {
-    const dids =
-      UserService.getSignedUsers().length > 0
-        ? UserService.getSignedUsers()
-        : []
-    if (dids && dids.length > 0) {
-      history.push({
-        pathname: '/unlock-user',
-        state: { dids },
-      })
+    if (
+      !user &&
+      props.location.state &&
+      props.location.state.user &&
+      props.location.state.user.firstName
+    ) {
+      setUser(props.location.state.user)
     }
   }, [])
 
   return (
     <OnBoardLayout className={style['did-signin']}>
+      {showHelp && <PassPhraseHelp close={() => setShowHelp(false)} />}
       <DidLeftSide error={error} />
       <OnBoardLayoutRight>
-        <OnBoardLayoutRightContent>
-          <OnBoardLayoutRightContentTitle>
-            Sign into with Decentrialized ID (DID)
-          </OnBoardLayoutRightContentTitle>
-          <Text16>
-            Enter your 12 security passwords in the correct order.
-          </Text16>
-          <IonRow style={{ marginTop: '12px' }}>
-            <Text12>What are these?</Text12>
-            <Text12>&nbsp;Help</Text12>
-          </IonRow>
-          <DidSignForm
-            error={error}
-            setError={setError}
-            onSuccess={async (uDid: string, mnemonic: string) => {
-              console.log('=====>', uDid, mnemonic)
-              const res = await UserService.SearchUserWithDID(uDid)
-              window.localStorage.setItem(
-                `temporary_${uDid.replace('did:elastos:', '')}`,
-                JSON.stringify({
-                  mnemonic: mnemonic,
-                })
-              )
-
-              if (res) {
-                history.push({
-                  pathname: '/set-password',
-                  state: {
-                    hiveHost: res.hiveHost,
-                    userToken: res.userToken,
-                    did: res.did,
-                    firstName: res.firstName,
-                    lastName: res.lastName,
-                    accountType: res.accountType,
-                    isDIDPublished: res.isDIDPublished,
-                    onBoardingCompleted: true,
-                  },
-                })
-              } else {
-                history.push({
-                  pathname: '/create-profile-with-did',
-                  state: {
-                    did: uDid,
-                    mnemonic,
-                  },
-                })
-              }
-            }}
-          />
-        </OnBoardLayoutRightContent>
+        <DidSignForm
+          showModal={() => setShowHelp(true)}
+          error={error}
+          setError={setError}
+          onSuccess={async (uDid: string, mnemonic: string) => {
+            const res = await UserService.SearchUserWithDID(uDid)
+            window.localStorage.setItem(
+              `temporary_${uDid.replace('did:elastos:', '')}`,
+              JSON.stringify({
+                mnemonic: mnemonic,
+              })
+            )
+            if (res) {
+              history.push({
+                pathname: '/set-password',
+                state: {
+                  hiveHost: res.hiveHost,
+                  userToken: res.userToken,
+                  did: res.did,
+                  firstName: res.firstName,
+                  lastName: res.lastName,
+                  accountType: res.accountType,
+                  isDIDPublished: res.isDIDPublished,
+                  onBoardingCompleted: true,
+                },
+              })
+            } else {
+              history.push({
+                pathname: '/create-profile-with-did',
+                state: {
+                  did: uDid,
+                  mnemonic,
+                  user,
+                },
+              })
+            }
+          }}
+        />
       </OnBoardLayoutRight>
     </OnBoardLayout>
   )

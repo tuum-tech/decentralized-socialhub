@@ -15,7 +15,6 @@ import {
   OnBoardLayoutLeftContent,
   OnBoardLayoutLeftContentTitle,
   OnBoardLayoutLeftContentDescription,
-  OnBoardLayoutLeftContentIntro,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
@@ -41,7 +40,6 @@ import {
   LocationState,
 } from './types'
 import { requestForceCreateUser } from './fetchapi'
-// import SignDid from './components/SignDid'
 import GenerateDid from './components/GenerateDid'
 import style from './style.module.scss'
 
@@ -65,18 +63,29 @@ const AssociatedProfilePage: React.FC<
   const [showModal, setShowModal] = useState(false)
   const [user, setUser] = useState<UserProps | null>(null)
   const [screen, setScreen] = useState('')
-  const [associatedInfo, setAssociatedIfno] = useState<SessionProp | null>(
-    null
-  )
+  const [associatedInfo, setAssociatedIfno] = useState<SessionProp | null>(null)
   const [loading, setLoading] = useState(false)
   const [displayText, setDisplayText] = useState('')
 
   useEffect(() => {
-    if (!associatedInfo && props.location.state && props.location.state.fname) {
-      const { fname, lname, email, users, id, request_token, service, credential } = props.location.state
+    if (
+      !associatedInfo &&
+      props.location.state &&
+      props.location.state.firstName
+    ) {
+      const {
+        firstName,
+        lastName,
+        email,
+        users,
+        id,
+        request_token,
+        service,
+        credential,
+      } = props.location.state
       setAssociatedIfno({
-        fname,
-        lname,
+        firstName,
+        lastName,
         email,
         users,
         id,
@@ -93,8 +102,8 @@ const AssociatedProfilePage: React.FC<
   } else if (screen === '/generate-did') {
     return (
       <GenerateDid
-        fname={associatedInfo.fname}
-        lname={associatedInfo.lname}
+        firstName={associatedInfo.firstName}
+        lastName={associatedInfo.lastName}
         email={associatedInfo.email}
         request_token={associatedInfo.request_token}
         credential={associatedInfo.credential}
@@ -116,12 +125,6 @@ const AssociatedProfilePage: React.FC<
             profile. You have two options, sign in to the associated profile or
             create a new one.
           </OnBoardLayoutLeftContentDescription>
-          <OnBoardLayoutLeftContentIntro className='my-25px'>
-            Why has this happened? Help
-          </OnBoardLayoutLeftContentIntro>
-          <ButtonLink width={26} to='/create-why'>
-            <ArrowButton />
-          </ButtonLink>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -129,7 +132,7 @@ const AssociatedProfilePage: React.FC<
           <OnBoardLayoutRightContentTitle>
             Sign into the associated profile
           </OnBoardLayoutRightContentTitle>
-          <Text16>Decentalized Identity (DID):</Text16>
+          <Text16>Decentralized Identity (DID):</Text16>
           <div className={style['did-select']}>
             <select
               value={user._id}
@@ -151,9 +154,8 @@ const AssociatedProfilePage: React.FC<
                 ))}
             </select>
           </div>
-
           <Text16 style={{ marginTop: '17px' }}>
-            Has been already linked to this social media account, sign into this
+            Has been already linked to profile registered, sign into this
             profile below.
           </Text16>
           <ButtonWithLogo
@@ -176,7 +178,15 @@ const AssociatedProfilePage: React.FC<
                   },
                 })
               } else {
-                history.push('/sign-did')
+                history.push({
+                  pathname: '/sign-did',
+                  state: {
+                    firstName: associatedInfo.firstName,
+                    lastName: associatedInfo.lastName,
+                    email: associatedInfo.email,
+                    service: AccountType.DID,
+                  },
+                })
               }
             }}
           />
@@ -188,12 +198,12 @@ const AssociatedProfilePage: React.FC<
           <ButtonWithLogo
             text={loading ? 'Creating your profile now' : 'Create new profile'}
             onClick={async () => {
-              const { fname, lname, email, service } = associatedInfo
+              const { firstName, lastName, email, service } = associatedInfo
               if (service === AccountType.Email) {
                 setLoading(true)
                 let response = (await requestForceCreateUser(
-                  fname,
-                  lname,
+                  firstName,
+                  lastName,
                   email
                 )) as ICreateUserResponse
                 setLoading(false)

@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { AccountType } from 'src/services/user.service'
 
-import SetPassword from 'src/components/SetPassword'
+import SetPassword from '../../components/SetPassword'
 import { UserService } from 'src/services/user.service'
 
 interface Props {
-  fname: string
-  lname: string
+  firstName: string
+  lastName: string
   email: string
   request_token: string
   credential: string
@@ -27,15 +27,22 @@ const GenerateDid: React.FC<Props> = (props) => {
    */
 
   const [loading, setLoading] = useState(false)
-  const { fname, lname, email, request_token, service, credential } = props
+  const {
+    firstName,
+    lastName,
+    email,
+    request_token,
+    service,
+    credential,
+  } = props
 
   return (
     <SetPassword
       next={async (pwd) => {
         setLoading(true)
         await UserService.CreateNewUser(
-          fname,
-          lname,
+          firstName,
+          lastName,
           request_token,
           service,
           email,
@@ -43,7 +50,7 @@ const GenerateDid: React.FC<Props> = (props) => {
           pwd,
           '',
           '',
-          '',
+          ''
         )
         setLoading(false)
         window.location.href = '/profile'

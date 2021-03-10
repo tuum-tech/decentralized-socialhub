@@ -3,18 +3,18 @@
  */
 
 export interface TokenContent {
-  request_token: string;
-  expires_in: string;
+  request_token: string
+  expires_in: string
 }
 
 export interface TokenResponse {
-  data: TokenContent;
+  data: TokenContent
 }
 
 export interface FacebookId {
-  id: string;
-  fname: string;
-  lname: string;
-  email: string;
-  credential: string;
+  id: string
+  firstName: string
+  lastName: string
+  email: string
+  credential: string
 }
