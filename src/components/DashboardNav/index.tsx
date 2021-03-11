@@ -35,12 +35,16 @@ const DashboardHome: React.FC<DashboardProps> = (props) => {
           <EducationCard educationDTO={props.profile!.educationDTO} mode=""></EducationCard>
         </IonCol>
         <IonCol size='4'>
-          <SpotlightCard
+          {
+           !props.sessionItem.tutorialCompleted &&
+           (<SpotlightCard
             title='Welcome to Profile'
             content='To get you familiar with the platform you can start our tutorial which
         will go through some basics. You will receive a badge for completing it.'
-            component={<div><br /> <ButtonWhite onClick={() => props.onTutorialStart()} >Start beginners tutorial</ButtonWhite></div>}
-          />
+            component={<div><br /> <ButtonWhite disabled={!props.sessionItem.isDIDPublished} onClick={() => props.onTutorialStart()} >Start beginners tutorial</ButtonWhite></div>}
+          />)
+          }
+          
           <BadgesCard title='Badges' />
         </IonCol>
       </IonRow>

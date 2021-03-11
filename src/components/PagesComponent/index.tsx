@@ -45,35 +45,35 @@ const FollowingList: React.FC = () => {
   }
 
   const refreshStatus = async () => {
-    let publishWaiting = getWaitingPublishItens()
-    if (publishWaiting.length <= 0) return
-    publishWaiting.forEach(async (confirmationId) => {
-      console.log('checking assist confirmationId', confirmationId)
-      let status = await AssistService.getRequestStatus(confirmationId)
-      setPublishStatus(status)
-      console.log(confirmationId, status)
-      let actual = getActualStatus(confirmationId)
-      if (actual.requestStatus === RequestStatus.NotFound) return
-      if (actual.requestStatus === RequestStatus.Completed){
-        setPublishStatus({ requestStatus: '' });
-          window.localStorage.removeItem('publish_' + confirmationId)
-          await DidDocumentService.reloadUserDocument()
-      }
+    // let publishWaiting = getWaitingPublishItens()
+    // if (publishWaiting.length <= 0) return
+    // publishWaiting.forEach(async (confirmationId) => {
+    //   console.log('checking assist confirmationId', confirmationId)
+    //   let status = await AssistService.getRequestStatus(confirmationId)
+    //   setPublishStatus(status)
+    //   console.log(confirmationId, status)
+    //   let actual = getActualStatus(confirmationId)
+    //   if (actual.requestStatus === RequestStatus.NotFound) return
+    //   if (actual.requestStatus === RequestStatus.Completed){
+    //     setPublishStatus({ requestStatus: '' });
+    //       window.localStorage.removeItem('publish_' + confirmationId)
+    //       await DidDocumentService.reloadUserDocument()
+    //   }
 
-      if (status.requestStatus !== actual.requestStatus) {
-        if (status.requestStatus === RequestStatus.Completed) {
-          setPublishStatus({ requestStatus: '' });
-          window.localStorage.removeItem('publish_' + confirmationId)
-          await DidDocumentService.reloadUserDocument()
-        } else {
-          window.localStorage.setItem(
-            'publish_' + confirmationId,
-            JSON.stringify(status)
-          )
-        }
-      }
-    })
-    //setTimer()
+    //   if (status.requestStatus !== actual.requestStatus) {
+    //     if (status.requestStatus === RequestStatus.Completed) {
+    //       setPublishStatus({ requestStatus: '' });
+    //       window.localStorage.removeItem('publish_' + confirmationId)
+    //       await DidDocumentService.reloadUserDocument()
+    //     } else {
+    //       window.localStorage.setItem(
+    //         'publish_' + confirmationId,
+    //         JSON.stringify(status)
+    //       )
+    //     }
+    //   }
+    // })
+    // //setTimer()
   }
   const getActualStatus = (
     confirmationId: string
