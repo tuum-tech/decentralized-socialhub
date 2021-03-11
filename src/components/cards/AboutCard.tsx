@@ -83,7 +83,7 @@ interface IProps {
 const AboutCard: React.FC<IProps> = ({ basicDTO, mode, updateFunc }: IProps) => {
 
   const [isEditing, setIsEditing] = useState(false);
-  const [about, setAbout] = useState(basicDTO.about);
+  const [about, setAbout] = useState(basicDTO ? basicDTO.about : "");
 
   const edit = () => {
     setIsEditing(true);

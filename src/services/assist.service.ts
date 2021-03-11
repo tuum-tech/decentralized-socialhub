@@ -24,7 +24,6 @@ export class AssistService {
       memo: '',
     };
     
-    console.log("ASSIST DATA", data)
     let postData: any = {
       method: 'POST',
       headers: {
@@ -35,29 +34,26 @@ export class AssistService {
     };
 
 
-
-    let response = await fetch(url, postData);
-    console.log("ASSIST RESPONSE", response)
-    let json = await response.json();
-    console.log("ASSIST JSON", json)
+    let didKey = did.replace("did:elastos:", "")
+    let fetchRresponse = await fetch(url, postData);
+    let json = await fetchRresponse.json();
     
-    
-    window.localStorage.setItem(
-      `publish_${json.data.confirmation_id}`,
-      JSON.stringify({
-        confirmationId: json.data.confirmation_id,
-        requestStatus: RequestStatus.Pending,
-      })
-    )
-
-    return {
+    let response : IPublishDocumentResponse = {
       confirmationId: json.data.confirmation_id,
       requestStatus: RequestStatus.Pending,
-    };
+    } 
+    
+    window.localStorage.setItem(
+      `publish_${didKey}`,
+      JSON.stringify(response)
+    )
+
+    return response;
   }
 
-  static async getRequestStatus(
-    confirmationId: string
+  static async refreshRequestStatus(
+    confirmationId: string,
+    did: string
   ): Promise<IPublishDocumentResponse> {
     let url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/assist_router/didtx/confirmation_id/${confirmationId}`;
 
@@ -69,21 +65,32 @@ export class AssistService {
       },
     };
 
-    let response = await fetch(url, postData);
+    let fetchResponse = await fetch(url, postData);
 
-    let json = await response.json();
+    let json = await fetchResponse.json();
+    let didKey = did.replace("did:elastos:", "")
 
-    window.localStorage.setItem(
-      `publish_${confirmationId}`,
-      JSON.stringify({
-        confirmationId: confirmationId,
-        requestStatus: RequestStatus.Pending,
-      })
-    )
-
-    return {
+    let response : IPublishDocumentResponse = {
       confirmationId: confirmationId,
       requestStatus: json.data.status,
-    };
+    }
+    window.localStorage.setItem(
+      `publish_${didKey}`,
+      JSON.stringify(response)
+    )
+
+    return response;
+  }
+
+  static getPublishStatusTask = (did: string) : IPublishDocumentResponse | undefined => {
+    let didKey = did.replace("did:elastos:", "")
+    let item = window.localStorage.getItem(`publish_${didKey}`);
+    if (!item) return
+    return JSON.parse(item)
+  }
+
+  static removePublishTask = (did: string) =>{
+    let didKey = did.replace("did:elastos:", "")
+    window.localStorage.removeItem(`publish_${didKey}`);
   }
 }
