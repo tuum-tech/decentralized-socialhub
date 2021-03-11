@@ -150,12 +150,7 @@ const App: React.FC = () => {
             component={TutorialPage}
             exact={true}
           />
-          <ProtectedRoute
-            proctedby='password'
-            path='/did/:did'
-            component={PublicPage}
-            exact={true}
-          />
+	  <Route path='/did/:did' component={PublicPage} exact={true} />
           <ProtectedRoute
             proctedby='password'
             path='/manager'
