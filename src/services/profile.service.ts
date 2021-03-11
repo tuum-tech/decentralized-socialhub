@@ -175,6 +175,19 @@ export class ProfileService {
     });
   }
 
+  async removeExperienceItem(
+    experienceItem: ExperienceItem
+  ): Promise<IRunScriptResponse<ProfileResponse>> {
+    return this.appHiveClient.Scripting.RunScript({
+      name: 'remove_experience_item',
+      context: {
+        target_did: UserService.GetUserSession().did,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+      },
+      params: experienceItem,
+    });
+  }
+
   async getFollowings(did: string): Promise<IFollowingResponse> {
     let followings: IFollowingResponse;
 
