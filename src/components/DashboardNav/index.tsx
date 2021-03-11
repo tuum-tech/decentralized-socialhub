@@ -26,6 +26,13 @@ export interface DashboardProps {
 }
 
 const DashboardHome: React.FC<DashboardProps> = (props) => {
+
+  const getTutorialButton = ()=>{
+    let tutorialStep = window.localStorage.getItem("tutorial-stage")
+    return <div><br /> <ButtonWhite onClick={() => props.onTutorialStart()} >{tutorialStep ? "Continue" : "Start"} beginners tutorial</ButtonWhite></div>
+    
+  }
+
   return (
     <IonGrid className={style['tab-grid']}>
       <IonRow>
@@ -41,7 +48,7 @@ const DashboardHome: React.FC<DashboardProps> = (props) => {
             title='Welcome to Profile'
             content='To get you familiar with the platform you can start our tutorial which
         will go through some basics. You will receive a badge for completing it.'
-            component={<div><br /> <ButtonWhite disabled={!props.sessionItem.isDIDPublished} onClick={() => props.onTutorialStart()} >Start beginners tutorial</ButtonWhite></div>}
+            component={getTutorialButton()}
           />)
           }
           
