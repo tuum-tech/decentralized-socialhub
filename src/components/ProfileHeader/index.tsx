@@ -74,20 +74,17 @@ const ProfileHeader: React.FC<IProps> = ({ profile, sessionItem, error }: IProps
           <img src={photo} className={style['profile-img']} alt='profile' />
         </IonCol>
 
-        {error === true ?
-          <>
-            <IonCol size='8'>
-              <IonGrid>
-                <IonRow>
-                  <ProfileName>{sessionItem.name}</ProfileName>
-                </IonRow>
-              </IonGrid>
-            </IonCol>
-            <IonCol size='2'>
-              <SignInButton href='../sign-did'>Sign in to Follow</SignInButton>
-            </IonCol>
-          </>
-          : <h3>It seems this DID doesn't have a Profile</h3>}
+        <IonCol size='8'>
+          <IonGrid>
+            <IonRow>
+              <ProfileName>{sessionItem.name}</ProfileName>
+            </IonRow>
+          </IonGrid>
+        </IonCol>
+        <IonCol size='2'>
+          <SignInButton href='../sign-did'>Sign in to Follow</SignInButton>
+        </IonCol>
+
       </IonRow>
     </IonGrid>
   )
