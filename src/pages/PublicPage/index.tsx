@@ -31,13 +31,13 @@ import PublicNavbar from 'src/components/PublicNavbar'
 import RegisterNewUserButton from 'src/components/RegisterNewUserButton'
 import SignInButton from 'src/components/SignInButton'
 import ProfileComponent from 'src/components/ProfileComponent'
-import { AccountType } from 'src/services/user.service'
+import { AccountType, UserService } from 'src/services/user.service'
 
 interface MatchParams {
   did: string
 }
 
-interface Props extends RouteComponentProps<MatchParams> {}
+interface Props extends RouteComponentProps<MatchParams> { }
 
 const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   props: RouteComponentProps<MatchParams>
@@ -47,7 +47,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
-
+  const [error, setError] = useState(false)
   const [loaded, setLoaded] = useState(false);
   const [userInfo, setUserInfo] = useState({
     hiveHost: '',
@@ -96,14 +96,27 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 
   useEffect(() => {
     (async () => {
-      let profile: ProfileDTO = await getFullProfile(did)
-      profile.educationDTO.isEnabled = true;
-      profile.experienceDTO.isEnabled = true;
 
-      setfull_profile(profile)
+      let instance = UserService.GetUserSession()
+      if (!instance) return
+
+      setUserInfo(instance);
+      console.error(JSON.stringify(userInfo));
+      if (instance.onBoardingCompleted && instance.tutorialCompleted) {
+
+        try {
+          let profile: ProfileDTO = await getFullProfile(instance.did)
+          profile.experienceDTO.isEnabled = true
+          profile.educationDTO.isEnabled = true
+          setfull_profile(profile)
+        } catch (e) {
+          setError(true)
+        }
+      }
       setLoaded(true);
     })()
   }, [])
+
 
   const scrollToPosition = (position: number) => {
     let ionContent = document.querySelector("ion-content");
@@ -142,27 +155,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
       </IonContent>
     </IonPage>
 
-    // <IonPage className={style['profilepage']}>
-    //   <IonContent>
-    //     <IonGrid>
-    //       <IonRow>
-    //         <IonCol size='6'>
-    //           {/* <FollowingList did={did} /> */}
-    //         </IonCol>
-    //       </IonRow>
-    //       <IonRow>
-    //         <IonCol size='6'>
-    //           <h1>basic profile</h1>
-    //           <span>{JSON.stringify(basic_profile)}</span>
-    //         </IonCol>
-    //         <IonCol size='6'>
-    //           <h1>education profile</h1>
-    //           <span>{JSON.stringify(education_profile)}</span>
-    //         </IonCol>
-    //       </IonRow>
-    //     </IonGrid>
-    //   </IonContent>
-    // </IonPage>
+
   )
 }
 
