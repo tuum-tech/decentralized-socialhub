@@ -102,18 +102,22 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
         let userInfo = (await UserService.SearchUserWithDID(did)) as any;
         setUserInfo(userInfo as ISessionItem);
       } catch (e) {
-
+        debugger;
+        setError(true)
       }
 
       try {
-        let profile: ProfileDTO = await getFullProfile(did)
-        profile.basicDTO.isEnabled = true
-        profile.experienceDTO.isEnabled = true
-        profile.educationDTO.isEnabled = true
-        setfull_profile(profile)
+        if (!error) {
+          debugger;
+          let profile: ProfileDTO = await getFullProfile(did)
+          profile.basicDTO.isEnabled = true
+          profile.experienceDTO.isEnabled = true
+          profile.educationDTO.isEnabled = true
+          setfull_profile(profile)
 
+        }
       } catch (e) {
-        setError(true)
+
       }
       setLoaded(true);
     })()
@@ -150,7 +154,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 
           <IonRow className='ion-justify-content-around'>
             <IonCol size='12'>
-              {loaded ? <ProfileComponent scrollToPosition={scrollToPosition} profile={full_profile} sessionItem={userInfo} /> : ""}
+              {loaded ? <ProfileComponent scrollToPosition={scrollToPosition} profile={full_profile} sessionItem={userInfo} error={error} /> : ""}
             </IonCol>
           </IonRow>
         </IonGrid>

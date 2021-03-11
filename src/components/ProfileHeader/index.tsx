@@ -62,25 +62,32 @@ color: #ffffff;
 interface IProps {
   profile: ProfileDTO;
   sessionItem: ISessionItem;
+  error: boolean;
+
 }
 
-const ProfileHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
+const ProfileHeader: React.FC<IProps> = ({ profile, sessionItem, error }: IProps) => {
   return (
     <IonGrid className={style['profileheader']}>
       <IonRow className={style['header']}>
         <IonCol size='auto'>
           <img src={photo} className={style['profile-img']} alt='profile' />
         </IonCol>
-        <IonCol size='8'>
-          <IonGrid>
-            <IonRow>
-              <ProfileName>{sessionItem.name}</ProfileName>
-            </IonRow>
-          </IonGrid>
-        </IonCol>
-        <IonCol size='2'>
-          <SignInButton href='../sign-did'>Sign in to Follow</SignInButton>
-        </IonCol>
+
+        {error === true ?
+          <>
+            <IonCol size='8'>
+              <IonGrid>
+                <IonRow>
+                  <ProfileName>{sessionItem.name}</ProfileName>
+                </IonRow>
+              </IonGrid>
+            </IonCol>
+            <IonCol size='2'>
+              <SignInButton href='../sign-did'>Sign in to Follow</SignInButton>
+            </IonCol>
+          </>
+          : <h3>It seems this DID doesn't have a Profile</h3>}
       </IonRow>
     </IonGrid>
   )
