@@ -224,8 +224,9 @@ interface IExperienceProps {
   experienceDTO: ExperienceDTO;
   updateFunc?: any;
   mode: string;
+  removeFunc?: any;
 }
-const ExperienceCard: React.FC<IExperienceProps> = ({ experienceDTO, updateFunc, mode }: IExperienceProps) => {
+const ExperienceCard: React.FC<IExperienceProps> = ({ experienceDTO, updateFunc, mode, removeFunc }: IExperienceProps) => {
 
   const [currentExperienceDTO, setcurrentExperienceDTO] = useState(experienceDTO);
 
@@ -283,12 +284,15 @@ const ExperienceCard: React.FC<IExperienceProps> = ({ experienceDTO, updateFunc,
     setcurrentExperienceDTO({ isEnabled: true, items: items });
   }
 
-  const removeItem = () => {
+  const removeItem = (index: number) => {
     let items = [...currentExperienceDTO.items];
 
-    items.pop()
+    let itemToDelete = items.splice(index, 1);
 
     setcurrentExperienceDTO({ isEnabled: true, items: items });
+
+    if (itemToDelete[0].isEmpty)
+      removeFunc(itemToDelete[0]);
   }
 
 
