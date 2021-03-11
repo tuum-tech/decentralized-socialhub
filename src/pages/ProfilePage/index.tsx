@@ -24,7 +24,6 @@ import { InferMappedProps, ProfileResponse, SubState } from './types';
 import { requestFullProfile } from './fetchapi';
 import FollowingList from 'src/components/FollowingList';
 import Pages from 'src/components/Pages';
-import ProfileHeader from 'src/components/ProfileHeader';
 import ProfileCompletion from 'src/components/ProfileCompletion';
 import PagesComponent from 'src/components/PagesComponent';
 import { RouteComponentProps } from 'react-router';
@@ -140,7 +139,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
 
   useEffect(() => {
     (async () => {
-      
+
       let instance = UserService.GetUserSession()
       if (!instance) return
 
