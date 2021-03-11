@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@elastos/elastos-hive-js-sdk": "github:tuum-tech/Elastos.NET.Hive.JS.SDK",
+    "@elastos/elastos-hive-js-sdk": "github:elastos/Elastos.NET.Hive.JS.SDK",
     "@elastosfoundation/elastos-js-sdk": "^1.2.4",
     "@sentry/react": "^6.2.1",
     "@sentry/tracing": "^6.2.1",
