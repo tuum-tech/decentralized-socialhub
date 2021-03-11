@@ -246,13 +246,25 @@ export class ProfileService {
     followersList = followersList.filter((item) => item !== did);
 
     let uniqueItems = [...new Set(followersList)]; // distinct
-    await this.appHiveClient.Scripting.RunScript({
-      name: 'set_followers',
-      params: {
-        did: did,
-        followers: uniqueItems,
-      },
-    });
+
+    if (!this.appHiveClient) {
+      let profileServiceLocal: ProfileService = await ProfileService.getProfileServiceAppOnlyInstance();
+      await profileServiceLocal.appHiveClient.Scripting.RunScript({
+        name: 'set_followers',
+        params: {
+          did: did,
+          followers: uniqueItems,
+        },
+      });
+    } else {
+      await this.appHiveClient.Scripting.RunScript({
+        name: 'set_followers',
+        params: {
+          did: did,
+          followers: uniqueItems,
+        },
+      });
+    }
 
     return this.getFollowings(UserService.GetUserSession().did);
   }
