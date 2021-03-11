@@ -37,6 +37,21 @@
     width: 300px;
   }
 
+  .tutorial-button-disabled {
+    --ion-color-primary: #4c6fff;
+    font-family: "SF Pro Display";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 12px;
+    color: #ffffff;
+    position: absolute;
+    left: 85px;
+    bottom: 40px;
+
+    width: auto;
+  }
+
   
 
   .tutorial-col-left {

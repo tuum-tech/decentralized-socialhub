@@ -30,6 +30,8 @@ import bulb from '../../assets/bulb.svg'
 import edit from '../../assets/icon-edit.svg'
 import addbutton from '../../assets/addbutton.svg'
 import university from '../../assets/university.png'
+import { ISession } from 'src/context/session.context'
+import { ISessionItem } from 'src/services/user.service'
 
 const SignInButton = styled(IonRouterLink)`
 width: 140px;
@@ -58,37 +60,31 @@ color: #ffffff;
 
 
 interface IProps {
-  profile: ProfileDTO
+  profile: ProfileDTO;
+  sessionItem: ISessionItem;
+  error: boolean;
+
 }
 
-const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
+const ProfileHeader: React.FC<IProps> = ({ profile, sessionItem, error }: IProps) => {
   return (
     <IonGrid className={style['profileheader']}>
       <IonRow className={style['header']}>
         <IonCol size='auto'>
           <img src={photo} className={style['profile-img']} alt='profile' />
         </IonCol>
+
         <IonCol size='8'>
           <IonGrid>
             <IonRow>
-              <ProfileName>{profile.basicDTO.name}</ProfileName>
-            </IonRow>
-            <IonRow>
-              <ProfileDescription>{profile.basicDTO.title}</ProfileDescription>
-            </IonRow>
-            <IonRow className='ion-justify-content-start'>
-              <IonCol size='auto'>
-                <ProfileLocationWidget address={profile.basicDTO.address} />
-              </IonCol>
-              <IonCol>
-                <DidSnippet did={profile.basicDTO.did} />
-              </IonCol>
+              <ProfileName>{sessionItem.name}</ProfileName>
             </IonRow>
           </IonGrid>
         </IonCol>
         <IonCol size='2'>
           <SignInButton href='../sign-did'>Sign in to Follow</SignInButton>
         </IonCol>
+
       </IonRow>
     </IonGrid>
   )

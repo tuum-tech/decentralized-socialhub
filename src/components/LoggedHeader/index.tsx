@@ -70,21 +70,21 @@ const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
   }
 
   const refreshStatus = async () => {
-    let publishWaiting = getWaitingPublishItens()
+    if (!sessionItem || !sessionItem.did) return
+    
+    let publishWaiting = AssistService.getPublishStatusTask(sessionItem.did)
+    
+    if (!publishWaiting) return
 
-    if (publishWaiting.length <= 0) return
-    publishWaiting.forEach(async (confirmationId) => {
-      let actual = getActualStatus(confirmationId)
-      if (actual.requestStatus == RequestStatus.Completed) {
-        setPublishStatus("")
-        window.localStorage.removeItem('publish_' + confirmationId)
-        await updateUserToComplete()
-        return
-      }
-      let status = await AssistService.getRequestStatus(confirmationId)
-      setPublishStatus(`${status.requestStatus}`)
-
-    })
+    let actual = await AssistService.refreshRequestStatus(publishWaiting.confirmationId, sessionItem.did)
+    if (actual.requestStatus == RequestStatus.Completed) {
+      setPublishStatus("")
+      AssistService.removePublishTask(sessionItem.did)
+      await updateUserToComplete()
+      return
+    }
+    setPublishStatus(actual.requestStatus)
+    
   }
 
   const updateUserToComplete = async () => {
@@ -93,28 +93,8 @@ const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
     UserService.updateSession(userSession)
     await DidDocumentService.reloadUserDocument()
   }
-  const getActualStatus = (
-    confirmationId: string
-  ): IPublishDocumentResponse => {
-    let item = window.localStorage.getItem('publish_' + confirmationId)
 
-    if (item) return JSON.parse(item)
-    return {
-      confirmationId: confirmationId,
-      requestStatus: RequestStatus.NotFound,
-    }
-  }
 
-  const getWaitingPublishItens = () => {
-    let response: string[] = []
-    for (var i = 0, len = window.localStorage.length; i < len; ++i) {
-      let key = window.localStorage.key(i)
-      if (key && key.startsWith('publish')) {
-        response.push(key.replace('publish_', ''))
-      }
-    }
-    return response
-  }
 
 
 
@@ -129,7 +109,7 @@ const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
     <IonGrid className={style['profileheader']}>
       <IonRow className={style['header']}>
         <IonCol size='auto'>
-          <img src={photo} className={style['profile-img']} alt='profile' />
+          <img src={photo} className={publishStatus !== "" ? style['profile-img-publishing'] : style['profile-img']} alt='profile' />
         </IonCol>
         <IonCol size='8'>
           <IonGrid>
@@ -138,7 +118,7 @@ const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
                 <ProfileName>{sessionItem.name}</ProfileName>
               </IonCol>
               <IonCol>
-                {publishStatus !== "" ? <PublishingLabel>{publishStatus}</PublishingLabel> : ""}
+                {publishStatus !== "" ? <PublishingLabel>{publishStatus}&nbsp;</PublishingLabel> : ""}
               </IonCol>
             </IonRow>
             <IonRow className='ion-justify-content-start'>

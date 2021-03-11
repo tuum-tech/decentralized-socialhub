@@ -29,7 +29,6 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
-import { fetchSimpleApi } from './fetchapi';
 import Logo from 'src/components/Logo';
 import Navbar from 'src/components/Navbar';
 import FollowersSearch from 'src/components/followers/FollowersSearch';

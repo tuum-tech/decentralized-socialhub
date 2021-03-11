@@ -91,9 +91,9 @@ const ProfileEditor: React.FC = () => {
 
   async function callUpdateAbout(basicDTO: BasicDTO): Promise<any> {
     let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
-    let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
-    getFullProfileResponse = await profileService.updateAbout(basicDTO);
-    console.log(JSON.stringify(getFullProfileResponse));
+    //let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
+    await profileService.updateAbout(basicDTO);
+
     return ""
   }
 
@@ -128,6 +128,14 @@ const ProfileEditor: React.FC = () => {
     let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
     let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
     getFullProfileResponse = await profileService.removeEducationItem(educationItem);
+    console.log(JSON.stringify(getFullProfileResponse));
+    return ""
+  }
+
+  async function callRemoveExperienceItem(experienceItem: ExperienceItem): Promise<any> {
+    let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
+    let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
+    getFullProfileResponse = await profileService.removeExperienceItem(experienceItem);
     console.log(JSON.stringify(getFullProfileResponse));
     return ""
   }
@@ -189,6 +197,14 @@ const ProfileEditor: React.FC = () => {
     callRemoveEducationItem(educationItem)
   }
 
+  const removeExperience = async (
+    experienceItem: ExperienceItem
+  ): Promise<any> => {
+    console.log('>>>>>>>>> remove experience_item called ')
+    console.log('>>>>>>>>>  ' + JSON.stringify(experienceItem))
+    callRemoveExperienceItem(experienceItem)
+  }
+
   useEffect(() => {
     ; (async () => {
       let instance = UserService.GetUserSession()
@@ -230,7 +246,7 @@ const ProfileEditor: React.FC = () => {
               <>
                 <AboutCard basicDTO={full_profile.basicDTO} updateFunc={updateAbout} mode="edit" ></AboutCard>
                 <EducationCard educationDTO={full_profile.educationDTO} updateFunc={updateEducationProfile} removeFunc={removeEducation} mode="edit" ></EducationCard>
-                <ExperienceCard experienceDTO={full_profile.experienceDTO} updateFunc={updateExperienceProfile} mode="edit" ></ExperienceCard>
+                <ExperienceCard experienceDTO={full_profile.experienceDTO} updateFunc={updateExperienceProfile} removeFunc={removeExperience} mode="edit" ></ExperienceCard>
               </>
               : ""}
 

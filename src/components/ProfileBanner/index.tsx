@@ -6,7 +6,7 @@ import style from './style.module.scss';
 const ProfileBanner: React.FC = () => {
   // return <img src={banner} className={style['banner']} alt='banner' />;
 
-  return <Banner>Digital Wellbeing</Banner>;
+  return <Banner></Banner>;
 };
 
 export default ProfileBanner;

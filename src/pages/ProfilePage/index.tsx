@@ -24,7 +24,6 @@ import { InferMappedProps, ProfileResponse, SubState } from './types';
 import { requestFullProfile } from './fetchapi';
 import FollowingList from 'src/components/FollowingList';
 import Pages from 'src/components/Pages';
-import ProfileHeader from 'src/components/ProfileHeader';
 import ProfileCompletion from 'src/components/ProfileCompletion';
 import PagesComponent from 'src/components/PagesComponent';
 import { RouteComponentProps } from 'react-router';
@@ -140,12 +139,12 @@ const ProfilePage: React.FC<RouteComponentProps> = (
 
   useEffect(() => {
     (async () => {
-      
+
       let instance = UserService.GetUserSession()
       if (!instance) return
 
       setUserInfo(instance);
-      console.error(JSON.stringify(userInfo));
+      
       if (instance.onBoardingCompleted && instance.tutorialCompleted && !willExpire) {
 
         try {
@@ -170,6 +169,12 @@ const ProfilePage: React.FC<RouteComponentProps> = (
   const onTutorialStart = () => {
     console.log('Start tutorial')
     setShowTutorial(true)
+  }
+
+  const onTutorialFinish = () =>{
+    let instance = UserService.GetUserSession()
+    setUserInfo(instance)
+    setShowTutorial(false)
   }
 
   if (!onboardingCompleted) {
@@ -221,7 +226,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
           cssClass={style['tutorialpage']}
           backdropDismiss={false}
         >
-          <TutorialComponent onClose={() => setShowTutorial(false)} />
+          <TutorialComponent onClose={() => onTutorialFinish()} />
         </TutorialModal>
       </IonContent>
     </IonPage>

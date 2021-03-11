@@ -16,6 +16,7 @@ export interface IDocumentChangeCallback extends IEventCallback{
 export class DidDocumentService {
 
     private static DOCUMENT_CHANGE_EVENT = "DocumentChangeEvent";
+    private static DIDDOCUMENT_KEY = "userdiddocument"
 
     static listenDocumentChange(id: string, callbackMethod: (data: IDIDDocumentState) => void){
         // let callbackItem :IDocumentChangeCallback = {
@@ -36,7 +37,7 @@ export class DidDocumentService {
     }
 
     private static getDocumentState() : IDIDDocumentState | null{
-        let json = window.localStorage.getItem("user_diddocument")
+        let json = window.localStorage.getItem(this.DIDDOCUMENT_KEY)
         
         if (!json) return null;
         return JSON.parse(json)
@@ -46,7 +47,7 @@ export class DidDocumentService {
 
     private static setDocumentState(documentState: IDIDDocumentState){
         let json = JSON.stringify(documentState)
-        window.localStorage.setItem("user_diddocument", json)
+        window.localStorage.setItem(this.DIDDOCUMENT_KEY, json)
         this.triggerDocumentChangeEvent(documentState)
     }
 

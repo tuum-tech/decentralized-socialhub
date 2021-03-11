@@ -15,6 +15,7 @@ import {
 import styleWidget from '../cards/WidgetCards.module.scss';
 import { BasicDTO } from 'src/pages/PublicPage/types';
 import styled from 'styled-components';
+import { UserService } from 'src/services/user.service';
 
 interface BasicInfo {
   adress: string,
@@ -31,8 +32,9 @@ const LinkStyleSpan = styled.span`
   line-height: normal;
   letter-spacing: -0.07px;
   text-align: left;
-  color: #4c6fff;`
-  ;
+  color: #4c6fff;
+  cursor:default;
+  `;
 
 
 
@@ -69,6 +71,18 @@ color: #6b829a;
 --padding-start: 16px;
 --placeholder-color: var(--input - muted - placeholder);
 `;
+const About = styled.span`
+margin: 9px 0 0 10px;
+font-family: 'SF Pro Display';
+font-size: 14px;
+font-weight: normal;
+font-stretch: normal;
+font-style: normal;
+line-height: 1.6;
+letter-spacing: normal;
+text-align: left;
+color: #425466;
+`;
 
 const ModalFooter = styled(IonFooter)`
 padding:12px;
@@ -83,7 +97,7 @@ interface IProps {
 const AboutCard: React.FC<IProps> = ({ basicDTO, mode, updateFunc }: IProps) => {
 
   const [isEditing, setIsEditing] = useState(false);
-  const [about, setAbout] = useState(basicDTO.about);
+  const [about, setAbout] = useState(basicDTO ? basicDTO.about : "");
 
   const edit = () => {
     setIsEditing(true);
@@ -91,6 +105,7 @@ const AboutCard: React.FC<IProps> = ({ basicDTO, mode, updateFunc }: IProps) => 
 
   const update = () => {
     const newBasicDTO = { ...basicDTO };
+    newBasicDTO.did = UserService.GetUserSession().did;
     newBasicDTO.about = about;
     updateFunc(newBasicDTO)
   }
@@ -108,7 +123,7 @@ const AboutCard: React.FC<IProps> = ({ basicDTO, mode, updateFunc }: IProps) => 
           </IonGrid>
         </IonCardHeader>
         <IonCardContent>
-          {about}
+          <About>{about}</About>
         </IonCardContent>
       </IonCard >
       <MyModal isOpen={isEditing} cssClass='my-custom-class'>

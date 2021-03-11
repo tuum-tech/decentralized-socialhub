@@ -27,6 +27,18 @@ export interface DashboardProps {
 }
 
 const DashboardHome: React.FC<DashboardProps> = (props) => {
+  const getTutorialButton = () => {
+    let tutorialStep = window.localStorage.getItem('tutorial-stage');
+    return (
+      <div>
+        <br />{' '}
+        <ButtonWhite onClick={() => props.onTutorialStart()}>
+          {tutorialStep ? 'Continue' : 'Start'} beginners tutorial
+        </ButtonWhite>
+      </div>
+    );
+  };
+
   return (
     <IonGrid className={style['tab-grid']}>
       <IonRow>
@@ -42,19 +54,15 @@ const DashboardHome: React.FC<DashboardProps> = (props) => {
           ></EducationCard>
         </IonCol>
         <IonCol size='4'>
-          <SpotlightCard
-            title='Welcome to Profile'
-            content='To get you familiar with the platform you can start our tutorial which
+          {!props.sessionItem.tutorialCompleted && (
+            <SpotlightCard
+              title='Welcome to Profile'
+              content='To get you familiar with the platform you can start our tutorial which
         will go through some basics. You will receive a badge for completing it.'
-            component={
-              <div>
-                <br />{' '}
-                <ButtonWhite onClick={() => props.onTutorialStart()}>
-                  Start beginners tutorial
-                </ButtonWhite>
-              </div>
-            }
-          />
+              component={getTutorialButton()}
+            />
+          )}
+
           <ProfileCompletionCard title='Profile Completion' />
           <BadgesCard title='Badges' />
         </IonCol>
