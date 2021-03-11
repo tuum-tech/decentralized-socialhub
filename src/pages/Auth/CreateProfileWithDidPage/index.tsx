@@ -5,9 +5,11 @@ import { createStructuredSelector } from 'reselect'
 import { StaticContext, RouteComponentProps } from 'react-router'
 import { AccountType, UserService } from 'src/services/user.service'
 
-import UserInfo from './components/UserInfo'
+import ProfileFields from '../components/ProfileFields'
+import SetPassword from '../components/SetPassword'
+
 import PageLoading from 'src/components/layouts/PageLoading'
-import SetPassword from 'src/components/SetPassword'
+import { DidService } from 'src/services/did.service'
 
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
 import injector from 'src/baseplate/injectorWrap'
@@ -17,40 +19,74 @@ import reducer from './reducer'
 import saga from './saga'
 import { InferMappedProps, SubState, LocationState } from './types'
 
+type UserType = {
+  did: string
+  mnemonic: string
+  name: string
+  email: string
+  hiveHost: string
+}
+
 const CreateProfileWithDidPage: React.FC<
   RouteComponentProps<{}, StaticContext, LocationState>
 > = (props) => {
-  // const [did, setDid] = useState('')
-  const [userInfo, setUserInfo] = useState({
-    fname: '',
+  const [userInfo, setUserInfo] = useState<UserType>({
     did: '',
     mnemonic: '',
-    lname: '',
+    name: '',
     email: '',
+    hiveHost: '',
   })
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (userInfo.did === '') {
+    const fetchUserInfo = async () => {
       const { did, mnemonic } = props.location.state
-      setUserInfo({
-        ...userInfo,
+      let doc = await DidService.getDidDocument(did)
+      let uInfo: UserType = {
         did,
-        mnemonic
-      })
+        mnemonic,
+        name: '',
+        email: '',
+        hiveHost: '',
+      }
+      if (props.location.state.user) {
+        uInfo.name = props.location.state.user.name
+        uInfo.email = props.location.state.user.email
+      }
+      if (doc && doc !== undefined && doc.verifiableCredential) {
+        if (doc.verifiableCredential && doc.verifiableCredential.length > 0) {
+          for (let i = 0; i < doc.verifiableCredential.length; i++) {
+            const cv = doc.verifiableCredential[i]
+            if (cv.credentialSubject && cv.credentialSubject.name) {
+              uInfo.name = cv.credentialSubject.name
+            }
+            if (cv.credentialSubject && cv.credentialSubject.email) {
+              uInfo.email = cv.credentialSubject.email
+            }
+          }
+        }
+        if (doc.service && doc.service.length > 0) {
+          uInfo.hiveHost = doc.service[0].serviceEndpoint
+        }
+      }
+      setUserInfo(uInfo)
     }
-  }, [userInfo.did])
+    if (userInfo.did === '') {
+      fetchUserInfo()
+    }
+  }, [])
 
   if (userInfo.did === '') {
     return <PageLoading />
-  } else if (userInfo.fname === '') {
+  } else if (userInfo.name === '') {
     return (
-      <UserInfo
-        setUserInfo={(fname, lname, email) => {
+      <ProfileFields
+        isCreate={false}
+        setUserInfo={(name, email) => {
           setUserInfo({
             ...userInfo,
-            fname,
-            lname,
+            name,
             email,
           })
         }}
@@ -63,15 +99,15 @@ const CreateProfileWithDidPage: React.FC<
       next={async (pwd) => {
         setLoading(true)
         await UserService.CreateNewUser(
-          userInfo.fname,
-          userInfo.lname,
+          userInfo.name,
           userInfo.did,
           AccountType.DID,
           userInfo.email,
           userInfo.did,
           pwd,
           userInfo.did,
-          userInfo.mnemonic
+          userInfo.mnemonic,
+          userInfo.hiveHost
         )
         setLoading(false)
         window.location.href = '/profile'

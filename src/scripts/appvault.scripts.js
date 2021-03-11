@@ -98,9 +98,7 @@ let run = async () => {
       body: {
         collection: 'users',
         document: {
-          firstName: '$params.firstName',
-          lastName: '$params.lastName',
-          name: '$params.full_name',
+          name: '$params.name',
           email: '$params.email',
           status: '$params.status',
           code: '$params.code',
@@ -127,9 +125,9 @@ let run = async () => {
         },
         update: {
           $set: {
-            firstName: '$params.firstName',
-            lastName: '$params.lastName',
+            name: '$params.name',
             email: '$params.email',
+            onBoardingCompleted: '$params.onBoardingCompleted',
           },
         },
         options: {

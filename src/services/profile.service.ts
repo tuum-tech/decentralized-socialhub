@@ -1,5 +1,6 @@
 import { HiveClient } from '@elastos/elastos-hive-js-sdk';
 import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
+import { Session } from 'inspector';
 // import { floor, noConflict } from 'lodash';
 import { ProfileResponse } from 'src/pages/ProfilePage/types';
 import {
@@ -50,9 +51,9 @@ export class ProfileService {
 
   static async getProfileServiceInstance(): Promise<ProfileService> {
     let profileService: ProfileService = new ProfileService();
-    let hiveClient = await HiveService.getSessionInstance();
+    //let hiveClient = await HiveService.getSessionInstance();
 
-    if (hiveClient) profileService.hiveClient = hiveClient;
+    //if (hiveClient) profileService.hiveClient = hiveClient;
     profileService.appHiveClient = await HiveService.getAppHiveClient();
     return profileService;
   }
@@ -63,9 +64,9 @@ export class ProfileService {
     return profileService;
   }
 
-  async getMyFollowings(): Promise<IRunScriptResponse<IFollowingResponse>> {
-    return this.hiveClient.Scripting.RunScript({ name: 'get_following' });
-  }
+  // async getMyFollowings(): Promise<IRunScriptResponse<IFollowingResponse>> {
+  //   return this.hiveClient.Scripting.RunScript({ name: 'get_following' });
+  // }
 
   async getUserFollowings(
     did: string
@@ -108,15 +109,32 @@ export class ProfileService {
     }
   }
 
+  async updateAbout(basicDTO: BasicDTO): Promise<any> {
+    const update_user_script = {
+      name: 'update_basic_profile',
+      params: basicDTO,
+      context: {
+        target_did: UserService.GetUserSession().did,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID,
+      },
+    };
+    let response: any = await ScriptService.runTuumTechScript(
+      update_user_script
+    );
+    const { data, meta } = response;
+    if (meta.code === 200 && meta.message === 'OK') {
+    }
+  }
+
   async updateEducationProfile(
     educationItem: EducationItem
   ): Promise<IRunScriptResponse<ProfileResponse>> {
-    return this.hiveClient.Scripting.RunScript({
+    return this.appHiveClient.Scripting.RunScript({
       name: 'update_education_profile',
-      // context: {
-      //   target_did: "did:elastos:iVy37oQuQ77L6SfXyNiBmdW2TSoyJQmBU1", // just to test, in real life use userHiveClient
-      //   target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-      // },
+      context: {
+        target_did: UserService.GetUserSession().did,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+      },
       params: educationItem,
     });
   }
@@ -124,8 +142,12 @@ export class ProfileService {
   async removeEducationItem(
     educationItem: EducationItem
   ): Promise<IRunScriptResponse<ProfileResponse>> {
-    return this.hiveClient.Scripting.RunScript({
+    return this.appHiveClient.Scripting.RunScript({
       name: 'remove_education_item',
+      context: {
+        target_did: UserService.GetUserSession().did,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+      },
       params: educationItem,
     });
   }
@@ -135,23 +157,19 @@ export class ProfileService {
   ): Promise<IRunScriptResponse<ProfileResponse>> {
     return this.appHiveClient.Scripting.RunScript({
       name: 'update_experience_profile',
-      // context: {
-      //   target_did: "did:elastos:iVy37oQuQ77L6SfXyNiBmdW2TSoyJQmBU1", // just to test, in real life use userHiveClient
-      //   target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-      // },
+      context: {
+        target_did: UserService.GetUserSession().did,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+      },
       params: experienceItem,
     });
   }
 
-  async getFollowings(did?: string): Promise<IFollowingResponse> {
+  async getFollowings(did: string): Promise<IFollowingResponse> {
     let followings: IFollowingResponse;
-    if (did === undefined) {
-      followings = (await this.getMyFollowings())
-        .response as IFollowingResponse;
-    } else {
-      followings = (await this.getUserFollowings(did))
-        .response as IFollowingResponse;
-    }
+
+    followings = (await this.getUserFollowings(did))
+      .response as IFollowingResponse;
 
     console.log('followings :' + JSON.stringify(followings));
     return followings;
@@ -161,7 +179,7 @@ export class ProfileService {
     if (!this.hiveClient) return;
     await this.hiveClient.Database.deleteCollection('following');
     await this.hiveClient.Database.createCollection('following');
-    return this.getFollowings();
+    return this.getFollowings(UserService.GetUserSession().did);
   }
 
   getSessionDid(): string {
@@ -171,11 +189,8 @@ export class ProfileService {
   async getFollowers(dids: string[]): Promise<IFollowerResponse | undefined> {
     console.log(JSON.stringify(dids));
 
-    console.log('Grabbing instance');
     const profileAppHiveClient: ProfileService = await ProfileService.getProfileServiceAppOnlyInstance();
-    console.log('Instance grabbed');
 
-    // let followersResponse: IRunScriptResponse<IFollowerResponse> = await this.appHiveClient.Scripting.RunScript(
     let followersResponse: IRunScriptResponse<IFollowerResponse> = await profileAppHiveClient.appHiveClient.Scripting.RunScript(
       {
         name: 'get_followers',
@@ -188,9 +203,6 @@ export class ProfileService {
         },
       }
     );
-
-    console.log('PROFILE SERVICE');
-    console.log(followersResponse);
 
     if (followersResponse.isSuccess) {
       return followersResponse.response;
@@ -233,7 +245,7 @@ export class ProfileService {
       },
     });
 
-    return this.getFollowings();
+    return this.getFollowings(UserService.GetUserSession().did);
   }
 
   async addFollowing(did: string): Promise<any> {
@@ -262,6 +274,6 @@ export class ProfileService {
       },
     });
 
-    return this.getFollowings();
+    return this.getFollowings(UserService.GetUserSession().did);
   }
 }

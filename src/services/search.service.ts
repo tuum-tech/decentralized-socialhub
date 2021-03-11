@@ -39,7 +39,7 @@ export interface IUserItem {
   did: string;
   name: string;
   avatar?: string;
-  vault_url: string;
+  hiveHost: string;
 }
 
 export class SearchService {

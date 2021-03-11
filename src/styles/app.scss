@@ -19,7 +19,7 @@
 }
 
 .mt-12px {
-  margin-top: 12px;
+  margin-top: 12px !important;
 }
 
 .mt-86px {
@@ -49,18 +49,6 @@ p {
 
 a {
   text-decoration: none;
-}
-
-.modal-wrapper{
-  width: 100% !important;
-  height: 100% !important;
-  overflow: hidden;
-}
-
-.sc-ion-modal-md-h{
-  --background: transparent !important;
-  --box-shadow: none !important;
-  
 }
 
 

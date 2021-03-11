@@ -5,6 +5,7 @@ import {
   IonCol,
   IonProgressBar,
   IonButton,
+  IonRouterLink,
 } from '@ionic/react'
 
 import { ProfileContent } from 'src/pages/ProfilePage/types'
@@ -29,6 +30,33 @@ import bulb from '../../assets/bulb.svg'
 import edit from '../../assets/icon-edit.svg'
 import addbutton from '../../assets/addbutton.svg'
 import university from '../../assets/university.png'
+
+const SignInButton = styled(IonRouterLink)`
+width: 140px;
+height: 40px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+gap: 10px;
+padding: 12px 20px;
+border-radius: 9px;
+background-color: #4c6fff;
+flex-grow: 0;
+font-family: 'SF Pro Display';
+font-size: 12px;
+font-weight: 600;
+font-stretch: normal;
+font-style: normal;
+line-height: 1;
+letter-spacing: normal;
+text-align: left;
+color: #ffffff;
+
+`;
+
+
+
 interface IProps {
   profile: ProfileDTO
 }
@@ -43,21 +71,23 @@ const ProfileHeader: React.FC<IProps> = ({ profile }: IProps) => {
         <IonCol size='8'>
           <IonGrid>
             <IonRow>
-              <ProfileName>
-                {profile.basicDTO.first_name} {profile.basicDTO.last_name}
-              </ProfileName>
+              <ProfileName>{profile.basicDTO.name}</ProfileName>
             </IonRow>
             <IonRow>
               <ProfileDescription>{profile.basicDTO.title}</ProfileDescription>
             </IonRow>
-            <IonRow className="ion-justify-content-start">
-              <IonCol size="auto"><ProfileLocationWidget address={profile.basicDTO.address} /></IonCol>
-              <IonCol><DidSnippet did={profile.basicDTO.did} /></IonCol>
+            <IonRow className='ion-justify-content-start'>
+              <IonCol size='auto'>
+                <ProfileLocationWidget address={profile.basicDTO.address} />
+              </IonCol>
+              <IonCol>
+                <DidSnippet did={profile.basicDTO.did} />
+              </IonCol>
             </IonRow>
           </IonGrid>
         </IonCol>
         <IonCol size='2'>
-          <FollowButton>Sign in to Follow</FollowButton>
+          <SignInButton href='../sign-did'>Sign in to Follow</SignInButton>
         </IonCol>
       </IonRow>
     </IonGrid>

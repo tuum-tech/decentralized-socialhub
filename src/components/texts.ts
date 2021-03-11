@@ -39,6 +39,12 @@ export const Title40 = styled.p`
   line-height: 48px;
 `
 
+export const ErrorTxt = styled(Text12)`
+  color: red;
+  text-align: center;
+  margin-top: 5px;
+`
+
 interface TextLinkProps {
   width?: number
   color?: string

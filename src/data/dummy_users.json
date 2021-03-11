@@ -8,25 +8,25 @@
   {
     "did": "did:elastos:iaf9qwq1xPBpLsGv4zR4CmzLpLUkBNfPHS",
     "name": "Waqas Ahmed",
-    "vault_url": "http://localhost:9001",
+    "hiveHost": "http://localhost:9001",
     "avatar": "https://media-exp1.licdn.com/dms/image/C5103AQGAj2dZpTgHrw/profile-displayphoto-shrink_100_100/0/1517341859509?e=1619654400&v=beta&t=fVEIup7pmT6pvNkCyAgqHDUUcByq-iuUGBq25TYulGc"
   },
   {
     "did": "did:elastos:ibEcLsB9V6tAtvjSu3o6Zv92bPNokQyLPM",
     "name": "Kiran Pichai",
-    "vault_url": "http://localhost:9001",
+    "hiveHost": "http://localhost:9001",
     "avatar": "https://media-exp1.licdn.com/dms/image/C5603AQHmPHO4Ji_lZw/profile-displayphoto-shrink_100_100/0/1565696607204?e=1620259200&v=beta&t=Bemk39kyasxAs-ac7oSrYoqGtPpaMZjwHLJS1OVngBI"
   },
   {
     "did": "did:elastos:icFcLsB9V6tAtvjSu3o6Zv92bPNokQyLFM",
     "name": "Donald Bullers",
-    "vault_url": "http://localhost:9001",
+    "hiveHost": "http://localhost:9001",
     "avatar": "https://media-exp1.licdn.com/dms/image/C4D03AQHzO8edIF8-Kw/profile-displayphoto-shrink_100_100/0/1600370724289?e=1620259200&v=beta&t=rmMmYx4Hodrqni0iNubfukBXvGO5_eIAD_GBuhEXcMU"
   },
   {
     "did": "did:elastos:idGcLsB9V6tAtvjSu3o6Zv92bPNokQyLTM",
     "name": "Anthony Day",
-    "vault_url": "http://localhost:9001",
+    "hiveHost": "http://localhost:9001",
     "avatar": "https://media-exp1.licdn.com/dms/image/C4D03AQG9L6XQ9t2n_w/profile-displayphoto-shrink_100_100/0/1528995420503?e=1620259200&v=beta&t=bc21En-9f1nV4DJRRCnEWt7KJI08XnfITRKXSFG3tEU"
   }
 ]

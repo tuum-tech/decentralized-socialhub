@@ -32,9 +32,10 @@ import { EducationItem, ExperienceItem, ProfileDTO } from 'src/pages/PublicPage/
 
 interface IProps {
   profile: ProfileDTO;
+  scrollToPosition: any
 }
 
-const PublicProfileNav: React.FC<IProps> = ({ profile }: IProps) => {
+const PublicProfileNav: React.FC<IProps> = ({ profile, scrollToPosition }: IProps) => {
   const [active, setActive] = useState('about');
 
   return (
@@ -46,7 +47,7 @@ const PublicProfileNav: React.FC<IProps> = ({ profile }: IProps) => {
             ' ' +
             style['tab-item']
           }
-          onClick={() => { setActive('about'); window.location.hash = "education" }}
+          onClick={() => { setActive('about'); scrollToPosition("about") }}
         >
           <IonLabel className={style['tab-label']}>About</IonLabel>
         </IonItem>
@@ -56,7 +57,7 @@ const PublicProfileNav: React.FC<IProps> = ({ profile }: IProps) => {
             ' ' +
             style['tab-item']
           }
-          onClick={() => setActive('experience')}
+          onClick={() => { setActive('experience'); scrollToPosition("experience"); }}
         >
           <IonLabel className={style['tab-label']}>Experience</IonLabel>
         </IonItem>
@@ -66,11 +67,11 @@ const PublicProfileNav: React.FC<IProps> = ({ profile }: IProps) => {
             ' ' +
             style['tab-item']
           }
-          onClick={() => setActive('education')}
+          onClick={() => { setActive('education'); scrollToPosition("education"); }}
         >
           <IonLabel className={style['tab-label']}>Education</IonLabel>
         </IonItem>
-        <IonItem
+        {/* <IonItem
           className={
             (active == 'certifications' ? style['tab-active'] : '') +
             ' ' +
@@ -89,8 +90,8 @@ const PublicProfileNav: React.FC<IProps> = ({ profile }: IProps) => {
           onClick={() => setActive('achievements')}
         >
           <IonLabel className={style['tab-label']}>Achievements</IonLabel>
-        </IonItem>
-      </IonList>
+        </IonItem> */}
+      </IonList >
       {/* <IonContent> */}
       {/* <AboutSection profile={profile} />
       <ExperienceSection profile={profile} />

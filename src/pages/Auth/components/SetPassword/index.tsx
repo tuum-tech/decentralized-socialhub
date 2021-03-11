@@ -6,6 +6,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import {
+  OnBoardLayout,
   OnBoardLayoutLeft,
   OnBoardLayoutLeftContent,
   OnBoardLayoutLeftContentTitle,
@@ -22,14 +23,6 @@ import { Text16 } from 'src/components/texts'
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png'
 import keyimg from 'src/assets/icon/key.png'
-
-const OnBoardLayout = styled.div`
-  font-style: normal;
-  height: 100%;
-  overflow-y: auto;
-  display: grid;
-  grid-template-columns: 40% 60%;
-`
 
 const ErrorText = styled(Text16)`
   text-align: center;
@@ -66,7 +59,7 @@ const SetPassword: React.FC<Props> = ({ next, displayText = '' }) => {
       <OnBoardLayoutRight>
         <OnBoardLayoutRightContent>
           <OnBoardLayoutRightContentTitle style={{ marginBottom: '46px' }}>
-            Create your profile
+            Create your password
           </OnBoardLayoutRightContentTitle>
           <TextInput
             value={password}

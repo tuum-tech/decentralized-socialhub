@@ -1,4 +1,5 @@
 import { ElastosClient } from '@elastosfoundation/elastos-js-sdk';
+import { Console } from 'console';
 // import { DidcredsService } from './didcreds.service';
 // import { AccountType } from './user.service';
 
@@ -9,15 +10,24 @@ export interface IDID {
   did: string;
 }
 
+export enum PublishRequestOperation{
+  Create = "create",
+  Update = "update"
+}
 
 
 export class DidService {
   static async loadDid(mnemonic: string, password: string = ''): Promise<IDID> {
-    return await ElastosClient.did.loadFromMnemonic(mnemonic, password);
+    console.log("Mnemonic used", mnemonic)
+    let didLoaded = await ElastosClient.did.loadFromMnemonic(mnemonic, password);
+    console.log("DID loaded", didLoaded)
+    return didLoaded
   }
 
   static async generateNew(): Promise<IDID> {
-    return await ElastosClient.did.generateNew();
+    let newDid = await ElastosClient.did.generateNew();
+    console.log("NEW DID", newDid)
+    return newDid
   }
 
   static async getDidDocument(did: any): Promise<any> {
@@ -36,23 +46,27 @@ export class DidService {
      return ElastosClient.didDocuments.isValid(signedDocument, did)
   }
 
-  static async temporaryDidDocument(did: IDID): Promise<any> {
-    //TEMPORARY: The real method will get the document fom blockchain or cache
+  static async genereteNewDidDocument(did: IDID): Promise<any> {
     let document = ElastosClient.didDocuments.newDIDDocument(did);
     return document;
   }
 
   static sealDIDDocument(did: IDID, diddocument: any) {
-    ElastosClient.didDocuments.sealDocument(did, diddocument);
-    return diddocument;
+    let isValid = false
+    while (!isValid){
+      if (diddocument.hasOwnProperty("proof")) {
+        delete diddocument.proof
+      }
+      ElastosClient.didDocuments.sealDocument(did, diddocument);
+      isValid = ElastosClient.didDocuments.isValid(diddocument, did)
+      console.log("sealed DIDDocument is valid", isValid)
+    }
   }
 
   static async addVerfiableCredentialToDIDDocument(diddocument: any, vc: any) {
     
     if (diddocument.hasOwnProperty("proof")) {
-      console.log("Remove proof")
       delete diddocument.proof
-      console.log("Proof removed")
     }
 
     ElastosClient.didDocuments.addVerfiableCredentialToDIDDocument(
@@ -112,19 +126,17 @@ export class DidService {
   }
 
 
-  static async generatePublishRequest(diddocument: any): Promise<any> {
-    let appMnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
-    let appDid = await this.loadDid(appMnemonic);
+  static async generatePublishRequest(diddocument: any, userDID: IDID, operation: PublishRequestOperation): Promise<any> {
     let isValid = false;
     let tx: any;
     while (!isValid) {
-      tx = ElastosClient.idChainRequest.generateCreateRequest(
+      tx = await ElastosClient.idChainRequest.generateRequest(
         diddocument,
-        appDid
+        userDID,
+        `${operation}`
       );
-      isValid = ElastosClient.idChainRequest.isValid(tx, appDid);
+      isValid = ElastosClient.idChainRequest.isValid(tx, userDID);
     }
-
     return tx;
   }
 }
