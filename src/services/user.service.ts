@@ -71,11 +71,11 @@ export class UserService {
     console.log('Generating temporary DID')
     let newDID = await DidService.generateNew()
     let temporaryDocument = await DidService.genereteNewDidDocument(newDID)
-     DidService.sealDIDDocument(newDID, temporaryDocument)
+    DidService.sealDIDDocument(newDID, temporaryDocument)
     DidDocumentService.updateUserDocument(temporaryDocument)
-    
+
     let requestPub = await DidService.generatePublishRequest(temporaryDocument, newDID, PublishRequestOperation.Create)
-    await AssistService.publishDocument(newDID.did,requestPub)
+    await AssistService.publishDocument(newDID.did, requestPub)
 
     window.localStorage.setItem(
       `temporary_${newDID.did.replace('did:elastos:', '')}`,

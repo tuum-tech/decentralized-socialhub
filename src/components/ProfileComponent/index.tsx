@@ -1,4 +1,5 @@
 import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react';
+import { userInfo } from 'os';
 import React from 'react';
 
 import { ExperienceItem, ProfileDTO } from 'src/pages/PublicPage/types';
@@ -26,10 +27,11 @@ interface IPropsSession {
   profile: ProfileDTO;
   sessionItem: ISessionItem;
   scrollToPosition: any;
+  error: boolean;
 }
 
 
-const ProfileComponent: React.FC<IPropsSession> = ({ profile, sessionItem, scrollToPosition }: IPropsSession) => {
+const ProfileComponent: React.FC<IPropsSession> = ({ profile, sessionItem, scrollToPosition, error }: IPropsSession) => {
 
   const scrollToCard = (cardName: string) => {
     if (cardName === "about") {
@@ -48,8 +50,10 @@ const ProfileComponent: React.FC<IPropsSession> = ({ profile, sessionItem, scrol
       <IonGrid className={style['fixed']}>
         <IonRow className="ion-justify-content-center">
           <IonCol size="9" className="ion-no-padding"><ProfileBanner /></IonCol>
-          <IonCol size="9" className="ion-no-padding"><ProfileHeader profile={profile} /></IonCol>
-          <IonCol size="9" className="ion-no-padding"><PublicProfileNav profile={profile} scrollToPosition={scrollToCard} /></IonCol>
+
+
+          <IonCol size="9" className="ion-no-padding"><ProfileHeader profile={profile} sessionItem={sessionItem} error={error} /></IonCol>
+          {profile.basicDTO.isEnabled === true ? <IonCol size="9" className="ion-no-padding"><PublicProfileNav profile={profile} scrollToPosition={scrollToCard} /></IonCol> : ""}
         </IonRow>
       </IonGrid >
 
@@ -59,14 +63,15 @@ const ProfileComponent: React.FC<IPropsSession> = ({ profile, sessionItem, scrol
             <IonGrid>
               <IonRow>
                 <IonCol size="9">
-                  <AboutCard basicDTO={profile.basicDTO} mode="read" />
-                  <ExperienceCard experienceDTO={profile.experienceDTO} mode="read" />
-                  <EducationCard educationDTO={profile.educationDTO} mode="read" />
+
+                  {!error && profile.basicDTO.isEnabled === true ? <AboutCard basicDTO={profile.basicDTO} mode="read" /> : ""}
+                  {!error && profile.experienceDTO.isEnabled === true ? <ExperienceCard experienceDTO={profile.experienceDTO} mode="read" /> : ""}
+                  {!error && profile.educationDTO.isEnabled === true ? <EducationCard educationDTO={profile.educationDTO} mode="read" /> : ""}
                 </IonCol>
                 <IonCol size="3">
-                  <SocialProfiles />
-                  <FollowingList did={profile.basicDTO.did} />
-                  <FollowersWidget />
+                  {!error && profile.basicDTO.isEnabled === true ? <SocialProfiles /> : ""}
+                  {!error && profile.basicDTO.isEnabled === true ? <FollowingList did={profile.basicDTO.did} /> : ""}
+                  {!error && profile.basicDTO.isEnabled === true ? <FollowersWidget /> : ""}
                 </IonCol>
               </IonRow>
             </IonGrid>
