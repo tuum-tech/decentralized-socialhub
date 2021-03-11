@@ -37,7 +37,7 @@ const FollowingSearch: React.FC = () => {
   // };
 
   const getUserHiveInstance = async (): Promise<ProfileService> => {
-    return ProfileService.getProfileServiceInstance();
+    return ProfileService.getProfileServiceUserOnlyInstance();
   };
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -71,8 +71,12 @@ const FollowingSearch: React.FC = () => {
         profileServiceLocal = profileService;
       }
 
-      let following = await profileServiceLocal.getFollowings();
-      setListFollowing(following as IFollowingResponse);
+      let user = UserService.GetUserSession();
+
+      if (user.did) {
+        let following = await profileServiceLocal.getFollowings(user.did);
+        setListFollowing(following as IFollowingResponse);
+      }
     } catch (e) {
       console.error('cant get followers count');
     }

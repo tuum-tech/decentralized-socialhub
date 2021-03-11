@@ -7,6 +7,11 @@ import {
   SearchService,
 } from 'src/services/search.service';
 import ExploreNav from '../ExploreNav';
+import {
+  IFollowingResponse,
+  ProfileService,
+} from 'src/services/profile.service';
+import { UserService } from 'src/services/user.service';
 
 const SearchComponent: React.FC = () => {
   const [
@@ -17,10 +22,18 @@ const SearchComponent: React.FC = () => {
   const [filteredUsers, setFilteredUsers] = useState<IUserResponse>({
     get_users: { items: [] },
   });
+  const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
+    get_following: { items: [] },
+  });
+
   const [searchService, setSearchService] = useState(new SearchService());
 
-  const getUserHiveInstance = async (): Promise<SearchService> => {
+  const getSearchUserHiveInstance = async (): Promise<SearchService> => {
     return SearchService.getSearchServiceInstance();
+  };
+
+  const getUserHiveInstance = async (): Promise<ProfileService> => {
+    return ProfileService.getProfileServiceUserOnlyInstance();
   };
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -40,7 +53,7 @@ const SearchComponent: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      let searchService = await getUserHiveInstance();
+      let searchService = await getSearchUserHiveInstance();
       setSearchService(searchService);
     })();
   }, []);
@@ -59,6 +72,14 @@ const SearchComponent: React.FC = () => {
 
       let listUsers: any = await searchServiceLocal.getUsers('', 200, 0);
       setFilteredUsers(listUsers.response);
+
+      let user = UserService.GetUserSession();
+
+      if (user.did) {
+        let profileServiceLocal = await getUserHiveInstance();
+        let following = await profileServiceLocal.getFollowings(user.did);
+        setListFollowing(following as IFollowingResponse);
+      }
     } catch (e) {
       setFilteredUniversities({ get_universities: { items: [] } });
       setFilteredUsers({ get_users: { items: [] } });
@@ -113,6 +134,7 @@ const SearchComponent: React.FC = () => {
       </IonContent>
       <ExploreNav
         people={filteredUsers.get_users}
+        following={listFollowing.get_following}
         pages={filteredUniversities.get_universities}
         searchKeyword={searchQuery}
         isSearchKeywordDID={isDID(searchQuery)}

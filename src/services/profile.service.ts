@@ -49,6 +49,15 @@ export class ProfileService {
   hiveClient!: HiveClient;
   appHiveClient!: HiveClient;
 
+  static async getProfileServiceUserOnlyInstance(): Promise<ProfileService> {
+    let profileService: ProfileService = new ProfileService();
+    let hiveClient = await HiveService.getSessionInstance();
+
+    if (hiveClient) profileService.hiveClient = hiveClient;
+    // profileService.appHiveClient = await HiveService.getAppHiveClient();
+    return profileService;
+  }
+
   static async getProfileServiceInstance(): Promise<ProfileService> {
     let profileService: ProfileService = new ProfileService();
     //let hiveClient = await HiveService.getSessionInstance();
@@ -71,7 +80,7 @@ export class ProfileService {
   async getUserFollowings(
     did: string
   ): Promise<IRunScriptResponse<IFollowingResponse>> {
-    return await this.appHiveClient.Scripting.RunScript({
+    return await this.hiveClient.Scripting.RunScript({
       name: 'get_following',
       context: {
         target_did: did,
@@ -266,13 +275,25 @@ export class ProfileService {
     followersList.push(this.getSessionDid());
 
     let uniqueItems = [...new Set(followersList)]; // distinct
-    await this.appHiveClient.Scripting.RunScript({
-      name: 'set_followers',
-      params: {
-        did: did,
-        followers: uniqueItems,
-      },
-    });
+
+    if (!this.appHiveClient) {
+      let profileServiceLocal: ProfileService = await ProfileService.getProfileServiceAppOnlyInstance();
+      await profileServiceLocal.appHiveClient.Scripting.RunScript({
+        name: 'set_followers',
+        params: {
+          did: did,
+          followers: uniqueItems,
+        },
+      });
+    } else {
+      await this.appHiveClient.Scripting.RunScript({
+        name: 'set_followers',
+        params: {
+          did: did,
+          followers: uniqueItems,
+        },
+      });
+    }
 
     return this.getFollowings(UserService.GetUserSession().did);
   }

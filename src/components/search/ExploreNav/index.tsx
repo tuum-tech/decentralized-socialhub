@@ -9,7 +9,7 @@ import {
   IonRow,
 } from '@ionic/react';
 import style from './style.module.scss';
-import { PageDTO, PeopleDTO } from '../types';
+import { FollowingDTO, PageDTO, PeopleDTO } from '../types';
 import PeopleCard from 'src/components/cards/PeopleCard';
 import PagesCard from 'src/components/cards/PagesCard';
 
@@ -17,6 +17,7 @@ interface Props {
   tab?: string;
   people?: PeopleDTO;
   pages?: PageDTO;
+  following?: FollowingDTO;
   searchKeyword?: string;
   isSearchKeywordDID?: boolean;
 }
@@ -26,6 +27,7 @@ const ExploreNav: React.FC<Props> = ({
   // perPage = 1,
   people,
   pages,
+  following,
   searchKeyword = '',
   isSearchKeywordDID = false,
 }) => {
@@ -70,6 +72,7 @@ const ExploreNav: React.FC<Props> = ({
           <IonRow>
             <PeopleCard
               people={people}
+              following={following}
               searchKeyword={searchKeyword}
               isSearchKeywordDID={isSearchKeywordDID}
             />
@@ -86,6 +89,7 @@ const ExploreNav: React.FC<Props> = ({
           <IonRow>
             <PeopleCard
               people={people}
+              following={following}
               searchKeyword={searchKeyword}
               size='6'
             />

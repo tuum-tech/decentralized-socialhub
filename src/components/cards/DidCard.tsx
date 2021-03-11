@@ -27,7 +27,7 @@ const DidCard: React.FC<Props> = ({
   let profileService: ProfileService;
 
   const getUserHiveInstance = async (): Promise<ProfileService> => {
-    return ProfileService.getProfileServiceInstance();
+    return ProfileService.getProfileServiceUserOnlyInstance();
   };
 
   const followDid = async (did: string) => {

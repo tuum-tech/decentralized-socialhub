@@ -32,7 +32,7 @@ const FollowersSearch: React.FC = () => {
   const [profileService, setProfileService] = useState(new ProfileService());
 
   const getUserHiveInstance = async (): Promise<ProfileService> => {
-    return ProfileService.getProfileServiceInstance();
+    return ProfileService.getProfileServiceUserOnlyInstance();
   };
 
   // const getUserHiveInstance = async (): Promise<SearchService> => {
@@ -72,7 +72,7 @@ const FollowersSearch: React.FC = () => {
 
         if (!profileService || !profileService.hiveClient) {
           let profileServiceLocal = await getUserHiveInstance();
-          let following = await profileServiceLocal.getFollowings();
+          let following = await profileServiceLocal.getFollowings(user.did);
           setListFollowing(following as IFollowingResponse);
         }
       }
