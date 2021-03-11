@@ -63,6 +63,13 @@
     padding: 3px;
   }
 
+  .profile-img-publishing {
+    max-width: 5.5em;
+    border: 3px solid var(--theme-danger-blue);
+    border-radius: 1.5em 2em 1.5em 2em;
+    padding: 3px;
+  }
+
   .view-profile-btn {
     display: flex;
     justify-content: flex-end;

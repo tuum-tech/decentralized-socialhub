@@ -145,7 +145,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
       if (!instance) return
 
       setUserInfo(instance);
-      console.error(JSON.stringify(userInfo));
+      
       if (instance.onBoardingCompleted && instance.tutorialCompleted && !willExpire) {
 
         try {
@@ -170,6 +170,12 @@ const ProfilePage: React.FC<RouteComponentProps> = (
   const onTutorialStart = () => {
     console.log('Start tutorial')
     setShowTutorial(true)
+  }
+
+  const onTutorialFinish = () =>{
+    let instance = UserService.GetUserSession()
+    setUserInfo(instance)
+    setShowTutorial(false)
   }
 
   if (!onboardingCompleted) {
@@ -221,7 +227,7 @@ const ProfilePage: React.FC<RouteComponentProps> = (
           cssClass={style['tutorialpage']}
           backdropDismiss={false}
         >
-          <TutorialComponent onClose={() => setShowTutorial(false)} />
+          <TutorialComponent onClose={() => onTutorialFinish()} />
         </TutorialModal>
       </IonContent>
     </IonPage>
