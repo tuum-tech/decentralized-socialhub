@@ -29,6 +29,7 @@ import SkeletonAvatar from '../avatars/SkeletonAvatar';
 import style from './DidCard.module.scss';
 import harvard from '../../assets/logo/Harvard-Logo.png'
 import { remove } from 'lodash';
+import { Guid } from 'guid-typescript';
 
 
 interface IEducationProps {
@@ -163,6 +164,7 @@ border-radius: 22px;
 font-weight: bold;
 background-color: rgba(221, 221, 221, 0.24);
 color: #000;
+cursor: default;
 `;
 
 const PopoverMenuItem = styled.div`
@@ -231,7 +233,7 @@ const EducationItems: React.FC<EducationItemsProps> = ({ educationItem, handleCh
           <IonCol size="9">
             <IonGrid>
               <IonRow><Institution>{educationItem.institution}</Institution></IonRow>
-              <IonRow><Program>{educationItem.title}</Program></IonRow>
+              <IonRow><Program>{educationItem.program}</Program></IonRow>
               <IonRow><Period>{educationItem.start} - {educationItem.end}</Period></IonRow>
               <IonRow><Description>{educationItem.description}</Description></IonRow>
             </IonGrid>
@@ -292,8 +294,9 @@ const LinkStyleSpan = styled.span`
   line-height: normal;
   letter-spacing: -0.07px;
   text-align: left;
-  color: #4c6fff;`
-  ;
+  color: #4c6fff;
+  cursor: default;
+  `;
 
 const EducationCard: React.FC<IEducationProps> = ({ educationDTO, updateFunc, removeFunc, mode }: IEducationProps) => {
 
@@ -341,7 +344,7 @@ const EducationCard: React.FC<IEducationProps> = ({ educationDTO, updateFunc, re
     let items = [...currentEducationDTO.items];
 
     let item: EducationItem = {
-      _id: "",
+      guid: Guid.create(),
       description: "",
       institution: "",
       program: "",
@@ -367,7 +370,7 @@ const EducationCard: React.FC<IEducationProps> = ({ educationDTO, updateFunc, re
 
     setCurrentEducationDTO({ isEnabled: true, items: items });
 
-    if (itemToDelete[0]._id !== "")
+    if (itemToDelete[0].isEmpty)
       removeFunc(itemToDelete[0]);
   }
 

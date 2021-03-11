@@ -119,6 +119,7 @@ export class ProfileService {
   }
 
   async updateAbout(basicDTO: BasicDTO): Promise<any> {
+    debugger;
     const update_user_script = {
       name: 'update_basic_profile',
       params: basicDTO,

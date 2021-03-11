@@ -91,9 +91,9 @@ const ProfileEditor: React.FC = () => {
 
   async function callUpdateAbout(basicDTO: BasicDTO): Promise<any> {
     let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
-    let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
-    getFullProfileResponse = await profileService.updateAbout(basicDTO);
-    console.log(JSON.stringify(getFullProfileResponse));
+    //let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
+    await profileService.updateAbout(basicDTO);
+
     return ""
   }
 
