@@ -8,6 +8,11 @@ import {
 } from 'src/services/search.service';
 import FollowingTabs from '../FollowingTabs';
 import FollowingHeader from '../FollowingHeader';
+import {
+  IFollowingResponse,
+  ProfileService,
+} from 'src/services/profile.service';
+import { UserService } from 'src/services/user.service';
 
 const FollowingSearch: React.FC = () => {
   const [
@@ -18,10 +23,21 @@ const FollowingSearch: React.FC = () => {
   const [filteredUsers, setFilteredUsers] = useState<IUserResponse>({
     get_users: { items: [] },
   });
-  const [searchService, setSearchService] = useState(new SearchService());
+  const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
+    get_following: { items: [] },
+  });
 
-  const getUserHiveInstance = async (): Promise<SearchService> => {
-    return SearchService.getSearchServiceInstance();
+  const [followingCount, setFollowingCount] = useState(0);
+
+  // const [searchService, setSearchService] = useState(new SearchService());
+  const [profileService, setProfileService] = useState(new ProfileService());
+
+  // const getUserHiveInstance = async (): Promise<SearchService> => {
+  //   return SearchService.getSearchServiceInstance();
+  // };
+
+  const getUserHiveInstance = async (): Promise<ProfileService> => {
+    return ProfileService.getProfileServiceInstance();
   };
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -39,53 +55,78 @@ const FollowingSearch: React.FC = () => {
     return str != null && regex.test(str.trim());
   };
 
-  useEffect(() => {
-    (async () => {
-      let searchService = await getUserHiveInstance();
-      setSearchService(searchService);
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     let searchService = await getUserHiveInstance();
+  //     setSearchService(searchService);
+  //   })();
+  // }, []);
 
-  const loadData = async () => {
+  const loadFollowingData = async () => {
+    try {
+      let profileServiceLocal: ProfileService;
+      if (!profileService || !profileService.hiveClient) {
+        profileServiceLocal = await getUserHiveInstance();
+      } else {
+        profileServiceLocal = profileService;
+      }
+
+      let following = await profileServiceLocal.getFollowings();
+      setListFollowing(following as IFollowingResponse);
+    } catch (e) {
+      console.error('cant get followers count');
+    }
+  };
+
+  const loadUsersData = async () => {
     let searchServiceLocal: SearchService;
+
+    let dids: string[] = [];
+
+    if (
+      listFollowing.get_following.items &&
+      listFollowing.get_following.items.length
+    ) {
+      dids = listFollowing.get_following.items.map((u) => u.did);
+    }
 
     try {
       searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-      let listUniversities: any = await searchServiceLocal.getUniversities(
-        '',
+      let listUsers: any = await searchServiceLocal.getUsersByDIDs(
+        dids,
         200,
         0
       );
-      setFilteredUniversities(listUniversities.response);
-
-      let listUsers: any = await searchServiceLocal.getUsers('', 200, 0);
       setFilteredUsers(listUsers.response);
     } catch (e) {
-      setFilteredUniversities({ get_universities: { items: [] } });
       setFilteredUsers({ get_users: { items: [] } });
-      console.error('could not load universities or users');
-      // setError({ hasError: true, errorDescription: 'cant load followings' });
+      console.error('could not load users');
+      // setError({ hasError: true, errorDescription: 'cant load followers' });
       return;
     }
   };
 
   useEffect(() => {
     (async () => {
-      await loadData();
+      await loadFollowingData();
     })();
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      await loadUsersData();
+    })();
+  }, [listFollowing]);
+
   const invokeSearch = async (searchQuery: string) => {
-    let listUniversities: any = await searchService.getUniversities(
-      searchQuery,
-      200,
-      0
-    );
-
-    setFilteredUniversities(listUniversities.response);
-
-    let listUsers: any = await searchService.getUsers(searchQuery, 200, 0);
-    setFilteredUsers(listUsers.response);
+    // let listUniversities: any = await searchService.getUniversities(
+    //   searchQuery,
+    //   200,
+    //   0
+    // );
+    // setFilteredUniversities(listUniversities.response);
+    // let listUsers: any = await searchService.getUsers(searchQuery, 200, 0);
+    // setFilteredUsers(listUsers.response);
   };
 
   useEffect(() => {
@@ -93,7 +134,7 @@ const FollowingSearch: React.FC = () => {
       invokeSearch(searchQuery);
     } else if (searchQuery == '') {
       setSearchQuery('');
-      loadData();
+      // loadData();
     }
   }, [searchQuery]);
 
@@ -101,9 +142,13 @@ const FollowingSearch: React.FC = () => {
     setSearchQuery(e.detail.value!);
   };
 
+  const getFollowingCount = (): number => {
+    return listFollowing.get_following.items.length;
+  };
+
   return (
     <>
-      <FollowingHeader />
+      <FollowingHeader followingCount={getFollowingCount()} />
       {/* <IonContent className={style['followingsearch']}>
         <IonSearchbar
           value={searchQuery}
@@ -114,6 +159,7 @@ const FollowingSearch: React.FC = () => {
       </IonContent> */}
       <FollowingTabs
         people={filteredUsers.get_users}
+        following={listFollowing.get_following}
         pages={filteredUniversities.get_universities}
         searchKeyword={searchQuery}
         isSearchKeywordDID={isDID(searchQuery)}

@@ -5,29 +5,34 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonCol,
-  IonItem,
-  IonList,
 } from '@ionic/react';
 import style from './PeopleCard.module.scss';
-import { PeopleDTO } from '../search/types';
+import { PeopleDTO, FollowingDTO } from '../search/types';
 import DidCard from './DidCard';
 import ReactPaginate from 'react-paginate';
 
 interface IProps {
   people?: PeopleDTO;
+  following?: FollowingDTO;
   searchKeyword?: string;
   isSearchKeywordDID?: boolean;
   size?: string;
   showHeader?: boolean;
 }
 
-const peopleItem = (peopleItem: any, indexItem: number, colSize: any) => {
+const peopleItem = (
+  peopleItem: any,
+  isFollowing: boolean,
+  indexItem: number,
+  colSize: any
+) => {
   return (
     <DidCard
       name={peopleItem.name}
       did={peopleItem.did}
       avatar={peopleItem.avatar}
       colSize={colSize}
+      following={isFollowing}
       type='user'
       key={'did-people-card-' + indexItem}
     />
@@ -36,6 +41,7 @@ const peopleItem = (peopleItem: any, indexItem: number, colSize: any) => {
 
 const PeopleCard: React.FC<IProps> = ({
   people,
+  following,
   searchKeyword,
   isSearchKeywordDID,
   showHeader = true,
@@ -47,17 +53,33 @@ const PeopleCard: React.FC<IProps> = ({
   const [peoplePageOffset, setPeoplePageOffset] = useState(0);
   const [listPeople, setListPeople] = useState<any[]>([]);
 
+  const isFollowing = (did: string): boolean => {
+    if (following && following.items) {
+      for (let i = 0; i < following.items.length; i++) {
+        if (following.items[i].did === did) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
   useEffect(() => {
     let listPeopleLocal: any =
       people &&
       people.items
         .slice(peoplePageOffset, peoplePageOffset + perPage)
         .map((p, index) =>
-          peopleItem(p, index, parseInt(size) / 12 == 1 ? '100%' : '50%')
+          peopleItem(
+            p,
+            isFollowing(p.did),
+            index,
+            parseInt(size) / 12 == 1 ? '100%' : '50%'
+          )
         );
 
     setListPeople(listPeopleLocal);
-  }, [peoplePageOffset, people]);
+  }, [peoplePageOffset, people, following]);
 
   const handlePeoplePageClick = (data: any) => {
     let selected = data.selected;

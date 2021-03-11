@@ -19,6 +19,7 @@ import { PageDTO, PeopleDTO } from '../types';
 import ReactPaginate from 'react-paginate';
 import PeopleCard from 'src/components/cards/PeopleCard';
 import PagesCard from 'src/components/cards/PagesCard';
+import { FollowingDTO } from 'src/components/search/types';
 
 // interface IProps {
 //   people?: PeopleDTO; // | never[];
@@ -199,6 +200,7 @@ import PagesCard from 'src/components/cards/PagesCard';
 interface Props {
   tab?: string;
   people?: PeopleDTO;
+  following?: FollowingDTO;
   pages?: PageDTO;
   searchKeyword?: string;
   isSearchKeywordDID?: boolean;
@@ -208,6 +210,7 @@ const FollowingTabs: React.FC<Props> = ({
   tab = 'people',
   // perPage = 1,
   people,
+  following,
   pages,
   searchKeyword = '',
   isSearchKeywordDID = false,
@@ -244,6 +247,7 @@ const FollowingTabs: React.FC<Props> = ({
           <IonRow>
             <PeopleCard
               people={people}
+              following={following}
               searchKeyword={searchKeyword}
               size='6'
             />

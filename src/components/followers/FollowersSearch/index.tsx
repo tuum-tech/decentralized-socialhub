@@ -10,8 +10,10 @@ import FollowersHeader from '../FollowersHeader';
 import PeopleCard from 'src/components/cards/PeopleCard';
 import {
   IFollowerResponse,
+  IFollowingResponse,
   ProfileService,
 } from 'src/services/profile.service';
+import { UserService } from 'src/services/user.service';
 
 const FollowersSearch: React.FC = () => {
   const [filteredUsers, setFilteredUsers] = useState<IUserResponse>({
@@ -20,16 +22,21 @@ const FollowersSearch: React.FC = () => {
   const [listFollowers, setListFollowers] = useState<IFollowerResponse>({
     get_followers: { items: [] },
   });
+  const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
+    get_following: { items: [] },
+  });
+
+  const [followersCount, setFollowersCount] = useState(0);
 
   // const [searchService, setSearchService] = useState(new SearchService());
   const [profileService, setProfileService] = useState(new ProfileService());
 
+  const getUserHiveInstance = async (): Promise<ProfileService> => {
+    return ProfileService.getProfileServiceInstance();
+  };
+
   // const getUserHiveInstance = async (): Promise<SearchService> => {
   //   return SearchService.getSearchServiceInstance();
-  // };
-
-  // const getUserHiveInstance = async (): Promise<ProfileService> => {
-  //   return ProfileService.getProfileServiceInstance();
   // };
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -56,19 +63,19 @@ const FollowersSearch: React.FC = () => {
 
   const loadFollowersData = async () => {
     try {
-      // console.log(profileService);
-      // if (!profileService.appHiveClient) {
-      //   setProfileService(
-      //     await ProfileService.getProfileServiceAppOnlyInstance()
-      //   );
-      //   console.log('Set app only instance');
-      // }
-      let listDids = ['did:elastos:iYyWRrP4izZfd26DZytSerbG1f6vqzBRmj'];
-      let followers = await profileService.getFollowers(listDids);
-      console.log('Followers: ', followers);
-      setListFollowers(followers as IFollowerResponse);
+      let user = UserService.GetUserSession();
 
-      console.log('List Followers: ', listFollowers);
+      if (user.did) {
+        let listDids = [user.did];
+        let followers = await profileService.getFollowers(listDids);
+        setListFollowers(followers as IFollowerResponse);
+
+        if (!profileService || !profileService.hiveClient) {
+          let profileServiceLocal = await getUserHiveInstance();
+          let following = await profileServiceLocal.getFollowings();
+          setListFollowing(following as IFollowingResponse);
+        }
+      }
     } catch (e) {
       console.error('cant get followers count');
     }
@@ -77,23 +84,14 @@ const FollowersSearch: React.FC = () => {
   const loadUsersData = async () => {
     let searchServiceLocal: SearchService;
 
-    console.log(listFollowers.get_followers);
-
     let dids: string[] = [];
 
     if (
       listFollowers.get_followers.items &&
       listFollowers.get_followers.items.length
     ) {
-      console.log('listFollowers.get_followers.items');
-      console.log(listFollowers.get_followers.items);
-
       dids = listFollowers.get_followers.items[0].followers.map((u) => u);
     }
-    // listFollowers.get_followers &&
-    // listFollowers.get_followers.items &&
-
-    console.log('DIDs to grab: ', dids);
 
     try {
       searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
@@ -119,6 +117,11 @@ const FollowersSearch: React.FC = () => {
 
   useEffect(() => {
     (async () => {
+      let user = UserService.GetUserSession();
+
+      if (user.did) {
+        setFollowersCount(getFollowersCount(user.did));
+      }
       await loadUsersData();
     })();
   }, [listFollowers]);
@@ -141,11 +144,26 @@ const FollowersSearch: React.FC = () => {
     setSearchQuery(e.detail.value!);
   };
 
+  const getFollowersCount = (did: string): number => {
+    let val: number = 0;
+    try {
+      if (
+        listFollowers.get_followers.items !== undefined &&
+        listFollowers.get_followers.items.length > 0
+      ) {
+        listFollowers.get_followers.items.forEach((item) => {
+          if (item.did === did) {
+            val = item.followers.length;
+          }
+        });
+      }
+    } catch (e) {}
+    return val;
+  };
+
   return (
     <>
-      <FollowersHeader
-        followersCount={listFollowers.get_followers.items.length}
-      />
+      <FollowersHeader followersCount={followersCount} />
       {/* <IonContent className={style['followingsearch']}>
         <IonSearchbar
           value={searchQuery}
@@ -158,6 +176,7 @@ const FollowersSearch: React.FC = () => {
         <IonRow>
           <PeopleCard
             people={filteredUsers.get_users}
+            following={listFollowing.get_following}
             searchKeyword={searchQuery}
             isSearchKeywordDID={isDID(searchQuery)}
             showHeader={false}

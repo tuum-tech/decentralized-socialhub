@@ -2,13 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { IonContent, IonGrid, IonSearchbar } from '@ionic/react';
 import style from './style.module.scss';
 
-const FollowingHeader: React.FC = () => {
+interface Props {
+  followingCount?: number;
+}
+
+const FollowingHeader: React.FC<Props> = ({ followingCount = 0 }) => {
   return (
     <>
       <IonContent className={style['connections-header']}>
         <div className={style['header-content']}>
           <h1>Connections</h1>
-          <h2>Followings()</h2>
+          <h2>Following({followingCount})</h2>
         </div>
       </IonContent>
     </>
