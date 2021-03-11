@@ -102,13 +102,12 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
         let userInfo = (await UserService.SearchUserWithDID(did)) as any;
         setUserInfo(userInfo as ISessionItem);
       } catch (e) {
-        debugger;
         setError(true)
       }
 
       try {
         if (!error) {
-          debugger;
+
           let profile: ProfileDTO = await getFullProfile(did)
           profile.basicDTO.isEnabled = true
           profile.experienceDTO.isEnabled = true
