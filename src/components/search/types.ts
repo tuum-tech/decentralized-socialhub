@@ -17,3 +17,12 @@ export interface PageItem {
 export interface PageDTO {
   items: PageItem[];
 }
+
+export interface FollowingItem {
+  did: string;
+  // followers?: string;
+}
+
+export interface FollowingDTO {
+  items: FollowingItem[];
+}

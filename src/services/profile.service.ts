@@ -3,7 +3,12 @@ import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/S
 import { Session } from 'inspector';
 // import { floor, noConflict } from 'lodash';
 import { ProfileResponse } from 'src/pages/ProfilePage/types';
-import { BasicDTO, EducationDTO, EducationItem, ExperienceItem } from 'src/pages/PublicPage/types';
+import {
+  BasicDTO,
+  EducationDTO,
+  EducationItem,
+  ExperienceItem,
+} from 'src/pages/PublicPage/types';
 import { HiveService } from './hive.service';
 import { ScriptService } from './script.service';
 import { ISessionItem, UserService } from './user.service';
@@ -44,6 +49,15 @@ export class ProfileService {
   hiveClient!: HiveClient;
   appHiveClient!: HiveClient;
 
+  static async getProfileServiceUserOnlyInstance(): Promise<ProfileService> {
+    let profileService: ProfileService = new ProfileService();
+    let hiveClient = await HiveService.getSessionInstance();
+
+    if (hiveClient) profileService.hiveClient = hiveClient;
+    // profileService.appHiveClient = await HiveService.getAppHiveClient();
+    return profileService;
+  }
+
   static async getProfileServiceInstance(): Promise<ProfileService> {
     let profileService: ProfileService = new ProfileService();
     //let hiveClient = await HiveService.getSessionInstance();
@@ -66,7 +80,7 @@ export class ProfileService {
   async getUserFollowings(
     did: string
   ): Promise<IRunScriptResponse<IFollowingResponse>> {
-    return await this.appHiveClient.Scripting.RunScript({
+    return await this.hiveClient.Scripting.RunScript({
       name: 'get_following',
       context: {
         target_did: did,
@@ -87,11 +101,7 @@ export class ProfileService {
     });
   }
 
-
-  async updateBasicProfile(
-    basicDTO: ISessionItem
-  ): Promise<any> {
-
+  async updateBasicProfile(basicDTO: ISessionItem): Promise<any> {
     const update_user_script = {
       name: 'update_user',
       params: basicDTO,
@@ -99,19 +109,16 @@ export class ProfileService {
         target_did: process.env.REACT_APP_APPLICATION_DID,
         target_app_did: process.env.REACT_APP_APPLICATION_ID,
       },
-    }
+    };
     let response: any = await ScriptService.runTuumTechScript(
       update_user_script
-    )
-    const { data, meta } = response
+    );
+    const { data, meta } = response;
     if (meta.code === 200 && meta.message === 'OK') {
-
     }
   }
 
-  async updateAbout(
-    basicDTO: BasicDTO
-  ): Promise<any> {
+  async updateAbout(basicDTO: BasicDTO): Promise<any> {
     const update_user_script = {
       name: 'update_basic_profile',
       params: basicDTO,
@@ -119,13 +126,12 @@ export class ProfileService {
         target_did: UserService.GetUserSession().did,
         target_app_did: process.env.REACT_APP_APPLICATION_ID,
       },
-    }
+    };
     let response: any = await ScriptService.runTuumTechScript(
       update_user_script
-    )
-    const { data, meta } = response
+    );
+    const { data, meta } = response;
     if (meta.code === 200 && meta.message === 'OK') {
-
     }
   }
 
@@ -138,7 +144,7 @@ export class ProfileService {
         target_did: UserService.GetUserSession().did,
         target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
       },
-      params: educationItem
+      params: educationItem,
     });
   }
 
@@ -151,10 +157,9 @@ export class ProfileService {
         target_did: UserService.GetUserSession().did,
         target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
       },
-      params: educationItem
+      params: educationItem,
     });
   }
-
 
   async updateExperienceProfile(
     experienceItem: ExperienceItem
@@ -165,18 +170,15 @@ export class ProfileService {
         target_did: UserService.GetUserSession().did,
         target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
       },
-      params: experienceItem
+      params: experienceItem,
     });
   }
-
-
 
   async getFollowings(did: string): Promise<IFollowingResponse> {
     let followings: IFollowingResponse;
 
     followings = (await this.getUserFollowings(did))
       .response as IFollowingResponse;
-
 
     console.log('followings :' + JSON.stringify(followings));
     return followings;
@@ -195,11 +197,18 @@ export class ProfileService {
 
   async getFollowers(dids: string[]): Promise<IFollowerResponse | undefined> {
     console.log(JSON.stringify(dids));
-    let followersResponse: IRunScriptResponse<IFollowerResponse> = await this.appHiveClient.Scripting.RunScript(
+
+    const profileAppHiveClient: ProfileService = await ProfileService.getProfileServiceAppOnlyInstance();
+
+    let followersResponse: IRunScriptResponse<IFollowerResponse> = await profileAppHiveClient.appHiveClient.Scripting.RunScript(
       {
         name: 'get_followers',
         params: {
           did: dids,
+        },
+        context: {
+          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`,
         },
       }
     );
@@ -237,13 +246,25 @@ export class ProfileService {
     followersList = followersList.filter((item) => item !== did);
 
     let uniqueItems = [...new Set(followersList)]; // distinct
-    await this.appHiveClient.Scripting.RunScript({
-      name: 'set_followers',
-      params: {
-        did: did,
-        followers: uniqueItems,
-      },
-    });
+
+    if (!this.appHiveClient) {
+      let profileServiceLocal: ProfileService = await ProfileService.getProfileServiceAppOnlyInstance();
+      await profileServiceLocal.appHiveClient.Scripting.RunScript({
+        name: 'set_followers',
+        params: {
+          did: did,
+          followers: uniqueItems,
+        },
+      });
+    } else {
+      await this.appHiveClient.Scripting.RunScript({
+        name: 'set_followers',
+        params: {
+          did: did,
+          followers: uniqueItems,
+        },
+      });
+    }
 
     return this.getFollowings(UserService.GetUserSession().did);
   }
@@ -266,13 +287,25 @@ export class ProfileService {
     followersList.push(this.getSessionDid());
 
     let uniqueItems = [...new Set(followersList)]; // distinct
-    await this.appHiveClient.Scripting.RunScript({
-      name: 'set_followers',
-      params: {
-        did: did,
-        followers: uniqueItems,
-      },
-    });
+
+    if (!this.appHiveClient) {
+      let profileServiceLocal: ProfileService = await ProfileService.getProfileServiceAppOnlyInstance();
+      await profileServiceLocal.appHiveClient.Scripting.RunScript({
+        name: 'set_followers',
+        params: {
+          did: did,
+          followers: uniqueItems,
+        },
+      });
+    } else {
+      await this.appHiveClient.Scripting.RunScript({
+        name: 'set_followers',
+        params: {
+          did: did,
+          followers: uniqueItems,
+        },
+      });
+    }
 
     return this.getFollowings(UserService.GetUserSession().did);
   }

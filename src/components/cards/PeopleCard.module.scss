@@ -1,0 +1,21 @@
+.people {
+  .tab-card {
+    border-radius: 16px;
+    background: #fff;
+  }
+
+  .pagination {
+    font-family: 'SF Pro Display';
+    text-align: center;
+    color: #4c6fff;
+    padding: 0;
+
+    li {
+      display: inline;
+      padding: 0.3em;
+    }
+    .page-active {
+      font-weight: 800;
+    }
+  }
+}

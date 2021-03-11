@@ -1,0 +1,14 @@
+[
+  {
+    "did": "did:elastos:iYyWRrP4izZfd26DZytSerbG1f6vqzBRmj",
+    "followers": ["did:elastos:idGcLsB9V6tAtvjSu3o6Zv92bPNokQyLTM"]
+  },
+  {
+    "did": "did:elastos:ibEcLsB9V6tAtvjSu3o6Zv92bPNokQyLPM",
+    "followers": ["did:elastos:iYyWRrP4izZfd26DZytSerbG1f6vqzBRmj"]
+  },
+  {
+    "did": "did:elastos:icFcLsB9V6tAtvjSu3o6Zv92bPNokQyLFM",
+    "followers": ["did:elastos:iYyWRrP4izZfd26DZytSerbG1f6vqzBRmj"]
+  }
+]

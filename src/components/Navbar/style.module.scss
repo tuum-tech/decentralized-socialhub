@@ -15,6 +15,11 @@
     cursor: pointer;
     color: var(--text-body-light);
   }
+  .item-connections-active,
+  .item-connections-link {
+    border-left: none;
+    padding-left: 1em;
+  }
 
   .divider {
     width: 80%;
