@@ -136,10 +136,11 @@ export class UserVaultScripts {
         body: {
           collection: 'education_profile',
           filter: {
-            _id: '$params._id',
+            guid: '$params.guid',
           },
           update: {
             $set: {
+              guid: '$params.guid',
               program: '$params.program',
               institution: '$params.institution',
               start: '$params.start',
@@ -165,10 +166,11 @@ export class UserVaultScripts {
         body: {
           collection: 'experience_profile',
           filter: {
-            _id: '$params._id',
+            guid: '$params.guid',
           },
           update: {
             $set: {
+              guid: '$params.guid',
               title: '$params.title',
               institution: '$params.institution',
               start: '$params.start',
@@ -183,7 +185,41 @@ export class UserVaultScripts {
         },
       },
     })
+    await hiveClient.Scripting.SetScript({
+      name: "remove_education_item",
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'delete',
+        name: 'remove_education_item',
+        body: {
+          collection: 'education_profile',
+          filter: {
+            guid: '$params.guid',
+          }
+        }
+      }
+    })
+
+    await hiveClient.Scripting.SetScript({
+      name: 'remove_experience_item',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'delete',
+        name: 'remove_experience_item',
+        body: {
+          collection: 'experience_profile',
+          filter: {
+            guid: '$params.guid',
+          }
+        }
+      }
+    })
+
+
   }
+
 
   static async SetScriptGetFollowing(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({

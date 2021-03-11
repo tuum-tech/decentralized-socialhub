@@ -119,6 +119,7 @@ export class ProfileService {
   }
 
   async updateAbout(basicDTO: BasicDTO): Promise<any> {
+
     const update_user_script = {
       name: 'update_basic_profile',
       params: basicDTO,
@@ -166,6 +167,19 @@ export class ProfileService {
   ): Promise<IRunScriptResponse<ProfileResponse>> {
     return this.appHiveClient.Scripting.RunScript({
       name: 'update_experience_profile',
+      context: {
+        target_did: UserService.GetUserSession().did,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+      },
+      params: experienceItem,
+    });
+  }
+
+  async removeExperienceItem(
+    experienceItem: ExperienceItem
+  ): Promise<IRunScriptResponse<ProfileResponse>> {
+    return this.appHiveClient.Scripting.RunScript({
+      name: 'remove_experience_item',
       context: {
         target_did: UserService.GetUserSession().did,
         target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,

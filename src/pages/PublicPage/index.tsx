@@ -50,15 +50,16 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   const [error, setError] = useState(false)
   const [loaded, setLoaded] = useState(false);
   const [userInfo, setUserInfo] = useState({
-    hiveHost: '',
-    userToken: '',
     accountType: AccountType.DID,
-    did: '',
-    name: '',
+    did: "",
+    name: "",
+    hiveHost: "",
+    email: "",
+    userToken: "",
     isDIDPublished: false,
-    mnemonics: '',
     onBoardingCompleted: false,
-    tutorialCompleted: false,
+    alreadySigned: false
+
   })
 
   const [full_profile, setfull_profile] = useState({
@@ -98,9 +99,9 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     (async () => {
 
       try {
-
-        let userInfo = (await UserService.SearchUserWithDID(did)) as any;
-        setUserInfo(userInfo as ISessionItem);
+        debugger;
+        let userInfo = await UserService.SearchUserWithDID(did);
+        setUserInfo(userInfo as any);
       } catch (e) {
         setError(true)
       }
@@ -153,7 +154,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 
           <IonRow className='ion-justify-content-around'>
             <IonCol size='12'>
-              {loaded ? <ProfileComponent scrollToPosition={scrollToPosition} profile={full_profile} sessionItem={userInfo} error={error} /> : ""}
+              {loaded && userInfo && userInfo.did !== "" ? <ProfileComponent scrollToPosition={scrollToPosition} profile={full_profile} sessionItem={userInfo as any} error={error} /> : "404 user not found"}
             </IonCol>
           </IonRow>
         </IonGrid>
