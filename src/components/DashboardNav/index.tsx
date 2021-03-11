@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   IonContent,
   IonList,
@@ -7,22 +7,23 @@ import {
   IonCol,
   IonGrid,
   IonRow,
-} from '@ionic/react'
-import style from './style.module.scss'
-import SpotlightCard from 'src/components/cards/SpotlightCard'
-import BadgesCard from 'src/components/cards/BadgesCard'
-import OverviewCard from 'src/components/cards/OverviewCard'
-import ButtonWhite from 'src/components/buttons/ButtonWhite'
-import AboutCard from '../cards/AboutCard'
-import ExperienceCard from '../cards/ExperienceCard'
-import EducationCard from '../cards/EducationCard'
-import { ProfileDTO } from 'src/pages/PublicPage/types'
-import { ISessionItem } from 'src/services/user.service'
+} from '@ionic/react';
+import style from './style.module.scss';
+import SpotlightCard from 'src/components/cards/SpotlightCard';
+import BadgesCard from 'src/components/cards/BadgesCard';
+import OverviewCard from 'src/components/cards/OverviewCard';
+import ButtonWhite from 'src/components/buttons/ButtonWhite';
+import AboutCard from '../cards/AboutCard';
+import ExperienceCard from '../cards/ExperienceCard';
+import EducationCard from '../cards/EducationCard';
+import { ProfileDTO } from 'src/pages/PublicPage/types';
+import { ISessionItem } from 'src/services/user.service';
+import ProfileCompletionCard from '../cards/ProfileCompletionCard';
 
 export interface DashboardProps {
-  onTutorialStart: () => void,
-  profile: ProfileDTO,
-  sessionItem: ISessionItem
+  onTutorialStart: () => void;
+  profile: ProfileDTO;
+  sessionItem: ISessionItem;
 }
 
 const DashboardHome: React.FC<DashboardProps> = (props) => {
@@ -30,23 +31,37 @@ const DashboardHome: React.FC<DashboardProps> = (props) => {
     <IonGrid className={style['tab-grid']}>
       <IonRow>
         <IonCol size='8'>
-          <AboutCard basicDTO={props.profile!.basicDTO} mode="" ></AboutCard>
-          <ExperienceCard experienceDTO={props.profile!.experienceDTO} mode=""></ExperienceCard>
-          <EducationCard educationDTO={props.profile!.educationDTO} mode=""></EducationCard>
+          <AboutCard basicDTO={props.profile!.basicDTO} mode=''></AboutCard>
+          <ExperienceCard
+            experienceDTO={props.profile!.experienceDTO}
+            mode=''
+          ></ExperienceCard>
+          <EducationCard
+            educationDTO={props.profile!.educationDTO}
+            mode=''
+          ></EducationCard>
         </IonCol>
         <IonCol size='4'>
           <SpotlightCard
             title='Welcome to Profile'
             content='To get you familiar with the platform you can start our tutorial which
         will go through some basics. You will receive a badge for completing it.'
-            component={<div><br /> <ButtonWhite onClick={() => props.onTutorialStart()} >Start beginners tutorial</ButtonWhite></div>}
+            component={
+              <div>
+                <br />{' '}
+                <ButtonWhite onClick={() => props.onTutorialStart()}>
+                  Start beginners tutorial
+                </ButtonWhite>
+              </div>
+            }
           />
+          <ProfileCompletionCard title='Profile Completion' />
           <BadgesCard title='Badges' />
         </IonCol>
       </IonRow>
     </IonGrid>
-  )
-}
+  );
+};
 
 const DashboardStatus: React.FC = () => {
   return (
@@ -63,8 +78,8 @@ const DashboardStatus: React.FC = () => {
         </IonCol>
       </IonRow>
     </IonGrid>
-  )
-}
+  );
+};
 
 const DashboardBadges: React.FC = () => {
   return (
@@ -82,11 +97,11 @@ const DashboardBadges: React.FC = () => {
         </IonCol>
       </IonRow>
     </IonGrid>
-  )
-}
+  );
+};
 
 const DashboardNav: React.FC<DashboardProps> = (props) => {
-  const [active, setActive] = useState('home')
+  const [active, setActive] = useState('home');
 
   return (
     <IonContent className={style['dashboardnav']}>
@@ -122,11 +137,17 @@ const DashboardNav: React.FC<DashboardProps> = (props) => {
           <IonLabel className={style['tab-label']}>Badges</IonLabel>
         </IonItem>
       </IonList>
-      {active === 'home' && <DashboardHome sessionItem={props.sessionItem} profile={props.profile} onTutorialStart={props.onTutorialStart} />}
+      {active === 'home' && (
+        <DashboardHome
+          sessionItem={props.sessionItem}
+          profile={props.profile}
+          onTutorialStart={props.onTutorialStart}
+        />
+      )}
       {active === 'status' && <DashboardStatus />}
       {active === 'badges' && <DashboardBadges />}
     </IonContent>
-  )
-}
+  );
+};
 
-export default DashboardNav
+export default DashboardNav;

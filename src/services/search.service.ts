@@ -138,6 +138,7 @@ export class SearchService {
 
       if (this.isDID(searchString)) {
         params['did'] = '.*' + searchString + '.*';
+        params['self_did'] = [UserService.GetUserSession().did];
 
         console.log('calling get users by did', params);
 
@@ -151,6 +152,7 @@ export class SearchService {
         });
       } else {
         params['name'] = '.*' + searchString + '.*';
+        params['self_did'] = [UserService.GetUserSession().did];
 
         usersResponse = await this.appHiveClient.Scripting.RunScript({
           name: 'get_users_by_name',
@@ -162,6 +164,8 @@ export class SearchService {
         });
       }
     } else {
+      params['self_did'] = [UserService.GetUserSession().did];
+
       usersResponse = await this.appHiveClient.Scripting.RunScript({
         name: 'get_all_users',
         params: params,

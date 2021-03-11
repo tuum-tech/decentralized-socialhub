@@ -1,0 +1,93 @@
+.profile-completion {
+  background-color: #fff;
+  border-radius: 20px;
+  margin-top: 2em;
+  min-height: 10em;
+
+  .progressbar {
+    width: 100%;
+    height: 6px;
+    margin: 26px 0 0;
+    padding: 0 150px 0 0;
+    border-radius: 50px;
+    background-color: #edf2f7;
+  }
+
+  // .card-title {
+  //   font-family: 'SF Pro Display';
+  //   font-size: 18px;
+  //   font-weight: bold;
+  //   font-stretch: normal;
+  //   font-style: normal;
+  //   line-height: normal;
+  //   letter-spacing: -0.09px;
+  //   text-align: left;
+  //   color: #000000;
+  // }
+
+  // .card-content {
+  //   font-family: 'SF Pro Display';
+  //   font-size: 14px;
+  //   font-weight: normal;
+  //   font-stretch: normal;
+  //   font-style: normal;
+  //   line-height: 1.64;
+  //   letter-spacing: normal;
+  //   text-align: left;
+  //   color: #425466;
+  // }
+
+  .badge-item {
+    border-radius: 1em;
+    border: 1px solid #efefef;
+    --inner-border-width: 0;
+    margin: 1em;
+
+    font-family: 'SF Pro Display';
+    font-size: 14px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: left;
+    color: #7a7a9d;
+
+    height: 0.7em;
+    background-color: #4c6fff;
+  }
+
+  .badge-bg {
+    margin: 5px 0px 0px 0;
+
+    // width: 30.2px;
+    // height: 30.2px;
+    // background-color: #d9dbe2;
+    // transform: rotate(-45deg);
+    // transform-origin: 0 100%;
+    // margin: 7px 0px -5px 30px;
+    // border-radius: 7px;
+    // text-align: center;
+  }
+
+  .card-link {
+    flex: auto;
+    float: right;
+    font-family: 'SF Pro Display';
+    font-size: 12px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: right;
+    color: var(--theme-primary-blue);
+    // cursor: pointer;
+    opacity: 1;
+    padding-top: 1em;
+
+    // &_hover {
+    //   opacity: 0.5;
+    // }
+  }
+}
