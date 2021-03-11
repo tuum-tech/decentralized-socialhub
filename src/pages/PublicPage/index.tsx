@@ -31,7 +31,7 @@ import PublicNavbar from 'src/components/PublicNavbar'
 import RegisterNewUserButton from 'src/components/RegisterNewUserButton'
 import SignInButton from 'src/components/SignInButton'
 import ProfileComponent from 'src/components/ProfileComponent'
-import { AccountType, UserService } from 'src/services/user.service'
+import { AccountType, ISessionItem, UserService } from 'src/services/user.service'
 
 interface MatchParams {
   did: string
@@ -79,11 +79,11 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
       },
     },
     educationDTO: {
-      isEnabled: true,
+      isEnabled: false,
       items: [] as EducationItem[],
     },
     experienceDTO: {
-      isEnabled: true,
+      isEnabled: false,
       items: [] as ExperienceItem[],
     },
   })
@@ -92,26 +92,28 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     return await requestFullProfile(did)
   }
 
-  let did: string = props.match.params.did || ''
+  let did: string = props.match.params.did
 
   useEffect(() => {
     (async () => {
 
-      let instance = UserService.GetUserSession()
-      if (!instance) return
+      try {
 
-      setUserInfo(instance);
-      console.error(JSON.stringify(userInfo));
-      if (instance.onBoardingCompleted && instance.tutorialCompleted) {
+        let userInfo = (await UserService.SearchUserWithDID(did)) as any;
+        setUserInfo(userInfo as ISessionItem);
+      } catch (e) {
 
-        try {
-          let profile: ProfileDTO = await getFullProfile(instance.did)
-          profile.experienceDTO.isEnabled = true
-          profile.educationDTO.isEnabled = true
-          setfull_profile(profile)
-        } catch (e) {
-          setError(true)
-        }
+      }
+
+      try {
+        let profile: ProfileDTO = await getFullProfile(did)
+        profile.basicDTO.isEnabled = true
+        profile.experienceDTO.isEnabled = true
+        profile.educationDTO.isEnabled = true
+        setfull_profile(profile)
+
+      } catch (e) {
+        setError(true)
       }
       setLoaded(true);
     })()
