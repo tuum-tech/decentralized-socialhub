@@ -1,7 +1,7 @@
-const { HiveClient, OptionsBuilder } = require('@elastos/elastos-hive-js-sdk')
-const { ElastosClient } = require('@elastosfoundation/elastos-js-sdk')
-const config = require('./config.json')
-const { testHelper } = require('./testsHelper')
+const { HiveClient, OptionsBuilder } = require('@elastos/elastos-hive-js-sdk');
+const { ElastosClient } = require('@elastosfoundation/elastos-js-sdk');
+const config = require('./config.json');
+const { testHelper } = require('./testsHelper');
 
 let run = async () => {
   let client = await testHelper.getHiveInstance(
@@ -9,13 +9,17 @@ let run = async () => {
     config.tuum_tech_mnemonic,
     config.hive_host,
     config.appId
-  )
-  client.Payment.CreateFreeVault()
+  );
+  client.Payment.CreateFreeVault();
+
+  const fs = require('fs');
 
   // ===== followers section start =====
-  await client.Database.createCollection('followers')
+  await client.Database.createCollection('followers');
   await client.Scripting.SetScript({
     name: 'set_followers',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
     executable: {
       type: 'update',
       name: 'set_followers',
@@ -36,9 +40,11 @@ let run = async () => {
         },
       },
     },
-  })
+  });
   await client.Scripting.SetScript({
     name: 'get_followers',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
     executable: {
       type: 'find',
       name: 'get_followers',
@@ -56,24 +62,30 @@ let run = async () => {
         },
       },
     },
-  })
+  });
+
+  fs.readFile('./src/data/dummy_followers.json', (err, data) => {
+    if (err) throw err;
+    let followerList = JSON.parse(data);
+    console.log(followerList[0]);
+    client.Database.insertMany('followers', followerList);
+  });
+
   // ===== followers section end =====
 
-  const fs = require('fs')
-
   // ===== users section start =====
-  await client.Database.createCollection('users')
+  await client.Database.createCollection('users');
 
-  console.log(__dirname)
-  console.log(process.cwd())
+  console.log(__dirname);
+  console.log(process.cwd());
 
   // fs.readFile('../data/dummy_users.json', (err, data) => {
   fs.readFile('./src/data/dummy_users.json', (err, data) => {
-    if (err) throw err
-    let dummyUsersList = JSON.parse(data)
-    console.log(dummyUsersList[0])
-    client.Database.insertMany('users', dummyUsersList)
-  })
+    if (err) throw err;
+    let dummyUsersList = JSON.parse(data);
+    console.log(dummyUsersList[0]);
+    client.Database.insertMany('users', dummyUsersList);
+  });
 
   await client.Scripting.SetScript({
     name: 'add_user',
@@ -97,7 +109,7 @@ let run = async () => {
         },
       },
     },
-  })
+  });
 
   await client.Scripting.SetScript({
     name: 'update_user',
@@ -124,7 +136,7 @@ let run = async () => {
         },
       },
     },
-  })
+  });
 
   await client.Scripting.SetScript({
     name: 'delete_user_by_did',
@@ -141,7 +153,7 @@ let run = async () => {
         },
       },
     },
-  })
+  });
   await client.Scripting.SetScript({
     name: 'get_user_by_did',
     allowAnonymousUser: true,
@@ -157,7 +169,7 @@ let run = async () => {
         },
       },
     },
-  })
+  });
   await client.Scripting.SetScript({
     name: 'get_users_by_email',
     allowAnonymousUser: true,
@@ -173,7 +185,7 @@ let run = async () => {
         },
       },
     },
-  })
+  });
   await client.Scripting.SetScript({
     name: 'verify_code',
     allowAnonymousUser: true,
@@ -213,7 +225,7 @@ let run = async () => {
         },
       ],
     },
-  })
+  });
   await client.Scripting.SetScript({
     name: 'update_user_did_info',
     allowAnonymousUser: true,
@@ -240,7 +252,7 @@ let run = async () => {
         },
       },
     },
-  })
+  });
 
   //For searching on explore page
   await client.Scripting.SetScript({
@@ -259,7 +271,7 @@ let run = async () => {
         },
       },
     },
-  })
+  });
 
   //For searching on explore page
   await client.Scripting.SetScript({
@@ -281,7 +293,7 @@ let run = async () => {
         },
       },
     },
-  })
+  });
 
   //For searching on explore page
   //This seems redundant to get_user_by_did but needed for now as the name in executable is different
@@ -305,21 +317,43 @@ let run = async () => {
         },
       },
     },
-  })
+  });
+
+  await client.Scripting.SetScript({
+    name: 'get_users_by_dids',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_users',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          did: { $in: '$params.dids' },
+        },
+        options: {
+          limit: 150, //'$params.limit',
+          skip: 0, //'$params.skip',
+        },
+      },
+    },
+  });
+
   // ===== users section end =====
 
   // ===== universities section start =====
   //store and retrieve universities data from tuum-tech vault
-  await client.Database.deleteCollection('universities')
-  await client.Database.createCollection('universities')
+  await client.Database.deleteCollection('universities');
+  await client.Database.createCollection('universities');
 
   fs.readFile('./src/data/world_universities_and_domains.json', (err, data) => {
     // fs.readFile('../data/world_universities_and_domains.json', (err, data) => {
-    if (err) throw err
-    let universityList = JSON.parse(data)
-    console.log(universityList[0])
-    client.Database.insertMany('universities', universityList)
-  })
+    if (err) throw err;
+    let universityList = JSON.parse(data);
+    console.log(universityList[0]);
+    client.Database.insertMany('universities', universityList);
+  });
 
   await client.Scripting.SetScript({
     name: 'get_all_universities',
@@ -337,7 +371,7 @@ let run = async () => {
         },
       },
     },
-  })
+  });
 
   await client.Scripting.SetScript({
     name: 'get_universities_by_name',
@@ -358,10 +392,10 @@ let run = async () => {
         },
       },
     },
-  })
+  });
   // ===== universities section end =====
 
-  console.log('All scripts OK')
-}
+  console.log('All scripts OK');
+};
 
-run()
+run();

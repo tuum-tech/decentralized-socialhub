@@ -1,8 +1,8 @@
 [
   {
-    "did": "did:elastos:TESTLsB9V6tAtvjSu3o6Zv92bPNokQyLGM",
-    "name": "faizan",
-    "hiveHost": "http://localhost:9001",
+    "did": "did:elastos:ib59qwq1xPBpLsGv4zR4CmzLpLUkBNfISE",
+    "name": "Faizan Atiq",
+    "vault_url": "http://localhost:9001",
     "avatar": "https://media-exp1.licdn.com/dms/image/C4D03AQHJrVWT1os_uQ/profile-displayphoto-shrink_100_100/0/1613330591466?e=1619654400&v=beta&t=oE-BJ4-vYiefNuEYQTaKeVDaJWh8coNOUypjIwHoY2s"
   },
   {

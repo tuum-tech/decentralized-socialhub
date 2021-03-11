@@ -6,14 +6,15 @@ import {
   IUserResponse,
   SearchService,
 } from 'src/services/search.service';
-import ExploreNav from '../ExploreNav';
+import FollowingTabs from '../FollowingTabs';
+import FollowingHeader from '../FollowingHeader';
 import {
   IFollowingResponse,
   ProfileService,
 } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
 
-const SearchComponent: React.FC = () => {
+const FollowingSearch: React.FC = () => {
   const [
     filteredUniversities,
     setFilteredUniversities,
@@ -26,11 +27,14 @@ const SearchComponent: React.FC = () => {
     get_following: { items: [] },
   });
 
-  const [searchService, setSearchService] = useState(new SearchService());
+  const [followingCount, setFollowingCount] = useState(0);
 
-  const getSearchUserHiveInstance = async (): Promise<SearchService> => {
-    return SearchService.getSearchServiceInstance();
-  };
+  // const [searchService, setSearchService] = useState(new SearchService());
+  const [profileService, setProfileService] = useState(new ProfileService());
+
+  // const getUserHiveInstance = async (): Promise<SearchService> => {
+  //   return SearchService.getSearchServiceInstance();
+  // };
 
   const getUserHiveInstance = async (): Promise<ProfileService> => {
     return ProfileService.getProfileServiceUserOnlyInstance();
@@ -51,61 +55,82 @@ const SearchComponent: React.FC = () => {
     return str != null && regex.test(str.trim());
   };
 
-  useEffect(() => {
-    (async () => {
-      let searchService = await getSearchUserHiveInstance();
-      setSearchService(searchService);
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     let searchService = await getUserHiveInstance();
+  //     setSearchService(searchService);
+  //   })();
+  // }, []);
 
-  const loadData = async () => {
-    let searchServiceLocal: SearchService;
-
+  const loadFollowingData = async () => {
     try {
-      searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-      let listUniversities: any = await searchServiceLocal.getUniversities(
-        '',
-        200,
-        0
-      );
-      setFilteredUniversities(listUniversities.response);
-
-      let listUsers: any = await searchServiceLocal.getUsers('', 200, 0);
-      setFilteredUsers(listUsers.response);
+      let profileServiceLocal: ProfileService;
+      if (!profileService || !profileService.hiveClient) {
+        profileServiceLocal = await getUserHiveInstance();
+      } else {
+        profileServiceLocal = profileService;
+      }
 
       let user = UserService.GetUserSession();
 
       if (user.did) {
-        let profileServiceLocal = await getUserHiveInstance();
         let following = await profileServiceLocal.getFollowings(user.did);
         setListFollowing(following as IFollowingResponse);
       }
     } catch (e) {
-      setFilteredUniversities({ get_universities: { items: [] } });
+      console.error('cant get followers count');
+    }
+  };
+
+  const loadUsersData = async () => {
+    let searchServiceLocal: SearchService;
+
+    let dids: string[] = [];
+
+    if (
+      listFollowing.get_following.items &&
+      listFollowing.get_following.items.length
+    ) {
+      dids = listFollowing.get_following.items.map((u) => u.did);
+    }
+
+    try {
+      searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
+      let listUsers: any = await searchServiceLocal.getUsersByDIDs(
+        dids,
+        200,
+        0
+      );
+      setFilteredUsers(listUsers.response);
+    } catch (e) {
       setFilteredUsers({ get_users: { items: [] } });
-      console.error('could not load universities or users');
-      // setError({ hasError: true, errorDescription: 'cant load followings' });
+      console.error('could not load users');
+      // setError({ hasError: true, errorDescription: 'cant load followers' });
       return;
     }
   };
 
   useEffect(() => {
     (async () => {
-      await loadData();
+      await loadFollowingData();
     })();
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      await loadUsersData();
+    })();
+  }, [listFollowing]);
+
   const invokeSearch = async (searchQuery: string) => {
-    let listUniversities: any = await searchService.getUniversities(
-      searchQuery,
-      200,
-      0
-    );
-
-    setFilteredUniversities(listUniversities.response);
-
-    let listUsers: any = await searchService.getUsers(searchQuery, 200, 0);
-    setFilteredUsers(listUsers.response);
+    // let listUniversities: any = await searchService.getUniversities(
+    //   searchQuery,
+    //   200,
+    //   0
+    // );
+    // setFilteredUniversities(listUniversities.response);
+    // let listUsers: any = await searchService.getUsers(searchQuery, 200, 0);
+    // setFilteredUsers(listUsers.response);
   };
 
   useEffect(() => {
@@ -113,7 +138,7 @@ const SearchComponent: React.FC = () => {
       invokeSearch(searchQuery);
     } else if (searchQuery == '') {
       setSearchQuery('');
-      loadData();
+      // loadData();
     }
   }, [searchQuery]);
 
@@ -121,18 +146,22 @@ const SearchComponent: React.FC = () => {
     setSearchQuery(e.detail.value!);
   };
 
+  const getFollowingCount = (): number => {
+    return listFollowing.get_following.items.length;
+  };
+
   return (
     <>
-      <IonContent className={style['searchcomponent']}>
+      <FollowingHeader followingCount={getFollowingCount()} />
+      {/* <IonContent className={style['followingsearch']}>
         <IonSearchbar
           value={searchQuery}
           onIonChange={(e) => search(e)}
           placeholder='Search people, pages by name or DID'
           className={style['search-input']}
         ></IonSearchbar>
-        {/* <IonSpinner /> */}
-      </IonContent>
-      <ExploreNav
+      </IonContent> */}
+      <FollowingTabs
         people={filteredUsers.get_users}
         following={listFollowing.get_following}
         pages={filteredUniversities.get_universities}
@@ -143,4 +172,4 @@ const SearchComponent: React.FC = () => {
   );
 };
 
-export default SearchComponent;
+export default FollowingSearch;

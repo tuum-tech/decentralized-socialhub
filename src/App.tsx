@@ -1,31 +1,31 @@
-import React from 'react'
+import React from 'react';
 
-import { Redirect, Route } from 'react-router-dom'
-import { IonApp, IonRouterOutlet } from '@ionic/react'
-import { IonReactRouter } from '@ionic/react-router'
-import * as Sentry from '@sentry/react'
+import { Redirect, Route } from 'react-router-dom';
+import { IonApp, IonRouterOutlet } from '@ionic/react';
+import { IonReactRouter } from '@ionic/react-router';
+import * as Sentry from '@sentry/react';
 
 /* Core CSS required for Ionic components to work properly */
-import '@ionic/react/css/core.css'
+import '@ionic/react/css/core.css';
 
 /* Basic CSS for apps built with Ionic */
-import '@ionic/react/css/normalize.css'
-import '@ionic/react/css/structure.css'
-import '@ionic/react/css/typography.css'
+import '@ionic/react/css/normalize.css';
+import '@ionic/react/css/structure.css';
+import '@ionic/react/css/typography.css';
 
 /* Optional CSS utils that can be commented out */
-import '@ionic/react/css/padding.css'
-import '@ionic/react/css/float-elements.css'
-import '@ionic/react/css/text-alignment.css'
-import '@ionic/react/css/text-transformation.css'
-import '@ionic/react/css/flex-utils.css'
-import '@ionic/react/css/display.css'
+import '@ionic/react/css/padding.css';
+import '@ionic/react/css/float-elements.css';
+import '@ionic/react/css/text-alignment.css';
+import '@ionic/react/css/text-transformation.css';
+import '@ionic/react/css/flex-utils.css';
+import '@ionic/react/css/display.css';
 
 /* Theme variables */
-import './theme/variables.css'
+import './theme/variables.css';
 // import './theme/theme-clearlyme.css';
 
-import './styles/app.scss'
+import './styles/app.scss';
 
 /* Pages */
 // import HomePage from './pages/HomePage'
@@ -39,10 +39,10 @@ import './styles/app.scss'
 // import SessionContext from './context/session.context';
 // import TwitterCallback from './pages/TwitterCallback';
 
-import CreateIdentityPage from './pages/OldPages/CreateIdentityPage'
-import ConfirmMnemonicPage from './pages/OldPages/ConfirmMnemonicPage'
-import PublishIdentityPage from './pages/PublishIdentityPage'
-import ChooseVaultPage from './pages/ChooseVaultPage'
+import CreateIdentityPage from './pages/OldPages/CreateIdentityPage';
+import ConfirmMnemonicPage from './pages/OldPages/ConfirmMnemonicPage';
+import PublishIdentityPage from './pages/PublishIdentityPage';
+import ChooseVaultPage from './pages/ChooseVaultPage';
 
 import {
   GoogleCallback,
@@ -60,21 +60,23 @@ import {
   UnlockUserPage,
   VerifyEmailPage,
   CreateProfileWithDidPage,
-} from './pages/Auth'
+} from './pages/Auth';
 
-import AccessCodePage from './pages/AlphaAccess/AccessCode'
-import TutorialPage from './pages/TutorialPage'
-import ExplorePage from './pages/ExplorePage'
-import SettingsPage from './pages/SettingsPage/Loadable'
-import ProfilePage from './pages/ProfilePage/Loadable'
-import PublicPage from './pages/PublicPage/Loadable'
+import AccessCodePage from './pages/AlphaAccess/AccessCode';
+import TutorialPage from './pages/TutorialPage';
+import ExplorePage from './pages/ExplorePage';
+import SettingsPage from './pages/SettingsPage/Loadable';
+import ProfilePage from './pages/ProfilePage/Loadable';
+import PublicPage from './pages/PublicPage/Loadable';
 
-import ProtectedRoute from './components/ProtectedRoute'
+import ProtectedRoute from './components/ProtectedRoute';
 
 // import RequestCodePage from './pages/AlphaAccess/RequestCode';
 // import InviteCodePage from './pages/AlphaAccess/InviteCode';
-import ManagerPage from './pages/ManagerPage'
-import ElastosMnemonicPage from './pages/OldPages/ElastosMnemonicPage'
+import ManagerPage from './pages/ManagerPage';
+import ElastosMnemonicPage from './pages/OldPages/ElastosMnemonicPage';
+import FollowersPage from './pages/FollowersPage';
+import FollowingsPage from './pages/FollowingsPage';
 
 const App: React.FC = () => {
   // const [session, setSession] = useState({});
@@ -103,7 +105,7 @@ const App: React.FC = () => {
           <Route path='/publish' component={PublishIdentityPage} exact={true} />
           <Route path='/choosevault' component={ChooseVaultPage} exact={true} />
           {/* <Route path='/home' component={HomePage} exact={true} /> */}
-          <Route exact path="/" render={() => <Redirect to="/Alpha" />} />
+          <Route exact path='/' render={() => <Redirect to='/Alpha' />} />
 
           <Route path='/Alpha' component={AccessCodePage} exact={true} />
           <ProtectedRoute
@@ -111,6 +113,17 @@ const App: React.FC = () => {
             component={ProfilePage}
             exact={true}
             proctedby='password'
+          />
+          <Route path='/connections' component={FollowersPage} exact={true} />
+          <Route
+            path='/connections/followings'
+            component={FollowingsPage}
+            exact={true}
+          />
+          <Route
+            path='/connections/followers'
+            component={FollowersPage}
+            exact={true}
           />
           <Route path='/explore' component={ExplorePage} exact={true} />
           <Route path='/settings' component={SettingsPage} exact={true} />
@@ -174,7 +187,7 @@ const App: React.FC = () => {
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
-  )
-}
+  );
+};
 
-export default Sentry.withProfiler(App)
+export default Sentry.withProfiler(App);
