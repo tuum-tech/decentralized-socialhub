@@ -109,27 +109,59 @@ const App: React.FC = () => {
 
           <Route path='/Alpha' component={AccessCodePage} exact={true} />
           <ProtectedRoute
+            proctedby='password'
             path='/profile'
             component={ProfilePage}
             exact={true}
-            proctedby='password'
           />
-          <Route path='/connections' component={FollowersPage} exact={true} />
-          <Route
+          <ProtectedRoute
+            proctedby='password'
+            path='/connections'
+            component={FollowersPage}
+            exact={true}
+          />
+          <ProtectedRoute
+            proctedby='password'
             path='/connections/followings'
             component={FollowingsPage}
             exact={true}
           />
-          <Route
+          <ProtectedRoute
+            proctedby='password'
             path='/connections/followers'
             component={FollowersPage}
             exact={true}
           />
-          <Route path='/explore' component={ExplorePage} exact={true} />
-          <Route path='/settings' component={SettingsPage} exact={true} />
-          <Route path='/tutorial' component={TutorialPage} exact={true} />
-          <Route path='/did/:did' component={PublicPage} exact={true} />
-          <Route path='/manager' component={ManagerPage} exact={true} />
+          <ProtectedRoute
+            proctedby='password'
+            path='/explore'
+            component={ExplorePage}
+            exact={true}
+          />
+          <ProtectedRoute
+            proctedby='password'
+            path='/settings'
+            component={SettingsPage}
+            exact={true}
+          />
+          <ProtectedRoute
+            proctedby='password'
+            path='/tutorial'
+            component={TutorialPage}
+            exact={true}
+          />
+          <ProtectedRoute
+            proctedby='password'
+            path='/did/:did'
+            component={PublicPage}
+            exact={true}
+          />
+          <ProtectedRoute
+            proctedby='password'
+            path='/manager'
+            component={ManagerPage}
+            exact={true}
+          />
           <Route exact path='/' render={() => <Redirect to='/Alpha' />} />
 
           {/* // login workflow */}

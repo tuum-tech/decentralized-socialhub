@@ -3,6 +3,7 @@ import { IonItem, IonList } from '@ionic/react';
 import style from './DidCard.module.scss';
 import SkeletonAvatar from '../avatars/SkeletonAvatar';
 import { ProfileService } from 'src/services/profile.service';
+import { Link } from 'react-router-dom';
 
 interface Props {
   name?: string;
@@ -49,6 +50,10 @@ const DidCard: React.FC<Props> = ({
     setIsFollowing(false);
   };
 
+  const getLink = (did: string) => {
+    return '/did/' + did;
+  };
+
   useEffect(() => {
     setIsFollowing(following);
   }, [following]);
@@ -70,7 +75,9 @@ const DidCard: React.FC<Props> = ({
           />
         </div>
         <div className={style['card-data']}>
-          <span className={style['name-value']}>{name}</span>
+          <Link className={style['name-value']} to={getLink(did)}>
+            {name}
+          </Link>
           <span className={style['did-value']}>
             {'DID:' + did.replace('did:elastos:', '')}
           </span>

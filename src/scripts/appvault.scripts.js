@@ -265,6 +265,9 @@ let run = async () => {
       output: true,
       body: {
         collection: 'users',
+        filter: {
+          did: { $nin: '$params.self_did' },
+        },
         options: {
           limit: 150, //'$params.limit',
           skip: 0, //'$params.skip',
@@ -286,6 +289,7 @@ let run = async () => {
         collection: 'users',
         filter: {
           name: { $regex: '$params.name', $options: 'i' },
+          did: { $nin: '$params.self_did' },
         },
         options: {
           limit: 150, //'$params.limit',
@@ -309,7 +313,7 @@ let run = async () => {
       body: {
         collection: 'users',
         filter: {
-          did: { $regex: '$params.did' },
+          did: { $regex: '$params.did', $nin: '$params.self_did' },
         },
         options: {
           limit: 150, //'$params.limit',
