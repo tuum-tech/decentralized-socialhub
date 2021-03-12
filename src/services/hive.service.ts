@@ -2,100 +2,97 @@ import {
   HiveClient,
   OptionsBuilder,
   IOptions,
-} from '@elastos/elastos-hive-js-sdk'
-import jwt_decode from 'jwt-decode'
+} from '@elastos/elastos-hive-js-sdk';
+import jwt_decode from 'jwt-decode';
 
-import { DidService } from './did.service'
-import { DidDocumentService } from './diddocument.service'
-import { AccountType, UserService } from './user.service'
+import { DidService } from './did.service';
+import { DidDocumentService } from './diddocument.service';
+import { AccountType, UserService } from './user.service';
 export interface IHiveChallenge {
-  issuer: string
-  nonce: string
+  issuer: string;
+  nonce: string;
 }
 export class HiveService {
-
-  
-
   static async getSessionInstance(): Promise<HiveClient | undefined> {
-    let instance = UserService.GetUserSession()
+    let instance = UserService.GetUserSession();
 
-    let isTest =  await DidDocumentService.isDidDocumentPublished("did:elastos:tesrkajhdaksjdhkjashdka")
-    console.log("teste ", isTest)
-    let isUserDocumentPublished = await DidDocumentService.isDidDocumentPublished(instance.did)
-    console.log("isDocumentPublished", isUserDocumentPublished)
+    let isTest = await DidDocumentService.isDidDocumentPublished(instance.did);
+    console.log('teste ', isTest);
+    let isUserDocumentPublished = await DidDocumentService.isDidDocumentPublished(
+      instance.did
+    );
+    console.log('isDocumentPublished', isUserDocumentPublished);
     if (!isUserDocumentPublished) {
       console.log(
         'DID User is not published or AccountTYpe is not available type'
-      )
-      return
+      );
+      return;
     }
 
     let hiveClient = await HiveClient.createInstance(
       instance.userToken,
       instance.hiveHost
-    )
+    );
     if (hiveClient.isConnected) {
-      await hiveClient.Payment.CreateFreeVault()
+      await hiveClient.Payment.CreateFreeVault();
     }
-    return hiveClient
+    return hiveClient;
   }
 
-  static async isHiveAddressValid(address: string) : Promise<boolean>{
-
+  static async isHiveAddressValid(address: string): Promise<boolean> {
     try {
-      let challenge = await HiveService.getHiveChallenge(address)  
-      let isValid: boolean = (challenge.nonce !== undefined && challenge.nonce.length > 0)
-      return isValid
+      let challenge = await HiveService.getHiveChallenge(address);
+      let isValid: boolean =
+        challenge.nonce !== undefined && challenge.nonce.length > 0;
+      return isValid;
     } catch (error) {
-      return false    
+      return false;
     }
   }
-
-  
 
   static async getAppHiveClient(): Promise<HiveClient> {
-    console.log('search service client grab1')
+    console.log('search service client grab1');
 
-    let host = `${process.env.REACT_APP_TUUM_TECH_HIVE}`
-    let hiveClient = await HiveClient.createAnonymousInstance(host)
-    console.log('search service client grab2')
-    return hiveClient
+    let host = `${process.env.REACT_APP_TUUM_TECH_HIVE}`;
+    let hiveClient = await HiveClient.createAnonymousInstance(host);
+    console.log('search service client grab2');
+    return hiveClient;
   }
 
   private static async getHiveOptions(hiveHost: string): Promise<IOptions> {
     //TODO: change to appInstance
-    let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`
-    let appId = `${process.env.REACT_APP_APPLICATION_ID}`
-    let appDid = await DidService.loadDid(mnemonic)
-    let builder = new OptionsBuilder()
-    await builder.setAppInstance(appId, appDid)
-    builder.setHiveHost(hiveHost)
-    return builder.build()
+    let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
+    let appId = `${process.env.REACT_APP_APPLICATION_ID}`;
+    let appDid = await DidService.loadDid(mnemonic);
+    let builder = new OptionsBuilder();
+    await builder.setAppInstance(appId, appDid);
+    builder.setHiveHost(hiveHost);
+    return builder.build();
   }
 
   static async getHiveChallenge(hiveHost: string): Promise<IHiveChallenge> {
-    let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`
-    let options = await this.getHiveOptions(hiveHost)
-    let appDid = await DidService.loadDid(mnemonic)
-    let appDocument = await DidService.getDidDocument(appDid.did)
+    let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
+    let options = await this.getHiveOptions(hiveHost);
+    let appDid = await DidService.loadDid(mnemonic);
+    let appDocument = await DidService.getDidDocument(appDid.did);
     let response = await HiveClient.getApplicationChallenge(
       options,
       appDocument
-    )
+    );
 
-    let jwt = jwt_decode<any>(response.challenge)
+    let jwt = jwt_decode<any>(response.challenge);
 
     return {
       issuer: jwt.iss,
       nonce: jwt.nonce,
-    }
+    };
   }
 
   static async getUserHiveToken(
     hiveHost: string,
     presentation: any
   ): Promise<string> {
-    let options = await this.getHiveOptions(hiveHost)
-    return await HiveClient.getAuthenticationToken(options, presentation)
+    let options = await this.getHiveOptions(hiveHost);
+    return await HiveClient.getAuthenticationToken(options, presentation);
   }
 }
