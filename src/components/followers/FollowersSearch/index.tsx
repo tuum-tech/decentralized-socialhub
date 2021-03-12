@@ -29,7 +29,7 @@ const FollowersSearch: React.FC = () => {
   const [followersCount, setFollowersCount] = useState(0);
 
   // const [searchService, setSearchService] = useState(new SearchService());
-  const [profileService, setProfileService] = useState(new ProfileService());
+  // const [profileService, setProfileService] = useState(new ProfileService());
 
   const getUserHiveInstance = async (): Promise<ProfileService> => {
     return ProfileService.getProfileServiceUserOnlyInstance();
@@ -66,18 +66,29 @@ const FollowersSearch: React.FC = () => {
       let user = UserService.GetUserSession();
 
       if (user.did) {
+        //Get Followers
         let listDids = [user.did];
-        let followers = await profileService.getFollowers(listDids);
+        let profileServiceAppInstance = await ProfileService.getProfileServiceAppOnlyInstance();
+        let followers = await profileServiceAppInstance.getFollowers(listDids);
         setListFollowers(followers as IFollowerResponse);
-
-        if (!profileService || !profileService.hiveClient) {
-          let profileServiceLocal = await getUserHiveInstance();
-          let following = await profileServiceLocal.getFollowings(user.did);
-          setListFollowing(following as IFollowingResponse);
-        }
       }
     } catch (e) {
-      console.error('cant get followers count');
+      console.error('cant get followers');
+    }
+
+    try {
+      let user = UserService.GetUserSession();
+
+      if (user.did) {
+        //Get Following
+        let profileServiceUserInstance = await getUserHiveInstance();
+        let following = await profileServiceUserInstance.getFollowings(
+          user.did
+        );
+        setListFollowing(following as IFollowingResponse);
+      }
+    } catch (e) {
+      console.error('cant get following');
     }
   };
 

@@ -28,12 +28,12 @@ const SearchComponent: React.FC = () => {
 
   const [searchService, setSearchService] = useState(new SearchService());
 
-  const getSearchUserHiveInstance = async (): Promise<SearchService> => {
-    return SearchService.getSearchServiceInstance();
-  };
-
   const getUserHiveInstance = async (): Promise<ProfileService> => {
     return ProfileService.getProfileServiceUserOnlyInstance();
+  };
+
+  const getSearchAppHiveInstance = async (): Promise<SearchService> => {
+    return SearchService.getSearchServiceAppOnlyInstance();
   };
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -53,37 +53,50 @@ const SearchComponent: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      let searchService = await getSearchUserHiveInstance();
+      let searchService = await getSearchAppHiveInstance();
       setSearchService(searchService);
     })();
   }, []);
 
   const loadData = async () => {
-    let searchServiceLocal: SearchService;
-
     try {
-      searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-      let listUniversities: any = await searchServiceLocal.getUniversities(
+      let listUniversities: any = await searchService.getUniversities(
         '',
         200,
         0
       );
       setFilteredUniversities(listUniversities.response);
+    } catch (e) {
+      setFilteredUniversities({ get_universities: { items: [] } });
+      console.error('could not load universities');
+      // setError({ hasError: true, errorDescription: 'cant load followings' });
+      return;
+    }
 
-      let listUsers: any = await searchServiceLocal.getUsers('', 200, 0);
+    try {
+      let listUsers: any = await searchService.getUsers('', 200, 0);
       setFilteredUsers(listUsers.response);
+    } catch (e) {
+      setFilteredUsers({ get_users: { items: [] } });
+      console.error('could not load users');
+      // setError({ hasError: true, errorDescription: 'cant load users' });
+      return;
+    }
 
+    try {
       let user = UserService.GetUserSession();
 
       if (user.did) {
-        let profileServiceLocal = await getUserHiveInstance();
-        let following = await profileServiceLocal.getFollowings(user.did);
+        //Get Following
+        let profileServiceUserInstance = await getUserHiveInstance();
+        let following = await profileServiceUserInstance.getFollowings(
+          user.did
+        );
         setListFollowing(following as IFollowingResponse);
       }
     } catch (e) {
-      setFilteredUniversities({ get_universities: { items: [] } });
-      setFilteredUsers({ get_users: { items: [] } });
-      console.error('could not load universities or users');
+      setListFollowing({ get_following: { items: [] } });
+      console.error('could not load following');
       // setError({ hasError: true, errorDescription: 'cant load followings' });
       return;
     }
@@ -93,7 +106,7 @@ const SearchComponent: React.FC = () => {
     (async () => {
       await loadData();
     })();
-  }, []);
+  }, [searchService]);
 
   const invokeSearch = async (searchQuery: string) => {
     let listUniversities: any = await searchService.getUniversities(

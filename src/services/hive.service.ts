@@ -16,15 +16,13 @@ export class HiveService {
   static async getSessionInstance(): Promise<HiveClient | undefined> {
     let instance = UserService.GetUserSession();
 
-    let isTest = await DidDocumentService.isDidDocumentPublished(instance.did);
-    console.log('teste ', isTest);
     let isUserDocumentPublished = await DidDocumentService.isDidDocumentPublished(
       instance.did
     );
     console.log('isDocumentPublished', isUserDocumentPublished);
     if (!isUserDocumentPublished) {
       console.log(
-        'DID User is not published or AccountTYpe is not available type'
+        'DID User is not published or AccountType is not available type'
       );
       return;
     }
@@ -33,6 +31,7 @@ export class HiveService {
       instance.userToken,
       instance.hiveHost
     );
+
     if (hiveClient.isConnected) {
       await hiveClient.Payment.CreateFreeVault();
     }
@@ -51,11 +50,8 @@ export class HiveService {
   }
 
   static async getAppHiveClient(): Promise<HiveClient> {
-    console.log('search service client grab1');
-
     let host = `${process.env.REACT_APP_TUUM_TECH_HIVE}`;
     let hiveClient = await HiveClient.createAnonymousInstance(host);
-    console.log('search service client grab2');
     return hiveClient;
   }
 
