@@ -47,10 +47,10 @@ interface Props {
 }
 
 const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
-  const history = useHistory()
   const [did, setDid] = useState(dids[0])
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   return (
     <OnBoardLayout>
@@ -100,9 +100,11 @@ const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
           <ButtonWithLogo
             mode='dark'
             mt={20}
-            text='Sign in to profile'
+            text={loading ? 'Signing in to profile' : 'Sign in to profile'}
             onClick={async () => {
-              const res = await UserService.UnLockWithDIDAndPWd(did, password)
+              setLoading(true)
+              const res = await UserService.UnLockWithDIDAndPwd(did, password)
+              setLoading(false)
               if (res) {
                 window.location.href = '/profile'
                 return
@@ -114,7 +116,7 @@ const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
 
           <FieldDivider mt={80} />
           <ButtonWithLogo
-            text='Create new profile'
+            text='Creating proifle now'
             onClick={changeMode}
             mt={42}
           />

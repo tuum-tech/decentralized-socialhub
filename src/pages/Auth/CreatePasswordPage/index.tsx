@@ -56,7 +56,6 @@ const CreatePasswordPage: React.FC<
   const [repeatPassword, setRepeatPassword] = useState('')
   const [error, setError] = useState('')
   const [session, setSession] = useState<ISessionItem | null>(null)
-  console.log('======>session', session)
 
   useEffect(() => {
     if (!session && props.location.state && props.location.state.did) {
@@ -86,7 +85,7 @@ const CreatePasswordPage: React.FC<
   const afterPasswordSet = async () => {
     if (!session) return
     setLoading(true)
-    await UserService.LockWithDIDAndPWd(session, password)
+    await UserService.LockWithDIDAndPwd(session, password)
     setLoading(false)
     window.location.href = '/profile'
   }

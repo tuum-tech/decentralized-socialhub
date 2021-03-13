@@ -31,13 +31,17 @@ import PublicNavbar from 'src/components/PublicNavbar'
 import RegisterNewUserButton from 'src/components/RegisterNewUserButton'
 import SignInButton from 'src/components/SignInButton'
 import ProfileComponent from 'src/components/ProfileComponent'
-import { AccountType, ISessionItem, UserService } from 'src/services/user.service'
+import {
+  AccountType,
+  ISessionItem,
+  UserService,
+} from 'src/services/user.service'
 
 interface MatchParams {
   did: string
 }
 
-interface Props extends RouteComponentProps<MatchParams> { }
+interface Props extends RouteComponentProps<MatchParams> {}
 
 const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   props: RouteComponentProps<MatchParams>
@@ -48,18 +52,16 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
    * incoming from Server API calls. Maintain a local state.
    */
   const [error, setError] = useState(false)
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(false)
   const [userInfo, setUserInfo] = useState({
     accountType: AccountType.DID,
-    did: "",
-    name: "",
-    hiveHost: "",
-    email: "",
-    userToken: "",
+    did: '',
+    name: '',
+    hiveHost: '',
+    email: '',
+    userToken: '',
     isDIDPublished: false,
     onBoardingCompleted: false,
-    alreadySigned: false
-
   })
 
   const [full_profile, setfull_profile] = useState({
@@ -96,43 +98,36 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   let did: string = props.match.params.did
 
   useEffect(() => {
-    (async () => {
-
+    ;(async () => {
       try {
-        debugger;
-        let userInfo = await UserService.SearchUserWithDID(did);
-        setUserInfo(userInfo as any);
+        debugger
+        let userInfo = await UserService.SearchUserWithDID(did)
+        setUserInfo(userInfo as any)
       } catch (e) {
         setError(true)
       }
 
       try {
         if (!error) {
-
           let profile: ProfileDTO = await getFullProfile(did)
           profile.basicDTO.isEnabled = true
           profile.experienceDTO.isEnabled = true
           profile.educationDTO.isEnabled = true
           setfull_profile(profile)
-
         }
-      } catch (e) {
-
-      }
-      setLoaded(true);
+      } catch (e) {}
+      setLoaded(true)
     })()
   }, [])
 
-
   const scrollToPosition = (position: number) => {
-    let ionContent = document.querySelector("ion-content");
-    ionContent!.scrollToPoint(0, position);
+    let ionContent = document.querySelector('ion-content')
+    ionContent!.scrollToPoint(0, position)
   }
 
   return (
     <IonPage className={style['profilepage']}>
       <IonContent className={style['content-scroll']}>
-
         <IonGrid className={style['profilepagegrid']}>
           <PublicNavbar className='ion-justify-content-between'>
             <IonCol size='auto'>
@@ -154,14 +149,21 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 
           <IonRow className='ion-justify-content-around'>
             <IonCol size='12'>
-              {loaded && userInfo && userInfo.did !== "" ? <ProfileComponent scrollToPosition={scrollToPosition} profile={full_profile} sessionItem={userInfo as any} error={error} /> : "404 user not found"}
+              {loaded && userInfo && userInfo.did !== '' ? (
+                <ProfileComponent
+                  scrollToPosition={scrollToPosition}
+                  profile={full_profile}
+                  sessionItem={userInfo as any}
+                  error={error}
+                />
+              ) : (
+                '404 user not found'
+              )}
             </IonCol>
           </IonRow>
         </IonGrid>
       </IonContent>
     </IonPage>
-
-
   )
 }
 

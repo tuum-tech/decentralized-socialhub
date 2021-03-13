@@ -1,44 +1,43 @@
-import { ElastosClient } from '@elastosfoundation/elastos-js-sdk';
-import { Console } from 'console';
-// import { DidcredsService } from './didcreds.service';
-// import { AccountType } from './user.service';
+import { ElastosClient } from '@elastosfoundation/elastos-js-sdk'
 
 export interface IDID {
-  mnemonic: string;
-  privateKey: string;
-  publicKey: string;
-  did: string;
+  mnemonic: string
+  privateKey: string
+  publicKey: string
+  did: string
 }
 
 export enum PublishRequestOperation {
-  Create = "create",
-  Update = "update"
+  Create = 'create',
+  Update = 'update',
 }
-
 
 export class DidService {
   static async loadDid(mnemonic: string, password: string = ''): Promise<IDID> {
-    let didLoaded = await ElastosClient.did.loadFromMnemonic(mnemonic, password);
+    let didLoaded = await ElastosClient.did.loadFromMnemonic(mnemonic, password)
     return didLoaded
   }
 
   static async generateNew(): Promise<IDID> {
-    let newDid = await ElastosClient.did.generateNew();
+    let newDid = await ElastosClient.did.generateNew()
 
     return newDid
   }
 
-  static async getDidDocument(did: any, useCache: boolean = true): Promise<any> {
+  static async getDidDocument(
+    did: any,
+    useCache: boolean = true
+  ): Promise<any> {
     let document = await ElastosClient.didDocuments.getMostRecentDIDDocument(
       did,
       { useCache: useCache }
-    );
-    return document;
+    )
+    return document
   }
 
   static async isDIDPublished(did: string): Promise<boolean> {
-    let document = await this.getDidDocument(did);
-    return document && document !== undefined;
+    let document = await this.getDidDocument(did)
+    return document && document !== undefined
   }
 
   static isSignedDIDDocumentValid(signedDocument: any, did: IDID): boolean {
@@ -46,54 +45,63 @@ export class DidService {
   }
 
   static async genereteNewDidDocument(did: IDID): Promise<any> {
-    let document = ElastosClient.didDocuments.newDIDDocument(did);
-    return document;
+    let document = ElastosClient.didDocuments.newDIDDocument(did)
+    return document
   }
 
   static sealDIDDocument(did: IDID, diddocument: any) {
     let isValid = false
     while (!isValid) {
-      if (diddocument.hasOwnProperty("proof")) {
+      if (diddocument.hasOwnProperty('proof')) {
         delete diddocument.proof
       }
-      ElastosClient.didDocuments.sealDocument(did, diddocument);
+      ElastosClient.didDocuments.sealDocument(did, diddocument)
       isValid = ElastosClient.didDocuments.isValid(diddocument, did)
-      console.log("sealed DIDDocument is valid", isValid)
+      console.log('sealed DIDDocument is valid', isValid)
     }
   }
 
   static async addVerfiableCredentialToDIDDocument(diddocument: any, vc: any) {
-
-    if (diddocument.hasOwnProperty("proof")) {
+    if (diddocument.hasOwnProperty('proof')) {
       delete diddocument.proof
     }
 
     ElastosClient.didDocuments.addVerfiableCredentialToDIDDocument(
       diddocument,
       vc
-    );
+    )
   }
 
   static async addServiceToDIDDocument(diddocument: any, service: any) {
-
-    if (diddocument.hasOwnProperty("proof")) {
+    if (diddocument.hasOwnProperty('proof')) {
       delete diddocument.proof
     }
 
-    ElastosClient.didDocuments.addServiceToDIDDocument(
-      diddocument,
-      service
-    );
+    ElastosClient.didDocuments.addServiceToDIDDocument(diddocument, service)
   }
 
-
-
-  static generateSelfVerifiableCredential(did: IDID, subjectName: string, subjectTypes: string[], subjectValue: any) {
-    return ElastosClient.didDocuments.createVerifiableCredential(did, did.did, subjectName, subjectTypes, subjectValue)
+  static generateSelfVerifiableCredential(
+    did: IDID,
+    subjectName: string,
+    subjectTypes: string[],
+    subjectValue: any
+  ) {
+    return ElastosClient.didDocuments.createVerifiableCredential(
+      did,
+      did.did,
+      subjectName,
+      subjectTypes,
+      subjectValue
+    )
   }
 
   static generateService(did: IDID, type: string, endpoint: string) {
-    return ElastosClient.didDocuments.createService(did, did.did, type, endpoint)
+    return ElastosClient.didDocuments.createService(
+      did,
+      did.did,
+      type,
+      endpoint
+    )
   }
 
   static async generateVerifiablePresentationFromUserMnemonics(
@@ -102,47 +110,50 @@ export class DidService {
     issuer: string,
     nonce: string
   ): Promise<any> {
-    let appMnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
-    let appId = `${process.env.REACT_APP_APPLICATION_ID}`;
+    let appMnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`
+    let appId = `${process.env.REACT_APP_APPLICATION_ID}`
 
-    let appDid = await this.loadDid(appMnemonic);
-    let userDid = await this.loadDid(userMnemonic, password);
+    let appDid = await this.loadDid(appMnemonic)
+    console.log('=====>appDid', appDid, appMnemonic)
 
+    let userDid = await this.loadDid(userMnemonic, password)
+    console.log('=====>userDid', userDid, userMnemonic)
     let vc = ElastosClient.didDocuments.createVerifiableCredentialVP(
       appDid,
       userDid,
       appId
-    );
+    )
+    console.log('=====>createVerifiableCredentialVP', vc)
+
     return ElastosClient.didDocuments.createVerifiablePresentation(
       appDid,
       'VerifiablePresentation',
       vc,
       issuer,
       nonce
-    );
+    )
   }
 
-
-  static async generatePublishRequest(diddocument: any, userDID: IDID, operation: PublishRequestOperation): Promise<any> {
-
+  static async generatePublishRequest(
+    diddocument: any,
+    userDID: IDID,
+    operation: PublishRequestOperation
+  ): Promise<any> {
     let newItem: any = {}
     Object.getOwnPropertyNames(diddocument).forEach(function (key) {
       newItem[key] = diddocument[key]
-    }, diddocument);
+    }, diddocument)
 
-
-
-
-    let isValid = false;
-    let tx: any;
+    let isValid = false
+    let tx: any
     while (!isValid) {
       tx = await ElastosClient.idChainRequest.generateRequest(
         newItem,
         userDID,
         `${operation}`
-      );
-      isValid = ElastosClient.idChainRequest.isValid(tx, userDID);
+      )
+      isValid = ElastosClient.idChainRequest.isValid(tx, userDID)
     }
-    return tx;
+    return tx
   }
 }
