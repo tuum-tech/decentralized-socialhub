@@ -4,8 +4,9 @@ import {
   IOptions,
 } from '@elastos/elastos-hive-js-sdk'
 import jwt_decode from 'jwt-decode'
+import { AssistService } from './assist.service'
 
-import { DidService } from './did.service'
+import { DidService, PublishRequestOperation } from './did.service'
 import { DidDocumentService } from './diddocument.service'
 import { AccountType, UserService } from './user.service'
 export interface IHiveChallenge {
@@ -18,11 +19,7 @@ export class HiveService {
 
   static async getSessionInstance(): Promise<HiveClient | undefined> {
     let instance = UserService.GetUserSession()
-
-    let isTest =  await DidDocumentService.isDidDocumentPublished("did:elastos:tesrkajhdaksjdhkjashdka")
-    console.log("teste ", isTest)
     let isUserDocumentPublished = await DidDocumentService.isDidDocumentPublished(instance.did)
-    console.log("isDocumentPublished", isUserDocumentPublished)
     if (!isUserDocumentPublished) {
       console.log(
         'DID User is not published or AccountTYpe is not available type'
@@ -47,6 +44,7 @@ export class HiveService {
       let isValid: boolean = (challenge.nonce !== undefined && challenge.nonce.length > 0)
       return isValid
     } catch (error) {
+      console.error(error)
       return false    
     }
   }
@@ -54,11 +52,8 @@ export class HiveService {
   
 
   static async getAppHiveClient(): Promise<HiveClient> {
-    console.log('search service client grab1')
-
     let host = `${process.env.REACT_APP_TUUM_TECH_HIVE}`
     let hiveClient = await HiveClient.createAnonymousInstance(host)
-    console.log('search service client grab2')
     return hiveClient
   }
 
@@ -73,14 +68,24 @@ export class HiveService {
     return builder.build()
   }
 
+  private static copyDocument(document: any) : any{
+    let newItem: any = {}
+    Object.getOwnPropertyNames(document).forEach(function (key) {
+      newItem[key] = document[key]
+    }, document);
+
+    return newItem
+  }
+
   static async getHiveChallenge(hiveHost: string): Promise<IHiveChallenge> {
     let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`
     let options = await this.getHiveOptions(hiveHost)
     let appDid = await DidService.loadDid(mnemonic)
-    let appDocument = await DidService.getDidDocument(appDid.did)
+    let appDocument = await DidService.getDidDocument(appDid.did, false)
+    
     let response = await HiveClient.getApplicationChallenge(
       options,
-      appDocument
+      this.copyDocument(appDocument)
     )
 
     let jwt = jwt_decode<any>(response.challenge)

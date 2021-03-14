@@ -51,27 +51,40 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({ onContinue }) => 
         }
 
         try {
+            console.log("Enter Try")
 
+            
             let user = UserService.GetUserSession()
+            console.log("Get user session")
             user.userToken = await generateUserToken(user.mnemonics, endpoint)
+            console.log("User token generated", user.userToken)
             user.tutorialCompleted = true
             user.hiveHost = endpoint;
 
             let userDid = await DidService.loadDid(user.mnemonics)
+            console.log("User DID loaded")
             let hivesvc = DidService.generateService(userDid, "HiveVault", endpoint)
-            let userDocument = await (await DidDocumentService.getUserDocument()).diddocument
-            DidService.addServiceToDIDDocument(userDocument, hivesvc)
-            DidDocumentService.publishUserDocument(userDocument)  
+            console.log("new Service generated")
+            let documentState = await DidDocumentService.getUserDocument()
+            console.log("Document from blockchain loaded")
+            let userDocument = documentState.diddocument
+            userDocument["service"] = [hivesvc]
+            console.log("Service added to document")
+            await DidDocumentService.publishUserDocument(userDocument)  
+            console.log("Document Published")
             UserService.updateSession(user)
+            console.log("Session updated")
 
             let hiveInstance = await HiveService.getSessionInstance()
+            console.log("Hive session instance generated")
             await UserVaultScripts.Execute(hiveInstance!)
-            
+            console.log("Hive user scripts executed")
             
             onContinue()
         } catch (error) {
             console.log("Error", error)
             await DidDocumentService.reloadUserDocument()
+            console.log("Document reloaded")
             setErrorMessage("We are not able to process your request at moment. Please try again later")
         }
 
@@ -79,13 +92,16 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({ onContinue }) => 
     }
 
     const generateUserToken = async (mnemonics: string, address: string)=>{
+        console.log("Enter generate user token")
         let challenge = await HiveService.getHiveChallenge(address)
+        console.log("Get hive challenge", challenge)
         let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(
         mnemonics,
         '',
         challenge.issuer,
         challenge.nonce
         )
+        console.log("Presentation generated", presentation)
         return await HiveService.getUserHiveToken(address, presentation)
     }
 
@@ -120,9 +136,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({ onContinue }) => 
 
                         <div className={style["tutorial-hive-item"]}>
                             <img src={tuumlogo} />
-                            <p>
-                                <h2>Tuum Tech</h2>
-                            </p>
+                            <h2>Tuum Tech</h2>
                         </div>
                     </div>
                     <div className={style["tutorial-hive-row"]}>
