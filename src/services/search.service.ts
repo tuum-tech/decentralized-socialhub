@@ -43,17 +43,7 @@ export interface IUserItem {
 }
 
 export class SearchService {
-  hiveClient!: HiveClient;
   appHiveClient!: HiveClient;
-
-  static async getSearchServiceInstance(): Promise<SearchService> {
-    let searchService: SearchService = new SearchService();
-    let hiveClient = await HiveService.getSessionInstance();
-
-    if (hiveClient) searchService.hiveClient = hiveClient;
-    searchService.appHiveClient = await HiveService.getAppHiveClient();
-    return searchService;
-  }
 
   static async getSearchServiceAppOnlyInstance(): Promise<SearchService> {
     let searchService: SearchService = new SearchService();
@@ -213,8 +203,6 @@ export class SearchService {
         target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`,
       },
     });
-
-    // console.log('users :' + JSON.stringify(usersResponse));
 
     if (usersResponse.isSuccess) {
       return usersResponse;

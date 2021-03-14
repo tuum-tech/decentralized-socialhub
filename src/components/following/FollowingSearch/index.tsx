@@ -78,7 +78,7 @@ const FollowingSearch: React.FC = () => {
         setListFollowing(following as IFollowingResponse);
       }
     } catch (e) {
-      console.error('cant get followers count');
+      console.error('cant get following');
     }
   };
 
