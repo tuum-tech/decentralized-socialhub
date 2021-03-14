@@ -19,9 +19,8 @@ export class HiveService {
     let isUserDocumentPublished = await DidDocumentService.isDidDocumentPublished(
       instance.did
     );
-    console.log('isDocumentPublished', isUserDocumentPublished);
     if (!isUserDocumentPublished) {
-      console.log(
+      console.error(
         'DID User is not published or AccountType is not available type'
       );
       return;
@@ -45,14 +44,15 @@ export class HiveService {
         challenge.nonce !== undefined && challenge.nonce.length > 0;
       return isValid;
     } catch (error) {
-      return false;
+      console.error(error)
+      return false    
     }
   }
 
   static async getAppHiveClient(): Promise<HiveClient> {
-    let host = `${process.env.REACT_APP_TUUM_TECH_HIVE}`;
-    let hiveClient = await HiveClient.createAnonymousInstance(host);
-    return hiveClient;
+    let host = `${process.env.REACT_APP_TUUM_TECH_HIVE}`
+    let hiveClient = await HiveClient.createAnonymousInstance(host)
+    return hiveClient
   }
 
   private static async getHiveOptions(hiveHost: string): Promise<IOptions> {
@@ -66,15 +66,25 @@ export class HiveService {
     return builder.build();
   }
 
+  private static copyDocument(document: any) : any{
+    let newItem: any = {}
+    Object.getOwnPropertyNames(document).forEach(function (key) {
+      newItem[key] = document[key]
+    }, document);
+
+    return newItem
+  }
+
   static async getHiveChallenge(hiveHost: string): Promise<IHiveChallenge> {
-    let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
-    let options = await this.getHiveOptions(hiveHost);
-    let appDid = await DidService.loadDid(mnemonic);
-    let appDocument = await DidService.getDidDocument(appDid.did);
+    let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`
+    let options = await this.getHiveOptions(hiveHost)
+    let appDid = await DidService.loadDid(mnemonic)
+    let appDocument = await DidService.getDidDocument(appDid.did, false)
+    
     let response = await HiveClient.getApplicationChallenge(
       options,
-      appDocument
-    );
+      this.copyDocument(appDocument)
+    )
 
     let jwt = jwt_decode<any>(response.challenge);
 

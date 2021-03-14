@@ -74,7 +74,7 @@ export class DidDocumentService {
     }
 
     private static async loadFromBlockchain(did: string) : Promise<IDIDDocumentState>{
-        let documentOnBlockchain = await DidService.getDidDocument(did)
+        let documentOnBlockchain = await DidService.getDidDocument(did, false)
         if (documentOnBlockchain){
             let documentState = {
                 diddocument: documentOnBlockchain,
@@ -106,7 +106,7 @@ export class DidDocumentService {
         }
 
         let userDid = await DidService.loadDid(userSession.mnemonics)
-
+        console.log("User DID loaded")
         if (diddocument["proof"]) delete diddocument["proof"]
         
         let isValid = false;
@@ -117,15 +117,15 @@ export class DidDocumentService {
             DidService.sealDIDDocument(userDid, signedDocument)
             isValid = DidService.isSignedDIDDocumentValid(signedDocument, userDid)
         }
+        console.log("Document Signed")
 
-        console.log(JSON.stringify(signedDocument))
-
-         
+        if (!signedDocument["proof"]) throw Error("The DID document was not signed")
 
         let requestPub = await DidService.generatePublishRequest(signedDocument, userDid, PublishRequestOperation.Update)
+        console.log("Request generated")
         await AssistService.publishDocument(userDid.did, requestPub)
-    
-      
+        console.log("Document published")
+        
 
         let documentState = {
             diddocument: signedDocument,
