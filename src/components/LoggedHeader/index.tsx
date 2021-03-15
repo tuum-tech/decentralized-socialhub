@@ -30,7 +30,11 @@ import edit from '../../assets/icon-edit.svg'
 import addbutton from '../../assets/addbutton.svg'
 import university from '../../assets/university.png'
 import { ISessionItem, UserService } from 'src/services/user.service'
-import { AssistService, IPublishDocumentResponse, RequestStatus } from 'src/services/assist.service'
+import {
+  AssistService,
+  IPublishDocumentResponse,
+  RequestStatus,
+} from 'src/services/assist.service'
 import { stat } from 'fs'
 import { DidDocumentService } from 'src/services/diddocument.service'
 import { set } from 'immer/dist/common'
@@ -56,50 +60,47 @@ const PublishingLabel = styled.span`
 `
 
 const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
-
   const getLink = (): string => {
-    return `/did/${sessionItem.did}`;
+    return `/did/${sessionItem.did}`
   }
-  const [publishStatus, setPublishStatus] = useState("")
+  const [publishStatus, setPublishStatus] = useState('')
   const setTimer = () => {
     const timer = setTimeout(async () => {
       await refreshStatus()
       setTimer()
-    }, 15 * 1000)
+    }, 1000)
     return () => clearTimeout(timer)
   }
 
   const refreshStatus = async () => {
     if (!sessionItem || !sessionItem.did) return
-    
+
     let publishWaiting = AssistService.getPublishStatusTask(sessionItem.did)
-    
+
     if (!publishWaiting) return
 
-    let actual = await AssistService.refreshRequestStatus(publishWaiting.confirmationId, sessionItem.did)
+    let actual = await AssistService.refreshRequestStatus(
+      publishWaiting.confirmationId,
+      sessionItem.did
+    )
     if (actual.requestStatus == RequestStatus.Completed) {
-      setPublishStatus("")
+      setPublishStatus('')
       AssistService.removePublishTask(sessionItem.did)
       await updateUserToComplete()
       return
     }
     setPublishStatus(actual.requestStatus)
-    
   }
 
   const updateUserToComplete = async () => {
     let userSession = UserService.GetUserSession()
-    userSession.isDIDPublished = true;
+    userSession.isDIDPublished = true
     UserService.updateSession(userSession)
     await DidDocumentService.reloadUserDocument()
   }
 
-
-
-
-
   useEffect(() => {
-    ; (async () => {
+    ;(async () => {
       await refreshStatus()
     })()
     setTimer()
@@ -109,7 +110,15 @@ const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
     <IonGrid className={style['profileheader']}>
       <IonRow className={style['header']}>
         <IonCol size='auto'>
-          <img src={photo} className={publishStatus !== "" ? style['profile-img-publishing'] : style['profile-img']} alt='profile' />
+          <img
+            src={photo}
+            className={
+              publishStatus !== ''
+                ? style['profile-img-publishing']
+                : style['profile-img']
+            }
+            alt='profile'
+          />
         </IonCol>
         <IonCol size='8'>
           <IonGrid>
@@ -118,7 +127,11 @@ const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
                 <ProfileName>{sessionItem.name}</ProfileName>
               </IonCol>
               <IonCol>
-                {publishStatus !== "" ? <PublishingLabel>{publishStatus}&nbsp;</PublishingLabel> : ""}
+                {publishStatus !== '' ? (
+                  <PublishingLabel>{publishStatus}&nbsp;</PublishingLabel>
+                ) : (
+                  ''
+                )}
               </IonCol>
             </IonRow>
             <IonRow className='ion-justify-content-start'>
@@ -134,8 +147,7 @@ const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
           </Link>
         </IonCol>
       </IonRow>
-
-    </IonGrid >
+    </IonGrid>
   )
 }
 
