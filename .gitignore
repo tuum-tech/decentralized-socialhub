@@ -26,8 +26,8 @@ yarn-debug.log*
 yarn-error.log*
 package-lock.json*
 
-.env 
-.env.prod 
+.env
+.env.prod
 .mongodb-data
 
 src/scripts/config.json.prod

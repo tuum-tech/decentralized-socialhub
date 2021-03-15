@@ -233,8 +233,6 @@ export class UserService {
 
     this.lockUser(this.key(did), sessionItem, storePassword);
     SessionService.saveSessionItem(sessionItem);
-
-    await UserVaultScriptService.register();
   }
 
   public static async setOnBoardingCompleted() {

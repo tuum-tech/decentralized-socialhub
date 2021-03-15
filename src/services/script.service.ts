@@ -190,14 +190,26 @@ export class UserVaultScriptService {
 
     return userToken;
   }
+
   public static async register() {
     let user = UserService.GetUserSession();
-    user.userToken = await this.generateUserToken(
-      user.mnemonics,
-      user.hiveHost
-    );
-    UserService.updateSession(user);
-    let hiveInstance = await HiveService.getSessionInstance();
-    await UserVaultScripts.Execute(hiveInstance!);
+    let response = await TuumTechScriptService.searchUserWithDID(user.did);
+    if (
+      response.data &&
+      response.data.get_user_by_did &&
+      response.data.get_user_by_did.items &&
+      response.data.get_user_by_did.items.length > 0
+    ) {
+      const userInfo = response.data.get_user_by_did.items[0];
+      if (user.isDIDPublished && userInfo.tutorialCompleted) {
+        user.userToken = await this.generateUserToken(
+          user.mnemonics,
+          user.hiveHost
+        );
+        UserService.updateSession(user);
+        let hiveInstance = await HiveService.getSessionInstance();
+        await UserVaultScripts.Execute(hiveInstance!);
+      }
+    }
   }
 }
