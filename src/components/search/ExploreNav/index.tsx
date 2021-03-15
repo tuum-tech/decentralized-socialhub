@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   IonContent,
   IonList,
   IonLabel,
   IonItem,
-  IonCol,
   IonGrid,
-  IonRow,
+  IonRow
 } from '@ionic/react';
 import style from './style.module.scss';
 import { FollowingDTO, PageDTO, PeopleDTO } from '../types';
@@ -29,7 +28,7 @@ const ExploreNav: React.FC<Props> = ({
   pages,
   following,
   searchKeyword = '',
-  isSearchKeywordDID = false,
+  isSearchKeywordDID = false
 }) => {
   const [active, setActive] = useState(tab);
 
@@ -91,7 +90,7 @@ const ExploreNav: React.FC<Props> = ({
               people={people}
               following={following}
               searchKeyword={searchKeyword}
-              size='6'
+              size="6"
             />
           </IonRow>
         </IonGrid>
@@ -99,7 +98,7 @@ const ExploreNav: React.FC<Props> = ({
       {active == 'pages' && (
         <IonGrid className={style['tab-grid']}>
           <IonRow>
-            <PagesCard pages={pages} searchKeyword={searchKeyword} size='6' />
+            <PagesCard pages={pages} searchKeyword={searchKeyword} size="6" />
           </IonRow>
         </IonGrid>
       )}

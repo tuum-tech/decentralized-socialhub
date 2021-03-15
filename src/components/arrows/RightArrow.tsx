@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react';
 
 interface Props {
   fill?: string;
 }
 
-const RightArrow: React.FC<Props> = ({ fill = "white" }) => {
+const RightArrow: React.FC<Props> = ({ fill = 'white' }) => {
   return (
     <svg
       width="16"

@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { useHistory } from 'react-router'
-import styled from 'styled-components'
+import React, { useState } from 'react';
+import { useHistory } from 'react-router';
+import styled from 'styled-components';
 
 import {
   OnBoardLayout,
@@ -12,15 +12,15 @@ import {
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
   OnBoardLayoutRightContentTitle,
-  WavingHandImg,
-} from 'src/components/layouts/OnBoardLayout'
-import FieldDivider from '../FieldDivider'
-import { ButtonWithLogo } from 'src/components/buttons'
-import { Text16, ErrorTxt } from 'src/components/texts'
-import whitelogo from 'src/assets/logo/whitetextlogo.png'
-import eye from 'src/assets/icon/eye.png'
-import TextInput from 'src/components/inputs/TextInput'
-import { UserService } from 'src/services/user.service'
+  WavingHandImg
+} from 'src/components/layouts/OnBoardLayout';
+import FieldDivider from '../FieldDivider';
+import { ButtonWithLogo } from 'src/components/buttons';
+import { Text16, ErrorTxt } from 'src/components/texts';
+import whitelogo from 'src/assets/logo/whitetextlogo.png';
+import eye from 'src/assets/icon/eye.png';
+import TextInput from 'src/components/inputs/TextInput';
+import { UserService } from 'src/services/user.service';
 
 const DidSelectComp = styled.div`
   background: #edf2f7;
@@ -39,18 +39,18 @@ const DidSelectComp = styled.div`
     width: 100%;
     background: transparent;
   }
-`
+`;
 
 interface Props {
-  changeMode: () => void
-  dids: Array<string>
+  changeMode: () => void;
+  dids: Array<string>;
 }
 
 const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
-  const history = useHistory()
-  const [did, setDid] = useState(dids[0])
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [did, setDid] = useState(dids[0]);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   return (
     <OnBoardLayout>
@@ -58,10 +58,10 @@ const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={eye} />
-          <OnBoardLayoutLeftContentTitle className='mt-18px'>
+          <OnBoardLayoutLeftContentTitle className="mt-18px">
             We have seen your accounts before.
           </OnBoardLayoutLeftContentTitle>
-          <OnBoardLayoutLeftContentDescription className='mt-25px'>
+          <OnBoardLayoutLeftContentDescription className="mt-25px">
             You can select and login using the password you set
           </OnBoardLayoutLeftContentDescription>
         </OnBoardLayoutLeftContent>
@@ -75,8 +75,8 @@ const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
           <DidSelectComp>
             <select
               value={did}
-              onChange={(event) => {
-                setDid((event.target as HTMLSelectElement).value)
+              onChange={event => {
+                setDid((event.target as HTMLSelectElement).value);
               }}
             >
               {dids.map((userDid: string) => (
@@ -88,40 +88,42 @@ const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
           </DidSelectComp>
           <TextInput
             value={password}
-            type='password'
-            label='Password'
-            onChange={(n) => {
-              setError('')
-              setPassword(n)
+            type="password"
+            label="Password"
+            onChange={n => {
+              setError('');
+              setPassword(n);
             }}
-            placeholder='Enter your password'
+            placeholder="Enter your password"
           />
-          {error !== '' && <ErrorTxt className='mt-3'>{error}</ErrorTxt>}
+          {error !== '' && <ErrorTxt className="mt-3">{error}</ErrorTxt>}
           <ButtonWithLogo
-            mode='dark'
+            mode="dark"
             mt={20}
-            text='Sign in to profile'
+            text={loading ? 'Signing in to profile' : 'Sign in to profile'}
             onClick={async () => {
-              const res = await UserService.UnLockWithDIDAndPWd(did, password)
+              setLoading(true);
+              const res = await UserService.UnLockWithDIDAndPwd(did, password);
               if (res) {
-                window.location.href = '/profile'
-                return
+                window.location.href = '/profile';
+                return;
               } else {
-                setError('User Not found secured by this password')
+                setError('User Not found secured by this password');
+                setLoading(false);
               }
             }}
           />
 
           <FieldDivider mt={80} />
           <ButtonWithLogo
-            text='Create new profile'
+            text="Creating proifle now"
             onClick={changeMode}
             mt={42}
           />
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>
-  )
-}
+  );
+};
 
-export default MultiDidPasswordLogin
+export default MultiDidPasswordLogin;

@@ -7,7 +7,7 @@ import { EducationItem, ProfileDTO } from './types';
 
 export function fetchSimpleApi(): Promise<BaseplateResp> {
   return request(Api.sample, {
-    headers: { 'content-type': 'text/plain' },
+    headers: { 'content-type': 'text/plain' }
   });
 }
 
@@ -20,20 +20,24 @@ export function fetchSimpleApi(): Promise<BaseplateResp> {
 
 export async function requestFullProfile(did: string): Promise<ProfileDTO> {
   let profileService: ProfileService = await ProfileService.getProfileServiceAppOnlyInstance();
-  let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
+  let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<
+    ProfileResponse
+  >;
   try {
     getFullProfileResponse = await profileService.getFullProfile(did);
-    console.log(JSON.stringify(getFullProfileResponse));
-    return mapProfileResponseToProfileDTO(getFullProfileResponse.response as ProfileResponse);
 
+    return mapProfileResponseToProfileDTO(
+      getFullProfileResponse.response as ProfileResponse
+    );
   } catch (error) {
     console.error(JSON.stringify(error));
   }
   return mapProfileResponseToProfileDTO({} as ProfileResponse);
 }
 
-const mapProfileResponseToProfileDTO = (fullProfileResponse: ProfileResponse): ProfileDTO => {
-
+const mapProfileResponseToProfileDTO = (
+  fullProfileResponse: ProfileResponse
+): ProfileDTO => {
   let basicProfile = fullProfileResponse.get_basic.items![0];
   let educationProfile = fullProfileResponse.get_education_profile;
   let experienceProfile = fullProfileResponse.get_experience_profile;
@@ -43,4 +47,4 @@ const mapProfileResponseToProfileDTO = (fullProfileResponse: ProfileResponse): P
     educationDTO: educationProfile,
     experienceDTO: experienceProfile
   };
-}
+};

@@ -4,36 +4,35 @@ import style from './style.module.scss';
 import {
   IUniversitiesResponse,
   IUserResponse,
-  SearchService,
+  SearchService
 } from 'src/services/search.service';
 import ExploreNav from '../ExploreNav';
 import {
   IFollowingResponse,
-  ProfileService,
+  ProfileService
 } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
 
 const SearchComponent: React.FC = () => {
-  const [
-    filteredUniversities,
-    setFilteredUniversities,
-  ] = useState<IUniversitiesResponse>({ get_universities: { items: [] } });
+  const [filteredUniversities, setFilteredUniversities] = useState<
+    IUniversitiesResponse
+  >({ get_universities: { items: [] } });
 
   const [filteredUsers, setFilteredUsers] = useState<IUserResponse>({
-    get_users: { items: [] },
+    get_users: { items: [] }
   });
   const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
-    get_following: { items: [] },
+    get_following: { items: [] }
   });
 
   const [searchService, setSearchService] = useState(new SearchService());
 
-  const getSearchUserHiveInstance = async (): Promise<SearchService> => {
-    return SearchService.getSearchServiceInstance();
-  };
-
   const getUserHiveInstance = async (): Promise<ProfileService> => {
     return ProfileService.getProfileServiceUserOnlyInstance();
+  };
+
+  const getSearchAppHiveInstance = async (): Promise<SearchService> => {
+    return SearchService.getSearchServiceAppOnlyInstance();
   };
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -53,37 +52,50 @@ const SearchComponent: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      let searchService = await getSearchUserHiveInstance();
+      let searchService = await getSearchAppHiveInstance();
       setSearchService(searchService);
     })();
   }, []);
 
   const loadData = async () => {
-    let searchServiceLocal: SearchService;
-
     try {
-      searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-      let listUniversities: any = await searchServiceLocal.getUniversities(
+      let listUniversities: any = await searchService.getUniversities(
         '',
         200,
         0
       );
       setFilteredUniversities(listUniversities.response);
+    } catch (e) {
+      setFilteredUniversities({ get_universities: { items: [] } });
+      console.error('could not load universities');
+      // setError({ hasError: true, errorDescription: 'cant load followings' });
+      return;
+    }
 
-      let listUsers: any = await searchServiceLocal.getUsers('', 200, 0);
+    try {
+      let listUsers: any = await searchService.getUsers('', 200, 0);
       setFilteredUsers(listUsers.response);
+    } catch (e) {
+      setFilteredUsers({ get_users: { items: [] } });
+      console.error('could not load users');
+      // setError({ hasError: true, errorDescription: 'cant load users' });
+      return;
+    }
 
+    try {
       let user = UserService.GetUserSession();
 
       if (user.did) {
-        let profileServiceLocal = await getUserHiveInstance();
-        let following = await profileServiceLocal.getFollowings(user.did);
+        //Get Following
+        let profileServiceUserInstance = await getUserHiveInstance();
+        let following = await profileServiceUserInstance.getFollowings(
+          user.did
+        );
         setListFollowing(following as IFollowingResponse);
       }
     } catch (e) {
-      setFilteredUniversities({ get_universities: { items: [] } });
-      setFilteredUsers({ get_users: { items: [] } });
-      console.error('could not load universities or users');
+      setListFollowing({ get_following: { items: [] } });
+      console.error('could not load following');
       // setError({ hasError: true, errorDescription: 'cant load followings' });
       return;
     }
@@ -93,7 +105,7 @@ const SearchComponent: React.FC = () => {
     (async () => {
       await loadData();
     })();
-  }, []);
+  }, [searchService]);
 
   const invokeSearch = async (searchQuery: string) => {
     let listUniversities: any = await searchService.getUniversities(
@@ -126,8 +138,8 @@ const SearchComponent: React.FC = () => {
       <IonContent className={style['searchcomponent']}>
         <IonSearchbar
           value={searchQuery}
-          onIonChange={(e) => search(e)}
-          placeholder='Search people, pages by name or DID'
+          onIonChange={e => search(e)}
+          placeholder="Search people, pages by name or DID"
           className={style['search-input']}
         ></IonSearchbar>
         {/* <IonSpinner /> */}

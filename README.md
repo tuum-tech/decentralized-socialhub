@@ -27,15 +27,6 @@ The following dependent services are now started:
 - [Vouch RestAPI Backend](https://github.com/tuum-tech/vouch-restapi-backend)
 - [DIDcreds Validator Service](https://github.com/tuum-tech/didcreds-validator)
 
-## Usage
-
-Clone the repository and run below command on the root of your project.
-
-- `npm i`
-- `cp .env.example .env`
-- Update .env file with your own IP
-- `npm start`
-
 ## ALPHA VERSION
 
 Before execute alpha version, you have to:
@@ -55,6 +46,19 @@ To generate alpha invite code:
 node ./src/scripts/alpha/generateAccessCodes.js
 
 ```
+
+Now, run all the setup scripts for Tuum Tech vault:
+
+```
+node ./src/scripts/appvault.scripts.js
+```
+
+Clone the repository and run below command on the root of your project.
+
+- `npm i`
+- `cp .env.example .env`
+- Update .env file with your own IP
+- `npm start`
 
 ## Deploy to production
 
@@ -82,25 +86,4 @@ netlify deploy
 
 ```
 netlify deploy --prod
-```
-
-### Deploy to AWS Elasticbeanstalk
-
-- First time only: Initialize AWS elasticbeanstalk
-
-```
-eb init
-```
-
-- First time only: Create the environment
-
-```
-eb create
-```
-
-- Deploy
-
-```
-# Prerequisite: make sure react-scripts is installed globally on the instance
-eb deploy
 ```

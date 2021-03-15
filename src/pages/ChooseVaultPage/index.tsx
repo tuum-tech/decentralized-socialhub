@@ -15,11 +15,11 @@ import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 import { fetchSimpleApi } from './fetchapi';
-import Header from 'src/components/Header';
+import Header from 'src/components/layouts/Header';
 import ClearlyMeContent from 'src/components/ClearlyMeContent';
 import VaultProgressComponent from 'src/components/VaultProgressComponent';
-import ButtonDefault from 'src/components/ButtonDefault';
-import ButtonLight from 'src/components/ButtonLight';
+import ButtonDefault from 'src/components/buttons/ButtonDefault';
+import ButtonLight from 'src/components/buttons/ButtonLight';
 
 const ChooseVault: React.FC<InferMappedProps> = ({
   eProps,
@@ -43,7 +43,7 @@ const ChooseVault: React.FC<InferMappedProps> = ({
           <Header />
         </IonHeader>
 
-        <VaultProgressComponent stage='choose'></VaultProgressComponent>
+        <VaultProgressComponent stage="choose"></VaultProgressComponent>
         <div className={style['main-container']}>
           <h1>Choose Your Vault</h1>
 
@@ -83,7 +83,7 @@ const ChooseVault: React.FC<InferMappedProps> = ({
           </IonList> */}
           <br />
           <div style={{ textAlign: 'center' }}>
-            <ButtonDefault href='/profile'>Next</ButtonDefault>
+            <ButtonDefault href="/profile">Next</ButtonDefault>
           </div>
         </div>
       </ClearlyMeContent>
@@ -94,7 +94,7 @@ const ChooseVault: React.FC<InferMappedProps> = ({
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg(),
+  msg: makeSelectAjaxMsg()
 });
 
 /** @returns {object} Contains dispatchable props */
@@ -104,8 +104,8 @@ export function mapDispatchToProps(dispatch: any) {
       // eProps - Emitter proptypes thats binds to dispatch
       /** dispatch for counter to increment */
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax()),
-    },
+      onSimpleAjax: () => dispatch(getSimpleAjax())
+    }
   };
 }
 
@@ -116,7 +116,7 @@ export function mapDispatchToProps(dispatch: any) {
 const withInjectedMode = injector(ChooseVault, {
   key: NameSpace,
   reducer,
-  saga,
+  saga
 });
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);

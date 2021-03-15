@@ -15,7 +15,7 @@ import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 import Logo from 'src/components/Logo';
-import Navbar from 'src/components/Navbar';
+import Navbar from 'src/components/layouts/Navbar';
 import SearchComponent from 'src/components/search/SearchComponent';
 
 const ExplorePage: React.FC<InferMappedProps> = ({
@@ -27,11 +27,11 @@ const ExplorePage: React.FC<InferMappedProps> = ({
       <IonContent>
         <IonGrid className={style['profilepagegrid']}>
           <IonRow className={style['profilecontent']}>
-            <IonCol size='2' className={style['left-panel']}>
+            <IonCol size="2" className={style['left-panel']}>
               <Logo />
-              <Navbar tab='explore' />
+              <Navbar tab="explore" />
             </IonCol>
-            <IonCol size='10' className={style['right-panel']}>
+            <IonCol size="10" className={style['right-panel']}>
               <SearchComponent />
             </IonCol>
           </IonRow>
@@ -44,7 +44,7 @@ const ExplorePage: React.FC<InferMappedProps> = ({
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg(),
+  msg: makeSelectAjaxMsg()
 });
 
 /** @returns {object} Contains dispatchable props */
@@ -54,8 +54,8 @@ export function mapDispatchToProps(dispatch: any) {
       // eProps - Emitter proptypes thats binds to dispatch
       /** dispatch for counter to increment */
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax()),
-    },
+      onSimpleAjax: () => dispatch(getSimpleAjax())
+    }
   };
 }
 
@@ -66,7 +66,7 @@ export function mapDispatchToProps(dispatch: any) {
 const withInjectedMode = injector(ExplorePage, {
   key: NameSpace,
   reducer,
-  saga,
+  saga
 });
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);

@@ -1,7 +1,3 @@
-/**
- * Page
- */
-
 import React from 'react';
 import styled from 'styled-components';
 import { IonImg } from '@ionic/react';

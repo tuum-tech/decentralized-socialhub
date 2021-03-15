@@ -1,5 +1,5 @@
-import request, { BaseplateResp } from 'src/baseplate/request'
-import { LinkedinId } from './types'
+import request, { BaseplateResp } from 'src/baseplate/request';
+import { LinkedinId } from './types';
 
 export function requestLinkedinToken(
   code: string,
@@ -12,10 +12,10 @@ export function requestLinkedinToken(
       headers: {
         'content-type': 'text/plain',
         Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
-        Accept: 'application/json',
-      },
+        Accept: 'application/json'
+      }
     }
-  )
+  );
 }
 
 export function requestLinkedinProfile(
@@ -28,8 +28,8 @@ export function requestLinkedinProfile(
       headers: {
         'content-type': 'text/plain',
         Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
-        Accept: 'application/json',
-      },
+        Accept: 'application/json'
+      }
     }
-  )
+  );
 }

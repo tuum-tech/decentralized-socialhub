@@ -1,10 +1,10 @@
-import request, { BaseplateResp } from 'src/baseplate/request'
-import { Api } from './constants'
+import request, { BaseplateResp } from 'src/baseplate/request';
+import { Api } from './constants';
 
 export function fetchSimpleApi(): Promise<BaseplateResp> {
   return request(Api.sample, {
-    headers: { 'content-type': 'text/plain' },
-  })
+    headers: { 'content-type': 'text/plain' }
+  });
 }
 
 export function requestForceCreateUser(
@@ -18,12 +18,12 @@ export function requestForceCreateUser(
       headers: {
         'content-type': 'application/json',
         Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
-        Accept: 'application/json',
+        Accept: 'application/json'
       },
       body: JSON.stringify({
         name: name,
-        email: email,
-      }),
+        email: email
+      })
     }
-  )
+  );
 }

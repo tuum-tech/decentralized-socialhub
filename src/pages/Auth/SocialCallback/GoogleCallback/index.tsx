@@ -1,16 +1,16 @@
 /**
  * Page
  */
-import React, { useEffect, useState } from 'react'
-import { Redirect, RouteComponentProps } from 'react-router'
+import React, { useEffect, useState } from 'react';
+import { Redirect, RouteComponentProps } from 'react-router';
 
-import PageLoading from 'src/components/layouts/PageLoading'
-import { AccountType } from 'src/services/user.service'
+import PageLoading from 'src/components/layouts/PageLoading';
+import { AccountType } from 'src/services/user.service';
 
-import { TokenResponse } from './types'
-import { requestGoogleId, requestGoogleToken } from './fetchapi'
+import { TokenResponse } from './types';
+import { requestGoogleId, requestGoogleToken } from './fetchapi';
 
-const GoogleCallback: React.FC<RouteComponentProps> = (props) => {
+const GoogleCallback: React.FC<RouteComponentProps> = props => {
   /**
    * Direct method implementation without SAGA
    * This was to show you dont need to put everything to global state
@@ -21,34 +21,34 @@ const GoogleCallback: React.FC<RouteComponentProps> = (props) => {
     email: '',
     name: '',
     request_token: '',
-    credential: '',
-  })
+    credential: ''
+  });
   const getToken = async (
     code: string,
     state: string
   ): Promise<TokenResponse> => {
-    return (await requestGoogleToken(code, state)) as TokenResponse
-  }
+    return (await requestGoogleToken(code, state)) as TokenResponse;
+  };
 
   let code: string =
-    new URLSearchParams(props.location.search).get('code') || ''
+    new URLSearchParams(props.location.search).get('code') || '';
   let state: string =
-    new URLSearchParams(props.location.search).get('state') || ''
+    new URLSearchParams(props.location.search).get('state') || '';
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       if (code !== '' && state !== '' && credentials.request_token === '') {
-        let t = await getToken(code, state)
-        let googleId = await requestGoogleId(t.data.request_token)
+        let t = await getToken(code, state);
+        let googleId = await requestGoogleId(t.data.request_token);
         setCredentials({
           name: googleId.name,
           request_token: t.data.request_token,
           email: googleId.email,
-          credential: googleId.credential,
-        })
+          credential: googleId.credential
+        });
       }
-    })()
-  }, [])
+    })();
+  }, []);
 
   const getRedirect = () => {
     if (credentials.request_token !== '') {
@@ -61,15 +61,15 @@ const GoogleCallback: React.FC<RouteComponentProps> = (props) => {
               request_token: credentials.request_token,
               email: credentials.email,
               service: AccountType.Google,
-              credential: credentials.credential,
-            },
+              credential: credentials.credential
+            }
           }}
         />
-      )
+      );
     }
-    return <PageLoading />
-  }
-  return getRedirect()
-}
+    return <PageLoading />;
+  };
+  return getRedirect();
+};
 
-export default GoogleCallback
+export default GoogleCallback;

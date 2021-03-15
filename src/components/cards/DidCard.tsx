@@ -3,6 +3,7 @@ import { IonItem, IonList } from '@ionic/react';
 import style from './DidCard.module.scss';
 import SkeletonAvatar from '../avatars/SkeletonAvatar';
 import { ProfileService } from 'src/services/profile.service';
+import { Link } from 'react-router-dom';
 
 interface Props {
   name?: string;
@@ -21,7 +22,7 @@ const DidCard: React.FC<Props> = ({
   indexItem,
   following = false,
   colSize = '100%',
-  type = 'user',
+  type = 'user'
 }) => {
   const [isFollowing, setIsFollowing] = useState(false);
   let profileService: ProfileService;
@@ -36,7 +37,6 @@ const DidCard: React.FC<Props> = ({
     }
 
     let list: any = await profileService.addFollowing(did);
-    console.log('FollowingList', list);
     setIsFollowing(true);
   };
 
@@ -47,6 +47,10 @@ const DidCard: React.FC<Props> = ({
 
     let list: any = await profileService.unfollow(did);
     setIsFollowing(false);
+  };
+
+  const getLink = (did: string) => {
+    return '/did/' + did;
   };
 
   useEffect(() => {
@@ -64,13 +68,15 @@ const DidCard: React.FC<Props> = ({
           <SkeletonAvatar />
           <img
             src={avatar}
-            width='80'
-            height='80'
+            width="80"
+            height="80"
             className={style['clip-avatar-svg']}
           />
         </div>
         <div className={style['card-data']}>
-          <span className={style['name-value']}>{name}</span>
+          <Link className={style['name-value']} to={getLink(did)}>
+            {name}
+          </Link>
           <span className={style['did-value']}>
             {'DID:' + did.replace('did:elastos:', '')}
           </span>

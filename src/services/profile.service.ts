@@ -1,16 +1,13 @@
 import { HiveClient } from '@elastos/elastos-hive-js-sdk';
 import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
-import { Session } from 'inspector';
-// import { floor, noConflict } from 'lodash';
 import { ProfileResponse } from 'src/pages/ProfilePage/types';
 import {
   BasicDTO,
-  EducationDTO,
   EducationItem,
-  ExperienceItem,
+  ExperienceItem
 } from 'src/pages/PublicPage/types';
 import { HiveService } from './hive.service';
-import { ScriptService } from './script.service';
+import { TuumTechScriptService } from './script.service';
 import { ISessionItem, UserService } from './user.service';
 
 export interface IFollowingResponse {
@@ -84,8 +81,8 @@ export class ProfileService {
       name: 'get_following',
       context: {
         target_did: did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-      },
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+      }
     });
   }
 
@@ -96,44 +93,17 @@ export class ProfileService {
       name: 'get_full_profile',
       context: {
         target_did: did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-      },
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+      }
     });
   }
 
   async updateBasicProfile(basicDTO: ISessionItem): Promise<any> {
-    const update_user_script = {
-      name: 'update_user',
-      params: basicDTO,
-      context: {
-        target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID,
-      },
-    };
-    let response: any = await ScriptService.runTuumTechScript(
-      update_user_script
-    );
-    const { data, meta } = response;
-    if (meta.code === 200 && meta.message === 'OK') {
-    }
+    await TuumTechScriptService.updateBasicProfile(basicDTO);
   }
 
   async updateAbout(basicDTO: BasicDTO): Promise<any> {
-
-    const update_user_script = {
-      name: 'update_basic_profile',
-      params: basicDTO,
-      context: {
-        target_did: UserService.GetUserSession().did,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID,
-      },
-    };
-    let response: any = await ScriptService.runTuumTechScript(
-      update_user_script
-    );
-    const { data, meta } = response;
-    if (meta.code === 200 && meta.message === 'OK') {
-    }
+    await TuumTechScriptService.updateAbout(basicDTO);
   }
 
   async updateEducationProfile(
@@ -143,9 +113,9 @@ export class ProfileService {
       name: 'update_education_profile',
       context: {
         target_did: UserService.GetUserSession().did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
       },
-      params: educationItem,
+      params: educationItem
     });
   }
 
@@ -156,9 +126,9 @@ export class ProfileService {
       name: 'remove_education_item',
       context: {
         target_did: UserService.GetUserSession().did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
       },
-      params: educationItem,
+      params: educationItem
     });
   }
 
@@ -169,9 +139,9 @@ export class ProfileService {
       name: 'update_experience_profile',
       context: {
         target_did: UserService.GetUserSession().did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
       },
-      params: experienceItem,
+      params: experienceItem
     });
   }
 
@@ -182,9 +152,9 @@ export class ProfileService {
       name: 'remove_experience_item',
       context: {
         target_did: UserService.GetUserSession().did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
       },
-      params: experienceItem,
+      params: experienceItem
     });
   }
 
@@ -194,7 +164,6 @@ export class ProfileService {
     followings = (await this.getUserFollowings(did))
       .response as IFollowingResponse;
 
-    console.log('followings :' + JSON.stringify(followings));
     return followings;
   }
 
@@ -210,20 +179,18 @@ export class ProfileService {
   }
 
   async getFollowers(dids: string[]): Promise<IFollowerResponse | undefined> {
-    console.log(JSON.stringify(dids));
-
     const profileAppHiveClient: ProfileService = await ProfileService.getProfileServiceAppOnlyInstance();
 
     let followersResponse: IRunScriptResponse<IFollowerResponse> = await profileAppHiveClient.appHiveClient.Scripting.RunScript(
       {
         name: 'get_followers',
         params: {
-          did: dids,
+          did: dids
         },
         context: {
           target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`,
-        },
+          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+        }
       }
     );
 
@@ -233,23 +200,12 @@ export class ProfileService {
     return;
   }
 
-  // async getFollowersCount(did: string): Promise<string> {
-  //     let followersResponse: IFollowerResponse = await this.getFollowers(did);
-  //     //if (followersResponse.get_followers[0].followerslength > 0)
-
-  //     console.log("count :" + followersResponse.get_followers.items[0].followers.length.toString());
-  //     return followersResponse.get_followers.items[0].followers.length.toString();
-  //     //return 0
-  // }
-
   async unfollow(did: string): Promise<any> {
     if (!this.hiveClient) return;
-    console.log('unfollow: ' + did);
 
     let deleteResponse = await this.hiveClient.Database.deleteOne('following', {
-      did: did,
+      did: did
     });
-    console.log(JSON.stringify(deleteResponse));
 
     let followersResponse = await this.getFollowers([did]);
     let followersList: string[] = [];
@@ -257,7 +213,7 @@ export class ProfileService {
       // TODO: handle this better
       followersList = followersResponse.get_followers.items[0].followers;
 
-    followersList = followersList.filter((item) => item !== did);
+    followersList = followersList.filter(item => item !== did);
 
     let uniqueItems = [...new Set(followersList)]; // distinct
 
@@ -267,16 +223,16 @@ export class ProfileService {
         name: 'set_followers',
         params: {
           did: did,
-          followers: uniqueItems,
-        },
+          followers: uniqueItems
+        }
       });
     } else {
       await this.appHiveClient.Scripting.RunScript({
         name: 'set_followers',
         params: {
           did: did,
-          followers: uniqueItems,
-        },
+          followers: uniqueItems
+        }
       });
     }
 
@@ -308,16 +264,16 @@ export class ProfileService {
         name: 'set_followers',
         params: {
           did: did,
-          followers: uniqueItems,
-        },
+          followers: uniqueItems
+        }
       });
     } else {
       await this.appHiveClient.Scripting.RunScript({
         name: 'set_followers',
         params: {
           did: did,
-          followers: uniqueItems,
-        },
+          followers: uniqueItems
+        }
       });
     }
 

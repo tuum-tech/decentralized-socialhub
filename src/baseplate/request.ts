@@ -9,20 +9,20 @@ export type BaseplateResp = string | object | null | Response;
  * @return {object | string} The parsed JSON or Text from the request
  */
 function responseParser(response: Response): BaseplateResp {
-    const contentType = response.headers.get("content-type");
-    if (response.status === 204 || response.status === 205) {
-        return null;
-    }
+  const contentType = response.headers.get('content-type');
+  if (response.status === 204 || response.status === 205) {
+    return null;
+  }
 
-    if (contentType) {
-        if (contentType.indexOf("application/json") !== -1) {
-            return response.json();
-        } else if (contentType.indexOf("text/plain") !== -1) {
-            return response.text();
-        }
+  if (contentType) {
+    if (contentType.indexOf('application/json') !== -1) {
+      return response.json();
+    } else if (contentType.indexOf('text/plain') !== -1) {
+      return response.text();
     }
-    
-    return response;
+  }
+
+  return response;
 }
 
 /**
@@ -33,13 +33,13 @@ function responseParser(response: Response): BaseplateResp {
  * @return {object|undefined} Returns either the response, or throws an error
  */
 function checkStatus(response: Response): any {
-    if (response.status >= 200 && response.status < 300) {
-        return response;
-    }
+  if (response.status >= 200 && response.status < 300) {
+    return response;
+  }
 
-    const error: { [key: string]: any } = new Error(response.statusText);
-    error.response = response;
-    throw error;
+  const error: { [key: string]: any } = new Error(response.statusText);
+  error.response = response;
+  throw error;
 }
 
 /**
@@ -50,8 +50,11 @@ function checkStatus(response: Response): any {
  *
  * @return {object}           The response data
  */
-export default function request(url: RequestInfo, options: RequestInit | undefined): Promise<BaseplateResp> {
-    return fetch(url, options)
-        .then(checkStatus)
-        .then(responseParser);
+export default function request(
+  url: RequestInfo,
+  options: RequestInit | undefined
+): Promise<BaseplateResp> {
+  return fetch(url, options)
+    .then(checkStatus)
+    .then(responseParser);
 }

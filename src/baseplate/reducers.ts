@@ -13,15 +13,19 @@ import { ActionTags } from 'src/baseplate/models';
 /**
  * Merges the main reducer with the router state and dynamically injected reducers
  */
-export default function createReducer(injectedReducers: {[key:string]: <T>(state: T, actions: ActionTags<any, any>) => any} = {}): Reducer {
+export default function createReducer(
+  injectedReducers: {
+    [key: string]: <T>(state: T, actions: ActionTags<any, any>) => any;
+  } = {}
+): Reducer {
   const rootReducer = combineReducers({
     global: globalReducer,
-    
+
     /* language: languageProviderReducer,
     // TODO: i18n Language should be implemented */
 
     router: connectRouter(history),
-    ...injectedReducers,
+    ...injectedReducers
   });
 
   return rootReducer;

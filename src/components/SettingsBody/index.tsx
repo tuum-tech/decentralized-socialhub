@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   IonContent,
   IonList,
@@ -6,39 +6,39 @@ import {
   IonLabel,
   IonGrid,
   IonRow,
-  IonCol,
-} from "@ionic/react";
-import style from "./style.module.scss";
-import PageHeader from "../PageHeader";
-import SettingsAccount from "./SettingsAccount/Loadable";
-import SettingsTerms from "./SettingsTerms/Loadable";
-import SettingsHelp from "./SettingsHelp/Loadable";
-import SettingsSubscription from "./SettingsSubscription/Loadable";
+  IonCol
+} from '@ionic/react';
+import style from './style.module.scss';
+import PageHeader from '../layouts/PageHeader';
+import SettingsAccount from './SettingsAccount/Loadable';
+import SettingsTerms from './SettingsTerms/Loadable';
+import SettingsHelp from './SettingsHelp/Loadable';
+import SettingsSubscription from './SettingsSubscription/Loadable';
 
 interface Props {
   tab?: string;
 }
 
-const SettingsBody: React.FC<Props> = ({ tab = "settingsaccount" }) => {
+const SettingsBody: React.FC<Props> = ({ tab = 'settingsaccount' }) => {
   const [active, setActive] = useState(tab);
 
   return (
     <>
       <PageHeader />
-      <IonContent className={style["settingsbody"]}>
-        <IonGrid className={style["settingspagegrid"]}>
-          <IonRow className={style["settingscontent"]}>
-            <IonCol size="2" className={style["left-panel"]}>
-              <IonContent className={style["settingsbodynavbar"]}>
+      <IonContent className={style['settingsbody']}>
+        <IonGrid className={style['settingspagegrid']}>
+          <IonRow className={style['settingscontent']}>
+            <IonCol size="2" className={style['left-panel']}>
+              <IonContent className={style['settingsbodynavbar']}>
                 <IonList>
                   <IonItem
                     className={
-                      active === "settingsaccount"
-                        ? style["item-active"]
-                        : style["item-link"]
+                      active === 'settingsaccount'
+                        ? style['item-active']
+                        : style['item-link']
                     }
                     onClick={() => {
-                      setActive("settingsaccount");
+                      setActive('settingsaccount');
                     }}
                   >
                     <IonLabel>
@@ -47,12 +47,12 @@ const SettingsBody: React.FC<Props> = ({ tab = "settingsaccount" }) => {
                   </IonItem>
                   <IonItem
                     className={
-                      active === "settingsterms"
-                        ? style["item-active"]
-                        : style["item-link"]
+                      active === 'settingsterms'
+                        ? style['item-active']
+                        : style['item-link']
                     }
                     onClick={() => {
-                      setActive("settingsterms");
+                      setActive('settingsterms');
                     }}
                   >
                     <IonLabel>
@@ -61,12 +61,12 @@ const SettingsBody: React.FC<Props> = ({ tab = "settingsaccount" }) => {
                   </IonItem>
                   <IonItem
                     className={
-                      active === "settingshelp"
-                        ? style["item-active"]
-                        : style["item-link"]
+                      active === 'settingshelp'
+                        ? style['item-active']
+                        : style['item-link']
                     }
                     onClick={() => {
-                      setActive("settingshelp");
+                      setActive('settingshelp');
                     }}
                   >
                     <IonLabel>
@@ -75,12 +75,12 @@ const SettingsBody: React.FC<Props> = ({ tab = "settingsaccount" }) => {
                   </IonItem>
                   <IonItem
                     className={
-                      active === "settingssubscription"
-                        ? style["item-active"]
-                        : style["item-link"]
+                      active === 'settingssubscription'
+                        ? style['item-active']
+                        : style['item-link']
                     }
                     onClick={() => {
-                      setActive("settingssubscription");
+                      setActive('settingssubscription');
                     }}
                   >
                     <IonLabel>
@@ -90,11 +90,11 @@ const SettingsBody: React.FC<Props> = ({ tab = "settingsaccount" }) => {
                 </IonList>
               </IonContent>
             </IonCol>
-            <IonCol size="10" className={style["right-panel"]}>
-              {active == "settingsaccount" && <SettingsAccount />}
-              {active == "settingsterms" && <SettingsTerms />}
-              {active == "settingshelp" && <SettingsHelp />}
-              {active == "settingssubscription" && <SettingsSubscription />}
+            <IonCol size="10" className={style['right-panel']}>
+              {active == 'settingsaccount' && <SettingsAccount />}
+              {active == 'settingsterms' && <SettingsTerms />}
+              {active == 'settingshelp' && <SettingsHelp />}
+              {active == 'settingssubscription' && <SettingsSubscription />}
             </IonCol>
           </IonRow>
         </IonGrid>

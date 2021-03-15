@@ -2,10 +2,10 @@
  * Page
  */
 
-import { connect } from 'react-redux'
-import { compose } from 'redux'
-import { createStructuredSelector } from 'reselect'
-import React, { memo } from 'react'
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { createStructuredSelector } from 'reselect';
+import React, { memo } from 'react';
 
 import {
   OnBoardLayout,
@@ -14,22 +14,22 @@ import {
   OnBoardLayoutLeftContentTitle,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
-  WavingHandImg,
-} from 'src/components/layouts/OnBoardLayout'
-import { ButtonLink, ArrowButton } from 'src/components/buttons'
+  WavingHandImg
+} from 'src/components/layouts/OnBoardLayout';
+import { ButtonLink, ArrowButton } from 'src/components/buttons';
 
-import whitelogo from 'src/assets/logo/whitetextlogo.png'
-import weird from 'src/assets/icon/weird.png'
+import whitelogo from 'src/assets/logo/whitetextlogo.png';
+import weird from 'src/assets/icon/weird.png';
 
-import injector from 'src/baseplate/injectorWrap'
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
-import { incrementAction, getSimpleAjax } from './actions'
-import { NameSpace } from './constants'
-import reducer from './reducer'
-import saga from './saga'
-import { InferMappedProps, SubState } from './types'
+import injector from 'src/baseplate/injectorWrap';
+import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
+import { incrementAction, getSimpleAjax } from './actions';
+import { NameSpace } from './constants';
+import reducer from './reducer';
+import saga from './saga';
+import { InferMappedProps, SubState } from './types';
 
-import style from './style.module.scss'
+import style from './style.module.scss';
 
 const CreateWhyPage: React.FC<InferMappedProps> = ({
   eProps,
@@ -52,21 +52,21 @@ const CreateWhyPage: React.FC<InferMappedProps> = ({
           >
             Why has this happened?
           </OnBoardLayoutLeftContentTitle>
-          <ButtonLink width={26} to='/associateds-profile'>
+          <ButtonLink width={26} to="/associateds-profile">
             <ArrowButton />
           </ButtonLink>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight></OnBoardLayoutRight>
     </OnBoardLayout>
-  )
-}
+  );
+};
 
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg(),
-})
+  msg: makeSelectAjaxMsg()
+});
 
 /** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
@@ -75,9 +75,9 @@ export function mapDispatchToProps(dispatch: any) {
       // eProps - Emitter proptypes thats binds to dispatch
       /** dispatch for counter to increment */
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax()),
-    },
-  }
+      onSimpleAjax: () => dispatch(getSimpleAjax())
+    }
+  };
 }
 
 /**
@@ -87,14 +87,14 @@ export function mapDispatchToProps(dispatch: any) {
 const withInjectedMode = injector(CreateWhyPage, {
   key: NameSpace,
   reducer,
-  saga,
-})
+  saga
+});
 
-const withConnect = connect(mapStateToProps, mapDispatchToProps)
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
 export default compose(
   withConnect,
   memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>
+)(withInjectedMode) as React.ComponentType<InferMappedProps>;
 
 // export default Tab1;
