@@ -1,85 +1,87 @@
-import React, { memo, useEffect, useState } from 'react'
-import { connect } from 'react-redux'
-import { compose } from 'redux'
-import { createStructuredSelector } from 'reselect'
-import { StaticContext, RouteComponentProps } from 'react-router'
-import { AccountType, UserService } from 'src/services/user.service'
+import React, { memo, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { createStructuredSelector } from 'reselect';
+import { StaticContext, RouteComponentProps } from 'react-router';
+import { AccountType, UserService } from 'src/services/user.service';
 
-import ProfileFields from '../components/ProfileFields'
-import SetPassword from '../components/SetPassword'
+import ProfileFields from '../components/ProfileFields';
+import SetPassword from '../components/SetPassword';
 
-import PageLoading from 'src/components/layouts/PageLoading'
-import { DidService } from 'src/services/did.service'
+import PageLoading from 'src/components/layouts/PageLoading';
+import { DidService } from 'src/services/did.service';
 
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
-import injector from 'src/baseplate/injectorWrap'
-import { incrementAction, getSimpleAjax } from './actions'
-import { NameSpace } from './constants'
-import reducer from './reducer'
-import saga from './saga'
-import { InferMappedProps, SubState, LocationState } from './types'
+import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
+import injector from 'src/baseplate/injectorWrap';
+import { incrementAction, getSimpleAjax } from './actions';
+import { NameSpace } from './constants';
+import reducer from './reducer';
+import saga from './saga';
+import { InferMappedProps, SubState, LocationState } from './types';
 
 type UserType = {
-  did: string
-  mnemonic: string
-  name: string
-  email: string
-  hiveHost: string
-}
+  did: string;
+  mnemonic: string;
+  name: string;
+  email: string;
+  hiveHost: string;
+};
 
-const CreateProfileWithDidPage: React.FC<
-  RouteComponentProps<{}, StaticContext, LocationState>
-> = (props) => {
+const CreateProfileWithDidPage: React.FC<RouteComponentProps<
+  {},
+  StaticContext,
+  LocationState
+>> = props => {
   const [userInfo, setUserInfo] = useState<UserType>({
     did: '',
     mnemonic: '',
     name: '',
     email: '',
-    hiveHost: '',
-  })
-  const [loading, setLoading] = useState(false)
+    hiveHost: ''
+  });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      const { did, mnemonic } = props.location.state
-      let doc = await DidService.getDidDocument(did)
+      const { did, mnemonic } = props.location.state;
+      let doc = await DidService.getDidDocument(did);
       let uInfo: UserType = {
         did,
         mnemonic,
         name: '',
         email: '',
-        hiveHost: '',
-      }
+        hiveHost: ''
+      };
       if (props.location.state.user) {
-        uInfo.name = props.location.state.user.name
-        uInfo.email = props.location.state.user.email
+        uInfo.name = props.location.state.user.name;
+        uInfo.email = props.location.state.user.email;
       }
       if (doc && doc !== undefined && doc.verifiableCredential) {
         if (doc.verifiableCredential && doc.verifiableCredential.length > 0) {
           for (let i = 0; i < doc.verifiableCredential.length; i++) {
-            const cv = doc.verifiableCredential[i]
+            const cv = doc.verifiableCredential[i];
             if (cv.credentialSubject && cv.credentialSubject.name) {
-              uInfo.name = cv.credentialSubject.name
+              uInfo.name = cv.credentialSubject.name;
             }
             if (cv.credentialSubject && cv.credentialSubject.email) {
-              uInfo.email = cv.credentialSubject.email
+              uInfo.email = cv.credentialSubject.email;
             }
           }
         }
-        console.log('=====>doc.service', doc.service)
+
         if (doc.service && doc.service.length > 0) {
-          uInfo.hiveHost = doc.service[0].serviceEndpoint
+          uInfo.hiveHost = doc.service[0].serviceEndpoint;
         }
       }
-      setUserInfo(uInfo)
-    }
+      setUserInfo(uInfo);
+    };
     if (userInfo.did === '') {
-      fetchUserInfo()
+      fetchUserInfo();
     }
-  }, [])
+  }, []);
 
   if (userInfo.did === '') {
-    return <PageLoading />
+    return <PageLoading />;
   } else if (userInfo.name === '') {
     return (
       <ProfileFields
@@ -88,17 +90,17 @@ const CreateProfileWithDidPage: React.FC<
           setUserInfo({
             ...userInfo,
             name,
-            email,
-          })
+            email
+          });
         }}
       />
-    )
+    );
   }
 
   return (
     <SetPassword
-      next={async (pwd) => {
-        setLoading(true)
+      next={async pwd => {
+        setLoading(true);
         await UserService.CreateNewUser(
           userInfo.name,
           userInfo.did,
@@ -109,20 +111,20 @@ const CreateProfileWithDidPage: React.FC<
           userInfo.did,
           userInfo.mnemonic,
           userInfo.hiveHost
-        )
-        setLoading(false)
-        window.location.href = '/profile'
+        );
+        setLoading(false);
+        window.location.href = '/profile';
       }}
       displayText={loading ? 'Encrypting now.......' : ''}
     />
-  )
-}
+  );
+};
 
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg(),
-})
+  msg: makeSelectAjaxMsg()
+});
 
 /** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
@@ -131,9 +133,9 @@ export function mapDispatchToProps(dispatch: any) {
       // eProps - Emitter proptypes thats binds to dispatch
       /** dispatch for counter to increment */
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax()),
-    },
-  }
+      onSimpleAjax: () => dispatch(getSimpleAjax())
+    }
+  };
 }
 
 /**
@@ -143,14 +145,14 @@ export function mapDispatchToProps(dispatch: any) {
 const withInjectedMode = injector(CreateProfileWithDidPage, {
   key: NameSpace,
   reducer,
-  saga,
-})
+  saga
+});
 
-const withConnect = connect(mapStateToProps, mapDispatchToProps)
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
 export default compose(
   withConnect,
   memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>
+)(withInjectedMode) as React.ComponentType<InferMappedProps>;
 
 // export default Tab1;

@@ -7,7 +7,7 @@ const Logo: React.FC = () => {
   return (
     <IonContent className={style['logo']}>
       <div>
-        <img src='../../assets/logo_profile_black.svg' />
+        <img src="../../assets/logo_profile_black.svg" />
       </div>
     </IonContent>
   );

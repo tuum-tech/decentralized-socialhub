@@ -22,7 +22,7 @@ const DidCard: React.FC<Props> = ({
   indexItem,
   following = false,
   colSize = '100%',
-  type = 'user',
+  type = 'user'
 }) => {
   const [isFollowing, setIsFollowing] = useState(false);
   let profileService: ProfileService;
@@ -37,7 +37,6 @@ const DidCard: React.FC<Props> = ({
     }
 
     let list: any = await profileService.addFollowing(did);
-    console.log('FollowingList', list);
     setIsFollowing(true);
   };
 
@@ -69,8 +68,8 @@ const DidCard: React.FC<Props> = ({
           <SkeletonAvatar />
           <img
             src={avatar}
-            width='80'
-            height='80'
+            width="80"
+            height="80"
             className={style['clip-avatar-svg']}
           />
         </div>

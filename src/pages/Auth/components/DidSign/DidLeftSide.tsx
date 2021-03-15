@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 import {
   OnBoardLayoutLeft,
@@ -7,16 +7,16 @@ import {
   OnBoardLayoutLeftContentDescription,
   OnBoardLayoutLeftContentIntro,
   OnBoardLayoutLogo,
-  WavingHandImg,
-} from 'src/components/layouts/OnBoardLayout'
-import { TextLink } from 'src/components/texts'
+  WavingHandImg
+} from 'src/components/layouts/OnBoardLayout';
+import { TextLink } from 'src/components/texts';
 
-import whitelogo from 'src/assets/logo/whitetextlogo.png'
-import markimg from 'src/assets/icon/mark.png'
-import wavinghand from 'src/assets/icon/wavinghand.png'
+import whitelogo from 'src/assets/logo/whitetextlogo.png';
+import markimg from 'src/assets/icon/mark.png';
+import wavinghand from 'src/assets/icon/wavinghand.png';
 
 interface Props {
-  error?: boolean
+  error?: boolean;
 }
 
 const DidLeftSide: React.FC<Props> = ({ error = false }) => {
@@ -26,15 +26,15 @@ const DidLeftSide: React.FC<Props> = ({ error = false }) => {
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={markimg} />
-          <OnBoardLayoutLeftContentTitle className='mt-18px'>
+          <OnBoardLayoutLeftContentTitle className="mt-18px">
             Invalid order or wrong words
           </OnBoardLayoutLeftContentTitle>
-          <OnBoardLayoutLeftContentDescription className='mt-25px'>
+          <OnBoardLayoutLeftContentDescription className="mt-25px">
             It looks like your security words are in the wrong order or
             incorrect. Click on one to re-write or click the clear all button to
             start again.
           </OnBoardLayoutLeftContentDescription>
-          <OnBoardLayoutLeftContentDescription className='mt-18px'>
+          <OnBoardLayoutLeftContentDescription className="mt-18px">
             Unforutantly we can not help if you have forgotton your security
             words. In a decentralized world we all must be responsable for our
             identity.
@@ -44,7 +44,7 @@ const DidLeftSide: React.FC<Props> = ({ error = false }) => {
           >
             New to Profile?
           </OnBoardLayoutLeftContentIntro>
-          <TextLink width={100} to='/create-profile'>
+          <TextLink width={100} to="/create-profile">
             Craete a new Profile
           </TextLink>
           <OnBoardLayoutLeftContentIntro
@@ -52,22 +52,22 @@ const DidLeftSide: React.FC<Props> = ({ error = false }) => {
           >
             Have a last QR code?
           </OnBoardLayoutLeftContentIntro>
-          <TextLink width={100} to='/sign-qr'>
+          <TextLink width={100} to="/sign-qr">
             Sign in here
           </TextLink>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
-    )
+    );
   }
   return (
     <OnBoardLayoutLeft>
       <OnBoardLayoutLogo src={whitelogo} />
       <OnBoardLayoutLeftContent>
         <WavingHandImg src={wavinghand} />
-        <OnBoardLayoutLeftContentTitle className='mt-18px'>
+        <OnBoardLayoutLeftContentTitle className="mt-18px">
           Welcome back
         </OnBoardLayoutLeftContentTitle>
-        <OnBoardLayoutLeftContentDescription className='mt-25px'>
+        <OnBoardLayoutLeftContentDescription className="mt-25px">
           Don’t forget to fill out as much of your profile as you can. You will
           earn badges and be set up for the future - where you can earn off your
           data, under your control!
@@ -77,7 +77,7 @@ const DidLeftSide: React.FC<Props> = ({ error = false }) => {
         >
           New to Profile?
         </OnBoardLayoutLeftContentIntro>
-        <TextLink width={100} to='/create-profile'>
+        <TextLink width={100} to="/create-profile">
           Craete a new Profile
         </TextLink>
         <OnBoardLayoutLeftContentIntro
@@ -85,12 +85,12 @@ const DidLeftSide: React.FC<Props> = ({ error = false }) => {
         >
           Have a last QR code?
         </OnBoardLayoutLeftContentIntro>
-        <TextLink width={100} to='/sign-qr'>
+        <TextLink width={100} to="/sign-qr">
           Sign in here
         </TextLink>
       </OnBoardLayoutLeftContent>
     </OnBoardLayoutLeft>
-  )
-}
+  );
+};
 
-export default DidLeftSide
+export default DidLeftSide;

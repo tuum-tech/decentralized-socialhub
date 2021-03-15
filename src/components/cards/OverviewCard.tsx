@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   IonCard,
   IonCardContent,
   IonCardHeader,
-  IonCardTitle,
+  IonCardTitle
 } from '@ionic/react';
 import style from './OverviewCard.module.scss';
 

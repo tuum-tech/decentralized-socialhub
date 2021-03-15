@@ -15,8 +15,8 @@ import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 import ClearlyMeContent from 'src/components/ClearlyMeContent';
-import Header from 'src/components/Header';
-import ButtonDefault from 'src/components/ButtonDefault';
+import Header from 'src/components/layouts/Header';
+import ButtonDefault from 'src/components/buttons/ButtonDefault';
 import IdentityProgressComponent from 'src/components/IdentityProgressComponent';
 
 const PublishIdentityPage: React.FC<InferMappedProps> = ({
@@ -46,7 +46,7 @@ const PublishIdentityPage: React.FC<InferMappedProps> = ({
     '-',
     '-',
     '-',
-    '-',
+    '-'
   ]);
 
   const publishDocument = async () => {
@@ -83,7 +83,7 @@ const PublishIdentityPage: React.FC<InferMappedProps> = ({
           <Header />
         </IonHeader>
 
-        <IdentityProgressComponent stage='publish'></IdentityProgressComponent>
+        <IdentityProgressComponent stage="publish"></IdentityProgressComponent>
         <div className={style['main-container']}>
           <h1>Publish Identity</h1>
 
@@ -99,7 +99,7 @@ const PublishIdentityPage: React.FC<InferMappedProps> = ({
           <br />
           <br />
 
-          {/*            
+          {/*
             <IonRow style={{marginTop: '10px'}}>
               <IonCol>
                 <IonInput className={style["mnemonic"]} value="bread" readonly>
@@ -115,7 +115,7 @@ const PublishIdentityPage: React.FC<InferMappedProps> = ({
                 <IonInput className={style["mnemonic"]} value="bread" readonly>
                   <span className={style["number-dark"]}>12</span>
                 </IonInput>
-              </IonCol>              
+              </IonCol>
             </IonRow> */}
           {/* </div><br/><br/> */}
 
@@ -128,7 +128,7 @@ const PublishIdentityPage: React.FC<InferMappedProps> = ({
           </div>
 
           <div style={{ textAlign: 'center' }}>
-            <ButtonDefault href='/choosevault'>
+            <ButtonDefault href="/choosevault">
               Publish to Blockchain
             </ButtonDefault>
           </div>
@@ -141,7 +141,7 @@ const PublishIdentityPage: React.FC<InferMappedProps> = ({
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg(),
+  msg: makeSelectAjaxMsg()
 });
 
 /** @returns {object} Contains dispatchable props */
@@ -151,8 +151,8 @@ export function mapDispatchToProps(dispatch: any) {
       // eProps - Emitter proptypes thats binds to dispatch
       /** dispatch for counter to increment */
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax()),
-    },
+      onSimpleAjax: () => dispatch(getSimpleAjax())
+    }
   };
 }
 
@@ -163,7 +163,7 @@ export function mapDispatchToProps(dispatch: any) {
 const withInjectedMode = injector(PublishIdentityPage, {
   key: NameSpace,
   reducer,
-  saga,
+  saga
 });
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);

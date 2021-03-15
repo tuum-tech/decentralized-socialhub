@@ -1,10 +1,10 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
 
 interface Props {
-  width?: number
-  color?: string
-  onClick?: () => void
+  width?: number;
+  color?: string;
+  onClick?: () => void;
 }
 
 const Container = styled.div`
@@ -24,24 +24,16 @@ const Container = styled.div`
 
   &:hover {
     color: white;
-    ${(props) => {
+    ${props => {
       if (props.color) {
-        return `color: ${props.color};`
+        return `color: ${props.color};`;
       }
     }}
   }
-`
+`;
 
 const SigninLinkButton: React.FC<Props> = () => {
-  return (
-    <Container
-      onClick={() => {
-        console.log('======<test')
-      }}
-    >
-      Sign In
-    </Container>
-  )
-}
+  return <Container onClick={() => {}}>Sign In</Container>;
+};
 
-export default SigninLinkButton
+export default SigninLinkButton;

@@ -2,31 +2,31 @@
  * Page
  */
 
-import React, { useState } from 'react'
-import { IonButton, IonImg } from '@ionic/react'
+import React, { useState } from 'react';
+import { IonButton, IonImg } from '@ionic/react';
 
-import AlphaContent from '../AlphaContent'
-import transparentlogo from '../../assets/logo/transparentlogo.png'
-import wavinghand from '../../assets/icon/wavinghand.png'
-import defaultAdamAvatar from '../../assets/icon/defaultAdamAvatar.png'
-import emojiCool from '../../assets/icon/emoji-cool.png'
+import AlphaContent from '../AlphaContent';
+import transparentlogo from '../../assets/logo/transparentlogo.png';
+import wavinghand from '../../assets/icon/wavinghand.png';
+import defaultAdamAvatar from '../../assets/icon/defaultAdamAvatar.png';
+import emojiCool from '../../assets/icon/emoji-cool.png';
 
-import style from './style.module.scss'
+import style from './style.module.scss';
 
 interface Props {
-  completed: () => void
+  completed: () => void;
 }
 
 const OnBoardingPage: React.FC<Props> = ({ completed }) => {
-  const [stage, setStage] = useState(1)
+  const [stage, setStage] = useState(1);
 
   const next = () => {
     if (stage === 4) {
-      completed()
+      completed();
     } else {
-      setStage(stage + 1)
+      setStage(stage + 1);
     }
-  }
+  };
 
   return (
     <AlphaContent>
@@ -136,7 +136,7 @@ const OnBoardingPage: React.FC<Props> = ({ completed }) => {
         </div>
       )}
     </AlphaContent>
-  )
-}
+  );
+};
 
-export default OnBoardingPage
+export default OnBoardingPage;

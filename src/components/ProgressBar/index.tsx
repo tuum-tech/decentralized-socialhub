@@ -14,7 +14,7 @@ const TodoList: React.FC<IProps> = ({ value }) => {
         className={style['Progressbar_value']}
         style={{ width: `${percent}%` }}
       ></div>
-      <progress value={percent} max='100'>
+      <progress value={percent} max="100">
         {percent}%
       </progress>
     </div>

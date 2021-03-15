@@ -8,9 +8,15 @@ import createSagaMiddleware from 'redux-saga';
 import createReducer from './reducers';
 import { History, LocationState } from 'history';
 
-declare var window: {__REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any, __SAGA_MONITOR_EXTENSION__: any};
+declare var window: {
+  __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any;
+  __SAGA_MONITOR_EXTENSION__: any;
+};
 
-export default function configureStore(initialState = {}, history:History<LocationState>) {
+export default function configureStore(
+  initialState = {},
+  history: History<LocationState>
+) {
   let composeEnhancers = compose;
   const reduxSagaMonitorOptions = {};
 
@@ -42,7 +48,7 @@ export default function configureStore(initialState = {}, history:History<Locati
   const store: any = createStore(
     createReducer(),
     initialState,
-    composeEnhancers(...enhancers),
+    composeEnhancers(...enhancers)
   );
 
   // Extensions

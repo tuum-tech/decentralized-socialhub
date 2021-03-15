@@ -4,13 +4,22 @@ import checkStore from './checkStore';
 import { StoreParameters, ActionTags } from './models';
 import createReducer from './reducers';
 
-export function injectReducerFactory(store: StoreParameters, isValid: boolean):(key: string, reducer: <T>(state: T, actions: ActionTags<any, any>) => void)=>void {
-  return function injectReducer(key: string, reducer: (state: any, actions: any) => void): void {
+export function injectReducerFactory(
+  store: StoreParameters,
+  isValid: boolean
+): (
+  key: string,
+  reducer: <T>(state: T, actions: ActionTags<any, any>) => void
+) => void {
+  return function injectReducer(
+    key: string,
+    reducer: (state: any, actions: any) => void
+  ): void {
     if (!isValid) checkStore(store);
 
     invariant(
       isString(key) && !isEmpty(key) && isFunction(reducer),
-      '(src/common...) injectReducer: Expected `reducer` to be a reducer function',
+      '(src/common...) injectReducer: Expected `reducer` to be a reducer function'
     );
 
     // Check `store.injectedReducers[key] === reducer` for hot reloading when a key is the same but a reducer is different
@@ -29,6 +38,6 @@ export default function getInjectors(store: StoreParameters) {
   checkStore(store);
 
   return {
-    injectReducer: injectReducerFactory(store, true),
+    injectReducer: injectReducerFactory(store, true)
   };
 }

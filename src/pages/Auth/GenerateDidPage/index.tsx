@@ -1,51 +1,53 @@
-import React, { memo, useState, useEffect } from 'react'
-import { connect } from 'react-redux'
-import { StaticContext, RouteComponentProps, useHistory } from 'react-router'
-import { compose } from 'redux'
+import React, { memo, useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { StaticContext, RouteComponentProps, useHistory } from 'react-router';
+import { compose } from 'redux';
 
-import { createStructuredSelector } from 'reselect'
-import injector from 'src/baseplate/injectorWrap'
-import { UserService } from 'src/services/user.service'
-import PageLoading from 'src/components/layouts/PageLoading'
-import { AccountType } from 'src/services/user.service'
+import { createStructuredSelector } from 'reselect';
+import injector from 'src/baseplate/injectorWrap';
+import { UserService } from 'src/services/user.service';
+import PageLoading from 'src/components/layouts/PageLoading';
+import { AccountType } from 'src/services/user.service';
 
-import SetPassword from '../components/SetPassword'
+import SetPassword from '../components/SetPassword';
 
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
-import { incrementAction, getSimpleAjax } from './actions'
-import { NameSpace } from './constants'
-import reducer from './reducer'
-import saga from './saga'
+import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
+import { incrementAction, getSimpleAjax } from './actions';
+import { NameSpace } from './constants';
+import reducer from './reducer';
+import saga from './saga';
 import {
   InferMappedProps,
   SubState,
   LocationState,
-  UserSessionProp,
-} from './types'
-import { getUsersWithRegisteredEmail } from './fetchapi'
+  UserSessionProp
+} from './types';
+import { getUsersWithRegisteredEmail } from './fetchapi';
 
-const GenerateDidPage: React.FC<
-  RouteComponentProps<{}, StaticContext, LocationState>
-> = (props) => {
+const GenerateDidPage: React.FC<RouteComponentProps<
+  {},
+  StaticContext,
+  LocationState
+>> = props => {
   /**
    * Direct method implementation without SAGA
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
 
-  const history = useHistory()
+  const history = useHistory();
 
-  const [loading, setLoading] = useState(false)
-  const [session, setSession] = useState<UserSessionProp | null>(null)
+  const [loading, setLoading] = useState(false);
+  const [session, setSession] = useState<UserSessionProp | null>(null);
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       if (!session && props.location.state && props.location.state.service) {
-        const { service } = props.location.state
+        const { service } = props.location.state;
         if (service !== AccountType.Email && service !== AccountType.DID) {
           const pUsers = await getUsersWithRegisteredEmail(
             props.location.state.email
-          )
+          );
           if (pUsers.length > 0) {
             history.push({
               pathname: '/associated-profile',
@@ -55,21 +57,21 @@ const GenerateDidPage: React.FC<
                 email: props.location.state.email,
                 request_token: props.location.state.request_token,
                 service: props.location.state.service,
-                credential: props.location.state.credential,
-              },
-            })
+                credential: props.location.state.credential
+              }
+            });
           }
         }
-        setSession(props.location.state)
+        setSession(props.location.state);
       }
-    })()
-  }, [session])
+    })();
+  }, [session]);
 
   if (session && session.request_token) {
     return (
       <SetPassword
-        next={async (pwd) => {
-          setLoading(true)
+        next={async pwd => {
+          setLoading(true);
           if (session) {
             await UserService.CreateNewUser(
               session.name,
@@ -81,24 +83,24 @@ const GenerateDidPage: React.FC<
               '',
               '',
               ''
-            )
+            );
           }
-          setLoading(false)
-          window.location.href = '/profile'
+          setLoading(false);
+          window.location.href = '/profile';
         }}
         displayText={loading ? 'Encrypting now.......' : ''}
       />
-    )
+    );
   }
 
-  return <PageLoading />
-}
+  return <PageLoading />;
+};
 
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg(),
-})
+  msg: makeSelectAjaxMsg()
+});
 
 /** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
@@ -107,9 +109,9 @@ export function mapDispatchToProps(dispatch: any) {
       // eProps - Emitter proptypes thats binds to dispatch
       /** dispatch for counter to increment */
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax()),
-    },
-  }
+      onSimpleAjax: () => dispatch(getSimpleAjax())
+    }
+  };
 }
 
 /**
@@ -119,14 +121,14 @@ export function mapDispatchToProps(dispatch: any) {
 const withInjectedMode = injector(GenerateDidPage, {
   key: NameSpace,
   reducer,
-  saga,
-})
+  saga
+});
 
-const withConnect = connect(mapStateToProps, mapDispatchToProps)
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
 export default compose(
   withConnect,
   memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>
+)(withInjectedMode) as React.ComponentType<InferMappedProps>;
 
 // export default Tab1;

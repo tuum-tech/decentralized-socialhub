@@ -1,11 +1,10 @@
-import React, { Component, useState } from 'react';
+import React from 'react';
 import {
   IonCard,
   IonCardContent,
   IonCardHeader,
-  IonCardTitle,
+  IonCardTitle
 } from '@ionic/react';
-import ButtonWhite from 'src/components/buttons/ButtonWhite';
 import style from './SpotlightCard.module.scss';
 
 interface Props {
@@ -19,7 +18,7 @@ const SpotlightCard: React.FC<Props> = ({
   title,
   content,
   component,
-  progressbar,
+  progressbar
 }) => {
   return (
     <IonCard className={style['spotlight']}>

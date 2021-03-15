@@ -4,26 +4,25 @@ import style from './style.module.scss';
 import {
   IUniversitiesResponse,
   IUserResponse,
-  SearchService,
+  SearchService
 } from 'src/services/search.service';
 import ExploreNav from '../ExploreNav';
 import {
   IFollowingResponse,
-  ProfileService,
+  ProfileService
 } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
 
 const SearchComponent: React.FC = () => {
-  const [
-    filteredUniversities,
-    setFilteredUniversities,
-  ] = useState<IUniversitiesResponse>({ get_universities: { items: [] } });
+  const [filteredUniversities, setFilteredUniversities] = useState<
+    IUniversitiesResponse
+  >({ get_universities: { items: [] } });
 
   const [filteredUsers, setFilteredUsers] = useState<IUserResponse>({
-    get_users: { items: [] },
+    get_users: { items: [] }
   });
   const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
-    get_following: { items: [] },
+    get_following: { items: [] }
   });
 
   const [searchService, setSearchService] = useState(new SearchService());
@@ -139,8 +138,8 @@ const SearchComponent: React.FC = () => {
       <IonContent className={style['searchcomponent']}>
         <IonSearchbar
           value={searchQuery}
-          onIonChange={(e) => search(e)}
-          placeholder='Search people, pages by name or DID'
+          onIonChange={e => search(e)}
+          placeholder="Search people, pages by name or DID"
           className={style['search-input']}
         ></IonSearchbar>
         {/* <IonSpinner /> */}

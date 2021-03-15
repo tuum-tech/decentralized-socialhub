@@ -11,11 +11,11 @@ export const modName = `baseplate.pages.${NameSpace}`;
 export default defineMessages({
   startProjectHeader: {
     id: `${modName}.header`,
-    defaultMessage: 'Start your next react project in seconds',
+    defaultMessage: 'Start your next react project in seconds'
   },
   startProjectMessage: {
     id: `${modName}.message`,
     defaultMessage:
-      'A highly scalable, offline-first foundation with the best DX and a focus on performance and best practices',
-  },
+      'A highly scalable, offline-first foundation with the best DX and a focus on performance and best practices'
+  }
 });
