@@ -4,9 +4,7 @@ import {
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
-  IonCol,
-  IonItem,
-  IonList,
+  IonCol
 } from '@ionic/react';
 import style from './PagesCard.module.scss';
 import { PageDTO } from '../search/types';
@@ -27,7 +25,7 @@ const pageItem = (pageItem: any, indexItem: number, colSize: any) => {
       did={pageItem.did}
       avatar={pageItem.avatar}
       colSize={colSize}
-      type='page'
+      type="page"
       key={'did-page-card-' + indexItem}
     />
   );
@@ -37,11 +35,8 @@ const PagesCard: React.FC<IProps> = ({
   pages,
   searchKeyword,
   isSearchKeywordDID,
-  size = '12',
+  size = '12'
 }: IProps) => {
-  console.log('Pages IProps called');
-  console.log(pages);
-
   const perPage = parseInt(size) / 12 == 1 ? 4 : 8;
   const totalPages = pages && pages.items ? pages.items.length / perPage : 1;
 

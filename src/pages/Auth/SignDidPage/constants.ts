@@ -1,13 +1,13 @@
 /**
  * Shared constants
  */
-import baseConst from '../../../shared-base/xconstants'
+import baseConst from '../../../shared-base/xconstants';
 
 /**
  * Base Namespace for the page
  * Use it wisely, as it affects your pagename
  */
-export const NameSpace = 'SignDidPage'
+export const NameSpace = 'SignDidPage';
 
 /***
  * Action Definitions - START
@@ -18,12 +18,12 @@ export const NameSpace = 'SignDidPage'
 export const Actions = {
   STATE_COUNT_INCREMENT: `[Page] -> ${NameSpace}/STATE_COUNT_INCREMENT`,
   STATE_PUT_AJAX: `[Page] -> ${NameSpace}/STATE_PUT_AJAX`,
-  FETCH_GET_AJAX: `[Page] -> ${NameSpace}/FETCH_GET_AJAX`,
-}
+  FETCH_GET_AJAX: `[Page] -> ${NameSpace}/FETCH_GET_AJAX`
+};
 /*** Action Definitions - END ***/
 
 /** Component Constants - START */
 export const Api = {
-  sample: `${baseConst.base}v2/5e88d29a3100007700d39adc`,
-}
+  sample: `${baseConst.base}v2/5e88d29a3100007700d39adc`
+};
 /** Component Constants - END */

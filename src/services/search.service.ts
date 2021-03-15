@@ -1,5 +1,4 @@
 import { HiveClient } from '@elastos/elastos-hive-js-sdk';
-import { floor, noConflict } from 'lodash';
 import { HiveService } from './hive.service';
 import { UserService } from './user.service';
 import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
@@ -58,7 +57,7 @@ export class SearchService {
   ): Promise<IRunScriptResponse<IUniversitiesResponse | undefined>> {
     let params: any = {
       limit: limit,
-      skip: offset,
+      skip: offset
     };
 
     let universitiesResponse: IRunScriptResponse<IUniversitiesResponse>;
@@ -71,8 +70,8 @@ export class SearchService {
         params: params,
         context: {
           target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`,
-        },
+          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+        }
       });
     } else {
       universitiesResponse = await this.appHiveClient.Scripting.RunScript({
@@ -80,12 +79,11 @@ export class SearchService {
         params: params,
         context: {
           target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`,
-        },
+          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+        }
       });
     }
 
-    console.log('universities :' + JSON.stringify(universitiesResponse));
     return universitiesResponse;
   }
 
@@ -112,33 +110,26 @@ export class SearchService {
   ): Promise<IRunScriptResponse<IUserResponse | undefined>> {
     let params: any = {
       limit: limit,
-      skip: offset,
+      skip: offset
     };
 
     let usersResponse: IRunScriptResponse<IUserResponse> = {
       isSuccess: false,
-      response: { get_users: { items: [] } },
+      response: { get_users: { items: [] } }
     };
 
-    console.log('Search string: ', searchString);
-
     if (searchString != null && searchString != '') {
-      console.log('Search string inside: ', searchString);
-      console.log('is this DID', this.isDID(searchString));
-
       if (this.isDID(searchString)) {
         params['did'] = '.*' + searchString + '.*';
         params['self_did'] = [UserService.GetUserSession().did];
-
-        console.log('calling get users by did', params);
 
         usersResponse = await this.appHiveClient.Scripting.RunScript({
           name: 'get_users_by_did',
           params: params,
           context: {
             target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`,
-          },
+            target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+          }
         });
       } else {
         params['name'] = '.*' + searchString + '.*';
@@ -149,8 +140,8 @@ export class SearchService {
           params: params,
           context: {
             target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`,
-          },
+            target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+          }
         });
       }
     } else {
@@ -161,12 +152,10 @@ export class SearchService {
         params: params,
         context: {
           target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`,
-        },
+          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+        }
       });
     }
-
-    console.log('users :' + JSON.stringify(usersResponse));
 
     if (usersResponse.isSuccess) {
       return usersResponse;
@@ -181,27 +170,23 @@ export class SearchService {
   ): Promise<IRunScriptResponse<IUserResponse | undefined>> {
     let params: any = {
       limit: limit,
-      skip: offset,
+      skip: offset
     };
 
     let usersResponse: IRunScriptResponse<IUserResponse> = {
       isSuccess: false,
-      response: { get_users: { items: [] } },
+      response: { get_users: { items: [] } }
     };
 
-    console.log('DIDs: ', dids);
-
     params['dids'] = dids;
-
-    console.log('calling get users by dids', params);
 
     usersResponse = await this.appHiveClient.Scripting.RunScript({
       name: 'get_users_by_dids',
       params: params,
       context: {
         target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`,
-      },
+        target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+      }
     });
 
     if (usersResponse.isSuccess) {

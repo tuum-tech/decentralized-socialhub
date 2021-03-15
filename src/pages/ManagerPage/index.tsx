@@ -1,23 +1,7 @@
 /**
  * Page
  */
-import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonButton,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonModal
-} from '@ionic/react';
+import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
@@ -32,11 +16,9 @@ import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 import { fetchSimpleApi } from './fetchapi';
 import Logo from 'src/components/Logo';
-import Navbar from 'src/components/Navbar';
+import Navbar from 'src/components/layouts/Navbar';
 import styled from 'styled-components';
-import ProfileEditor from 'src/components/ProfileEditor';
-import AlphaContent from 'src/components/AlphaContent';
-
+import ProfileEditor from 'src/components/profile/ProfileEditor';
 
 const ManagerPage: React.FC<InferMappedProps> = ({
   eProps,
@@ -61,15 +43,15 @@ const ManagerPage: React.FC<InferMappedProps> = ({
   `;
 
   const PageTitle = styled.h2`
-  font-family: 'SF Pro Display';
-  font-size: 28px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1.36;
-  letter-spacing: normal;
-  text-align: left;
-  color: #27272e;
+    font-family: 'SF Pro Display';
+    font-size: 28px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.36;
+    letter-spacing: normal;
+    text-align: left;
+    color: #27272e;
   `;
 
   return (
@@ -78,55 +60,47 @@ const ManagerPage: React.FC<InferMappedProps> = ({
         <IonContent className={style['content-page']}>
           <IonGrid className={style['profilepagegrid']}>
             <IonRow className={style['profilecontent']}>
-              <IonCol size='2' className={style['left-panel']}>
+              <IonCol size="2" className={style['left-panel']}>
                 <Logo />
-                <Navbar tab='profile_manager' />
+                <Navbar tab="profile_manager" />
               </IonCol>
-              <IonCol size='10' className={style['right-panel']}>
+              <IonCol size="10" className={style['right-panel']}>
                 <Header>
                   <PageTitle>Profile Manager</PageTitle>
                 </Header>
                 <ProfileEditor></ProfileEditor>
-
-
               </IonCol>
             </IonRow>
           </IonGrid>
-
         </IonContent>
       </IonPage>
     </>
   );
 };
 
-
-
 const Popup = styled.div`
-width: 541px;
-height: 655px;
-position: absolute;
-top: 50%;
-left: 50%;
-/* bring your own prefixes */
-transform: translate(-50%, -50%);
-border-radius: 16px;
-background-color: #ffffff;
-box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24),
-  0px 3px 8px -1px rgba(50, 50, 71, 0.05);
+  width: 541px;
+  height: 655px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+  border-radius: 16px;
+  background-color: #ffffff;
+  box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24),
+    0px 3px 8px -1px rgba(50, 50, 71, 0.05);
 
-text-align: center;
-font-family: 'SF Pro Display';
+  text-align: center;
+  font-family: 'SF Pro Display';
 
-padding: 50px 56px;
+  padding: 50px 56px;
 
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 `;
-
-
-
 
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
@@ -137,7 +111,8 @@ export const mapStateToProps = createStructuredSelector<SubState, SubState>({
 /** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
   return {
-    eProps: { // eProps - Emitter proptypes thats binds to dispatch
+    eProps: {
+      // eProps - Emitter proptypes thats binds to dispatch
       /** dispatch for counter to increment */
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
       onSimpleAjax: () => dispatch(getSimpleAjax())
@@ -149,23 +124,17 @@ export function mapDispatchToProps(dispatch: any) {
  * Injects prop and saga bindings done via
  * useInjectReducer & useInjectSaga
  */
-const withInjectedMode = injector(
-  ManagerPage,
-  {
-    key: NameSpace,
-    reducer,
-    saga
-  }
-);
+const withInjectedMode = injector(ManagerPage, {
+  key: NameSpace,
+  reducer,
+  saga
+});
 
-const withConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-);
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
 export default compose(
   withConnect,
-  memo,
+  memo
 )(withInjectedMode) as React.ComponentType<InferMappedProps>;
 
 // export default Tab1;

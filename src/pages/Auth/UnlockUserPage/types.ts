@@ -1,4 +1,4 @@
 export type LocationState = {
-  from: Location
-  dids: Array<string>
-}
+  from: Location;
+  dids: Array<string>;
+};

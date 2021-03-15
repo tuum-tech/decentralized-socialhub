@@ -4,7 +4,7 @@ export enum CredentialType {
   Google = 'Google',
   Twitter = 'Twitter',
   Email = 'Email',
-  DID = 'Did',
+  DID = 'Did'
 }
 
 export class DidcredsService {
@@ -13,25 +13,25 @@ export class DidcredsService {
     credential_type: CredentialType,
     credential_value: string
   ): Promise<any> {
-    let url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/didcreds_router/validation/internet_account`
+    let url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/didcreds_router/validation/internet_account`;
     let data = {
       did: did,
       credential_type: credential_type.toLowerCase(),
-      credential_value: credential_value,
-    }
+      credential_value: credential_value
+    };
 
     let postData: any = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: process.env.REACT_APP_PROFILE_API_SERVICE_KEY,
+        Authorization: process.env.REACT_APP_PROFILE_API_SERVICE_KEY
       },
-      body: JSON.stringify(data),
-    }
+      body: JSON.stringify(data)
+    };
 
-    let response = await fetch(url, postData)
+    let response = await fetch(url, postData);
 
-    let json = await response.json()
-    return json.data.verifiable_credential
+    let json = await response.json();
+    return json.data.verifiable_credential;
   }
 }

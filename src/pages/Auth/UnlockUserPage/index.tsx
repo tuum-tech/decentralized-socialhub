@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { StaticContext, RouteComponentProps } from 'react-router'
-import styled from 'styled-components'
+import React, { useState } from 'react';
+import { StaticContext, RouteComponentProps } from 'react-router';
+import styled from 'styled-components';
 
 import {
   OnBoardLayout,
@@ -12,47 +12,53 @@ import {
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
   OnBoardLayoutRightContentTitle,
-  WavingHandImg,
-} from 'src/components/layouts/OnBoardLayout'
-import { ButtonLink, ArrowButton, ButtonWithLogo } from 'src/components/buttons'
-import { Text12, ErrorTxt } from 'src/components/texts'
-import TextInput from 'src/components/inputs/TextInput'
-import { UserService } from 'src/services/user.service'
-import wavinghand from 'src/assets/icon/wavinghand.png'
-import whitelogo from 'src/assets/logo/whitetextlogo.png'
+  WavingHandImg
+} from 'src/components/layouts/OnBoardLayout';
+import {
+  ButtonLink,
+  ArrowButton,
+  ButtonWithLogo
+} from 'src/components/buttons';
+import { Text12, ErrorTxt } from 'src/components/texts';
+import TextInput from 'src/components/inputs/TextInput';
+import { UserService } from 'src/services/user.service';
+import wavinghand from 'src/assets/icon/wavinghand.png';
+import whitelogo from 'src/assets/logo/whitetextlogo.png';
 
-import { LocationState } from './types'
+import { LocationState } from './types';
 
-const UnlockUserPage: React.FC<
-  RouteComponentProps<{}, StaticContext, LocationState>
-> = (props) => {
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+const UnlockUserPage: React.FC<RouteComponentProps<
+  {},
+  StaticContext,
+  LocationState
+>> = props => {
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [dids, setDids] = useState(
     props.location.state && props.location.state.dids
       ? props.location.state.dids
       : []
-  )
+  );
 
   const unlockUser = async () => {
-    if (!dids || dids.length === 0) return
-    let res = null
+    if (!dids || dids.length === 0) return;
+    let res = null;
     if (dids.length === 1) {
-      res = await UserService.UnLockWithDIDAndPwd(dids[0], password)
+      res = await UserService.UnLockWithDIDAndPwd(dids[0], password);
     } else {
       for (let i = 0; i < dids.length; i++) {
-        const did = dids[i]
-        res = await UserService.UnLockWithDIDAndPwd(did, password)
+        const did = dids[i];
+        res = await UserService.UnLockWithDIDAndPwd(did, password);
       }
     }
 
     if (res) {
-      window.location.href = '/profile'
-      return
+      window.location.href = '/profile';
+      return;
     } else {
-      setError('User Not found secured by this password')
+      setError('User Not found secured by this password');
     }
-  }
+  };
 
   return (
     <OnBoardLayout>
@@ -60,13 +66,13 @@ const UnlockUserPage: React.FC<
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={wavinghand} />
-          <OnBoardLayoutLeftContentTitle className='mt-18px'>
+          <OnBoardLayoutLeftContentTitle className="mt-18px">
             Continue with your password
           </OnBoardLayoutLeftContentTitle>
-          <OnBoardLayoutLeftContentIntro className='my-25px'>
+          <OnBoardLayoutLeftContentIntro className="my-25px">
             Forgot your password? Help
           </OnBoardLayoutLeftContentIntro>
-          <ButtonLink width={26} to='/forgot-password'>
+          <ButtonLink width={26} to="/forgot-password">
             <ArrowButton />
           </ButtonLink>
         </OnBoardLayoutLeftContent>
@@ -78,29 +84,29 @@ const UnlockUserPage: React.FC<
           </OnBoardLayoutRightContentTitle>
           <TextInput
             value={password}
-            label='Password'
-            onChange={(n) => setPassword(n)}
-            placeholder='Enter your password'
+            label="Password"
+            onChange={n => setPassword(n)}
+            placeholder="Enter your password"
           />
           {error !== '' && <ErrorTxt>{error}</ErrorTxt>}
           <ButtonWithLogo
             mt={34}
             hasLogo={false}
-            text='Continue'
+            text="Continue"
             onClick={async () => {
               if (password === '') {
-                setError('You should fill the password')
-                return
+                setError('You should fill the password');
+                return;
               } else {
-                setError('')
-                await unlockUser()
+                setError('');
+                await unlockUser();
               }
             }}
           />
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>
-  )
-}
+  );
+};
 
-export default UnlockUserPage
+export default UnlockUserPage;

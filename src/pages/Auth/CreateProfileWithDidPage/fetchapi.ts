@@ -1,12 +1,12 @@
-import request, { BaseplateResp } from 'src/baseplate/request'
-import { TuumTechScriptService } from 'src/services/script.service'
+import request, { BaseplateResp } from 'src/baseplate/request';
+import { TuumTechScriptService } from 'src/services/script.service';
 
-import { Api } from './constants'
+import { Api } from './constants';
 
 export function fetchSimpleApi(): Promise<BaseplateResp> {
   return request(Api.sample, {
-    headers: { 'content-type': 'text/plain' },
-  })
+    headers: { 'content-type': 'text/plain' }
+  });
 }
 
 export function requestCreateUser(
@@ -20,14 +20,14 @@ export function requestCreateUser(
       headers: {
         'content-type': 'application/json',
         Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
-        Accept: 'application/json',
+        Accept: 'application/json'
       },
       body: JSON.stringify({
         name,
-        email,
-      }),
+        email
+      })
     }
-  )
+  );
 }
 
 export function requestLinkedinLogin(): Promise<BaseplateResp> {
@@ -37,10 +37,10 @@ export function requestLinkedinLogin(): Promise<BaseplateResp> {
       headers: {
         'content-type': 'text/plain',
         Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
-        Accept: 'application/json',
-      },
+        Accept: 'application/json'
+      }
     }
-  )
+  );
 }
 
 export function requestGoogleLogin(): Promise<BaseplateResp> {
@@ -50,10 +50,10 @@ export function requestGoogleLogin(): Promise<BaseplateResp> {
       headers: {
         'content-type': 'text/plain',
         Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
-        Accept: 'application/json',
-      },
+        Accept: 'application/json'
+      }
     }
-  )
+  );
 }
 
 export function requestFacebookLogin(): Promise<BaseplateResp> {
@@ -63,14 +63,14 @@ export function requestFacebookLogin(): Promise<BaseplateResp> {
       headers: {
         'content-type': 'text/plain',
         Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
-        Accept: 'application/json',
-      },
+        Accept: 'application/json'
+      }
     }
-  )
+  );
 }
 
 export async function getUsersWithRegisteredEmail(email: string) {
-  let prevUsers = []
-  prevUsers = await TuumTechScriptService.getUsersWithRegisteredEmail(email)
-  return prevUsers
+  let prevUsers = [];
+  prevUsers = await TuumTechScriptService.getUsersWithRegisteredEmail(email);
+  return prevUsers;
 }

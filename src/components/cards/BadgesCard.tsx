@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   IonCard,
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
   IonItem,
-  IonList,
+  IonList
 } from '@ionic/react';
 import style from './BadgesCard.module.scss';
 

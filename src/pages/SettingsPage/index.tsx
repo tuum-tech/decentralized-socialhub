@@ -1,37 +1,37 @@
 /**
  * Page
  */
-import { IonPage, IonContent, IonGrid, IonRow, IonCol } from "@ionic/react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { createStructuredSelector } from "reselect";
-import injector from "src/baseplate/injectorWrap";
-import { makeSelectCounter, makeSelectAjaxMsg } from "./selectors";
-import { incrementAction, getSimpleAjax } from "./actions";
-import React, { memo, useEffect, useState } from "react";
-import style from "./style.module.scss";
-import { NameSpace } from "./constants";
-import reducer from "./reducer";
-import saga from "./saga";
-import { InferMappedProps, SubState } from "./types";
-import Logo from "src/components/Logo";
-import Navbar from "src/components/Navbar";
-import SettingsBody from "src/components/SettingsBody";
+import { IonPage, IonContent, IonGrid, IonRow, IonCol } from '@ionic/react';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { createStructuredSelector } from 'reselect';
+import injector from 'src/baseplate/injectorWrap';
+import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
+import { incrementAction, getSimpleAjax } from './actions';
+import React, { memo, useEffect, useState } from 'react';
+import style from './style.module.scss';
+import { NameSpace } from './constants';
+import reducer from './reducer';
+import saga from './saga';
+import { InferMappedProps, SubState } from './types';
+import Logo from 'src/components/Logo';
+import Navbar from 'src/components/layouts/Navbar';
+import SettingsBody from 'src/components/SettingsBody';
 
 const SettingsPage: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
   return (
-    <IonPage className={style["settingspage"]}>
+    <IonPage className={style['settingspage']}>
       <IonContent>
-        <IonGrid className={style["settingspagegrid"]}>
-          <IonRow className={style["settingscontent"]}>
-            <IonCol size="2" className={style["left-panel"]}>
+        <IonGrid className={style['settingspagegrid']}>
+          <IonRow className={style['settingscontent']}>
+            <IonCol size="2" className={style['left-panel']}>
               <Logo />
               <Navbar tab="settings" />
             </IonCol>
-            <IonCol size="10" className={style["right-panel"]}>
+            <IonCol size="10" className={style['right-panel']}>
               <SettingsBody />
             </IonCol>
           </IonRow>
@@ -44,7 +44,7 @@ const SettingsPage: React.FC<InferMappedProps> = ({
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg(),
+  msg: makeSelectAjaxMsg()
 });
 
 /** @returns {object} Contains dispatchable props */
@@ -54,8 +54,8 @@ export function mapDispatchToProps(dispatch: any) {
       // eProps - Emitter proptypes thats binds to dispatch
       /** dispatch for counter to increment */
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax()),
-    },
+      onSimpleAjax: () => dispatch(getSimpleAjax())
+    }
   };
 }
 
@@ -66,7 +66,7 @@ export function mapDispatchToProps(dispatch: any) {
 const withInjectedMode = injector(SettingsPage, {
   key: NameSpace,
   reducer,
-  saga,
+  saga
 });
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);

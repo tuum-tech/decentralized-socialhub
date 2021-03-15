@@ -6,35 +6,34 @@ import { Api } from './constants';
 import { ProfileResponse } from './types';
 
 export function fetchSimpleApi(): Promise<BaseplateResp> {
-    return request(Api.sample, {
-        headers: { 'content-type': 'text/plain' }
-    });
+  return request(Api.sample, {
+    headers: { 'content-type': 'text/plain' }
+  });
 }
 
-
-
-// 
+//
 
 export async function requestFullProfile(did: string): Promise<ProfileDTO> {
-    let profileService: ProfileService = await ProfileService.getProfileServiceAppOnlyInstance();
-    let getFullProfileResponse: any;
-    try {
-        getFullProfileResponse = await profileService.getFullProfile(did);
-        console.log(JSON.stringify(getFullProfileResponse));
-    } catch (error) {
-        console.error(JSON.stringify(error));
-    }
-    return mapProfileResponseToProfileDTO(getFullProfileResponse);
+  let profileService: ProfileService = await ProfileService.getProfileServiceAppOnlyInstance();
+  let getFullProfileResponse: any;
+  try {
+    getFullProfileResponse = await profileService.getFullProfile(did);
+  } catch (error) {
+    // console.error(JSON.stringify(error));
+  }
+  return mapProfileResponseToProfileDTO(getFullProfileResponse);
 }
 
-const mapProfileResponseToProfileDTO = (fullProfileResponse: IRunScriptResponse<ProfileResponse>): ProfileDTO => {
-    let basicProfile = fullProfileResponse.response!.get_basic.items![0];
-    let educationProfile = fullProfileResponse.response!.get_education_profile;
-    let experienceProfile = fullProfileResponse.response!.get_experience_profile;
+const mapProfileResponseToProfileDTO = (
+  fullProfileResponse: IRunScriptResponse<ProfileResponse>
+): ProfileDTO => {
+  let basicProfile = fullProfileResponse.response!.get_basic.items![0];
+  let educationProfile = fullProfileResponse.response!.get_education_profile;
+  let experienceProfile = fullProfileResponse.response!.get_experience_profile;
 
-    return {
-        basicDTO: basicProfile,
-        educationDTO: educationProfile,
-        experienceDTO: experienceProfile
-    };
-}
+  return {
+    basicDTO: basicProfile,
+    educationDTO: educationProfile,
+    experienceDTO: experienceProfile
+  };
+};

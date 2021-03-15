@@ -1,14 +1,14 @@
-import React, { memo, useState, useEffect } from 'react'
-import { StaticContext, RouteComponentProps, useHistory } from 'react-router'
-import { connect } from 'react-redux'
-import { compose } from 'redux'
-import { createStructuredSelector } from 'reselect'
-import Modal from 'react-bootstrap/esm/Modal'
-import Button from 'react-bootstrap/esm/Button'
-import styled from 'styled-components'
+import React, { memo, useState, useEffect } from 'react';
+import { StaticContext, RouteComponentProps, useHistory } from 'react-router';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { createStructuredSelector } from 'reselect';
+import Modal from 'react-bootstrap/esm/Modal';
+import Button from 'react-bootstrap/esm/Button';
+import styled from 'styled-components';
 
-import injector from 'src/baseplate/injectorWrap'
-import { AccountType, UserService } from 'src/services/user.service'
+import injector from 'src/baseplate/injectorWrap';
+import { AccountType, UserService } from 'src/services/user.service';
 import {
   OnBoardLayout,
   OnBoardLayoutLeft,
@@ -19,53 +19,61 @@ import {
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
   OnBoardLayoutRightContentTitle,
-  WavingHandImg,
-} from 'src/components/layouts/OnBoardLayout'
-import { ButtonLink, ButtonWithLogo, ArrowButton } from 'src/components/buttons'
-import { Text16 } from 'src/components/texts'
-import PageLoading from 'src/components/layouts/PageLoading'
-import whitelogo from 'src/assets/logo/whitetextlogo.png'
-import eye from 'src/assets/icon/eye.png'
+  WavingHandImg
+} from 'src/components/layouts/OnBoardLayout';
+import {
+  ButtonLink,
+  ButtonWithLogo,
+  ArrowButton
+} from 'src/components/buttons';
+import { Text16 } from 'src/components/texts';
+import PageLoading from 'src/components/layouts/PageLoading';
+import whitelogo from 'src/assets/logo/whitetextlogo.png';
+import eye from 'src/assets/icon/eye.png';
 
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
-import { incrementAction, getSimpleAjax } from './actions'
-import { NameSpace } from './constants'
-import reducer from './reducer'
-import saga from './saga'
+import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
+import { incrementAction, getSimpleAjax } from './actions';
+import { NameSpace } from './constants';
+import reducer from './reducer';
+import saga from './saga';
 import {
   InferMappedProps,
   SubState,
   UserProps,
   SessionProp,
-  LocationState,
-} from './types'
-import { requestForceCreateUser } from './fetchapi'
-import GenerateDid from './components/GenerateDid'
-import style from './style.module.scss'
+  LocationState
+} from './types';
+import { requestForceCreateUser } from './fetchapi';
+import GenerateDid from './components/GenerateDid';
+import style from './style.module.scss';
 
 export interface ICreateUserResponse {
   data: {
-    return_code: string
-    did: string
-  }
+    return_code: string;
+    did: string;
+  };
 }
 
 const DisplayText = styled(Text16)`
   text-align: center;
   color: green;
   margin-top: 8px;
-`
+`;
 
-const AssociatedProfilePage: React.FC<
-  RouteComponentProps<{}, StaticContext, LocationState>
-> = (props) => {
-  const history = useHistory()
-  const [showModal, setShowModal] = useState(false)
-  const [user, setUser] = useState<UserProps | null>(null)
-  const [screen, setScreen] = useState('')
-  const [associatedInfo, setAssociatedIfno] = useState<SessionProp | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [displayText, setDisplayText] = useState('')
+const AssociatedProfilePage: React.FC<RouteComponentProps<
+  {},
+  StaticContext,
+  LocationState
+>> = props => {
+  const history = useHistory();
+  const [showModal, setShowModal] = useState(false);
+  const [user, setUser] = useState<UserProps | null>(null);
+  const [screen, setScreen] = useState('');
+  const [associatedInfo, setAssociatedIfno] = useState<SessionProp | null>(
+    null
+  );
+  const [loading, setLoading] = useState(false);
+  const [displayText, setDisplayText] = useState('');
 
   useEffect(() => {
     if (!associatedInfo && props.location.state && props.location.state.name) {
@@ -76,8 +84,8 @@ const AssociatedProfilePage: React.FC<
         id,
         request_token,
         service,
-        credential,
-      } = props.location.state
+        credential
+      } = props.location.state;
       setAssociatedIfno({
         name,
         email,
@@ -85,14 +93,14 @@ const AssociatedProfilePage: React.FC<
         id,
         request_token,
         service,
-        credential,
-      })
-      setUser(users[0])
+        credential
+      });
+      setUser(users[0]);
     }
-  }, [associatedInfo])
+  }, [associatedInfo]);
 
   if (!associatedInfo || !user) {
-    return <PageLoading />
+    return <PageLoading />;
   } else if (screen === '/generate-did') {
     return (
       <GenerateDid
@@ -102,7 +110,7 @@ const AssociatedProfilePage: React.FC<
         credential={associatedInfo.credential}
         service={associatedInfo.service}
       />
-    )
+    );
   }
   return (
     <OnBoardLayout>
@@ -110,10 +118,10 @@ const AssociatedProfilePage: React.FC<
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={eye} />
-          <OnBoardLayoutLeftContentTitle className='mt-18px'>
+          <OnBoardLayoutLeftContentTitle className="mt-18px">
             We have seen your social account before.
           </OnBoardLayoutLeftContentTitle>
-          <OnBoardLayoutLeftContentDescription className='mt-25px'>
+          <OnBoardLayoutLeftContentDescription className="mt-25px">
             Sorry, your sign in information has already been linked with another
             profile. You have two options, sign in to the associated profile or
             create a new one.
@@ -129,12 +137,12 @@ const AssociatedProfilePage: React.FC<
           <div className={style['did-select']}>
             <select
               value={user._id}
-              onChange={(event) => {
-                const selectedId = (event.target as HTMLSelectElement).value
+              onChange={event => {
+                const selectedId = (event.target as HTMLSelectElement).value;
                 const selectedIndex = associatedInfo.users.findIndex(
                   (item: UserProps) => item._id === selectedId
-                )
-                setUser(associatedInfo.users[selectedIndex])
+                );
+                setUser(associatedInfo.users[selectedIndex]);
               }}
             >
               {associatedInfo &&
@@ -152,13 +160,13 @@ const AssociatedProfilePage: React.FC<
             profile below.
           </Text16>
           <ButtonWithLogo
-            mode='dark'
+            mode="dark"
             mt={32}
-            text='Sign in to profile'
+            text="Sign in to profile"
             onClick={() => {
-              const signedUserDids = UserService.getSignedUsers()
+              const signedUserDids = UserService.getSignedUsers();
               if (user.did === '') {
-                setShowModal(true)
+                setShowModal(true);
               } else if (
                 signedUserDids &&
                 signedUserDids.length > 0 &&
@@ -167,18 +175,18 @@ const AssociatedProfilePage: React.FC<
                 history.push({
                   pathname: '/unlock-user',
                   state: {
-                    dids: [user.did],
-                  },
-                })
+                    dids: [user.did]
+                  }
+                });
               } else {
                 history.push({
                   pathname: '/sign-did',
                   state: {
                     name: associatedInfo.name,
                     email: associatedInfo.email,
-                    service: AccountType.DID,
-                  },
-                })
+                    service: AccountType.DID
+                  }
+                });
               }
             }}
           />
@@ -190,14 +198,14 @@ const AssociatedProfilePage: React.FC<
           <ButtonWithLogo
             text={loading ? 'Creating your profile now' : 'Create new profile'}
             onClick={async () => {
-              const { name, email, service } = associatedInfo
+              const { name, email, service } = associatedInfo;
               if (service === AccountType.Email) {
-                setLoading(true)
+                setLoading(true);
                 let response = (await requestForceCreateUser(
                   name,
                   email
-                )) as ICreateUserResponse
-                setLoading(false)
+                )) as ICreateUserResponse;
+                setLoading(false);
                 if (
                   response &&
                   response.data &&
@@ -205,10 +213,10 @@ const AssociatedProfilePage: React.FC<
                 ) {
                   setDisplayText(
                     'Verification email is sent to you. Please confirm to complete your registration.'
-                  )
+                  );
                 }
               } else {
-                setScreen('/generate-did')
+                setScreen('/generate-did');
               }
             }}
             mt={42}
@@ -225,21 +233,21 @@ const AssociatedProfilePage: React.FC<
             so please verify first and continue process.
           </Modal.Body>
           <Modal.Footer>
-            <Button variant='primary' onClick={() => setShowModal(false)}>
+            <Button variant="primary" onClick={() => setShowModal(false)}>
               Close
             </Button>
           </Modal.Footer>
         </Modal>
       </OnBoardLayoutRight>
     </OnBoardLayout>
-  )
-}
+  );
+};
 
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg(),
-})
+  msg: makeSelectAjaxMsg()
+});
 
 /** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
@@ -248,9 +256,9 @@ export function mapDispatchToProps(dispatch: any) {
       // eProps - Emitter proptypes thats binds to dispatch
       /** dispatch for counter to increment */
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax()),
-    },
-  }
+      onSimpleAjax: () => dispatch(getSimpleAjax())
+    }
+  };
 }
 
 /**
@@ -260,14 +268,14 @@ export function mapDispatchToProps(dispatch: any) {
 const withInjectedMode = injector(AssociatedProfilePage, {
   key: NameSpace,
   reducer,
-  saga,
-})
+  saga
+});
 
-const withConnect = connect(mapStateToProps, mapDispatchToProps)
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
 export default compose(
   withConnect,
   memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>
+)(withInjectedMode) as React.ComponentType<InferMappedProps>;
 
 // export default Tab1;

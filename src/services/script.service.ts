@@ -1,38 +1,38 @@
-import request from 'src/baseplate/request'
+import request from 'src/baseplate/request';
+import { UserVaultScripts } from 'src/scripts/uservault.script';
 
-import { UserVaultScripts } from 'src/scripts/uservault.script'
-import { UserService, ISessionItem, AccountType } from './user.service'
-import { HiveService } from './hive.service'
-import { DidService } from './did.service'
-import { BasicDTO } from 'src/pages/PublicPage/types'
+import { UserService, ISessionItem, AccountType } from './user.service';
+import { HiveService } from './hive.service';
+import { DidService } from './did.service';
+import { BasicDTO } from 'src/pages/PublicPage/types';
 
 interface TuumScriptUpdateDidUserParams {
-  email: string
-  code: string
-  did: string
-  hiveHost: string
-  accountType: string
-  userToken: string
-  tutorialCompleted: boolean
+  email: string;
+  code: string;
+  did: string;
+  hiveHost: string;
+  accountType: string;
+  userToken: string;
+  tutorialCompleted: boolean;
 }
 
 interface TuumScriptAddDidUserParams {
-  name: string
-  email: string
-  status: string
-  code: string
-  did: string
-  hiveHost: string
-  accountType: AccountType
-  userToken: string
-  tutorialCompleted: boolean
+  name: string;
+  email: string;
+  status: string;
+  code: string;
+  did: string;
+  hiveHost: string;
+  accountType: AccountType;
+  userToken: string;
+  tutorialCompleted: boolean;
 }
 
 interface TuumScriptUpdateUserParams {
-  did: string
-  name: string
-  email: string
-  onBoardingCompleted: boolean
+  did: string;
+  name: string;
+  email: string;
+  onBoardingCompleted: boolean;
 }
 export class TuumTechScriptService {
   private static async runTuumTechScript(script: any) {
@@ -44,33 +44,33 @@ export class TuumTechScriptService {
           Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
           Accept: 'application/json',
           charset: 'utf8',
-          'content-type': 'application/json',
+          'content-type': 'application/json'
         },
-        body: JSON.stringify(script),
+        body: JSON.stringify(script)
       }
-    )
+    );
   }
 
   public static async getUsersWithRegisteredEmail(email: string) {
     const get_users_scripts = {
       name: 'get_users_by_email',
       params: {
-        email: email,
+        email: email
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID,
-      },
-    }
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
 
     let get_users_script_response: any = await this.runTuumTechScript(
       get_users_scripts
-    )
+    );
 
-    let prevUsers = []
-    const { meta, data } = get_users_script_response
+    let prevUsers = [];
+    const { meta, data } = get_users_script_response;
     if (meta && meta.code === 200 && meta.message === 'OK') {
-      const { get_users_by_email } = data
+      const { get_users_by_email } = data;
       if (
         get_users_by_email &&
         get_users_by_email.items &&
@@ -81,16 +81,16 @@ export class TuumTechScriptService {
             status: userItem.status || '',
             did: userItem.did || '',
             email: userItem.email || '',
-            _id: userItem._id.$oid || '',
-          }
-          return newUserItem
-        })
+            _id: userItem._id.$oid || ''
+          };
+          return newUserItem;
+        });
       }
     } else {
       // throw new Error('Error while running get_users script')
-      return []
+      return [];
     }
-    return prevUsers
+    return prevUsers;
   }
 
   public static async updateBasicProfile(basicDTO: ISessionItem) {
@@ -99,14 +99,14 @@ export class TuumTechScriptService {
       params: basicDTO,
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID,
-      },
-    }
-    let response: any = await this.runTuumTechScript(update_user_script)
-    const { data, meta } = response
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+    let response: any = await this.runTuumTechScript(update_user_script);
+    const { data, meta } = response;
     if (meta.code === 200 && meta.message === 'OK') {
     }
-    return response
+    return response;
   }
 
   public static async updateAbout(basicDTO: BasicDTO): Promise<any> {
@@ -115,29 +115,29 @@ export class TuumTechScriptService {
       params: basicDTO,
       context: {
         target_did: UserService.GetUserSession().did,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID,
-      },
-    }
-    let response: any = await this.runTuumTechScript(update_user_script)
-    const { data, meta } = response
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+    let response: any = await this.runTuumTechScript(update_user_script);
+    const { data, meta } = response;
     if (meta.code === 200 && meta.message === 'OK') {
     }
-    return response
+    return response;
   }
 
   public static async searchUserWithDID(did: string) {
     const get_user_by_did_script = {
       name: 'get_user_by_did',
       params: {
-        did,
+        did
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID,
-      },
-    }
-    let response: any = await this.runTuumTechScript(get_user_by_did_script)
-    return response
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+    let response: any = await this.runTuumTechScript(get_user_by_did_script);
+    return response;
   }
 
   public static async updateUserDidInfo(params: TuumScriptUpdateDidUserParams) {
@@ -146,11 +146,10 @@ export class TuumTechScriptService {
       params,
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID,
-      },
-    }
-    let response = await this.runTuumTechScript(add_user_script)
-    console.log('update_user_did_info script response', response)
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+    await this.runTuumTechScript(add_user_script);
   }
 
   public static async addUserToTuumTech(params: TuumScriptAddDidUserParams) {
@@ -159,11 +158,10 @@ export class TuumTechScriptService {
       params,
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID,
-      },
-    }
-    let response = await this.runTuumTechScript(add_user_script)
-    console.log('add_user script response', response)
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+    await this.runTuumTechScript(add_user_script);
   }
 
   public static async updateUser(params: TuumScriptUpdateUserParams) {
@@ -172,33 +170,34 @@ export class TuumTechScriptService {
       params,
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID,
-      },
-    }
-    let response: any = await this.runTuumTechScript(update_user_script)
-    console.log('update_user script response', response)
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+    await this.runTuumTechScript(update_user_script);
   }
 }
 
 export class UserVaultScriptService {
   private static async generateUserToken(mnemonics: string, address: string) {
-    let challenge = await HiveService.getHiveChallenge(address)
+    let challenge = await HiveService.getHiveChallenge(address);
     let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(
       mnemonics,
       '',
       challenge.issuer,
       challenge.nonce
-    )
-    const userToken = await HiveService.getUserHiveToken(address, presentation)
+    );
+    const userToken = await HiveService.getUserHiveToken(address, presentation);
 
-    return userToken
+    return userToken;
   }
   public static async register() {
-    let user = UserService.GetUserSession()
-    user.userToken = await this.generateUserToken(user.mnemonics, user.hiveHost)
-    UserService.updateSession(user)
-    let hiveInstance = await HiveService.getSessionInstance()
-    await UserVaultScripts.Execute(hiveInstance!)
-    console.log('====>successfuly regstered uservaultscripts')
+    let user = UserService.GetUserSession();
+    user.userToken = await this.generateUserToken(
+      user.mnemonics,
+      user.hiveHost
+    );
+    UserService.updateSession(user);
+    let hiveInstance = await HiveService.getSessionInstance();
+    await UserVaultScripts.Execute(hiveInstance!);
   }
 }

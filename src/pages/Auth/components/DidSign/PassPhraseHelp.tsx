@@ -2,14 +2,14 @@
  * Page
  */
 
-import React, { useState } from 'react'
-import { IonButton, IonImg } from '@ionic/react'
-import styled from 'styled-components'
+import React, { useState } from 'react';
+import { IonButton, IonImg } from '@ionic/react';
+import styled from 'styled-components';
 
-import lockImg from '../../../../assets/icon/lock.png'
+import lockImg from '../../../../assets/icon/lock.png';
 
 interface Props {
-  close: () => void
+  close: () => void;
 }
 
 const OnBoardingContainer = styled.div`
@@ -23,7 +23,7 @@ const OnBoardingContainer = styled.div`
   background: rgba(0, 0, 0, 0.62);
   backdrop-filter: blur(10px);
   z-index: 100;
-`
+`;
 
 const OnBoarding = styled.div`
   width: 471px;
@@ -55,13 +55,13 @@ const OnBoarding = styled.div`
     font-weight: bold;
     margin: 0;
   }
-`
+`;
 
 const TopImg = styled(IonImg)`
   width: 38px;
   display: block;
   margin: 0 auto 19px;
-`
+`;
 
 const Content = styled.div`
   padding: 48px 30px 60px;
@@ -117,7 +117,7 @@ const Content = styled.div`
       color: #ff5a5a;
     }
   }
-`
+`;
 
 const CloseBtn = styled(IonButton)`
   --ion-color-primary: #4c6fff !important;
@@ -134,7 +134,7 @@ const CloseBtn = styled(IonButton)`
   font-size: 12px;
   line-height: 12px;
   color: #ffffff;
-`
+`;
 
 const OnBoardingPage: React.FC<Props> = ({ close }) => {
   return (
@@ -155,7 +155,7 @@ const OnBoardingPage: React.FC<Props> = ({ close }) => {
         <CloseBtn onClick={close}>Close</CloseBtn>
       </OnBoarding>
     </OnBoardingContainer>
-  )
-}
+  );
+};
 
-export default OnBoardingPage
+export default OnBoardingPage;
