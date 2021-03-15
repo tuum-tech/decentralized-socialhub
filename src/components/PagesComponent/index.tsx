@@ -1,48 +1,45 @@
-import React, { useEffect, useState } from 'react'
-import { IonGrid, IonRow, IonCol } from '@ionic/react'
-import style from './style.module.scss'
-import google from '../../assets/logo_google.svg'
-import facebook from '../../assets/logo_facebook.svg'
-import twitter from '../../assets/logo_twitter.svg'
-import linkedin from '../../assets/logo_linkedin.svg'
+import React, { useEffect, useState } from 'react';
+import { IonGrid, IonRow, IonCol } from '@ionic/react';
+import style from './style.module.scss';
+import google from '../../assets/logo_google.svg';
+import facebook from '../../assets/logo_facebook.svg';
+import twitter from '../../assets/logo_twitter.svg';
+import linkedin from '../../assets/logo_linkedin.svg';
 
-import { DidService } from 'src/services/did.service'
-import { UserService } from 'src/services/user.service'
+import { DidService } from 'src/services/did.service';
+import { UserService } from 'src/services/user.service';
 import {
-  AssistService,
   IPublishDocumentResponse,
-  RequestStatus,
-} from 'src/services/assist.service'
-import { DidDocumentService } from 'src/services/diddocument.service'
+  RequestStatus
+} from 'src/services/assist.service';
 
 const FollowingList: React.FC = () => {
-  const [googleCredential, setGoogleCredential] = useState('')
-  const [facebookCredential, setFacebookCredential] = useState('')
-  const [twitterCredential, setTwitterCredential] = useState('')
-  const [linkedinCredential, setLinkedinCredential] = useState('')
-  const [publishStatus, setPublishStatus] = useState({ requestStatus: '' })
+  const [googleCredential, setGoogleCredential] = useState('');
+  const [facebookCredential, setFacebookCredential] = useState('');
+  const [twitterCredential, setTwitterCredential] = useState('');
+  const [linkedinCredential, setLinkedinCredential] = useState('');
+  const [publishStatus, setPublishStatus] = useState({ requestStatus: '' });
   const updateValues = async () => {
-    let user = UserService.GetUserSession()
-    let document = await DidService.getDidDocument(user.did)
+    let user = UserService.GetUserSession();
+    let document = await DidService.getDidDocument(user.did);
 
     if (!document) {
-      console.log('document is empty')
-      return
+      return;
     }
     document.verifiableCredential.forEach((item: any) => {
-      let type = item.id.replace(`${user.did}#`, '')
+      let type = item.id.replace(`${user.did}#`, '');
       if (type === 'twitter') {
-        setTwitterCredential(item.credentialSubject[type])
+        setTwitterCredential(item.credentialSubject[type]);
       }
-    })
-  }
+    });
+  };
 
   const setTimer = () => {
     const timer = setTimeout(async () => {
-      await refreshStatus()
-    }, 15 * 1000)
-    return () => clearTimeout(timer)
-  }
+      await refreshStatus();
+    }, 15 * 1000);
+    return () => clearTimeout(timer);
+  };
 
   const refreshStatus = async () => {
     // let publishWaiting = getWaitingPublishItens()
@@ -59,7 +56,6 @@ const FollowingList: React.FC = () => {
     //       window.localStorage.removeItem('publish_' + confirmationId)
     //       await DidDocumentService.reloadUserDocument()
     //   }
-
     //   if (status.requestStatus !== actual.requestStatus) {
     //     if (status.requestStatus === RequestStatus.Completed) {
     //       setPublishStatus({ requestStatus: '' });
@@ -74,28 +70,28 @@ const FollowingList: React.FC = () => {
     //   }
     // })
     // //setTimer()
-  }
+  };
   const getActualStatus = (
     confirmationId: string
   ): IPublishDocumentResponse => {
-    let item = window.localStorage.getItem('publish_' + confirmationId)
-    if (item) return JSON.parse(item)
+    let item = window.localStorage.getItem('publish_' + confirmationId);
+    if (item) return JSON.parse(item);
     return {
       confirmationId: confirmationId,
-      requestStatus: RequestStatus.NotFound,
-    }
-  }
+      requestStatus: RequestStatus.NotFound
+    };
+  };
 
   const getWaitingPublishItens = () => {
-    let response: string[] = []
+    let response: string[] = [];
     for (var i = 0, len = window.localStorage.length; i < len; ++i) {
-      let key = window.localStorage.key(i)
+      let key = window.localStorage.key(i);
       if (key && key.startsWith('publish')) {
-        response.push(key.replace('publish_', ''))
+        response.push(key.replace('publish_', ''));
       }
     }
-    return response
-  }
+    return response;
+  };
 
   const showPublishStatus = () => {
     if (publishStatus['requestStatus']) {
@@ -106,21 +102,21 @@ const FollowingList: React.FC = () => {
             DID Publish {publishStatus.requestStatus}
           </span>
         </div>
-      )
+      );
     } else {
-      return <div></div>
+      return <div></div>;
     }
-  }
+  };
 
-  const openTwitter = () => {}
+  const openTwitter = () => {};
 
   useEffect(() => {
-    ;(async () => {
-      await updateValues()
+    (async () => {
+      await updateValues();
       //await refreshStatus()
-    })()
-    setTimer()
-  }, [])
+    })();
+    setTimer();
+  }, []);
 
   return (
     <div className={style['pagesList']}>
@@ -129,10 +125,10 @@ const FollowingList: React.FC = () => {
       <h1>Verified credentials</h1>
       <IonGrid>
         <IonRow>
-          <IonCol size='*'>
-            <img className={style['thumbnail']} src={google} alt='google' />
+          <IonCol size="*">
+            <img className={style['thumbnail']} src={google} alt="google" />
           </IonCol>
-          <IonCol size='10'>
+          <IonCol size="10">
             <div>
               <span className={style['name']}>Google</span>
             </div>
@@ -144,10 +140,10 @@ const FollowingList: React.FC = () => {
           </IonCol>
         </IonRow>
         <IonRow>
-          <IonCol size='*'>
-            <img className={style['thumbnail']} src={facebook} alt='facebook' />
+          <IonCol size="*">
+            <img className={style['thumbnail']} src={facebook} alt="facebook" />
           </IonCol>
-          <IonCol size='10'>
+          <IonCol size="10">
             <div>
               <span className={style['name']}>Facebook</span>
             </div>
@@ -159,10 +155,10 @@ const FollowingList: React.FC = () => {
           </IonCol>
         </IonRow>
         <IonRow>
-          <IonCol size='*'>
-            <img className={style['thumbnail']} src={twitter} alt='twitter' />
+          <IonCol size="*">
+            <img className={style['thumbnail']} src={twitter} alt="twitter" />
           </IonCol>
-          <IonCol size='10'>
+          <IonCol size="10">
             <span className={style['name']}>Twitter</span>
             <div>
               <span className={style['number-followers']}>
@@ -172,10 +168,10 @@ const FollowingList: React.FC = () => {
           </IonCol>
         </IonRow>
         <IonRow>
-          <IonCol size='*'>
-            <img className={style['thumbnail']} src={linkedin} alt='linkedin' />
+          <IonCol size="*">
+            <img className={style['thumbnail']} src={linkedin} alt="linkedin" />
           </IonCol>
-          <IonCol size='10'>
+          <IonCol size="10">
             <span className={style['name']}>Linkedin</span>
             <div>
               <span className={style['number-followers']}>
@@ -187,7 +183,7 @@ const FollowingList: React.FC = () => {
       </IonGrid>
       {showPublishStatus()}
     </div>
-  )
-}
+  );
+};
 
-export default FollowingList
+export default FollowingList;

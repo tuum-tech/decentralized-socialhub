@@ -12,21 +12,21 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  IonButton,
-} from '@ionic/react'
-import { connect } from 'react-redux'
-import { compose } from 'redux'
-import { createStructuredSelector } from 'reselect'
-import injector from 'src/baseplate/injectorWrap'
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
-import { incrementAction, getSimpleAjax } from './actions'
-import React, { memo, useState } from 'react'
-import style from './style.module.scss'
-import { NameSpace } from './constants'
-import reducer from './reducer'
-import saga from './saga'
-import { InferMappedProps, SubState } from './types'
-import { fetchSimpleApi } from './fetchapi'
+  IonButton
+} from '@ionic/react';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { createStructuredSelector } from 'reselect';
+import injector from 'src/baseplate/injectorWrap';
+import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
+import { incrementAction, getSimpleAjax } from './actions';
+import React, { memo, useState } from 'react';
+import style from './style.module.scss';
+import { NameSpace } from './constants';
+import reducer from './reducer';
+import saga from './saga';
+import { InferMappedProps, SubState } from './types';
+import { fetchSimpleApi } from './fetchapi';
 
 import {
   OnBoardLayout,
@@ -37,12 +37,12 @@ import {
   OnBoardLayoutLeftContentIntro,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
-  WavingHandImg,
-} from 'src/components/layouts/OnBoardLayout'
-import { ButtonLink, ArrowButton } from 'src/components/buttons'
+  WavingHandImg
+} from 'src/components/layouts/OnBoardLayout';
+import { ButtonLink, ArrowButton } from 'src/components/buttons';
 
-import whitelogo from 'src/assets/logo/whitetextlogo.png'
-import wavinghand from 'src/assets/icon/wavinghand.png'
+import whitelogo from 'src/assets/logo/whitetextlogo.png';
+import wavinghand from 'src/assets/icon/wavinghand.png';
 
 const SignHelpPage: React.FC<InferMappedProps> = ({
   eProps,
@@ -60,32 +60,32 @@ const SignHelpPage: React.FC<InferMappedProps> = ({
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={wavinghand} />
-          <OnBoardLayoutLeftContentTitle className='mt-18px'>
+          <OnBoardLayoutLeftContentTitle className="mt-18px">
             What is elastOS?
           </OnBoardLayoutLeftContentTitle>
-          <OnBoardLayoutLeftContentDescription className='mt-25px'>
+          <OnBoardLayoutLeftContentDescription className="mt-25px">
             Don’t forget to fill out as much of your profile as you can. You
             will earn badges and be set up for the future - where you can earn
             off your data, under your control!
           </OnBoardLayoutLeftContentDescription>
-          <OnBoardLayoutLeftContentIntro className='my-25px'>
+          <OnBoardLayoutLeftContentIntro className="my-25px">
             Download for iOS here or Android here
           </OnBoardLayoutLeftContentIntro>
-          <ButtonLink width={26} to='/sign-qr'>
+          <ButtonLink width={26} to="/sign-qr">
             <ArrowButton />
           </ButtonLink>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight></OnBoardLayoutRight>
     </OnBoardLayout>
-  )
-}
+  );
+};
 
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg(),
-})
+  msg: makeSelectAjaxMsg()
+});
 
 /** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
@@ -94,9 +94,9 @@ export function mapDispatchToProps(dispatch: any) {
       // eProps - Emitter proptypes thats binds to dispatch
       /** dispatch for counter to increment */
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax()),
-    },
-  }
+      onSimpleAjax: () => dispatch(getSimpleAjax())
+    }
+  };
 }
 
 /**
@@ -106,14 +106,14 @@ export function mapDispatchToProps(dispatch: any) {
 const withInjectedMode = injector(SignHelpPage, {
   key: NameSpace,
   reducer,
-  saga,
-})
+  saga
+});
 
-const withConnect = connect(mapStateToProps, mapDispatchToProps)
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
 export default compose(
   withConnect,
   memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>
+)(withInjectedMode) as React.ComponentType<InferMappedProps>;
 
 // export default Tab1;

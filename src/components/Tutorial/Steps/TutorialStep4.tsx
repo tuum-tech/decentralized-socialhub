@@ -1,11 +1,12 @@
-import { IonButton } from '@ionic/react'
-import React, { useState } from 'react'
-import style from '../style.module.scss'
-import { ITutorialStepProp } from './TutorialStep1'
-import badge from '../../../assets/TutorialBagde.svg'
+import React from 'react';
+import { IonButton } from '@ionic/react';
+import style from '../style.module.scss';
+import { ITutorialStepProp } from './TutorialStep1';
+
+import badge from '../../../assets/TutorialBagde.svg';
 
 const TutorialStep4Component: React.FC<ITutorialStepProp> = ({
-  onContinue,
+  onContinue
 }) => {
   return (
     <div>
@@ -27,7 +28,7 @@ const TutorialStep4Component: React.FC<ITutorialStepProp> = ({
         Continue
       </IonButton>
     </div>
-  )
-}
+  );
+};
 
-export default TutorialStep4Component
+export default TutorialStep4Component;

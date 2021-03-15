@@ -17,12 +17,12 @@ import { InferMappedProps, SubState } from './types';
 import {
   requestLinkedinLogin,
   requestGoogleLogin,
-  requestFacebookLogin,
+  requestFacebookLogin
 } from './fetchapi';
-import Header from 'src/components/Header';
+import Header from 'src/components/layouts/Header';
 import ClearlyMeContent from 'src/components/ClearlyMeContent';
-import ButtonDefault from 'src/components/ButtonDefault';
-import ButtonLight from 'src/components/ButtonLight';
+import ButtonDefault from 'src/components/buttons/ButtonDefault';
+import ButtonLight from 'src/components/buttons/ButtonLight';
 import SocialLoginLink from 'src/components/SocialLoginLink';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 // import MnemonicContext from 'src/context/MnemonicContext';
@@ -49,7 +49,6 @@ const HomePage: React.FC<InferMappedProps> = ({
 
     // gets the linkedin auth endpoint
     const url = (await requestLinkedinLogin()) as MyType;
-    console.log(url.data);
 
     // redirects
     window.location.href = url.data;
@@ -60,7 +59,6 @@ const HomePage: React.FC<InferMappedProps> = ({
 
     // gets the linkedin auth endpoint
     const url = (await requestFacebookLogin()) as MyType;
-    console.log(url.data);
 
     // redirects
     window.location.href = url.data;
@@ -71,7 +69,6 @@ const HomePage: React.FC<InferMappedProps> = ({
 
     // gets the linkedin auth endpoint
     const url = (await requestGoogleLogin()) as MyType;
-    console.log(url.data);
 
     // redirects
     window.location.href = url.data;
@@ -82,7 +79,6 @@ const HomePage: React.FC<InferMappedProps> = ({
 
     // gets the linkedin auth endpoint
     const response = (await TwitterApi.GetRequestToken()) as MyType;
-    console.log(response.data.request_token);
 
     // redirects
     window.location.replace(
@@ -108,50 +104,50 @@ const HomePage: React.FC<InferMappedProps> = ({
           <br />
           <br />
           <div style={{ textAlign: 'center' }}>
-            <ButtonDefault href='/login/elastos/mnemonic'>
+            <ButtonDefault href="/login/elastos/mnemonic">
               Sign in with DID
             </ButtonDefault>
           </div>
 
           <div style={{ textAlign: 'center' }}>
-            <ButtonLight href='/create'>Create New DID</ButtonLight>
+            <ButtonLight href="/create">Create New DID</ButtonLight>
           </div>
 
           {/* <ButtonGhost /> */}
           <br />
           <p>Continue with</p>
-          <div className='social-login'>
-            <SocialLoginLink href='/login/elastos/qrcode'>
+          <div className="social-login">
+            <SocialLoginLink href="/login/elastos/qrcode">
               <IonImg
-                src='../../assets/logo_elastos.svg'
+                src="../../assets/logo_elastos.svg"
                 style={{ minWidth: '24px' }}
               />
             </SocialLoginLink>
             <SocialLoginLink>
               <IonImg
                 onClick={googlelogin}
-                src='../../assets/logo_google.svg'
+                src="../../assets/logo_google.svg"
                 style={{ minWidth: '24px' }}
               />
             </SocialLoginLink>
             <SocialLoginLink>
               <IonImg
                 onClick={linkedinlogin}
-                src='../../assets/logo_linkedin.svg'
+                src="../../assets/logo_linkedin.svg"
                 style={{ minWidth: '24px' }}
               />
             </SocialLoginLink>
             <SocialLoginLink>
               <IonImg
                 onClick={twitterlogin}
-                src='../../assets/logo_twitter.svg'
+                src="../../assets/logo_twitter.svg"
                 style={{ minWidth: '24px' }}
               />
             </SocialLoginLink>
             <SocialLoginLink>
               <IonImg
                 onClick={facebooklogin}
-                src='../../assets/logo_facebook.svg'
+                src="../../assets/logo_facebook.svg"
                 style={{ minWidth: '24px' }}
               />
             </SocialLoginLink>
@@ -165,7 +161,7 @@ const HomePage: React.FC<InferMappedProps> = ({
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg(),
+  msg: makeSelectAjaxMsg()
 });
 
 /** @returns {object} Contains dispatchable props */
@@ -175,8 +171,8 @@ export function mapDispatchToProps(dispatch: any) {
       // eProps - Emitter proptypes thats binds to dispatch
       /** dispatch for counter to increment */
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax()),
-    },
+      onSimpleAjax: () => dispatch(getSimpleAjax())
+    }
   };
 }
 
@@ -187,7 +183,7 @@ export function mapDispatchToProps(dispatch: any) {
 const withInjectedMode = injector(HomePage, {
   key: NameSpace,
   reducer,
-  saga,
+  saga
 });
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);

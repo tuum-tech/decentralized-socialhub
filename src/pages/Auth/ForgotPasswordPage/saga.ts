@@ -5,17 +5,16 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { Actions } from './constants';
 import { simpleAjaxAction } from './actions';
-import {fetchSimpleApi} from './fetchapi';
-
+import { fetchSimpleApi } from './fetchapi';
 
 /**
  * Github repos request/response handler
  */
 export function* getAjaxMsg() {
-  // Select username from store  
+  // Select username from store
   try {
     // Call our request helper (see 'utils/request')
-    const msg = yield call(fetchSimpleApi);    
+    const msg = yield call(fetchSimpleApi);
     yield put(simpleAjaxAction({ msg }));
   } catch (err) {
     console.error(err);

@@ -1,4 +1,4 @@
-import request, { BaseplateResp } from 'src/baseplate/request'
+import request, { BaseplateResp } from 'src/baseplate/request';
 
 export function requestTwitterToken(
   code: string,
@@ -7,11 +7,11 @@ export function requestTwitterToken(
   let body = JSON.stringify(
     {
       token: code,
-      verifier: state,
+      verifier: state
     },
     null,
     ''
-  )
+  );
   return request(
     `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/twitter_callback`,
     {
@@ -19,9 +19,9 @@ export function requestTwitterToken(
       headers: {
         'content-type': 'application/json',
         Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
-        Accept: 'application/json',
+        Accept: 'application/json'
       },
-      body: body,
+      body: body
     }
-  )
+  );
 }

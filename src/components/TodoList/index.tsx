@@ -48,7 +48,7 @@ const ItemTxtColum = styled(IonCol)`
   font-weight: normal;
   line-height: 1.43;
   letter-spacing: 0.25px;
-  color: ${(props) => (props.color ? props.color : 'rgba(0, 0, 0, 0.6)')};
+  color: ${props => (props.color ? props.color : 'rgba(0, 0, 0, 0.6)')};
 `;
 
 interface IProps {
@@ -60,7 +60,7 @@ interface IProps {
 const TodoList: React.FC<IProps> = ({
   title,
   targetList,
-  accomplishedList,
+  accomplishedList
 }) => {
   const [showMore, setShowMore] = useState(false);
 
@@ -89,11 +89,11 @@ const TodoList: React.FC<IProps> = ({
     const isDone = accomplishedList.includes(text);
     return (
       <ItemRow key={`todoItem_${text}`}>
-        <ItemImgColum size='auto'>
+        <ItemImgColum size="auto">
           {isDone ? (
-            <img src={checkgreen} alt='check' />
+            <img src={checkgreen} alt="check" />
           ) : (
-            <img src={check} alt='task' />
+            <img src={check} alt="task" />
           )}
         </ItemImgColum>
         <ItemTxtColum color={isDone ? '#00b715' : 'rgba(0, 0, 0, 0.6)'}>

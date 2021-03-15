@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 //   const [isLogged, setIsLogged] = useState(false);
-  
+
 //   const [mnemonic, setMnemonic] = useState([
 //     "-",
 //     "-",
@@ -19,22 +19,9 @@ import React, { useState } from 'react';
 //   const [did, setDid] = useState(null);
 
 const MnemonicContext = React.createContext({
-    mnemonic: [
-            "-",
-            "-",
-            "-",
-            "-",
-            "-",
-            "-",
-            "-",
-            "-",
-            "-",
-            "-",
-            "-",
-            "-",
-          ],
-    did: null,
-    isLogged: false
+  mnemonic: ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+  did: null,
+  isLogged: false
 });
 // const MnemonicContext = React.createContext({
 //     mnemonic,

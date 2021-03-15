@@ -9,13 +9,10 @@ const pageState = (state: any): SubState => state[NameSpace] || initialState;
 const makeSelectCounter = () =>
   createSelector(
     pageState,
-    (simplePageState: SubState) => simplePageState.counter,
+    (simplePageState: SubState) => simplePageState.counter
   );
 
 const makeSelectAjaxMsg = () =>
-  createSelector(
-    pageState,
-    (simplePageState: SubState) => simplePageState.msg,
-  );
+  createSelector(pageState, (simplePageState: SubState) => simplePageState.msg);
 
 export { pageState, makeSelectCounter, makeSelectAjaxMsg };

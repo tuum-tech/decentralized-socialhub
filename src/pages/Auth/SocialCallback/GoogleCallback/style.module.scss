@@ -1,10 +1,9 @@
 .elastosmnemonicpage {
-
   .main-container {
     width: 502px;
     margin: 100px auto;
     height: 625px;
-    background: #FFFFFF 0% 0% no-repeat padding-box;
+    background: #ffffff 0% 0% no-repeat padding-box;
     box-shadow: 0px 3px 3px #00000015;
     border: 2px solid lightgreen;
     opacity: 1;
@@ -16,12 +15,12 @@
     flex-direction: column;
     text-align: center;
   }
-  
+
   h1 {
     text-align: center;
     font: normal normal bold 38px/44px Open Sans;
     letter-spacing: 0px;
-    color: #0F358E;
+    color: #0f358e;
     opacity: 1;
     margin-top: 5%;
   }
@@ -29,7 +28,7 @@
   p {
     font: normal normal normal 16px/19px Open Sans;
     letter-spacing: 0px;
-    color: #595F6F;
+    color: #595f6f;
     opacity: 1;
   }
 
@@ -56,17 +55,17 @@
       top: 7px;
       width: 28px;
       height: 28px;
-      background-color: #F5F5FA;
+      background-color: #f5f5fa;
       color: #0f358e;
       border-radius: 50%;
       border: 1px solid #bfc4ce;
       text-align: center;
       line-height: 25px;
       font-size: 12px;
-    }    
+    }
   }
-  
-  .addressInput{
+
+  .addressInput {
     width: 90%;
     position: relative;
     height: 41px;
@@ -84,7 +83,7 @@
     color: #0f358e;
   }
 
-  .loginInput{
+  .loginInput {
     width: 100%;
     position: relative;
     height: 41px;

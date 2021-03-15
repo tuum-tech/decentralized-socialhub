@@ -1,16 +1,16 @@
 /**
  * Page
  */
-import React, { useEffect, useState } from 'react'
-import { Redirect, RouteComponentProps } from 'react-router'
+import React, { useEffect, useState } from 'react';
+import { Redirect, RouteComponentProps } from 'react-router';
 
-import PageLoading from 'src/components/layouts/PageLoading'
-import { AccountType } from 'src/services/user.service'
+import PageLoading from 'src/components/layouts/PageLoading';
+import { AccountType } from 'src/services/user.service';
 
-import { requestTwitterToken } from './fetchapi'
-import { TokenResponse } from './types'
+import { requestTwitterToken } from './fetchapi';
+import { TokenResponse } from './types';
 
-const TwitterCallback: React.FC<RouteComponentProps> = (props) => {
+const TwitterCallback: React.FC<RouteComponentProps> = props => {
   /**
    * Direct method implementation without SAGA
    * This was to show you dont need to put everything to global state
@@ -21,8 +21,8 @@ const TwitterCallback: React.FC<RouteComponentProps> = (props) => {
     name: '',
     email: '',
     request_token: '',
-    credential: '',
-  })
+    credential: ''
+  });
 
   const getToken = async (
     oauth_token: string,
@@ -31,34 +31,34 @@ const TwitterCallback: React.FC<RouteComponentProps> = (props) => {
     return (await requestTwitterToken(
       oauth_token,
       oauth_verifier
-    )) as TokenResponse
-  }
+    )) as TokenResponse;
+  };
 
   let oauth_token: string =
-    new URLSearchParams(props.location.search).get('oauth_token') || ''
+    new URLSearchParams(props.location.search).get('oauth_token') || '';
   let oauth_verifier: string =
-    new URLSearchParams(props.location.search).get('oauth_verifier') || ''
+    new URLSearchParams(props.location.search).get('oauth_verifier') || '';
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       if (
         oauth_token !== '' &&
         oauth_verifier !== '' &&
         credentials.request_token === ''
       ) {
-        let t = await getToken(oauth_token, oauth_verifier)
-        let items: string[] = atob(t.data.response).split(';')
-        const name = items[0]
-        const uniqueEmail = name.replace(' ', '') + items[1] + '@twitter.com'
+        let t = await getToken(oauth_token, oauth_verifier);
+        let items: string[] = atob(t.data.response).split(';');
+        const name = items[0];
+        const uniqueEmail = name.replace(' ', '') + items[1] + '@twitter.com';
         setCredentials({
           name,
           request_token: `${oauth_token}[-]${oauth_verifier}`,
           email: uniqueEmail.toLocaleLowerCase(),
-          credential: items[1].toString(),
-        })
+          credential: items[1].toString()
+        });
       }
-    })()
-  })
+    })();
+  });
 
   const getRedirect = () => {
     if (credentials.request_token !== '') {
@@ -71,15 +71,15 @@ const TwitterCallback: React.FC<RouteComponentProps> = (props) => {
               request_token: credentials.request_token,
               email: credentials.email,
               credential: credentials.credential,
-              service: AccountType.Twitter,
-            },
+              service: AccountType.Twitter
+            }
           }}
         />
-      )
+      );
     }
-    return <PageLoading />
-  }
-  return getRedirect()
-}
+    return <PageLoading />;
+  };
+  return getRedirect();
+};
 
-export default TwitterCallback
+export default TwitterCallback;

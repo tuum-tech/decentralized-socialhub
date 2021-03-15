@@ -1,7 +1,3 @@
-/**
- * Page
- */
-
 import React from 'react';
 
 import { IonInput, IonLabel } from '@ionic/react';
@@ -17,16 +13,16 @@ interface Props {
   disabled?: boolean;
   onChange: (e: any) => void;
   type?:
-  | 'number'
-  | 'text'
-  | 'time'
-  | 'date'
-  | 'email'
-  | 'password'
-  | 'search'
-  | 'tel'
-  | 'url'
-  | undefined;
+    | 'number'
+    | 'text'
+    | 'time'
+    | 'date'
+    | 'email'
+    | 'password'
+    | 'search'
+    | 'tel'
+    | 'url'
+    | undefined;
 }
 
 const SmallTextInput: React.FC<Props> = ({
@@ -59,7 +55,7 @@ const SmallTextInput: React.FC<Props> = ({
         name={name}
         className={style['textinput_field']}
         placeholder={placeholder}
-        onIonChange={(e) => onChange(e)}
+        onIonChange={e => onChange(e)}
         disabled={disabled}
       />
     </div>

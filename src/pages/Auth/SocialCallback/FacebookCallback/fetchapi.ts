@@ -1,5 +1,5 @@
-import request, { BaseplateResp } from 'src/baseplate/request'
-import { FacebookId } from './types'
+import request, { BaseplateResp } from 'src/baseplate/request';
+import { FacebookId } from './types';
 
 export function requestFacebookToken(
   code: string,
@@ -12,25 +12,25 @@ export function requestFacebookToken(
       headers: {
         'content-type': 'text/plain',
         Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
-        Accept: 'application/json',
-      },
+        Accept: 'application/json'
+      }
     }
-  )
+  );
 }
 
 export async function requestFacebookId(token: string): Promise<FacebookId> {
-  const url = `https://graph.facebook.com/me?access_token=${token}`
+  const url = `https://graph.facebook.com/me?access_token=${token}`;
   const response = await fetch(url, {
-    method: 'GET',
-  })
-  const json = await response.json()
-  const name = json.name
-  const uniqueEmail = name.replace(' ', '') + '@facebook.com'
+    method: 'GET'
+  });
+  const json = await response.json();
+  const name = json.name;
+  const uniqueEmail = name.replace(' ', '') + '@facebook.com';
 
   return {
     id: json.id,
     name,
     credential: json.name,
-    email: uniqueEmail.toLocaleLowerCase(),
-  }
+    email: uniqueEmail.toLocaleLowerCase()
+  };
 }

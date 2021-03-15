@@ -1,26 +1,26 @@
-import { HiveClient } from '@elastos/elastos-hive-js-sdk'
+import { HiveClient } from '@elastos/elastos-hive-js-sdk';
 // import { all } from 'redux-saga/effects';
 
 export class UserVaultScripts {
   static async Execute(hiveClient: HiveClient) {
-    console.log('Enter uservaultscripts')
+    console.log('Enter uservaultscripts');
 
-    await this.CreateCollections(hiveClient)
-    await this.SetScripts(hiveClient)
+    await this.CreateCollections(hiveClient);
+    await this.SetScripts(hiveClient);
   }
 
   static async CreateCollections(hiveClient: HiveClient) {
-    await hiveClient.Database.createCollection('following')
-    await hiveClient.Database.createCollection('userdetails')
-    await hiveClient.Database.createCollection('basic_profile')
-    await hiveClient.Database.createCollection('education_profile')
-    await hiveClient.Database.createCollection('experience_profile')
+    await hiveClient.Database.createCollection('following');
+    await hiveClient.Database.createCollection('userdetails');
+    await hiveClient.Database.createCollection('basic_profile');
+    await hiveClient.Database.createCollection('education_profile');
+    await hiveClient.Database.createCollection('experience_profile');
   }
 
   static async SetScripts(hiveClient: HiveClient) {
-    await this.SetScriptGetFollowing(hiveClient)
-    await this.SetScriptsForUserDetails(hiveClient)
-    await this.SetScriptsForProfile(hiveClient)
+    await this.SetScriptGetFollowing(hiveClient);
+    await this.SetScriptsForUserDetails(hiveClient);
+    await this.SetScriptsForProfile(hiveClient);
   }
 
   static async SetScriptsForProfile(hiveClient: HiveClient) {
@@ -33,10 +33,10 @@ export class UserVaultScripts {
         name: 'get_basic_profile',
         output: true,
         body: {
-          collection: 'basic_profile',
-        },
-      },
-    })
+          collection: 'basic_profile'
+        }
+      }
+    });
 
     await hiveClient.Scripting.SetScript({
       name: 'get_education_profile',
@@ -47,10 +47,10 @@ export class UserVaultScripts {
         name: 'get_education_profile',
         output: true,
         body: {
-          collection: 'education_profile',
-        },
-      },
-    })
+          collection: 'education_profile'
+        }
+      }
+    });
 
     await hiveClient.Scripting.SetScript({
       name: 'get_experience_profile',
@@ -61,10 +61,10 @@ export class UserVaultScripts {
         name: 'get_experience_profile',
         output: true,
         body: {
-          collection: 'experience_profile',
-        },
-      },
-    })
+          collection: 'experience_profile'
+        }
+      }
+    });
 
     await hiveClient.Scripting.SetScript({
       name: 'get_full_profile',
@@ -79,28 +79,28 @@ export class UserVaultScripts {
             name: 'get_basic',
             output: true,
             body: {
-              collection: 'basic_profile',
-            },
+              collection: 'basic_profile'
+            }
           },
           {
             type: 'find',
             name: 'get_education_profile',
             output: true,
             body: {
-              collection: 'education_profile',
-            },
+              collection: 'education_profile'
+            }
           },
           {
             type: 'find',
             name: 'get_experience_profile',
             output: true,
             body: {
-              collection: 'experience_profile',
-            },
-          },
-        ],
-      },
-    })
+              collection: 'experience_profile'
+            }
+          }
+        ]
+      }
+    });
     await hiveClient.Scripting.SetScript({
       name: 'update_basic_profile',
       allowAnonymousUser: true,
@@ -111,20 +111,20 @@ export class UserVaultScripts {
         body: {
           collection: 'basic_profile',
           filter: {
-            did: '$params.did',
+            did: '$params.did'
           },
           update: {
             $set: {
-              about: '$params.about',
+              about: '$params.about'
             }
           },
           options: {
             upsert: true,
-            bypass_document_validation: false,
-          },
-        },
-      },
-    })
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
 
     await hiveClient.Scripting.SetScript({
       name: 'update_education_profile',
@@ -136,7 +136,7 @@ export class UserVaultScripts {
         body: {
           collection: 'education_profile',
           filter: {
-            guid: '$params.guid',
+            guid: '$params.guid'
           },
           update: {
             $set: {
@@ -145,16 +145,16 @@ export class UserVaultScripts {
               institution: '$params.institution',
               start: '$params.start',
               end: '$params.end',
-              description: '$params.description',
-            },
+              description: '$params.description'
+            }
           },
           options: {
             upsert: true,
-            bypass_document_validation: false,
-          },
-        },
-      },
-    })
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
 
     await hiveClient.Scripting.SetScript({
       name: 'update_experience_profile',
@@ -166,7 +166,7 @@ export class UserVaultScripts {
         body: {
           collection: 'experience_profile',
           filter: {
-            guid: '$params.guid',
+            guid: '$params.guid'
           },
           update: {
             $set: {
@@ -175,18 +175,18 @@ export class UserVaultScripts {
               institution: '$params.institution',
               start: '$params.start',
               end: '$params.end',
-              description: '$params.description',
-            },
+              description: '$params.description'
+            }
           },
           options: {
             upsert: true,
-            bypass_document_validation: false,
-          },
-        },
-      },
-    })
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
     await hiveClient.Scripting.SetScript({
-      name: "remove_education_item",
+      name: 'remove_education_item',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
       executable: {
@@ -195,11 +195,11 @@ export class UserVaultScripts {
         body: {
           collection: 'education_profile',
           filter: {
-            guid: '$params.guid',
+            guid: '$params.guid'
           }
         }
       }
-    })
+    });
 
     await hiveClient.Scripting.SetScript({
       name: 'remove_experience_item',
@@ -211,15 +211,12 @@ export class UserVaultScripts {
         body: {
           collection: 'experience_profile',
           filter: {
-            guid: '$params.guid',
+            guid: '$params.guid'
           }
         }
       }
-    })
-
-
+    });
   }
-
 
   static async SetScriptGetFollowing(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
@@ -231,13 +228,11 @@ export class UserVaultScripts {
         name: 'get_following',
         output: true,
         body: {
-          collection: 'following',
-        },
-      },
-    })
+          collection: 'following'
+        }
+      }
+    });
   }
-
-
 
   static async SetGetPublicInfo(hiveClient: HiveClient) {
     hiveClient.Scripting.SetScript({
@@ -247,10 +242,10 @@ export class UserVaultScripts {
         name: 'get_public_info',
         output: true,
         body: {
-          collection: 'following',
-        },
-      },
-    })
+          collection: 'following'
+        }
+      }
+    });
   }
 
   static async SetScriptsForUserDetails(hiveClient: HiveClient) {
@@ -263,12 +258,12 @@ export class UserVaultScripts {
           collection: 'userdetails',
           document: {
             category: '$params.category',
-            data: '$params.data',
+            data: '$params.data'
           },
-          options: { bypass_document_validation: false },
-        },
-      },
-    })
+          options: { bypass_document_validation: false }
+        }
+      }
+    });
     hiveClient.Scripting.SetScript({
       name: 'get_all_userdetails',
       executable: {
@@ -276,10 +271,10 @@ export class UserVaultScripts {
         name: 'get_all_userdetails',
         output: true,
         body: {
-          collection: 'userdetails',
-        },
-      },
-    })
+          collection: 'userdetails'
+        }
+      }
+    });
     hiveClient.Scripting.SetScript({
       name: 'find_category_data',
       executable: {
@@ -289,11 +284,11 @@ export class UserVaultScripts {
         body: {
           collection: 'userdetails',
           filter: {
-            category: '$params.category',
-          },
-        },
-      },
-    })
+            category: '$params.category'
+          }
+        }
+      }
+    });
     hiveClient.Scripting.SetScript({
       name: 'update_category_data',
       executable: {
@@ -303,15 +298,15 @@ export class UserVaultScripts {
         body: {
           collection: 'userdetails',
           filter: {
-            category: '$params.category',
+            category: '$params.category'
           },
           update: {
             $set: {
-              data: '$params.data',
-            },
-          },
-        },
-      },
-    })
+              data: '$params.data'
+            }
+          }
+        }
+      }
+    });
   }
 }

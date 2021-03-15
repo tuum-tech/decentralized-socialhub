@@ -3,18 +3,18 @@
  */
 
 export interface TokenContent {
-  request_token: string
-  expires_in: string
-  response: string
+  request_token: string;
+  expires_in: string;
+  response: string;
 }
 
 export interface TokenResponse {
-  data: TokenContent
+  data: TokenContent;
 }
 
 export interface TwitterId {
-  id: string
-  name: string
-  email: string
-  credential: string
+  id: string;
+  name: string;
+  email: string;
+  credential: string;
 }
