@@ -116,7 +116,7 @@ const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
 
           <FieldDivider mt={80} />
           <ButtonWithLogo
-            text="Creating proifle now"
+            text="Create new profile"
             onClick={changeMode}
             mt={42}
           />
