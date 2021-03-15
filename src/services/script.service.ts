@@ -199,5 +199,6 @@ export class UserVaultScriptService {
     UserService.updateSession(user)
     let hiveInstance = await HiveService.getSessionInstance()
     await UserVaultScripts.Execute(hiveInstance!)
+    console.log('====>successfuly regstered uservaultscripts')
   }
 }

@@ -272,8 +272,7 @@ export class UserService {
         }
         SessionService.saveSessionItem(instance)
         await UserVaultScriptService.register()
-        // return instance
-        return null
+        return instance
       }
       return
     } catch (error) {

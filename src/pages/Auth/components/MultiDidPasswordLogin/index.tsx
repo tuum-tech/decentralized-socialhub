@@ -104,12 +104,12 @@ const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
             onClick={async () => {
               setLoading(true)
               const res = await UserService.UnLockWithDIDAndPwd(did, password)
-              setLoading(false)
               if (res) {
                 window.location.href = '/profile'
                 return
               } else {
                 setError('User Not found secured by this password')
+                setLoading(false)
               }
             }}
           />
