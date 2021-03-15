@@ -100,6 +100,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   useEffect(() => {
     (async () => {
       try {
+      
         let userInfo = await UserService.SearchUserWithDID(did);
         setUserInfo(userInfo as any);
       } catch (e) {
