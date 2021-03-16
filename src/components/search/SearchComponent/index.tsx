@@ -59,34 +59,44 @@ const SearchComponent: React.FC = () => {
   }, []);
 
   const loadData = async () => {
+    if (searchService.appHiveClient) {
+      try {
+        let listUniversities: any = await searchService.getUniversities(
+          '',
+          200,
+          0
+        );
+        setFilteredUniversities(listUniversities.response);
+      } catch (e) {
+        setFilteredUniversities({ get_universities: { items: [] } });
+        alertError(null, 'cant load universities');
+        return;
+      }
+
+      try {
+        let listUsers: any = await searchService.getUsers('', 200, 0);
+        setFilteredUsers(listUsers.response);
+      } catch (e) {
+        setFilteredUsers({ get_users: { items: [] } });
+        alertError(null, 'cant load users');
+        return;
+      }
+    }
+
+    let user = UserService.GetUserSession();
+    let profileServiceUserInstance;
+
     try {
-      let listUniversities: any = await searchService.getUniversities(
-        '',
-        200,
-        0
-      );
-      setFilteredUniversities(listUniversities.response);
+      profileServiceUserInstance = await getUserHiveInstance();
     } catch (e) {
-      setFilteredUniversities({ get_universities: { items: [] } });
-      alertError(null, 'cant load universities');
+      console.log(null, 'could not get user vault instance');
+      alertError(null, 'could not get user vault instance');
       return;
     }
 
     try {
-      let listUsers: any = await searchService.getUsers('', 200, 0);
-      setFilteredUsers(listUsers.response);
-    } catch (e) {
-      setFilteredUsers({ get_users: { items: [] } });
-      alertError(null, 'cant load users');
-      return;
-    }
-
-    try {
-      let user = UserService.GetUserSession();
-
-      if (user && user.did) {
+      if (user && user.did && profileServiceUserInstance.hiveClient) {
         //Get Following
-        let profileServiceUserInstance = await getUserHiveInstance();
         let following = await profileServiceUserInstance.getFollowings(
           user.did
         );
@@ -119,12 +129,14 @@ const SearchComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    if (searchQuery !== '' && searchQuery.length > 2) {
-      invokeSearch(searchQuery);
-    } else if (searchQuery == '') {
-      setSearchQuery('');
-      loadData();
-    }
+    (async () => {
+      if (searchQuery !== '' && searchQuery.length > 2) {
+        invokeSearch(searchQuery);
+      } else if (searchQuery == '') {
+        setSearchQuery('');
+        await loadData();
+      }
+    })();
   }, [searchQuery]);
 
   const search = (e: any) => {

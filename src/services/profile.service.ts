@@ -229,7 +229,10 @@ export class ProfileService {
       // TODO: handle this better
       followersList = followersResponse.get_followers.items[0].followers;
 
-    followersList = followersList.filter(item => item !== did);
+    const sDid = this.getSessionDid();
+    if (sDid !== '') {
+      followersList = followersList.filter(item => item !== sDid);
+    }
 
     let uniqueItems = [...new Set(followersList)]; // distinct
 
@@ -240,6 +243,10 @@ export class ProfileService {
         params: {
           did: did,
           followers: uniqueItems
+        },
+        context: {
+          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
         }
       });
     } else {
@@ -248,6 +255,10 @@ export class ProfileService {
         params: {
           did: did,
           followers: uniqueItems
+        },
+        context: {
+          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
         }
       });
     }
@@ -287,6 +298,10 @@ export class ProfileService {
         params: {
           did: did,
           followers: uniqueItems
+        },
+        context: {
+          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
         }
       });
     } else {
@@ -295,6 +310,10 @@ export class ProfileService {
         params: {
           did: did,
           followers: uniqueItems
+        },
+        context: {
+          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
         }
       });
     }
