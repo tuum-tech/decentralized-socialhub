@@ -88,6 +88,7 @@ const GenerateDidPage: React.FC<RouteComponentProps<
               ''
             );
             window.location.href = '/profile';
+            setLoading(false);
           }}
         />
         <LoadingIndicator loadingText="Encrypting Now..." />

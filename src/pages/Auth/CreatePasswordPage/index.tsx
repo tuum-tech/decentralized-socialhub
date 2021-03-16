@@ -91,6 +91,7 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
     setLoading(true);
     await UserService.LockWithDIDAndPwd(session, password);
     window.location.href = '/profile';
+    setLoading(false);
   };
 
   return (
