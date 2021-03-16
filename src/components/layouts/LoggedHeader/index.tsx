@@ -69,9 +69,11 @@ const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
 
   const updateUserToComplete = async () => {
     let userSession = UserService.GetUserSession();
-    userSession.isDIDPublished = true;
-    UserService.updateSession(userSession);
-    await DidDocumentService.reloadUserDocument();
+    if (userSession) {
+      userSession.isDIDPublished = true;
+      UserService.updateSession(userSession);
+      await DidDocumentService.reloadUserDocument();
+    }
   };
 
   useEffect(() => {

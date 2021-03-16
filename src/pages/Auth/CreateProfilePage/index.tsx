@@ -22,6 +22,8 @@ import { SocialButton, ButtonWithLogo } from 'src/components/buttons';
 import TextInput from 'src/components/inputs/TextInput';
 import { Text16, TextLink } from 'src/components/texts';
 import { AccountType, UserService } from 'src/services/user.service';
+import { validateEmail } from 'src/utils/validation';
+import LoadingIndicator from 'src/components/LoadingIndicator';
 
 import { AlphaService } from 'src/services/alpha.service';
 import TwitterApi from 'src/shared-base/api/twitter-api';
@@ -91,15 +93,17 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
 
   useEffect(() => {
     const signedUserDids = UserService.getSignedUsers();
-    if (signedUserDids.length > 0) {
-      setSignedUsers(signedUserDids);
-      setMode(1);
-    }
+    setSignedUsers(signedUserDids);
+    setMode(signedUserDids.length > 0 ? 1 : 0);
   }, []);
 
   const createUser = async () => {
     if (!name || !email) {
       setError('You should fill this field');
+      return;
+    }
+    if (!validateEmail(email)) {
+      setError('Not correct Email');
       return;
     }
     setLoading(true);
@@ -181,6 +185,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
 
   return (
     <OnBoardLayout className={style['create-profile']}>
+      {loading && <LoadingIndicator loadingText="Creating your profile now" />}
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>
@@ -229,10 +234,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
           {error !== '' && <ErrorText>{error}</ErrorText>}
           {displayText !== '' && <DisplayText>{displayText}</DisplayText>}
 
-          <ButtonWithLogo
-            text={loading ? 'Creating your profile now' : 'Create new profile'}
-            onClick={createUser}
-          />
+          <ButtonWithLogo text="Create new profile" onClick={createUser} />
 
           <FieldDivider text="or connect with" />
           <div className={style['social-btn-group']}>

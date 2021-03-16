@@ -11,7 +11,7 @@ const TutorialStep1Component: React.FC<ITutorialStepProp> = ({
   onContinue
 }) => {
   const [isDIDPublished] = useState(
-    UserService.GetUserSession().isDIDPublished
+    UserService.GetUserSession()!.isDIDPublished
   );
 
   return (
