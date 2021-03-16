@@ -91,7 +91,7 @@ const GenerateDidPage: React.FC<RouteComponentProps<
             setLoading(false);
           }}
         />
-        <LoadingIndicator loadingText="Encrypting Now..." />
+        {loading && <LoadingIndicator loadingText="Encrypting Now..." />}
       </>
     );
   }
