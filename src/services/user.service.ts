@@ -83,12 +83,7 @@ export class UserService {
     return newDID;
   }
 
-  private static lockUser(
-    key: string,
-    instance: ISessionItem
-  ) {
-
-
+  private static lockUser(key: string, instance: ISessionItem) {
     let encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(instance),
       instance.passhash
@@ -107,11 +102,16 @@ export class UserService {
     storePassword: string
   ): ISessionItem | undefined {
     let item = window.localStorage.getItem(key);
-    if (!item) throw new Error('User not found');
-    
+    if (!item) {
+      alertError(null, 'User not found');
+      return;
+    }
+
     try {
-      let did = `did:elastos:${key.replace("user_", "")}`
-      var passhash = CryptoJS.SHA256(did + storePassword).toString(CryptoJS.enc.Hex);
+      let did = `did:elastos:${key.replace('user_', '')}`;
+      var passhash = CryptoJS.SHA256(did + storePassword).toString(
+        CryptoJS.enc.Hex
+      );
       let userData: UserData = JSON.parse(item);
 
       let decrypted = CryptoJS.AES.decrypt(userData.data, passhash);
@@ -122,9 +122,8 @@ export class UserService {
         return instance;
       }
       alertError(null, 'Incorrect Password');
-    } 
-    catch (error) {
-      alertError(null, 'Incorrect Password');  
+    } catch (error) {
+      alertError(null, 'Incorrect Password');
     }
     return;
   }
@@ -142,11 +141,12 @@ export class UserService {
 
   public static async LockWithDIDAndPwd(
     sessionItem: ISessionItem,
-    password: string = ""
+    password: string = ''
   ) {
-
     if (!sessionItem.passhash || sessionItem.passhash.trim().length == 0) {
-      sessionItem.passhash = CryptoJS.SHA256(sessionItem.did + password).toString(CryptoJS.enc.Hex);
+      sessionItem.passhash = CryptoJS.SHA256(
+        sessionItem.did + password
+      ).toString(CryptoJS.enc.Hex);
     }
 
     this.lockUser(this.key(sessionItem.did), sessionItem);
@@ -209,8 +209,9 @@ export class UserService {
       mnemonic = newDid.mnemonic;
     }
 
-
-    var passhash = CryptoJS.SHA256(did + storePassword).toString(CryptoJS.enc.Hex);
+    var passhash = CryptoJS.SHA256(did + storePassword).toString(
+      CryptoJS.enc.Hex
+    );
 
     sessionItem = {
       did: did,
@@ -276,9 +277,9 @@ export class UserService {
   }
 
   public static async updateSession(sessionItem: ISessionItem): Promise<void> {
-
-    let userData = await TuumTechScriptService.searchUserWithDID(sessionItem.did)
-
+    let userData = await TuumTechScriptService.searchUserWithDID(
+      sessionItem.did
+    );
 
     await TuumTechScriptService.updateUserDidInfo({
       email: sessionItem.email!,
@@ -290,30 +291,19 @@ export class UserService {
       tutorialCompleted: sessionItem.tutorialCompleted
     });
 
-
-    this.LockWithDIDAndPwd(sessionItem)
-
-
+    this.LockWithDIDAndPwd(sessionItem);
   }
 
   public static async UnLockWithDIDAndPwd(did: string, storePassword: string) {
-    try {
-      let instance = this.unlockUser(this.key(did), storePassword);
-      const res = await this.SearchUserWithDID(did);
-
-      if (res && instance) {
-        instance.onBoardingCompleted = res.onBoardingCompleted;
-        instance.tutorialCompleted = res.tutorialCompleted;
-        this.lockUser(this.key(instance.did), instance);
-        SessionService.saveSessionItem(instance);
-        await UserVaultScriptService.register();
-        return instance;
-      } else {
-        alertError(null, 'User Not found secured by this password');
-      }
-    } catch (error) {
-      // return null;
-      alertError(null, 'User Not found secured by this password');
+    let instance = this.unlockUser(this.key(did), storePassword);
+    const res = await this.SearchUserWithDID(did);
+    if (res && instance) {
+      instance.onBoardingCompleted = res.onBoardingCompleted;
+      instance.tutorialCompleted = res.tutorialCompleted;
+      this.lockUser(this.key(instance.did), instance);
+      SessionService.saveSessionItem(instance);
+      await UserVaultScriptService.register();
+      return instance;
     }
     return null;
   }
