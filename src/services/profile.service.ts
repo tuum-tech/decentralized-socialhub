@@ -108,54 +108,66 @@ export class ProfileService {
 
   async updateEducationProfile(
     educationItem: EducationItem
-  ): Promise<IRunScriptResponse<ProfileResponse>> {
-    return this.appHiveClient.Scripting.RunScript({
-      name: 'update_education_profile',
-      context: {
-        target_did: UserService.GetUserSession().did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-      },
-      params: educationItem
-    });
+  ): Promise<IRunScriptResponse<ProfileResponse> | undefined> {
+    const userSession = UserService.GetUserSession();
+    if (userSession) {
+      return this.appHiveClient.Scripting.RunScript({
+        name: 'update_education_profile',
+        context: {
+          target_did: userSession.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: educationItem
+      });
+    }
   }
 
   async removeEducationItem(
     educationItem: EducationItem
-  ): Promise<IRunScriptResponse<ProfileResponse>> {
-    return this.appHiveClient.Scripting.RunScript({
-      name: 'remove_education_item',
-      context: {
-        target_did: UserService.GetUserSession().did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-      },
-      params: educationItem
-    });
+  ): Promise<IRunScriptResponse<ProfileResponse> | undefined> {
+    const userSession = UserService.GetUserSession();
+    if (userSession) {
+      return this.appHiveClient.Scripting.RunScript({
+        name: 'remove_education_item',
+        context: {
+          target_did: userSession.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: educationItem
+      });
+    }
   }
 
   async updateExperienceProfile(
     experienceItem: ExperienceItem
-  ): Promise<IRunScriptResponse<ProfileResponse>> {
-    return this.appHiveClient.Scripting.RunScript({
-      name: 'update_experience_profile',
-      context: {
-        target_did: UserService.GetUserSession().did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-      },
-      params: experienceItem
-    });
+  ): Promise<IRunScriptResponse<ProfileResponse> | undefined> {
+    const userSession = UserService.GetUserSession();
+    if (userSession) {
+      return this.appHiveClient.Scripting.RunScript({
+        name: 'update_experience_profile',
+        context: {
+          target_did: userSession.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: experienceItem
+      });
+    }
   }
 
   async removeExperienceItem(
     experienceItem: ExperienceItem
-  ): Promise<IRunScriptResponse<ProfileResponse>> {
-    return this.appHiveClient.Scripting.RunScript({
-      name: 'remove_experience_item',
-      context: {
-        target_did: UserService.GetUserSession().did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-      },
-      params: experienceItem
-    });
+  ): Promise<IRunScriptResponse<ProfileResponse> | undefined> {
+    const userSession = UserService.GetUserSession();
+    if (userSession) {
+      return this.appHiveClient.Scripting.RunScript({
+        name: 'remove_experience_item',
+        context: {
+          target_did: userSession.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: experienceItem
+      });
+    }
   }
 
   async getFollowings(did: string): Promise<IFollowingResponse> {
@@ -171,11 +183,15 @@ export class ProfileService {
     if (!this.hiveClient) return;
     await this.hiveClient.Database.deleteCollection('following');
     await this.hiveClient.Database.createCollection('following');
-    return this.getFollowings(UserService.GetUserSession().did);
+    const userSession = UserService.GetUserSession();
+    if (userSession) {
+      return this.getFollowings(userSession.did);
+    }
   }
 
   getSessionDid(): string {
-    return UserService.GetUserSession().did;
+    const userSession = UserService.GetUserSession();
+    return userSession ? userSession.did : '';
   }
 
   async getFollowers(dids: string[]): Promise<IFollowerResponse | undefined> {
@@ -236,7 +252,10 @@ export class ProfileService {
       });
     }
 
-    return this.getFollowings(UserService.GetUserSession().did);
+    const userSession = UserService.GetUserSession();
+    if (userSession) {
+      return this.getFollowings(userSession.did);
+    }
   }
 
   async addFollowing(did: string): Promise<any> {
@@ -254,7 +273,10 @@ export class ProfileService {
       // TODO: handle this better
       followersList = followersResponse.get_followers.items[0].followers;
 
-    followersList.push(this.getSessionDid());
+    const sDid = this.getSessionDid();
+    if (sDid !== '') {
+      followersList.push(sDid);
+    }
 
     let uniqueItems = [...new Set(followersList)]; // distinct
 
@@ -277,6 +299,9 @@ export class ProfileService {
       });
     }
 
-    return this.getFollowings(UserService.GetUserSession().did);
+    const userSession = UserService.GetUserSession();
+    if (userSession) {
+      return this.getFollowings(userSession.did);
+    }
   }
 }

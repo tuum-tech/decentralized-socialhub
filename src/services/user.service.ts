@@ -1,3 +1,5 @@
+import { alertError } from 'src/utils/notify';
+
 import { AssistService } from './assist.service';
 import { DidService, IDID, PublishRequestOperation } from './did.service';
 import { DidDocumentService } from './diddocument.service';
@@ -98,23 +100,24 @@ export class UserService {
     window.localStorage.setItem(key, json);
   }
 
-  private static unlockUser(key: string, storePassword: string): ISessionItem {
+  private static unlockUser(
+    key: string,
+    storePassword: string
+  ): ISessionItem | undefined {
     let item = window.localStorage.getItem(key);
-    if (!item) throw new Error('User not found');
-    try {
-      let userData: UserData = JSON.parse(item);
-
-      let decrypted = CryptoJS.AES.decrypt(userData.data, storePassword);
-
-      let instance = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
-
-      if (!instance && !instance.userToken)
-        throw new Error('Incorrect password');
-      return instance;
-    } catch (error) {
-      console.error(error);
-      throw error;
+    if (!item) {
+      alertError(null, 'User not found');
+      return;
     }
+    let userData: UserData = JSON.parse(item);
+    let decrypted = CryptoJS.AES.decrypt(userData.data, storePassword);
+    let instance = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
+
+    if (instance && instance.userToken) {
+      return instance;
+    }
+    alertError(null, 'Incorrect Password');
+    return;
   }
 
   public static getSignedUsers(): string[] {
@@ -158,13 +161,15 @@ export class UserService {
           email: userData.email,
           userToken: userData.userToken,
           isDIDPublished: isDIDPublished ? isDIDPublished : false,
-          onBoardingCompleted: userData.onBoardingCompleted
+          onBoardingCompleted: userData.onBoardingCompleted,
+          tutorialCompleted: userData.tutorialCompleted
         };
       } else {
         return null;
       }
     } else {
-      throw Error('Error while searching user by did');
+      alertError(null, 'Error while searching user by did');
+      return;
     }
   }
 
@@ -265,42 +270,46 @@ export class UserService {
       const res = await this.SearchUserWithDID(did);
 
       if (res && instance) {
-        if (!instance.onBoardingCompleted) {
-          instance.onBoardingCompleted = res.onBoardingCompleted;
-          this.lockUser(this.key(instance.did), instance, storePassword);
-        }
+        instance.onBoardingCompleted = res.onBoardingCompleted;
+        instance.tutorialCompleted = res.tutorialCompleted;
+        this.lockUser(this.key(instance.did), instance, storePassword);
         SessionService.saveSessionItem(instance);
         await UserVaultScriptService.register();
         return instance;
+      } else {
+        alertError(null, 'User Not found secured by this password');
       }
-      return;
     } catch (error) {
-      return null;
+      // return null;
+      alertError(null, 'User Not found secured by this password');
     }
+    return null;
   }
 
   public static async logout() {
     SessionService.Logout();
   }
 
-  public static GetUserSession(): ISessionItem {
+  public static GetUserSession(): ISessionItem | undefined {
     let item = window.sessionStorage.getItem('session_instance');
 
     if (!item) {
-      throw Error('Not logged in');
+      alertError(null, 'Not logged in');
+      return;
+    } else {
+      return JSON.parse(item);
     }
-
-    return JSON.parse(item);
   }
 }
 
 //To be
 class SessionService {
-  static getSession(): ISessionItem {
+  static getSession(): ISessionItem | undefined {
     let item = window.sessionStorage.getItem('session_instance');
 
     if (!item) {
-      throw Error('Not logged in');
+      alertError(null, 'Not logged in');
+      return;
     }
 
     let instance = JSON.parse(item);

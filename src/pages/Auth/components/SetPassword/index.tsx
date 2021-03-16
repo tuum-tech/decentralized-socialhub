@@ -20,6 +20,7 @@ import {
 import ButtonWithLogo from 'src/components/buttons/ButtonWithLogo';
 import TextInput from 'src/components/inputs/TextInput';
 import { Text16 } from 'src/components/texts';
+import LoadingIndicator from 'src/components/LoadingIndicator';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import keyimg from 'src/assets/icon/key.png';
@@ -33,9 +34,14 @@ const ErrorText = styled(Text16)`
 interface Props {
   next: (password: string) => void;
   displayText?: string;
+  loading?: boolean;
 }
 
-const SetPassword: React.FC<Props> = ({ next, displayText = '' }) => {
+const SetPassword: React.FC<Props> = ({
+  next,
+  displayText = '',
+  loading = false
+}) => {
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const [error, setError] = useState('');
@@ -43,6 +49,7 @@ const SetPassword: React.FC<Props> = ({ next, displayText = '' }) => {
 
   return (
     <OnBoardLayout>
+      {loading && <LoadingIndicator loadingText="Encrypting now..." />}
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>

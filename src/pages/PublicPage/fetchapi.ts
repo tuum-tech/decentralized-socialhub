@@ -1,9 +1,10 @@
 import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 import request, { BaseplateResp } from 'src/baseplate/request';
 import { ProfileService } from 'src/services/profile.service';
-import { ProfileContent, ProfileResponse } from '../ProfilePage/types';
+import { ProfileResponse } from '../ProfilePage/types';
 import { Api } from './constants';
-import { EducationItem, ProfileDTO } from './types';
+import { ProfileDTO } from './types';
+import { alertError } from 'src/utils/notify';
 
 export function fetchSimpleApi(): Promise<BaseplateResp> {
   return request(Api.sample, {
@@ -30,7 +31,8 @@ export async function requestFullProfile(did: string): Promise<ProfileDTO> {
       getFullProfileResponse.response as ProfileResponse
     );
   } catch (error) {
-    console.error(JSON.stringify(error));
+    // console.error(JSON.stringify(error));
+    // alertError(null, 'Failed requestFullProfile');
   }
   return mapProfileResponseToProfileDTO({} as ProfileResponse);
 }

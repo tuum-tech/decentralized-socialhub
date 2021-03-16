@@ -110,19 +110,22 @@ export class TuumTechScriptService {
   }
 
   public static async updateAbout(basicDTO: BasicDTO): Promise<any> {
-    const update_user_script = {
-      name: 'update_basic_profile',
-      params: basicDTO,
-      context: {
-        target_did: UserService.GetUserSession().did,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
+    const userSession = UserService.GetUserSession();
+    if (userSession) {
+      const update_user_script = {
+        name: 'update_basic_profile',
+        params: basicDTO,
+        context: {
+          target_did: userSession.did,
+          target_app_did: process.env.REACT_APP_APPLICATION_ID
+        }
+      };
+      let response: any = await this.runTuumTechScript(update_user_script);
+      const { data, meta } = response;
+      if (meta.code === 200 && meta.message === 'OK') {
       }
-    };
-    let response: any = await this.runTuumTechScript(update_user_script);
-    const { data, meta } = response;
-    if (meta.code === 200 && meta.message === 'OK') {
+      return response;
     }
-    return response;
   }
 
   public static async searchUserWithDID(did: string) {
@@ -193,6 +196,7 @@ export class UserVaultScriptService {
 
   public static async register() {
     let user = UserService.GetUserSession();
+    if (!user) return;
     let response = await TuumTechScriptService.searchUserWithDID(user.did);
     if (
       response.data &&
@@ -201,7 +205,7 @@ export class UserVaultScriptService {
       response.data.get_user_by_did.items.length > 0
     ) {
       const userInfo = response.data.get_user_by_did.items[0];
-      if (user.isDIDPublished && userInfo.tutorialCompleted) {
+      if (userInfo.tutorialCompleted) {
         user.userToken = await this.generateUserToken(
           user.mnemonics,
           user.hiveHost
