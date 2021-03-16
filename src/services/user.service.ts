@@ -297,7 +297,9 @@ export class UserService {
   public static async UnLockWithDIDAndPwd(did: string, storePassword: string) {
     let instance = this.unlockUser(this.key(did), storePassword);
     const res = await this.SearchUserWithDID(did);
-    if (res && instance) {
+    if (!res) {
+      alertError(null, 'User not find with this DID');
+    } else if (instance) {
       instance.onBoardingCompleted = res.onBoardingCompleted;
       instance.tutorialCompleted = res.tutorialCompleted;
       this.lockUser(this.key(instance.did), instance);
