@@ -88,7 +88,7 @@ export class UserService {
     instance: ISessionItem
   ) {
 
-    
+
     let encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(instance),
       instance.passhash
@@ -108,6 +108,7 @@ export class UserService {
   ): ISessionItem | undefined {
     let item = window.localStorage.getItem(key);
     if (!item) throw new Error('User not found');
+    
     try {
       let did = `did:elastos:${key.replace("user_", "")}`
       var passhash = CryptoJS.SHA256(did + storePassword).toString(CryptoJS.enc.Hex);
@@ -117,10 +118,14 @@ export class UserService {
 
       let instance = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
 
-    if (instance && instance.userToken) {
-      return instance;
+      if (instance && instance.userToken) {
+        return instance;
+      }
+      alertError(null, 'Incorrect Password');
+    } 
+    catch (error) {
+      alertError(null, 'Incorrect Password');  
     }
-    alertError(null, 'Incorrect Password');
     return;
   }
 
@@ -136,12 +141,12 @@ export class UserService {
   }
 
   public static async LockWithDIDAndPwd(
-    sessionItem: ISessionItem, 
+    sessionItem: ISessionItem,
     password: string = ""
   ) {
 
-    if (!sessionItem.passhash || sessionItem.passhash.trim().length == 0){
-      sessionItem.passhash = CryptoJS.SHA256(sessionItem.did+password).toString(CryptoJS.enc.Hex);
+    if (!sessionItem.passhash || sessionItem.passhash.trim().length == 0) {
+      sessionItem.passhash = CryptoJS.SHA256(sessionItem.did + password).toString(CryptoJS.enc.Hex);
     }
 
     this.lockUser(this.key(sessionItem.did), sessionItem);
@@ -204,8 +209,8 @@ export class UserService {
       mnemonic = newDid.mnemonic;
     }
 
-    
-    var passhash = CryptoJS.SHA256(did+storePassword).toString(CryptoJS.enc.Hex);
+
+    var passhash = CryptoJS.SHA256(did + storePassword).toString(CryptoJS.enc.Hex);
 
     sessionItem = {
       did: did,
@@ -270,14 +275,14 @@ export class UserService {
     }
   }
 
-  public static async updateSession(sessionItem: ISessionItem) : Promise<void>{
+  public static async updateSession(sessionItem: ISessionItem): Promise<void> {
 
     let userData = await TuumTechScriptService.searchUserWithDID(sessionItem.did)
 
 
-   await TuumTechScriptService.updateUserDidInfo({
+    await TuumTechScriptService.updateUserDidInfo({
       email: sessionItem.email!,
-      code: userData.code ,
+      code: userData.code,
       did: sessionItem.did,
       hiveHost: sessionItem.hiveHost,
       accountType: sessionItem.accountType,
@@ -287,8 +292,8 @@ export class UserService {
 
 
     this.LockWithDIDAndPwd(sessionItem)
-    
-   
+
+
   }
 
   public static async UnLockWithDIDAndPwd(did: string, storePassword: string) {
