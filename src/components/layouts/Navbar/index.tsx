@@ -27,6 +27,7 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
     name: '',
     isDIDPublished: false,
     mnemonics: '',
+    passhash: '',
     onBoardingCompleted: false,
     tutorialCompleted: false
   });

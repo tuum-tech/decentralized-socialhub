@@ -69,6 +69,7 @@ const PeopleCard: React.FC<IProps> = ({
     name: '',
     isDIDPublished: false,
     mnemonics: '',
+    passhash: '',
     onBoardingCompleted: false,
     tutorialCompleted: false
   });
