@@ -36,6 +36,7 @@ const ProfileEditor: React.FC = () => {
     name: '',
     isDIDPublished: false,
     mnemonics: '',
+    passhash: '',
     onBoardingCompleted: false,
     tutorialCompleted: false
   });

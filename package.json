@@ -78,10 +78,6 @@
     "@types/react-router": "^5.1.12",
     "@types/react-router-dom": "^5.1.6",
     "@types/webpack-env": "^1.16.0",
-    "fs-extra": "^9.1.0",
-    "handlebars": "^4.7.7",
-    "react-scripts": "^3.4.4",
-    "tslint-react": "^4.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",
     "eslint-config-prettier": "^6.10.0",
@@ -90,9 +86,13 @@
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^2.5.0",
+    "fs-extra": "^9.1.0",
+    "handlebars": "^4.7.7",
     "husky": "^4.2.3",
     "lint-staged": "^10.0.8",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "react-scripts": "^3.4.4",
+    "tslint-react": "^4.1.0"
   },
   "husky": {
     "hooks": {

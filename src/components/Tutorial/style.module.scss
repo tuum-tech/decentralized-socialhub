@@ -300,7 +300,8 @@
         margin-top: 15px;
         margin-left: 10px;
       }
-      h3{
+      .tutorial-hive-item-title{
+        display: block;
         font-style: normal;
         font-weight: bold;
         font-size: 16px;
@@ -309,17 +310,21 @@
         font-feature-settings: 'salt' on;
         color: #000000;
         margin-top: 5px;
+       
+        
       }
-      span {
+      .tutorial-hive-item-description {
+        line-break: before;
         display: block;
         font-style: normal;
         font-weight: normal;
         font-size: 13px;
         line-height: 162.02%;
-        /* identical to box height, or 21px */
+        
         
         display: flex;
         align-items: center;
+        
         font-feature-settings: 'salt' on;
         
         color: #000000;

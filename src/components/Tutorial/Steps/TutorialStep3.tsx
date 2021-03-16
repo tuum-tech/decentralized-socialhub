@@ -1,5 +1,5 @@
 import { IonButton, IonInput, IonRadio, IonRadioGroup } from '@ionic/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ITutorialStepProp } from './TutorialStep1';
 import style from '../style.module.scss';
 import tuumlogo from '../../../assets/tuumtech.png';
@@ -13,7 +13,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   onContinue
 }) => {
   const [hiveUrl, sethiveUrl] = useState('');
-  const [hiveDocument] = useState('');
+  const [hiveDocument, setHiveDocument] = useState('');
 
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -53,16 +53,21 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
 
     try {
       let user = UserService.GetUserSession();
-      user.userToken = await generateUserToken(user.mnemonics, endpoint);
+      let userToken = await generateUserToken (user.mnemonics, endpoint);
+      user.userToken = userToken
       user.tutorialCompleted = true;
       user.hiveHost = endpoint;
-
-      let userDid = await DidService.loadDid(user.mnemonics);
-      let hivesvc = DidService.generateService(userDid, 'HiveVault', endpoint);
-      let userDocument = await (await DidDocumentService.getUserDocument())
-        .diddocument;
-      DidService.addServiceToDIDDocument(userDocument, hivesvc);
-      DidDocumentService.publishUserDocument(userDocument);
+      
+      if (selected !== "document")
+      {
+        let userDid = await DidService.loadDid(user.mnemonics);
+        let hivesvc = DidService.generateService(userDid, 'HiveVault', endpoint);
+        let documentState = await DidDocumentService.getUserDocument()
+        let userDocument = documentState.diddocument;
+        await DidService.addServiceToDIDDocument(userDocument, hivesvc);
+        await DidDocumentService.publishUserDocument(userDocument);
+      }
+      
       UserService.updateSession(user);
 
       let hiveInstance = await HiveService.getSessionInstance();
@@ -85,8 +90,22 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       challenge.issuer,
       challenge.nonce
     );
-    return await HiveService.getUserHiveToken(address, presentation);
+    const userToken = await HiveService.getUserHiveToken(address, presentation);
+
+    return userToken;
   };
+
+
+  useEffect(() => {
+    (async () => {
+      let sessionUser = UserService.GetUserSession();
+      let doc = await DidService.getDidDocument(sessionUser.did);
+      if (doc.service && doc.service.length > 0) {
+        setSelected("document")
+        setHiveDocument(doc.service[0].serviceEndpoint);
+      }
+    })();
+  }, []);
 
   return (
     <div>
@@ -113,10 +132,12 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
               <IonRadio value="document"></IonRadio>
 
               <div className={style['tutorial-hive-item']}>
-                <p>
-                  <h3>{hiveDocument}</h3>
-                  <span>Using the default detected vault</span>
-                </p>
+                  <p>
+                    <span className={style['tutorial-hive-item-title']}>{hiveDocument}</span>
+                    <span className={style['tutorial-hive-item-description']}>Using the default detected vault</span>
+                  </p>
+                 
+                  
               </div>
             </div>
           )}
@@ -126,9 +147,9 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
 
             <div className={style['tutorial-hive-item']}>
               <img src={tuumlogo} />
-              <p>
+              
                 <h2>Tuum Tech</h2>
-              </p>
+              
             </div>
           </div>
           <div className={style['tutorial-hive-row']}>
