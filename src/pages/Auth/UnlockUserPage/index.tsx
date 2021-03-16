@@ -51,7 +51,6 @@ const UnlockUserPage: React.FC<RouteComponentProps<
         res = await UserService.UnLockWithDIDAndPwd(did, password);
       }
     }
-
     if (res) {
       window.location.href = '/profile';
       return;

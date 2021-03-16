@@ -115,6 +115,7 @@ const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
               if (res) {
                 window.location.href = '/profile';
               }
+              setLoading(false);
             }}
           />
 
