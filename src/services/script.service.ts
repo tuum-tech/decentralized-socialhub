@@ -205,7 +205,7 @@ export class UserVaultScriptService {
       response.data.get_user_by_did.items.length > 0
     ) {
       const userInfo = response.data.get_user_by_did.items[0];
-      if (user.isDIDPublished && userInfo.tutorialCompleted) {
+      if (userInfo.tutorialCompleted) {
         user.userToken = await this.generateUserToken(
           user.mnemonics,
           user.hiveHost

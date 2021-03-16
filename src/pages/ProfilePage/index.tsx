@@ -67,7 +67,7 @@ const ProfilePage: React.FC<RouteComponentProps> = () => {
     email: '',
     isDIDPublished: false,
     mnemonics: '',
-    onBoardingCompleted: false,
+    onBoardingCompleted: true,
     tutorialCompleted: false
   });
 
@@ -109,7 +109,7 @@ const ProfilePage: React.FC<RouteComponentProps> = () => {
       if (!instance) return;
 
       setUserInfo(instance);
-
+      setOnboardingStatus(instance.onBoardingCompleted);
       if (
         instance.onBoardingCompleted &&
         instance.tutorialCompleted &&
@@ -130,7 +130,6 @@ const ProfilePage: React.FC<RouteComponentProps> = () => {
           window.location.href = '/';
         }, ExporeTime);
       }
-      setOnboardingStatus(instance.onBoardingCompleted);
     })();
   }, []);
 
