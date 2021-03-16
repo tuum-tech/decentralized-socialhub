@@ -4,12 +4,14 @@ import style from './DidCard.module.scss';
 import SkeletonAvatar from '../avatars/SkeletonAvatar';
 import { ProfileService } from 'src/services/profile.service';
 import { Link } from 'react-router-dom';
+import { ISessionItem } from 'src/services/user.service';
 
 interface Props {
   name?: string;
   did: string;
   avatar?: string;
   indexItem?: number;
+  sessionItem?: ISessionItem;
   following?: boolean;
   colSize?: string;
   type?: string;
@@ -20,6 +22,9 @@ const DidCard: React.FC<Props> = ({
   did = '',
   avatar,
   indexItem,
+  sessionItem = {
+    tutorialCompleted: false
+  },
   following = false,
   colSize = '100%',
   type = 'user'
@@ -81,7 +86,7 @@ const DidCard: React.FC<Props> = ({
             {'DID:' + did.replace('did:elastos:', '')}
           </span>
         </div>
-        {type == 'user' && (
+        {type == 'user' && sessionItem.tutorialCompleted && (
           <div className={style['card-link']}>
             {isFollowing && (
               <span

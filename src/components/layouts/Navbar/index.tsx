@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { IonContent, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react';
 
-import { UserService } from 'src/services/user.service';
+import {
+  AccountType,
+  ISessionItem,
+  UserService
+} from 'src/services/user.service';
 
 import style from './style.module.scss';
 
@@ -13,6 +17,28 @@ interface Props {
 const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
   const [active, setActive] = useState(tab);
   const history = useHistory();
+
+  const [userInfo, setUserInfo] = useState<ISessionItem>({
+    hiveHost: '',
+    userToken: '',
+    accountType: AccountType.DID,
+    did: '',
+    email: '',
+    name: '',
+    isDIDPublished: false,
+    mnemonics: '',
+    onBoardingCompleted: false,
+    tutorialCompleted: false
+  });
+
+  useEffect(() => {
+    (async () => {
+      let instance = UserService.GetUserSession();
+      if (!instance || !instance.userToken) return;
+
+      setUserInfo(instance);
+    })();
+  }, []);
 
   return (
     <IonContent>
@@ -57,6 +83,7 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
             </IonLabel>
           </IonItem>
           <IonItem
+            disabled={!userInfo.tutorialCompleted}
             className={
               active === 'connections-followers' ||
               active === 'connections-followings'
@@ -72,8 +99,19 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
               slot="start"
               src="../../assets/icon_connections.svg"
               className={style['img']}
+              title={
+                userInfo.tutorialCompleted
+                  ? ''
+                  : 'Please complete the tutorial to access your Connections'
+              }
             ></IonIcon>
-            <IonLabel>
+            <IonLabel
+              title={
+                userInfo.tutorialCompleted
+                  ? ''
+                  : 'Please complete the tutorial to access your Connections'
+              }
+            >
               <h3>Connections</h3>
             </IonLabel>
           </IonItem>
