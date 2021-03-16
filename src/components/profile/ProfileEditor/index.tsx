@@ -106,13 +106,11 @@ const ProfileEditor: React.FC = () => {
     educationItem: EducationItem
   ): Promise<any> {
     let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
-    let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<
-      ProfileResponse
-    >;
-    getFullProfileResponse = await profileService.updateEducationProfile(
-      educationItem
-    );
-
+    // let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<
+    //   ProfileResponse
+    // >;
+    // getFullProfileResponse =
+    await profileService.updateEducationProfile(educationItem);
     return '';
   }
 
@@ -120,13 +118,12 @@ const ProfileEditor: React.FC = () => {
     experienceItem: ExperienceItem
   ): Promise<any> {
     let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
-    let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<
-      ProfileResponse
-    >;
+    // let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<
+    //   ProfileResponse
+    // >;
     try {
-      getFullProfileResponse = await profileService.updateExperienceProfile(
-        experienceItem
-      );
+      // getFullProfileResponse =
+      await profileService.updateExperienceProfile(experienceItem);
 
       return ''; //mapProfileResponseToProfileDTO(getFullProfileResponse.response as ProfileResponse);
     } catch (error) {
@@ -139,13 +136,11 @@ const ProfileEditor: React.FC = () => {
     educationItem: EducationItem
   ): Promise<any> {
     let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
-    let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<
-      ProfileResponse
-    >;
-    getFullProfileResponse = await profileService.removeEducationItem(
-      educationItem
-    );
-
+    // let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<
+    //   ProfileResponse
+    // >;
+    // getFullProfileResponse =
+    await profileService.removeEducationItem(educationItem);
     return '';
   }
 
@@ -153,12 +148,11 @@ const ProfileEditor: React.FC = () => {
     experienceItem: ExperienceItem
   ): Promise<any> {
     let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
-    let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<
-      ProfileResponse
-    >;
-    getFullProfileResponse = await profileService.removeExperienceItem(
-      experienceItem
-    );
+    // let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<
+    //   ProfileResponse
+    // >;
+    // getFullProfileResponse =
+    await profileService.removeExperienceItem(experienceItem);
 
     return '';
   }

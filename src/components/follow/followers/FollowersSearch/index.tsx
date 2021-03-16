@@ -58,7 +58,7 @@ const FollowersSearch: React.FC = () => {
     try {
       let user = UserService.GetUserSession();
 
-      if (user.did) {
+      if (user && user.did) {
         //Get Followers
         let listDids = [user.did];
         let profileServiceAppInstance = await ProfileService.getProfileServiceAppOnlyInstance();
@@ -72,7 +72,7 @@ const FollowersSearch: React.FC = () => {
     try {
       let user = UserService.GetUserSession();
 
-      if (user.did) {
+      if (user && user.did) {
         //Get Following
         let profileServiceUserInstance = await getUserHiveInstance();
         let following = await profileServiceUserInstance.getFollowings(
@@ -123,7 +123,7 @@ const FollowersSearch: React.FC = () => {
     (async () => {
       let user = UserService.GetUserSession();
 
-      if (user.did) {
+      if (user && user.did) {
         setFollowersCount(getFollowersCount(user.did));
       }
       await loadUsersData();

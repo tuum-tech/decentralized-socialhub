@@ -68,7 +68,7 @@ const FollowingSearch: React.FC = () => {
 
       let user = UserService.GetUserSession();
 
-      if (user.did) {
+      if (user && user.did) {
         let following = await profileServiceLocal.getFollowings(user.did);
         setListFollowing(following as IFollowingResponse);
       }

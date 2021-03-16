@@ -15,6 +15,7 @@ export interface IHiveChallenge {
 export class HiveService {
   static async getSessionInstance(): Promise<HiveClient | undefined> {
     let instance = UserService.GetUserSession();
+    if (!instance) return;
 
     let isUserDocumentPublished = await DidDocumentService.isDidDocumentPublished(
       instance.did

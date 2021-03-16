@@ -159,8 +159,10 @@ const ProfilePage: React.FC<RouteComponentProps> = (
 
   const onTutorialFinish = () => {
     let instance = UserService.GetUserSession();
-    setUserInfo(instance);
-    setShowTutorial(false);
+    if (instance) {
+      setUserInfo(instance);
+      setShowTutorial(false);
+    }
   };
 
   if (!onboardingCompleted) {

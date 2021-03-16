@@ -21,15 +21,12 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import {
-  ButtonLink,
-  ButtonWithLogo,
-  ArrowButton
-} from 'src/components/buttons';
+import { ButtonWithLogo } from 'src/components/buttons';
 import { Text16 } from 'src/components/texts';
 import PageLoading from 'src/components/layouts/PageLoading';
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import eye from 'src/assets/icon/eye.png';
+import LoadingIndicator from 'src/components/LoadingIndicator';
 
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
 import { incrementAction, getSimpleAjax } from './actions';
@@ -114,6 +111,7 @@ const AssociatedProfilePage: React.FC<RouteComponentProps<
   }
   return (
     <OnBoardLayout>
+      {loading && <LoadingIndicator loadingText="Creating new profie now..." />}
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>
@@ -196,7 +194,7 @@ const AssociatedProfilePage: React.FC<RouteComponentProps<
           <Text16>Use your email to create a new profile.</Text16>
 
           <ButtonWithLogo
-            text={loading ? 'Creating your profile now' : 'Create new profile'}
+            text={'Create new profile'}
             onClick={async () => {
               const { name, email, service } = associatedInfo;
               if (service === AccountType.Email) {

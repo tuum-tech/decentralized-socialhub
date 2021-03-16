@@ -1,7 +1,8 @@
+import { alertError } from 'src/utils/notify';
 import { AssistService } from './assist.service';
 import { DidService, PublishRequestOperation } from './did.service';
 import { EventsService, IEventCallback } from './events.service';
-import { UserService } from './user.service';
+import { ISessionItem, UserService } from './user.service';
 
 export interface IDIDDocumentState {
   diddocument: any;
@@ -55,13 +56,9 @@ export class DidDocumentService {
     return documentOnBlockchain;
   }
 
-  static async getUserDocument(): Promise<IDIDDocumentState> {
-    let userSession = UserService.GetUserSession();
-
-    if (!userSession) {
-      throw Error('Not logged');
-    }
-
+  static async getUserDocument(
+    userSession: ISessionItem
+  ): Promise<IDIDDocumentState> {
     let documentState = this.getDocumentState();
     if (documentState) return documentState;
 
@@ -101,16 +98,15 @@ export class DidDocumentService {
 
   static async publishUserDocument(
     diddocument: any
-  ): Promise<IDIDDocumentState> {
+  ): Promise<IDIDDocumentState | undefined> {
     let userSession = UserService.GetUserSession();
     if (!userSession) {
-      throw Error('Not logged');
+      alertError(null, 'Not logged');
+      return;
     }
 
     let userDid = await DidService.loadDid(userSession.mnemonics);
-
     if (diddocument['proof']) delete diddocument['proof'];
-
     let isValid = false;
     let signedDocument: any;
     while (!isValid) {
@@ -119,8 +115,10 @@ export class DidDocumentService {
       isValid = DidService.isSignedDIDDocumentValid(signedDocument, userDid);
     }
 
-    if (!signedDocument['proof'])
-      throw Error('The DID document was not signed');
+    if (!signedDocument['proof']) {
+      alertError(null, 'The DID document was not signed');
+      return;
+    }
 
     let requestPub = await DidService.generatePublishRequest(
       signedDocument,
@@ -139,10 +137,11 @@ export class DidDocumentService {
     return documentState;
   }
 
-  static async reloadUserDocument(): Promise<IDIDDocumentState> {
+  static async reloadUserDocument(): Promise<IDIDDocumentState | undefined> {
     let userSession = UserService.GetUserSession();
     if (!userSession) {
-      throw Error('Not logged');
+      alertError(null, 'Not logged');
+      return;
     }
 
     let documentState = await this.loadFromBlockchain(userSession.did);

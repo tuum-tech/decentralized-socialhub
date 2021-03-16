@@ -85,7 +85,7 @@ const SearchComponent: React.FC = () => {
     try {
       let user = UserService.GetUserSession();
 
-      if (user.did) {
+      if (user && user.did) {
         //Get Following
         let profileServiceUserInstance = await getUserHiveInstance();
         let following = await profileServiceUserInstance.getFollowings(

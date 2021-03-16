@@ -87,10 +87,6 @@ export class SearchService {
     return universitiesResponse;
   }
 
-  getSessionDid(): string {
-    return UserService.GetUserSession().did;
-  }
-
   // ID text strings within Elastos DID is an ID Sidechain address encoded
   // using Bitcoin-style Base58 and starting with the letter "i",
   // such asicJ4z2DULrHEzYSvjKNJpKyhqFDxvYV7pN. The DID text string is case sensitive.
@@ -107,7 +103,12 @@ export class SearchService {
     searchString: string,
     limit: number,
     offset: number
-  ): Promise<IRunScriptResponse<IUserResponse | undefined>> {
+  ): Promise<IRunScriptResponse<IUserResponse | undefined> | undefined> {
+    const userSession = UserService.GetUserSession();
+    if (!userSession) {
+      return;
+    }
+
     let params: any = {
       limit: limit,
       skip: offset
@@ -121,7 +122,7 @@ export class SearchService {
     if (searchString != null && searchString != '') {
       if (this.isDID(searchString)) {
         params['did'] = '.*' + searchString + '.*';
-        params['self_did'] = [UserService.GetUserSession().did];
+        params['self_did'] = [userSession.did];
 
         usersResponse = await this.appHiveClient.Scripting.RunScript({
           name: 'get_users_by_did',
@@ -133,7 +134,7 @@ export class SearchService {
         });
       } else {
         params['name'] = '.*' + searchString + '.*';
-        params['self_did'] = [UserService.GetUserSession().did];
+        params['self_did'] = [userSession.did];
 
         usersResponse = await this.appHiveClient.Scripting.RunScript({
           name: 'get_users_by_name',
@@ -145,7 +146,7 @@ export class SearchService {
         });
       }
     } else {
-      params['self_did'] = [UserService.GetUserSession().did];
+      params['self_did'] = [userSession.did];
 
       usersResponse = await this.appHiveClient.Scripting.RunScript({
         name: 'get_all_users',

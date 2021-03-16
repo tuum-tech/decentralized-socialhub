@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router';
 import styled from 'styled-components';
 
 import {
@@ -14,13 +13,16 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import FieldDivider from '../FieldDivider';
+import LoadingIndicator from 'src/components/LoadingIndicator';
+
 import { ButtonWithLogo } from 'src/components/buttons';
 import { Text16, ErrorTxt } from 'src/components/texts';
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import eye from 'src/assets/icon/eye.png';
 import TextInput from 'src/components/inputs/TextInput';
 import { UserService } from 'src/services/user.service';
+
+import FieldDivider from '../FieldDivider';
 
 const DidSelectComp = styled.div`
   background: #edf2f7;
@@ -54,6 +56,7 @@ const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
 
   return (
     <OnBoardLayout>
+      {loading && <LoadingIndicator loadingText="Signing now..." />}
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>
@@ -95,21 +98,22 @@ const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
               setPassword(n);
             }}
             placeholder="Enter your password"
+            hasError={error !== '' && password === ''}
           />
           {error !== '' && <ErrorTxt className="mt-3">{error}</ErrorTxt>}
           <ButtonWithLogo
             mode="dark"
             mt={20}
-            text={loading ? 'Signing in to profile' : 'Sign in to profile'}
+            text="Sign in to profile"
             onClick={async () => {
+              if (!password || password === '') {
+                setError('Enter your password');
+                return;
+              }
               setLoading(true);
               const res = await UserService.UnLockWithDIDAndPwd(did, password);
               if (res) {
                 window.location.href = '/profile';
-                return;
-              } else {
-                setError('User Not found secured by this password');
-                setLoading(false);
               }
             }}
           />
