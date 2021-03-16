@@ -28,6 +28,7 @@ export interface ISessionItem {
   email?: string;
   isDIDPublished: boolean;
   mnemonics: string;
+  passhash: string;
   onBoardingCompleted: boolean;
   tutorialCompleted: boolean;
 }
@@ -84,12 +85,13 @@ export class UserService {
 
   private static lockUser(
     key: string,
-    instance: ISessionItem,
-    storePassword: string
+    instance: ISessionItem
   ) {
+
+
     let encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(instance),
-      storePassword
+      instance.passhash
     ).toString();
     let localUserData: UserData = {
       name: instance.name,
@@ -105,18 +107,25 @@ export class UserService {
     storePassword: string
   ): ISessionItem | undefined {
     let item = window.localStorage.getItem(key);
-    if (!item) {
-      alertError(null, 'User not found');
-      return;
-    }
-    let userData: UserData = JSON.parse(item);
-    let decrypted = CryptoJS.AES.decrypt(userData.data, storePassword);
-    let instance = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
+    if (!item) throw new Error('User not found');
+    
+    try {
+      let did = `did:elastos:${key.replace("user_", "")}`
+      var passhash = CryptoJS.SHA256(did + storePassword).toString(CryptoJS.enc.Hex);
+      let userData: UserData = JSON.parse(item);
 
-    if (instance && instance.userToken) {
-      return instance;
+      let decrypted = CryptoJS.AES.decrypt(userData.data, passhash);
+
+      let instance = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
+
+      if (instance && instance.userToken) {
+        return instance;
+      }
+      alertError(null, 'Incorrect Password');
+    } 
+    catch (error) {
+      alertError(null, 'Incorrect Password');  
     }
-    alertError(null, 'Incorrect Password');
     return;
   }
 
@@ -133,9 +142,14 @@ export class UserService {
 
   public static async LockWithDIDAndPwd(
     sessionItem: ISessionItem,
-    storePassword: string
+    password: string = ""
   ) {
-    this.lockUser(this.key(sessionItem.did), sessionItem, storePassword);
+
+    if (!sessionItem.passhash || sessionItem.passhash.trim().length == 0) {
+      sessionItem.passhash = CryptoJS.SHA256(sessionItem.did + password).toString(CryptoJS.enc.Hex);
+    }
+
+    this.lockUser(this.key(sessionItem.did), sessionItem);
     SessionService.saveSessionItem(sessionItem);
     await UserVaultScriptService.register();
   }
@@ -195,6 +209,9 @@ export class UserService {
       mnemonic = newDid.mnemonic;
     }
 
+
+    var passhash = CryptoJS.SHA256(did + storePassword).toString(CryptoJS.enc.Hex);
+
     sessionItem = {
       did: did,
       accountType: service,
@@ -206,6 +223,7 @@ export class UserService {
           : hiveHostStr,
       userToken: token,
       mnemonics: mnemonic,
+      passhash: passhash,
       email: email,
       onBoardingCompleted: false,
       tutorialCompleted: false
@@ -220,7 +238,7 @@ export class UserService {
         hiveHost: sessionItem.hiveHost,
         accountType: service,
         userToken: token,
-        tutorialCompleted: false
+        tutorialCompleted: sessionItem.tutorialCompleted
       });
     } else {
       await TuumTechScriptService.addUserToTuumTech({
@@ -236,7 +254,7 @@ export class UserService {
       });
     }
 
-    this.lockUser(this.key(did), sessionItem, storePassword);
+    this.lockUser(this.key(did), sessionItem);
     SessionService.saveSessionItem(sessionItem);
   }
 
@@ -257,11 +275,25 @@ export class UserService {
     }
   }
 
-  public static updateSession(sessionItem: ISessionItem) {
-    window.sessionStorage.setItem(
-      'session_instance',
-      JSON.stringify(sessionItem, null, '')
-    );
+  public static async updateSession(sessionItem: ISessionItem): Promise<void> {
+
+    let userData = await TuumTechScriptService.searchUserWithDID(sessionItem.did)
+
+
+    await TuumTechScriptService.updateUserDidInfo({
+      email: sessionItem.email!,
+      code: userData.code,
+      did: sessionItem.did,
+      hiveHost: sessionItem.hiveHost,
+      accountType: sessionItem.accountType,
+      userToken: sessionItem.userToken,
+      tutorialCompleted: sessionItem.tutorialCompleted
+    });
+
+
+    this.LockWithDIDAndPwd(sessionItem)
+
+
   }
 
   public static async UnLockWithDIDAndPwd(did: string, storePassword: string) {
@@ -272,7 +304,7 @@ export class UserService {
       if (res && instance) {
         instance.onBoardingCompleted = res.onBoardingCompleted;
         instance.tutorialCompleted = res.tutorialCompleted;
-        this.lockUser(this.key(instance.did), instance, storePassword);
+        this.lockUser(this.key(instance.did), instance);
         SessionService.saveSessionItem(instance);
         await UserVaultScriptService.register();
         return instance;
