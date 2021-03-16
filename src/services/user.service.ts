@@ -281,17 +281,21 @@ export class UserService {
       sessionItem.did
     );
 
+    let code = userData.data["get_user_by_did"]["items"][0].code 
+
     await TuumTechScriptService.updateUserDidInfo({
       email: sessionItem.email!,
-      code: userData.code,
+      code: code,
       did: sessionItem.did,
       hiveHost: sessionItem.hiveHost,
       accountType: sessionItem.accountType,
       userToken: sessionItem.userToken,
       tutorialCompleted: sessionItem.tutorialCompleted
     });
+   
 
-    this.LockWithDIDAndPwd(sessionItem);
+    this.lockUser(this.key(sessionItem.did), sessionItem);
+    SessionService.saveSessionItem(sessionItem);
   }
 
   public static async UnLockWithDIDAndPwd(did: string, storePassword: string) {
