@@ -185,8 +185,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
 
   return (
     <OnBoardLayout className={style['create-profile']}>
-      <LoadingIndicator loadingText="Creating your profile now" />
-      {/* {loading && <LoadingIndicator loadingText="Creating your profile now" />} */}
+      {loading && <LoadingIndicator loadingText="Creating your profile now" />}
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { IonContent, IonGrid, IonSearchbar } from '@ionic/react';
+import { IonContent, IonSearchbar } from '@ionic/react';
 import style from './style.module.scss';
 import {
   IUniversitiesResponse,
@@ -12,6 +12,7 @@ import {
   ProfileService
 } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
+import { alertError } from 'src/utils/notify';
 
 const SearchComponent: React.FC = () => {
   const [filteredUniversities, setFilteredUniversities] = useState<
@@ -67,8 +68,7 @@ const SearchComponent: React.FC = () => {
       setFilteredUniversities(listUniversities.response);
     } catch (e) {
       setFilteredUniversities({ get_universities: { items: [] } });
-      console.error('could not load universities');
-      // setError({ hasError: true, errorDescription: 'cant load followings' });
+      alertError(null, 'cant load universities');
       return;
     }
 
@@ -77,8 +77,7 @@ const SearchComponent: React.FC = () => {
       setFilteredUsers(listUsers.response);
     } catch (e) {
       setFilteredUsers({ get_users: { items: [] } });
-      console.error('could not load users');
-      // setError({ hasError: true, errorDescription: 'cant load users' });
+      alertError(null, 'cant load users');
       return;
     }
 
@@ -95,8 +94,7 @@ const SearchComponent: React.FC = () => {
       }
     } catch (e) {
       setListFollowing({ get_following: { items: [] } });
-      console.error('could not load following');
-      // setError({ hasError: true, errorDescription: 'cant load followings' });
+      alertError(null, 'cant load following');
       return;
     }
   };

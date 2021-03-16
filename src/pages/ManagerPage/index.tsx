@@ -8,13 +8,12 @@ import { createStructuredSelector } from 'reselect';
 import injector from 'src/baseplate/injectorWrap';
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
 import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 import style from './style.module.scss';
 import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
-import { fetchSimpleApi } from './fetchapi';
 import Logo from 'src/components/Logo';
 import Navbar from 'src/components/layouts/Navbar';
 import styled from 'styled-components';
@@ -29,11 +28,6 @@ const ManagerPage: React.FC<InferMappedProps> = ({
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
-  const [msg, setMsg] = useState('');
-  const simpleAjaxDirect = async () => {
-    const msg = (await fetchSimpleApi()) as string;
-    setMsg(msg);
-  };
 
   const Header = styled.div`
     width: 100%;
@@ -77,30 +71,6 @@ const ManagerPage: React.FC<InferMappedProps> = ({
     </>
   );
 };
-
-const Popup = styled.div`
-  width: 541px;
-  height: 655px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  /* bring your own prefixes */
-  transform: translate(-50%, -50%);
-  border-radius: 16px;
-  background-color: #ffffff;
-  box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24),
-    0px 3px 8px -1px rgba(50, 50, 71, 0.05);
-
-  text-align: center;
-  font-family: 'SF Pro Display';
-
-  padding: 50px 56px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-`;
 
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({

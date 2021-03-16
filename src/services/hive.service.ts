@@ -4,6 +4,7 @@ import {
   IOptions
 } from '@elastos/elastos-hive-js-sdk';
 import jwt_decode from 'jwt-decode';
+import { alertError } from 'src/utils/notify';
 
 import { DidService } from './did.service';
 import { DidDocumentService } from './diddocument.service';
@@ -21,7 +22,8 @@ export class HiveService {
       instance.did
     );
     if (!isUserDocumentPublished) {
-      console.error(
+      alertError(
+        null,
         'DID User is not published or AccountType is not available type'
       );
       return;
@@ -45,7 +47,11 @@ export class HiveService {
         challenge.nonce !== undefined && challenge.nonce.length > 0;
       return isValid;
     } catch (error) {
-      console.error(error);
+      // console.error(error);
+      // alertError(
+      //   null,
+      //   'DID User is not published or AccountType is not available type'
+      // );
       return false;
     }
   }
