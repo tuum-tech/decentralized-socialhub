@@ -51,8 +51,9 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       return;
     }
 
+    let user = UserService.GetUserSession();
+    if (!user) return;
     try {
-      let user = UserService.GetUserSession();
       let userToken = await generateUserToken (user.mnemonics, endpoint);
       user.userToken = userToken
       user.tutorialCompleted = true;
@@ -62,7 +63,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       {
         let userDid = await DidService.loadDid(user.mnemonics);
         let hivesvc = DidService.generateService(userDid, 'HiveVault', endpoint);
-        let documentState = await DidDocumentService.getUserDocument()
+        let documentState = await DidDocumentService.getUserDocument(user)
         let userDocument = documentState.diddocument;
         await DidService.addServiceToDIDDocument(userDocument, hivesvc);
         await DidDocumentService.publishUserDocument(userDocument);
@@ -99,6 +100,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   useEffect(() => {
     (async () => {
       let sessionUser = UserService.GetUserSession();
+      if (!sessionUser) return;
       let doc = await DidService.getDidDocument(sessionUser.did);
       if (doc.service && doc.service.length > 0) {
         setSelected("document")

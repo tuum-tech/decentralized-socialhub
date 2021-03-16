@@ -1,33 +1,28 @@
 /** All your component stuyles */
-.profilecomponent{
-    min-height: 200px;
-    height: auto;
-    background-color: white;
-    box-shadow: 0px 3px 3px #00000005;
-    border-radius: 19px 19px 0px 0px;
-  
+.profilecomponent {
+  min-height: 200px;
+  height: auto;
+  background-color: white;
+  box-shadow: 0px 3px 3px #00000005;
+  border-radius: 19px 19px 0px 0px;
 }
 
 .fixed {
-    position:fixed;
-    top:83px;
-    z-index: 1000;
-    width: 100%;
-    background-color: #f7fafc;
-    margin: none;
-    --ion-grid-padding: 0px;
-    left:0px;
-    
-   
+  position: fixed;
+  top: 83px;
+  z-index: 1000;
+  width: 100%;
+  background-color: #f7fafc;
+  margin: none;
+  --ion-grid-padding: 0px;
+  left: 0px;
 }
 
 .scroll {
-    width: 100%;
-    z-index: 100;
+  width: 100%;
+  z-index: 100;
 }
 
-
 .dashboard {
-    
-    background-color: rgb(206, 129, 28);
+  background-color: rgb(206, 129, 28);
 }

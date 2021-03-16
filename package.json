@@ -8,6 +8,7 @@
     "@sentry/react": "^6.2.2",
     "@sentry/tracing": "^6.2.2",
     "@types/styled-components": "^5.1.5",
+    "@types/toastr": "^2.1.38",
     "bootstrap": "^4.6.0",
     "connected-react-router": "^6.8.0",
     "crypto-js": "^4.0.0",
@@ -32,6 +33,7 @@
     "redux-saga": "^1.1.3",
     "reselect": "^4.0.0",
     "styled-components": "^5.2.1",
+    "toastr": "^2.1.4",
     "typescript": "3.6.3"
   },
   "scripts": {

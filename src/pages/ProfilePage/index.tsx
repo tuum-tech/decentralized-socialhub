@@ -21,7 +21,7 @@ import style from './style.module.scss';
 import { NameSpace, ExporeTime } from './constants';
 import reducer from './reducer';
 import saga from './saga';
-import { InferMappedProps, ProfileResponse, SubState } from './types';
+import { InferMappedProps, SubState } from './types';
 import { requestFullProfile } from './fetchapi';
 
 import Logo from 'src/components/Logo';
@@ -49,9 +49,7 @@ const TutorialModal = styled(IonModal)`
   --box-shadow: none !important;
 `;
 
-const ProfilePage: React.FC<RouteComponentProps> = (
-  props: RouteComponentProps
-) => {
+const ProfilePage: React.FC<RouteComponentProps> = () => {
   /**
    * Direct method implementation without SAGA
    * This was to show you dont need to put everything to global state
@@ -102,23 +100,6 @@ const ProfilePage: React.FC<RouteComponentProps> = (
   });
   const [onboardingCompleted, setOnboardingStatus] = useState(false);
 
-  const [active, setActive] = useState('dashboard');
-
-  // const getProfile = async (token: string): Promise<ProfileResponse> => {
-  //   return (await requestLinkedinProfile(token)) as ProfileResponse
-  // }
-  // let token: string =
-  //   new URLSearchParams(props.location.search).get('token') || ''
-
-  // const getPublicUrl = (): string => {
-  //   let item = window.sessionStorage.getItem('session_instance')
-  //   if (!item) {
-  //     throw Error('Not logged in')
-  //   }
-  //   let instance = JSON.parse(item)
-  //   return '/did/' + instance.did
-  // }
-
   const getFullProfile = async (did: string): Promise<any> => {
     return await requestFullProfile(did);
   };
@@ -160,8 +141,10 @@ const ProfilePage: React.FC<RouteComponentProps> = (
 
   const onTutorialFinish = () => {
     let instance = UserService.GetUserSession();
-    setUserInfo(instance);
-    setShowTutorial(false);
+    if (instance) {
+      setUserInfo(instance);
+      setShowTutorial(false);
+    }
   };
 
   if (!onboardingCompleted) {

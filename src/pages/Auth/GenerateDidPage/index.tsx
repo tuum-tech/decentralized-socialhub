@@ -8,6 +8,7 @@ import injector from 'src/baseplate/injectorWrap';
 import { UserService } from 'src/services/user.service';
 import PageLoading from 'src/components/layouts/PageLoading';
 import { AccountType } from 'src/services/user.service';
+import LoadingIndicator from 'src/components/LoadingIndicator';
 
 import SetPassword from '../components/SetPassword';
 
@@ -69,10 +70,12 @@ const GenerateDidPage: React.FC<RouteComponentProps<
 
   if (session && session.request_token) {
     return (
-      <SetPassword
-        next={async pwd => {
-          setLoading(true);
-          if (session) {
+      <>
+        <SetPassword
+          loading={loading}
+          next={async pwd => {
+            if (!session || !session.request_token) return;
+            setLoading(true);
             await UserService.CreateNewUser(
               session.name,
               session.request_token,
@@ -84,12 +87,11 @@ const GenerateDidPage: React.FC<RouteComponentProps<
               '',
               ''
             );
-          }
-          setLoading(false);
-          window.location.href = '/profile';
-        }}
-        displayText={loading ? 'Encrypting now.......' : ''}
-      />
+            window.location.href = '/profile';
+          }}
+        />
+        <LoadingIndicator loadingText="Encrypting Now..." />
+      </>
     );
   }
 

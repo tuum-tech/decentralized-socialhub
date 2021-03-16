@@ -13,6 +13,7 @@ import saga from './saga';
 import { InferMappedProps, SubState, LocationState } from './types';
 
 import { UserService, ISessionItem } from 'src/services/user.service';
+import LoadingIndicator from 'src/components/LoadingIndicator';
 
 import styled from 'styled-components';
 
@@ -89,12 +90,12 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
     if (!session) return;
     setLoading(true);
     await UserService.LockWithDIDAndPwd(session, password);
-    setLoading(false);
     window.location.href = '/profile';
   };
 
   return (
     <OnBoardLayout>
+      {loading && <LoadingIndicator loadingText="Encrypting now..." />}
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>
@@ -133,11 +134,11 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
             }}
             placeholder="Enter your password"
           />
-
+          {error !== '' && <ErrorText>{error}</ErrorText>}
           <ButtonWithLogo
             mt={34}
             hasLogo={false}
-            text={loading ? 'Encrypting now.......' : 'Continue'}
+            text="Continue"
             onClick={async () => {
               if (password === '' || repeatPassword === '') {
                 setError('You should fill the input fields');
@@ -148,7 +149,6 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
               }
             }}
           />
-          {error !== '' && <ErrorText>{error}</ErrorText>}
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>

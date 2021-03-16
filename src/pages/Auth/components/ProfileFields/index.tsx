@@ -16,6 +16,7 @@ import {
 import { ButtonWithLogo } from 'src/components/buttons';
 import TextInput from 'src/components/inputs/TextInput';
 import { Text16, TextLink } from 'src/components/texts';
+import { validateEmail } from 'src/utils/validation';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import wavinghand from 'src/assets/icon/wavinghand.png';
@@ -97,6 +98,10 @@ const UseDetailsForm: React.FC<Props> = ({ setUserInfo, isCreate = true }) => {
             onClick={() => {
               if (name === '' || email === '') {
                 setError('You should fill all the blanks');
+                return;
+              }
+              if (!validateEmail(email)) {
+                setError('Not correct Email');
                 return;
               }
               setUserInfo(name, email);

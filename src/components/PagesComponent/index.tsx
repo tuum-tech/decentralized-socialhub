@@ -21,17 +21,18 @@ const FollowingList: React.FC = () => {
   const [publishStatus, setPublishStatus] = useState({ requestStatus: '' });
   const updateValues = async () => {
     let user = UserService.GetUserSession();
-    let document = await DidService.getDidDocument(user.did);
-
-    if (!document) {
-      return;
+    if (user && user.did) {
+      let document = await DidService.getDidDocument(user.did);
+      if (!document) return;
+      document.verifiableCredential.forEach((item: any) => {
+        if (user) {
+          let type = item.id.replace(`${user.did}#`, '');
+          if (type === 'twitter') {
+            setTwitterCredential(item.credentialSubject[type]);
+          }
+        }
+      });
     }
-    document.verifiableCredential.forEach((item: any) => {
-      let type = item.id.replace(`${user.did}#`, '');
-      if (type === 'twitter') {
-        setTwitterCredential(item.credentialSubject[type]);
-      }
-    });
   };
 
   const setTimer = () => {

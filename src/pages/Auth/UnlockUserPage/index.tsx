@@ -55,9 +55,10 @@ const UnlockUserPage: React.FC<RouteComponentProps<
     if (res) {
       window.location.href = '/profile';
       return;
-    } else {
-      setError('User Not found secured by this password');
     }
+    // else {
+    //   setError('User Not found secured by this password');
+    // }
   };
 
   return (

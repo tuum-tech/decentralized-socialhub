@@ -8,9 +8,9 @@ import {
   IonCardHeader,
   IonCardContent
 } from '@ionic/react';
-import style from './style.module.scss';
-
+import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+
 import {
   IFollowingResponse,
   IFollowingItem,
@@ -18,9 +18,9 @@ import {
   IFollowerResponse
 } from 'src/services/profile.service';
 import { DidService } from 'src/services/did.service';
+import { alertError } from 'src/utils/notify';
 import styleCards from '../../cards/OverviewCard.module.scss';
-import styled from 'styled-components';
-
+import style from './style.module.scss';
 export interface IDidDocument {
   id: string;
   publicKey?: PublicKeyEntity[] | null;
@@ -284,8 +284,8 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
       list = await profileService.getFollowings(did);
     } catch (e) {
       list = { get_following: { items: [] } };
-      console.error('cant load followings');
-      setError({ hasError: true, errorDescription: 'cant load followings' });
+      // setError({ hasError: true, errorDescription: 'cant load followings' });
+      alertError(null, 'cant load followings');
     }
 
     let listDids = list.get_following.items.map(p => p.did);
@@ -301,7 +301,7 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
       let followers = await profileService.getFollowers(listDids);
       setListFollowers(followers as IFollowerResponse);
     } catch (e) {
-      console.error('cant get followers count');
+      alertError(null, 'cant get followers count');
     }
 
     let docs: IDidDocument[] = [];
