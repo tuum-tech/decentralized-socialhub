@@ -152,7 +152,8 @@ export class TuumTechScriptService {
         target_app_did: process.env.REACT_APP_APPLICATION_ID
       }
     };
-    await this.runTuumTechScript(add_user_script);
+    let response = await this.runTuumTechScript(add_user_script);
+    console.log("update_user_did_info response", response)
   }
 
   public static async addUserToTuumTech(params: TuumScriptAddDidUserParams) {

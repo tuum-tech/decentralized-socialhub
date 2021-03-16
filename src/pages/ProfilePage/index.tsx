@@ -67,7 +67,8 @@ const ProfilePage: React.FC<RouteComponentProps> = () => {
     email: '',
     isDIDPublished: false,
     mnemonics: '',
-    onBoardingCompleted: true,
+    passhash: '',
+    onBoardingCompleted: false,
     tutorialCompleted: false
   });
 
