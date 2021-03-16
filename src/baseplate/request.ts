@@ -38,6 +38,7 @@ function checkStatus(response: Response): any {
   }
 
   const error: { [key: string]: any } = new Error(response.statusText);
+  error.message = response;
   error.response = response;
   throw error;
 }

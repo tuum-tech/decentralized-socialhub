@@ -1,37 +1,38 @@
-import React, { useState } from 'react'
-import { AccountType } from 'src/services/user.service'
+import React, { useState } from 'react';
+import { AccountType } from 'src/services/user.service';
 
-import SetPassword from '../../components/SetPassword'
-import { UserService } from 'src/services/user.service'
+import SetPassword from '../../components/SetPassword';
+import { UserService } from 'src/services/user.service';
 
 interface Props {
-  name: string
-  email: string
-  request_token: string
-  credential: string
+  name: string;
+  email: string;
+  request_token: string;
+  credential: string;
   service:
     | AccountType.DID
     | AccountType.Linkedin
     | AccountType.Facebook
     | AccountType.Google
     | AccountType.Twitter
-    | AccountType.Email
+    | AccountType.Email;
 }
 
-const GenerateDid: React.FC<Props> = (props) => {
+const GenerateDid: React.FC<Props> = props => {
   /**
    * Direct method implementation without SAGA
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
 
-  const [loading, setLoading] = useState(false)
-  const { name, email, request_token, service, credential } = props
+  const [loading, setLoading] = useState(false);
+  const { name, email, request_token, service, credential } = props;
 
   return (
     <SetPassword
-      next={async (pwd) => {
-        setLoading(true)
+      loading={loading}
+      next={async pwd => {
+        setLoading(true);
         await UserService.CreateNewUser(
           name,
           request_token,
@@ -42,13 +43,11 @@ const GenerateDid: React.FC<Props> = (props) => {
           '',
           '',
           ''
-        )
-        setLoading(false)
-        window.location.href = '/profile'
+        );
+        window.location.href = '/profile';
       }}
-      displayText={loading ? 'Encrypting now.......' : ''}
     />
-  )
-}
+  );
+};
 
-export default GenerateDid
+export default GenerateDid;

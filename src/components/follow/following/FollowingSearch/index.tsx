@@ -11,6 +11,7 @@ import {
   ProfileService
 } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
+import { alertError } from 'src/utils/notify';
 
 const FollowingSearch: React.FC = () => {
   const [filteredUniversities, setFilteredUniversities] = useState<
@@ -68,12 +69,12 @@ const FollowingSearch: React.FC = () => {
 
       let user = UserService.GetUserSession();
 
-      if (user.did) {
+      if (user && user.did) {
         let following = await profileServiceLocal.getFollowings(user.did);
         setListFollowing(following as IFollowingResponse);
       }
     } catch (e) {
-      console.error('cant get following');
+      alertError(null, 'cant get following');
     }
   };
 
@@ -99,8 +100,7 @@ const FollowingSearch: React.FC = () => {
       setFilteredUsers(listUsers.response);
     } catch (e) {
       setFilteredUsers({ get_users: { items: [] } });
-      console.error('could not load users');
-      // setError({ hasError: true, errorDescription: 'cant load followers' });
+      alertError(null, 'cant load users');
       return;
     }
   };

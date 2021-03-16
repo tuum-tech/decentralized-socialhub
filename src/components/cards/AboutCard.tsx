@@ -104,9 +104,12 @@ const AboutCard: React.FC<IProps> = ({
 
   const update = () => {
     const newBasicDTO = { ...basicDTO };
-    newBasicDTO.did = UserService.GetUserSession().did;
-    newBasicDTO.about = about;
-    updateFunc(newBasicDTO);
+    const userSession = UserService.GetUserSession();
+    if (userSession) {
+      newBasicDTO.did = userSession.did;
+      newBasicDTO.about = about;
+      updateFunc(newBasicDTO);
+    }
   };
 
   return (

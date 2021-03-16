@@ -99,6 +99,7 @@ const CreateProfileWithDidPage: React.FC<RouteComponentProps<
 
   return (
     <SetPassword
+      loading={loading}
       next={async pwd => {
         setLoading(true);
         await UserService.CreateNewUser(
@@ -112,10 +113,8 @@ const CreateProfileWithDidPage: React.FC<RouteComponentProps<
           userInfo.mnemonic,
           userInfo.hiveHost
         );
-        setLoading(false);
         window.location.href = '/profile';
       }}
-      displayText={loading ? 'Encrypting now.......' : ''}
     />
   );
 };

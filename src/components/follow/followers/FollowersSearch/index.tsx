@@ -10,6 +10,7 @@ import {
   ProfileService
 } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
+import { alertError } from 'src/utils/notify';
 
 const FollowersSearch: React.FC = () => {
   const [filteredUsers, setFilteredUsers] = useState<IUserResponse>({
@@ -58,7 +59,7 @@ const FollowersSearch: React.FC = () => {
     try {
       let user = UserService.GetUserSession();
 
-      if (user.did) {
+      if (user && user.did) {
         //Get Followers
         let listDids = [user.did];
         let profileServiceAppInstance = await ProfileService.getProfileServiceAppOnlyInstance();
@@ -66,13 +67,13 @@ const FollowersSearch: React.FC = () => {
         setListFollowers(followers as IFollowerResponse);
       }
     } catch (e) {
-      console.error('cant get followers');
+      alertError(null, 'cant get followers');
     }
 
     try {
       let user = UserService.GetUserSession();
 
-      if (user.did) {
+      if (user && user.did) {
         //Get Following
         let profileServiceUserInstance = await getUserHiveInstance();
         let following = await profileServiceUserInstance.getFollowings(
@@ -81,7 +82,7 @@ const FollowersSearch: React.FC = () => {
         setListFollowing(following as IFollowingResponse);
       }
     } catch (e) {
-      console.error('cant get following');
+      alertError(null, 'cant get following');
     }
   };
 
@@ -107,8 +108,7 @@ const FollowersSearch: React.FC = () => {
       setFilteredUsers(listUsers.response);
     } catch (e) {
       setFilteredUsers({ get_users: { items: [] } });
-      console.error('could not load users');
-      // setError({ hasError: true, errorDescription: 'cant load followers' });
+      alertError(null, 'cant load users');
       return;
     }
   };
@@ -123,7 +123,7 @@ const FollowersSearch: React.FC = () => {
     (async () => {
       let user = UserService.GetUserSession();
 
-      if (user.did) {
+      if (user && user.did) {
         setFollowersCount(getFollowersCount(user.did));
       }
       await loadUsersData();

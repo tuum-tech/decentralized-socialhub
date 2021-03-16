@@ -51,15 +51,16 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       return;
     }
 
+    let user = UserService.GetUserSession();
+    if (!user) return;
     try {
-      let user = UserService.GetUserSession();
       user.userToken = await generateUserToken(user.mnemonics, endpoint);
       user.tutorialCompleted = true;
       user.hiveHost = endpoint;
 
       let userDid = await DidService.loadDid(user.mnemonics);
       let hivesvc = DidService.generateService(userDid, 'HiveVault', endpoint);
-      let userDocument = await (await DidDocumentService.getUserDocument())
+      let userDocument = await (await DidDocumentService.getUserDocument(user))
         .diddocument;
       DidService.addServiceToDIDDocument(userDocument, hivesvc);
       DidDocumentService.publishUserDocument(userDocument);
