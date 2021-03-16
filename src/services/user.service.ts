@@ -170,7 +170,8 @@ export class UserService {
           email: userData.email,
           userToken: userData.userToken,
           isDIDPublished: isDIDPublished ? isDIDPublished : false,
-          onBoardingCompleted: userData.onBoardingCompleted
+          onBoardingCompleted: userData.onBoardingCompleted,
+          tutorialCompleted: userData.tutorialCompleted
         };
       } else {
         return null;
@@ -296,10 +297,9 @@ export class UserService {
       const res = await this.SearchUserWithDID(did);
 
       if (res && instance) {
-        if (!instance.onBoardingCompleted) {
-          instance.onBoardingCompleted = res.onBoardingCompleted;
-          this.lockUser(this.key(instance.did), instance);
-        }
+        instance.onBoardingCompleted = res.onBoardingCompleted;
+        instance.tutorialCompleted = res.tutorialCompleted;
+        this.lockUser(this.key(instance.did), instance);
         SessionService.saveSessionItem(instance);
         await UserVaultScriptService.register();
         return instance;
@@ -310,6 +310,7 @@ export class UserService {
       // return null;
       alertError(null, 'User Not found secured by this password');
     }
+    return null;
   }
 
   public static async logout() {
