@@ -55,11 +55,11 @@ const SetPassword: React.FC<Props> = ({
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={keyimg} />
           <OnBoardLayoutLeftContentTitle className="mt-18px">
-            Your password is not stored by us.
+            Your password is not stored by us
           </OnBoardLayoutLeftContentTitle>
           <OnBoardLayoutLeftContentDescription className="mt-25px">
-            This is a locally stored password. This password protects your main
-            profile account (decentralized identity).
+            This is a locally stored password that protects your main profile
+            account (decentralized identity).
           </OnBoardLayoutLeftContentDescription>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>

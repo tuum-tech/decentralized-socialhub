@@ -12,7 +12,8 @@ const TutorialStep4Component: React.FC<ITutorialStepProp> = ({
     <div>
       <h2>✅ Tutorial Complete</h2>
       <p>
-        You received a completion badge. Thanks for completing the tutorial.{' '}
+        Your profile is now ready. You have also received a completion badge.
+        Thanks for completing the tutorial.{' '}
       </p>
 
       <div className={style['tutorial-badge']}>
@@ -21,8 +22,8 @@ const TutorialStep4Component: React.FC<ITutorialStepProp> = ({
       </div>
 
       <p className={style['tutorial-complete']}>
-        <b>Next steps:</b>&nbsp;Continue with your profile completion &amp;
-        receive the different badges{' '}
+        <b>Next steps:</b>&nbsp;You can now access your Profile Manager where
+        you can start adding content to your profile.
       </p>
       <IonButton onClick={onContinue} className={style['tutorial-button']}>
         Continue

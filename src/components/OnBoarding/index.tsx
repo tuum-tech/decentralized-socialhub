@@ -53,16 +53,17 @@ const OnBoardingPage: React.FC<Props> = ({ completed }) => {
           </div>
           <div className={style['stage2-content']}>
             <p>
-              There is no help with passwords or security in a decentralized
-              world. You control it, you own it and it’s nothing to do with us.
-              This means you need to be resonsable for it! We call it a
-              Decentralized ID (DID for short).
+              Only you know your secret keys(also called mnemonics) and your
+              passwords. You control it, you own it and we do not store
+              anything. This means you are responsible for protecting and
+              securing your secret keys! These keys are used to issue your
+              Decentralized Identifier(DID for short) so keep it in a safe
+              place!!
             </p>
 
             <p>
-              You can learn more about this later. Ready to see what your
-              Decentralized ID looks like? Make sure no one else can see the
-              next screen. Only you!
+              You can learn more about this later. Ready to see what your can do
+              with your DID?
             </p>
           </div>
 
@@ -87,17 +88,19 @@ const OnBoardingPage: React.FC<Props> = ({ completed }) => {
               <p>Profile is being published...</p>
             </div>
             <p>
-              You need to keep an eye on your profile status. It’s
+              Keep an eye on your profile status. It is
               <span style={{ color: '#FF5A5A', fontWeight: 'bold' }}>
                 {' '}
                 red{' '}
               </span>
-              at the moment meaning a transaction is taking place. Once this is
+              at the moment because your DID is still being published. Once this
+              is
               <span style={{ color: '#4C6FFF', fontWeight: 'bold' }}>
                 {' '}
-                blue{' '}
+                blue,
               </span>
-              you can access the profile manager to edit.
+              you can access your profile manager to add content to your
+              profile.
             </p>
           </div>
           <IonButton className={style['nextBtn']} onClick={next}>
@@ -113,13 +116,13 @@ const OnBoardingPage: React.FC<Props> = ({ completed }) => {
           </div>
           <div className={style['stage4-content']}>
             <p>
-              You can edit your profile in the profile manager and explore other
-              peoples in the explore section.
+              You can edit your profile in profile manager and explore other
+              people in the explore section.
             </p>
             <p style={{ marginTop: '30px' }}>
-              You can view your public profile by clicking on the button in the
-              top right. This will launch a seperate window, and shows you what
-              your profile looks like to others.
+              You can view your public profile by clicking the button "View
+              Profile" on the top right. This will launch a separate window, and
+              shows you what your profile looks like to others.
             </p>
             <p style={{ marginTop: '40px' }}>
               You will now be taken to the dashboard where you can start the

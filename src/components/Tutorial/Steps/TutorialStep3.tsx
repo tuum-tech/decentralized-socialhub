@@ -54,12 +54,11 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     let user = UserService.GetUserSession();
     if (!user) return;
     try {
-      let userToken = await generateUserToken (user.mnemonics, endpoint);
-      user.userToken = userToken
+      let userToken = await generateUserToken(user.mnemonics, endpoint);
+      user.userToken = userToken;
       user.tutorialCompleted = true;
       user.hiveHost = endpoint;
-      
-      
+
       //TODO: Uncomment when did publishing was fixed
       // if (selected !== "document")
       // {
@@ -70,7 +69,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       //   await DidService.addServiceToDIDDocument(userDocument, hivesvc);
       //   await DidDocumentService.publishUserDocument(userDocument);
       // }
-      
+
       await UserService.updateSession(user);
 
       let hiveInstance = await HiveService.getSessionInstance();
@@ -98,14 +97,13 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     return userToken;
   };
 
-
   useEffect(() => {
     (async () => {
       let sessionUser = UserService.GetUserSession();
       if (!sessionUser) return;
       let doc = await DidService.getDidDocument(sessionUser.did);
       if (doc.service && doc.service.length > 0) {
-        setSelected("document")
+        setSelected('document');
         setHiveDocument(doc.service[0].serviceEndpoint);
       }
     })();
@@ -113,13 +111,21 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
 
   return (
     <div>
-      <h2>Decentralized Storage</h2>
+      <h2>Decentralized Storage(Hive Vault)</h2>
       <p>
-        You have the chance, whenever, so switch over to your own storage
-        solution. By default you are on a <b>standard package from Tuum Tech</b>
-        . This is a not like a normal server as we do not own or control your
-        data, you do! You can learn more on your dashboard, in the settings and
-        completing the beginners tutorial.
+        You can choose to store all your personal and application data to your
+        own storage as long as the storage is an Elastos Hive Node. By default,
+        you are choosing to store your data on a vault provided by{' '}
+        <b>Tuum Tech</b>. You can also run your own Hive Node and choose that
+        instead where you are in full control of your entire data! To learn more
+        about how to run your own Hive Node, refer to{' '}
+        <a
+          href="https://github.com/elastos/Elastos.NET.Hive.Node"
+          target="_blank"
+        >
+          Elastos Hive Node
+        </a>
+        .
       </p>
 
       <div className={style['tutorial-hive']}>
@@ -136,12 +142,14 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
               <IonRadio value="document"></IonRadio>
 
               <div className={style['tutorial-hive-item']}>
-                  <p>
-                    <span className={style['tutorial-hive-item-title']}>{hiveDocument}</span>
-                    <span className={style['tutorial-hive-item-description']}>Using the default detected vault</span>
-                  </p>
-                 
-                  
+                <p>
+                  <span className={style['tutorial-hive-item-title']}>
+                    {hiveDocument}
+                  </span>
+                  <span className={style['tutorial-hive-item-description']}>
+                    Using the default detected vault
+                  </span>
+                </p>
               </div>
             </div>
           )}
@@ -151,9 +159,8 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
 
             <div className={style['tutorial-hive-item']}>
               <img src={tuumlogo} />
-              
-                <h2>Tuum Tech</h2>
-              
+
+              <h2>Tuum Tech</h2>
             </div>
           </div>
           <div className={style['tutorial-hive-row']}>

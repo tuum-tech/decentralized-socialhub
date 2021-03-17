@@ -21,9 +21,11 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
       <div>
         <h2>Decentralized Identity (DID)</h2>
         <p>
-          This is your Decentralized Identity (DID). It’s 12 security words in
-          order, that keep your profile safe. Write these down, in order and
-          keep them safe. You lose these and you lose this identity.
+          These are your secret keys(also known as 12 word mnemonics) that
+          control your Decentralized Identifier (DID). Write these down, in
+          order and keep them safe. You own it and you control your DID so if
+          you lose these secret keys, you cannot access your profile in the
+          future.
         </p>
         <SecurityWordsView mnemonics={mnemonic} />
         <IonButton
@@ -64,10 +66,8 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
             back();
           }}
         />
-        <h2>Re-enter your Security passwords</h2>
-        {!isOnError && (
-          <p>Please enter your security words in the right order</p>
-        )}
+        <h2>Re-enter your secret keys(12 word mnemonics)</h2>
+        {!isOnError && <p>Please enter your secret keys in the right order</p>}
 
         <SecurityWordsValidate
           mnemonics={mnemonics}

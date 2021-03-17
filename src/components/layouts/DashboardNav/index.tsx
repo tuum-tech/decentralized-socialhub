@@ -57,8 +57,8 @@ const DashboardHome: React.FC<DashboardProps> = props => {
           {!props.sessionItem.tutorialCompleted && (
             <SpotlightCard
               title="Welcome to Profile"
-              content="To get you familiar with the platform you can start our tutorial which
-        will go through some basics. You will receive a badge for completing it."
+              content="To get you familiar with the platform, you can start the tutorial that
+        will take you through some basics of DID and Hive Vaults. You must complete this tutorial before your profile is ready."
               component={getTutorialButton()}
             />
           )}

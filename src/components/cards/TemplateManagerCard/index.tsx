@@ -45,8 +45,9 @@ const TemplateManagerCard: React.FC<IProps> = ({ sessionItem }: IProps) => {
       </IonCardHeader>
       <IonCardContent>
         <IonText>
-          You have 2 profile templates you can choose from. Switching will
-          change your public profile.
+          You can choose any template you like. The template only applies to the
+          public profile as seen by others. This does not apply to your profile
+          on Dashboard.
         </IonText>
         <Divider />
         <ProfileTemplateManager sessionItem={sessionItem} />
