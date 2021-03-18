@@ -99,28 +99,25 @@ const CreateProfileWithDidPage: React.FC<RouteComponentProps<
   }
 
   return (
-    <>
-      <SetPassword
-        loading={loading}
-        next={async pwd => {
-          setLoading(true);
-          await UserService.CreateNewUser(
-            userInfo.name,
-            userInfo.did,
-            AccountType.DID,
-            userInfo.email,
-            userInfo.did,
-            pwd,
-            userInfo.did,
-            userInfo.mnemonic,
-            userInfo.hiveHost
-          );
-          window.location.href = '/profile';
-          setLoading(false);
-        }}
-      />
-      {loading && <LoadingIndicator loadingText="Encrypting Now..." />}
-    </>
+    <SetPassword
+      loading={loading}
+      next={async pwd => {
+        setLoading(true);
+        await UserService.CreateNewUser(
+          userInfo.name,
+          userInfo.did,
+          AccountType.DID,
+          userInfo.email,
+          userInfo.did,
+          pwd,
+          userInfo.did,
+          userInfo.mnemonic,
+          userInfo.hiveHost
+        );
+        window.location.href = '/profile';
+        setLoading(false);
+      }}
+    />
   );
 };
 

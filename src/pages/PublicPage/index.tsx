@@ -49,8 +49,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     hiveHost: '',
     email: '',
     userToken: '',
-    isDIDPublished: false,
-    onBoardingCompleted: false
+    isDIDPublished: false
   });
 
   const [full_profile, setfull_profile] = useState({

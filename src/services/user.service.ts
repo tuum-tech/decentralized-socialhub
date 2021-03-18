@@ -143,13 +143,24 @@ export class UserService {
     sessionItem: ISessionItem,
     password: string = ''
   ) {
-    if (!sessionItem.passhash || sessionItem.passhash.trim().length == 0) {
-      sessionItem.passhash = CryptoJS.SHA256(
-        sessionItem.did + password
+    let newSessionItem = sessionItem;
+    if (
+      !newSessionItem.passhash ||
+      newSessionItem.passhash.trim().length == 0
+    ) {
+      newSessionItem.passhash = CryptoJS.SHA256(
+        newSessionItem.did + password
       ).toString(CryptoJS.enc.Hex);
     }
-    this.lockUser(this.key(sessionItem.did), sessionItem);
-    SessionService.saveSessionItem(sessionItem);
+
+    const res = await this.SearchUserWithDID(sessionItem.did);
+    if (res) {
+      newSessionItem.onBoardingCompleted = res.onBoardingCompleted;
+      newSessionItem.tutorialCompleted = res.tutorialCompleted;
+    }
+
+    this.lockUser(this.key(newSessionItem.did), newSessionItem);
+    SessionService.saveSessionItem(newSessionItem);
     await UserVaultScriptService.register();
   }
 
@@ -178,7 +189,7 @@ export class UserService {
           tutorialCompleted: userData.tutorialCompleted
         };
       } else {
-        return null;
+        return;
       }
     } else {
       alertError(null, 'Error while searching user by did');
@@ -238,7 +249,8 @@ export class UserService {
         hiveHost: sessionItem.hiveHost,
         accountType: service,
         userToken: token,
-        tutorialCompleted: sessionItem.tutorialCompleted
+        tutorialCompleted: sessionItem.tutorialCompleted,
+        onBoardingCompleted: sessionItem.onBoardingCompleted
       });
     } else {
       await TuumTechScriptService.addUserToTuumTech({
@@ -249,30 +261,12 @@ export class UserService {
         did: did,
         hiveHost: sessionItem.hiveHost,
         accountType: service,
-        userToken: token,
-        tutorialCompleted: false
+        userToken: token
       });
     }
 
     this.lockUser(this.key(did), sessionItem);
     SessionService.saveSessionItem(sessionItem);
-  }
-
-  public static async setOnBoardingCompleted() {
-    let sessionItem = this.GetUserSession();
-    if (sessionItem && !sessionItem.onBoardingCompleted) {
-      sessionItem.onBoardingCompleted = true;
-      window.sessionStorage.setItem(
-        'session_instance',
-        JSON.stringify(sessionItem, null, '')
-      );
-      await TuumTechScriptService.updateUser({
-        did: sessionItem.did,
-        name: sessionItem.name,
-        email: sessionItem.email!,
-        onBoardingCompleted: true
-      });
-    }
   }
 
   public static async updateSession(sessionItem: ISessionItem): Promise<void> {
@@ -281,7 +275,6 @@ export class UserService {
     );
 
     let code = userData.data['get_user_by_did']['items'][0].code;
-
     await TuumTechScriptService.updateUserDidInfo({
       email: sessionItem.email!,
       code: code,
@@ -289,7 +282,8 @@ export class UserService {
       hiveHost: sessionItem.hiveHost,
       accountType: sessionItem.accountType,
       userToken: sessionItem.userToken,
-      tutorialCompleted: sessionItem.tutorialCompleted
+      tutorialCompleted: sessionItem.tutorialCompleted,
+      onBoardingCompleted: sessionItem.onBoardingCompleted
     });
 
     this.lockUser(this.key(sessionItem.did), sessionItem);
@@ -299,6 +293,7 @@ export class UserService {
   public static async UnLockWithDIDAndPwd(did: string, storePassword: string) {
     let instance = this.unlockUser(this.key(did), storePassword);
     const res = await this.SearchUserWithDID(did);
+    console.log('=====>res', res);
     if (!res) {
       alertError(null, 'User not find with this DID');
     } else if (instance) {
@@ -307,7 +302,8 @@ export class UserService {
       this.lockUser(this.key(instance.did), instance);
       SessionService.saveSessionItem(instance);
       await UserVaultScriptService.register();
-      return instance;
+      // return instance;
+      return null;
     }
     return null;
   }
@@ -324,6 +320,14 @@ export class UserService {
       return;
     } else {
       return JSON.parse(item);
+    }
+  }
+
+  public static async DuplicateNewSession(did: string) {
+    const newSession = (await this.SearchUserWithDID(did)) as ISessionItem;
+    if (newSession && newSession && newSession.did) {
+      SessionService.saveSessionItem(newSession);
+      await UserVaultScriptService.register();
     }
   }
 }
@@ -343,6 +347,9 @@ class SessionService {
   }
 
   static saveSessionItem(item: ISessionItem) {
+    if (item && item.did) {
+      window.localStorage.setItem('logedDid', item.did);
+    }
     window.sessionStorage.setItem(
       'session_instance',
       JSON.stringify(item, null, '')
@@ -351,6 +358,7 @@ class SessionService {
 
   static Logout() {
     window.sessionStorage.clear();
+    window.localStorage.removeItem('logedDid');
     window.location.href = '/create-profile';
   }
 }

@@ -73,8 +73,7 @@ const SignDidPage: React.FC<RouteComponentProps<
                   did: res.did,
                   name: res.name,
                   accountType: res.accountType,
-                  isDIDPublished: res.isDIDPublished,
-                  onBoardingCompleted: res.onBoardingCompleted
+                  isDIDPublished: res.isDIDPublished
                 }
               });
             } else {

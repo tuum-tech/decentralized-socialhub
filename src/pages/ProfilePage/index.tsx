@@ -100,10 +100,6 @@ const ProfilePage: React.FC<RouteComponentProps> = () => {
   });
   const [onboardingCompleted, setOnboardingStatus] = useState(false);
 
-  // const getFullProfile = async (did: string): Promise<any> => {
-  //   return await requestFullProfile(did);
-  // };
-
   useEffect(() => {
     (async () => {
       let instance = UserService.GetUserSession();
@@ -149,8 +145,11 @@ const ProfilePage: React.FC<RouteComponentProps> = () => {
   if (!onboardingCompleted) {
     return (
       <OnBoarding
-        completed={() => {
-          UserService.setOnBoardingCompleted();
+        completed={async () => {
+          let user = UserService.GetUserSession();
+          if (!user) return;
+          user.onBoardingCompleted = true;
+          await UserService.updateSession(user);
           setOnboardingStatus(true);
           if (!willExpire) {
             setWillExpire(true);

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Redirect, Route } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import { IonApp, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import * as Sentry from '@sentry/react';
@@ -27,23 +27,6 @@ import './theme/variables.css';
 
 import './styles/app.scss';
 
-/* Pages */
-// import HomePage from './pages/HomePage'
-// import LoginPage from './pages/OldPages/LoginPage/Loadable'
-// import LoginPage from './pages/LoginPage/Loadable';
-// import ElastosLoginPage from './pages/OldPages/ElastosLoginPage/Loadable';
-//import MnemonicPage from './pages/OldPages/pages/MnemonicPage(Obsolete)/Loadable';
-// import RegisterPage from './pages/OldPages/RegisterPage/Loadable'
-// import ElastosMnemonicPage from './pages/OldPages/ElastosMnemonicPage'
-// import ElastosLoginQRPage from './pages/OldPages/ElastosLoginQRPage'
-// import SessionContext from './context/session.context';
-// import TwitterCallback from './pages/TwitterCallback';
-// import CreateIdentityPage from './pages/OldPages/CreateIdentityPage';
-// import ConfirmMnemonicPage from './pages/OldPages/ConfirmMnemonicPage';
-// import ElastosMnemonicPage from './pages/OldPages/ElastosMnemonicPage';
-// import RequestCodePage from './pages/AlphaAccess/RequestCode';
-// import InviteCodePage from './pages/AlphaAccess/InviteCode';
-
 import PublishIdentityPage from './pages/PublishIdentityPage';
 import ChooseVaultPage from './pages/ChooseVaultPage';
 import {
@@ -64,6 +47,7 @@ import {
   CreateProfileWithDidPage
 } from './pages/Auth';
 
+import DefaultPage from './pages/404Page';
 import AccessCodePage from './pages/AlphaAccess/AccessCode';
 import TutorialPage from './pages/TutorialPage';
 import ExplorePage from './pages/ExplorePage';
@@ -77,139 +61,127 @@ import FollowingsPage from './pages/FollowingsPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const App: React.FC = () => {
-  // const [session, setSession] = useState({});
-
   return (
     <IonApp>
       <IonReactRouter>
-        <IonRouterOutlet>
-          {/* <Route path="/login/mnemonic" component={MnemonicPage} exact={true} />
-          <Route path="/register/mnemonic" component={MnemonicPage} exact={true} />
-          <Route
-            path="/login/elastos/mnemonic"
-            component={ElastosMnemonicPage}
-            exact
-          />
-          <Route
-            path='/login/elastos/qrcode'
-            component={ElastosLoginQRPage}
-            exact
-          />
-          <Route path='/register' component={RegisterPage} exact={true} />
-          <Route path='/home' component={HomePage} exact={true} />
-          <Route path="/create" component={CreateIdentityPage} exact={true} />
-          <Route path="/confirm" component={ConfirmMnemonicPage} exact={true} />
-          <Route path='/home' component={HomePage} exact={true} /> */}
-          <Route path="/publish" component={PublishIdentityPage} exact={true} />
-          <Route path="/choosevault" component={ChooseVaultPage} exact={true} />
+        <Switch>
+          <IonRouterOutlet>
+            {/* ====== Private URLs that are log in required ==== */}
+            <ProtectedRoute
+              path="/publish"
+              component={PublishIdentityPage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/choosevault"
+              component={ChooseVaultPage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/profile"
+              component={ProfilePage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/connections"
+              component={FollowersPage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/connections/followings"
+              component={FollowingsPage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/connections/followers"
+              component={FollowersPage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/explore"
+              component={ExplorePage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/settings"
+              component={SettingsPage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/tutorial"
+              component={TutorialPage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/manager"
+              component={ManagerPage}
+              exact={true}
+            />
 
-          <Route exact path="/" render={() => <Redirect to="/Alpha" />} />
+            {/* // login workflow */}
+            <Route path="/twitter_callback" component={TwitterCallback} />
+            <Route path="/linkedin_callback" component={LinkedinCallback} />
+            <Route path="/google_callback" component={GoogleCallback} />
+            <Route path="/facebook_callback" component={FacebookCallback} />
+            <ProtectedRoute
+              path="/set-password"
+              component={CreatePasswordPage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/unlock-user"
+              component={UnlockUserPage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/generate-did"
+              component={GenerateDidPage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/sign-did"
+              component={SignDidPage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/sign-qr"
+              component={SignQRPage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/associated-profile"
+              component={AssociatedProfilePage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/create-why"
+              component={CreateWhyPage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/create-profile"
+              component={CreateProfilePage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/create-profile-with-did"
+              component={CreateProfileWithDidPage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/forgot-password"
+              component={ForgotPasswordPage}
+              exact={true}
+            />
+            <Route path="/verify/email/:code" component={VerifyEmailPage} />
 
-          <Route path="/Alpha" component={AccessCodePage} exact={true} />
-          <ProtectedRoute
-            proctedby="password"
-            path="/profile"
-            component={ProfilePage}
-            exact={true}
-          />
-          <ProtectedRoute
-            proctedby="password"
-            path="/connections"
-            component={FollowersPage}
-            exact={true}
-          />
-          <ProtectedRoute
-            proctedby="password"
-            path="/connections/followings"
-            component={FollowingsPage}
-            exact={true}
-          />
-          <ProtectedRoute
-            proctedby="password"
-            path="/connections/followers"
-            component={FollowersPage}
-            exact={true}
-          />
-          <ProtectedRoute
-            proctedby="password"
-            path="/explore"
-            component={ExplorePage}
-            exact={true}
-          />
-          <ProtectedRoute
-            proctedby="password"
-            path="/settings"
-            component={SettingsPage}
-            exact={true}
-          />
-          <ProtectedRoute
-            proctedby="password"
-            path="/tutorial"
-            component={TutorialPage}
-            exact={true}
-          />
-          <Route path="/did/:did" component={PublicPage} exact={true} />
-          <ProtectedRoute
-            proctedby="password"
-            path="/manager"
-            component={ManagerPage}
-            exact={true}
-          />
-          <Route exact path="/" render={() => <Redirect to="/Alpha" />} />
-
-          {/* // login workflow */}
-          <Route path="/twitter_callback" component={TwitterCallback} />
-          <Route path="/linkedin_callback" component={LinkedinCallback} />
-          <Route path="/google_callback" component={GoogleCallback} />
-          <Route path="/facebook_callback" component={FacebookCallback} />
-          <ProtectedRoute
-            path="/set-password"
-            component={CreatePasswordPage}
-            exact={true}
-          />
-          <ProtectedRoute
-            path="/unlock-user"
-            component={UnlockUserPage}
-            exact={true}
-          />
-          <ProtectedRoute
-            path="/generate-did"
-            component={GenerateDidPage}
-            exact={true}
-          />
-          <ProtectedRoute
-            path="/sign-did"
-            component={SignDidPage}
-            exact={true}
-          />
-          <ProtectedRoute path="/sign-qr" component={SignQRPage} exact={true} />
-          <ProtectedRoute
-            path="/associated-profile"
-            component={AssociatedProfilePage}
-            exact={true}
-          />
-          <ProtectedRoute
-            path="/create-why"
-            component={CreateWhyPage}
-            exact={true}
-          />
-          <ProtectedRoute
-            path="/create-profile"
-            component={CreateProfilePage}
-            exact={true}
-          />
-          <ProtectedRoute
-            path="/create-profile-with-did"
-            component={CreateProfileWithDidPage}
-            exact={true}
-          />
-          <ProtectedRoute
-            path="/forgot-password"
-            component={ForgotPasswordPage}
-            exact={true}
-          />
-          <Route path="/verify/email/:code" component={VerifyEmailPage} />
-        </IonRouterOutlet>
+            {/* ====== Public URLs ==== */}
+            <Route exact path="/" render={() => <Redirect to="/Alpha" />} />
+            <Route path="/Alpha" component={AccessCodePage} exact={true} />
+            <Route path="/did/:did" component={PublicPage} exact={true} />
+            <Route component={DefaultPage} />
+          </IonRouterOutlet>
+        </Switch>
       </IonReactRouter>
     </IonApp>
   );

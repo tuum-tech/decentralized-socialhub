@@ -45,6 +45,7 @@ const GenerateDid: React.FC<Props> = props => {
           ''
         );
         window.location.href = '/profile';
+        setLoading(false);
       }}
     />
   );
