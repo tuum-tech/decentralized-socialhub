@@ -5,6 +5,8 @@
 import React, { useState } from 'react';
 import { IonButton, IonImg } from '@ionic/react';
 
+import { UserService } from 'src/services/user.service';
+
 import AlphaContent from '../AlphaContent';
 import transparentlogo from '../../assets/logo/transparentlogo.png';
 import wavinghand from '../../assets/icon/wavinghand.png';
@@ -27,6 +29,10 @@ const OnBoardingPage: React.FC<Props> = ({ completed }) => {
       setStage(stage + 1);
     }
   };
+
+  let userSession = UserService.GetUserSession();
+  let userSessionName = '';
+  if (userSession) userSessionName = userSession.name;
 
   return (
     <AlphaContent>
@@ -84,7 +90,7 @@ const OnBoardingPage: React.FC<Props> = ({ completed }) => {
                 src={defaultAdamAvatar}
                 className={style['defaultAdamAvatar']}
               />
-              <p className={style['name']}>Adam Keywood</p>
+              <p className={style['name']}>{userSessionName}</p>
               <p>Profile is being published...</p>
             </div>
             <p>
