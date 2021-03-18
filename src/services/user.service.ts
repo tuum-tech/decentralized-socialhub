@@ -148,7 +148,6 @@ export class UserService {
         sessionItem.did + password
       ).toString(CryptoJS.enc.Hex);
     }
-
     this.lockUser(this.key(sessionItem.did), sessionItem);
     SessionService.saveSessionItem(sessionItem);
     await UserVaultScriptService.register();
@@ -281,7 +280,7 @@ export class UserService {
       sessionItem.did
     );
 
-    let code = userData.data["get_user_by_did"]["items"][0].code 
+    let code = userData.data['get_user_by_did']['items'][0].code;
 
     await TuumTechScriptService.updateUserDidInfo({
       email: sessionItem.email!,
@@ -292,7 +291,6 @@ export class UserService {
       userToken: sessionItem.userToken,
       tutorialCompleted: sessionItem.tutorialCompleted
     });
-   
 
     this.lockUser(this.key(sessionItem.did), sessionItem);
     SessionService.saveSessionItem(sessionItem);

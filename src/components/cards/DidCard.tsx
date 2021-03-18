@@ -30,27 +30,13 @@ const DidCard: React.FC<Props> = ({
   type = 'user'
 }) => {
   const [isFollowing, setIsFollowing] = useState(false);
-  let profileService: ProfileService;
-
-  const getUserHiveInstance = async (): Promise<ProfileService> => {
-    return ProfileService.getProfileServiceUserOnlyInstance();
-  };
-
   const followDid = async (did: string) => {
-    if (!profileService || !profileService.hiveClient) {
-      profileService = await getUserHiveInstance();
-    }
-
-    let list: any = await profileService.addFollowing(did);
+    await ProfileService.addFollowing(did);
     setIsFollowing(true);
   };
 
   const unfollowDid = async (did: string) => {
-    if (!profileService || !profileService.hiveClient) {
-      profileService = await getUserHiveInstance();
-    }
-
-    let list: any = await profileService.unfollow(did);
+    await ProfileService.unfollow(did);
     setIsFollowing(false);
   };
 

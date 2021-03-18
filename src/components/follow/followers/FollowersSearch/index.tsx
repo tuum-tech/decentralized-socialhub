@@ -24,15 +24,6 @@ const FollowersSearch: React.FC = () => {
   });
 
   const [followersCount, setFollowersCount] = useState(0);
-
-  const getUserHiveInstance = async (): Promise<ProfileService> => {
-    return ProfileService.getProfileServiceUserOnlyInstance();
-  };
-
-  // const getUserHiveInstance = async (): Promise<SearchService> => {
-  //   return SearchService.getSearchServiceInstance();
-  // };
-
   const [searchQuery, setSearchQuery] = useState('');
 
   // ID text strings within Elastos DID is an ID Sidechain address encoded
@@ -62,8 +53,7 @@ const FollowersSearch: React.FC = () => {
       if (user && user.did) {
         //Get Followers
         let listDids = [user.did];
-        let profileServiceAppInstance = await ProfileService.getProfileServiceAppOnlyInstance();
-        let followers = await profileServiceAppInstance.getFollowers(listDids);
+        let followers = await ProfileService.getFollowers(listDids);
         setListFollowers(followers as IFollowerResponse);
       }
     } catch (e) {
@@ -75,10 +65,7 @@ const FollowersSearch: React.FC = () => {
 
       if (user && user.did) {
         //Get Following
-        let profileServiceUserInstance = await getUserHiveInstance();
-        let following = await profileServiceUserInstance.getFollowings(
-          user.did
-        );
+        let following = await ProfileService.getFollowings(user.did);
         setListFollowing(following as IFollowingResponse);
       }
     } catch (e) {

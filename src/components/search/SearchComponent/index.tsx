@@ -25,12 +25,7 @@ const SearchComponent: React.FC = () => {
   const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
     get_following: { items: [] }
   });
-
   const [searchService, setSearchService] = useState(new SearchService());
-
-  const getUserHiveInstance = async (): Promise<ProfileService> => {
-    return ProfileService.getProfileServiceUserOnlyInstance();
-  };
 
   const getSearchAppHiveInstance = async (): Promise<SearchService> => {
     return SearchService.getSearchServiceAppOnlyInstance();
@@ -84,22 +79,10 @@ const SearchComponent: React.FC = () => {
     }
 
     let user = UserService.GetUserSession();
-    let profileServiceUserInstance;
-
     try {
-      profileServiceUserInstance = await getUserHiveInstance();
-    } catch (e) {
-      console.log(null, 'could not get user vault instance');
-      alertError(null, 'could not get user vault instance');
-      return;
-    }
-
-    try {
-      if (user && user.did && profileServiceUserInstance.hiveClient) {
+      if (user && user.did) {
         //Get Following
-        let following = await profileServiceUserInstance.getFollowings(
-          user.did
-        );
+        let following = await ProfileService.getFollowings(user.did);
         setListFollowing(following as IFollowingResponse);
       }
     } catch (e) {
