@@ -100,9 +100,9 @@ const ProfilePage: React.FC<RouteComponentProps> = () => {
   });
   const [onboardingCompleted, setOnboardingStatus] = useState(false);
 
-  const getFullProfile = async (did: string): Promise<any> => {
-    return await requestFullProfile(did);
-  };
+  // const getFullProfile = async (did: string): Promise<any> => {
+  //   return await requestFullProfile(did);
+  // };
 
   useEffect(() => {
     (async () => {
@@ -111,18 +111,18 @@ const ProfilePage: React.FC<RouteComponentProps> = () => {
 
       setUserInfo(instance);
       setOnboardingStatus(instance.onBoardingCompleted);
+
       if (
         instance.onBoardingCompleted &&
         instance.tutorialCompleted &&
         !willExpire
       ) {
-        try {
-          let profile: ProfileDTO = await getFullProfile(instance.did);
+        let profile = await requestFullProfile(instance.did);
+        if (profile) {
+          console.log('====>profile', profile);
           profile.experienceDTO.isEnabled = true;
           profile.educationDTO.isEnabled = true;
           setfull_profile(profile);
-        } catch (e) {
-          setError(true);
         }
 
         setWillExpire(true);

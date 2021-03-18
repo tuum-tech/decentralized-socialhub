@@ -12,29 +12,15 @@ export function fetchSimpleApi(): Promise<BaseplateResp> {
   });
 }
 
-// export function requestVaultProfile(did: string): Promise<ProfileContent> {
-//   let profileContent: ProfileContent = {
-//     profile: { firstName: 'firstName', lastName: 'lastName' },
-//   };
-//   return Promise.resolve(profileContent);
-// }
-
 export async function requestFullProfile(did: string): Promise<ProfileDTO> {
-  let profileService: ProfileService = await ProfileService.getProfileServiceAppOnlyInstance();
   let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<
     ProfileResponse
   >;
-  try {
-    getFullProfileResponse = await profileService.getFullProfile(did);
+  getFullProfileResponse = await ProfileService.getFullProfile(did);
 
-    return mapProfileResponseToProfileDTO(
-      getFullProfileResponse.response as ProfileResponse
-    );
-  } catch (error) {
-    // console.error(JSON.stringify(error));
-    // alertError(null, 'Failed requestFullProfile');
-  }
-  return mapProfileResponseToProfileDTO({} as ProfileResponse);
+  return mapProfileResponseToProfileDTO(
+    getFullProfileResponse.response as ProfileResponse
+  );
 }
 
 const mapProfileResponseToProfileDTO = (

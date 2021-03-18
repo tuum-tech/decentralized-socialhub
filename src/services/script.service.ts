@@ -5,6 +5,7 @@ import { UserService, ISessionItem, AccountType } from './user.service';
 import { HiveService } from './hive.service';
 import { DidService } from './did.service';
 import { BasicDTO } from 'src/pages/PublicPage/types';
+import { alertError } from 'src/utils/notify';
 
 interface TuumScriptUpdateDidUserParams {
   email: string;
@@ -93,41 +94,6 @@ export class TuumTechScriptService {
     return prevUsers;
   }
 
-  public static async updateBasicProfile(basicDTO: ISessionItem) {
-    const update_user_script = {
-      name: 'update_user',
-      params: basicDTO,
-      context: {
-        target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
-      }
-    };
-    let response: any = await this.runTuumTechScript(update_user_script);
-    const { data, meta } = response;
-    if (meta.code === 200 && meta.message === 'OK') {
-    }
-    return response;
-  }
-
-  public static async updateAbout(basicDTO: BasicDTO): Promise<any> {
-    const userSession = UserService.GetUserSession();
-    if (userSession) {
-      const update_user_script = {
-        name: 'update_basic_profile',
-        params: basicDTO,
-        context: {
-          target_did: userSession.did,
-          target_app_did: process.env.REACT_APP_APPLICATION_ID
-        }
-      };
-      let response: any = await this.runTuumTechScript(update_user_script);
-      const { data, meta } = response;
-      if (meta.code === 200 && meta.message === 'OK') {
-      }
-      return response;
-    }
-  }
-
   public static async searchUserWithDID(did: string) {
     const get_user_by_did_script = {
       name: 'get_user_by_did',
@@ -153,7 +119,7 @@ export class TuumTechScriptService {
       }
     };
     let response = await this.runTuumTechScript(add_user_script);
-    console.log("update_user_did_info response", response)
+    console.log('update_user_did_info response', response);
   }
 
   public static async addUserToTuumTech(params: TuumScriptAddDidUserParams) {
@@ -178,6 +144,22 @@ export class TuumTechScriptService {
       }
     };
     await this.runTuumTechScript(update_user_script);
+  }
+
+  public static async updateBasicProfile(basicDTO: ISessionItem) {
+    const update_user_script = {
+      name: 'update_user',
+      params: basicDTO,
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+    let response: any = await this.runTuumTechScript(update_user_script);
+    const { data, meta } = response;
+    if (meta.code === 200 && meta.message === 'OK') {
+    }
+    return response;
   }
 }
 
@@ -206,14 +188,19 @@ export class UserVaultScriptService {
       response.data.get_user_by_did.items.length > 0
     ) {
       const userInfo = response.data.get_user_by_did.items[0];
-      if (userInfo.tutorialCompleted) {
-        user.userToken = await this.generateUserToken(
+      if (!userInfo.tutorialCompleted) return;
+      try {
+        let userToken = await this.generateUserToken(
           user.mnemonics,
           user.hiveHost
         );
-        UserService.updateSession(user);
+        user.userToken = userToken;
+
+        await UserService.updateSession(user);
         let hiveInstance = await HiveService.getSessionInstance();
         await UserVaultScripts.Execute(hiveInstance!);
+      } catch (error) {
+        alertError(null, error);
       }
     }
   }
