@@ -14,7 +14,6 @@ import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { ExporeTime } from './constants';
-import { requestFullProfile } from './fetchapi';
 
 import Logo from 'src/components/Logo';
 import Navbar from 'src/components/layouts/Navbar';
@@ -25,11 +24,12 @@ import {
 } from 'src/services/user.service';
 import LoggedHeader from 'src/components/layouts/LoggedHeader';
 import { EducationItem, ExperienceItem } from '../PublicPage/types';
+import { ProfileDTO } from '../PublicPage/types';
+import { ProfileService } from 'src/services/profile.service';
 
 import TutorialComponent from './components/Tutorial';
 import DashboardContent from './components/Content';
 import OnBoarding from './components/OnBoarding';
-import StartService from './components/StartService';
 
 const TutorialModal = styled(IonModal)`
   --border-radius: 16px;
@@ -77,11 +77,11 @@ const ProfilePage = () => {
       }
     },
     educationDTO: {
-      isEnabled: false,
+      isEnabled: true,
       items: [] as EducationItem[]
     },
     experienceDTO: {
-      isEnabled: false,
+      isEnabled: true,
       items: [] as ExperienceItem[]
     }
   });
@@ -103,7 +103,9 @@ const ProfilePage = () => {
         instance.tutorialStep === 4 &&
         !willExpire
       ) {
-        let profile = await requestFullProfile(instance.did);
+        let profile:
+          | ProfileDTO
+          | undefined = await ProfileService.getFullProfile(instance.did);
         if (profile) {
           profile.experienceDTO.isEnabled = true;
           profile.educationDTO.isEnabled = true;

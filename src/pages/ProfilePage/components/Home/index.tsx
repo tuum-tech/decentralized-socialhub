@@ -46,22 +46,26 @@ const DashboardHome: React.FC<DashboardProps> = ({
     <IonGrid className={style['tab-grid']}>
       <IonRow>
         <IonCol size="8">
-          <AboutCard
-            aboutText={profile.basicDTO.about}
-            update={async (nextAbout: string) => {
-              const newBasicDTO = { ...profile.basicDTO };
-              const userSession = UserService.GetUserSession();
-              if (userSession) {
-                newBasicDTO.did = userSession.did;
-                newBasicDTO.about = nextAbout;
-                await ProfileService.updateAbout(newBasicDTO);
-              }
-            }}
-          ></AboutCard>
-          <ExperienceCard
-            experienceDTO={profile.experienceDTO}
-          ></ExperienceCard>
-          <EducationCard educationDTO={profile.educationDTO}></EducationCard>
+          {profile && profile.basicDTO && (
+            <AboutCard
+              aboutText={profile.basicDTO.about || ''}
+              update={async (nextAbout: string) => {
+                const newBasicDTO = { ...profile.basicDTO };
+                const userSession = UserService.GetUserSession();
+                if (userSession) {
+                  newBasicDTO.did = userSession.did;
+                  newBasicDTO.about = nextAbout;
+                  await ProfileService.updateAbout(newBasicDTO);
+                }
+              }}
+            />
+          )}
+          {profile && profile.experienceDTO && (
+            <ExperienceCard experienceDTO={profile.experienceDTO} />
+          )}
+          {profile && profile.educationDTO && (
+            <EducationCard educationDTO={profile.educationDTO} />
+          )}
         </IonCol>
         <IonCol size="4">
           {tutorialVisible && (
