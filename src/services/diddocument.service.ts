@@ -101,7 +101,7 @@ export class DidDocumentService {
   ): Promise<IDIDDocumentState | undefined> {
     let userSession = UserService.GetUserSession();
     if (!userSession) {
-      alertError(null, 'Not logged');
+      // alertError(null, 'Not logged');
       return;
     }
 
@@ -116,7 +116,7 @@ export class DidDocumentService {
     }
 
     if (!signedDocument['proof']) {
-      alertError(null, 'The DID document was not signed');
+      // alertError(null, 'The DID document was not signed');
       return;
     }
 

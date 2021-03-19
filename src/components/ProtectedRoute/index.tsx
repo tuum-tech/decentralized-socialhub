@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 
 type ProtectedRouteProps = {
@@ -29,14 +29,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     '/associated-profile',
     '/create-why',
     '/create-profile',
-    // '/create-profile-with-did',
+    '/create-profile-with-did',
     '/forgot-password',
     '/verify/email'
   ];
 
   const logedDid = window.localStorage.getItem('logedDid');
   const isAuthPage =
-    authRoutes.findIndex(item => item.includes(routeProps.path)) > -1;
+    authRoutes.findIndex(item => routeProps.path.includes(item)) > -1;
 
   if (!logedDid && !isAuthPage) {
     return (

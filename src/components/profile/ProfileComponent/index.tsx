@@ -80,23 +80,17 @@ const ProfileComponent: React.FC<IPropsSession> = ({
               <IonRow>
                 <IonCol size="9">
                   {!error && profile.basicDTO.isEnabled === true ? (
-                    <AboutCard basicDTO={profile.basicDTO} mode="read" />
+                    <AboutCard aboutText={profile.basicDTO.about} />
                   ) : (
                     ''
                   )}
                   {!error && profile.experienceDTO.isEnabled === true ? (
-                    <ExperienceCard
-                      experienceDTO={profile.experienceDTO}
-                      mode="read"
-                    />
+                    <ExperienceCard experienceDTO={profile.experienceDTO} />
                   ) : (
                     ''
                   )}
                   {!error && profile.educationDTO.isEnabled === true ? (
-                    <EducationCard
-                      educationDTO={profile.educationDTO}
-                      mode="read"
-                    />
+                    <EducationCard educationDTO={profile.educationDTO} />
                   ) : (
                     ''
                   )}

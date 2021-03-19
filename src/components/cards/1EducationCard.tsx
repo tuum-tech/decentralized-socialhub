@@ -15,22 +15,23 @@ import {
   IonRow,
   IonTextarea
 } from '@ionic/react';
-import styleWidget from './WidgetCards.module.scss';
-import { EducationDTO, EducationItem } from 'src/pages/PublicPage/types';
 import styled from 'styled-components';
+import { Guid } from 'guid-typescript';
+
+import { EducationDTO, EducationItem } from 'src/pages/PublicPage/types';
+import style from './DidCard.module.scss';
+import styleWidget from './WidgetCards.module.scss';
+
 import { ButtonLink } from '../buttons';
 import SmallTextInput from '../inputs/SmallTextInput';
 import SkeletonAvatar from '../avatars/SkeletonAvatar';
-//import avatar from 'https://media-exp1.licdn.com/dms/image/C4D03AQHJrVWT1os_uQ/profile-displayphoto-shrink_100_100/0/1613330591466?e=1619654400&v=beta&t=oE-BJ4-vYiefNuEYQTaKeVDaJWh8coNOUypjIwHoY2s'
-import style from './DidCard.module.scss';
 import harvard from '../../assets/logo/Harvard-Logo.png';
-import { Guid } from 'guid-typescript';
 
 interface IEducationProps {
   educationDTO: EducationDTO;
   updateFunc?: any;
   removeFunc?: any;
-  mode: string;
+  mode?: string;
 }
 
 const Institution = styled.span`
@@ -197,7 +198,6 @@ const EducationItems: React.FC<EducationItemsProps> = ({
 
   const cancel = () => {
     if (editMode === 'add') removeFunc(index);
-
     setEditMode('readonly');
   };
 
@@ -331,7 +331,7 @@ const EducationCard: React.FC<IEducationProps> = ({
   educationDTO,
   updateFunc,
   removeFunc,
-  mode
+  mode = 'view'
 }: IEducationProps) => {
   const [currentEducationDTO, setCurrentEducationDTO] = useState(educationDTO);
 

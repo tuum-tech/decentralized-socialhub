@@ -80,18 +80,30 @@ const DidForm: React.FC<Props> = ({
   showModal
 }) => {
   const [mnemonic, setMnemonic] = useState([
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    ''
+    'amazing',
+    'strike',
+    'aerobic',
+    'fiber',
+    'slight',
+    'warm',
+    'flee',
+    'cattle',
+    'legend',
+    'hollow',
+    'current',
+    'second'
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // ''
   ]);
 
   const [passphrase, setPassphrase] = useState('');

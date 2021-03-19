@@ -103,7 +103,6 @@ export class TuumTechScriptService {
   }
 
   public static async updateUserDidInfo(params: TuumScriptUpdateDidUserParams) {
-    console.log('=====>params', params.onBoardingCompleted);
     const add_user_script = {
       name: 'update_user_did_info',
       params,
@@ -113,7 +112,6 @@ export class TuumTechScriptService {
       }
     };
     let response = await this.runTuumTechScript(add_user_script);
-    console.log('update_user_did_info response', response);
   }
 
   public static async addUserToTuumTech(params: TuumScriptAddDidUserParams) {

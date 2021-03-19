@@ -223,6 +223,8 @@ export class UserService {
       CryptoJS.enc.Hex
     );
 
+    const res = await this.SearchUserWithDID(did);
+
     sessionItem = {
       did: did,
       accountType: service,
@@ -236,8 +238,8 @@ export class UserService {
       mnemonics: mnemonic,
       passhash: passhash,
       email: email,
-      onBoardingCompleted: false,
-      tutorialCompleted: false
+      onBoardingCompleted: res ? res.onBoardingCompleted : false,
+      tutorialCompleted: res ? res.tutorialCompleted : false
     };
 
     // add new user to the tuum.tech vault
@@ -293,7 +295,6 @@ export class UserService {
   public static async UnLockWithDIDAndPwd(did: string, storePassword: string) {
     let instance = this.unlockUser(this.key(did), storePassword);
     const res = await this.SearchUserWithDID(did);
-    console.log('=====>res', res);
     if (!res) {
       alertError(null, 'User not find with this DID');
     } else if (instance) {
@@ -302,8 +303,7 @@ export class UserService {
       this.lockUser(this.key(instance.did), instance);
       SessionService.saveSessionItem(instance);
       await UserVaultScriptService.register();
-      // return instance;
-      return null;
+      return instance;
     }
     return null;
   }
@@ -314,11 +314,7 @@ export class UserService {
 
   public static GetUserSession(): ISessionItem | undefined {
     let item = window.sessionStorage.getItem('session_instance');
-
-    if (!item) {
-      alertError(null, 'Not logged in');
-      return;
-    } else {
+    if (item) {
       return JSON.parse(item);
     }
   }
@@ -338,7 +334,7 @@ class SessionService {
     let item = window.sessionStorage.getItem('session_instance');
 
     if (!item) {
-      alertError(null, 'Not logged in');
+      // alertError(null, 'Not logged in');
       return;
     }
 

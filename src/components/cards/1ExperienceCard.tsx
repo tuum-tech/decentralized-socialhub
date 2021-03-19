@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   IonButton,
   IonCard,
@@ -21,9 +21,6 @@ import styled from 'styled-components';
 import SmallTextInput from '../inputs/SmallTextInput';
 import { Guid } from 'guid-typescript';
 
-interface IProps {
-  experiences: ExperienceDTO;
-}
 const Institution = styled.span`
   font-family: 'SF Pro Display';
   font-size: 16px;
@@ -156,9 +153,9 @@ const ExperienceItems: React.FC<ExperienceItemsProps> = ({
 
   const cancel = () => {
     if (editMode === 'add') removeFunc();
-
     setEditMode('readonly');
   };
+
   const remove = () => {
     removeFunc(index);
   };
@@ -263,18 +260,22 @@ const ExperienceItems: React.FC<ExperienceItemsProps> = ({
 interface IExperienceProps {
   experienceDTO: ExperienceDTO;
   updateFunc?: any;
-  mode: string;
+  mode?: string;
   removeFunc?: any;
 }
 const ExperienceCard: React.FC<IExperienceProps> = ({
   experienceDTO,
   updateFunc,
-  mode,
+  mode = 'view',
   removeFunc
 }: IExperienceProps) => {
   const [currentExperienceDTO, setcurrentExperienceDTO] = useState(
     experienceDTO
   );
+
+  useEffect(() => {
+    setcurrentExperienceDTO(experienceDTO);
+  }, [experienceDTO]);
 
   const handleChange = (evt: any, index: number) => {
     // 1. Make a shallow copy of the items
@@ -328,22 +329,6 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     if (itemToDelete[0].isEmpty) removeFunc(itemToDelete[0]);
   };
 
-  const listExperiences = currentExperienceDTO.items.map((x, i) => {
-    return (
-      <div key={i}>
-        <ExperienceItems
-          experienceItem={x}
-          handleChange={handleChange}
-          updateFunc={saveChanges}
-          index={i}
-          removeFunc={removeItem}
-          mode={mode}
-        />
-        {i < currentExperienceDTO.items.length - 1 ? <Divider /> : ''}
-      </div>
-    );
-  });
-
   return (
     <>
       {experienceDTO.isEnabled === true ? (
@@ -366,7 +351,23 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
               </IonRow>
             </IonGrid>
           </IonCardHeader>
-          <IonCardContent>{listExperiences}</IonCardContent>
+          <IonCardContent>
+            {currentExperienceDTO.items.map((x, i) => {
+              return (
+                <div key={i}>
+                  <ExperienceItems
+                    experienceItem={x}
+                    handleChange={handleChange}
+                    updateFunc={saveChanges}
+                    index={i}
+                    removeFunc={removeItem}
+                    mode={mode}
+                  />
+                  {i < currentExperienceDTO.items.length - 1 ? <Divider /> : ''}
+                </div>
+              );
+            })}
+          </IonCardContent>
         </IonCard>
       ) : (
         ''
