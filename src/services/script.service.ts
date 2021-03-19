@@ -13,8 +13,8 @@ interface TuumScriptUpdateDidUserParams {
   hiveHost: string;
   accountType: string;
   userToken: string;
-  tutorialCompleted: boolean;
   onBoardingCompleted: boolean;
+  tutorialStep: number;
 }
 
 interface TuumScriptAddDidUserParams {
@@ -168,7 +168,7 @@ export class UserVaultScriptService {
       response.data.get_user_by_did.items.length > 0
     ) {
       const userInfo = response.data.get_user_by_did.items[0];
-      if (!userInfo.tutorialCompleted) return;
+      if (!userInfo.tutorialStep && userInfo.tutorialStep !== 4) return;
       try {
         let userToken = await this.generateUserToken(
           user.mnemonics,

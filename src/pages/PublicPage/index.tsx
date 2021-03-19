@@ -13,10 +13,10 @@ import styled from 'styled-components';
 import ProfileComponent from 'src/components/profile/ProfileComponent';
 import { AccountType, UserService } from 'src/services/user.service';
 import PageLoading from 'src/components/layouts/PageLoading';
+import { ProfileService } from 'src/services/profile.service';
 
 import style from './style.module.scss';
 import { EducationItem, ExperienceItem, ProfileDTO } from './types';
-import { requestFullProfile } from './fetchapi';
 
 const SignInButton = styled(IonRouterLink)`
   width: 140px;
@@ -97,10 +97,6 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     }
   });
 
-  const getFullProfile = async (did: string): Promise<any> => {
-    return await requestFullProfile(did);
-  };
-
   let did: string = props.match.params.did;
 
   useEffect(() => {
@@ -113,15 +109,15 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
       }
 
       try {
-        if (!error) {
-          let profile: ProfileDTO = await getFullProfile(did);
-          profile.basicDTO.isEnabled = true;
+        let profile:
+          | ProfileDTO
+          | undefined = await ProfileService.getFullProfile(did);
+        if (profile) {
           profile.experienceDTO.isEnabled = true;
           profile.educationDTO.isEnabled = true;
           setfull_profile(profile);
         }
       } catch (e) {}
-      // setLoaded(true);
       setLoading(false);
     })();
   }, []);

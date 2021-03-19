@@ -250,7 +250,7 @@ let run = async () => {
             hiveHost: '$params.hiveHost',
             userToken: '$params.userToken',
             accountType: '$params.accountType',
-            tutorialCompleted: '$params.tutorialCompleted',
+            tutorialStep: '$params.tutorialStep',
             onBoardingCompleted: '$params.onBoardingCompleted'
           }
         }

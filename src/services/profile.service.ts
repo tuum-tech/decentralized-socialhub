@@ -3,7 +3,8 @@ import { ProfileResponse } from 'src/pages/ProfilePage/types';
 import {
   EducationItem,
   ExperienceItem,
-  BasicDTO
+  BasicDTO,
+  ProfileDTO
 } from 'src/pages/PublicPage/types';
 import { HiveService } from './hive.service';
 import { UserService } from './user.service';
@@ -41,17 +42,37 @@ export interface IFollowerItem {
 }
 
 export class ProfileService {
-  static async getFullProfile(
-    did: string
-  ): Promise<IRunScriptResponse<ProfileResponse>> {
-    const hiveInstance = await HiveService.getSessionInstance();
-    return hiveInstance!.Scripting.RunScript({
-      name: 'get_full_profile',
-      context: {
-        target_did: did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+  static async getFullProfile(did: string): Promise<ProfileDTO | undefined> {
+    {
+      const hiveInstance = await HiveService.getSessionInstance();
+      if (hiveInstance) {
+        const fullProfileResponse: IRunScriptResponse<ProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_full_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            }
+          }
+        );
+
+        if (fullProfileResponse) {
+          let basicProfile = fullProfileResponse.response!.get_basic.items![0];
+          let educationProfile = fullProfileResponse.response!
+            .get_education_profile;
+          let experienceProfile = fullProfileResponse.response!
+            .get_experience_profile;
+
+          return {
+            basicDTO: basicProfile || {},
+            educationDTO: educationProfile,
+            experienceDTO: experienceProfile
+          };
+        }
       }
-    });
+
+      return;
+    }
   }
 
   static async updateEducationProfile(

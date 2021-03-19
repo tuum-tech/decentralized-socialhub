@@ -23,7 +23,7 @@ const DidCard: React.FC<Props> = ({
   avatar,
   indexItem,
   sessionItem = {
-    tutorialCompleted: false
+    tutorialStep: 1
   },
   following = false,
   colSize = '100%',
@@ -72,7 +72,7 @@ const DidCard: React.FC<Props> = ({
             {'DID:' + did.replace('did:elastos:', '')}
           </span>
         </div>
-        {type == 'user' && sessionItem.tutorialCompleted && (
+        {type == 'user' && sessionItem.tutorialStep === 4 && (
           <div className={style['card-link']}>
             {isFollowing && (
               <span

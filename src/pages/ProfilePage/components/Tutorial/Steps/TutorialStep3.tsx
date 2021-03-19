@@ -56,7 +56,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     try {
       let userToken = await generateUserToken(user.mnemonics, endpoint);
       user.userToken = userToken;
-      user.tutorialCompleted = true;
+      user.tutorialStep = 4;
       user.hiveHost = endpoint;
 
       //TODO: Uncomment when did publishing was fixed

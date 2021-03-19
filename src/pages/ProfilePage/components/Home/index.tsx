@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 
 import SpotlightCard from 'src/components/cards/SpotlightCard';
@@ -26,13 +26,17 @@ const DashboardHome: React.FC<DashboardProps> = ({
   profile,
   sessionItem
 }) => {
+  const [tutorialVisible, setTutorialVisible] = useState(true);
+  useEffect(() => {
+    setTutorialVisible(sessionItem.tutorialStep !== 4);
+  }, [sessionItem]);
   const getTutorialButton = () => {
-    let tutorialStep = window.localStorage.getItem('tutorial-stage');
     return (
       <div>
         <br />{' '}
         <ButtonWhite onClick={() => onTutorialStart()}>
-          {tutorialStep ? 'Continue' : 'Start'} beginners tutorial
+          {sessionItem.tutorialStep ? 'Continue' : 'Start'} beginners tutorial (
+          {sessionItem.tutorialStep ? sessionItem.tutorialStep : 1} / 4)
         </ButtonWhite>
       </div>
     );
@@ -42,25 +46,29 @@ const DashboardHome: React.FC<DashboardProps> = ({
     <IonGrid className={style['tab-grid']}>
       <IonRow>
         <IonCol size="8">
-          <AboutCard
-            aboutText={profile.basicDTO.about}
-            update={async (nextAbout: string) => {
-              const newBasicDTO = { ...profile.basicDTO };
-              const userSession = UserService.GetUserSession();
-              if (userSession) {
-                newBasicDTO.did = userSession.did;
-                newBasicDTO.about = nextAbout;
-                await ProfileService.updateAbout(newBasicDTO);
-              }
-            }}
-          ></AboutCard>
-          <ExperienceCard
-            experienceDTO={profile.experienceDTO}
-          ></ExperienceCard>
-          <EducationCard educationDTO={profile.educationDTO}></EducationCard>
+          {profile && profile.basicDTO && (
+            <AboutCard
+              aboutText={profile.basicDTO.about || ''}
+              update={async (nextAbout: string) => {
+                const newBasicDTO = { ...profile.basicDTO };
+                const userSession = UserService.GetUserSession();
+                if (userSession) {
+                  newBasicDTO.did = userSession.did;
+                  newBasicDTO.about = nextAbout;
+                  await ProfileService.updateAbout(newBasicDTO);
+                }
+              }}
+            />
+          )}
+          {profile && profile.experienceDTO && (
+            <ExperienceCard experienceDTO={profile.experienceDTO} />
+          )}
+          {profile && profile.educationDTO && (
+            <EducationCard educationDTO={profile.educationDTO} />
+          )}
         </IonCol>
         <IonCol size="4">
-          {!sessionItem.tutorialCompleted && (
+          {tutorialVisible && (
             <SpotlightCard
               title="Welcome to Profile"
               content="To get you familiar with the platform, you can start the tutorial that

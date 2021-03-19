@@ -14,7 +14,6 @@ import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { ExporeTime } from './constants';
-import { requestFullProfile } from './fetchapi';
 
 import Logo from 'src/components/Logo';
 import Navbar from 'src/components/layouts/Navbar';
@@ -25,11 +24,12 @@ import {
 } from 'src/services/user.service';
 import LoggedHeader from 'src/components/layouts/LoggedHeader';
 import { EducationItem, ExperienceItem } from '../PublicPage/types';
+import { ProfileDTO } from '../PublicPage/types';
+import { ProfileService } from 'src/services/profile.service';
 
 import TutorialComponent from './components/Tutorial';
 import DashboardContent from './components/Content';
 import OnBoarding from './components/OnBoarding';
-import StartService from './components/StartService';
 
 const TutorialModal = styled(IonModal)`
   --border-radius: 16px;
@@ -56,7 +56,7 @@ const ProfilePage = () => {
     mnemonics: '',
     passhash: '',
     onBoardingCompleted: true,
-    tutorialCompleted: false
+    tutorialStep: 1
   });
 
   const [full_profile, setfull_profile] = useState({
@@ -77,15 +77,16 @@ const ProfilePage = () => {
       }
     },
     educationDTO: {
-      isEnabled: false,
+      isEnabled: true,
       items: [] as EducationItem[]
     },
     experienceDTO: {
-      isEnabled: false,
+      isEnabled: true,
       items: [] as ExperienceItem[]
     }
   });
   const [onboardingCompleted, setOnboardingStatus] = useState(true);
+  const [loadingText, setLoadingText] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -99,10 +100,12 @@ const ProfilePage = () => {
 
       if (
         instance.onBoardingCompleted &&
-        instance.tutorialCompleted &&
+        instance.tutorialStep === 4 &&
         !willExpire
       ) {
-        let profile = await requestFullProfile(instance.did);
+        let profile:
+          | ProfileDTO
+          | undefined = await ProfileService.getFullProfile(instance.did);
         if (profile) {
           profile.experienceDTO.isEnabled = true;
           profile.educationDTO.isEnabled = true;
@@ -122,12 +125,16 @@ const ProfilePage = () => {
     setShowTutorial(true);
   };
 
-  const onTutorialFinish = () => {
-    let instance = UserService.GetUserSession();
-    if (instance) {
-      setUserInfo(instance);
-      setShowTutorial(false);
+  const onTutorialFinish = async (step: number) => {
+    setLoadingText('Updating Loading Status on Vault');
+    let userSession = UserService.GetUserSession();
+    if (userSession && userSession.did) {
+      userSession.tutorialStep = step;
+      await UserService.updateSession(userSession);
+      setUserInfo(userSession);
     }
+    setShowTutorial(false);
+    setLoadingText('');
   };
 
   if (!onboardingCompleted) {
@@ -181,7 +188,7 @@ const ProfilePage = () => {
           cssClass={style['tutorialpage']}
           backdropDismiss={false}
         >
-          <TutorialComponent onClose={() => onTutorialFinish()} />
+          <TutorialComponent onClose={onTutorialFinish} />
         </TutorialModal>
       </IonContent>
     </IonPage>

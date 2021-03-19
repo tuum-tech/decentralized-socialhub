@@ -71,7 +71,7 @@ const PeopleCard: React.FC<IProps> = ({
     mnemonics: '',
     passhash: '',
     onBoardingCompleted: false,
-    tutorialCompleted: false
+    tutorialStep: 1
   });
 
   useEffect(() => {
