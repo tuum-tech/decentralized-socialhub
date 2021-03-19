@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 
 import SpotlightCard from 'src/components/cards/SpotlightCard';
@@ -26,13 +26,17 @@ const DashboardHome: React.FC<DashboardProps> = ({
   profile,
   sessionItem
 }) => {
+  const [tutorialVisible, setTutorialVisible] = useState(true);
+  useEffect(() => {
+    setTutorialVisible(sessionItem.tutorialStep !== 4);
+  }, [sessionItem]);
   const getTutorialButton = () => {
-    let tutorialStep = window.localStorage.getItem('tutorial-stage');
     return (
       <div>
         <br />{' '}
         <ButtonWhite onClick={() => onTutorialStart()}>
-          {tutorialStep ? 'Continue' : 'Start'} beginners tutorial
+          {sessionItem.tutorialStep ? 'Continue' : 'Start'} beginners tutorial (
+          {sessionItem.tutorialStep ? sessionItem.tutorialStep : 1} / 4)
         </ButtonWhite>
       </div>
     );
@@ -60,7 +64,7 @@ const DashboardHome: React.FC<DashboardProps> = ({
           <EducationCard educationDTO={profile.educationDTO}></EducationCard>
         </IonCol>
         <IonCol size="4">
-          {!sessionItem.tutorialCompleted && (
+          {tutorialVisible && (
             <SpotlightCard
               title="Welcome to Profile"
               content="To get you familiar with the platform, you can start the tutorial that

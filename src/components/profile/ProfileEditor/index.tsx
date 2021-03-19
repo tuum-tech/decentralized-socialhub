@@ -38,7 +38,7 @@ const ProfileEditor: React.FC = () => {
     mnemonics: '',
     passhash: '',
     onBoardingCompleted: false,
-    tutorialCompleted: false
+    tutorialStep: 1
   });
   const [loaded, setloaded] = useState(false);
   const [full_profile, setfull_profile] = useState({
@@ -101,7 +101,7 @@ const ProfileEditor: React.FC = () => {
 
       setUserInfo(instance);
 
-      if (instance.tutorialCompleted) {
+      if (instance.tutorialStep === 4) {
         try {
           let profile: ProfileDTO = await requestFullProfile(instance.did);
 
@@ -136,7 +136,7 @@ const ProfileEditor: React.FC = () => {
             ) : (
               ''
             )}
-            {!error && loaded && userInfo.tutorialCompleted === true ? (
+            {!error && loaded && userInfo.tutorialStep === 4 ? (
               <>
                 <AboutCard
                   aboutText={full_profile.basicDTO.about}

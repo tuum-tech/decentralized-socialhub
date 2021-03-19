@@ -30,7 +30,7 @@ export interface ISessionItem {
   mnemonics: string;
   passhash: string;
   onBoardingCompleted: boolean;
-  tutorialCompleted: boolean;
+  tutorialStep: number;
 }
 
 export interface ITemporaryDID {
@@ -156,7 +156,7 @@ export class UserService {
     const res = await this.SearchUserWithDID(sessionItem.did);
     if (res) {
       newSessionItem.onBoardingCompleted = res.onBoardingCompleted;
-      newSessionItem.tutorialCompleted = res.tutorialCompleted;
+      newSessionItem.tutorialStep = res.tutorialStep;
     }
 
     this.lockUser(this.key(newSessionItem.did), newSessionItem);
@@ -190,7 +190,7 @@ export class UserService {
           userToken: userData.userToken,
           isDIDPublished: isDIDPublished ? isDIDPublished : false,
           onBoardingCompleted: userData.onBoardingCompleted,
-          tutorialCompleted: userData.tutorialCompleted
+          tutorialStep: userData.tutorialStep
         };
       } else {
         return;
@@ -243,7 +243,7 @@ export class UserService {
       passhash: passhash,
       email: email,
       onBoardingCompleted: res ? res.onBoardingCompleted : false,
-      tutorialCompleted: res ? res.tutorialCompleted : false
+      tutorialStep: res ? res.tutorialStep : 1
     };
 
     // add new user to the tuum.tech vault
@@ -255,7 +255,7 @@ export class UserService {
         hiveHost: sessionItem.hiveHost,
         accountType: service,
         userToken: token,
-        tutorialCompleted: sessionItem.tutorialCompleted,
+        tutorialStep: sessionItem.tutorialStep,
         onBoardingCompleted: sessionItem.onBoardingCompleted
       });
     } else {
@@ -292,7 +292,7 @@ export class UserService {
       hiveHost: sessionItem.hiveHost,
       accountType: sessionItem.accountType,
       userToken: sessionItem.userToken,
-      tutorialCompleted: sessionItem.tutorialCompleted,
+      tutorialStep: sessionItem.tutorialStep,
       onBoardingCompleted: sessionItem.onBoardingCompleted
     });
 
@@ -312,7 +312,7 @@ export class UserService {
       alertError(null, 'User not find with this DID');
     } else if (instance) {
       instance.onBoardingCompleted = res.onBoardingCompleted;
-      instance.tutorialCompleted = res.tutorialCompleted;
+      instance.tutorialStep = res.tutorialStep;
       this.lockUser(this.key(instance.did), instance);
 
       // SessionService.saveSessionItem(instance);

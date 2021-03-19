@@ -87,7 +87,7 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
             </IonCol>
             <IonCol size="auto">
               <SmallLightButton
-                disabled={sessionItem.tutorialCompleted === false}
+                disabled={sessionItem.tutorialStep !== 4}
                 onClick={() => updateFunc(currentBasicDTO)}
               >
                 Save
@@ -101,7 +101,7 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
           <IonRow class="ion-justify-content-start">
             <IonCol size="5">
               <SmallTextInput
-                disabled={!sessionItem.tutorialCompleted}
+                disabled={sessionItem.tutorialStep !== 4}
                 label="Name"
                 name="name"
                 value={currentBasicDTO.name}

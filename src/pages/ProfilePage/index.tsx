@@ -56,7 +56,7 @@ const ProfilePage = () => {
     mnemonics: '',
     passhash: '',
     onBoardingCompleted: true,
-    tutorialCompleted: false
+    tutorialStep: 1
   });
 
   const [full_profile, setfull_profile] = useState({
@@ -86,6 +86,7 @@ const ProfilePage = () => {
     }
   });
   const [onboardingCompleted, setOnboardingStatus] = useState(true);
+  const [loadingText, setLoadingText] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -99,7 +100,7 @@ const ProfilePage = () => {
 
       if (
         instance.onBoardingCompleted &&
-        instance.tutorialCompleted &&
+        instance.tutorialStep === 4 &&
         !willExpire
       ) {
         let profile = await requestFullProfile(instance.did);
@@ -122,12 +123,16 @@ const ProfilePage = () => {
     setShowTutorial(true);
   };
 
-  const onTutorialFinish = () => {
-    let instance = UserService.GetUserSession();
-    if (instance) {
-      setUserInfo(instance);
-      setShowTutorial(false);
+  const onTutorialFinish = async (step: number) => {
+    setLoadingText('Updating Loading Status on Vault');
+    let userSession = UserService.GetUserSession();
+    if (userSession && userSession.did) {
+      userSession.tutorialStep = step;
+      await UserService.updateSession(userSession);
+      setUserInfo(userSession);
     }
+    setShowTutorial(false);
+    setLoadingText('');
   };
 
   if (!onboardingCompleted) {
@@ -181,7 +186,7 @@ const ProfilePage = () => {
           cssClass={style['tutorialpage']}
           backdropDismiss={false}
         >
-          <TutorialComponent onClose={() => onTutorialFinish()} />
+          <TutorialComponent onClose={onTutorialFinish} />
         </TutorialModal>
       </IonContent>
     </IonPage>

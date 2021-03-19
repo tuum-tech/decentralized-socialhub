@@ -29,7 +29,7 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
     mnemonics: '',
     passhash: '',
     onBoardingCompleted: false,
-    tutorialCompleted: false
+    tutorialStep: 1
   });
 
   useEffect(() => {
@@ -84,7 +84,7 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
             </IonLabel>
           </IonItem>
           <IonItem
-            disabled={!userInfo.tutorialCompleted}
+            disabled={userInfo.tutorialStep !== 4}
             className={
               active === 'connections-followers' ||
               active === 'connections-followings'
@@ -101,14 +101,14 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
               src="../../assets/icon_connections.svg"
               className={style['img']}
               title={
-                userInfo.tutorialCompleted
+                userInfo.tutorialStep === 4
                   ? ''
                   : 'Please complete the tutorial to access your Connections'
               }
             ></IonIcon>
             <IonLabel
               title={
-                userInfo.tutorialCompleted
+                userInfo.tutorialStep === 4
                   ? ''
                   : 'Please complete the tutorial to access your Connections'
               }
