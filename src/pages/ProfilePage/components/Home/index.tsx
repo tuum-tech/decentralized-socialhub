@@ -37,7 +37,6 @@ const DashboardHome: React.FC<DashboardProps> = ({
       </div>
     );
   };
-  console.log('=====>profile.experienceDTO', profile.experienceDTO);
 
   return (
     <IonGrid className={style['tab-grid']}>
