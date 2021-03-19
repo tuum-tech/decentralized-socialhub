@@ -25,17 +25,6 @@ const FollowingSearch: React.FC = () => {
     get_following: { items: [] }
   });
 
-  // const [searchService, setSearchService] = useState(new SearchService());
-  const [profileService, setProfileService] = useState(new ProfileService());
-
-  // const getUserHiveInstance = async (): Promise<SearchService> => {
-  //   return SearchService.getSearchServiceInstance();
-  // };
-
-  const getUserHiveInstance = async (): Promise<ProfileService> => {
-    return ProfileService.getProfileServiceUserOnlyInstance();
-  };
-
   const [searchQuery, setSearchQuery] = useState('');
 
   // ID text strings within Elastos DID is an ID Sidechain address encoded
@@ -51,26 +40,11 @@ const FollowingSearch: React.FC = () => {
     return str != null && regex.test(str.trim());
   };
 
-  // useEffect(() => {
-  //   (async () => {
-  //     let searchService = await getUserHiveInstance();
-  //     setSearchService(searchService);
-  //   })();
-  // }, []);
-
   const loadFollowingData = async () => {
     try {
-      let profileServiceLocal: ProfileService;
-      if (!profileService || !profileService.hiveClient) {
-        profileServiceLocal = await getUserHiveInstance();
-      } else {
-        profileServiceLocal = profileService;
-      }
-
       let user = UserService.GetUserSession();
-
       if (user && user.did) {
-        let following = await profileServiceLocal.getFollowings(user.did);
+        let following = await ProfileService.getFollowings(user.did);
         setListFollowing(following as IFollowingResponse);
       }
     } catch (e) {

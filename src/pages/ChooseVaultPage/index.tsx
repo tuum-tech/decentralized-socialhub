@@ -16,10 +16,11 @@ import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 import { fetchSimpleApi } from './fetchapi';
 import Header from 'src/components/layouts/Header';
-import ClearlyMeContent from 'src/components/ClearlyMeContent';
-import VaultProgressComponent from 'src/components/VaultProgressComponent';
+import ClearlyMeContent from 'src/components/oldComponents/ClearlyMeContent';
 import ButtonDefault from 'src/components/buttons/ButtonDefault';
 import ButtonLight from 'src/components/buttons/ButtonLight';
+
+import VaultProgressComponent from './components/VaultProgressComponent';
 
 const ChooseVault: React.FC<InferMappedProps> = ({
   eProps,

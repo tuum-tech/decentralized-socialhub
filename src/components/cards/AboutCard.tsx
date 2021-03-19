@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   IonButton,
   IonCard,
@@ -12,15 +12,9 @@ import {
   IonRow,
   IonTextarea
 } from '@ionic/react';
-import styleWidget from './WidgetCards.module.scss';
-import { BasicDTO } from 'src/pages/PublicPage/types';
 import styled from 'styled-components';
-import { UserService } from 'src/services/user.service';
 
-interface BasicInfo {
-  adress: string;
-  name: string;
-}
+import styleWidget from './WidgetCards.module.scss';
 
 const LinkStyleSpan = styled.span`
   font-family: 'SF Pro Display';
@@ -85,32 +79,22 @@ const ModalFooter = styled(IonFooter)`
   padding: 12px;
 `;
 interface IProps {
-  basicDTO: BasicDTO;
-  mode: string;
-  updateFunc?: any;
+  mode?: string;
+  update?: any;
+  aboutText: string;
 }
 
 const AboutCard: React.FC<IProps> = ({
-  basicDTO,
-  mode,
-  updateFunc
+  aboutText,
+  mode = 'read',
+  update
 }: IProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [about, setAbout] = useState(basicDTO ? basicDTO.about : '');
+  const [about, setAbout] = useState(aboutText ? aboutText : '');
 
-  const edit = () => {
-    setIsEditing(true);
-  };
-
-  const update = () => {
-    const newBasicDTO = { ...basicDTO };
-    const userSession = UserService.GetUserSession();
-    if (userSession) {
-      newBasicDTO.did = userSession.did;
-      newBasicDTO.about = about;
-      updateFunc(newBasicDTO);
-    }
-  };
+  useEffect(() => {
+    setAbout(aboutText);
+  }, [aboutText]);
 
   return (
     <>
@@ -123,7 +107,9 @@ const AboutCard: React.FC<IProps> = ({
               </IonCol>
               {mode === 'edit' ? (
                 <IonCol size="auto">
-                  <LinkStyleSpan onClick={edit}>+ Edit</LinkStyleSpan>
+                  <LinkStyleSpan onClick={() => setIsEditing(true)}>
+                    + Edit
+                  </LinkStyleSpan>
                 </IonCol>
               ) : (
                 ''
@@ -158,8 +144,8 @@ const AboutCard: React.FC<IProps> = ({
                 Cancel
               </IonButton>
               <IonButton
-                onClick={() => {
-                  update();
+                onClick={async () => {
+                  await update(about);
                   setIsEditing(false);
                 }}
               >

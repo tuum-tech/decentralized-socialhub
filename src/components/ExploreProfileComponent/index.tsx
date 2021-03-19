@@ -13,10 +13,11 @@ import {
   ExperienceItem,
   ProfileDTO
 } from 'src/pages/PublicPage/types';
-import { requestFullProfile } from 'src/pages/ExplorePage/fetchapi';
+
 import ProfileHeader from '../profile/ProfileHeader';
 import style from './style.module.scss';
 import arrowLeft from '../../assets/icons/arrow-left-square.svg';
+import { ProfileService } from 'src/services/profile.service';
 
 const Header = styled.div`
     width: 100%;
@@ -97,9 +98,6 @@ const ExploreProfileComponent: React.FC<ExploreProfileParams> = ({
     }
   });
 
-  const getFullProfile = async (did: string): Promise<any> => {
-    return await requestFullProfile(did);
-  };
   useEffect(() => {
     (async () => {
       try {
@@ -111,11 +109,15 @@ const ExploreProfileComponent: React.FC<ExploreProfileParams> = ({
 
       try {
         //if (!error) {
-        let profile: ProfileDTO = await getFullProfile(did);
-        profile.basicDTO.isEnabled = true;
-        profile.experienceDTO.isEnabled = true;
-        profile.educationDTO.isEnabled = true;
-        setfull_profile(profile);
+        let profile:
+          | ProfileDTO
+          | undefined = await ProfileService.getFullProfile(did);
+        if (profile) {
+          profile.basicDTO.isEnabled = true;
+          profile.experienceDTO.isEnabled = true;
+          profile.educationDTO.isEnabled = true;
+          setfull_profile(profile);
+        }
       } catch (e) {}
       //setLoaded(true);
     })();

@@ -1,5 +1,4 @@
 import { HiveClient } from '@elastos/elastos-hive-js-sdk';
-// import { all } from 'redux-saga/effects';
 
 export class UserVaultScripts {
   static async Execute(hiveClient: HiveClient) {

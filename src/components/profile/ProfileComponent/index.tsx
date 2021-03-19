@@ -10,8 +10,8 @@ import ExperienceCard from '../../cards/ExperienceCard';
 import FollowersWidget from '../../follow/FollowersWidget';
 import FollowingList from '../../follow/FollowingList';
 import PublicProfileNav from '../PublicProfileNav';
-import SocialProfiles from '../../SocialProfiles';
 
+import SocialProfiles from '../SocialProfiles';
 import ProfileBanner from '../ProfileBanner';
 import ProfileHeader from '../ProfileHeader';
 import style from './style.module.scss';
@@ -109,7 +109,10 @@ const ProfileComponent: React.FC<IPropsSession> = ({
                   <IonCol size="9">
                     {!error && profile.basicDTO.isEnabled === true ? (
                       <div ref={aboutRef}>
-                        <AboutCard basicDTO={profile.basicDTO} mode="read" />
+                        <AboutCard
+                          aboutText={profile.basicDTO.about}
+                          mode="read"
+                        />
                       </div>
                     ) : (
                       ''

@@ -9,12 +9,10 @@ import {
 } from 'src/services/user.service';
 import { TuumTechScriptService } from 'src/services/script.service';
 import {
-  BasicDTO,
   EducationItem,
   ExperienceItem,
   ProfileDTO
 } from 'src/pages/PublicPage/types';
-import { ProfileResponse } from 'src/pages/ProfilePage/types';
 import { ProfileService } from 'src/services/profile.service';
 
 import TemplateManagerCard from '../../cards/TemplateManagerCard';
@@ -36,8 +34,9 @@ const ProfileEditor: React.FC = () => {
     name: '',
     isDIDPublished: false,
     mnemonics: '',
+    passhash: '',
     onBoardingCompleted: false,
-    tutorialCompleted: false
+    tutorialStep: 1
   });
   const [loaded, setloaded] = useState(false);
   const [full_profile, setfull_profile] = useState({
@@ -67,147 +66,6 @@ const ProfileEditor: React.FC = () => {
     }
   });
 
-  async function requestFullProfile(did: string): Promise<ProfileDTO> {
-    let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
-    let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<
-      ProfileResponse
-    >;
-
-    getFullProfileResponse = await profileService.getFullProfile(did);
-
-    return mapProfileResponseToProfileDTO(
-      getFullProfileResponse.response as ProfileResponse
-    );
-  }
-
-  async function callUpdateProfile(basicDTO: ISessionItem): Promise<any> {
-    let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
-    let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<
-      ProfileResponse
-    >;
-    try {
-      getFullProfileResponse = await TuumTechScriptService.updateBasicProfile(
-        basicDTO
-      );
-    } catch (error) {
-      // console.error(JSON.stringify(error));
-    }
-    return '';
-  }
-
-  async function callUpdateAbout(basicDTO: BasicDTO): Promise<any> {
-    let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
-    //let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<ProfileResponse>;
-    await TuumTechScriptService.updateAbout(basicDTO);
-    return '';
-  }
-
-  async function callUpdateEducationProfile(
-    educationItem: EducationItem
-  ): Promise<any> {
-    let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
-    // let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<
-    //   ProfileResponse
-    // >;
-    // getFullProfileResponse =
-    await profileService.updateEducationProfile(educationItem);
-    return '';
-  }
-
-  async function callUpdateExperienceProfile(
-    experienceItem: ExperienceItem
-  ): Promise<any> {
-    let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
-    // let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<
-    //   ProfileResponse
-    // >;
-    try {
-      // getFullProfileResponse =
-      await profileService.updateExperienceProfile(experienceItem);
-
-      return ''; //mapProfileResponseToProfileDTO(getFullProfileResponse.response as ProfileResponse);
-    } catch (error) {
-      console.error(JSON.stringify(error));
-    }
-    return mapProfileResponseToProfileDTO({} as ProfileResponse);
-  }
-
-  async function callRemoveEducationItem(
-    educationItem: EducationItem
-  ): Promise<any> {
-    let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
-    // let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<
-    //   ProfileResponse
-    // >;
-    // getFullProfileResponse =
-    await profileService.removeEducationItem(educationItem);
-    return '';
-  }
-
-  async function callRemoveExperienceItem(
-    experienceItem: ExperienceItem
-  ): Promise<any> {
-    let profileService: ProfileService = await ProfileService.getProfileServiceInstance();
-    // let getFullProfileResponse: IRunScriptResponse<ProfileResponse> = {} as IRunScriptResponse<
-    //   ProfileResponse
-    // >;
-    // getFullProfileResponse =
-    await profileService.removeExperienceItem(experienceItem);
-
-    return '';
-  }
-
-  const mapProfileResponseToProfileDTO = (
-    fullProfileResponse: ProfileResponse
-  ): ProfileDTO => {
-    let basicProfile = fullProfileResponse.get_basic.items![0];
-    let educationProfile = fullProfileResponse.get_education_profile;
-    let experienceProfile = fullProfileResponse.get_experience_profile;
-
-    return {
-      basicDTO: basicProfile,
-      educationDTO: educationProfile,
-      experienceDTO: experienceProfile
-    };
-  };
-
-  const getFullProfile = async (did: string): Promise<ProfileDTO> => {
-    return await requestFullProfile(did);
-  };
-
-  const updateBasicProfile = async (userInfo: ISessionItem): Promise<any> => {
-    callUpdateProfile(userInfo);
-    UserService.updateSession(userInfo);
-  };
-
-  const updateAbout = async (basicDTO: BasicDTO): Promise<any> => {
-    callUpdateAbout(basicDTO);
-  };
-
-  const updateEducationProfile = async (
-    educationItem: EducationItem
-  ): Promise<any> => {
-    callUpdateEducationProfile(educationItem);
-  };
-
-  const updateExperienceProfile = async (
-    experienceItem: ExperienceItem
-  ): Promise<any> => {
-    callUpdateExperienceProfile(experienceItem);
-  };
-
-  const removeEducation = async (
-    educationItem: EducationItem
-  ): Promise<any> => {
-    callRemoveEducationItem(educationItem);
-  };
-
-  const removeExperience = async (
-    experienceItem: ExperienceItem
-  ): Promise<any> => {
-    callRemoveExperienceItem(experienceItem);
-  };
-
   useEffect(() => {
     (async () => {
       let instance = UserService.GetUserSession();
@@ -215,13 +73,17 @@ const ProfileEditor: React.FC = () => {
 
       setUserInfo(instance);
 
-      if (instance.tutorialCompleted) {
+      if (instance.tutorialStep === 4) {
         try {
-          let profile: ProfileDTO = await getFullProfile(instance.did);
-          profile.experienceDTO.isEnabled = true;
-          profile.educationDTO.isEnabled = true;
-
-          setfull_profile(profile);
+          let profile:
+            | ProfileDTO
+            | undefined = await ProfileService.getFullProfile(instance.did);
+          if (profile) {
+            profile.basicDTO.isEnabled = true;
+            profile.experienceDTO.isEnabled = true;
+            profile.educationDTO.isEnabled = true;
+            setfull_profile(profile);
+          }
         } catch (e) {
           setError(true);
         }
@@ -229,11 +91,10 @@ const ProfileEditor: React.FC = () => {
       setloaded(true);
     })();
   }, []);
+  console.log('=====>profile', full_profile);
 
   return (
     <IonContent className={style['profileeditor']}>
-      {/*-- Default ProfileEditor --*/}
-      {/* <IonSpinner /> */}
       <IonGrid className={style['profileeditorgrid']}>
         <IonRow>
           <IonCol size="4">
@@ -243,30 +104,61 @@ const ProfileEditor: React.FC = () => {
             {!error && loaded ? (
               <BasicCard
                 sessionItem={userInfo}
-                updateFunc={updateBasicProfile}
+                updateFunc={async (userInfo: ISessionItem) => {
+                  await TuumTechScriptService.updateBasicProfile(userInfo);
+                  UserService.updateSession(userInfo);
+                }}
               ></BasicCard>
             ) : (
               ''
             )}
-            {!error && loaded && userInfo.tutorialCompleted === true ? (
+            {!error && loaded && userInfo.tutorialStep === 4 ? (
               <>
-                <AboutCard
-                  basicDTO={full_profile.basicDTO}
-                  updateFunc={updateAbout}
-                  mode="edit"
-                ></AboutCard>
-                <EducationCard
-                  educationDTO={full_profile.educationDTO}
-                  updateFunc={updateEducationProfile}
-                  removeFunc={removeEducation}
-                  mode="edit"
-                ></EducationCard>
-                <ExperienceCard
-                  experienceDTO={full_profile.experienceDTO}
-                  updateFunc={updateExperienceProfile}
-                  removeFunc={removeExperience}
-                  mode="edit"
-                ></ExperienceCard>
+                {full_profile && full_profile.basicDTO && (
+                  <AboutCard
+                    aboutText={full_profile.basicDTO.about || ''}
+                    mode="edit"
+                    update={async (nextAbout: string) => {
+                      const newBasicDTO = { ...full_profile.basicDTO };
+                      const userSession = UserService.GetUserSession();
+                      if (userSession) {
+                        newBasicDTO.did = userSession.did;
+                        newBasicDTO.about = nextAbout;
+                        await ProfileService.updateAbout(newBasicDTO);
+                      }
+                    }}
+                  />
+                )}
+                {full_profile && full_profile.educationDTO && (
+                  <EducationCard
+                    educationDTO={full_profile.educationDTO}
+                    updateFunc={async (educationItem: EducationItem) => {
+                      await ProfileService.updateEducationProfile(
+                        educationItem
+                      );
+                    }}
+                    removeFunc={async (educationItem: EducationItem) => {
+                      await ProfileService.removeEducationItem(educationItem);
+                    }}
+                    mode="edit"
+                  />
+                )}
+                {full_profile && full_profile.experienceDTO && (
+                  <ExperienceCard
+                    experienceDTO={full_profile.experienceDTO}
+                    updateFunc={async (experienceItem: ExperienceItem) => {
+                      await ProfileService.updateExperienceProfile(
+                        experienceItem
+                      );
+                    }}
+                    removeFunc={async (
+                      experienceItem: ExperienceItem
+                    ): Promise<any> => {
+                      await ProfileService.removeExperienceItem(experienceItem);
+                    }}
+                    mode="edit"
+                  />
+                )}
               </>
             ) : (
               ''

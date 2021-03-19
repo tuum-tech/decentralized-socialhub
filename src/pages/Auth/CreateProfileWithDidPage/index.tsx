@@ -5,11 +5,12 @@ import { createStructuredSelector } from 'reselect';
 import { StaticContext, RouteComponentProps } from 'react-router';
 import { AccountType, UserService } from 'src/services/user.service';
 
+import PageLoading from 'src/components/layouts/PageLoading';
+import LoadingIndicator from 'src/components/LoadingIndicator';
+import { DidService } from 'src/services/did.service';
+
 import ProfileFields from '../components/ProfileFields';
 import SetPassword from '../components/SetPassword';
-
-import PageLoading from 'src/components/layouts/PageLoading';
-import { DidService } from 'src/services/did.service';
 
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
 import injector from 'src/baseplate/injectorWrap';
@@ -114,6 +115,7 @@ const CreateProfileWithDidPage: React.FC<RouteComponentProps<
           userInfo.hiveHost
         );
         window.location.href = '/profile';
+        setLoading(false);
       }}
     />
   );

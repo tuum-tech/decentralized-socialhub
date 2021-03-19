@@ -49,17 +49,17 @@ const SetPassword: React.FC<Props> = ({
 
   return (
     <OnBoardLayout>
-      {loading && <LoadingIndicator loadingText="Encrypting now..." />}
+      {loading && <LoadingIndicator loadingText="Encrypting Now..." />}
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={keyimg} />
           <OnBoardLayoutLeftContentTitle className="mt-18px">
-            Your password is not stored by us.
+            Your password is not stored by us
           </OnBoardLayoutLeftContentTitle>
           <OnBoardLayoutLeftContentDescription className="mt-25px">
-            This is a locally stored password. This password protects your main
-            profile account (decentralized identity).
+            This is a locally stored password that protects your main profile
+            account (decentralized identity).
           </OnBoardLayoutLeftContentDescription>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>

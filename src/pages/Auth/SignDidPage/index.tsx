@@ -1,10 +1,17 @@
-import { IonCol, IonRow } from '@ionic/react';
 import { connect } from 'react-redux';
 import { StaticContext, RouteComponentProps, useHistory } from 'react-router';
-import styled from 'styled-components';
-
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
+
+import {
+  OnBoardLayout,
+  OnBoardLayoutRight
+} from 'src/components/layouts/OnBoardLayout';
+import LoadingIndicator from 'src/components/LoadingIndicator';
+import { UserService } from 'src/services/user.service';
+import DidSignForm from '../components/DidSign/DidSignForm';
+import DidLeftSide from '../components/DidSign/DidLeftSide';
+import PassPhraseHelp from '../components/DidSign/PassPhraseHelp';
 
 import injector from 'src/baseplate/injectorWrap';
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
@@ -16,15 +23,6 @@ import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState, UserType, LocationState } from './types';
 
-import {
-  OnBoardLayout,
-  OnBoardLayoutRight
-} from 'src/components/layouts/OnBoardLayout';
-import { UserService } from 'src/services/user.service';
-import DidSignForm from '../components/DidSign/DidSignForm';
-import DidLeftSide from '../components/DidSign/DidLeftSide';
-import PassPhraseHelp from '../components/DidSign/PassPhraseHelp';
-
 const SignDidPage: React.FC<RouteComponentProps<
   {},
   StaticContext,
@@ -34,6 +32,7 @@ const SignDidPage: React.FC<RouteComponentProps<
   const [showHelp, setShowHelp] = useState(false);
   const [error, setError] = useState(false);
   const [user, setUser] = useState<UserType | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (
@@ -48,6 +47,7 @@ const SignDidPage: React.FC<RouteComponentProps<
 
   return (
     <OnBoardLayout className={style['did-signin']}>
+      {loading && <LoadingIndicator loadingText="Signing Now..." />}
       {showHelp && <PassPhraseHelp close={() => setShowHelp(false)} />}
       <DidLeftSide error={error} />
       <OnBoardLayoutRight>
@@ -56,6 +56,7 @@ const SignDidPage: React.FC<RouteComponentProps<
           error={error}
           setError={setError}
           onSuccess={async (uDid: string, mnemonic: string) => {
+            setLoading(true);
             const res = await UserService.SearchUserWithDID(uDid);
             window.localStorage.setItem(
               `temporary_${uDid.replace('did:elastos:', '')}`,
@@ -72,8 +73,7 @@ const SignDidPage: React.FC<RouteComponentProps<
                   did: res.did,
                   name: res.name,
                   accountType: res.accountType,
-                  isDIDPublished: res.isDIDPublished,
-                  onBoardingCompleted: res.onBoardingCompleted
+                  isDIDPublished: res.isDIDPublished
                 }
               });
             } else {
@@ -86,6 +86,7 @@ const SignDidPage: React.FC<RouteComponentProps<
                 }
               });
             }
+            setLoading(false);
           }}
         />
       </OnBoardLayoutRight>

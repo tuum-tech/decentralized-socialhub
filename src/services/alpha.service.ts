@@ -60,18 +60,18 @@ export class AlphaService {
 
   static async requestAccess(email: string): Promise<boolean> {
     try {
-      // let URL = `${
-      //   process.env.REACT_APP_MAILCHIMP_URL
-      // }&EMAIL=${encodeURIComponent(
-      //   email
-      // )}&b_8d74b221b8912cf1478a69f37_1eb3890eaf=`;
-      // let response = await fetch(URL, {
-      //   method: 'POST',
-      //   mode: 'no-cors',
-      //   headers: {
-      //     'Content-Type': 'application/json'
-      //   }
-      // });
+      let URL = `${
+        process.env.REACT_APP_MAILCHIMP_URL
+      }&EMAIL=${encodeURIComponent(
+        email
+      )}&b_8d74b221b8912cf1478a69f37_1eb3890eaf=`;
+      await fetch(URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
 
       let client = await HiveService.getAppHiveClient();
       let scriptResponse = await client.Scripting.RunScript({

@@ -21,6 +21,7 @@ export class HiveService {
     let isUserDocumentPublished = await DidDocumentService.isDidDocumentPublished(
       instance.did
     );
+
     if (!isUserDocumentPublished) {
       alertError(
         null,
@@ -47,11 +48,6 @@ export class HiveService {
         challenge.nonce !== undefined && challenge.nonce.length > 0;
       return isValid;
     } catch (error) {
-      // console.error(error);
-      // alertError(
-      //   null,
-      //   'DID User is not published or AccountType is not available type'
-      // );
       return false;
     }
   }

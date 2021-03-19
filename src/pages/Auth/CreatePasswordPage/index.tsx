@@ -68,8 +68,7 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
         accountType,
         did,
         name,
-        isDIDPublished,
-        onBoardingCompleted
+        isDIDPublished
       } = props.location.state;
       setSession({
         hiveHost,
@@ -79,8 +78,9 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
         name,
         isDIDPublished,
         mnemonics: '',
-        onBoardingCompleted,
-        tutorialCompleted: false
+        passhash: '',
+        onBoardingCompleted: false,
+        tutorialStep: 1
       });
     }
   });
@@ -90,6 +90,7 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
     setLoading(true);
     await UserService.LockWithDIDAndPwd(session, password);
     window.location.href = '/profile';
+    setLoading(false);
   };
 
   return (
@@ -100,11 +101,11 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={keyimg} />
           <OnBoardLayoutLeftContentTitle className="mt-18px">
-            Your password is not stored by us.
+            Your password is not stored by us
           </OnBoardLayoutLeftContentTitle>
           <OnBoardLayoutLeftContentDescription className="mt-25px">
-            This is a locally stored password. This password protects your main
-            profile account (decentralized identity).
+            This is a locally stored password that protects your main profile
+            account (decentralized identity).
           </OnBoardLayoutLeftContentDescription>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>

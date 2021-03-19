@@ -116,6 +116,7 @@ export class DidService {
     let appId = `${process.env.REACT_APP_APPLICATION_ID}`;
     let appDid = await this.loadDid(appMnemonic);
     let userDid = await this.loadDid(userMnemonic, password);
+
     let vc = ElastosClient.didDocuments.createVerifiableCredentialVP(
       appDid,
       userDid,
