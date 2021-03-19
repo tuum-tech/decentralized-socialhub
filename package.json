@@ -17,7 +17,7 @@
     "immer": "^5.3.6",
     "invariant": "^2.2.4",
     "ionicons": "^4.6.3",
-    "jose": "^3.7.1",
+    "jose": "^3.9.0",
     "jwt-decode": "^3.1.2",
     "node-fetch": "^2.6.1",
     "node-sass": "^4.14.1",
@@ -72,7 +72,7 @@
     "@types/invariant": "^2.2.34",
     "@types/jest": "^24.9.1",
     "@types/lodash": "^4.14.168",
-    "@types/node": "^12.20.1",
+    "@types/node": "^12.20.6",
     "@types/react": "^16.14.5",
     "@types/react-dom": "^16.9.11",
     "@types/react-paginate": "^6.2.1",
@@ -80,10 +80,6 @@
     "@types/react-router": "^5.1.12",
     "@types/react-router-dom": "^5.1.6",
     "@types/webpack-env": "^1.16.0",
-    "fs-extra": "^9.1.0",
-    "handlebars": "^4.7.7",
-    "react-scripts": "^3.4.4",
-    "tslint-react": "^4.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",
     "eslint-config-prettier": "^6.10.0",
@@ -92,9 +88,13 @@
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^2.5.0",
+    "fs-extra": "^9.1.0",
+    "handlebars": "^4.7.7",
     "husky": "^4.2.3",
     "lint-staged": "^10.0.8",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "react-scripts": "^3.4.4",
+    "tslint-react": "^4.1.0"
   },
   "husky": {
     "hooks": {

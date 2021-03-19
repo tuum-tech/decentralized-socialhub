@@ -26,20 +26,20 @@ let run = async () => {
       body: {
         collection: 'followers',
         filter: {
-          did: '$params.did',
+          did: '$params.did'
         },
         update: {
           $set: {
             did: '$params.did',
-            followers: '$params.followers',
-          },
+            followers: '$params.followers'
+          }
         },
         options: {
           upsert: true,
-          bypass_document_validation: false,
-        },
-      },
-    },
+          bypass_document_validation: false
+        }
+      }
+    }
   });
   await client.Scripting.SetScript({
     name: 'get_followers',
@@ -52,19 +52,19 @@ let run = async () => {
       body: {
         collection: 'followers',
         filter: {
-          did: { $in: '$params.did' },
+          did: { $in: '$params.did' }
         },
         options: {
           projection: {
             _id: false,
-            created: false,
-          },
-        },
-      },
-    },
+            created: false
+          }
+        }
+      }
+    }
   });
 
-  fs.readFile('./src/data/dummy_followers.json', (err, data) => {
+  fs.readFile('../data/dummy_followers.json', (err, data) => {
     if (err) throw err;
     let followerList = JSON.parse(data);
     console.log(followerList[0]);
@@ -79,8 +79,8 @@ let run = async () => {
   console.log(__dirname);
   console.log(process.cwd());
 
-  // fs.readFile('../data/dummy_users.json', (err, data) => {
-  fs.readFile('./src/data/dummy_users.json', (err, data) => {
+  fs.readFile('../data/dummy_users.json', (err, data) => {
+    //fs.readFile('./src/data/dummy_users.json', (err, data) => {
     if (err) throw err;
     let dummyUsersList = JSON.parse(data);
     console.log(dummyUsersList[0]);
@@ -105,10 +105,10 @@ let run = async () => {
           did: '$params.did',
           hiveHost: '$params.hiveHost',
           accountType: '$params.accountType',
-          userToken: '$params.userToken',
-        },
-      },
-    },
+          userToken: '$params.userToken'
+        }
+      }
+    }
   });
 
   await client.Scripting.SetScript({
@@ -121,21 +121,21 @@ let run = async () => {
       body: {
         collection: 'users',
         filter: {
-          did: '$params.did',
+          did: '$params.did'
         },
         update: {
           $set: {
             name: '$params.name',
             email: '$params.email',
-            onBoardingCompleted: '$params.onBoardingCompleted',
-          },
+            onBoardingCompleted: '$params.onBoardingCompleted'
+          }
         },
         options: {
           upsert: true,
-          bypass_document_validation: false,
-        },
-      },
-    },
+          bypass_document_validation: false
+        }
+      }
+    }
   });
 
   await client.Scripting.SetScript({
@@ -149,10 +149,10 @@ let run = async () => {
       body: {
         collection: 'users',
         filter: {
-          did: '$params.did',
-        },
-      },
-    },
+          did: '$params.did'
+        }
+      }
+    }
   });
   await client.Scripting.SetScript({
     name: 'get_user_by_did',
@@ -165,10 +165,10 @@ let run = async () => {
       body: {
         collection: 'users',
         filter: {
-          did: '$params.did',
-        },
-      },
-    },
+          did: '$params.did'
+        }
+      }
+    }
   });
   await client.Scripting.SetScript({
     name: 'get_users_by_email',
@@ -181,10 +181,10 @@ let run = async () => {
       body: {
         collection: 'users',
         filter: {
-          email: '$params.email',
-        },
-      },
-    },
+          email: '$params.email'
+        }
+      }
+    }
   });
   await client.Scripting.SetScript({
     name: 'verify_code',
@@ -202,9 +202,9 @@ let run = async () => {
             collection: 'users',
             filter: {
               code: '$params.code',
-              status: 'WAITING_CONFIRMATION',
-            },
-          },
+              status: 'WAITING_CONFIRMATION'
+            }
+          }
         },
         {
           type: 'update',
@@ -214,17 +214,17 @@ let run = async () => {
             collection: 'users',
             filter: {
               code: '$params.code',
-              status: 'WAITING_CONFIRMATION',
+              status: 'WAITING_CONFIRMATION'
             },
             update: {
               $set: {
-                status: 'CONFIRMED',
-              },
-            },
-          },
-        },
-      ],
-    },
+                status: 'CONFIRMED'
+              }
+            }
+          }
+        }
+      ]
+    }
   });
   await client.Scripting.SetScript({
     name: 'update_user_did_info',
@@ -239,7 +239,7 @@ let run = async () => {
         filter: {
           code: '$params.code',
           email: '$params.email',
-          status: 'CONFIRMED',
+          status: 'CONFIRMED'
         },
         update: {
           $set: {
@@ -247,11 +247,11 @@ let run = async () => {
             hiveHost: '$params.hiveHost',
             userToken: '$params.userToken',
             accountType: '$params.accountType',
-            tutorialCompleted: '$params.tutorialCompleted',
-          },
-        },
-      },
-    },
+            tutorialCompleted: '$params.tutorialCompleted'
+          }
+        }
+      }
+    }
   });
 
   //For searching on explore page
@@ -266,14 +266,14 @@ let run = async () => {
       body: {
         collection: 'users',
         filter: {
-          did: { $nin: '$params.self_did' },
+          did: { $nin: '$params.self_did' }
         },
         options: {
           limit: 150, //'$params.limit',
-          skip: 0, //'$params.skip',
-        },
-      },
-    },
+          skip: 0 //'$params.skip',
+        }
+      }
+    }
   });
 
   //For searching on explore page
@@ -289,14 +289,14 @@ let run = async () => {
         collection: 'users',
         filter: {
           name: { $regex: '$params.name', $options: 'i' },
-          did: { $nin: '$params.self_did' },
+          did: { $nin: '$params.self_did' }
         },
         options: {
           limit: 150, //'$params.limit',
-          skip: 0, //'$params.skip',
-        },
-      },
-    },
+          skip: 0 //'$params.skip',
+        }
+      }
+    }
   });
 
   //For searching on explore page
@@ -313,14 +313,14 @@ let run = async () => {
       body: {
         collection: 'users',
         filter: {
-          did: { $regex: '$params.did', $nin: '$params.self_did' },
+          did: { $regex: '$params.did', $nin: '$params.self_did' }
         },
         options: {
           limit: 150, //'$params.limit',
-          skip: 0, //'$params.skip',
-        },
-      },
-    },
+          skip: 0 //'$params.skip',
+        }
+      }
+    }
   });
 
   await client.Scripting.SetScript({
@@ -334,14 +334,14 @@ let run = async () => {
       body: {
         collection: 'users',
         filter: {
-          did: { $in: '$params.dids' },
+          did: { $in: '$params.dids' }
         },
         options: {
           limit: 150, //'$params.limit',
-          skip: 0, //'$params.skip',
-        },
-      },
-    },
+          skip: 0 //'$params.skip',
+        }
+      }
+    }
   });
 
   // ===== users section end =====
@@ -351,8 +351,8 @@ let run = async () => {
   await client.Database.deleteCollection('universities');
   await client.Database.createCollection('universities');
 
-  fs.readFile('./src/data/world_universities_and_domains.json', (err, data) => {
-    // fs.readFile('../data/world_universities_and_domains.json', (err, data) => {
+  //fs.readFile('./src/data/world_universities_and_domains.json', (err, data) => {
+  fs.readFile('../data/world_universities_and_domains.json', (err, data) => {
     if (err) throw err;
     let universityList = JSON.parse(data);
     console.log(universityList[0]);
@@ -371,10 +371,10 @@ let run = async () => {
         collection: 'universities',
         options: {
           limit: 150, //'$params.limit',
-          skip: 0, //'$params.skip',
-        },
-      },
-    },
+          skip: 0 //'$params.skip',
+        }
+      }
+    }
   });
 
   await client.Scripting.SetScript({
@@ -388,14 +388,14 @@ let run = async () => {
       body: {
         collection: 'universities',
         filter: {
-          name: { $regex: '$params.name', $options: 'i' },
+          name: { $regex: '$params.name', $options: 'i' }
         },
         options: {
           limit: 150, //'$params.limit',
-          skip: 0, //'$params.skip',
-        },
-      },
-    },
+          skip: 0 //'$params.skip',
+        }
+      }
+    }
   });
   // ===== universities section end =====
 

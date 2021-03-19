@@ -30,6 +30,7 @@ export interface ISessionItem {
   mnemonics: string;
   onBoardingCompleted: boolean;
   tutorialCompleted: boolean;
+  avatar?: string;
 }
 
 export interface ITemporaryDID {
@@ -162,7 +163,8 @@ export class UserService {
           userToken: userData.userToken,
           isDIDPublished: isDIDPublished ? isDIDPublished : false,
           onBoardingCompleted: userData.onBoardingCompleted,
-          tutorialCompleted: userData.tutorialCompleted
+          tutorialCompleted: userData.tutorialCompleted,
+          avatar: userData.avatar
         };
       } else {
         return null;

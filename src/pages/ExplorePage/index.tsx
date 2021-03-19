@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import injector from 'src/baseplate/injectorWrap';
+import { matchPath, RouteComponentProps } from 'react-router';
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
 import { incrementAction, getSimpleAjax } from './actions';
 import React, { memo } from 'react';
@@ -17,26 +18,32 @@ import { InferMappedProps, SubState } from './types';
 import Logo from 'src/components/Logo';
 import Navbar from 'src/components/layouts/Navbar';
 import SearchComponent from 'src/components/search/SearchComponent';
+import ExploreProfileComponent from 'src/components/ExploreProfileComponent';
 
-const ExplorePage: React.FC<InferMappedProps> = ({
-  eProps,
-  ...props
-}: InferMappedProps) => {
+interface MatchParams {
+  did: string;
+}
+
+const ExplorePage: React.FC<RouteComponentProps<MatchParams>> = (
+  props: RouteComponentProps<MatchParams>
+) => {
   return (
     <IonPage className={style['explorepage']}>
-      <IonContent>
-        <IonGrid className={style['profilepagegrid']}>
-          <IonRow className={style['profilecontent']}>
-            <IonCol size="2" className={style['left-panel']}>
-              <Logo />
-              <Navbar tab="explore" />
-            </IonCol>
-            <IonCol size="10" className={style['right-panel']}>
+      <IonGrid className={style['profilepagegrid']}>
+        <IonRow className={style['profilecontent']}>
+          <IonCol size="2" className={style['left-panel']}>
+            <Logo />
+            <Navbar tab="explore" />
+          </IonCol>
+          <IonCol size="10" className={style['right-panel']}>
+            {props.match.params.did === undefined ? (
               <SearchComponent />
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </IonContent>
+            ) : (
+              <ExploreProfileComponent did={props.match.params.did} />
+            )}
+          </IonCol>
+        </IonRow>
+      </IonGrid>
     </IonPage>
   );
 };

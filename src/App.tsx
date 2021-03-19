@@ -132,9 +132,9 @@ const App: React.FC = () => {
           />
           <ProtectedRoute
             proctedby="password"
-            path="/explore"
+            path="/explore/:did?"
             component={ExplorePage}
-            exact={true}
+            exact={false}
           />
           <ProtectedRoute
             proctedby="password"

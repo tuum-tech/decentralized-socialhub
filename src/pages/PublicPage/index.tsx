@@ -89,7 +89,6 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   useEffect(() => {
     (async () => {
       try {
-      
         let userInfo = await UserService.SearchUserWithDID(did);
         setUserInfo(userInfo as any);
       } catch (e) {
@@ -140,7 +139,6 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
             <IonCol size="12">
               {loaded && userInfo && userInfo.did !== '' ? (
                 <ProfileComponent
-                  scrollToPosition={scrollToPosition}
                   profile={full_profile}
                   sessionItem={userInfo as any}
                   error={error}
