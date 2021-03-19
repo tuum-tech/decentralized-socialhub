@@ -19,11 +19,11 @@ import {
   requestGoogleLogin,
   requestFacebookLogin
 } from './fetchapi';
+import SocialLoginLink from './components/SocialLoginLink';
 import Header from 'src/components/layouts/Header';
-import ClearlyMeContent from 'src/components/ClearlyMeContent';
+import ClearlyMeContent from 'src/components/oldComponents/ClearlyMeContent';
 import ButtonDefault from 'src/components/buttons/ButtonDefault';
 import ButtonLight from 'src/components/buttons/ButtonLight';
-import SocialLoginLink from 'src/components/SocialLoginLink';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 // import MnemonicContext from 'src/context/MnemonicContext';
 

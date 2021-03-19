@@ -70,29 +70,26 @@ const GenerateDidPage: React.FC<RouteComponentProps<
 
   if (session && session.request_token) {
     return (
-      <>
-        <SetPassword
-          loading={loading}
-          next={async pwd => {
-            if (!session || !session.request_token) return;
-            setLoading(true);
-            await UserService.CreateNewUser(
-              session.name,
-              session.request_token,
-              session.service,
-              session.email,
-              session.credential,
-              pwd,
-              '',
-              '',
-              ''
-            );
-            window.location.href = '/profile';
-            setLoading(false);
-          }}
-        />
-        {loading && <LoadingIndicator loadingText="Encrypting Now..." />}
-      </>
+      <SetPassword
+        loading={loading}
+        next={async pwd => {
+          if (!session || !session.request_token) return;
+          setLoading(true);
+          await UserService.CreateNewUser(
+            session.name,
+            session.request_token,
+            session.service,
+            session.email,
+            session.credential,
+            pwd,
+            '',
+            '',
+            ''
+          );
+          window.location.href = '/profile';
+          setLoading(false);
+        }}
+      />
     );
   }
 

@@ -82,7 +82,7 @@ let run = async () => {
   console.log(process.cwd());
 
   // fs.readFile('../data/dummy_users.json', (err, data) => {
-  /*  
+  /*
   fs.readFile('./src/data/dummy_users.json', (err, data) => {
     if (err) throw err;
     let dummyUsersList = JSON.parse(data);
@@ -130,8 +130,7 @@ let run = async () => {
         update: {
           $set: {
             name: '$params.name',
-            email: '$params.email',
-            onBoardingCompleted: '$params.onBoardingCompleted'
+            email: '$params.email'
           }
         },
         options: {
@@ -251,7 +250,8 @@ let run = async () => {
             hiveHost: '$params.hiveHost',
             userToken: '$params.userToken',
             accountType: '$params.accountType',
-            tutorialCompleted: '$params.tutorialCompleted'
+            tutorialCompleted: '$params.tutorialCompleted',
+            onBoardingCompleted: '$params.onBoardingCompleted'
           }
         }
       }

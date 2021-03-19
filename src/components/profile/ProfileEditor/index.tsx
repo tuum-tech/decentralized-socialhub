@@ -139,11 +139,17 @@ const ProfileEditor: React.FC = () => {
             {!error && loaded && userInfo.tutorialCompleted === true ? (
               <>
                 <AboutCard
-                  basicDTO={full_profile.basicDTO}
-                  updateFunc={async (basicDTO: BasicDTO) => {
-                    await ProfileService.updateAbout(basicDTO);
-                  }}
+                  aboutText={full_profile.basicDTO.about}
                   mode="edit"
+                  update={async (nextAbout: string) => {
+                    const newBasicDTO = { ...full_profile.basicDTO };
+                    const userSession = UserService.GetUserSession();
+                    if (userSession) {
+                      newBasicDTO.did = userSession.did;
+                      newBasicDTO.about = nextAbout;
+                      await ProfileService.updateAbout(newBasicDTO);
+                    }
+                  }}
                 ></AboutCard>
                 <EducationCard
                   educationDTO={full_profile.educationDTO}

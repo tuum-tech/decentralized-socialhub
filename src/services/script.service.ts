@@ -4,7 +4,6 @@ import { UserVaultScripts } from 'src/scripts/uservault.script';
 import { UserService, ISessionItem, AccountType } from './user.service';
 import { HiveService } from './hive.service';
 import { DidService } from './did.service';
-import { BasicDTO } from 'src/pages/PublicPage/types';
 import { alertError } from 'src/utils/notify';
 
 interface TuumScriptUpdateDidUserParams {
@@ -15,6 +14,7 @@ interface TuumScriptUpdateDidUserParams {
   accountType: string;
   userToken: string;
   tutorialCompleted: boolean;
+  onBoardingCompleted: boolean;
 }
 
 interface TuumScriptAddDidUserParams {
@@ -26,15 +26,8 @@ interface TuumScriptAddDidUserParams {
   hiveHost: string;
   accountType: AccountType;
   userToken: string;
-  tutorialCompleted: boolean;
 }
 
-interface TuumScriptUpdateUserParams {
-  did: string;
-  name: string;
-  email: string;
-  onBoardingCompleted: boolean;
-}
 export class TuumTechScriptService {
   private static async runTuumTechScript(script: any) {
     return request(
@@ -119,7 +112,6 @@ export class TuumTechScriptService {
       }
     };
     let response = await this.runTuumTechScript(add_user_script);
-    console.log('update_user_did_info response', response);
   }
 
   public static async addUserToTuumTech(params: TuumScriptAddDidUserParams) {
@@ -132,18 +124,6 @@ export class TuumTechScriptService {
       }
     };
     await this.runTuumTechScript(add_user_script);
-  }
-
-  public static async updateUser(params: TuumScriptUpdateUserParams) {
-    const update_user_script = {
-      name: 'update_user',
-      params,
-      context: {
-        target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
-      }
-    };
-    await this.runTuumTechScript(update_user_script);
   }
 
   public static async updateBasicProfile(basicDTO: ISessionItem) {

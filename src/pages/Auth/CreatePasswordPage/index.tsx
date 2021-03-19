@@ -68,8 +68,7 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
         accountType,
         did,
         name,
-        isDIDPublished,
-        onBoardingCompleted
+        isDIDPublished
       } = props.location.state;
       setSession({
         hiveHost,
@@ -80,7 +79,7 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
         isDIDPublished,
         mnemonics: '',
         passhash: '',
-        onBoardingCompleted,
+        onBoardingCompleted: false,
         tutorialCompleted: false
       });
     }

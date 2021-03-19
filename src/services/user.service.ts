@@ -143,13 +143,28 @@ export class UserService {
     sessionItem: ISessionItem,
     password: string = ''
   ) {
-    if (!sessionItem.passhash || sessionItem.passhash.trim().length == 0) {
-      sessionItem.passhash = CryptoJS.SHA256(
-        sessionItem.did + password
+    let newSessionItem = sessionItem;
+    if (
+      !newSessionItem.passhash ||
+      newSessionItem.passhash.trim().length == 0
+    ) {
+      newSessionItem.passhash = CryptoJS.SHA256(
+        newSessionItem.did + password
       ).toString(CryptoJS.enc.Hex);
     }
-    this.lockUser(this.key(sessionItem.did), sessionItem);
-    SessionService.saveSessionItem(sessionItem);
+
+    const res = await this.SearchUserWithDID(sessionItem.did);
+    if (res) {
+      newSessionItem.onBoardingCompleted = res.onBoardingCompleted;
+      newSessionItem.tutorialCompleted = res.tutorialCompleted;
+    }
+
+    this.lockUser(this.key(newSessionItem.did), newSessionItem);
+    // SessionService.saveSessionItem(newSessionItem);
+    window.localStorage.setItem(
+      'session_instance',
+      JSON.stringify(newSessionItem, null, '')
+    );
     await UserVaultScriptService.register();
   }
 
@@ -178,7 +193,7 @@ export class UserService {
           tutorialCompleted: userData.tutorialCompleted
         };
       } else {
-        return null;
+        return;
       }
     } else {
       alertError(null, 'Error while searching user by did');
@@ -212,6 +227,8 @@ export class UserService {
       CryptoJS.enc.Hex
     );
 
+    const res = await this.SearchUserWithDID(did);
+
     sessionItem = {
       did: did,
       accountType: service,
@@ -225,8 +242,8 @@ export class UserService {
       mnemonics: mnemonic,
       passhash: passhash,
       email: email,
-      onBoardingCompleted: false,
-      tutorialCompleted: false
+      onBoardingCompleted: res ? res.onBoardingCompleted : false,
+      tutorialCompleted: res ? res.tutorialCompleted : false
     };
 
     // add new user to the tuum.tech vault
@@ -238,7 +255,8 @@ export class UserService {
         hiveHost: sessionItem.hiveHost,
         accountType: service,
         userToken: token,
-        tutorialCompleted: sessionItem.tutorialCompleted
+        tutorialCompleted: sessionItem.tutorialCompleted,
+        onBoardingCompleted: sessionItem.onBoardingCompleted
       });
     } else {
       await TuumTechScriptService.addUserToTuumTech({
@@ -249,30 +267,16 @@ export class UserService {
         did: did,
         hiveHost: sessionItem.hiveHost,
         accountType: service,
-        userToken: token,
-        tutorialCompleted: false
+        userToken: token
       });
     }
 
     this.lockUser(this.key(did), sessionItem);
-    SessionService.saveSessionItem(sessionItem);
-  }
-
-  public static async setOnBoardingCompleted() {
-    let sessionItem = this.GetUserSession();
-    if (sessionItem && !sessionItem.onBoardingCompleted) {
-      sessionItem.onBoardingCompleted = true;
-      window.sessionStorage.setItem(
-        'session_instance',
-        JSON.stringify(sessionItem, null, '')
-      );
-      await TuumTechScriptService.updateUser({
-        did: sessionItem.did,
-        name: sessionItem.name,
-        email: sessionItem.email!,
-        onBoardingCompleted: true
-      });
-    }
+    // SessionService.saveSessionItem(sessionItem);
+    window.localStorage.setItem(
+      'session_instance',
+      JSON.stringify(sessionItem, null, '')
+    );
   }
 
   public static async updateSession(sessionItem: ISessionItem): Promise<void> {
@@ -281,7 +285,6 @@ export class UserService {
     );
 
     let code = userData.data['get_user_by_did']['items'][0].code;
-
     await TuumTechScriptService.updateUserDidInfo({
       email: sessionItem.email!,
       code: code,
@@ -289,11 +292,17 @@ export class UserService {
       hiveHost: sessionItem.hiveHost,
       accountType: sessionItem.accountType,
       userToken: sessionItem.userToken,
-      tutorialCompleted: sessionItem.tutorialCompleted
+      tutorialCompleted: sessionItem.tutorialCompleted,
+      onBoardingCompleted: sessionItem.onBoardingCompleted
     });
 
     this.lockUser(this.key(sessionItem.did), sessionItem);
-    SessionService.saveSessionItem(sessionItem);
+
+    // SessionService.saveSessionItem(sessionItem);
+    window.localStorage.setItem(
+      'session_instance',
+      JSON.stringify(sessionItem, null, '')
+    );
   }
 
   public static async UnLockWithDIDAndPwd(did: string, storePassword: string) {
@@ -305,7 +314,13 @@ export class UserService {
       instance.onBoardingCompleted = res.onBoardingCompleted;
       instance.tutorialCompleted = res.tutorialCompleted;
       this.lockUser(this.key(instance.did), instance);
-      SessionService.saveSessionItem(instance);
+
+      // SessionService.saveSessionItem(instance);
+      window.localStorage.setItem(
+        'session_instance',
+        JSON.stringify(instance, null, '')
+      );
+
       await UserVaultScriptService.register();
       return instance;
     }
@@ -313,44 +328,56 @@ export class UserService {
   }
 
   public static async logout() {
-    SessionService.Logout();
+    // SessionService.Logout();
+    window.sessionStorage.clear();
+    window.localStorage.removeItem('session_instance');
+    window.location.href = '/create-profile';
   }
 
   public static GetUserSession(): ISessionItem | undefined {
-    let item = window.sessionStorage.getItem('session_instance');
-
-    if (!item) {
-      alertError(null, 'Not logged in');
-      return;
-    } else {
+    // let item = window.sessionStorage.getItem('session_instance');
+    // if (item) {
+    //   return JSON.parse(item);
+    // }
+    let item = window.localStorage.getItem('session_instance');
+    if (item) {
       return JSON.parse(item);
     }
+    return;
   }
+
+  // public static async DuplicateNewSession(did: string) {
+  //   const newSession = (await this.SearchUserWithDID(did)) as ISessionItem;
+  //   if (newSession && newSession && newSession.did) {
+  //     SessionService.saveSessionItem(newSession);
+  //     await UserVaultScriptService.register();
+  //   }
+  // }
 }
 
 //To be
-class SessionService {
-  static getSession(): ISessionItem | undefined {
-    let item = window.sessionStorage.getItem('session_instance');
+// class SessionService {
+//   static getSession(): ISessionItem | undefined {
+//     let item = window.sessionStorage.getItem('session_instance');
 
-    if (!item) {
-      alertError(null, 'Not logged in');
-      return;
-    }
+//     if (!item) {
+//       // alertError(null, 'Not logged in');
+//       return;
+//     }
 
-    let instance = JSON.parse(item);
-    return instance;
-  }
+//     let instance = JSON.parse(item);
+//     return instance;
+//   }
 
-  static saveSessionItem(item: ISessionItem) {
-    window.sessionStorage.setItem(
-      'session_instance',
-      JSON.stringify(item, null, '')
-    );
-  }
+//   static saveSessionItem(item: ISessionItem) {
+//     window.sessionStorage.setItem(
+//       'session_instance',
+//       JSON.stringify(item, null, '')
+//     );
+//   }
 
-  static Logout() {
-    window.sessionStorage.clear();
-    window.location.href = '/create-profile';
-  }
-}
+//   static Logout() {
+//     window.sessionStorage.clear();
+//     window.location.href = '/create-profile';
+//   }
+// }

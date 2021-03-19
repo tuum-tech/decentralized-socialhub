@@ -49,7 +49,7 @@ const SetPassword: React.FC<Props> = ({
 
   return (
     <OnBoardLayout>
-      {loading && <LoadingIndicator loadingText="Encrypting now..." />}
+      {loading && <LoadingIndicator loadingText="Encrypting Now..." />}
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>

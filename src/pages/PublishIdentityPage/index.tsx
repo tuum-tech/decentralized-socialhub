@@ -14,10 +14,12 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
-import ClearlyMeContent from 'src/components/ClearlyMeContent';
+
+import ClearlyMeContent from 'src/components/oldComponents/ClearlyMeContent';
 import Header from 'src/components/layouts/Header';
 import ButtonDefault from 'src/components/buttons/ButtonDefault';
-import IdentityProgressComponent from 'src/components/IdentityProgressComponent';
+
+import IdentityProgressComponent from './components/IdentityProgressComponent';
 
 const PublishIdentityPage: React.FC<InferMappedProps> = ({
   eProps,
