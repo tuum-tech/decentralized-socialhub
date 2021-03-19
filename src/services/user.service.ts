@@ -160,7 +160,11 @@ export class UserService {
     }
 
     this.lockUser(this.key(newSessionItem.did), newSessionItem);
-    SessionService.saveSessionItem(newSessionItem);
+    // SessionService.saveSessionItem(newSessionItem);
+    window.localStorage.setItem(
+      'session_instance',
+      JSON.stringify(newSessionItem, null, '')
+    );
     await UserVaultScriptService.register();
   }
 
@@ -268,7 +272,11 @@ export class UserService {
     }
 
     this.lockUser(this.key(did), sessionItem);
-    SessionService.saveSessionItem(sessionItem);
+    // SessionService.saveSessionItem(sessionItem);
+    window.localStorage.setItem(
+      'session_instance',
+      JSON.stringify(sessionItem, null, '')
+    );
   }
 
   public static async updateSession(sessionItem: ISessionItem): Promise<void> {
@@ -289,7 +297,12 @@ export class UserService {
     });
 
     this.lockUser(this.key(sessionItem.did), sessionItem);
-    SessionService.saveSessionItem(sessionItem);
+
+    // SessionService.saveSessionItem(sessionItem);
+    window.localStorage.setItem(
+      'session_instance',
+      JSON.stringify(sessionItem, null, '')
+    );
   }
 
   public static async UnLockWithDIDAndPwd(did: string, storePassword: string) {
@@ -301,7 +314,13 @@ export class UserService {
       instance.onBoardingCompleted = res.onBoardingCompleted;
       instance.tutorialCompleted = res.tutorialCompleted;
       this.lockUser(this.key(instance.did), instance);
-      SessionService.saveSessionItem(instance);
+
+      // SessionService.saveSessionItem(instance);
+      window.localStorage.setItem(
+        'session_instance',
+        JSON.stringify(instance, null, '')
+      );
+
       await UserVaultScriptService.register();
       return instance;
     }
@@ -309,52 +328,56 @@ export class UserService {
   }
 
   public static async logout() {
-    SessionService.Logout();
+    // SessionService.Logout();
+    window.sessionStorage.clear();
+    window.localStorage.removeItem('session_instance');
+    window.location.href = '/create-profile';
   }
 
   public static GetUserSession(): ISessionItem | undefined {
-    let item = window.sessionStorage.getItem('session_instance');
+    // let item = window.sessionStorage.getItem('session_instance');
+    // if (item) {
+    //   return JSON.parse(item);
+    // }
+    let item = window.localStorage.getItem('session_instance');
     if (item) {
       return JSON.parse(item);
     }
+    return;
   }
 
-  public static async DuplicateNewSession(did: string) {
-    const newSession = (await this.SearchUserWithDID(did)) as ISessionItem;
-    if (newSession && newSession && newSession.did) {
-      SessionService.saveSessionItem(newSession);
-      await UserVaultScriptService.register();
-    }
-  }
+  // public static async DuplicateNewSession(did: string) {
+  //   const newSession = (await this.SearchUserWithDID(did)) as ISessionItem;
+  //   if (newSession && newSession && newSession.did) {
+  //     SessionService.saveSessionItem(newSession);
+  //     await UserVaultScriptService.register();
+  //   }
+  // }
 }
 
 //To be
-class SessionService {
-  static getSession(): ISessionItem | undefined {
-    let item = window.sessionStorage.getItem('session_instance');
+// class SessionService {
+//   static getSession(): ISessionItem | undefined {
+//     let item = window.sessionStorage.getItem('session_instance');
 
-    if (!item) {
-      // alertError(null, 'Not logged in');
-      return;
-    }
+//     if (!item) {
+//       // alertError(null, 'Not logged in');
+//       return;
+//     }
 
-    let instance = JSON.parse(item);
-    return instance;
-  }
+//     let instance = JSON.parse(item);
+//     return instance;
+//   }
 
-  static saveSessionItem(item: ISessionItem) {
-    if (item && item.did) {
-      window.localStorage.setItem('logedDid', item.did);
-    }
-    window.sessionStorage.setItem(
-      'session_instance',
-      JSON.stringify(item, null, '')
-    );
-  }
+//   static saveSessionItem(item: ISessionItem) {
+//     window.sessionStorage.setItem(
+//       'session_instance',
+//       JSON.stringify(item, null, '')
+//     );
+//   }
 
-  static Logout() {
-    window.sessionStorage.clear();
-    window.localStorage.removeItem('logedDid');
-    window.location.href = '/create-profile';
-  }
-}
+//   static Logout() {
+//     window.sessionStorage.clear();
+//     window.location.href = '/create-profile';
+//   }
+// }

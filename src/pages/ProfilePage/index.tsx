@@ -106,12 +106,7 @@ const ProfilePage: React.FC<RouteComponentProps> = () => {
     (async () => {
       let instance = UserService.GetUserSession();
       if (!instance) {
-        const logedDid = window.localStorage.getItem('logedDid');
-        if (logedDid) {
-          await UserService.DuplicateNewSession(logedDid);
-          instance = UserService.GetUserSession();
-        }
-        if (!instance) return;
+        return;
       }
 
       setUserInfo(instance);

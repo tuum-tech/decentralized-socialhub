@@ -34,16 +34,16 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     '/verify/email'
   ];
 
-  const logedDid = window.localStorage.getItem('logedDid');
+  const sessionInstance = window.localStorage.getItem('session_instance');
   const isAuthPage =
     authRoutes.findIndex(item => routeProps.path.includes(item)) > -1;
 
-  if (!logedDid && !isAuthPage) {
+  if (!sessionInstance && !isAuthPage) {
     return (
       <Route {...routeProps} render={() => <Redirect to="/create-profile" />} />
     );
   }
-  if (logedDid && isAuthPage) {
+  if (sessionInstance && isAuthPage) {
     return <Route {...routeProps} render={() => <Redirect to="/profile" />} />;
   }
 
