@@ -2,17 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { IonGrid, IonRow, IonCol, IonButton } from '@ionic/react';
 import { Link } from 'react-router-dom';
 
-import ProfileName from '../../profile/ProfileName';
 import styled from 'styled-components';
 import { ProfileDTO } from 'src/pages/PublicPage/types';
-import DidSnippet from '../../DidSnippet';
+
 import { ISessionItem, UserService } from 'src/services/user.service';
 import { AssistService, RequestStatus } from 'src/services/assist.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 
-import photo from '../../../assets/dp.jpeg';
-
+import ProfileName from '../../profile/ProfileName';
+import DidSnippet from './DidSnippet';
 import style from './style.module.scss';
+
+import photo from '../../../assets/dp.jpeg';
 
 interface IProps {
   profile?: ProfileDTO;

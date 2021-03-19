@@ -1,19 +1,8 @@
 /**
  * Type defined inside this container
  */
-import { initialState } from './reducer';
-import { mapDispatchToProps, mapStateToProps } from './index';
 import { Actions } from './constants';
-import {
-  BasicDTO,
-  EducationDTO,
-  EducationItem,
-  ExperienceDTO
-} from '../PublicPage/types';
-
-export type SubState = typeof initialState;
-export type InferMappedProps = ReturnType<typeof mapStateToProps> &
-  ReturnType<typeof mapDispatchToProps>;
+import { BasicDTO, EducationDTO, ExperienceDTO } from '../PublicPage/types';
 
 export type ActionType = typeof Actions;
 

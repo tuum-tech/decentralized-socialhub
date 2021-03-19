@@ -49,7 +49,6 @@ import {
 
 import DefaultPage from './pages/404Page';
 import AccessCodePage from './pages/AlphaAccess/AccessCode';
-import TutorialPage from './pages/TutorialPage';
 import ExplorePage from './pages/ExplorePage';
 import SettingsPage from './pages/SettingsPage/Loadable';
 import ProfilePage from './pages/ProfilePage/Loadable';
@@ -105,11 +104,6 @@ const App: React.FC = () => {
             <ProtectedRoute
               path="/settings"
               component={SettingsPage}
-              exact={true}
-            />
-            <ProtectedRoute
-              path="/tutorial"
-              component={TutorialPage}
               exact={true}
             />
             <ProtectedRoute
