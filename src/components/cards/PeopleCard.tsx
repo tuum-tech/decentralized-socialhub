@@ -4,12 +4,17 @@ import {
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
-  IonCol,
+  IonCol
 } from '@ionic/react';
 import style from './PeopleCard.module.scss';
 import { PeopleDTO, FollowingDTO } from '../search/types';
 import DidCard from './DidCard';
 import ReactPaginate from 'react-paginate';
+import {
+  AccountType,
+  ISessionItem,
+  UserService
+} from 'src/services/user.service';
 
 interface IProps {
   people?: PeopleDTO;
@@ -24,6 +29,7 @@ const peopleItem = (
   peopleItem: any,
   isFollowing: boolean,
   indexItem: number,
+  userInfo: ISessionItem,
   colSize: any
 ) => {
   return (
@@ -32,8 +38,9 @@ const peopleItem = (
       did={peopleItem.did}
       avatar={peopleItem.avatar}
       colSize={colSize}
+      sessionItem={userInfo}
       following={isFollowing}
-      type='user'
+      type="user"
       key={'did-people-card-' + indexItem}
     />
   );
@@ -45,13 +52,36 @@ const PeopleCard: React.FC<IProps> = ({
   searchKeyword,
   isSearchKeywordDID,
   showHeader = true,
-  size = '12',
+  size = '12'
 }: IProps) => {
   const perPage = parseInt(size) / 12 == 1 ? 4 : 8;
   const totalPages = people && people.items ? people.items.length / perPage : 1;
 
   const [peoplePageOffset, setPeoplePageOffset] = useState(0);
   const [listPeople, setListPeople] = useState<any[]>([]);
+
+  const [userInfo, setUserInfo] = useState<ISessionItem>({
+    hiveHost: '',
+    userToken: '',
+    accountType: AccountType.DID,
+    did: '',
+    email: '',
+    name: '',
+    isDIDPublished: false,
+    mnemonics: '',
+    passhash: '',
+    onBoardingCompleted: false,
+    tutorialStep: 1
+  });
+
+  useEffect(() => {
+    (async () => {
+      let instance = UserService.GetUserSession();
+      if (!instance || !instance.userToken) return;
+
+      setUserInfo(instance);
+    })();
+  }, []);
 
   const isFollowing = (did: string): boolean => {
     if (following && following.items) {
@@ -74,6 +104,7 @@ const PeopleCard: React.FC<IProps> = ({
             p,
             isFollowing(p.did),
             index,
+            userInfo,
             parseInt(size) / 12 == 1 ? '100%' : '50%'
           )
         );

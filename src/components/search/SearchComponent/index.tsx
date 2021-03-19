@@ -25,12 +25,7 @@ const SearchComponent: React.FC = () => {
   const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
     get_following: { items: [] }
   });
-
   const [searchService, setSearchService] = useState(new SearchService());
-
-  const getUserHiveInstance = async (): Promise<ProfileService> => {
-    return ProfileService.getProfileServiceUserOnlyInstance();
-  };
 
   const getSearchAppHiveInstance = async (): Promise<SearchService> => {
     return SearchService.getSearchServiceAppOnlyInstance();
@@ -59,37 +54,35 @@ const SearchComponent: React.FC = () => {
   }, []);
 
   const loadData = async () => {
-    try {
-      let listUniversities: any = await searchService.getUniversities(
-        '',
-        200,
-        0
-      );
-      setFilteredUniversities(listUniversities.response);
-    } catch (e) {
-      setFilteredUniversities({ get_universities: { items: [] } });
-      alertError(null, 'cant load universities');
-      return;
+    if (searchService.appHiveClient) {
+      try {
+        let listUniversities: any = await searchService.getUniversities(
+          '',
+          200,
+          0
+        );
+        setFilteredUniversities(listUniversities.response);
+      } catch (e) {
+        setFilteredUniversities({ get_universities: { items: [] } });
+        alertError(null, 'cant load universities');
+        return;
+      }
+
+      try {
+        let listUsers: any = await searchService.getUsers('', 200, 0);
+        setFilteredUsers(listUsers.response);
+      } catch (e) {
+        setFilteredUsers({ get_users: { items: [] } });
+        alertError(null, 'cant load users');
+        return;
+      }
     }
 
+    let user = UserService.GetUserSession();
     try {
-      let listUsers: any = await searchService.getUsers('', 200, 0);
-      setFilteredUsers(listUsers.response);
-    } catch (e) {
-      setFilteredUsers({ get_users: { items: [] } });
-      alertError(null, 'cant load users');
-      return;
-    }
-
-    try {
-      let user = UserService.GetUserSession();
-
       if (user && user.did) {
         //Get Following
-        let profileServiceUserInstance = await getUserHiveInstance();
-        let following = await profileServiceUserInstance.getFollowings(
-          user.did
-        );
+        let following = await ProfileService.getFollowings(user.did);
         setListFollowing(following as IFollowingResponse);
       }
     } catch (e) {
@@ -119,12 +112,14 @@ const SearchComponent: React.FC = () => {
   };
 
   useEffect(() => {
-    if (searchQuery !== '' && searchQuery.length > 2) {
-      invokeSearch(searchQuery);
-    } else if (searchQuery == '') {
-      setSearchQuery('');
-      loadData();
-    }
+    (async () => {
+      if (searchQuery !== '' && searchQuery.length > 2) {
+        invokeSearch(searchQuery);
+      } else if (searchQuery == '') {
+        setSearchQuery('');
+        await loadData();
+      }
+    })();
   }, [searchQuery]);
 
   const search = (e: any) => {

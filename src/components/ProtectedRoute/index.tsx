@@ -1,59 +1,52 @@
-import React from 'react';
-import { Redirect, Route, RouteProps } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Redirect, Route } from 'react-router-dom';
 
 type ProtectedRouteProps = {
-  path: RouteProps['path'];
+  path: string;
   component: React.ElementType;
   exact?: boolean;
-  proctedby?: string;
 };
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   component: Component,
-  proctedby = 'accesscode',
   ...routeProps
 }) => {
-  let hasCode = true;
-  let isLoggedIn = true;
-
-  const session_instance = window.sessionStorage.getItem('session_instance');
-  const local_invitecode = window.localStorage.getItem('invitecode');
-
-  if (!local_invitecode) {
-    hasCode = false;
-    isLoggedIn = false;
-  } else if (!session_instance) {
-    isLoggedIn = false;
+  const invitecode = window.localStorage.getItem('invitecode');
+  if (!invitecode && routeProps.path !== '/Alpha') {
+    return <Route {...routeProps} render={() => <Redirect to="/Alpha" />} />;
   }
 
-  if (proctedby === 'password') {
+  const authRoutes = [
+    '/twitter_callback',
+    '/linkedin_callback',
+    '/google_callback',
+    '/facebook_callback',
+    '/set-password',
+    '/unlock-user',
+    '/generate-did',
+    '/sign-did',
+    '/sign-qr',
+    '/associated-profile',
+    '/create-why',
+    '/create-profile',
+    '/create-profile-with-did',
+    '/forgot-password',
+    '/verify/email'
+  ];
+
+  const sessionInstance = window.localStorage.getItem('session_instance');
+  const isAuthPage =
+    authRoutes.findIndex(item => routeProps.path.includes(item)) > -1;
+
+  if (!sessionInstance && !isAuthPage) {
     return (
-      <Route
-        {...routeProps}
-        render={props => {
-          if (isLoggedIn) {
-            return <Component {...props} />;
-          } else {
-            return <Redirect to="/create-profile" />;
-          }
-        }}
-      />
+      <Route {...routeProps} render={() => <Redirect to="/create-profile" />} />
     );
   }
+  if (sessionInstance && isAuthPage) {
+    return <Route {...routeProps} render={() => <Redirect to="/profile" />} />;
+  }
 
-  return (
-    <Route
-      {...routeProps}
-      render={props => {
-        if (isLoggedIn) {
-          return <Redirect to="/profile" />;
-        } else if (hasCode) {
-          return <Component {...props} />;
-        } else {
-          return <Redirect to="/Alpha" />;
-        }
-      }}
-    />
-  );
+  return <Route {...routeProps} render={props => <Component {...props} />} />;
 };
 export default ProtectedRoute;

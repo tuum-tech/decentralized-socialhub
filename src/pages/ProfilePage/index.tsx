@@ -9,34 +9,27 @@ import {
   IonCol,
   IonModal
 } from '@ionic/react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { RouteComponentProps } from 'react-router';
-import { createStructuredSelector } from 'reselect';
-import injector from 'src/baseplate/injectorWrap';
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
-import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo, useEffect, useState } from 'react';
+import styled from 'styled-components';
+
+import React, { useEffect, useState } from 'react';
 import style from './style.module.scss';
-import { NameSpace, ExporeTime } from './constants';
-import reducer from './reducer';
-import saga from './saga';
-import { InferMappedProps, SubState } from './types';
-import { requestFullProfile } from './fetchapi';
+import { ExporeTime } from './constants';
 
 import Logo from 'src/components/Logo';
 import Navbar from 'src/components/layouts/Navbar';
-import DashboardNav from 'src/components/layouts/DashboardNav';
-import { EducationItem, ExperienceItem, ProfileDTO } from '../PublicPage/types';
-import OnBoarding from 'src/components/OnBoarding';
 import {
   AccountType,
   ISessionItem,
   UserService
 } from 'src/services/user.service';
 import LoggedHeader from 'src/components/layouts/LoggedHeader';
-import TutorialComponent from 'src/components/Tutorial';
-import styled from 'styled-components';
+import { EducationItem, ExperienceItem } from '../PublicPage/types';
+import { ProfileDTO } from '../PublicPage/types';
+import { ProfileService } from 'src/services/profile.service';
+
+import TutorialComponent from './components/Tutorial';
+import DashboardContent from './components/Content';
+import OnBoarding from './components/OnBoarding';
 
 const TutorialModal = styled(IonModal)`
   --border-radius: 16px;
@@ -49,13 +42,7 @@ const TutorialModal = styled(IonModal)`
   --box-shadow: none !important;
 `;
 
-const ProfilePage: React.FC<RouteComponentProps> = () => {
-  /**
-   * Direct method implementation without SAGA
-   * This was to show you dont need to put everything to global state
-   * incoming from Server API calls. Maintain a local state.
-   */
-  const [error, setError] = useState(false);
+const ProfilePage = () => {
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [userInfo, setUserInfo] = useState<ISessionItem>({
@@ -67,8 +54,9 @@ const ProfilePage: React.FC<RouteComponentProps> = () => {
     email: '',
     isDIDPublished: false,
     mnemonics: '',
+    passhash: '',
     onBoardingCompleted: true,
-    tutorialCompleted: false
+    tutorialStep: 1
   });
 
   const [full_profile, setfull_profile] = useState({
@@ -89,39 +77,39 @@ const ProfilePage: React.FC<RouteComponentProps> = () => {
       }
     },
     educationDTO: {
-      isEnabled: false,
+      isEnabled: true,
       items: [] as EducationItem[]
     },
     experienceDTO: {
-      isEnabled: false,
+      isEnabled: true,
       items: [] as ExperienceItem[]
     }
   });
-  const [onboardingCompleted, setOnboardingStatus] = useState(false);
-
-  const getFullProfile = async (did: string): Promise<any> => {
-    return await requestFullProfile(did);
-  };
+  const [onboardingCompleted, setOnboardingStatus] = useState(true);
+  const [loadingText, setLoadingText] = useState('');
 
   useEffect(() => {
     (async () => {
       let instance = UserService.GetUserSession();
-      if (!instance) return;
+      if (!instance) {
+        return;
+      }
 
       setUserInfo(instance);
       setOnboardingStatus(instance.onBoardingCompleted);
+
       if (
         instance.onBoardingCompleted &&
-        instance.tutorialCompleted &&
+        instance.tutorialStep === 4 &&
         !willExpire
       ) {
-        try {
-          let profile: ProfileDTO = await getFullProfile(instance.did);
+        let profile:
+          | ProfileDTO
+          | undefined = await ProfileService.getFullProfile(instance.did);
+        if (profile) {
           profile.experienceDTO.isEnabled = true;
           profile.educationDTO.isEnabled = true;
           setfull_profile(profile);
-        } catch (e) {
-          setError(true);
         }
 
         setWillExpire(true);
@@ -137,19 +125,26 @@ const ProfilePage: React.FC<RouteComponentProps> = () => {
     setShowTutorial(true);
   };
 
-  const onTutorialFinish = () => {
-    let instance = UserService.GetUserSession();
-    if (instance) {
-      setUserInfo(instance);
-      setShowTutorial(false);
+  const onTutorialFinish = async (step: number) => {
+    setLoadingText('Updating Loading Status on Vault');
+    let userSession = UserService.GetUserSession();
+    if (userSession && userSession.did) {
+      userSession.tutorialStep = step;
+      await UserService.updateSession(userSession);
+      setUserInfo(userSession);
     }
+    setShowTutorial(false);
+    setLoadingText('');
   };
 
   if (!onboardingCompleted) {
     return (
       <OnBoarding
-        completed={() => {
-          UserService.setOnBoardingCompleted();
+        completed={async () => {
+          let user = UserService.GetUserSession();
+          if (!user) return;
+          user.onBoardingCompleted = true;
+          await UserService.updateSession(user);
           setOnboardingStatus(true);
           if (!willExpire) {
             setWillExpire(true);
@@ -177,13 +172,12 @@ const ProfilePage: React.FC<RouteComponentProps> = () => {
             </IonCol> */}
             <IonCol size="10" className={style['right-panel']}>
               <LoggedHeader profile={full_profile} sessionItem={userInfo} />
-
-              <DashboardNav
+              <DashboardContent
                 onTutorialStart={onTutorialStart}
                 profile={full_profile}
                 sessionItem={userInfo}
               />
-              {/* <StartServiceComponent />
+              {/* <StartService />
               <ProfileCompletion /> */}
             </IonCol>
           </IonRow>
@@ -194,46 +188,11 @@ const ProfilePage: React.FC<RouteComponentProps> = () => {
           cssClass={style['tutorialpage']}
           backdropDismiss={false}
         >
-          <TutorialComponent onClose={() => onTutorialFinish()} />
+          <TutorialComponent onClose={onTutorialFinish} />
         </TutorialModal>
       </IonContent>
     </IonPage>
   );
 };
 
-/** @returns {object} Contains state props from selectors */
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg()
-});
-
-/** @returns {object} Contains dispatchable props */
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      // eProps - Emitter proptypes thats binds to dispatch
-      /** dispatch for counter to increment */
-      onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax())
-    }
-  };
-}
-
-/**
- * Injects prop and saga bindings done via
- * useInjectReducer & useInjectSaga
- */
-const withInjectedMode = injector(ProfilePage, {
-  key: NameSpace,
-  reducer,
-  saga
-});
-
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
-
-export default compose(
-  withConnect,
-  memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>;
-
-// export default Tab1;
+export default ProfilePage;

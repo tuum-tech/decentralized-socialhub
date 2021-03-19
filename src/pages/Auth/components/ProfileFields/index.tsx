@@ -85,10 +85,14 @@ const UseDetailsForm: React.FC<Props> = ({ setUserInfo, isCreate = true }) => {
           />
           <TextInput
             value={email}
-            label="E-mail"
+            label={
+              error === 'Not correct Email' ? 'Type valid Email' : 'E-mail'
+            }
             onChange={n => setField('email', n)}
-            placeholder="Enter your e-mail"
-            hasError={error !== '' && email === ''}
+            placeholder="Enter your email"
+            hasError={
+              (error !== '' && email === '') || error === 'Not correct Email'
+            }
             type="email"
           />
           <ButtonWithLogo

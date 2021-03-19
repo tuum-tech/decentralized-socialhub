@@ -1,32 +1,55 @@
-/**
- * Page
- */
-import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { createStructuredSelector } from 'reselect';
-import { RouteComponentProps } from 'react-router';
-
-import injector from 'src/baseplate/injectorWrap';
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
-import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo, useEffect, useState } from 'react';
-import style from './style.module.scss';
-import { NameSpace } from './constants';
-import reducer from './reducer';
-import saga from './saga';
 import {
-  EducationItem,
-  ExperienceItem,
-  InferMappedProps,
-  ProfileDTO,
-  SubState
-} from './types';
-import { requestFullProfile } from './fetchapi';
-import PublicNavbar from 'src/components/PublicNavbar';
-import SignInButton from 'src/components/SignInButton';
+  IonContent,
+  IonPage,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonRouterLink
+} from '@ionic/react';
+import { RouteComponentProps } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+
 import ProfileComponent from 'src/components/profile/ProfileComponent';
 import { AccountType, UserService } from 'src/services/user.service';
+import PageLoading from 'src/components/layouts/PageLoading';
+import { ProfileService } from 'src/services/profile.service';
+
+import style from './style.module.scss';
+import { EducationItem, ExperienceItem, ProfileDTO } from './types';
+
+const SignInButton = styled(IonRouterLink)`
+  width: 140px;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 9px;
+  background-color: #4c6fff;
+  flex-grow: 0;
+  font-family: 'SF Pro Display';
+  font-size: 12px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-align: left;
+  color: #ffffff;
+`;
+
+const PublicNavbar = styled(IonRow)`
+  width: 100%;
+  height: 83px;
+  padding: 21px 0 0;
+  background-color: #ffffff;
+  position: fixed;
+  top: 0px;
+  z-index: 1001;
+`;
 
 interface MatchParams {
   did: string;
@@ -35,13 +58,8 @@ interface MatchParams {
 const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   props: RouteComponentProps<MatchParams>
 ) => {
-  /**
-   * Direct method implementation without SAGA
-   * This was to show you dont need to put everything to global state
-   * incoming from Server API calls. Maintain a local state.
-   */
   const [error, setError] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState({
     accountType: AccountType.DID,
     did: '',
@@ -49,8 +67,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     hiveHost: '',
     email: '',
     userToken: '',
-    isDIDPublished: false,
-    onBoardingCompleted: false
+    isDIDPublished: false
   });
 
   const [full_profile, setfull_profile] = useState({
@@ -80,10 +97,6 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     }
   });
 
-  const getFullProfile = async (did: string): Promise<any> => {
-    return await requestFullProfile(did);
-  };
-
   let did: string = props.match.params.did;
 
   useEffect(() => {
@@ -97,15 +110,16 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
       }
 
       try {
-        if (!error) {
-          let profile: ProfileDTO = await getFullProfile(did);
-          profile.basicDTO.isEnabled = true;
+        let profile:
+          | ProfileDTO
+          | undefined = await ProfileService.getFullProfile(did);
+        if (profile) {
           profile.experienceDTO.isEnabled = true;
           profile.educationDTO.isEnabled = true;
           setfull_profile(profile);
         }
       } catch (e) {}
-      setLoaded(true);
+      setLoading(false);
     })();
   }, []);
 
@@ -113,6 +127,10 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     let ionContent = document.querySelector('ion-content');
     ionContent!.scrollToPoint(0, position);
   };
+
+  if (loading) {
+    return <PageLoading />;
+  }
 
   return (
     <IonPage className={style['profilepage']}>
@@ -138,7 +156,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 
           <IonRow className="ion-justify-content-around">
             <IonCol size="12">
-              {loaded && userInfo && userInfo.did !== '' ? (
+              {userInfo && userInfo.did !== '' ? (
                 <ProfileComponent
                   scrollToPosition={scrollToPosition}
                   profile={full_profile}
@@ -156,39 +174,4 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   );
 };
 
-/** @returns {object} Contains state props from selectors */
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg()
-});
-
-/** @returns {object} Contains dispatchable props */
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      // eProps - Emitter proptypes thats binds to dispatch
-      /** dispatch for counter to increment */
-      onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax())
-    }
-  };
-}
-
-/**
- * Injects prop and saga bindings done via
- * useInjectReducer & useInjectSaga
- */
-const withInjectedMode = injector(PublicPage, {
-  key: NameSpace,
-  reducer,
-  saga
-});
-
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
-
-export default compose(
-  withConnect,
-  memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>;
-
-// export default Tab1;
+export default PublicPage;

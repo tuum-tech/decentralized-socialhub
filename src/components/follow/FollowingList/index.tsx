@@ -184,26 +184,17 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
   const [listFollowers, setListFollowers] = useState<IFollowerResponse>({
     get_followers: { items: [] }
   });
-  const [profileService, setProfileService] = useState(new ProfileService());
   const [didFollow, setDidFollow] = useState('');
   const [didDocuments, setDidDocuments] = useState<IDidDocument[]>([]);
   const [error, setError] = useState<IError>({ hasError: false });
 
-  const getUserHiveInstance = async (): Promise<ProfileService> => {
-    return ProfileService.getProfileServiceInstance();
-  };
-
-  const getappHiveInstance = async (): Promise<ProfileService> => {
-    return ProfileService.getProfileServiceAppOnlyInstance();
-  };
-
   const follow = async () => {
-    let list: any = await profileService.addFollowing(didFollow);
+    let list: any = await ProfileService.addFollowing(didFollow);
     setListContacts(list);
   };
 
   const reset = async () => {
-    let list: any = await profileService.resetFollowing();
+    let list: any = await ProfileService.resetFollowing();
     setListContacts(list);
   };
 
@@ -236,7 +227,7 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
   };
 
   const unfollow = async (did: string) => {
-    let list: any = await profileService.unfollow(did);
+    let list: any = await ProfileService.unfollow(did);
     setListContacts(list);
   };
 
@@ -276,12 +267,9 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
   };
 
   const loadData = async (did: string) => {
-    let profileService: ProfileService = await getappHiveInstance();
-    setProfileService(profileService);
-
     let list: IFollowingResponse;
     try {
-      list = await profileService.getFollowings(did);
+      list = await ProfileService.getFollowings(did);
     } catch (e) {
       list = { get_following: { items: [] } };
       // setError({ hasError: true, errorDescription: 'cant load followings' });
@@ -298,7 +286,7 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
     }
 
     try {
-      let followers = await profileService.getFollowers(listDids);
+      let followers = await ProfileService.getFollowers(listDids);
       setListFollowers(followers as IFollowerResponse);
     } catch (e) {
       alertError(null, 'cant get followers count');

@@ -4,8 +4,8 @@
 
 import React from 'react';
 import loadable from 'src/baseplate/loadable';
-import LoadingIndicator from 'src/components/Spinner/Loadable';
+import LoadingIndicator from 'src/components/LoadingIndicator';
 
 export default loadable(() => import('./index'), {
-  fallback: <LoadingIndicator />,
+  fallback: <LoadingIndicator />
 });

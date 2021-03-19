@@ -107,12 +107,11 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
       return;
     }
     setLoading(true);
+
     let response = (await requestCreateUser(
       name,
       email
     )) as ICreateUserResponse;
-
-    setLoading(false);
     if (
       response &&
       response.data &&
@@ -136,6 +135,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
         }
       });
     }
+    setLoading(false);
   };
 
   const setField = (fieldName: string, fieldValue: string) => {
@@ -185,7 +185,9 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
 
   return (
     <OnBoardLayout className={style['create-profile']}>
-      {loading && <LoadingIndicator loadingText="Creating your profile now" />}
+      {loading && (
+        <LoadingIndicator loadingText="Creating new profile now..." />
+      )}
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>
