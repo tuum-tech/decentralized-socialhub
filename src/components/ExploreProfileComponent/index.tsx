@@ -125,7 +125,7 @@ const ExploreProfileComponent: React.FC<ExploreProfileParams> = ({
   return (
     <div className={style['exploreprofilecomponent']}>
       <Header>
-        <ArrowLeft />
+        <ArrowLeft onClick={() => (window.location.href = '/explore')} />
         <PageTitle>Explore</PageTitle>
       </Header>
 

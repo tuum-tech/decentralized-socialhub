@@ -46,8 +46,14 @@ const PublicNavbar = styled(IonRow)`
   height: 83px;
   padding: 21px 0 0;
   background-color: #ffffff;
-  position: fixed;
-  top: 0px;
+  z-index: 1001;
+`;
+
+const ContentRow = styled(IonRow)`
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background-color: #ffffff;
   z-index: 1001;
 `;
 
@@ -113,6 +119,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
           | ProfileDTO
           | undefined = await ProfileService.getFullProfile(did);
         if (profile) {
+          profile.basicDTO.isEnabled = true;
           profile.experienceDTO.isEnabled = true;
           profile.educationDTO.isEnabled = true;
           setfull_profile(profile);
@@ -133,41 +140,39 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 
   return (
     <IonPage className={style['profilepage']}>
-      <IonContent className={style['content-scroll']}>
-        <IonGrid className={style['profilepagegrid']}>
-          <PublicNavbar className="ion-justify-content-between">
-            <IonCol size="auto">
-              <img src="../../assets/logo_profile_black.svg" />
-            </IonCol>
-            <IonCol size="auto">
-              <IonRow>
-                <IonCol>
-                  <SignInButton href="create-profile">
-                    Register new user
-                  </SignInButton>
-                </IonCol>
-                <IonCol>
-                  <SignInButton href="../sign-did">Sign In</SignInButton>
-                </IonCol>
-              </IonRow>
-            </IonCol>
-          </PublicNavbar>
+      <IonGrid className={style['profilepagegrid']}>
+        <PublicNavbar className="ion-justify-content-between">
+          <IonCol size="auto">
+            <img src="../../assets/logo_profile_black.svg" />
+          </IonCol>
+          <IonCol size="auto">
+            <IonRow>
+              <IonCol>
+                <SignInButton href="create-profile">
+                  Register new user
+                </SignInButton>
+              </IonCol>
+              <IonCol>
+                <SignInButton href="../sign-did">Sign In</SignInButton>
+              </IonCol>
+            </IonRow>
+          </IonCol>
+        </PublicNavbar>
 
-          <IonRow className="ion-justify-content-around">
-            <IonCol size="12">
-              {userInfo && userInfo.did !== '' ? (
-                <ProfileComponent
-                  profile={full_profile}
-                  sessionItem={userInfo as any}
-                  error={error}
-                />
-              ) : (
-                '404 user not found'
-              )}
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </IonContent>
+        <ContentRow className="ion-justify-content-around">
+          <IonCol size="9">
+            {userInfo && userInfo.did !== '' ? (
+              <ProfileComponent
+                profile={full_profile}
+                sessionItem={userInfo as any}
+                error={error}
+              />
+            ) : (
+              '404 user not found'
+            )}
+          </IonCol>
+        </ContentRow>
+      </IonGrid>
     </IonPage>
   );
 };
