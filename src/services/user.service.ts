@@ -30,6 +30,7 @@ export interface ISessionItem {
   mnemonics: string;
   passhash: string;
   onBoardingCompleted: boolean;
+  avatar?: string;
   tutorialStep: number;
 }
 
@@ -190,6 +191,7 @@ export class UserService {
           userToken: userData.userToken,
           isDIDPublished: isDIDPublished ? isDIDPublished : false,
           onBoardingCompleted: userData.onBoardingCompleted,
+          avatar: userData.avatar,
           tutorialStep: userData.tutorialStep
         };
       } else {

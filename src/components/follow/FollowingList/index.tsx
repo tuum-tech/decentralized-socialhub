@@ -19,7 +19,7 @@ import {
 } from 'src/services/profile.service';
 import { DidService } from 'src/services/did.service';
 import { alertError } from 'src/utils/notify';
-import styleCards from '../../cards/OverviewCard.module.scss';
+import styleCards from '../../cards/WidgetCards.module.scss';
 import style from './style.module.scss';
 export interface IDidDocument {
   id: string;

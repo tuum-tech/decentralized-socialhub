@@ -16,6 +16,7 @@ import { ProfileDTO } from 'src/pages/PublicPage/types';
 // import photo from '../../assets/photo.png';
 import photo from '../../../assets/dp.jpeg';
 import { ISessionItem } from 'src/services/user.service';
+import SkeletonAvatar from 'src/components/avatars/SkeletonAvatar';
 
 const SignInButton = styled(IonRouterLink)`
   width: 140px;
@@ -40,33 +41,66 @@ const SignInButton = styled(IonRouterLink)`
   color: #ffffff;
 `;
 
+const AvatarBox = styled.div`
+margin-left: 50px;
+margin-top: 15px
+margin-bottom: 15px;
+`;
+
+interface AvatarProps {
+  avatar: string;
+  mode: string;
+}
+const Avatar: React.FC<AvatarProps> = ({ avatar, mode }: AvatarProps) => {
+  return (
+    <>
+      <SkeletonAvatar />
+      <img
+        alt="avatar"
+        src={avatar}
+        width={mode === 'small' ? '44' : '80'}
+        height={mode === 'small' ? '44' : '80'}
+        className={style['clip-avatar-svg']}
+      />
+    </>
+  );
+};
+
 interface IProps {
   profile: ProfileDTO;
-  sessionItem: ISessionItem;
+  user: ISessionItem;
   error: boolean;
+  mode: string;
 }
 
 const ProfileHeader: React.FC<IProps> = ({
   profile,
-  sessionItem,
+  user,
+  mode,
   error
 }: IProps) => {
   return (
-    <IonGrid className={style['profileheader']}>
+    <IonGrid className={style['profileheadersticky']}>
       <IonRow className={style['header']}>
         <IonCol size="auto">
-          <img src={photo} className={style['profile-img']} alt="profile" />
+          <AvatarBox>
+            {user && user.avatar ? (
+              <Avatar avatar={user.avatar as string} mode="big" />
+            ) : (
+              'avatar'
+            )}
+          </AvatarBox>
         </IonCol>
 
         <IonCol size="8">
           <IonGrid>
             <IonRow>
-              <ProfileName>{sessionItem.name}</ProfileName>
+              <ProfileName>{user ? user.name : ''}</ProfileName>
             </IonRow>
           </IonGrid>
         </IonCol>
         <IonCol size="2">
-          <SignInButton href="../sign-did">Sign in to Follow</SignInButton>
+          <SignInButton href="../sign-did">Follow</SignInButton>
         </IonCol>
       </IonRow>
     </IonGrid>

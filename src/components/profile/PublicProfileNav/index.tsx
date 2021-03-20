@@ -2,20 +2,30 @@ import React, { useState } from 'react';
 import { IonList, IonLabel, IonItem } from '@ionic/react';
 import style from './style.module.scss';
 import { ProfileDTO } from 'src/pages/PublicPage/types';
+import styled from 'styled-components';
 
 interface IProps {
   profile: ProfileDTO;
   scrollToPosition: any;
+  mode: string;
 }
+
+const Navigation = styled.div`
+  position: sticky;
+  top: 110px;
+`;
 
 const PublicProfileNav: React.FC<IProps> = ({
   profile,
-  scrollToPosition
+  scrollToPosition,
+  mode
 }: IProps) => {
   const [active, setActive] = useState('about');
 
   return (
-    <>
+    <Navigation
+      className={mode === 'normal' ? style['normal'] : style['sticky']}
+    >
       <IonList className={style['tab-list']}>
         <IonItem
           className={
@@ -56,35 +66,8 @@ const PublicProfileNav: React.FC<IProps> = ({
         >
           <IonLabel className={style['tab-label']}>Education</IonLabel>
         </IonItem>
-        {/* <IonItem
-          className={
-            (active == 'certifications' ? style['tab-active'] : '') +
-            ' ' +
-            style['tab-item']
-          }
-          onClick={() => setActive('certifications')}
-        >
-          <IonLabel className={style['tab-label']}>License & Certifications</IonLabel>
-        </IonItem>
-        <IonItem
-          className={
-            (active == 'achievements' ? style['tab-active'] : '') +
-            ' ' +
-            style['tab-item']
-          }
-          onClick={() => setActive('achievements')}
-        >
-          <IonLabel className={style['tab-label']}>Achievements</IonLabel>
-        </IonItem> */}
       </IonList>
-      {/* <IonContent> */}
-      {/* <AboutSection profile={profile} />
-      <ExperienceSection profile={profile} />
-      <EducationSection profile={profile} />
-      <CerificationsSection />
-      <AchievementsSection /> */}
-      {/* </IonContent> */}
-    </>
+    </Navigation>
   );
 };
 

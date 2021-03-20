@@ -41,7 +41,7 @@ const DidCard: React.FC<Props> = ({
   };
 
   const getLink = (did: string) => {
-    return '/did/' + did;
+    return '/explore/' + did;
   };
 
   useEffect(() => {

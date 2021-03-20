@@ -1,46 +1,52 @@
+.profileheadersticky {
+  background-color: white;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  z-index:99;
+  padding: 20px;
+
+ .clip-avatar-svg {
+  clip-path: url(#avatarClip);
+}
+
+.profile-img {
+  max-width: 5.5em;
+  border: 3px solid var(--theme-primary-blue);
+  border-radius: 1.5em 2em 1.5em 2em;
+  padding: 3px;
+}
+
+.view-profile-btn {
+  display: flex;
+  justify-content: flex-end;
+}
+
+}
+
+
+
+
 /** All your component stuyles */
 .profileheader {
-  min-height: 100px;
+ //min-height: 100px;
   background-color: white;
 
   h2 {
     margin-top: 0;
   }
 
+  .clip-avatar-svg {
+    clip-path: url(#avatarClip);
+  }
+
+
   ion-row {
     align-items: center;
     //padding-top: 8px;
   }
 
-  // .header {
-  //     border-bottom: 2px solid #EFEFEF;
-  //     padding-bottom: 10px;
-  // }
-
-  // .addbutton {
-  //     background: rgba(1, 230, 252, 0.14);
-
-  //     border-radius: 12px;
-  //     padding: 5px 8px 5px 5px;
-  //     font-family: 'Open Sans', sans-serif;
-  //     font-size: 11px;
-  //     letter-spacing: 0.11px;
-  //     color: #000000DE;
-
-  //     img {
-  //         margin-bottom: -5px;
-  //         margin-right: 4px;
-  //     }
-  // }
-  // .name {
-  //     text-align: left;
-  //     font-family: 'Open Sans', sans-serif;
-  //     font-weight: 600;
-  //     font-size: 19x;
-  //     color: #363291;
-  //     opacity: 1;
-  // }
-
+ 
   .details {
     text-align: left;
     //   font-family: 'Open Sans', sans-serif;
@@ -49,13 +55,7 @@
     color: var(--theme-primary-blue);
   }
 
-  // .percent-completed-verified {
-  //     text-align: left;
-  //     font-family: 'Open Sans', sans-serif;
-  //     font-size: 14px;
-  //     opacity: 1;
-  // }
-
+  
   .profile-img {
     max-width: 5.5em;
     border: 3px solid var(--theme-primary-blue);
@@ -68,48 +68,5 @@
     justify-content: flex-end;
   }
 
-  // .tip {
-  //     color: #00000099;
-  //     background-color: #E3F3FD;
-  //     border-radius: 10px;
-  //     opacity: 1;
-  //     margin: 10px 0px 5px 0px;
-  //     border: 1px solid #A7DCFD;
-  //     font-family: 'Open Sans', sans-serif;
-  //     font-size: 14px;
-  //     letter-spacing: 0.25px;
-  //     padding-top: 0px !important;
-  // }
-
-  // .action {
-  //     text-align: right;
-  //     font-family: 'Open Sans', sans-serif;
-  //     font-size: 14px;
-  //     letter-spacing: 0.25px;
-  //     color: #363291;
-  //     opacity: 1;
-  // }
-
-  // h2 {
-  //     font-family: 'Open Sans', sans-serif;
-  //     font-size: 16px;
-  //     font-weight: bold;
-  //     letter-spacing: 0.14px;
-  //     color: #000000DE;
-  //     margin-bottom: 0px;
-  // }
-
-  // p {
-  //     font-family: 'Open Sans', sans-serif;
-  //     font-size: 14px;
-  //     font-weight: normal;
-  //     letter-spacing: 0.25px;
-  //     color: #000000DE;
-  // }
-
-  // .title-university {
-
-  //     font-family: 'Open Sans', sans-serif;
-  //     font-size: 14px;
-  // }
+  
 }
