@@ -10,23 +10,24 @@ import {
   IonModal
 } from '@ionic/react';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 
 import React, { useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { ExporeTime } from './constants';
 
 import Logo from 'src/components/Logo';
-import Navbar from 'src/components/layouts/Navbar';
-import {
-  AccountType,
-  ISessionItem,
-  UserService
-} from 'src/services/user.service';
+import DashboardNavBar from 'src/components/layouts/Navbar/DashboardNavbar';
 import LoggedHeader from 'src/components/layouts/LoggedHeader';
-import { EducationItem, ExperienceItem } from '../PublicPage/types';
-import { ProfileDTO } from '../PublicPage/types';
-import { ProfileService } from 'src/services/profile.service';
+import { ISessionItem, UserService } from 'src/services/user.service';
+import LoadingIndicator from 'src/components/LoadingIndicator';
+import {
+  ProfileService,
+  defaultUserInfo,
+  defaultFullProfile
+} from 'src/services/profile.service';
 
+import { ProfileDTO } from '../PublicPage/types';
 import TutorialComponent from './components/Tutorial';
 import DashboardContent from './components/Content';
 import OnBoarding from './components/OnBoarding';
@@ -45,73 +46,44 @@ const TutorialModal = styled(IonModal)`
 const ProfilePage = () => {
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
-  const [userInfo, setUserInfo] = useState<ISessionItem>({
-    hiveHost: '',
-    userToken: '',
-    accountType: AccountType.DID,
-    did: '',
-    name: '',
-    email: '',
-    isDIDPublished: false,
-    mnemonics: '',
-    passhash: '',
-    onBoardingCompleted: true,
-    tutorialStep: 1
-  });
-
-  const [full_profile, setfull_profile] = useState({
-    basicDTO: {
-      isEnabled: false,
-      name: '',
-      did: '',
-      email: '',
-      hiveHost: '',
-      title: '',
-      about: '',
-      address: {
-        number: '',
-        street_name: '',
-        postal_code: '',
-        state: '',
-        country: ''
-      }
-    },
-    educationDTO: {
-      isEnabled: true,
-      items: [] as EducationItem[]
-    },
-    experienceDTO: {
-      isEnabled: true,
-      items: [] as ExperienceItem[]
-    }
-  });
-  const [onboardingCompleted, setOnboardingStatus] = useState(true);
   const [loadingText, setLoadingText] = useState('');
+  const [userInfo, setUserInfo] = useState<ISessionItem>(defaultUserInfo);
+  const [full_profile, setfull_profile] = useState(defaultFullProfile);
+  const [onboardingCompleted, setOnboardingStatus] = useState(true);
+  const history = useHistory();
+
+  const retriveProfile = async () => {
+    let userSession = UserService.GetUserSession();
+    if (!userSession) {
+      return;
+    }
+    setLoadingText('Wait a while...');
+    let profile: ProfileDTO | undefined = await ProfileService.getFullProfile(
+      userSession.did
+    );
+    if (profile) {
+      profile.experienceDTO.isEnabled = true;
+      profile.educationDTO.isEnabled = true;
+      setfull_profile(profile);
+    }
+    setLoadingText('');
+  };
 
   useEffect(() => {
     (async () => {
-      let instance = UserService.GetUserSession();
-      if (!instance) {
+      let userSession = UserService.GetUserSession();
+      if (!userSession) {
         return;
       }
 
-      setUserInfo(instance);
-      setOnboardingStatus(instance.onBoardingCompleted);
+      setUserInfo(userSession);
+      setOnboardingStatus(userSession.onBoardingCompleted);
 
       if (
-        instance.onBoardingCompleted &&
-        instance.tutorialStep === 4 &&
+        userSession.onBoardingCompleted &&
+        userSession.tutorialStep === 4 &&
         !willExpire
       ) {
-        let profile:
-          | ProfileDTO
-          | undefined = await ProfileService.getFullProfile(instance.did);
-        if (profile) {
-          profile.experienceDTO.isEnabled = true;
-          profile.educationDTO.isEnabled = true;
-          setfull_profile(profile);
-        }
-
         setWillExpire(true);
         setTimeout(() => {
           UserService.logout();
@@ -121,21 +93,21 @@ const ProfilePage = () => {
     })();
   }, []);
 
-  const onTutorialStart = () => {
-    setShowTutorial(true);
-  };
-
-  const onTutorialFinish = async (step: number) => {
-    setLoadingText('Updating Loading Status on Vault');
-    let userSession = UserService.GetUserSession();
-    if (userSession && userSession.did) {
-      userSession.tutorialStep = step;
-      await UserService.updateSession(userSession);
-      setUserInfo(userSession);
-    }
-    setShowTutorial(false);
-    setLoadingText('');
-  };
+  useEffect(() => {
+    (async () => {
+      let userSession = UserService.GetUserSession();
+      if (
+        !userSession ||
+        userSession.tutorialStep ||
+        userSession.tutorialStep !== 4 ||
+        !userSession.onBoardingCompleted
+      ) {
+        return;
+      } else if (history.location.pathname === '/profile') {
+        await retriveProfile();
+      }
+    })();
+  }, [history.location.pathname]);
 
   if (!onboardingCompleted) {
     return (
@@ -143,6 +115,7 @@ const ProfilePage = () => {
         completed={async () => {
           let user = UserService.GetUserSession();
           if (!user) return;
+
           user.onBoardingCompleted = true;
           await UserService.updateSession(user);
           setOnboardingStatus(true);
@@ -160,12 +133,15 @@ const ProfilePage = () => {
 
   return (
     <IonPage>
+      {loadingText && loadingText !== '' && (
+        <LoadingIndicator loadingText={loadingText} />
+      )}
       <IonContent className={style['profilepage']}>
         <IonGrid className={style['profilepagegrid']}>
           <IonRow className={style['profilecontent']}>
             <IonCol size="2" className={style['left-panel']}>
               <Logo />
-              <Navbar tab="dashboard" />
+              <DashboardNavBar />
             </IonCol>
             {/* <IonCol size='7' className={style['center-panel']}>
               <ProfileComponent profile={profile} />
@@ -173,7 +149,9 @@ const ProfilePage = () => {
             <IonCol size="10" className={style['right-panel']}>
               <LoggedHeader profile={full_profile} sessionItem={userInfo} />
               <DashboardContent
-                onTutorialStart={onTutorialStart}
+                onTutorialStart={() => {
+                  setShowTutorial(true);
+                }}
                 profile={full_profile}
                 sessionItem={userInfo}
               />
@@ -188,7 +166,15 @@ const ProfilePage = () => {
           cssClass={style['tutorialpage']}
           backdropDismiss={false}
         >
-          <TutorialComponent onClose={onTutorialFinish} />
+          <TutorialComponent
+            onClose={() => {
+              let userSession = UserService.GetUserSession();
+              if (userSession && userSession.did !== '') {
+                setUserInfo(userSession);
+              }
+              setShowTutorial(false);
+            }}
+          />
         </TutorialModal>
       </IonContent>
     </IonPage>

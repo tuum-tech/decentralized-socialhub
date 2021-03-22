@@ -7,7 +7,7 @@ import {
   ProfileDTO
 } from 'src/pages/PublicPage/types';
 import { HiveService } from './hive.service';
-import { UserService } from './user.service';
+import { UserService, ISessionItem, AccountType } from './user.service';
 
 export interface IFollowingResponse {
   _status?: string;
@@ -294,3 +294,44 @@ export class ProfileService {
     }
   }
 }
+
+export const defaultUserInfo: ISessionItem = {
+  hiveHost: '',
+  userToken: '',
+  accountType: AccountType.DID,
+  did: '',
+  email: '',
+  name: '',
+  isDIDPublished: false,
+  mnemonics: '',
+  passhash: '',
+  onBoardingCompleted: false,
+  tutorialStep: 1
+};
+
+export const defaultFullProfile = {
+  basicDTO: {
+    isEnabled: false,
+    name: '',
+    hiveHost: '',
+    email: '',
+    did: '',
+    title: '',
+    about: '',
+    address: {
+      number: '',
+      street_name: '',
+      postal_code: '',
+      state: '',
+      country: ''
+    }
+  },
+  educationDTO: {
+    isEnabled: true,
+    items: [] as EducationItem[]
+  },
+  experienceDTO: {
+    isEnabled: true,
+    items: [] as ExperienceItem[]
+  }
+};

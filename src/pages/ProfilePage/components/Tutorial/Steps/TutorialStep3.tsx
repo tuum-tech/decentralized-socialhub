@@ -10,13 +10,12 @@ import { DidDocumentService } from 'src/services/diddocument.service';
 import { UserVaultScripts } from 'src/scripts/uservault.script';
 
 const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
-  onContinue
+  onContinue,
+  setLoading
 }) => {
   const [hiveUrl, sethiveUrl] = useState('');
   const [hiveDocument, setHiveDocument] = useState('');
-
   const [errorMessage, setErrorMessage] = useState('');
-
   const [selected, setSelected] = useState(
     hiveDocument === '' ? 'tuum' : 'document'
   );
@@ -28,7 +27,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   };
 
   const isEndpointValid = (endpoint: string) => {
-    if (!endpoint || endpoint.length == 0) return false;
+    if (!endpoint || endpoint.length === 0) return false;
     let regexp = new RegExp(
       /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(:[0-9]+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
     );
@@ -40,48 +39,51 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     let endpoint = getEndpoint();
     let endpointValid = isEndpointValid(endpoint);
 
-    if (!endpointValid) {
+    if (!endpointValid || !setLoading) {
       setErrorMessage('Invalid hive address');
       return;
     }
 
+    setLoading(true);
     let isValidHiveAddress = await HiveService.isHiveAddressValid(endpoint);
     if (!isValidHiveAddress) {
+      setLoading(false);
       setErrorMessage('Invalid hive address');
       return;
     }
 
     let user = UserService.GetUserSession();
-    if (!user) return;
-    try {
-      let userToken = await generateUserToken(user.mnemonics, endpoint);
-      user.userToken = userToken;
-      user.tutorialStep = 4;
-      user.hiveHost = endpoint;
+    if (user) {
+      try {
+        let userToken = await generateUserToken(user.mnemonics, endpoint);
+        user.userToken = userToken;
+        user.tutorialStep = 4;
+        user.hiveHost = endpoint;
 
-      //TODO: Uncomment when did publishing was fixed
-      // if (selected !== "document")
-      // {
-      //   let userDid = await DidService.loadDid(user.mnemonics);
-      //   let hivesvc = DidService.generateService(userDid, 'HiveVault', endpoint);
-      //   let documentState = await DidDocumentService.getUserDocument(user)
-      //   let userDocument = documentState.diddocument;
-      //   await DidService.addServiceToDIDDocument(userDocument, hivesvc);
-      //   await DidDocumentService.publishUserDocument(userDocument);
-      // }
+        //TODO: Uncomment when did publishing was fixed
+        // if (selected !== "document")
+        // {
+        //   let userDid = await DidService.loadDid(user.mnemonics);
+        //   let hivesvc = DidService.generateService(userDid, 'HiveVault', endpoint);
+        //   let documentState = await DidDocumentService.getUserDocument(user)
+        //   let userDocument = documentState.diddocument;
+        //   await DidService.addServiceToDIDDocument(userDocument, hivesvc);
+        //   await DidDocumentService.publishUserDocument(userDocument);
+        // }
 
-      await UserService.updateSession(user);
+        await UserService.updateSession(user);
+        let hiveInstance = await HiveService.getSessionInstance();
+        await UserVaultScripts.Execute(hiveInstance!);
 
-      let hiveInstance = await HiveService.getSessionInstance();
-      await UserVaultScripts.Execute(hiveInstance!);
-
-      onContinue();
-    } catch (error) {
-      await DidDocumentService.reloadUserDocument();
-      setErrorMessage(
-        'We are not able to process your request at moment. Please try again later'
-      );
+        onContinue();
+      } catch (error) {
+        await DidDocumentService.reloadUserDocument();
+        setErrorMessage(
+          'We are not able to process your request at moment. Please try again later'
+        );
+      }
     }
+    setLoading(false);
   };
 
   const generateUserToken = async (mnemonics: string, address: string) => {

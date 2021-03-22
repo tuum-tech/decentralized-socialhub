@@ -1,22 +1,9 @@
-import { connect } from 'react-redux';
 import { StaticContext, RouteComponentProps } from 'react-router';
-import { compose } from 'redux';
-import { createStructuredSelector } from 'reselect';
-import injector from 'src/baseplate/injectorWrap';
-
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
-import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo, useState, useEffect } from 'react';
-import { NameSpace } from './constants';
-import reducer from './reducer';
-import saga from './saga';
-import { InferMappedProps, SubState, LocationState } from './types';
+import styled from 'styled-components';
+import React, { useState, useEffect } from 'react';
 
 import { UserService, ISessionItem } from 'src/services/user.service';
 import LoadingIndicator from 'src/components/LoadingIndicator';
-
-import styled from 'styled-components';
-
 import {
   OnBoardLayout,
   OnBoardLayoutLeft,
@@ -29,13 +16,14 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-
 import ButtonWithLogo from 'src/components/buttons/ButtonWithLogo';
 import TextInput from 'src/components/inputs/TextInput';
 import { Text16 } from 'src/components/texts';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import keyimg from 'src/assets/icon/key.png';
+
+import { LocationState } from './types';
 
 const ErrorText = styled(Text16)`
   text-align: center;
@@ -155,39 +143,4 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
   );
 };
 
-/** @returns {object} Contains state props from selectors */
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg()
-});
-
-/** @returns {object} Contains dispatchable props */
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      // eProps - Emitter proptypes thats binds to dispatch
-      /** dispatch for counter to increment */
-      onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax())
-    }
-  };
-}
-
-/**
- * Injects prop and saga bindings done via
- * useInjectReducer & useInjectSaga
- */
-const withInjectedMode = injector(CreatePasswordPage, {
-  key: NameSpace,
-  reducer,
-  saga
-});
-
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
-
-export default compose(
-  withConnect,
-  memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>;
-
-// export default Tab1;
+export default CreatePasswordPage;

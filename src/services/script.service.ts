@@ -153,7 +153,6 @@ export class UserVaultScriptService {
       challenge.nonce
     );
     const userToken = await HiveService.getUserHiveToken(address, presentation);
-
     return userToken;
   }
 
@@ -168,14 +167,19 @@ export class UserVaultScriptService {
       response.data.get_user_by_did.items.length > 0
     ) {
       const userInfo = response.data.get_user_by_did.items[0];
-      if (!userInfo.tutorialStep && userInfo.tutorialStep !== 4) return;
+      if (
+        !userInfo.tutorialStep ||
+        userInfo.tutorialStep !== 4 ||
+        !userInfo.onBoardingCompleted
+      )
+        return;
+
       try {
         let userToken = await this.generateUserToken(
           user.mnemonics,
           user.hiveHost
         );
         user.userToken = userToken;
-
         await UserService.updateSession(user);
         let hiveInstance = await HiveService.getSessionInstance();
         await UserVaultScripts.Execute(hiveInstance!);

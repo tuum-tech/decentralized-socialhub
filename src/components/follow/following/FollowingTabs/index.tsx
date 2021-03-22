@@ -38,7 +38,7 @@ const FollowingTabs: React.FC<Props> = ({
       <IonList className={style['tab-list']}>
         <IonItem
           className={
-            (active == 'people' ? style['tab-active'] : '') +
+            (active === 'people' ? style['tab-active'] : '') +
             ' ' +
             style['tab-item']
           }
@@ -48,7 +48,7 @@ const FollowingTabs: React.FC<Props> = ({
         </IonItem>
         <IonItem
           className={
-            (active == 'pages' ? style['tab-active'] : '') +
+            (active === 'pages' ? style['tab-active'] : '') +
             ' ' +
             style['tab-item']
           }
@@ -58,7 +58,7 @@ const FollowingTabs: React.FC<Props> = ({
         </IonItem>
       </IonList>
 
-      {active == 'people' && (
+      {active === 'people' && (
         <IonGrid className={style['tab-grid']}>
           <IonRow>
             <PeopleCard
@@ -70,7 +70,7 @@ const FollowingTabs: React.FC<Props> = ({
           </IonRow>
         </IonGrid>
       )}
-      {active == 'pages' && (
+      {active === 'pages' && (
         <IonGrid className={style['tab-grid']}>
           <IonRow>
             <PagesCard pages={pages} searchKeyword={searchKeyword} size="6" />

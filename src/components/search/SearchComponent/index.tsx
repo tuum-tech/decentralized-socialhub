@@ -41,7 +41,6 @@ const SearchComponent: React.FC = () => {
     // Following are the valid patterns:
     // did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX
     // icJ4z2DULrHEzYSvjKNJpKyhqFDxvYV7pN
-
     const regex = /^(did:elastos:i|i)+[a-zA-Z0-9]+$/g;
     return str != null && regex.test(str.trim());
   };
@@ -115,7 +114,7 @@ const SearchComponent: React.FC = () => {
     (async () => {
       if (searchQuery !== '' && searchQuery.length > 2) {
         invokeSearch(searchQuery);
-      } else if (searchQuery == '') {
+      } else if (searchQuery === '') {
         setSearchQuery('');
         await loadData();
       }

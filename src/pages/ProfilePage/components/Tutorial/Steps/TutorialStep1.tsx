@@ -5,6 +5,7 @@ import style from '../style.module.scss';
 export interface ITutorialStepProp {
   onContinue: () => void;
   mnemonics?: string[];
+  setLoading?: (status: boolean) => void;
 }
 
 const TutorialStep1Component: React.FC<ITutorialStepProp> = ({

@@ -1,22 +1,19 @@
-import {
-  IonContent,
-  IonPage,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonRouterLink
-} from '@ionic/react';
+import { IonPage, IonGrid, IonRow, IonCol, IonRouterLink } from '@ionic/react';
 import { RouteComponentProps } from 'react-router';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import ProfileComponent from 'src/components/profile/ProfileComponent';
-import { AccountType, UserService } from 'src/services/user.service';
+import { UserService } from 'src/services/user.service';
 import PageLoading from 'src/components/layouts/PageLoading';
-import { ProfileService } from 'src/services/profile.service';
+import {
+  ProfileService,
+  defaultUserInfo,
+  defaultFullProfile
+} from 'src/services/profile.service';
 
 import style from './style.module.scss';
-import { EducationItem, ExperienceItem, ProfileDTO } from './types';
+import { ProfileDTO } from './types';
 
 const SignInButton = styled(IonRouterLink)`
   width: 140px;
@@ -66,42 +63,8 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 ) => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [userInfo, setUserInfo] = useState({
-    accountType: AccountType.DID,
-    did: '',
-    name: '',
-    hiveHost: '',
-    email: '',
-    userToken: '',
-    isDIDPublished: false
-  });
-
-  const [full_profile, setfull_profile] = useState({
-    basicDTO: {
-      isEnabled: false,
-      name: '',
-      did: '',
-      title: '',
-      email: '',
-      hiveHost: '',
-      about: '',
-      address: {
-        number: '',
-        street_name: '',
-        postal_code: '',
-        state: '',
-        country: ''
-      }
-    },
-    educationDTO: {
-      isEnabled: false,
-      items: [] as EducationItem[]
-    },
-    experienceDTO: {
-      isEnabled: false,
-      items: [] as ExperienceItem[]
-    }
-  });
+  const [userInfo, setUserInfo] = useState(defaultUserInfo);
+  const [full_profile, setfull_profile] = useState(defaultFullProfile);
 
   let did: string = props.match.params.did;
 

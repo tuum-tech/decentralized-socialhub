@@ -1,7 +1,7 @@
 import React from 'react';
 import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react';
 import Logo from '../../Logo';
-import Navbar from '../Navbar';
+import DashboardNavbar from '../Navbar/DashboardNavbar';
 
 const Header: React.FC = () => {
   return (
@@ -13,7 +13,7 @@ const Header: React.FC = () => {
             <Logo />
           </IonCol>
           <IonCol size="9" pull="1">
-            <Navbar />
+            <DashboardNavbar />
           </IonCol>
         </IonRow>
       </IonGrid>

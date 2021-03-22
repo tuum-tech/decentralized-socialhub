@@ -17,7 +17,7 @@ import {
   TreeDotsButton,
   PopoverMenuItem,
   ModalFooter
-} from '../ExperienceCard/components';
+} from '../ExperienceCard/Item';
 import EducationCardEdit from './Edit';
 
 interface EducationItemProps {

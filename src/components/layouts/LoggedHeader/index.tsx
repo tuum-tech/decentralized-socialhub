@@ -59,7 +59,7 @@ const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
       publishWaiting.confirmationId,
       sessionItem.did
     );
-    if (actual.requestStatus == RequestStatus.Completed) {
+    if (actual.requestStatus === RequestStatus.Completed) {
       setPublishStatus('');
       AssistService.removePublishTask(sessionItem.did);
       await updateUserToComplete();

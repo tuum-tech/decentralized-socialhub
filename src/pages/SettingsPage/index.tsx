@@ -8,15 +8,15 @@ import { createStructuredSelector } from 'reselect';
 import injector from 'src/baseplate/injectorWrap';
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
 import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo } from 'react';
 import style from './style.module.scss';
 import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 import Logo from 'src/components/Logo';
-import Navbar from 'src/components/layouts/Navbar';
-import SettingsBody from 'src/components/SettingsBody';
+import DashboardNavBar from 'src/components/layouts/Navbar/DashboardNavbar';
+import SettingsBody from './components/SettingsBody';
 
 const SettingsPage: React.FC<InferMappedProps> = ({
   eProps,
@@ -29,7 +29,8 @@ const SettingsPage: React.FC<InferMappedProps> = ({
           <IonRow className={style['settingscontent']}>
             <IonCol size="2" className={style['left-panel']}>
               <Logo />
-              <Navbar tab="settings" />
+
+              <DashboardNavBar />
             </IonCol>
             <IonCol size="10" className={style['right-panel']}>
               <SettingsBody />

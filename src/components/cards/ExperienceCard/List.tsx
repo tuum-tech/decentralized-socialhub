@@ -12,7 +12,7 @@ import {
   TreeDotsButton,
   PopoverMenuItem,
   ModalFooter
-} from './components';
+} from './Item';
 import ExperienceCardEdit from './Edit';
 
 interface ExperienceItemsProps {

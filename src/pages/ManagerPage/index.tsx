@@ -3,7 +3,9 @@
  */
 import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 import { compose } from 'redux';
+
 import { createStructuredSelector } from 'reselect';
 import injector from 'src/baseplate/injectorWrap';
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
@@ -15,8 +17,7 @@ import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 import Logo from 'src/components/Logo';
-import Navbar from 'src/components/layouts/Navbar';
-import styled from 'styled-components';
+import DashboardNavBar from 'src/components/layouts/Navbar/DashboardNavbar';
 import ProfileEditor from 'src/components/profile/ProfileEditor';
 
 const ManagerPage: React.FC<InferMappedProps> = ({
@@ -56,7 +57,7 @@ const ManagerPage: React.FC<InferMappedProps> = ({
             <IonRow className={style['profilecontent']}>
               <IonCol size="2" className={style['left-panel']}>
                 <Logo />
-                <Navbar tab="profile_manager" />
+                <DashboardNavBar />
               </IonCol>
               <IonCol size="10" className={style['right-panel']}>
                 <Header>

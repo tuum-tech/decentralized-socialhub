@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { IonContent, IonGrid, IonCol, IonRow } from '@ionic/react';
-import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 
-import {
-  AccountType,
-  ISessionItem,
-  UserService
-} from 'src/services/user.service';
+import { ISessionItem, UserService } from 'src/services/user.service';
 import { TuumTechScriptService } from 'src/services/script.service';
 import {
   EducationItem,
   ExperienceItem,
   ProfileDTO
 } from 'src/pages/PublicPage/types';
-import { ProfileService } from 'src/services/profile.service';
+import {
+  ProfileService,
+  defaultUserInfo,
+  defaultFullProfile
+} from 'src/services/profile.service';
 
 import TemplateManagerCard from '../../cards/TemplateManagerCard';
 import EducationCard from '../../cards/EducationCard';
@@ -25,46 +24,27 @@ import style from './style.module.scss';
 
 const ProfileEditor: React.FC = () => {
   const [error, setError] = useState(false);
-  const [userInfo, setUserInfo] = useState<ISessionItem>({
-    hiveHost: '',
-    userToken: '',
-    accountType: AccountType.DID,
-    did: '',
-    email: '',
-    name: '',
-    isDIDPublished: false,
-    mnemonics: '',
-    passhash: '',
-    onBoardingCompleted: false,
-    tutorialStep: 1
-  });
+  const [userInfo, setUserInfo] = useState<ISessionItem>(defaultUserInfo);
   const [loaded, setloaded] = useState(false);
-  const [full_profile, setfull_profile] = useState({
-    basicDTO: {
-      isEnabled: false,
-      name: '',
-      hiveHost: '',
-      email: '',
-      did: '',
-      title: '',
-      about: '',
-      address: {
-        number: '',
-        street_name: '',
-        postal_code: '',
-        state: '',
-        country: ''
+  const [full_profile, setfull_profile] = useState(defaultFullProfile);
+
+  const retriveProfile = async () => {
+    let instance = UserService.GetUserSession();
+    if (!instance || !instance.userToken) return;
+    try {
+      let profile: ProfileDTO | undefined = await ProfileService.getFullProfile(
+        instance.did
+      );
+      if (profile) {
+        profile.basicDTO.isEnabled = true;
+        profile.experienceDTO.isEnabled = true;
+        profile.educationDTO.isEnabled = true;
+        setfull_profile(profile);
       }
-    },
-    educationDTO: {
-      isEnabled: true,
-      items: [] as EducationItem[]
-    },
-    experienceDTO: {
-      isEnabled: true,
-      items: [] as ExperienceItem[]
+    } catch (e) {
+      setError(true);
     }
-  });
+  };
 
   useEffect(() => {
     (async () => {
@@ -74,24 +54,11 @@ const ProfileEditor: React.FC = () => {
       setUserInfo(instance);
 
       if (instance.tutorialStep === 4) {
-        try {
-          let profile:
-            | ProfileDTO
-            | undefined = await ProfileService.getFullProfile(instance.did);
-          if (profile) {
-            profile.basicDTO.isEnabled = true;
-            profile.experienceDTO.isEnabled = true;
-            profile.educationDTO.isEnabled = true;
-            setfull_profile(profile);
-          }
-        } catch (e) {
-          setError(true);
-        }
+        await retriveProfile();
       }
       setloaded(true);
     })();
   }, []);
-  console.log('=====>profile', full_profile);
 
   return (
     <IonContent className={style['profileeditor']}>
@@ -151,11 +118,14 @@ const ProfileEditor: React.FC = () => {
                         experienceItem
                       );
                     }}
-                    removeFunc={async (
-                      experienceItem: ExperienceItem
-                    ): Promise<any> => {
+                    removeFunc={async (experienceItem: ExperienceItem) => {
                       await ProfileService.removeExperienceItem(experienceItem);
                     }}
+                    // removeFunc={async (
+                    //   experienceItem: ExperienceItem
+                    // ): Promise<any> => {
+                    //   await ProfileService.removeExperienceItem(experienceItem);
+                    // }}
                     mode="edit"
                   />
                 )}
