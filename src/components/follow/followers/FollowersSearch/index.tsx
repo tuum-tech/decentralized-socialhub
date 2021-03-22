@@ -125,7 +125,7 @@ const FollowersSearch: React.FC = () => {
   useEffect(() => {
     if (searchQuery !== '' && searchQuery.length > 2) {
       invokeSearch(searchQuery);
-    } else if (searchQuery == '') {
+    } else if (searchQuery === '') {
       setSearchQuery('');
       // loadData();
     }

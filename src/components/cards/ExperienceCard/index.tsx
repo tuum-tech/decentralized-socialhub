@@ -14,7 +14,7 @@ import { ExperienceItem as ExperienceItemType } from 'src/pages/PublicPage/types
 import { ExperienceDTO } from 'src/pages/PublicPage/types';
 import ExperienceItems from './List';
 import styleWidget from '../WidgetCards.module.scss';
-import { Divider, LinkStyleSpan } from './components';
+import { Divider, LinkStyleSpan } from './Item';
 
 interface IExperienceProps {
   experienceDTO: ExperienceDTO;
@@ -79,14 +79,11 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     setcurrentExperienceDTO({ isEnabled: true, items: items });
   };
 
-  const removeItem = (index: number) => {
+  const removeItem = async (index: number) => {
     let items = [...currentExperienceDTO.items];
-
-    let itemToDelete = items.splice(index, 1);
-
+    await removeFunc(items[index]);
+    items = items.splice(index, 1);
     setcurrentExperienceDTO({ isEnabled: true, items: items });
-
-    if (itemToDelete[0].isEmpty) removeFunc(itemToDelete[0]);
   };
 
   return (

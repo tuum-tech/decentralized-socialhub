@@ -72,7 +72,7 @@ const DidCard: React.FC<Props> = ({
             {'DID:' + did.replace('did:elastos:', '')}
           </span>
         </div>
-        {type == 'user' && sessionItem.tutorialStep === 4 && (
+        {type === 'user' && sessionItem.tutorialStep === 4 && (
           <div className={style['card-link']}>
             {isFollowing && (
               <span

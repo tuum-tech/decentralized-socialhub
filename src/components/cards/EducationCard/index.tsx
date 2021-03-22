@@ -17,7 +17,7 @@ import {
 
 import EducationItem from './Item';
 import styleWidget from '../WidgetCards.module.scss';
-import { Divider, LinkStyleSpan } from '../ExperienceCard/components';
+import { Divider, LinkStyleSpan } from '../ExperienceCard/Item';
 
 interface IEducationProps {
   educationDTO: EducationDTO;
@@ -85,14 +85,19 @@ const EducationCard: React.FC<IEducationProps> = ({
     setCurrentEducationDTO({ isEnabled: true, items: items });
   };
 
-  const removeItem = (index: number) => {
+  const removeItem = async (index: number) => {
+    // let items = [...currentEducationDTO.items];
+
+    // let itemToDelete = items.splice(index, 1);
+
+    // setCurrentEducationDTO({ isEnabled: true, items: items });
+
+    // if (itemToDelete[0].isEmpty) removeFunc(itemToDelete[0]);
+
     let items = [...currentEducationDTO.items];
-
-    let itemToDelete = items.splice(index, 1);
-
+    await removeFunc(items[index]);
+    items = items.splice(index, 1);
     setCurrentEducationDTO({ isEnabled: true, items: items });
-
-    if (itemToDelete[0].isEmpty) removeFunc(itemToDelete[0]);
   };
 
   return (

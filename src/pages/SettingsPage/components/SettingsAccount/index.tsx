@@ -11,8 +11,9 @@ import {
   IonCardContent,
   IonText
 } from '@ionic/react';
+
+import ButtonDisabled from 'src/components/buttons/ButtonDisabled';
 import style from './style.module.scss';
-import ButtonDisabled from '../../buttons/ButtonDisabled';
 
 const SettingsAccount: React.FC = () => {
   return (

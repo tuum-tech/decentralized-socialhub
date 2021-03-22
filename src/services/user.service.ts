@@ -147,7 +147,7 @@ export class UserService {
     let newSessionItem = sessionItem;
     if (
       !newSessionItem.passhash ||
-      newSessionItem.passhash.trim().length == 0
+      newSessionItem.passhash.trim().length === 0
     ) {
       newSessionItem.passhash = CryptoJS.SHA256(
         newSessionItem.did + password

@@ -8,12 +8,14 @@ import {
   IonRow,
   IonCol
 } from '@ionic/react';
+
+import PageHeader from 'src/components/layouts/PageHeader';
+import SettingsAccount from '../SettingsAccount/Loadable';
+import SettingsTerms from '../SettingsTerms/Loadable';
+import SettingsHelp from '../SettingsHelp/Loadable';
+import SettingsSubscription from '../SettingsSubscription/Loadable';
+
 import style from './style.module.scss';
-import PageHeader from '../layouts/PageHeader';
-import SettingsAccount from './SettingsAccount/Loadable';
-import SettingsTerms from './SettingsTerms/Loadable';
-import SettingsHelp from './SettingsHelp/Loadable';
-import SettingsSubscription from './SettingsSubscription/Loadable';
 
 interface Props {
   tab?: string;
@@ -91,10 +93,10 @@ const SettingsBody: React.FC<Props> = ({ tab = 'settingsaccount' }) => {
               </IonContent>
             </IonCol>
             <IonCol size="10" className={style['right-panel']}>
-              {active == 'settingsaccount' && <SettingsAccount />}
-              {active == 'settingsterms' && <SettingsTerms />}
-              {active == 'settingshelp' && <SettingsHelp />}
-              {active == 'settingssubscription' && <SettingsSubscription />}
+              {active === 'settingsaccount' && <SettingsAccount />}
+              {active === 'settingsterms' && <SettingsTerms />}
+              {active === 'settingshelp' && <SettingsHelp />}
+              {active === 'settingssubscription' && <SettingsSubscription />}
             </IonCol>
           </IonRow>
         </IonGrid>

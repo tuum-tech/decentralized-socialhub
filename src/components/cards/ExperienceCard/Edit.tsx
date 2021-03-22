@@ -9,7 +9,7 @@ import {
 import { ExperienceItem } from 'src/pages/PublicPage/types';
 
 import SmallTextInput from '../../inputs/SmallTextInput';
-import { MyGrid, MyTextarea } from './components';
+import { MyGrid, MyTextarea } from './Item';
 
 interface ExperienceCardEditProps {
   experienceItem: ExperienceItem;

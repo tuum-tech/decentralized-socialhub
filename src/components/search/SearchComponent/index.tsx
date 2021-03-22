@@ -115,7 +115,7 @@ const SearchComponent: React.FC = () => {
     (async () => {
       if (searchQuery !== '' && searchQuery.length > 2) {
         invokeSearch(searchQuery);
-      } else if (searchQuery == '') {
+      } else if (searchQuery === '') {
         setSearchQuery('');
         await loadData();
       }

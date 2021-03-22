@@ -1,32 +1,32 @@
 /**
  * Page
  */
-import { useHistory } from 'react-router'
-import React, { useState, useEffect } from 'react'
-import AlphaContent from 'src/components/AlphaContent'
-import TextInput from 'src/components/inputs/TextInput'
-import style from '../style.module.scss'
-import AlphaButtonDefault from 'src/components/AlphaContent/alphabutton'
-import { AlphaService } from 'src/services/alpha.service'
+import { useHistory } from 'react-router';
+import React, { useState, useEffect } from 'react';
+import AlphaContent from 'src/components/AlphaContent';
+import TextInput from 'src/components/inputs/TextInput';
+import style from '../style.module.scss';
+import AlphaButtonDefault from 'src/components/AlphaContent/alphabutton';
+import { AlphaService } from 'src/services/alpha.service';
 
-import logo from '../../../assets/logo/blacklogo.svg'
+import logo from '../../../assets/logo/blacklogo.svg';
 
 const AccessCodePage: React.FC = () => {
-  const history = useHistory()
-  const [accessCode, setAccessCode] = useState('')
-  const [email, setEmail] = useState('')
-  const [message, setMessage] = useState('')
-  const [hasError, setHasError] = useState(false)
-  const [page, setPage] = useState(1)
+  const history = useHistory();
+  const [accessCode, setAccessCode] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [hasError, setHasError] = useState(false);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
-    ;(async () => {
-      const alreadyHaveCode = await AlphaService.isLocalCodeValid()
+    (async () => {
+      const alreadyHaveCode = await AlphaService.isLocalCodeValid();
       if (alreadyHaveCode) {
-        history.push({ pathname: '/create-profile' })
+        history.push({ pathname: '/create-profile' });
       }
-    })()
-  }, [])
+    })();
+  }, []);
 
   const messageDiv = () => {
     if (message && message !== '') {
@@ -36,65 +36,65 @@ const AccessCodePage: React.FC = () => {
             {message}
           </p>
         </div>
-      )
+      );
     }
-    return <div></div>
-  }
+    return <div></div>;
+  };
 
   const isAccessCodeValid = async (): Promise<boolean> => {
-    if (!accessCode || accessCode.length === 0) return false
-    let response = await AlphaService.isCodeValid(accessCode)
-    return response
-  }
+    if (!accessCode || accessCode.length === 0) return false;
+    let response = await AlphaService.isCodeValid(accessCode);
+    return response;
+  };
 
   const setErrorMessage = (newMessage: string) => {
-    setHasError(true)
-    setMessage(newMessage)
-  }
+    setHasError(true);
+    setMessage(newMessage);
+  };
 
   const isEmailValid = () => {
-    if (!email || email.length == 0) return false
+    if (!email || email.length === 0) return false;
     let regexp = new RegExp(
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    )
-    return regexp.test(email)
-  }
+    );
+    return regexp.test(email);
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+    event.preventDefault();
     if (isEmailValid()) {
-      let emailResponse = await AlphaService.requestAccess(email)
+      let emailResponse = await AlphaService.requestAccess(email);
       if (emailResponse) {
-        changePage(3)
+        changePage(3);
       } else {
         setErrorMessage(
           'We are not able to process your request at moment. Please try again later'
-        )
+        );
       }
     } else {
-      setErrorMessage('Your email address is invalid')
+      setErrorMessage('Your email address is invalid');
     }
-  }
+  };
 
   const continueAction = async () => {
     if (await isAccessCodeValid()) {
-      AlphaService.addInviteCodeToLocal(accessCode)
-      history.push('/create-profile')
+      AlphaService.addInviteCodeToLocal(accessCode);
+      history.push('/create-profile');
     } else {
-      setErrorMessage('Invalid invite code')
+      setErrorMessage('Invalid invite code');
     }
-  }
+  };
 
   const goToTwitter = async () => {
-    window.location.href = `${process.env.REACT_APP_PROFILE_TWITTER}`
-  }
+    window.location.href = `${process.env.REACT_APP_PROFILE_TWITTER}`;
+  };
 
   const changePage = (newPage: number) => {
-    setEmail('')
-    setAccessCode('')
-    setErrorMessage('')
-    setPage(newPage)
-  }
+    setEmail('');
+    setAccessCode('');
+    setErrorMessage('');
+    setPage(newPage);
+  };
 
   const page1 = () => {
     return (
@@ -108,9 +108,9 @@ const AccessCodePage: React.FC = () => {
 
         <TextInput
           value={accessCode}
-          label=''
-          onChange={(n) => setAccessCode(n.toUpperCase())}
-          placeholder='Please enter your invite code here'
+          label=""
+          onChange={n => setAccessCode(n.toUpperCase())}
+          placeholder="Please enter your invite code here"
         />
 
         <AlphaButtonDefault onClick={continueAction}>
@@ -122,18 +122,18 @@ const AccessCodePage: React.FC = () => {
         <p>
           No invite yet? You can still request one!{' '}
           <a
-            href='#'
-            onClick={(event) => {
-              event.preventDefault()
-              changePage(2)
+            href="#"
+            onClick={event => {
+              event.preventDefault();
+              changePage(2);
             }}
           >
             Join the wait list
           </a>
         </p>
       </div>
-    )
-  }
+    );
+  };
 
   const page2 = () => {
     return (
@@ -145,30 +145,30 @@ const AccessCodePage: React.FC = () => {
         <form className={style['div-input']} onSubmit={handleSubmit}>
           <TextInput
             value={email}
-            label='Email address'
-            onChange={(n) => setEmail(n)}
-            placeholder='Please enter your e-mail'
+            label="Email address"
+            onChange={n => setEmail(n)}
+            placeholder="Please enter your e-mail"
           />
 
-          <AlphaButtonDefault type='submit'>Continue</AlphaButtonDefault>
+          <AlphaButtonDefault type="submit">Continue</AlphaButtonDefault>
         </form>
         {messageDiv()}
 
         <p>
           Have invite code?{' '}
           <a
-            href='#'
-            onClick={(event) => {
-              event.preventDefault()
-              changePage(1)
+            href="#"
+            onClick={event => {
+              event.preventDefault();
+              changePage(1);
             }}
           >
             Enter code
           </a>
         </p>
       </div>
-    )
-  }
+    );
+  };
 
   const page3 = () => {
     return (
@@ -189,17 +189,17 @@ const AccessCodePage: React.FC = () => {
 
         <p>Note: You may close this window.</p>
       </div>
-    )
-  }
+    );
+  };
 
   const showPage = () => {
-    if (page == 2) return page2()
-    if (page == 3) return page3()
+    if (page === 2) return page2();
+    if (page === 3) return page3();
 
-    return page1()
-  }
+    return page1();
+  };
 
-  return <AlphaContent>{showPage()}</AlphaContent>
-}
+  return <AlphaContent>{showPage()}</AlphaContent>;
+};
 
-export default AccessCodePage
+export default AccessCodePage;

@@ -10,7 +10,7 @@ import styled from 'styled-components';
 
 import { EducationItem } from 'src/pages/PublicPage/types';
 import SmallTextInput from '../../inputs/SmallTextInput';
-import { MyTextarea, MyGrid } from '../ExperienceCard/components';
+import { MyTextarea, MyGrid } from '../ExperienceCard/Item';
 
 interface EducationItemProps {
   educationItem: EducationItem;

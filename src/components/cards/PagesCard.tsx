@@ -37,7 +37,7 @@ const PagesCard: React.FC<IProps> = ({
   isSearchKeywordDID,
   size = '12'
 }: IProps) => {
-  const perPage = parseInt(size) / 12 == 1 ? 4 : 8;
+  const perPage = parseInt(size) / 12 === 1 ? 4 : 8;
   const totalPages = pages && pages.items ? pages.items.length / perPage : 1;
 
   const [pagesPageOffset, setPagesPageOffset] = useState(0);
@@ -49,7 +49,7 @@ const PagesCard: React.FC<IProps> = ({
       pages.items
         .slice(pagesPageOffset, pagesPageOffset + perPage)
         .map((p, index) =>
-          pageItem(p, index, parseInt(size) / 12 == 1 ? '100%' : '50%')
+          pageItem(p, index, parseInt(size) / 12 === 1 ? '100%' : '50%')
         );
 
     setListPages(listPagesLocal);
@@ -64,7 +64,7 @@ const PagesCard: React.FC<IProps> = ({
 
   return (
     <IonCol
-      size={(parseInt(size) / 12 == 1 ? parseInt(size) / 2 : 12).toString()}
+      size={(parseInt(size) / 12 === 1 ? parseInt(size) / 2 : 12).toString()}
       className={style['pages']}
     >
       <IonCard className={style['tab-card']}>

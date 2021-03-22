@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from 'react';
 
-import { IonSpinner, IonContent } from '@ionic/react';
 import styled from 'styled-components';
 import ProfileComponent from '../profile/ProfileComponent';
-import {
-  AccountType,
-  ISessionItem,
-  UserService
-} from 'src/services/user.service';
-import {
-  EducationItem,
-  ExperienceItem,
-  ProfileDTO
-} from 'src/pages/PublicPage/types';
+import { ISessionItem, UserService } from 'src/services/user.service';
+import { ProfileDTO } from 'src/pages/PublicPage/types';
 
-import ProfileHeader from '../profile/ProfileHeader';
+// import ProfileHeader from '../profile/ProfileHeader';
 import style from './style.module.scss';
 import arrowLeft from '../../assets/icons/arrow-left-square.svg';
-import { ProfileService } from 'src/services/profile.service';
+// import { ProfileService } from 'src/services/profile.service';
+import {
+  ProfileService,
+  defaultUserInfo,
+  defaultFullProfile
+} from 'src/services/profile.service';
 
 const Header = styled.div`
     width: 100%;
@@ -60,43 +56,8 @@ interface ExploreProfileParams {
 const ExploreProfileComponent: React.FC<ExploreProfileParams> = ({
   did
 }: ExploreProfileParams) => {
-  const [userInfo, setUserInfo] = useState({
-    accountType: AccountType.DID,
-    did: '',
-    name: '',
-    hiveHost: '',
-    email: '',
-    userToken: '',
-    isDIDPublished: false,
-    onBoardingCompleted: false,
-    avatar: ''
-  });
-  const [full_profile, setfull_profile] = useState({
-    basicDTO: {
-      isEnabled: false,
-      name: '',
-      did: '',
-      title: '',
-      email: '',
-      hiveHost: '',
-      about: '',
-      address: {
-        number: '',
-        street_name: '',
-        postal_code: '',
-        state: '',
-        country: ''
-      }
-    },
-    educationDTO: {
-      isEnabled: false,
-      items: [] as EducationItem[]
-    },
-    experienceDTO: {
-      isEnabled: false,
-      items: [] as ExperienceItem[]
-    }
-  });
+  const [userInfo, setUserInfo] = useState(defaultUserInfo);
+  const [full_profile, setfull_profile] = useState(defaultFullProfile);
 
   useEffect(() => {
     (async () => {

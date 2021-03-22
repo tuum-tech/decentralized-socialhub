@@ -20,7 +20,7 @@ export class AlphaService {
       !scriptResponse.isSuccess ||
       !scriptResponse.response.requeststatus ||
       !scriptResponse.response.requeststatus.items ||
-      scriptResponse.response.requeststatus.items.length == 0
+      scriptResponse.response.requeststatus.items.length === 0
     ) {
       return false;
     }

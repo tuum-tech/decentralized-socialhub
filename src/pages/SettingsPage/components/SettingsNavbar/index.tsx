@@ -1,16 +1,17 @@
-import { useHistory } from 'react-router-dom'
-import React, { useState } from 'react'
-import { IonContent, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react'
-import style from './style.module.scss'
-import { UserService } from 'src/services/user.service'
+import { useHistory } from 'react-router-dom';
+import React, { useState } from 'react';
+import { IonContent, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react';
+import { UserService } from 'src/services/user.service';
+
+import style from './style.module.scss';
 
 interface Props {
-  tab?: string
+  tab?: string;
 }
 
 const SettingsNavbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
-  const [active, setActive] = useState(tab)
-  const history = useHistory()
+  const [active, setActive] = useState(tab);
+  const history = useHistory();
 
   return (
     <IonContent>
@@ -23,8 +24,8 @@ const SettingsNavbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
             onClick={() => setActive('dashboard')}
           >
             <IonIcon
-              slot='start'
-              src='../../assets/icon_dashboard.svg'
+              slot="start"
+              src="../../assets/icon_dashboard.svg"
               className={style['img']}
             ></IonIcon>
             <IonLabel>
@@ -40,8 +41,8 @@ const SettingsNavbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
             onClick={() => setActive('profile_manager')}
           >
             <IonIcon
-              slot='start'
-              src='../../assets/icon_profile_manager.svg'
+              slot="start"
+              src="../../assets/icon_profile_manager.svg"
               className={style['img']}
             ></IonIcon>
             <IonLabel>
@@ -57,8 +58,8 @@ const SettingsNavbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
             onClick={() => setActive('connections')}
           >
             <IonIcon
-              slot='start'
-              src='../../assets/icon_connections.svg'
+              slot="start"
+              src="../../assets/icon_connections.svg"
               className={style['img']}
             ></IonIcon>
             <IonLabel>
@@ -70,13 +71,13 @@ const SettingsNavbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
               active === 'search' ? style['item-active'] : style['item-link']
             }
             onClick={() => {
-              setActive('search')
-              history.push('/explore')
+              setActive('search');
+              history.push('/explore');
             }}
           >
             <IonIcon
-              slot='start'
-              src='../../assets/icon_search.svg'
+              slot="start"
+              src="../../assets/icon_search.svg"
               className={style['img']}
             ></IonIcon>
             <IonLabel>
@@ -89,13 +90,13 @@ const SettingsNavbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
               active === 'settings' ? style['item-active'] : style['item-link']
             }
             onClick={() => {
-              setActive('settings')
-              history.push('/settings')
+              setActive('settings');
+              history.push('/settings');
             }}
           >
             <IonIcon
-              slot='start'
-              src='../../assets/icon_settings.svg'
+              slot="start"
+              src="../../assets/icon_settings.svg"
               className={style['img']}
             ></IonIcon>
             <IonLabel>
@@ -111,8 +112,8 @@ const SettingsNavbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
             onClick={() => setActive('notifications')}
           >
             <IonIcon
-              slot='start'
-              src='../../assets/icon_notifications.svg'
+              slot="start"
+              src="../../assets/icon_notifications.svg"
               className={style['img']}
             ></IonIcon>
             <IonLabel>
@@ -122,12 +123,12 @@ const SettingsNavbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           <IonItem
             className={style['item-link']}
             onClick={async () => {
-              await UserService.logout()
+              await UserService.logout();
             }}
           >
             <IonIcon
-              slot='start'
-              src='../../assets/sign-out.svg'
+              slot="start"
+              src="../../assets/sign-out.svg"
               className={style['img']}
             ></IonIcon>
             <IonLabel>
@@ -146,7 +147,7 @@ const SettingsNavbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           <img src="../../assets/icon_notifications.svg" /> Notifications<br />           */}
       </div>
     </IonContent>
-  )
-}
+  );
+};
 
-export default SettingsNavbar
+export default SettingsNavbar;

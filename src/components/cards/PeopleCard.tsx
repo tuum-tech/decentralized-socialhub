@@ -6,15 +6,14 @@ import {
   IonCardTitle,
   IonCol
 } from '@ionic/react';
-import style from './PeopleCard.module.scss';
-import { PeopleDTO, FollowingDTO } from '../search/types';
-import DidCard from './DidCard';
 import ReactPaginate from 'react-paginate';
-import {
-  AccountType,
-  ISessionItem,
-  UserService
-} from 'src/services/user.service';
+
+import { ISessionItem, UserService } from 'src/services/user.service';
+import { defaultUserInfo } from 'src/services/profile.service';
+
+import style from './PeopleCard.module.scss';
+import DidCard from './DidCard';
+import { PeopleDTO, FollowingDTO } from '../search/types';
 
 interface IProps {
   people?: PeopleDTO;
@@ -54,25 +53,12 @@ const PeopleCard: React.FC<IProps> = ({
   showHeader = true,
   size = '12'
 }: IProps) => {
-  const perPage = parseInt(size) / 12 == 1 ? 4 : 8;
+  const perPage = parseInt(size) / 12 === 1 ? 4 : 8;
   const totalPages = people && people.items ? people.items.length / perPage : 1;
 
   const [peoplePageOffset, setPeoplePageOffset] = useState(0);
   const [listPeople, setListPeople] = useState<any[]>([]);
-
-  const [userInfo, setUserInfo] = useState<ISessionItem>({
-    hiveHost: '',
-    userToken: '',
-    accountType: AccountType.DID,
-    did: '',
-    email: '',
-    name: '',
-    isDIDPublished: false,
-    mnemonics: '',
-    passhash: '',
-    onBoardingCompleted: false,
-    tutorialStep: 1
-  });
+  const [userInfo, setUserInfo] = useState<ISessionItem>(defaultUserInfo);
 
   useEffect(() => {
     (async () => {
@@ -105,7 +91,7 @@ const PeopleCard: React.FC<IProps> = ({
             isFollowing(p.did),
             index,
             userInfo,
-            parseInt(size) / 12 == 1 ? '100%' : '50%'
+            parseInt(size) / 12 === 1 ? '100%' : '50%'
           )
         );
 
@@ -121,7 +107,7 @@ const PeopleCard: React.FC<IProps> = ({
 
   return (
     <IonCol
-      size={(parseInt(size) / 12 == 1 ? parseInt(size) / 2 : 12).toString()}
+      size={(parseInt(size) / 12 === 1 ? parseInt(size) / 2 : 12).toString()}
       className={style['people']}
     >
       <IonCard className={style['tab-card']}>

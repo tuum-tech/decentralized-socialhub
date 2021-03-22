@@ -29,7 +29,7 @@ const PublicProfileNav: React.FC<IProps> = ({
       <IonList className={style['tab-list']}>
         <IonItem
           className={
-            (active == 'about' ? style['tab-active'] : '') +
+            (active === 'about' ? style['tab-active'] : '') +
             ' ' +
             style['tab-item']
           }
@@ -42,7 +42,7 @@ const PublicProfileNav: React.FC<IProps> = ({
         </IonItem>
         <IonItem
           className={
-            (active == 'experience' ? style['tab-active'] : '') +
+            (active === 'experience' ? style['tab-active'] : '') +
             ' ' +
             style['tab-item']
           }
@@ -55,7 +55,7 @@ const PublicProfileNav: React.FC<IProps> = ({
         </IonItem>
         <IonItem
           className={
-            (active == 'education' ? style['tab-active'] : '') +
+            (active === 'education' ? style['tab-active'] : '') +
             ' ' +
             style['tab-item']
           }

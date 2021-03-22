@@ -1,17 +1,12 @@
 /**
  * Page
  */
-import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { createStructuredSelector } from 'reselect';
-import injector from 'src/baseplate/injectorWrap';
-import { matchPath, RouteComponentProps } from 'react-router';
-import React, { memo } from 'react';
+import { IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
+import { RouteComponentProps } from 'react-router';
+import React from 'react';
 import style from './style.module.scss';
-import { NameSpace } from './constants';
 import Logo from 'src/components/Logo';
-import Navbar from 'src/components/layouts/Navbar';
+import DashboardNavBar from 'src/components/layouts/Navbar/DashboardNavbar';
 import SearchComponent from 'src/components/search/SearchComponent';
 import ExploreProfileComponent from 'src/components/ExploreProfileComponent';
 
@@ -28,7 +23,7 @@ const ExplorePage: React.FC<RouteComponentProps<MatchParams>> = (
         <IonRow className={style['profilecontent']}>
           <IonCol size="2" className={style['left-panel']}>
             <Logo />
-            <Navbar tab="explore" />
+            <DashboardNavBar />
           </IonCol>
           <IonCol size="10" className={style['right-panel']}>
             {props.match.params.did === undefined ? (

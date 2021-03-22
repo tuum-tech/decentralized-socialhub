@@ -1,45 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { IonContent, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react';
 
-import {
-  AccountType,
-  ISessionItem,
-  UserService
-} from 'src/services/user.service';
+import { ISessionItem, UserService } from 'src/services/user.service';
+import { defaultUserInfo } from 'src/services/profile.service';
 
 import style from './style.module.scss';
 
-interface Props {
-  tab?: string;
-}
-
-const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
-  const [active, setActive] = useState(tab);
+const Navbar: React.FC = ({}) => {
   const history = useHistory();
-
-  const [userInfo, setUserInfo] = useState<ISessionItem>({
-    hiveHost: '',
-    userToken: '',
-    accountType: AccountType.DID,
-    did: '',
-    email: '',
-    name: '',
-    isDIDPublished: false,
-    mnemonics: '',
-    passhash: '',
-    onBoardingCompleted: false,
-    tutorialStep: 1
-  });
-
-  useEffect(() => {
-    (async () => {
-      let instance = UserService.GetUserSession();
-      if (!instance || !instance.userToken) return;
-
-      setUserInfo(instance);
-    })();
-  }, []);
+  const [userInfo, setUserInfo] = useState<ISessionItem>(
+    UserService.GetUserSession() || defaultUserInfo
+  );
 
   return (
     <IonContent>
@@ -47,12 +19,12 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
         <IonList>
           <IonItem
             className={
-              active === 'dashboard' ? style['item-active'] : style['item-link']
+              // active === 'dashboard'
+              history.location.pathname === '/profile'
+                ? style['item-active']
+                : style['item-link']
             }
-            onClick={() => {
-              setActive('dashboard');
-              history.push('/profile');
-            }}
+            onClick={async () => history.push('/profile')}
           >
             <IonIcon
               slot="start"
@@ -65,14 +37,12 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           </IonItem>
           <IonItem
             className={
-              active === 'profile_manager'
+              // active === 'profile_manager'
+              history.location.pathname === '/manager'
                 ? style['item-active']
                 : style['item-link']
             }
-            onClick={() => {
-              setActive('profile_manager');
-              history.push('/manager');
-            }}
+            onClick={async () => history.push('/manager')}
           >
             <IonIcon
               slot="start"
@@ -86,15 +56,14 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           <IonItem
             disabled={userInfo.tutorialStep !== 4}
             className={
-              active === 'connections-followers' ||
-              active === 'connections-followings'
+              // active === 'connections-followers' ||
+              // active === 'connections-followings'
+              history.location.pathname === '/connections/followers' ||
+              history.location.pathname === '/connections/followings'
                 ? style['item-active']
                 : style['item-link']
             }
-            onClick={() => {
-              setActive('connections-followers');
-              history.push('/connections/followers');
-            }}
+            onClick={async () => history.push('/connections/followers')}
           >
             <IonIcon
               slot="start"
@@ -117,24 +86,18 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
             </IonLabel>
           </IonItem>
 
-          {['connections-followers', 'connections-followings'].some(function(
-            v
-          ) {
-            return active.indexOf(v) >= 0;
-          }) && (
+          {history.location.pathname.includes('/connections/') && (
             <>
               <IonItem
                 className={
-                  active === 'connections-followers'
+                  // active === 'connections-followers'
+                  history.location.pathname === '/connections/followers'
                     ? style['item-active'] +
                       ' ' +
                       style['item-connections-active']
                     : style['item-link'] + ' ' + style['item-connections-link']
                 }
-                onClick={() => {
-                  setActive('connections-followers');
-                  history.push('/connections/followers');
-                }}
+                onClick={async () => history.push('/connections/followers')}
               >
                 <IonIcon
                   slot="start"
@@ -147,16 +110,14 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
               </IonItem>
               <IonItem
                 className={
-                  active === 'connections-followings'
+                  // active === 'connections-followings'
+                  history.location.pathname === '/connections/followings'
                     ? style['item-active'] +
                       ' ' +
                       style['item-connections-active']
                     : style['item-link'] + ' ' + style['item-connections-link']
                 }
-                onClick={() => {
-                  setActive('connections-followings');
-                  history.push('/connections/followings');
-                }}
+                onClick={async () => history.push('/connections/followings')}
               >
                 <IonIcon
                   slot="start"
@@ -172,12 +133,12 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
 
           <IonItem
             className={
-              active === 'search' ? style['item-active'] : style['item-link']
+              // active === 'search' ?
+              history.location.pathname === '/explore'
+                ? style['item-active']
+                : style['item-link']
             }
-            onClick={() => {
-              setActive('search');
-              history.push('/explore');
-            }}
+            onClick={async () => history.push('/explore')}
           >
             <IonIcon
               slot="start"
@@ -191,12 +152,12 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           <hr className={style['divider']} />
           <IonItem
             className={
-              active === 'settings' ? style['item-active'] : style['item-link']
+              // active === 'settings'
+              history.location.pathname === '/settings'
+                ? style['item-active']
+                : style['item-link']
             }
-            onClick={() => {
-              setActive('settings');
-              history.push('/settings');
-            }}
+            onClick={async () => history.push('/settings')}
           >
             <IonIcon
               slot="start"
@@ -209,11 +170,12 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           </IonItem>
           <IonItem
             className={
-              active === 'notifications'
+              // active === 'notifications'
+              history.location.pathname === '/notifications'
                 ? style['item-active']
                 : style['item-link']
             }
-            onClick={() => setActive('notifications')}
+            onClick={() => history.push('/notifications')} // should be fixed later
           >
             <IonIcon
               slot="start"
@@ -226,8 +188,8 @@ const Navbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           </IonItem>
           <IonItem
             className={style['item-link']}
-            onClick={async () => {
-              await UserService.logout();
+            onClick={() => {
+              UserService.logout();
             }}
           >
             <IonIcon
