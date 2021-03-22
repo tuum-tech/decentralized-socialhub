@@ -84,8 +84,6 @@ const ProfilePage = () => {
         userSession.tutorialStep === 4 &&
         !willExpire
       ) {
-        // await retriveProfile();
-
         setWillExpire(true);
         setTimeout(() => {
           UserService.logout();
@@ -97,7 +95,15 @@ const ProfilePage = () => {
 
   useEffect(() => {
     (async () => {
-      if (history.location.pathname === '/profile') {
+      let userSession = UserService.GetUserSession();
+      if (
+        !userSession ||
+        userSession.tutorialStep ||
+        userSession.tutorialStep !== 4 ||
+        !userSession.onBoardingCompleted
+      ) {
+        return;
+      } else if (history.location.pathname === '/profile') {
         await retriveProfile();
       }
     })();

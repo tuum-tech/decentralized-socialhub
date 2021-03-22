@@ -8,7 +8,7 @@ import style from './style.module.scss';
 import Logo from 'src/components/Logo';
 import DashboardNavBar from 'src/components/layouts/Navbar/DashboardNavbar';
 import SearchComponent from 'src/components/search/SearchComponent';
-import ExploreProfileComponent from 'src/components/ExploreProfileComponent';
+import ExploreProfileComponent from './components/ExploreProfileComponent';
 
 interface MatchParams {
   did: string;

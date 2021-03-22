@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IonItem, IonList } from '@ionic/react';
+import { IonItem, IonList, IonSpinner } from '@ionic/react';
 import style from './DidCard.module.scss';
 import SkeletonAvatar from '../avatars/SkeletonAvatar';
 import { ProfileService } from 'src/services/profile.service';
@@ -30,14 +30,19 @@ const DidCard: React.FC<Props> = ({
   type = 'user'
 }) => {
   const [isFollowing, setIsFollowing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const followDid = async (did: string) => {
+    setLoading(true);
     await ProfileService.addFollowing(did);
     setIsFollowing(true);
+    setLoading(false);
   };
 
   const unfollowDid = async (did: string) => {
+    setLoading(true);
     await ProfileService.unfollow(did);
     setIsFollowing(false);
+    setLoading(false);
   };
 
   const getLink = (did: string) => {
@@ -54,6 +59,7 @@ const DidCard: React.FC<Props> = ({
       style={{ width: colSize, display: 'inline-block' }}
       key={indexItem}
     >
+      {/* {loading && <LoadingIndicator loadingText="Creating new profie now..." />} */}
       <IonItem className={style['badge-item']}>
         <div>
           <SkeletonAvatar />
@@ -74,7 +80,19 @@ const DidCard: React.FC<Props> = ({
         </div>
         {type === 'user' && sessionItem.tutorialStep === 4 && (
           <div className={style['card-link']}>
-            {isFollowing && (
+            {loading && (
+              <span className={style['card-link-inner']}>
+                <IonSpinner
+                  color="#007bff"
+                  style={{
+                    width: '1rem',
+                    height: '1rem'
+                  }}
+                />
+                <span>Wait a while...</span>
+              </span>
+            )}
+            {!loading && isFollowing && (
               <span
                 className={style['card-link-inner']}
                 onClick={() => unfollowDid(did)}
@@ -83,7 +101,7 @@ const DidCard: React.FC<Props> = ({
               </span>
             )}
 
-            {!isFollowing && (
+            {!loading && !isFollowing && (
               <span
                 className={style['card-link-inner']}
                 onClick={() => followDid(did)}

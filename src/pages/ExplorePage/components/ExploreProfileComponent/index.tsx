@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react';
-
 import styled from 'styled-components';
-import ProfileComponent from '../profile/ProfileComponent';
+
+import ProfileComponent from 'src/components/profile/ProfileComponent';
 import { ISessionItem, UserService } from 'src/services/user.service';
 import { ProfileDTO } from 'src/pages/PublicPage/types';
-
-// import ProfileHeader from '../profile/ProfileHeader';
-import style from './style.module.scss';
-import arrowLeft from '../../assets/icons/arrow-left-square.svg';
-// import { ProfileService } from 'src/services/profile.service';
 import {
   ProfileService,
   defaultUserInfo,
   defaultFullProfile
 } from 'src/services/profile.service';
+import arrowLeft from '../../../../assets/icons/arrow-left-square.svg';
+
+import style from './style.module.scss';
 
 const Header = styled.div`
     width: 100%;
@@ -89,7 +87,6 @@ const ExploreProfileComponent: React.FC<ExploreProfileParams> = ({
         <ArrowLeft onClick={() => (window.location.href = '/explore')} />
         <PageTitle>Explore</PageTitle>
       </Header>
-
       <ProfileComponent
         profile={full_profile}
         sessionItem={userInfo as ISessionItem}

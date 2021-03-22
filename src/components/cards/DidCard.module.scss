@@ -110,6 +110,12 @@
       &:hover {
         background: #f7fafc;
       }
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      span {
+        margin-left: 1rem;
+      }
     }
   }
 }
