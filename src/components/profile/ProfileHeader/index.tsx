@@ -11,6 +11,8 @@ import styled from 'styled-components';
 import SkeletonAvatar from 'src/components/avatars/SkeletonAvatar';
 import ProfileName from '../ProfileName';
 import style from './style.module.scss';
+import DidSnippet from 'src/components/layouts/LoggedHeader/DidSnippet';
+import defaultAdamAvatar from 'src/assets/icon/defaultAdamAvatar.png';
 
 const SignInButton = styled(IonRouterLink)`
   width: 140px;
@@ -81,7 +83,8 @@ const ProfileHeader: React.FC<IProps> = ({
             {user && user.avatar ? (
               <Avatar avatar={user.avatar as string} mode="big" />
             ) : (
-              'avatar'
+              // <Avatar avatar={user.avatar as string} mode="big" />
+              <img src={defaultAdamAvatar} alt="default avatar" />
             )}
           </AvatarBox>
         </IonCol>
@@ -90,6 +93,11 @@ const ProfileHeader: React.FC<IProps> = ({
           <IonGrid>
             <IonRow>
               <ProfileName>{user ? user.name : ''}</ProfileName>
+            </IonRow>
+            <IonRow className="ion-justify-content-start">
+              <IonCol>
+                <DidSnippet did={user.did} />
+              </IonCol>
             </IonRow>
           </IonGrid>
         </IonCol>

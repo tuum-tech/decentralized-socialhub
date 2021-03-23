@@ -123,7 +123,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 
         <ContentRow className="ion-justify-content-around">
           <IonCol size="9">
-            {userInfo && userInfo.did !== '' ? (
+            {!loading && userInfo && userInfo.did !== '' ? (
               <ProfileComponent
                 profile={full_profile}
                 sessionItem={userInfo as any}

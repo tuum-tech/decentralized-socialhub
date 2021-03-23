@@ -321,11 +321,11 @@ export const defaultFullProfile = {
     }
   },
   educationDTO: {
-    isEnabled: true,
+    isEnabled: false,
     items: [] as EducationItem[]
   },
   experienceDTO: {
-    isEnabled: true,
+    isEnabled: false,
     items: [] as ExperienceItem[]
   }
 };
