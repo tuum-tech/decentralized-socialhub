@@ -70,7 +70,6 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   useEffect(() => {
     (async () => {
       try {
-        debugger;
         let userInfo = await UserService.SearchUserWithDID(did);
         setUserInfo(userInfo as any);
       } catch (e) {
@@ -82,7 +81,6 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
           | ProfileDTO
           | undefined = await ProfileService.getFullProfile(did);
         if (profile) {
-          debugger;
           profile.basicDTO.isEnabled = true;
           profile.experienceDTO.isEnabled = true;
           profile.educationDTO.isEnabled = true;
