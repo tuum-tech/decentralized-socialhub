@@ -34,8 +34,7 @@ let generateUserVerifiablePresentation = async (
 
 let getApplicationDIDDocument = async (appDid) => {
   let document = ElastosClient.didDocuments.newDIDDocument(appDid);
-  ElastosClient.didDocuments.sealDocument(appDid, document);
-  return document;
+  return ElastosClient.didDocuments.sealDocument(appDid, document);
 };
 
 module.exports.testHelper = {
