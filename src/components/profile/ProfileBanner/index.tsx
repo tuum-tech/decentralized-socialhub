@@ -12,9 +12,9 @@ const ProfileBanner: React.FC<IProps> = ({ mode }: IProps) => {
   return (
     <>
       {mode === 'sticky' ? (
-        <BannerEmpty className={style['banner']}>Blockchain</BannerEmpty>
+        <BannerEmpty className={style['banner']}></BannerEmpty>
       ) : (
-        <Banner className={style['banner']}>Blockchain</Banner>
+        <Banner className={style['banner']}></Banner>
       )}
     </>
   );

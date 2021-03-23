@@ -95,14 +95,16 @@ const ProfilePage = () => {
   useEffect(() => {
     (async () => {
       let userSession = UserService.GetUserSession();
+      debugger;
       if (
         !userSession ||
-        userSession.tutorialStep ||
+        !userSession.tutorialStep ||
         userSession.tutorialStep !== 4 ||
         !userSession.onBoardingCompleted
       ) {
         return;
       } else if (history.location.pathname === '/profile') {
+        debugger;
         await retriveProfile();
       }
     })();

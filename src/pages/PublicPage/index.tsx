@@ -70,6 +70,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   useEffect(() => {
     (async () => {
       try {
+        debugger;
         let userInfo = await UserService.SearchUserWithDID(did);
         setUserInfo(userInfo as any);
       } catch (e) {
@@ -81,6 +82,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
           | ProfileDTO
           | undefined = await ProfileService.getFullProfile(did);
         if (profile) {
+          debugger;
           profile.basicDTO.isEnabled = true;
           profile.experienceDTO.isEnabled = true;
           profile.educationDTO.isEnabled = true;
@@ -123,7 +125,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 
         <ContentRow className="ion-justify-content-around">
           <IonCol size="9">
-            {userInfo && userInfo.did !== '' ? (
+            {!loading && userInfo && userInfo.did !== '' ? (
               <ProfileComponent
                 profile={full_profile}
                 sessionItem={userInfo as any}

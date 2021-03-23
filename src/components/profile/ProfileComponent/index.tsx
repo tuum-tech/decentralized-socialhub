@@ -27,7 +27,6 @@ const ProfileComponent: React.FC<IPropsSession> = ({
   sessionItem,
   error
 }: IPropsSession) => {
-  const [scrolled, setScrolled] = useState(false);
   const [scrollTop, setScrollTop] = useState(0);
   const [mode, setMode] = useState('normal');
 
@@ -85,76 +84,58 @@ const ProfileComponent: React.FC<IPropsSession> = ({
           error={error}
         />
 
-        {/* <span>{scrollTop}</span> */}
         {profile.basicDTO.isEnabled === true ? (
-          <PublicProfileNav
-            mode={mode}
-            profile={profile}
-            scrollToPosition={scrollToElement}
-          />
+          <>
+            <PublicProfileNav
+              mode={mode}
+              profile={profile}
+              scrollToPosition={scrollToElement}
+            />
+            <IonGrid className={style['scroll']}>
+              <IonRow className="ion-justify-content-center">
+                <IonCol size="12">
+                  <IonGrid>
+                    <IonRow>
+                      <IonCol size="9">
+                        <div ref={aboutRef}>
+                          <AboutCard
+                            aboutText={profile.basicDTO.about}
+                            mode="read"
+                          />
+                        </div>
+                        <div ref={experienceRef}>
+                          <ExperienceCard
+                            experienceDTO={profile.experienceDTO}
+                            mode="read"
+                          />
+                        </div>
+                        <div ref={educationRef}>
+                          <EducationCard
+                            educationDTO={profile.educationDTO}
+                            mode="read"
+                          />
+                        </div>
+                      </IonCol>
+                      <IonCol size="3">
+                        <SocialProfiles />
+                        <FollowingList did={profile.basicDTO.did} />
+                        <FollowersWidget />
+                      </IonCol>
+                    </IonRow>
+                  </IonGrid>
+                </IonCol>
+              </IonRow>
+            </IonGrid>
+          </>
         ) : (
-          ''
+          <IonGrid>
+            <IonRow className="ion-justify-content-center">
+              <IonCol size="auto">
+                This user needs a little bit of work on his Profile
+              </IonCol>
+            </IonRow>
+          </IonGrid>
         )}
-        {/* </div> */}
-        <IonGrid className={style['scroll']}>
-          <IonRow className="ion-justify-content-center">
-            <IonCol size="12">
-              <IonGrid>
-                <IonRow>
-                  <IonCol size="9">
-                    {!error && profile.basicDTO.isEnabled === true ? (
-                      <div ref={aboutRef}>
-                        <AboutCard
-                          aboutText={profile.basicDTO.about}
-                          mode="read"
-                        />
-                      </div>
-                    ) : (
-                      ''
-                    )}
-                    {!error && profile.experienceDTO.isEnabled === true ? (
-                      <div ref={experienceRef}>
-                        <ExperienceCard
-                          experienceDTO={profile.experienceDTO}
-                          mode="read"
-                        />
-                      </div>
-                    ) : (
-                      ''
-                    )}
-                    {!error && profile.educationDTO.isEnabled === true ? (
-                      <div ref={educationRef}>
-                        <EducationCard
-                          educationDTO={profile.educationDTO}
-                          mode="read"
-                        />
-                      </div>
-                    ) : (
-                      ''
-                    )}
-                  </IonCol>
-                  <IonCol size="3">
-                    {!error && profile.basicDTO.isEnabled === true ? (
-                      <SocialProfiles />
-                    ) : (
-                      ''
-                    )}
-                    {!error && profile.basicDTO.isEnabled === true ? (
-                      <FollowingList did={profile.basicDTO.did} />
-                    ) : (
-                      ''
-                    )}
-                    {!error && profile.basicDTO.isEnabled === true ? (
-                      <FollowersWidget />
-                    ) : (
-                      ''
-                    )}
-                  </IonCol>
-                </IonRow>
-              </IonGrid>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
       </IonContent>
     </>
   );
