@@ -95,7 +95,6 @@ const ProfilePage = () => {
   useEffect(() => {
     (async () => {
       let userSession = UserService.GetUserSession();
-      debugger;
       if (
         !userSession ||
         !userSession.tutorialStep ||
@@ -104,7 +103,6 @@ const ProfilePage = () => {
       ) {
         return;
       } else if (history.location.pathname === '/profile') {
-        debugger;
         await retriveProfile();
       }
     })();
