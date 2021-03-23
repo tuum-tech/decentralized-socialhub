@@ -131,7 +131,7 @@ const ProfileComponent: React.FC<IPropsSession> = ({
           <IonGrid>
             <IonRow className="ion-justify-content-center">
               <IonCol size="auto">
-                This user needs a little bit of work on his Profile
+                The content of this profile is not currently viewable
               </IonCol>
             </IonRow>
           </IonGrid>

@@ -1,10 +1,10 @@
 {
   "name": "profile",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "dependencies": {
     "@elastos/elastos-hive-js-sdk": "github:elastos/Elastos.NET.Hive.JS.SDK",
-    "@elastosfoundation/elastos-js-sdk": "^1.2.7",
+    "@elastosfoundation/elastos-js-sdk": "1.2.7",
     "@sentry/react": "^6.2.2",
     "@sentry/tracing": "^6.2.2",
     "@types/styled-components": "^5.1.5",
