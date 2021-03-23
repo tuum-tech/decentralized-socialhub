@@ -38,7 +38,7 @@ export interface IFollowerItem {
 export class ProfileService {
   static async getFullProfile(did: string): Promise<ProfileDTO | undefined> {
     {
-      const hiveInstance = await HiveService.getSessionInstance();
+      const hiveInstance = await HiveService.getAppHiveClient();
       if (hiveInstance) {
         const fullProfileResponse: IRunScriptResponse<ProfileResponse> = await hiveInstance.Scripting.RunScript(
           {
