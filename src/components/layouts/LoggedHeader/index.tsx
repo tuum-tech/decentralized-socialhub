@@ -70,7 +70,7 @@ const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
     let userSession = UserService.GetUserSession();
     if (userSession) {
       userSession.isDIDPublished = true;
-      UserService.updateSession(userSession);
+      await UserService.updateSession(userSession);
       await DidDocumentService.reloadUserDocument();
     }
   };

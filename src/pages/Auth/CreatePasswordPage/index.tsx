@@ -67,7 +67,7 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
         isDIDPublished,
         mnemonics: '',
         passhash: '',
-        onBoardingCompleted: false,
+        onBoardingStep: 1,
         tutorialStep: 1
       });
     }

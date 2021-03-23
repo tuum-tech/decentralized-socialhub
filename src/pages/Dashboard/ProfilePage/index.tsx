@@ -48,7 +48,7 @@ const ProfilePage = () => {
   const [loadingText, setLoadingText] = useState('');
   const [userInfo, setUserInfo] = useState<ISessionItem>(defaultUserInfo);
   const [full_profile, setfull_profile] = useState(defaultFullProfile);
-  const [onboardingCompleted, setOnboardingStatus] = useState(true);
+  // const [onboardingCompleted, setOnboardingStatus] = useState(true);
   const history = useHistory();
 
   const retriveProfile = async () => {
@@ -76,10 +76,10 @@ const ProfilePage = () => {
       }
 
       setUserInfo(userSession);
-      setOnboardingStatus(userSession.onBoardingCompleted);
+      // setOnboardingStatus(userSession.onBoardingCompleted);
 
       if (
-        userSession.onBoardingCompleted &&
+        // userSession.onBoardingCompleted &&
         userSession.tutorialStep === 4 &&
         !willExpire
       ) {
@@ -97,9 +97,9 @@ const ProfilePage = () => {
       let userSession = UserService.GetUserSession();
       if (
         !userSession ||
-        userSession.tutorialStep ||
-        userSession.tutorialStep !== 4 ||
-        !userSession.onBoardingCompleted
+        userSession.tutorialStep !== 4
+        // ||
+        // !userSession.onBoardingCompleted
       ) {
         return;
       } else if (history.location.pathname === '/profile') {
@@ -108,27 +108,27 @@ const ProfilePage = () => {
     })();
   }, [history.location.pathname]);
 
-  if (!onboardingCompleted) {
-    return (
-      <OnBoarding
-        completed={async () => {
-          let user = UserService.GetUserSession();
-          if (!user) return;
+  // if (!onboardingCompleted) {
+  //   return (
+  //     <OnBoarding
+  //       completed={async () => {
+  //         let user = UserService.GetUserSession();
+  //         if (!user) return;
 
-          user.onBoardingCompleted = true;
-          await UserService.updateSession(user);
-          setOnboardingStatus(true);
-          if (!willExpire) {
-            setWillExpire(true);
-            setTimeout(() => {
-              UserService.logout();
-              window.location.href = '/';
-            }, ExporeTime);
-          }
-        }}
-      />
-    );
-  }
+  //         user.onBoardingCompleted = true;
+  //         await UserService.updateSession(user);
+  //         setOnboardingStatus(true);
+  //         if (!willExpire) {
+  //           setWillExpire(true);
+  //           setTimeout(() => {
+  //             UserService.logout();
+  //             window.location.href = '/';
+  //           }, ExporeTime);
+  //         }
+  //       }}
+  //     />
+  //   );
+  // }
 
   return (
     <IonPage>

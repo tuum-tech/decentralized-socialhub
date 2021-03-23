@@ -299,7 +299,7 @@ export const defaultUserInfo: ISessionItem = {
   isDIDPublished: false,
   mnemonics: '',
   passhash: '',
-  onBoardingCompleted: false,
+  onBoardingStep: 1,
   tutorialStep: 1
 };
 

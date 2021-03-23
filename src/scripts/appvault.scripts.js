@@ -251,7 +251,7 @@ let run = async () => {
             userToken: '$params.userToken',
             accountType: '$params.accountType',
             tutorialStep: '$params.tutorialStep',
-            onBoardingCompleted: '$params.onBoardingCompleted'
+            onBoardingStep: '$params.onBoardingStep'
           }
         }
       }

@@ -141,7 +141,7 @@ export class UserService {
 
     const res = await this.SearchUserWithDID(sessionItem.did);
     if (res) {
-      newSessionItem.onBoardingCompleted = res.onBoardingCompleted;
+      newSessionItem.onBoardingStep = res.onBoardingStep;
       newSessionItem.tutorialStep = res.tutorialStep;
     }
 
@@ -175,7 +175,7 @@ export class UserService {
           email: userData.email,
           userToken: userData.userToken,
           isDIDPublished: isDIDPublished ? isDIDPublished : false,
-          onBoardingCompleted: userData.onBoardingCompleted,
+          onBoardingStep: userData.onBoardingStep,
           avatar: userData.avatar,
           tutorialStep: userData.tutorialStep
         };
@@ -202,12 +202,12 @@ export class UserService {
     let sessionItem: ISessionItem;
 
     let did = newDidStr;
-    let mnemonic = newMnemonicStr;
+    let mnemonics = newMnemonicStr;
 
     if (!did || did === '') {
       const newDid = await this.generateTemporaryDID(service, credential);
       did = newDid.did;
-      mnemonic = newDid.mnemonic;
+      mnemonics = newDid.mnemonic;
     }
 
     var passhash = CryptoJS.SHA256(did + storePassword).toString(
@@ -217,44 +217,32 @@ export class UserService {
     const res = await this.SearchUserWithDID(did);
 
     sessionItem = {
-      did: did,
-      accountType: service,
-      isDIDPublished: await DidService.isDIDPublished(did),
-      name,
       hiveHost:
         hiveHostStr === ''
           ? `${process.env.REACT_APP_TUUM_TECH_HIVE}`
           : hiveHostStr,
       userToken: token,
-      mnemonics: mnemonic,
-      passhash: passhash,
-      email: email,
-      onBoardingCompleted: res ? res.onBoardingCompleted : false,
-      tutorialStep: res ? res.tutorialStep : 1
+      accountType: service,
+      did,
+      name,
+      email,
+      isDIDPublished: await DidService.isDIDPublished(did),
+      mnemonics,
+      passhash,
+      onBoardingStep: res ? res.onBoardingStep : 1,
+      tutorialStep: res ? res.tutorialStep : 1,
+      code: credential ? credential : ''
     };
 
     // add new user to the tuum.tech vault
     if (service === AccountType.Email) {
-      await TuumTechScriptService.updateUserDidInfo({
-        email: email,
-        code: credential,
-        did: did,
-        hiveHost: sessionItem.hiveHost,
-        accountType: service,
-        userToken: token,
-        tutorialStep: sessionItem.tutorialStep,
-        onBoardingCompleted: sessionItem.onBoardingCompleted
-      });
+      await TuumTechScriptService.updateUserDidInfo(sessionItem);
     } else {
       await TuumTechScriptService.addUserToTuumTech({
-        name,
-        email: email,
-        status: 'CONFIRMED',
-        code: '1',
-        did: did,
-        hiveHost: sessionItem.hiveHost,
-        accountType: service,
-        userToken: token
+        ...sessionItem,
+        email,
+        code: 'emailconfirmedcode',
+        status: 'CONFIRMED'
       });
     }
 
@@ -273,14 +261,9 @@ export class UserService {
 
     let code = userData.data['get_user_by_did']['items'][0].code;
     await TuumTechScriptService.updateUserDidInfo({
+      ...sessionItem,
       email: sessionItem.email!,
-      code: code,
-      did: sessionItem.did,
-      hiveHost: sessionItem.hiveHost,
-      accountType: sessionItem.accountType,
-      userToken: sessionItem.userToken,
-      tutorialStep: sessionItem.tutorialStep,
-      onBoardingCompleted: sessionItem.onBoardingCompleted
+      code: code
     });
 
     this.lockUser(this.key(sessionItem.did), sessionItem);
@@ -298,7 +281,7 @@ export class UserService {
     if (!res) {
       alertError(null, 'User not find with this DID');
     } else if (instance) {
-      instance.onBoardingCompleted = res.onBoardingCompleted;
+      instance.onBoardingStep = res.onBoardingStep;
       instance.tutorialStep = res.tutorialStep;
       this.lockUser(this.key(instance.did), instance);
 
