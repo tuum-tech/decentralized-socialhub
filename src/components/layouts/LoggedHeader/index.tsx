@@ -82,8 +82,6 @@ const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
     setTimer();
   }, [sessionItem]);
 
-  console.log('====>publishStatus', publishStatus);
-
   return (
     <IonGrid className={style['profileheader']}>
       <IonRow className={style['header']}>
