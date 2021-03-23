@@ -4,7 +4,6 @@ import style from './DidCard.module.scss';
 import SkeletonAvatar from '../avatars/SkeletonAvatar';
 import { ProfileService } from 'src/services/profile.service';
 import { Link } from 'react-router-dom';
-import { ISessionItem } from 'src/services/user.service';
 
 interface Props {
   name?: string;

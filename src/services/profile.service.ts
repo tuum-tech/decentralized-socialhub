@@ -1,13 +1,7 @@
 import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
-import { ProfileResponse } from 'src/pages/ProfilePage/types';
-import {
-  EducationItem,
-  ExperienceItem,
-  BasicDTO,
-  ProfileDTO
-} from 'src/pages/PublicPage/types';
+import { ProfileResponse } from 'src/pages/Dashboard/ProfilePage/types';
 import { HiveService } from './hive.service';
-import { UserService, ISessionItem, AccountType } from './user.service';
+import { UserService, AccountType } from './user.service';
 
 export interface IFollowingResponse {
   _status?: string;

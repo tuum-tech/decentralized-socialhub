@@ -6,17 +6,11 @@ import {
   IonButton,
   IonRouterLink
 } from '@ionic/react';
-
-import style from './style.module.scss';
-
-import ProfileName from '../ProfileName';
 import styled from 'styled-components';
-import { ProfileDTO } from 'src/pages/PublicPage/types';
 
-// import photo from '../../assets/photo.png';
-import photo from '../../../assets/dp.jpeg';
-import { ISessionItem } from 'src/services/user.service';
 import SkeletonAvatar from 'src/components/avatars/SkeletonAvatar';
+import ProfileName from '../ProfileName';
+import style from './style.module.scss';
 
 const SignInButton = styled(IonRouterLink)`
   width: 140px;

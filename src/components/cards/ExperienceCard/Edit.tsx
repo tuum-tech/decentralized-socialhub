@@ -6,7 +6,6 @@ import {
   IonLabel,
   IonRow
 } from '@ionic/react';
-import { ExperienceItem } from 'src/pages/PublicPage/types';
 
 import SmallTextInput from '../../inputs/SmallTextInput';
 import { MyGrid, MyTextarea } from './Item';

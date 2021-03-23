@@ -1,7 +1,10 @@
 import { IonButton } from '@ionic/react';
 import React, { useState } from 'react';
+
 import { UserService } from 'src/services/user.service';
+
 import style from '../style.module.scss';
+
 export interface ITutorialStepProp {
   onContinue: () => void;
   mnemonics?: string[];

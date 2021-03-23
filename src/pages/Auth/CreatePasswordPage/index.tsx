@@ -2,7 +2,7 @@ import { StaticContext, RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
 import React, { useState, useEffect } from 'react';
 
-import { UserService, ISessionItem } from 'src/services/user.service';
+import { UserService } from 'src/services/user.service';
 import LoadingIndicator from 'src/components/LoadingIndicator';
 import {
   OnBoardLayout,

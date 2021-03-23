@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { IonContent, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react';
 
-import { ISessionItem, UserService } from 'src/services/user.service';
+import { UserService } from 'src/services/user.service';
 import { defaultUserInfo } from 'src/services/profile.service';
 
 import style from './style.module.scss';

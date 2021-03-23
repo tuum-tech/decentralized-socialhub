@@ -1,10 +1,13 @@
 import { IonButton } from '@ionic/react';
 import React, { useState } from 'react';
-import { ITutorialStepProp } from './TutorialStep1';
-import style from '../style.module.scss';
+
 import SecurityWordsView from 'src/components/SecurityWords/SecurityWordsView';
 import SecurityWordsValidate from 'src/components/SecurityWords/SecurityWordsValidate';
-import arrowback from '../../../../../assets/arrow_back_black.svg';
+
+import style from '../style.module.scss';
+import arrowback from '../../../../../../assets/arrow_back_black.svg';
+
+import { ITutorialStepProp } from './TutorialStep1';
 
 const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
   onContinue,

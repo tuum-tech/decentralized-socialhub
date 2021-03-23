@@ -2,7 +2,6 @@
  * Type defined inside this container
  */
 import { Actions } from './constants';
-import { BasicDTO, EducationDTO, ExperienceDTO } from '../PublicPage/types';
 
 export type ActionType = typeof Actions;
 

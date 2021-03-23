@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import ProfileComponent from 'src/components/profile/ProfileComponent';
-import { ISessionItem, UserService } from 'src/services/user.service';
-import { ProfileDTO } from 'src/pages/PublicPage/types';
+import { UserService } from 'src/services/user.service';
 import {
   ProfileService,
   defaultUserInfo,

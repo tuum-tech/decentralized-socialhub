@@ -13,7 +13,6 @@ import {
 } from 'src/services/profile.service';
 
 import style from './style.module.scss';
-import { ProfileDTO } from './types';
 
 const SignInButton = styled(IonRouterLink)`
   width: 140px;

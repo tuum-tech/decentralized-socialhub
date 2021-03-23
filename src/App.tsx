@@ -51,7 +51,7 @@ import DefaultPage from './pages/404Page';
 import AccessCodePage from './pages/AlphaAccess/AccessCode';
 import ExplorePage from './pages/ExplorePage';
 import SettingsPage from './pages/SettingsPage/Loadable';
-import ProfilePage from './pages/ProfilePage/Loadable';
+import ProfilePage from './pages/Dashboard/ProfilePage/Loadable';
 import PublicPage from './pages/PublicPage/Loadable';
 import ManagerPage from './pages/ManagerPage';
 import FollowersPage from './pages/FollowersPage';

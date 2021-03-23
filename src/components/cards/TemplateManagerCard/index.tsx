@@ -15,7 +15,6 @@ import styleWidget from '../../cards/WidgetCards.module.scss';
 import { ButtonLink } from '../../buttons';
 
 import ProfileTemplateManager from '../../profile/ProfileTemplateManager';
-import { ISessionItem } from 'src/services/user.service';
 
 const Divider = styled.hr`
   width: 100%;

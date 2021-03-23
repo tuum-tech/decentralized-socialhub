@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { IonGrid, IonRow, IonCol, IonButton } from '@ionic/react';
 import { Link } from 'react-router-dom';
-
 import styled from 'styled-components';
-import { ProfileDTO } from 'src/pages/PublicPage/types';
 
-import { ISessionItem, UserService } from 'src/services/user.service';
+import { UserService } from 'src/services/user.service';
 import { AssistService, RequestStatus } from 'src/services/assist.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 

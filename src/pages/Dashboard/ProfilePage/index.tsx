@@ -19,7 +19,7 @@ import { ExporeTime } from './constants';
 import Logo from 'src/components/Logo';
 import DashboardNavBar from 'src/components/layouts/Navbar/DashboardNavbar';
 import LoggedHeader from 'src/components/layouts/LoggedHeader';
-import { ISessionItem, UserService } from 'src/services/user.service';
+import { UserService } from 'src/services/user.service';
 import LoadingIndicator from 'src/components/LoadingIndicator';
 import {
   ProfileService,
@@ -27,7 +27,6 @@ import {
   defaultFullProfile
 } from 'src/services/profile.service';
 
-import { ProfileDTO } from '../PublicPage/types';
 import TutorialComponent from './components/Tutorial';
 import DashboardContent from './components/Content';
 import OnBoarding from './components/OnBoarding';

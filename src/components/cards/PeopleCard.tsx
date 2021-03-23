@@ -8,7 +8,7 @@ import {
 } from '@ionic/react';
 import ReactPaginate from 'react-paginate';
 
-import { ISessionItem, UserService } from 'src/services/user.service';
+import { UserService } from 'src/services/user.service';
 import { defaultUserInfo } from 'src/services/profile.service';
 
 import style from './PeopleCard.module.scss';

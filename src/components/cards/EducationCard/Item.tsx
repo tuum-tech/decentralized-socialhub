@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { IonButton, IonCol, IonGrid, IonPopover, IonRow } from '@ionic/react';
 
-import { EducationItem as EducationItemType } from 'src/pages/PublicPage/types';
 import style from '../DidCard.module.scss';
 import styleWidget from '../WidgetCards.module.scss';
 
@@ -21,7 +20,7 @@ import {
 import EducationCardEdit from './Edit';
 
 interface EducationItemProps {
-  educationItem: EducationItemType;
+  educationItem: EducationItem;
   handleChange: any;
   updateFunc: any;
   index: number;

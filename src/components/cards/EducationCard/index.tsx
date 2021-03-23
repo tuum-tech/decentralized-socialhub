@@ -10,11 +10,6 @@ import {
 } from '@ionic/react';
 import { Guid } from 'guid-typescript';
 
-import {
-  EducationDTO,
-  EducationItem as EducationItemProp
-} from 'src/pages/PublicPage/types';
-
 import EducationItem from './Item';
 import styleWidget from '../WidgetCards.module.scss';
 import { Divider, LinkStyleSpan } from '../ExperienceCard/Item';
@@ -66,7 +61,7 @@ const EducationCard: React.FC<IEducationProps> = ({
     // 1. Make a shallow copy of the items
     let items = [...currentEducationDTO.items];
 
-    let item: EducationItemProp = {
+    let item: EducationItem = {
       guid: Guid.create(),
       description: '',
       institution: '',
