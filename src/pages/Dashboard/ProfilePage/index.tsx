@@ -56,7 +56,7 @@ const ProfilePage = () => {
     if (!userSession) {
       return;
     }
-    setLoadingText('Wait a while...');
+    setLoadingText('Please wait a moment...');
     let profile: ProfileDTO | undefined = await ProfileService.getFullProfile(
       userSession.did
     );

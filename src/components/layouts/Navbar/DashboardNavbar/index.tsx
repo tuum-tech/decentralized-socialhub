@@ -168,7 +168,7 @@ const Navbar: React.FC = ({}) => {
               <h3>Settings</h3>
             </IonLabel>
           </IonItem>
-          <IonItem
+          {/* <IonItem
             className={
               // active === 'notifications'
               history.location.pathname === '/notifications'
@@ -185,7 +185,7 @@ const Navbar: React.FC = ({}) => {
             <IonLabel>
               <h3>Notifications</h3>
             </IonLabel>
-          </IonItem>
+          </IonItem> */}
           <IonItem
             className={style['item-link']}
             onClick={() => {

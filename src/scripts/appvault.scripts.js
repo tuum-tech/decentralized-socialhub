@@ -355,8 +355,7 @@ let run = async () => {
   await client.Database.deleteCollection('universities');
   await client.Database.createCollection('universities');
 
-  //fs.readFile('./src/data/world_universities_and_domains.json', (err, data) => {
-  fs.readFile('../data/world_universities_and_domains.json', (err, data) => {
+  fs.readFile('./src/data/world_universities_and_domains.json', (err, data) => {
     if (err) throw err;
     let universityList = JSON.parse(data);
     console.log(universityList[0]);
