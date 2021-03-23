@@ -8,7 +8,6 @@ import {
 } from '@ionic/react';
 import styled from 'styled-components';
 
-import { EducationItem } from 'src/pages/PublicPage/types';
 import SmallTextInput from '../../inputs/SmallTextInput';
 import { MyTextarea, MyGrid } from '../ExperienceCard/Item';
 

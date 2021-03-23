@@ -10,8 +10,6 @@ import {
 } from '@ionic/react';
 import { Guid } from 'guid-typescript';
 
-import { ExperienceItem as ExperienceItemType } from 'src/pages/PublicPage/types';
-import { ExperienceDTO } from 'src/pages/PublicPage/types';
 import ExperienceItems from './List';
 import styleWidget from '../WidgetCards.module.scss';
 import { Divider, LinkStyleSpan } from './Item';
@@ -60,7 +58,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     // 1. Make a shallow copy of the items
     let items = [...currentExperienceDTO.items];
 
-    let item: ExperienceItemType = {
+    let item: ExperienceItem = {
       guid: Guid.create(),
       description: '',
       isEnabled: true,

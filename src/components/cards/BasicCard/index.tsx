@@ -12,7 +12,6 @@ import styleWidget from '../../cards/WidgetCards.module.scss';
 import SmallTextInput from 'src/components/inputs/SmallTextInput';
 import { ButtonLink } from 'src/components/buttons';
 import styled from 'styled-components';
-import { ISessionItem } from 'src/services/user.service';
 
 const SmallLightButton = styled.button`
   height: 27px;

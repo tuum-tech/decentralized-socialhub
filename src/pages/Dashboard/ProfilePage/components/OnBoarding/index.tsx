@@ -8,10 +8,10 @@ import { IonButton, IonImg } from '@ionic/react';
 import { UserService } from 'src/services/user.service';
 
 import AlphaContent from 'src/components/AlphaContent';
-import transparentlogo from '../../../../assets/logo/transparentlogo.png';
-import wavinghand from '../../../../assets/icon/wavinghand.png';
-import defaultAdamAvatar from '../../../../assets/icon/defaultAdamAvatar.png';
-import emojiCool from '../../../../assets/icon/emoji-cool.png';
+import transparentlogo from '../../../../../assets/logo/transparentlogo.png';
+import wavinghand from '../../../../../assets/icon/wavinghand.png';
+import defaultAdamAvatar from '../../../../../assets/icon/defaultAdamAvatar.png';
+import emojiCool from '../../../../../assets/icon/emoji-cool.png';
 
 import style from './style.module.scss';
 

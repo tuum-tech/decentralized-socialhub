@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { IonList, IonLabel, IonItem } from '@ionic/react';
-import style from './style.module.scss';
-import { ProfileDTO } from 'src/pages/PublicPage/types';
 import styled from 'styled-components';
+
+import style from './style.module.scss';
 
 interface IProps {
   profile: ProfileDTO;

@@ -11,13 +11,11 @@ import {
 } from '@ionic/react';
 import styled from 'styled-components';
 
-import { ExperienceItem as ExperienceItemType } from 'src/pages/PublicPage/types';
-
 import ExperienceCardEdit from './Edit';
 import styleWidget from '../WidgetCards.module.scss';
 
 export interface Props {
-  experienceItem: ExperienceItemType;
+  experienceItem: ExperienceItem;
   handleChange: any;
   updateFunc: any;
   index: number;

@@ -1,8 +1,5 @@
 import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react';
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-
-import { ProfileDTO } from 'src/pages/PublicPage/types';
-import { ISessionItem } from 'src/services/user.service';
+import React, { useRef, useState } from 'react';
 
 import AboutCard from '../../cards/AboutCard';
 import EducationCard from '../../cards/EducationCard';
@@ -10,12 +7,10 @@ import ExperienceCard from '../../cards/ExperienceCard';
 import FollowersWidget from '../../follow/FollowersWidget';
 import FollowingList from '../../follow/FollowingList';
 import PublicProfileNav from '../PublicProfileNav';
-
 import SocialProfiles from '../SocialProfiles';
 import ProfileBanner from '../ProfileBanner';
 import ProfileHeader from '../ProfileHeader';
 import style from './style.module.scss';
-import Button from 'react-bootstrap/esm/Button';
 
 interface IProps {
   profile: ProfileDTO;

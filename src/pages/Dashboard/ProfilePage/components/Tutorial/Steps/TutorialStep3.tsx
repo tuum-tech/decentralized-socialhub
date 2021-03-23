@@ -1,13 +1,15 @@
 import { IonButton, IonInput, IonRadio, IonRadioGroup } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
-import { ITutorialStepProp } from './TutorialStep1';
-import style from '../style.module.scss';
-import tuumlogo from '../../../../../assets/tuumtech.png';
+
 import { DidService } from 'src/services/did.service';
 import { UserService } from 'src/services/user.service';
 import { HiveService } from 'src/services/hive.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { UserVaultScripts } from 'src/scripts/uservault.script';
+
+import { ITutorialStepProp } from './TutorialStep1';
+import style from '../style.module.scss';
+import tuumlogo from '../../../../../../assets/tuumtech.png';
 
 const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   onContinue,

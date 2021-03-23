@@ -1,7 +1,7 @@
 import request from 'src/baseplate/request';
 import { UserVaultScripts } from 'src/scripts/uservault.script';
 
-import { UserService, ISessionItem, AccountType } from './user.service';
+import { UserService, AccountType } from './user.service';
 import { HiveService } from './hive.service';
 import { DidService } from './did.service';
 import { alertError } from 'src/utils/notify';

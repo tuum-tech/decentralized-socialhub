@@ -2,7 +2,6 @@ import React from 'react';
 import { IonText } from '@ionic/react';
 import styled from 'styled-components';
 import pin from '../../assets/icon/pin.svg';
-import { AddressDTO } from 'src/pages/PublicPage/types';
 
 interface IProp {
   address: AddressDTO;

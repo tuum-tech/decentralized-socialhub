@@ -19,21 +19,6 @@ export enum AccountType {
   Email = 'Email'
 }
 
-export interface ISessionItem {
-  hiveHost: string;
-  userToken: string;
-  accountType: AccountType;
-  did: string;
-  name: string;
-  email?: string;
-  isDIDPublished: boolean;
-  mnemonics: string;
-  passhash: string;
-  onBoardingCompleted: boolean;
-  avatar?: string;
-  tutorialStep: number;
-}
-
 export interface ITemporaryDID {
   mnemonic: string;
   confirmationId: string;

@@ -9,7 +9,6 @@ import {
 } from '@ionic/react';
 import styled from 'styled-components';
 
-import { ISessionItem } from 'src/services/user.service';
 import photo from '../../../assets/dp.jpeg';
 import ProfileName from '../ProfileName';
 

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { IonContent, IonList, IonLabel, IonItem } from '@ionic/react';
 
-import { ISessionItem } from 'src/services/user.service';
-import { ProfileDTO } from 'src/pages/PublicPage/types';
 import DashboardHome from '../Home';
 import DashboardStatus from '../Status';
 import DashboardBadges from '../Badges';

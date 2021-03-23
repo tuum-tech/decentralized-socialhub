@@ -7,12 +7,10 @@ import ButtonWhite from 'src/components/buttons/ButtonWhite';
 import AboutCard from 'src/components/cards/AboutCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
 import EducationCard from 'src/components/cards/EducationCard';
-import { ISessionItem } from 'src/services/user.service';
 import ProfileCompletionCard from 'src/components/cards/ProfileCompletionCard';
-import { ProfileDTO } from 'src/pages/PublicPage/types';
-
 import { UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
+
 import style from './style.module.scss';
 
 export interface DashboardProps {

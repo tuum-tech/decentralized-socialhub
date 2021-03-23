@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { IonButton, IonCol, IonGrid, IonPopover, IonRow } from '@ionic/react';
 
-import { ExperienceItem } from 'src/pages/PublicPage/types';
 import styleWidget from '../WidgetCards.module.scss';
 import {
   Institution,
