@@ -3,6 +3,7 @@ import { alertError } from 'src/utils/notify';
 import { AssistService } from './assist.service';
 import { DidService, IDID, PublishRequestOperation } from './did.service';
 import { DidDocumentService } from './diddocument.service';
+import { showNotify } from 'src/utils/notify';
 import {
   TuumTechScriptService,
   UserVaultScriptService
@@ -242,7 +243,10 @@ export class UserService {
     );
   }
 
-  public static async updateSession(sessionItem: ISessionItem): Promise<void> {
+  public static async updateSession(
+    sessionItem: ISessionItem,
+    notifyUser: boolean = false
+  ): Promise<void> {
     let newSessionItem = sessionItem;
     const userData = await TuumTechScriptService.searchUserWithDID(
       sessionItem.did
@@ -260,13 +264,19 @@ export class UserService {
       newSessionItem.code = code;
     }
 
-    await TuumTechScriptService.updateUserDidInfo(newSessionItem);
+    const res: any = await TuumTechScriptService.updateUserDidInfo(
+      newSessionItem
+    );
     this.lockUser(this.key(sessionItem.did), newSessionItem);
 
     window.localStorage.setItem(
       'session_instance',
       JSON.stringify(newSessionItem, null, '')
     );
+
+    if (notifyUser && res.meta.code === 200 && res.data._status === 'OK') {
+      showNotify('Basic info is successfuly saved', 'success');
+    }
   }
 
   public static async UnLockWithDIDAndPwd(did: string, storePassword: string) {

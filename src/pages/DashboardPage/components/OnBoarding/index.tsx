@@ -59,17 +59,16 @@ const OnBoardingPage: React.FC<Props> = ({ completed }) => {
           </div>
           <div className={style['stage2-content']}>
             <p>
-              Only you know your secret keys(also called mnemonics) and your
-              passwords. You control it, you own it and we do not store
-              anything. This means you are responsible for protecting and
-              securing your secret keys! These keys are used to issue your
-              Decentralized Identifier(DID for short) so keep it in a safe
-              place!!
+              Only you know your secret keys (known as mnemonics) and passwords.
+              This information is your responsibility, you own them, and we
+              store nothing. You must protect and store your 12 word mnemonics!
+              These secret keys are used to issue a unique Decentralized
+              Identifier (DID) and must be stored in a safe place!
             </p>
 
             <p>
-              You can learn more about this later. Ready to see what your can do
-              with your DID?
+              More information will be provided later. Ready to see what you can
+              do with your new DID?
             </p>
           </div>
 

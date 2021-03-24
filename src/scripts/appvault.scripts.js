@@ -95,47 +95,47 @@ let run = async () => {
       }
     }
   });
-  // await client.Scripting.SetScript({
-  //   name: 'update_user',
-  //   allowAnonymousUser: true,
-  //   allowAnonymousApp: true,
-  //   executable: {
-  //     type: 'update',
-  //     name: 'update_user',
-  //     body: {
-  //       collection: 'users',
-  //       filter: {
-  //         did: '$params.did'
-  //       },
-  //       update: {
-  //         $set: {
-  //           name: '$params.name',
-  //           email: '$params.email'
-  //         }
-  //       },
-  //       options: {
-  //         upsert: true,
-  //         bypass_document_validation: false
-  //       }
-  //     }
-  //   }
-  // });
-  // await client.Scripting.SetScript({
-  //   name: 'delete_user_by_did',
-  //   allowAnonymousUser: true,
-  //   allowAnonymousApp: true,
-  //   executable: {
-  //     type: 'delete',
-  //     name: 'delete_user_by_did',
-  //     output: true,
-  //     body: {
-  //       collection: 'users',
-  //       filter: {
-  //         did: '$params.did'
-  //       }
-  //     }
-  //   }
-  // });
+  await client.Scripting.SetScript({
+    name: 'update_user',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'update',
+      name: 'update_user',
+      body: {
+        collection: 'users',
+        filter: {
+          did: '$params.did'
+        },
+        update: {
+          $set: {
+            name: '$params.name',
+            email: '$params.email'
+          }
+        },
+        options: {
+          upsert: true,
+          bypass_document_validation: false
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'delete_user_by_did',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'delete',
+      name: 'delete_user_by_did',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          did: '$params.did'
+        }
+      }
+    }
+  });
   await client.Scripting.SetScript({
     name: 'get_user_by_did',
     allowAnonymousUser: true,

@@ -89,7 +89,8 @@ export class TuumTechScriptService {
         target_app_did: process.env.REACT_APP_APPLICATION_ID
       }
     };
-    let response = await this.runTuumTechScript(add_user_script);
+    let response: any = await this.runTuumTechScript(add_user_script);
+    return response;
   }
 
   public static async addUserToTuumTech(params: ISessionItem) {
@@ -101,7 +102,8 @@ export class TuumTechScriptService {
         target_app_did: process.env.REACT_APP_APPLICATION_ID
       }
     };
-    await this.runTuumTechScript(add_user_script);
+    let response: any = await this.runTuumTechScript(add_user_script);
+    return response;
   }
 
   public static async updateBasicProfile(basicDTO: ISessionItem) {

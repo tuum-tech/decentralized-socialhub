@@ -120,12 +120,12 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         You can choose to store all your personal and application data to your
         own storage as long as the storage is an Elastos Hive Node. By default,
         you are choosing to store your data on a vault provided by{' '}
-        <b>Tuum Tech</b>. You can also run your own Hive Node and choose that
-        instead where you are in full control of your entire data! To learn more
-        about how to run your own Hive Node, refer to{' '}
+        <b>Tuum Tech</b>. Or, you have the option to run your own Hive Node and
+        be in complete control of your data! To learn more about how to run your
+        own Hive Node, refer to{' '}
         <a
           href="https://github.com/elastos/Elastos.NET.Hive.Node"
-          target="_blank"
+          target="_blank" rel="noreferrer"
         >
           Elastos Hive Node
         </a>
