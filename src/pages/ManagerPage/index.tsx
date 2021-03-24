@@ -17,8 +17,9 @@ import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 import Logo from 'src/components/Logo';
-import DashboardNavBar from 'src/components/layouts/Navbar/DashboardNavbar';
-import ProfileEditor from 'src/components/profile/ProfileEditor';
+import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
+
+import ProfileEditor from './components/ProfileEditor';
 
 const ManagerPage: React.FC<InferMappedProps> = ({
   eProps,
@@ -57,7 +58,7 @@ const ManagerPage: React.FC<InferMappedProps> = ({
             <IonRow className={style['profilecontent']}>
               <IonCol size="2" className={style['left-panel']}>
                 <Logo />
-                <DashboardNavBar />
+                <LeftSideMenu />
               </IonCol>
               <IonCol size="10" className={style['right-panel']}>
                 <Header>

@@ -1,4 +1,4 @@
-import { IonPage, IonGrid, IonRow, IonCol, IonRouterLink } from '@ionic/react';
+import { IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
 import { RouteComponentProps } from 'react-router';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -11,31 +11,9 @@ import {
   defaultUserInfo,
   defaultFullProfile
 } from 'src/services/profile.service';
+import { DashboardSignInButton } from 'src/components/buttons';
 
 import style from './style.module.scss';
-
-const SignInButton = styled(IonRouterLink)`
-  width: 140px;
-  height: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
-  border-radius: 9px;
-  background-color: #4c6fff;
-  flex-grow: 0;
-  font-family: 'SF Pro Display';
-  font-size: 12px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1;
-  letter-spacing: normal;
-  text-align: left;
-  color: #ffffff;
-`;
 
 const PublicNavbar = styled(IonRow)`
   width: 100%;
@@ -90,7 +68,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
           setSignedIn(true);
         }
       } catch (error) {
-        console.log('======>error', error);
+        // console.log('======>error', error);
       }
 
       setLoading(false);
@@ -112,12 +90,14 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
             {!signedIn && (
               <IonRow>
                 <IonCol>
-                  <SignInButton href="/create-profile">
+                  <DashboardSignInButton href="/create-profile">
                     Register new user
-                  </SignInButton>
+                  </DashboardSignInButton>
                 </IonCol>
                 <IonCol>
-                  <SignInButton href="/sign-did">Sign In</SignInButton>
+                  <DashboardSignInButton href="/sign-did">
+                    Sign In
+                  </DashboardSignInButton>
                 </IonCol>
               </IonRow>
             )}

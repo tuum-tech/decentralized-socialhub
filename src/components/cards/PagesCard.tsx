@@ -6,11 +6,10 @@ import {
   IonCardTitle,
   IonCol
 } from '@ionic/react';
-import style from './PagesCard.module.scss';
-import { PageDTO } from '../search/types';
-import DidCard from './DidCard';
 import ReactPaginate from 'react-paginate';
 
+import DidCard from './DidCard';
+import style from './PagesCard.module.scss';
 interface IProps {
   pages?: PageDTO;
   searchKeyword?: string;

@@ -9,7 +9,7 @@ import {
   IonCol
 } from '@ionic/react';
 
-import PageHeader from 'src/components/layouts/PageHeader';
+import SettingsHeader from '../SettingsHeader/Loadable';
 import SettingsAccount from '../SettingsAccount/Loadable';
 import SettingsTerms from '../SettingsTerms/Loadable';
 import SettingsHelp from '../SettingsHelp/Loadable';
@@ -26,7 +26,7 @@ const SettingsBody: React.FC<Props> = ({ tab = 'settingsaccount' }) => {
 
   return (
     <>
-      <PageHeader />
+      <SettingsHeader />
       <IonContent className={style['settingsbody']}>
         <IonGrid className={style['settingspagegrid']}>
           <IonRow className={style['settingscontent']}>

@@ -6,8 +6,8 @@ import { RouteComponentProps } from 'react-router';
 import React from 'react';
 import style from './style.module.scss';
 import Logo from 'src/components/Logo';
-import DashboardNavBar from 'src/components/layouts/Navbar/DashboardNavbar';
-import SearchComponent from 'src/components/search/SearchComponent';
+import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
+import SearchComponent from './components/SearchComponent';
 import ExploreProfileComponent from './components/ExploreProfileComponent';
 
 interface MatchParams {
@@ -23,7 +23,7 @@ const ExplorePage: React.FC<RouteComponentProps<MatchParams>> = (
         <IonRow className={style['profilecontent']}>
           <IonCol size="2" className={style['left-panel']}>
             <Logo />
-            <DashboardNavBar />
+            <LeftSideMenu />
           </IonCol>
           <IonCol size="10" className={style['right-panel']}>
             {props.match.params.did === undefined ? (

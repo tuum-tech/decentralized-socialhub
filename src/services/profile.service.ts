@@ -1,6 +1,6 @@
 import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
+import { ProfileResponse } from 'src/pages/DashboardPage/types';
 
-import { ProfileResponse } from 'src/pages/Dashboard/ProfilePage/types';
 import { showNotify } from 'src/utils/notify';
 
 import { HiveService } from './hive.service';
@@ -102,7 +102,6 @@ export class ProfileService {
         },
         params: experienceItem
       });
-      console.log('=====>res', res);
       if (res.isSuccess && res.response._status === 'OK') {
         showNotify('Experience info is successfuly saved', 'success');
       }

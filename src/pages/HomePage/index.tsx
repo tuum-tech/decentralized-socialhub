@@ -20,7 +20,7 @@ import {
   requestFacebookLogin
 } from './fetchapi';
 import SocialLoginLink from './components/SocialLoginLink';
-import Header from 'src/components/layouts/Header';
+import Header from 'src/components/oldComponents/OldHeader';
 import ClearlyMeContent from 'src/components/oldComponents/ClearlyMeContent';
 import ButtonDefault from 'src/components/buttons/ButtonDefault';
 import ButtonLight from 'src/components/buttons/ButtonLight';

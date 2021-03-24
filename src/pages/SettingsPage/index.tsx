@@ -15,7 +15,7 @@ import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 import Logo from 'src/components/Logo';
-import DashboardNavBar from 'src/components/layouts/Navbar/DashboardNavbar';
+import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import SettingsBody from './components/SettingsBody';
 
 const SettingsPage: React.FC<InferMappedProps> = ({
@@ -30,7 +30,7 @@ const SettingsPage: React.FC<InferMappedProps> = ({
             <IonCol size="2" className={style['left-panel']}>
               <Logo />
 
-              <DashboardNavBar />
+              <LeftSideMenu />
             </IonCol>
             <IonCol size="10" className={style['right-panel']}>
               <SettingsBody />

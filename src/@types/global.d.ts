@@ -75,3 +75,32 @@ interface ISessionItem {
   code?: string;
   status?: string;
 }
+
+interface PeopleItem {
+  name: string;
+  did: string;
+  avatar?: string;
+}
+
+interface PeopleDTO {
+  items: PeopleItem[];
+}
+
+interface PageItem {
+  name: string;
+  did?: string;
+  avatar?: string;
+}
+
+interface PageDTO {
+  items: PageItem[];
+}
+
+interface FollowingItem {
+  did: string;
+  // followers?: string;
+}
+
+interface FollowingDTO {
+  items: FollowingItem[];
+}

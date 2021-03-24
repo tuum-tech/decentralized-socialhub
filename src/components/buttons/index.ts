@@ -1,4 +1,4 @@
-import { IonRouterLink } from '@ionic/react';
+import { IonRouterLink, IonButton } from '@ionic/react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -9,6 +9,7 @@ import SocialButton from './SocialButton';
 interface ButtonLinkProps {
   width?: number;
 }
+
 const ButtonLink = styled(Link)<ButtonLinkProps>`
   width: 100%;
   ${props => {
@@ -19,6 +20,8 @@ const ButtonLink = styled(Link)<ButtonLinkProps>`
   display: block;
   margin: 0;
 `;
+
+// for buttons used in logic workflow
 
 const SigninLinkButton = styled.div`
   width: 100%;
@@ -66,7 +69,9 @@ const RegisterNewUserButton = styled(ButtonLink)`
   color: #4c6fff;
 `;
 
-const SignInButton = styled(IonRouterLink)`
+// for buttons used in dashboard
+
+const DashboardSignInButton = styled(IonRouterLink)`
   width: 140px;
   height: 40px;
   display: flex;
@@ -89,6 +94,27 @@ const SignInButton = styled(IonRouterLink)`
   color: #ffffff;
 `;
 
+const FollowButton = styled(IonButton)`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  --background: #4c6fff;
+  --border-radius: 9px;
+  height: 40px;
+  opacity: 1;
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0px;
+  color: #ffffff;
+  font-family: 'SF Pro Display';
+  font-size: 12px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+`;
+
 export {
   ButtonLink,
   ArrowButton,
@@ -96,5 +122,6 @@ export {
   ButtonWithLogo,
   SigninLinkButton,
   RegisterNewUserButton,
-  SignInButton
+  DashboardSignInButton,
+  FollowButton
 };
