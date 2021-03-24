@@ -62,21 +62,20 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 ) => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [userInfo, setUserInfo] = useState(defaultUserInfo);
-  const [full_profile, setfull_profile] = useState(defaultFullProfile);
+  const [publicUser, setPublicUser] = useState<ISessionItem>(defaultUserInfo);
+  const [publicUserProfile, setPublicUserProfile] = useState(
+    defaultFullProfile
+  );
+  const [signedIn, setSignedIn] = useState(false);
 
   let did: string = props.match.params.did;
-
   useEffect(() => {
     (async () => {
       try {
-        let userInfo = await UserService.SearchUserWithDID(did);
-        setUserInfo(userInfo as any);
-      } catch (e) {
-        setError(true);
-      }
-
-      try {
+        const pUser = await UserService.SearchUserWithDID(did);
+        if (pUser && pUser.did !== '') {
+          setPublicUser(pUser as ISessionItem);
+        }
         let profile:
           | ProfileDTO
           | undefined = await ProfileService.getFullProfile(did);
@@ -84,17 +83,19 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
           profile.basicDTO.isEnabled = true;
           profile.experienceDTO.isEnabled = true;
           profile.educationDTO.isEnabled = true;
-          setfull_profile(profile);
+          setPublicUserProfile(profile);
         }
-      } catch (e) {}
+        const sUser = UserService.GetUserSession();
+        if (sUser && sUser.did !== '') {
+          setSignedIn(true);
+        }
+      } catch (error) {
+        console.log('======>error', error);
+      }
+
       setLoading(false);
     })();
   }, []);
-
-  const scrollToPosition = (position: number) => {
-    let ionContent = document.querySelector('ion-content');
-    ionContent!.scrollToPoint(0, position);
-  };
 
   if (loading) {
     return <PageLoading />;
@@ -108,25 +109,26 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
             <img src="../../assets/logo_profile_black.svg" />
           </IonCol>
           <IonCol size="auto">
-            <IonRow>
-              <IonCol>
-                <SignInButton href="create-profile">
-                  Register new user
-                </SignInButton>
-              </IonCol>
-              <IonCol>
-                <SignInButton href="../sign-did">Sign In</SignInButton>
-              </IonCol>
-            </IonRow>
+            {!signedIn && (
+              <IonRow>
+                <IonCol>
+                  <SignInButton href="/create-profile">
+                    Register new user
+                  </SignInButton>
+                </IonCol>
+                <IonCol>
+                  <SignInButton href="/sign-did">Sign In</SignInButton>
+                </IonCol>
+              </IonRow>
+            )}
           </IonCol>
         </PublicNavbar>
-
         <ContentRow className="ion-justify-content-around">
           <IonCol size="9">
-            {!loading && userInfo && userInfo.did !== '' ? (
+            {publicUser && publicUser.did !== '' ? (
               <ProfileComponent
-                profile={full_profile}
-                sessionItem={userInfo as any}
+                profile={publicUserProfile}
+                sessionItem={publicUser as any}
                 error={error}
               />
             ) : (

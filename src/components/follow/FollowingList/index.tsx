@@ -284,19 +284,16 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
       list.get_following.items.length > 0
     ) {
       listDids = list.get_following.items.map(p => p.did);
-    }
 
-    if (
-      listContacts &&
-      listContacts.get_following &&
-      listContacts.get_following.items &&
-      list &&
-      list.get_following &&
-      list.get_following.items &&
-      listContacts.get_following.items.length !==
-        list.get_following.items.length
-    ) {
-      setListContacts(list);
+      if (
+        listContacts &&
+        listContacts.get_following &&
+        listContacts.get_following.items &&
+        listContacts.get_following.items.length !==
+          list.get_following.items.length
+      ) {
+        setListContacts(list);
+      }
     }
 
     try {
