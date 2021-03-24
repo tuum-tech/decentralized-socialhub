@@ -51,7 +51,7 @@ import DefaultPage from './pages/404Page';
 import AccessCodePage from './pages/AlphaAccess/AccessCode';
 import ExplorePage from './pages/ExplorePage';
 import SettingsPage from './pages/SettingsPage/Loadable';
-import ProfilePage from './pages/Dashboard/ProfilePage/Loadable';
+import DashboardPage from './pages/DashboardPage/Loadable';
 import PublicPage from './pages/PublicPage/Loadable';
 import ManagerPage from './pages/ManagerPage';
 import FollowersPage from './pages/FollowersPage';
@@ -78,7 +78,7 @@ const App: React.FC = () => {
             />
             <ProtectedRoute
               path="/profile"
-              component={ProfilePage}
+              component={DashboardPage}
               exact={true}
             />
             <ProtectedRoute

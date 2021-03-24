@@ -1,11 +1,20 @@
-import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react';
+import {
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonRow,
+  IonCard,
+  IonCardTitle,
+  IonCardContent,
+  IonCardHeader
+} from '@ionic/react';
 import React, { useRef, useState } from 'react';
 
 import AboutCard from '../../cards/AboutCard';
 import EducationCard from '../../cards/EducationCard';
 import ExperienceCard from '../../cards/ExperienceCard';
-import FollowersWidget from '../../follow/FollowersWidget';
-import FollowingList from '../../follow/FollowingList';
+// import FollowersWidget from '../FollowersWidget';
+import FollowingList from '../FollowingList';
 import PublicProfileNav from '../PublicProfileNav';
 import SocialProfiles from '../SocialProfiles';
 import ProfileBanner from '../ProfileBanner';
@@ -75,15 +84,18 @@ const ProfileComponent: React.FC<IPropsSession> = ({
         scrollEvents={true}
         onIonScroll={handleScroll}
       >
+        ProfileBanner
         <ProfileBanner mode={mode} />
-
+        ProfileBanner
+        <br />
+        profileheader
         <ProfileHeader
           mode={mode}
           profile={profile}
           user={sessionItem as ISessionItem}
           error={error}
         />
-
+        profileheader
         {profile.basicDTO.isEnabled === true ? (
           <>
             <PublicProfileNav
@@ -119,7 +131,16 @@ const ProfileComponent: React.FC<IPropsSession> = ({
                       <IonCol size="3">
                         <SocialProfiles />
                         <FollowingList did={profile.basicDTO.did} />
-                        <FollowersWidget />
+
+                        {/* FollowersWidget */}
+
+                        <IonCard className={style['overview']}>
+                          <IonCardHeader>
+                            <IonCardTitle>Followers</IonCardTitle>
+                          </IonCardHeader>
+
+                          <IonCardContent></IonCardContent>
+                        </IonCard>
                       </IonCol>
                     </IonRow>
                   </IonGrid>

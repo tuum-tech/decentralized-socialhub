@@ -1,52 +1,25 @@
 import React from 'react';
-import {
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonButton,
-  IonRouterLink
-} from '@ionic/react';
+import { IonGrid, IonRow, IonCol } from '@ionic/react';
 import styled from 'styled-components';
 
 import SkeletonAvatar from 'src/components/avatars/SkeletonAvatar';
-import ProfileName from '../ProfileName';
 import style from './style.module.scss';
-import DidSnippet from 'src/components/layouts/LoggedHeader/DidSnippet';
+import DidSnippet from 'src/components/DidSnippet';
 import defaultAdamAvatar from 'src/assets/icon/defaultAdamAvatar.png';
-
-const SignInButton = styled(IonRouterLink)`
-  width: 140px;
-  height: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
-  border-radius: 9px;
-  background-color: #4c6fff;
-  flex-grow: 0;
-  font-family: 'SF Pro Display';
-  font-size: 12px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1;
-  letter-spacing: normal;
-  text-align: left;
-  color: #ffffff;
-`;
+import { ProfileName } from 'src/components/texts';
+import { DashboardSignInButton } from 'src/components/buttons';
 
 const AvatarBox = styled.div`
-margin-left: 50px;
-margin-top: 15px
-margin-bottom: 15px;
+  margin-left: 50px;
+  margin-top: 15px
+  margin-bottom: 15px;
 `;
 
 interface AvatarProps {
   avatar: string;
   mode: string;
 }
+
 const Avatar: React.FC<AvatarProps> = ({ avatar, mode }: AvatarProps) => {
   return (
     <>
@@ -102,7 +75,9 @@ const ProfileHeader: React.FC<IProps> = ({
           </IonGrid>
         </IonCol>
         <IonCol size="2">
-          <SignInButton href="../sign-did">Follow</SignInButton>
+          <DashboardSignInButton href="../sign-did">
+            Follow
+          </DashboardSignInButton>
         </IonCol>
       </IonRow>
     </IonGrid>
@@ -110,24 +85,3 @@ const ProfileHeader: React.FC<IProps> = ({
 };
 
 export default ProfileHeader;
-
-const FollowButton = styled(IonButton)`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 10px;
-  --background: #4c6fff;
-  --border-radius: 9px;
-  height: 40px;
-  opacity: 1;
-  text-align: center;
-  text-transform: none;
-  letter-spacing: 0px;
-  color: #ffffff;
-  font-family: 'SF Pro Display';
-  font-size: 12px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-`;

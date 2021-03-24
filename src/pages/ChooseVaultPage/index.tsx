@@ -15,7 +15,7 @@ import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 import { fetchSimpleApi } from './fetchapi';
-import Header from 'src/components/layouts/Header';
+import Header from 'src/components/oldComponents/OldHeader';
 import ClearlyMeContent from 'src/components/oldComponents/ClearlyMeContent';
 import ButtonDefault from 'src/components/buttons/ButtonDefault';
 import ButtonLight from 'src/components/buttons/ButtonLight';

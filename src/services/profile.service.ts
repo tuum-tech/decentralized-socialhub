@@ -1,5 +1,5 @@
 import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
-import { ProfileResponse } from 'src/pages/Dashboard/ProfilePage/types';
+import { ProfileResponse } from 'src/pages/DashboardPage/types';
 import { HiveService } from './hive.service';
 import { UserService, AccountType } from './user.service';
 

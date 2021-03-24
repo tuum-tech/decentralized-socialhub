@@ -13,7 +13,6 @@ import { defaultUserInfo } from 'src/services/profile.service';
 
 import style from './PeopleCard.module.scss';
 import DidCard from './DidCard';
-import { PeopleDTO, FollowingDTO } from '../search/types';
 
 interface IProps {
   people?: PeopleDTO;

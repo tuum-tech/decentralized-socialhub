@@ -2,26 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import style from './style.module.scss';
 
-interface IProps {
-  mode: string;
-}
-
-const ProfileBanner: React.FC<IProps> = ({ mode }: IProps) => {
-  // return <img src={banner} className={style['banner']} alt='banner' />;
-
-  return (
-    <>
-      {mode === 'sticky' ? (
-        <BannerEmpty className={style['banner']}></BannerEmpty>
-      ) : (
-        <Banner className={style['banner']}></Banner>
-      )}
-    </>
-  );
-};
-
-export default ProfileBanner;
-
 const Banner = styled.div`
   display: flex;
   position: sticky;
@@ -74,3 +54,21 @@ const BannerEmpty = styled.div`
   width: 100%;
   padding-bottom: 2px;
 `;
+
+interface IProps {
+  mode: string;
+}
+
+const ProfileBanner: React.FC<IProps> = ({ mode }: IProps) => {
+  return (
+    <>
+      {mode === 'sticky' ? (
+        <BannerEmpty className={style['banner']}></BannerEmpty>
+      ) : (
+        <Banner className={style['banner']}></Banner>
+      )}
+    </>
+  );
+};
+
+export default ProfileBanner;

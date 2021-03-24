@@ -15,8 +15,9 @@ import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 import Logo from 'src/components/Logo';
-import DashboardNavBar from 'src/components/layouts/Navbar/DashboardNavbar';
-import FollowersSearch from 'src/components/follow/followers/FollowersSearch';
+import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
+
+import FollowersSearch from './components/FollowersSearch';
 
 const FollowersPage: React.FC<InferMappedProps> = ({
   eProps,
@@ -29,7 +30,7 @@ const FollowersPage: React.FC<InferMappedProps> = ({
           <IonRow className={style['profilecontent']}>
             <IonCol size="2" className={style['left-panel']}>
               <Logo />
-              <DashboardNavBar />
+              <LeftSideMenu />
             </IonCol>
             <IonCol size="10" className={style['right-panel']}>
               <FollowersSearch />
