@@ -14,7 +14,7 @@
     "crypto-js": "^4.0.0",
     "guid-typescript": "^1.0.9",
     "hoist-non-react-statics": "^3.3.2",
-    "immer": "^5.3.6",
+    "immer": "^8.0.1",
     "invariant": "^2.2.4",
     "ionicons": "^4.6.3",
     "jose": "^3.9.0",
