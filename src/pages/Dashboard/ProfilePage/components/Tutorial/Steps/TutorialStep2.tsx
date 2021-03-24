@@ -1,13 +1,12 @@
 import { IonButton } from '@ionic/react';
 import React, { useState } from 'react';
 
-import SecurityWordsView from 'src/components/SecurityWords/SecurityWordsView';
-import SecurityWordsValidate from 'src/components/SecurityWords/SecurityWordsValidate';
-
-import style from '../style.module.scss';
-import arrowback from '../../../../../../assets/arrow_back_black.svg';
+import LeftArrow from 'src/components/arrows/LeftArrow';
+import SecurityWordsView from '../SecurityWords/SecurityWordsView';
+import SecurityWordsValidate from '../SecurityWords/SecurityWordsValidate';
 
 import { ITutorialStepProp } from './TutorialStep1';
+import style from '../style.module.scss';
 
 const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
   onContinue,
@@ -22,7 +21,8 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
   const viewWords = () => {
     return (
       <div>
-        <h2>Decentralized Identity (DID)</h2>
+        <LeftArrow fill="black" />
+        <h2 className="mb-15px mt-25px">Decentralized Identity (DID)</h2>
         <p>
           These are your secret keys(also known as 12 word mnemonics) that
           control your Decentralized Identifier (DID). Write these down, in
@@ -63,13 +63,10 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
   const verifyWords = () => {
     return (
       <div>
-        <img
-          src={arrowback}
-          onClick={() => {
-            back();
-          }}
-        />
-        <h2>Re-enter your secret keys(12 word mnemonics)</h2>
+        <LeftArrow fill="black" />
+        <h2 className="mb-15px mt-25px">
+          Re-enter your secret keys(12 word mnemonics)
+        </h2>
         {!isOnError && <p>Please enter your secret keys in the right order</p>}
 
         <SecurityWordsValidate

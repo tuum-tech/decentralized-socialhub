@@ -276,11 +276,25 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
       alertError(null, 'cant load followings');
     }
 
-    let listDids = list.get_following.items.map(p => p.did);
+    let listDids: string[] = [];
+    if (
+      list &&
+      list.get_following &&
+      list.get_following.items &&
+      list.get_following.items.length > 0
+    ) {
+      listDids = list.get_following.items.map(p => p.did);
+    }
 
     if (
+      listContacts &&
+      listContacts.get_following &&
+      listContacts.get_following.items &&
+      list &&
+      list.get_following &&
+      list.get_following.items &&
       listContacts.get_following.items.length !==
-      list.get_following.items.length
+        list.get_following.items.length
     ) {
       setListContacts(list);
     }
