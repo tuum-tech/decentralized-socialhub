@@ -86,11 +86,11 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({
         <IonCol size="3">
           <Spacer>
             <IonCheckbox
-              checked={educationItem.stillWorking}
-              name="stillWorking"
+              checked={educationItem.still}
+              name="still"
               onIonChange={handleChangeIndex}
             />{' '}
-            Still Working
+            Still studying
           </Spacer>
         </IonCol>
       </IonRow>

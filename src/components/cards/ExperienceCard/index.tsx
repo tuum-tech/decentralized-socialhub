@@ -36,12 +36,19 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   }, [experienceDTO]);
 
   const handleChange = (evt: any, index: number) => {
+    let value: any;
+    if (evt.target.name === 'still') {
+      value = evt.target.checked;
+    } else {
+      value = evt.target.value;
+    }
+
     // 1. Make a shallow copy of the items
     let items = [...currentExperienceDTO.items];
 
     let item = {
       ...items[index],
-      [evt.target.name]: evt.target.value
+      [evt.target.name]: value
     };
     // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
     items[index] = item;
@@ -66,6 +73,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
       program: '',
       start: '',
       end: '',
+      still: false,
       title: '',
       order: '',
       isEmpty: true

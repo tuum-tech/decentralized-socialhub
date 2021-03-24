@@ -65,7 +65,10 @@ const ExperienceItem: React.FC<Props> = ({
               </IonRow>
               <IonRow>
                 <Period>
-                  {experienceItem.start} - {experienceItem.end}
+                  {experienceItem.start} -
+                  {experienceItem.still === true
+                    ? ' Present'
+                    : experienceItem.end}
                 </Period>
               </IonRow>
               <IonRow>

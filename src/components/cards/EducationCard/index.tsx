@@ -34,9 +34,11 @@ const EducationCard: React.FC<IEducationProps> = ({
   }, [educationDTO]);
 
   const handleChange = (evt: any, index: number) => {
-    if (evt.target.name === 'stillWorking') {
-      evt.target.name = 'end';
-      evt.target.value = '';
+    let value: any;
+    if (evt.target.name === 'still') {
+      value = evt.target.checked;
+    } else {
+      value = evt.target.value;
     }
 
     // 1. Make a shallow copy of the items
@@ -44,7 +46,7 @@ const EducationCard: React.FC<IEducationProps> = ({
 
     let item = {
       ...items[index],
-      [evt.target.name]: evt.target.value
+      [evt.target.name]: value
     };
     // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
     items[index] = item;
@@ -67,7 +69,7 @@ const EducationCard: React.FC<IEducationProps> = ({
       institution: '',
       program: '',
       title: '',
-      stillWorking: false,
+      still: false,
       order: '',
       start: '',
       end: '',
