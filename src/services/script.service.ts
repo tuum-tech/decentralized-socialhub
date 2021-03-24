@@ -6,28 +6,6 @@ import { HiveService } from './hive.service';
 import { DidService } from './did.service';
 import { alertError } from 'src/utils/notify';
 
-interface TuumScriptUpdateDidUserParams {
-  email: string;
-  code: string;
-  did: string;
-  hiveHost: string;
-  accountType: string;
-  userToken: string;
-  onBoardingCompleted: boolean;
-  tutorialStep: number;
-}
-
-interface TuumScriptAddDidUserParams {
-  name: string;
-  email: string;
-  status: string;
-  code: string;
-  did: string;
-  hiveHost: string;
-  accountType: AccountType;
-  userToken: string;
-}
-
 export class TuumTechScriptService {
   private static async runTuumTechScript(script: any) {
     return request(
@@ -102,7 +80,7 @@ export class TuumTechScriptService {
     return response;
   }
 
-  public static async updateUserDidInfo(params: TuumScriptUpdateDidUserParams) {
+  public static async updateUserDidInfo(params: ISessionItem) {
     const add_user_script = {
       name: 'update_user_did_info',
       params,
@@ -114,7 +92,7 @@ export class TuumTechScriptService {
     let response = await this.runTuumTechScript(add_user_script);
   }
 
-  public static async addUserToTuumTech(params: TuumScriptAddDidUserParams) {
+  public static async addUserToTuumTech(params: ISessionItem) {
     const add_user_script = {
       name: 'add_user',
       params,

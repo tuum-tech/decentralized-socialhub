@@ -118,7 +118,15 @@ const LoggedHeader: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
           </IonGrid>
         </IonCol>
         <IonCol size="2">
-          <Link to={getLink}>
+          {/* <Link to={getLink}> */}
+          <Link
+            to={getLink}
+            target="_blank"
+            onClick={event => {
+              event.preventDefault();
+              window.open(getLink());
+            }}
+          >
             <FollowButton>View profile</FollowButton>
           </Link>
         </IonCol>
