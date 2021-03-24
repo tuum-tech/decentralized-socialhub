@@ -200,9 +200,11 @@ export class UserService {
       did = newDid.did;
       mnemonics = newDid.mnemonic;
     }
-    var passhash = CryptoJS.SHA256(did + storePassword).toString(
+    const passhash = CryptoJS.SHA256(did + storePassword).toString(
       CryptoJS.enc.Hex
     );
+
+    const isDIDPublished = await DidService.isDIDPublished(did);
     let sessionItem: ISessionItem = {
       did,
       accountType,
@@ -211,7 +213,7 @@ export class UserService {
       name,
       userToken,
       code: credential,
-      isDIDPublished: await DidService.isDIDPublished(did),
+      isDIDPublished: isDIDPublished ? isDIDPublished : false,
       onBoardingCompleted: false,
       tutorialStep: 1,
       avatar: '',
