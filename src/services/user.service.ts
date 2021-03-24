@@ -168,16 +168,10 @@ export class UserService {
         const isDIDPublished = await DidService.isDIDPublished(userData.did);
 
         return {
-          accountType: userData.accountType,
-          did: userData.did,
-          name: userData.name,
-          hiveHost: userData.hiveHost,
-          email: userData.email,
-          userToken: userData.userToken,
+          ...userData,
           isDIDPublished: isDIDPublished ? isDIDPublished : false,
-          onBoardingCompleted: userData.onBoardingCompleted,
-          avatar: userData.avatar,
-          tutorialStep: userData.tutorialStep
+          onBoardingCompleted: userData ? userData.onBoardingCompleted : false,
+          tutorialStep: userData ? userData.tutorialStep : 1
         };
       } else {
         return;
@@ -190,8 +184,8 @@ export class UserService {
 
   public static async CreateNewUser(
     name: string,
-    token: string,
-    service: AccountType,
+    userToken: string,
+    accountType: AccountType,
     email: string,
     credential: string,
     storePassword: string,
@@ -199,63 +193,43 @@ export class UserService {
     newMnemonicStr: string,
     hiveHostStr: string
   ) {
-    let sessionItem: ISessionItem;
-
     let did = newDidStr;
-    let mnemonic = newMnemonicStr;
-
+    let mnemonics = newMnemonicStr;
     if (!did || did === '') {
-      const newDid = await this.generateTemporaryDID(service, credential);
+      const newDid = await this.generateTemporaryDID(accountType, credential);
       did = newDid.did;
-      mnemonic = newDid.mnemonic;
+      mnemonics = newDid.mnemonic;
     }
-
     var passhash = CryptoJS.SHA256(did + storePassword).toString(
       CryptoJS.enc.Hex
     );
-
-    const res = await this.SearchUserWithDID(did);
-
-    sessionItem = {
-      did: did,
-      accountType: service,
-      isDIDPublished: await DidService.isDIDPublished(did),
+    let sessionItem: ISessionItem = {
+      did,
+      accountType,
+      passhash,
+      email,
       name,
+      userToken,
+      code: credential,
+      isDIDPublished: await DidService.isDIDPublished(did),
+      onBoardingCompleted: false,
+      tutorialStep: 1,
+      avatar: '',
+      status: 'Created',
       hiveHost:
         hiveHostStr === ''
           ? `${process.env.REACT_APP_TUUM_TECH_HIVE}`
           : hiveHostStr,
-      userToken: token,
-      mnemonics: mnemonic,
-      passhash: passhash,
-      email: email,
-      onBoardingCompleted: res ? res.onBoardingCompleted : false,
-      tutorialStep: res ? res.tutorialStep : 1
+      mnemonics
     };
 
-    // add new user to the tuum.tech vault
-    if (service === AccountType.Email) {
-      await TuumTechScriptService.updateUserDidInfo({
-        email: email,
-        code: credential,
-        did: did,
-        hiveHost: sessionItem.hiveHost,
-        accountType: service,
-        userToken: token,
-        tutorialStep: sessionItem.tutorialStep,
-        onBoardingCompleted: sessionItem.onBoardingCompleted
-      });
+    if (accountType === AccountType.Email) {
+      sessionItem = await this.SearchUserWithDID(did);
+      await TuumTechScriptService.updateUserDidInfo(sessionItem);
     } else {
-      await TuumTechScriptService.addUserToTuumTech({
-        name,
-        email: email,
-        status: 'CONFIRMED',
-        code: '1',
-        did: did,
-        hiveHost: sessionItem.hiveHost,
-        accountType: service,
-        userToken: token
-      });
+      sessionItem.status = 'CONFIRMED';
+      sessionItem.code = userToken;
+      await TuumTechScriptService.addUserToTuumTech(sessionItem);
     }
 
     this.lockUser(this.key(did), sessionItem);
@@ -267,28 +241,29 @@ export class UserService {
   }
 
   public static async updateSession(sessionItem: ISessionItem): Promise<void> {
-    let userData = await TuumTechScriptService.searchUserWithDID(
+    let newSessionItem = sessionItem;
+    const userData = await TuumTechScriptService.searchUserWithDID(
       sessionItem.did
     );
 
-    let code = userData.data['get_user_by_did']['items'][0].code;
-    await TuumTechScriptService.updateUserDidInfo({
-      email: sessionItem.email!,
-      code: code,
-      did: sessionItem.did,
-      hiveHost: sessionItem.hiveHost,
-      accountType: sessionItem.accountType,
-      userToken: sessionItem.userToken,
-      tutorialStep: sessionItem.tutorialStep,
-      onBoardingCompleted: sessionItem.onBoardingCompleted
-    });
+    if (
+      userData &&
+      userData.data &&
+      userData.data['get_user_by_did'] &&
+      userData.data['get_user_by_did']['items'] &&
+      userData.data['get_user_by_did']['items'].length > 0 &&
+      userData.data['get_user_by_did']['items'][0].code
+    ) {
+      const code = userData.data['get_user_by_did']['items'][0].code;
+      newSessionItem.code = code;
+    }
 
-    this.lockUser(this.key(sessionItem.did), sessionItem);
+    await TuumTechScriptService.updateUserDidInfo(newSessionItem);
+    this.lockUser(this.key(sessionItem.did), newSessionItem);
 
-    // SessionService.saveSessionItem(sessionItem);
     window.localStorage.setItem(
       'session_instance',
-      JSON.stringify(sessionItem, null, '')
+      JSON.stringify(newSessionItem, null, '')
     );
   }
 
