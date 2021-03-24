@@ -5,6 +5,7 @@ interface ExperienceItem {
   program: string;
   start: string;
   end: string;
+  still: boolean;
   title: string;
   description: string;
   order: string;
@@ -23,7 +24,7 @@ interface EducationItem {
   program: string;
   start: string;
   end: string;
-  stillWorking: boolean;
+  still: boolean;
   title: string;
   description: string;
   order: string;

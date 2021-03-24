@@ -143,6 +143,7 @@ export class UserVaultScripts {
               institution: '$params.institution',
               start: '$params.start',
               end: '$params.end',
+              still: '$params.still',
               description: '$params.description'
             }
           },
@@ -173,6 +174,7 @@ export class UserVaultScripts {
               institution: '$params.institution',
               start: '$params.start',
               end: '$params.end',
+              still: '$params.still',
               description: '$params.description'
             }
           },

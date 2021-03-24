@@ -9,6 +9,7 @@ import {
 
 import SmallTextInput from '../../inputs/SmallTextInput';
 import { MyGrid, MyTextarea } from './Item';
+import styled from 'styled-components';
 
 interface ExperienceCardEditProps {
   experienceItem: ExperienceItem;
@@ -16,6 +17,11 @@ interface ExperienceCardEditProps {
   index: number;
   mode: string;
 }
+
+const Spacer = styled.div`
+  margin-top: 40px;
+  padding: 5px;
+`;
 
 const ExperienceCardEdit: React.FC<ExperienceCardEditProps> = ({
   experienceItem,
@@ -78,7 +84,14 @@ const ExperienceCardEdit: React.FC<ExperienceCardEditProps> = ({
           />
         </IonCol>
         <IonCol size="auto" class="ion-align-self-end">
-          <IonCheckbox onIonChange={handleChangeIndex} />
+          <Spacer>
+            <IonCheckbox
+              checked={experienceItem.still}
+              name="still"
+              onIonChange={handleChangeIndex}
+            />{' '}
+            Still working
+          </Spacer>
         </IonCol>
       </IonRow>
       <IonRow class="ion-justify-content-start">
