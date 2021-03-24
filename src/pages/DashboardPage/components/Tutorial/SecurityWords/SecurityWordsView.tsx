@@ -7,9 +7,8 @@ import style from './style.module.scss';
 const SecurityWordsViewContainer = styled(IonGrid)`
   width: 100%;
   margin: 5px auto;
-  margin-left: 25px;
-  margin-bottom: 10px;
 `;
+
 const SecurityWordsViewRow = styled(IonRow)`
   margin-right: -25px;
 `;

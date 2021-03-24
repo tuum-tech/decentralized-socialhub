@@ -64,33 +64,8 @@ let run = async () => {
     }
   });
 
-  /*
-  fs.readFile('./src/data/dummy_followers.json', (err, data) => {
-    if (err) throw err;
-    let followerList = JSON.parse(data);
-    console.log(followerList[0]);
-    client.Database.insertMany('followers', followerList);
-  });
-  */
-
-  // ===== followers section end =====
-
   // ===== users section start =====
   await client.Database.createCollection('users');
-
-  console.log(__dirname);
-  console.log(process.cwd());
-
-  // fs.readFile('../data/dummy_users.json', (err, data) => {
-  /*
-  fs.readFile('./src/data/dummy_users.json', (err, data) => {
-    if (err) throw err;
-    let dummyUsersList = JSON.parse(data);
-    console.log(dummyUsersList[0]);
-    client.Database.insertMany('users', dummyUsersList);
-  });
-  */
-
   await client.Scripting.SetScript({
     name: 'add_user',
     allowAnonymousUser: true,
@@ -102,61 +77,65 @@ let run = async () => {
       body: {
         collection: 'users',
         document: {
-          name: '$params.name',
-          email: '$params.email',
-          status: '$params.status',
-          code: '$params.code',
           did: '$params.did',
-          hiveHost: '$params.hiveHost',
           accountType: '$params.accountType',
-          userToken: '$params.userToken'
+          passhash: '$params.passhash',
+          email: '$params.email',
+          name: '$params.name',
+          userToken: '$params.userToken',
+          code: '$params.code',
+          isDIDPublished: '$params.isDIDPublished',
+          onBoardingCompleted: '$params.onBoardingCompleted',
+          tutorialStep: '$params.tutorialStep',
+          hiveHost: '$params.hiveHost',
+          avatar: '$params.avatar',
+          code: '$params.code',
+          status: '$params.status'
         }
       }
     }
   });
-
-  await client.Scripting.SetScript({
-    name: 'update_user',
-    allowAnonymousUser: true,
-    allowAnonymousApp: true,
-    executable: {
-      type: 'update',
-      name: 'update_user',
-      body: {
-        collection: 'users',
-        filter: {
-          did: '$params.did'
-        },
-        update: {
-          $set: {
-            name: '$params.name',
-            email: '$params.email'
-          }
-        },
-        options: {
-          upsert: true,
-          bypass_document_validation: false
-        }
-      }
-    }
-  });
-
-  await client.Scripting.SetScript({
-    name: 'delete_user_by_did',
-    allowAnonymousUser: true,
-    allowAnonymousApp: true,
-    executable: {
-      type: 'delete',
-      name: 'delete_user_by_did',
-      output: true,
-      body: {
-        collection: 'users',
-        filter: {
-          did: '$params.did'
-        }
-      }
-    }
-  });
+  // await client.Scripting.SetScript({
+  //   name: 'update_user',
+  //   allowAnonymousUser: true,
+  //   allowAnonymousApp: true,
+  //   executable: {
+  //     type: 'update',
+  //     name: 'update_user',
+  //     body: {
+  //       collection: 'users',
+  //       filter: {
+  //         did: '$params.did'
+  //       },
+  //       update: {
+  //         $set: {
+  //           name: '$params.name',
+  //           email: '$params.email'
+  //         }
+  //       },
+  //       options: {
+  //         upsert: true,
+  //         bypass_document_validation: false
+  //       }
+  //     }
+  //   }
+  // });
+  // await client.Scripting.SetScript({
+  //   name: 'delete_user_by_did',
+  //   allowAnonymousUser: true,
+  //   allowAnonymousApp: true,
+  //   executable: {
+  //     type: 'delete',
+  //     name: 'delete_user_by_did',
+  //     output: true,
+  //     body: {
+  //       collection: 'users',
+  //       filter: {
+  //         did: '$params.did'
+  //       }
+  //     }
+  //   }
+  // });
   await client.Scripting.SetScript({
     name: 'get_user_by_did',
     allowAnonymousUser: true,
@@ -247,11 +226,19 @@ let run = async () => {
         update: {
           $set: {
             did: '$params.did',
-            hiveHost: '$params.hiveHost',
-            userToken: '$params.userToken',
             accountType: '$params.accountType',
+            passhash: '$params.passhash',
+            email: '$params.email',
+            name: '$params.name',
+            userToken: '$params.userToken',
+            code: '$params.code',
+            isDIDPublished: '$params.isDIDPublished',
+            onBoardingCompleted: '$params.onBoardingCompleted',
             tutorialStep: '$params.tutorialStep',
-            onBoardingCompleted: '$params.onBoardingCompleted'
+            hiveHost: '$params.hiveHost',
+            avatar: '$params.avatar',
+            code: '$params.code',
+            status: '$params.status'
           }
         }
       }
@@ -348,8 +335,6 @@ let run = async () => {
     }
   });
 
-  // ===== users section end =====
-
   // ===== universities section start =====
   //store and retrieve universities data from tuum-tech vault
   await client.Database.deleteCollection('universities');
@@ -400,7 +385,6 @@ let run = async () => {
       }
     }
   });
-  // ===== universities section end =====
 
   console.log('All scripts OK');
 };

@@ -65,13 +65,15 @@ interface ISessionItem {
   accountType: AccountType;
   did: string;
   name: string;
-  email?: string;
   isDIDPublished: boolean;
   mnemonics: string;
   passhash: string;
-  onBoardingCompleted: boolean;
-  avatar?: string;
   tutorialStep: number;
+  onBoardingCompleted: boolean;
+  email?: string;
+  avatar?: string;
+  code?: string;
+  status?: string;
 }
 
 interface PeopleItem {

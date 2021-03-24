@@ -20,6 +20,7 @@ export interface TutorialComponentProps {
 
 const NoPaddingGrid = styled(IonGrid)`
   padding: 0 !important;
+  overflow-y: auto !important;
 `;
 
 const TutorialComponent: React.FC<TutorialComponentProps> = ({ onClose }) => {

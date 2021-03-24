@@ -1,5 +1,8 @@
 import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 import { ProfileResponse } from 'src/pages/DashboardPage/types';
+
+import { showNotify } from 'src/utils/notify';
+
 import { HiveService } from './hive.service';
 import { UserService, AccountType } from './user.service';
 
@@ -69,45 +72,11 @@ export class ProfileService {
     }
   }
 
-  static async updateEducationProfile(
-    educationItem: EducationItem
-  ): Promise<IRunScriptResponse<ProfileResponse> | undefined> {
-    const userSession = UserService.GetUserSession();
-    const hiveInstance = await HiveService.getSessionInstance();
-    if (userSession && hiveInstance) {
-      return hiveInstance.Scripting.RunScript({
-        name: 'update_education_profile',
-        context: {
-          target_did: userSession.did,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-        },
-        params: educationItem
-      });
-    }
-  }
-
-  static async removeEducationItem(
-    educationItem: EducationItem
-  ): Promise<IRunScriptResponse<ProfileResponse> | undefined> {
-    const userSession = UserService.GetUserSession();
-    const hiveInstance = await HiveService.getSessionInstance();
-    if (userSession && hiveInstance) {
-      return hiveInstance.Scripting.RunScript({
-        name: 'remove_education_item',
-        context: {
-          target_did: userSession.did,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-        },
-        params: educationItem
-      });
-    }
-  }
-
   static async updateAbout(basicDTO: BasicDTO) {
     const userSession = UserService.GetUserSession();
     const hiveInstance = await HiveService.getSessionInstance();
     if (userSession && hiveInstance) {
-      return hiveInstance.Scripting.RunScript({
+      const res: any = await hiveInstance.Scripting.RunScript({
         name: 'update_basic_profile',
         context: {
           target_did: userSession.did,
@@ -115,16 +84,17 @@ export class ProfileService {
         },
         params: basicDTO
       });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('About info is successfuly saved', 'success');
+      }
     }
   }
 
-  static async updateExperienceProfile(
-    experienceItem: ExperienceItem
-  ): Promise<IRunScriptResponse<ProfileResponse> | undefined> {
+  static async updateExperienceProfile(experienceItem: ExperienceItem) {
     const userSession = UserService.GetUserSession();
     const hiveInstance = await HiveService.getSessionInstance();
     if (userSession && hiveInstance) {
-      return hiveInstance.Scripting.RunScript({
+      const res: any = await hiveInstance.Scripting.RunScript({
         name: 'update_experience_profile',
         context: {
           target_did: userSession.did,
@@ -132,16 +102,54 @@ export class ProfileService {
         },
         params: experienceItem
       });
+      console.log('=====>res', res);
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Experience info is successfuly saved', 'success');
+      }
     }
   }
 
-  static async removeExperienceItem(
-    experienceItem: ExperienceItem
-  ): Promise<IRunScriptResponse<ProfileResponse> | undefined> {
+  static async updateEducationProfile(educationItem: EducationItem) {
     const userSession = UserService.GetUserSession();
     const hiveInstance = await HiveService.getSessionInstance();
     if (userSession && hiveInstance) {
-      return hiveInstance.Scripting.RunScript({
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'update_education_profile',
+        context: {
+          target_did: userSession.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: educationItem
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Education info is successfuly saved', 'success');
+      }
+    }
+  }
+
+  static async removeEducationItem(educationItem: EducationItem) {
+    const userSession = UserService.GetUserSession();
+    const hiveInstance = await HiveService.getSessionInstance();
+    if (userSession && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'remove_education_item',
+        context: {
+          target_did: userSession.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: educationItem
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Education info is successfuly removed', 'success');
+      }
+    }
+  }
+
+  static async removeExperienceItem(experienceItem: ExperienceItem) {
+    const userSession = UserService.GetUserSession();
+    const hiveInstance = await HiveService.getSessionInstance();
+    if (userSession && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
         name: 'remove_experience_item',
         context: {
           target_did: userSession.did,
@@ -149,6 +157,9 @@ export class ProfileService {
         },
         params: experienceItem
       });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Experience info is successfuly removed', 'success');
+      }
     }
   }
 

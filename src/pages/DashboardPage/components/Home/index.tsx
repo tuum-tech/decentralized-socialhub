@@ -45,18 +45,7 @@ const DashboardHome: React.FC<DashboardProps> = ({
       <IonRow>
         <IonCol size="8">
           {profile && profile.basicDTO && (
-            <AboutCard
-              aboutText={profile.basicDTO.about || ''}
-              update={async (nextAbout: string) => {
-                const newBasicDTO = { ...profile.basicDTO };
-                const userSession = UserService.GetUserSession();
-                if (userSession) {
-                  newBasicDTO.did = userSession.did;
-                  newBasicDTO.about = nextAbout;
-                  await ProfileService.updateAbout(newBasicDTO);
-                }
-              }}
-            />
+            <AboutCard aboutText={profile.basicDTO.about || ''} />
           )}
           {profile && profile.experienceDTO && (
             <ExperienceCard experienceDTO={profile.experienceDTO} />
@@ -74,7 +63,6 @@ const DashboardHome: React.FC<DashboardProps> = ({
               component={getTutorialButton()}
             />
           )}
-
           <ProfileCompletionCard title="Profile Completion" />
           <BadgesCard title="Badges" />
         </IonCol>

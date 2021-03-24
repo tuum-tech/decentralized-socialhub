@@ -87,6 +87,7 @@ const ProfileEditor: React.FC = () => {
                         newBasicDTO.did = userSession.did;
                         newBasicDTO.about = nextAbout;
                         await ProfileService.updateAbout(newBasicDTO);
+                        await retriveProfile();
                       }
                     }}
                   />
@@ -98,9 +99,11 @@ const ProfileEditor: React.FC = () => {
                       await ProfileService.updateEducationProfile(
                         educationItem
                       );
+                      await retriveProfile();
                     }}
                     removeFunc={async (educationItem: EducationItem) => {
                       await ProfileService.removeEducationItem(educationItem);
+                      await retriveProfile();
                     }}
                     mode="edit"
                   />
@@ -112,9 +115,11 @@ const ProfileEditor: React.FC = () => {
                       await ProfileService.updateExperienceProfile(
                         experienceItem
                       );
+                      await retriveProfile();
                     }}
                     removeFunc={async (experienceItem: ExperienceItem) => {
                       await ProfileService.removeExperienceItem(experienceItem);
+                      await retriveProfile();
                     }}
                     mode="edit"
                   />

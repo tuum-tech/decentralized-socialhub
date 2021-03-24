@@ -121,7 +121,14 @@ const DashboardProfileHeader: React.FC<IProps> = ({
           </IonGrid>
         </IonCol>
         <IonCol size="2">
-          <Link to={getPublicProfileLink}>
+          <Link
+            to={getPublicProfileLink}
+            target="_blank"
+            onClick={event => {
+              event.preventDefault();
+              window.open(getPublicProfileLink());
+            }}
+          >
             <FollowButton>View profile</FollowButton>
           </Link>
         </IonCol>
