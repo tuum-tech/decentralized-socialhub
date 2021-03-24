@@ -68,7 +68,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
           setSignedIn(true);
         }
       } catch (error) {
-        console.log('======>error', error);
+        // console.log('======>error', error);
       }
 
       setLoading(false);

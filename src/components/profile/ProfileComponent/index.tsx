@@ -84,18 +84,15 @@ const ProfileComponent: React.FC<IPropsSession> = ({
         scrollEvents={true}
         onIonScroll={handleScroll}
       >
-        ProfileBanner
         <ProfileBanner mode={mode} />
-        ProfileBanner
-        <br />
-        profileheader
+
         <ProfileHeader
           mode={mode}
           profile={profile}
           user={sessionItem as ISessionItem}
           error={error}
         />
-        profileheader
+
         {profile.basicDTO.isEnabled === true ? (
           <>
             <PublicProfileNav

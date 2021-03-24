@@ -102,7 +102,6 @@ export class ProfileService {
         },
         params: experienceItem
       });
-      console.log('=====>res', res);
       if (res.isSuccess && res.response._status === 'OK') {
         showNotify('Experience info is successfuly saved', 'success');
       }
