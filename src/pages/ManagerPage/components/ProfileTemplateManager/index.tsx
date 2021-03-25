@@ -65,7 +65,13 @@ const ProfileTemplateManager: React.FC<IProps> = ({ sessionItem }: IProps) => {
                 <ProfileName>{sessionItem.name}</ProfileName>
               </IonRow>
               <IonRow>
-                <ProfileStatus>Profile is Ready</ProfileStatus>
+                <ProfileStatus>
+                  Profile is{' '}
+                  {sessionItem.onBoardingCompleted &&
+                  sessionItem.tutorialStep === 4
+                    ? 'ready'
+                    : 'being published'}
+                </ProfileStatus>
               </IonRow>
             </IonGrid>
           </IonCol>

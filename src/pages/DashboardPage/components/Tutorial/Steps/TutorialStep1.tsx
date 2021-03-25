@@ -21,7 +21,11 @@ const TutorialStep1Component: React.FC<ITutorialStepProp> = ({
   return (
     <div>
       <h2>What is Profile?</h2>
-      <p>It's free and easy to get setup</p>
+      <p>
+        Be your own entity online with total control of your digital world, in
+        one place. A platform where genuine connections and real-world
+        networking online begins. It's free and easy to setup!
+      </p>
       {isDIDPublished && (
         <IonButton onClick={onContinue} className={style['tutorial-button']}>
           Continue

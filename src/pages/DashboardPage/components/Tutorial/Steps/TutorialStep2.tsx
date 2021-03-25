@@ -24,11 +24,10 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
         <LeftArrow fill="black" />
         <h2 className="mb-15px mt-25px">Decentralized Identity (DID)</h2>
         <p>
-          These are your secret keys(also known as 12 word mnemonics) that
-          control your Decentralized Identifier (DID). Write these down, in
-          order and keep them safe. You own it and you control your DID so if
-          you lose these secret keys, you cannot access your profile in the
-          future.
+          These are your secret keys(also called mnemonics) that control your
+          Decentralized Identifier (DID). Write these down, in order and keep
+          them safe. You own it and you control your DID so if you lose these
+          secret keys, you cannot access your profile in the future.
         </p>
         <SecurityWordsView mnemonics={mnemonic} />
         <IonButton
