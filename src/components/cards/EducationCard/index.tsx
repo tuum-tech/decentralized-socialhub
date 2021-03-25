@@ -158,6 +158,7 @@ const EducationCard: React.FC<IEducationProps> = ({
             </IonCardContent>
           </IonCard>
           <MyModal
+            onDidDismiss={() => setMode(MODE.NONE)}
             isOpen={mode === MODE.EDIT || mode === MODE.ADD}
             cssClass="my-custom-class"
           >
