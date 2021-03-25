@@ -164,7 +164,8 @@ export class UserVaultScriptService {
         let hiveInstance = await HiveService.getSessionInstance();
         await UserVaultScripts.Execute(hiveInstance!);
       } catch (error) {
-        alertError(null, error);
+        console.log('Could not register: ' + error);
+        alertError(null, 'Could not register');
       }
     }
   }

@@ -63,7 +63,7 @@ const SearchComponent: React.FC = () => {
         setFilteredUniversities(listUniversities.response);
       } catch (e) {
         setFilteredUniversities({ get_universities: { items: [] } });
-        alertError(null, 'cant load universities');
+        alertError(null, 'Could not load universities');
         return;
       }
 
@@ -72,7 +72,7 @@ const SearchComponent: React.FC = () => {
         setFilteredUsers(listUsers.response);
       } catch (e) {
         setFilteredUsers({ get_users: { items: [] } });
-        alertError(null, 'cant load users');
+        alertError(null, 'Could not load users');
         return;
       }
     }
@@ -86,7 +86,7 @@ const SearchComponent: React.FC = () => {
       }
     } catch (e) {
       setListFollowing({ get_following: { items: [] } });
-      alertError(null, 'cant load following');
+      alertError(null, 'Could not load users that you follow');
       return;
     }
   };

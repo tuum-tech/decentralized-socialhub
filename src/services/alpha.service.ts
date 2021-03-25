@@ -87,7 +87,7 @@ export class AlphaService {
 
       return scriptResponse.isSuccess;
     } catch (error) {
-      alertError(null, 'Failed request Access');
+      alertError(null, 'Could not request access code');
       return false;
     }
   }

@@ -90,7 +90,7 @@ export class UserService {
   ): ISessionItem | undefined {
     let item = window.localStorage.getItem(key);
     if (!item) {
-      alertError(null, 'User not found');
+      alertError(null, 'User could not be found');
       return;
     }
 
@@ -178,7 +178,7 @@ export class UserService {
         return;
       }
     } else {
-      alertError(null, 'Error while searching user by did');
+      alertError(null, 'Error while searching the user by DID');
       return;
     }
   }
@@ -283,7 +283,7 @@ export class UserService {
     let instance = this.unlockUser(this.key(did), storePassword);
     const res = await this.SearchUserWithDID(did);
     if (!res) {
-      alertError(null, 'User not find with this DID');
+      alertError(null, 'Could not find user with this DID');
     } else if (instance) {
       instance.onBoardingCompleted = res.onBoardingCompleted;
       instance.tutorialStep = res.tutorialStep;
