@@ -145,7 +145,7 @@ const EducationCard: React.FC<IEducationProps> = ({
                       editFunc={editItem}
                       index={i}
                       removeFunc={removeItem}
-                      isEditable={true}
+                      isEditable={isEditable}
                     />
                     {i < currentEducationDTO.items.length - 1 ? (
                       <Divider />
