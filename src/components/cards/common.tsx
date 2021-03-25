@@ -63,7 +63,7 @@ export const LinkStyleSpan = styled.span`
   letter-spacing: -0.07px;
   text-align: left;
   color: #4c6fff;
-  cursor: default;
+  cursor: pointer;
 `;
 
 export const Description = styled.span`
@@ -95,7 +95,7 @@ export const TreeDotsButton = styled.div`
   font-weight: bold;
   background-color: rgba(221, 221, 221, 0.24);
   color: #000;
-  cursor: default;
+  cursor: pointer;
 `;
 
 export const PopoverMenuItem = styled.div`
