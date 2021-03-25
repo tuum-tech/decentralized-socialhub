@@ -140,7 +140,7 @@ const ExperienceItem: React.FC<Props> = ({
                   setEditMode('readonly');
                 }}
               >
-                {editMode === 'add' ? 'Add new Experience' : 'Edit Experience'}
+                Save
               </IonButton>
             </IonCol>
           </IonRow>

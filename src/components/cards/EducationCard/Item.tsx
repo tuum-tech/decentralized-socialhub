@@ -154,7 +154,7 @@ const EducationItem: React.FC<EducationItemProps> = ({
                   setEditMode('readonly');
                 }}
               >
-                {editMode === 'add' ? 'Add new Education' : 'Edit Education'}
+                Save
               </IonButton>
             </IonCol>
           </IonRow>
