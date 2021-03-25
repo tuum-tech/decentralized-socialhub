@@ -34,9 +34,7 @@ const ExperienceCardEdit: React.FC<ExperienceCardEditProps> = ({
   return (
     <MyGrid>
       <IonRow>
-        <IonCardTitle>
-          {mode === MODE.EDIT ? 'Edit Experience' : 'Add new Experience'}
-        </IonCardTitle>
+        <IonCardTitle>Save</IonCardTitle>
       </IonRow>
       <IonRow class="ion-justify-content-start">
         <IonCol size="5">

@@ -30,9 +30,7 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({
   return (
     <MyGrid>
       <IonRow>
-        <IonCardTitle>
-          {mode === MODE.EDIT ? 'Edit Education' : 'Add new Education'}
-        </IonCardTitle>
+        <IonCardTitle>Save</IonCardTitle>
       </IonRow>
       <IonRow class="ion-justify-content-start">
         <IonCol size="5">
