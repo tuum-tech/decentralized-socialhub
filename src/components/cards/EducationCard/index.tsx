@@ -179,7 +179,7 @@ const EducationCard: React.FC<IEducationProps> = ({
                       setMode(MODE.NONE);
                     }}
                   >
-                    {mode === MODE.ADD ? 'Add new Education' : 'Edit Education'}
+                    Save
                   </IonButton>
                 </IonCol>
               </IonRow>

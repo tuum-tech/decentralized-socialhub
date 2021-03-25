@@ -183,9 +183,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
                       setMode(MODE.NONE);
                     }}
                   >
-                    {mode === MODE.ADD
-                      ? 'Add new Experience'
-                      : 'Edit Experience'}
+                    Save
                   </IonButton>
                 </IonCol>
               </IonRow>
