@@ -26,7 +26,7 @@ const LinkStyleSpan = styled.span`
   letter-spacing: -0.07px;
   text-align: left;
   color: #4c6fff;
-  cursor: default;
+  cursor: pointer;
 `;
 
 const MyModal = styled(IonModal)`

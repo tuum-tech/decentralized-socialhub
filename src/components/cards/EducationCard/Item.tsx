@@ -1,54 +1,42 @@
 import React, { useState } from 'react';
-import { IonButton, IonCol, IonGrid, IonPopover, IonRow } from '@ionic/react';
+import { IonCol, IonGrid, IonPopover, IonRow } from '@ionic/react';
 
 import style from '../DidCard.module.scss';
 import styleWidget from '../WidgetCards.module.scss';
 
 import SkeletonAvatar from '../../avatars/SkeletonAvatar';
 import harvard from '../../../assets/logo/Harvard-Logo.png';
-
 import {
-  Institution,
-  Program,
-  Period,
   Description,
-  MyModal,
-  TreeDotsButton,
+  Institution,
+  Period,
   PopoverMenuItem,
-  ModalFooter
-} from '../ExperienceCard/Item';
-import EducationCardEdit from './Edit';
+  Program,
+  TreeDotsButton
+} from '../common';
 
 interface EducationItemProps {
   educationItem: EducationItem;
   handleChange: any;
   updateFunc: any;
+  editFunc: any;
   index: number;
   initialStatus?: string;
   removeFunc: any;
-  mode: string;
+  isEditable: boolean;
 }
 
 const EducationItem: React.FC<EducationItemProps> = ({
   educationItem,
-  handleChange,
-  updateFunc,
+  editFunc,
   index,
   removeFunc,
-  mode
+  isEditable
 }) => {
-  const [editMode, setEditMode] = useState(
-    educationItem.isEmpty ? 'add' : 'readonly'
-  );
   const [popoverState, setShowPopover] = useState({
     showPopover: false,
     event: undefined
   });
-
-  const cancel = () => {
-    if (editMode === 'add') removeFunc(index);
-    setEditMode('readonly');
-  };
 
   const remove = () => {
     removeFunc(index);
@@ -90,7 +78,7 @@ const EducationItem: React.FC<EducationItemProps> = ({
             </IonGrid>
           </IonCol>
 
-          {mode === 'edit' ? (
+          {isEditable ? (
             <IonCol size="auto">
               <IonPopover
                 showBackdrop={false}
@@ -104,7 +92,7 @@ const EducationItem: React.FC<EducationItemProps> = ({
                 <PopoverMenuItem
                   onClick={e => {
                     setShowPopover({ showPopover: false, event: undefined });
-                    setEditMode('edit');
+                    editFunc(educationItem);
                   }}
                 >
                   Edit
@@ -132,34 +120,6 @@ const EducationItem: React.FC<EducationItemProps> = ({
           )}
         </IonRow>
       </IonGrid>
-      <MyModal
-        isOpen={editMode === 'add' || editMode === 'edit'}
-        cssClass="my-custom-class"
-      >
-        <EducationCardEdit
-          educationItem={educationItem}
-          handleChange={handleChange}
-          index={index}
-          mode={editMode}
-        />
-        <ModalFooter className="ion-no-border">
-          <IonRow className="ion-justify-content-around">
-            <IonCol size="auto">
-              <IonButton fill="outline" onClick={cancel}>
-                Cancel
-              </IonButton>
-              <IonButton
-                onClick={() => {
-                  updateFunc(index);
-                  setEditMode('readonly');
-                }}
-              >
-                Save
-              </IonButton>
-            </IonCol>
-          </IonRow>
-        </ModalFooter>
-      </MyModal>
     </>
   );
 };

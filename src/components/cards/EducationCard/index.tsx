@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
+  IonButton,
   IonCard,
   IonCardContent,
   IonCardHeader,
@@ -12,20 +13,34 @@ import { Guid } from 'guid-typescript';
 
 import EducationItem from './Item';
 import styleWidget from '../WidgetCards.module.scss';
-import { Divider, LinkStyleSpan } from '../ExperienceCard/Item';
+import { Divider, LinkStyleSpan, MyModal, ModalFooter, MODE } from '../common';
+import EducationCardEdit from './Edit';
 
 interface IEducationProps {
   educationDTO: EducationDTO;
   updateFunc?: any;
   removeFunc?: any;
-  mode?: string;
+  isEditable?: boolean;
 }
+
+export const defaultEducationItem: EducationItem = {
+  guid: Guid.create(),
+  isEmpty: true,
+  institution: '',
+  program: '',
+  start: '',
+  end: '',
+  still: false,
+  title: '',
+  description: '',
+  order: ''
+};
 
 const EducationCard: React.FC<IEducationProps> = ({
   educationDTO,
   updateFunc,
   removeFunc,
-  mode = 'view'
+  isEditable = false
 }: IEducationProps) => {
   const [currentEducationDTO, setCurrentEducationDTO] = useState(educationDTO);
 
@@ -33,64 +48,63 @@ const EducationCard: React.FC<IEducationProps> = ({
     setCurrentEducationDTO(educationDTO);
   }, [educationDTO]);
 
-  const handleChange = (evt: any, index: number) => {
-    let value: any;
+  const [editedItem, setEditedItem] = useState(defaultEducationItem);
+  const [mode, setMode] = useState<MODE>(MODE.NONE);
+
+  useEffect(() => {
+    setCurrentEducationDTO(educationDTO);
+  }, [educationDTO]);
+
+  const handleChange = (evt: any) => {
+    let v: any;
     if (evt.target.name === 'still') {
-      value = evt.target.checked;
+      v = evt.target.checked;
     } else {
-      value = evt.target.value;
+      v = evt.target.value;
     }
 
-    // 1. Make a shallow copy of the items
+    let item = {
+      ...editedItem,
+      [evt.target.name]: v
+    };
+
+    setEditedItem(item);
+  };
+
+  const saveChanges = (item: EducationItem) => {
     let items = [...currentEducationDTO.items];
 
-    let item = {
-      ...items[index],
-      [evt.target.name]: value
-    };
+    let itemToUpdate = items.find(x => x.guid === item.guid);
+
+    if (itemToUpdate === undefined) {
+      items.push(item);
+    } else {
+      let index = items.indexOf(itemToUpdate);
+      items[index] = item;
+    }
+
     // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
-    items[index] = item;
 
     // 5. Set the state to our new copy
     setCurrentEducationDTO({ isEnabled: true, items: items });
+    updateFunc(item);
   };
 
-  const saveChanges = (index: number) => {
-    updateFunc(currentEducationDTO.items[index]);
+  const cancel = () => {
+    setMode(MODE.NONE);
   };
 
   const addItem = () => {
-    // 1. Make a shallow copy of the items
-    let items = [...currentEducationDTO.items];
+    setMode(MODE.ADD);
+    setEditedItem(defaultEducationItem);
+  };
 
-    let item: EducationItem = {
-      guid: Guid.create(),
-      description: '',
-      institution: '',
-      program: '',
-      title: '',
-      still: false,
-      order: '',
-      start: '',
-      end: '',
-      isEmpty: true
-    };
-    // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
-    items.push(item);
-
-    // 5. Set the state to our new copy
-    setCurrentEducationDTO({ isEnabled: true, items: items });
+  const editItem = (item: ExperienceItem) => {
+    setEditedItem(item);
+    setMode(MODE.EDIT);
   };
 
   const removeItem = async (index: number) => {
-    // let items = [...currentEducationDTO.items];
-
-    // let itemToDelete = items.splice(index, 1);
-
-    // setCurrentEducationDTO({ isEnabled: true, items: items });
-
-    // if (itemToDelete[0].isEmpty) removeFunc(itemToDelete[0]);
-
     let items = [...currentEducationDTO.items];
     await removeFunc(items[index]);
     items = items.splice(index, 1);
@@ -100,43 +114,78 @@ const EducationCard: React.FC<IEducationProps> = ({
   return (
     <>
       {educationDTO.isEnabled === true ? (
-        <IonCard className={styleWidget['overview']}>
-          <IonCardHeader>
-            <IonGrid>
-              <IonRow className="ion-justify-content-between">
-                <IonCol>
-                  <IonCardTitle>Education</IonCardTitle>
-                </IonCol>
-                {mode === 'edit' ? (
-                  <IonCol size="auto">
-                    <LinkStyleSpan onClick={e => addItem()}>
-                      + Add Education
-                    </LinkStyleSpan>
+        <>
+          <IonCard className={styleWidget['overview']}>
+            <IonCardHeader>
+              <IonGrid>
+                <IonRow className="ion-justify-content-between">
+                  <IonCol>
+                    <IonCardTitle>Education</IonCardTitle>
                   </IonCol>
-                ) : (
-                  ''
-                )}
+                  {isEditable ? (
+                    <IonCol size="auto">
+                      <LinkStyleSpan onClick={e => addItem()}>
+                        + Add Education
+                      </LinkStyleSpan>
+                    </IonCol>
+                  ) : (
+                    ''
+                  )}
+                </IonRow>
+              </IonGrid>
+            </IonCardHeader>
+            <IonCardContent>
+              {currentEducationDTO.items.map((x, i) => {
+                return (
+                  <div key={i}>
+                    <EducationItem
+                      educationItem={x}
+                      handleChange={handleChange}
+                      updateFunc={saveChanges}
+                      editFunc={editItem}
+                      index={i}
+                      removeFunc={removeItem}
+                      isEditable={isEditable}
+                    />
+                    {i < currentEducationDTO.items.length - 1 ? (
+                      <Divider />
+                    ) : (
+                      ''
+                    )}
+                  </div>
+                );
+              })}
+            </IonCardContent>
+          </IonCard>
+          <MyModal
+            onDidDismiss={() => setMode(MODE.NONE)}
+            isOpen={mode === MODE.EDIT || mode === MODE.ADD}
+            cssClass="my-custom-class"
+          >
+            <EducationCardEdit
+              educationItem={editedItem}
+              handleChange={handleChange}
+              mode={mode}
+            />
+            <ModalFooter className="ion-no-border">
+              <IonRow className="ion-justify-content-around">
+                <IonCol size="auto">
+                  <IonButton fill="outline" onClick={cancel}>
+                    Cancel
+                  </IonButton>
+                  <IonButton
+                    onClick={() => {
+                      saveChanges(editedItem);
+                      setMode(MODE.NONE);
+                    }}
+                  >
+                    {mode === MODE.ADD ? 'Add new Education' : 'Edit Education'}
+                  </IonButton>
+                </IonCol>
               </IonRow>
-            </IonGrid>
-          </IonCardHeader>
-          <IonCardContent>
-            {currentEducationDTO.items.map((x, i) => {
-              return (
-                <div key={i}>
-                  <EducationItem
-                    educationItem={x}
-                    handleChange={handleChange}
-                    updateFunc={saveChanges}
-                    index={i}
-                    removeFunc={removeItem}
-                    mode={mode}
-                  />
-                  {i < currentEducationDTO.items.length - 1 ? <Divider /> : ''}
-                </div>
-              );
-            })}
-          </IonCardContent>
-        </IonCard>
+            </ModalFooter>
+          </MyModal>
+        </>
       ) : (
         ''
       )}
