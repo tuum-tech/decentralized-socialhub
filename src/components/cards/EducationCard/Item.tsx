@@ -69,7 +69,7 @@ const EducationItem: React.FC<EducationItemProps> = ({
               <IonRow>
                 <Period>
                   {educationItem.start} -
-                  {educationItem.still ? ' Current' : educationItem.end}
+                  {educationItem.still ? ' Present' : educationItem.end}
                 </Period>
               </IonRow>
               <IonRow>

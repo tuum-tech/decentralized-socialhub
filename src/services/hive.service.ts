@@ -23,10 +23,7 @@ export class HiveService {
     );
 
     if (!isUserDocumentPublished) {
-      alertError(
-        null,
-        'DID User is not published or AccountType is not available type'
-      );
+      alertError(null, 'DID is not published yet');
       return;
     }
 

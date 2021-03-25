@@ -149,7 +149,7 @@ const AboutCard: React.FC<IProps> = ({
                   setIsEditing(false);
                 }}
               >
-                Edit
+                Save
               </IonButton>
             </IonCol>
           </IonRow>

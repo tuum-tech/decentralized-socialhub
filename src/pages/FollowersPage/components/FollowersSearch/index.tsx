@@ -60,7 +60,7 @@ const FollowersSearch: React.FC = () => {
         setListFollowers(followers as IFollowerResponse);
       }
     } catch (e) {
-      alertError(null, 'cant get followers');
+      alertError(null, 'Could not retrieve your followers');
     }
 
     try {
@@ -72,7 +72,7 @@ const FollowersSearch: React.FC = () => {
         setListFollowing(following as IFollowingResponse);
       }
     } catch (e) {
-      alertError(null, 'cant get following');
+      alertError(null, 'Could not load users that you follow');
     }
   };
 
@@ -98,7 +98,7 @@ const FollowersSearch: React.FC = () => {
       setFilteredUsers(listUsers.response);
     } catch (e) {
       setFilteredUsers({ get_users: { items: [] } });
-      alertError(null, 'cant load users');
+      alertError(null, 'Could not load users');
       return;
     }
   };

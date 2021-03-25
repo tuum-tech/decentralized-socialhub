@@ -76,7 +76,7 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({ onClose }) => {
 
   return (
     <div className={style['tutorial-component']}>
-      {loading && <LoadingIndicator loadingText="In Progress Now..." />}
+      {loading && <LoadingIndicator loadingText="In progress..." />}
       <NoPaddingGrid>
         <IonRow>
           <IonCol className={colLeftStyle()} size="5">

@@ -10,6 +10,7 @@ import { UserService } from 'src/services/user.service';
 import AlphaContent from 'src/components/AlphaContent';
 import transparentlogo from '../../../../assets/logo/transparentlogo.png';
 import wavinghand from '../../../../assets/icon/wavinghand.png';
+import lockicon from '../../../../assets/icon/lock.png';
 import defaultAdamAvatar from '../../../../assets/icon/defaultAdamAvatar.png';
 import emojiCool from '../../../../assets/icon/emoji-cool.png';
 
@@ -23,7 +24,7 @@ const OnBoardingPage: React.FC<Props> = ({ completed }) => {
   const [stage, setStage] = useState(1);
 
   const next = () => {
-    if (stage === 4) {
+    if (stage === 3) {
       completed();
     } else {
       setStage(stage + 1);
@@ -45,45 +46,7 @@ const OnBoardingPage: React.FC<Props> = ({ completed }) => {
             <IonImg src={wavinghand} className={style['wavinghand']} />
             <h1>Welcome to Profile</h1>
           </div>
-
-          <IonButton className={style['nextBtn']} onClick={next}>
-            Continue
-          </IonButton>
-        </div>
-      )}
-      {stage === 2 && (
-        <div className={style['onboarding-container']}>
-          <div>
-            <IonImg src={wavinghand} className={style['wavinghand']} />
-            <h1>Your Responsibility</h1>
-          </div>
-          <div className={style['stage2-content']}>
-            <p>
-              Only you know your secret keys (known as mnemonics) and passwords.
-              This information is your responsibility, you own them, and we
-              store nothing. You must protect and store your 12 word mnemonics!
-              These secret keys are used to issue a unique Decentralized
-              Identifier (DID) and must be stored in a safe place!
-            </p>
-
-            <p>
-              More information will be provided later. Ready to see what you can
-              do with your new DID?
-            </p>
-          </div>
-
-          <IonButton className={style['nextBtn']} onClick={next}>
-            Continue
-          </IonButton>
-        </div>
-      )}
-      {stage === 3 && (
-        <div className={style['onboarding-container']}>
-          <div>
-            <IonImg src={emojiCool} className={style['wavinghand']} />
-            <h1>Profile Status</h1>
-          </div>
-          <div className={style['stage3-content']}>
+          <div className={style['stage1-content']}>
             <div className={style['avatar-container']}>
               <IonImg
                 src={defaultAdamAvatar}
@@ -108,18 +71,47 @@ const OnBoardingPage: React.FC<Props> = ({ completed }) => {
               profile.
             </p>
           </div>
+
           <IonButton className={style['nextBtn']} onClick={next}>
             Continue
           </IonButton>
         </div>
       )}
-      {stage === 4 && (
+      {stage === 2 && (
+        <div className={style['onboarding-container']}>
+          <div>
+            <IonImg src={lockicon} className={style['wavinghand']} />
+            <h1>Your Responsibility</h1>
+          </div>
+          <div className={style['stage2-content']}>
+            <p>
+              Before setting up your profile, you will need to complete the
+              beginner's tutorial which will provide you with your secret
+              keys(also known as mnemonics). This information is your
+              responsibility, you own them, and we store nothing. You must
+              protect and store your secret keys(also known as mnemonics)! These
+              secret keys are used to issue a unique Decentralized Identifier
+              (DID) and must be stored in a safe place!
+            </p>
+
+            <p>
+              More information will be provided later. Ready to see what you can
+              do with your new DID?
+            </p>
+          </div>
+
+          <IonButton className={style['nextBtn']} onClick={next}>
+            Continue
+          </IonButton>
+        </div>
+      )}
+      {stage === 3 && (
         <div className={style['onboarding-container']}>
           <div>
             <IonImg src={emojiCool} className={style['wavinghand']} />
             <h1>Next steps?</h1>
           </div>
-          <div className={style['stage4-content']}>
+          <div className={style['stage3-content']}>
             <p>
               You can edit your profile in profile manager and explore other
               people in the explore section.
