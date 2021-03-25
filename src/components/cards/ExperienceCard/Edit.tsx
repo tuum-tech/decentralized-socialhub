@@ -3,21 +3,24 @@ import {
   IonCardTitle,
   IonCheckbox,
   IonCol,
+  IonGrid,
   IonLabel,
   IonRow
 } from '@ionic/react';
 
 import SmallTextInput from '../../inputs/SmallTextInput';
-import { MyGrid, MyTextarea } from './Item';
 import styled from 'styled-components';
+import { MODE, MyTextarea } from '../common';
 
 interface ExperienceCardEditProps {
   experienceItem: ExperienceItem;
   handleChange: any;
-  index: number;
-  mode: string;
+  mode: MODE;
 }
-
+export const MyGrid = styled(IonGrid)`
+  margin: 10px 20px 10px 20px;
+  height: 100 %;
+`;
 const Spacer = styled.div`
   margin-top: 40px;
   padding: 5px;
@@ -26,18 +29,13 @@ const Spacer = styled.div`
 const ExperienceCardEdit: React.FC<ExperienceCardEditProps> = ({
   experienceItem,
   handleChange,
-  index,
   mode
 }: ExperienceCardEditProps) => {
-  const handleChangeIndex = (evt: any) => {
-    handleChange(evt, index);
-  };
-
   return (
     <MyGrid>
       <IonRow>
         <IonCardTitle>
-          {mode === 'edit' ? 'Edit Experience' : 'Add new Experience'}
+          {mode === MODE.EDIT ? 'Edit Experience' : 'Add new Experience'}
         </IonCardTitle>
       </IonRow>
       <IonRow class="ion-justify-content-start">
@@ -47,7 +45,7 @@ const ExperienceCardEdit: React.FC<ExperienceCardEditProps> = ({
             label="Title"
             name="title"
             value={experienceItem.title}
-            onChange={handleChangeIndex}
+            onChange={handleChange}
           />
         </IonCol>
       </IonRow>
@@ -58,7 +56,7 @@ const ExperienceCardEdit: React.FC<ExperienceCardEditProps> = ({
             label="Organization Name"
             name="institution"
             value={experienceItem.institution}
-            onChange={handleChangeIndex}
+            onChange={handleChange}
           />
         </IonCol>
       </IonRow>
@@ -70,7 +68,7 @@ const ExperienceCardEdit: React.FC<ExperienceCardEditProps> = ({
             name="start"
             type="date"
             value={experienceItem.start}
-            onChange={handleChangeIndex}
+            onChange={handleChange}
           />
         </IonCol>
         <IonCol size="4.5">
@@ -80,7 +78,7 @@ const ExperienceCardEdit: React.FC<ExperienceCardEditProps> = ({
             name="end"
             type="date"
             value={experienceItem.end}
-            onChange={handleChangeIndex}
+            onChange={handleChange}
           />
         </IonCol>
         <IonCol size="auto" class="ion-align-self-end">
@@ -88,7 +86,7 @@ const ExperienceCardEdit: React.FC<ExperienceCardEditProps> = ({
             <IonCheckbox
               checked={experienceItem.still}
               name="still"
-              onIonChange={handleChangeIndex}
+              onIonChange={handleChange}
             />{' '}
             Still working
           </Spacer>
@@ -102,7 +100,7 @@ const ExperienceCardEdit: React.FC<ExperienceCardEditProps> = ({
             rows={3}
             name="description"
             value={experienceItem.description}
-            onIonChange={handleChangeIndex}
+            onIonChange={handleChange}
           />
         </IonCol>
       </IonRow>

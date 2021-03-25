@@ -115,13 +115,13 @@ const ProfileComponent: React.FC<IPropsSession> = ({
                         <div ref={experienceRef}>
                           <ExperienceCard
                             experienceDTO={profile.experienceDTO}
-                            mode="read"
+                            isEditable={false}
                           />
                         </div>
                         <div ref={educationRef}>
                           <EducationCard
                             educationDTO={profile.educationDTO}
-                            mode="read"
+                            isEditable={false}
                           />
                         </div>
                       </IonCol>
