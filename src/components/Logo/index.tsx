@@ -1,15 +1,23 @@
 import React from 'react';
-import { IonContent } from '@ionic/react';
+import styled from 'styled-components';
 
-import style from './style.module.scss';
+const Container = styled.div`
+  height: 5em;
+  padding: 16px;
+  background: white;
+
+  img {
+    width: 100%;
+    max-width: 9em;
+    margin: 16px auto;
+  }
+`;
 
 const Logo: React.FC = () => {
   return (
-    <IonContent className={style['logo']}>
-      <div>
-        <img src="../../assets/logo_profile_black.svg" />
-      </div>
-    </IonContent>
+    <Container>
+      <img src="../../assets/logo_profile_black.svg" />
+    </Container>
   );
 };
 

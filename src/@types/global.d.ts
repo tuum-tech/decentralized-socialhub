@@ -10,6 +10,7 @@ interface ExperienceItem {
   description: string;
   order: string;
   isEmpty: boolean;
+  logo?: string;
 }
 
 interface ExperienceDTO {
@@ -28,6 +29,7 @@ interface EducationItem {
   title: string;
   description: string;
   order: string;
+  logo?: string;
 }
 
 interface EducationDTO {

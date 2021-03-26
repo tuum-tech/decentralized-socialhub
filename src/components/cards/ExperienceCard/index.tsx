@@ -6,15 +6,12 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonCol,
-  IonFooter,
   IonGrid,
-  IonModal,
-  IonRow,
-  IonTextarea
+  IonRow
 } from '@ionic/react';
 import { Guid } from 'guid-typescript';
 
-import ExperienceItems from './List';
+import ExperienceItem from './Item';
 import styleWidget from '../WidgetCards.module.scss';
 
 import styled from 'styled-components';
@@ -142,7 +139,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
               {currentExperienceDTO.items.map((x, i) => {
                 return (
                   <div key={i}>
-                    <ExperienceItems
+                    <ExperienceItem
                       experienceItem={x}
                       handleChange={handleChange}
                       updateFunc={saveChanges}
