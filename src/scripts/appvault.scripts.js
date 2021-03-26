@@ -83,7 +83,6 @@ let run = async () => {
           email: '$params.email',
           name: '$params.name',
           userToken: '$params.userToken',
-          code: '$params.code',
           isDIDPublished: '$params.isDIDPublished',
           onBoardingCompleted: '$params.onBoardingCompleted',
           tutorialStep: '$params.tutorialStep',
@@ -228,17 +227,13 @@ let run = async () => {
             did: '$params.did',
             accountType: '$params.accountType',
             passhash: '$params.passhash',
-            email: '$params.email',
             name: '$params.name',
             userToken: '$params.userToken',
-            code: '$params.code',
             isDIDPublished: '$params.isDIDPublished',
             onBoardingCompleted: '$params.onBoardingCompleted',
             tutorialStep: '$params.tutorialStep',
             hiveHost: '$params.hiveHost',
-            avatar: '$params.avatar',
-            code: '$params.code',
-            status: '$params.status'
+            avatar: '$params.avatar'
           }
         }
       }

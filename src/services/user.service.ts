@@ -227,7 +227,10 @@ export class UserService {
     };
 
     if (accountType === AccountType.Email) {
-      sessionItem = await this.SearchUserWithDID(did);
+      const newSessionItem = await this.SearchUserWithDID(did);
+      if (newSessionItem && newSessionItem.did && newSessionItem.did !== '') {
+        sessionItem = newSessionItem;
+      }
       await TuumTechScriptService.updateUserDidInfo(sessionItem);
     } else {
       sessionItem.status = 'CONFIRMED';
