@@ -1,6 +1,11 @@
-import { IonFooter, IonGrid, IonModal, IonTextarea } from '@ionic/react';
+import {
+  IonFooter,
+  IonCard,
+  IonGrid,
+  IonModal,
+  IonTextarea
+} from '@ionic/react';
 import styled from 'styled-components';
-import { toEditorSettings } from 'typescript';
 
 export enum MODE {
   NONE,
@@ -67,6 +72,7 @@ export const LinkStyleSpan = styled.span`
 `;
 
 export const Description = styled.span`
+  white-space: break-spaces !important;
   font-family: 'SF Pro Display';
   font-size: 13px;
   font-weight: normal;

@@ -6,64 +6,23 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonCol,
-  IonFooter,
   IonGrid,
-  IonModal,
-  IonRow,
-  IonTextarea
+  IonRow
 } from '@ionic/react';
 import styled from 'styled-components';
 
+import {
+  LinkStyleSpan,
+  MyModal,
+  MyGrid,
+  MyTextarea,
+  ModalFooter
+} from './common';
 import styleWidget from './WidgetCards.module.scss';
 
-const LinkStyleSpan = styled.span`
-  font-family: 'SF Pro Display';
-  font-size: 14px;
-  font-weight: 500;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: normal;
-  letter-spacing: -0.07px;
-  text-align: left;
-  color: #4c6fff;
-  cursor: pointer;
-`;
-
-const MyModal = styled(IonModal)`
-  --border-radius: 16px;
-  --min-height: 200px;
-  --height: 280px;
-  --width: 560px;
-`;
-
-const MyGrid = styled(IonGrid)`
-  margin: 10px 20px 10px 20px;
-  height: 100 %;
-`;
-const MyTextarea = styled(IonTextarea)`
-  width: 90 %;
-  margin-top: 15px;
-  background: #edf2f7;
-  box-shadow: 0px 1px 2px rgba(50, 50, 71, 0.08),
-    0px 0px 1px rgba(50, 50, 71, 0.2);
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1.15;
-  font-family: 'SF Pro Display';
-  letter-spacing: normal;
-  text-align: left;
-  color: #6b829a;
-  --padding-bottom: 8px;
-  --padding-top: 9px;
-  --padding-end: 16px;
-  --padding-start: 16px;
-  --placeholder-color: var(--input - muted - placeholder);
-`;
 const About = styled.span`
-  margin: 9px 0 0 10px;
+  white-space: break-spaces !important;
+  margin: 9px 0 0 0;
   font-family: 'SF Pro Display';
   font-size: 14px;
   font-weight: normal;
@@ -75,9 +34,6 @@ const About = styled.span`
   color: #425466;
 `;
 
-const ModalFooter = styled(IonFooter)`
-  padding: 12px;
-`;
 interface IProps {
   mode?: string;
   update?: any;
@@ -118,7 +74,13 @@ const AboutCard: React.FC<IProps> = ({
           </IonGrid>
         </IonCardHeader>
         <IonCardContent>
-          <About>{about}</About>
+          <IonGrid>
+            <IonRow>
+              <IonCol size="12">
+                <About>{about}</About>
+              </IonCol>
+            </IonRow>
+          </IonGrid>
         </IonCardContent>
       </IonCard>
       <MyModal isOpen={isEditing} cssClass="my-custom-class">

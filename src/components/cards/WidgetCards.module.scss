@@ -1,11 +1,10 @@
 .overview {
   background-color: #fff;
   border-radius: 16px;
-  min-height: 250px;
-  box-shadow: 0 3px 8px -1px rgba(50, 50, 71, 0.05), 0 0 1px 0 rgba(12, 26, 75, 0.24);
-  padding-bottom: 15px;
-  margin-top:10px;
-  margin-bottom: 20px;
+  box-shadow: 0 3px 8px -1px rgba(50, 50, 71, 0.05),
+    0 0 1px 0 rgba(12, 26, 75, 0.24);
+  margin-top: 22px;
+  margin-bottom: 22px;
 
   ion-card-title {
     font-family: 'SF Pro Display';
@@ -18,22 +17,17 @@
     text-align: left;
     color: #27272e;
   }
-
-  // .card-content {
-  // }
-
-  // .card-button {
-  // }
 }
 
 .popover-class {
   --width: 90px;
   --padding: 25px 20px 25px 20px;
-  --box-shadow: 0 5px 5px -3px rgba(0,0,0,0.2),0 8px 10px 1px rgba(100,100,100,0.14),0 3px 8px 2px rgba(100,100,100,0.12);
+  --box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(100, 100, 100, 0.14),
+    0 3px 8px 2px rgba(100, 100, 100, 0.12);
   .popover-content {
     background: white;
     --width: 90px;
     --padding: 10px;
   }
-  
 }
