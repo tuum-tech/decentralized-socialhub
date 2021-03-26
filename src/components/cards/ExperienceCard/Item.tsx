@@ -17,8 +17,8 @@ const EditableContent = styled(IonCol)`
   display: flex;
 `;
 
-interface EducationItemProps {
-  educationItem: EducationItem;
+interface ExperienceItemProps {
+  experienceItem: ExperienceItem;
   handleChange: any;
   updateFunc: any;
   editFunc: any;
@@ -28,8 +28,8 @@ interface EducationItemProps {
   isEditable: boolean;
 }
 
-const EducationItem: React.FC<EducationItemProps> = ({
-  educationItem,
+const ExperienceItem: React.FC<ExperienceItemProps> = ({
+  experienceItem,
   editFunc,
   index,
   removeFunc,
@@ -49,34 +49,34 @@ const EducationItem: React.FC<EducationItemProps> = ({
       <IonGrid>
         <IonRow className="ion-justify-content-between">
           <IonCol size="2">
-            <div>
-              <Image
-                src={educationItem.logo}
-                alt="university logo"
-                maxWidth="100px"
-              />
-            </div>
+            <Image
+              src={experienceItem.logo}
+              alt="company logo"
+              maxWidth="100px"
+            />
           </IonCol>
           <EditableContent size="10">
             <IonGrid>
               <IonRow>
-                <Institution>{educationItem.institution}</Institution>
+                <Institution>{experienceItem.institution}</Institution>
               </IonRow>
               <IonRow>
-                <Program>{educationItem.program}</Program>
+                <Program>{experienceItem.title}</Program>
               </IonRow>
               <IonRow>
                 <Period>
-                  {educationItem.start} -
-                  {educationItem.still ? ' Present' : educationItem.end}
+                  {experienceItem.start} -
+                  {experienceItem.still === true
+                    ? ' Present'
+                    : experienceItem.end}
                 </Period>
               </IonRow>
               <IonRow>
-                <Description>{educationItem.description}</Description>
+                <Description>{experienceItem.description}</Description>
               </IonRow>
             </IonGrid>
 
-            {isEditable && (
+            {isEditable === true ? (
               <div>
                 <IonPopover
                   showBackdrop={false}
@@ -89,21 +89,15 @@ const EducationItem: React.FC<EducationItemProps> = ({
                 >
                   <PopoverMenuItem
                     onClick={e => {
-                      setShowPopover({
-                        showPopover: false,
-                        event: undefined
-                      });
-                      editFunc(educationItem);
+                      setShowPopover({ showPopover: false, event: undefined });
+                      editFunc(experienceItem);
                     }}
                   >
                     Edit
                   </PopoverMenuItem>
                   <PopoverMenuItem
                     onClick={() => {
-                      setShowPopover({
-                        showPopover: false,
-                        event: undefined
-                      });
+                      setShowPopover({ showPopover: false, event: undefined });
                       remove();
                     }}
                   >
@@ -119,6 +113,8 @@ const EducationItem: React.FC<EducationItemProps> = ({
                   ...
                 </TreeDotsButton>
               </div>
+            ) : (
+              ''
             )}
           </EditableContent>
         </IonRow>
@@ -127,4 +123,4 @@ const EducationItem: React.FC<EducationItemProps> = ({
   );
 };
 
-export default EducationItem;
+export default ExperienceItem;
