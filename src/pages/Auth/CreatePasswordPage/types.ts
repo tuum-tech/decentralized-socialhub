@@ -17,15 +17,3 @@ export type LocationState = {
   hiveHost: string;
   isDIDPublished: boolean;
 };
-
-// export type ISessionItem = {
-//   hiveHost: string;
-//   userToken: string;
-//   accountType: AccountType;
-//   did: string;
-//   name: string;
-//   email?: string;
-//   isDIDPublished: boolean;
-//   mnemonics: string;
-//   passhash: string;
-// };
