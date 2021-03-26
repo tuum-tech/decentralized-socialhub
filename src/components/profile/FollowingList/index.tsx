@@ -271,9 +271,10 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
     try {
       list = await ProfileService.getFollowings(did);
     } catch (e) {
+      console.log('Could not load users that you follow' + e);
       list = { get_following: { items: [] } };
-      // setError({ hasError: true, errorDescription: 'cant load followings' });
-      alertError(null, 'cant load followings');
+      // setError({ hasError: true, errorDescription: 'Could not load users that you follow' });
+      alertError(null, 'Could not load users that you follow');
     }
 
     let listDids: string[] = [];
@@ -300,7 +301,8 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
       let followers = await ProfileService.getFollowers(listDids);
       setListFollowers(followers as IFollowerResponse);
     } catch (e) {
-      alertError(null, 'cant get followers count');
+      console.log('Could not retrieve your followers: ' + e);
+      alertError(null, 'Could not retrieve your followers');
     }
 
     let docs: IDidDocument[] = [];

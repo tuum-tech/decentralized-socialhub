@@ -101,7 +101,7 @@ export class DidDocumentService {
   ): Promise<IDIDDocumentState | undefined> {
     let userSession = UserService.GetUserSession();
     if (!userSession) {
-      // alertError(null, 'Not logged');
+      // alertError(null, 'User is not logged in');
       return;
     }
 
@@ -134,7 +134,7 @@ export class DidDocumentService {
   static async reloadUserDocument(): Promise<IDIDDocumentState | undefined> {
     let userSession = UserService.GetUserSession();
     if (!userSession) {
-      alertError(null, 'Not logged');
+      alertError(null, 'User is not logged in');
       return;
     }
 

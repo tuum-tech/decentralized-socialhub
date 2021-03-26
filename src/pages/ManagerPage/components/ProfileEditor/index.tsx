@@ -105,7 +105,7 @@ const ProfileEditor: React.FC = () => {
                       await ProfileService.removeEducationItem(educationItem);
                       await retriveProfile();
                     }}
-                    mode="edit"
+                    isEditable={true}
                   />
                 )}
                 {full_profile && full_profile.experienceDTO && (
@@ -121,7 +121,7 @@ const ProfileEditor: React.FC = () => {
                       await ProfileService.removeExperienceItem(experienceItem);
                       await retriveProfile();
                     }}
-                    mode="edit"
+                    isEditable={true}
                   />
                 )}
               </>

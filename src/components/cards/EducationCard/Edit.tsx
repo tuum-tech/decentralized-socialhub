@@ -9,13 +9,12 @@ import {
 import styled from 'styled-components';
 
 import SmallTextInput from '../../inputs/SmallTextInput';
-import { MyTextarea, MyGrid } from '../ExperienceCard/Item';
+import { MODE, MyGrid, MyTextarea } from '../common';
 
 interface EducationItemProps {
   educationItem: EducationItem;
   handleChange: any;
-  index: number;
-  mode: string;
+  mode: MODE;
 }
 
 const Spacer = styled.div`
@@ -26,18 +25,13 @@ const Spacer = styled.div`
 const EducationCardEdit: React.FC<EducationItemProps> = ({
   educationItem,
   handleChange,
-  index,
   mode
 }: EducationItemProps) => {
-  const handleChangeIndex = (evt: any) => {
-    handleChange(evt, index);
-  };
-
   return (
     <MyGrid>
       <IonRow>
         <IonCardTitle>
-          {mode === 'edit' ? 'Edit Education' : 'Add new Education'}
+          {mode === MODE.EDIT ? 'Edit education' : 'Add new education'}
         </IonCardTitle>
       </IonRow>
       <IonRow class="ion-justify-content-start">
@@ -47,7 +41,7 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({
             placeholder="e.g. Blockchain developer"
             name="program"
             value={educationItem.program}
-            onChange={handleChangeIndex}
+            onChange={handleChange}
           />
         </IonCol>
       </IonRow>
@@ -58,7 +52,7 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({
             placeholder="e.g. Harvard, MIT, ..."
             name="institution"
             value={educationItem.institution}
-            onChange={handleChangeIndex}
+            onChange={handleChange}
           />
         </IonCol>
       </IonRow>
@@ -70,7 +64,7 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({
             type="date"
             name="start"
             value={educationItem.start}
-            onChange={handleChangeIndex}
+            onChange={handleChange}
           />
         </IonCol>
         <IonCol size="4.5">
@@ -80,7 +74,7 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({
             placeholder="End"
             name="end"
             value={educationItem.end}
-            onChange={handleChangeIndex}
+            onChange={handleChange}
           />
         </IonCol>
         <IonCol size="3">
@@ -88,7 +82,7 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({
             <IonCheckbox
               checked={educationItem.still}
               name="still"
-              onIonChange={handleChangeIndex}
+              onIonChange={handleChange}
             />{' '}
             Still studying
           </Spacer>
@@ -102,7 +96,7 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({
             name="description"
             placeholder="..."
             value={educationItem.description}
-            onIonChange={handleChangeIndex}
+            onIonChange={handleChange}
           />
         </IonCol>
       </IonRow>
