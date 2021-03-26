@@ -12,17 +12,20 @@ import { UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
 
 import style from './style.module.scss';
+import SocialProfilesCard from 'src/components/cards/SocialProfilesCard';
 
 export interface DashboardProps {
   onTutorialStart: () => void;
   profile: ProfileDTO;
   sessionItem: ISessionItem;
+  didDocument: any;
 }
 
 const DashboardHome: React.FC<DashboardProps> = ({
   onTutorialStart,
   profile,
-  sessionItem
+  sessionItem,
+  didDocument
 }) => {
   const [tutorialVisible, setTutorialVisible] = useState(true);
   useEffect(() => {
@@ -33,7 +36,7 @@ const DashboardHome: React.FC<DashboardProps> = ({
       <div>
         <br />{' '}
         <ButtonWhite onClick={() => onTutorialStart()}>
-          {sessionItem.tutorialStep ? 'Continue' : 'Start'} beginners tutorial (
+          {sessionItem.tutorialStep && sessionItem.tutorialStep > 1 ? 'Continue' : 'Start'} beginners tutorial (
           {sessionItem.tutorialStep ? sessionItem.tutorialStep : 1} / 4)
         </ButtonWhite>
       </div>
@@ -65,6 +68,7 @@ const DashboardHome: React.FC<DashboardProps> = ({
           )}
           <ProfileCompletionCard title="Profile Completion" />
           <BadgesCard title="Badges" />
+          <SocialProfilesCard  diddocument={didDocument} />
         </IonCol>
       </IonRow>
     </IonGrid>

@@ -11,12 +11,14 @@ export interface DashboardProps {
   onTutorialStart: () => void;
   profile: ProfileDTO;
   sessionItem: ISessionItem;
+  didDocument: any;
 }
 
 const DashboardContent: React.FC<DashboardProps> = ({
   onTutorialStart,
   profile,
-  sessionItem
+  sessionItem,
+  didDocument
 }) => {
   const [active, setActive] = useState('home');
 
@@ -59,6 +61,7 @@ const DashboardContent: React.FC<DashboardProps> = ({
           sessionItem={sessionItem}
           profile={profile}
           onTutorialStart={onTutorialStart}
+          didDocument={didDocument}
         />
       )}
       {active === 'status' && <DashboardStatus />}

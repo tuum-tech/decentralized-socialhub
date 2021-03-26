@@ -50,11 +50,11 @@ export class UserService {
   ): Promise<IDID> {
     let newDID = await DidService.generateNew();
     let temporaryDocument = await DidService.genereteNewDidDocument(newDID);
-    DidService.sealDIDDocument(newDID, temporaryDocument);
-    DidDocumentService.updateUserDocument(temporaryDocument);
+    let signedDocument = DidService.sealDIDDocument(newDID, temporaryDocument);
+    DidDocumentService.updateUserDocument(signedDocument);
 
     let requestPub = await DidService.generatePublishRequest(
-      temporaryDocument,
+      signedDocument,
       newDID,
       PublishRequestOperation.Create
     );

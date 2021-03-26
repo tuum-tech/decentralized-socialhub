@@ -31,6 +31,7 @@ import TutorialComponent from './components/Tutorial';
 import DashboardContent from './components/Content';
 import OnBoarding from './components/OnBoarding';
 import DashboardHeader from './components/DashboardHeader';
+import { DidDocumentService } from 'src/services/diddocument.service';
 
 const TutorialModal = styled(IonModal)`
   --border-radius: 16px;
@@ -50,7 +51,9 @@ const ProfilePage = () => {
   const [userInfo, setUserInfo] = useState<ISessionItem>(defaultUserInfo);
   const [full_profile, setfull_profile] = useState(defaultFullProfile);
   const [onboardingCompleted, setOnboardingStatus] = useState(true);
+  const [didDocument, setDidDocument] = useState({});
   const history = useHistory();
+  
 
   const retriveProfile = async () => {
     let userSession = UserService.GetUserSession();
@@ -78,6 +81,9 @@ const ProfilePage = () => {
 
       setUserInfo(userSession);
       setOnboardingStatus(userSession.onBoardingCompleted);
+      
+      let document = DidDocumentService.getUserDocument(userSession)
+      setDidDocument(document)
 
       if (
         userSession.onBoardingCompleted &&
@@ -154,6 +160,7 @@ const ProfilePage = () => {
                 }}
                 profile={full_profile}
                 sessionItem={userInfo}
+                didDocument={didDocument}
               />
               {/* <StartService /> */}
             </IonCol>

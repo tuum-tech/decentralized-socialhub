@@ -106,14 +106,8 @@ export class DidDocumentService {
     }
 
     let userDid = await DidService.loadDid(userSession.mnemonics);
-    if (diddocument['proof']) delete diddocument['proof'];
-    let isValid = false;
-    let signedDocument: any;
-    while (!isValid) {
-      signedDocument = JSON.parse(JSON.stringify(diddocument));
-      DidService.sealDIDDocument(userDid, signedDocument);
-      isValid = DidService.isSignedDIDDocumentValid(signedDocument, userDid);
-    }
+    let signedDocument = DidService.sealDIDDocument(userDid, diddocument);
+    
 
     if (!signedDocument['proof']) {
       // alertError(null, 'The DID document was not signed');
