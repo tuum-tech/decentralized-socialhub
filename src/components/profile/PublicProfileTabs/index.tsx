@@ -15,7 +15,7 @@ const Navigation = styled.div`
   top: 110px;
 `;
 
-const PublicProfileNav: React.FC<IProps> = ({
+const PublicProfileTabs: React.FC<IProps> = ({
   profile,
   scrollToPosition,
   mode
@@ -71,4 +71,4 @@ const PublicProfileNav: React.FC<IProps> = ({
   );
 };
 
-export default PublicProfileNav;
+export default PublicProfileTabs;
