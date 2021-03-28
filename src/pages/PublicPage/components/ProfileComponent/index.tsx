@@ -10,9 +10,9 @@ import {
 } from '@ionic/react';
 import React, { useRef, useState } from 'react';
 
-import AboutCard from '../../cards/AboutCard';
-import EducationCard from '../../cards/EducationCard';
-import ExperienceCard from '../../cards/ExperienceCard';
+import AboutCard from 'src/components/cards/AboutCard';
+import EducationCard from 'src/components/cards/EducationCard';
+import ExperienceCard from 'src/components/cards/ExperienceCard';
 // import FollowersWidget from '../FollowersWidget';
 import FollowingList from '../FollowingList';
 import PublicProfileTabs from '../PublicProfileTabs';
@@ -20,10 +20,6 @@ import SocialProfiles from '../SocialProfiles';
 import ProfileBanner from '../ProfileBanner';
 import ProfileHeader from '../ProfileHeader';
 import style from './style.module.scss';
-
-interface IProps {
-  profile: ProfileDTO;
-}
 
 interface IPropsSession {
   profile: ProfileDTO;
@@ -42,7 +38,6 @@ const ProfileComponent: React.FC<IPropsSession> = ({
   const handleScroll = (e: any) => {
     //if (e.detail.scrollTop - scrollTop > 10 || e.detail.scrollTop - scrollTop < -10)
     setScrollTop(e.detail.scrollTop);
-
     if (scrollTop > 176) setMode('sticky');
     else {
       setMode('normal');

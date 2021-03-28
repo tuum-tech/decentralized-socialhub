@@ -52,6 +52,12 @@ const AboutCard: React.FC<IProps> = ({
     setAbout(aboutText);
   }, [aboutText]);
 
+  console.log('====>', mode, aboutText ? 'test' : 'no');
+
+  if (mode !== 'edit' && (aboutText === '' || aboutText === undefined)) {
+    return <></>;
+  }
+
   return (
     <>
       <IonCard className={styleWidget['overview']}>
