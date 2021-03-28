@@ -111,13 +111,6 @@ const EducationCard: React.FC<IEducationProps> = ({
     setCurrentEducationDTO({ isEnabled: true, items: items });
   };
 
-  if (
-    !currentEducationDTO.isEnabled ||
-    (!isEditable && currentEducationDTO.items.length == 0)
-  ) {
-    return <></>;
-  }
-
   return (
     <>
       {educationDTO.isEnabled === true ? (

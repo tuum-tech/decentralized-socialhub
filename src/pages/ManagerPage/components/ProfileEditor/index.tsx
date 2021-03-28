@@ -21,20 +21,20 @@ const ProfileEditor: React.FC = () => {
   const [error, setError] = useState(false);
   const [userInfo, setUserInfo] = useState<ISessionItem>(defaultUserInfo);
   const [loaded, setloaded] = useState(false);
-  const [profile, setProfile] = useState(defaultFullProfile);
+  const [full_profile, setfull_profile] = useState(defaultFullProfile);
 
   const retriveProfile = async () => {
     let instance = UserService.GetUserSession();
     if (!instance || !instance.userToken) return;
     try {
-      let res: ProfileDTO | undefined = await ProfileService.getFullProfile(
+      let profile: ProfileDTO | undefined = await ProfileService.getFullProfile(
         instance.did
       );
-      if (res) {
-        res.basicDTO.isEnabled = true;
-        res.experienceDTO.isEnabled = true;
-        res.educationDTO.isEnabled = true;
-        setProfile(res);
+      if (profile) {
+        profile.basicDTO.isEnabled = true;
+        profile.experienceDTO.isEnabled = true;
+        profile.educationDTO.isEnabled = true;
+        setfull_profile(profile);
       }
     } catch (e) {
       setError(true);
@@ -76,12 +76,12 @@ const ProfileEditor: React.FC = () => {
             )}
             {!error && loaded && userInfo.tutorialStep === 4 ? (
               <>
-                {profile && profile.basicDTO && (
+                {full_profile && full_profile.basicDTO && (
                   <AboutCard
-                    aboutText={profile.basicDTO.about || ''}
+                    aboutText={full_profile.basicDTO.about || ''}
                     mode="edit"
                     update={async (nextAbout: string) => {
-                      const newBasicDTO = { ...profile.basicDTO };
+                      const newBasicDTO = { ...full_profile.basicDTO };
                       const userSession = UserService.GetUserSession();
                       if (userSession) {
                         newBasicDTO.did = userSession.did;
@@ -92,9 +92,9 @@ const ProfileEditor: React.FC = () => {
                     }}
                   />
                 )}
-                {profile && profile.educationDTO && (
+                {full_profile && full_profile.educationDTO && (
                   <EducationCard
-                    educationDTO={profile.educationDTO}
+                    educationDTO={full_profile.educationDTO}
                     updateFunc={async (educationItem: EducationItem) => {
                       await ProfileService.updateEducationProfile(
                         educationItem
@@ -108,9 +108,9 @@ const ProfileEditor: React.FC = () => {
                     isEditable={true}
                   />
                 )}
-                {profile && profile.experienceDTO && (
+                {full_profile && full_profile.experienceDTO && (
                   <ExperienceCard
-                    experienceDTO={profile.experienceDTO}
+                    experienceDTO={full_profile.experienceDTO}
                     updateFunc={async (experienceItem: ExperienceItem) => {
                       await ProfileService.updateExperienceProfile(
                         experienceItem

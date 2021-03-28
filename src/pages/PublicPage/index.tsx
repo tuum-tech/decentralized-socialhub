@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import ProfileComponent from './components/ProfileComponent';
+import ProfileComponent from 'src/components/profile/ProfileComponent';
 import { UserService } from 'src/services/user.service';
 import PageLoading from 'src/components/layouts/PageLoading';
 import {
@@ -40,14 +40,13 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 ) => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [signedIn, setSignedIn] = useState(false);
   const [publicUser, setPublicUser] = useState<ISessionItem>(defaultUserInfo);
   const [publicUserProfile, setPublicUserProfile] = useState(
     defaultFullProfile
   );
+  const [signedIn, setSignedIn] = useState(false);
 
   let did: string = props.match.params.did;
-
   useEffect(() => {
     (async () => {
       try {
