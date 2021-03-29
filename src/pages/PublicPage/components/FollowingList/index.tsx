@@ -21,6 +21,7 @@ import { DidService } from 'src/services/did.service';
 import { alertError } from 'src/utils/notify';
 import styleCards from 'src/components/cards/WidgetCards.module.scss';
 import style from './style.module.scss';
+import { CardHeaderContent, CardContentContainer } from '../SocialProfiles';
 export interface IDidDocument {
   id: string;
   publicKey?: PublicKeyEntity[] | null;

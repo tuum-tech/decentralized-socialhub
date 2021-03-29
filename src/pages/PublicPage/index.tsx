@@ -49,9 +49,8 @@ interface MatchParams {
 const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   props: RouteComponentProps<MatchParams>
 ) => {
-  const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [signedIn, setSignedIn] = useState(false);
+  const [signedInUser, setSignedInUser] = useState(defaultUserInfo);
   const [publicUser, setPublicUser] = useState<ISessionItem>(defaultUserInfo);
   const [publicUserProfile, setPublicUserProfile] = useState(
     defaultFullProfile
@@ -77,7 +76,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
         }
         const sUser = UserService.GetUserSession();
         if (sUser && sUser.did !== '') {
-          setSignedIn(true);
+          setSignedInUser(sUser);
         }
       } catch (error) {
         // console.log('======>error', error);
@@ -133,7 +132,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
           scrollEvents={true}
           onIonScroll={handleScroll}
         >
-          <PublicNavbar signedIn={signedIn} />
+          <PublicNavbar signedIn={signedInUser && signedInUser.did !== ''} />
           {!publicUser || publicUser.did === '' ? (
             'User not found'
           ) : (
@@ -141,8 +140,8 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
               <IonCol size="9" className="ion-no-padding">
                 <div className={style['profilecomponent']}>
                   <ProfileHeader
-                    signedIn={signedIn}
                     user={publicUser as ISessionItem}
+                    signedUserDid={signedInUser.did}
                   />
 
                   {publicUserProfile.basicDTO.isEnabled === true ? (
@@ -183,13 +182,11 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
                                   </div>
                                 </IonCol>
                                 <IonCol size="3">
-                                  <SocialProfiles />
+                                  <SocialProfiles sProfile={['linkedin']} />
                                   <FollowingList
                                     did={publicUserProfile.basicDTO.did}
                                   />
-
                                   {/* FollowersWidget */}
-
                                   <IonCard className={style['overview']}>
                                     <IonCardHeader>
                                       <IonCardTitle>Followers</IonCardTitle>

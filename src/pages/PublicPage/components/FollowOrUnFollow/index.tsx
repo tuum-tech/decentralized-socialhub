@@ -1,69 +1,53 @@
 import React, { useState, useEffect } from 'react';
 
 import { FollowButton } from 'src/components/buttons';
-import {
-  ProfileService,
-  defaultUserInfo,
-  IFollowingResponse
-} from 'src/services/profile.service';
+import { ProfileService } from 'src/services/profile.service';
 import { alertError } from 'src/utils/notify';
-import { UserService } from 'src/services/user.service';
 
 interface IProps {
   did: string;
+  userDid: string;
 }
 
-const FollowOrUnFollowButton: React.FC<IProps> = ({ did }: IProps) => {
-  const [text, setText] = useState('');
+const FollowOrUnFollowButton: React.FC<IProps> = ({ did, userDid }: IProps) => {
+  const [text, setText] = useState('Follow');
   const [loading, setLoading] = useState(true);
-  const [userInfo, setUserInfo] = useState<ISessionItem>(
-    UserService.GetUserSession() || defaultUserInfo
-  );
-  const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
-    get_following: { items: [] }
-  });
 
   const follow = async (follow: boolean) => {
     setLoading(true);
     try {
       if (follow) {
         await ProfileService.addFollowing(did);
-        setText('UnFollow');
       } else {
         await ProfileService.unfollow(did);
-        setText('Follow');
       }
+      await loadData();
     } catch (e) {
       alertError(null, `Failed to ${follow ? 'follow' : 'unfollow'} this user`);
     }
-    setLoading(false);
-  };
-
-  const isFollowing = (did: string): boolean => {
-    if (listFollowing.get_following && listFollowing.get_following.items) {
-      for (let i = 0; i < listFollowing.get_following.items.length; i++) {
-        if (listFollowing.get_following.items[i].did === did) {
-          return true;
-        }
-      }
-    }
-    return false;
   };
 
   const loadData = async () => {
-    if (!userInfo || userInfo.did === '') return;
+    if (!userDid || userDid === '') return;
     try {
-      let following = await ProfileService.getFollowings(userInfo.did);
-      setListFollowing(following as IFollowingResponse);
-      setText(isFollowing(did) ? 'Unfollow' : 'Follow');
+      let following = await ProfileService.getFollowings(userDid);
+      if (
+        following &&
+        following.get_following &&
+        following.get_following.items
+      ) {
+        const followingDids = following.get_following.items.map(
+          item => item.did
+        );
+
+        setText(followingDids.includes(did) ? 'Unfollow' : 'Follow');
+      }
       setLoading(false);
       return;
     } catch (e) {
-      setListFollowing({ get_following: { items: [] } });
       alertError(null, 'Could not load users that you follow');
-      setText('Follow');
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -72,7 +56,7 @@ const FollowOrUnFollowButton: React.FC<IProps> = ({ did }: IProps) => {
     })();
   }, [did]);
 
-  if (userInfo.did === did || text === '') {
+  if (userDid == did || text === '') {
     return <></>;
   }
   return (

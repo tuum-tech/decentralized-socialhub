@@ -71,10 +71,10 @@ const Info = styled.div`
 
 interface IProps {
   user: ISessionItem;
-  signedIn: boolean;
+  signedUserDid: string;
 }
 
-const ProfileHeader: React.FC<IProps> = ({ user, signedIn }: IProps) => {
+const ProfileHeader: React.FC<IProps> = ({ user, signedUserDid }: IProps) => {
   return (
     <HeaderContainer className="ion-no-padding">
       <Banner />
@@ -95,12 +95,12 @@ const ProfileHeader: React.FC<IProps> = ({ user, signedIn }: IProps) => {
           </IonGrid>
         </Info>
         <Buttons>
-          {!signedIn ? (
+          {signedUserDid === '' ? (
             <Link to="/sign-did">
               <FollowButton>Sign in to Follow</FollowButton>
             </Link>
           ) : (
-            <FollowOrUnFollowButton did={user.did} />
+            <FollowOrUnFollowButton did={user.did} userDid={signedUserDid} />
           )}
         </Buttons>
       </Header>
