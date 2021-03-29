@@ -32,14 +32,17 @@ import SocialProfiles from './components/SocialProfiles';
 
 import style from './style.module.scss';
 
-const ContainerRow = styled(IonContent)`
-  width: 100%;
-  height: 100%;
-`;
-
 const ContentRow = styled(IonRow)`
   background-color: #f7fafc !important;
   padding: 16px;
+`;
+
+const LeftContent = styled.div`
+  width: calc(100% - 300px);
+`;
+
+const RightContent = styled.div`
+  width: 300px;
 `;
 
 interface MatchParams {
@@ -155,7 +158,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
                           <IonCol size="12">
                             <IonGrid>
                               <IonRow>
-                                <IonCol size="9">
+                                <LeftContent>
                                   <div ref={aboutRef}>
                                     <AboutCard
                                       aboutText={
@@ -180,8 +183,8 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
                                       isEditable={false}
                                     />
                                   </div>
-                                </IonCol>
-                                <IonCol size="3">
+                                </LeftContent>
+                                <RightContent>
                                   {/* /sProfile should be a real data */}
                                   <SocialProfiles sProfile={['linkedin']} />
 
@@ -196,7 +199,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 
                                     <IonCardContent></IonCardContent>
                                   </IonCard>
-                                </IonCol>
+                                </RightContent>
                               </IonRow>
                             </IonGrid>
                           </IonCol>
