@@ -182,7 +182,9 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
                                   </div>
                                 </IonCol>
                                 <IonCol size="3">
+                                  {/* /sProfile should be a real data */}
                                   <SocialProfiles sProfile={['linkedin']} />
+
                                   <FollowingList
                                     did={publicUserProfile.basicDTO.did}
                                   />
