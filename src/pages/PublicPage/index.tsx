@@ -1,9 +1,19 @@
-import { IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
+import {
+  IonPage,
+  IonGrid,
+  IonRow,
+  IonContent,
+  IonCol,
+  IonCard,
+  IonCardTitle,
+  IonCardContent,
+  IonCardHeader
+} from '@ionic/react';
 import { RouteComponentProps } from 'react-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import ProfileComponent from './components/ProfileComponent';
+import PublicNavbar from './components/PublicNavbar';
 import { UserService } from 'src/services/user.service';
 import PageLoading from 'src/components/layouts/PageLoading';
 import {
@@ -11,24 +21,25 @@ import {
   defaultUserInfo,
   defaultFullProfile
 } from 'src/services/profile.service';
-import { DashboardSignInButton } from 'src/components/buttons';
+import ProfileHeader from './components/ProfileHeader';
+import AboutCard from 'src/components/cards/AboutCard';
+import EducationCard from 'src/components/cards/EducationCard';
+import ExperienceCard from 'src/components/cards/ExperienceCard';
+// import FollowersWidget from '../FollowersWidget';
+import FollowingList from './components/FollowingList';
+import PublicProfileTabs from './components/PublicProfileTabs';
+import SocialProfiles from './components/SocialProfiles';
 
 import style from './style.module.scss';
 
-const PublicNavbar = styled(IonRow)`
+const ContainerRow = styled(IonContent)`
   width: 100%;
-  height: 83px;
-  padding: 21px 0 0;
-  background-color: #ffffff;
-  z-index: 1001;
+  height: 100%;
 `;
 
 const ContentRow = styled(IonRow)`
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  background-color: #ffffff;
-  z-index: 1001;
+  background-color: #f7fafc !important;
+  padding: 16px;
 `;
 
 interface MatchParams {
@@ -76,47 +87,137 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     })();
   }, []);
 
+  const [scrollTop, setScrollTop] = useState(0);
+  const [mode, setMode] = useState('normal');
+
+  const contentRef = useRef<HTMLIonContentElement | null>(null);
+  const aboutRef = useRef<HTMLDivElement | null>(null);
+  const experienceRef = useRef<HTMLDivElement | null>(null);
+  const educationRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToElement = (cardName: string) => {
+    let point: number = 0;
+    let adjust = 0;
+    if (scrollTop < 176) adjust = 292 - scrollTop;
+    else {
+      adjust = 260 - scrollTop;
+    }
+
+    if (cardName === 'about') {
+      point = 0;
+    }
+    if (cardName === 'experience') {
+      point = (experienceRef.current!.getBoundingClientRect().top -
+        adjust) as number;
+    }
+    if (cardName === 'education') {
+      point = (educationRef.current!.getBoundingClientRect().top -
+        adjust) as number;
+    }
+    contentRef.current && contentRef.current.scrollToPoint(0, point, 200);
+  };
+
+  const handleScroll = (e: any) => {
+    setScrollTop(e.detail.scrollTop);
+  };
+
   if (loading) {
     return <PageLoading />;
   }
 
   return (
     <IonPage className={style['profilepage']}>
-      <IonGrid className={style['profilepagegrid']}>
-        <PublicNavbar className="ion-justify-content-between">
-          <IonCol size="auto">
-            <img src="../../assets/logo_profile_black.svg" />
-          </IonCol>
-          <IonCol size="auto">
-            {!signedIn && (
-              <IonRow>
-                <IonCol>
-                  <DashboardSignInButton href="/create-profile">
-                    Register new user
-                  </DashboardSignInButton>
-                </IonCol>
-                <IonCol>
-                  <DashboardSignInButton href="/sign-did">
-                    Sign In
-                  </DashboardSignInButton>
-                </IonCol>
-              </IonRow>
-            )}
-          </IonCol>
-        </PublicNavbar>
-        <ContentRow className="ion-justify-content-around">
-          <IonCol size="9">
-            {publicUser && publicUser.did !== '' ? (
-              <ProfileComponent
-                profile={publicUserProfile}
-                sessionItem={publicUser as any}
-                error={error}
-              />
-            ) : (
-              '404 user not found'
-            )}
-          </IonCol>
-        </ContentRow>
+      <IonGrid className={style['profilepagegrid'] + ' ion-no-padding'}>
+        <IonContent
+          ref={contentRef}
+          scrollEvents={true}
+          onIonScroll={handleScroll}
+        >
+          <PublicNavbar signedIn={signedIn} />
+          {!publicUser || publicUser.did === '' ? (
+            'User not found'
+          ) : (
+            <ContentRow className="ion-justify-content-around">
+              <IonCol size="9" className="ion-no-padding">
+                <div className={style['profilecomponent']}>
+                  <ProfileHeader
+                    signedIn={signedIn}
+                    user={publicUser as ISessionItem}
+                  />
+
+                  {publicUserProfile.basicDTO.isEnabled === true ? (
+                    <>
+                      <PublicProfileTabs
+                        mode={mode}
+                        scrollToPosition={scrollToElement}
+                      />
+                      <IonGrid className={style['scroll']}>
+                        <IonRow className="ion-justify-content-center">
+                          <IonCol size="12">
+                            <IonGrid>
+                              <IonRow>
+                                <IonCol size="9">
+                                  <div ref={aboutRef}>
+                                    <AboutCard
+                                      aboutText={
+                                        publicUserProfile.basicDTO.about
+                                      }
+                                      mode="read"
+                                    />
+                                  </div>
+                                  <div ref={experienceRef}>
+                                    <ExperienceCard
+                                      experienceDTO={
+                                        publicUserProfile.experienceDTO
+                                      }
+                                      isEditable={false}
+                                    />
+                                  </div>
+                                  <div ref={educationRef}>
+                                    <EducationCard
+                                      educationDTO={
+                                        publicUserProfile.educationDTO
+                                      }
+                                      isEditable={false}
+                                    />
+                                  </div>
+                                </IonCol>
+                                <IonCol size="3">
+                                  <SocialProfiles />
+                                  <FollowingList
+                                    did={publicUserProfile.basicDTO.did}
+                                  />
+
+                                  {/* FollowersWidget */}
+
+                                  <IonCard className={style['overview']}>
+                                    <IonCardHeader>
+                                      <IonCardTitle>Followers</IonCardTitle>
+                                    </IonCardHeader>
+
+                                    <IonCardContent></IonCardContent>
+                                  </IonCard>
+                                </IonCol>
+                              </IonRow>
+                            </IonGrid>
+                          </IonCol>
+                        </IonRow>
+                      </IonGrid>
+                    </>
+                  ) : (
+                    <IonGrid>
+                      <IonRow className="ion-justify-content-center">
+                        <IonCol size="auto">
+                          The content of this profile is not currently viewable
+                        </IonCol>
+                      </IonRow>
+                    </IonGrid>
+                  )}
+                </div>
+              </IonCol>
+            </ContentRow>
+          )}
+        </IonContent>
       </IonGrid>
     </IonPage>
   );

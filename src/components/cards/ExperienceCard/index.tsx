@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   IonButton,
   IonCard,
-  IonCardContent,
-  IonCardHeader,
   IonCardTitle,
   IonCol,
   IonGrid,
@@ -15,7 +13,15 @@ import ExperienceItem from './Item';
 import styleWidget from '../WidgetCards.module.scss';
 
 import ExperienceCardEdit from './Edit';
-import { LinkStyleSpan, MyModal, ModalFooter, Divider, MODE } from '../common';
+import {
+  LinkStyleSpan,
+  MyModal,
+  ModalFooter,
+  Divider,
+  MODE,
+  CardHeaderContent,
+  CardContentContainer
+} from '../common';
 
 interface IExperienceProps {
   experienceDTO: ExperienceDTO;
@@ -121,14 +127,14 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   return (
     <>
       <IonCard className={styleWidget['overview']}>
-        <IonCardHeader>
-          <IonGrid>
-            <IonRow className="ion-justify-content-between">
-              <IonCol>
+        <CardHeaderContent>
+          <IonGrid className="ion-no-padding">
+            <IonRow className="ion-justify-content-between ion-no-padding">
+              <IonCol className="ion-no-padding">
                 <IonCardTitle>Experience</IonCardTitle>
               </IonCol>
               {isEditable ? (
-                <IonCol size="auto">
+                <IonCol size="auto" className="ion-no-padding">
                   <LinkStyleSpan onClick={e => addItem()}>
                     + Add Experience
                   </LinkStyleSpan>
@@ -138,8 +144,8 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
               )}
             </IonRow>
           </IonGrid>
-        </IonCardHeader>
-        <IonCardContent>
+        </CardHeaderContent>
+        <CardContentContainer>
           {currentExperienceDTO.items.map((x, i) => {
             return (
               <div key={i}>
@@ -156,7 +162,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
               </div>
             );
           })}
-        </IonCardContent>
+        </CardContentContainer>
       </IonCard>
       <MyModal
         onDidDismiss={() => setMode(MODE.NONE)}

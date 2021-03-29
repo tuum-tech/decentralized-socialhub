@@ -46,9 +46,9 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
 
   return (
     <>
-      <IonGrid>
-        <IonRow className="ion-justify-content-between">
-          <IonCol size="2">
+      <IonGrid className="ion-no-padding">
+        <IonRow className="ion-justify-content-between ion-no-padding">
+          <IonCol size="2" className="ion-no-padding">
             <Image
               src={experienceItem.logo}
               alt="company logo"
@@ -56,14 +56,14 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
             />
           </IonCol>
           <EditableContent size="10">
-            <IonGrid>
-              <IonRow>
+            <IonGrid className="ion-no-padding">
+              <IonRow className="ion-no-padding">
                 <Institution>{experienceItem.institution}</Institution>
               </IonRow>
-              <IonRow>
+              <IonRow className="ion-no-padding">
                 <Program>{experienceItem.title}</Program>
               </IonRow>
-              <IonRow>
+              <IonRow className="ion-no-padding">
                 <Period>
                   {experienceItem.start} -
                   {experienceItem.still === true
@@ -71,7 +71,7 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
                     : experienceItem.end}
                 </Period>
               </IonRow>
-              <IonRow>
+              <IonRow className="ion-no-padding">
                 <Description>{experienceItem.description}</Description>
               </IonRow>
             </IonGrid>
