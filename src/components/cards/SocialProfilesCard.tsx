@@ -34,6 +34,7 @@ import { DidDocumentService } from 'src/services/diddocument.service';
 
 interface Props {
   diddocument: any;
+  showManageButton: boolean;
 }
 
 interface VerifiedCredential {
@@ -87,11 +88,18 @@ const ManagerLogo = styled(IonImg)`
   
 `
 
+const ProfileItem = styled(IonItem)`
+  --inner-padding-bottom: 0;
+  --inner-padding-end: 0;
+  --inner-padding-start: 0;
+  --inner-padding-top: 0;
+`
+
 
 const ManagerButton = styled(IonButton)`
     position: relative;
     --ion-color-primary: transparent !important;
-    --ion-color-primary-tint: #4c6fff;
+    --ion-color-primary-tint: transparent;
     width: 90px;
     height: 26px;
     float: right;
@@ -127,14 +135,14 @@ const CloseButton = styled(IonButton)`
     color: #ffffff;
 `;
 
-const SocialProfilesCard: React.FC<Props> = ({ diddocument }) => {
+const SocialProfilesCard: React.FC<Props> = ({ diddocument, showManageButton }) => {
 
   const [isManagerOpen, setIsManagerOpen] = useState(false)
 
   const popupCenter = (url: string, title: string, w: number, h: number) => {
-    
-    const dualScreenLeft = window.screenLeft !==  undefined ? window.screenLeft : window.screenX;
-    const dualScreenTop = window.screenTop !==  undefined   ? window.screenTop  : window.screenY;
+
+    const dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
+    const dualScreenTop = window.screenTop !== undefined ? window.screenTop : window.screenY;
 
     const width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : window.screen.width;
     const height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : window.screen.height;
@@ -142,9 +150,9 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument }) => {
     const systemZoom = width / window.screen.availWidth;
     const left = (width - w) / 2 / systemZoom + dualScreenLeft
     const top = (height - h) / 2 / systemZoom + dualScreenTop
-    
-    
-    window.open(url, title, 
+
+
+    window.open(url, title,
       `
       scrollbars=yes,
       width=${w / systemZoom}, 
@@ -154,14 +162,14 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument }) => {
       `
     )
 
-    
-}
+
+  }
 
   const sociallogin = async (socialType: string) => {
     if (socialType === 'twitter') {
       type MyType = { meta: string; data: { request_token: string } };
       const response = (await TwitterApi.GetRequestToken()) as MyType;
-      popupCenter(`https://api.twitter.com/oauth/authorize?oauth_token=${response.data.request_token}`, 'Login', 548,325);
+      popupCenter(`https://api.twitter.com/oauth/authorize?oauth_token=${response.data.request_token}`, 'Login', 548, 325);
       return;
     }
 
@@ -180,21 +188,43 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument }) => {
     }
 
     if (url) {
-      popupCenter(url.data, 'Login', 548,725);
+      popupCenter(url.data, 'Login', 548, 725);
     }
   };
 
- 
+  const containsVerifiedCredential = (id: string): boolean => {
+    return getVerifiedCredential(id) !== undefined
+
+  }
+
+  const getUrlFromService = (service: string, value: string) : string => {
+    if (service == "twitter") return `https://twitter.com/${value}`
+    if (service == "linkedin") return `https://linkedin.com/in/${value}`
+    if (service == "facebook") return `https://facebook.com/${value}`
+    if (service == "google") return `mailto://${value}`
+    return ""
+  }
+    
+
+
+  const parseValueFromService = (service: string, value: string) : string => {
+    if (service == "twitter") return `@${value}`
+    if (service == "linkedin") return `linkedin.com/in/${value}`
+    if (service == "facebook") return `facebook.com/${value}`
+    if (service == "google") return `${value}`
+    return ""
+  }
+
 
   const getVerifiedCredential = (id: string): VerifiedCredential | undefined => {
-    
+
     if (!diddocument || !diddocument["id"] || !diddocument["verifiableCredential"]) return
 
     let vcs: any[] = diddocument["verifiableCredential"].map((vc: any) => {
 
       if (`${vc["id"]}`.endsWith(`#${id.toLowerCase()}`)) {
         let types: string[] = vc["type"]
-        
+
         return {
           value: vc["credentialSubject"][id.toLowerCase()],
           isVerified: !types.includes("SelfProclaimedCredential")
@@ -202,7 +232,7 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument }) => {
       }
     })
 
-    vcs = vcs.filter(item =>{
+    vcs = vcs.filter(item => {
       return item !== undefined
     })
 
@@ -213,19 +243,19 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument }) => {
   }
 
 
-  const removeVc = async (key: string) =>{
+  const removeVc = async (key: string) => {
     let userSession = UserService.GetUserSession()
     let documentState = await DidDocumentService.getUserDocument(userSession!);
     let keyIndex = -1
     documentState.diddocument["verifiableCredential"].forEach((element: any, index: number) => {
       if (`${element["id"]}`.endsWith(`#${key.toLowerCase()}`)) {
-        
+
         keyIndex = index
       }
     });
 
-    if (keyIndex >= 0){
-      documentState.diddocument["verifiableCredential"].splice(keyIndex,1);
+    if (keyIndex >= 0) {
+      documentState.diddocument["verifiableCredential"].splice(keyIndex, 1);
       DidDocumentService.updateUserDocument(documentState.diddocument)
     }
   }
@@ -233,14 +263,14 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument }) => {
   const createIonItem = (key: string, icon: any) => {
     let vc = getVerifiedCredential(key)
     if (!vc) return
-    return <IonItem className={style['social-profile-item']}>
+    return <ProfileItem className={style['social-profile-item']}>
       <img src={icon} />
-      {vc.value}
-      {vc.isVerified && <img src={shieldIcon} className={style['social-profile-badge']}/>}
-    </IonItem>
+      <a href={getUrlFromService(key, vc.value)} target="_blank">{parseValueFromService(key, vc.value)}</a>
+      {vc.isVerified && <img src={shieldIcon} className={style['social-profile-badge']} />}
+    </ProfileItem>
   }
 
-  
+
 
   const createModalIonItem = (key: string, icon: any) => {
     let vc = getVerifiedCredential(key)
@@ -251,24 +281,24 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument }) => {
 
 
     if (!vc) return <div className={style["manage-links-item"]}>
-          <ManagerLogo src={icon}  /> 
-          <ManagerButton onClick={()=>{sociallogin(key)}}>Add</ManagerButton>
-          <span className={style["manage-links-header"]}>{header}</span>
+      <ManagerLogo src={icon} />
+      <ManagerButton onClick={() => { sociallogin(key) }}>Add</ManagerButton>
+      <span className={style["manage-links-header"]}>{header}</span>
     </div>
 
 
     return <div className={style["manage-links-item"]}>
-      <ManagerLogo src={icon}  /> 
-      <ManagerButton onClick={()=>{removeVc(key)}}>Remove</ManagerButton>
+      <ManagerLogo src={icon} />
+      <ManagerButton onClick={() => { removeVc(key) }}>Remove</ManagerButton>
       <span className={style["manage-links-header"]}>{header}</span>
-        <span className={style["manage-links-detail"]}>{vc.value}</span>
-      
-     
+      <span className={style["manage-links-detail"]}>{parseValueFromService(key, vc.value)}</span>
+
+
     </div>
   }
 
   const linkedInItem = () => {
-    return createIonItem("linkedIn", linkedinIcon)
+    return createIonItem("linkedin", linkedinIcon)
   }
 
   const facebookItem = () => {
@@ -283,19 +313,19 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument }) => {
     return createIonItem("twitter", twitterIcon)
   }
 
-  const googleModalItem = ()=>{
+  const googleModalItem = () => {
     return createModalIonItem("google", googleLogo)
   }
 
-  const twitterModalItem = ()=>{
+  const twitterModalItem = () => {
     return createModalIonItem("twitter", twitterLogo)
   }
 
-  const facebookModalItem = ()=>{
+  const facebookModalItem = () => {
     return createModalIonItem("facebook", facebookLogo)
   }
 
-  const linkedinModalItem = ()=>{
+  const linkedinModalItem = () => {
     return createModalIonItem("linkedin", linkedinLogo)
   }
 
@@ -340,17 +370,45 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument }) => {
       <IonCard className={style['social-profile']}>
         <IonCardHeader>
           <IonCardTitle className={style['card-title']}>
-            Social Profiles <span className={style['card-link']} onClick={() => { setIsManagerOpen(true) }}>Manage Links</span>
+            Social Profiles
+            {showManageButton && <span className={style['card-link']} onClick={() => { setIsManagerOpen(true) }}>Manage Profiles</span>}
           </IonCardTitle>
         </IonCardHeader>
         <IonCardContent>
-          <IonList>
+
+          {showManageButton &&  <IonGrid>
+            <IonRow>
+              {containsVerifiedCredential("linkedin") &&
+                <IonCol size="6">
+                  {linkedInItem()}
+                </IonCol>
+              }
+              {containsVerifiedCredential("twitter") &&
+                <IonCol size="6">
+                  {twitterItem()}
+                </IonCol>
+              }
+              {containsVerifiedCredential("facebook") &&
+                <IonCol size="6">
+                  {facebookItem()}
+                </IonCol>
+              }
+              {containsVerifiedCredential("google") &&
+                <IonCol size="6">
+                  {googleItem()}
+                </IonCol>
+              }
+            </IonRow>
+          </IonGrid>}
+
+          {!showManageButton && <IonList>
             {linkedInItem()}
             {twitterItem()}
-            {googleItem()}
             {facebookItem()}
+            {googleItem()}
+            </IonList>}
 
-          </IonList>
+          
         </IonCardContent>
       </IonCard>
 
@@ -366,7 +424,7 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument }) => {
           </IonRow>
           <IonRow no-padding>
             <IonCol class="ion-no-padding">
-             {linkedinModalItem()}
+              {linkedinModalItem()}
             </IonCol>
           </IonRow>
           <IonRow no-padding>

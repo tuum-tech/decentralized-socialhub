@@ -68,7 +68,7 @@ const DashboardHome: React.FC<DashboardProps> = ({
           )}
           <ProfileCompletionCard title="Profile Completion" />
           <BadgesCard title="Badges" />
-          <SocialProfilesCard  diddocument={didDocument} />
+          <SocialProfilesCard  diddocument={didDocument} showManageButton={false} />
         </IonCol>
       </IonRow>
     </IonGrid>

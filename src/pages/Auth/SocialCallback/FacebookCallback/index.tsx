@@ -3,11 +3,14 @@
  */
 import React, { useEffect, useState } from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
-import { AccountType } from 'src/services/user.service';
+import { AccountType, UserService } from 'src/services/user.service';
 
 import PageLoading from 'src/components/layouts/PageLoading';
 import { TokenResponse } from './types';
 import { requestFacebookId, requestFacebookToken } from './fetchapi';
+import { DidService } from 'src/services/did.service';
+import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
+import { DidDocumentService } from 'src/services/diddocument.service';
 
 const FacebookCallback: React.FC<RouteComponentProps> = props => {
   /**
@@ -40,12 +43,25 @@ const FacebookCallback: React.FC<RouteComponentProps> = props => {
         let t = await getToken(code, state);
         let facebookId = await requestFacebookId(t.data.request_token);
 
-        setCredentials({
-          name: facebookId.name,
-          request_token: t.data.request_token,
-          email: facebookId.email,
-          credential: ''
-        });
+        let userSession = UserService.GetUserSession()
+        if (userSession){
+
+          let vc = await DidcredsService.generateVerifiableCredential(userSession.did, CredentialType.Facebook, facebookId.name)
+          let state = await DidDocumentService.getUserDocument(userSession)
+          await DidService.addVerfiableCredentialToDIDDocument(state.diddocument, vc)
+          DidDocumentService.updateUserDocument(state.diddocument)
+
+          window.close();
+        } else {
+          setCredentials({
+            name: facebookId.name,
+            request_token: t.data.request_token,
+            email: facebookId.email,
+            credential: ''
+          });
+        }
+
+        
       }
     })();
   }, []);
