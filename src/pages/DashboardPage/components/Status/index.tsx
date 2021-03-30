@@ -12,13 +12,11 @@ const DashboardStatus: React.FC = () => {
       <IonRow>
         <IonCol size="4">
           <SpotlightCard
-            title="Overview"
-            content="Your profile is ready. There are no pending transactions."
+            title="NOT READY YET"
+            content="Please refrain from testing this page for this version"
           />
         </IonCol>
-        <IonCol size="8">
-          <OverviewCard />
-        </IonCol>
+        <IonCol size="8">{/* <OverviewCard /> */}</IonCol>
       </IonRow>
     </IonGrid>
   );

@@ -140,7 +140,7 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
               />
             </IonCol>
             <IonCol size="auto">
-              <MigrateButton>Migrate Vault</MigrateButton>
+              {/* <MigrateButton>Migrate Vault</MigrateButton> */}
             </IonCol>
           </IonRow>
         </IonGrid>
