@@ -109,6 +109,58 @@ const FollowButton = styled(IonButton)`
   width: 100%;
 `;
 
+interface ButtonProps {
+  width?: string;
+}
+
+const DefaultButton = styled.div<ButtonProps>`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 25px;
+
+  font-family: 'SF Pro Display';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 12px;
+
+  width: 100%;
+  max-width: ${props => (props.width ? `${props.width}` : '100%')};
+  height: 42px;
+  left: 25px;
+  top: 329px;
+
+  background: #4c6fff;
+  border-radius: 9px;
+  color: white;
+`;
+
+const WhiteButton = styled.div<ButtonProps>`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 25px;
+
+  font-family: 'SF Pro Display';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 12px;
+
+  width: 100%;
+  max-width: ${props => (props.width ? `${props.width}` : '100%')};
+  height: 42px;
+  left: 25px;
+  top: 329px;
+
+  background: white;
+  border-radius: 9px;
+  color: #4c6fff;
+`;
+
 export {
   ButtonLink,
   ArrowButton,
@@ -117,5 +169,8 @@ export {
   SignInButton,
   DashboardSignInButton,
   FollowButton,
-  Button
+  Button,
+  // PrimaryButton,
+  DefaultButton,
+  WhiteButton
 };

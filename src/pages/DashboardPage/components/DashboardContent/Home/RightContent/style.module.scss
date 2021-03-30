@@ -1,0 +1,26 @@
+.img-card {
+  background: url('../../../../../../assets/dashboard/communitybg.png')
+    no-repeat top right;
+  background-size: cover;
+  position: relative;
+
+  ion-card-header {
+    padding-right: 20%;
+    p {
+      color: white;
+    }
+    .dark-txt {
+      color: #bbbbbb !important;
+    }
+  }
+
+  ion-card-content {
+    background: transparent;
+  }
+
+  svg {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}
