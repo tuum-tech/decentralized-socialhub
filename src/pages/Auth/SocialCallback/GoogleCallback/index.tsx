@@ -5,10 +5,14 @@ import React, { useEffect, useState } from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
 
 import PageLoading from 'src/components/layouts/PageLoading';
-import { AccountType } from 'src/services/user.service';
+import { AccountType, UserService } from 'src/services/user.service';
 
 import { TokenResponse } from './types';
 import { requestGoogleId, requestGoogleToken } from './fetchapi';
+import { AssistService } from 'src/services/assist.service';
+import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
+import { DidDocumentService } from 'src/services/diddocument.service';
+import { DidService } from 'src/services/did.service';
 
 const GoogleCallback: React.FC<RouteComponentProps> = props => {
   /**
@@ -40,12 +44,28 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
       if (code !== '' && state !== '' && credentials.request_token === '') {
         let t = await getToken(code, state);
         let googleId = await requestGoogleId(t.data.request_token);
-        setCredentials({
-          name: googleId.name,
-          request_token: t.data.request_token,
-          email: googleId.email,
-          credential: googleId.credential
-        });
+
+        let userSession = UserService.GetUserSession()
+        if (userSession){
+
+          let vc = await DidcredsService.generateVerifiableCredential(userSession.did, CredentialType.Google, googleId.email)
+
+          let state = await DidDocumentService.getUserDocument(userSession)
+
+          await DidService.addVerfiableCredentialToDIDDocument(state.diddocument, vc)
+
+          DidDocumentService.updateUserDocument(state.diddocument)
+
+
+          window.close();
+        } else {
+          setCredentials({
+            name: googleId.name,
+            request_token: t.data.request_token,
+            email: googleId.email,
+            credential: googleId.credential
+          });
+        }
       }
     })();
   }, []);

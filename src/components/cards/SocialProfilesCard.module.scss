@@ -31,7 +31,7 @@
     .social-profile-item {
       border: 0px;
       --inner-border-width: 0;
-      margin: 1em;
+      padding: 0px !important;
   
       font-family: 'SF Pro Display';
       font-size: 14px;
@@ -42,6 +42,15 @@
       letter-spacing: normal;
       text-align: left;
       color: #7a7a9d;
+      
+      img{
+        width: 16px;
+        height: 16px;
+        margin-right: 10px;
+      }
+      .social-profile-badge {
+        margin-left: 5px;
+      }
     }
   
     .social-profile-bg {
@@ -74,4 +83,36 @@
         opacity: 0.5;
       }
     }
+    
   }
+
+  .manage-links-item{
+    border-bottom: 1px solid #f3f9ff;
+    height: 72px;
+    padding: 15px;
+    font-family: 'SF Pro Display';
+    font-stretch: normal;
+    font-style: normal;   
+    letter-spacing: normal; 
+    text-align: left;
+    .manage-links-header{
+      margin-left: 55px;
+      display: block;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.56;
+      color: #27272e;
+      flex-basis: 100%;
+    }
+  
+    .manage-links-detail{
+      display: block;
+      margin-left: 55px;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.79;
+      color: #a0aec0;
+    }
+  }
+
+  

@@ -5,7 +5,10 @@ import React, { useEffect, useState } from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
 
 import PageLoading from 'src/components/layouts/PageLoading';
-import { AccountType } from 'src/services/user.service';
+import { DidService } from 'src/services/did.service';
+import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
+import { DidDocumentService } from 'src/services/diddocument.service';
+import { AccountType, UserService } from 'src/services/user.service';
 
 import { requestTwitterToken } from './fetchapi';
 import { TokenResponse } from './types';
@@ -50,12 +53,32 @@ const TwitterCallback: React.FC<RouteComponentProps> = props => {
         let items: string[] = atob(t.data.response).split(';');
         const name = items[0];
         const uniqueEmail = name.replace(' ', '') + items[1] + '@twitter.com';
-        setCredentials({
-          name,
-          request_token: `${oauth_token}[-]${oauth_verifier}`,
-          email: uniqueEmail.toLocaleLowerCase(),
-          credential: items[1].toString()
-        });
+
+
+        let userSession = UserService.GetUserSession()
+        if (userSession){
+
+          let vc = await DidcredsService.generateVerifiableCredential(userSession.did, CredentialType.Twitter, items[1].toString())
+
+          let state = await DidDocumentService.getUserDocument(userSession)
+
+          await DidService.addVerfiableCredentialToDIDDocument(state.diddocument, vc)
+
+          DidDocumentService.updateUserDocument(state.diddocument)
+
+
+          window.close();
+        } else {
+          setCredentials({
+            name,
+            request_token: `${oauth_token}[-]${oauth_verifier}`,
+            email: uniqueEmail.toLocaleLowerCase(),
+            credential: items[1].toString()
+          });
+        }
+
+
+       
       }
     })();
   });

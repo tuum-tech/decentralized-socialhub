@@ -54,6 +54,21 @@ const ProfilePage = () => {
   const [didDocument, setDidDocument] = useState({});
   const history = useHistory();
   
+  const setTimer = () => {
+    const timer = setTimeout(async () => {
+      await refreshDidDocument();
+      setTimer();
+    }, 1000);
+    return () => clearTimeout(timer);
+  };
+  const refreshDidDocument = async () => {
+    let userSession = UserService.GetUserSession();
+    if (!userSession) {
+      return;
+    }
+    let documentState = await DidDocumentService.getUserDocument(userSession)
+    setDidDocument(documentState.diddocument)
+  };
 
   const retriveProfile = async () => {
     let userSession = UserService.GetUserSession();
@@ -78,12 +93,11 @@ const ProfilePage = () => {
       if (!userSession) {
         return;
       }
-
+      await refreshDidDocument();
       setUserInfo(userSession);
       setOnboardingStatus(userSession.onBoardingCompleted);
       
-      let document = DidDocumentService.getUserDocument(userSession)
-      setDidDocument(document)
+     
 
       if (
         userSession.onBoardingCompleted &&
@@ -97,6 +111,7 @@ const ProfilePage = () => {
         }, ExporeTime);
       }
     })();
+    setTimer();
   }, []);
 
   useEffect(() => {
