@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   IonButton,
   IonCard,
-  IonCardContent,
-  IonCardHeader,
   IonCardTitle,
   IonCol,
   IonGrid,
@@ -14,9 +12,16 @@ import { Guid } from 'guid-typescript';
 import ExperienceItem from './Item';
 import styleWidget from '../WidgetCards.module.scss';
 
-import styled from 'styled-components';
 import ExperienceCardEdit from './Edit';
-import { LinkStyleSpan, MyModal, ModalFooter, Divider, MODE } from '../common';
+import {
+  LinkStyleSpan,
+  MyModal,
+  ModalFooter,
+  Divider,
+  MODE,
+  CardHeaderContent,
+  CardContentContainer
+} from '../common';
 
 interface IExperienceProps {
   experienceDTO: ExperienceDTO;
@@ -112,84 +117,81 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     setcurrentExperienceDTO({ isEnabled: true, items: items });
   };
 
+  if (
+    !experienceDTO.isEnabled ||
+    (!isEditable && currentExperienceDTO.items.length == 0)
+  ) {
+    return <></>;
+  }
+
   return (
     <>
-      {experienceDTO.isEnabled === true ? (
-        <>
-          <IonCard className={styleWidget['overview']}>
-            <IonCardHeader>
-              <IonGrid>
-                <IonRow className="ion-justify-content-between">
-                  <IonCol>
-                    <IonCardTitle>Experience</IonCardTitle>
-                  </IonCol>
-                  {isEditable ? (
-                    <IonCol size="auto">
-                      <LinkStyleSpan onClick={e => addItem()}>
-                        + Add Experience
-                      </LinkStyleSpan>
-                    </IonCol>
-                  ) : (
-                    ''
-                  )}
-                </IonRow>
-              </IonGrid>
-            </IonCardHeader>
-            <IonCardContent>
-              {currentExperienceDTO.items.map((x, i) => {
-                return (
-                  <div key={i}>
-                    <ExperienceItem
-                      experienceItem={x}
-                      handleChange={handleChange}
-                      updateFunc={saveChanges}
-                      editFunc={editItem}
-                      index={i}
-                      removeFunc={removeItem}
-                      isEditable={isEditable}
-                    />
-                    {i < currentExperienceDTO.items.length - 1 ? (
-                      <Divider />
-                    ) : (
-                      ''
-                    )}
-                  </div>
-                );
-              })}
-            </IonCardContent>
-          </IonCard>
-          <MyModal
-            onDidDismiss={() => setMode(MODE.NONE)}
-            isOpen={mode === MODE.EDIT || mode === MODE.ADD}
-            cssClass="my-custom-class"
-          >
-            <ExperienceCardEdit
-              experienceItem={editedItem}
-              handleChange={handleChange}
-              mode={mode}
-            />
-            <ModalFooter className="ion-no-border">
-              <IonRow className="ion-justify-content-around">
-                <IonCol size="auto">
-                  <IonButton fill="outline" onClick={cancel}>
-                    Cancel
-                  </IonButton>
-                  <IonButton
-                    onClick={() => {
-                      saveChanges(editedItem);
-                      setMode(MODE.NONE);
-                    }}
-                  >
-                    Save
-                  </IonButton>
+      <IonCard className={styleWidget['overview']}>
+        <CardHeaderContent>
+          <IonGrid className="ion-no-padding">
+            <IonRow className="ion-justify-content-between ion-no-padding">
+              <IonCol className="ion-no-padding">
+                <IonCardTitle>Experience</IonCardTitle>
+              </IonCol>
+              {isEditable ? (
+                <IonCol size="auto" className="ion-no-padding">
+                  <LinkStyleSpan onClick={e => addItem()}>
+                    + Add Experience
+                  </LinkStyleSpan>
                 </IonCol>
-              </IonRow>
-            </ModalFooter>
-          </MyModal>
-        </>
-      ) : (
-        ''
-      )}
+              ) : (
+                ''
+              )}
+            </IonRow>
+          </IonGrid>
+        </CardHeaderContent>
+        <CardContentContainer>
+          {currentExperienceDTO.items.map((x, i) => {
+            return (
+              <div key={i}>
+                <ExperienceItem
+                  experienceItem={x}
+                  handleChange={handleChange}
+                  updateFunc={saveChanges}
+                  editFunc={editItem}
+                  index={i}
+                  removeFunc={removeItem}
+                  isEditable={isEditable}
+                />
+                {i < currentExperienceDTO.items.length - 1 ? <Divider /> : ''}
+              </div>
+            );
+          })}
+        </CardContentContainer>
+      </IonCard>
+      <MyModal
+        onDidDismiss={() => setMode(MODE.NONE)}
+        isOpen={mode === MODE.EDIT || mode === MODE.ADD}
+        cssClass="my-custom-class"
+      >
+        <ExperienceCardEdit
+          experienceItem={editedItem}
+          handleChange={handleChange}
+          mode={mode}
+        />
+        <ModalFooter className="ion-no-border">
+          <IonRow className="ion-justify-content-around">
+            <IonCol size="auto">
+              <IonButton fill="outline" onClick={cancel}>
+                Cancel
+              </IonButton>
+              <IonButton
+                onClick={() => {
+                  saveChanges(editedItem);
+                  setMode(MODE.NONE);
+                }}
+              >
+                Save
+              </IonButton>
+            </IonCol>
+          </IonRow>
+        </ModalFooter>
+      </MyModal>
     </>
   );
 };

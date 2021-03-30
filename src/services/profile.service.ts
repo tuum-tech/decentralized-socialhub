@@ -53,7 +53,12 @@ export class ProfileService {
           }
         );
 
-        if (fullProfileResponse) {
+        if (
+          fullProfileResponse &&
+          fullProfileResponse.response &&
+          fullProfileResponse.response.get_basic &&
+          fullProfileResponse.response.get_basic.items
+        ) {
           let basicProfile = fullProfileResponse.response!.get_basic.items![0];
           let educationProfile = fullProfileResponse.response!
             .get_education_profile;

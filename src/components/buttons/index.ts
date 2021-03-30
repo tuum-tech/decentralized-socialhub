@@ -113,6 +113,7 @@ const FollowButton = styled(IonButton)`
   font-weight: 600;
   font-stretch: normal;
   font-style: normal;
+  width: 100%;
 `;
 
 export {

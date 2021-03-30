@@ -23,20 +23,21 @@ const ProfileEditor: React.FC = () => {
   const [error, setError] = useState(false);
   const [userInfo, setUserInfo] = useState<ISessionItem>(defaultUserInfo);
   const [loaded, setloaded] = useState(false);
-  const [full_profile, setfull_profile] = useState(defaultFullProfile);
   const [didDocument, setDidDocument] = useState({});
+  const [profile, setProfile] = useState(defaultFullProfile);
+
   const retriveProfile = async () => {
     let instance = UserService.GetUserSession();
     if (!instance || !instance.userToken) return;
     try {
-      let profile: ProfileDTO | undefined = await ProfileService.getFullProfile(
+      let res: ProfileDTO | undefined = await ProfileService.getFullProfile(
         instance.did
       );
-      if (profile) {
-        profile.basicDTO.isEnabled = true;
-        profile.experienceDTO.isEnabled = true;
-        profile.educationDTO.isEnabled = true;
-        setfull_profile(profile);
+      if (res) {
+        res.basicDTO.isEnabled = true;
+        res.experienceDTO.isEnabled = true;
+        res.educationDTO.isEnabled = true;
+        setProfile(res);
       }
     } catch (e) {
       setError(true);
@@ -95,12 +96,12 @@ const ProfileEditor: React.FC = () => {
             )}
             {!error && loaded && userInfo.tutorialStep === 4 ? (
               <>
-                {full_profile && full_profile.basicDTO && (
+                {profile && profile.basicDTO && (
                   <AboutCard
-                    aboutText={full_profile.basicDTO.about || ''}
+                    aboutText={profile.basicDTO.about || ''}
                     mode="edit"
                     update={async (nextAbout: string) => {
-                      const newBasicDTO = { ...full_profile.basicDTO };
+                      const newBasicDTO = { ...profile.basicDTO };
                       const userSession = UserService.GetUserSession();
                       if (userSession) {
                         newBasicDTO.did = userSession.did;
@@ -114,9 +115,9 @@ const ProfileEditor: React.FC = () => {
                
                <SocialProfilesCard  diddocument={didDocument} showManageButton={true} />
                 
-                {full_profile && full_profile.educationDTO && (
+                {profile && profile.educationDTO && (
                   <EducationCard
-                    educationDTO={full_profile.educationDTO}
+                    educationDTO={profile.educationDTO}
                     updateFunc={async (educationItem: EducationItem) => {
                       await ProfileService.updateEducationProfile(
                         educationItem
@@ -130,9 +131,9 @@ const ProfileEditor: React.FC = () => {
                     isEditable={true}
                   />
                 )}
-                {full_profile && full_profile.experienceDTO && (
+                {profile && profile.experienceDTO && (
                   <ExperienceCard
-                    experienceDTO={full_profile.experienceDTO}
+                    experienceDTO={profile.experienceDTO}
                     updateFunc={async (experienceItem: ExperienceItem) => {
                       await ProfileService.updateExperienceProfile(
                         experienceItem

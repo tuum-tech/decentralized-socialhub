@@ -12,7 +12,7 @@ import SmallTextInput from '../../inputs/SmallTextInput';
 import styled from 'styled-components';
 import { MODE, MyTextarea } from '../common';
 
-interface ExperienceCardEditProps {
+interface Props {
   experienceItem: ExperienceItem;
   handleChange: any;
   mode: MODE;
@@ -26,11 +26,11 @@ const Spacer = styled.div`
   padding: 5px;
 `;
 
-const ExperienceCardEdit: React.FC<ExperienceCardEditProps> = ({
+const ExperienceCardEdit: React.FC<Props> = ({
   experienceItem,
   handleChange,
   mode
-}: ExperienceCardEditProps) => {
+}: Props) => {
   return (
     <MyGrid>
       <IonRow>

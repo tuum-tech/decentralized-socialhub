@@ -1,9 +1,10 @@
 import {
   IonFooter,
-  IonCard,
+  IonCardHeader,
   IonGrid,
   IonModal,
-  IonTextarea
+  IonTextarea,
+  IonCardContent
 } from '@ionic/react';
 import styled from 'styled-components';
 
@@ -149,4 +150,12 @@ export const MyTextarea = styled(IonTextarea)`
 
 export const ModalFooter = styled(IonFooter)`
   padding: 12px;
+`;
+
+export const CardHeaderContent = styled(IonCardHeader)`
+  padding: 26px;
+`;
+
+export const CardContentContainer = styled(IonCardContent)`
+  padding-left: 26px;
 `;

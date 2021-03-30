@@ -15,7 +15,7 @@ import EducationCard from '../../cards/EducationCard';
 import ExperienceCard from '../../cards/ExperienceCard';
 // import FollowersWidget from '../FollowersWidget';
 import FollowingList from '../FollowingList';
-import PublicProfileNav from '../PublicProfileNav';
+import PublicProfileTabs from '../PublicProfileTabs';
 import SocialProfiles from '../SocialProfiles';
 import ProfileBanner from '../ProfileBanner';
 import ProfileHeader from '../ProfileHeader';
@@ -95,7 +95,7 @@ const ProfileComponent: React.FC<IPropsSession> = ({
 
         {profile.basicDTO.isEnabled === true ? (
           <>
-            <PublicProfileNav
+            <PublicProfileTabs
               mode={mode}
               profile={profile}
               scrollToPosition={scrollToElement}

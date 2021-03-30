@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   IonButton,
   IonCard,
-  IonCardContent,
-  IonCardHeader,
   IonCardTitle,
   IonCol,
   IonGrid,
@@ -16,7 +14,9 @@ import {
   MyModal,
   MyGrid,
   MyTextarea,
-  ModalFooter
+  ModalFooter,
+  CardHeaderContent,
+  CardContentContainer
 } from './common';
 import styleWidget from './WidgetCards.module.scss';
 
@@ -52,17 +52,21 @@ const AboutCard: React.FC<IProps> = ({
     setAbout(aboutText);
   }, [aboutText]);
 
+  if (mode !== 'edit' && (aboutText === '' || aboutText === undefined)) {
+    return <></>;
+  }
+
   return (
     <>
       <IonCard className={styleWidget['overview']}>
-        <IonCardHeader>
-          <IonGrid>
-            <IonRow className="ion-justify-content-between">
-              <IonCol>
+        <CardHeaderContent>
+          <IonGrid className="ion-no-padding">
+            <IonRow className="ion-justify-content-between ion-no-padding">
+              <IonCol className="ion-no-padding">
                 <IonCardTitle>About</IonCardTitle>
               </IonCol>
               {mode === 'edit' ? (
-                <IonCol size="auto">
+                <IonCol size="auto" className="ion-no-padding">
                   <LinkStyleSpan onClick={() => setIsEditing(true)}>
                     + Edit
                   </LinkStyleSpan>
@@ -72,24 +76,24 @@ const AboutCard: React.FC<IProps> = ({
               )}
             </IonRow>
           </IonGrid>
-        </IonCardHeader>
-        <IonCardContent>
-          <IonGrid>
-            <IonRow>
-              <IonCol size="12">
+        </CardHeaderContent>
+        <CardContentContainer>
+          <IonGrid className="ion-no-padding">
+            <IonRow className="ion-no-padding">
+              <IonCol size="12" className="ion-no-padding">
                 <About>{about}</About>
               </IonCol>
             </IonRow>
           </IonGrid>
-        </IonCardContent>
+        </CardContentContainer>
       </IonCard>
       <MyModal isOpen={isEditing} cssClass="my-custom-class">
-        <MyGrid>
-          <IonRow>
+        <MyGrid className="ion-no-padding">
+          <IonRow className="ion-no-padding">
             <IonCardTitle>Edit About</IonCardTitle>
           </IonRow>
-          <IonRow>
-            <IonCol>
+          <IonRow className="ion-no-padding">
+            <IonCol className="ion-no-padding">
               <MyTextarea
                 rows={5}
                 name="about"
@@ -100,8 +104,8 @@ const AboutCard: React.FC<IProps> = ({
           </IonRow>
         </MyGrid>
         <ModalFooter className="ion-no-border">
-          <IonRow className="ion-justify-content-around">
-            <IonCol size="auto">
+          <IonRow className="ion-justify-content-around ion-no-padding">
+            <IonCol size="auto" className="ion-no-padding">
               <IonButton fill="outline" onClick={() => setIsEditing(false)}>
                 Cancel
               </IonButton>

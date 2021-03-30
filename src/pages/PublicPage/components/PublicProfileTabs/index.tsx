@@ -5,18 +5,16 @@ import styled from 'styled-components';
 import style from './style.module.scss';
 
 interface IProps {
-  profile: ProfileDTO;
   scrollToPosition: any;
   mode: string;
 }
 
 const Navigation = styled.div`
   position: sticky;
-  top: 110px;
+  top: 284px;
 `;
 
-const PublicProfileNav: React.FC<IProps> = ({
-  profile,
+const PublicProfileTabs: React.FC<IProps> = ({
   scrollToPosition,
   mode
 }: IProps) => {
@@ -71,4 +69,4 @@ const PublicProfileNav: React.FC<IProps> = ({
   );
 };
 
-export default PublicProfileNav;
+export default PublicProfileTabs;

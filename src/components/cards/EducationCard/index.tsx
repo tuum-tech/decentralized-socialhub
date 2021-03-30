@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   IonButton,
   IonCard,
-  IonCardContent,
-  IonCardHeader,
   IonCardTitle,
   IonCol,
   IonGrid,
@@ -13,7 +11,15 @@ import { Guid } from 'guid-typescript';
 
 import EducationItem from './Item';
 import styleWidget from '../WidgetCards.module.scss';
-import { Divider, LinkStyleSpan, MyModal, ModalFooter, MODE } from '../common';
+import {
+  Divider,
+  LinkStyleSpan,
+  MyModal,
+  ModalFooter,
+  MODE,
+  CardHeaderContent,
+  CardContentContainer
+} from '../common';
 import EducationCardEdit from './Edit';
 
 interface IEducationProps {
@@ -111,19 +117,26 @@ const EducationCard: React.FC<IEducationProps> = ({
     setCurrentEducationDTO({ isEnabled: true, items: items });
   };
 
+  if (
+    !currentEducationDTO.isEnabled ||
+    (!isEditable && currentEducationDTO.items.length == 0)
+  ) {
+    return <></>;
+  }
+
   return (
     <>
       {educationDTO.isEnabled === true ? (
         <>
           <IonCard className={styleWidget['overview']}>
-            <IonCardHeader>
-              <IonGrid>
-                <IonRow className="ion-justify-content-between">
-                  <IonCol>
+            <CardHeaderContent>
+              <IonGrid className="ion-no-padding">
+                <IonRow className="ion-justify-content-between ion-no-padding">
+                  <IonCol className="ion-no-padding">
                     <IonCardTitle>Education</IonCardTitle>
                   </IonCol>
                   {isEditable ? (
-                    <IonCol size="auto">
+                    <IonCol size="auto" className="ion-no-padding">
                       <LinkStyleSpan onClick={e => addItem()}>
                         + Add Education
                       </LinkStyleSpan>
@@ -133,8 +146,8 @@ const EducationCard: React.FC<IEducationProps> = ({
                   )}
                 </IonRow>
               </IonGrid>
-            </IonCardHeader>
-            <IonCardContent>
+            </CardHeaderContent>
+            <CardContentContainer>
               {currentEducationDTO.items.map((x, i) => {
                 return (
                   <div key={i}>
@@ -155,7 +168,7 @@ const EducationCard: React.FC<IEducationProps> = ({
                   </div>
                 );
               })}
-            </IonCardContent>
+            </CardContentContainer>
           </IonCard>
           <MyModal
             onDidDismiss={() => setMode(MODE.NONE)}
