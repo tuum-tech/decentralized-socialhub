@@ -17,7 +17,7 @@ interface Props {
   tab?: string;
   people?: PeopleDTO;
   pages?: PageDTO;
-  following?: FollowingDTO;
+  following: FollowingDTO;
   searchKeyword?: string;
   isSearchKeywordDID?: boolean;
 }

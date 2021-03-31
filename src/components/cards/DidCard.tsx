@@ -4,6 +4,7 @@ import style from './DidCard.module.scss';
 import SkeletonAvatar from '../avatars/SkeletonAvatar';
 import { ProfileService } from 'src/services/profile.service';
 import { Link } from 'react-router-dom';
+import { UserService } from 'src/services/user.service';
 
 interface Props {
   name?: string;
@@ -11,7 +12,7 @@ interface Props {
   avatar?: string;
   indexItem?: number;
   sessionItem?: ISessionItem;
-  following?: boolean;
+  following?: FollowingDTO;
   colSize?: string;
   type?: string;
 }
@@ -21,25 +22,28 @@ const DidCard: React.FC<Props> = ({
   did = '',
   avatar,
   indexItem,
-  sessionItem = {
-    tutorialStep: 1
-  },
-  following = false,
+  following,
   colSize = '100%',
   type = 'user'
 }) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const userInfo = UserService.GetUserSession();
+  const tutorialStep = userInfo !== undefined ? userInfo.tutorialStep : 1;
+
   const followDid = async (did: string) => {
     setLoading(true);
-    await ProfileService.addFollowing(did);
+    const response = await ProfileService.addFollowing(did);
+    following = response.get_following;
     setIsFollowing(true);
     setLoading(false);
   };
 
   const unfollowDid = async (did: string) => {
     setLoading(true);
-    await ProfileService.unfollow(did);
+    const response = await ProfileService.unfollow(did);
+    following = response.get_following;
     setIsFollowing(false);
     setLoading(false);
   };
@@ -49,8 +53,21 @@ const DidCard: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    setIsFollowing(following);
+    setLoading(true);
+    setIsFollowing(computeIsFollowing(did));
+    setLoading(false);
   }, [following]);
+
+  const computeIsFollowing = (did: string): boolean => {
+    if (following && following.items) {
+      for (let i = 0; i < following.items.length; i++) {
+        if (following.items[i].did === did) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
 
   return (
     <IonList
@@ -77,7 +94,7 @@ const DidCard: React.FC<Props> = ({
             {'DID:' + did.replace('did:elastos:', '')}
           </span>
         </div>
-        {type === 'user' && sessionItem.tutorialStep === 4 && (
+        {type === 'user' && tutorialStep === 4 && (
           <div className={style['card-link']}>
             {loading && (
               <span className={style['card-link-inner']}>
@@ -88,7 +105,7 @@ const DidCard: React.FC<Props> = ({
                     height: '1rem'
                   }}
                 />
-                <span>Wait a while...</span>
+                {/* <span>Wait a while...</span> */}
               </span>
             )}
             {!loading && isFollowing && (
