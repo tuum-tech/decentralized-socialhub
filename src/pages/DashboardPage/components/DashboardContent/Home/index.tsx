@@ -9,6 +9,11 @@ import ExperienceCard from 'src/components/cards/ExperienceCard';
 import EducationCard from 'src/components/cards/EducationCard';
 import ProfileCompletionCard from 'src/components/cards/ProfileCompletionCard';
 
+import ManageProfile from './Left/ManageProfile';
+import ExploreConnnections from './Left/ExploreConnnections';
+import ManageLinks from './Left/ManageLinks';
+import BeginnersTutorial from './Left/BeginnersTutorial';
+
 import WhatIsProfile from './RightContent/WhatIsProfile';
 import ConnectWithCommunity from './RightContent/ConnectWithCommunity';
 import ProfileCompletion from './RightContent/ProfileCompletion';
@@ -58,6 +63,11 @@ const DashboardHome: React.FC<DashboardProps> = ({
           {profile && profile.educationDTO && (
             <EducationCard educationDTO={profile.educationDTO} />
           )} */}
+          <BeginnersTutorial />
+
+          <ManageProfile />
+          <ExploreConnnections />
+          <ManageLinks />
         </IonCol>
         <IonCol size="4">
           <VerificationStatus />
