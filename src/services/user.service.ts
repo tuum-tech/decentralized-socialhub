@@ -54,20 +54,20 @@ export class UserService {
     let temporaryDocument = await DidService.genereteNewDidDocument(newDID);
 
 
-    let nameVc = DidService.generateSelfVerifiableCredential(newDID, "name", [""], name)
-    await DidService.addVerfiableCredentialToDIDDocument(temporaryDocument, nameVc)
+    // let nameVc = DidService.generateSelfVerifiableCredential(newDID, "name", ["BasicProfileCredential"], name)
+    // await DidService.addVerfiableCredentialToDIDDocument(temporaryDocument, nameVc)
 
-    let credentialType: CredentialType = CredentialType.DID
-    if (service == AccountType.Email) credentialType = CredentialType.Email
-    if (service == AccountType.Facebook) credentialType = CredentialType.Facebook
-    if (service == AccountType.Google) credentialType = CredentialType.Google
-    if (service == AccountType.Linkedin) credentialType = CredentialType.Linkedin
-    if (service == AccountType.Twitter) credentialType = CredentialType.Twitter
+    // let credentialType: CredentialType = CredentialType.DID
+    // if (service == AccountType.Email) credentialType = CredentialType.Email
+    // if (service == AccountType.Facebook) credentialType = CredentialType.Facebook
+    // if (service == AccountType.Google) credentialType = CredentialType.Google
+    // if (service == AccountType.Linkedin) credentialType = CredentialType.Linkedin
+    // if (service == AccountType.Twitter) credentialType = CredentialType.Twitter
 
-    if (credentialType !== CredentialType.DID){
-      let serviceVc = await DidcredsService.generateVerifiableCredential(newDID.did, credentialType, credential)
-      await DidService.addVerfiableCredentialToDIDDocument(temporaryDocument, serviceVc)
-    }
+    // if (credentialType !== CredentialType.DID){
+    //   let serviceVc = await DidcredsService.generateVerifiableCredential(newDID.did, credentialType, credential)
+    //   await DidService.addVerfiableCredentialToDIDDocument(temporaryDocument, serviceVc)
+    // }
     
 
 
