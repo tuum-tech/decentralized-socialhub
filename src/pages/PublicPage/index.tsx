@@ -17,7 +17,7 @@ import PublicNavbar from './components/PublicNavbar';
 import { UserService } from 'src/services/user.service';
 import PageLoading from 'src/components/layouts/PageLoading';
 import {
-  ProfileService,
+  PublicProfileService,
   defaultUserInfo,
   defaultFullProfile
 } from 'src/services/profile.service';
@@ -70,7 +70,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
         }
         let profile:
           | ProfileDTO
-          | undefined = await ProfileService.getFullProfile(did);
+          | undefined = await PublicProfileService.getFullProfile(did);
         if (profile) {
           profile.basicDTO.isEnabled = true;
           profile.experienceDTO.isEnabled = true;
@@ -185,9 +185,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
                                   </div>
                                 </LeftContent>
                                 <RightContent>
-                                  {/* /sProfile should be a real data */}
                                   <SocialProfiles sProfile={['linkedin']} />
-
                                   <FollowingList
                                     did={publicUserProfile.basicDTO.did}
                                   />

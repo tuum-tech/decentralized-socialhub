@@ -42,6 +42,19 @@ let run = async () => {
     }
   });
   await client.Scripting.SetScript({
+    name: 'get_following',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_following',
+      output: true,
+      body: {
+        collection: 'following'
+      }
+    }
+  });
+  await client.Scripting.SetScript({
     name: 'get_followers',
     allowAnonymousUser: true,
     allowAnonymousApp: true,

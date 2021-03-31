@@ -4,7 +4,7 @@ import { IonContent, IonGrid, IonCol, IonRow } from '@ionic/react';
 import { UserService } from 'src/services/user.service';
 import { TuumTechScriptService } from 'src/services/script.service';
 import {
-  ProfileService,
+  PublicProfileService,
   defaultUserInfo,
   defaultFullProfile
 } from 'src/services/profile.service';
@@ -30,9 +30,9 @@ const ProfileEditor: React.FC = () => {
     let instance = UserService.GetUserSession();
     if (!instance || !instance.userToken) return;
     try {
-      let res: ProfileDTO | undefined = await ProfileService.getFullProfile(
-        instance.did
-      );
+      let res:
+        | ProfileDTO
+        | undefined = await PublicProfileService.getFullProfile(instance.did);
       if (res) {
         res.basicDTO.isEnabled = true;
         res.experienceDTO.isEnabled = true;

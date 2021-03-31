@@ -23,7 +23,7 @@ import { UserService } from 'src/services/user.service';
 import { AssistService, RequestStatus } from 'src/services/assist.service';
 import LoadingIndicator from 'src/components/LoadingIndicator';
 import {
-  ProfileService,
+  PublicProfileService,
   defaultUserInfo,
   defaultFullProfile
 } from 'src/services/profile.service';
@@ -118,9 +118,9 @@ const ProfilePage = () => {
       return;
     }
     setLoadingText('Please wait a moment...');
-    let profile: ProfileDTO | undefined = await ProfileService.getFullProfile(
-      userSession.did
-    );
+    let profile:
+      | ProfileDTO
+      | undefined = await PublicProfileService.getFullProfile(userSession.did);
     if (profile) {
       profile.experienceDTO.isEnabled = true;
       profile.educationDTO.isEnabled = true;

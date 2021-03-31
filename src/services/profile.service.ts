@@ -38,45 +38,48 @@ export interface IFollowerItem {
   followers: string[];
 }
 
-export class ProfileService {
-  static async getFullProfile(did: string): Promise<ProfileDTO | undefined> {
-    {
-      const hiveInstance = await HiveService.getAppHiveClient();
-      if (hiveInstance) {
-        const fullProfileResponse: IRunScriptResponse<ProfileResponse> = await hiveInstance.Scripting.RunScript(
-          {
-            name: 'get_full_profile',
-            context: {
-              target_did: did,
-              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-            }
-          }
-        );
+export const defaultUserInfo: ISessionItem = {
+  hiveHost: '',
+  userToken: '',
+  accountType: AccountType.DID,
+  did: '',
+  // email: '',
+  name: '',
+  isDIDPublished: false,
+  mnemonics: '',
+  passhash: '',
+  onBoardingCompleted: false,
+  tutorialStep: 1
+};
 
-        if (
-          fullProfileResponse &&
-          fullProfileResponse.response &&
-          fullProfileResponse.response.get_basic &&
-          fullProfileResponse.response.get_basic.items
-        ) {
-          let basicProfile = fullProfileResponse.response!.get_basic.items![0];
-          let educationProfile = fullProfileResponse.response!
-            .get_education_profile;
-          let experienceProfile = fullProfileResponse.response!
-            .get_experience_profile;
-
-          return {
-            basicDTO: basicProfile || {},
-            educationDTO: educationProfile,
-            experienceDTO: experienceProfile
-          };
-        }
-      }
-
-      return;
+export const defaultFullProfile = {
+  basicDTO: {
+    isEnabled: false,
+    name: '',
+    hiveHost: '',
+    email: '',
+    did: '',
+    title: '',
+    about: '',
+    address: {
+      number: '',
+      street_name: '',
+      postal_code: '',
+      state: '',
+      country: ''
     }
+  },
+  educationDTO: {
+    isEnabled: false,
+    items: [] as EducationItem[]
+  },
+  experienceDTO: {
+    isEnabled: false,
+    items: [] as ExperienceItem[]
   }
+};
 
+export class ProfileService {
   static async updateAbout(basicDTO: BasicDTO) {
     const userSession = UserService.GetUserSession();
     const hiveInstance = await HiveService.getSessionInstance();
@@ -184,6 +187,7 @@ export class ProfileService {
 
   static async getFollowings(did: string): Promise<IFollowingResponse> {
     const getUserFollowingScriptRes: any = await this.getUserFollowings(did);
+    console.log('======>getUserFollowingScriptRes', getUserFollowingScriptRes);
     return getUserFollowingScriptRes!.response as IFollowingResponse;
   }
 
@@ -304,43 +308,80 @@ export class ProfileService {
   }
 }
 
-export const defaultUserInfo: ISessionItem = {
-  hiveHost: '',
-  userToken: '',
-  accountType: AccountType.DID,
-  did: '',
-  name: '',
-  isDIDPublished: false,
-  loginCred:{},
-  mnemonics: '',
-  passhash: '',
-  onBoardingCompleted: false,
-  tutorialStep: 1
-};
+export class PublicProfileService {
+  static async getFullProfile(did: string): Promise<ProfileDTO | undefined> {
+    {
+      const hiveInstance = await HiveService.getAppHiveClient();
+      if (hiveInstance) {
+        const fullProfileResponse: IRunScriptResponse<ProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_full_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            }
+          }
+        );
 
-export const defaultFullProfile = {
-  basicDTO: {
-    isEnabled: false,
-    name: '',
-    hiveHost: '',
-    email: '',
-    did: '',
-    title: '',
-    about: '',
-    address: {
-      number: '',
-      street_name: '',
-      postal_code: '',
-      state: '',
-      country: ''
+        if (
+          fullProfileResponse &&
+          fullProfileResponse.response &&
+          fullProfileResponse.response.get_basic &&
+          fullProfileResponse.response.get_basic.items
+        ) {
+          let basicProfile = fullProfileResponse.response!.get_basic.items![0];
+          let educationProfile = fullProfileResponse.response!
+            .get_education_profile;
+          let experienceProfile = fullProfileResponse.response!
+            .get_experience_profile;
+
+          return {
+            basicDTO: basicProfile || {},
+            educationDTO: educationProfile,
+            experienceDTO: experienceProfile
+          };
+        }
+      }
+      return;
     }
-  },
-  educationDTO: {
-    isEnabled: false,
-    items: [] as EducationItem[]
-  },
-  experienceDTO: {
-    isEnabled: false,
-    items: [] as ExperienceItem[]
   }
-};
+
+  static async getFollowings(did: string): Promise<any> {
+    const appHiveClient = await HiveService.getAppHiveClient();
+
+    if (appHiveClient) {
+      const getUserFollowingScriptRes: any = appHiveClient.Scripting.RunScript({
+        name: 'get_following',
+        context: {
+          target_did: did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        }
+      });
+      console.log('======>2', getUserFollowingScriptRes);
+      return getUserFollowingScriptRes!.response as IFollowingResponse;
+    }
+  }
+
+  static async getFollowers(
+    dids: string[]
+  ): Promise<IFollowerResponse | undefined> {
+    const appHiveClient = await HiveService.getAppHiveClient();
+    let followersResponse: IRunScriptResponse<IFollowerResponse> = await appHiveClient.Scripting.RunScript(
+      {
+        name: 'get_followers',
+        params: {
+          did: dids
+        },
+        context: {
+          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+        }
+      }
+    );
+
+    if (followersResponse.isSuccess) {
+      return followersResponse.response;
+    }
+    return;
+  }
+}
