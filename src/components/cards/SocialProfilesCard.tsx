@@ -265,7 +265,8 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument, showManageButton }) 
     if (!vc) return
     return <ProfileItem className={style['social-profile-item']}>
       <img src={icon} />
-      <a href={getUrlFromService(key, vc.value)} target="_blank">{parseValueFromService(key, vc.value)}</a>
+      {(key == "facebook" || key == "linkedin") && <span>{parseValueFromService(key, vc.value)}</span> }
+      {(key == "google" || key == "twitter") && <a href={getUrlFromService(key, vc.value)} target="_blank">{parseValueFromService(key, vc.value)}</a> }
       {vc.isVerified && <img src={shieldIcon} className={style['social-profile-badge']} />}
     </ProfileItem>
   }

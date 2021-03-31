@@ -63,7 +63,7 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
             name: googleId.name,
             request_token: t.data.request_token,
             email: googleId.email,
-            credential: googleId.credential
+            credential: googleId.email
           });
         }
       }

@@ -53,7 +53,7 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
         let userSession = UserService.GetUserSession()
         if (userSession){
 
-          let vc = await DidcredsService.generateVerifiableCredential(userSession.did, CredentialType.Linkedin, linkedinprofile.data.profile.id )
+          let vc = await DidcredsService.generateVerifiableCredential(userSession.did, CredentialType.Linkedin, firstName + '' + lastName )
 
           let state = await DidDocumentService.getUserDocument(userSession)
 
@@ -68,7 +68,7 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
             name: firstName + ' ' + lastName,
             request_token: t.data.request_token,
             email: uniqueEmail,
-            credential: linkedinprofile.data.profile.id
+            credential: firstName + '' + lastName
           });
         }
 
