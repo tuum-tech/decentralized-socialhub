@@ -2,6 +2,7 @@ import React from 'react';
 import { IonCard } from '@ionic/react';
 import styled from 'styled-components';
 
+import { DefaultButton } from 'src/components/buttons';
 import profileCardImg from '../../../../../../assets/dashboard/profile.png';
 
 export const CardTitle = styled.p`
@@ -20,6 +21,7 @@ export const CardText = styled.p`
   line-height: 23px;
   color: #425466;
   max-width: 315px;
+  maring-bottom: 15px;
 `;
 
 export const MainCard = styled(IonCard)`
@@ -43,6 +45,15 @@ export const CardImg = styled.img`
   bottom: 0;
 `;
 
+export const LinkButton = styled(DefaultButton)`
+  margin-top: 15px;
+  width: 158px;
+  color: #4c6fff;
+  background-color: #f3f9ff;
+  text-align: left !important;
+  padding: 11px 15px;
+`;
+
 const ManageProfile: React.FC = ({}) => {
   return (
     <MainCard>
@@ -50,6 +61,7 @@ const ManageProfile: React.FC = ({}) => {
       <CardText>
         Add, edit and manage your profile information from profile manager.
       </CardText>
+      <LinkButton>Manage your profile ></LinkButton>
       <CardImg src={profileCardImg} />
     </MainCard>
   );

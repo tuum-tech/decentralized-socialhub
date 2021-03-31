@@ -1,6 +1,12 @@
 import React from 'react';
 
-import { MainCard, CardText, CardTitle, CardImg } from './ManageProfile';
+import {
+  MainCard,
+  CardText,
+  CardTitle,
+  CardImg,
+  LinkButton
+} from './ManageProfile';
 import exploreCardImg from '../../../../../../assets/dashboard/explore.png';
 
 const ExploreConnnections: React.FC = ({}) => {
@@ -11,6 +17,7 @@ const ExploreConnnections: React.FC = ({}) => {
         Search for like minded people and make valuable connections. explore
         your influnce circle
       </CardText>
+      <LinkButton>Expolore connections ></LinkButton>
       <CardImg src={exploreCardImg} />
     </MainCard>
   );

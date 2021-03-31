@@ -111,6 +111,11 @@ const FollowButton = styled(IonButton)`
 
 interface ButtonProps {
   width?: string;
+  height?: string;
+  bgColor?: string;
+  color?: string;
+  borderRadius?: string;
+  padding?: string;
 }
 
 const DefaultButton = styled.div<ButtonProps>`
@@ -118,7 +123,6 @@ const DefaultButton = styled.div<ButtonProps>`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 15px 25px;
 
   font-family: 'SF Pro Display';
   font-style: normal;
@@ -127,38 +131,15 @@ const DefaultButton = styled.div<ButtonProps>`
   line-height: 12px;
 
   width: 100%;
+  height: 100%;
+
+  padding: ${props => (props.padding ? `${props.padding}` : '15px 25px')};
   max-width: ${props => (props.width ? `${props.width}` : '100%')};
-  height: 42px;
-  left: 25px;
-  top: 329px;
-
-  background: #4c6fff;
-  border-radius: 9px;
-  color: white;
-`;
-
-const WhiteButton = styled.div<ButtonProps>`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 15px 25px;
-
-  font-family: 'SF Pro Display';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 12px;
-
-  width: 100%;
-  max-width: ${props => (props.width ? `${props.width}` : '100%')};
-  height: 42px;
-  left: 25px;
-  top: 329px;
-
-  background: white;
-  border-radius: 9px;
-  color: #4c6fff;
+  max-height: ${props => (props.height ? `${props.height}` : '100%')};
+  background: ${props => (props.bgColor ? `${props.bgColor}` : '#4c6fff')};
+  color: ${props => (props.color ? `${props.color}` : 'white')};
+  border-radius: ${props =>
+    props.borderRadius ? `${props.borderRadius}` : '9px'};
 `;
 
 export {
@@ -170,7 +151,5 @@ export {
   DashboardSignInButton,
   FollowButton,
   Button,
-  // PrimaryButton,
-  DefaultButton,
-  WhiteButton
+  DefaultButton
 };

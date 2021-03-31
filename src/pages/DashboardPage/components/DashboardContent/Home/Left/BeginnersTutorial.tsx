@@ -2,6 +2,7 @@ import React from 'react';
 import { IonCard } from '@ionic/react';
 import styled from 'styled-components';
 
+import { DefaultButton } from 'src/components/buttons';
 import badgeImg from '../../../../../../assets/dashboard/tutorialbadge.png';
 import style from './style.module.scss';
 
@@ -43,6 +44,14 @@ export const BadgeImg = styled.img`
   width: 102px !important;
 `;
 
+const LinkButton = styled(DefaultButton)`
+  margin-top: 15px;
+  width: 158px;
+  color: #4c6fff;
+  background-color: #f3f9ff;
+  padding: 11px 15px;
+`;
+
 const BeginnersTutorial: React.FC = ({}) => {
   return (
     <MainCard className={style['begginers-card']}>
@@ -50,6 +59,15 @@ const BeginnersTutorial: React.FC = ({}) => {
       <CardText>
         Complete the tutorial to start adding and sharing your profiles.
       </CardText>
+
+      <LinkButton
+        width="160px"
+        onClick={() => {}}
+        color="#4C6FFF"
+        bgColor="#F3F9FF"
+      >
+        Resume Tutorial
+      </LinkButton>
 
       <BadgeImg src={badgeImg} />
     </MainCard>

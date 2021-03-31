@@ -2,7 +2,7 @@ import React from 'react';
 import { IonCardContent, IonCardHeader } from '@ionic/react';
 import styled from 'styled-components';
 
-import { WhiteButton } from 'src/components/buttons';
+import { DefaultButton } from 'src/components/buttons';
 import { CardTitle, CardSubTitle, MainCard } from './ProfileCompletion';
 
 const Logo = () => (
@@ -58,9 +58,14 @@ const WhatIsProfile: React.FC = ({}) => {
           </CardSubTitle>
         </IonCardHeader>
         <IonCardContent>
-          <WhiteButton width="120px" onClick={() => {}}>
+          <DefaultButton
+            bgColor="#F3F9FF"
+            width="120px"
+            onClick={() => {}}
+            color="#4C6FFF"
+          >
             Read more
-          </WhiteButton>
+          </DefaultButton>
         </IonCardContent>
         <Logo />
       </ColorCard>
