@@ -62,16 +62,16 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         user.tutorialStep = 4;
         user.hiveHost = endpoint;
 
-        //TODO: Uncomment when did publishing was fixed
-        // if (selected !== "document")
-        // {
-        //   let userDid = await DidService.loadDid(user.mnemonics);
-        //   let hivesvc = DidService.generateService(userDid, 'HiveVault', endpoint);
-        //   let documentState = await DidDocumentService.getUserDocument(user)
-        //   let userDocument = documentState.diddocument;
-        //   await DidService.addServiceToDIDDocument(userDocument, hivesvc);
-        //   await DidDocumentService.publishUserDocument(userDocument);
-        // }
+        
+        if (selected !== "document")
+        {
+          let userDid = await DidService.loadDid(user.mnemonics);
+          let hivesvc = DidService.generateService(userDid, 'HiveVault', endpoint);
+          let documentState = await DidDocumentService.getUserDocument(user)
+          let userDocument = documentState.diddocument;
+          await DidService.addServiceToDIDDocument(userDocument, hivesvc);
+          await DidDocumentService.publishUserDocument(userDocument);
+        }
 
         await UserService.updateSession(user);
         let hiveInstance = await HiveService.getSessionInstance();

@@ -1,0 +1,121 @@
+.social-profile {
+    background-color: #fff;
+    border-radius: 20px;
+    margin-top: 2em;
+    padding: 10px;
+  
+    .card-title {
+      font-family: 'SF Pro Display';
+      font-size: 18px;
+      font-weight: bold;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: -0.09px;
+      text-align: left;
+      color: #000000;
+    }
+  
+    .card-content {
+      font-family: 'SF Pro Display';
+      font-size: 14px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.64;
+      letter-spacing: normal;
+      text-align: left;
+      color: #425466;
+    }
+  
+    .social-profile-item {
+      border: 0px;
+      --inner-border-width: 0;
+      padding: 0px !important;
+      
+      height: 35px;
+      font-family: 'SF Pro Display';
+      font-size: 14px;
+      font-weight: 500;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      text-align: left;
+      color: #7a7a9d;
+      a{
+        color: #000000;
+      }
+      img{
+        width: 16px;
+        height: 16px;
+        margin-right: 10px;
+      }
+      .social-profile-badge {
+        margin-left: 5px;
+      }
+    }
+  
+    .social-profile-bg {
+      width: 30.2px;
+      height: 30.2px;
+      background-color: #d9dbe2;
+      transform: rotate(-45deg);
+      transform-origin: 0 100%;
+      margin: 7px 0px -5px 30px;
+      border-radius: 7px;
+      text-align: center;
+    }
+  
+    .card-link {
+      flex: auto;
+      float: right;
+      font-family: 'SF Pro Display';
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: -0.07px;
+  text-align: left;
+  color: #4c6fff;
+  cursor: pointer;
+      opacity: 1;
+  
+      &_hover {
+        opacity: 0.5;
+      }
+    }
+    
+  }
+
+  .manage-links-item{
+    border-bottom: 1px solid #f3f9ff;
+    height: 72px;
+    padding: 15px;
+    font-family: 'SF Pro Display';
+    font-stretch: normal;
+    font-style: normal;   
+    letter-spacing: normal; 
+    text-align: left;
+    .manage-links-header{
+      margin-left: 55px;
+      display: block;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.56;
+      color: #27272e;
+      flex-basis: 100%;
+    }
+  
+    .manage-links-detail{
+      display: block;
+      margin-left: 55px;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.79;
+      color: #a0aec0;
+    }
+  }
+
+  

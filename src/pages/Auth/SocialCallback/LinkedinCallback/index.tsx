@@ -5,11 +5,14 @@
 import React, { useEffect, useState } from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
 
-import { AccountType } from 'src/services/user.service';
+import { AccountType, UserService } from 'src/services/user.service';
 import PageLoading from 'src/components/layouts/PageLoading';
 
 import { TokenResponse } from './types';
 import { requestLinkedinProfile, requestLinkedinToken } from './fetchapi';
+import { DidService } from 'src/services/did.service';
+import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
+import { DidDocumentService } from 'src/services/diddocument.service';
 
 const LinkedinCallback: React.FC<RouteComponentProps> = props => {
   /**
@@ -47,12 +50,30 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
         const firstName = linkedinprofile.data.profile.localizedFirstName.toLowerCase();
         const lastName = linkedinprofile.data.profile.localizedLastName.toLowerCase();
         const uniqueEmail = firstName + lastName + '@linkedin.com';
-        setCredentials({
-          name: firstName + ' ' + lastName,
-          request_token: t.data.request_token,
-          email: uniqueEmail,
-          credential: linkedinprofile.data.profile.id
-        });
+        let userSession = UserService.GetUserSession()
+        if (userSession){
+
+          let vc = await DidcredsService.generateVerifiableCredential(userSession.did, CredentialType.Linkedin, firstName + '' + lastName )
+
+          let state = await DidDocumentService.getUserDocument(userSession)
+
+          await DidService.addVerfiableCredentialToDIDDocument(state.diddocument, vc)
+
+          DidDocumentService.updateUserDocument(state.diddocument)
+
+
+          window.close();
+        } else {
+          setCredentials({
+            name: firstName + ' ' + lastName,
+            request_token: t.data.request_token,
+            email: uniqueEmail,
+            credential: firstName + '' + lastName
+          });
+        }
+
+        
+       
       }
     })();
   });

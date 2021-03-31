@@ -16,11 +16,14 @@ import AboutCard from 'src/components/cards/AboutCard';
 import BasicCard from '../BasicCard';
 import TemplateManagerCard from '../TemplateManagerCard';
 import style from './style.module.scss';
+import { DidDocumentService } from 'src/services/diddocument.service';
+import SocialProfilesCard from 'src/components/cards/SocialProfilesCard';
 
 const ProfileEditor: React.FC = () => {
   const [error, setError] = useState(false);
   const [userInfo, setUserInfo] = useState<ISessionItem>(defaultUserInfo);
   const [loaded, setloaded] = useState(false);
+  const [didDocument, setDidDocument] = useState({});
   const [profile, setProfile] = useState(defaultFullProfile);
 
   const retriveProfile = async () => {
@@ -41,6 +44,22 @@ const ProfileEditor: React.FC = () => {
     }
   };
 
+  const setTimer = () => {
+    const timer = setTimeout(async () => {
+      await refreshDidDocument();
+      setTimer();
+    }, 1000);
+    return () => clearTimeout(timer);
+  };
+  const refreshDidDocument = async () => {
+    let userSession = UserService.GetUserSession();
+    if (!userSession) {
+      return;
+    }
+    let documentState = await DidDocumentService.getUserDocument(userSession)
+    setDidDocument(documentState.diddocument)
+  };
+
   useEffect(() => {
     (async () => {
       let instance = UserService.GetUserSession();
@@ -53,6 +72,7 @@ const ProfileEditor: React.FC = () => {
       }
       setloaded(true);
     })();
+    setTimer();
   }, []);
 
   return (
@@ -92,6 +112,9 @@ const ProfileEditor: React.FC = () => {
                     }}
                   />
                 )}
+               
+               <SocialProfilesCard  diddocument={didDocument} showManageButton={true} />
+                
                 {profile && profile.educationDTO && (
                   <EducationCard
                     educationDTO={profile.educationDTO}

@@ -8,6 +8,7 @@ import {
   TuumTechScriptService,
   UserVaultScriptService
 } from './script.service';
+import { CredentialType, DidcredsService } from './didcreds.service';
 
 const CryptoJS = require('crypto-js');
 
@@ -46,15 +47,45 @@ export class UserService {
 
   private static async generateTemporaryDID(
     service: AccountType,
-    credential: string
+    credential: string,
+    name: string
   ): Promise<IDID> {
     let newDID = await DidService.generateNew();
     let temporaryDocument = await DidService.genereteNewDidDocument(newDID);
-    DidService.sealDIDDocument(newDID, temporaryDocument);
-    DidDocumentService.updateUserDocument(temporaryDocument);
+
+    let nameVc = DidService.generateSelfVerifiableCredential(
+      newDID,
+      'name',
+      [''],
+      name
+    );
+    await DidService.addVerfiableCredentialToDIDDocument(
+      temporaryDocument,
+      nameVc
+    );
+
+    // let nameVc = DidService.generateSelfVerifiableCredential(newDID, "name", ["BasicProfileCredential"], name)
+    // await DidService.addVerfiableCredentialToDIDDocument(temporaryDocument, nameVc)
+
+    // let credentialType: CredentialType = CredentialType.DID
+    // if (service == AccountType.Email) credentialType = CredentialType.Email
+    // if (service == AccountType.Facebook) credentialType = CredentialType.Facebook
+    // if (service == AccountType.Google) credentialType = CredentialType.Google
+    // if (service == AccountType.Linkedin) credentialType = CredentialType.Linkedin
+    // if (service == AccountType.Twitter) credentialType = CredentialType.Twitter
+
+    // if (credentialType !== CredentialType.DID){
+    //   let serviceVc = await DidcredsService.generateVerifiableCredential(newDID.did, credentialType, credential)
+    //   await DidService.addVerfiableCredentialToDIDDocument(temporaryDocument, serviceVc)
+    // }
+    
+
+
+    let signedDocument = DidService.sealDIDDocument(newDID, temporaryDocument);
+    DidDocumentService.updateUserDocument(signedDocument);
 
     let requestPub = await DidService.generatePublishRequest(
-      temporaryDocument,
+      signedDocument,
       newDID,
       PublishRequestOperation.Create
     );
@@ -71,6 +102,12 @@ export class UserService {
   }
 
   private static lockUser(key: string, instance: ISessionItem) {
+    if (!instance.mnemonics || instance.mnemonics === '') {
+      instance.mnemonics =
+        window.localStorage.getItem(
+          `temporary_${instance.did.replace('did:elastos:', '')}`
+        ) || '';
+    }
     let encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(instance),
       instance.passhash
@@ -197,7 +234,11 @@ export class UserService {
     let did = newDidStr;
     let mnemonics = newMnemonicStr;
     if (!did || did === '') {
-      const newDid = await this.generateTemporaryDID(accountType, credential);
+      const newDid = await this.generateTemporaryDID(
+        accountType,
+        credential,
+        name
+      );
       did = newDid.did;
       mnemonics = newDid.mnemonic;
     }
