@@ -13,14 +13,12 @@ const DashboardBadges: React.FC = () => {
       <IonRow>
         <IonCol size="4">
           <SpotlightCard
-            title="Overview"
-            content="You gain badges the more you complete and use your profile. Level your profile up! Click on a badge to learn more about it."
+            title="NOT READY YET"
+            content="Please refrain from testing this page for this version"
           />
-          <BadgesCard title="Social" />
+          {/* <BadgesCard title="Social" /> */}
         </IonCol>
-        <IonCol size="8">
-          <OverviewCard />
-        </IonCol>
+        <IonCol size="8">{/* <OverviewCard /> */}</IonCol>
       </IonRow>
     </IonGrid>
   );

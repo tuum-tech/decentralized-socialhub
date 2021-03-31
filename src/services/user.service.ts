@@ -53,6 +53,16 @@ export class UserService {
     let newDID = await DidService.generateNew();
     let temporaryDocument = await DidService.genereteNewDidDocument(newDID);
 
+    let nameVc = DidService.generateSelfVerifiableCredential(
+      newDID,
+      'name',
+      [''],
+      name
+    );
+    await DidService.addVerfiableCredentialToDIDDocument(
+      temporaryDocument,
+      nameVc
+    );
 
     // let nameVc = DidService.generateSelfVerifiableCredential(newDID, "name", ["BasicProfileCredential"], name)
     // await DidService.addVerfiableCredentialToDIDDocument(temporaryDocument, nameVc)
@@ -92,6 +102,12 @@ export class UserService {
   }
 
   private static lockUser(key: string, instance: ISessionItem) {
+    if (!instance.mnemonics || instance.mnemonics === '') {
+      instance.mnemonics =
+        window.localStorage.getItem(
+          `temporary_${instance.did.replace('did:elastos:', '')}`
+        ) || '';
+    }
     let encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(instance),
       instance.passhash
@@ -218,7 +234,11 @@ export class UserService {
     let did = newDidStr;
     let mnemonics = newMnemonicStr;
     if (!did || did === '') {
-      const newDid = await this.generateTemporaryDID(accountType, credential, name);
+      const newDid = await this.generateTemporaryDID(
+        accountType,
+        credential,
+        name
+      );
       did = newDid.did;
       mnemonics = newDid.mnemonic;
     }
