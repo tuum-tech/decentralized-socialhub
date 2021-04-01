@@ -140,6 +140,8 @@ const DefaultButton = styled.div<ButtonProps>`
   color: ${props => (props.color ? `${props.color}` : 'white')};
   border-radius: ${props =>
     props.borderRadius ? `${props.borderRadius}` : '9px'};
+
+  cursor: pointer;
 `;
 
 export {

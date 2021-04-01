@@ -63,7 +63,12 @@ const DashboardHome: React.FC<DashboardProps> = ({
           {profile && profile.educationDTO && (
             <EducationCard educationDTO={profile.educationDTO} />
           )} */}
-          <BeginnersTutorial />
+          {tutorialVisible && (
+            <BeginnersTutorial
+              onTutorialStart={onTutorialStart}
+              tutorialStep={sessionItem.tutorialStep}
+            />
+          )}
 
           <ManageProfile />
           <ExploreConnnections />
@@ -82,8 +87,8 @@ const DashboardHome: React.FC<DashboardProps> = ({
         will take you through some basics of DID and Hive Vaults. You must complete this tutorial before your profile is ready."
               component={getTutorialButton()}
             />
-          )}
-          <ProfileCompletionCard title="Profile Completion" />
+          )} */}
+          {/* <ProfileCompletionCard title="Profile Completion" />
           <BadgesCard title="Badges" /> */}
         </IonCol>
       </IonRow>
