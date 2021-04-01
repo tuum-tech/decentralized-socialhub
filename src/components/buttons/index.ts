@@ -22,51 +22,43 @@ const ButtonLink = styled(Link)<ButtonLinkProps>`
 `;
 
 // for buttons used in logic workflow
-
-const SigninLinkButton = styled.div`
+interface SignInButtonProps {
+  width?: number;
+  color?: string;
+}
+const SignInButton = styled(Link)<SignInButtonProps>`
   width: 100%;
-  max-width: 100px
-  display: block;
-  margin: 0;
-  text-decoration-line: underline;
-  cursor: pointer;
+  background: #3c5cde;
+  border-radius: 10px;
+  margin-top: 14px;
+  padding: 10px;
 
+  ${props => {
+    if (props.width) {
+      return `max-width: ${props.width}px;`;
+    }
+  }}
+
+  ${props => {
+    return `color: ${props.color ? props.color : 'white'};`;
+  }}
+
+  font-family: 'SF Pro Display';
   font-style: normal;
-  font-weight: normal;
-  font-size: 12px;
-  line-height: 20px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 23px;
 
-  margin-top: 9px;
+  display: block;
+  align-items: center;
+  text-align: center;
 
   &:hover {
-    color: white;
     ${props => {
-      if (props.color) {
-        return `color: ${props.color};`;
-      }
+      return `color: ${props.color ? props.color : 'white'};`;
     }}
+    text-decoration: none;
   }
-`;
-
-const RegisterNewUserButton = styled(ButtonLink)`
-  height: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
-  border-radius: 9px;
-  background-color: #f3f9ff;
-  font-family: 'SF Pro Display';
-  font-size: 12px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1;
-  letter-spacing: normal;
-  text-align: left;
-  color: #4c6fff;
 `;
 
 // for buttons used in dashboard
@@ -121,8 +113,7 @@ export {
   ArrowButton,
   SocialButton,
   ButtonWithLogo,
-  SigninLinkButton,
-  RegisterNewUserButton,
+  SignInButton,
   DashboardSignInButton,
   FollowButton
 };

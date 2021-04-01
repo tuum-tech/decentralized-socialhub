@@ -1,9 +1,9 @@
-import { IonImg } from '@ionic/react'
-import React, { memo } from 'react'
-import { connect } from 'react-redux'
-import { compose } from 'redux'
-import { createStructuredSelector } from 'reselect'
-import { incrementAction, getSimpleAjax } from './actions'
+import { IonImg } from '@ionic/react';
+import React, { memo } from 'react';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { createStructuredSelector } from 'reselect';
+import { incrementAction, getSimpleAjax } from './actions';
 
 import {
   OnBoardLayout,
@@ -15,20 +15,21 @@ import {
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
   OnBoardLayoutRightContentTitle,
-  WavingHandImg,
-} from 'src/components/layouts/OnBoardLayout'
-import { Text16, TextLink } from 'src/components/texts'
+  WavingHandImg
+} from 'src/components/layouts/OnBoardLayout';
+import { Text16 } from 'src/components/texts';
+import { SignInButton } from 'src/components/buttons';
 
-import whitelogo from 'src/assets/logo/whitetextlogo.png'
-import phone from 'src/assets/icon/phone.png'
-import injector from 'src/baseplate/injectorWrap'
+import whitelogo from 'src/assets/logo/whitetextlogo.png';
+import phone from 'src/assets/icon/phone.png';
+import injector from 'src/baseplate/injectorWrap';
 
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors'
-import style from './style.module.scss'
-import { NameSpace } from './constants'
-import reducer from './reducer'
-import saga from './saga'
-import { InferMappedProps, SubState } from './types'
+import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
+import style from './style.module.scss';
+import { NameSpace } from './constants';
+import reducer from './reducer';
+import saga from './saga';
+import { InferMappedProps, SubState } from './types';
 
 const SignQRPage: React.FC<InferMappedProps> = ({
   eProps,
@@ -46,7 +47,7 @@ const SignQRPage: React.FC<InferMappedProps> = ({
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={phone} />
-          <OnBoardLayoutLeftContentTitle className='mt-18px'>
+          <OnBoardLayoutLeftContentTitle className="mt-18px">
             elastOS Sign in
           </OnBoardLayoutLeftContentTitle>
           <OnBoardLayoutLeftContentIntro
@@ -54,17 +55,17 @@ const SignQRPage: React.FC<InferMappedProps> = ({
           >
             New to Profile?
           </OnBoardLayoutLeftContentIntro>
-          <TextLink width={100} to='/create-profile'>
+          <SignInButton width={160} to="/create-profile">
             Craete a new Profile
-          </TextLink>
+          </SignInButton>
           <OnBoardLayoutLeftContentIntro
             style={{ marginTop: '44px', marginBottom: '5px' }}
           >
             Have secrete Mnemonic words?
           </OnBoardLayoutLeftContentIntro>
-          <TextLink width={100} to='/sign-did'>
-            Sign in here
-          </TextLink>
+          <SignInButton width={120} to="/sign-did">
+            Sign In
+          </SignInButton>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -74,7 +75,7 @@ const SignQRPage: React.FC<InferMappedProps> = ({
           </OnBoardLayoutRightContentTitle>
           <Text16>Scan the QR code with your elastOS application</Text16>
           <div className={style['qr-frame']}>
-            <IonImg src='../../assets/qr-code.svg' />
+            <IonImg src="../../assets/qr-code.svg" />
             <Text16>
               QR code expires in <span>00:30</span>
             </Text16>
@@ -82,14 +83,14 @@ const SignQRPage: React.FC<InferMappedProps> = ({
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>
-  )
-}
+  );
+};
 
 /** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg(),
-})
+  msg: makeSelectAjaxMsg()
+});
 
 /** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
@@ -98,9 +99,9 @@ export function mapDispatchToProps(dispatch: any) {
       // eProps - Emitter proptypes thats binds to dispatch
       /** dispatch for counter to increment */
       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax()),
-    },
-  }
+      onSimpleAjax: () => dispatch(getSimpleAjax())
+    }
+  };
 }
 
 /**
@@ -110,14 +111,14 @@ export function mapDispatchToProps(dispatch: any) {
 const withInjectedMode = injector(SignQRPage, {
   key: NameSpace,
   reducer,
-  saga,
-})
+  saga
+});
 
-const withConnect = connect(mapStateToProps, mapDispatchToProps)
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
 export default compose(
   withConnect,
   memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>
+)(withInjectedMode) as React.ComponentType<InferMappedProps>;
 
 // export default Tab1;
