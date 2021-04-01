@@ -9,7 +9,10 @@ import {
 import ReactPaginate from 'react-paginate';
 
 import { UserService } from 'src/services/user.service';
-import { defaultUserInfo, ProfileService } from 'src/services/profile.service';
+import {
+  defaultUserInfo,
+  PublicProfileService
+} from 'src/services/profile.service';
 
 import style from './PeopleCard.module.scss';
 import DidCard from './DidCard';
@@ -75,7 +78,9 @@ const PeopleCard: React.FC<IProps> = ({
       try {
         if (userInfo && userInfo.did) {
           //Get Following
-          const response = await ProfileService.getFollowings(userInfo.did);
+          const response = await PublicProfileService.getFollowings(
+            userInfo.did
+          );
           refreshFollowing = response.get_following;
         }
       } catch (e) {
