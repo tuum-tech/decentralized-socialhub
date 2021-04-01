@@ -56,7 +56,7 @@ const SignQRPage: React.FC<InferMappedProps> = ({
             New to Profile?
           </OnBoardLayoutLeftContentIntro>
           <SignInButton width={160} to="/create-profile">
-            Craete a new Profile
+            Create a new Profile
           </SignInButton>
           <OnBoardLayoutLeftContentIntro
             style={{ marginTop: '44px', marginBottom: '5px' }}

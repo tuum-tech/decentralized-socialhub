@@ -45,7 +45,7 @@ const DidLeftSide: React.FC<Props> = ({ error = false }) => {
             New to Profile?
           </OnBoardLayoutLeftContentIntro>
           <SignInButton width={160} to="/create-profile">
-            Craete a new Profile
+            Create a new Profile
           </SignInButton>
           <OnBoardLayoutLeftContentIntro
             style={{ marginTop: '25px', marginBottom: '5px' }}
@@ -78,7 +78,7 @@ const DidLeftSide: React.FC<Props> = ({ error = false }) => {
           New to Profile?
         </OnBoardLayoutLeftContentIntro>
         <SignInButton width={160} to="/create-profile">
-          Craete a new Profile
+          Create a new Profile
         </SignInButton>
         <OnBoardLayoutLeftContentIntro
           style={{ marginTop: '44px', marginBottom: '5px' }}
