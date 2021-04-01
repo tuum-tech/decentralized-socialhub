@@ -231,7 +231,11 @@ const ProfilePage = () => {
           </IonRow>
         </IonGrid>
 
-        <TutorialModal isOpen={showTutorial} backdropDismiss={false}>
+        <TutorialModal
+          isOpen={showTutorial}
+          backdropDismiss={false}
+          cssClass={style['tutorialpage']}
+        >
           <TutorialComponent
             onClose={() => {
               let userSession = UserService.GetUserSession();

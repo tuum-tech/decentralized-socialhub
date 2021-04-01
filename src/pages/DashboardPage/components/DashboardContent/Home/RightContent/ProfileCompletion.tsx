@@ -1,53 +1,102 @@
 import React from 'react';
-import { IonCard, IonCardContent, IonCardHeader } from '@ionic/react';
 import styled from 'styled-components';
 
-export const CardTitle = styled.p`
-  color: black;
-  font-size: 18px;
-  font-weight: bold;
-  line-height: normal;
-  margin: 0;
-`;
+import ProgressBar from 'src/components/ProgressBar';
+import DropDown from 'src/components/arrows/DropDown';
+import {
+  MainCard,
+  CardTitle,
+  CardText,
+  ProgressArea
+} from './VerificationStatus';
 
-export const CardSubTitle = styled.p`
-  margin-top: 13px;
-  font-size: 14px;
-  line-height: 23px;
-  color: #425466;
-  max-width: 62%;
-`;
-
-export const MainCard = styled(IonCard)`
-  background-color: #fff;
+const ProfileStep = styled.div`
+  background: #f5f8fa;
   border-radius: 16px;
-  box-shadow: 0 3px 8px -1px rgba(50, 50, 71, 0.05),
-    0 0 1px 0 rgba(12, 26, 75, 0.24);
-  margin: 12px;
+  padding: 16px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
   font-family: 'SF Pro Display';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
 
-  ion-card-header {
-    padding: 21px;
-    font-stretch: normal;
-    font-style: normal;
+  margin-bottom: 11px;
 
-    letter-spacing: -0.09px;
-    text-align: left;
+  .title {
+    color: #7a7a9d;
   }
+`;
 
-  ion-card-content {
-    padding: 0px 21px 21px 21px;
+const ProgressAreaContainer = styled.div`
+  display: flex;
+  align-items: center;
+
+  p {
+    margin-right: 15px;
   }
 `;
 
 const ProfileCompletion: React.FC = ({}) => {
+  const renderContent = () => {
+    const data = [
+      {
+        title: 'Basic Information',
+        value: 3,
+        targets: 5
+      },
+      {
+        title: 'Education',
+        value: 3,
+        targets: 5
+      },
+      {
+        title: 'Experience',
+        value: 3,
+        targets: 5
+      },
+      {
+        title: 'Others',
+        value: 3,
+        targets: 5
+      }
+    ];
+    const renderComponents = [];
+    for (let i = 0; i < data.length; i++) {
+      const percent = Math.round((data[i].value / data[i].targets) * 100);
+
+      renderComponents.push(
+        <ProfileStep>
+          <p className="title">{data[i].title}</p>
+          <ProgressAreaContainer>
+            <ProgressArea>
+              <ProgressBar value={percent} width="42px" />
+              <p>
+                {data[i].value} / {data[i].targets}
+              </p>
+            </ProgressArea>
+            <DropDown />
+          </ProgressAreaContainer>
+        </ProfileStep>
+      );
+    }
+    return renderComponents;
+  };
+  const percent = 10;
   return (
     <MainCard>
-      <IonCardHeader>
-        <CardTitle>Profile Completion</CardTitle>
-        <CardSubTitle>Complete tasks and gain badges.</CardSubTitle>
-      </IonCardHeader>
-      <IonCardContent></IonCardContent>
+      <CardTitle>Profile Completion</CardTitle>
+      <CardText>Complete tasks and gain badges.</CardText>
+
+      <ProgressArea style={{ marginTop: '13px', marginBottom: '20px' }}>
+        <ProgressBar value={percent} width="calc(100% - 90px)" />
+        <p>{percent}% Verified</p>
+      </ProgressArea>
+
+      {renderContent()}
     </MainCard>
   );
 };

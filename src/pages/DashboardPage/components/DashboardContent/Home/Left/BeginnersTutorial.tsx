@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonCard, IonGrid, IonRow, IonCol } from '@ionic/react';
+import { IonCard } from '@ionic/react';
 import styled from 'styled-components';
 
 import { DefaultButton } from 'src/components/buttons';
@@ -26,7 +26,7 @@ export const CardText = styled.p`
   max-width: 315px;
 `;
 
-export const MainCard = styled(IonCard)`
+export const MainCard = styled.div`
   background-size: cover !important;
 
   box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24),
@@ -35,6 +35,8 @@ export const MainCard = styled(IonCard)`
   min-height: 189px;
   padding: 46px 61px;
   position: relative;
+
+  margin-bottom: 22px;
 `;
 
 export const BadgeImg = styled.img`

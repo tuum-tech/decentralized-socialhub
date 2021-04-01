@@ -3,7 +3,7 @@ import { IonCardContent, IonCardHeader } from '@ionic/react';
 import styled from 'styled-components';
 
 import { DefaultButton } from 'src/components/buttons';
-import { CardTitle, CardSubTitle, MainCard } from './ProfileCompletion';
+import { MainCard, CardTitle, CardText } from './VerificationStatus';
 
 const Logo = () => (
   <svg
@@ -30,10 +30,11 @@ const Logo = () => (
   </svg>
 );
 
-const ColorCard = styled.div`
+const ColorCard = styled(MainCard)`
   background: #4c6fff;
   mix-blend-mode: multiply;
   position: relative;
+  padding: 28px 25px;
 
   p {
     color: white !important;
@@ -48,28 +49,27 @@ const ColorCard = styled.div`
 
 const WhatIsProfile: React.FC = ({}) => {
   return (
-    <MainCard>
-      <ColorCard>
-        <IonCardHeader>
-          <CardTitle>What is Profile?</CardTitle>
-          <CardSubTitle>
-            digital identity, verified credentials, blockchain publishing &
-            more...
-          </CardSubTitle>
-        </IonCardHeader>
-        <IonCardContent>
-          <DefaultButton
-            bgColor="#F3F9FF"
-            width="120px"
-            onClick={() => {}}
-            color="#4C6FFF"
-          >
-            Read more
-          </DefaultButton>
-        </IonCardContent>
-        <Logo />
-      </ColorCard>
-    </MainCard>
+    <ColorCard>
+      <CardTitle>What is Profile?</CardTitle>
+      <CardText
+        style={{
+          marginTop: '4px',
+          marginBottom: '26px'
+        }}
+      >
+        digital identity, verified credentials, blockchain publishing & more...
+      </CardText>
+
+      <DefaultButton
+        bgColor="#F3F9FF"
+        width="120px"
+        onClick={() => {}}
+        color="#4C6FFF"
+      >
+        Read more
+      </DefaultButton>
+      <Logo />
+    </ColorCard>
   );
 };
 

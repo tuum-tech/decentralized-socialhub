@@ -1,8 +1,7 @@
 import React from 'react';
-import { IonCardContent, IonCardHeader } from '@ionic/react';
 
 import { DefaultButton } from 'src/components/buttons';
-import { CardTitle, CardSubTitle, MainCard } from './ProfileCompletion';
+import { MainCard, CardTitle, CardText } from './VerificationStatus';
 import style from './style.module.scss';
 
 const Discord = () => (
@@ -50,17 +49,15 @@ const Discord = () => (
 const WhatIsProfile: React.FC = ({}) => {
   return (
     <MainCard className={style['img-card']}>
-      <IonCardHeader>
-        <CardTitle>Connect with our community</CardTitle>
-        <CardSubTitle className={style['dark-txt']}>
-          Discuss, request, support on discord
-        </CardSubTitle>
-      </IonCardHeader>
-      <IonCardContent>
-        <DefaultButton width="100px" onClick={() => {}}>
-          Connect
-        </DefaultButton>
-      </IonCardContent>
+      <CardTitle>Connect with our community</CardTitle>
+      <CardText className={style['dark-txt']}>
+        Discuss, request, support on discord
+      </CardText>
+
+      <DefaultButton width="100px" onClick={() => {}}>
+        Connect
+      </DefaultButton>
+
       <Discord />
     </MainCard>
   );

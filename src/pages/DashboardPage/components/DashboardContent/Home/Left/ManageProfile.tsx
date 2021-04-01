@@ -24,7 +24,7 @@ export const CardText = styled.p`
   maring-bottom: 15px;
 `;
 
-export const MainCard = styled(IonCard)`
+export const MainCard = styled.div`
   box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24),
     0px 3px 8px -1px rgba(50, 50, 71, 0.05);
   border-radius: 16px;
@@ -35,6 +35,8 @@ export const MainCard = styled(IonCard)`
   min-height: 248px;
   background: white;
   position: relative;
+
+  margin-bottom: 22px;
 `;
 
 export const CardImg = styled.img`
