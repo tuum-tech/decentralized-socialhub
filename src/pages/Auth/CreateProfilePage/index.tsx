@@ -18,9 +18,13 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { SocialButton, ButtonWithLogo } from 'src/components/buttons';
+import {
+  SocialButton,
+  ButtonWithLogo,
+  SignInButton
+} from 'src/components/buttons';
 import TextInput from 'src/components/inputs/TextInput';
-import { Text16, TextLink } from 'src/components/texts';
+import { Text16 } from 'src/components/texts';
 import { AccountType, UserService } from 'src/services/user.service';
 import { validateEmail } from 'src/utils/validation';
 import LoadingIndicator from 'src/components/LoadingIndicator';
@@ -204,9 +208,9 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
           <OnBoardLayoutLeftContentIntro className="mt-25px mb-0">
             Already have a profile?
           </OnBoardLayoutLeftContentIntro>
-          <TextLink width={100} to="/sign-did">
+          <SignInButton width={120} to="/sign-did">
             Sign in Here
-          </TextLink>
+          </SignInButton>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>

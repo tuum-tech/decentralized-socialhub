@@ -10,7 +10,7 @@ import {
   OnBoardLayoutRight,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { TextLink } from 'src/components/texts';
+import { SignInButton } from 'src/components/buttons';
 
 import weird from 'src/assets/icon/weird.png';
 
@@ -31,15 +31,16 @@ const DefaultPage = () => {
           <OnBoardLayoutLeftContentIntro className="mt-86px mb-0">
             Already have a profile?
           </OnBoardLayoutLeftContentIntro>
-          <TextLink width={100} to="/sign-did">
+          <SignInButton width={120} to="/sign-did">
             Sign in Here
-          </TextLink>
+          </SignInButton>
           <OnBoardLayoutLeftContentIntro className="mt-25px mb-0">
             Or create new profile here
           </OnBoardLayoutLeftContentIntro>
-          <TextLink width={100} to="/create-profile">
+
+          <SignInButton width={120} to="/create-profile">
             Create new Profile
-          </TextLink>
+          </SignInButton>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight />
