@@ -15,6 +15,7 @@ import {
   IFollowingResponse,
   IFollowingItem,
   ProfileService,
+  PublicProfileService,
   IFollowerResponse
 } from 'src/services/profile.service';
 import { DidService } from 'src/services/did.service';
@@ -269,7 +270,7 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
   const loadData = async (did: string) => {
     let list: IFollowingResponse;
     try {
-      list = await ProfileService.getFollowings(did);
+      list = await PublicProfileService.getFollowings(did);
     } catch (e) {
       console.log('Could not load users that you follow' + e);
       list = { get_following: { items: [] } };
@@ -298,7 +299,7 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
     }
 
     try {
-      let followers = await ProfileService.getFollowers(listDids);
+      let followers = await PublicProfileService.getFollowers(listDids);
       setListFollowers(followers as IFollowerResponse);
     } catch (e) {
       console.log('Could not retrieve your followers: ' + e);

@@ -5,7 +5,7 @@ import PeopleCard from 'src/components/cards/PeopleCard';
 import {
   IFollowerResponse,
   IFollowingResponse,
-  ProfileService
+  PublicProfileService
 } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
 import { alertError } from 'src/utils/notify';
@@ -56,7 +56,7 @@ const FollowersSearch: React.FC = () => {
       if (user && user.did) {
         //Get Followers
         let listDids = [user.did];
-        let followers = await ProfileService.getFollowers(listDids);
+        let followers = await PublicProfileService.getFollowers(listDids);
         setListFollowers(followers as IFollowerResponse);
       }
     } catch (e) {
@@ -68,7 +68,7 @@ const FollowersSearch: React.FC = () => {
 
       if (user && user.did) {
         //Get Following
-        let following = await ProfileService.getFollowings(user.did);
+        let following = await PublicProfileService.getFollowings(user.did);
         setListFollowing(following as IFollowingResponse);
       }
     } catch (e) {

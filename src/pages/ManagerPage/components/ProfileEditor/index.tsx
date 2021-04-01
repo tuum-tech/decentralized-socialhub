@@ -5,6 +5,7 @@ import { UserService } from 'src/services/user.service';
 import { TuumTechScriptService } from 'src/services/script.service';
 import {
   PublicProfileService,
+  ProfileService,
   defaultUserInfo,
   defaultFullProfile
 } from 'src/services/profile.service';

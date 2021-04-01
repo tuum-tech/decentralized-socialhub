@@ -9,7 +9,7 @@ import {
 import ExploreNav from '../ExploreNav';
 import {
   IFollowingResponse,
-  ProfileService
+  PublicProfileService
 } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
 import { alertError } from 'src/utils/notify';
@@ -83,7 +83,7 @@ const SearchComponent: React.FC = () => {
     try {
       if (user && user.did) {
         //Get Following
-        let following = await ProfileService.getFollowings(user.did);
+        let following = await PublicProfileService.getFollowings(user.did);
         setListFollowing(following as IFollowingResponse);
       }
     } catch (e) {

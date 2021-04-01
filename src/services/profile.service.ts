@@ -185,12 +185,6 @@ export class ProfileService {
     }
   }
 
-  static async getFollowings(did: string): Promise<IFollowingResponse> {
-    const getUserFollowingScriptRes: any = await this.getUserFollowings(did);
-    console.log('======>getUserFollowingScriptRes', getUserFollowingScriptRes);
-    return getUserFollowingScriptRes!.response as IFollowingResponse;
-  }
-
   static async resetFollowing(): Promise<any> {
     const hiveInstance = await HiveService.getSessionInstance();
     if (!hiveInstance) return;
@@ -198,31 +192,8 @@ export class ProfileService {
     await hiveInstance.Database.createCollection('following');
     const userSession = UserService.GetUserSession();
     if (userSession) {
-      return this.getFollowings(userSession.did);
+      return PublicProfileService.getFollowings(userSession.did);
     }
-  }
-
-  static async getFollowers(
-    dids: string[]
-  ): Promise<IFollowerResponse | undefined> {
-    const appHiveClient = await HiveService.getAppHiveClient();
-    let followersResponse: IRunScriptResponse<IFollowerResponse> = await appHiveClient.Scripting.RunScript(
-      {
-        name: 'get_followers',
-        params: {
-          did: dids
-        },
-        context: {
-          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-        }
-      }
-    );
-
-    if (followersResponse.isSuccess) {
-      return followersResponse.response;
-    }
-    return;
   }
 
   static async unfollow(did: string): Promise<any> {
@@ -233,7 +204,7 @@ export class ProfileService {
       did: did
     });
 
-    let followersResponse = await this.getFollowers([did]);
+    let followersResponse = await PublicProfileService.getFollowers([did]);
     let followersList: string[] = [];
     if (followersResponse && followersResponse.get_followers.items.length > 0) {
       // TODO: handle this better
@@ -263,7 +234,7 @@ export class ProfileService {
     }
 
     if (userSession) {
-      return this.getFollowings(userSession.did);
+      return PublicProfileService.getFollowings(userSession.did);
     }
   }
 
@@ -272,7 +243,7 @@ export class ProfileService {
     if (!hiveClient) return;
     await hiveClient.Database.insertOne('following', { did: did }, undefined);
 
-    let followersResponse = await this.getFollowers([did]);
+    let followersResponse = await PublicProfileService.getFollowers([did]);
 
     let followersList: string[] = [];
     if (followersResponse && followersResponse.get_followers.items.length > 0)
@@ -303,7 +274,7 @@ export class ProfileService {
     }
 
     if (userSession) {
-      return this.getFollowings(userSession.did);
+      return PublicProfileService.getFollowings(userSession.did);
     }
   }
 }
