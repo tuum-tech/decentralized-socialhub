@@ -142,7 +142,7 @@ const OnBoardingPage: React.FC<Props> = ({ close }) => {
       <OnBoarding>
         <div>
           <TopImg src={lockImg} />
-          <h1>What is a passphase?</h1>
+          <h1>What is a passphrase?</h1>
         </div>
         <Content>
           <p>
