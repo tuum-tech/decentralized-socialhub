@@ -16,7 +16,7 @@ import style from './style.module.scss';
 interface Props {
   tab?: string;
   people?: PeopleDTO;
-  following?: FollowingDTO;
+  following: FollowingDTO;
   pages?: PageDTO;
   searchKeyword?: string;
   isSearchKeywordDID?: boolean;

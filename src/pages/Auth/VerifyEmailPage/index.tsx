@@ -16,8 +16,8 @@ import {
   OnBoardLayoutRightContent,
   OnBoardLayoutRightContentTitle
 } from 'src/components/layouts/OnBoardLayout';
-import { ArrowButton, ButtonLink } from 'src/components/buttons';
-import { Text16, TextLink } from 'src/components/texts';
+import { ArrowButton, ButtonLink, SignInButton } from 'src/components/buttons';
+import { Text16 } from 'src/components/texts';
 import { AccountType } from 'src/services/user.service';
 
 import { requestVerifyCode } from './fetchapi';
@@ -121,9 +121,9 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
               <OnBoardLayoutLeftContentIntro className="mt-25px mb-0">
                 Already have a profile?
               </OnBoardLayoutLeftContentIntro>
-              <TextLink width={100} to="/sign-did">
+              <SignInButton width={120} to="/sign-did">
                 Sign in Here
-              </TextLink>
+              </SignInButton>
             </OnBoardLayoutLeftContent>
           </OnBoardLayoutLeft>
           <OnBoardLayoutRight>

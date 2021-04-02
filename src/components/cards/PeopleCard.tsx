@@ -9,14 +9,15 @@ import {
 import ReactPaginate from 'react-paginate';
 
 import { UserService } from 'src/services/user.service';
-import { defaultUserInfo } from 'src/services/profile.service';
+import { defaultUserInfo, ProfileService } from 'src/services/profile.service';
 
 import style from './PeopleCard.module.scss';
 import DidCard from './DidCard';
+import { alertError } from 'src/utils/notify';
 
 interface IProps {
   people?: PeopleDTO;
-  following?: FollowingDTO;
+  following: FollowingDTO;
   searchKeyword?: string;
   isSearchKeywordDID?: boolean;
   size?: string;
@@ -25,9 +26,8 @@ interface IProps {
 
 const peopleItem = (
   peopleItem: any,
-  isFollowing: boolean,
+  following: FollowingDTO,
   indexItem: number,
-  userInfo: ISessionItem,
   colSize: any
 ) => {
   return (
@@ -36,8 +36,7 @@ const peopleItem = (
       did={peopleItem.did}
       avatar={peopleItem.avatar}
       colSize={colSize}
-      sessionItem={userInfo}
-      following={isFollowing}
+      following={following}
       type="user"
       key={'did-people-card-' + indexItem}
     />
@@ -68,33 +67,37 @@ const PeopleCard: React.FC<IProps> = ({
     })();
   }, []);
 
-  const isFollowing = (did: string): boolean => {
-    if (following && following.items) {
-      for (let i = 0; i < following.items.length; i++) {
-        if (following.items[i].did === did) {
-          return true;
-        }
-      }
-    }
-    return false;
-  };
-
   useEffect(() => {
-    let listPeopleLocal: any =
-      people &&
-      people.items
-        .slice(peoplePageOffset, peoplePageOffset + perPage)
-        .map((p, index) =>
-          peopleItem(
-            p,
-            isFollowing(p.did),
-            index,
-            userInfo,
-            parseInt(size) / 12 === 1 ? '100%' : '50%'
-          )
-        );
+    (async () => {
+      // let user = UserService.GetUserSession();
+      let refreshFollowing: FollowingDTO = following;
 
-    setListPeople(listPeopleLocal);
+      try {
+        if (userInfo && userInfo.did) {
+          //Get Following
+          const response = await ProfileService.getFollowings(userInfo.did);
+          refreshFollowing = response.get_following;
+        }
+      } catch (e) {
+        alertError(null, 'Could not load users that you follow');
+        return;
+      }
+
+      let listPeopleLocal: any =
+        people &&
+        people.items
+          .slice(peoplePageOffset, peoplePageOffset + perPage)
+          .map((p, index) =>
+            peopleItem(
+              p,
+              refreshFollowing,
+              index,
+              parseInt(size) / 12 === 1 ? '100%' : '50%'
+            )
+          );
+
+      setListPeople(listPeopleLocal);
+    })();
   }, [peoplePageOffset, people, following]);
 
   const handlePeoplePageClick = (data: any) => {

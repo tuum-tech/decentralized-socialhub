@@ -9,7 +9,7 @@ import {
   OnBoardLayoutLogo,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { TextLink } from 'src/components/texts';
+import { SignInButton } from 'src/components/buttons';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import markimg from 'src/assets/icon/mark.png';
@@ -44,17 +44,17 @@ const DidLeftSide: React.FC<Props> = ({ error = false }) => {
           >
             New to Profile?
           </OnBoardLayoutLeftContentIntro>
-          <TextLink width={100} to="/create-profile">
-            Craete a new Profile
-          </TextLink>
+          <SignInButton width={160} to="/create-profile">
+            Create a new Profile
+          </SignInButton>
           <OnBoardLayoutLeftContentIntro
             style={{ marginTop: '25px', marginBottom: '5px' }}
           >
             Have a last QR code?
           </OnBoardLayoutLeftContentIntro>
-          <TextLink width={100} to="/sign-qr">
-            Sign in here
-          </TextLink>
+          <SignInButton width={120} to="/sign-qr">
+            Sign In
+          </SignInButton>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
     );
@@ -77,17 +77,17 @@ const DidLeftSide: React.FC<Props> = ({ error = false }) => {
         >
           New to Profile?
         </OnBoardLayoutLeftContentIntro>
-        <TextLink width={100} to="/create-profile">
-          Craete a new Profile
-        </TextLink>
+        <SignInButton width={160} to="/create-profile">
+          Create a new Profile
+        </SignInButton>
         <OnBoardLayoutLeftContentIntro
           style={{ marginTop: '44px', marginBottom: '5px' }}
         >
           Have a last QR code?
         </OnBoardLayoutLeftContentIntro>
-        <TextLink width={100} to="/sign-qr">
-          Sign in here
-        </TextLink>
+        <SignInButton width={120} to="/sign-qr">
+          Sign In
+        </SignInButton>
       </OnBoardLayoutLeftContent>
     </OnBoardLayoutLeft>
   );

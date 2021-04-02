@@ -13,9 +13,9 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { ButtonWithLogo } from 'src/components/buttons';
+import { ButtonWithLogo, SignInButton } from 'src/components/buttons';
 import TextInput from 'src/components/inputs/TextInput';
-import { Text16, TextLink } from 'src/components/texts';
+import { Text16 } from 'src/components/texts';
 import { validateEmail } from 'src/utils/validation';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
@@ -58,9 +58,9 @@ const UseDetailsForm: React.FC<Props> = ({ setUserInfo, isCreate = true }) => {
             </OnBoardLayoutLeftContentIntro>
           )}
           {isCreate && (
-            <TextLink width={100} to="/sign-did">
-              Sign in Here
-            </TextLink>
+            <SignInButton width={120} to="/sign-did">
+              Sign in
+            </SignInButton>
           )}
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
