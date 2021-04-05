@@ -1,0 +1,19 @@
+.btn-primary {
+  margin-top: 30.84px;
+  width: 150px;
+  border-radius: 8px;
+  padding: 12.68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  height: 45.63px;
+  background-color: var(--theme-primary-blue) !important;
+
+  & ion-text {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 14px;
+    color: #ffffff;
+  }
+}
