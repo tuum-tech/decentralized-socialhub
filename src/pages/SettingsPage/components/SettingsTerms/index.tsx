@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef, useState, useEffect, useRef } from 'react';
 import {
   IonCol,
   IonCard,
@@ -24,6 +24,60 @@ import styled from 'styled-components';
 import style from './style.module.scss';
 
 const SettingsTerms: React.FC = () => {
+  const [sectionRefs, setSectionRefs] = useState([]);
+
+  useEffect(() => {
+    // add or remove refs
+    setSectionRefs(sectionRefs =>
+      Array(28)
+        .fill(0)
+        .map((_, i) => sectionRefs[i] || createRef())
+    );
+  }, []);
+
+  interface tempParam {
+    behavior: string | null;
+  }
+  const func = (temp: tempParam) => {};
+
+  const scrollToSection = (index: number) => {
+    let targetRef = sectionRefs[index]
+      ? sectionRefs[index]
+      : { current: { scrollIntoView: func } };
+    return targetRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const sectionTitles = [
+    'AGREEMENT TO TERMS?',
+    'PURPOSE',
+    'PRIVACY POLICY',
+    'INTELLECTUAL PROPERTY RIGHTS',
+    'USER REPRESENTATIONS',
+    'USER REGISTRATION',
+    'PROHIBITED ACTIVITIES',
+    'USER GENERATED CONTRIBUTIONS',
+    'CONTRIBUTION LICENSE',
+    'MOBILE APPLICATION LICENSE(as applicable)',
+    'SUBMISSIONS',
+    'THIRD-PARTY WEBSITES AND CONTENT',
+    'ADVERTISERS',
+    'SITE MANAGEMENT',
+    'DIGITAL MILLENNIUM COPYRIGHT ACT (DMCA) NOTICE AND POLICY',
+    'TERM AND TERMINATION',
+    'MODIFICATIONS AND INTERRUPTIONS',
+    'GOVERNING LAW',
+    'DISPUTE RESOLUTION',
+    'CORRECTIONS',
+    'DISCLAIMER',
+    'LIMITATIONS OF LIABILITY',
+    'INDEMNIFICATION',
+    'USER DATA',
+    'ELECTRONIC COMMUNICATIONS, TRANSACTIONS, AND SIGNATURES',
+    'CALIFORNIA USERS AND RESIDENTS',
+    'MISCELLANEOUS',
+    'CONTACT US'
+  ];
+
   return (
     <IonContent className={style['settingsterms']}>
       <IonGrid className={style['tab-grid']}>
@@ -43,24 +97,27 @@ const SettingsTerms: React.FC = () => {
                     </IonCardTitle>
                   </IonCardHeader>
                   <IonCardContent>
-                    <TocText>
-                      <h3>1. What Are Terms and Conditions?</h3>
-                    </TocText>
-                    <TocText>
-                      <h3>2. What Are Terms and Conditions?</h3>
-                    </TocText>
-                    <TocText>
-                      <h3>3. What Are Terms and Conditions?</h3>
-                    </TocText>
-                    <TocText>
-                      <h3>4. What Are Terms and Conditions?</h3>
-                    </TocText>
-                    <TocText>
-                      <h3>5. What Are Terms and Conditions?</h3>
-                    </TocText>
+                    {sectionTitles.map((item, idx) => {
+                      return (
+                        <IonRouterLink
+                          href="#"
+                          key={idx}
+                          onClick={e => {
+                            e.preventDefault();
+                            scrollToSection(idx);
+                          }}
+                        >
+                          <TocText>
+                            <h3>
+                              {idx + 1}. {item}
+                            </h3>
+                          </TocText>
+                        </IonRouterLink>
+                      );
+                    })}
                   </IonCardContent>
                 </IonCard>
-                <Section>
+                <Section ref={sectionRefs[0]}>
                   <SectionTitle>AGREEMENT TO TERMS</SectionTitle>
                   <SectionText>
                     <p>
@@ -176,7 +233,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[1]}>
                   <SectionTitle>PURPOSE</SectionTitle>
                   <SectionText>
                     <p>
@@ -194,7 +251,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[2]}>
                   <SectionTitle>PRIVACY POLICY</SectionTitle>
                   <SectionText>
                     <p>
@@ -231,7 +288,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[3]}>
                   <SectionTitle>INTELLECTUAL PROPERTY RIGHTS</SectionTitle>
                   <SectionText>
                     <p>
@@ -266,7 +323,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[4]}>
                   <SectionTitle>USER REPRESENTATIONS</SectionTitle>
                   <SectionText>
                     <p>
@@ -294,7 +351,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[5]}>
                   <SectionTitle>USER REGISTRATION</SectionTitle>
                   <SectionText>
                     <p>
@@ -309,7 +366,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[6]}>
                   <SectionTitle>PROHIBITED ACTIVITES</SectionTitle>
                   <SectionText>
                     <p>
@@ -449,7 +506,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </Indent>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[7]}>
                   <SectionTitle>USER GENERATED CONTRIBUTIONS</SectionTitle>
                   <SectionText>
                     <p>
@@ -556,7 +613,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </Indent>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[8]}>
                   <SectionTitle>CONTRIBUTION LICENSE</SectionTitle>
                   <SectionText>
                     <p>
@@ -613,7 +670,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[9]}>
                   <SectionTitle>
                     MOBILE APPLICATION LICENSE(as applicable)
                   </SectionTitle>
@@ -704,7 +761,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[10]}>
                   <SectionTitle>SUBMISSIONS</SectionTitle>
                   <SectionText>
                     <p>
@@ -727,7 +784,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[11]}>
                   <SectionTitle>THIRD-PARTY WEBSITES AND CONTENT</SectionTitle>
                   <SectionText>
                     <p>
@@ -773,7 +830,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[12]}>
                   <SectionTitle>ADVERTISERS</SectionTitle>
                   <SectionText>
                     <p>
@@ -798,7 +855,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[13]}>
                   <SectionTitle>SITE MANAGEMENT</SectionTitle>
                   <SectionText>
                     <p>
@@ -821,7 +878,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[14]}>
                   <SectionTitle>
                     DIGITAL MILLENNIUM COPYRIGHT ACT (DMCA) NOTICE AND POLICY
                   </SectionTitle>
@@ -911,7 +968,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[15]}>
                   <SectionTitle>TERM AND TERMINATION</SectionTitle>
                   <SectionText>
                     <p>
@@ -941,7 +998,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[16]}>
                   <SectionTitle>MODIFICATIONS AND INTERRUPTIONS</SectionTitle>
                   <SectionText>
                     <p>
@@ -970,7 +1027,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[17]}>
                   <SectionTitle>GOVERNING LAW</SectionTitle>
                   <SectionText>
                     <p>
@@ -980,7 +1037,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[18]}>
                   <SectionTitle>DISPUTE RESOLUTION</SectionTitle>
                   <SectionSubTitle>Informal Negotiations</SectionSubTitle>
                   <SectionText>
@@ -1061,7 +1118,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[19]}>
                   <SectionTitle>CORRECTIONS</SectionTitle>
                   <SectionText>
                     <p>
@@ -1075,7 +1132,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[20]}>
                   <SectionTitle>DISCLAIMER</SectionTitle>
                   <SectionText>
                     <p>
@@ -1117,7 +1174,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[21]}>
                   <SectionTitle>LIMITATIONS OF LIABILITY</SectionTitle>
                   <SectionText>
                     <p>
@@ -1131,7 +1188,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[22]}>
                   <SectionTitle>INDEMNIFICATION</SectionTitle>
                   <SectionText>
                     <p>
@@ -1158,7 +1215,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[23]}>
                   <SectionTitle>USER DATA</SectionTitle>
                   <SectionText>
                     <p>
@@ -1175,7 +1232,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[24]}>
                   <SectionTitle>
                     ELECTRONIC COMMUNICATIONS, TRANSACTIONS, AND SIGNATURES
                   </SectionTitle>
@@ -1200,7 +1257,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[25]}>
                   <SectionTitle>CALIFORNIA USERS AND RESIDENTS</SectionTitle>
                   <SectionText>
                     <p>
@@ -1213,7 +1270,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[26]}>
                   <SectionTitle>MISCELLANEOUS</SectionTitle>
                   <SectionText>
                     <p>
@@ -1244,7 +1301,7 @@ const SettingsTerms: React.FC = () => {
                     </p>
                   </SectionText>
                 </Section>
-                <Section>
+                <Section ref={sectionRefs[27]}>
                   <SectionTitle>CONTACT US</SectionTitle>
                   <SectionText>
                     <p>
