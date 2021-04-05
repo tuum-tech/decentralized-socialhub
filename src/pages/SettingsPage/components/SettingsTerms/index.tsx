@@ -48,7 +48,7 @@ const SettingsTerms: React.FC = () => {
   };
 
   const sectionTitles = [
-    'AGREEMENT TO TERMS?',
+    'AGREEMENT TO TERMS',
     'PURPOSE',
     'PRIVACY POLICY',
     'INTELLECTUAL PROPERTY RIGHTS',

@@ -24,7 +24,7 @@ const SettingsContact: React.FC = () => {
             <IonCard className={style['tab-card']}>
               <IonCardHeader>
                 <PageCategory>Help & Support</PageCategory>
-                <PageTitle>Contact Us</PageTitle>
+                <PageTitle>Contact Us[UNDER CONSTRUCTION]</PageTitle>
               </IonCardHeader>
               <IonCardContent>
                 <IonText>
