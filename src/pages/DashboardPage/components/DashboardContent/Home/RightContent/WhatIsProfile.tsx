@@ -1,8 +1,7 @@
 import React from 'react';
-import { IonCardContent, IonCardHeader } from '@ionic/react';
 import styled from 'styled-components';
 
-import { DefaultButton } from 'src/components/buttons';
+import { DefaultLinkButton } from 'src/components/buttons';
 import { MainCard, CardTitle, CardText } from './VerificationStatus';
 
 const Logo = () => (
@@ -47,6 +46,15 @@ const ColorCard = styled(MainCard)`
   }
 `;
 
+const LinkButton = styled(DefaultLinkButton)`
+  margin-top: 25px;
+  width: 120px;
+  color: #4c6fff;
+  background-color: #f3f9ff;
+  text-align: left !important;
+  padding: 15px 25px;
+`;
+
 const WhatIsProfile: React.FC = ({}) => {
   return (
     <ColorCard>
@@ -60,14 +68,7 @@ const WhatIsProfile: React.FC = ({}) => {
         digital identity, verified credentials, blockchain publishing & more...
       </CardText>
 
-      <DefaultButton
-        bgColor="#F3F9FF"
-        width="120px"
-        onClick={() => {}}
-        color="#4C6FFF"
-      >
-        Read more
-      </DefaultButton>
+      <LinkButton href="http://tuum.tech/">Read more</LinkButton>
       <Logo />
     </ColorCard>
   );

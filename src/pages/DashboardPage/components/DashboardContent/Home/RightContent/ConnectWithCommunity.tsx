@@ -1,6 +1,7 @@
 import React from 'react';
+import styled from 'styled-components';
 
-import { DefaultButton } from 'src/components/buttons';
+import { DefaultLinkButton } from 'src/components/buttons';
 import { MainCard, CardTitle, CardText } from './VerificationStatus';
 import style from './style.module.scss';
 
@@ -46,7 +47,16 @@ const Discord = () => (
   </svg>
 );
 
-const WhatIsProfile: React.FC = ({}) => {
+const LinkButton = styled(DefaultLinkButton)`
+  margin-top: 18px;
+  width: 110px;
+  color: white;
+  background-color: #4c6fff;
+  text-align: left !important;
+  padding: 15px 25px;
+`;
+
+const ConnectWithCommunity: React.FC = ({}) => {
   return (
     <MainCard className={style['img-card']}>
       <CardTitle>Connect with our community</CardTitle>
@@ -54,13 +64,12 @@ const WhatIsProfile: React.FC = ({}) => {
         Discuss, request, support on discord
       </CardText>
 
-      <DefaultButton width="100px" onClick={() => {}}>
+      <LinkButton href="https://discord.com/invite/9gA3EAQjHt">
         Connect
-      </DefaultButton>
-
+      </LinkButton>
       <Discord />
     </MainCard>
   );
 };
 
-export default WhatIsProfile;
+export default ConnectWithCommunity;

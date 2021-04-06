@@ -1,8 +1,11 @@
 import React from 'react';
-import { IonCard } from '@ionic/react';
 import styled from 'styled-components';
 
-import { DefaultButton } from 'src/components/buttons';
+import { DefaultLinkButton } from 'src/components/buttons';
+import AboutCard from 'src/components/cards/AboutCard';
+import ExperienceCard from 'src/components/cards/ExperienceCard';
+import EducationCard from 'src/components/cards/EducationCard';
+
 import profileCardImg from '../../../../../../assets/dashboard/profile.png';
 
 export const CardTitle = styled.p`
@@ -47,7 +50,7 @@ export const CardImg = styled.img`
   bottom: 0;
 `;
 
-export const LinkButton = styled(DefaultButton)`
+export const LinkButton = styled(DefaultLinkButton)`
   margin-top: 15px;
   width: 158px;
   color: #4c6fff;
@@ -56,16 +59,48 @@ export const LinkButton = styled(DefaultButton)`
   padding: 11px 15px;
 `;
 
-const ManageProfile: React.FC = ({}) => {
+interface Props {
+  profile: ProfileDTO;
+}
+
+const ManageProfile: React.FC<Props> = ({ profile }) => {
+  let filledContent = false;
+  let hasAbout =
+    profile.basicDTO && profile.basicDTO.about && profile.basicDTO.about !== '';
+  let hasEducation =
+    profile.educationDTO &&
+    profile.educationDTO.items &&
+    profile.educationDTO.items.length > 0;
+  let hasExperience =
+    profile.experienceDTO &&
+    profile.experienceDTO.items &&
+    profile.experienceDTO.items.length > 0;
+
+  if (hasAbout || hasEducation || hasExperience) {
+    filledContent = true;
+  }
+
+  if (!filledContent) {
+    return (
+      <MainCard>
+        <CardTitle>Manage Your profiles</CardTitle>
+        <CardText>
+          Add, edit and manage your profile information from profile manager.
+        </CardText>
+        <LinkButton href="/manager">Manage your profile &gt;</LinkButton>
+        <CardImg src={profileCardImg} />
+      </MainCard>
+    );
+  }
+
   return (
-    <MainCard>
-      <CardTitle>Manage Your profiles</CardTitle>
-      <CardText>
-        Add, edit and manage your profile information from profile manager.
-      </CardText>
-      <LinkButton>Manage your profile ></LinkButton>
-      <CardImg src={profileCardImg} />
-    </MainCard>
+    <>
+      {hasAbout && <AboutCard aboutText={profile.basicDTO.about} />}
+      {hasExperience && (
+        <ExperienceCard experienceDTO={profile.experienceDTO} />
+      )}
+      {hasEducation && <EducationCard educationDTO={profile.educationDTO} />}
+    </>
   );
 };
 

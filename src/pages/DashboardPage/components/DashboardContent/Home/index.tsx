@@ -5,12 +5,10 @@ import styled from 'styled-components';
 // import SpotlightCard from 'src/components/cards/SpotlightCard';
 // import BadgesCard from 'src/components/cards/BadgesCard';
 // import ButtonWhite from 'src/components/buttons/ButtonWhite';
-// import AboutCard from 'src/components/cards/AboutCard';
-// import ExperienceCard from 'src/components/cards/ExperienceCard';
-// import EducationCard from 'src/components/cards/EducationCard';
 // import ProfileCompletionCard from 'src/components/cards/ProfileCompletionCard';
-import SocialProfilesCard from 'src/components/cards/SocialProfilesCard';
 
+import { UserService } from 'src/services/user.service';
+import SocialProfilesCard from 'src/components/cards/SocialProfilesCard';
 import ManageProfile from './Left/ManageProfile';
 import ExploreConnnections from './Left/ExploreConnnections';
 import ManageLinks from './Left/ManageLinks';
@@ -36,6 +34,11 @@ export interface Props {
   didDocument: any;
 }
 
+interface VerifiedCredential {
+  value: string;
+  isVerified: boolean;
+}
+
 const DashboardHome: React.FC<Props> = ({
   onTutorialStart,
   profile,
@@ -43,6 +46,47 @@ const DashboardHome: React.FC<Props> = ({
   didDocument
 }) => {
   const [tutorialVisible, setTutorialVisible] = useState(true);
+  const [userSession, setUserSession] = useState(UserService.GetUserSession());
+
+  const [embededSocialProfiles, setEmbededSocialedProfiles] = useState<
+    string[]
+  >([]);
+
+  const getVerifiedCredential = (
+    id: string
+  ): VerifiedCredential | undefined => {
+    if (
+      !didDocument ||
+      !didDocument['id'] ||
+      !didDocument['verifiableCredential']
+    )
+      return;
+    let vcs: any[] = didDocument['verifiableCredential'].map((vc: any) => {
+      if (`${vc['id']}`.endsWith(`#${id.toLowerCase()}`)) {
+        let types: string[] = vc['type'];
+        return {
+          value: vc['credentialSubject'][id.toLowerCase()],
+          isVerified: !types.includes('SelfProclaimedCredential')
+        };
+      }
+    });
+    vcs = vcs.filter(item => {
+      return item !== undefined;
+    });
+    if (vcs && vcs.length > 0) return vcs[0];
+    return;
+  };
+
+  useEffect(() => {
+    const ids = ['linkedin', 'twitter', 'facebook', 'google'];
+    const embededSocialProfiles = [];
+    for (let i = 0; i < ids.length; i++) {
+      if (getVerifiedCredential(ids[i])) {
+        embededSocialProfiles.push(ids[i]);
+      }
+    }
+    setEmbededSocialedProfiles(embededSocialProfiles);
+  }, []);
 
   useEffect(() => {
     setTutorialVisible(sessionItem.tutorialStep !== 4);
@@ -52,37 +96,28 @@ const DashboardHome: React.FC<Props> = ({
     <IonGrid className="ion-no-padding">
       <IonRow className="ion-no-padding">
         <LeftCardCol size="8">
-          {/* {profile && profile.basicDTO && (
-            <AboutCard aboutText={profile.basicDTO.about || ''} />
-          )}
-          {profile && profile.experienceDTO && (
-            <ExperienceCard experienceDTO={profile.experienceDTO} />
-          )}
-          {profile && profile.educationDTO && (
-            <EducationCard educationDTO={profile.educationDTO} />
-          )} */}
           {tutorialVisible && (
             <BeginnersTutorial
               onTutorialStart={onTutorialStart}
               tutorialStep={sessionItem.tutorialStep}
             />
           )}
-
-          <ManageProfile />
-          <ExploreConnnections />
-          <ManageLinks />
+          <ManageProfile profile={profile} />
+          <ExploreConnnections did={(userSession && userSession.did) || ''} />
+          {embededSocialProfiles.length === 0 && <ManageLinks />}
         </LeftCardCol>
         <RightCardCol size="4">
           <VerificationStatus />
           <ProfileCompletion />
           <WhatIsProfile />
           <ConnectWithCommunity />
-
           {/*  <BadgesCard title="Badges" /> */}
-          <SocialProfilesCard
-            diddocument={didDocument}
-            showManageButton={false}
-          />
+          {embededSocialProfiles.length !== 0 && (
+            <SocialProfilesCard
+              diddocument={didDocument}
+              showManageButton={false}
+            />
+          )}
         </RightCardCol>
       </IonRow>
     </IonGrid>

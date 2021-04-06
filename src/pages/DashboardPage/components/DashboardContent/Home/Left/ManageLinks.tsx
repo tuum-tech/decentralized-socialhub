@@ -16,7 +16,7 @@ const ManageLink: React.FC = ({}) => {
       <CardText>
         Link your verified social profiles or custom links to Profile.
       </CardText>
-      <LinkButton>Manage Links ></LinkButton>
+      <LinkButton href="/manager">Manage Links &gt;</LinkButton>
       <CardImg src={socialCardImg} />
     </MainCard>
   );
