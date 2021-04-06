@@ -69,7 +69,7 @@ const ProfileCompletion: React.FC = ({}) => {
       const percent = Math.round((data[i].value / data[i].targets) * 100);
 
       renderComponents.push(
-        <ProfileStep>
+        <ProfileStep key={i}>
           <p className="title">{data[i].title}</p>
           <ProgressAreaContainer>
             <ProgressArea>
