@@ -137,10 +137,9 @@ export class ProfileService {
   static async getFollowings(
     did: string
   ): Promise<IFollowingResponse | undefined> {
-    const hiveInstance = await HiveService.getSessionInstance();
-    if (!hiveInstance) return;
+    const appHiveClient = await HiveService.getAppHiveClient();
 
-    const followingResponse: IRunScriptResponse<IFollowingResponse> = await hiveInstance.Scripting.RunScript(
+    const followingResponse: IRunScriptResponse<IFollowingResponse> = await appHiveClient.Scripting.RunScript(
       {
         name: 'get_following',
         context: {
@@ -149,22 +148,11 @@ export class ProfileService {
         }
       }
     );
-    console.log('=====>followingResponse', followingResponse);
+
     if (followingResponse.isSuccess) {
       return followingResponse.response;
     }
     return;
-  }
-
-  static async resetFollowing(): Promise<any> {
-    const hiveInstance = await HiveService.getSessionInstance();
-    if (!hiveInstance) return;
-    await hiveInstance.Database.deleteCollection('following');
-    await hiveInstance.Database.createCollection('following');
-    const userSession = UserService.GetUserSession();
-    if (userSession) {
-      return this.getFollowings(userSession.did);
-    }
   }
 
   static async getFollowers(
@@ -227,6 +215,17 @@ export class ProfileService {
       });
     }
 
+    if (userSession) {
+      return this.getFollowings(userSession.did);
+    }
+  }
+
+  static async resetFollowing(): Promise<any> {
+    const hiveInstance = await HiveService.getSessionInstance();
+    if (!hiveInstance) return;
+    await hiveInstance.Database.deleteCollection('following');
+    await hiveInstance.Database.createCollection('following');
+    const userSession = UserService.GetUserSession();
     if (userSession) {
       return this.getFollowings(userSession.did);
     }

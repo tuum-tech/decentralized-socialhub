@@ -11,7 +11,6 @@ import {
 import { Link } from 'react-router-dom';
 
 import styleCards from 'src/components/cards/WidgetCards.module.scss';
-import { IUserResponse } from 'src/services/search.service';
 
 import { TruncatedSpan, Name, ViewAll } from './FollowingCard';
 import style from './style.module.scss';
@@ -20,12 +19,14 @@ interface FollwerWidgetProps {
   contacts: IFollowerResponse;
   resolveUserFunc: any;
   getLinkFunc: any;
+  isSigned: boolean;
 }
 
 const FollowerCard: React.FC<FollwerWidgetProps> = ({
   contacts,
   resolveUserFunc,
-  getLinkFunc
+  getLinkFunc,
+  isSigned
 }: FollwerWidgetProps) => {
   return (
     <IonCard className={styleCards['overview']}>
@@ -38,7 +39,10 @@ const FollowerCard: React.FC<FollwerWidgetProps> = ({
               </IonCardTitle>
             </IonCol>
             <IonCol size="auto">
-              <ViewAll>View all</ViewAll>
+              <ViewAll href={isSigned ? '/connections/followers' : '/sign-did'}>
+                {/* {isSigned ? 'View All' : 'Sign In'} */}
+                View All
+              </ViewAll>
             </IonCol>
           </IonRow>
         </IonGrid>

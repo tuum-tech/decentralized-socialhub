@@ -6,11 +6,12 @@ import { IUserResponse, SearchService } from 'src/services/search.service';
 import FollowerCard from './FollowerCard';
 import FollowingCard from './FollowingCard';
 
-interface IProps {
+interface Props {
   did: string;
+  signed: boolean;
 }
 
-const FowllowCards: React.FC<IProps> = ({ did }: IProps) => {
+const FowllowCards: React.FC<Props> = ({ did, signed }: Props) => {
   const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
     get_following: { items: [] }
   });
@@ -77,16 +78,26 @@ const FowllowCards: React.FC<IProps> = ({ did }: IProps) => {
 
   return (
     <>
-      <FollowingCard
-        contacts={listFollowing}
-        resolveUserFunc={resolveUserInfo}
-        getLinkFunc={(did: string) => '/did/' + did}
-      />
-      <FollowerCard
-        contacts={listFollowers}
-        resolveUserFunc={resolveUserInfo}
-        getLinkFunc={(did: string) => '/did/' + did}
-      />
+      {listFollowing &&
+        listFollowing.get_following.items &&
+        listFollowing.get_following.items.length > 0 && (
+          <FollowingCard
+            contacts={listFollowing}
+            resolveUserFunc={resolveUserInfo}
+            getLinkFunc={(did: string) => '/did/' + did}
+            isSigned={signed}
+          />
+        )}
+      {listFollowers &&
+        listFollowers.get_followers.items &&
+        listFollowers.get_followers.items.length > 0 && (
+          <FollowerCard
+            contacts={listFollowers}
+            resolveUserFunc={resolveUserInfo}
+            getLinkFunc={(did: string) => '/did/' + did}
+            isSigned={signed}
+          />
+        )}
     </>
   );
 };
