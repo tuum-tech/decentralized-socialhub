@@ -6,10 +6,7 @@ import {
 } from 'src/services/search.service';
 import FollowingTabs from '../FollowingTabs';
 import FollowingHeader from '../FollowingHeader';
-import {
-  IFollowingResponse,
-  PublicProfileService
-} from 'src/services/profile.service';
+import { ProfileService } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
 import { alertError } from 'src/utils/notify';
 
@@ -44,7 +41,7 @@ const FollowingSearch: React.FC = () => {
     try {
       let user = UserService.GetUserSession();
       if (user && user.did) {
-        let following = await PublicProfileService.getFollowings(user.did);
+        let following = await ProfileService.getFollowings(user.did);
         setListFollowing(following as IFollowingResponse);
       }
     } catch (e) {

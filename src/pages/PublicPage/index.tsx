@@ -17,7 +17,7 @@ import PublicNavbar from './components/PublicNavbar';
 import { UserService } from 'src/services/user.service';
 import PageLoading from 'src/components/layouts/PageLoading';
 import {
-  PublicProfileService,
+  ProfileService,
   defaultUserInfo,
   defaultFullProfile
 } from 'src/services/profile.service';
@@ -26,7 +26,7 @@ import AboutCard from 'src/components/cards/AboutCard';
 import EducationCard from 'src/components/cards/EducationCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
 // import FollowersWidget from '../FollowersWidget';
-import FollowingList from './components/FollowingList';
+import FollowCards from './components/FollowCards';
 import PublicProfileTabs from './components/PublicProfileTabs';
 import SocialProfiles from './components/SocialProfiles';
 
@@ -70,7 +70,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
         }
         let profile:
           | ProfileDTO
-          | undefined = await PublicProfileService.getFullProfile(did);
+          | undefined = await ProfileService.getFullProfile(did);
         if (profile) {
           profile.basicDTO.isEnabled = true;
           profile.experienceDTO.isEnabled = true;
@@ -149,10 +149,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 
                   {publicUserProfile.basicDTO.isEnabled === true ? (
                     <>
-                      <PublicProfileTabs
-                        mode={mode}
-                        scrollToPosition={scrollToElement}
-                      />
+                      <PublicProfileTabs scrollToPosition={scrollToElement} />
                       <IonGrid className={style['scroll']}>
                         <IonRow className="ion-justify-content-center">
                           <IonCol size="12">
@@ -186,17 +183,9 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
                                 </LeftContent>
                                 <RightContent>
                                   <SocialProfiles sProfile={['linkedin']} />
-                                  <FollowingList
+                                  <FollowCards
                                     did={publicUserProfile.basicDTO.did}
                                   />
-                                  {/* FollowersWidget */}
-                                  <IonCard className={style['overview']}>
-                                    <IonCardHeader>
-                                      <IonCardTitle>Followers</IonCardTitle>
-                                    </IonCardHeader>
-
-                                    <IonCardContent></IonCardContent>
-                                  </IonCard>
                                 </RightContent>
                               </IonRow>
                             </IonGrid>

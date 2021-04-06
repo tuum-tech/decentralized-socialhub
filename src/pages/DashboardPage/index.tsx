@@ -23,7 +23,7 @@ import { UserService } from 'src/services/user.service';
 import { AssistService, RequestStatus } from 'src/services/assist.service';
 import LoadingIndicator from 'src/components/LoadingIndicator';
 import {
-  PublicProfileService,
+  ProfileService,
   defaultUserInfo,
   defaultFullProfile
 } from 'src/services/profile.service';
@@ -56,7 +56,7 @@ const ProfilePage = () => {
   const [onBoardVisible, setOnBoardVisible] = useState(false);
   const history = useHistory();
 
-  const setTimerForDid = () => {
+  const setTimer = () => {
     const timer = setTimeout(async () => {
       await refreshDidDocument();
       setTimerForDid();
@@ -81,46 +81,15 @@ const ProfilePage = () => {
     setDidDocument(documentState.diddocument);
   };
 
-  const refreshStatus = async () => {
-    let userSession = UserService.GetUserSession();
-    if (!userSession || !userSession.did) return;
-
-    let publishWaiting = AssistService.getPublishStatusTask(userSession.did);
-
-    if (!publishWaiting) return;
-
-    let actual = await AssistService.refreshRequestStatus(
-      publishWaiting.confirmationId,
-      userSession.did
-    );
-
-    setPublishStatus(actual.requestStatus);
-
-    if (actual.requestStatus === RequestStatus.Completed) {
-      AssistService.removePublishTask(userSession.did);
-      await updateUserToComplete();
-      return;
-    }
-  };
-
-  const updateUserToComplete = async () => {
-    let userSession = UserService.GetUserSession();
-    if (userSession) {
-      userSession.isDIDPublished = true;
-      UserService.updateSession(userSession);
-      await DidDocumentService.reloadUserDocument();
-    }
-  };
-
   const retriveProfile = async () => {
     let userSession = UserService.GetUserSession();
     if (!userSession) {
       return;
     }
     setLoadingText('Please wait a moment...');
-    let profile:
-      | ProfileDTO
-      | undefined = await PublicProfileService.getFullProfile(userSession.did);
+    let profile: ProfileDTO | undefined = await ProfileService.getFullProfile(
+      userSession.did
+    );
     if (profile) {
       profile.experienceDTO.isEnabled = true;
       profile.educationDTO.isEnabled = true;
@@ -137,12 +106,8 @@ const ProfilePage = () => {
       }
       await refreshDidDocument();
       setUserInfo(userSession);
-      setPublishStatus(
-        userSession.isDIDPublished
-          ? RequestStatus.Completed
-          : RequestStatus.Pending
-      );
-      setOnBoardVisible(true);
+      setOnboardingStatus(userSession.onBoardingCompleted);
+
       if (
         userSession.onBoardingCompleted &&
         userSession.tutorialStep === 4 &&

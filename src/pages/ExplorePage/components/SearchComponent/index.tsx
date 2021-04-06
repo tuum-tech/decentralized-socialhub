@@ -7,10 +7,7 @@ import {
   SearchService
 } from 'src/services/search.service';
 import ExploreNav from '../ExploreNav';
-import {
-  IFollowingResponse,
-  PublicProfileService
-} from 'src/services/profile.service';
+import { ProfileService } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
 import { alertError } from 'src/utils/notify';
 import LoadingIndicator from 'src/components/LoadingIndicator';
@@ -83,7 +80,7 @@ const SearchComponent: React.FC = () => {
     try {
       if (user && user.did) {
         //Get Following
-        let following = await PublicProfileService.getFollowings(user.did);
+        let following = await ProfileService.getFollowings(user.did);
         setListFollowing(following as IFollowingResponse);
       }
     } catch (e) {

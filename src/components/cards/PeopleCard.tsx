@@ -9,14 +9,16 @@ import {
 import ReactPaginate from 'react-paginate';
 
 import { UserService } from 'src/services/user.service';
-import {
-  defaultUserInfo,
-  PublicProfileService
-} from 'src/services/profile.service';
+import { defaultUserInfo, ProfileService } from 'src/services/profile.service';
 
 import style from './PeopleCard.module.scss';
 import DidCard from './DidCard';
 import { alertError } from 'src/utils/notify';
+
+export interface IFollowingResponse {
+  _status?: string;
+  get_following: IGetFollowing;
+}
 
 interface IProps {
   people?: PeopleDTO;
@@ -72,15 +74,14 @@ const PeopleCard: React.FC<IProps> = ({
 
   useEffect(() => {
     (async () => {
-      // let user = UserService.GetUserSession();
       let refreshFollowing: FollowingDTO = following;
 
       try {
         if (userInfo && userInfo.did) {
           //Get Following
-          const response = await PublicProfileService.getFollowings(
+          const response = (await ProfileService.getFollowings(
             userInfo.did
-          );
+          )) as IFollowingResponse;
           refreshFollowing = response.get_following;
         }
       } catch (e) {

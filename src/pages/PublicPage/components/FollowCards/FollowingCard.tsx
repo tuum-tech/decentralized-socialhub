@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   IonGrid,
   IonRow,
@@ -11,10 +11,6 @@ import {
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import {
-  IFollowingResponse,
-  IFollowingItem
-} from 'src/services/profile.service';
 import styleCards from 'src/components/cards/WidgetCards.module.scss';
 import style from './style.module.scss';
 
@@ -24,7 +20,7 @@ interface FollowingsWidgetProps {
   getLinkFunc: any;
 }
 
-const TruncatedSpan = styled.span`
+export const TruncatedSpan = styled.span`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -40,7 +36,7 @@ const TruncatedSpan = styled.span`
   color: #979797;
 `;
 
-const Name = styled.span`
+export const Name = styled.span`
   font-family: 'SF Pro Display';
   font-size: 16px;
   font-weight: 600;
@@ -52,7 +48,7 @@ const Name = styled.span`
   color: #27272e;
 `;
 
-const ViewAll = styled.span`
+export const ViewAll = styled.span`
   flex-grow: 0;
   font-family: 'SF Pro Display';
   font-size: 14px;
@@ -65,7 +61,7 @@ const ViewAll = styled.span`
   color: #4c6fff;
 `;
 
-const FollowingWidget: React.FC<FollowingsWidgetProps> = ({
+const FollowingCard: React.FC<FollowingsWidgetProps> = ({
   contacts,
   resolveUserFunc,
   getLinkFunc
@@ -109,11 +105,6 @@ const FollowingWidget: React.FC<FollowingsWidgetProps> = ({
                   </IonGrid>
                 </Link>
               </IonCol>
-              {/* <IonCol size='3'>
-                    <IonButton size='small' onClick={() => unfollow(item.did)}>
-                      Unfollow
-                    </IonButton>
-                  </IonCol> */}
             </IonRow>
           ))}
         </IonGrid>
@@ -122,4 +113,4 @@ const FollowingWidget: React.FC<FollowingsWidgetProps> = ({
   );
 };
 
-export default FollowingWidget;
+export default FollowingCard;

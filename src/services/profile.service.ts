@@ -6,80 +6,44 @@ import { showNotify } from 'src/utils/notify';
 import { HiveService } from './hive.service';
 import { UserService, AccountType } from './user.service';
 
-export interface IFollowingResponse {
-  _status?: string;
-  get_following: IGetFollowing;
-}
-
-export interface IGetFollowing {
-  items: IFollowingItem[];
-}
-
-export interface IFollowingItem {
-  _id?: { $oid: string };
-  created?: { $date: string };
-  did: string;
-  modified?: { $date: string };
-  followers?: string;
-}
-
-export interface IFollowerResponse {
-  _status?: string;
-  get_followers: IGetFollowersBody;
-}
-
-export interface IGetFollowersBody {
-  items: IFollowerItem[];
-}
-
-export interface IFollowerItem {
-  did: string;
-  name: string;
-  followers: string[];
-}
-
-export const defaultUserInfo: ISessionItem = {
-  hiveHost: '',
-  userToken: '',
-  accountType: AccountType.DID,
-  did: '',
-  // email: '',
-  name: '',
-  isDIDPublished: false,
-  mnemonics: '',
-  passhash: '',
-  onBoardingCompleted: false,
-  tutorialStep: 1
-};
-
-export const defaultFullProfile = {
-  basicDTO: {
-    isEnabled: false,
-    name: '',
-    hiveHost: '',
-    email: '',
-    did: '',
-    title: '',
-    about: '',
-    address: {
-      number: '',
-      street_name: '',
-      postal_code: '',
-      state: '',
-      country: ''
-    }
-  },
-  educationDTO: {
-    isEnabled: false,
-    items: [] as EducationItem[]
-  },
-  experienceDTO: {
-    isEnabled: false,
-    items: [] as ExperienceItem[]
-  }
-};
-
 export class ProfileService {
+  static async getFullProfile(did: string): Promise<ProfileDTO | undefined> {
+    {
+      const hiveInstance = await HiveService.getAppHiveClient();
+      if (hiveInstance) {
+        const fullProfileResponse: IRunScriptResponse<ProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_full_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            }
+          }
+        );
+
+        if (
+          fullProfileResponse &&
+          fullProfileResponse.response &&
+          fullProfileResponse.response.get_basic &&
+          fullProfileResponse.response.get_basic.items
+        ) {
+          let basicProfile = fullProfileResponse.response!.get_basic.items![0];
+          let educationProfile = fullProfileResponse.response!
+            .get_education_profile;
+          let experienceProfile = fullProfileResponse.response!
+            .get_experience_profile;
+
+          return {
+            basicDTO: basicProfile || {},
+            educationDTO: educationProfile,
+            experienceDTO: experienceProfile
+          };
+        }
+      }
+      return;
+    }
+  }
+
   static async updateAbout(basicDTO: BasicDTO) {
     const userSession = UserService.GetUserSession();
     const hiveInstance = await HiveService.getSessionInstance();
@@ -170,19 +134,26 @@ export class ProfileService {
     }
   }
 
-  static async getUserFollowings(
+  static async getFollowings(
     did: string
-  ): Promise<IRunScriptResponse<IFollowingResponse> | undefined> {
+  ): Promise<IFollowingResponse | undefined> {
     const hiveInstance = await HiveService.getSessionInstance();
-    if (hiveInstance) {
-      return hiveInstance.Scripting.RunScript({
+    if (!hiveInstance) return;
+
+    const followingResponse: IRunScriptResponse<IFollowingResponse> = await hiveInstance.Scripting.RunScript(
+      {
         name: 'get_following',
         context: {
           target_did: did,
           target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
         }
-      });
+      }
+    );
+    console.log('=====>followingResponse', followingResponse);
+    if (followingResponse.isSuccess) {
+      return followingResponse.response;
     }
+    return;
   }
 
   static async resetFollowing(): Promise<any> {
@@ -192,8 +163,31 @@ export class ProfileService {
     await hiveInstance.Database.createCollection('following');
     const userSession = UserService.GetUserSession();
     if (userSession) {
-      return PublicProfileService.getFollowings(userSession.did);
+      return this.getFollowings(userSession.did);
     }
+  }
+
+  static async getFollowers(
+    dids: string[]
+  ): Promise<IFollowerResponse | undefined> {
+    const appHiveClient = await HiveService.getAppHiveClient();
+    let followersResponse: IRunScriptResponse<IFollowerResponse> = await appHiveClient.Scripting.RunScript(
+      {
+        name: 'get_followers',
+        params: {
+          did: dids
+        },
+        context: {
+          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+        }
+      }
+    );
+
+    if (followersResponse.isSuccess) {
+      return followersResponse.response;
+    }
+    return;
   }
 
   static async unfollow(did: string): Promise<any> {
@@ -204,7 +198,7 @@ export class ProfileService {
       did: did
     });
 
-    let followersResponse = await PublicProfileService.getFollowers([did]);
+    let followersResponse = await this.getFollowers([did]);
     let followersList: string[] = [];
     if (followersResponse && followersResponse.get_followers.items.length > 0) {
       // TODO: handle this better
@@ -234,7 +228,7 @@ export class ProfileService {
     }
 
     if (userSession) {
-      return PublicProfileService.getFollowings(userSession.did);
+      return this.getFollowings(userSession.did);
     }
   }
 
@@ -243,7 +237,7 @@ export class ProfileService {
     if (!hiveClient) return;
     await hiveClient.Database.insertOne('following', { did: did }, undefined);
 
-    let followersResponse = await PublicProfileService.getFollowers([did]);
+    let followersResponse = await this.getFollowers([did]);
 
     let followersList: string[] = [];
     if (followersResponse && followersResponse.get_followers.items.length > 0)
@@ -274,85 +268,48 @@ export class ProfileService {
     }
 
     if (userSession) {
-      return PublicProfileService.getFollowings(userSession.did);
+      return this.getFollowings(userSession.did);
     }
   }
 }
 
-export class PublicProfileService {
-  static async getFullProfile(did: string): Promise<ProfileDTO | undefined> {
-    {
-      const hiveInstance = await HiveService.getAppHiveClient();
-      if (hiveInstance) {
-        const fullProfileResponse: IRunScriptResponse<ProfileResponse> = await hiveInstance.Scripting.RunScript(
-          {
-            name: 'get_full_profile',
-            context: {
-              target_did: did,
-              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-            }
-          }
-        );
+export const defaultUserInfo: ISessionItem = {
+  hiveHost: '',
+  userToken: '',
+  accountType: AccountType.DID,
+  did: '',
+  // email: '',
+  name: '',
+  isDIDPublished: false,
+  mnemonics: '',
+  passhash: '',
+  onBoardingCompleted: false,
+  tutorialStep: 1
+};
 
-        if (
-          fullProfileResponse &&
-          fullProfileResponse.response &&
-          fullProfileResponse.response.get_basic &&
-          fullProfileResponse.response.get_basic.items
-        ) {
-          let basicProfile = fullProfileResponse.response!.get_basic.items![0];
-          let educationProfile = fullProfileResponse.response!
-            .get_education_profile;
-          let experienceProfile = fullProfileResponse.response!
-            .get_experience_profile;
-
-          return {
-            basicDTO: basicProfile || {},
-            educationDTO: educationProfile,
-            experienceDTO: experienceProfile
-          };
-        }
-      }
-      return;
+export const defaultFullProfile = {
+  basicDTO: {
+    isEnabled: false,
+    name: '',
+    hiveHost: '',
+    email: '',
+    did: '',
+    title: '',
+    about: '',
+    address: {
+      number: '',
+      street_name: '',
+      postal_code: '',
+      state: '',
+      country: ''
     }
+  },
+  educationDTO: {
+    isEnabled: false,
+    items: [] as EducationItem[]
+  },
+  experienceDTO: {
+    isEnabled: false,
+    items: [] as ExperienceItem[]
   }
-
-  static async getFollowings(did: string): Promise<any> {
-    const appHiveClient = await HiveService.getAppHiveClient();
-
-    if (appHiveClient) {
-      const getUserFollowingScriptRes: any = appHiveClient.Scripting.RunScript({
-        name: 'get_following',
-        context: {
-          target_did: did,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-        }
-      });
-      console.log('======>2', getUserFollowingScriptRes);
-      return getUserFollowingScriptRes!.response as IFollowingResponse;
-    }
-  }
-
-  static async getFollowers(
-    dids: string[]
-  ): Promise<IFollowerResponse | undefined> {
-    const appHiveClient = await HiveService.getAppHiveClient();
-    let followersResponse: IRunScriptResponse<IFollowerResponse> = await appHiveClient.Scripting.RunScript(
-      {
-        name: 'get_followers',
-        params: {
-          did: dids
-        },
-        context: {
-          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-        }
-      }
-    );
-
-    if (followersResponse.isSuccess) {
-      return followersResponse.response;
-    }
-    return;
-  }
-}
+};

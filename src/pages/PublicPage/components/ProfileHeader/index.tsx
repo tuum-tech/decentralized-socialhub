@@ -7,6 +7,7 @@ import DidSnippet from 'src/components/DidSnippet';
 import defaultAdamAvatar from 'src/assets/icon/defaultAdamAvatar.png';
 import { ProfileName } from 'src/components/texts';
 import { FollowButton } from 'src/components/buttons';
+
 import FollowOrUnFollowButton from '../FollowOrUnFollow';
 
 const HeaderContainer = styled(IonGrid)`

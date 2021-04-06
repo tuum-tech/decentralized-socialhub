@@ -4,7 +4,6 @@ import { IonContent, IonGrid, IonCol, IonRow } from '@ionic/react';
 import { UserService } from 'src/services/user.service';
 import { TuumTechScriptService } from 'src/services/script.service';
 import {
-  PublicProfileService,
   ProfileService,
   defaultUserInfo,
   defaultFullProfile
@@ -31,9 +30,9 @@ const ProfileEditor: React.FC = () => {
     let instance = UserService.GetUserSession();
     if (!instance || !instance.userToken) return;
     try {
-      let res:
-        | ProfileDTO
-        | undefined = await PublicProfileService.getFullProfile(instance.did);
+      let res: ProfileDTO | undefined = await ProfileService.getFullProfile(
+        instance.did
+      );
       if (res) {
         res.basicDTO.isEnabled = true;
         res.experienceDTO.isEnabled = true;
@@ -59,8 +58,8 @@ const ProfileEditor: React.FC = () => {
     if (!userSession) {
       return;
     }
-    let documentState = await DidDocumentService.getUserDocument(userSession)
-    setDidDocument(documentState.diddocument)
+    let documentState = await DidDocumentService.getUserDocument(userSession);
+    setDidDocument(documentState.diddocument);
   };
 
   useEffect(() => {
@@ -115,9 +114,12 @@ const ProfileEditor: React.FC = () => {
                     }}
                   />
                 )}
-               
-               <SocialProfilesCard  diddocument={didDocument} showManageButton={true} sessionItem={userInfo} />
-                
+
+                <SocialProfilesCard
+                  diddocument={didDocument}
+                  showManageButton={true}
+                />
+
                 {profile && profile.educationDTO && (
                   <EducationCard
                     educationDTO={profile.educationDTO}

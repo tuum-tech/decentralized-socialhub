@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { FollowButton } from 'src/components/buttons';
-import {
-  ProfileService,
-  PublicProfileService
-} from 'src/services/profile.service';
+import { ProfileService } from 'src/services/profile.service';
 import { alertError } from 'src/utils/notify';
 
 interface IProps {
@@ -33,7 +30,7 @@ const FollowOrUnFollowButton: React.FC<IProps> = ({ did, userDid }: IProps) => {
   const loadData = async () => {
     if (!userDid || userDid === '') return;
     try {
-      let following = await PublicProfileService.getFollowings(userDid);
+      let following = await ProfileService.getFollowings(userDid);
       if (
         following &&
         following.get_following &&

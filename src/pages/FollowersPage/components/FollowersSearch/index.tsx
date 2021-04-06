@@ -2,11 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { IonGrid, IonRow } from '@ionic/react';
 
 import PeopleCard from 'src/components/cards/PeopleCard';
-import {
-  IFollowerResponse,
-  IFollowingResponse,
-  PublicProfileService
-} from 'src/services/profile.service';
+import { ProfileService } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
 import { alertError } from 'src/utils/notify';
 import { IUserResponse, SearchService } from 'src/services/search.service';
@@ -56,7 +52,7 @@ const FollowersSearch: React.FC = () => {
       if (user && user.did) {
         //Get Followers
         let listDids = [user.did];
-        let followers = await PublicProfileService.getFollowers(listDids);
+        let followers = await ProfileService.getFollowers(listDids);
         setListFollowers(followers as IFollowerResponse);
       }
     } catch (e) {
@@ -68,7 +64,7 @@ const FollowersSearch: React.FC = () => {
 
       if (user && user.did) {
         //Get Following
-        let following = await PublicProfileService.getFollowings(user.did);
+        let following = await ProfileService.getFollowings(user.did);
         setListFollowing(following as IFollowingResponse);
       }
     } catch (e) {

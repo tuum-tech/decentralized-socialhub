@@ -5,7 +5,7 @@ import LoadingIndicator from 'src/components/LoadingIndicator';
 import ProfileComponent from 'src/components/profile/ProfileComponent';
 import { UserService } from 'src/services/user.service';
 import {
-  PublicProfileService,
+  ProfileService,
   defaultUserInfo,
   defaultFullProfile
 } from 'src/services/profile.service';
@@ -71,7 +71,7 @@ const ExploreProfileComponent: React.FC<ExploreProfileParams> = ({
         //if (!error) {
         let profile:
           | ProfileDTO
-          | undefined = await PublicProfileService.getFullProfile(did);
+          | undefined = await ProfileService.getFullProfile(did);
         if (profile) {
           profile.basicDTO.isEnabled = true;
           profile.experienceDTO.isEnabled = true;
