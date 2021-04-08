@@ -13,6 +13,7 @@ import { requestLinkedinProfile, requestLinkedinToken } from './fetchapi';
 import { DidService } from 'src/services/did.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
+import { TuumTechScriptService } from 'src/services/script.service';
 
 const LinkedinCallback: React.FC<RouteComponentProps> = props => {
   /**
@@ -61,7 +62,9 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
 
           DidDocumentService.updateUserDocument(state.diddocument)
 
-
+          userSession.loginCred.linkedin = firstName + '' + lastName
+          
+          UserService.updateSession(userSession)
           window.close();
         } else {
           setCredentials({

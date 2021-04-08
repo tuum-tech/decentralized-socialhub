@@ -74,9 +74,18 @@ interface ISessionItem {
   tutorialStep: number;
   onBoardingCompleted: boolean;
   email?: string;
+  loginCred: LoginCred;
   avatar?: string;
   code?: string;
   status?: string;
+}
+
+interface LoginCred{
+  linkedin?: string;
+  google?: string;
+  twitter?: string;
+  facebook?: string;
+  email?: string;
 }
 
 interface PeopleItem {

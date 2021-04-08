@@ -312,6 +312,7 @@ export const defaultUserInfo: ISessionItem = {
   email: '',
   name: '',
   isDIDPublished: false,
+  loginCred:{},
   mnemonics: '',
   passhash: '',
   onBoardingCompleted: false,

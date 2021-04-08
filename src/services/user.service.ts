@@ -253,6 +253,8 @@ export class UserService {
       passhash,
       email,
       name,
+      loginCred: {
+      },
       userToken,
       code: credential,
       isDIDPublished: isDIDPublished ? isDIDPublished : false,
@@ -272,10 +274,16 @@ export class UserService {
       if (newSessionItem && newSessionItem.did && newSessionItem.did !== '') {
         sessionItem = newSessionItem;
       }
+      sessionItem.loginCred.email = email
       await TuumTechScriptService.updateUserDidInfo(sessionItem);
+      
     } else {
       sessionItem.status = 'CONFIRMED';
       sessionItem.code = userToken;
+      if (accountType == AccountType.Twitter) sessionItem.loginCred.twitter = credential
+      if (accountType == AccountType.Linkedin) sessionItem.loginCred.linkedin = credential
+      if (accountType == AccountType.Google) sessionItem.loginCred.google = credential
+      if (accountType == AccountType.Facebook) sessionItem.loginCred.facebook = credential
       await TuumTechScriptService.addUserToTuumTech(sessionItem);
     }
 
@@ -295,7 +303,6 @@ export class UserService {
     const userData = await TuumTechScriptService.searchUserWithDID(
       sessionItem.did
     );
-
     if (
       userData &&
       userData.data &&

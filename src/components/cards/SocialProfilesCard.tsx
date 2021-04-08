@@ -35,6 +35,7 @@ import { DidDocumentService } from 'src/services/diddocument.service';
 interface Props {
   diddocument: any;
   showManageButton: boolean;
+  sessionItem: ISessionItem;
 }
 
 interface VerifiedCredential {
@@ -135,7 +136,7 @@ const CloseButton = styled(IonButton)`
     color: #ffffff;
 `;
 
-const SocialProfilesCard: React.FC<Props> = ({ diddocument, showManageButton }) => {
+const SocialProfilesCard: React.FC<Props> = ({ diddocument, showManageButton, sessionItem }) => {
 
   const [isManagerOpen, setIsManagerOpen] = useState(false)
 
@@ -217,27 +218,40 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument, showManageButton }) 
 
 
   const getVerifiedCredential = (id: string): VerifiedCredential | undefined => {
+    let value = ""
+    if (id == "twitter") value = sessionItem.loginCred.twitter!
+    if (id == "linkedin") value = sessionItem.loginCred.linkedin!
+    if (id == "facebook") value = sessionItem.loginCred.facebook!
+    if (id == "google") value = sessionItem.loginCred.google!
 
-    if (!diddocument || !diddocument["id"] || !diddocument["verifiableCredential"]) return
+    if (value == undefined) return
+    
+    return {
+      value,
+      isVerified: true
+    }
 
-    let vcs: any[] = diddocument["verifiableCredential"].map((vc: any) => {
+    //Temporary code to not use diddocument to search credentials
 
-      if (`${vc["id"]}`.endsWith(`#${id.toLowerCase()}`)) {
-        let types: string[] = vc["type"]
+    
 
-        return {
-          value: vc["credentialSubject"][id.toLowerCase()],
-          isVerified: !types.includes("SelfProclaimedCredential")
-        }
-      }
-    })
+     
+    //TODO: Temporary 
+    // if (!diddocument || !diddocument["id"] || !diddocument["verifiableCredential"]) return
+    // let vcs: any[] = diddocument["verifiableCredential"].map((vc: any) => {
+    //   if (`${vc["id"]}`.endsWith(`#${id.toLowerCase()}`)) {
+    //     let types: string[] = vc["type"]
+    //     return {
+    //       value: vc["credentialSubject"][id.toLowerCase()],
+    //       isVerified: !types.includes("SelfProclaimedCredential")
+    //     }
+    //   }
+    // })
 
-    vcs = vcs.filter(item => {
-      return item !== undefined
-    })
-
-
-    if (vcs && vcs.length > 0) return vcs[0]
+    // vcs = vcs.filter(item => {
+    //   return item !== undefined
+    // })
+    // if (vcs && vcs.length > 0) return vcs[0]
 
     return
   }
@@ -249,7 +263,6 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument, showManageButton }) 
     let keyIndex = -1
     documentState.diddocument["verifiableCredential"].forEach((element: any, index: number) => {
       if (`${element["id"]}`.endsWith(`#${key.toLowerCase()}`)) {
-
         keyIndex = index
       }
     });
@@ -258,6 +271,13 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument, showManageButton }) 
       documentState.diddocument["verifiableCredential"].splice(keyIndex, 1);
       DidDocumentService.updateUserDocument(documentState.diddocument)
     }
+
+    if (key == "twitter")  sessionItem.loginCred.twitter = undefined
+    if (key == "linkedin") sessionItem.loginCred.linkedin = undefined
+    if (key == "facebook") sessionItem.loginCred.facebook = undefined
+    if (key == "google") sessionItem.loginCred.google = undefined
+
+    await UserService.updateSession(sessionItem)
   }
 
   const createIonItem = (key: string, icon: any) => {

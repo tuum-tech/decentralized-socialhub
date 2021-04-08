@@ -8,6 +8,7 @@ import PageLoading from 'src/components/layouts/PageLoading';
 import { DidService } from 'src/services/did.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
+import { TuumTechScriptService } from 'src/services/script.service';
 import { AccountType, UserService } from 'src/services/user.service';
 
 import { requestTwitterToken } from './fetchapi';
@@ -66,6 +67,8 @@ const TwitterCallback: React.FC<RouteComponentProps> = props => {
 
           DidDocumentService.updateUserDocument(state.diddocument)
 
+          userSession.loginCred.twitter = items[1].toString()
+          await UserService.updateSession(userSession)
 
           window.close();
         } else {

@@ -13,6 +13,7 @@ import { AssistService } from 'src/services/assist.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service';
+import { TuumTechScriptService } from 'src/services/script.service';
 
 const GoogleCallback: React.FC<RouteComponentProps> = props => {
   /**
@@ -56,6 +57,8 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
 
           DidDocumentService.updateUserDocument(state.diddocument)
 
+          userSession.loginCred.google = googleId.name
+          UserService.updateSession(userSession)
 
           window.close();
         } else {
