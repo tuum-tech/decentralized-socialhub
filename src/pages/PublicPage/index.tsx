@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { DidDocumentService } from 'src/services/diddocument.service';
-import SocialProfilesCard from 'src/components/cards/SocialProfilesCard';
 import PublicNavbar from './components/PublicNavbar';
 import { UserService } from 'src/services/user.service';
 import PageLoading from 'src/components/layouts/PageLoading';
@@ -13,12 +12,14 @@ import {
   defaultUserInfo,
   defaultFullProfile
 } from 'src/services/profile.service';
-import ProfileHeader from './components/ProfileHeader';
 import AboutCard from 'src/components/cards/AboutCard';
 import EducationCard from 'src/components/cards/EducationCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
+
 import FollowCards from './components/FollowCards';
 import PublicProfileTabs from './components/PublicProfileTabs';
+import SocialProfilesCard from './components/SocialProfilesCard';
+import ProfileHeader from './components/ProfileHeader';
 
 import style from './style.module.scss';
 
@@ -51,21 +52,6 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   );
 
   let did: string = props.match.params.did;
-  const setTimer = () => {
-    const timer = setTimeout(async () => {
-      await refreshDidDocument();
-      setTimer();
-    }, 1000);
-    return () => clearTimeout(timer);
-  };
-  const refreshDidDocument = async () => {
-    let userSession = UserService.GetUserSession();
-    if (!userSession) {
-      return;
-    }
-    let documentState = await DidDocumentService.getUserDocument(userSession);
-    setDidDocument(documentState.diddocument);
-  };
 
   useEffect(() => {
     (async () => {
@@ -87,8 +73,8 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
         if (sUser && sUser.did !== '') {
           setSignedInUser(sUser);
         }
-
-        await refreshDidDocument();
+        let documentState = await DidDocumentService.getUserDocumentByDid(did);
+        setDidDocument(documentState.diddocument);
       } catch (error) {
         // console.log('======>error', error);
       }
@@ -191,12 +177,12 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
                                 <RightContent>
                                   {didDocument && didDocument.id && (
                                     <SocialProfilesCard
-                                      diddocument={didDocument}
-                                      showManageButton={false}
+                                      didDocument={didDocument}
                                     />
                                   )}
+
                                   <FollowCards
-                                    did={publicUserProfile.basicDTO.did}
+                                    did={publicUser.did}
                                     signed={signedInUser.did !== ''}
                                   />
                                 </RightContent>

@@ -68,6 +68,11 @@ export class DidDocumentService {
     return documentState;
   }
 
+  static async getUserDocumentByDid(did: string): Promise<IDIDDocumentState> {
+    const documentState = await this.loadFromBlockchain(did);
+    return documentState;
+  }
+
   private static async loadFromBlockchain(
     did: string
   ): Promise<IDIDDocumentState> {
@@ -107,7 +112,6 @@ export class DidDocumentService {
 
     let userDid = await DidService.loadDid(userSession.mnemonics);
     let signedDocument = DidService.sealDIDDocument(userDid, diddocument);
-    
 
     if (!signedDocument['proof']) {
       // alertError(null, 'The DID document was not signed');

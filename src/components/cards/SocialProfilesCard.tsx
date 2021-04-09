@@ -30,8 +30,6 @@ import { DidcredsService } from 'src/services/didcreds.service';
 import { UserService } from 'src/services/user.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 
-
-
 interface Props {
   diddocument: any;
   showManageButton: boolean;
@@ -39,8 +37,8 @@ interface Props {
 }
 
 interface VerifiedCredential {
-  value: string
-  isVerified: boolean
+  value: string;
+  isVerified: boolean;
 }
 
 const ManagerModal = styled(IonModal)`
@@ -79,81 +77,90 @@ const ManagerModalFooter = styled(IonFooter)`
 const MyGrid = styled(IonGrid)`
   margin: 5px 20px 0px 20px;
   height: 100 %;
-  
 `;
 
 const ManagerLogo = styled(IonImg)`
   position: relative;
   float: left;
   width: 42px;
-  
-`
+`;
 
 const ProfileItem = styled(IonItem)`
   --inner-padding-bottom: 0;
   --inner-padding-end: 0;
   --inner-padding-start: 0;
   --inner-padding-top: 0;
-`
-
+`;
 
 const ManagerButton = styled(IonButton)`
-    position: relative;
-    --ion-color-primary: transparent !important;
-    --ion-color-primary-tint: transparent;
-    width: 90px;
-    height: 26px;
-    float: right;
-   
-    font-family: 'SF Pro Display';
-    border-radius: 8px;
-    border: solid 1px #4c6fff;
-    font-size: 13px;
-    font-weight: 600;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 1.92;
-    letter-spacing: normal;
-    text-align: center;
-    color: #4c6fff;
+  position: relative;
+  --ion-color-primary: transparent !important;
+  --ion-color-primary-tint: transparent;
+  width: 90px;
+  height: 26px;
+  float: right;
+
+  font-family: 'SF Pro Display';
+  border-radius: 8px;
+  border: solid 1px #4c6fff;
+  font-size: 13px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.92;
+  letter-spacing: normal;
+  text-align: center;
+  color: #4c6fff;
 `;
 
 const CloseButton = styled(IonButton)`
-    --ion-color-primary: #4c6fff !important;
-    --ion-color-primary-tint: #4c7aff;
-    width: 210px;
-    height: 36px;
-    float: right;
-    border-radius: 6px;
-    font-family: 'SF Pro Display';
-    font-size: 12px;
-    font-weight: 600;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 1;
-    letter-spacing: normal;
-    text-align: left;
-    color: #ffffff;
+  --ion-color-primary: #4c6fff !important;
+  --ion-color-primary-tint: #4c7aff;
+  width: 210px;
+  height: 36px;
+  float: right;
+  border-radius: 6px;
+  font-family: 'SF Pro Display';
+  font-size: 12px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-align: left;
+  color: #ffffff;
 `;
 
-const SocialProfilesCard: React.FC<Props> = ({ diddocument, showManageButton, sessionItem }) => {
-
-  const [isManagerOpen, setIsManagerOpen] = useState(false)
+const SocialProfilesCard: React.FC<Props> = ({
+  diddocument,
+  showManageButton
+}) => {
+  const [isManagerOpen, setIsManagerOpen] = useState(false);
 
   const popupCenter = (url: string, title: string, w: number, h: number) => {
+    const dualScreenLeft =
+      window.screenLeft !== undefined ? window.screenLeft : window.screenX;
+    const dualScreenTop =
+      window.screenTop !== undefined ? window.screenTop : window.screenY;
 
-    const dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
-    const dualScreenTop = window.screenTop !== undefined ? window.screenTop : window.screenY;
-
-    const width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : window.screen.width;
-    const height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : window.screen.height;
+    const width = window.innerWidth
+      ? window.innerWidth
+      : document.documentElement.clientWidth
+      ? document.documentElement.clientWidth
+      : window.screen.width;
+    const height = window.innerHeight
+      ? window.innerHeight
+      : document.documentElement.clientHeight
+      ? document.documentElement.clientHeight
+      : window.screen.height;
 
     const systemZoom = width / window.screen.availWidth;
-    const left = (width - w) / 2 / systemZoom + dualScreenLeft
-    const top = (height - h) / 2 / systemZoom + dualScreenTop
+    const left = (width - w) / 2 / systemZoom + dualScreenLeft;
+    const top = (height - h) / 2 / systemZoom + dualScreenTop;
 
-
-    window.open(url, title,
+    window.open(
+      url,
+      title,
       `
       scrollbars=yes,
       width=${w / systemZoom}, 
@@ -161,16 +168,19 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument, showManageButton, se
       top=${top}, 
       left=${left}
       `
-    )
-
-
-  }
+    );
+  };
 
   const sociallogin = async (socialType: string) => {
     if (socialType === 'twitter') {
       type MyType = { meta: string; data: { request_token: string } };
       const response = (await TwitterApi.GetRequestToken()) as MyType;
-      popupCenter(`https://api.twitter.com/oauth/authorize?oauth_token=${response.data.request_token}`, 'Login', 548, 325);
+      popupCenter(
+        `https://api.twitter.com/oauth/authorize?oauth_token=${response.data.request_token}`,
+        'Login',
+        548,
+        325
+      );
       return;
     }
 
@@ -194,168 +204,172 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument, showManageButton, se
   };
 
   const containsVerifiedCredential = (id: string): boolean => {
-    return getVerifiedCredential(id) !== undefined
+    return getVerifiedCredential(id) !== undefined;
+  };
 
-  }
+  const getUrlFromService = (service: string, value: string): string => {
+    if (service == 'twitter') return `https://twitter.com/${value}`;
+    if (service == 'linkedin') return `https://linkedin.com/in/${value}`;
+    if (service == 'facebook') return `https://facebook.com/${value}`;
+    if (service == 'google') return `mailto://${value}`;
+    return '';
+  };
 
-  const getUrlFromService = (service: string, value: string) : string => {
-    if (service == "twitter") return `https://twitter.com/${value}`
-    if (service == "linkedin") return `https://linkedin.com/in/${value}`
-    if (service == "facebook") return `https://facebook.com/${value}`
-    if (service == "google") return `mailto://${value}`
-    return ""
-  }
-    
+  const parseValueFromService = (service: string, value: string): string => {
+    if (service == 'twitter') return `@${value}`;
+    if (service == 'linkedin') return `linkedin.com/in/${value}`;
+    if (service == 'facebook') return `facebook.com/${value}`;
+    if (service == 'google') return `${value}`;
+    return '';
+  };
 
+  const getVerifiedCredential = (
+    id: string
+  ): VerifiedCredential | undefined => {
+    if (
+      !diddocument ||
+      !diddocument['id'] ||
+      !diddocument['verifiableCredential']
+    )
+      return;
 
-  const parseValueFromService = (service: string, value: string) : string => {
-    if (service == "twitter") return `@${value}`
-    if (service == "linkedin") return `linkedin.com/in/${value}`
-    if (service == "facebook") return `facebook.com/${value}`
-    if (service == "google") return `${value}`
-    return ""
-  }
+    let vcs: any[] = diddocument['verifiableCredential'].map((vc: any) => {
+      if (`${vc['id']}`.endsWith(`#${id.toLowerCase()}`)) {
+        let types: string[] = vc['type'];
 
-
-  const getVerifiedCredential = (id: string): VerifiedCredential | undefined => {
-    let value = ""
-    if (id == "twitter") value = sessionItem.loginCred!.twitter!
-    if (id == "linkedin") value = sessionItem.loginCred!.linkedin!
-    if (id == "facebook") value = sessionItem.loginCred!.facebook!
-    if (id == "google") value = sessionItem.loginCred!.google!
-
-    if (value == undefined) return
-    
-    return {
-      value,
-      isVerified: true
-    }
-
-    //Temporary code to not use diddocument to search credentials
-
-    
-
-     
-    //TODO: Temporary 
-    // if (!diddocument || !diddocument["id"] || !diddocument["verifiableCredential"]) return
-    // let vcs: any[] = diddocument["verifiableCredential"].map((vc: any) => {
-    //   if (`${vc["id"]}`.endsWith(`#${id.toLowerCase()}`)) {
-    //     let types: string[] = vc["type"]
-    //     return {
-    //       value: vc["credentialSubject"][id.toLowerCase()],
-    //       isVerified: !types.includes("SelfProclaimedCredential")
-    //     }
-    //   }
-    // })
-
-    // vcs = vcs.filter(item => {
-    //   return item !== undefined
-    // })
-    // if (vcs && vcs.length > 0) return vcs[0]
-
-    return
-  }
-
-
-  const removeVc = async (key: string) => {
-    let userSession = UserService.GetUserSession()
-    let documentState = await DidDocumentService.getUserDocument(userSession!);
-    let keyIndex = -1
-    documentState.diddocument["verifiableCredential"].forEach((element: any, index: number) => {
-      if (`${element["id"]}`.endsWith(`#${key.toLowerCase()}`)) {
-        keyIndex = index
+        return {
+          value: vc['credentialSubject'][id.toLowerCase()],
+          isVerified: !types.includes('SelfProclaimedCredential')
+        };
       }
     });
 
+    vcs = vcs.filter(item => {
+      return item !== undefined;
+    });
+
+    if (vcs && vcs.length > 0) return vcs[0];
+
+    return;
+  };
+
+  const removeVc = async (key: string) => {
+    let userSession = UserService.GetUserSession();
+    let documentState = await DidDocumentService.getUserDocument(userSession!);
+    let keyIndex = -1;
+    documentState.diddocument['verifiableCredential'].forEach(
+      (element: any, index: number) => {
+        if (`${element['id']}`.endsWith(`#${key.toLowerCase()}`)) {
+          keyIndex = index;
+        }
+      }
+    );
+
     if (keyIndex >= 0) {
-      documentState.diddocument["verifiableCredential"].splice(keyIndex, 1);
-      DidDocumentService.updateUserDocument(documentState.diddocument)
+      documentState.diddocument['verifiableCredential'].splice(keyIndex, 1);
+      DidDocumentService.updateUserDocument(documentState.diddocument);
     }
-
-    if (key == "twitter")  sessionItem.loginCred!.twitter = undefined
-    if (key == "linkedin") sessionItem.loginCred!.linkedin = undefined
-    if (key == "facebook") sessionItem.loginCred!.facebook = undefined
-    if (key == "google") sessionItem.loginCred!.google = undefined
-
-    await UserService.updateSession(sessionItem)
-  }
+  };
 
   const createIonItem = (key: string, icon: any) => {
-    let vc = getVerifiedCredential(key)
-    if (!vc) return
-    return <ProfileItem className={style['social-profile-item']}>
-      <img src={icon} />
-      {(key == "facebook" || key == "linkedin") && <span>{parseValueFromService(key, vc.value)}</span> }
-      {(key == "google" || key == "twitter") && <a href={getUrlFromService(key, vc.value)} target="_blank">{parseValueFromService(key, vc.value)}</a> }
-      {vc.isVerified && <img src={shieldIcon} className={style['social-profile-badge']} />}
-    </ProfileItem>
-  }
-
-
+    let vc = getVerifiedCredential(key);
+    if (!vc) return;
+    return (
+      <ProfileItem className={style['social-profile-item']}>
+        <img src={icon} />
+        {(key == 'facebook' || key == 'linkedin') && (
+          <span>{parseValueFromService(key, vc.value)}</span>
+        )}
+        {(key == 'google' || key == 'twitter') && (
+          <a href={getUrlFromService(key, vc.value)} target="_blank" rel="noreferrer">
+            {parseValueFromService(key, vc.value)}
+          </a>
+        )}
+        {vc.isVerified && (
+          <img src={shieldIcon} className={style['social-profile-badge']} />
+        )}
+      </ProfileItem>
+    );
+  };
 
   const createModalIonItem = (key: string, icon: any) => {
-    let vc = getVerifiedCredential(key)
-    let header = "Google Account";
-    if (key === "twitter") header = "Twitter Account"
-    if (key === "facebook") header = "Facebook Account"
-    if (key === "linkedin") header = "LinkedIn Account"
+    let vc = getVerifiedCredential(key);
+    let header = 'Google Account';
+    if (key === 'twitter') header = 'Twitter Account';
+    if (key === 'facebook') header = 'Facebook Account';
+    if (key === 'linkedin') header = 'LinkedIn Account';
 
+    if (!vc)
+      return (
+        <div className={style['manage-links-item']}>
+          <ManagerLogo src={icon} />
+          <ManagerButton
+            onClick={() => {
+              sociallogin(key);
+            }}
+          >
+            Add
+          </ManagerButton>
+          <span className={style['manage-links-header']}>{header}</span>
+        </div>
+      );
 
-    if (!vc) return <div className={style["manage-links-item"]}>
-      <ManagerLogo src={icon} />
-      <ManagerButton onClick={() => { sociallogin(key) }}>Add</ManagerButton>
-      <span className={style["manage-links-header"]}>{header}</span>
-    </div>
-
-
-    return <div className={style["manage-links-item"]}>
-      <ManagerLogo src={icon} />
-      <ManagerButton onClick={() => { removeVc(key) }}>Remove</ManagerButton>
-      <span className={style["manage-links-header"]}>{header}</span>
-      <span className={style["manage-links-detail"]}>{parseValueFromService(key, vc.value)}</span>
-
-
-    </div>
-  }
+    return (
+      <div className={style['manage-links-item']}>
+        <ManagerLogo src={icon} />
+        <ManagerButton
+          onClick={() => {
+            removeVc(key);
+          }}
+        >
+          Remove
+        </ManagerButton>
+        <span className={style['manage-links-header']}>{header}</span>
+        <span className={style['manage-links-detail']}>
+          {parseValueFromService(key, vc.value)}
+        </span>
+      </div>
+    );
+  };
 
   const linkedInItem = () => {
-    return createIonItem("linkedin", linkedinIcon)
-  }
+    return createIonItem('linkedin', linkedinIcon);
+  };
 
   const facebookItem = () => {
-    return createIonItem("facebook", facebookIcon)
-  }
+    return createIonItem('facebook', facebookIcon);
+  };
 
   const googleItem = () => {
-    return createIonItem("google", googleIcon)
-  }
+    return createIonItem('google', googleIcon);
+  };
 
   const twitterItem = () => {
-    return createIonItem("twitter", twitterIcon)
-  }
+    return createIonItem('twitter', twitterIcon);
+  };
 
   const googleModalItem = () => {
-    return createModalIonItem("google", googleLogo)
-  }
+    return createModalIonItem('google', googleLogo);
+  };
 
   const twitterModalItem = () => {
-    return createModalIonItem("twitter", twitterLogo)
-  }
+    return createModalIonItem('twitter', twitterLogo);
+  };
 
   const facebookModalItem = () => {
-    return createModalIonItem("facebook", facebookLogo)
-  }
+    return createModalIonItem('facebook', facebookLogo);
+  };
 
   const linkedinModalItem = () => {
-    return createModalIonItem("linkedin", linkedinLogo)
-  }
+    return createModalIonItem('linkedin', linkedinLogo);
+  };
 
   // const anyCredential = (): boolean => {
   //   if (!diddocument || !diddocument["id"]) return false
   //   let vcs: string[] = diddocument["verifiableCredential"].map((vc: any) => {
   //     return `${vc["id"]}`.replace("#", "")
   //   })
-  //   if (!vcs || vcs.length === 0) return false; 
+  //   if (!vcs || vcs.length === 0) return false;
 
   //   return vcs.includes("twitter") ||
   //          vcs.includes("linkedin") ||
@@ -385,54 +399,54 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument, showManageButton, se
   //   return <div></div>
   // }
 
-
   return (
     <div>
       <IonCard className={style['social-profile']}>
         <IonCardHeader>
           <IonCardTitle className={style['card-title']}>
             Social Profiles
-            {showManageButton && <span className={style['card-link']} onClick={() => { setIsManagerOpen(true) }}>Manage Profiles</span>}
+            {showManageButton && (
+              <span
+                className={style['card-link']}
+                onClick={() => {
+                  setIsManagerOpen(true);
+                }}
+              >
+                Manage Profiles
+              </span>
+            )}
           </IonCardTitle>
         </IonCardHeader>
         <IonCardContent>
+          {showManageButton && (
+            <IonGrid>
+              <IonRow>
+                {containsVerifiedCredential('linkedin') && (
+                  <IonCol size="6">{linkedInItem()}</IonCol>
+                )}
+                {containsVerifiedCredential('twitter') && (
+                  <IonCol size="6">{twitterItem()}</IonCol>
+                )}
+                {containsVerifiedCredential('facebook') && (
+                  <IonCol size="6">{facebookItem()}</IonCol>
+                )}
+                {containsVerifiedCredential('google') && (
+                  <IonCol size="6">{googleItem()}</IonCol>
+                )}
+              </IonRow>
+            </IonGrid>
+          )}
 
-          {showManageButton &&  <IonGrid>
-            <IonRow>
-              {containsVerifiedCredential("linkedin") &&
-                <IonCol size="6">
-                  {linkedInItem()}
-                </IonCol>
-              }
-              {containsVerifiedCredential("twitter") &&
-                <IonCol size="6">
-                  {twitterItem()}
-                </IonCol>
-              }
-              {containsVerifiedCredential("facebook") &&
-                <IonCol size="6">
-                  {facebookItem()}
-                </IonCol>
-              }
-              {containsVerifiedCredential("google") &&
-                <IonCol size="6">
-                  {googleItem()}
-                </IonCol>
-              }
-            </IonRow>
-          </IonGrid>}
-
-          {!showManageButton && <IonList>
-            {linkedInItem()}
-            {twitterItem()}
-            {facebookItem()}
-            {googleItem()}
-            </IonList>}
-
-          
+          {!showManageButton && (
+            <IonList>
+              {linkedInItem()}
+              {twitterItem()}
+              {facebookItem()}
+              {googleItem()}
+            </IonList>
+          )}
         </IonCardContent>
       </IonCard>
-
 
       <ManagerModal
         isOpen={isManagerOpen}
@@ -444,30 +458,26 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument, showManageButton, se
             <ManagerModalTitle>Manage Links</ManagerModalTitle>
           </IonRow>
           <IonRow no-padding>
-            <IonCol class="ion-no-padding">
-              {linkedinModalItem()}
-            </IonCol>
+            <IonCol class="ion-no-padding">{linkedinModalItem()}</IonCol>
           </IonRow>
           <IonRow no-padding>
-            <IonCol class="ion-no-padding">
-              {twitterModalItem()}
-            </IonCol>
+            <IonCol class="ion-no-padding">{twitterModalItem()}</IonCol>
           </IonRow>
           <IonRow no-padding>
-            <IonCol class="ion-no-padding">
-              {facebookModalItem()}
-            </IonCol>
+            <IonCol class="ion-no-padding">{facebookModalItem()}</IonCol>
           </IonRow>
           <IonRow no-padding>
-            <IonCol class="ion-no-padding">
-              {googleModalItem()}
-            </IonCol>
+            <IonCol class="ion-no-padding">{googleModalItem()}</IonCol>
           </IonRow>
         </MyGrid>
         <ManagerModalFooter className="ion-no-border">
           <IonRow className="ion-justify-content-around">
             <IonCol size="auto">
-              <CloseButton onClick={() => { setIsManagerOpen(false) }}>
+              <CloseButton
+                onClick={() => {
+                  setIsManagerOpen(false);
+                }}
+              >
                 Close
               </CloseButton>
             </IonCol>
@@ -475,10 +485,6 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument, showManageButton, se
         </ManagerModalFooter>
       </ManagerModal>
     </div>
-
-
-
-
   );
 };
 
