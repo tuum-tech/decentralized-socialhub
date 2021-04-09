@@ -45,7 +45,7 @@ const DashboardProfileHeader: React.FC<IProps> = ({
     const timer = setTimeout(async () => {
       await refreshStatus();
       setTimer();
-    }, 1000);
+    }, 5000);
     return () => clearTimeout(timer);
   };
 
