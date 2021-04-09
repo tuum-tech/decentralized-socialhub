@@ -13,11 +13,10 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 import styleCards from 'src/components/cards/WidgetCards.module.scss';
-import { DashboardSignInButton } from 'src/components/buttons';
 import style from './style.module.scss';
 
 interface FollowingsWidgetProps {
-  contacts: IFollowingResponse;
+  dids: string[];
   resolveUserFunc: any;
   getLinkFunc: any;
   isSigned: boolean;
@@ -65,7 +64,7 @@ export const ViewAll = styled(IonRouterLink)`
 `;
 
 const FollowingCard: React.FC<FollowingsWidgetProps> = ({
-  contacts,
+  dids,
   resolveUserFunc,
   getLinkFunc,
   isSigned
@@ -77,7 +76,7 @@ const FollowingCard: React.FC<FollowingsWidgetProps> = ({
           <IonRow className="ion-justify-content-between">
             <IonCol size="6">
               <IonCardTitle id="education">
-                Following ({contacts.get_following.items.length})
+                Following ({dids.length})
               </IonCardTitle>
             </IonCol>
             <IonCol size="auto">
@@ -92,23 +91,23 @@ const FollowingCard: React.FC<FollowingsWidgetProps> = ({
       </IonCardHeader>
       <IonCardContent>
         <IonGrid className={style['following-widget']}>
-          {contacts.get_following.items.map((item: IFollowingItem, index) => (
+          {dids.map((did: string, index) => (
             <IonRow key={index}>
               <IonCol size="*">
                 <img
                   className={style['thumbnail']}
-                  src={resolveUserFunc(item.did).image}
+                  src={resolveUserFunc(did).image}
                   alt="thumbnail"
                 />
               </IonCol>
               <IonCol size="7">
-                <Link to={getLinkFunc(item.did)}>
+                <Link to={getLinkFunc(did)}>
                   <IonGrid>
                     <IonRow>
-                      <Name>{resolveUserFunc(item.did).name}</Name>
+                      <Name>{resolveUserFunc(did).name}</Name>
                     </IonRow>
                     <IonRow>
-                      <TruncatedSpan>{item.did}</TruncatedSpan>
+                      <TruncatedSpan>{did}</TruncatedSpan>
                     </IonRow>
                   </IonGrid>
                 </Link>

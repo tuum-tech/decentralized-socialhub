@@ -12,16 +12,11 @@ interface Props {
 }
 
 const FowllowCards: React.FC<Props> = ({ did, signed }: Props) => {
-  const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
-    get_following: { items: [] }
-  });
+  const [followingDids, setFollowingDids] = useState<string[]>([]);
+  const [followerDids, setFollowerDids] = useState<string[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<IUserResponse>({
     get_users: { items: [] }
   });
-  const [listFollowers, setListFollowers] = useState<IFollowerResponse>({
-    get_followers: { items: [] }
-  });
-
   const resolveUserInfo = (did: string): any => {
     const userIndex = filteredUsers.get_users.items.findIndex(
       item => item.did === did
@@ -32,72 +27,75 @@ const FowllowCards: React.FC<Props> = ({ did, signed }: Props) => {
       image: user ? user.avatar : ''
     };
   };
-
-  const loadData = async (did: string) => {
-    let fUserDids: string[] = [];
-    let followings = (await ProfileService.getFollowings(
+  const loadFollowingDdata = async (did: string) => {
+    let followingDidArray: string[] = [];
+    const followingRes = (await ProfileService.getFollowings(
       did
     )) as IFollowingResponse;
-    if (followings) {
-      setListFollowing(followings);
-      fUserDids = followings.get_following.items.map(item => item.did);
+    if (
+      followingRes &&
+      followingRes.get_following &&
+      followingRes.get_following.items.length > 0
+    ) {
+      followingDidArray = followingRes.get_following.items.map(
+        item => item.did
+      );
     }
-    let followers = (await ProfileService.getFollowers([
+    setFollowingDids(followingDidArray);
+    return followingDidArray;
+  };
+  const loadFollowerData = async (did: string) => {
+    let follwerDidArray: string[] = [];
+    let followersRes = (await ProfileService.getFollowers([
       did
     ])) as IFollowerResponse;
-    if (followers) {
-      setListFollowers(followers);
-      for (let i = 0; i < followers.get_followers.items.length; i++) {
-        if (!fUserDids.includes(followers.get_followers.items[i].did)) {
-          fUserDids.push(followers.get_followers.items[i].did);
-        }
-      }
+    if (
+      followersRes &&
+      followersRes.get_followers &&
+      followersRes.get_followers.items.length > 0
+    ) {
+      follwerDidArray = followersRes.get_followers.items[0].followers;
     }
-
-    let searchServiceLocal: SearchService;
-    try {
-      searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-      let listUsers: any = await searchServiceLocal.getUsersByDIDs(
-        fUserDids,
-        200,
-        0
-      );
-      setFilteredUsers(listUsers.response);
-    } catch (e) {
-      setFilteredUsers({ get_users: { items: [] } });
-    }
+    setFollowerDids(follwerDidArray);
+    return follwerDidArray;
   };
-
   useEffect(() => {
     (async () => {
-      if (did !== '') {
-        await loadData(did);
+      let fUserDids: string[] = await loadFollowingDdata(did);
+      fUserDids = fUserDids.concat(await loadFollowerData(did));
+
+      let searchServiceLocal: SearchService;
+      try {
+        searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
+        let listUsers: any = await searchServiceLocal.getUsersByDIDs(
+          fUserDids,
+          200,
+          0
+        );
+        setFilteredUsers(listUsers.response);
+      } catch (e) {
+        setFilteredUsers({ get_users: { items: [] } });
       }
     })();
   }, [did]);
-
   return (
     <>
-      {listFollowing &&
-        listFollowing.get_following.items &&
-        listFollowing.get_following.items.length > 0 && (
-          <FollowingCard
-            contacts={listFollowing}
-            resolveUserFunc={resolveUserInfo}
-            getLinkFunc={(did: string) => '/did/' + did}
-            isSigned={signed}
-          />
-        )}
-      {listFollowers &&
-        listFollowers.get_followers.items &&
-        listFollowers.get_followers.items.length > 0 && (
-          <FollowerCard
-            contacts={listFollowers}
-            resolveUserFunc={resolveUserInfo}
-            getLinkFunc={(did: string) => '/did/' + did}
-            isSigned={signed}
-          />
-        )}
+      {followingDids.length > 0 && (
+        <FollowingCard
+          dids={followingDids}
+          resolveUserFunc={resolveUserInfo}
+          getLinkFunc={(did: string) => '/did/' + did}
+          isSigned={signed}
+        />
+      )}
+      {followerDids.length > 0 && (
+        <FollowerCard
+          dids={followerDids}
+          resolveUserFunc={resolveUserInfo}
+          getLinkFunc={(did: string) => '/did/' + did}
+          isSigned={signed}
+        />
+      )}
     </>
   );
 };

@@ -159,6 +159,7 @@ export class ProfileService {
     dids: string[]
   ): Promise<IFollowerResponse | undefined> {
     const appHiveClient = await HiveService.getAppHiveClient();
+
     let followersResponse: IRunScriptResponse<IFollowerResponse> = await appHiveClient.Scripting.RunScript(
       {
         name: 'get_followers',
@@ -171,7 +172,6 @@ export class ProfileService {
         }
       }
     );
-
     if (followersResponse.isSuccess) {
       return followersResponse.response;
     }
