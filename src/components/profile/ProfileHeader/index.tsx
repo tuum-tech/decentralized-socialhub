@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonGrid, IonRow, IonCol } from '@ionic/react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+
+import { ProfileService } from 'src/services/profile.service';
+import { UserService } from 'src/services/user.service';
 
 import SkeletonAvatar from 'src/components/avatars/SkeletonAvatar';
 import style from './style.module.scss';
 import DidSnippet from 'src/components/DidSnippet';
 import defaultAdamAvatar from 'src/assets/icon/defaultAdamAvatar.png';
 import { ProfileName } from 'src/components/texts';
-import { DashboardSignInButton } from 'src/components/buttons';
+import { Button } from 'src/components/buttons';
+
+import followIcon from 'src/assets/icon/follow.svg';
+import linkIcon from 'src/assets/icon/link.svg';
 
 const AvatarBox = styled.div`
   margin-left: 50px;
@@ -48,6 +55,34 @@ const ProfileHeader: React.FC<IProps> = ({
   mode,
   error
 }: IProps) => {
+  const [isFollowing, setIsFollowing] = useState(false);
+  const followDid = async () => {
+    await ProfileService.addFollowing(user.did);
+    setIsFollowing(true);
+  };
+
+  const unfollowDid = async () => {
+    await ProfileService.unfollow(user.did);
+    setIsFollowing(false);
+  };
+
+  const getPublicProfileLink = (): string => {
+    return `/did/${user.did}`;
+  };
+  useEffect(() => {
+    (async () => {
+      const userSession = UserService.GetUserSession();
+      if (userSession && userSession.did) {
+        let followings = (await ProfileService.getFollowings(userSession.did))
+          .get_following;
+        if (followings && followings.items) {
+          if (followings.items.findIndex(item => item.did === user.did) != -1) {
+            setIsFollowing(true);
+          }
+        }
+      }
+    })();
+  }, [user]);
   return (
     <IonGrid className={style['profileheadersticky']}>
       <IonRow className={style['header']}>
@@ -62,7 +97,7 @@ const ProfileHeader: React.FC<IProps> = ({
           </AvatarBox>
         </IonCol>
 
-        <IonCol size="8">
+        <IonCol size="7">
           <IonGrid>
             <IonRow>
               <ProfileName>{user ? user.name : ''}</ProfileName>
@@ -74,10 +109,41 @@ const ProfileHeader: React.FC<IProps> = ({
             </IonRow>
           </IonGrid>
         </IonCol>
-        <IonCol size="2">
-          <DashboardSignInButton href="../sign-did">
-            Follow
-          </DashboardSignInButton>
+        <IonCol size="3" className={style['d-flex']}>
+          <Link
+            to={getPublicProfileLink}
+            target="_blank"
+            onClick={event => {
+              event.preventDefault();
+              window.open(getPublicProfileLink());
+            }}
+          >
+            <Button
+              type="secondary"
+              text="View Profile"
+              icon={linkIcon}
+              onClick={async () => {}}
+            />
+          </Link>
+          {isFollowing ? (
+            <Button
+              type="primary"
+              text="Unfollow"
+              icon={followIcon}
+              onClick={async () => {
+                unfollowDid();
+              }}
+            />
+          ) : (
+            <Button
+              type="primary"
+              text="Follow"
+              icon={followIcon}
+              onClick={async () => {
+                followDid();
+              }}
+            />
+          )}
         </IonCol>
       </IonRow>
     </IonGrid>

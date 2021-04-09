@@ -20,6 +20,7 @@ import Logo from 'src/components/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 
 import { UserService } from 'src/services/user.service';
+import { AssistService, RequestStatus } from 'src/services/assist.service';
 import LoadingIndicator from 'src/components/LoadingIndicator';
 import {
   ProfileService,
@@ -52,22 +53,63 @@ const ProfilePage = () => {
   const [full_profile, setfull_profile] = useState(defaultFullProfile);
   const [onboardingCompleted, setOnboardingStatus] = useState(true);
   const [didDocument, setDidDocument] = useState({});
+  const [publishStatus, setPublishStatus] = useState(RequestStatus.Completed);
   const history = useHistory();
-  
-  const setTimer = () => {
+
+  const setTimerForDid = () => {
     const timer = setTimeout(async () => {
       await refreshDidDocument();
-      setTimer();
+      setTimerForDid();
     }, 1000);
     return () => clearTimeout(timer);
   };
+
+  const setTimerForStatus = () => {
+    const timer = setTimeout(async () => {
+      await refreshStatus();
+      setTimerForStatus();
+    }, 1000);
+    return () => clearTimeout(timer);
+  };
+
   const refreshDidDocument = async () => {
     let userSession = UserService.GetUserSession();
     if (!userSession) {
       return;
     }
-    let documentState = await DidDocumentService.getUserDocument(userSession)
-    setDidDocument(documentState.diddocument)
+    let documentState = await DidDocumentService.getUserDocument(userSession);
+    setDidDocument(documentState.diddocument);
+  };
+
+  const refreshStatus = async () => {
+    let userSession = UserService.GetUserSession();
+    if (!userSession || !userSession.did) return;
+
+    let publishWaiting = AssistService.getPublishStatusTask(userSession.did);
+
+    if (!publishWaiting) return;
+
+    let actual = await AssistService.refreshRequestStatus(
+      publishWaiting.confirmationId,
+      userSession.did
+    );
+
+    setPublishStatus(actual.requestStatus);
+
+    if (actual.requestStatus === RequestStatus.Completed) {
+      AssistService.removePublishTask(userSession.did);
+      await updateUserToComplete();
+      return;
+    }
+  };
+
+  const updateUserToComplete = async () => {
+    let userSession = UserService.GetUserSession();
+    if (userSession) {
+      userSession.isDIDPublished = true;
+      UserService.updateSession(userSession);
+      await DidDocumentService.reloadUserDocument();
+    }
   };
 
   const retriveProfile = async () => {
@@ -96,8 +138,6 @@ const ProfilePage = () => {
       await refreshDidDocument();
       setUserInfo(userSession);
       setOnboardingStatus(userSession.onBoardingCompleted);
-      
-     
 
       if (
         userSession.onBoardingCompleted &&
@@ -111,7 +151,8 @@ const ProfilePage = () => {
         }, ExporeTime);
       }
     })();
-    setTimer();
+    setTimerForStatus();
+    setTimerForDid();
   }, []);
 
   useEffect(() => {
@@ -148,6 +189,8 @@ const ProfilePage = () => {
             }, ExporeTime);
           }
         }}
+        publishStatus={publishStatus}
+        publish={() => {}}
       />
     );
   }
@@ -168,7 +211,11 @@ const ProfilePage = () => {
               <ProfileComponent profile={profile} />
             </IonCol> */}
             <IonCol size="10" className={style['right-panel']}>
-              <DashboardHeader profile={full_profile} sessionItem={userInfo} />
+              <DashboardHeader
+                profile={full_profile}
+                sessionItem={userInfo}
+                publishStatus={publishStatus}
+              />
               <DashboardContent
                 onTutorialStart={() => {
                   setShowTutorial(true);

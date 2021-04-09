@@ -1,6 +1,8 @@
 import { IonButton } from '@ionic/react';
 import React, { useState } from 'react';
 
+import { AccountType, UserService } from 'src/services/user.service';
+
 import SecurityWordsView from '../SecurityWords/SecurityWordsView';
 import SecurityWordsValidate from '../SecurityWords/SecurityWordsValidate';
 import LeftArrow from 'src/components/arrows/LeftArrow';
@@ -91,7 +93,15 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
   };
 
   const displayStep = () => {
-    if (isVerifying) return verifyWords();
+    if (isVerifying) {
+      let userSession = UserService.GetUserSession();
+      if (userSession && userSession.accountType == AccountType.Email) {
+        return verifyWords();
+      } else {
+        onContinue();
+        return '';
+      }
+    }
     return viewWords();
   };
 

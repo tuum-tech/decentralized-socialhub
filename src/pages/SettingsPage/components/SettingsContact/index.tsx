@@ -9,11 +9,11 @@ import {
   IonContent,
   IonText
 } from '@ionic/react';
-import { PageTitle, PageCategory, SpaceMd } from 'src/components/note';
+import { PageTitle, PageCategory, SpaceMd, SpaceLs } from 'src/components/note';
 import style from './style.module.scss';
 import TextInput from 'src/components/inputs/TextInput';
 import TextareaInput from 'src/components/inputs/TextareaInput';
-import { PrimaryButton } from 'src/components/buttons';
+import { Button } from 'src/components/buttons';
 
 const SettingsContact: React.FC = () => {
   return (
@@ -47,7 +47,8 @@ const SettingsContact: React.FC = () => {
                   onChange={n => n}
                   placeholder="Write your message..."
                 ></TextareaInput>
-                <PrimaryButton text="Send Message"></PrimaryButton>
+                <SpaceLs></SpaceLs>
+                <Button type="primary" text="Send Message"></Button>
                 <SpaceMd></SpaceMd>
               </IonCardContent>
             </IonCard>

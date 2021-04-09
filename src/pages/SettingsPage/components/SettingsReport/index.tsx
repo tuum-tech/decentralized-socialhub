@@ -9,13 +9,13 @@ import {
   IonContent,
   IonText
 } from '@ionic/react';
-import { PageTitle, PageCategory } from 'src/components/note';
+import { PageTitle, PageCategory, SpaceLs } from 'src/components/note';
 import style from './style.module.scss';
 import TextInput from 'src/components/inputs/TextInput';
 import SelectInput from 'src/components/inputs/SelectInput';
 import TextareaInput from 'src/components/inputs/TextareaInput';
 import FileInput from 'src/components/inputs/FileInput';
-import { PrimaryButton } from 'src/components/buttons';
+import { Button } from 'src/components/buttons';
 
 const SettingsReport: React.FC = () => {
   return (
@@ -59,7 +59,8 @@ const SettingsReport: React.FC = () => {
                   placeholder="Write your message here..."
                 ></TextareaInput>
                 <FileInput label="Attachment" onChange={n => n}></FileInput>
-                <PrimaryButton text="Send Message"></PrimaryButton>
+                <SpaceLs></SpaceLs>
+                <Button type="primary" text="Send Message"></Button>
               </IonCardContent>
             </IonCard>
           </IonCol>

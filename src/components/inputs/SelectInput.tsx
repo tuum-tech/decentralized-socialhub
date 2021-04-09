@@ -48,7 +48,9 @@ const SelectInput: React.FC<Props> = ({
       >
         {options.map(function(item, index) {
           return (
-            <IonSelectOption value={item.value}>{item.text}</IonSelectOption>
+            <IonSelectOption key={index} value={item.value}>
+              {item.text}
+            </IonSelectOption>
           );
         })}
       </IonSelect>

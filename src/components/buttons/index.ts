@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import ArrowButton from './ArrowButton';
 import ButtonWithLogo from './ButtonWithLogo';
 import SocialButton from './SocialButton';
-import PrimaryButton from './PrimaryButton';
+import Button from './Button';
 
 interface ButtonLinkProps {
   width?: number;
@@ -117,5 +117,5 @@ export {
   SignInButton,
   DashboardSignInButton,
   FollowButton,
-  PrimaryButton
+  Button
 };

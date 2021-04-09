@@ -3,59 +3,13 @@
   position: sticky;
   position: -webkit-sticky;
   top: 0;
-  z-index:99;
+  z-index: 99;
   padding: 20px;
-
- .clip-avatar-svg {
-  clip-path: url(#avatarClip);
-}
-
-.profile-img {
-  max-width: 5.5em;
-  border: 3px solid var(--theme-primary-blue);
-  border-radius: 1.5em 2em 1.5em 2em;
-  padding: 3px;
-}
-
-.view-profile-btn {
-  display: flex;
-  justify-content: flex-end;
-}
-
-}
-
-
-
-
-/** All your component stuyles */
-.profileheader {
- //min-height: 100px;
-  background-color: white;
-
-  h2 {
-    margin-top: 0;
-  }
 
   .clip-avatar-svg {
     clip-path: url(#avatarClip);
   }
 
-
-  ion-row {
-    align-items: center;
-    //padding-top: 8px;
-  }
-
- 
-  .details {
-    text-align: left;
-    //   font-family: 'Open Sans', sans-serif;
-    font-size: 14x;
-    opacity: 1;
-    color: var(--theme-primary-blue);
-  }
-
-  
   .profile-img {
     max-width: 5.5em;
     border: 3px solid var(--theme-primary-blue);
@@ -68,5 +22,48 @@
     justify-content: flex-end;
   }
 
-  
+  .d-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/** All your component stuyles */
+.profileheader {
+  //min-height: 100px;
+  background-color: white;
+
+  h2 {
+    margin-top: 0;
+  }
+
+  .clip-avatar-svg {
+    clip-path: url(#avatarClip);
+  }
+
+  ion-row {
+    align-items: center;
+    //padding-top: 8px;
+  }
+
+  .details {
+    text-align: left;
+    //   font-family: 'Open Sans', sans-serif;
+    font-size: 14x;
+    opacity: 1;
+    color: var(--theme-primary-blue);
+  }
+
+  .profile-img {
+    max-width: 5.5em;
+    border: 3px solid var(--theme-primary-blue);
+    border-radius: 1.5em 2em 1.5em 2em;
+    padding: 3px;
+  }
+
+  .view-profile-btn {
+    display: flex;
+    justify-content: flex-end;
+  }
 }

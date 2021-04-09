@@ -125,7 +125,8 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         own Hive Node, refer to{' '}
         <a
           href="https://github.com/elastos/Elastos.NET.Hive.Node"
-          target="_blank" rel="noreferrer"
+          target="_blank"
+          rel="noreferrer"
         >
           Elastos Hive Node
         </a>
