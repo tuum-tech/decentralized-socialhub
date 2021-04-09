@@ -253,19 +253,18 @@ export class UserService {
       passhash,
       email,
       name,
-      loginCred: {
-      },
       userToken,
-      code: credential,
       isDIDPublished: isDIDPublished ? isDIDPublished : false,
       onBoardingCompleted: false,
+      loginCred: {email: email},
       tutorialStep: 1,
-      avatar: '',
-      status: 'Created',
       hiveHost:
         hiveHostStr === ''
           ? `${process.env.REACT_APP_TUUM_TECH_HIVE}`
           : hiveHostStr,
+      avatar: '',
+      code: credential,
+      status: 'Created',
       mnemonics
     };
 
@@ -274,18 +273,19 @@ export class UserService {
       if (newSessionItem && newSessionItem.did && newSessionItem.did !== '') {
         sessionItem = newSessionItem;
       }
-      sessionItem.loginCred.email = email
       await TuumTechScriptService.updateUserDidInfo(sessionItem);
-      
     } else {
       sessionItem.status = 'CONFIRMED';
-      sessionItem.code = userToken;
-      if (accountType == AccountType.Twitter) sessionItem.loginCred.twitter = credential
-      if (accountType == AccountType.Linkedin) sessionItem.loginCred.linkedin = credential
-      if (accountType == AccountType.Google) sessionItem.loginCred.google = credential
-      if (accountType == AccountType.Facebook) sessionItem.loginCred.facebook = credential
+      if (accountType == AccountType.Twitter) sessionItem.loginCred!.twitter = credential
+      if (accountType == AccountType.Linkedin) sessionItem.loginCred!.linkedin = credential
+      if (accountType == AccountType.Google) sessionItem.loginCred!.google = credential
+      if (accountType == AccountType.Facebook) sessionItem.loginCred!.facebook = credential
+
       await TuumTechScriptService.addUserToTuumTech(sessionItem);
+      debugger
     }
+
+
 
     this.lockUser(this.key(did), sessionItem);
     // SessionService.saveSessionItem(sessionItem);

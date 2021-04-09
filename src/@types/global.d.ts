@@ -74,7 +74,7 @@ interface ISessionItem {
   tutorialStep: number;
   onBoardingCompleted: boolean;
   email?: string;
-  loginCred: LoginCred;
+  loginCred?: LoginCred;
   avatar?: string;
   code?: string;
   status?: string;

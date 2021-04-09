@@ -67,7 +67,7 @@ const TwitterCallback: React.FC<RouteComponentProps> = props => {
 
           DidDocumentService.updateUserDocument(state.diddocument)
 
-          userSession.loginCred.twitter = items[1].toString()
+          userSession.loginCred!.twitter! = items[1].toString()
           await UserService.updateSession(userSession)
 
           window.close();

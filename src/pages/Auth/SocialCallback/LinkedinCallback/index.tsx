@@ -62,7 +62,7 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
 
           DidDocumentService.updateUserDocument(state.diddocument)
 
-          userSession.loginCred.linkedin = firstName + '' + lastName
+          userSession.loginCred!.linkedin! = firstName + '' + lastName
           
           UserService.updateSession(userSession)
           window.close();

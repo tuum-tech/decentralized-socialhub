@@ -219,10 +219,10 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument, showManageButton, se
 
   const getVerifiedCredential = (id: string): VerifiedCredential | undefined => {
     let value = ""
-    if (id == "twitter") value = sessionItem.loginCred.twitter!
-    if (id == "linkedin") value = sessionItem.loginCred.linkedin!
-    if (id == "facebook") value = sessionItem.loginCred.facebook!
-    if (id == "google") value = sessionItem.loginCred.google!
+    if (id == "twitter") value = sessionItem.loginCred!.twitter!
+    if (id == "linkedin") value = sessionItem.loginCred!.linkedin!
+    if (id == "facebook") value = sessionItem.loginCred!.facebook!
+    if (id == "google") value = sessionItem.loginCred!.google!
 
     if (value == undefined) return
     
@@ -272,10 +272,10 @@ const SocialProfilesCard: React.FC<Props> = ({ diddocument, showManageButton, se
       DidDocumentService.updateUserDocument(documentState.diddocument)
     }
 
-    if (key == "twitter")  sessionItem.loginCred.twitter = undefined
-    if (key == "linkedin") sessionItem.loginCred.linkedin = undefined
-    if (key == "facebook") sessionItem.loginCred.facebook = undefined
-    if (key == "google") sessionItem.loginCred.google = undefined
+    if (key == "twitter")  sessionItem.loginCred!.twitter = undefined
+    if (key == "linkedin") sessionItem.loginCred!.linkedin = undefined
+    if (key == "facebook") sessionItem.loginCred!.facebook = undefined
+    if (key == "google") sessionItem.loginCred!.google = undefined
 
     await UserService.updateSession(sessionItem)
   }

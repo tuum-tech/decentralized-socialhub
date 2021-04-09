@@ -57,7 +57,7 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
 
           DidDocumentService.updateUserDocument(state.diddocument)
 
-          userSession.loginCred.google = googleId.name
+          userSession.loginCred!.google! = googleId.name
           UserService.updateSession(userSession)
 
           window.close();

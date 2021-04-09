@@ -52,7 +52,7 @@ const FacebookCallback: React.FC<RouteComponentProps> = props => {
           await DidService.addVerfiableCredentialToDIDDocument(state.diddocument, vc)
           DidDocumentService.updateUserDocument(state.diddocument)
 
-          userSession.loginCred.facebook = facebookId.name
+          userSession.loginCred!.facebook! = facebookId.name
           UserService.updateSession(userSession)
 
           window.close();
