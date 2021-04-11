@@ -80,7 +80,6 @@ let run = async () => {
           did: '$params.did',
           accountType: '$params.accountType',
           passhash: '$params.passhash',
-          email: '$params.email',
           name: '$params.name',
           userToken: '$params.userToken',
           isDIDPublished: '$params.isDIDPublished',
@@ -110,7 +109,7 @@ let run = async () => {
         update: {
           $set: {
             name: '$params.name',
-            email: '$params.email'
+            'loginCred.email': '$params.email'
           }
         },
         options: {
@@ -163,7 +162,7 @@ let run = async () => {
       body: {
         collection: 'users',
         filter: {
-          email: '$params.email'
+          'loginCred.email': '$params.email'
         }
       }
     }
@@ -220,7 +219,7 @@ let run = async () => {
         collection: 'users',
         filter: {
           code: '$params.code',
-          email: '$params.email',
+          did: '$params.did',
           status: 'CONFIRMED'
         },
         update: {

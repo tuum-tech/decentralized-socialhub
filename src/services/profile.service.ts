@@ -309,7 +309,6 @@ export const defaultUserInfo: ISessionItem = {
   userToken: '',
   accountType: AccountType.DID,
   did: '',
-  email: '',
   name: '',
   isDIDPublished: false,
   loginCred:{},

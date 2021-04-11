@@ -73,7 +73,6 @@ interface ISessionItem {
   passhash: string;
   tutorialStep: number;
   onBoardingCompleted: boolean;
-  email?: string;
   loginCred?: LoginCred;
   avatar?: string;
   code?: string;

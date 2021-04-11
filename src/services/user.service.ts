@@ -8,7 +8,7 @@ import {
   TuumTechScriptService,
   UserVaultScriptService
 } from './script.service';
-import { CredentialType, DidcredsService } from './didcreds.service';
+import { Guid } from "guid-typescript";
 
 const CryptoJS = require('crypto-js');
 
@@ -251,7 +251,6 @@ export class UserService {
       did,
       accountType,
       passhash,
-      email,
       name,
       userToken,
       isDIDPublished: isDIDPublished ? isDIDPublished : false,
@@ -263,7 +262,7 @@ export class UserService {
           ? `${process.env.REACT_APP_TUUM_TECH_HIVE}`
           : hiveHostStr,
       avatar: '',
-      code: credential,
+      code: Guid.create().toString(),
       status: 'Created',
       mnemonics
     };
@@ -282,7 +281,6 @@ export class UserService {
       if (accountType == AccountType.Facebook) sessionItem.loginCred!.facebook = credential
 
       await TuumTechScriptService.addUserToTuumTech(sessionItem);
-      debugger
     }
 
 
