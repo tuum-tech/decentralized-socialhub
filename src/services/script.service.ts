@@ -5,6 +5,7 @@ import { UserService, AccountType } from './user.service';
 import { HiveService } from './hive.service';
 import { DidService } from './did.service';
 import { alertError } from 'src/utils/notify';
+import { StyleHTMLAttributes } from 'react';
 
 export class TuumTechScriptService {
   private static async runTuumTechScript(script: any) {
@@ -23,11 +24,12 @@ export class TuumTechScriptService {
     );
   }
 
-  public static async getUsersWithRegisteredEmail(email: string) {
+  private static async getUsersWithRegisteredCredential(credential: string, credentialType: string) {
+
     const get_users_scripts = {
-      name: 'get_users_by_email',
+      name: 'get_users_by_' + credentialType,
       params: {
-        email: email
+        filter: credential
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
@@ -42,17 +44,21 @@ export class TuumTechScriptService {
     let prevUsers = [];
     const { meta, data } = get_users_script_response;
     if (meta && meta.code === 200 && meta.message === 'OK') {
-      const { get_users_by_email } = data;
+      const { users_found } = data;
       if (
-        get_users_by_email &&
-        get_users_by_email.items &&
-        get_users_by_email.items.length > 0
+        users_found &&
+        users_found.items &&
+        users_found.items.length > 0
       ) {
-        prevUsers = get_users_by_email.items.map((userItem: any) => {
+        prevUsers = users_found.items.map((userItem: any) => {
           const newUserItem = {
             status: userItem.status || '',
             did: userItem.did || '',
-            email: userItem.email || '',
+            email: TuumTechScriptService.getValueFromLoginCred(userItem, 'email'),
+            facebook: TuumTechScriptService.getValueFromLoginCred(userItem, 'facebook'),
+            google: TuumTechScriptService.getValueFromLoginCred(userItem, 'google'),
+            twitter: TuumTechScriptService.getValueFromLoginCred(userItem, 'twitter'),
+            linkedin: TuumTechScriptService.getValueFromLoginCred(userItem, 'linkedin'),
             _id: userItem._id.$oid || ''
           };
           return newUserItem;
@@ -63,6 +69,31 @@ export class TuumTechScriptService {
       return [];
     }
     return prevUsers;
+  }
+
+  private static getValueFromLoginCred(userItem: any, credType: string){
+    if (!userItem || !userItem.loginCred || !userItem.loginCred[credType]) return ''
+    return userItem.loginCred[credType]
+  }
+
+  public static async getUsersWithRegisteredEmail(email: string) {
+    return TuumTechScriptService.getUsersWithRegisteredCredential(email, "email")
+  }
+
+  public static async getUsersWithRegisteredFacebook(facebook: string) {
+    return TuumTechScriptService.getUsersWithRegisteredCredential(facebook, "facebook")
+  }
+
+  public static async getUsersWithRegisteredGoogle(google: string) {
+    return TuumTechScriptService.getUsersWithRegisteredCredential(google, "google")
+  }
+
+  public static async getUsersWithRegisteredTwitter(twitter: string) {
+    return TuumTechScriptService.getUsersWithRegisteredCredential(twitter, "twitter")
+  }
+
+  public static async getUsersWithRegisteredLinkedin(linkedin: string) {
+    return TuumTechScriptService.getUsersWithRegisteredCredential(linkedin, "linkedin")
   }
 
   public static async searchUserWithDID(did: string) {

@@ -2,7 +2,7 @@
  * Page
  */
 import React, { useEffect, useState } from 'react';
-import { Redirect, RouteComponentProps } from 'react-router';
+import { Redirect, RouteComponentProps, useHistory } from 'react-router';
 
 import PageLoading from 'src/components/layouts/PageLoading';
 import { DidService } from 'src/services/did.service';
@@ -11,7 +11,7 @@ import { DidDocumentService } from 'src/services/diddocument.service';
 import { TuumTechScriptService } from 'src/services/script.service';
 import { AccountType, UserService } from 'src/services/user.service';
 
-import { requestTwitterToken } from './fetchapi';
+import { requestTwitterToken, getUsersWithRegisteredTwitter } from './fetchapi';
 import { TokenResponse } from './types';
 
 const TwitterCallback: React.FC<RouteComponentProps> = props => {
@@ -20,7 +20,7 @@ const TwitterCallback: React.FC<RouteComponentProps> = props => {
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
-
+   const history = useHistory();
   const [credentials, setCredentials] = useState({
     name: '',
     email: '',
@@ -72,12 +72,30 @@ const TwitterCallback: React.FC<RouteComponentProps> = props => {
 
           window.close();
         } else {
-          setCredentials({
-            name,
-            request_token: `${oauth_token}[-]${oauth_verifier}`,
-            email: uniqueEmail.toLocaleLowerCase(),
-            credential: items[1].toString()
-          });
+          let prevUsers = await getUsersWithRegisteredTwitter(items[1].toString())
+          if (prevUsers.length > 0){
+            history.push({
+              pathname: '/associated-profile',
+              state: {
+                users: prevUsers,
+                name: items[0].toString(),
+                email: uniqueEmail,
+                request_token: '',
+                service: AccountType.Twitter,
+                credential: items[1].toString()
+              }
+            });
+          } else {
+            setCredentials({
+              name,
+              request_token: `${oauth_token}[-]${oauth_verifier}`,
+              email: uniqueEmail.toLocaleLowerCase(),
+              credential: items[1].toString()
+            });
+          }
+
+
+         
         }
 
 
