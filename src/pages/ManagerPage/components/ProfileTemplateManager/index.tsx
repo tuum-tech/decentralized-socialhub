@@ -70,7 +70,7 @@ const ProfileTemplateManager: React.FC<IProps> = ({ sessionItem }: IProps) => {
                   {sessionItem.onBoardingCompleted &&
                   sessionItem.tutorialStep === 4
                     ? 'ready'
-                    : 'being published'}
+                    : 'not yet ready'}
                 </ProfileStatus>
               </IonRow>
             </IonGrid>
