@@ -8,7 +8,7 @@ import {
   TuumTechScriptService,
   UserVaultScriptService
 } from './script.service';
-import { CredentialType, DidcredsService } from './didcreds.service';
+import { Guid } from "guid-typescript";
 
 const CryptoJS = require('crypto-js');
 
@@ -251,19 +251,19 @@ export class UserService {
       did,
       accountType,
       passhash,
-      email,
       name,
       userToken,
-      code: credential,
       isDIDPublished: isDIDPublished ? isDIDPublished : false,
       onBoardingCompleted: false,
+      loginCred: {email: email},
       tutorialStep: 1,
-      avatar: '',
-      status: 'Created',
       hiveHost:
         hiveHostStr === ''
           ? `${process.env.REACT_APP_TUUM_TECH_HIVE}`
           : hiveHostStr,
+      avatar: '',
+      code: Guid.create().toString(),
+      status: 'Created',
       mnemonics
     };
 
@@ -275,9 +275,15 @@ export class UserService {
       await TuumTechScriptService.updateUserDidInfo(sessionItem);
     } else {
       sessionItem.status = 'CONFIRMED';
-      sessionItem.code = userToken;
+      if (accountType == AccountType.Twitter) sessionItem.loginCred!.twitter = credential
+      if (accountType == AccountType.Linkedin) sessionItem.loginCred!.linkedin = credential
+      if (accountType == AccountType.Google) sessionItem.loginCred!.google = credential
+      if (accountType == AccountType.Facebook) sessionItem.loginCred!.facebook = credential
+
       await TuumTechScriptService.addUserToTuumTech(sessionItem);
     }
+
+
 
     this.lockUser(this.key(did), sessionItem);
     // SessionService.saveSessionItem(sessionItem);
@@ -295,7 +301,6 @@ export class UserService {
     const userData = await TuumTechScriptService.searchUserWithDID(
       sessionItem.did
     );
-
     if (
       userData &&
       userData.data &&

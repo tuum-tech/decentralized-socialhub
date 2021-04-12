@@ -38,13 +38,13 @@ const SettingsTerms: React.FC = () => {
   interface tempParam {
     behavior: string | null;
   }
-  const func = (temp: tempParam) => {};
+  const func = (temp: tempParam) => { };
 
   const scrollToSection = (index: number) => {
-    let targetRef = sectionRefs[index]
-      ? sectionRefs[index]
-      : { current: { scrollIntoView: func } };
-    return targetRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // let targetRef = sectionRefs[index]
+    //   ? sectionRefs[index]
+    //   : { current: { scrollIntoView: func } };
+    // return targetRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const sectionTitles = [

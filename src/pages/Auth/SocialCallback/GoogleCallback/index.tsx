@@ -2,17 +2,18 @@
  * Page
  */
 import React, { useEffect, useState } from 'react';
-import { Redirect, RouteComponentProps } from 'react-router';
+import { Redirect, RouteComponentProps, useHistory } from 'react-router';
 
 import PageLoading from 'src/components/layouts/PageLoading';
 import { AccountType, UserService } from 'src/services/user.service';
 
 import { TokenResponse } from './types';
-import { requestGoogleId, requestGoogleToken } from './fetchapi';
+import { requestGoogleId, requestGoogleToken, getUsersWithRegisteredGoogle } from './fetchapi';
 import { AssistService } from 'src/services/assist.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service';
+import { TuumTechScriptService } from 'src/services/script.service';
 
 const GoogleCallback: React.FC<RouteComponentProps> = props => {
   /**
@@ -20,7 +21,7 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
-
+   const history = useHistory();
   const [credentials, setCredentials] = useState({
     email: '',
     name: '',
@@ -56,15 +57,37 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
 
           DidDocumentService.updateUserDocument(state.diddocument)
 
+          userSession.loginCred!.google! = googleId.email
+         await  UserService.updateSession(userSession)
 
           window.close();
         } else {
-          setCredentials({
-            name: googleId.name,
-            request_token: t.data.request_token,
-            email: googleId.email,
-            credential: googleId.email
-          });
+
+          let prevUsers = await getUsersWithRegisteredGoogle(googleId.email)
+          if (prevUsers.length > 0){
+            history.push({
+              pathname: '/associated-profile',
+              state: {
+                users: prevUsers,
+                name: googleId.name,
+                email: googleId.email,
+                request_token: '',
+                service: AccountType.Google,
+                credential: googleId.email
+              }
+            });
+          } else {
+            setCredentials({
+              name: googleId.name,
+              request_token: t.data.request_token,
+              email: googleId.email,
+              credential: googleId.email
+            });
+          }
+
+       
+
+         
         }
       }
     })();
