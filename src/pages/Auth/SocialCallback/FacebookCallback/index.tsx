@@ -53,7 +53,7 @@ const FacebookCallback: React.FC<RouteComponentProps> = props => {
           DidDocumentService.updateUserDocument(state.diddocument)
 
           userSession.loginCred!.facebook! = facebookId.name
-          UserService.updateSession(userSession)
+          await UserService.updateSession(userSession)
 
           window.close();
         } else {

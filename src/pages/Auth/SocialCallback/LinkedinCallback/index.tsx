@@ -48,13 +48,14 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
           t.data.request_token
         );
         if (!linkedinprofile || !linkedinprofile.data) return;
-
+        console.log("aui")
         const firstName = linkedinprofile.data.profile.localizedFirstName.toLowerCase();
         const lastName = linkedinprofile.data.profile.localizedLastName.toLowerCase();
         const uniqueEmail = firstName + lastName + '@linkedin.com';
         let userSession = UserService.GetUserSession()
+        debugger
         if (userSession) {
-
+          console.log("entrou aqui")
           let vc = await DidcredsService.generateVerifiableCredential(userSession.did, CredentialType.Linkedin, firstName + '' + lastName)
 
           let state = await DidDocumentService.getUserDocument(userSession)
@@ -65,7 +66,7 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
 
           userSession.loginCred!.linkedin! = firstName + '' + lastName
 
-          UserService.updateSession(userSession)
+          await UserService.updateSession(userSession)
           window.close();
         } else {
 
