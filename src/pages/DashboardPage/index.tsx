@@ -68,7 +68,7 @@ const ProfilePage = () => {
     const timer = setTimeout(async () => {
       await refreshStatus();
       setTimerForStatus();
-    }, 1000);
+    }, 5000);
     return () => clearTimeout(timer);
   };
 
