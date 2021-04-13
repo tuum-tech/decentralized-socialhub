@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+import LoadingIndicator from 'src/components/LoadingIndicator';
 import ProfileComponent from 'src/components/profile/ProfileComponent';
 import { UserService } from 'src/services/user.service';
 import {
@@ -55,9 +56,10 @@ const ExploreProfileComponent: React.FC<ExploreProfileParams> = ({
 }: ExploreProfileParams) => {
   const [userInfo, setUserInfo] = useState(defaultUserInfo);
   const [full_profile, setfull_profile] = useState(defaultFullProfile);
-
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       try {
         let userInfo = await UserService.SearchUserWithDID(did);
         setUserInfo(userInfo as any);
@@ -77,21 +79,27 @@ const ExploreProfileComponent: React.FC<ExploreProfileParams> = ({
           setfull_profile(profile);
         }
       } catch (e) {}
-      //setLoaded(true);
+      setIsLoading(false);
     })();
   }, []);
   return (
-    <div className={style['exploreprofilecomponent']}>
-      <Header>
-        <ArrowLeft onClick={() => (window.location.href = '/explore')} />
-        <PageTitle>Explore</PageTitle>
-      </Header>
-      <ProfileComponent
-        profile={full_profile}
-        sessionItem={userInfo as ISessionItem}
-        error={false}
-      />
-    </div>
+    <>
+      {isLoading ? (
+        <LoadingIndicator loadingText="Loading data..." />
+      ) : (
+        <div className={style['exploreprofilecomponent']}>
+          <Header>
+            <ArrowLeft onClick={() => (window.location.href = '/explore')} />
+            <PageTitle>Explore</PageTitle>
+          </Header>
+          <ProfileComponent
+            profile={full_profile}
+            sessionItem={userInfo as ISessionItem}
+            error={false}
+          />
+        </div>
+      )}
+    </>
   );
 };
 

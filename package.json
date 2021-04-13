@@ -10,6 +10,7 @@
     "@types/styled-components": "^5.1.5",
     "@types/toastr": "^2.1.38",
     "bootstrap": "^4.6.0",
+    "clsx": "^1.1.1",
     "connected-react-router": "^6.8.0",
     "crypto-js": "^4.0.0",
     "guid-typescript": "^1.0.9",
@@ -34,7 +35,8 @@
     "reselect": "^4.0.0",
     "styled-components": "^5.2.1",
     "toastr": "^2.1.4",
-    "typescript": "3.9.4"
+    "typescript": "3.9.4",
+    "typestyle": "^2.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -3,14 +3,16 @@
  */
 
 import React, { useState } from 'react';
-import { IonButton, IonImg } from '@ionic/react';
+import { IonButton, IonImg, IonText, IonIcon } from '@ionic/react';
+import clsx from 'clsx';
 
 import { UserService } from 'src/services/user.service';
-
+import { RequestStatus } from 'src/services/assist.service';
 import AlphaContent from 'src/components/AlphaContent';
+import PublishingLabel from '../PublishingLabel';
 import transparentlogo from '../../../../assets/logo/transparentlogo.png';
 import wavinghand from '../../../../assets/icon/wavinghand.png';
-import lockicon from '../../../../assets/icon/lock.png';
+import thumbup from '../../../../assets/icon/thumbup.svg';
 import defaultAdamAvatar from '../../../../assets/icon/defaultAdamAvatar.png';
 import emojiCool from '../../../../assets/icon/emoji-cool.png';
 
@@ -18,72 +20,62 @@ import style from './style.module.scss';
 
 interface Props {
   completed: () => void;
+  publishStatus: RequestStatus;
+  sessionItem: ISessionItem;
 }
 
-const OnBoardingPage: React.FC<Props> = ({ completed }) => {
+const OnBoardingPage: React.FC<Props> = ({
+  completed,
+  publishStatus,
+  sessionItem
+}) => {
   const [stage, setStage] = useState(1);
 
   const next = () => {
-    if (stage === 3) {
-      completed();
-    } else {
-      setStage(stage + 1);
-    }
+    setStage(stage + 1);
   };
-
+  const close = () => {
+    completed();
+  };
   let userSession = UserService.GetUserSession();
   let userSessionName = '';
   if (userSession) userSessionName = userSession.name;
-
   return (
     <AlphaContent>
-      {stage === 0 && (
+      {stage === 0 && !sessionItem.onBoardingCompleted && (
         <img className={style['transparent-logo']} src={transparentlogo} />
       )}
-      {stage === 1 && (
-        <div className={style['onboarding-container']}>
+      {stage === 1 && !sessionItem.onBoardingCompleted && (
+        <div
+          className={clsx(
+            style['onboarding-container'],
+            style['stage1To3'],
+            style['v-flex']
+          )}
+        >
           <div>
             <IonImg src={wavinghand} className={style['wavinghand']} />
             <h1>Welcome to Profile</h1>
           </div>
-          <div className={style['stage1-content']}>
-            <div className={style['avatar-container']}>
-              <IonImg
-                src={defaultAdamAvatar}
-                className={style['defaultAdamAvatar']}
-              />
-              <p className={style['name']}>{userSessionName}</p>
-              <p>Profile is being published...</p>
-            </div>
-            <p>
-              Keep an eye on your profile status. It is
-              <span style={{ color: '#FF5A5A', fontWeight: 'bold' }}>
-                {' '}
-                red{' '}
-              </span>
-              at the moment because your DID is still being published. Once this
-              is
-              <span style={{ color: '#4C6FFF', fontWeight: 'bold' }}>
-                {' '}
-                blue,
-              </span>
-              you can access your profile manager to add content to your
-              profile.
-            </p>
-          </div>
 
-          <IonButton className={style['nextBtn']} onClick={next}>
+          <IonButton className={style['next-btn']} onClick={next}>
             Continue
           </IonButton>
         </div>
       )}
-      {stage === 2 && (
-        <div className={style['onboarding-container']}>
+      {stage === 2 && !sessionItem.onBoardingCompleted && (
+        <div
+          className={clsx(
+            style['onboarding-container'],
+            style['stage1To3'],
+            style['v-flex']
+          )}
+        >
           <div>
-            <IonImg src={lockicon} className={style['wavinghand']} />
+            <IonImg src={thumbup} className={style['wavinghand']} />
             <h1>Your Responsibility</h1>
           </div>
-          <div className={style['stage2-content']}>
+          <div className={clsx(style['stage2-content'], style['v-flex'])}>
             <p>
               Before setting up your profile, you will need to complete the
               beginner's tutorial which will provide you with your secret
@@ -100,13 +92,19 @@ const OnBoardingPage: React.FC<Props> = ({ completed }) => {
             </p>
           </div>
 
-          <IonButton className={style['nextBtn']} onClick={next}>
+          <IonButton className={style['next-btn']} onClick={next}>
             Continue
           </IonButton>
         </div>
       )}
-      {stage === 3 && (
-        <div className={style['onboarding-container']}>
+      {stage === 3 && !sessionItem.onBoardingCompleted && (
+        <div
+          className={clsx(
+            style['onboarding-container'],
+            style['stage1To3'],
+            style['v-flex']
+          )}
+        >
           <div>
             <IonImg src={emojiCool} className={style['wavinghand']} />
             <h1>Next steps?</h1>
@@ -130,11 +128,92 @@ const OnBoardingPage: React.FC<Props> = ({ completed }) => {
               control!
             </p>
           </div>
-          <IonButton className={style['nextBtn']} onClick={next}>
+          <IonButton className={style['next-btn']} onClick={next}>
             Continue
           </IonButton>
         </div>
       )}
+      {(stage > 3 || sessionItem.onBoardingCompleted) &&
+        sessionItem.tutorialStep < 4 &&
+        publishStatus !== RequestStatus.Completed && (
+          <div
+            className={clsx(
+              style['onboarding-container'],
+              style['stage4To5'],
+              style['v-flex']
+            )}
+          >
+            <div>
+              <h3>Publishing in progress...</h3>
+              <p style={{ marginTop: '30px' }}>
+                Your profile is being published to the blockchain. This may take
+                some time. You can now close this notice and refresh your site
+                in about 30 minutes.
+              </p>
+            </div>
+            <div className={clsx(style['stage4-content'], style['v-flex'])}>
+              <div className={clsx(style['avatar-container'], style['v-flex'])}>
+                <IonImg
+                  src={defaultAdamAvatar}
+                  className={style['defaultAdamAvatar']}
+                />
+                <p className={style['name']}>{userSessionName}</p>
+                <p>
+                  <PublishingLabel status={RequestStatus.Pending} />
+                </p>
+              </div>
+              <p>
+                Once complete, your processing status will turn{' '}
+                <span style={{ color: '#4C6FFF', fontWeight: 'bold' }}>
+                  {' '}
+                  blue,
+                </span>{' '}
+                and look like this:{'  '}
+                <PublishingLabel status={RequestStatus.Completed} />
+              </p>
+            </div>
+
+            <IonButton className={style['close-btn']} onClick={close}>
+              Close
+            </IonButton>
+          </div>
+        )}
+      {(stage > 3 || sessionItem.onBoardingCompleted) &&
+        sessionItem.tutorialStep < 4 &&
+        publishStatus === RequestStatus.Completed && (
+          <div
+            className={clsx(
+              style['onboarding-container'],
+              style['stage4To5'],
+              style['v-flex']
+            )}
+          >
+            <div>
+              <h3>Publishing Complete</h3>
+              <p style={{ marginTop: '30px' }}>
+                Welcome to your first decentralized profile controlled
+                completely by you. Explore the dashboard and complete the
+                tutorial to get started.
+              </p>
+            </div>
+            <div className={clsx(style['stage5-content'], style['v-flex'])}>
+              <div className={clsx(style['avatar-container'], style['v-flex'])}>
+                <IonImg
+                  src={defaultAdamAvatar}
+                  className={style['defaultAdamAvatar']}
+                />
+                <p className={style['name']}>{userSessionName}</p>
+                <p>
+                  <PublishingLabel status={RequestStatus.Completed} />
+                </p>
+              </div>
+            </div>
+
+            <IonButton className={style['start-btn']} onClick={close}>
+              Start Tutorial
+            </IonButton>
+          </div>
+        )}
     </AlphaContent>
   );
 };
