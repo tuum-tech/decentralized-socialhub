@@ -20,19 +20,18 @@ import style from './style.module.scss';
 
 interface Props {
   completed: () => void;
-  publish: () => void;
   publishStatus: RequestStatus;
+  sessionItem: ISessionItem;
 }
 
 const OnBoardingPage: React.FC<Props> = ({
   completed,
-  publish,
-  publishStatus
+  publishStatus,
+  sessionItem
 }) => {
   const [stage, setStage] = useState(1);
 
   const next = () => {
-    if (stage == 3) publish();
     setStage(stage + 1);
   };
   const close = () => {
@@ -43,10 +42,10 @@ const OnBoardingPage: React.FC<Props> = ({
   if (userSession) userSessionName = userSession.name;
   return (
     <AlphaContent>
-      {stage === 0 && (
+      {stage === 0 && !sessionItem.onBoardingCompleted && (
         <img className={style['transparent-logo']} src={transparentlogo} />
       )}
-      {stage === 1 && (
+      {stage === 1 && !sessionItem.onBoardingCompleted && (
         <div
           className={clsx(
             style['onboarding-container'],
@@ -64,7 +63,7 @@ const OnBoardingPage: React.FC<Props> = ({
           </IonButton>
         </div>
       )}
-      {stage === 2 && (
+      {stage === 2 && !sessionItem.onBoardingCompleted && (
         <div
           className={clsx(
             style['onboarding-container'],
@@ -98,7 +97,7 @@ const OnBoardingPage: React.FC<Props> = ({
           </IonButton>
         </div>
       )}
-      {stage === 3 && (
+      {stage === 3 && !sessionItem.onBoardingCompleted && (
         <div
           className={clsx(
             style['onboarding-container'],
@@ -134,83 +133,87 @@ const OnBoardingPage: React.FC<Props> = ({
           </IonButton>
         </div>
       )}
-      {stage > 3 && publishStatus !== RequestStatus.Completed && (
-        <div
-          className={clsx(
-            style['onboarding-container'],
-            style['stage4To5'],
-            style['v-flex']
-          )}
-        >
-          <div>
-            <h3>Publishing in progress...</h3>
-            <p style={{ marginTop: '30px' }}>
-              Your profile is being published to the blockchain. This may take
-              some time. You can now close this notice and refresh your site in
-              about 30 minutes.
-            </p>
-          </div>
-          <div className={clsx(style['stage4-content'], style['v-flex'])}>
-            <div className={clsx(style['avatar-container'], style['v-flex'])}>
-              <IonImg
-                src={defaultAdamAvatar}
-                className={style['defaultAdamAvatar']}
-              />
-              <p className={style['name']}>{userSessionName}</p>
-              <p>
-                <PublishingLabel status={RequestStatus.Pending} />
+      {(stage > 3 || sessionItem.onBoardingCompleted) &&
+        sessionItem.tutorialStep < 4 &&
+        publishStatus !== RequestStatus.Completed && (
+          <div
+            className={clsx(
+              style['onboarding-container'],
+              style['stage4To5'],
+              style['v-flex']
+            )}
+          >
+            <div>
+              <h3>Publishing in progress...</h3>
+              <p style={{ marginTop: '30px' }}>
+                Your profile is being published to the blockchain. This may take
+                some time. You can now close this notice and refresh your site
+                in about 30 minutes.
               </p>
             </div>
-            <p>
-              Once complete, your processing status will turn{' '}
-              <span style={{ color: '#4C6FFF', fontWeight: 'bold' }}>
-                {' '}
-                blue,
-              </span>{' '}
-              and look like this:{'  '}
-              <PublishingLabel status={RequestStatus.Completed} />
-            </p>
-          </div>
-
-          <IonButton className={style['close-btn']} onClick={close}>
-            Close
-          </IonButton>
-        </div>
-      )}
-      {stage > 3 && publishStatus === RequestStatus.Completed && (
-        <div
-          className={clsx(
-            style['onboarding-container'],
-            style['stage4To5'],
-            style['v-flex']
-          )}
-        >
-          <div>
-            <h3>Publishing Complete</h3>
-            <p style={{ marginTop: '30px' }}>
-              Welcome to your first decentralized profile controlled completely
-              by you. Explore the dashboard and complete the tutorial to get
-              started.
-            </p>
-          </div>
-          <div className={clsx(style['stage5-content'], style['v-flex'])}>
-            <div className={clsx(style['avatar-container'], style['v-flex'])}>
-              <IonImg
-                src={defaultAdamAvatar}
-                className={style['defaultAdamAvatar']}
-              />
-              <p className={style['name']}>{userSessionName}</p>
+            <div className={clsx(style['stage4-content'], style['v-flex'])}>
+              <div className={clsx(style['avatar-container'], style['v-flex'])}>
+                <IonImg
+                  src={defaultAdamAvatar}
+                  className={style['defaultAdamAvatar']}
+                />
+                <p className={style['name']}>{userSessionName}</p>
+                <p>
+                  <PublishingLabel status={RequestStatus.Pending} />
+                </p>
+              </div>
               <p>
+                Once complete, your processing status will turn{' '}
+                <span style={{ color: '#4C6FFF', fontWeight: 'bold' }}>
+                  {' '}
+                  blue,
+                </span>{' '}
+                and look like this:{'  '}
                 <PublishingLabel status={RequestStatus.Completed} />
               </p>
             </div>
-          </div>
 
-          <IonButton className={style['start-btn']} onClick={close}>
-            Start Tutorial
-          </IonButton>
-        </div>
-      )}
+            <IonButton className={style['close-btn']} onClick={close}>
+              Close
+            </IonButton>
+          </div>
+        )}
+      {(stage > 3 || sessionItem.onBoardingCompleted) &&
+        sessionItem.tutorialStep < 4 &&
+        publishStatus === RequestStatus.Completed && (
+          <div
+            className={clsx(
+              style['onboarding-container'],
+              style['stage4To5'],
+              style['v-flex']
+            )}
+          >
+            <div>
+              <h3>Publishing Complete</h3>
+              <p style={{ marginTop: '30px' }}>
+                Welcome to your first decentralized profile controlled
+                completely by you. Explore the dashboard and complete the
+                tutorial to get started.
+              </p>
+            </div>
+            <div className={clsx(style['stage5-content'], style['v-flex'])}>
+              <div className={clsx(style['avatar-container'], style['v-flex'])}>
+                <IonImg
+                  src={defaultAdamAvatar}
+                  className={style['defaultAdamAvatar']}
+                />
+                <p className={style['name']}>{userSessionName}</p>
+                <p>
+                  <PublishingLabel status={RequestStatus.Completed} />
+                </p>
+              </div>
+            </div>
+
+            <IonButton className={style['start-btn']} onClick={close}>
+              Start Tutorial
+            </IonButton>
+          </div>
+        )}
     </AlphaContent>
   );
 };

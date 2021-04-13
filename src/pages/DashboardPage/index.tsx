@@ -12,7 +12,7 @@ import {
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import style from './style.module.scss';
 import { ExporeTime } from './constants';
 
@@ -51,9 +51,9 @@ const ProfilePage = () => {
   const [loadingText, setLoadingText] = useState('');
   const [userInfo, setUserInfo] = useState<ISessionItem>(defaultUserInfo);
   const [full_profile, setfull_profile] = useState(defaultFullProfile);
-  const [onboardingCompleted, setOnboardingStatus] = useState(true);
   const [didDocument, setDidDocument] = useState({});
-  const [publishStatus, setPublishStatus] = useState(RequestStatus.Completed);
+  const [publishStatus, setPublishStatus] = useState(RequestStatus.Pending);
+  const [onBoardVisible, setOnBoardVisible] = useState(false);
   const history = useHistory();
 
   const setTimerForDid = () => {
@@ -137,8 +137,12 @@ const ProfilePage = () => {
       }
       await refreshDidDocument();
       setUserInfo(userSession);
-      setOnboardingStatus(userSession.onBoardingCompleted);
-
+      setPublishStatus(
+        userSession.isDIDPublished
+          ? RequestStatus.Completed
+          : RequestStatus.Pending
+      );
+      setOnBoardVisible(true);
       if (
         userSession.onBoardingCompleted &&
         userSession.tutorialStep === 4 &&
@@ -158,20 +162,21 @@ const ProfilePage = () => {
   useEffect(() => {
     (async () => {
       let userSession = UserService.GetUserSession();
-      if (
-        !userSession ||
-        !userSession.tutorialStep ||
-        userSession.tutorialStep !== 4 ||
-        !userSession.onBoardingCompleted
-      ) {
-        return;
-      } else if (history.location.pathname === '/profile') {
-        await retriveProfile();
+      if (!userSession) return;
+      if (history.location.pathname === '/profile') {
+        setOnBoardVisible(true);
+        if (
+          userSession.tutorialStep &&
+          userSession.tutorialStep === 4 &&
+          userSession.onBoardingCompleted
+        ) {
+          await retriveProfile();
+        }
       }
     })();
   }, [history.location.pathname]);
 
-  if (!onboardingCompleted) {
+  if (userInfo.tutorialStep < 4 && onBoardVisible) {
     return (
       <OnBoarding
         completed={async () => {
@@ -180,7 +185,8 @@ const ProfilePage = () => {
 
           user.onBoardingCompleted = true;
           await UserService.updateSession(user);
-          setOnboardingStatus(true);
+          setUserInfo(user);
+          setOnBoardVisible(false);
           if (!willExpire) {
             setWillExpire(true);
             setTimeout(() => {
@@ -189,8 +195,8 @@ const ProfilePage = () => {
             }, ExporeTime);
           }
         }}
+        sessionItem={userInfo}
         publishStatus={publishStatus}
-        publish={() => {}}
       />
     );
   }
