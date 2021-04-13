@@ -80,11 +80,11 @@ let run = async () => {
           did: '$params.did',
           accountType: '$params.accountType',
           passhash: '$params.passhash',
-          email: '$params.email',
           name: '$params.name',
           userToken: '$params.userToken',
           isDIDPublished: '$params.isDIDPublished',
           onBoardingCompleted: '$params.onBoardingCompleted',
+          loginCred: '$params.loginCred',
           tutorialStep: '$params.tutorialStep',
           hiveHost: '$params.hiveHost',
           avatar: '$params.avatar',
@@ -109,7 +109,7 @@ let run = async () => {
         update: {
           $set: {
             name: '$params.name',
-            email: '$params.email'
+            'loginCred.email': '$params.email'
           }
         },
         options: {
@@ -157,16 +157,86 @@ let run = async () => {
     allowAnonymousApp: true,
     executable: {
       type: 'find',
-      name: 'get_users_by_email',
+      name: 'users_found',
       output: true,
       body: {
         collection: 'users',
         filter: {
-          email: '$params.email'
+          'loginCred.email': '$params.filter'
         }
       }
     }
   });
+
+  await client.Scripting.SetScript({
+    name: 'get_users_by_google',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'users_found',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          'loginCred.google': '$params.filter'
+        }
+      }
+    }
+  });
+
+
+  await client.Scripting.SetScript({
+    name: 'get_users_by_twitter',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'users_found',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          'loginCred.twitter': '$params.filter'
+        }
+      }
+    }
+  });
+
+  await client.Scripting.SetScript({
+    name: 'get_users_by_facebook',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'users_found',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          'loginCred.facebook': '$params.filter'
+        }
+      }
+    }
+  });
+
+  await client.Scripting.SetScript({
+    name: 'get_users_by_linkedin',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'users_found',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          'loginCred.linkedin': '$params.filter'
+        }
+      }
+    }
+  });
+
   await client.Scripting.SetScript({
     name: 'verify_code',
     allowAnonymousUser: true,
@@ -219,7 +289,7 @@ let run = async () => {
         collection: 'users',
         filter: {
           code: '$params.code',
-          email: '$params.email',
+          did: '$params.did',
           status: 'CONFIRMED'
         },
         update: {
@@ -229,6 +299,7 @@ let run = async () => {
             passhash: '$params.passhash',
             name: '$params.name',
             userToken: '$params.userToken',
+            loginCred: '$params.loginCred',
             isDIDPublished: '$params.isDIDPublished',
             onBoardingCompleted: '$params.onBoardingCompleted',
             tutorialStep: '$params.tutorialStep',

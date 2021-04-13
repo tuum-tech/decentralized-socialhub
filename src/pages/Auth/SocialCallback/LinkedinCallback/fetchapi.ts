@@ -1,4 +1,5 @@
 import request, { BaseplateResp } from 'src/baseplate/request';
+import { TuumTechScriptService } from 'src/services/script.service';
 import { LinkedinId } from './types';
 
 export function requestLinkedinToken(
@@ -32,4 +33,10 @@ export function requestLinkedinProfile(
       }
     }
   );
+}
+
+export async function getUsersWithRegisteredLinkedin(linkedin: string) {
+  let prevUsers = [];
+  prevUsers = await TuumTechScriptService.getUsersWithRegisteredLinkedin(linkedin);
+  return prevUsers;
 }

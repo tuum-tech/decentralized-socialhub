@@ -47,6 +47,8 @@ const ProfileEditor: React.FC = () => {
   const setTimer = () => {
     const timer = setTimeout(async () => {
       await refreshDidDocument();
+      let instance = UserService.GetUserSession();
+      if (instance && instance.userToken) setUserInfo(instance);;
       setTimer();
     }, 1000);
     return () => clearTimeout(timer);
@@ -113,7 +115,7 @@ const ProfileEditor: React.FC = () => {
                   />
                 )}
                
-               <SocialProfilesCard  diddocument={didDocument} showManageButton={true} />
+               <SocialProfilesCard  diddocument={didDocument} showManageButton={true} sessionItem={userInfo} />
                 
                 {profile && profile.educationDTO && (
                   <EducationCard
