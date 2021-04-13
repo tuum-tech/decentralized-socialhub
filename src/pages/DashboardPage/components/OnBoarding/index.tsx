@@ -58,6 +58,19 @@ const OnBoardingPage: React.FC<Props> = ({
             <h1>Welcome to Profile</h1>
           </div>
 
+          <div className={clsx(style['stage2-content'], style['v-flex'])}>
+            <p>
+              Profile is a new type of digital identity owned by you where
+              genuine connections happen, and real-world networking begins
+              online.
+            </p>
+
+            <p>
+              Profile gives you total control over your digital world all in one
+              place. Finally unlock the power of your data and digital content.
+            </p>
+          </div>
+
           <IonButton className={style['next-btn']} onClick={next}>
             Continue
           </IonButton>
