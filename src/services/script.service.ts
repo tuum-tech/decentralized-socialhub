@@ -24,8 +24,10 @@ export class TuumTechScriptService {
     );
   }
 
-  private static async getUsersWithRegisteredCredential(credential: string, credentialType: string) {
-
+  private static async getUsersWithRegisteredCredential(
+    credential: string,
+    credentialType: string
+  ) {
     const get_users_scripts = {
       name: 'get_users_by_' + credentialType,
       params: {
@@ -45,20 +47,31 @@ export class TuumTechScriptService {
     const { meta, data } = get_users_script_response;
     if (meta && meta.code === 200 && meta.message === 'OK') {
       const { users_found } = data;
-      if (
-        users_found &&
-        users_found.items &&
-        users_found.items.length > 0
-      ) {
+      if (users_found && users_found.items && users_found.items.length > 0) {
         prevUsers = users_found.items.map((userItem: any) => {
           const newUserItem = {
             status: userItem.status || '',
             did: userItem.did || '',
-            email: TuumTechScriptService.getValueFromLoginCred(userItem, 'email'),
-            facebook: TuumTechScriptService.getValueFromLoginCred(userItem, 'facebook'),
-            google: TuumTechScriptService.getValueFromLoginCred(userItem, 'google'),
-            twitter: TuumTechScriptService.getValueFromLoginCred(userItem, 'twitter'),
-            linkedin: TuumTechScriptService.getValueFromLoginCred(userItem, 'linkedin'),
+            email: TuumTechScriptService.getValueFromLoginCred(
+              userItem,
+              'email'
+            ),
+            facebook: TuumTechScriptService.getValueFromLoginCred(
+              userItem,
+              'facebook'
+            ),
+            google: TuumTechScriptService.getValueFromLoginCred(
+              userItem,
+              'google'
+            ),
+            twitter: TuumTechScriptService.getValueFromLoginCred(
+              userItem,
+              'twitter'
+            ),
+            linkedin: TuumTechScriptService.getValueFromLoginCred(
+              userItem,
+              'linkedin'
+            ),
             _id: userItem._id.$oid || ''
           };
           return newUserItem;
@@ -71,29 +84,45 @@ export class TuumTechScriptService {
     return prevUsers;
   }
 
-  private static getValueFromLoginCred(userItem: any, credType: string){
-    if (!userItem || !userItem.loginCred || !userItem.loginCred[credType]) return ''
-    return userItem.loginCred[credType]
+  private static getValueFromLoginCred(userItem: any, credType: string) {
+    if (!userItem || !userItem.loginCred || !userItem.loginCred[credType])
+      return '';
+    return userItem.loginCred[credType];
   }
 
   public static async getUsersWithRegisteredEmail(email: string) {
-    return TuumTechScriptService.getUsersWithRegisteredCredential(email, "email")
+    return TuumTechScriptService.getUsersWithRegisteredCredential(
+      email,
+      'email'
+    );
   }
 
   public static async getUsersWithRegisteredFacebook(facebook: string) {
-    return TuumTechScriptService.getUsersWithRegisteredCredential(facebook, "facebook")
+    return TuumTechScriptService.getUsersWithRegisteredCredential(
+      facebook,
+      'facebook'
+    );
   }
 
   public static async getUsersWithRegisteredGoogle(google: string) {
-    return TuumTechScriptService.getUsersWithRegisteredCredential(google, "google")
+    return TuumTechScriptService.getUsersWithRegisteredCredential(
+      google,
+      'google'
+    );
   }
 
   public static async getUsersWithRegisteredTwitter(twitter: string) {
-    return TuumTechScriptService.getUsersWithRegisteredCredential(twitter, "twitter")
+    return TuumTechScriptService.getUsersWithRegisteredCredential(
+      twitter,
+      'twitter'
+    );
   }
 
   public static async getUsersWithRegisteredLinkedin(linkedin: string) {
-    return TuumTechScriptService.getUsersWithRegisteredCredential(linkedin, "linkedin")
+    return TuumTechScriptService.getUsersWithRegisteredCredential(
+      linkedin,
+      'linkedin'
+    );
   }
 
   public static async searchUserWithDID(did: string) {
@@ -121,6 +150,21 @@ export class TuumTechScriptService {
       }
     };
     let response: any = await this.runTuumTechScript(add_user_script);
+    return response;
+  }
+
+  // Update user created from email flow. The update do not filter by DID because this user doesn't have one yet
+  public static async updateEmailUserDidInfo(params: ISessionItem) {
+    const update_emailuser_script = {
+      name: 'update_emailuser_did_info',
+      params,
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+    let response: any = await this.runTuumTechScript(update_emailuser_script);
+
     return response;
   }
 
