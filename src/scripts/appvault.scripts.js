@@ -185,7 +185,6 @@ let run = async () => {
     }
   });
 
-
   await client.Scripting.SetScript({
     name: 'get_users_by_twitter',
     allowAnonymousUser: true,
@@ -290,6 +289,39 @@ let run = async () => {
         filter: {
           code: '$params.code',
           did: '$params.did',
+          status: 'CONFIRMED'
+        },
+        update: {
+          $set: {
+            did: '$params.did',
+            accountType: '$params.accountType',
+            passhash: '$params.passhash',
+            name: '$params.name',
+            userToken: '$params.userToken',
+            loginCred: '$params.loginCred',
+            isDIDPublished: '$params.isDIDPublished',
+            onBoardingCompleted: '$params.onBoardingCompleted',
+            tutorialStep: '$params.tutorialStep',
+            hiveHost: '$params.hiveHost',
+            avatar: '$params.avatar'
+          }
+        }
+      }
+    }
+  });
+
+  await client.Scripting.SetScript({
+    name: 'update_emailuser_did_info',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'update',
+      name: 'update_emailuser_did_info',
+      output: false,
+      body: {
+        collection: 'users',
+        filter: {
+          code: '$params.code',
           status: 'CONFIRMED'
         },
         update: {
