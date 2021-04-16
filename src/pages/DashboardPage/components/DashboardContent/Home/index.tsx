@@ -2,11 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
-// import SpotlightCard from 'src/components/cards/SpotlightCard';
-// import BadgesCard from 'src/components/cards/BadgesCard';
-// import ButtonWhite from 'src/components/buttons/ButtonWhite';
-// import ProfileCompletionCard from 'src/components/cards/ProfileCompletionCard';
-
+import FollowCards from 'src/components/FollowCards';
 import { UserService } from 'src/services/user.service';
 import SocialProfilesCard from 'src/components/cards/SocialProfilesCard';
 import ManageProfile from './Left/ManageProfile';
@@ -18,6 +14,7 @@ import WhatIsProfile from './RightContent/WhatIsProfile';
 import ConnectWithCommunity from './RightContent/ConnectWithCommunity';
 import ProfileCompletion from './RightContent/ProfileCompletion';
 import VerificationStatus from './RightContent/VerificationStatus';
+import Badges from './RightContent/Badges';
 
 const LeftCardCol = styled(IonCol)`
   padding: 22px 16px;
@@ -111,13 +108,14 @@ const DashboardHome: React.FC<Props> = ({
           <ProfileCompletion />
           <WhatIsProfile />
           <ConnectWithCommunity />
-          {/*  <BadgesCard title="Badges" /> */}
           {embededSocialProfiles.length !== 0 && (
             <SocialProfilesCard
               diddocument={didDocument}
               showManageButton={false}
             />
           )}
+          <Badges />
+          {userSession && <FollowCards did={userSession.did} signed={true} />}
         </RightCardCol>
       </IonRow>
     </IonGrid>
