@@ -4,6 +4,7 @@ import SocialProfilesCard from 'src/components/cards/SocialProfilesCard';
 
 interface Props {
   didDocument: any;
+  sessionItem: ISessionItem;
 }
 
 interface VerifiedCredential {
@@ -11,7 +12,7 @@ interface VerifiedCredential {
   isVerified: boolean;
 }
 
-const SocialProfiles: React.FC<Props> = ({ didDocument }) => {
+const SocialProfiles: React.FC<Props> = ({ didDocument, sessionItem }) => {
   const [embededSocialProfiles, setEmbededSocialedProfiles] = useState<
     string[]
   >([]);
@@ -52,9 +53,14 @@ const SocialProfiles: React.FC<Props> = ({ didDocument }) => {
     setEmbededSocialedProfiles(embededSocialProfiles);
   }, []);
 
+  console.log('=====>diddocument', didDocument);
   if (embededSocialProfiles.length > 0) {
     return (
-      <SocialProfilesCard diddocument={didDocument} showManageButton={false} />
+      <SocialProfilesCard
+        diddocument={didDocument}
+        showManageButton={false}
+        sessionItem={sessionItem}
+      />
     );
   }
   return <></>;

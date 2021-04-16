@@ -79,7 +79,7 @@ interface ISessionItem {
   status?: string;
 }
 
-interface LoginCred{
+interface LoginCred {
   linkedin?: string;
   google?: string;
   twitter?: string;

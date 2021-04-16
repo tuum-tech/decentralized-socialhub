@@ -56,7 +56,7 @@ const ProfilePage = () => {
   const [onBoardVisible, setOnBoardVisible] = useState(false);
   const history = useHistory();
 
-  const setTimer = () => {
+  const setTimerForDid = () => {
     const timer = setTimeout(async () => {
       await refreshDidDocument();
       setTimerForDid();
@@ -72,6 +72,36 @@ const ProfilePage = () => {
     return () => clearTimeout(timer);
   };
 
+  const refreshStatus = async () => {
+    let userSession = UserService.GetUserSession();
+    if (!userSession || !userSession.did) return;
+
+    let publishWaiting = AssistService.getPublishStatusTask(userSession.did);
+
+    if (!publishWaiting) return;
+
+    let actual = await AssistService.refreshRequestStatus(
+      publishWaiting.confirmationId,
+      userSession.did
+    );
+
+    setPublishStatus(actual.requestStatus);
+
+    if (actual.requestStatus === RequestStatus.Completed) {
+      AssistService.removePublishTask(userSession.did);
+      await updateUserToComplete();
+      return;
+    }
+  };
+
+  const updateUserToComplete = async () => {
+    let userSession = UserService.GetUserSession();
+    if (userSession) {
+      userSession.isDIDPublished = true;
+      UserService.updateSession(userSession);
+      await DidDocumentService.reloadUserDocument();
+    }
+  };
   const refreshDidDocument = async () => {
     let userSession = UserService.GetUserSession();
     if (!userSession) {
@@ -106,7 +136,7 @@ const ProfilePage = () => {
       }
       await refreshDidDocument();
       setUserInfo(userSession);
-      setOnboardingStatus(userSession.onBoardingCompleted);
+      setOnBoardVisible(userSession.onBoardingCompleted);
 
       if (
         userSession.onBoardingCompleted &&

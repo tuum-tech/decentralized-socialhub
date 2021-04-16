@@ -37,16 +37,24 @@ export class DidDocumentService {
     EventsService.trigger(this.DOCUMENT_CHANGE_EVENT, documentstate);
   }
 
-  private static getDocumentState(): IDIDDocumentState | null {
-    let json = window.localStorage.getItem(this.DIDDOCUMENT_KEY);
+  private static getDocumentState(userDID: string): IDIDDocumentState | null {
+    let json = window.localStorage.getItem(
+      `${this.DIDDOCUMENT_KEY}_${userDID.replace('did:elastos:', '')}`
+    );
 
     if (!json) return null;
     return JSON.parse(json);
   }
 
-  private static setDocumentState(documentState: IDIDDocumentState) {
+  private static setDocumentState(
+    documentState: IDIDDocumentState,
+    userDID: string
+  ) {
     let json = JSON.stringify(documentState);
-    window.localStorage.setItem(this.DIDDOCUMENT_KEY, json);
+    window.localStorage.setItem(
+      `${this.DIDDOCUMENT_KEY}_${userDID.replace('did:elastos:', '')}`,
+      json
+    );
     this.triggerDocumentChangeEvent(documentState);
   }
 
@@ -59,17 +67,18 @@ export class DidDocumentService {
   static async getUserDocument(
     userSession: ISessionItem
   ): Promise<IDIDDocumentState> {
-    let documentState = this.getDocumentState();
+    let documentState = this.getDocumentState(userSession.did);
     if (documentState) return documentState;
 
     documentState = await this.loadFromBlockchain(userSession.did);
-    this.setDocumentState(documentState);
+    this.setDocumentState(documentState, userSession.did);
 
     return documentState;
   }
 
   static async getUserDocumentByDid(did: string): Promise<IDIDDocumentState> {
     const documentState = await this.loadFromBlockchain(did);
+    this.setDocumentState(documentState, did);
     return documentState;
   }
 
@@ -96,7 +105,7 @@ export class DidDocumentService {
       isChanged: true
     };
 
-    this.setDocumentState(documentState);
+    this.setDocumentState(documentState, diddocument.id);
 
     return documentState;
   }
@@ -131,7 +140,7 @@ export class DidDocumentService {
       isChanged: false
     };
 
-    this.setDocumentState(documentState);
+    this.setDocumentState(documentState, userDid.did);
     return documentState;
   }
 
@@ -143,7 +152,7 @@ export class DidDocumentService {
     }
 
     let documentState = await this.loadFromBlockchain(userSession.did);
-    this.setDocumentState(documentState);
+    this.setDocumentState(documentState, userSession.did);
 
     return documentState;
   }

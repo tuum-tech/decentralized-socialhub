@@ -53,6 +53,18 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 
   let did: string = props.match.params.did;
 
+  // const setTimer = () => {
+  //   const timer = setTimeout(async () => {
+  //     await refreshDidDocument();
+  //     setTimer();
+  //   }, 1000);
+  //   return () => clearTimeout(timer);
+  // };
+  // const refreshDidDocument = async () => {
+  //   let documentState = await DidDocumentService.getUserDocumentByDid(did);
+  //   setDidDocument(documentState.diddocument);
+  // };
+
   useEffect(() => {
     (async () => {
       try {
@@ -75,6 +87,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
         }
         let documentState = await DidDocumentService.getUserDocumentByDid(did);
         setDidDocument(documentState.diddocument);
+        // setTimer();
       } catch (error) {
         // console.log('======>error', error);
       }
@@ -178,6 +191,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
                                   {didDocument && didDocument.id && (
                                     <SocialProfilesCard
                                       didDocument={didDocument}
+                                      sessionItem={publicUser}
                                     />
                                   )}
 
