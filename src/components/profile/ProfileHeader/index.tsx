@@ -72,11 +72,21 @@ const ProfileHeader: React.FC<IProps> = ({
   useEffect(() => {
     (async () => {
       const userSession = UserService.GetUserSession();
+      if (!userSession) return;
       if (userSession && userSession.did) {
-        let followings = (await ProfileService.getFollowings(userSession.did))
-          .get_following;
-        if (followings && followings.items) {
-          if (followings.items.findIndex(item => item.did === user.did) != -1) {
+        let followings_res = await ProfileService.getFollowings(
+          userSession.did
+        );
+        if (
+          followings_res &&
+          followings_res.get_following &&
+          followings_res.get_following.items
+        ) {
+          if (
+            followings_res.get_following.items.findIndex(
+              item => item.did === user.did
+            ) != -1
+          ) {
             setIsFollowing(true);
           }
         }

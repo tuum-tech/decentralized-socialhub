@@ -21,6 +21,22 @@ export class UserVaultScripts {
     await this.SetScriptsForProfile(hiveClient);
   }
 
+  static async SetScriptGetFollowing(hiveClient: HiveClient) {
+    await hiveClient.Scripting.SetScript({
+      name: 'get_following',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_following',
+        output: true,
+        body: {
+          collection: 'following'
+        }
+      }
+    });
+  }
+
   static async SetScriptsForProfile(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'get_basic_profile',
@@ -213,22 +229,6 @@ export class UserVaultScripts {
           filter: {
             guid: '$params.guid'
           }
-        }
-      }
-    });
-  }
-
-  static async SetScriptGetFollowing(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'get_following',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_following',
-        output: true,
-        body: {
-          collection: 'following'
         }
       }
     });

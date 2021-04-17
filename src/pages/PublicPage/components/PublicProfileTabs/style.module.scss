@@ -1,6 +1,5 @@
-.normal {
+.sticky {
   z-index: 100;
-
   .tab-grid {
     background: #f7fafc;
   }
@@ -14,38 +13,6 @@
     --inner-border-width: 0 0 2px 0;
     display: inline-block;
     --background: #f7fafc;
-    --inner-padding-bottom: 0.5em;
-    font-weight: 600;
-    color: #718096;
-  }
-  .tab-active {
-    --border-color: var(--theme-primary-blue);
-    color: #1a202c;
-  }
-  .tab-label {
-    font-family: 'SF Pro Display';
-    margin-top: 10px !important;
-    margin-bottom: 10px !important;
-    margin-left: 10px;
-  }
-}
-
-.sticky {
-  box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.1);
-  z-index: 100;
-  .tab-grid {
-    background: white;
-  }
-  .tab-list {
-    background: white;
-    padding: 15px 0px 0px 15px;
-  }
-  .tab-item {
-    cursor: pointer;
-    --border-color: white;
-    --inner-border-width: 0 0 2px 0;
-    display: inline-block;
-    --background: white;
     --inner-padding-bottom: 0 !important;
 
     font-weight: 600;

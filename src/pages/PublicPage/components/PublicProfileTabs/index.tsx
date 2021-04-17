@@ -6,7 +6,6 @@ import style from './style.module.scss';
 
 interface IProps {
   scrollToPosition: any;
-  mode: string;
 }
 
 const Navigation = styled.div`
@@ -14,16 +13,11 @@ const Navigation = styled.div`
   top: 284px;
 `;
 
-const PublicProfileTabs: React.FC<IProps> = ({
-  scrollToPosition,
-  mode
-}: IProps) => {
+const PublicProfileTabs: React.FC<IProps> = ({ scrollToPosition }: IProps) => {
   const [active, setActive] = useState('about');
 
   return (
-    <Navigation
-      className={mode === 'normal' ? style['normal'] : style['sticky']}
-    >
+    <Navigation className={style['sticky']}>
       <IonList className={style['tab-list']}>
         <IonItem
           className={

@@ -2,11 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { IonGrid, IonRow } from '@ionic/react';
 
 import PeopleCard from 'src/components/cards/PeopleCard';
-import {
-  IFollowerResponse,
-  IFollowingResponse,
-  ProfileService
-} from 'src/services/profile.service';
+import { ProfileService } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
 import { alertError } from 'src/utils/notify';
 import { IUserResponse, SearchService } from 'src/services/search.service';

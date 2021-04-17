@@ -36,7 +36,6 @@ export async function requestGoogleId(token: string): Promise<GoogleId> {
   };
 }
 
-
 export async function getUsersWithRegisteredGoogle(email: string) {
   let prevUsers = [];
   prevUsers = await TuumTechScriptService.getUsersWithRegisteredGoogle(email);

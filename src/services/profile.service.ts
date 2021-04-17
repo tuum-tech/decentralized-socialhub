@@ -6,38 +6,6 @@ import { showNotify } from 'src/utils/notify';
 import { HiveService } from './hive.service';
 import { UserService, AccountType } from './user.service';
 
-export interface IFollowingResponse {
-  _status?: string;
-  get_following: IGetFollowing;
-}
-
-export interface IGetFollowing {
-  items: IFollowingItem[];
-}
-
-export interface IFollowingItem {
-  _id?: { $oid: string };
-  created?: { $date: string };
-  did: string;
-  modified?: { $date: string };
-  followers?: string;
-}
-
-export interface IFollowerResponse {
-  _status?: string;
-  get_followers: IGetFollowersBody;
-}
-
-export interface IGetFollowersBody {
-  items: IFollowerItem[];
-}
-
-export interface IFollowerItem {
-  did: string;
-  name: string;
-  followers: string[];
-}
-
 export class ProfileService {
   static async getFullProfile(did: string): Promise<ProfileDTO | undefined> {
     {
@@ -72,7 +40,6 @@ export class ProfileService {
           };
         }
       }
-
       return;
     }
   }
@@ -167,41 +134,32 @@ export class ProfileService {
     }
   }
 
-  static async getUserFollowings(
+  static async getFollowings(
     did: string
-  ): Promise<IRunScriptResponse<IFollowingResponse> | undefined> {
-    const hiveInstance = await HiveService.getSessionInstance();
-    if (hiveInstance) {
-      return hiveInstance.Scripting.RunScript({
+  ): Promise<IFollowingResponse | undefined> {
+    const appHiveClient = await HiveService.getAppHiveClient();
+
+    const followingResponse: IRunScriptResponse<IFollowingResponse> = await appHiveClient.Scripting.RunScript(
+      {
         name: 'get_following',
         context: {
           target_did: did,
           target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
         }
-      });
-    }
-  }
+      }
+    );
 
-  static async getFollowings(did: string): Promise<IFollowingResponse> {
-    const getUserFollowingScriptRes: any = await this.getUserFollowings(did);
-    return getUserFollowingScriptRes!.response as IFollowingResponse;
-  }
-
-  static async resetFollowing(): Promise<any> {
-    const hiveInstance = await HiveService.getSessionInstance();
-    if (!hiveInstance) return;
-    await hiveInstance.Database.deleteCollection('following');
-    await hiveInstance.Database.createCollection('following');
-    const userSession = UserService.GetUserSession();
-    if (userSession) {
-      return this.getFollowings(userSession.did);
+    if (followingResponse.isSuccess) {
+      return followingResponse.response;
     }
+    return;
   }
 
   static async getFollowers(
     dids: string[]
   ): Promise<IFollowerResponse | undefined> {
     const appHiveClient = await HiveService.getAppHiveClient();
+
     let followersResponse: IRunScriptResponse<IFollowerResponse> = await appHiveClient.Scripting.RunScript(
       {
         name: 'get_followers',
@@ -214,7 +172,6 @@ export class ProfileService {
         }
       }
     );
-
     if (followersResponse.isSuccess) {
       return followersResponse.response;
     }
@@ -258,6 +215,17 @@ export class ProfileService {
       });
     }
 
+    if (userSession) {
+      return this.getFollowings(userSession.did);
+    }
+  }
+
+  static async resetFollowing(): Promise<any> {
+    const hiveInstance = await HiveService.getSessionInstance();
+    if (!hiveInstance) return;
+    await hiveInstance.Database.deleteCollection('following');
+    await hiveInstance.Database.createCollection('following');
+    const userSession = UserService.GetUserSession();
     if (userSession) {
       return this.getFollowings(userSession.did);
     }
@@ -309,9 +277,9 @@ export const defaultUserInfo: ISessionItem = {
   userToken: '',
   accountType: AccountType.DID,
   did: '',
+  // email: '',
   name: '',
   isDIDPublished: false,
-  loginCred:{},
   mnemonics: '',
   passhash: '',
   onBoardingCompleted: false,

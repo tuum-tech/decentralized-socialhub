@@ -20,7 +20,7 @@ const TwitterCallback: React.FC<RouteComponentProps> = props => {
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
-   const history = useHistory();
+  const history = useHistory();
   const [credentials, setCredentials] = useState({
     name: '',
     email: '',
@@ -55,25 +55,32 @@ const TwitterCallback: React.FC<RouteComponentProps> = props => {
         const name = items[0];
         const uniqueEmail = name.replace(' ', '') + items[1] + '@twitter.com';
 
+        let userSession = UserService.GetUserSession();
+        if (userSession) {
+          let vc = await DidcredsService.generateVerifiableCredential(
+            userSession.did,
+            CredentialType.Twitter,
+            items[1].toString()
+          );
 
-        let userSession = UserService.GetUserSession()
-        if (userSession){
+          let state = await DidDocumentService.getUserDocument(userSession);
 
-          let vc = await DidcredsService.generateVerifiableCredential(userSession.did, CredentialType.Twitter, items[1].toString())
+          await DidService.addVerfiableCredentialToDIDDocument(
+            state.diddocument,
+            vc
+          );
 
-          let state = await DidDocumentService.getUserDocument(userSession)
+          DidDocumentService.updateUserDocument(state.diddocument);
 
-          await DidService.addVerfiableCredentialToDIDDocument(state.diddocument, vc)
-
-          DidDocumentService.updateUserDocument(state.diddocument)
-
-          userSession.loginCred!.twitter! = items[1].toString()
-          await UserService.updateSession(userSession)
+          userSession.loginCred!.twitter! = items[1].toString();
+          await UserService.updateSession(userSession);
 
           window.close();
         } else {
-          let prevUsers = await getUsersWithRegisteredTwitter(items[1].toString())
-          if (prevUsers.length > 0){
+          let prevUsers = await getUsersWithRegisteredTwitter(
+            items[1].toString()
+          );
+          if (prevUsers.length > 0) {
             history.push({
               pathname: '/associated-profile',
               state: {
@@ -93,13 +100,7 @@ const TwitterCallback: React.FC<RouteComponentProps> = props => {
               credential: items[1].toString()
             });
           }
-
-
-         
         }
-
-
-       
       }
     })();
   });

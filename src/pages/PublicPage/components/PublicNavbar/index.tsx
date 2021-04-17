@@ -13,6 +13,14 @@ const PublicNavbarContainer = styled(IonRow)`
   align-items: center;
 `;
 
+const RegisterButton = styled(DashboardSignInButton)`
+  margin-right: 14px;
+  background: #f3f9ff;
+  color: #4c6fff;
+`;
+
+const SignButton = styled(DashboardSignInButton)``;
+
 interface Props {
   signedIn: boolean;
 }
@@ -25,16 +33,14 @@ const PublicNavbar: React.FC<Props> = ({ signedIn }) => {
       </IonCol>
       <IonCol size="auto">
         {!signedIn && (
-          <IonRow className="ion-no-padding">
+          <IonRow>
             <IonCol>
-              <DashboardSignInButton href="/create-profile">
+              <RegisterButton href="/create-profile">
                 Register new user
-              </DashboardSignInButton>
+              </RegisterButton>
             </IonCol>
             <IonCol>
-              <DashboardSignInButton href="/sign-did">
-                Sign In
-              </DashboardSignInButton>
+              <SignButton href="/sign-did">Sign In</SignButton>
             </IonCol>
           </IonRow>
         )}

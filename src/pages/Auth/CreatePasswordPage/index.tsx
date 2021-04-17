@@ -72,9 +72,9 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
         passhash: '',
         onBoardingCompleted: false,
         tutorialStep: 1
-      }
+      };
 
-      console.log("newSession", JSON.stringify(newSession))
+      console.log('newSession', JSON.stringify(newSession));
 
       setSession(newSession);
     }
