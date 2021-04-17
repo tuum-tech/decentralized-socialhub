@@ -29,6 +29,8 @@ export function requestTwitterToken(
 
 export async function getUsersWithRegisteredTwitter(twitter: string) {
   let prevUsers = [];
-  prevUsers = await TuumTechScriptService.getUsersWithRegisteredTwitter(twitter);
+  prevUsers = await TuumTechScriptService.getUsersWithRegisteredTwitter(
+    twitter
+  );
   return prevUsers;
 }

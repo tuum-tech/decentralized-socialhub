@@ -8,7 +8,7 @@ import {
   TuumTechScriptService,
   UserVaultScriptService
 } from './script.service';
-import { Guid } from "guid-typescript";
+import { Guid } from 'guid-typescript';
 
 const CryptoJS = require('crypto-js');
 
@@ -78,8 +78,6 @@ export class UserService {
     //   let serviceVc = await DidcredsService.generateVerifiableCredential(newDID.did, credentialType, credential)
     //   await DidService.addVerfiableCredentialToDIDDocument(temporaryDocument, serviceVc)
     // }
-    
-
 
     let signedDocument = DidService.sealDIDDocument(newDID, temporaryDocument);
     DidDocumentService.updateUserDocument(signedDocument);
@@ -255,7 +253,7 @@ export class UserService {
       userToken,
       isDIDPublished: isDIDPublished ? isDIDPublished : false,
       onBoardingCompleted: false,
-      loginCred: {email: email},
+      loginCred: { email: email },
       tutorialStep: 1,
       hiveHost:
         hiveHostStr === ''
@@ -275,15 +273,17 @@ export class UserService {
       await TuumTechScriptService.updateUserDidInfo(sessionItem);
     } else {
       sessionItem.status = 'CONFIRMED';
-      if (accountType == AccountType.Twitter) sessionItem.loginCred!.twitter = credential
-      if (accountType == AccountType.Linkedin) sessionItem.loginCred!.linkedin = credential
-      if (accountType == AccountType.Google) sessionItem.loginCred!.google = credential
-      if (accountType == AccountType.Facebook) sessionItem.loginCred!.facebook = credential
+      if (accountType == AccountType.Twitter)
+        sessionItem.loginCred!.twitter = credential;
+      if (accountType == AccountType.Linkedin)
+        sessionItem.loginCred!.linkedin = credential;
+      if (accountType == AccountType.Google)
+        sessionItem.loginCred!.google = credential;
+      if (accountType == AccountType.Facebook)
+        sessionItem.loginCred!.facebook = credential;
 
       await TuumTechScriptService.addUserToTuumTech(sessionItem);
     }
-
-
 
     this.lockUser(this.key(did), sessionItem);
     // SessionService.saveSessionItem(sessionItem);

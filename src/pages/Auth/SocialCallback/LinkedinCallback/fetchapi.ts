@@ -37,6 +37,8 @@ export function requestLinkedinProfile(
 
 export async function getUsersWithRegisteredLinkedin(linkedin: string) {
   let prevUsers = [];
-  prevUsers = await TuumTechScriptService.getUsersWithRegisteredLinkedin(linkedin);
+  prevUsers = await TuumTechScriptService.getUsersWithRegisteredLinkedin(
+    linkedin
+  );
   return prevUsers;
 }

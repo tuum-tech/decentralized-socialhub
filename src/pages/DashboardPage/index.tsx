@@ -72,6 +72,15 @@ const ProfilePage = () => {
     return () => clearTimeout(timer);
   };
 
+  const refreshDidDocument = async () => {
+    let userSession = UserService.GetUserSession();
+    if (!userSession) {
+      return;
+    }
+    let documentState = await DidDocumentService.getUserDocument(userSession);
+    setDidDocument(documentState.diddocument);
+  };
+
   const refreshStatus = async () => {
     let userSession = UserService.GetUserSession();
     if (!userSession || !userSession.did) return;
@@ -102,14 +111,6 @@ const ProfilePage = () => {
       await DidDocumentService.reloadUserDocument();
     }
   };
-  const refreshDidDocument = async () => {
-    let userSession = UserService.GetUserSession();
-    if (!userSession) {
-      return;
-    }
-    let documentState = await DidDocumentService.getUserDocument(userSession);
-    setDidDocument(documentState.diddocument);
-  };
 
   const retriveProfile = async () => {
     let userSession = UserService.GetUserSession();
@@ -136,8 +137,12 @@ const ProfilePage = () => {
       }
       await refreshDidDocument();
       setUserInfo(userSession);
-      setOnBoardVisible(userSession.onBoardingCompleted);
-
+      setPublishStatus(
+        userSession.isDIDPublished
+          ? RequestStatus.Completed
+          : RequestStatus.Pending
+      );
+      setOnBoardVisible(true);
       if (
         userSession.onBoardingCompleted &&
         userSession.tutorialStep === 4 &&

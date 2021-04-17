@@ -38,7 +38,7 @@ const SettingsTerms: React.FC = () => {
   interface tempParam {
     behavior: string | null;
   }
-  const func = (temp: tempParam) => { };
+  const func = (temp: tempParam) => {};
 
   const scrollToSection = (index: number) => {
     // let targetRef = sectionRefs[index]

@@ -26,7 +26,7 @@ import googleLogo from '../../assets/icon/google.png';
 import shieldIcon from '../../assets/icon/shield.svg';
 import styled from 'styled-components';
 import TwitterApi from 'src/shared-base/api/twitter-api';
-import { DidcredsService } from 'src/services/didcreds.service';
+import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { UserService } from 'src/services/user.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 
@@ -133,7 +133,8 @@ const CloseButton = styled(IonButton)`
 
 const SocialProfilesCard: React.FC<Props> = ({
   diddocument,
-  showManageButton
+  showManageButton,
+  sessionItem
 }) => {
   const [isManagerOpen, setIsManagerOpen] = useState(false);
 
@@ -243,7 +244,6 @@ const SocialProfilesCard: React.FC<Props> = ({
         };
       }
     });
-
     vcs = vcs.filter(item => {
       return item !== undefined;
     });
@@ -269,6 +269,28 @@ const SocialProfilesCard: React.FC<Props> = ({
       documentState.diddocument['verifiableCredential'].splice(keyIndex, 1);
       DidDocumentService.updateUserDocument(documentState.diddocument);
     }
+
+    // ===== temporary codes start =====
+    let newLoginCred = userSession!.loginCred;
+    if (!newLoginCred) {
+      return;
+    }
+
+    if (key === 'google' && newLoginCred.google) {
+      delete newLoginCred.google;
+    } else if (key === 'facebook' && newLoginCred.facebook) {
+      delete newLoginCred.facebook;
+    } else if (key === 'linkedin' && newLoginCred.linkedin) {
+      delete newLoginCred.linkedin;
+    } else if (key === 'twitter' && newLoginCred.twitter) {
+      delete newLoginCred.twitter;
+    }
+    const newUserSession = {
+      ...userSession,
+      loginCred: newLoginCred
+    } as ISessionItem;
+    await UserService.updateSession(newUserSession);
+    // ===== temporary codes end =====
   };
 
   const createIonItem = (key: string, icon: any) => {
@@ -281,7 +303,11 @@ const SocialProfilesCard: React.FC<Props> = ({
           <span>{parseValueFromService(key, vc.value)}</span>
         )}
         {(key == 'google' || key == 'twitter') && (
-          <a href={getUrlFromService(key, vc.value)} target="_blank" rel="noreferrer">
+          <a
+            href={getUrlFromService(key, vc.value)}
+            target="_blank"
+            rel="noreferrer"
+          >
             {parseValueFromService(key, vc.value)}
           </a>
         )}
