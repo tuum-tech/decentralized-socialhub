@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import ProgressBar from 'src/components/ProgressBar';
@@ -8,7 +8,8 @@ import {
   CardTitle,
   CardText,
   ProgressArea
-} from './VerificationStatus';
+} from '../VerificationStatus';
+import ProfileComp from './ProfileComp';
 
 const ProfileStep = styled.div`
   background: #f5f8fa;
@@ -41,46 +42,52 @@ const ProgressAreaContainer = styled.div`
 `;
 
 const ProfileCompletion: React.FC = ({}) => {
+  const [category, setCategory] = useState(-1);
   const renderContent = () => {
     const data = [
       {
+        title: 'Beginners Tutorial',
+        targetList: ['Tutorial'],
+        accomplishedList: ['Tutorial']
+      },
+      {
         title: 'Basic Information',
-        value: 3,
-        targets: 5
+        targetList: ['Add About me', 'Add Experience', 'Add Education'],
+        accomplishedList: ['Add About me']
       },
       {
         title: 'Education',
-        value: 3,
-        targets: 5
+        targetList: ['Education'],
+        accomplishedList: ['Education']
       },
       {
         title: 'Experience',
-        value: 3,
-        targets: 5
+        targetList: ['Experience'],
+        accomplishedList: ['Experience']
       },
       {
         title: 'Others',
-        value: 3,
-        targets: 5
+        targetList: ['Other1', 'Other2', 'Other3'],
+        accomplishedList: ['Other1']
       }
     ];
     const renderComponents = [];
     for (let i = 0; i < data.length; i++) {
-      const percent = Math.round((data[i].value / data[i].targets) * 100);
-
       renderComponents.push(
-        <ProfileStep key={i}>
-          <p className="title">{data[i].title}</p>
-          <ProgressAreaContainer>
-            <ProgressArea>
-              <ProgressBar value={percent} width="42px" />
-              <p>
-                {data[i].value} / {data[i].targets}
-              </p>
-            </ProgressArea>
-            <DropDown />
-          </ProgressAreaContainer>
-        </ProfileStep>
+        <ProfileComp
+          key={i}
+          title={data[i].title}
+          targetList={data[i].targetList}
+          accomplishedList={data[i].accomplishedList}
+          expanded={category === i}
+          expandClicked={() => {
+            if (category === i) {
+              setCategory(-1);
+            } else {
+              setCategory(i);
+            }
+          }}
+        />
       );
     }
     return renderComponents;
@@ -90,12 +97,16 @@ const ProfileCompletion: React.FC = ({}) => {
     <MainCard>
       <CardTitle>Profile Completion</CardTitle>
       <CardText>Complete tasks and gain badges.</CardText>
-
       <ProgressArea style={{ marginTop: '13px', marginBottom: '20px' }}>
         <ProgressBar value={percent} width="calc(100% - 90px)" />
         <p>{percent}% Verified</p>
       </ProgressArea>
 
+      {/* <ProfileComp
+        title="Basic Information"
+        targetList={['Add About me', 'Add Experience', 'Add Education']}
+        accomplishedList={['Add About me']}
+      /> */}
       {renderContent()}
     </MainCard>
   );

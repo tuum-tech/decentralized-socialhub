@@ -43,7 +43,7 @@ const DashboardHome: React.FC<Props> = ({
   didDocument
 }) => {
   const [tutorialVisible, setTutorialVisible] = useState(true);
-  const [userSession, setUserSession] = useState(UserService.GetUserSession());
+  // const [userSession, setUserSession] = useState(UserService.GetUserSession());
 
   const [embededSocialProfiles, setEmbededSocialedProfiles] = useState<
     string[]
@@ -100,9 +100,12 @@ const DashboardHome: React.FC<Props> = ({
             />
           )}
           <ManageProfile profile={profile} />
-          <ExploreConnnections did={(userSession && userSession.did) || ''} />
+          {sessionItem.tutorialStep === 4 && (
+            <ExploreConnnections did={sessionItem.did} />
+          )}
           {embededSocialProfiles.length === 0 && <ManageLinks />}
         </LeftCardCol>
+
         <RightCardCol size="4">
           <VerificationStatus />
           <ProfileCompletion />
@@ -112,10 +115,13 @@ const DashboardHome: React.FC<Props> = ({
             <SocialProfilesCard
               diddocument={didDocument}
               showManageButton={false}
+              sessionItem={sessionItem}
             />
           )}
           <Badges />
-          {userSession && <FollowCards did={userSession.did} signed={true} />}
+          {sessionItem.tutorialStep === 4 && (
+            <FollowCards did={sessionItem.did} signed={true} />
+          )}
         </RightCardCol>
       </IonRow>
     </IonGrid>

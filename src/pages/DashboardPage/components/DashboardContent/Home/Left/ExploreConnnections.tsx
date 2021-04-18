@@ -19,19 +19,14 @@ const ExploreConnnections: React.FC<Props> = ({ did }) => {
 
   useEffect(() => {
     (async () => {
-      if (did === '') {
-        return;
-      }
       let fUserDids: string[] = [];
-      let followings = (await ProfileService.getFollowings(
-        did
-      )) as IFollowingResponse;
+
+      let followings = await ProfileService.getFollowings(did);
       if (followings) {
         fUserDids = followings.get_following.items.map(item => item.did);
       }
-      let followers = (await ProfileService.getFollowers([
-        did
-      ])) as IFollowerResponse;
+
+      let followers = await ProfileService.getFollowers([did]);
       if (followers) {
         for (let i = 0; i < followers.get_followers.items.length; i++) {
           if (!fUserDids.includes(followers.get_followers.items[i].did)) {
@@ -39,6 +34,7 @@ const ExploreConnnections: React.FC<Props> = ({ did }) => {
           }
         }
       }
+
       if (fUserDids.length > 0 && fUserDids.includes(did)) {
         fUserDids = fUserDids.filter(item => item !== did);
       }

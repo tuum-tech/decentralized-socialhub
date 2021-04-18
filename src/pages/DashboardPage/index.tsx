@@ -219,6 +219,7 @@ const ProfilePage = () => {
                 sessionItem={userInfo}
                 publishStatus={publishStatus}
               />
+
               <DashboardContent
                 onTutorialStart={() => {
                   setShowTutorial(true);
