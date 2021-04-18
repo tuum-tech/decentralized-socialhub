@@ -38,7 +38,9 @@ export class DidDocumentService {
   }
 
   private static getDocumentState(userDID: string): IDIDDocumentState | null {
-    let json = window.localStorage.getItem(this.DIDDOCUMENT_KEY);
+    let json = window.localStorage.getItem(
+      `${this.DIDDOCUMENT_KEY}_${userDID.replace('did:elastos:', '')}`
+    );
 
     if (!json) return null;
     return JSON.parse(json);
@@ -46,7 +48,13 @@ export class DidDocumentService {
 
   private static setDocumentState(documentState: IDIDDocumentState) {
     let json = JSON.stringify(documentState);
-    window.localStorage.setItem(this.DIDDOCUMENT_KEY, json);
+    window.localStorage.setItem(
+      `${this.DIDDOCUMENT_KEY}_${documentState.diddocument.id.replace(
+        'did:elastos:',
+        ''
+      )}`,
+      json
+    );
     this.triggerDocumentChangeEvent(documentState);
   }
 
