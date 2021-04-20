@@ -15,10 +15,10 @@ import {
 import AboutCard from 'src/components/cards/AboutCard';
 import EducationCard from 'src/components/cards/EducationCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
+import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 
 import FollowCards from './components/FollowCards';
 import PublicProfileTabs from './components/PublicProfileTabs';
-import SocialProfilesCard from './components/SocialProfilesCard';
 import ProfileHeader from './components/ProfileHeader';
 
 import style from './style.module.scss';

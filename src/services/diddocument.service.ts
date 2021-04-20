@@ -79,7 +79,6 @@ export class DidDocumentService {
   static async getUserDocumentByDid(did: string): Promise<IDIDDocumentState> {
     const documentState = await this.loadFromBlockchain(did);
     // this.setDocumentState(documentState);
-
     return documentState;
   }
 

@@ -12,7 +12,7 @@ import {
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { ExporeTime } from './constants';
 
@@ -27,9 +27,10 @@ import {
   defaultUserInfo,
   defaultFullProfile
 } from 'src/services/profile.service';
+import { loginCredSyn } from 'src/utils/socialprofile';
 
 import TutorialComponent from './components/Tutorial';
-import DashboardContent from './components/Content';
+import DashboardContent from './components/DashboardContent';
 import OnBoarding from './components/OnBoarding';
 import DashboardHeader from './components/DashboardHeader';
 import { DidDocumentService } from 'src/services/diddocument.service';
@@ -78,6 +79,7 @@ const ProfilePage = () => {
       return;
     }
     let documentState = await DidDocumentService.getUserDocument(userSession);
+    await loginCredSyn(userSession, documentState.diddocument);
     setDidDocument(documentState.diddocument);
   };
 
@@ -213,15 +215,13 @@ const ProfilePage = () => {
               <Logo />
               <LeftSideMenu />
             </IonCol>
-            {/* <IonCol size='7' className={style['center-panel']}>
-              <ProfileComponent profile={profile} />
-            </IonCol> */}
             <IonCol size="10" className={style['right-panel']}>
               <DashboardHeader
                 profile={full_profile}
                 sessionItem={userInfo}
                 publishStatus={publishStatus}
               />
+
               <DashboardContent
                 onTutorialStart={() => {
                   setShowTutorial(true);
@@ -230,15 +230,14 @@ const ProfilePage = () => {
                 sessionItem={userInfo}
                 didDocument={didDocument}
               />
-              {/* <StartService /> */}
             </IonCol>
           </IonRow>
         </IonGrid>
 
         <TutorialModal
           isOpen={showTutorial}
-          cssClass={style['tutorialpage']}
           backdropDismiss={false}
+          cssClass={style['tutorialpage']}
         >
           <TutorialComponent
             onClose={() => {
