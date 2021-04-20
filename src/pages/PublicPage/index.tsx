@@ -30,6 +30,7 @@ const ContentRow = styled(IonRow)`
 
 const LeftContent = styled.div`
   width: calc(100% - 300px);
+  padding-right: 22px;
 `;
 
 const RightContent = styled.div`
