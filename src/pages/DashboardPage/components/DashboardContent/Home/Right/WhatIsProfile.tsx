@@ -68,7 +68,9 @@ const WhatIsProfile: React.FC = ({}) => {
         digital identity, verified credentials, blockchain publishing & more...
       </CardText>
 
-      <LinkButton href="http://tuum.tech/">Read more</LinkButton>
+      <LinkButton href="https://www.tuum.tech/products/profile">
+        Read more
+      </LinkButton>
       <Logo />
     </ColorCard>
   );
