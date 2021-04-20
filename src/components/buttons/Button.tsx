@@ -27,6 +27,7 @@ interface Props {
   type: string;
   text?: string;
   mt?: number;
+  ml?: number;
   icon?: string;
   disabled?: boolean;
 }
@@ -36,6 +37,7 @@ const Button: React.FC<Props> = ({
   type = 'primary',
   text,
   mt,
+  ml,
   icon,
   disabled = false
 }) => {
@@ -45,6 +47,7 @@ const Button: React.FC<Props> = ({
 
   const colorStyle = typestyle({
     marginTop: mt && `${mt}px`,
+    marginLeft: ml && `${ml}px`,
     opacity: disabled ? 0.2 : 1,
     color: color,
     backgroundColor: bgColor,

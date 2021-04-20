@@ -15,7 +15,6 @@ const DashboardBadges: React.FC = () => {
           <SpotlightCard title="UNDER CONSTRUCTION" content="TODO" />
           <BadgesCard title="Social[UNDER CONSTRUCTION]" />
         </IonCol>
-        <IonCol size="8">{/* <OverviewCard /> */}</IonCol>
       </IonRow>
     </IonGrid>
   );
