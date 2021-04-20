@@ -4,11 +4,12 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import DidSnippet from 'src/components/DidSnippet';
-import defaultAdamAvatar from 'src/assets/icon/defaultAdamAvatar.png';
+// import defaultAdamAvatar from 'src/assets/icon/defaultAdamAvatar.png';
 import { ProfileName } from 'src/components/texts';
 import { FollowButton } from 'src/components/buttons';
 
 import FollowOrUnFollowButton from '../FollowOrUnFollow';
+import Avatar from 'src/components/Avatar';
 
 const HeaderContainer = styled(IonGrid)`
   background-color: white;
@@ -80,9 +81,10 @@ const ProfileHeader: React.FC<IProps> = ({ user, signedUserDid }: IProps) => {
     <HeaderContainer className="ion-no-padding">
       <Banner />
       <Header class="ion-justify-content-center ion-align-items-center">
-        <AvatarArea>
+        {/* <AvatarArea>
           <img src={defaultAdamAvatar} alt="default avatar" />
-        </AvatarArea>
+        </AvatarArea> */}
+        <Avatar did={user.did} />
         <Info>
           <IonGrid>
             <IonRow>

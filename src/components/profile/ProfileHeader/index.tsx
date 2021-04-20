@@ -1,46 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { IonGrid, IonRow, IonCol } from '@ionic/react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
 
 import { ProfileService } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
-
-import SkeletonAvatar from 'src/components/avatars/SkeletonAvatar';
-import style from './style.module.scss';
 import DidSnippet from 'src/components/DidSnippet';
-import defaultAdamAvatar from 'src/assets/icon/defaultAdamAvatar.png';
 import { ProfileName } from 'src/components/texts';
 import { Button } from 'src/components/buttons';
-
+import Avatar from 'src/components/Avatar';
 import followIcon from 'src/assets/icon/follow.svg';
 import linkIcon from 'src/assets/icon/link.svg';
 
-const AvatarBox = styled.div`
-  margin-left: 50px;
-  margin-top: 15px
-  margin-bottom: 15px;
-`;
-
-interface AvatarProps {
-  avatar: string;
-  mode: string;
-}
-
-const Avatar: React.FC<AvatarProps> = ({ avatar, mode }: AvatarProps) => {
-  return (
-    <>
-      <SkeletonAvatar />
-      <img
-        alt="avatar"
-        src={avatar}
-        width={mode === 'small' ? '44' : '80'}
-        height={mode === 'small' ? '44' : '80'}
-        className={style['clip-avatar-svg']}
-      />
-    </>
-  );
-};
+import style from './style.module.scss';
 
 interface IProps {
   profile: ProfileDTO;
@@ -97,14 +68,7 @@ const ProfileHeader: React.FC<IProps> = ({
     <IonGrid className={style['profileheadersticky']}>
       <IonRow className={style['header']}>
         <IonCol size="auto">
-          <AvatarBox>
-            {user && user.avatar ? (
-              <Avatar avatar={user.avatar as string} mode="big" />
-            ) : (
-              // <Avatar avatar={user.avatar as string} mode="big" />
-              <img src={defaultAdamAvatar} alt="default avatar" />
-            )}
-          </AvatarBox>
+          <Avatar did={user.did} />
         </IonCol>
 
         <IonCol size="7">

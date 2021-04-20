@@ -10,6 +10,7 @@ import ReactPaginate from 'react-paginate';
 
 import DidCard from './DidCard';
 import style from './PagesCard.module.scss';
+import universityImg from '../../assets/university.png';
 interface IProps {
   pages?: PageDTO;
   searchKeyword?: string;
@@ -22,7 +23,7 @@ const pageItem = (pageItem: any, indexItem: number, colSize: any) => {
     <DidCard
       name={pageItem.name}
       did={pageItem.did}
-      avatar={pageItem.avatar}
+      avatar={pageItem.avatar || universityImg}
       colSize={colSize}
       type="page"
       key={'did-page-card-' + indexItem}
@@ -86,7 +87,6 @@ const PagesCard: React.FC<IProps> = ({
             activeClassName={style['page-active']}
           />
         )}
-
         {!listPages && (
           <IonCardContent>
             No page found with the {isSearchKeywordDID ? 'DID' : 'keyword'}:{' '}

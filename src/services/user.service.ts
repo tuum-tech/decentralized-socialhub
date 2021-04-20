@@ -327,7 +327,7 @@ export class UserService {
     );
 
     if (notifyUser && res.meta.code === 200 && res.data._status === 'OK') {
-      showNotify('Basic info is successfuly saved', 'success');
+      showNotify('User info is successfuly saved', 'success');
     }
   }
 
