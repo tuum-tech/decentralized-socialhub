@@ -7,10 +7,7 @@ import {
   SearchService
 } from 'src/services/search.service';
 import ExploreNav from '../ExploreNav';
-import {
-  IFollowingResponse,
-  ProfileService
-} from 'src/services/profile.service';
+import { ProfileService } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
 import { alertError } from 'src/utils/notify';
 import LoadingIndicator from 'src/components/LoadingIndicator';

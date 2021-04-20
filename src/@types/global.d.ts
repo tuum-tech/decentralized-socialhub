@@ -79,7 +79,7 @@ interface ISessionItem {
   status?: string;
 }
 
-interface LoginCred{
+interface LoginCred {
   linkedin?: string;
   google?: string;
   twitter?: string;
@@ -114,4 +114,36 @@ interface FollowingItem {
 
 interface FollowingDTO {
   items: FollowingItem[];
+}
+
+interface IFollowingResponse {
+  _status?: string;
+  get_following: IGetFollowing;
+}
+
+interface IGetFollowing {
+  items: IFollowingItem[];
+}
+
+interface IFollowingItem {
+  _id?: { $oid: string };
+  created?: { $date: string };
+  did: string;
+  modified?: { $date: string };
+  followers?: string;
+}
+
+interface IFollowerResponse {
+  _status?: string;
+  get_followers: IGetFollowersBody;
+}
+
+interface IGetFollowersBody {
+  items: IFollowerItem[];
+}
+
+interface IFollowerItem {
+  did: string;
+  name: string;
+  followers: string[];
 }

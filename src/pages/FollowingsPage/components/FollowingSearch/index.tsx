@@ -6,10 +6,7 @@ import {
 } from 'src/services/search.service';
 import FollowingTabs from '../FollowingTabs';
 import FollowingHeader from '../FollowingHeader';
-import {
-  IFollowingResponse,
-  ProfileService
-} from 'src/services/profile.service';
+import { ProfileService } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
 import { alertError } from 'src/utils/notify';
 

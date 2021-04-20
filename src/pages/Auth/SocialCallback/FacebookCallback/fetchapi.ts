@@ -36,9 +36,10 @@ export async function requestFacebookId(token: string): Promise<FacebookId> {
   };
 }
 
-
 export async function getUsersWithRegisteredFacebook(facebook: string) {
   let prevUsers = [];
-  prevUsers = await TuumTechScriptService.getUsersWithRegisteredFacebook(facebook);
+  prevUsers = await TuumTechScriptService.getUsersWithRegisteredFacebook(
+    facebook
+  );
   return prevUsers;
 }

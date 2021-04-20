@@ -8,7 +8,11 @@ import PageLoading from 'src/components/layouts/PageLoading';
 import { AccountType, UserService } from 'src/services/user.service';
 
 import { TokenResponse } from './types';
-import { requestGoogleId, requestGoogleToken, getUsersWithRegisteredGoogle } from './fetchapi';
+import {
+  requestGoogleId,
+  requestGoogleToken,
+  getUsersWithRegisteredGoogle
+} from './fetchapi';
 import { AssistService } from 'src/services/assist.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
@@ -21,7 +25,7 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
-   const history = useHistory();
+  const history = useHistory();
   const [credentials, setCredentials] = useState({
     email: '',
     name: '',
@@ -46,25 +50,30 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
         let t = await getToken(code, state);
         let googleId = await requestGoogleId(t.data.request_token);
 
-        let userSession = UserService.GetUserSession()
-        if (userSession){
+        let userSession = UserService.GetUserSession();
+        if (userSession) {
+          let vc = await DidcredsService.generateVerifiableCredential(
+            userSession.did,
+            CredentialType.Google,
+            googleId.email
+          );
 
-          let vc = await DidcredsService.generateVerifiableCredential(userSession.did, CredentialType.Google, googleId.email)
+          let state = await DidDocumentService.getUserDocument(userSession);
 
-          let state = await DidDocumentService.getUserDocument(userSession)
+          await DidService.addVerfiableCredentialToDIDDocument(
+            state.diddocument,
+            vc
+          );
 
-          await DidService.addVerfiableCredentialToDIDDocument(state.diddocument, vc)
+          DidDocumentService.updateUserDocument(state.diddocument);
 
-          DidDocumentService.updateUserDocument(state.diddocument)
-
-          userSession.loginCred!.google! = googleId.email
-         await  UserService.updateSession(userSession)
+          userSession.loginCred!.google! = googleId.email;
+          await UserService.updateSession(userSession);
 
           window.close();
         } else {
-
-          let prevUsers = await getUsersWithRegisteredGoogle(googleId.email)
-          if (prevUsers.length > 0){
+          let prevUsers = await getUsersWithRegisteredGoogle(googleId.email);
+          if (prevUsers.length > 0) {
             history.push({
               pathname: '/associated-profile',
               state: {
@@ -84,10 +93,6 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
               credential: googleId.email
             });
           }
-
-       
-
-         
         }
       }
     })();

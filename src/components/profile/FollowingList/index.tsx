@@ -11,12 +11,7 @@ import {
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import {
-  IFollowingResponse,
-  IFollowingItem,
-  ProfileService,
-  IFollowerResponse
-} from 'src/services/profile.service';
+import { ProfileService } from 'src/services/profile.service';
 import { DidService } from 'src/services/did.service';
 import { alertError } from 'src/utils/notify';
 import styleCards from '../../cards/WidgetCards.module.scss';
@@ -267,14 +262,10 @@ const FollowingList: React.FC<IProps> = ({ did }: IProps) => {
   };
 
   const loadData = async (did: string) => {
-    let list: IFollowingResponse;
-    try {
-      list = await ProfileService.getFollowings(did);
-    } catch (e) {
-      console.log('Could not load users that you follow' + e);
+    let list = (await ProfileService.getFollowings(did)) as IFollowingResponse;
+    if (!list) {
       list = { get_following: { items: [] } };
-      // setError({ hasError: true, errorDescription: 'Could not load users that you follow' });
-      alertError(null, 'Could not load users that you follow');
+      return;
     }
 
     let listDids: string[] = [];

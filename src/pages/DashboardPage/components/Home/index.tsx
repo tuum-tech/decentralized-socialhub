@@ -36,7 +36,10 @@ const DashboardHome: React.FC<DashboardProps> = ({
       <div>
         <br />{' '}
         <ButtonWhite onClick={() => onTutorialStart()}>
-          {sessionItem.tutorialStep && sessionItem.tutorialStep > 1 ? 'Continue' : 'Start'} beginners tutorial (
+          {sessionItem.tutorialStep && sessionItem.tutorialStep > 1
+            ? 'Continue'
+            : 'Start'}{' '}
+          beginners tutorial (
           {sessionItem.tutorialStep ? sessionItem.tutorialStep : 1} / 4)
         </ButtonWhite>
       </div>
@@ -68,7 +71,11 @@ const DashboardHome: React.FC<DashboardProps> = ({
           )}
           <ProfileCompletionCard title="Profile Completion" />
           <BadgesCard title="Badges" />
-          <SocialProfilesCard  diddocument={didDocument} showManageButton={false} sessionItem={sessionItem} />
+          <SocialProfilesCard
+            diddocument={didDocument}
+            showManageButton={false}
+            sessionItem={sessionItem}
+          />
         </IonCol>
       </IonRow>
     </IonGrid>

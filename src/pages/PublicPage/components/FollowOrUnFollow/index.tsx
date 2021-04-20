@@ -37,7 +37,7 @@ const FollowOrUnFollowButton: React.FC<IProps> = ({ did, userDid }: IProps) => {
         following.get_following.items
       ) {
         const followingDids = following.get_following.items.map(
-          item => item.did
+          (item: any) => item.did
         );
 
         setText(followingDids.includes(did) ? 'Unfollow' : 'Follow');
@@ -45,7 +45,7 @@ const FollowOrUnFollowButton: React.FC<IProps> = ({ did, userDid }: IProps) => {
       setLoading(false);
       return;
     } catch (e) {
-      alertError(null, 'Could not load users that you follow');
+      console.log('====>error', e);
     }
     setLoading(false);
   };
