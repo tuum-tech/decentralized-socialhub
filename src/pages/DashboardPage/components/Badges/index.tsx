@@ -16,9 +16,11 @@ const DashboardBadges: React.FC = () => {
             title="NOT READY YET"
             content="Please refrain from testing this page for this version"
           />
-          {/* <BadgesCard title="Social" /> */}
+          <BadgesCard title="Social" />
         </IonCol>
-        <IonCol size="8">{/* <OverviewCard /> */}</IonCol>
+        <IonCol size="8">
+          <OverviewCard />
+        </IonCol>
       </IonRow>
     </IonGrid>
   );

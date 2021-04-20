@@ -5,11 +5,11 @@ const Container = styled.div`
   height: 5em;
   padding: 16px;
   background: white;
-
+  display: flex;
+  align-items: center;
   img {
     width: 100%;
     max-width: 9em;
-    margin: 16px auto;
   }
 `;
 
