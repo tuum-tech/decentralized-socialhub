@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { IonItem, IonList, IonSpinner } from '@ionic/react';
 import style from './DidCard.module.scss';
-import SkeletonAvatar from '../avatars/SkeletonAvatar';
+
+import Avatar from '../Avatar';
 import { ProfileService } from 'src/services/profile.service';
 import { Link } from 'react-router-dom';
 import { UserService } from 'src/services/user.service';
@@ -77,15 +78,11 @@ const DidCard: React.FC<Props> = ({
     >
       {/* {loading && <LoadingIndicator loadingText="Creating new profie now..." />} */}
       <IonItem className={style['badge-item']}>
-        <div>
-          <SkeletonAvatar />
-          <img
-            src={avatar}
-            width="80"
-            height="80"
-            className={style['clip-avatar-svg']}
-          />
-        </div>
+        {type === 'user' ? (
+          <Avatar did={did} />
+        ) : (
+          <img src={avatar} width={80} height={80} />
+        )}
         <div className={style['card-data']}>
           <Link className={style['name-value']} to={getLink(did)}>
             {name}

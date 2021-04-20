@@ -12,6 +12,7 @@ import {
 import EducationCard from 'src/components/cards/EducationCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
 import AboutCard from 'src/components/cards/AboutCard';
+import AvatarChangeCard from 'src/components/cards/AvatarChangeCard';
 
 import BasicCard from '../BasicCard';
 import TemplateManagerCard from '../TemplateManagerCard';
@@ -53,6 +54,7 @@ const ProfileEditor: React.FC = () => {
     }, 1000);
     return () => clearTimeout(timer);
   };
+
   const refreshDidDocument = async () => {
     let userSession = UserService.GetUserSession();
     if (!userSession) {
@@ -85,6 +87,7 @@ const ProfileEditor: React.FC = () => {
             <TemplateManagerCard sessionItem={userInfo} />
           </IonCol>
           <IonCol size="8">
+            <AvatarChangeCard />
             {!error && loaded ? (
               <BasicCard
                 sessionItem={userInfo}

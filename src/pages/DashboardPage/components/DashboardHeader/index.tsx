@@ -6,11 +6,11 @@ import { RequestStatus } from 'src/services/assist.service';
 import { ProfileName } from 'src/components/texts';
 import DidSnippet from 'src/components/DidSnippet';
 import { FollowButton } from 'src/components/buttons';
+import Avatar from 'src/components/Avatar';
 
 import PublishingLabel from '../PublishingLabel';
 
 import style from './style.module.scss';
-import photo from '../../../../assets/dp.jpeg';
 
 interface IProps {
   profile?: ProfileDTO;
@@ -31,15 +31,7 @@ const DashboardProfileHeader: React.FC<IProps> = ({
     <IonGrid className={style['profileheader']}>
       <IonRow className={style['header']}>
         <IonCol size="auto">
-          <img
-            src={photo}
-            className={
-              publishStatus !== RequestStatus.Completed
-                ? style['profile-img-publishing']
-                : style['profile-img']
-            }
-            alt="profile"
-          />
+          <Avatar did={sessionItem.did} />
         </IonCol>
         <IonCol size="8">
           <IonGrid>

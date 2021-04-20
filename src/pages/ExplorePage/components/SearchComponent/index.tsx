@@ -141,7 +141,6 @@ const SearchComponent: React.FC = () => {
               placeholder="Search people, pages by name or DID"
               className={style['search-input']}
             ></IonSearchbar>
-            {/* <IonSpinner /> */}
           </IonContent>
           <ExploreNav
             people={filteredUsers.get_users}

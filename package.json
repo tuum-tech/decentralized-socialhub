@@ -11,6 +11,7 @@
     "@types/toastr": "^2.1.38",
     "bootstrap": "^4.6.0",
     "clsx": "^1.1.1",
+    "compress-base64": "^1.0.2",
     "connected-react-router": "^6.8.0",
     "crypto-js": "^4.0.0",
     "guid-typescript": "^1.0.9",
