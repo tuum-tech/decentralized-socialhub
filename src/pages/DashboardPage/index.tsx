@@ -20,15 +20,17 @@ import Logo from 'src/components/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 
 import { UserService } from 'src/services/user.service';
+import { AssistService, RequestStatus } from 'src/services/assist.service';
 import LoadingIndicator from 'src/components/LoadingIndicator';
 import {
   ProfileService,
   defaultUserInfo,
   defaultFullProfile
 } from 'src/services/profile.service';
+import { loginCredSyn } from 'src/utils/socialprofile';
 
 import TutorialComponent from './components/Tutorial';
-import DashboardContent from './components/Content';
+import DashboardContent from './components/DashboardContent';
 import OnBoarding from './components/OnBoarding';
 import DashboardHeader from './components/DashboardHeader';
 import { DidDocumentService } from 'src/services/diddocument.service';
@@ -50,24 +52,66 @@ const ProfilePage = () => {
   const [loadingText, setLoadingText] = useState('');
   const [userInfo, setUserInfo] = useState<ISessionItem>(defaultUserInfo);
   const [full_profile, setfull_profile] = useState(defaultFullProfile);
-  const [onboardingCompleted, setOnboardingStatus] = useState(true);
   const [didDocument, setDidDocument] = useState({});
+  const [publishStatus, setPublishStatus] = useState(RequestStatus.Pending);
+  const [onBoardVisible, setOnBoardVisible] = useState(false);
   const history = useHistory();
-  
-  const setTimer = () => {
+
+  const setTimerForDid = () => {
     const timer = setTimeout(async () => {
       await refreshDidDocument();
-      setTimer();
+      setTimerForDid();
     }, 1000);
     return () => clearTimeout(timer);
   };
+
+  const setTimerForStatus = () => {
+    const timer = setTimeout(async () => {
+      await refreshStatus();
+      setTimerForStatus();
+    }, 5000);
+    return () => clearTimeout(timer);
+  };
+
   const refreshDidDocument = async () => {
     let userSession = UserService.GetUserSession();
     if (!userSession) {
       return;
     }
-    let documentState = await DidDocumentService.getUserDocument(userSession)
-    setDidDocument(documentState.diddocument)
+    let documentState = await DidDocumentService.getUserDocument(userSession);
+    await loginCredSyn(userSession, documentState.diddocument);
+    setDidDocument(documentState.diddocument);
+  };
+
+  const refreshStatus = async () => {
+    let userSession = UserService.GetUserSession();
+    if (!userSession || !userSession.did) return;
+
+    let publishWaiting = AssistService.getPublishStatusTask(userSession.did);
+
+    if (!publishWaiting) return;
+
+    let actual = await AssistService.refreshRequestStatus(
+      publishWaiting.confirmationId,
+      userSession.did
+    );
+
+    setPublishStatus(actual.requestStatus);
+
+    if (actual.requestStatus === RequestStatus.Completed) {
+      AssistService.removePublishTask(userSession.did);
+      await updateUserToComplete();
+      return;
+    }
+  };
+
+  const updateUserToComplete = async () => {
+    let userSession = UserService.GetUserSession();
+    if (userSession) {
+      userSession.isDIDPublished = true;
+      UserService.updateSession(userSession);
+      await DidDocumentService.reloadUserDocument();
+    }
   };
 
   const retriveProfile = async () => {
@@ -95,10 +139,12 @@ const ProfilePage = () => {
       }
       await refreshDidDocument();
       setUserInfo(userSession);
-      setOnboardingStatus(userSession.onBoardingCompleted);
-      
-     
-
+      setPublishStatus(
+        userSession.isDIDPublished
+          ? RequestStatus.Completed
+          : RequestStatus.Pending
+      );
+      setOnBoardVisible(true);
       if (
         userSession.onBoardingCompleted &&
         userSession.tutorialStep === 4 &&
@@ -111,26 +157,28 @@ const ProfilePage = () => {
         }, ExporeTime);
       }
     })();
-    setTimer();
+    setTimerForStatus();
+    setTimerForDid();
   }, []);
 
   useEffect(() => {
     (async () => {
       let userSession = UserService.GetUserSession();
-      if (
-        !userSession ||
-        !userSession.tutorialStep ||
-        userSession.tutorialStep !== 4 ||
-        !userSession.onBoardingCompleted
-      ) {
-        return;
-      } else if (history.location.pathname === '/profile') {
-        await retriveProfile();
+      if (!userSession) return;
+      if (history.location.pathname === '/profile') {
+        setOnBoardVisible(true);
+        if (
+          userSession.tutorialStep &&
+          userSession.tutorialStep === 4 &&
+          userSession.onBoardingCompleted
+        ) {
+          await retriveProfile();
+        }
       }
     })();
   }, [history.location.pathname]);
 
-  if (!onboardingCompleted) {
+  if (userInfo.tutorialStep < 4 && onBoardVisible) {
     return (
       <OnBoarding
         completed={async () => {
@@ -139,7 +187,8 @@ const ProfilePage = () => {
 
           user.onBoardingCompleted = true;
           await UserService.updateSession(user);
-          setOnboardingStatus(true);
+          setUserInfo(user);
+          setOnBoardVisible(false);
           if (!willExpire) {
             setWillExpire(true);
             setTimeout(() => {
@@ -148,6 +197,8 @@ const ProfilePage = () => {
             }, ExporeTime);
           }
         }}
+        sessionItem={userInfo}
+        publishStatus={publishStatus}
       />
     );
   }
@@ -164,11 +215,13 @@ const ProfilePage = () => {
               <Logo />
               <LeftSideMenu />
             </IonCol>
-            {/* <IonCol size='7' className={style['center-panel']}>
-              <ProfileComponent profile={profile} />
-            </IonCol> */}
             <IonCol size="10" className={style['right-panel']}>
-              <DashboardHeader profile={full_profile} sessionItem={userInfo} />
+              <DashboardHeader
+                profile={full_profile}
+                sessionItem={userInfo}
+                publishStatus={publishStatus}
+              />
+
               <DashboardContent
                 onTutorialStart={() => {
                   setShowTutorial(true);
@@ -177,15 +230,14 @@ const ProfilePage = () => {
                 sessionItem={userInfo}
                 didDocument={didDocument}
               />
-              {/* <StartService /> */}
             </IonCol>
           </IonRow>
         </IonGrid>
 
         <TutorialModal
           isOpen={showTutorial}
-          cssClass={style['tutorialpage']}
           backdropDismiss={false}
+          cssClass={style['tutorialpage']}
         >
           <TutorialComponent
             onClose={() => {

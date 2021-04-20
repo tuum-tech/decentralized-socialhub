@@ -63,6 +63,7 @@ const GenerateDidPage: React.FC<RouteComponentProps<
             });
           }
         }
+        console.log(props.location.state);
         setSession(props.location.state);
       }
     })();

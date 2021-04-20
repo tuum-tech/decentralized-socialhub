@@ -15,6 +15,11 @@ import style from './PeopleCard.module.scss';
 import DidCard from './DidCard';
 import { alertError } from 'src/utils/notify';
 
+export interface IFollowingResponse {
+  _status?: string;
+  get_following: IGetFollowing;
+}
+
 interface IProps {
   people?: PeopleDTO;
   following: FollowingDTO;
@@ -69,13 +74,14 @@ const PeopleCard: React.FC<IProps> = ({
 
   useEffect(() => {
     (async () => {
-      // let user = UserService.GetUserSession();
       let refreshFollowing: FollowingDTO = following;
 
       try {
         if (userInfo && userInfo.did) {
           //Get Following
-          const response = await ProfileService.getFollowings(userInfo.did);
+          const response = (await ProfileService.getFollowings(
+            userInfo.did
+          )) as IFollowingResponse;
           refreshFollowing = response.get_following;
         }
       } catch (e) {

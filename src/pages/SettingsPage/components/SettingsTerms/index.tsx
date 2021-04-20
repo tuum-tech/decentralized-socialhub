@@ -4,11 +4,13 @@ import {
   IonCard,
   IonCardHeader,
   IonCardTitle,
+  IonCardContent,
   IonGrid,
   IonRow,
   IonContent
 } from '@ionic/react';
 import style from './style.module.scss';
+import Content from 'src/pages/TermsPage/components/Content';
 
 const SettingsTerms: React.FC = () => {
   return (
@@ -22,6 +24,9 @@ const SettingsTerms: React.FC = () => {
                   Terms of Use
                 </IonCardTitle>
               </IonCardHeader>
+              <IonCardContent>
+                <Content />
+              </IonCardContent>
             </IonCard>
           </IonCol>
         </IonRow>

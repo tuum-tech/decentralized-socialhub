@@ -27,6 +27,12 @@ The following dependent services are now started:
 - [Vouch RestAPI Backend](https://github.com/tuum-tech/vouch-restapi-backend)
 - [DIDcreds Validator Service](https://github.com/tuum-tech/didcreds-validator)
 
+## Profile API Service
+
+You need to run Profile API service before you can start Profile app
+
+- [Profile API Service](https://github.com/tuum-tech/profile-api-service)
+
 ## ALPHA VERSION
 
 Before execute alpha version, you have to:

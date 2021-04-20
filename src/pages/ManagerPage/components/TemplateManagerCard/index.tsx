@@ -47,7 +47,9 @@ const TemplateManagerCard: React.FC<IProps> = ({ sessionItem }: IProps) => {
           on Dashboard.
         </IonText>
         <Divider />
-        <ProfileTemplateManager sessionItem={sessionItem} />
+        {sessionItem && sessionItem.did && (
+          <ProfileTemplateManager sessionItem={sessionItem} />
+        )}
       </IonCardContent>
     </IonCard>
   );

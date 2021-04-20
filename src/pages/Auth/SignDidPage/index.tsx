@@ -67,14 +67,7 @@ const SignDidPage: React.FC<RouteComponentProps<
             if (res) {
               history.push({
                 pathname: '/set-password',
-                state: {
-                  hiveHost: res.hiveHost,
-                  userToken: res.userToken,
-                  did: res.did,
-                  name: res.name,
-                  accountType: res.accountType,
-                  isDIDPublished: res.isDIDPublished
-                }
+                state: res
               });
             } else {
               history.push({

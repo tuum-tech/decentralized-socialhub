@@ -56,20 +56,27 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
         accountType,
         did,
         name,
-        isDIDPublished
+        isDIDPublished,
+        loginCred
       } = props.location.state;
-      setSession({
+
+      let newSession = {
         hiveHost,
         userToken,
         accountType,
         did,
         name,
         isDIDPublished,
+        loginCred,
         mnemonics: '',
         passhash: '',
         onBoardingCompleted: false,
         tutorialStep: 1
-      });
+      };
+
+      console.log('newSession', JSON.stringify(newSession));
+
+      setSession(newSession);
     }
   });
 
@@ -77,8 +84,8 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
     if (!session) return;
     setLoading(true);
     await UserService.LockWithDIDAndPwd(session, password);
-    window.location.href = '/profile';
-    setLoading(false);
+    // window.location.href = '/profile';
+    // setLoading(false);
   };
 
   return (

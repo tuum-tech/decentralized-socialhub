@@ -80,6 +80,7 @@ export class AssistService {
   ): IPublishDocumentResponse | undefined => {
     let didKey = did.replace('did:elastos:', '');
     let item = window.localStorage.getItem(`publish_${didKey}`);
+
     if (!item) return;
     return JSON.parse(item);
   };

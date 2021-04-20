@@ -1,0 +1,16 @@
+.btn-primary {
+  width: 150px;
+  border-radius: 8px;
+  padding: 12.68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  height: 45.63px;
+
+  & ion-text {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 14px;
+  }
+}

@@ -115,7 +115,7 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
                 disabled={true}
                 label="Email"
                 name="email"
-                value={currentBasicDTO.email}
+                value={currentBasicDTO.loginCred!.email}
                 onChange={handleChange}
               />
             </IonCol>

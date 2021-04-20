@@ -1,4 +1,5 @@
 import request, { BaseplateResp } from 'src/baseplate/request';
+import { TuumTechScriptService } from 'src/services/script.service';
 
 export function requestTwitterToken(
   code: string,
@@ -24,4 +25,12 @@ export function requestTwitterToken(
       body: body
     }
   );
+}
+
+export async function getUsersWithRegisteredTwitter(twitter: string) {
+  let prevUsers = [];
+  prevUsers = await TuumTechScriptService.getUsersWithRegisteredTwitter(
+    twitter
+  );
+  return prevUsers;
 }

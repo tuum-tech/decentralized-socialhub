@@ -1,103 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { IonGrid, IonRow, IonCol } from '@ionic/react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
 
-import { UserService } from 'src/services/user.service';
-import { AssistService, RequestStatus } from 'src/services/assist.service';
-import { DidDocumentService } from 'src/services/diddocument.service';
+import { RequestStatus } from 'src/services/assist.service';
 import { ProfileName } from 'src/components/texts';
 import DidSnippet from 'src/components/DidSnippet';
 import { FollowButton } from 'src/components/buttons';
+import Avatar from 'src/components/Avatar';
+
+import PublishingLabel from '../PublishingLabel';
 
 import style from './style.module.scss';
-import photo from '../../../../assets/dp.jpeg';
 
 interface IProps {
   profile?: ProfileDTO;
   sessionItem: ISessionItem;
+  publishStatus: RequestStatus;
 }
-
-const PublishingLabel = styled.span`
-  font-family: 'SF Pro Display';
-  font-size: 9px;
-  font-weight: bold;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1.62;
-  letter-spacing: normal;
-  text-align: left;
-  color: #ffffff;
-  padding: 3px 5px 3px 7px;
-  border-radius: 8px;
-  background-color: #ff5a5a;
-`;
 
 const DashboardProfileHeader: React.FC<IProps> = ({
   profile,
-  sessionItem
+  sessionItem,
+  publishStatus
 }: IProps) => {
   const getPublicProfileLink = (): string => {
     return `/did/${sessionItem.did}`;
   };
-  const [publishStatus, setPublishStatus] = useState('');
-  const setTimer = () => {
-    const timer = setTimeout(async () => {
-      await refreshStatus();
-      setTimer();
-    }, 1000);
-    return () => clearTimeout(timer);
-  };
-
-  const refreshStatus = async () => {
-    if (!sessionItem || !sessionItem.did) return;
-
-    let publishWaiting = AssistService.getPublishStatusTask(sessionItem.did);
-
-    if (!publishWaiting) return;
-
-    let actual = await AssistService.refreshRequestStatus(
-      publishWaiting.confirmationId,
-      sessionItem.did
-    );
-    if (actual.requestStatus === RequestStatus.Completed) {
-      setPublishStatus('');
-      AssistService.removePublishTask(sessionItem.did);
-      await updateUserToComplete();
-      return;
-    }
-    setPublishStatus(actual.requestStatus);
-  };
-
-  const updateUserToComplete = async () => {
-    let userSession = UserService.GetUserSession();
-    if (userSession) {
-      userSession.isDIDPublished = true;
-      UserService.updateSession(userSession);
-      await DidDocumentService.reloadUserDocument();
-    }
-  };
-
-  useEffect(() => {
-    (async () => {
-      await refreshStatus();
-    })();
-    setTimer();
-  }, [sessionItem]);
 
   return (
     <IonGrid className={style['profileheader']}>
       <IonRow className={style['header']}>
         <IonCol size="auto">
-          <img
-            src={photo}
-            className={
-              publishStatus !== ''
-                ? style['profile-img-publishing']
-                : style['profile-img']
-            }
-            alt="profile"
-          />
+          <Avatar did={sessionItem.did} />
         </IonCol>
         <IonCol size="8">
           <IonGrid>
@@ -106,11 +40,7 @@ const DashboardProfileHeader: React.FC<IProps> = ({
                 <ProfileName>{sessionItem.name}</ProfileName>
               </IonCol>
               <IonCol>
-                {publishStatus !== '' ? (
-                  <PublishingLabel>{publishStatus}&nbsp;</PublishingLabel>
-                ) : (
-                  ''
-                )}
+                <PublishingLabel status={publishStatus} />
               </IonCol>
             </IonRow>
             <IonRow className="ion-justify-content-start">

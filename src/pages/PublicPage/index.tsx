@@ -1,18 +1,9 @@
-import {
-  IonPage,
-  IonGrid,
-  IonRow,
-  IonContent,
-  IonCol,
-  IonCard,
-  IonCardTitle,
-  IonCardContent,
-  IonCardHeader
-} from '@ionic/react';
+import { IonPage, IonGrid, IonRow, IonContent, IonCol } from '@ionic/react';
 import { RouteComponentProps } from 'react-router';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
+import { DidDocumentService } from 'src/services/diddocument.service';
 import PublicNavbar from './components/PublicNavbar';
 import { UserService } from 'src/services/user.service';
 import PageLoading from 'src/components/layouts/PageLoading';
@@ -21,14 +12,14 @@ import {
   defaultUserInfo,
   defaultFullProfile
 } from 'src/services/profile.service';
-import ProfileHeader from './components/ProfileHeader';
 import AboutCard from 'src/components/cards/AboutCard';
 import EducationCard from 'src/components/cards/EducationCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
-// import FollowersWidget from '../FollowersWidget';
-import FollowingList from './components/FollowingList';
+import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
+
+import FollowCards from './components/FollowCards';
 import PublicProfileTabs from './components/PublicProfileTabs';
-import SocialProfiles from './components/SocialProfiles';
+import ProfileHeader from './components/ProfileHeader';
 
 import style from './style.module.scss';
 
@@ -39,6 +30,7 @@ const ContentRow = styled(IonRow)`
 
 const LeftContent = styled.div`
   width: calc(100% - 300px);
+  padding-right: 22px;
 `;
 
 const RightContent = styled.div`
@@ -55,11 +47,24 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   const [loading, setLoading] = useState(true);
   const [signedInUser, setSignedInUser] = useState(defaultUserInfo);
   const [publicUser, setPublicUser] = useState<ISessionItem>(defaultUserInfo);
+  const [didDocument, setDidDocument] = useState<any>({});
   const [publicUserProfile, setPublicUserProfile] = useState(
     defaultFullProfile
   );
 
   let did: string = props.match.params.did;
+
+  // const setTimer = () => {
+  //   const timer = setTimeout(async () => {
+  //     await refreshDidDocument();
+  //     setTimer();
+  //   }, 1000);
+  //   return () => clearTimeout(timer);
+  // };
+  // const refreshDidDocument = async () => {
+  //   let documentState = await DidDocumentService.getUserDocumentByDid(did);
+  //   setDidDocument(documentState.diddocument);
+  // };
 
   useEffect(() => {
     (async () => {
@@ -81,6 +86,9 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
         if (sUser && sUser.did !== '') {
           setSignedInUser(sUser);
         }
+        let documentState = await DidDocumentService.getUserDocumentByDid(did);
+        setDidDocument(documentState.diddocument);
+        // setTimer();
       } catch (error) {
         // console.log('======>error', error);
       }
@@ -90,7 +98,6 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   }, []);
 
   const [scrollTop, setScrollTop] = useState(0);
-  const [mode, setMode] = useState('normal');
 
   const contentRef = useRef<HTMLIonContentElement | null>(null);
   const aboutRef = useRef<HTMLDivElement | null>(null);
@@ -149,10 +156,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
 
                   {publicUserProfile.basicDTO.isEnabled === true ? (
                     <>
-                      <PublicProfileTabs
-                        mode={mode}
-                        scrollToPosition={scrollToElement}
-                      />
+                      <PublicProfileTabs scrollToPosition={scrollToElement} />
                       <IonGrid className={style['scroll']}>
                         <IonRow className="ion-justify-content-center">
                           <IonCol size="12">
@@ -185,20 +189,17 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
                                   </div>
                                 </LeftContent>
                                 <RightContent>
-                                  {/* /sProfile should be a real data */}
-                                  <SocialProfiles sProfile={['linkedin']} />
+                                  {didDocument && didDocument.id && (
+                                    <SocialProfilesCard
+                                      didDocument={didDocument}
+                                      sessionItem={publicUser}
+                                    />
+                                  )}
 
-                                  <FollowingList
-                                    did={publicUserProfile.basicDTO.did}
+                                  <FollowCards
+                                    did={publicUser.did}
+                                    signed={signedInUser.did !== ''}
                                   />
-                                  {/* FollowersWidget */}
-                                  <IonCard className={style['overview']}>
-                                    <IonCardHeader>
-                                      <IonCardTitle>Followers</IonCardTitle>
-                                    </IonCardHeader>
-
-                                    <IonCardContent></IonCardContent>
-                                  </IonCard>
                                 </RightContent>
                               </IonRow>
                             </IonGrid>

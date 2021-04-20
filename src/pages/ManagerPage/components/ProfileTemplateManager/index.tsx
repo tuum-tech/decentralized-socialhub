@@ -10,7 +10,7 @@ import {
 import styled from 'styled-components';
 
 import { ProfileName } from 'src/components/texts';
-import photo from '../../../../assets/dp.jpeg';
+import Avatar from 'src/components/Avatar';
 import style from './style.module.scss';
 
 const Divider = styled.hr`
@@ -57,7 +57,7 @@ const ProfileTemplateManager: React.FC<IProps> = ({ sessionItem }: IProps) => {
       <IonGrid>
         <IonRow className={style['header']}>
           <IonCol size="auto">
-            <img src={photo} className={style['profile-img']} alt="profile" />
+            <Avatar did={sessionItem.did} />
           </IonCol>
           <IonCol size="8">
             <IonGrid>
@@ -70,7 +70,7 @@ const ProfileTemplateManager: React.FC<IProps> = ({ sessionItem }: IProps) => {
                   {sessionItem.onBoardingCompleted &&
                   sessionItem.tutorialStep === 4
                     ? 'ready'
-                    : 'being published'}
+                    : 'not yet ready'}
                 </ProfileStatus>
               </IonRow>
             </IonGrid>

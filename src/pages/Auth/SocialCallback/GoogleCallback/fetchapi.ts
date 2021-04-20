@@ -1,4 +1,5 @@
 import request, { BaseplateResp } from 'src/baseplate/request';
+import { TuumTechScriptService } from 'src/services/script.service';
 import { GoogleId } from './types';
 
 export function requestGoogleToken(
@@ -33,4 +34,10 @@ export async function requestGoogleId(token: string): Promise<GoogleId> {
     email: json.email,
     credential: json.id
   };
+}
+
+export async function getUsersWithRegisteredGoogle(email: string) {
+  let prevUsers = [];
+  prevUsers = await TuumTechScriptService.getUsersWithRegisteredGoogle(email);
+  return prevUsers;
 }

@@ -1,5 +1,7 @@
 import { IonButton } from '@ionic/react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import { AccountType, UserService } from 'src/services/user.service';
 
 import SecurityWordsView from '../SecurityWords/SecurityWordsView';
 import SecurityWordsValidate from '../SecurityWords/SecurityWordsValidate';
@@ -17,6 +19,17 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
   const [isOnError, setIsOnError] = useState(false);
 
   const [isVerifying, setIsVerifying] = useState(false);
+
+  useEffect(() => {
+    if (isVerifying) {
+      let userSession = UserService.GetUserSession();
+      if (userSession && userSession.accountType != AccountType.DID) {
+      } else {
+        onContinue();
+        return;
+      }
+    }
+  }, [isVerifying]);
 
   const viewWords = () => {
     return (
@@ -90,12 +103,21 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
     );
   };
 
-  const displayStep = () => {
-    if (isVerifying) return verifyWords();
-    return viewWords();
-  };
+  let userSession = UserService.GetUserSession();
 
-  return <div className={style['tutorial-step-2']}>{displayStep()}</div>;
+  return (
+    <div className={style['tutorial-step-2']}>
+      {isVerifying ? (
+        <>
+          {userSession &&
+            userSession.accountType != AccountType.DID &&
+            verifyWords()}
+        </>
+      ) : (
+        viewWords()
+      )}
+    </div>
+  );
 };
 
 export default TutorialStep2Component;

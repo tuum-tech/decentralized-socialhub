@@ -12,12 +12,13 @@ import {
 import EducationCard from 'src/components/cards/EducationCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
 import AboutCard from 'src/components/cards/AboutCard';
+import AvatarChangeCard from 'src/components/cards/AvatarChangeCard';
 
 import BasicCard from '../BasicCard';
 import TemplateManagerCard from '../TemplateManagerCard';
 import style from './style.module.scss';
 import { DidDocumentService } from 'src/services/diddocument.service';
-import SocialProfilesCard from 'src/components/cards/SocialProfilesCard';
+import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
 
 const ProfileEditor: React.FC = () => {
   const [error, setError] = useState(false);
@@ -47,17 +48,20 @@ const ProfileEditor: React.FC = () => {
   const setTimer = () => {
     const timer = setTimeout(async () => {
       await refreshDidDocument();
+      let instance = UserService.GetUserSession();
+      if (instance && instance.userToken) setUserInfo(instance);
       setTimer();
     }, 1000);
     return () => clearTimeout(timer);
   };
+
   const refreshDidDocument = async () => {
     let userSession = UserService.GetUserSession();
     if (!userSession) {
       return;
     }
-    let documentState = await DidDocumentService.getUserDocument(userSession)
-    setDidDocument(documentState.diddocument)
+    let documentState = await DidDocumentService.getUserDocument(userSession);
+    setDidDocument(documentState.diddocument);
   };
 
   useEffect(() => {
@@ -83,6 +87,7 @@ const ProfileEditor: React.FC = () => {
             <TemplateManagerCard sessionItem={userInfo} />
           </IonCol>
           <IonCol size="8">
+            <AvatarChangeCard />
             {!error && loaded ? (
               <BasicCard
                 sessionItem={userInfo}
@@ -112,9 +117,13 @@ const ProfileEditor: React.FC = () => {
                     }}
                   />
                 )}
-               
-               <SocialProfilesCard  diddocument={didDocument} showManageButton={true} />
-                
+
+                <SocialProfilesCard
+                  diddocument={didDocument}
+                  showManageButton={true}
+                  sessionItem={userInfo}
+                />
+
                 {profile && profile.educationDTO && (
                   <EducationCard
                     educationDTO={profile.educationDTO}

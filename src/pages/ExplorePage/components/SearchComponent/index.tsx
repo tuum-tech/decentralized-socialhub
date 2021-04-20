@@ -7,12 +7,10 @@ import {
   SearchService
 } from 'src/services/search.service';
 import ExploreNav from '../ExploreNav';
-import {
-  IFollowingResponse,
-  ProfileService
-} from 'src/services/profile.service';
+import { ProfileService } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
 import { alertError } from 'src/utils/notify';
+import LoadingIndicator from 'src/components/LoadingIndicator';
 
 const SearchComponent: React.FC = () => {
   const [filteredUniversities, setFilteredUniversities] = useState<
@@ -33,6 +31,7 @@ const SearchComponent: React.FC = () => {
 
   const [searchQuery, setSearchQuery] = useState('');
 
+  const [isLoading, setIsLoading] = useState(true);
   // ID text strings within Elastos DID is an ID Sidechain address encoded
   // using Bitcoin-style Base58 and starting with the letter "i",
   // such asicJ4z2DULrHEzYSvjKNJpKyhqFDxvYV7pN. The DID text string is case sensitive.
@@ -93,7 +92,9 @@ const SearchComponent: React.FC = () => {
 
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       await loadData();
+      setIsLoading(false);
     })();
   }, [searchService]);
 
@@ -116,7 +117,9 @@ const SearchComponent: React.FC = () => {
         invokeSearch(searchQuery);
       } else if (searchQuery === '') {
         setSearchQuery('');
+        setIsLoading(true);
         await loadData();
+        setIsLoading(false);
       }
     })();
   }, [searchQuery]);
@@ -127,22 +130,29 @@ const SearchComponent: React.FC = () => {
 
   return (
     <>
-      <IonContent className={style['searchcomponent']}>
-        <IonSearchbar
-          value={searchQuery}
-          onIonChange={e => search(e)}
-          placeholder="Search people, pages by name or DID"
-          className={style['search-input']}
-        ></IonSearchbar>
-        {/* <IonSpinner /> */}
-      </IonContent>
-      <ExploreNav
-        people={filteredUsers.get_users}
-        following={listFollowing.get_following}
-        pages={filteredUniversities && filteredUniversities.get_universities}
-        searchKeyword={searchQuery}
-        isSearchKeywordDID={isDID(searchQuery)}
-      />
+      {isLoading ? (
+        <LoadingIndicator loadingText="Loading data..." />
+      ) : (
+        <>
+          <IonContent className={style['searchcomponent']}>
+            <IonSearchbar
+              value={searchQuery}
+              onIonChange={e => search(e)}
+              placeholder="Search people, pages by name or DID"
+              className={style['search-input']}
+            ></IonSearchbar>
+          </IonContent>
+          <ExploreNav
+            people={filteredUsers.get_users}
+            following={listFollowing.get_following}
+            pages={
+              filteredUniversities && filteredUniversities.get_universities
+            }
+            searchKeyword={searchQuery}
+            isSearchKeywordDID={isDID(searchQuery)}
+          />
+        </>
+      )}
     </>
   );
 };

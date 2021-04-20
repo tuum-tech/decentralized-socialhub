@@ -121,14 +121,14 @@ const TodoList: React.FC<IProps> = ({
           CollapsedTodos.length > 0 &&
           CollapsedTodos.map((text: string) => renderTodoLitem(text))}
       </IonGrid>
-      {targetList.length > 5 && (
+      {/* {targetList.length > 3 && (
         <button
           onClick={() => setShowMore(!showMore)}
           className={style['btn-expand']}
         >
           {showMore ? 'Collapse' : 'Expand All'}
         </button>
-      )}
+      )} */}
     </div>
   );
 };

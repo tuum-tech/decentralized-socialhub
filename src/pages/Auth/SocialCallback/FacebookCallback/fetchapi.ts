@@ -1,4 +1,5 @@
 import request, { BaseplateResp } from 'src/baseplate/request';
+import { TuumTechScriptService } from 'src/services/script.service';
 import { FacebookId } from './types';
 
 export function requestFacebookToken(
@@ -33,4 +34,12 @@ export async function requestFacebookId(token: string): Promise<FacebookId> {
     credential: json.name,
     email: uniqueEmail.toLocaleLowerCase()
   };
+}
+
+export async function getUsersWithRegisteredFacebook(facebook: string) {
+  let prevUsers = [];
+  prevUsers = await TuumTechScriptService.getUsersWithRegisteredFacebook(
+    facebook
+  );
+  return prevUsers;
 }

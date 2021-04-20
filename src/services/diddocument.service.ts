@@ -37,8 +37,10 @@ export class DidDocumentService {
     EventsService.trigger(this.DOCUMENT_CHANGE_EVENT, documentstate);
   }
 
-  private static getDocumentState(): IDIDDocumentState | null {
-    let json = window.localStorage.getItem(this.DIDDOCUMENT_KEY);
+  private static getDocumentState(userDID: string): IDIDDocumentState | null {
+    let json = window.localStorage.getItem(
+      `${this.DIDDOCUMENT_KEY}_${userDID.replace('did:elastos:', '')}`
+    );
 
     if (!json) return null;
     return JSON.parse(json);
@@ -46,7 +48,13 @@ export class DidDocumentService {
 
   private static setDocumentState(documentState: IDIDDocumentState) {
     let json = JSON.stringify(documentState);
-    window.localStorage.setItem(this.DIDDOCUMENT_KEY, json);
+    window.localStorage.setItem(
+      `${this.DIDDOCUMENT_KEY}_${documentState.diddocument.id.replace(
+        'did:elastos:',
+        ''
+      )}`,
+      json
+    );
     this.triggerDocumentChangeEvent(documentState);
   }
 
@@ -59,12 +67,18 @@ export class DidDocumentService {
   static async getUserDocument(
     userSession: ISessionItem
   ): Promise<IDIDDocumentState> {
-    let documentState = this.getDocumentState();
+    let documentState = this.getDocumentState(userSession.did);
     if (documentState) return documentState;
 
     documentState = await this.loadFromBlockchain(userSession.did);
     this.setDocumentState(documentState);
 
+    return documentState;
+  }
+
+  static async getUserDocumentByDid(did: string): Promise<IDIDDocumentState> {
+    const documentState = await this.loadFromBlockchain(did);
+    // this.setDocumentState(documentState);
     return documentState;
   }
 
@@ -107,7 +121,6 @@ export class DidDocumentService {
 
     let userDid = await DidService.loadDid(userSession.mnemonics);
     let signedDocument = DidService.sealDIDDocument(userDid, diddocument);
-    
 
     if (!signedDocument['proof']) {
       // alertError(null, 'The DID document was not signed');

@@ -29,6 +29,7 @@ import './styles/app.scss';
 
 import PublishIdentityPage from './pages/PublishIdentityPage';
 import ChooseVaultPage from './pages/ChooseVaultPage';
+import TermsPage from './pages/TermsPage';
 import {
   GoogleCallback,
   TwitterCallback,
@@ -167,6 +168,7 @@ const App: React.FC = () => {
               component={ForgotPasswordPage}
               exact={true}
             />
+            <Route path="/terms-of-use" component={TermsPage} />
             <Route path="/verify/email/:code" component={VerifyEmailPage} />
 
             {/* ====== Public URLs ==== */}

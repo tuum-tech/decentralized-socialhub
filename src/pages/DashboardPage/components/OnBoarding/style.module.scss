@@ -6,11 +6,117 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
-.onboarding-container {
+.v-flex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.stage1To3 {
   width: 541px;
   height: 655px;
+  padding: 50px 56px;
+  .stage2-content {
+    flex-grow: 1;
+    padding: 55px 40px;
+    justify-content: space-between;
+  }
 
+  .stage3-content {
+    padding: 48px 30px 60px;
+    flex-grow: 1;
+  }
+}
+.stage4To5 {
+  width: 587px;
+  height: 533px;
+  padding: 30px 56px;
+
+  .avatar-container {
+    padding: 26px;
+    margin-bottom: 23px;
+    width: 233px;
+    background: #f7fafc;
+    border-radius: 16px;
+    box-shadow: 0px 3px 8px -1px rgba(50, 50, 71, 0.05);
+    filter: drop-shadow(0px 0px 1px rgba(12, 26, 75, 0.24));
+    justify-content: space-between;
+
+    .defaultAdamAvatar {
+      width: 90px;
+    }
+
+    .name {
+      font-family: Inter;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 25px;
+      margin-top: 10px;
+      text-align: center;
+      color: #1a202c;
+    }
+    .status {
+      font-family: 'SF Pro Display';
+      font-style: normal;
+      font-weight: normal;
+      font-size: 16px;
+      line-height: 162.02%;
+      text-align: center;
+      font-feature-settings: 'salt' on;
+      color: #ff5a5a;
+    }
+  }
+
+  .stage4-content {
+    padding: 30px 40px;
+  }
+  .stage5-content {
+    padding: 30px 40px;
+  }
+  .close-btn {
+    --border-radius: 9px;
+    --border-width: 1px !important;
+    --border-color: #4c6fff !important;
+    --border-style: solid;
+    --box-shadow: none;
+    --background: #ffffff;
+    --background-hover: #4c6fff;
+    --background-hover-opacity: 1;
+    --color: #4c6fff;
+    --color-hover: #ffffff;
+    box-sizing: border-box;
+    height: 36px;
+    min-width: 130px;
+    opacity: 1;
+
+    font-family: 'SF Pro Display';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 12px;
+
+    &:hover {
+      --border-style: none;
+    }
+  }
+  .start-btn {
+    --ion-color-primary: #4c6fff !important;
+    --ion-color-primary-tint: #4c7aff;
+    background: #4c6fff 0% 0% no-repeat padding-box !important;
+    height: 36px;
+    min-width: 130px;
+    border-radius: 8px;
+    opacity: 1;
+
+    font-family: 'SF Pro Display';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 12px;
+    color: #ffffff;
+  }
+}
+.onboarding-container {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -23,12 +129,6 @@
 
   text-align: center;
   font-family: 'SF Pro Display';
-
-  padding: 50px 56px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: space-between;
 
   h1 {
@@ -37,7 +137,6 @@
     font-weight: bold;
     margin: 0;
   }
-
   p {
     font-family: 'SF Pro Display';
     font-style: normal;
@@ -48,73 +147,12 @@
     font-feature-settings: 'salt' on;
     color: #425466;
   }
-
-  .stage2-content {
-    flex-grow: 1;
-    padding: 55px 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .stage1-content {
-    padding: 48px 30px 60px;
-    flex-grow: 1;
-
-    .avatar-container {
-      padding: 26px;
-      margin-bottom: 47px;
-
-      background: #f7fafc;
-      border-radius: 16px;
-      box-shadow: 0px 3px 8px -1px rgba(50, 50, 71, 0.05);
-      filter: drop-shadow(0px 0px 1px rgba(12, 26, 75, 0.24));
-
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-
-      .defaultAdamAvatar {
-        width: 90px;
-      }
-
-      .name {
-        font-family: Inter;
-        font-style: normal;
-        font-weight: 600;
-        font-size: 16px;
-        line-height: 25px;
-        margin-top: 10px;
-        text-align: center;
-        color: #1a202c;
-      }
-      .status {
-        font-family: 'SF Pro Display';
-        font-style: normal;
-        font-weight: normal;
-        font-size: 16px;
-        line-height: 162.02%;
-        text-align: center;
-        font-feature-settings: 'salt' on;
-        color: #ff5a5a;
-      }
-    }
-  }
-
-  .stage3-content {
-    padding: 48px 30px 60px;
-    flex-grow: 1;
-  }
-
   .wavinghand {
     width: 38px;
     display: block;
     margin: 0 auto 19px;
   }
-
-  .nextBtn {
+  .next-btn {
     --ion-color-primary: #4c6fff !important;
     --ion-color-primary-tint: #4c7aff;
     background: #4c6fff 0% 0% no-repeat padding-box !important;

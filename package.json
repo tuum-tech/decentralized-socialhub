@@ -1,6 +1,6 @@
 {
   "name": "profile",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "dependencies": {
     "@elastos/elastos-hive-js-sdk": "github:elastos/Elastos.NET.Hive.JS.SDK",
@@ -10,13 +10,15 @@
     "@types/styled-components": "^5.1.5",
     "@types/toastr": "^2.1.38",
     "bootstrap": "^4.6.0",
+    "clsx": "^1.1.1",
+    "compress-base64": "^1.0.2",
     "connected-react-router": "^6.8.0",
     "crypto-js": "^4.0.0",
     "guid-typescript": "^1.0.9",
     "hoist-non-react-statics": "^3.3.2",
     "immer": "^8.0.1",
     "invariant": "^2.2.4",
-    "ionicons": "^4.6.3",
+    "ionicons": "^5.4.0",
     "jose": "^3.9.0",
     "jwt-decode": "^3.1.2",
     "node-fetch": "^2.6.1",
@@ -34,7 +36,8 @@
     "reselect": "^4.0.0",
     "styled-components": "^5.2.1",
     "toastr": "^2.1.4",
-    "typescript": "3.6.3"
+    "typescript": "3.9.4",
+    "typestyle": "^2.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -66,8 +69,8 @@
   },
   "description": "Profile",
   "devDependencies": {
-    "@ionic/react": "^4.11.13",
-    "@ionic/react-router": "^4.11.13",
+    "@ionic/react": "^5.6.3",
+    "@ionic/react-router": "^5.6.3",
     "@types/hoist-non-react-statics": "^3.3.1",
     "@types/invariant": "^2.2.34",
     "@types/jest": "^24.9.1",

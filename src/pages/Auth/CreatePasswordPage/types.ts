@@ -16,4 +16,5 @@ export type LocationState = {
   did: string;
   hiveHost: string;
   isDIDPublished: boolean;
+  loginCred: LoginCred;
 };
