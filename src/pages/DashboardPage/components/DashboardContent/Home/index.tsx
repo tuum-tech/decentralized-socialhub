@@ -3,18 +3,18 @@ import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
 import FollowCards from 'src/components/FollowCards';
-import { UserService } from 'src/services/user.service';
-import SocialProfilesCard from 'src/components/cards/SocialProfilesCard';
+import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
+import { loadFollowingUserDids, loadFollowerUserDids } from 'src/utils/follow';
+
 import ManageProfile from './Left/ManageProfile';
 import ExploreConnnections from './Left/ExploreConnnections';
 import ManageLinks from './Left/ManageLinks';
 import BeginnersTutorial from './Left/BeginnersTutorial';
-
-import WhatIsProfile from './RightContent/WhatIsProfile';
-import ConnectWithCommunity from './RightContent/ConnectWithCommunity';
-import ProfileCompletion from './RightContent/ProfileCompletion';
-import VerificationStatus from './RightContent/VerificationStatus';
-import Badges from './RightContent/Badges';
+import WhatIsProfile from './Right/WhatIsProfile';
+import ConnectWithCommunity from './Right/ConnectWithCommunity';
+import ProfileCompletion from './Right/ProfileCompletion';
+import VerificationStatus from './Right/VerificationStatus';
+import Badges from './Right/Badges';
 
 const LeftCardCol = styled(IonCol)`
   padding: 22px 16px;
@@ -31,11 +31,6 @@ export interface Props {
   didDocument: any;
 }
 
-interface VerifiedCredential {
-  value: string;
-  isVerified: boolean;
-}
-
 const DashboardHome: React.FC<Props> = ({
   onTutorialStart,
   profile,
@@ -43,51 +38,23 @@ const DashboardHome: React.FC<Props> = ({
   didDocument
 }) => {
   const [tutorialVisible, setTutorialVisible] = useState(true);
-  // const [userSession, setUserSession] = useState(UserService.GetUserSession());
-
-  const [embededSocialProfiles, setEmbededSocialedProfiles] = useState<
-    string[]
-  >([]);
-
-  const getVerifiedCredential = (
-    id: string
-  ): VerifiedCredential | undefined => {
-    if (
-      !didDocument ||
-      !didDocument['id'] ||
-      !didDocument['verifiableCredential']
-    )
-      return;
-    let vcs: any[] = didDocument['verifiableCredential'].map((vc: any) => {
-      if (`${vc['id']}`.endsWith(`#${id.toLowerCase()}`)) {
-        let types: string[] = vc['type'];
-        return {
-          value: vc['credentialSubject'][id.toLowerCase()],
-          isVerified: !types.includes('SelfProclaimedCredential')
-        };
-      }
-    });
-    vcs = vcs.filter(item => {
-      return item !== undefined;
-    });
-    if (vcs && vcs.length > 0) return vcs[0];
-    return;
-  };
-
-  useEffect(() => {
-    const ids = ['linkedin', 'twitter', 'facebook', 'google'];
-    const embededSocialProfiles = [];
-    for (let i = 0; i < ids.length; i++) {
-      if (getVerifiedCredential(ids[i])) {
-        embededSocialProfiles.push(ids[i]);
-      }
-    }
-    setEmbededSocialedProfiles(embededSocialProfiles);
-  }, []);
+  const [hasFollowUsers, setFollowUsers] = useState(false);
 
   useEffect(() => {
     setTutorialVisible(sessionItem.tutorialStep !== 4);
   }, [sessionItem]);
+
+  useEffect(() => {
+    (async () => {
+      const followerUsers = await loadFollowingUserDids(sessionItem.did);
+      const followingUsers = await loadFollowerUserDids(sessionItem.did);
+      setFollowUsers(followerUsers.length + followingUsers.length > 0);
+    })();
+  }, []);
+
+  const hasSocialProfiles =
+    didDocument.verifiableCredential &&
+    didDocument.verifiableCredential.length > 1;
 
   return (
     <IonGrid className="ion-no-padding">
@@ -100,22 +67,19 @@ const DashboardHome: React.FC<Props> = ({
             />
           )}
           <ManageProfile profile={profile} />
-          {sessionItem.tutorialStep === 4 && (
-            <ExploreConnnections did={sessionItem.did} />
-          )}
-          {embededSocialProfiles.length === 0 && <ManageLinks />}
+          {!hasFollowUsers && <ExploreConnnections did={sessionItem.did} />}
+          {!hasSocialProfiles && <ManageLinks />}
         </LeftCardCol>
-
         <RightCardCol size="4">
           <VerificationStatus />
           <ProfileCompletion />
           <WhatIsProfile />
           <ConnectWithCommunity />
-          {embededSocialProfiles.length !== 0 && (
+          {hasSocialProfiles && (
             <SocialProfilesCard
               diddocument={didDocument}
-              showManageButton={false}
               sessionItem={sessionItem}
+              showManageButton={false}
             />
           )}
           <Badges />

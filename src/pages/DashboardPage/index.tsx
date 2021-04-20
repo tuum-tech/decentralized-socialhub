@@ -12,7 +12,7 @@ import {
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { ExporeTime } from './constants';
 
@@ -27,6 +27,7 @@ import {
   defaultUserInfo,
   defaultFullProfile
 } from 'src/services/profile.service';
+import { loginCredSyn } from 'src/utils/socialprofile';
 
 import TutorialComponent from './components/Tutorial';
 import DashboardContent from './components/DashboardContent';
@@ -78,6 +79,7 @@ const ProfilePage = () => {
       return;
     }
     let documentState = await DidDocumentService.getUserDocument(userSession);
+    await loginCredSyn(userSession, documentState.diddocument);
     setDidDocument(documentState.diddocument);
   };
 

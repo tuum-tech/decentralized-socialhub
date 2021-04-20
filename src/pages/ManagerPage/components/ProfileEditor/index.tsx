@@ -17,7 +17,7 @@ import BasicCard from '../BasicCard';
 import TemplateManagerCard from '../TemplateManagerCard';
 import style from './style.module.scss';
 import { DidDocumentService } from 'src/services/diddocument.service';
-import SocialProfilesCard from 'src/components/cards/SocialProfilesCard';
+import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
 
 const ProfileEditor: React.FC = () => {
   const [error, setError] = useState(false);

@@ -14,21 +14,23 @@ import {
   IonModal,
   IonRow
 } from '@ionic/react';
-import style from './SocialProfilesCard.module.scss';
-import linkedinIcon from '../../assets/icon/Linkedin.svg';
-import linkedinLogo from '../../assets/icon/ml_linkedin.png';
-import twitterIcon from '../../assets/icon/Twitter.svg';
-import twitterLogo from '../../assets/icon/ml_twitter.png';
-import facebookIcon from '../../assets/icon/Facebook.svg';
-import facebookLogo from '../../assets/icon/ml_facebook.png';
-import googleIcon from '../../assets/icon/Google.svg';
-import googleLogo from '../../assets/icon/google.png';
-import shieldIcon from '../../assets/icon/shield.svg';
 import styled from 'styled-components';
 import TwitterApi from 'src/shared-base/api/twitter-api';
-import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
+import { DidcredsService } from 'src/services/didcreds.service';
 import { UserService } from 'src/services/user.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
+import { getVerifiedCredential } from 'src/utils/socialprofile';
+
+import style from './SocialCard.module.scss';
+import linkedinIcon from '../../../assets/icon/Linkedin.svg';
+import linkedinLogo from '../../../assets/icon/ml_linkedin.png';
+import twitterIcon from '../../../assets/icon/Twitter.svg';
+import twitterLogo from '../../../assets/icon/ml_twitter.png';
+import facebookIcon from '../../../assets/icon/Facebook.svg';
+import facebookLogo from '../../../assets/icon/ml_facebook.png';
+import googleIcon from '../../../assets/icon/Google.svg';
+import googleLogo from '../../../assets/icon/google.png';
+import shieldIcon from '../../../assets/icon/shield.svg';
 
 interface Props {
   diddocument: any;
@@ -205,7 +207,7 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const containsVerifiedCredential = (id: string): boolean => {
-    return getVerifiedCredential(id) !== undefined;
+    return getVerifiedCredential(id, diddocument) !== undefined;
   };
 
   const getUrlFromService = (service: string, value: string): string => {
@@ -222,35 +224,6 @@ const SocialProfilesCard: React.FC<Props> = ({
     if (service == 'facebook') return `facebook.com/${value}`;
     if (service == 'google') return `${value}`;
     return '';
-  };
-
-  const getVerifiedCredential = (
-    id: string
-  ): VerifiedCredential | undefined => {
-    if (
-      !diddocument ||
-      !diddocument['id'] ||
-      !diddocument['verifiableCredential']
-    )
-      return;
-
-    let vcs: any[] = diddocument['verifiableCredential'].map((vc: any) => {
-      if (`${vc['id']}`.endsWith(`#${id.toLowerCase()}`)) {
-        let types: string[] = vc['type'];
-
-        return {
-          value: vc['credentialSubject'][id.toLowerCase()],
-          isVerified: !types.includes('SelfProclaimedCredential')
-        };
-      }
-    });
-    vcs = vcs.filter(item => {
-      return item !== undefined;
-    });
-
-    if (vcs && vcs.length > 0) return vcs[0];
-
-    return;
   };
 
   const removeVc = async (key: string) => {
@@ -294,7 +267,7 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const createIonItem = (key: string, icon: any) => {
-    let vc = getVerifiedCredential(key);
+    let vc = getVerifiedCredential(key, diddocument);
     if (!vc) return;
     return (
       <ProfileItem className={style['social-profile-item']}>
@@ -319,7 +292,7 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const createModalIonItem = (key: string, icon: any) => {
-    let vc = getVerifiedCredential(key);
+    let vc = getVerifiedCredential(key, diddocument);
     let header = 'Google Account';
     if (key === 'twitter') header = 'Twitter Account';
     if (key === 'facebook') header = 'Facebook Account';

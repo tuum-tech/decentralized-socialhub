@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-import SocialProfilesCard from 'src/components/cards/SocialProfilesCard';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
+import SocialProfilesCard from './SocialCard';
 
 interface Props {
   didDocument: any;
@@ -62,8 +62,8 @@ const SocialProfiles: React.FC<Props> = ({ didDocument, sessionItem }) => {
   ) {
     return (
       <SocialProfilesCard
-        diddocument={document}
         showManageButton={false}
+        diddocument={document}
         sessionItem={sessionItem}
       />
     );
