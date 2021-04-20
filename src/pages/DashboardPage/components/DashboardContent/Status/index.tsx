@@ -11,14 +11,9 @@ const DashboardStatus: React.FC = () => {
     <IonGrid className={style['tab-grid']}>
       <IonRow>
         <IonCol size="4">
-          <SpotlightCard
-            title="Overview"
-            content="Your profile is ready. There are no pending transactions."
-          />
+          <SpotlightCard title="UNDER CONSTRUCTION" content="TODO" />
         </IonCol>
-        <IonCol size="8">
-          <OverviewCard />
-        </IonCol>
+        <IonCol size="8">{/* <OverviewCard /> */}</IonCol>
       </IonRow>
     </IonGrid>
   );

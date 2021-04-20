@@ -95,7 +95,7 @@ const ProfileCompletion: React.FC = ({}) => {
   const percent = 10;
   return (
     <MainCard>
-      <CardTitle>Profile Completion</CardTitle>
+      <CardTitle>Profile Completion[UNDER CONSTRUCTION]</CardTitle>
       <CardText>Complete tasks and gain badges.</CardText>
       <ProgressArea style={{ marginTop: '13px', marginBottom: '20px' }}>
         <ProgressBar value={percent} width="calc(100% - 90px)" />

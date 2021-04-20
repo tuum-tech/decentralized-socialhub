@@ -275,7 +275,7 @@ const Badges: React.FC = ({}) => {
 
   return (
     <MainCard>
-      <CardTitle>Badges</CardTitle>
+      <CardTitle>Badges[UNDER CONSTRUCTION]</CardTitle>
       <BadgeContainer>
         {BadgeData.map((b, index) => (
           <Badge

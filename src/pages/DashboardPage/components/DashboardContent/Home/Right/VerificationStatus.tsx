@@ -48,7 +48,7 @@ const VerificationStatus: React.FC = ({}) => {
   const percent = 10;
   return (
     <MainCard>
-      <CardTitle>Verification status</CardTitle>
+      <CardTitle>Verification status[UNDER CONSTRUCTION]</CardTitle>
 
       <ProgressArea>
         <ProgressBar value={percent} width="calc(100% - 90px)" />

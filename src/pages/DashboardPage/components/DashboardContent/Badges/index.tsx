@@ -12,15 +12,10 @@ const DashboardBadges: React.FC = () => {
     <IonGrid className={style['tab-grid']}>
       <IonRow>
         <IonCol size="4">
-          <SpotlightCard
-            title="Overview"
-            content="You gain badges the more you complete and use your profile. Level your profile up! Click on a badge to learn more about it."
-          />
-          <BadgesCard title="Social" />
+          <SpotlightCard title="UNDER CONSTRUCTION" content="TODO" />
+          <BadgesCard title="Social[UNDER CONSTRUCTION]" />
         </IonCol>
-        <IonCol size="8">
-          <OverviewCard />
-        </IonCol>
+        <IonCol size="8">{/* <OverviewCard /> */}</IonCol>
       </IonRow>
     </IonGrid>
   );
