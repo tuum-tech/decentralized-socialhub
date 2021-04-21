@@ -65,10 +65,11 @@ const WhatIsProfile: React.FC = ({}) => {
           marginBottom: '26px'
         }}
       >
-        digital identity, verified credentials, blockchain publishing & more...
+        Learn about what makes Profile different with its verified digital
+        identities, personalized vaults & more...
       </CardText>
 
-      <LinkButton href="https://www.tuum.tech/products/profile">
+      <LinkButton href="https://www.tuum.tech/products/profile" target="_blank">
         Read more
       </LinkButton>
       <Logo />

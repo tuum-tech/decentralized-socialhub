@@ -64,7 +64,7 @@ const ConnectWithCommunity: React.FC = ({}) => {
         Discuss, request, support on discord
       </CardText>
 
-      <LinkButton href="https://discord.com/invite/9gA3EAQjHt">
+      <LinkButton href="https://discord.com/invite/9gA3EAQjHt" target="_blank">
         Connect
       </LinkButton>
       <Discord />
