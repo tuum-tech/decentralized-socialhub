@@ -16,8 +16,7 @@ import styleCards from 'src/components/cards/WidgetCards.module.scss';
 import style from './style.module.scss';
 
 interface FollowingsWidgetProps {
-  dids: string[];
-  resolveUserFunc: any;
+  users: any[];
   getLinkFunc: any;
   isSigned: boolean;
 }
@@ -64,8 +63,7 @@ export const ViewAll = styled(IonRouterLink)`
 `;
 
 const FollowingCard: React.FC<FollowingsWidgetProps> = ({
-  dids,
-  resolveUserFunc,
+  users,
   getLinkFunc,
   isSigned
 }: FollowingsWidgetProps) => {
@@ -76,7 +74,7 @@ const FollowingCard: React.FC<FollowingsWidgetProps> = ({
           <IonRow className="ion-justify-content-between">
             <IonCol size="6">
               <IonCardTitle id="education">
-                Following ({dids.length})
+                Following ({users.length})
               </IonCardTitle>
             </IonCol>
             <IonCol size="auto">
@@ -91,23 +89,23 @@ const FollowingCard: React.FC<FollowingsWidgetProps> = ({
       </IonCardHeader>
       <IonCardContent>
         <IonGrid className={style['following-widget']}>
-          {dids.map((did: string, index) => (
+          {users.map((user: any, index: number) => (
             <IonRow key={index}>
               <IonCol size="*">
                 <img
                   className={style['thumbnail']}
-                  src={resolveUserFunc(did).image}
+                  src={user.avatar}
                   alt="thumbnail"
                 />
               </IonCol>
               <IonCol size="7">
-                <Link to={getLinkFunc(did)}>
+                <Link to={getLinkFunc(user.did)}>
                   <IonGrid>
                     <IonRow>
-                      <Name>{resolveUserFunc(did).name}</Name>
+                      <Name>{user.name}</Name>
                     </IonRow>
                     <IonRow>
-                      <TruncatedSpan>{did}</TruncatedSpan>
+                      <TruncatedSpan>{user.did}</TruncatedSpan>
                     </IonRow>
                   </IonGrid>
                 </Link>

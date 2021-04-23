@@ -16,15 +16,13 @@ import { TruncatedSpan, Name, ViewAll } from './FollowingCard';
 import style from './style.module.scss';
 
 interface FollwerWidgetProps {
-  dids: string[];
-  resolveUserFunc: any;
+  users: string[];
   getLinkFunc: any;
   isSigned: boolean;
 }
 
 const FollowerCard: React.FC<FollwerWidgetProps> = ({
-  dids,
-  resolveUserFunc,
+  users,
   getLinkFunc,
   isSigned
 }: FollwerWidgetProps) => {
@@ -35,7 +33,7 @@ const FollowerCard: React.FC<FollwerWidgetProps> = ({
           <IonRow className="ion-justify-content-between">
             <IonCol size="6">
               <IonCardTitle id="education">
-                Follower ({dids.length})
+                Follower ({users.length})
               </IonCardTitle>
             </IonCol>
             <IonCol size="auto">
@@ -48,23 +46,23 @@ const FollowerCard: React.FC<FollwerWidgetProps> = ({
       </IonCardHeader>
       <IonCardContent>
         <IonGrid className={style['following-widget']}>
-          {dids.map((did: string, index) => (
+          {users.map((user: any, index) => (
             <IonRow key={index}>
               <IonCol size="*">
                 <img
                   className={style['thumbnail']}
-                  src={resolveUserFunc(did).image}
+                  src={user.avatar}
                   alt="thumbnail"
                 />
               </IonCol>
               <IonCol size="7">
-                <Link to={getLinkFunc(did)}>
+                <Link to={user.did}>
                   <IonGrid>
                     <IonRow>
-                      <Name>{resolveUserFunc(did).name}</Name>
+                      <Name>{user.name}</Name>
                     </IonRow>
                     <IonRow>
-                      <TruncatedSpan>{did}</TruncatedSpan>
+                      <TruncatedSpan>{user.did}</TruncatedSpan>
                     </IonRow>
                   </IonGrid>
                 </Link>

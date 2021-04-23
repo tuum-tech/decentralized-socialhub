@@ -136,6 +136,26 @@ let run = async () => {
     }
   });
   await client.Scripting.SetScript({
+    name: 'delete_users_by_dids',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'delete',
+      name: 'delete_users_by_dids',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          did: { $in: '$params.dids' }
+        },
+        options: {
+          limit: 150, //'$params.limit',
+          skip: 0 //'$params.skip',
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
     name: 'get_user_by_did',
     allowAnonymousUser: true,
     allowAnonymousApp: true,
