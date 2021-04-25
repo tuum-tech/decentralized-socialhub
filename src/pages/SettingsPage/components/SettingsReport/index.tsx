@@ -66,6 +66,11 @@ const SettingsReport: React.FC = () => {
 
     if (emailResponse.status === 200) {
       showNotify('Email sent successfully', 'success');
+      setComments('');
+      setFeedback('');
+      setSubject('');
+    } else {
+      showNotify('Error sending email. Please try again another time', 'error');
     }
   };
 

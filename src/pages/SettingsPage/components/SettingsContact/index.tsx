@@ -44,6 +44,10 @@ const SettingsContact: React.FC = () => {
 
     if (emailresponse.status === 200) {
       showNotify('Email sent successfully', 'success');
+      setDescription('');
+      setSubject('');
+    } else {
+      showNotify('Error sending email. Please try again another time', 'error');
     }
   };
 
