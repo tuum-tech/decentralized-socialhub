@@ -77,7 +77,7 @@ const SettingsReport: React.FC = () => {
             <IonCard className={style['tab-card']}>
               <IonCardHeader>
                 <PageCategory>Help & Support</PageCategory>
-                <PageTitle>Report a problem[UNDER CONSTRUCTION]</PageTitle>
+                <PageTitle>Report a problem</PageTitle>
               </IonCardHeader>
               <IonCardContent>
                 <IonText>
