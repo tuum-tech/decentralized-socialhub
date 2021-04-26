@@ -52,18 +52,21 @@ export class DidService {
     return document;
   }
 
-  static sealDIDDocument(did: IDID, diddocument: any) : any {
+  static sealDIDDocument(did: IDID, diddocument: any): any {
     let isValid = false;
     let signedDocument: any;
     if (diddocument.hasOwnProperty('proof')) {
       delete diddocument.proof;
     }
     while (!isValid) {
-      signedDocument = ElastosClient.didDocuments.sealDocument(did, diddocument);
+      signedDocument = ElastosClient.didDocuments.sealDocument(
+        did,
+        diddocument
+      );
       isValid = ElastosClient.didDocuments.isValid(signedDocument, did);
     }
 
-    return signedDocument
+    return signedDocument;
   }
 
   static async addVerfiableCredentialToDIDDocument(diddocument: any, vc: any) {
@@ -101,11 +104,7 @@ export class DidService {
   }
 
   static generateService(did: IDID, type: string, endpoint: string) {
-    return ElastosClient.didDocuments.createService(
-      did.did,
-      type,
-      endpoint
-    );
+    return ElastosClient.didDocuments.createService(did.did, type, endpoint);
   }
 
   static async generateVerifiablePresentationFromUserMnemonics(

@@ -81,13 +81,15 @@ const SearchComponent: React.FC = () => {
       if (user && user.did) {
         //Get Following
         let following = await ProfileService.getFollowings(user.did);
-        setListFollowing(following as IFollowingResponse);
+        if (following) {
+          setListFollowing(following as IFollowingResponse);
+          return;
+        }
       }
     } catch (e) {
-      setListFollowing({ get_following: { items: [] } });
       alertError(null, 'Could not load users that you follow');
-      return;
     }
+    setListFollowing({ get_following: { items: [] } });
   };
 
   useEffect(() => {
@@ -106,7 +108,6 @@ const SearchComponent: React.FC = () => {
     );
 
     setFilteredUniversities(listUniversities.response);
-
     let listUsers: any = await searchService.getUsers(searchQuery, 200, 0);
     setFilteredUsers(listUsers.response);
   };
