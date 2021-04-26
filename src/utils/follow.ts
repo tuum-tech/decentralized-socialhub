@@ -50,17 +50,6 @@ const getUsersInTuumVault = async (dids: string[]) => {
   return usersInTuumVault;
 };
 
-const getUsersHaveVaults = async (dids: string[]) => {
-  /**
-   * get only users that have vaults
-   * will be users that completed tutorial or publishment
-   */
-  let usersHaveVault: string[] = dids;
-
-  // how to check if other user vault exist?
-  return usersHaveVault;
-};
-
 const addDetailsToFollowData = async (dids: string[]) => {
   let res_users: any[] = [];
   let searchServiceLocal: SearchService;
@@ -72,8 +61,14 @@ const addDetailsToFollowData = async (dids: string[]) => {
       PAGE_LIMIT,
       0
     );
-    if (listUsers && listUsers.response && listUsers.response.items) {
-      res_users = listUsers.response.items.map((user: any) => {
+    if (
+      listUsers &&
+      listUsers.response &&
+      listUsers.response.get_users &&
+      listUsers.response.get_users.items &&
+      listUsers.response.get_users.items.length > 0
+    ) {
+      res_users = listUsers.response.get_users.items.map((user: any) => {
         const newobj = {
           name: user.name,
           avatar: user.avatar || '',
@@ -89,7 +84,6 @@ const addDetailsToFollowData = async (dids: string[]) => {
 const syncFollowData = async (dids: string[]) => {
   let res_user_dids: string[] = dids;
   res_user_dids = await getUsersInTuumVault(dids);
-  res_user_dids = await getUsersHaveVaults(res_user_dids);
   return res_user_dids;
 };
 
