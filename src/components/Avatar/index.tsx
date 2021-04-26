@@ -17,9 +17,11 @@ const Avatar: React.FC<AvatarProps> = ({ size, did = '' }: AvatarProps) => {
 
   useEffect(() => {
     (async () => {
-      const avatarRes = await getAvatarIfno(did);
-      if (avatarRes && avatarRes.avatar) {
-        setAvatarInfo(avatarRes);
+      if (did) {
+        const avatarRes = await getAvatarIfno(did);
+        if (avatarRes && avatarRes.avatar) {
+          setAvatarInfo(avatarRes);
+        }
       }
     })();
   }, []);
