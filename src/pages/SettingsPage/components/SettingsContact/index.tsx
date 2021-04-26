@@ -24,14 +24,19 @@ const SettingsContact: React.FC = () => {
   const [description, setDescription] = useState('');
 
   const send = async () => {
-    const bodyContact = {
-      subject: subject,
-      description: description,
+    const userinfo = {
+      name: UserService.GetUserSession()?.name,
+      did: UserService.GetUserSession()?.did,
       email: UserService.GetUserSession()?.loginCred?.email
+    };
+    const bodyContact = {
+      subject: `[Contact Us] - ${subject}`,
+      userinfo: userinfo,
+      description: description
     };
 
     const emailresponse: Response = await fetch(
-      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/tuumtech/contact`,
+      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/send_email`,
       {
         method: 'POST',
         headers: {
@@ -64,14 +69,15 @@ const SettingsContact: React.FC = () => {
               <IonCardContent>
                 <form
                   ref={formRef}
-                  action={`process.env.REACT_APP_PROFILE_API_SERVICE_URL/v1/tuumtech/support`}
+                  action={`process.env.REACT_APP_PROFILE_API_SERVICE_URL/v1/support_router/send_email`}
                 >
                   <IonText>
                     <p>
-                      Terms and conditions (also referred to as terms of use or
-                      terms of service) are a form of legal agreement outlining
-                      rules and restrictions for customers to follow when using
-                      your site
+                      If you would like to contact us regarding any
+                      collaboration opportunities, please use this form to get
+                      in touch with us. Ensure that you have linked at least one
+                      social media account or an email address linked to your
+                      Profile so we can get back to you.
                     </p>
                   </IonText>
                   <TextInput
