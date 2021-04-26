@@ -25,14 +25,10 @@ export async function requestFacebookId(token: string): Promise<FacebookId> {
     method: 'GET'
   });
   const json = await response.json();
-  const name = json.name;
-  const uniqueEmail = name.replace(' ', '') + '@facebook.com';
 
   return {
     id: json.id,
-    name,
-    credential: json.name,
-    email: uniqueEmail.toLocaleLowerCase()
+    name: json.name
   };
 }
 

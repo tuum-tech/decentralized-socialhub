@@ -6,8 +6,7 @@ import { StaticContext, RouteComponentProps } from 'react-router';
 import { AccountType, UserService } from 'src/services/user.service';
 
 import PageLoading from 'src/components/layouts/PageLoading';
-import LoadingIndicator from 'src/components/LoadingIndicator';
-import { DidService } from 'src/services/did.service';
+import { retreiveDocInfo, UserType } from 'src/utils/user';
 
 import ProfileFields from '../components/ProfileFields';
 import SetPassword from '../components/SetPassword';
@@ -20,14 +19,6 @@ import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState, LocationState } from './types';
 
-type UserType = {
-  did: string;
-  mnemonic: string;
-  name: string;
-  email: string;
-  hiveHost: string;
-};
-
 const CreateProfileWithDidPage: React.FC<RouteComponentProps<
   {},
   StaticContext,
@@ -37,43 +28,23 @@ const CreateProfileWithDidPage: React.FC<RouteComponentProps<
     did: '',
     mnemonic: '',
     name: '',
-    email: '',
-    hiveHost: ''
+    hiveHost: '',
+    loginCred: {
+      email: ''
+    }
   });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      const { did, mnemonic } = props.location.state;
-      let doc = await DidService.getDidDocument(did);
-      let uInfo: UserType = {
-        did,
-        mnemonic,
-        name: '',
-        email: '',
-        hiveHost: ''
-      };
-      if (props.location.state.user) {
-        uInfo.name = props.location.state.user.name;
-        uInfo.email = props.location.state.user.email;
-      }
-      if (doc && doc !== undefined && doc.verifiableCredential) {
-        if (doc.verifiableCredential && doc.verifiableCredential.length > 0) {
-          for (let i = 0; i < doc.verifiableCredential.length; i++) {
-            const cv = doc.verifiableCredential[i];
-            if (cv.credentialSubject && cv.credentialSubject.name) {
-              uInfo.name = cv.credentialSubject.name;
-            }
-            if (cv.credentialSubject && cv.credentialSubject.email) {
-              uInfo.email = cv.credentialSubject.email;
-            }
-          }
-        }
-
-        if (doc.service && doc.service.length > 0) {
-          uInfo.hiveHost = doc.service[0].serviceEndpoint;
-        }
-      }
+      const uInfo = await retreiveDocInfo(
+        props.location.state.did,
+        props.location.state.mnemonic,
+        props.location.state.user ? props.location.state.user.name : '',
+        props.location.state.user?.loginCred
+          ? props.location.state.user.loginCred.email
+          : ''
+      );
       setUserInfo(uInfo);
     };
     if (userInfo.did === '') {
@@ -91,7 +62,10 @@ const CreateProfileWithDidPage: React.FC<RouteComponentProps<
           setUserInfo({
             ...userInfo,
             name,
-            email
+            loginCred: {
+              ...userInfo.loginCred,
+              email
+            }
           });
         }}
       />
@@ -105,10 +79,9 @@ const CreateProfileWithDidPage: React.FC<RouteComponentProps<
         setLoading(true);
         await UserService.CreateNewUser(
           userInfo.name,
-          userInfo.did,
           AccountType.DID,
-          userInfo.email,
-          userInfo.did,
+          userInfo.loginCred,
+          '',
           pwd,
           userInfo.did,
           userInfo.mnemonic,

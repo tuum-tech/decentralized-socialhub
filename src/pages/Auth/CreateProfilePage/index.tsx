@@ -25,7 +25,10 @@ import {
 } from 'src/components/buttons';
 import TextInput from 'src/components/inputs/TextInput';
 import { Text16 } from 'src/components/texts';
-import { AccountType, UserService } from 'src/services/user.service';
+import {
+  // AccountType,
+  UserService
+} from 'src/services/user.service';
 import { validateEmail } from 'src/utils/validation';
 import LoadingIndicator from 'src/components/LoadingIndicator';
 
@@ -50,8 +53,8 @@ import {
   requestCreateUser,
   requestGoogleLogin,
   requestLinkedinLogin,
-  requestFacebookLogin,
-  getUsersWithRegisteredEmail
+  requestFacebookLogin
+  // getUsersWithRegisteredEmail
 } from './fetchapi';
 
 const ErrorText = styled(Text16)`
@@ -84,7 +87,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   const [error, setError] = useState('');
   const [signedUsers, setSignedUsers] = useState<string[]>([]);
   const [mode, setMode] = useState(0); // 0: create new, 1: sign in using pre logged
-  const history = useHistory();
+  // const history = useHistory();
 
   useEffect(() => {
     // UserService.clearPrevLocalData()
@@ -124,20 +127,6 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
       setDisplayText(
         'Verification email is sent to you. Please confirm to complete your registration.'
       );
-    } else if (response.data.return_code === 'REGISTERED_USER') {
-      const pUsers = await getUsersWithRegisteredEmail(email);
-
-      history.push({
-        pathname: '/associated-profile',
-        state: {
-          users: pUsers,
-          name,
-          email,
-          request_token: '',
-          service: AccountType.Email,
-          credential: name.replace(' ', '') + email
-        }
-      });
     }
     setLoading(false);
   };

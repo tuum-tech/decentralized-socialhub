@@ -9,7 +9,7 @@ export class UserVaultScripts {
 
   static async CreateCollections(hiveClient: HiveClient) {
     await hiveClient.Database.createCollection('following');
-    await hiveClient.Database.createCollection('userdetails');
+    await hiveClient.Database.createCollection('userdetails'); //  remove
     await hiveClient.Database.createCollection('basic_profile');
     await hiveClient.Database.createCollection('education_profile');
     await hiveClient.Database.createCollection('experience_profile');
@@ -81,6 +81,7 @@ export class UserVaultScripts {
     });
 
     await hiveClient.Scripting.SetScript({
+      // remove
       name: 'get_full_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -235,6 +236,7 @@ export class UserVaultScripts {
   }
 
   static async SetGetPublicInfo(hiveClient: HiveClient) {
+    // remove
     hiveClient.Scripting.SetScript({
       name: 'get_public_info',
       executable: {
@@ -249,6 +251,7 @@ export class UserVaultScripts {
   }
 
   static async SetScriptsForUserDetails(hiveClient: HiveClient) {
+    // remove
     hiveClient.Scripting.SetScript({
       name: 'add_userdetails',
       executable: {

@@ -6,8 +6,7 @@ import { UserService } from 'src/services/user.service';
 
 interface Props {
   name: string;
-  email: string;
-  request_token: string;
+  loginCred: LoginCred;
   credential: string;
   service:
     | AccountType.DID
@@ -26,7 +25,7 @@ const GenerateDid: React.FC<Props> = props => {
    */
 
   const [loading, setLoading] = useState(false);
-  const { name, email, request_token, service, credential } = props;
+  const { name, loginCred, service, credential } = props;
 
   return (
     <SetPassword
@@ -35,9 +34,8 @@ const GenerateDid: React.FC<Props> = props => {
         setLoading(true);
         await UserService.CreateNewUser(
           name,
-          request_token,
           service,
-          email,
+          loginCred,
           credential,
           pwd,
           '',

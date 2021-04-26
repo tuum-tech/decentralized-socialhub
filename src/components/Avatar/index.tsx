@@ -24,7 +24,7 @@ const Avatar: React.FC<AvatarProps> = ({ size, did = '' }: AvatarProps) => {
         }
       }
     })();
-  }, []);
+  }, [did]);
   return (
     <div className={style['avatar']}>
       <img
