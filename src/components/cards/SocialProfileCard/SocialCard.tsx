@@ -219,7 +219,8 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const parseValueFromService = (service: string, value: string): string => {
-    if (service == 'twitter') return `@${value}`;
+    if (service == 'twitter')
+      return value.startsWith('@') ? value : `@${value}`;
     if (service == 'linkedin') return `linkedin.com/in/${value}`;
     if (service == 'facebook') return `facebook.com/${value}`;
     if (service == 'google') return `${value}`;

@@ -26,14 +26,18 @@ const FowllowCards: React.FC<Props> = ({ did, signed }: Props) => {
     <>
       {followingDids.length > 0 && (
         <FollowingCard
-          users={followingDids}
+          users={
+            followingDids.length > 5 ? followingDids.slice(0, 5) : followingDids
+          }
           getLinkFunc={(did: string) => '/did/' + did}
           isSigned={signed}
         />
       )}
       {followerDids.length > 0 && (
         <FollowerCard
-          users={followerDids}
+          users={
+            followerDids.length > 5 ? followerDids.slice(0, 5) : followerDids
+          }
           getLinkFunc={(did: string) => '/did/' + did}
           isSigned={signed}
         />

@@ -130,7 +130,6 @@ const PeopleCard: React.FC<IProps> = ({
           placeholder='Search people, pages by name or DID'
           className={style['search-input']}
         ></IonSearchbar> */}
-
         {listPeople}
         {listPeople && (
           <ReactPaginate
