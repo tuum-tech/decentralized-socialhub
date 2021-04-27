@@ -12,6 +12,7 @@ import {
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
+import Avatar from '../Avatar';
 import styleCards from 'src/components/cards/WidgetCards.module.scss';
 import style from './style.module.scss';
 
@@ -90,15 +91,11 @@ const FollowingCard: React.FC<FollowingsWidgetProps> = ({
       <IonCardContent>
         <IonGrid className={style['following-widget']}>
           {users.map((user: any, index: number) => (
-            <IonRow key={index}>
-              <IonCol size="*">
-                <img
-                  className={style['thumbnail']}
-                  src={user.avatar}
-                  alt="thumbnail"
-                />
+            <IonRow key={index} className="mb-3">
+              <IonCol size="2">
+                <Avatar did={user.did} width="45px" />
               </IonCol>
-              <IonCol size="7">
+              <IonCol size="10" className="pl-1">
                 <Link to={getLinkFunc(user.did)}>
                   <IonGrid>
                     <IonRow>

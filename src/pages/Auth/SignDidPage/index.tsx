@@ -58,9 +58,7 @@ const SignDidPage: React.FC<RouteComponentProps<
           error={error}
           setError={setError}
           onSuccess={async (uDid: string, mnemonic: string) => {
-            console.log('=====>uDid', uDid);
             const isDidPublished = await DidService.isDIDPublished(uDid);
-            console.log('=====>isDidPublished', isDidPublished);
             if (!isDidPublished) {
               alertError(
                 null,

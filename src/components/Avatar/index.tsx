@@ -5,11 +5,14 @@ import defaultAvatar from '../../assets/dp.jpeg';
 import style from './style.module.scss';
 
 interface AvatarProps {
-  size?: string;
   did: string;
+  width?: string;
 }
 
-const Avatar: React.FC<AvatarProps> = ({ size, did = '' }: AvatarProps) => {
+const Avatar: React.FC<AvatarProps> = ({
+  did = '',
+  width = '86px'
+}: AvatarProps) => {
   const [avatarInfo, setAvatarInfo] = useState<GetAvatarRes>({
     avatar: defaultAvatar,
     didPublished: true
@@ -34,6 +37,8 @@ const Avatar: React.FC<AvatarProps> = ({ size, did = '' }: AvatarProps) => {
             ? style['border-primary']
             : style['border-danger']
         }
+        style={{ maxWidth: width }}
+        height="auto"
         alt="avatar"
       />
     </div>

@@ -14,8 +14,12 @@ import { Link } from 'react-router-dom';
 import { ProfileService } from 'src/services/profile.service';
 import { DidService } from 'src/services/did.service';
 import { alertError } from 'src/utils/notify';
+
+import Avatar from '../../Avatar';
 import styleCards from '../../cards/WidgetCards.module.scss';
+
 import style from './style.module.scss';
+
 export interface IDidDocument {
   id: string;
   publicKey?: PublicKeyEntity[] | null;
@@ -121,11 +125,7 @@ const FollowingWidget: React.FC<FollowingsWidgetProps> = ({
           {contacts.get_following.items.map((item: IFollowingItem, index) => (
             <IonRow key={index}>
               <IonCol size="*">
-                <img
-                  className={style['thumbnail']}
-                  src={resolveUserFunc(item.did).image}
-                  alt="thumbnail"
-                />
+                <Avatar did={item.did} />
               </IonCol>
               <IonCol size="7">
                 <Link to={getLinkFunc(item.did)}>
