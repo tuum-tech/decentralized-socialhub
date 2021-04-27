@@ -43,14 +43,14 @@ const UnlockUserPage: React.FC<RouteComponentProps<
   const unlockUser = async () => {
     if (!dids || dids.length === 0) return;
     let res = null;
-    if (dids.length === 1) {
-      res = await UserService.UnLockWithDIDAndPwd(dids[0], password);
-    } else {
-      for (let i = 0; i < dids.length; i++) {
-        const did = dids[i];
-        res = await UserService.UnLockWithDIDAndPwd(did, password);
-      }
+    // if (dids.length === 1) {
+    //   res = await UserService.UnLockWithDIDAndPwd(dids[0], password);
+    // } else {
+    for (let i = 0; i < dids.length; i++) {
+      const did = dids[i];
+      res = await UserService.UnLockWithDIDAndPwd(did, password);
     }
+    // }
     if (res) {
       window.location.href = '/profile';
       return;

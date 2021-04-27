@@ -140,13 +140,11 @@ export class UserService {
 
       let instance = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
 
-      if (instance && instance.userToken) {
+      if (instance && instance.did && instance.name) {
         return instance;
       }
-      alertError(null, 'Incorrect Password');
-    } catch (error) {
-      alertError(null, 'Incorrect Password');
-    }
+    } catch (error) {}
+    alertError(null, 'Incorrect Password');
     return;
   }
 
@@ -220,10 +218,9 @@ export class UserService {
 
   public static async CreateNewUser(
     name: string,
-    userToken: string,
     accountType: AccountType,
-    email: string,
-    credential: string,
+    loginCred: LoginCred,
+    credential: string = '',
     storePassword: string,
     newDidStr: string,
     newMnemonicStr: string,
@@ -231,6 +228,7 @@ export class UserService {
   ) {
     let did = newDidStr;
     let mnemonics = newMnemonicStr;
+
     if (!did || did === '') {
       const newDid = await this.generateTemporaryDID(
         accountType,
@@ -250,10 +248,10 @@ export class UserService {
       accountType,
       passhash,
       name,
-      userToken,
+      userToken: credential,
       isDIDPublished: isDIDPublished ? isDIDPublished : false,
       onBoardingCompleted: false,
-      loginCred: { email: email },
+      loginCred: loginCred || {},
       tutorialStep: 1,
       hiveHost:
         hiveHostStr === ''
@@ -266,25 +264,13 @@ export class UserService {
     };
 
     if (accountType === AccountType.Email) {
-      const newSessionItem = await this.SearchUserWithDID(did);
-      if (newSessionItem && newSessionItem.did && newSessionItem.did !== '') {
-        sessionItem = newSessionItem;
-      }
+      // the confirmation code for email verification is passed as credential in the email flow, we can improve that
+      sessionItem.status = 'CONFIRMED';
+      sessionItem.code = credential;
 
-      // the confirmation code for email verification is passed as usertoken in the email flow, we can improve that
-      sessionItem.code = userToken;
       await TuumTechScriptService.updateEmailUserDidInfo(sessionItem);
     } else {
       sessionItem.status = 'CONFIRMED';
-      if (accountType == AccountType.Twitter)
-        sessionItem.loginCred!.twitter = credential;
-      if (accountType == AccountType.Linkedin)
-        sessionItem.loginCred!.linkedin = credential;
-      if (accountType == AccountType.Google)
-        sessionItem.loginCred!.google = credential;
-      if (accountType == AccountType.Facebook)
-        sessionItem.loginCred!.facebook = credential;
-
       await TuumTechScriptService.addUserToTuumTech(sessionItem);
     }
 

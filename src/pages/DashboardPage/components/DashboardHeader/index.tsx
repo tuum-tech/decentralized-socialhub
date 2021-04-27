@@ -31,7 +31,9 @@ const DashboardProfileHeader: React.FC<IProps> = ({
     <IonGrid className={style['profileheader']}>
       <IonRow className={style['header']}>
         <IonCol size="auto">
-          <Avatar did={sessionItem.did} />
+          {sessionItem.did && sessionItem.did !== '' && (
+            <Avatar did={sessionItem.did} />
+          )}
         </IonCol>
         <IonCol size="8">
           <IonGrid>

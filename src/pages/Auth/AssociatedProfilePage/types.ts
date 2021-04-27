@@ -16,7 +16,7 @@ export type ActionType = typeof Actions;
 export type UserProps = {
   status: string;
   did: string;
-  email: string;
+  loginCred: LoginCred;
   _id: string;
 };
 
@@ -24,9 +24,7 @@ export type SessionProp = {
   id: string;
   users: Array<UserProps>;
   name: string;
-  email: string;
-  request_token: string;
-  credential: string;
+  loginCred: LoginCred;
   service:
     | AccountType.DID
     | AccountType.Linkedin
@@ -41,9 +39,7 @@ export type LocationState = {
   users: Array<UserProps>;
   id: string;
   name: string;
-  email: string;
-  request_token: string;
-  credential: string;
+  loginCred: LoginCred;
   service:
     | AccountType.DID
     | AccountType.Linkedin

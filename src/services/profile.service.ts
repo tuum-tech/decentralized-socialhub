@@ -138,19 +138,20 @@ export class ProfileService {
     did: string
   ): Promise<IFollowingResponse | undefined> {
     const appHiveClient = await HiveService.getAppHiveClient();
-
-    const followingResponse: IRunScriptResponse<IFollowingResponse> = await appHiveClient.Scripting.RunScript(
-      {
-        name: 'get_following',
-        context: {
-          target_did: did,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+    if (did && did !== '' && appHiveClient) {
+      const followingResponse: IRunScriptResponse<IFollowingResponse> = await appHiveClient.Scripting.RunScript(
+        {
+          name: 'get_following',
+          context: {
+            target_did: did,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+          }
         }
-      }
-    );
+      );
 
-    if (followingResponse.isSuccess) {
-      return followingResponse.response;
+      if (followingResponse.isSuccess) {
+        return followingResponse.response;
+      }
     }
     return;
   }
@@ -159,65 +160,72 @@ export class ProfileService {
     dids: string[]
   ): Promise<IFollowerResponse | undefined> {
     const appHiveClient = await HiveService.getAppHiveClient();
-
-    let followersResponse: IRunScriptResponse<IFollowerResponse> = await appHiveClient.Scripting.RunScript(
-      {
-        name: 'get_followers',
-        params: {
-          did: dids
-        },
-        context: {
-          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+    if (appHiveClient && dids && dids.length > 0) {
+      let followersResponse: IRunScriptResponse<IFollowerResponse> = await appHiveClient.Scripting.RunScript(
+        {
+          name: 'get_followers',
+          params: {
+            did: dids
+          },
+          context: {
+            target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+          }
         }
+      );
+      if (followersResponse.isSuccess) {
+        return followersResponse.response;
       }
-    );
-    if (followersResponse.isSuccess) {
-      return followersResponse.response;
     }
     return;
   }
 
   static async unfollow(did: string): Promise<any> {
     const hiveInstance = await HiveService.getSessionInstance();
-    if (!hiveInstance) return;
 
-    await hiveInstance.Database.deleteOne('following', {
-      did: did
-    });
-
-    let followersResponse = await this.getFollowers([did]);
-    let followersList: string[] = [];
-    if (followersResponse && followersResponse.get_followers.items.length > 0) {
-      // TODO: handle this better
-      followersList = followersResponse.get_followers.items[0].followers;
-    }
-
-    const userSession = UserService.GetUserSession();
-    const sDid = userSession ? userSession.did : '';
-    if (sDid !== '') {
-      followersList = followersList.filter(item => item !== sDid);
-    }
-    let uniqueItems = [...new Set(followersList)]; // distinct
-
-    const appHiveClient = await HiveService.getAppHiveClient();
-    if (appHiveClient) {
-      await appHiveClient.Scripting.RunScript({
-        name: 'set_followers',
-        params: {
-          did: did,
-          followers: uniqueItems
-        },
-        context: {
-          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-        }
+    if (hiveInstance && did && did !== '') {
+      await hiveInstance.Database.deleteOne('following', {
+        did: did
       });
+
+      let followersResponse = await this.getFollowers([did]);
+      let followersList: string[] = [];
+      if (
+        followersResponse &&
+        followersResponse.get_followers.items.length > 0
+      ) {
+        // TODO: handle this better
+        followersList = followersResponse.get_followers.items[0].followers;
+      }
+
+      const userSession = UserService.GetUserSession();
+      const sDid = userSession ? userSession.did : '';
+      if (sDid !== '') {
+        followersList = followersList.filter(item => item !== sDid);
+      }
+      let uniqueItems = [...new Set(followersList)]; // distinct
+
+      const appHiveClient = await HiveService.getAppHiveClient();
+      if (appHiveClient) {
+        await appHiveClient.Scripting.RunScript({
+          name: 'set_followers',
+          params: {
+            did: did,
+            followers: uniqueItems
+          },
+          context: {
+            target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+          }
+        });
+      }
+
+      if (userSession) {
+        return this.getFollowings(userSession.did);
+      }
     }
 
-    if (userSession) {
-      return this.getFollowings(userSession.did);
-    }
+    return;
   }
 
   static async resetFollowing(): Promise<any> {
@@ -233,42 +241,44 @@ export class ProfileService {
 
   static async addFollowing(did: string): Promise<any> {
     const hiveClient = await HiveService.getSessionInstance();
-    if (!hiveClient) return;
-    await hiveClient.Database.insertOne('following', { did: did }, undefined);
+    if (hiveClient && did && did !== '') {
+      await hiveClient.Database.insertOne('following', { did: did }, undefined);
 
-    let followersResponse = await this.getFollowers([did]);
+      let followersResponse = await this.getFollowers([did]);
 
-    let followersList: string[] = [];
-    if (followersResponse && followersResponse.get_followers.items.length > 0)
-      // TODO: handle this better
-      followersList = followersResponse.get_followers.items[0].followers;
+      let followersList: string[] = [];
+      if (followersResponse && followersResponse.get_followers.items.length > 0)
+        // TODO: handle this better
+        followersList = followersResponse.get_followers.items[0].followers;
 
-    const userSession = UserService.GetUserSession();
-    const sDid = userSession ? userSession.did : '';
-    if (sDid !== '') {
-      followersList.push(sDid);
+      const userSession = UserService.GetUserSession();
+      const sDid = userSession ? userSession.did : '';
+      if (sDid !== '') {
+        followersList.push(sDid);
+      }
+
+      let uniqueItems = [...new Set(followersList)]; // distinct
+
+      const appHiveClient = await HiveService.getAppHiveClient();
+      if (appHiveClient) {
+        await appHiveClient.Scripting.RunScript({
+          name: 'set_followers',
+          params: {
+            did: did,
+            followers: uniqueItems
+          },
+          context: {
+            target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+          }
+        });
+      }
+
+      if (userSession) {
+        return this.getFollowings(userSession.did);
+      }
     }
-
-    let uniqueItems = [...new Set(followersList)]; // distinct
-
-    const appHiveClient = await HiveService.getAppHiveClient();
-    if (appHiveClient) {
-      await appHiveClient.Scripting.RunScript({
-        name: 'set_followers',
-        params: {
-          did: did,
-          followers: uniqueItems
-        },
-        context: {
-          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-        }
-      });
-    }
-
-    if (userSession) {
-      return this.getFollowings(userSession.did);
-    }
+    return;
   }
 }
 

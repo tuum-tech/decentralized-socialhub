@@ -67,7 +67,9 @@ const DashboardHome: React.FC<Props> = ({
             />
           )}
           <ManageProfile profile={profile} />
-          {!hasFollowUsers && <ExploreConnnections did={sessionItem.did} />}
+          {!hasFollowUsers && sessionItem.did && sessionItem.did !== '' && (
+            <ExploreConnnections did={sessionItem.did} />
+          )}
           {!hasSocialProfiles && <ManageLinks />}
         </LeftCardCol>
         <RightCardCol size="4">

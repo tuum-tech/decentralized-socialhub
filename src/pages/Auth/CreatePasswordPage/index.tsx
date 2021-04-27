@@ -73,9 +73,6 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
         onBoardingCompleted: false,
         tutorialStep: 1
       };
-
-      console.log('newSession', JSON.stringify(newSession));
-
       setSession(newSession);
     }
   });
@@ -84,8 +81,8 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
     if (!session) return;
     setLoading(true);
     await UserService.LockWithDIDAndPwd(session, password);
-    // window.location.href = '/profile';
-    // setLoading(false);
+    window.location.href = '/profile';
+    setLoading(false);
   };
 
   return (

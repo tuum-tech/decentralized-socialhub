@@ -164,6 +164,7 @@ export class TuumTechScriptService {
       }
     };
     let response: any = await this.runTuumTechScript(update_emailuser_script);
+    console.log('====>response', response);
 
     return response;
   }
@@ -178,6 +179,7 @@ export class TuumTechScriptService {
       }
     };
     let response: any = await this.runTuumTechScript(add_user_script);
+    console.log('=====>response', response);
     return response;
   }
 
