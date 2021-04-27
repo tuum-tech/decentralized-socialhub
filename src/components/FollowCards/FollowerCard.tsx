@@ -11,7 +11,6 @@ import {
 import { Link } from 'react-router-dom';
 
 import styleCards from 'src/components/cards/WidgetCards.module.scss';
-
 import { TruncatedSpan, Name, ViewAll } from './FollowingCard';
 import style from './style.module.scss';
 
@@ -56,7 +55,7 @@ const FollowerCard: React.FC<FollwerWidgetProps> = ({
                 />
               </IonCol>
               <IonCol size="7">
-                <Link to={user.did}>
+                <Link to={getLinkFunc(user.did)}>
                   <IonGrid>
                     <IonRow>
                       <Name>{user.name}</Name>

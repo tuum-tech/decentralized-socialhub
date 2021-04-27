@@ -365,7 +365,7 @@ let run = async () => {
 
   //For searching on explore page
   await client.Scripting.SetScript({
-    name: 'get_all_users', // pagination
+    name: 'get_activated_users', // pagination
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
@@ -375,7 +375,8 @@ let run = async () => {
       body: {
         collection: 'users',
         filter: {
-          did: { $nin: '$params.self_did' }
+          did: { $nin: '$params.self_did' },
+          tutorialStep: 4 // only fully registered and tutorial completed users
         },
         options: {
           limit: 150, //'$params.limit',
