@@ -1,0 +1,14 @@
+.badge-card {
+    border-radius: 16px;
+    .badge-card-header {
+        display: flex;
+        justify-content: space-between;
+
+        padding: 25px 30px;
+    }
+    .badge-category-name {
+        font-size: 18px;
+        line-height: 21px;
+        font-weight: bold;
+    }
+}

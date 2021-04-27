@@ -254,6 +254,30 @@ export class UserService {
       isDIDPublished: isDIDPublished ? isDIDPublished : false,
       onBoardingCompleted: false,
       loginCred: { email: email },
+      badges: {
+        account: {
+          beginnerTutorial: false,
+          basicProfile: false,
+          educationProfile: false,
+          experienceProfile: false,
+          ownVault: false
+        },
+        socialVerify: {
+          linkedin: false,
+          facebook: false,
+          twitter: false,
+          google: false,
+          email: false,
+          phone: false
+        },
+        didPublishTimes: {
+          _5times: false,
+          _10times: false,
+          _25times: false,
+          _50times: false,
+          _100times: false
+        }
+      },
       tutorialStep: 1,
       hiveHost:
         hiveHostStr === ''
@@ -273,18 +297,26 @@ export class UserService {
 
       // the confirmation code for email verification is passed as usertoken in the email flow, we can improve that
       sessionItem.code = userToken;
+      sessionItem.badges!.socialVerify!.email = true;
       await TuumTechScriptService.updateEmailUserDidInfo(sessionItem);
     } else {
       sessionItem.status = 'CONFIRMED';
-      if (accountType == AccountType.Twitter)
+      if (accountType == AccountType.Twitter) {
         sessionItem.loginCred!.twitter = credential;
-      if (accountType == AccountType.Linkedin)
+        sessionItem.badges!.socialVerify!.twitter = true;
+      }
+      if (accountType == AccountType.Linkedin) {
         sessionItem.loginCred!.linkedin = credential;
-      if (accountType == AccountType.Google)
+        sessionItem.badges!.socialVerify!.linkedin = true;
+      }
+      if (accountType == AccountType.Google) {
         sessionItem.loginCred!.google = credential;
-      if (accountType == AccountType.Facebook)
+        sessionItem.badges!.socialVerify!.google = true;
+      }
+      if (accountType == AccountType.Facebook) {
         sessionItem.loginCred!.facebook = credential;
-
+        sessionItem.badges!.socialVerify!.facebook = true;
+      }
       await TuumTechScriptService.addUserToTuumTech(sessionItem);
     }
 

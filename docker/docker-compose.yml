@@ -1,10 +1,10 @@
-version: '3.3'
+version: "3.3"
 
 services:
   hive-node:
     container_name: hive-node
     image: tuumtech/hive-node:latest
-    user: '${UID}:${GID}'
+    user: "${UID}:${GID}"
     entrypoint: /bin/sh -c "python manage.py -c dev runserver"
     volumes:
       - ${HOME}/.profile-data/hive-data:/src/data
@@ -12,7 +12,7 @@ services:
     ports:
       - 9001:5000
     depends_on:
-      - restapi-mongo
+      - hive-mongo
     networks:
       - profile
     tty: true
@@ -20,7 +20,7 @@ services:
   assist-restapi-node:
     container_name: assist-restapi-node
     image: tuumtech/assist-restapi-node:latest
-    user: '${UID}:${GID}'
+    user: "${UID}:${GID}"
     volumes:
       - ${PWD}/docker/assist-restapi.env:/src/.env
     ports:
@@ -34,7 +34,7 @@ services:
   vouch-restapi-node:
     container_name: vouch-restapi-node
     image: tuumtech/vouch-restapi-node:latest
-    user: '${UID}:${GID}'
+    user: "${UID}:${GID}"
     volumes:
       - ${PWD}/docker/vouch-restapi.env:/src/.env
     ports:
@@ -49,7 +49,7 @@ services:
   didcreds-validator-node:
     container_name: didcreds-validator-node
     image: tuumtech/didcreds-validator-node:latest
-    user: '${UID}:${GID}'
+    user: "${UID}:${GID}"
     volumes:
       - ${HOME}/.profile-data/didcreds-didstore:/src/data
       - ${PWD}/docker/didcreds-validator.env:/src/.env
@@ -63,10 +63,22 @@ services:
       - profile
     tty: true
 
+  hive-mongo:
+    container_name: hive-mongo
+    image: mongo
+    user: "${UID}:${GID}"
+    volumes:
+      - ${HOME}/.profile-data/hive-mongo-data:/data/db
+    ports:
+      - 37017:27017
+    networks:
+      - profile
+    tty: true
+
   restapi-mongo:
     container_name: restapi-mongo
     image: mongo
-    user: '${UID}:${GID}'
+    user: "${UID}:${GID}"
     volumes:
       - ${HOME}/.profile-data/restapi-mongo-data:/data/db
     ports:
@@ -81,7 +93,7 @@ services:
   restapi-redis:
     container_name: restapi-redis
     image: redis
-    user: '${UID}:${GID}'
+    user: "${UID}:${GID}"
     volumes:
       - ${HOME}/.profile-data/restapi-redis-data:/data
     ports:

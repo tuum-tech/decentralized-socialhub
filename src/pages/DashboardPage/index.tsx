@@ -86,7 +86,6 @@ const ProfilePage = () => {
   const refreshStatus = async () => {
     let userSession = UserService.GetUserSession();
     if (!userSession || !userSession.did) return;
-
     let publishWaiting = AssistService.getPublishStatusTask(userSession.did);
 
     if (!publishWaiting) return;

@@ -111,6 +111,10 @@ const ProfileEditor: React.FC = () => {
                       if (userSession) {
                         newBasicDTO.did = userSession.did;
                         newBasicDTO.about = nextAbout;
+                        if (!userSession.badges?.account.basicProfile) {
+                          userSession.badges!.account!.basicProfile = true;
+                          await UserService.updateSession(userSession);
+                        }
                         await ProfileService.updateAbout(newBasicDTO);
                         await retriveProfile();
                       }
@@ -128,6 +132,14 @@ const ProfileEditor: React.FC = () => {
                   <EducationCard
                     educationDTO={profile.educationDTO}
                     updateFunc={async (educationItem: EducationItem) => {
+                      const userSession = UserService.GetUserSession();
+                      if (
+                        userSession &&
+                        !userSession.badges?.account.educationProfile
+                      ) {
+                        userSession.badges!.account!.educationProfile = true;
+                        await UserService.updateSession(userSession);
+                      }
                       await ProfileService.updateEducationProfile(
                         educationItem
                       );
@@ -144,6 +156,14 @@ const ProfileEditor: React.FC = () => {
                   <ExperienceCard
                     experienceDTO={profile.experienceDTO}
                     updateFunc={async (experienceItem: ExperienceItem) => {
+                      const userSession = UserService.GetUserSession();
+                      if (
+                        userSession &&
+                        !userSession.badges?.account.experienceProfile
+                      ) {
+                        userSession.badges!.account!.experienceProfile = true;
+                        await UserService.updateSession(userSession);
+                      }
                       await ProfileService.updateExperienceProfile(
                         experienceItem
                       );

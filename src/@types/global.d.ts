@@ -74,6 +74,7 @@ interface ISessionItem {
   tutorialStep: number;
   onBoardingCompleted: boolean;
   loginCred?: LoginCred;
+  badges?: IBadges;
   avatar?: string;
   code?: string;
   status?: string;
@@ -146,4 +147,34 @@ interface IFollowerItem {
   did: string;
   name: string;
   followers: string[];
+}
+
+interface IBadges {
+  account: AccountBadgeItem;
+  socialVerify: SocialBadgeItem;
+  didPublishTimes: DIDBadgeItem;
+}
+
+interface AccontBadgeItem {
+  beginnerTutorial: boolean;
+  basicProfile: boolean;
+  educationProfile: boolean;
+  experienceProfile: boolean;
+  ownVault: boolean;
+}
+
+interface SocialBadgeItem {
+  linkedin: boolean;
+  facebook: boolean;
+  twitter: boolean;
+  google: boolean;
+  email: boolean;
+  phone: boolean;
+}
+interface DIDBadgeItem {
+  _5times: boolean;
+  _10times: boolean;
+  _25times: boolean;
+  _50times: boolean;
+  _100times: boolean;
 }

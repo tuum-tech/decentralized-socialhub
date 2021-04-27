@@ -55,7 +55,6 @@ const DashboardContent: React.FC<Props> = ({
   didDocument
 }) => {
   const [active, setActive] = useState('home');
-
   return (
     <Container>
       <IonList>
@@ -91,7 +90,7 @@ const DashboardContent: React.FC<Props> = ({
         />
       )}
       {active === 'status' && <DashboardStatus />}
-      {active === 'badges' && <DashboardBadges />}
+      {active === 'badges' && <DashboardBadges sessionItem={sessionItem} />}
     </Container>
   );
 };

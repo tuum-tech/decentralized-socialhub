@@ -59,6 +59,8 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({ onClose }) => {
     let userSession = UserService.GetUserSession();
     if (step !== 4 && userSession) {
       userSession.tutorialStep = step + 1;
+      if (userSession.tutorialStep == 4)
+        userSession.badges!.account!.beginnerTutorial = true;
       await UserService.updateSession(userSession);
       setStep(step + 1);
     } else {

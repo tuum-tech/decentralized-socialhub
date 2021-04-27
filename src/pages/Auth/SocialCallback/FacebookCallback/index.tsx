@@ -62,6 +62,7 @@ const FacebookCallback: React.FC<RouteComponentProps> = props => {
           DidDocumentService.updateUserDocument(state.diddocument);
 
           userSession.loginCred!.facebook! = facebookId.name;
+          userSession.badges!.socialVerify!.facebook = true;
           await UserService.updateSession(userSession);
 
           window.close();

@@ -76,7 +76,7 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
           DidDocumentService.updateUserDocument(state.diddocument);
 
           userSession.loginCred!.linkedin! = firstName + '' + lastName;
-
+          userSession.badges!.socialVerify!.linkedin = true;
           await UserService.updateSession(userSession);
           window.close();
         } else {

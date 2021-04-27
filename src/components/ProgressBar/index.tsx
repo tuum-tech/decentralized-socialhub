@@ -3,16 +3,14 @@ import styled from 'styled-components';
 
 const PBContainer = styled.div`
   position: relative;
-  height: 6px;
-  border-radius: 3px;
+  border-radius: 30px;
 
   clip-path: inset(0 0 0 0 round 3px);
 `;
 
 const PB = styled.div`
-  height: 6px;
   transition: width 0.4s ease-in-out;
-  border-radius: 3px;
+  border-radius: 30px;
   will-change: width;
 `;
 
@@ -29,11 +27,13 @@ interface IProps {
   containerColor?: string;
   progressColor?: string;
   width?: string;
+  height?: number;
 }
 
 const ProgressBar: React.FC<IProps> = ({
   value,
   width = '100%',
+  height = 6,
   containerColor = '#EDF2F7',
   progressColor = '#4C6FFF'
 }) => {
@@ -42,13 +42,15 @@ const ProgressBar: React.FC<IProps> = ({
     <PBContainer
       style={{
         background: containerColor,
-        width: width
+        width: width,
+        height: `${height}px`
       }}
     >
       <PB
         style={{
           width: `${percent}%`,
-          background: progressColor
+          background: progressColor,
+          height: `${height}px`
         }}
       ></PB>
       <Progress value={percent} max="100">

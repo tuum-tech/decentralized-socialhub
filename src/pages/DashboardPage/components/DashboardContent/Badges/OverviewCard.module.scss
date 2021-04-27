@@ -1,0 +1,55 @@
+.spotlight {
+  background: url('../../../../../assets/graduation_cap.svg') no-repeat top
+    right;
+  background-color: var(--theme-primary-blue);
+  border-radius: 20px;
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+
+    padding: 25px 20px;
+  }
+  .card-title {
+    font-family: 'SF Pro Display';
+    font-size: 18px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: -0.09px;
+    text-align: left;
+    color: #ffffff;
+  }
+
+  .card-content {
+    font-family: 'SF Pro Display';
+    font-size: 14px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.64;
+    letter-spacing: normal;
+    text-align: left;
+    color: #f2f2f2;
+  }
+
+  .card-button {
+    font-family: 'SF Pro Display';
+    font-size: 12px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1;
+    letter-spacing: normal;
+    text-align: left;
+    color: #16192c;
+    background: #fff;
+    border-radius: 6px;
+  }
+
+  .overview-text{
+    & p {
+      margin-bottom: 20px;
+    }
+  }
+}

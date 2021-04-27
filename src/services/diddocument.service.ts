@@ -49,7 +49,7 @@ export class DidDocumentService {
   private static setDocumentState(documentState: IDIDDocumentState) {
     let json = JSON.stringify(documentState);
     window.localStorage.setItem(
-      `${this.DIDDOCUMENT_KEY}_${documentState.diddocument.id.replace(
+      `${this.DIDDOCUMENT_KEY}_${documentState.diddocument?.id.replace(
         'did:elastos:',
         ''
       )}`,
@@ -134,6 +134,35 @@ export class DidDocumentService {
     );
 
     await AssistService.publishDocument(userDid.did, requestPub);
+    let publishTimes = await AssistService.getPublishTimes(userDid.did);
+
+    if (publishTimes < 5) {
+    } else if (publishTimes < 10) {
+      if (!userSession.badges?.didPublishTimes._5times) {
+        userSession.badges!.didPublishTimes!._5times = true;
+        await UserService.updateSession(userSession);
+      }
+    } else if (publishTimes < 25) {
+      if (!userSession.badges?.didPublishTimes._10times) {
+        userSession.badges!.didPublishTimes!._10times = true;
+        await UserService.updateSession(userSession);
+      }
+    } else if (publishTimes < 50) {
+      if (!userSession.badges?.didPublishTimes._25times) {
+        userSession.badges!.didPublishTimes!._25times = true;
+        await UserService.updateSession(userSession);
+      }
+    } else if (publishTimes < 100) {
+      if (!userSession.badges?.didPublishTimes._50times) {
+        userSession.badges!.didPublishTimes!._50times = true;
+        await UserService.updateSession(userSession);
+      }
+    } else {
+      if (!userSession.badges?.didPublishTimes._100times) {
+        userSession.badges!.didPublishTimes!._100times = true;
+        await UserService.updateSession(userSession);
+      }
+    }
 
     let documentState = {
       diddocument: signedDocument,
