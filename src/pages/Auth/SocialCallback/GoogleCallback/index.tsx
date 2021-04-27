@@ -27,10 +27,11 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
    */
   const history = useHistory();
   const [credentials, setCredentials] = useState({
-    email: '',
-    name: '',
-    request_token: '',
-    credential: ''
+    loginCred: {
+      google: '',
+      email: ''
+    },
+    name: ''
   });
   const getToken = async (
     code: string,
@@ -46,7 +47,7 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
 
   useEffect(() => {
     (async () => {
-      if (code !== '' && state !== '' && credentials.request_token === '') {
+      if (code !== '' && state !== '' && credentials.loginCred.google === '') {
         let t = await getToken(code, state);
         let googleId = await requestGoogleId(t.data.request_token);
 
@@ -66,32 +67,30 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
           );
 
           DidDocumentService.updateUserDocument(state.diddocument);
-
           userSession.loginCred!.google! = googleId.email;
           userSession.badges!.socialVerify!.google = true;
           await UserService.updateSession(userSession);
-
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredGoogle(googleId.email);
+          const loginCred = {
+            email: googleId.email,
+            google: googleId.name
+          };
           if (prevUsers.length > 0) {
             history.push({
               pathname: '/associated-profile',
               state: {
                 users: prevUsers,
                 name: googleId.name,
-                email: googleId.email,
-                request_token: '',
                 service: AccountType.Google,
-                credential: googleId.email
+                loginCred
               }
             });
           } else {
             setCredentials({
               name: googleId.name,
-              request_token: t.data.request_token,
-              email: googleId.email,
-              credential: googleId.email
+              loginCred
             });
           }
         }
@@ -100,17 +99,15 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
   }, []);
 
   const getRedirect = () => {
-    if (credentials.request_token !== '') {
+    if (credentials.loginCred.google !== '') {
       return (
         <Redirect
           to={{
             pathname: '/generate-did',
             state: {
               name: credentials.name,
-              request_token: credentials.request_token,
-              email: credentials.email,
-              service: AccountType.Google,
-              credential: credentials.credential
+              loginCred: credentials.loginCred,
+              service: AccountType.Google
             }
           }}
         />

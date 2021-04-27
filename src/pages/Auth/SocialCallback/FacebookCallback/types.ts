@@ -14,6 +14,4 @@ export interface TokenResponse {
 export interface FacebookId {
   id: string;
   name: string;
-  email: string;
-  credential: string;
 }

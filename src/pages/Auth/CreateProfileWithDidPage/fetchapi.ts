@@ -9,27 +9,6 @@ export function fetchSimpleApi(): Promise<BaseplateResp> {
   });
 }
 
-export function requestCreateUser(
-  name: string,
-  email: string
-): Promise<BaseplateResp> {
-  return request(
-    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/create/user`,
-    {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
-        Accept: 'application/json'
-      },
-      body: JSON.stringify({
-        name,
-        email
-      })
-    }
-  );
-}
-
 export function requestLinkedinLogin(): Promise<BaseplateResp> {
   return request(
     `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/linkedin_request`,

@@ -79,7 +79,7 @@ let run = async () => {
         document: {
           did: '$params.did',
           accountType: '$params.accountType',
-          passhash: '$params.passhash',
+          passhash: '$params.passhash', // remove
           name: '$params.name',
           userToken: '$params.userToken',
           isDIDPublished: '$params.isDIDPublished',
@@ -96,7 +96,7 @@ let run = async () => {
     }
   });
   await client.Scripting.SetScript({
-    name: 'update_user',
+    name: 'update_user', // combine to update_user_did
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
@@ -121,7 +121,7 @@ let run = async () => {
     }
   });
   await client.Scripting.SetScript({
-    name: 'delete_user_by_did',
+    name: 'delete_user_by_did', //  remove
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
@@ -132,6 +132,26 @@ let run = async () => {
         collection: 'users',
         filter: {
           did: '$params.did'
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'delete_users_by_dids',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'delete',
+      name: 'delete_users_by_dids',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          did: { $in: '$params.dids' }
+        },
+        options: {
+          limit: 150, //'$params.limit',
+          skip: 0 //'$params.skip',
         }
       }
     }
@@ -204,7 +224,7 @@ let run = async () => {
   });
 
   await client.Scripting.SetScript({
-    name: 'get_users_by_facebook',
+    name: 'get_users_by_facebook', //    remove
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
@@ -238,7 +258,7 @@ let run = async () => {
   });
 
   await client.Scripting.SetScript({
-    name: 'verify_code',
+    name: 'verify_code', // remove check backend side
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
@@ -348,7 +368,7 @@ let run = async () => {
 
   //For searching on explore page
   await client.Scripting.SetScript({
-    name: 'get_all_users',
+    name: 'get_activated_users', // pagination
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
@@ -358,7 +378,8 @@ let run = async () => {
       body: {
         collection: 'users',
         filter: {
-          did: { $nin: '$params.self_did' }
+          did: { $nin: '$params.self_did' },
+          tutorialStep: 4 // only fully registered and tutorial completed users
         },
         options: {
           limit: 150, //'$params.limit',
@@ -395,7 +416,7 @@ let run = async () => {
   //This seems redundant to get_user_by_did but needed for now as the name in executable is different
   //TODO: Remove it and use `get_user_by_did` instead and handle the result with appropriate output name
   await client.Scripting.SetScript({
-    name: 'get_users_by_did',
+    name: 'get_users_by_did', // remove
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {

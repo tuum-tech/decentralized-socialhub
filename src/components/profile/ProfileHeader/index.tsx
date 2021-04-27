@@ -91,6 +91,7 @@ const ProfileHeader: React.FC<IProps> = ({
               event.preventDefault();
               window.open(getPublicProfileLink());
             }}
+            className="mr-2"
           >
             <Button
               type="secondary"

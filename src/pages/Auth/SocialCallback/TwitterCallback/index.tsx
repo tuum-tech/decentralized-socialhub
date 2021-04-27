@@ -23,9 +23,9 @@ const TwitterCallback: React.FC<RouteComponentProps> = props => {
   const history = useHistory();
   const [credentials, setCredentials] = useState({
     name: '',
-    email: '',
-    request_token: '',
-    credential: ''
+    loginCred: {
+      twitter: ''
+    }
   });
 
   const getToken = async (
@@ -48,12 +48,11 @@ const TwitterCallback: React.FC<RouteComponentProps> = props => {
       if (
         oauth_token !== '' &&
         oauth_verifier !== '' &&
-        credentials.request_token === ''
+        credentials.loginCred.twitter === ''
       ) {
         let t = await getToken(oauth_token, oauth_verifier);
         let items: string[] = atob(t.data.response).split(';');
         const name = items[0];
-        const uniqueEmail = name.replace(' ', '') + items[1] + '@twitter.com';
 
         let userSession = UserService.GetUserSession();
         if (userSession) {
@@ -87,18 +86,18 @@ const TwitterCallback: React.FC<RouteComponentProps> = props => {
               state: {
                 users: prevUsers,
                 name: items[0].toString(),
-                email: uniqueEmail,
-                request_token: '',
                 service: AccountType.Twitter,
-                credential: items[1].toString()
+                loginCred: {
+                  twitter: items[1].toString()
+                }
               }
             });
           } else {
             setCredentials({
               name,
-              request_token: `${oauth_token}[-]${oauth_verifier}`,
-              email: uniqueEmail.toLocaleLowerCase(),
-              credential: items[1].toString()
+              loginCred: {
+                twitter: items[1].toString()
+              }
             });
           }
         }
@@ -107,16 +106,14 @@ const TwitterCallback: React.FC<RouteComponentProps> = props => {
   });
 
   const getRedirect = () => {
-    if (credentials.request_token !== '') {
+    if (credentials.loginCred.twitter !== '') {
       return (
         <Redirect
           to={{
             pathname: '/generate-did',
             state: {
               name: credentials.name,
-              request_token: credentials.request_token,
-              email: credentials.email,
-              credential: credentials.credential,
+              loginCred: credentials.loginCred,
               service: AccountType.Twitter
             }
           }}

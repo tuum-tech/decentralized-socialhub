@@ -1,5 +1,4 @@
 import request, { BaseplateResp } from 'src/baseplate/request';
-import { Api } from './constants';
 
 export function requestVerifyCode(code: string): Promise<BaseplateResp> {
   return request(

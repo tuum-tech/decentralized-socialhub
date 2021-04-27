@@ -15,8 +15,7 @@ export type ActionType = typeof Actions;
 export type LocationState = {
   from: Location;
   name: string;
-  email: string;
-  request_token: string;
+  loginCred: LoginCred;
   credential: string;
   service:
     | AccountType.DID
@@ -29,8 +28,7 @@ export type LocationState = {
 
 export type UserSessionProp = {
   name: string;
-  email: string;
-  request_token: string;
+  loginCred: LoginCred;
   credential: string;
   service:
     | AccountType.DID

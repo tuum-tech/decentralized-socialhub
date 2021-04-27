@@ -164,7 +164,6 @@ export class TuumTechScriptService {
       }
     };
     let response: any = await this.runTuumTechScript(update_emailuser_script);
-
     return response;
   }
 

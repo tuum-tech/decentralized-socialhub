@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import FollowCards from 'src/components/FollowCards';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
-import { loadFollowingUserDids, loadFollowerUserDids } from 'src/utils/follow';
+import { loadFollowingUsers, loadFollowerUsers } from 'src/utils/follow';
 
 import ManageProfile from './Left/ManageProfile';
 import ExploreConnnections from './Left/ExploreConnnections';
@@ -46,8 +46,8 @@ const DashboardHome: React.FC<Props> = ({
 
   useEffect(() => {
     (async () => {
-      const followerUsers = await loadFollowingUserDids(sessionItem.did);
-      const followingUsers = await loadFollowerUserDids(sessionItem.did);
+      const followerUsers = await loadFollowingUsers(sessionItem.did);
+      const followingUsers = await loadFollowerUsers(sessionItem.did);
       setFollowUsers(followerUsers.length + followingUsers.length > 0);
     })();
   }, []);
@@ -67,7 +67,9 @@ const DashboardHome: React.FC<Props> = ({
             />
           )}
           <ManageProfile profile={profile} />
-          {!hasFollowUsers && <ExploreConnnections did={sessionItem.did} />}
+          {!hasFollowUsers && sessionItem.did && sessionItem.did !== '' && (
+            <ExploreConnnections did={sessionItem.did} />
+          )}
           {!hasSocialProfiles && <ManageLinks />}
         </LeftCardCol>
         <RightCardCol size="4">

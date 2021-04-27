@@ -11,5 +11,4 @@ export interface GoogleId {
   id: string;
   name: string;
   email: string;
-  credential: string;
 }
