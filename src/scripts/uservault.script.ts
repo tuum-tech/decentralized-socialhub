@@ -9,7 +9,6 @@ export class UserVaultScripts {
 
   static async CreateCollections(hiveClient: HiveClient) {
     await hiveClient.Database.createCollection('following');
-    await hiveClient.Database.createCollection('userdetails'); //  remove
     await hiveClient.Database.createCollection('basic_profile');
     await hiveClient.Database.createCollection('education_profile');
     await hiveClient.Database.createCollection('experience_profile');
@@ -17,7 +16,6 @@ export class UserVaultScripts {
 
   static async SetScripts(hiveClient: HiveClient) {
     await this.SetScriptGetFollowing(hiveClient);
-    await this.SetScriptsForUserDetails(hiveClient);
     await this.SetScriptsForProfile(hiveClient);
   }
 
@@ -51,71 +49,6 @@ export class UserVaultScripts {
         }
       }
     });
-
-    await hiveClient.Scripting.SetScript({
-      name: 'get_education_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_education_profile',
-        output: true,
-        body: {
-          collection: 'education_profile'
-        }
-      }
-    });
-
-    await hiveClient.Scripting.SetScript({
-      name: 'get_experience_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_experience_profile',
-        output: true,
-        body: {
-          collection: 'experience_profile'
-        }
-      }
-    });
-
-    await hiveClient.Scripting.SetScript({
-      // remove
-      name: 'get_full_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'aggregated',
-        name: 'get_full_profile',
-        body: [
-          {
-            type: 'find',
-            name: 'get_basic',
-            output: true,
-            body: {
-              collection: 'basic_profile'
-            }
-          },
-          {
-            type: 'find',
-            name: 'get_education_profile',
-            output: true,
-            body: {
-              collection: 'education_profile'
-            }
-          },
-          {
-            type: 'find',
-            name: 'get_experience_profile',
-            output: true,
-            body: {
-              collection: 'experience_profile'
-            }
-          }
-        ]
-      }
-    });
     await hiveClient.Scripting.SetScript({
       name: 'update_basic_profile',
       allowAnonymousUser: true,
@@ -142,6 +75,19 @@ export class UserVaultScripts {
     });
 
     await hiveClient.Scripting.SetScript({
+      name: 'get_education_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_education_profile',
+        output: true,
+        body: {
+          collection: 'education_profile'
+        }
+      }
+    });
+    await hiveClient.Scripting.SetScript({
       name: 'update_education_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -157,37 +103,6 @@ export class UserVaultScripts {
             $set: {
               guid: '$params.guid',
               program: '$params.program',
-              institution: '$params.institution',
-              start: '$params.start',
-              end: '$params.end',
-              still: '$params.still',
-              description: '$params.description'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
-        }
-      }
-    });
-
-    await hiveClient.Scripting.SetScript({
-      name: 'update_experience_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'update_experience_profile',
-        body: {
-          collection: 'experience_profile',
-          filter: {
-            guid: '$params.guid'
-          },
-          update: {
-            $set: {
-              guid: '$params.guid',
-              title: '$params.title',
               institution: '$params.institution',
               start: '$params.start',
               end: '$params.end',
@@ -219,6 +134,49 @@ export class UserVaultScripts {
     });
 
     await hiveClient.Scripting.SetScript({
+      name: 'get_experience_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_experience_profile',
+        output: true,
+        body: {
+          collection: 'experience_profile'
+        }
+      }
+    });
+    await hiveClient.Scripting.SetScript({
+      name: 'update_experience_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_experience_profile',
+        body: {
+          collection: 'experience_profile',
+          filter: {
+            guid: '$params.guid'
+          },
+          update: {
+            $set: {
+              guid: '$params.guid',
+              title: '$params.title',
+              institution: '$params.institution',
+              start: '$params.start',
+              end: '$params.end',
+              still: '$params.still',
+              description: '$params.description'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+    await hiveClient.Scripting.SetScript({
       name: 'remove_experience_item',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -229,84 +187,6 @@ export class UserVaultScripts {
           collection: 'experience_profile',
           filter: {
             guid: '$params.guid'
-          }
-        }
-      }
-    });
-  }
-
-  static async SetGetPublicInfo(hiveClient: HiveClient) {
-    // remove
-    hiveClient.Scripting.SetScript({
-      name: 'get_public_info',
-      executable: {
-        type: 'find',
-        name: 'get_public_info',
-        output: true,
-        body: {
-          collection: 'following'
-        }
-      }
-    });
-  }
-
-  static async SetScriptsForUserDetails(hiveClient: HiveClient) {
-    // remove
-    hiveClient.Scripting.SetScript({
-      name: 'add_userdetails',
-      executable: {
-        type: 'insert',
-        name: 'add_userdetails',
-        body: {
-          collection: 'userdetails',
-          document: {
-            category: '$params.category',
-            data: '$params.data'
-          },
-          options: { bypass_document_validation: false }
-        }
-      }
-    });
-    hiveClient.Scripting.SetScript({
-      name: 'get_all_userdetails',
-      executable: {
-        type: 'find',
-        name: 'get_all_userdetails',
-        output: true,
-        body: {
-          collection: 'userdetails'
-        }
-      }
-    });
-    hiveClient.Scripting.SetScript({
-      name: 'find_category_data',
-      executable: {
-        type: 'find',
-        name: 'find_category_data',
-        output: true,
-        body: {
-          collection: 'userdetails',
-          filter: {
-            category: '$params.category'
-          }
-        }
-      }
-    });
-    hiveClient.Scripting.SetScript({
-      name: 'update_category_data',
-      executable: {
-        type: 'update',
-        name: 'update_category_data',
-        output: true,
-        body: {
-          collection: 'userdetails',
-          filter: {
-            category: '$params.category'
-          },
-          update: {
-            $set: {
-              data: '$params.data'
-            }
           }
         }
       }

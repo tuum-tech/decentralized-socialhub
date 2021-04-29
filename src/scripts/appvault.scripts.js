@@ -1,5 +1,3 @@
-const { HiveClient, OptionsBuilder } = require('@elastos/elastos-hive-js-sdk');
-const { ElastosClient } = require('@elastosfoundation/elastos-js-sdk');
 const config = require('./config.json');
 const { testHelper } = require('./testsHelper');
 
@@ -96,42 +94,66 @@ let run = async () => {
     }
   });
   await client.Scripting.SetScript({
-    name: 'update_user', // combine to update_user_did
+    name: 'update_user',
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
       type: 'update',
       name: 'update_user',
+      output: false,
       body: {
         collection: 'users',
         filter: {
-          did: '$params.did'
+          code: '$params.code',
+          did: '$params.did',
+          status: 'CONFIRMED'
         },
         update: {
           $set: {
+            did: '$params.did',
+            accountType: '$params.accountType',
+            passhash: '$params.passhash',
             name: '$params.name',
-            'loginCred.email': '$params.email'
+            userToken: '$params.userToken',
+            loginCred: '$params.loginCred',
+            isDIDPublished: '$params.isDIDPublished',
+            onBoardingCompleted: '$params.onBoardingCompleted',
+            tutorialStep: '$params.tutorialStep',
+            hiveHost: '$params.hiveHost',
+            avatar: '$params.avatar'
           }
-        },
-        options: {
-          upsert: true,
-          bypass_document_validation: false
         }
       }
     }
   });
   await client.Scripting.SetScript({
-    name: 'delete_user_by_did', //  remove
+    name: 'update_email_user',
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
-      type: 'delete',
-      name: 'delete_user_by_did',
-      output: true,
+      type: 'update',
+      name: 'update_email_user',
+      output: false,
       body: {
         collection: 'users',
         filter: {
-          did: '$params.did'
+          code: '$params.code',
+          status: 'CONFIRMED'
+        },
+        update: {
+          $set: {
+            did: '$params.did',
+            accountType: '$params.accountType',
+            passhash: '$params.passhash',
+            name: '$params.name',
+            userToken: '$params.userToken',
+            loginCred: '$params.loginCred',
+            isDIDPublished: '$params.isDIDPublished',
+            onBoardingCompleted: '$params.onBoardingCompleted',
+            tutorialStep: '$params.tutorialStep',
+            hiveHost: '$params.hiveHost',
+            avatar: '$params.avatar'
+          }
         }
       }
     }
@@ -157,17 +179,21 @@ let run = async () => {
     }
   });
   await client.Scripting.SetScript({
-    name: 'get_user_by_did',
+    name: 'get_users_by_dids',
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
       type: 'find',
-      name: 'get_user_by_did',
+      name: 'get_users',
       output: true,
       body: {
         collection: 'users',
         filter: {
-          did: '$params.did'
+          did: { $in: '$params.dids' }
+        },
+        options: {
+          limit: 150, //'$params.limit',
+          skip: 0 //'$params.skip',
         }
       }
     }
@@ -188,77 +214,8 @@ let run = async () => {
       }
     }
   });
-
   await client.Scripting.SetScript({
-    name: 'get_users_by_google',
-    allowAnonymousUser: true,
-    allowAnonymousApp: true,
-    executable: {
-      type: 'find',
-      name: 'users_found',
-      output: true,
-      body: {
-        collection: 'users',
-        filter: {
-          'loginCred.google': '$params.filter'
-        }
-      }
-    }
-  });
-
-  await client.Scripting.SetScript({
-    name: 'get_users_by_twitter',
-    allowAnonymousUser: true,
-    allowAnonymousApp: true,
-    executable: {
-      type: 'find',
-      name: 'users_found',
-      output: true,
-      body: {
-        collection: 'users',
-        filter: {
-          'loginCred.twitter': '$params.filter'
-        }
-      }
-    }
-  });
-
-  await client.Scripting.SetScript({
-    name: 'get_users_by_facebook', //    remove
-    allowAnonymousUser: true,
-    allowAnonymousApp: true,
-    executable: {
-      type: 'find',
-      name: 'users_found',
-      output: true,
-      body: {
-        collection: 'users',
-        filter: {
-          'loginCred.facebook': '$params.filter'
-        }
-      }
-    }
-  });
-
-  await client.Scripting.SetScript({
-    name: 'get_users_by_linkedin',
-    allowAnonymousUser: true,
-    allowAnonymousApp: true,
-    executable: {
-      type: 'find',
-      name: 'users_found',
-      output: true,
-      body: {
-        collection: 'users',
-        filter: {
-          'loginCred.linkedin': '$params.filter'
-        }
-      }
-    }
-  });
-
-  await client.Scripting.SetScript({
-    name: 'verify_code', // remove check backend side
+    name: 'verify_code', // is being used in backend
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
@@ -297,76 +254,8 @@ let run = async () => {
       ]
     }
   });
-  await client.Scripting.SetScript({
-    name: 'update_user_did_info',
-    allowAnonymousUser: true,
-    allowAnonymousApp: true,
-    executable: {
-      type: 'update',
-      name: 'update_user_did_info',
-      output: false,
-      body: {
-        collection: 'users',
-        filter: {
-          code: '$params.code',
-          did: '$params.did',
-          status: 'CONFIRMED'
-        },
-        update: {
-          $set: {
-            did: '$params.did',
-            accountType: '$params.accountType',
-            passhash: '$params.passhash',
-            name: '$params.name',
-            userToken: '$params.userToken',
-            loginCred: '$params.loginCred',
-            badges: '$params.badges',
-            isDIDPublished: '$params.isDIDPublished',
-            onBoardingCompleted: '$params.onBoardingCompleted',
-            tutorialStep: '$params.tutorialStep',
-            hiveHost: '$params.hiveHost',
-            avatar: '$params.avatar'
-          }
-        }
-      }
-    }
-  });
 
-  await client.Scripting.SetScript({
-    name: 'update_emailuser_did_info',
-    allowAnonymousUser: true,
-    allowAnonymousApp: true,
-    executable: {
-      type: 'update',
-      name: 'update_emailuser_did_info',
-      output: false,
-      body: {
-        collection: 'users',
-        filter: {
-          code: '$params.code',
-          status: 'CONFIRMED'
-        },
-        update: {
-          $set: {
-            did: '$params.did',
-            accountType: '$params.accountType',
-            passhash: '$params.passhash',
-            name: '$params.name',
-            userToken: '$params.userToken',
-            loginCred: '$params.loginCred',
-            badges: '$params.badges',
-            isDIDPublished: '$params.isDIDPublished',
-            onBoardingCompleted: '$params.onBoardingCompleted',
-            tutorialStep: '$params.tutorialStep',
-            hiveHost: '$params.hiveHost',
-            avatar: '$params.avatar'
-          }
-        }
-      }
-    }
-  });
-
-  //For searching on explore page
+  // ===== For searching on explore page =====
   await client.Scripting.SetScript({
     name: 'get_activated_users', // pagination
     allowAnonymousUser: true,
@@ -388,8 +277,6 @@ let run = async () => {
       }
     }
   });
-
-  //For searching on explore page
   await client.Scripting.SetScript({
     name: 'get_users_by_name',
     allowAnonymousUser: true,
@@ -411,12 +298,8 @@ let run = async () => {
       }
     }
   });
-
-  //For searching on explore page
-  //This seems redundant to get_user_by_did but needed for now as the name in executable is different
-  //TODO: Remove it and use `get_user_by_did` instead and handle the result with appropriate output name
   await client.Scripting.SetScript({
-    name: 'get_users_by_did', // remove
+    name: 'get_users_by_did', // searching all users with search words of DID
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
@@ -427,27 +310,6 @@ let run = async () => {
         collection: 'users',
         filter: {
           did: { $regex: '$params.did', $nin: '$params.self_did' }
-        },
-        options: {
-          limit: 150, //'$params.limit',
-          skip: 0 //'$params.skip',
-        }
-      }
-    }
-  });
-
-  await client.Scripting.SetScript({
-    name: 'get_users_by_dids',
-    allowAnonymousUser: true,
-    allowAnonymousApp: true,
-    executable: {
-      type: 'find',
-      name: 'get_users',
-      output: true,
-      body: {
-        collection: 'users',
-        filter: {
-          did: { $in: '$params.dids' }
         },
         options: {
           limit: 150, //'$params.limit',

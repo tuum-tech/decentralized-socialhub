@@ -342,7 +342,7 @@ export class UserService {
       sessionItem.code = credential;
 
       sessionItem.badges!.socialVerify!.email.archived = curTime;
-      await TuumTechScriptService.updateEmailUserDidInfo(sessionItem);
+      await TuumTechScriptService.updateTuumEmailUser(sessionItem);
     } else {
       sessionItem.status = 'CONFIRMED';
       if (accountType === AccountType.Twitter) {
@@ -379,18 +379,16 @@ export class UserService {
     if (
       userData &&
       userData.data &&
-      userData.data['get_user_by_did'] &&
-      userData.data['get_user_by_did']['items'] &&
-      userData.data['get_user_by_did']['items'].length > 0 &&
-      userData.data['get_user_by_did']['items'][0].code
+      userData.data['get_users_by_dids'] &&
+      userData.data['get_users_by_dids']['items'] &&
+      userData.data['get_users_by_dids']['items'].length > 0 &&
+      userData.data['get_users_by_dids']['items'][0].code
     ) {
-      const code = userData.data['get_user_by_did']['items'][0].code;
+      const code = userData.data['get_user']['items'][0].code;
       newSessionItem.code = code;
     }
 
-    const res: any = await TuumTechScriptService.updateUserDidInfo(
-      newSessionItem
-    );
+    const res: any = await TuumTechScriptService.updateTuumUser(newSessionItem);
     this.lockUser(this.key(sessionItem.did), newSessionItem);
 
     window.localStorage.setItem(

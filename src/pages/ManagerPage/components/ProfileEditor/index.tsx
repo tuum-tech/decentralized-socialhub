@@ -92,7 +92,7 @@ const ProfileEditor: React.FC = () => {
               <BasicCard
                 sessionItem={userInfo}
                 updateFunc={async (userInfo: ISessionItem) => {
-                  await TuumTechScriptService.updateBasicProfile(userInfo);
+                  await TuumTechScriptService.updateTuumUser(userInfo);
                   UserService.updateSession(userInfo, true);
                 }}
               ></BasicCard>
