@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import {
@@ -14,6 +14,8 @@ import {
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
 import LoadingIndicator from 'src/components/LoadingIndicator';
+import { IUserResponse, SearchService } from 'src/services/search.service';
+import Avatar from 'src/components/Avatar';
 
 import { ButtonWithLogo } from 'src/components/buttons';
 import { Text16, ErrorTxt } from 'src/components/texts';
@@ -23,6 +25,7 @@ import TextInput from 'src/components/inputs/TextInput';
 import { UserService } from 'src/services/user.service';
 
 import FieldDivider from '../FieldDivider';
+import SelectUsers from './SelectUsers';
 
 const DidSelectComp = styled.div`
   background: #edf2f7;
@@ -50,13 +53,38 @@ interface Props {
 
 const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
   const [did, setDid] = useState(dids[0]);
+  const [localUsers, setLocalUsers] = useState([]);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState('');
+
+  useEffect(() => {
+    (async () => {
+      const searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
+      let getUserRes: any = await searchServiceLocal.getUsersByDIDs(
+        dids,
+        200,
+        0
+      );
+      if (
+        getUserRes &&
+        getUserRes.response &&
+        getUserRes.response.get_users &&
+        getUserRes.response.get_users.items &&
+        getUserRes.response.get_users.items.length > 0
+      ) {
+        setLocalUsers(getUserRes.response.get_users.items);
+        setLoading('');
+      }
+    })();
+  }, [dids]);
 
   return (
     <OnBoardLayout>
       {loading && <LoadingIndicator loadingText="Signing now..." />}
+      {localUsers.length === 0 && (
+        <LoadingIndicator loadingText="Loading local users now..." />
+      )}
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>
@@ -75,20 +103,13 @@ const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
             Sign in using the previous logged info
           </OnBoardLayoutRightContentTitle>
           <Text16>Decentralized Identity (DID):</Text16>
-          <DidSelectComp>
-            <select
-              value={did}
-              onChange={event => {
-                setDid((event.target as HTMLSelectElement).value);
-              }}
-            >
-              {dids.map((userDid: string) => (
-                <option key={userDid} value={userDid}>
-                  {userDid}
-                </option>
-              ))}
-            </select>
-          </DidSelectComp>
+          {localUsers && localUsers.length > 0 && (
+            <SelectUsers
+              users={localUsers}
+              selectDID={(did: string) => setDid(did)}
+              removeUser={async (did: string) => {}}
+            />
+          )}
           <TextInput
             value={password}
             type="password"
@@ -110,12 +131,12 @@ const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
                 setError('Enter your password');
                 return;
               }
-              setLoading(true);
+              setLoading('Signing now...');
               const res = await UserService.UnLockWithDIDAndPwd(did, password);
               if (res) {
                 window.location.href = '/profile';
               }
-              setLoading(false);
+              setLoading('');
             }}
           />
 
