@@ -61,7 +61,9 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         user.userToken = userToken;
         user.tutorialStep = 4;
         user.hiveHost = endpoint;
-        user.badges!.account!.ownVault = selected !== 'tuum' ? true : false;
+        if (selected !== 'tuum') {
+          user.badges!.dStorage!.ownVault.archived = new Date().getTime();
+        }
         //TODO: Uncomment when update document publish is fixed
         // if (selected !== "document")
         // {

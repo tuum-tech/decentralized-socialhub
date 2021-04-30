@@ -60,6 +60,10 @@ const ProfilePage = () => {
   const setTimerForDid = () => {
     const timer = setTimeout(async () => {
       await refreshDidDocument();
+      // hard-coded here
+      let userSession = UserService.GetUserSession();
+      if (userSession) setUserInfo(userSession);
+
       setTimerForDid();
     }, 1000);
     return () => clearTimeout(timer);
@@ -129,7 +133,6 @@ const ProfilePage = () => {
     }
     setLoadingText('');
   };
-
   useEffect(() => {
     (async () => {
       let userSession = UserService.GetUserSession();

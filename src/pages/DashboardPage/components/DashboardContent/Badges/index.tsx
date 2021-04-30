@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import style from './style.module.scss';
 
 import OverviewCard from './OverviewCard';
+import RecentBadgeCard from './RecentBadgeCard';
 import BadgeCard from './BadgeCard';
 
 interface Props {
@@ -19,7 +20,8 @@ const DashboardBadges: React.FC<Props> = ({ sessionItem }) => {
       <IonRow>
         <IonCol size="4">
           <OverviewCard badges={sessionItem.badges!} />
-          <ProfileCompletion />
+          {/* <ProfileCompletion /> */}
+          <RecentBadgeCard badges={sessionItem.badges!} />
         </IonCol>
         <IonCol size="8">
           <BadgeCard badges={sessionItem.badges!} badgeCategory="account" />
@@ -31,6 +33,7 @@ const DashboardBadges: React.FC<Props> = ({ sessionItem }) => {
             badges={sessionItem.badges!}
             badgeCategory="didPublishTimes"
           />
+          <BadgeCard badges={sessionItem.badges!} badgeCategory="dStorage" />
         </IonCol>
       </IonRow>
     </IonGrid>

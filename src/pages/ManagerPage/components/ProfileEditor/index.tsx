@@ -111,8 +111,10 @@ const ProfileEditor: React.FC = () => {
                       if (userSession) {
                         newBasicDTO.did = userSession.did;
                         newBasicDTO.about = nextAbout;
-                        if (!userSession.badges?.account.basicProfile) {
-                          userSession.badges!.account!.basicProfile = true;
+                        if (
+                          !userSession.badges?.account.basicProfile.archived
+                        ) {
+                          userSession.badges!.account!.basicProfile.archived = new Date().getTime();
                           await UserService.updateSession(userSession);
                         }
                         await ProfileService.updateAbout(newBasicDTO);
@@ -135,9 +137,9 @@ const ProfileEditor: React.FC = () => {
                       const userSession = UserService.GetUserSession();
                       if (
                         userSession &&
-                        !userSession.badges?.account.educationProfile
+                        !userSession.badges?.account.educationProfile.archived
                       ) {
-                        userSession.badges!.account!.educationProfile = true;
+                        userSession.badges!.account!.educationProfile.archived = new Date().getTime();
                         await UserService.updateSession(userSession);
                       }
                       await ProfileService.updateEducationProfile(
@@ -159,9 +161,9 @@ const ProfileEditor: React.FC = () => {
                       const userSession = UserService.GetUserSession();
                       if (
                         userSession &&
-                        !userSession.badges?.account.experienceProfile
+                        !userSession.badges?.account.experienceProfile.archived
                       ) {
-                        userSession.badges!.account!.experienceProfile = true;
+                        userSession.badges!.account!.experienceProfile.archived = new Date().getTime();
                         await UserService.updateSession(userSession);
                       }
                       await ProfileService.updateExperienceProfile(

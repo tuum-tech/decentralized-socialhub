@@ -1,0 +1,106 @@
+{
+    "account": {
+      "beginnerTutorial": {
+        "title": "Beginner Tutorial",
+        "description": "Complete the beginner tutorial",
+        "enbl_icon": "assets/badges/enbl_tutorial.svg",
+        "dsabl_icon": "assets/badges/dsabl_tutorial.svg"
+      },
+      "basicProfile": {
+        "title": "Add Basic Profile",
+        "description": "Add content in About Me section",
+        "enbl_icon": "assets/badges/enbl_basic_profile.svg",
+        "dsabl_icon": "assets/badges/dsabl_basic_profile.svg"
+      },
+      "educationProfile": {
+        "title": "Add Education Profile",
+        "description": "Add content in Education section",
+        "enbl_icon": "assets/badges/enbl_education_profile.svg",
+        "dsabl_icon": "assets/badges/dsabl_education_profile.svg"
+      },
+      "experienceProfile": {
+        "title": "Add Experience Profile",
+        "description": "Add content in Experience section",
+        "enbl_icon": "assets/badges/enbl_experience_profile.svg",
+        "dsabl_icon": "assets/badges/dsabl_experience_profile.svg"
+      }
+    },
+    "socialVerify": {
+      "linkedin": {
+        "title": "Linkedin Verification",
+        "description": "Authenticate and link your Linkedin account",
+        "enbl_icon": "assets/badges/enbl_linkedin_verify.svg",
+        "dsabl_icon": "assets/badges/dsabl_linkedin_verify.svg"
+      },
+      "facebook": {
+        "title": "Facebook Verification",
+        "description": "Authenticate and link your Facebook account",
+        "enbl_icon": "assets/badges/enbl_facebook_verify.svg",
+        "dsabl_icon": "assets/badges/dsabl_facebook_verify.svg"
+      },
+      "twitter": {
+        "title": "Twitter Verification",
+        "description": "Authenticate and link your Twitter account",
+        "enbl_icon": "assets/badges/enbl_twitter_verify.svg",
+        "dsabl_icon": "assets/badges/dsabl_twitter_verify.svg"
+      },
+      "google": {
+        "title": "Google Verification",
+        "description": "Authenticate and link your Google account",
+        "enbl_icon": "assets/badges/enbl_google_verify.svg",
+        "dsabl_icon": "assets/badges/dsabl_google_verify.svg"
+      },
+      "email": {
+        "title": "Email Verification",
+        "description": "Authenticate and link your Email account",
+        "enbl_icon": "assets/badges/enbl_email_verify.svg",
+        "dsabl_icon": "assets/badges/dsabl_email_verify.svg"
+      },
+      "phone": {
+        "title": "Phone Verification",
+        "description": "Authenticate and link your Phone no",
+        "enbl_icon": "assets/badges/enbl_phone_verify.svg",
+        "dsabl_icon": "assets/badges/dsabl_phone_verify.svg"
+      }
+    },
+    "didPublishTimes": {
+      "_5times": {
+        "title": "Publish DID 5 times",
+        "description": "Complete the tutorial",
+        "enbl_icon": "assets/badges/enbl_publish_did_5.svg",
+        "dsabl_icon": "assets/badges/dsabl_publish_did_5.svg"
+      },
+      "_10times": {
+        "title": "Publish DID 10 times",
+        "description": "Complete the tutorial",
+        "enbl_icon": "assets/badges/enbl_publish_did_10.svg",
+        "dsabl_icon": "assets/badges/dsabl_publish_did_10.svg"
+      },
+      "_25times": {
+        "title": "Publish DID 25 times",
+        "description": "Complete the tutorial",
+        "enbl_icon": "assets/badges/enbl_publish_did_25.svg",
+        "dsabl_icon": "assets/badges/dsabl_publish_did_25.svg"
+      },
+      "_50times": {
+        "title": "Publish DID 50 times",
+        "description": "Complete the tutorial",
+        "enbl_icon": "assets/badges/enbl_publish_did_50.svg",
+        "dsabl_icon": "assets/badges/dsabl_publish_did_50.svg"
+      },
+      "_100times": {
+        "title": "Publish DID 100 times",
+        "description": "Complete the tutorial",
+        "enbl_icon": "assets/badges/enbl_publish_did_100.svg",
+        "dsabl_icon": "assets/badges/dsabl_publish_did_100.svg"
+      }
+    },
+    "dStorage": {
+      "ownVault": {
+        "title": "Own Vault",
+        "description": "Choose own vault instead of default",
+        "enbl_icon": "assets/badges/enbl_own_vault.svg",
+        "dsabl_icon": "assets/badges/dsabl_own_vault.svg"
+      }
+    }
+  }

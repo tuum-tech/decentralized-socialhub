@@ -55,6 +55,7 @@ import SettingsPage from './pages/SettingsPage/Loadable';
 import DashboardPage from './pages/DashboardPage/Loadable';
 import PublicPage from './pages/PublicPage/Loadable';
 import ManagerPage from './pages/ManagerPage';
+import ActivityPage from './pages/ActivityPage';
 import FollowersPage from './pages/FollowersPage';
 import FollowingsPage from './pages/FollowingsPage';
 
@@ -112,7 +113,11 @@ const App: React.FC = () => {
               component={ManagerPage}
               exact={true}
             />
-
+            <ProtectedRoute
+              path="/activities"
+              component={ActivityPage}
+              exact={true}
+            />
             {/* // login workflow */}
             <Route path="/twitter_callback" component={TwitterCallback} />
             <Route path="/linkedin_callback" component={LinkedinCallback} />

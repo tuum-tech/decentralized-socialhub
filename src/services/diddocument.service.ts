@@ -135,31 +135,31 @@ export class DidDocumentService {
 
     await AssistService.publishDocument(userDid.did, requestPub);
     let publishTimes = await AssistService.getPublishTimes(userDid.did);
-
+    let curTime = new Date().getTime();
     if (publishTimes < 5) {
     } else if (publishTimes < 10) {
-      if (!userSession.badges?.didPublishTimes._5times) {
-        userSession.badges!.didPublishTimes!._5times = true;
+      if (!userSession.badges?.didPublishTimes._5times.archived) {
+        userSession.badges!.didPublishTimes!._5times.archived = curTime;
         await UserService.updateSession(userSession);
       }
     } else if (publishTimes < 25) {
-      if (!userSession.badges?.didPublishTimes._10times) {
-        userSession.badges!.didPublishTimes!._10times = true;
+      if (!userSession.badges?.didPublishTimes._10times.archived) {
+        userSession.badges!.didPublishTimes!._10times.archived = curTime;
         await UserService.updateSession(userSession);
       }
     } else if (publishTimes < 50) {
-      if (!userSession.badges?.didPublishTimes._25times) {
-        userSession.badges!.didPublishTimes!._25times = true;
+      if (!userSession.badges?.didPublishTimes._25times.archived) {
+        userSession.badges!.didPublishTimes!._25times.archived = curTime;
         await UserService.updateSession(userSession);
       }
     } else if (publishTimes < 100) {
-      if (!userSession.badges?.didPublishTimes._50times) {
-        userSession.badges!.didPublishTimes!._50times = true;
+      if (!userSession.badges?.didPublishTimes._50times.archived) {
+        userSession.badges!.didPublishTimes!._50times.archived = curTime;
         await UserService.updateSession(userSession);
       }
     } else {
-      if (!userSession.badges?.didPublishTimes._100times) {
-        userSession.badges!.didPublishTimes!._100times = true;
+      if (!userSession.badges?.didPublishTimes._100times.archived) {
+        userSession.badges!.didPublishTimes!._100times.archived = curTime;
         await UserService.updateSession(userSession);
       }
     }

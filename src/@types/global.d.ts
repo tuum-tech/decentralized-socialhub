@@ -153,28 +153,35 @@ interface IBadges {
   account: AccountBadgeItem;
   socialVerify: SocialBadgeItem;
   didPublishTimes: DIDBadgeItem;
+  dStorage: DStorageBadgeItem;
 }
 
 interface AccontBadgeItem {
-  beginnerTutorial: boolean;
-  basicProfile: boolean;
-  educationProfile: boolean;
-  experienceProfile: boolean;
-  ownVault: boolean;
+  beginnerTutorial: BadgeArchiveModel;
+  basicProfile: BadgeArchiveModel;
+  educationProfile: BadgeArchiveModel;
+  experienceProfile: BadgeArchiveModel;
 }
 
 interface SocialBadgeItem {
-  linkedin: boolean;
-  facebook: boolean;
-  twitter: boolean;
-  google: boolean;
-  email: boolean;
-  phone: boolean;
+  linkedin: BadgeArchiveModel;
+  facebook: BadgeArchiveModel;
+  twitter: BadgeArchiveModel;
+  google: BadgeArchiveModel;
+  email: BadgeArchiveModel;
+  phone: BadgeArchiveModel;
 }
 interface DIDBadgeItem {
-  _5times: boolean;
-  _10times: boolean;
-  _25times: boolean;
-  _50times: boolean;
-  _100times: boolean;
+  _5times: BadgeArchiveModel;
+  _10times: BadgeArchiveModel;
+  _25times: BadgeArchiveModel;
+  _50times: BadgeArchiveModel;
+  _100times: BadgeArchiveModel;
+}
+interface DStorageBadgeItem {
+  ownVault: BadgeArchiveModel;
+}
+
+interface BadgeArchiveModel {
+  archived: number | boolean;
 }

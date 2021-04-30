@@ -62,25 +62,29 @@ const OverviewCard: React.FC<Props> = ({ badges }) => {
   const [completedBadgeCount, setCompletedBadgeCount] = useState(0);
   const [progressPercent, setProgressPercent] = useState(0);
   useEffect(() => {
-    let sum1 = 0;
-    let sum2 = 0;
+    let _totalBadgeCount = 0;
+    let _completedBadgeCount = 0;
 
-    sum1 += Object.keys(badges?.account).length;
-    sum1 += Object.keys(badges?.socialVerify).length;
-    sum1 += Object.keys(badges?.didPublishTimes).length;
+    _totalBadgeCount += Object.keys(badges?.account).length;
+    _totalBadgeCount += Object.keys(badges?.socialVerify).length;
+    _totalBadgeCount += Object.keys(badges?.didPublishTimes).length;
+    _totalBadgeCount += Object.keys(badges?.dStorage).length;
 
-    sum2 += Object.keys(badges?.account).filter(key => badges?.account[key])
-      .length;
-    sum2 += Object.keys(badges?.socialVerify).filter(
-      key => (badges?.socialVerify as any)[key]
+    _completedBadgeCount += Object.keys(badges?.account).filter(
+      key => badges?.account[key].archived
     ).length;
-    sum2 += Object.keys(badges?.didPublishTimes).filter(
-      key => (badges?.didPublishTimes as any)[key]
+    _completedBadgeCount += Object.keys(badges?.socialVerify).filter(
+      key => (badges?.socialVerify as any)[key].archived
     ).length;
-
-    setTotalBadgeCount(sum1);
-    setCompletedBadgeCount(sum2);
-    setProgressPercent((sum2 * 100) / sum1);
+    _completedBadgeCount += Object.keys(badges?.didPublishTimes).filter(
+      key => (badges?.didPublishTimes as any)[key].archived
+    ).length;
+    _completedBadgeCount += Object.keys(badges?.dStorage).filter(
+      key => (badges?.dStorage as any)[key].archived
+    ).length;
+    setTotalBadgeCount(_totalBadgeCount);
+    setCompletedBadgeCount(_completedBadgeCount);
+    setProgressPercent((_completedBadgeCount * 100) / _totalBadgeCount);
   }, []);
   return (
     <IonCard className={style['spotlight']}>

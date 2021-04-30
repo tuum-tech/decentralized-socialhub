@@ -68,7 +68,7 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
 
           DidDocumentService.updateUserDocument(state.diddocument);
           userSession.loginCred!.google! = googleId.email;
-          userSession.badges!.socialVerify!.google = true;
+          userSession.badges!.socialVerify!.google.archived = new Date().getTime();
           await UserService.updateSession(userSession);
           window.close();
         } else {
