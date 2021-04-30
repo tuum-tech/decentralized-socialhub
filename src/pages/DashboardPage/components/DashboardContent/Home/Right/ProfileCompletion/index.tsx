@@ -41,9 +41,15 @@ const ProgressAreaContainer = styled.div`
   }
 `;
 
-const ProfileCompletion: React.FC = ({}) => {
+interface Props {
+  progress: number;
+  completionStats: any;
+}
+
+const ProfileCompletion: React.FC<Props> = ({ progress, completionStats }) => {
   const [category, setCategory] = useState(-1);
   const renderContent = () => {
+    /*
     const data = [
       {
         title: 'Beginners Tutorial',
@@ -68,17 +74,18 @@ const ProfileCompletion: React.FC = ({}) => {
       {
         title: 'Others',
         targetList: ['Other1', 'Other2', 'Other3'],
-        accomplishedList: ['Other1']
+        accomplishedList: []
       }
     ];
+    */
     const renderComponents = [];
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < completionStats.length; i++) {
       renderComponents.push(
         <ProfileComp
           key={i}
-          title={data[i].title}
-          targetList={data[i].targetList}
-          accomplishedList={data[i].accomplishedList}
+          title={completionStats[i].title}
+          targetList={completionStats[i].targetList}
+          accomplishedList={completionStats[i].accomplishedList}
           expanded={category === i}
           expandClicked={() => {
             if (category === i) {
@@ -92,10 +99,10 @@ const ProfileCompletion: React.FC = ({}) => {
     }
     return renderComponents;
   };
-  const percent = 10;
+  const percent = progress ? progress : 0;
   return (
     <MainCard>
-      <CardTitle>Profile Completion[UNDER CONSTRUCTION]</CardTitle>
+      <CardTitle>Profile Completion</CardTitle>
       <CardText>Complete tasks and gain badges.</CardText>
       <ProgressArea style={{ marginTop: '13px', marginBottom: '20px' }}>
         <ProgressBar value={percent} width="calc(100% - 90px)" />
