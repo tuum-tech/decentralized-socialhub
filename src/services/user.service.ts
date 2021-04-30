@@ -379,10 +379,10 @@ export class UserService {
     if (
       userData &&
       userData.data &&
-      userData.data['get_users_by_dids'] &&
-      userData.data['get_users_by_dids']['items'] &&
-      userData.data['get_users_by_dids']['items'].length > 0 &&
-      userData.data['get_users_by_dids']['items'][0].code
+      userData.data['get_users'] &&
+      userData.data['get_users']['items'] &&
+      userData.data['get_users']['items'].length > 0 &&
+      userData.data['get_users']['items'][0].code
     ) {
       const code = userData.data['get_user']['items'][0].code;
       newSessionItem.code = code;

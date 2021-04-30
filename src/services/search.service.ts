@@ -182,7 +182,7 @@ export class SearchService {
     params['dids'] = dids;
 
     usersResponse = await this.appHiveClient.Scripting.RunScript({
-      name: 'get_users_by_dids',
+      name: 'get_users',
       params: params,
       context: {
         target_did: `${process.env.REACT_APP_APPLICATION_ID}`,

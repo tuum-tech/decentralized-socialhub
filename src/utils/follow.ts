@@ -38,7 +38,7 @@ const getUsersInTuumVault = async (dids: string[]) => {
         dids: not_existing_users
       };
       await appHiveClient.Scripting.RunScript({
-        name: 'delete_users_by_dids',
+        name: 'delete_users',
         params: params,
         context: {
           target_did: `${process.env.REACT_APP_APPLICATION_ID}`,

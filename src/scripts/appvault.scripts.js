@@ -159,12 +159,12 @@ let run = async () => {
     }
   });
   await client.Scripting.SetScript({
-    name: 'delete_users_by_dids',
+    name: 'delete_users',
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
       type: 'delete',
-      name: 'delete_users_by_dids',
+      name: 'delete_users',
       output: true,
       body: {
         collection: 'users',
@@ -179,7 +179,7 @@ let run = async () => {
     }
   });
   await client.Scripting.SetScript({
-    name: 'get_users_by_dids',
+    name: 'get_users',
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {

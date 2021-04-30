@@ -127,7 +127,7 @@ export class TuumTechScriptService {
 
   public static async searchUserWithDID(did: string) {
     const get_user_by_did_script = {
-      name: 'get_users_by_dids',
+      name: 'get_users',
       params: {
         did: [did]
       },
