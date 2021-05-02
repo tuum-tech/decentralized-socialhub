@@ -32,13 +32,13 @@ interface IProps {
 }
 
 const ProgressBar: React.FC<IProps> = ({
-  value = 0,
-  text = 'completed',
+  value,
   width = '100%',
   height = 6,
   containerColor = '#EDF2F7',
   progressColor = '#4C6FFF'
 }) => {
+  const percent = value ? value : 0;
   return (
     <PBContainer
       style={{
