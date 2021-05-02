@@ -106,6 +106,7 @@ const BadgeCard: React.FC<Props> = ({ badges, badgeCategory }) => {
                     ((badgeDetails as any)[badgeCategory] as any)[key]
                       .description
                   }
+                  archived={(badgeItems as any)[key].archived}
                 />
               </IonCol>
             );

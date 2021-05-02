@@ -87,6 +87,9 @@ const DashboardContent: React.FC<Props> = ({
           profile={profile}
           onTutorialStart={onTutorialStart}
           didDocument={didDocument}
+          activeTab={tab => {
+            setActive(tab);
+          }}
         />
       )}
       {active === 'status' && <DashboardStatus />}

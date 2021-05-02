@@ -172,6 +172,7 @@ interface SocialBadgeItem {
   phone: BadgeArchiveModel;
 }
 interface DIDBadgeItem {
+  _1times: BadgeArchiveModel;
   _5times: BadgeArchiveModel;
   _10times: BadgeArchiveModel;
   _25times: BadgeArchiveModel;

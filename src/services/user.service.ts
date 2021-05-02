@@ -288,6 +288,9 @@ export class UserService {
           }
         },
         didPublishTimes: {
+          _1times: {
+            archived: false
+          },
           _5times: {
             archived: false
           },
@@ -321,6 +324,18 @@ export class UserService {
       mnemonics
     };
     let curTime = new Date().getTime();
+    if (loginCred) {
+      if (loginCred.email)
+        sessionItem.badges!.socialVerify!.email.archived = curTime;
+      if (loginCred.facebook)
+        sessionItem.badges!.socialVerify!.facebook.archived = curTime;
+      if (loginCred.twitter)
+        sessionItem.badges!.socialVerify!.twitter.archived = curTime;
+      if (loginCred.linkedin)
+        sessionItem.badges!.socialVerify!.linkedin.archived = curTime;
+      if (loginCred.google)
+        sessionItem.badges!.socialVerify!.google.archived = curTime;
+    }
     if (accountType === AccountType.Email) {
       // the confirmation code for email verification is passed as credential in the email flow, we can improve that
       sessionItem.status = 'CONFIRMED';
@@ -330,16 +345,16 @@ export class UserService {
       await TuumTechScriptService.updateEmailUserDidInfo(sessionItem);
     } else {
       sessionItem.status = 'CONFIRMED';
-      if (accountType == AccountType.Twitter) {
+      if (accountType === AccountType.Twitter) {
         sessionItem.badges!.socialVerify!.twitter.archived = curTime;
       }
-      if (accountType == AccountType.Linkedin) {
+      if (accountType === AccountType.Linkedin) {
         sessionItem.badges!.socialVerify!.linkedin.archived = curTime;
       }
-      if (accountType == AccountType.Google) {
+      if (accountType === AccountType.Google) {
         sessionItem.badges!.socialVerify!.google.archived = curTime;
       }
-      if (accountType == AccountType.Facebook) {
+      if (accountType === AccountType.Facebook) {
         sessionItem.badges!.socialVerify!.facebook.archived = curTime;
       }
       await TuumTechScriptService.addUserToTuumTech(sessionItem);
