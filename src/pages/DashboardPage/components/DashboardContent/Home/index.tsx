@@ -52,7 +52,7 @@ const DashboardHome: React.FC<Props> = ({
   useEffect(() => {
     setTutorialVisible(sessionItem.tutorialStep !== 4);
     setCompletionStats(profileCompletionStats());
-  }, [sessionItem]);
+  }, [sessionItem, profile]);
 
   useEffect(() => {
     let percentAggregated = '0';
@@ -100,8 +100,8 @@ const DashboardHome: React.FC<Props> = ({
         targetList: ['Added About me', 'Added Experience', 'Added Education'],
         accomplishedList: [
           profile.basicDTO && profile.basicDTO.about ? 'Added About me' : '',
-          profile.experienceDTO ? 'Added Experience' : '',
-          profile.educationDTO ? 'Added Education' : ''
+          profile.experienceDTO.items.length ? 'Added Experience' : '',
+          profile.educationDTO.items.length ? 'Added Education' : ''
         ].filter(a => a != '')
       }
     ];
@@ -121,7 +121,14 @@ const DashboardHome: React.FC<Props> = ({
           {
             name: 'Social Media Authenticated',
             code: 'socialMediaAuthenticated',
-            value: true
+            value:
+              sessionItem.loginCred &&
+              (sessionItem.loginCred.linkedin ||
+                sessionItem.loginCred.twitter ||
+                sessionItem.loginCred.google ||
+                sessionItem.loginCred.facebook)
+                ? true
+                : false
           }
         ],
         stats: {}
@@ -138,12 +145,12 @@ const DashboardHome: React.FC<Props> = ({
           {
             name: 'Added Education',
             code: 'education',
-            value: profile.educationDTO ? true : false
+            value: profile.educationDTO.items.length ? true : false
           },
           {
             name: 'Added Experience',
             code: 'experience',
-            value: profile.experienceDTO ? true : false
+            value: profile.experienceDTO.items.length ? true : false
           }
         ],
         stats: {}
