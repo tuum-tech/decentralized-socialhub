@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonCol, IonGrid, IonPopover, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
@@ -12,6 +12,10 @@ import {
 } from '../common';
 import Image from '../../Image';
 import styleWidget from '../WidgetCards.module.scss';
+import { UserService } from 'src/services/user.service';
+import { DidDocumentService } from 'src/services/diddocument.service';
+import { getVerifiedCredential } from 'src/utils/credential';
+import shieldIcon from '../../../assets/icon/shield.svg';
 
 const EditableContent = styled(IonCol)`
   display: flex;
@@ -57,6 +61,13 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
           </IonCol>
           <EditableContent size="10">
             <IonGrid className="ion-no-padding">
+              <IonRow style={{ float: 'right' }}>
+                <IonCol>
+                  {experienceItem.isVerified && (
+                    <img src={shieldIcon} style={{ width: '1em' }} />
+                  )}
+                </IonCol>
+              </IonRow>
               <IonRow className="ion-no-padding">
                 <Institution>{experienceItem.institution}</Institution>
               </IonRow>

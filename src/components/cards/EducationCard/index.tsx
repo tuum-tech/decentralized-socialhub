@@ -21,12 +21,14 @@ import {
   CardContentContainer
 } from '../common';
 import EducationCardEdit from './Edit';
+import ProgressBar from 'src/components/ProgressBar';
 
 interface IEducationProps {
   educationDTO: EducationDTO;
   updateFunc?: any;
   removeFunc?: any;
   isEditable?: boolean;
+  isPublicPage?: boolean;
 }
 
 export const defaultEducationItem: EducationItem = {
@@ -39,27 +41,40 @@ export const defaultEducationItem: EducationItem = {
   still: false,
   title: '',
   description: '',
-  order: ''
+  order: '',
+  isVerified: false
 };
 
 const EducationCard: React.FC<IEducationProps> = ({
   educationDTO,
   updateFunc,
   removeFunc,
-  isEditable = false
+  isEditable = false,
+  isPublicPage = false
 }: IEducationProps) => {
   const [currentEducationDTO, setCurrentEducationDTO] = useState(educationDTO);
+  const [eduVerifiedPercent, setEduVerifiedPercent] = useState(0);
 
   useEffect(() => {
     setCurrentEducationDTO(educationDTO);
   }, [educationDTO]);
+
+  let noOfVerifiedEduCred = 0;
+
+  educationDTO.items.map((x, i) => {
+    if (x.isVerified) {
+      noOfVerifiedEduCred++;
+    }
+  });
+
+  useEffect(() => {
+    setEduVerifiedPercent(
+      (noOfVerifiedEduCred * 100) / educationDTO.items.length
+    );
+  }, [currentEducationDTO, noOfVerifiedEduCred]);
 
   const [editedItem, setEditedItem] = useState(defaultEducationItem);
   const [mode, setMode] = useState<MODE>(MODE.NONE);
-
-  useEffect(() => {
-    setCurrentEducationDTO(educationDTO);
-  }, [educationDTO]);
 
   const handleChange = (evt: any) => {
     let v: any;
@@ -105,7 +120,7 @@ const EducationCard: React.FC<IEducationProps> = ({
     setEditedItem(defaultEducationItem);
   };
 
-  const editItem = (item: ExperienceItem) => {
+  const editItem = (item: EducationItem) => {
     setEditedItem(item);
     setMode(MODE.EDIT);
   };
@@ -133,7 +148,26 @@ const EducationCard: React.FC<IEducationProps> = ({
               <IonGrid className="ion-no-padding">
                 <IonRow className="ion-justify-content-between ion-no-padding">
                   <IonCol className="ion-no-padding">
-                    <IonCardTitle>Education</IonCardTitle>
+                    <IonCardTitle>
+                      Education
+                      {!isEditable && !isPublicPage && (
+                        <div
+                          style={{
+                            width: '10em',
+                            float: 'right',
+                            fontSize: '0.8em'
+                          }}
+                        >
+                          <ProgressBar
+                            value={eduVerifiedPercent}
+                            text={'verified'}
+                          />
+                          <div
+                            style={{ float: 'right', fontSize: '0.8em' }}
+                          >{`${eduVerifiedPercent}% ${'verified'}`}</div>
+                        </div>
+                      )}
+                    </IonCardTitle>
                   </IonCol>
                   {isEditable ? (
                     <IonCol size="auto" className="ion-no-padding">

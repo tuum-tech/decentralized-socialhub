@@ -44,15 +44,19 @@ export const CardText = styled.p`
   max-width: 315px;
 `;
 
-const VerificationStatus: React.FC = ({}) => {
-  const percent = 10;
+interface Props {
+  progress: number;
+}
+
+const VerificationStatus: React.FC<Props> = ({ progress }) => {
+  const percent = progress ? parseFloat(progress.toFixed(2)) : 0;
   return (
     <MainCard>
-      <CardTitle>Verification status[UNDER CONSTRUCTION]</CardTitle>
+      <CardTitle>Verification status</CardTitle>
 
       <ProgressArea>
         <ProgressBar value={percent} width="calc(100% - 90px)" />
-        <p>{percent}% Verified</p>
+        <p>{percent}% verified</p>
       </ProgressArea>
     </MainCard>
   );

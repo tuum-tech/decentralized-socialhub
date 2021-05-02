@@ -6,6 +6,7 @@ interface ExperienceItem {
   start: string;
   end: string;
   still: boolean;
+  isVerified: boolean;
   title: string;
   description: string;
   order: string;
@@ -26,6 +27,7 @@ interface EducationItem {
   start: string;
   end: string;
   still: boolean;
+  isVerified: boolean;
   title: string;
   description: string;
   order: string;
@@ -68,6 +70,7 @@ interface ISessionItem {
   accountType: AccountType;
   did: string;
   name: string;
+  email?: string;
   isDIDPublished: boolean;
   mnemonics: string;
   passhash: string;

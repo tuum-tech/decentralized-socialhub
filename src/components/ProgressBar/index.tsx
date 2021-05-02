@@ -26,18 +26,19 @@ const Progress = styled.progress`
 
 interface IProps {
   value?: number;
+  text?: string;
   containerColor?: string;
   progressColor?: string;
   width?: string;
 }
 
 const ProgressBar: React.FC<IProps> = ({
-  value,
+  value = 0,
+  text = 'completed',
   width = '100%',
   containerColor = '#EDF2F7',
   progressColor = '#4C6FFF'
 }) => {
-  const percent = value ? value : 0;
   return (
     <PBContainer
       style={{
@@ -47,13 +48,11 @@ const ProgressBar: React.FC<IProps> = ({
     >
       <PB
         style={{
-          width: `${percent}%`,
+          width: `${value}%`,
           background: progressColor
         }}
       ></PB>
-      <Progress value={percent} max="100">
-        {percent}%
-      </Progress>
+      <Progress value={value} max="100"></Progress>
     </PBContainer>
   );
 };
