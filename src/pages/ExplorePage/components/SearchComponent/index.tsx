@@ -145,7 +145,7 @@ const SearchComponent: React.FC = () => {
           </IonContent>
           <ExploreNav
             people={filteredUsers.get_users}
-            following={listFollowing.get_following}
+            following={listFollowing?.get_following}
             pages={
               filteredUniversities && filteredUniversities.get_universities
             }

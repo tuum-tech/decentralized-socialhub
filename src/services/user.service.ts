@@ -252,6 +252,67 @@ export class UserService {
       isDIDPublished: isDIDPublished ? isDIDPublished : false,
       onBoardingCompleted: false,
       loginCred: loginCred || {},
+      badges: {
+        account: {
+          beginnerTutorial: {
+            archived: false
+          },
+          basicProfile: {
+            archived: false
+          },
+          educationProfile: {
+            archived: false
+          },
+          experienceProfile: {
+            archived: false
+          }
+        },
+        socialVerify: {
+          linkedin: {
+            archived: false
+          },
+          facebook: {
+            archived: false
+          },
+          twitter: {
+            archived: false
+          },
+          google: {
+            archived: false
+          },
+          email: {
+            archived: false
+          },
+          phone: {
+            archived: false
+          }
+        },
+        didPublishTimes: {
+          _1times: {
+            archived: false
+          },
+          _5times: {
+            archived: false
+          },
+          _10times: {
+            archived: false
+          },
+          _25times: {
+            archived: false
+          },
+          _50times: {
+            archived: false
+          },
+          _100times: {
+            archived: false
+          }
+        },
+        dStorage: {
+          ownVault: {
+            archived: false
+          }
+        }
+      },
       tutorialStep: 1,
       hiveHost:
         hiveHostStr === ''
@@ -262,15 +323,40 @@ export class UserService {
       status: 'Created',
       mnemonics
     };
-
+    let curTime = new Date().getTime();
+    if (loginCred) {
+      if (loginCred.email)
+        sessionItem.badges!.socialVerify!.email.archived = curTime;
+      if (loginCred.facebook)
+        sessionItem.badges!.socialVerify!.facebook.archived = curTime;
+      if (loginCred.twitter)
+        sessionItem.badges!.socialVerify!.twitter.archived = curTime;
+      if (loginCred.linkedin)
+        sessionItem.badges!.socialVerify!.linkedin.archived = curTime;
+      if (loginCred.google)
+        sessionItem.badges!.socialVerify!.google.archived = curTime;
+    }
     if (accountType === AccountType.Email) {
       // the confirmation code for email verification is passed as credential in the email flow, we can improve that
       sessionItem.status = 'CONFIRMED';
       sessionItem.code = credential;
 
+      sessionItem.badges!.socialVerify!.email.archived = curTime;
       await TuumTechScriptService.updateEmailUserDidInfo(sessionItem);
     } else {
       sessionItem.status = 'CONFIRMED';
+      if (accountType === AccountType.Twitter) {
+        sessionItem.badges!.socialVerify!.twitter.archived = curTime;
+      }
+      if (accountType === AccountType.Linkedin) {
+        sessionItem.badges!.socialVerify!.linkedin.archived = curTime;
+      }
+      if (accountType === AccountType.Google) {
+        sessionItem.badges!.socialVerify!.google.archived = curTime;
+      }
+      if (accountType === AccountType.Facebook) {
+        sessionItem.badges!.socialVerify!.facebook.archived = curTime;
+      }
       await TuumTechScriptService.addUserToTuumTech(sessionItem);
     }
 

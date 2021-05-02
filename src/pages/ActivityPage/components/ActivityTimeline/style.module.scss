@@ -1,0 +1,31 @@
+.timeline-card {
+  border-radius: 16px;
+  box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24),
+    0px 3px 8px -1px rgba(50, 50, 71, 0.05);
+  background: #ffffff;
+  margin: 30px 50px;
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .card-title {
+      font-size: 18px;
+      line-height: 21.48px;
+      font-weight: 700;
+    }
+  }
+
+  .avatar {
+    max-width: 5.5em;
+    border-radius: 25px 25px 25px 25px;
+    padding: 3px;
+  }
+  .item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .left {
+        display: flex;
+      }
+  }
+}

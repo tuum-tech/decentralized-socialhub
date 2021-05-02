@@ -30,13 +30,15 @@ export interface Props {
   profile: ProfileDTO;
   sessionItem: ISessionItem;
   didDocument: any;
+  activeTab: (tab: string) => void;
 }
 
 const DashboardHome: React.FC<Props> = ({
   onTutorialStart,
   profile,
   sessionItem,
-  didDocument
+  didDocument,
+  activeTab
 }) => {
   const [tutorialVisible, setTutorialVisible] = useState(true);
   const [hasFollowUsers, setFollowUsers] = useState(false);
@@ -308,7 +310,12 @@ const DashboardHome: React.FC<Props> = ({
               showManageButton={false}
             />
           )}
-          <Badges />
+          <Badges
+            badges={sessionItem.badges!}
+            exploreAll={() => {
+              activeTab('badges');
+            }}
+          />
           {sessionItem.tutorialStep === 4 && (
             <FollowCards did={sessionItem.did} signed={true} />
           )}
