@@ -202,10 +202,49 @@ const DashboardHome: React.FC<Props> = ({
 
       verified['name'] = await isCredVerified('name', sessionItem.name);
 
-      if (sessionItem.email) {
-        verified['email'] = await isCredVerified('email', sessionItem.email);
+      if (sessionItem.loginCred?.email) {
+        verified['email'] = await isCredVerified(
+          'email',
+          sessionItem.loginCred.email
+        );
       } else {
         verified['email'] = false;
+      }
+
+      if (sessionItem.loginCred?.twitter) {
+        verified['twitter'] = await isCredVerified(
+          'twitter',
+          sessionItem.loginCred.twitter
+        );
+      } else {
+        verified['twitter'] = false;
+      }
+
+      if (sessionItem.loginCred?.google) {
+        verified['google'] = await isCredVerified(
+          'google',
+          sessionItem.loginCred.google
+        );
+      } else {
+        verified['google'] = false;
+      }
+
+      if (sessionItem.loginCred?.facebook) {
+        verified['facebook'] = await isCredVerified(
+          'facebook',
+          sessionItem.loginCred.facebook
+        );
+      } else {
+        verified['facebook'] = false;
+      }
+
+      if (sessionItem.loginCred?.linkedin) {
+        verified['linkedin'] = await isCredVerified(
+          'linkedin',
+          sessionItem.loginCred.linkedin
+        );
+      } else {
+        verified['linkedin'] = false;
       }
 
       /* Calculate verified education credentials starts */

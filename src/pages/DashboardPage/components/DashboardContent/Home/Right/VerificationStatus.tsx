@@ -49,14 +49,14 @@ interface Props {
 }
 
 const VerificationStatus: React.FC<Props> = ({ progress }) => {
-  const percent = progress ? progress : 0;
+  const percent = progress ? parseFloat(progress.toFixed(2)) : 0;
   return (
     <MainCard>
       <CardTitle>Verification status</CardTitle>
 
       <ProgressArea>
         <ProgressBar value={percent} width="calc(100% - 90px)" />
-        <p>{percent}% Verified</p>
+        <p>{percent}% verified</p>
       </ProgressArea>
     </MainCard>
   );
