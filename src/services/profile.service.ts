@@ -1,12 +1,36 @@
 import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 import { ProfileResponse } from 'src/pages/DashboardPage/types';
+import { getVerifiedCredential } from 'src/utils/credential';
 
 import { showNotify } from 'src/utils/notify';
+import { DidDocumentService } from './diddocument.service';
 
 import { HiveService } from './hive.service';
 import { UserService, AccountType } from './user.service';
 
 export class ProfileService {
+  static didDocument: any = null;
+
+  static isCredVerified = async (key: string, profileValue: string) => {
+    if (ProfileService.didDocument === null) {
+      ProfileService.didDocument = await ProfileService.getDidDocument();
+    }
+
+    let vc = getVerifiedCredential(key, ProfileService.didDocument);
+    if (!vc) return false;
+
+    return vc.value === profileValue && vc.isVerified;
+  };
+
+  static getDidDocument = async () => {
+    let userSession = UserService.GetUserSession();
+    if (!userSession) {
+      return;
+    }
+    let documentState = await DidDocumentService.getUserDocument(userSession);
+    return documentState.diddocument;
+  };
+
   static async getFullProfile(did: string): Promise<ProfileDTO | undefined> {
     {
       const hiveInstance = await HiveService.getAppHiveClient();
@@ -32,6 +56,29 @@ export class ProfileService {
             .get_education_profile;
           let experienceProfile = fullProfileResponse.response!
             .get_experience_profile;
+
+          /* Calculate verified education credentials starts */
+          educationProfile.items.map(async (x, i) => {
+            educationProfile.items[
+              i
+            ].isVerified = await ProfileService.isCredVerified(
+              'education',
+              x.institution
+            );
+          });
+          /* Calculate verified education credentials ends */
+
+          /* Calculate verified experience credentials starts */
+
+          experienceProfile.items.map(async (x, i) => {
+            experienceProfile.items[
+              i
+            ].isVerified = await ProfileService.isCredVerified(
+              'occupation',
+              x.title
+            );
+          });
+          /* Calculate verified experience credentials ends */
 
           return {
             basicDTO: basicProfile || {},

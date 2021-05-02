@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonCol, IonGrid, IonPopover, IonRow } from '@ionic/react';
 import styled from 'styled-components';
+import shieldIcon from '../../../assets/icon/shield.svg';
 
 import {
   Description,
@@ -59,6 +60,13 @@ const EducationItem: React.FC<EducationItemProps> = ({
           </IonCol>
           <EditableContent size="10">
             <IonGrid className="ion-no-padding">
+              <IonRow style={{ float: 'right' }}>
+                <IonCol>
+                  {educationItem.isVerified && (
+                    <img src={shieldIcon} style={{ width: '1em' }} />
+                  )}
+                </IonCol>
+              </IonRow>
               <IonRow className="ion-no-padding">
                 <Institution>{educationItem.institution}</Institution>
               </IonRow>

@@ -177,6 +177,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
                                         publicUserProfile.experienceDTO
                                       }
                                       isEditable={false}
+                                      isPublicPage={true}
                                     />
                                   </div>
                                   <div ref={educationRef}>
@@ -185,6 +186,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
                                         publicUserProfile.educationDTO
                                       }
                                       isEditable={false}
+                                      isPublicPage={true}
                                     />
                                   </div>
                                 </LeftContent>
