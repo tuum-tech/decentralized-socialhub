@@ -1,10 +1,10 @@
 import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 import {
-  ProfileResponse,
   BasicProfileResponse,
   EducationProfileResponse,
   ExperienceProfileResponse
 } from 'src/pages/DashboardPage/types';
+import { getVerifiedCredential } from 'src/utils/credential';
 
 import { showNotify } from 'src/utils/notify';
 import { DidDocumentService } from './diddocument.service';
@@ -225,28 +225,6 @@ export class ProfileService {
     }
   }
 
-  static async getFollowings(
-    did: string
-  ): Promise<IFollowingResponse | undefined> {
-    const appHiveClient = await HiveService.getAppHiveClient();
-    if (did && did !== '' && appHiveClient) {
-      const followingResponse: IRunScriptResponse<IFollowingResponse> = await appHiveClient.Scripting.RunScript(
-        {
-          name: 'get_following',
-          context: {
-            target_did: did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          }
-        }
-      );
-
-      if (followingResponse.isSuccess) {
-        return followingResponse.response;
-      }
-    }
-    return;
-  }
-
   static async getFollowers(
     dids: string[]
   ): Promise<IFollowerResponse | undefined> {
@@ -328,6 +306,28 @@ export class ProfileService {
     if (userSession) {
       return this.getFollowings(userSession.did);
     }
+  }
+
+  static async getFollowings(
+    did: string
+  ): Promise<IFollowingResponse | undefined> {
+    const appHiveClient = await HiveService.getAppHiveClient();
+    if (did && did !== '' && appHiveClient) {
+      const followingResponse: IRunScriptResponse<IFollowingResponse> = await appHiveClient.Scripting.RunScript(
+        {
+          name: 'get_following',
+          context: {
+            target_did: did,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+          }
+        }
+      );
+
+      if (followingResponse.isSuccess) {
+        return followingResponse.response;
+      }
+    }
+    return;
   }
 
   static async addFollowing(did: string): Promise<any> {

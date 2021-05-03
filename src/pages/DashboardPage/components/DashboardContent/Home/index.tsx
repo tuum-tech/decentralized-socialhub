@@ -16,6 +16,7 @@ import ConnectWithCommunity from './Right/ConnectWithCommunity';
 import ProfileCompletion from './Right/ProfileCompletion';
 import VerificationStatus from './Right/VerificationStatus';
 import Badges from './Right/Badges';
+import { hasCredentials } from 'src/utils/socialprofile';
 
 const LeftCardCol = styled(IonCol)`
   padding: 22px 16px;
@@ -77,9 +78,7 @@ const DashboardHome: React.FC<Props> = ({
     })();
   }, []);
 
-  const hasSocialProfiles =
-    didDocument.verifiableCredential &&
-    didDocument.verifiableCredential.length > 1;
+  const hasSocialProfiles = hasCredentials(didDocument);
 
   const profileCompletionStats = () => {
     const completionStatsDisplay = [
@@ -279,6 +278,7 @@ const DashboardHome: React.FC<Props> = ({
   }, [verifiedStats]);
   /* Verification ends */
 
+  
   return (
     <IonGrid className="ion-no-padding">
       <IonRow className="ion-no-padding">

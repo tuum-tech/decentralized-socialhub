@@ -17,11 +17,11 @@ const getUsersInTuumVault = async (dids: string[]) => {
     );
     if (
       listUsers.response &&
-      listUsers.response.get_users &&
-      listUsers.response.get_users.items &&
-      listUsers.response.get_users.items.length > 0
+      listUsers.response.get_users_by_dids &&
+      listUsers.response.get_users_by_dids.items &&
+      listUsers.response.get_users_by_dids.items.length > 0
     ) {
-      usersInTuumVault = listUsers.response.get_users.items.map(
+      usersInTuumVault = listUsers.response.get_users_by_dids.items.map(
         (item: any) => item.did
       );
     }
@@ -64,18 +64,20 @@ const addDetailsToFollowData = async (dids: string[]) => {
     if (
       listUsers &&
       listUsers.response &&
-      listUsers.response.get_users &&
-      listUsers.response.get_users.items &&
-      listUsers.response.get_users.items.length > 0
+      listUsers.response.get_users_by_dids &&
+      listUsers.response.get_users_by_dids.items &&
+      listUsers.response.get_users_by_dids.items.length > 0
     ) {
-      res_users = listUsers.response.get_users.items.map((user: any) => {
-        const newobj = {
-          name: user.name,
-          avatar: user.avatar || '',
-          did: user.did
-        };
-        return newobj;
-      });
+      res_users = listUsers.response.get_users_by_dids.items.map(
+        (user: any) => {
+          const newobj = {
+            name: user.name,
+            avatar: user.avatar || '',
+            did: user.did
+          };
+          return newobj;
+        }
+      );
     }
   } catch (e) {}
   return res_users;
@@ -110,6 +112,7 @@ export const loadFollowerUsers = async (did: string) => {
   let followersRes = (await ProfileService.getFollowers([
     did
   ])) as IFollowerResponse;
+
   if (
     followersRes &&
     followersRes.get_followers &&
@@ -117,7 +120,9 @@ export const loadFollowerUsers = async (did: string) => {
   ) {
     follwerDids = followersRes.get_followers.items[0].followers;
   }
+
   follwerDids = await syncFollowData(follwerDids);
+  console.log('====>follwerDids', follwerDids);
   const followerUsers: any[] = await addDetailsToFollowData(follwerDids);
   return followerUsers;
 };

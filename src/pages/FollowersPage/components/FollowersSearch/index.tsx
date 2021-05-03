@@ -5,15 +5,27 @@ import PeopleCard from 'src/components/cards/PeopleCard';
 import { ProfileService } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
 import { alertError } from 'src/utils/notify';
-import { IUserResponse, SearchService } from 'src/services/search.service';
+import { SearchService } from 'src/services/search.service';
 
 import FollowersHeader from '../FollowersHeader';
 
 import style from './style.module.scss';
 
+export interface IUserResponse {
+  _status?: string;
+  get_users_by_dids: {
+    items: {
+      did: string;
+      name: string;
+      avatar?: string;
+      hiveHost: string;
+    }[];
+  };
+}
+
 const FollowersSearch: React.FC = () => {
   const [filteredUsers, setFilteredUsers] = useState<IUserResponse>({
-    get_users: { items: [] }
+    get_users_by_dids: { items: [] }
   });
   const [listFollowers, setListFollowers] = useState<IFollowerResponse>({
     get_followers: { items: [] }
@@ -63,7 +75,6 @@ const FollowersSearch: React.FC = () => {
       let user = UserService.GetUserSession();
 
       if (user && user.did) {
-        //Get Following
         let following = await ProfileService.getFollowings(user.did);
         setListFollowing(following as IFollowingResponse);
       }
@@ -91,9 +102,10 @@ const FollowersSearch: React.FC = () => {
         200,
         0
       );
+      console.log('====>listUsers', listUsers.response);
       setFilteredUsers(listUsers.response);
     } catch (e) {
-      setFilteredUsers({ get_users: { items: [] } });
+      setFilteredUsers({ get_users_by_dids: { items: [] } });
       alertError(null, 'Could not load users');
       return;
     }
@@ -165,7 +177,7 @@ const FollowersSearch: React.FC = () => {
       <IonGrid className={style['tab-grid']}>
         <IonRow>
           <PeopleCard
-            people={filteredUsers.get_users}
+            people={filteredUsers.get_users_by_dids}
             following={listFollowing.get_following}
             searchKeyword={searchQuery}
             isSearchKeywordDID={isDID(searchQuery)}

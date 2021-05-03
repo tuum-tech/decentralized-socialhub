@@ -70,7 +70,6 @@ const ProfileEditor: React.FC = () => {
       if (!instance || !instance.userToken) return;
 
       setUserInfo(instance);
-
       if (instance.tutorialStep === 4) {
         await retriveProfile();
       }

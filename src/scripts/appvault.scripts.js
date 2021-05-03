@@ -179,12 +179,32 @@ let run = async () => {
     }
   });
   await client.Scripting.SetScript({
-    name: 'get_users',
+    name: 'get_users_by_tutorialStep',
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
       type: 'find',
-      name: 'get_users',
+      name: 'get_users_by_tutorialStep',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          tutorialStep: { $in: '$params.tutorialStep' }
+        },
+        options: {
+          limit: 150, //'$params.limit',
+          skip: 0 //'$params.skip',
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'get_users_by_dids',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_users_by_dids',
       output: true,
       body: {
         collection: 'users',
@@ -210,6 +230,70 @@ let run = async () => {
         collection: 'users',
         filter: {
           'loginCred.email': '$params.filter'
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'get_users_by_google',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'users_found',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          'loginCred.google': '$params.filter'
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'get_users_by_twitter',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'users_found',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          'loginCred.twitter': '$params.filter'
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'get_users_by_facebook',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'users_found',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          'loginCred.facebook': '$params.filter'
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'get_users_by_linkedin',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'users_found',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          'loginCred.linkedin': '$params.filter'
         }
       }
     }
@@ -257,33 +341,12 @@ let run = async () => {
 
   // ===== For searching on explore page =====
   await client.Scripting.SetScript({
-    name: 'get_activated_users', // pagination
-    allowAnonymousUser: true,
-    allowAnonymousApp: true,
-    executable: {
-      type: 'find',
-      name: 'get_users',
-      output: true,
-      body: {
-        collection: 'users',
-        filter: {
-          did: { $nin: '$params.self_did' },
-          tutorialStep: 4 // only fully registered and tutorial completed users
-        },
-        options: {
-          limit: 150, //'$params.limit',
-          skip: 0 //'$params.skip',
-        }
-      }
-    }
-  });
-  await client.Scripting.SetScript({
     name: 'get_users_by_name',
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
       type: 'find',
-      name: 'get_users',
+      name: 'get_users_by_name',
       output: true,
       body: {
         collection: 'users',
@@ -304,7 +367,7 @@ let run = async () => {
     allowAnonymousApp: true,
     executable: {
       type: 'find',
-      name: 'get_users',
+      name: 'get_users_by_did',
       output: true,
       body: {
         collection: 'users',
