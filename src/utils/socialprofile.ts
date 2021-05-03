@@ -1,5 +1,6 @@
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { UserService } from 'src/services/user.service';
+import { DidDocumentService } from 'src/services/diddocument.service';
 
 interface VerifiedCredential {
   value: string;
@@ -90,63 +91,26 @@ export const checkLoginCredFromSession = async (
   };
 };
 
-export const loginCredSyn = async (
-  userSssion: ISessionItem,
-  diddocument: any
-) => {
-  const { loginCred } = userSssion;
-
-  const doc_linkedin = getVerifiedCredential('linkedin', diddocument);
-  const doc_twitter = getVerifiedCredential('twitter', diddocument);
-  const doc_facebook = getVerifiedCredential('facebook', diddocument);
-  const doc_google = getVerifiedCredential('google', diddocument);
-
-  let newLoginCred = loginCred || {};
-  let hasChanged = false;
-  if (doc_linkedin && doc_linkedin.value) {
-    if (
-      !loginCred ||
-      !loginCred.linkedin ||
-      loginCred.linkedin !== doc_linkedin.value
-    ) {
-      newLoginCred.linkedin = doc_linkedin.value;
-      hasChanged = true;
+export const hasCredentials = (diddocument: any) => {
+  let has = false;
+  if (
+    diddocument &&
+    diddocument.verifiableCredential &&
+    diddocument.verifiableCredential.length > 0
+  ) {
+    for (let i = 0; i < diddocument.verifiableCredential.length; i++) {
+      if (diddocument.verifiableCredential[i].credentialSubject) {
+        const { credentialSubject } = diddocument.verifiableCredential[i];
+        if (
+          credentialSubject.google ||
+          credentialSubject.linkedin ||
+          credentialSubject.twitter ||
+          credentialSubject.facebook
+        ) {
+          has = true;
+        }
+      }
     }
   }
-  if (doc_twitter && doc_twitter.value) {
-    if (
-      !loginCred ||
-      !loginCred.twitter ||
-      loginCred.twitter !== doc_twitter.value
-    ) {
-      newLoginCred.twitter = doc_twitter.value;
-      hasChanged = true;
-    }
-  }
-  if (doc_google && doc_google.value) {
-    if (
-      !loginCred ||
-      !loginCred.google ||
-      loginCred.google !== doc_google.value
-    ) {
-      newLoginCred.google = doc_google.value;
-      hasChanged = true;
-    }
-  }
-  if (doc_facebook && doc_facebook.value) {
-    if (
-      !loginCred ||
-      !loginCred.facebook ||
-      loginCred.facebook !== doc_facebook.value
-    ) {
-      newLoginCred.facebook = doc_facebook.value;
-      hasChanged = true;
-    }
-  }
-  if (hasChanged) {
-    await UserService.updateSession({
-      ...userSssion,
-      loginCred: newLoginCred
-    } as ISessionItem);
-  }
+  return has;
 };

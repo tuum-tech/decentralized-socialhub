@@ -22,6 +22,21 @@ export interface ProfileResponse {
   get_experience_profile: ExperienceDTO;
 }
 
+export interface BasicProfileResponse {
+  _status: string;
+  get_basic_profile: GetBasic;
+}
+
+export interface EducationProfileResponse {
+  _status: string;
+  get_education_profile: EducationDTO;
+}
+
+export interface ExperienceProfileResponse {
+  _status: string;
+  get_experience_profile: ExperienceDTO;
+}
+
 export interface GetBasic {
   items?: BasicDTO[] | null;
 }

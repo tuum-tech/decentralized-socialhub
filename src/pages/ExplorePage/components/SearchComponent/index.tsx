@@ -3,7 +3,6 @@ import { IonContent, IonSearchbar } from '@ionic/react';
 import style from './style.module.scss';
 import {
   IUniversitiesResponse,
-  IUserResponse,
   SearchService
 } from 'src/services/search.service';
 import ExploreNav from '../ExploreNav';
@@ -12,14 +11,24 @@ import { UserService } from 'src/services/user.service';
 import { alertError } from 'src/utils/notify';
 import LoadingIndicator from 'src/components/LoadingIndicator';
 
+export interface IUserResponse {
+  _status?: string;
+  get_users_by_tutorialStep: {
+    items: {
+      did: string;
+      name: string;
+      avatar?: string;
+      hiveHost: string;
+    }[];
+  };
+}
+
 const SearchComponent: React.FC = () => {
   const [filteredUniversities, setFilteredUniversities] = useState<
     IUniversitiesResponse
   >({ get_universities: { items: [] } });
 
-  const [filteredUsers, setFilteredUsers] = useState<IUserResponse>({
-    get_users: { items: [] }
-  });
+  const [filteredUsers, setFilteredUsers] = useState<PeopleDTO>({ items: [] });
   const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
     get_following: { items: [] }
   });
@@ -68,9 +77,9 @@ const SearchComponent: React.FC = () => {
 
       try {
         let listUsers: any = await searchService.getUsers('', 200, 0);
-        setFilteredUsers(listUsers.response);
+        setFilteredUsers(listUsers);
       } catch (e) {
-        setFilteredUsers({ get_users: { items: [] } });
+        setFilteredUsers({ items: [] });
         alertError(null, 'Could not load users');
         return;
       }
@@ -109,7 +118,7 @@ const SearchComponent: React.FC = () => {
 
     setFilteredUniversities(listUniversities.response);
     let listUsers: any = await searchService.getUsers(searchQuery, 200, 0);
-    setFilteredUsers(listUsers.response);
+    setFilteredUsers(listUsers);
   };
 
   useEffect(() => {
@@ -144,8 +153,8 @@ const SearchComponent: React.FC = () => {
             ></IonSearchbar>
           </IonContent>
           <ExploreNav
-            people={filteredUsers.get_users}
-            following={listFollowing?.get_following}
+            people={filteredUsers}
+            following={listFollowing.get_following}
             pages={
               filteredUniversities && filteredUniversities.get_universities
             }
