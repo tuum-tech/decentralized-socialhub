@@ -84,6 +84,7 @@ let run = async () => {
           onBoardingCompleted: '$params.onBoardingCompleted',
           loginCred: '$params.loginCred',
           timestamp: '$params.timestamp',
+          badges: '$params.badges',
           tutorialStep: '$params.tutorialStep',
           hiveHost: '$params.hiveHost',
           avatar: '$params.avatar',
@@ -197,7 +198,6 @@ let run = async () => {
     }
   });
   await client.Scripting.SetScript({
-    name: 'delete_users_by_dids',
     name: 'get_users_by_tutorialStep',
     allowAnonymousUser: true,
     allowAnonymousApp: true,
