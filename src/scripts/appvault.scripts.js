@@ -83,7 +83,7 @@ let run = async () => {
           isDIDPublished: '$params.isDIDPublished',
           onBoardingCompleted: '$params.onBoardingCompleted',
           loginCred: '$params.loginCred',
-          badges: '$params.badges',
+          timestamp: '$params.timestamp',
           tutorialStep: '$params.tutorialStep',
           hiveHost: '$params.hiveHost',
           avatar: '$params.avatar',
@@ -178,7 +178,26 @@ let run = async () => {
       }
     }
   });
+
   await client.Scripting.SetScript({
+    name: 'delete_expired_users', //  remove
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'delete',
+      name: 'delete_expired_users',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          did: '',
+          timestamp: { $lt: '$params.timestamp' }
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'delete_users_by_dids',
     name: 'get_users_by_tutorialStep',
     allowAnonymousUser: true,
     allowAnonymousApp: true,

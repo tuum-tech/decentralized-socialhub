@@ -315,6 +315,7 @@ export class UserService {
         }
       },
       tutorialStep: 1,
+      timestamp: 0,
       hiveHost:
         hiveHostStr === ''
           ? `${process.env.REACT_APP_TUUM_TECH_HIVE}`

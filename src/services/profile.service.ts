@@ -36,7 +36,7 @@ export class ProfileService {
   };
 
   static async getFullProfile(did: string): Promise<ProfileDTO | undefined> {
-    let basicDTO: any = {}
+    let basicDTO: any = {};
     let educationDTO: EducationDTO = {
       items: [],
       isEnabled: true
@@ -84,7 +84,8 @@ export class ProfileService {
         educationProfileResponse.response.get_education_profile.items &&
         educationProfileResponse.response.get_education_profile.items.length > 0
       ) {
-        educationDTO.items = educationProfileResponse.response.get_education_profile.items;
+        educationDTO.items =
+          educationProfileResponse.response.get_education_profile.items;
       }
 
       const experienceProfileResponse: IRunScriptResponse<ExperienceProfileResponse> = await hiveInstance.Scripting.RunScript(
@@ -102,16 +103,16 @@ export class ProfileService {
         experienceProfileResponse.response &&
         experienceProfileResponse.response.get_experience_profile &&
         experienceProfileResponse.response.get_experience_profile.items &&
-        experienceProfileResponse.response.get_experience_profile.items.length > 0
+        experienceProfileResponse.response.get_experience_profile.items.length >
+          0
       ) {
-        experienceDTO.items = experienceProfileResponse.response.get_experience_profile.items;
+        experienceDTO.items =
+          experienceProfileResponse.response.get_experience_profile.items;
       }
 
       /* Calculate verified education credentials starts */
       educationDTO.items.map(async (x, i) => {
-        educationDTO.items[
-          i
-        ].isVerified = await ProfileService.isCredVerified(
+        educationDTO.items[i].isVerified = await ProfileService.isCredVerified(
           'education',
           x.institution
         );
@@ -120,9 +121,7 @@ export class ProfileService {
 
       /* Calculate verified experience credentials starts */
       experienceDTO.items.map(async (x, i) => {
-        experienceDTO.items[
-          i
-        ].isVerified = await ProfileService.isCredVerified(
+        experienceDTO.items[i].isVerified = await ProfileService.isCredVerified(
           'occupation',
           x.title
         );
@@ -130,9 +129,10 @@ export class ProfileService {
       /* Calculate verified experience credentials ends */
     }
     return {
-      basicDTO, educationDTO, experienceDTO
+      basicDTO,
+      educationDTO,
+      experienceDTO
     };
-    
   }
 
   static async updateAbout(basicDTO: BasicDTO) {
@@ -385,7 +385,8 @@ export const defaultUserInfo: ISessionItem = {
   mnemonics: '',
   passhash: '',
   onBoardingCompleted: false,
-  tutorialStep: 1
+  tutorialStep: 1,
+  timestamp: 0
 };
 
 export const defaultFullProfile = {

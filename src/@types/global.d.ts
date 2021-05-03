@@ -81,6 +81,7 @@ interface ISessionItem {
   avatar?: string;
   code?: string;
   status?: string;
+  timestamp: number;
 }
 
 interface LoginCred {

@@ -71,7 +71,8 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
         mnemonics: '',
         passhash: '',
         onBoardingCompleted: false,
-        tutorialStep: 1
+        tutorialStep: 1,
+        timestamp: Date.now()
       };
       setSession(newSession);
     }
