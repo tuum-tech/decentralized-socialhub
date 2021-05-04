@@ -13,7 +13,7 @@ export type ActionType = typeof Actions;
 
 export type UserType = {
   name: string;
-  email: string;
+  loginCred: LoginCred;
 };
 
 export type LocationState = {

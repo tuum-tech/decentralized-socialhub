@@ -35,17 +35,16 @@ interface IVerifyCodeResponse {
   };
 }
 
-interface Props extends RouteComponentProps<MatchParams> {}
-
 const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
   props: RouteComponentProps<MatchParams>
 ) => {
   let code: string = props.match.params.code;
   const [status, setStatus] = useState('');
   const [credentials, setCredentials] = useState({
-    email: '',
+    loginCred: {
+      email: ''
+    },
     name: '',
-    request_token: '',
     credential: ''
   });
 
@@ -56,8 +55,9 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
         const { name, email } = response.data;
         setCredentials({
           name,
-          email,
-          request_token: code,
+          loginCred: {
+            email
+          },
           credential: code
         });
       }
@@ -96,8 +96,9 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
             pathname: '/generate-did',
             state: {
               name: credentials.name,
-              request_token: credentials.request_token,
-              email: credentials.email,
+              loginCred: {
+                email: credentials.loginCred.email
+              },
               service: AccountType.Email,
               credential: credentials.credential
             }

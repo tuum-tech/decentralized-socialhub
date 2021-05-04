@@ -1,19 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 
-import SpotlightCard from 'src/components/cards/SpotlightCard';
-import BadgesCard from 'src/components/cards/BadgesCard';
-import OverviewCard from 'src/components/cards/OverviewCard';
+import ProfileCompletion from '../Home/Right/ProfileCompletion';
 
+import styled from 'styled-components';
 import style from './style.module.scss';
 
-const DashboardBadges: React.FC = () => {
+import OverviewCard from './OverviewCard';
+import RecentBadgeCard from './RecentBadgeCard';
+import BadgeCard from './BadgeCard';
+
+interface Props {
+  sessionItem: ISessionItem;
+}
+
+const DashboardBadges: React.FC<Props> = ({ sessionItem }) => {
   return (
     <IonGrid className={style['tab-grid']}>
       <IonRow>
         <IonCol size="4">
-          <SpotlightCard title="UNDER CONSTRUCTION" content="TODO" />
-          <BadgesCard title="Social[UNDER CONSTRUCTION]" />
+          <OverviewCard badges={sessionItem.badges!} />
+          {/* <ProfileCompletion /> */}
+          <RecentBadgeCard badges={sessionItem.badges!} />
+        </IonCol>
+        <IonCol size="8">
+          <BadgeCard badges={sessionItem.badges!} badgeCategory="account" />
+          <BadgeCard
+            badges={sessionItem.badges!}
+            badgeCategory="socialVerify"
+          />
+          <BadgeCard
+            badges={sessionItem.badges!}
+            badgeCategory="didPublishTimes"
+          />
+          <BadgeCard badges={sessionItem.badges!} badgeCategory="dStorage" />
         </IonCol>
       </IonRow>
     </IonGrid>

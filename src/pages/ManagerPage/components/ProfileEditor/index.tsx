@@ -70,7 +70,6 @@ const ProfileEditor: React.FC = () => {
       if (!instance || !instance.userToken) return;
 
       setUserInfo(instance);
-
       if (instance.tutorialStep === 4) {
         await retriveProfile();
       }
@@ -92,7 +91,7 @@ const ProfileEditor: React.FC = () => {
               <BasicCard
                 sessionItem={userInfo}
                 updateFunc={async (userInfo: ISessionItem) => {
-                  await TuumTechScriptService.updateBasicProfile(userInfo);
+                  await TuumTechScriptService.updateTuumUser(userInfo);
                   UserService.updateSession(userInfo, true);
                 }}
               ></BasicCard>
@@ -111,6 +110,14 @@ const ProfileEditor: React.FC = () => {
                       if (userSession) {
                         newBasicDTO.did = userSession.did;
                         newBasicDTO.about = nextAbout;
+                        if (
+                          userSession.badges &&
+                          userSession.badges.account &&
+                          !userSession.badges.account.basicProfile.archived
+                        ) {
+                          userSession.badges.account!.basicProfile.archived = new Date().getTime();
+                          await UserService.updateSession(userSession);
+                        }
                         await ProfileService.updateAbout(newBasicDTO);
                         await retriveProfile();
                       }
@@ -128,6 +135,16 @@ const ProfileEditor: React.FC = () => {
                   <EducationCard
                     educationDTO={profile.educationDTO}
                     updateFunc={async (educationItem: EducationItem) => {
+                      const userSession = UserService.GetUserSession();
+                      if (
+                        userSession &&
+                        userSession.badges &&
+                        userSession.badges.account &&
+                        !userSession.badges.account.educationProfile.archived
+                      ) {
+                        userSession.badges.account.educationProfile.archived = new Date().getTime();
+                        await UserService.updateSession(userSession);
+                      }
                       await ProfileService.updateEducationProfile(
                         educationItem
                       );
@@ -144,6 +161,16 @@ const ProfileEditor: React.FC = () => {
                   <ExperienceCard
                     experienceDTO={profile.experienceDTO}
                     updateFunc={async (experienceItem: ExperienceItem) => {
+                      const userSession = UserService.GetUserSession();
+                      if (
+                        userSession &&
+                        userSession.badges &&
+                        userSession.badges.account &&
+                        !userSession.badges.account.experienceProfile.archived
+                      ) {
+                        userSession.badges.account.experienceProfile.archived = new Date().getTime();
+                        await UserService.updateSession(userSession);
+                      }
                       await ProfileService.updateExperienceProfile(
                         experienceItem
                       );

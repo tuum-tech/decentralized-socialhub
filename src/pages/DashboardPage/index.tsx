@@ -27,7 +27,6 @@ import {
   defaultUserInfo,
   defaultFullProfile
 } from 'src/services/profile.service';
-import { loginCredSyn } from 'src/utils/socialprofile';
 
 import TutorialComponent from './components/Tutorial';
 import DashboardContent from './components/DashboardContent';
@@ -60,6 +59,10 @@ const ProfilePage = () => {
   const setTimerForDid = () => {
     const timer = setTimeout(async () => {
       await refreshDidDocument();
+      // hard-coded here
+      let userSession = UserService.GetUserSession();
+      if (userSession) setUserInfo(userSession);
+
       setTimerForDid();
     }, 1000);
     return () => clearTimeout(timer);
@@ -79,14 +82,12 @@ const ProfilePage = () => {
       return;
     }
     let documentState = await DidDocumentService.getUserDocument(userSession);
-    await loginCredSyn(userSession, documentState.diddocument);
     setDidDocument(documentState.diddocument);
   };
 
   const refreshStatus = async () => {
     let userSession = UserService.GetUserSession();
     if (!userSession || !userSession.did) return;
-
     let publishWaiting = AssistService.getPublishStatusTask(userSession.did);
 
     if (!publishWaiting) return;
@@ -130,7 +131,6 @@ const ProfilePage = () => {
     }
     setLoadingText('');
   };
-
   useEffect(() => {
     (async () => {
       let userSession = UserService.GetUserSession();
@@ -181,7 +181,7 @@ const ProfilePage = () => {
   if (userInfo.tutorialStep < 4 && onBoardVisible) {
     return (
       <OnBoarding
-        completed={async () => {
+        completed={async (startTutorial: boolean) => {
           let user = UserService.GetUserSession();
           if (!user) return;
 
@@ -195,6 +195,9 @@ const ProfilePage = () => {
               UserService.logout();
               window.location.href = '/';
             }, ExporeTime);
+          }
+          if (startTutorial) {
+            setShowTutorial(true);
           }
         }}
         sessionItem={userInfo}

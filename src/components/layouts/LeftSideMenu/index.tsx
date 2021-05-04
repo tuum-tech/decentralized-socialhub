@@ -168,6 +168,24 @@ const LeftSideMenu: React.FC = ({}) => {
               <h3>Settings</h3>
             </IonLabel>
           </IonItem>
+          <IonItem
+            className={
+              // active === 'settings'
+              history.location.pathname === '/activities'
+                ? style['item-active']
+                : style['item-link']
+            }
+            onClick={async () => history.push('/activities')}
+          >
+            <IonIcon
+              slot="start"
+              src="../../assets/icon_activities.svg"
+              className={style['img']}
+            ></IonIcon>
+            <IonLabel>
+              <h3>Activities</h3>
+            </IonLabel>
+          </IonItem>
           {/* <IonItem
             className={
               // active === 'notifications'

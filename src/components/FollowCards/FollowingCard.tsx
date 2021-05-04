@@ -12,12 +12,12 @@ import {
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
+import Avatar from '../Avatar';
 import styleCards from 'src/components/cards/WidgetCards.module.scss';
 import style from './style.module.scss';
 
 interface FollowingsWidgetProps {
-  dids: string[];
-  resolveUserFunc: any;
+  users: any[];
   getLinkFunc: any;
   isSigned: boolean;
 }
@@ -64,8 +64,7 @@ export const ViewAll = styled(IonRouterLink)`
 `;
 
 const FollowingCard: React.FC<FollowingsWidgetProps> = ({
-  dids,
-  resolveUserFunc,
+  users,
   getLinkFunc,
   isSigned
 }: FollowingsWidgetProps) => {
@@ -76,7 +75,7 @@ const FollowingCard: React.FC<FollowingsWidgetProps> = ({
           <IonRow className="ion-justify-content-between">
             <IonCol size="6">
               <IonCardTitle id="education">
-                Following ({dids.length})
+                Following ({users.length})
               </IonCardTitle>
             </IonCol>
             <IonCol size="auto">
@@ -91,23 +90,19 @@ const FollowingCard: React.FC<FollowingsWidgetProps> = ({
       </IonCardHeader>
       <IonCardContent>
         <IonGrid className={style['following-widget']}>
-          {dids.map((did: string, index) => (
-            <IonRow key={index}>
-              <IonCol size="*">
-                <img
-                  className={style['thumbnail']}
-                  src={resolveUserFunc(did).image}
-                  alt="thumbnail"
-                />
+          {users.map((user: any, index: number) => (
+            <IonRow key={index} className="mb-3">
+              <IonCol size="2">
+                <Avatar did={user.did} width="45px" />
               </IonCol>
-              <IonCol size="7">
-                <Link to={getLinkFunc(did)}>
+              <IonCol size="10" className="pl-1">
+                <Link to={getLinkFunc(user.did)}>
                   <IonGrid>
                     <IonRow>
-                      <Name>{resolveUserFunc(did).name}</Name>
+                      <Name>{user.name}</Name>
                     </IonRow>
                     <IonRow>
-                      <TruncatedSpan>{did}</TruncatedSpan>
+                      <TruncatedSpan>{user.did}</TruncatedSpan>
                     </IonRow>
                   </IonGrid>
                 </Link>

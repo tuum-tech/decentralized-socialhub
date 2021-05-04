@@ -125,10 +125,6 @@ export default function Upload() {
               </LinkStyleSpan>
               <LinkStyleSpan
                 onClick={async () => {
-                  // console.log('======>file', file);
-                  // console.log('======>name', name);
-                  // console.log('======>size', size);
-                  // console.log('======>base64', base64);
                   if (base64) await storeUploadedAvatar(base64);
                 }}
               >

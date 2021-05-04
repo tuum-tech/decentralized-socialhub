@@ -24,6 +24,11 @@ export const ProgressArea = styled.div`
   }
 `;
 
+export const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
 export const MainCard = styled(LeftCard)`
   padding: 21px !important;
   min-height: 100px;
@@ -35,6 +40,14 @@ export const CardTitle = styled(LeftCardTitle)`
   margin-bottom: 25px;
 `;
 
+export const ExploreAll = styled.p`
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  color: #4c6fff;
+  cursor: pointer;
+`;
+
 export const CardText = styled.p`
   font-style: normal;
   font-weight: normal;
@@ -44,15 +57,19 @@ export const CardText = styled.p`
   max-width: 315px;
 `;
 
-const VerificationStatus: React.FC = ({}) => {
-  const percent = 10;
+interface Props {
+  progress: number;
+}
+
+const VerificationStatus: React.FC<Props> = ({ progress }) => {
+  const percent = progress ? parseFloat(progress.toFixed(2)) : 0;
   return (
     <MainCard>
-      <CardTitle>Verification status[UNDER CONSTRUCTION]</CardTitle>
+      <CardTitle>Verification status</CardTitle>
 
       <ProgressArea>
         <ProgressBar value={percent} width="calc(100% - 90px)" />
-        <p>{percent}% Verified</p>
+        <p>{percent}% verified</p>
       </ProgressArea>
     </MainCard>
   );

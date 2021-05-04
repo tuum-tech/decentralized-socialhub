@@ -127,9 +127,9 @@ export class TuumTechScriptService {
 
   public static async searchUserWithDID(did: string) {
     const get_user_by_did_script = {
-      name: 'get_user_by_did',
+      name: 'get_users_by_dids',
       params: {
-        did
+        dids: [did]
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
@@ -140,9 +140,9 @@ export class TuumTechScriptService {
     return response;
   }
 
-  public static async updateUserDidInfo(params: ISessionItem) {
+  public static async updateTuumUser(params: ISessionItem) {
     const add_user_script = {
-      name: 'update_user_did_info',
+      name: 'update_user',
       params,
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
@@ -154,9 +154,9 @@ export class TuumTechScriptService {
   }
 
   // Update user created from email flow. The update do not filter by DID because this user doesn't have one yet
-  public static async updateEmailUserDidInfo(params: ISessionItem) {
+  public static async updateTuumEmailUser(params: ISessionItem) {
     const update_emailuser_script = {
-      name: 'update_emailuser_did_info',
+      name: 'update_email_user',
       params,
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
@@ -164,7 +164,6 @@ export class TuumTechScriptService {
       }
     };
     let response: any = await this.runTuumTechScript(update_emailuser_script);
-
     return response;
   }
 
@@ -178,22 +177,6 @@ export class TuumTechScriptService {
       }
     };
     let response: any = await this.runTuumTechScript(add_user_script);
-    return response;
-  }
-
-  public static async updateBasicProfile(basicDTO: ISessionItem) {
-    const update_user_script = {
-      name: 'update_user',
-      params: basicDTO,
-      context: {
-        target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
-      }
-    };
-    let response: any = await this.runTuumTechScript(update_user_script);
-    const { data, meta } = response;
-    if (meta.code === 200 && meta.message === 'OK') {
-    }
     return response;
   }
 }

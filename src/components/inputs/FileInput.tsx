@@ -8,7 +8,7 @@ interface Props {
   value?: string;
   flexDirection?: string;
   hasError?: boolean;
-  onChange: (e: string) => void;
+  onChange: (e: File) => void;
   className?: string;
 }
 
@@ -36,7 +36,14 @@ const FileInput: React.FC<Props> = ({
       {label && label !== '' && (
         <IonLabel className={style['fileinput_label']}>{label}</IonLabel>
       )}
-      <input className={style['fileinput_field']} type="file" accept="*/*" />
+      <input
+        className={style['fileinput_field']}
+        onChange={e => {
+          onChange(e.target.files![0]);
+        }}
+        type="file"
+        accept="*/*"
+      />
     </div>
   );
 };

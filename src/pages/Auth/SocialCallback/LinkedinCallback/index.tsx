@@ -17,7 +17,6 @@ import {
 import { DidService } from 'src/services/did.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
-import { TuumTechScriptService } from 'src/services/script.service';
 
 const LinkedinCallback: React.FC<RouteComponentProps> = props => {
   /**
@@ -28,9 +27,9 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
   const history = useHistory();
   const [credentials, setCredentials] = useState({
     name: '',
-    email: '',
-    request_token: '',
-    credential: ''
+    loginCred: {
+      linkedin: ''
+    }
   });
   const getToken = async (
     code: string,
@@ -46,7 +45,11 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
 
   useEffect(() => {
     (async () => {
-      if (code !== '' && state !== '' && credentials.request_token === '') {
+      if (
+        code !== '' &&
+        state !== '' &&
+        credentials.loginCred.linkedin === ''
+      ) {
         let t = await getToken(code, state);
         let linkedinprofile: any = await requestLinkedinProfile(
           t.data.request_token
@@ -55,7 +58,7 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
         console.log('aui');
         const firstName = linkedinprofile.data.profile.localizedFirstName.toLowerCase();
         const lastName = linkedinprofile.data.profile.localizedLastName.toLowerCase();
-        const uniqueEmail = firstName + lastName + '@linkedin.com';
+
         let userSession = UserService.GetUserSession();
         debugger;
         if (userSession) {
@@ -76,7 +79,7 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
           DidDocumentService.updateUserDocument(state.diddocument);
 
           userSession.loginCred!.linkedin! = firstName + '' + lastName;
-
+          userSession.badges!.socialVerify!.linkedin.archived = new Date().getTime();
           await UserService.updateSession(userSession);
           window.close();
         } else {
@@ -89,18 +92,18 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
               state: {
                 users: prevUsers,
                 name: firstName + ' ' + lastName,
-                email: uniqueEmail,
-                request_token: '',
-                service: AccountType.Linkedin,
-                credential: firstName + '' + lastName
+                loginCred: {
+                  linkedin: firstName + '' + lastName
+                },
+                service: AccountType.Linkedin
               }
             });
           } else {
             setCredentials({
               name: firstName + ' ' + lastName,
-              request_token: t.data.request_token,
-              email: uniqueEmail,
-              credential: firstName + '' + lastName
+              loginCred: {
+                linkedin: firstName + '' + lastName
+              }
             });
           }
         }
@@ -109,17 +112,15 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
   });
 
   const getRedirect = () => {
-    if (credentials.request_token !== '') {
+    if (credentials.loginCred.linkedin !== '') {
       return (
         <Redirect
           to={{
             pathname: '/generate-did',
             state: {
               name: credentials.name,
-              request_token: credentials.request_token,
-              email: credentials.email,
               service: AccountType.Linkedin,
-              credential: credentials.credential
+              loginCred: credentials.loginCred
             }
           }}
         />

@@ -22,12 +22,14 @@ import {
   CardHeaderContent,
   CardContentContainer
 } from '../common';
+import ProgressBar from 'src/components/ProgressBar';
 
 interface IExperienceProps {
   experienceDTO: ExperienceDTO;
   updateFunc?: any;
   isEditable?: boolean;
   removeFunc?: any;
+  isPublicPage?: boolean;
 }
 
 export const defaultExperienceItem: ExperienceItem = {
@@ -41,25 +43,42 @@ export const defaultExperienceItem: ExperienceItem = {
   title: '',
   description: '',
   order: '',
-  isEnabled: false
+  isEnabled: false,
+  isVerified: false
 };
 
 const ExperienceCard: React.FC<IExperienceProps> = ({
   experienceDTO,
   updateFunc,
   isEditable = false,
-  removeFunc
+  removeFunc,
+  isPublicPage = false
 }: IExperienceProps) => {
-  const [currentExperienceDTO, setcurrentExperienceDTO] = useState(
+  const [currentExperienceDTO, setCurrentExperienceDTO] = useState(
     experienceDTO
   );
+  const [expVerifiedPercent, setExpVerifiedPercent] = useState(0);
+
+  useEffect(() => {
+    setCurrentExperienceDTO(experienceDTO);
+  }, [experienceDTO]);
+
+  let noOfVerifiedExpCred = 0;
+
+  experienceDTO.items.map((x, i) => {
+    if (x.isVerified) {
+      noOfVerifiedExpCred++;
+    }
+  });
+
+  useEffect(() => {
+    setExpVerifiedPercent(
+      (noOfVerifiedExpCred * 100) / experienceDTO.items.length
+    );
+  }, [currentExperienceDTO, noOfVerifiedExpCred]);
 
   const [editedItem, setEditedItem] = useState(defaultExperienceItem);
   const [mode, setMode] = useState(MODE.NONE);
-
-  useEffect(() => {
-    setcurrentExperienceDTO(experienceDTO);
-  }, [experienceDTO]);
 
   const handleChange = (evt: any) => {
     let v: any;
@@ -92,7 +111,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
 
     // 5. Set the state to our new copy
-    setcurrentExperienceDTO({ isEnabled: true, items: items });
+    setCurrentExperienceDTO({ isEnabled: true, items: items });
     updateFunc(item);
   };
 
@@ -114,7 +133,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     let items = [...currentExperienceDTO.items];
     await removeFunc(items[index]);
     items = items.splice(index, 1);
-    setcurrentExperienceDTO({ isEnabled: true, items: items });
+    setCurrentExperienceDTO({ isEnabled: true, items: items });
   };
 
   if (
@@ -131,7 +150,26 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
           <IonGrid className="ion-no-padding">
             <IonRow className="ion-justify-content-between ion-no-padding">
               <IonCol className="ion-no-padding">
-                <IonCardTitle>Experience</IonCardTitle>
+                <IonCardTitle>
+                  Experience
+                  {!isEditable && !isPublicPage && (
+                    <div
+                      style={{
+                        width: '10em',
+                        float: 'right',
+                        fontSize: '0.8em'
+                      }}
+                    >
+                      <ProgressBar
+                        value={expVerifiedPercent}
+                        text={'verified'}
+                      />
+                      <div
+                        style={{ float: 'right', fontSize: '0.8em' }}
+                      >{`${expVerifiedPercent}% ${'verified'}`}</div>
+                    </div>
+                  )}
+                </IonCardTitle>
               </IonCol>
               {isEditable ? (
                 <IonCol size="auto" className="ion-no-padding">

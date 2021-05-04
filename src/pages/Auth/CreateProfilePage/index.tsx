@@ -1,5 +1,4 @@
 import React, { memo, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
@@ -25,7 +24,7 @@ import {
 } from 'src/components/buttons';
 import TextInput from 'src/components/inputs/TextInput';
 import { Text16 } from 'src/components/texts';
-import { AccountType, UserService } from 'src/services/user.service';
+import { UserService } from 'src/services/user.service';
 import { validateEmail } from 'src/utils/validation';
 import LoadingIndicator from 'src/components/LoadingIndicator';
 
@@ -50,8 +49,7 @@ import {
   requestCreateUser,
   requestGoogleLogin,
   requestLinkedinLogin,
-  requestFacebookLogin,
-  getUsersWithRegisteredEmail
+  requestFacebookLogin
 } from './fetchapi';
 
 const ErrorText = styled(Text16)`
@@ -79,12 +77,11 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
 }: InferMappedProps) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState('');
   const [displayText, setDisplayText] = useState('');
   const [error, setError] = useState('');
   const [signedUsers, setSignedUsers] = useState<string[]>([]);
   const [mode, setMode] = useState(0); // 0: create new, 1: sign in using pre logged
-  const history = useHistory();
 
   useEffect(() => {
     // UserService.clearPrevLocalData()
@@ -96,9 +93,11 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   }, []);
 
   useEffect(() => {
-    const signedUserDids = UserService.getSignedUsers();
-    setSignedUsers(signedUserDids);
-    setMode(signedUserDids.length > 0 ? 1 : 0);
+    (async () => {
+      const signedUserDids = await UserService.getSignedUsers();
+      setSignedUsers(signedUserDids);
+      setMode(signedUserDids.length > 0 ? 1 : 0);
+    })();
   }, []);
 
   const createUser = async () => {
@@ -110,8 +109,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
       setError('Not correct Email');
       return;
     }
-    setLoading(true);
-
+    setLoading('Creating new profile now');
     let response = (await requestCreateUser(
       name,
       email
@@ -124,22 +122,8 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
       setDisplayText(
         'Verification email is sent to you. Please confirm to complete your registration.'
       );
-    } else if (response.data.return_code === 'REGISTERED_USER') {
-      const pUsers = await getUsersWithRegisteredEmail(email);
-
-      history.push({
-        pathname: '/associated-profile',
-        state: {
-          users: pUsers,
-          name,
-          email,
-          request_token: '',
-          service: AccountType.Email,
-          credential: name.replace(' ', '') + email
-        }
-      });
     }
-    setLoading(false);
+    setLoading('');
   };
 
   const setField = (fieldName: string, fieldValue: string) => {
@@ -181,17 +165,31 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
     }
   };
 
+  const removeUser = async (removeDid: string) => {
+    setLoading('Wait while remove this user');
+    await UserService.removeLocalUser(removeDid);
+    const newSignedUsers = signedUsers.filter(item => item !== removeDid);
+    if (newSignedUsers.length === 0) {
+      setMode(0);
+    } else {
+      setSignedUsers(newSignedUsers);
+    }
+    setLoading('');
+  };
+
   if (mode === 1) {
     return (
-      <MultiDidPasswordLogin dids={signedUsers} changeMode={() => setMode(0)} />
+      <MultiDidPasswordLogin
+        dids={signedUsers}
+        removeUser={removeUser}
+        changeMode={() => setMode(0)}
+      />
     );
   }
 
   return (
     <OnBoardLayout className={style['create-profile']}>
-      {loading && (
-        <LoadingIndicator loadingText="Creating new profile now..." />
-      )}
+      {loading !== '' && <LoadingIndicator loadingText={loading} />}
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>

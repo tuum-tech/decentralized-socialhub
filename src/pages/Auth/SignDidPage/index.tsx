@@ -3,12 +3,14 @@ import { StaticContext, RouteComponentProps, useHistory } from 'react-router';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 
+import { UserService } from 'src/services/user.service';
+import { DidService } from 'src/services/did.service';
+import { alertError } from 'src/utils/notify';
 import {
   OnBoardLayout,
   OnBoardLayoutRight
 } from 'src/components/layouts/OnBoardLayout';
 import LoadingIndicator from 'src/components/LoadingIndicator';
-import { UserService } from 'src/services/user.service';
 import DidSignForm from '../components/DidSign/DidSignForm';
 import DidLeftSide from '../components/DidSign/DidLeftSide';
 import PassPhraseHelp from '../components/DidSign/PassPhraseHelp';
@@ -56,30 +58,38 @@ const SignDidPage: React.FC<RouteComponentProps<
           error={error}
           setError={setError}
           onSuccess={async (uDid: string, mnemonic: string) => {
-            setLoading(true);
-            const res = await UserService.SearchUserWithDID(uDid);
-            window.localStorage.setItem(
-              `temporary_${uDid.replace('did:elastos:', '')}`,
-              JSON.stringify({
-                mnemonic: mnemonic
-              })
-            );
-            if (res) {
-              history.push({
-                pathname: '/set-password',
-                state: res
-              });
+            const isDidPublished = await DidService.isDIDPublished(uDid);
+            if (!isDidPublished) {
+              alertError(
+                null,
+                'Did is not published yet, You can only login with published DID user'
+              );
             } else {
-              history.push({
-                pathname: '/create-profile-with-did',
-                state: {
-                  did: uDid,
-                  mnemonic,
-                  user
-                }
-              });
+              setLoading(true);
+              const res = await UserService.SearchUserWithDID(uDid);
+              window.localStorage.setItem(
+                `temporary_${uDid.replace('did:elastos:', '')}`,
+                JSON.stringify({
+                  mnemonic: mnemonic
+                })
+              );
+              if (res) {
+                history.push({
+                  pathname: '/set-password',
+                  state: res
+                });
+              } else {
+                history.push({
+                  pathname: '/create-profile-with-did',
+                  state: {
+                    did: uDid,
+                    mnemonic,
+                    user
+                  }
+                });
+              }
+              setLoading(false);
             }
-            setLoading(false);
           }}
         />
       </OnBoardLayoutRight>

@@ -49,7 +49,7 @@ export class DidDocumentService {
   private static setDocumentState(documentState: IDIDDocumentState) {
     let json = JSON.stringify(documentState);
     window.localStorage.setItem(
-      `${this.DIDDOCUMENT_KEY}_${documentState.diddocument.id.replace(
+      `${this.DIDDOCUMENT_KEY}_${documentState.diddocument?.id.replace(
         'did:elastos:',
         ''
       )}`,
@@ -134,6 +134,39 @@ export class DidDocumentService {
     );
 
     await AssistService.publishDocument(userDid.did, requestPub);
+    let publishTimes = await AssistService.getPublishTimes(userDid.did);
+    let curTime = new Date().getTime();
+    if (publishTimes < 5) {
+      if (!userSession.badges?.didPublishTimes._1times.archived) {
+        userSession.badges!.didPublishTimes!._1times.archived = curTime;
+        await UserService.updateSession(userSession);
+      }
+    } else if (publishTimes < 10) {
+      if (!userSession.badges?.didPublishTimes._5times.archived) {
+        userSession.badges!.didPublishTimes!._5times.archived = curTime;
+        await UserService.updateSession(userSession);
+      }
+    } else if (publishTimes < 25) {
+      if (!userSession.badges?.didPublishTimes._10times.archived) {
+        userSession.badges!.didPublishTimes!._10times.archived = curTime;
+        await UserService.updateSession(userSession);
+      }
+    } else if (publishTimes < 50) {
+      if (!userSession.badges?.didPublishTimes._25times.archived) {
+        userSession.badges!.didPublishTimes!._25times.archived = curTime;
+        await UserService.updateSession(userSession);
+      }
+    } else if (publishTimes < 100) {
+      if (!userSession.badges?.didPublishTimes._50times.archived) {
+        userSession.badges!.didPublishTimes!._50times.archived = curTime;
+        await UserService.updateSession(userSession);
+      }
+    } else {
+      if (!userSession.badges?.didPublishTimes._100times.archived) {
+        userSession.badges!.didPublishTimes!._100times.archived = curTime;
+        await UserService.updateSession(userSession);
+      }
+    }
 
     let documentState = {
       diddocument: signedDocument,

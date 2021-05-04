@@ -14,5 +14,5 @@ export interface TokenResponse {
 export interface LinkedinId {
   id: string;
   name: string;
-  credential: string;
+  // credential: string;
 }

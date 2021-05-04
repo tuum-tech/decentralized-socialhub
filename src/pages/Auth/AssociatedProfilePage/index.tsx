@@ -74,23 +74,13 @@ const AssociatedProfilePage: React.FC<RouteComponentProps<
 
   useEffect(() => {
     if (!associatedInfo && props.location.state && props.location.state.name) {
-      const {
-        name,
-        email,
-        users,
-        id,
-        request_token,
-        service,
-        credential
-      } = props.location.state;
+      const { name, loginCred, users, id, service } = props.location.state;
       setAssociatedIfno({
         name,
-        email,
+        loginCred,
         users,
         id,
-        request_token,
-        service,
-        credential
+        service
       });
       setUser(users[0]);
     }
@@ -102,9 +92,8 @@ const AssociatedProfilePage: React.FC<RouteComponentProps<
     return (
       <GenerateDid
         name={associatedInfo.name}
-        email={associatedInfo.email}
-        request_token={associatedInfo.request_token}
-        credential={associatedInfo.credential}
+        loginCred={associatedInfo.loginCred}
+        credential=""
         service={associatedInfo.service}
       />
     );
@@ -161,8 +150,8 @@ const AssociatedProfilePage: React.FC<RouteComponentProps<
             mode="dark"
             mt={32}
             text="Sign in to profile"
-            onClick={() => {
-              const signedUserDids = UserService.getSignedUsers();
+            onClick={async () => {
+              const signedUserDids = await UserService.getSignedUsers();
               if (user.did === '') {
                 setShowModal(true);
               } else if (
@@ -181,7 +170,7 @@ const AssociatedProfilePage: React.FC<RouteComponentProps<
                   pathname: '/sign-did',
                   state: {
                     name: associatedInfo.name,
-                    email: associatedInfo.email,
+                    loginCred: associatedInfo.loginCred,
                     service: AccountType.DID
                   }
                 });
@@ -196,12 +185,13 @@ const AssociatedProfilePage: React.FC<RouteComponentProps<
           <ButtonWithLogo
             text={'Create new profile'}
             onClick={async () => {
-              const { name, email, service } = associatedInfo;
+              const { name, loginCred, service } = associatedInfo;
               if (service === AccountType.Email) {
+                if (!loginCred.email) return;
                 setLoading(true);
                 let response = (await requestForceCreateUser(
                   name,
-                  email
+                  loginCred.email
                 )) as ICreateUserResponse;
                 setLoading(false);
                 if (

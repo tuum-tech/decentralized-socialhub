@@ -140,17 +140,15 @@ export class UserService {
 
       let instance = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
 
-      if (instance && instance.userToken) {
+      if (instance && instance.did && instance.name) {
         return instance;
       }
-      alertError(null, 'Incorrect Password');
-    } catch (error) {
-      alertError(null, 'Incorrect Password');
-    }
+    } catch (error) {}
+    alertError(null, 'Incorrect Password');
     return;
   }
 
-  public static getSignedUsers(): string[] {
+  public static async getSignedUsers() {
     let response: string[] = [];
     for (var i = 0, len = window.localStorage.length; i < len; ++i) {
       let key = window.localStorage.key(i);
@@ -159,6 +157,20 @@ export class UserService {
       }
     }
     return response;
+  }
+
+  public static async removeLocalUser(did: string) {
+    const didStr = did.replace('did:elastos:', '');
+    const removeKeys = [];
+    for (var i = 0, len = window.localStorage.length; i < len; ++i) {
+      let key = window.localStorage.key(i);
+      if (key && key.includes(didStr)) {
+        removeKeys.push(key);
+      }
+    }
+    for (let i = 0; i < removeKeys.length; i++) {
+      window.localStorage.removeItem(removeKeys[i]);
+    }
   }
 
   public static async LockWithDIDAndPwd(
@@ -193,14 +205,15 @@ export class UserService {
   public static async SearchUserWithDID(did: string) {
     let response: any = await TuumTechScriptService.searchUserWithDID(did);
     const { data, meta } = response;
+
     if (meta.code === 200 && meta.message === 'OK') {
-      const { get_user_by_did } = data;
+      const { get_users_by_dids } = data;
       if (
-        get_user_by_did &&
-        get_user_by_did.items &&
-        get_user_by_did.items.length > 0
+        get_users_by_dids &&
+        get_users_by_dids.items &&
+        get_users_by_dids.items.length > 0
       ) {
-        const userData = get_user_by_did.items[0];
+        const userData = get_users_by_dids.items[0];
         const isDIDPublished = await DidService.isDIDPublished(userData.did);
 
         return {
@@ -220,10 +233,9 @@ export class UserService {
 
   public static async CreateNewUser(
     name: string,
-    userToken: string,
     accountType: AccountType,
-    email: string,
-    credential: string,
+    loginCred: LoginCred,
+    credential: string = '',
     storePassword: string,
     newDidStr: string,
     newMnemonicStr: string,
@@ -231,6 +243,7 @@ export class UserService {
   ) {
     let did = newDidStr;
     let mnemonics = newMnemonicStr;
+
     if (!did || did === '') {
       const newDid = await this.generateTemporaryDID(
         accountType,
@@ -250,10 +263,71 @@ export class UserService {
       accountType,
       passhash,
       name,
-      userToken,
+      userToken: credential,
       isDIDPublished: isDIDPublished ? isDIDPublished : false,
       onBoardingCompleted: false,
-      loginCred: { email: email },
+      loginCred: loginCred || {},
+      badges: {
+        account: {
+          beginnerTutorial: {
+            archived: false
+          },
+          basicProfile: {
+            archived: false
+          },
+          educationProfile: {
+            archived: false
+          },
+          experienceProfile: {
+            archived: false
+          }
+        },
+        socialVerify: {
+          linkedin: {
+            archived: false
+          },
+          facebook: {
+            archived: false
+          },
+          twitter: {
+            archived: false
+          },
+          google: {
+            archived: false
+          },
+          email: {
+            archived: false
+          },
+          phone: {
+            archived: false
+          }
+        },
+        didPublishTimes: {
+          _1times: {
+            archived: false
+          },
+          _5times: {
+            archived: false
+          },
+          _10times: {
+            archived: false
+          },
+          _25times: {
+            archived: false
+          },
+          _50times: {
+            archived: false
+          },
+          _100times: {
+            archived: false
+          }
+        },
+        dStorage: {
+          ownVault: {
+            archived: false
+          }
+        }
+      },
       tutorialStep: 1,
       hiveHost:
         hiveHostStr === ''
@@ -264,27 +338,40 @@ export class UserService {
       status: 'Created',
       mnemonics
     };
-
+    let curTime = new Date().getTime();
+    if (loginCred) {
+      if (loginCred.email)
+        sessionItem.badges!.socialVerify!.email.archived = curTime;
+      if (loginCred.facebook)
+        sessionItem.badges!.socialVerify!.facebook.archived = curTime;
+      if (loginCred.twitter)
+        sessionItem.badges!.socialVerify!.twitter.archived = curTime;
+      if (loginCred.linkedin)
+        sessionItem.badges!.socialVerify!.linkedin.archived = curTime;
+      if (loginCred.google)
+        sessionItem.badges!.socialVerify!.google.archived = curTime;
+    }
     if (accountType === AccountType.Email) {
-      const newSessionItem = await this.SearchUserWithDID(did);
-      if (newSessionItem && newSessionItem.did && newSessionItem.did !== '') {
-        sessionItem = newSessionItem;
-      }
+      // the confirmation code for email verification is passed as credential in the email flow, we can improve that
+      sessionItem.status = 'CONFIRMED';
+      sessionItem.code = credential;
 
-      // the confirmation code for email verification is passed as usertoken in the email flow, we can improve that
-      sessionItem.code = userToken;
-      await TuumTechScriptService.updateEmailUserDidInfo(sessionItem);
+      sessionItem.badges!.socialVerify!.email.archived = curTime;
+      await TuumTechScriptService.updateTuumEmailUser(sessionItem);
     } else {
       sessionItem.status = 'CONFIRMED';
-      if (accountType == AccountType.Twitter)
-        sessionItem.loginCred!.twitter = credential;
-      if (accountType == AccountType.Linkedin)
-        sessionItem.loginCred!.linkedin = credential;
-      if (accountType == AccountType.Google)
-        sessionItem.loginCred!.google = credential;
-      if (accountType == AccountType.Facebook)
-        sessionItem.loginCred!.facebook = credential;
-
+      if (accountType === AccountType.Twitter) {
+        sessionItem.badges!.socialVerify!.twitter.archived = curTime;
+      }
+      if (accountType === AccountType.Linkedin) {
+        sessionItem.badges!.socialVerify!.linkedin.archived = curTime;
+      }
+      if (accountType === AccountType.Google) {
+        sessionItem.badges!.socialVerify!.google.archived = curTime;
+      }
+      if (accountType === AccountType.Facebook) {
+        sessionItem.badges!.socialVerify!.facebook.archived = curTime;
+      }
       await TuumTechScriptService.addUserToTuumTech(sessionItem);
     }
 
@@ -301,24 +388,12 @@ export class UserService {
     notifyUser: boolean = false
   ): Promise<void> {
     let newSessionItem = sessionItem;
-    const userData = await TuumTechScriptService.searchUserWithDID(
-      sessionItem.did
-    );
-    if (
-      userData &&
-      userData.data &&
-      userData.data['get_user_by_did'] &&
-      userData.data['get_user_by_did']['items'] &&
-      userData.data['get_user_by_did']['items'].length > 0 &&
-      userData.data['get_user_by_did']['items'][0].code
-    ) {
-      const code = userData.data['get_user_by_did']['items'][0].code;
-      newSessionItem.code = code;
+    const userData = await UserService.SearchUserWithDID(sessionItem.did);
+    if (userData && userData.code) {
+      newSessionItem.code = userData.code;
     }
 
-    const res: any = await TuumTechScriptService.updateUserDidInfo(
-      newSessionItem
-    );
+    const res: any = await TuumTechScriptService.updateTuumUser(newSessionItem);
     this.lockUser(this.key(sessionItem.did), newSessionItem);
 
     window.localStorage.setItem(

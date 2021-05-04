@@ -19,7 +19,7 @@ import emojiCool from '../../../../assets/icon/emoji-cool.png';
 import style from './style.module.scss';
 
 interface Props {
-  completed: () => void;
+  completed: (startTutorial: boolean) => void;
   publishStatus: RequestStatus;
   sessionItem: ISessionItem;
 }
@@ -35,7 +35,7 @@ const OnBoardingPage: React.FC<Props> = ({
     setStage(stage + 1);
   };
   const close = () => {
-    completed();
+    completed(false);
   };
   let userSession = UserService.GetUserSession();
   let userSessionName = '';
@@ -222,7 +222,10 @@ const OnBoardingPage: React.FC<Props> = ({
               </div>
             </div>
 
-            <IonButton className={style['start-btn']} onClick={close}>
+            <IonButton
+              className={style['start-btn']}
+              onClick={() => completed(true)}
+            >
               Start Tutorial
             </IonButton>
           </div>

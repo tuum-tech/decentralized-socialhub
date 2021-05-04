@@ -24,10 +24,10 @@ const FacebookCallback: React.FC<RouteComponentProps> = props => {
    */
   const history = useHistory();
   const [credentials, setCredentials] = useState({
-    email: '',
     name: '',
-    request_token: '',
-    credential: ''
+    loginCred: {
+      facebook: ''
+    }
   });
   const getToken = async (
     code: string,
@@ -43,7 +43,7 @@ const FacebookCallback: React.FC<RouteComponentProps> = props => {
 
   useEffect(() => {
     (async () => {
-      if (code !== '' && state !== '' && credentials.request_token === '') {
+      if (code !== '' && state !== '' && credentials.name === '') {
         let t = await getToken(code, state);
         let facebookId = await requestFacebookId(t.data.request_token);
 
@@ -62,6 +62,7 @@ const FacebookCallback: React.FC<RouteComponentProps> = props => {
           DidDocumentService.updateUserDocument(state.diddocument);
 
           userSession.loginCred!.facebook! = facebookId.name;
+          userSession.badges!.socialVerify!.facebook.archived = new Date().getTime();
           await UserService.updateSession(userSession);
 
           window.close();
@@ -73,18 +74,18 @@ const FacebookCallback: React.FC<RouteComponentProps> = props => {
               state: {
                 users: prevUsers,
                 name: facebookId.name,
-                email: facebookId.email,
-                request_token: '',
-                service: AccountType.Facebook,
-                credential: facebookId.name
+                loginCred: {
+                  facebook: facebookId.name
+                },
+                service: AccountType.Facebook
               }
             });
           } else {
             setCredentials({
               name: facebookId.name,
-              request_token: t.data.request_token,
-              email: facebookId.email,
-              credential: facebookId.name
+              loginCred: {
+                facebook: facebookId.name
+              }
             });
           }
         }
@@ -93,16 +94,14 @@ const FacebookCallback: React.FC<RouteComponentProps> = props => {
   }, []);
 
   const getRedirect = () => {
-    if (credentials.request_token !== '') {
+    if (credentials.name !== '') {
       return (
         <Redirect
           to={{
             pathname: '/generate-did',
             state: {
               name: credentials.name,
-              request_token: credentials.request_token,
-              email: credentials.email,
-              credential: credentials.credential,
+              loginCred: credentials.loginCred,
               service: AccountType.Facebook
             }
           }}

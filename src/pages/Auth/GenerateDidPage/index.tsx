@@ -8,7 +8,7 @@ import injector from 'src/baseplate/injectorWrap';
 import { UserService } from 'src/services/user.service';
 import PageLoading from 'src/components/layouts/PageLoading';
 import { AccountType } from 'src/services/user.service';
-import LoadingIndicator from 'src/components/LoadingIndicator';
+// import LoadingIndicator from 'src/components/LoadingIndicator';
 
 import SetPassword from '../components/SetPassword';
 
@@ -45,9 +45,13 @@ const GenerateDidPage: React.FC<RouteComponentProps<
     (async () => {
       if (!session && props.location.state && props.location.state.service) {
         const { service } = props.location.state;
-        if (service !== AccountType.Email && service !== AccountType.DID) {
+        if (
+          service !== AccountType.Email &&
+          service !== AccountType.DID &&
+          props.location.state.loginCred.email
+        ) {
           const pUsers = await getUsersWithRegisteredEmail(
-            props.location.state.email
+            props.location.state.loginCred.email
           );
           if (pUsers.length > 0) {
             history.push({
@@ -55,32 +59,29 @@ const GenerateDidPage: React.FC<RouteComponentProps<
               state: {
                 users: pUsers,
                 name: props.location.state.name,
-                email: props.location.state.email,
-                request_token: props.location.state.request_token,
+                loginCred: props.location.state.loginCred,
                 service: props.location.state.service,
                 credential: props.location.state.credential
               }
             });
           }
         }
-        console.log(props.location.state);
         setSession(props.location.state);
       }
     })();
   }, [session]);
 
-  if (session && session.request_token) {
+  if (session && session.name) {
     return (
       <SetPassword
         loading={loading}
         next={async pwd => {
-          if (!session || !session.request_token) return;
+          if (!session || !session.name) return;
           setLoading(true);
           await UserService.CreateNewUser(
             session.name,
-            session.request_token,
             session.service,
-            session.email,
+            session.loginCred,
             session.credential,
             pwd,
             '',
