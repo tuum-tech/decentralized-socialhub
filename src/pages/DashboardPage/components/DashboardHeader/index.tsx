@@ -73,14 +73,14 @@ const DashboardHeader: React.FC<IProps> = ({
               <IonCol size="auto">
                 <ProfileName>{sessionItem.name}</ProfileName>
               </IonCol>
-              <IonCol>
-                {isNameVerified && (
+              {isNameVerified && (
+                <IonCol>
                   <img
                     src={shieldIcon}
                     className={style['social-profile-badge']}
                   />
-                )}
-              </IonCol>
+                </IonCol>
+              )}
               <IonCol>
                 <PublishingLabel status={publishStatus} />
               </IonCol>
