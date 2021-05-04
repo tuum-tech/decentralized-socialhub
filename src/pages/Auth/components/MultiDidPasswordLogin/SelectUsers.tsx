@@ -21,9 +21,13 @@ interface Props {
 
 const SelectUser: React.FC<Props> = ({ users, selectDID, removeUser }) => {
   const [selectedItem, setSelectedItem] = useState(users[0]);
-  const [showItems, setShowItems] = useState(true);
+  const [showItems, setShowItems] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const [disableSelect, setDisableSelect] = useState(false);
 
+  useEffect(() => {
+    setSelectedItem(users[0]);
+  }, [users]);
   useEffect(() => {
     function handleClickOutside(event: any) {
       if (
@@ -72,8 +76,10 @@ const SelectUser: React.FC<Props> = ({ users, selectDID, removeUser }) => {
           <div
             key={user.did}
             onClick={() => {
-              selectDID(user.did);
-              setSelectedItem(user);
+              if (!disableSelect) {
+                selectDID(user.did);
+                setSelectedItem(user);
+              }
               setShowItems(false);
             }}
             className={style['selectBox-items_row']}
@@ -86,6 +92,8 @@ const SelectUser: React.FC<Props> = ({ users, selectDID, removeUser }) => {
             <div
               className={style['trush']}
               onClick={() => removeUser(user.did)}
+              onMouseEnter={() => setDisableSelect(true)}
+              onMouseLeave={() => setDisableSelect(false)}
             >
               <Trush />
             </div>

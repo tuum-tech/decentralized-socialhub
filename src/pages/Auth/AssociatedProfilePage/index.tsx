@@ -150,8 +150,8 @@ const AssociatedProfilePage: React.FC<RouteComponentProps<
             mode="dark"
             mt={32}
             text="Sign in to profile"
-            onClick={() => {
-              const signedUserDids = UserService.getSignedUsers();
+            onClick={async () => {
+              const signedUserDids = await UserService.getSignedUsers();
               if (user.did === '') {
                 setShowModal(true);
               } else if (

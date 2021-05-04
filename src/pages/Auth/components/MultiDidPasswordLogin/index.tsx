@@ -14,8 +14,7 @@ import {
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
 import LoadingIndicator from 'src/components/LoadingIndicator';
-import { IUserResponse, SearchService } from 'src/services/search.service';
-import Avatar from 'src/components/Avatar';
+import { SearchService } from 'src/services/search.service';
 
 import { ButtonWithLogo } from 'src/components/buttons';
 import { Text16, ErrorTxt } from 'src/components/texts';
@@ -27,31 +26,17 @@ import { UserService } from 'src/services/user.service';
 import FieldDivider from '../FieldDivider';
 import SelectUsers from './SelectUsers';
 
-const DidSelectComp = styled.div`
-  background: #edf2f7;
-  border-radius: 6px;
-  padding: 14.5px 16.5px;
-  margin-top: 11px;
-
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 15px;
-  color: #8492a6;
-
-  select {
-    border: none;
-    outline: none;
-    width: 100%;
-    background: transparent;
-  }
-`;
-
 interface Props {
   changeMode: () => void;
   dids: Array<string>;
+  removeUser: (did: string) => void;
 }
 
-const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
+const MultiDidPasswordLogin: React.FC<Props> = ({
+  dids,
+  changeMode,
+  removeUser
+}) => {
   const [did, setDid] = useState(dids[0]);
   const [localUsers, setLocalUsers] = useState([]);
   const [password, setPassword] = useState('');
@@ -69,11 +54,11 @@ const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
       if (
         getUserRes &&
         getUserRes.response &&
-        getUserRes.response.get_users &&
-        getUserRes.response.get_users.items &&
-        getUserRes.response.get_users.items.length > 0
+        getUserRes.response.get_users_by_dids &&
+        getUserRes.response.get_users_by_dids.items &&
+        getUserRes.response.get_users_by_dids.items.length > 0
       ) {
-        setLocalUsers(getUserRes.response.get_users.items);
+        setLocalUsers(getUserRes.response.get_users_by_dids.items);
         setLoading('');
       }
     })();
@@ -81,10 +66,7 @@ const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
 
   return (
     <OnBoardLayout>
-      {loading && <LoadingIndicator loadingText="Signing now..." />}
-      {localUsers.length === 0 && (
-        <LoadingIndicator loadingText="Loading local users now..." />
-      )}
+      {loading !== '' && <LoadingIndicator loadingText={loading} />}
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>
@@ -107,7 +89,7 @@ const MultiDidPasswordLogin: React.FC<Props> = ({ dids, changeMode }) => {
             <SelectUsers
               users={localUsers}
               selectDID={(did: string) => setDid(did)}
-              removeUser={async (did: string) => {}}
+              removeUser={removeUser}
             />
           )}
           <TextInput
