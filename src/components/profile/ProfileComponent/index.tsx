@@ -59,14 +59,11 @@ const ProfileComponent: React.FC<Props> = ({
     (async () => {
       if (targetDid && targetDid !== '') {
         setLoading(true);
-
         let sUser = await UserService.GetUserSession();
         if (sUser && sUser.did) setSignedUser(sUser);
-
         let pUser = await UserService.SearchUserWithDID(targetDid);
         if (pUser && pUser.did) {
           setPublicUser(pUser as any);
-
           let profile = await ProfileService.getFullProfile(targetDid);
           if (profile) {
             profile.basicDTO.isEnabled = true;
@@ -74,7 +71,6 @@ const ProfileComponent: React.FC<Props> = ({
             profile.educationDTO.isEnabled = true;
             setPublicUserProfile(profile);
           }
-
           let documentState = await DidDocumentService.getUserDocumentByDid(
             targetDid
           );
@@ -85,78 +81,73 @@ const ProfileComponent: React.FC<Props> = ({
     })();
   }, [targetDid]);
 
-  if (loading) {
-    return <p>Loading Data...</p>;
-  }
-
-  if (publicUser.did === '') {
-    return <p>User Not Found</p>;
-  }
+  const displayText = loading
+    ? 'Loading User Data ...'
+    : publicUser.did === ''
+    ? 'User Not found'
+    : !publicUserProfile.basicDTO.isEnabled
+    ? 'This profile is not visible'
+    : '';
 
   return (
     <>
       <ProfileHeader
+        onlyText={displayText}
         user={publicUser}
         signedUserDid={signedUser.did}
         hasBanner={hasBanner}
       />
-      {publicUserProfile.basicDTO.isEnabled === true ? (
-        <>
-          <PublicProfileTabs scrollToPosition={scrollToElement} />
-          <IonGrid className={style['scroll']}>
-            <IonRow className="ion-justify-content-center">
-              <IonCol size="12">
-                <IonGrid>
-                  <IonRow>
-                    <LeftContent>
-                      <div ref={aboutRef}>
-                        <AboutCard
-                          aboutText={publicUserProfile.basicDTO.about}
-                          mode="read"
+      {!loading &&
+        publicUser.did !== '' &&
+        publicUserProfile.basicDTO.isEnabled === true && (
+          <>
+            <PublicProfileTabs scrollToPosition={scrollToElement} />
+            <IonGrid className={style['scroll']}>
+              <IonRow className="ion-justify-content-center">
+                <IonCol size="12">
+                  <IonGrid>
+                    <IonRow>
+                      <LeftContent>
+                        <div ref={aboutRef}>
+                          <AboutCard
+                            aboutText={publicUserProfile.basicDTO.about}
+                            mode="read"
+                          />
+                        </div>
+                        <div ref={experienceRef}>
+                          <ExperienceCard
+                            experienceDTO={publicUserProfile.experienceDTO}
+                            isEditable={false}
+                            isPublicPage={true}
+                          />
+                        </div>
+                        <div ref={educationRef}>
+                          <EducationCard
+                            educationDTO={publicUserProfile.educationDTO}
+                            isEditable={false}
+                            isPublicPage={true}
+                          />
+                        </div>
+                      </LeftContent>
+                      <RightContent>
+                        {didDocument && didDocument.id && (
+                          <SocialProfilesCard
+                            didDocument={didDocument}
+                            sessionItem={publicUser}
+                          />
+                        )}
+                        <FollowCards
+                          did={publicUser.did}
+                          signed={signedUser.did !== ''}
                         />
-                      </div>
-                      <div ref={experienceRef}>
-                        <ExperienceCard
-                          experienceDTO={publicUserProfile.experienceDTO}
-                          isEditable={false}
-                          isPublicPage={true}
-                        />
-                      </div>
-                      <div ref={educationRef}>
-                        <EducationCard
-                          educationDTO={publicUserProfile.educationDTO}
-                          isEditable={false}
-                          isPublicPage={true}
-                        />
-                      </div>
-                    </LeftContent>
-                    <RightContent>
-                      {didDocument && didDocument.id && (
-                        <SocialProfilesCard
-                          didDocument={didDocument}
-                          sessionItem={publicUser}
-                        />
-                      )}
-                      <FollowCards
-                        did={publicUser.did}
-                        signed={signedUser.did !== ''}
-                      />
-                    </RightContent>
-                  </IonRow>
-                </IonGrid>
-              </IonCol>
-            </IonRow>
-          </IonGrid>
-        </>
-      ) : (
-        <IonGrid>
-          <IonRow className="ion-justify-content-center">
-            <IonCol size="auto">
-              The content of this profile is not currently viewable
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      )}
+                      </RightContent>
+                    </IonRow>
+                  </IonGrid>
+                </IonCol>
+              </IonRow>
+            </IonGrid>
+          </>
+        )}
     </>
   );
 };

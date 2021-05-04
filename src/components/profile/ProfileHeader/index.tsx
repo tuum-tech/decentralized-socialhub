@@ -69,39 +69,50 @@ interface IProps {
   user: ISessionItem;
   signedUserDid: string;
   hasBanner?: boolean;
+  onlyText?: string;
 }
 
 const ProfileHeader: React.FC<IProps> = ({
   user,
   signedUserDid,
-  hasBanner = true
+  hasBanner = true,
+  onlyText = ''
 }: IProps) => {
   return (
     <HeaderContainer className="ion-no-padding">
       {hasBanner && <Banner />}
       <Header class="ion-justify-content-center ion-align-items-center">
-        <Avatar did={user.did} />
-        <Info>
-          <IonGrid>
-            <IonRow>
-              <ProfileName>{user ? user.name : ''}</ProfileName>
-            </IonRow>
-            <IonRow className="ion-justify-content-start">
-              <IonCol>
-                <DidSnippet did={user.did} />
-              </IonCol>
-            </IonRow>
-          </IonGrid>
-        </Info>
-        <Buttons>
-          {signedUserDid === '' ? (
-            <Link to="/sign-did">
-              <FollowButton>Sign in to Follow</FollowButton>
-            </Link>
-          ) : (
-            <FollowOrUnFollowButton did={user.did} userDid={signedUserDid} />
-          )}
-        </Buttons>
+        {onlyText === '' ? (
+          <>
+            <Avatar did={user.did} />
+            <Info>
+              <IonGrid>
+                <IonRow>
+                  <ProfileName>{user ? user.name : ''}</ProfileName>
+                </IonRow>
+                <IonRow className="ion-justify-content-start">
+                  <IonCol>
+                    <DidSnippet did={user.did} />
+                  </IonCol>
+                </IonRow>
+              </IonGrid>
+            </Info>
+            <Buttons>
+              {signedUserDid === '' ? (
+                <Link to="/sign-did">
+                  <FollowButton>Sign in to Follow</FollowButton>
+                </Link>
+              ) : (
+                <FollowOrUnFollowButton
+                  did={user.did}
+                  userDid={signedUserDid}
+                />
+              )}
+            </Buttons>
+          </>
+        ) : (
+          <p>{onlyText}</p>
+        )}
       </Header>
     </HeaderContainer>
   );
