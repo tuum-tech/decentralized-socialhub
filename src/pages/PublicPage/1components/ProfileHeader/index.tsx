@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import DidSnippet from 'src/components/DidSnippet';
-// import defaultAdamAvatar from 'src/assets/icon/defaultAdamAvatar.png';
 import { ProfileName } from 'src/components/texts';
 import { FollowButton } from 'src/components/buttons';
 
@@ -49,16 +48,11 @@ const Header = styled(IonRow)`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 13px 43px;
+  padding: 13px 32px;
   img {
     margin: 0;
     display: block;
   }
-`;
-
-const AvatarArea = styled.div`
-  display: block;
-  width: 100px;
 `;
 
 const Buttons = styled.div`
@@ -74,16 +68,18 @@ const Info = styled.div`
 interface IProps {
   user: ISessionItem;
   signedUserDid: string;
+  hasBanner?: boolean;
 }
 
-const ProfileHeader: React.FC<IProps> = ({ user, signedUserDid }: IProps) => {
+const ProfileHeader: React.FC<IProps> = ({
+  user,
+  signedUserDid,
+  hasBanner = true
+}: IProps) => {
   return (
     <HeaderContainer className="ion-no-padding">
-      <Banner />
+      {hasBanner && <Banner />}
       <Header class="ion-justify-content-center ion-align-items-center">
-        {/* <AvatarArea>
-          <img src={defaultAdamAvatar} alt="default avatar" />
-        </AvatarArea> */}
         <Avatar did={user.did} />
         <Info>
           <IonGrid>

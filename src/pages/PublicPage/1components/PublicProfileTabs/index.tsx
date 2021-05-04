@@ -9,8 +9,8 @@ interface IProps {
 }
 
 const Navigation = styled.div`
-  position: sticky;
-  top: 284px;
+  // position: sticky;
+  // top: 284px;
 `;
 
 const PublicProfileTabs: React.FC<IProps> = ({ scrollToPosition }: IProps) => {

@@ -1,160 +1,162 @@
-import {
-  IonCol,
-  IonContent,
-  IonGrid,
-  IonRow,
-  IonCard,
-  IonCardTitle,
-  IonCardContent,
-  IonCardHeader
-} from '@ionic/react';
-import React, { useRef, useState } from 'react';
+import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react';
+import React, { useRef, useState, useEffect } from 'react';
+import styled from 'styled-components';
 
-import AboutCard from '../../cards/AboutCard';
-import EducationCard from '../../cards/EducationCard';
-import ExperienceCard from '../../cards/ExperienceCard';
-// import FollowersWidget from '../FollowersWidget';
-import FollowingList from '../FollowingList';
+import {
+  ProfileService,
+  defaultUserInfo,
+  defaultFullProfile
+} from 'src/services/profile.service';
+import { DidDocumentService } from 'src/services/diddocument.service';
+import { UserService } from 'src/services/user.service';
+
+import LoadingIndicator from 'src/components/LoadingIndicator';
+import AboutCard from 'src/components/cards/AboutCard';
+import EducationCard from 'src/components/cards/EducationCard';
+import ExperienceCard from 'src/components/cards/ExperienceCard';
+import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
+import FollowCards from 'src/components/FollowCards';
 import PublicProfileTabs from '../PublicProfileTabs';
-import SocialProfiles from '../SocialProfiles';
-import ProfileBanner from '../ProfileBanner';
 import ProfileHeader from '../ProfileHeader';
+
 import style from './style.module.scss';
 
-interface IProps {
-  profile: ProfileDTO;
+const LeftContent = styled.div`
+  width: calc(100% - 300px);
+  padding-right: 22px;
+`;
+
+const RightContent = styled.div`
+  width: 300px;
+`;
+
+interface Props {
+  targetDid: string;
+  aboutRef: any;
+  experienceRef: any;
+  educationRef: any;
+  scrollToElement: (cardName: string) => void;
+  hasBanner?: boolean;
 }
 
-interface IPropsSession {
-  profile: ProfileDTO;
-  sessionItem?: ISessionItem;
-  error: boolean;
-}
+const ProfileComponent: React.FC<Props> = ({
+  targetDid,
+  aboutRef,
+  experienceRef,
+  educationRef,
+  scrollToElement,
+  hasBanner = false
+}: Props) => {
+  const [publicUser, setPublicUser] = useState(defaultUserInfo);
+  const [signedUser, setSignedUser] = useState(defaultUserInfo);
+  const [publicUserProfile, setPublicUserProfile] = useState(
+    defaultFullProfile
+  );
+  const [didDocument, setDidDocument] = useState<any>({});
+  const [loading, setLoading] = useState(true);
 
-const ProfileComponent: React.FC<IPropsSession> = ({
-  profile,
-  sessionItem,
-  error
-}: IPropsSession) => {
-  const [scrollTop, setScrollTop] = useState(0);
-  const [mode, setMode] = useState('normal');
+  useEffect(() => {
+    (async () => {
+      if (targetDid && targetDid !== '') {
+        setLoading(true);
 
-  const handleScroll = (e: any) => {
-    //if (e.detail.scrollTop - scrollTop > 10 || e.detail.scrollTop - scrollTop < -10)
-    setScrollTop(e.detail.scrollTop);
+        let sUser = await UserService.GetUserSession();
+        if (sUser && sUser.did) setSignedUser(sUser);
 
-    if (scrollTop > 176) setMode('sticky');
-    else {
-      setMode('normal');
-    }
-  };
+        let pUser = await UserService.SearchUserWithDID(targetDid);
+        if (pUser && pUser.did) {
+          setPublicUser(pUser as any);
 
-  const contentRef = useRef<HTMLIonContentElement | null>(null);
-  const aboutRef = useRef<HTMLDivElement | null>(null);
-  const experienceRef = useRef<HTMLDivElement | null>(null);
-  const educationRef = useRef<HTMLDivElement | null>(null);
+          let profile = await ProfileService.getFullProfile(targetDid);
+          if (profile) {
+            profile.basicDTO.isEnabled = true;
+            profile.experienceDTO.isEnabled = true;
+            profile.educationDTO.isEnabled = true;
+            setPublicUserProfile(profile);
+          }
 
-  const scrollToElement = (cardName: string) => {
-    let point: number = 0;
-    let adjust = 0;
-    if (scrollTop < 176) adjust = 292 - scrollTop;
-    else {
-      adjust = 260 - scrollTop;
-    }
+          let documentState = await DidDocumentService.getUserDocumentByDid(
+            targetDid
+          );
+          setDidDocument(documentState.diddocument);
+        }
+      }
+      setLoading(false);
+    })();
+  }, [targetDid]);
 
-    if (cardName === 'about') {
-      point = 0;
-    }
-    if (cardName === 'experience') {
-      point = (experienceRef.current!.getBoundingClientRect().top -
-        adjust) as number;
-    }
-    if (cardName === 'education') {
-      point = (educationRef.current!.getBoundingClientRect().top -
-        adjust) as number;
-    }
-    contentRef.current && contentRef.current.scrollToPoint(0, point, 200);
-  };
+  if (loading) {
+    return <p>Loading Data...</p>;
+  }
+
+  if (publicUser.did === '') {
+    return <p>User Not Found</p>;
+  }
 
   return (
     <>
-      <IonContent
-        ref={contentRef}
-        className={style['profilecomponent']}
-        scrollEvents={true}
-        onIonScroll={handleScroll}
-      >
-        <ProfileBanner mode={mode} />
-
-        <ProfileHeader
-          mode={mode}
-          profile={profile}
-          user={sessionItem as ISessionItem}
-          error={error}
-        />
-
-        {profile.basicDTO.isEnabled === true ? (
-          <>
-            <PublicProfileTabs
-              mode={mode}
-              profile={profile}
-              scrollToPosition={scrollToElement}
-            />
-            <IonGrid className={style['scroll']}>
-              <IonRow className="ion-justify-content-center">
-                <IonCol size="12">
-                  <IonGrid>
-                    <IonRow>
-                      <IonCol size="9">
-                        <div ref={aboutRef}>
-                          <AboutCard
-                            aboutText={profile.basicDTO.about}
-                            mode="read"
-                          />
-                        </div>
-                        <div ref={experienceRef}>
-                          <ExperienceCard
-                            experienceDTO={profile.experienceDTO}
-                            isEditable={false}
-                          />
-                        </div>
-                        <div ref={educationRef}>
-                          <EducationCard
-                            educationDTO={profile.educationDTO}
-                            isEditable={false}
-                          />
-                        </div>
-                      </IonCol>
-                      <IonCol size="3">
-                        <SocialProfiles />
-                        <FollowingList did={profile.basicDTO.did} />
-
-                        {/* FollowersWidget */}
-
-                        <IonCard className={style['overview']}>
-                          <IonCardHeader>
-                            <IonCardTitle>Followers</IonCardTitle>
-                          </IonCardHeader>
-
-                          <IonCardContent></IonCardContent>
-                        </IonCard>
-                      </IonCol>
-                    </IonRow>
-                  </IonGrid>
-                </IonCol>
-              </IonRow>
-            </IonGrid>
-          </>
-        ) : (
-          <IonGrid>
+      <ProfileHeader
+        user={publicUser}
+        signedUserDid={signedUser.did}
+        hasBanner={hasBanner}
+      />
+      {publicUserProfile.basicDTO.isEnabled === true ? (
+        <>
+          <PublicProfileTabs scrollToPosition={scrollToElement} />
+          <IonGrid className={style['scroll']}>
             <IonRow className="ion-justify-content-center">
-              <IonCol size="auto">
-                The content of this profile is not currently viewable
+              <IonCol size="12">
+                <IonGrid>
+                  <IonRow>
+                    <LeftContent>
+                      <div ref={aboutRef}>
+                        <AboutCard
+                          aboutText={publicUserProfile.basicDTO.about}
+                          mode="read"
+                        />
+                      </div>
+                      <div ref={experienceRef}>
+                        <ExperienceCard
+                          experienceDTO={publicUserProfile.experienceDTO}
+                          isEditable={false}
+                          isPublicPage={true}
+                        />
+                      </div>
+                      <div ref={educationRef}>
+                        <EducationCard
+                          educationDTO={publicUserProfile.educationDTO}
+                          isEditable={false}
+                          isPublicPage={true}
+                        />
+                      </div>
+                    </LeftContent>
+                    <RightContent>
+                      {didDocument && didDocument.id && (
+                        <SocialProfilesCard
+                          didDocument={didDocument}
+                          sessionItem={publicUser}
+                        />
+                      )}
+                      <FollowCards
+                        did={publicUser.did}
+                        signed={signedUser.did !== ''}
+                      />
+                    </RightContent>
+                  </IonRow>
+                </IonGrid>
               </IonCol>
             </IonRow>
           </IonGrid>
-        )}
-      </IonContent>
+        </>
+      ) : (
+        <IonGrid>
+          <IonRow className="ion-justify-content-center">
+            <IonCol size="auto">
+              The content of this profile is not currently viewable
+            </IonCol>
+          </IonRow>
+        </IonGrid>
+      )}
     </>
   );
 };

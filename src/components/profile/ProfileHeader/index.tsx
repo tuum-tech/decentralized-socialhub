@@ -1,77 +1,87 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { IonGrid, IonRow, IonCol } from '@ionic/react';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
-import { ProfileService } from 'src/services/profile.service';
-import { UserService } from 'src/services/user.service';
 import DidSnippet from 'src/components/DidSnippet';
 import { ProfileName } from 'src/components/texts';
-import { Button } from 'src/components/buttons';
-import Avatar from 'src/components/Avatar';
-import followIcon from 'src/assets/icon/follow.svg';
-import linkIcon from 'src/assets/icon/link.svg';
+import { FollowButton } from 'src/components/buttons';
 
-import style from './style.module.scss';
+import FollowOrUnFollowButton from '../FollowOrUnFollow';
+import Avatar from 'src/components/Avatar';
+
+const HeaderContainer = styled(IonGrid)`
+  background-color: white;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  z-index: 99;
+`;
+
+const Banner = styled.div`
+  display: flex;
+  position: sticky;
+  top: 0px;
+  height: 176px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background-color: rgba(255, 110, 110, 1);
+  font-family: 'SF Pro Display';
+  font-size: 56px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-align: left;
+  color: #ffffff;
+  box-shadow: 0px 3px 3px #00000005;
+
+  margin-top: 0px;
+  width: 100%;
+  padding-bottom: 2px;
+`;
+
+const Header = styled(IonRow)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 13px 32px;
+  img {
+    margin: 0;
+    display: block;
+  }
+`;
+
+const Buttons = styled.div`
+  display: flex;
+  width: 110px;
+`;
+
+const Info = styled.div`
+  flex-grow: 1;
+  padding: 0 10px;
+`;
 
 interface IProps {
-  profile: ProfileDTO;
   user: ISessionItem;
-  error: boolean;
-  mode: string;
+  signedUserDid: string;
+  hasBanner?: boolean;
 }
 
 const ProfileHeader: React.FC<IProps> = ({
-  profile,
   user,
-  mode,
-  error
+  signedUserDid,
+  hasBanner = true
 }: IProps) => {
-  const [isFollowing, setIsFollowing] = useState(false);
-  const followDid = async () => {
-    await ProfileService.addFollowing(user.did);
-    setIsFollowing(true);
-  };
-
-  const unfollowDid = async () => {
-    await ProfileService.unfollow(user.did);
-    setIsFollowing(false);
-  };
-
-  const getPublicProfileLink = (): string => {
-    return `/did/${user.did}`;
-  };
-  useEffect(() => {
-    (async () => {
-      const userSession = UserService.GetUserSession();
-      if (!userSession) return;
-      if (userSession && userSession.did) {
-        let followings_res = await ProfileService.getFollowings(
-          userSession.did
-        );
-        if (
-          followings_res &&
-          followings_res.get_following &&
-          followings_res.get_following.items
-        ) {
-          if (
-            followings_res.get_following.items.findIndex(
-              item => item.did === user.did
-            ) != -1
-          ) {
-            setIsFollowing(true);
-          }
-        }
-      }
-    })();
-  }, [user]);
   return (
-    <IonGrid className={style['profileheadersticky']}>
-      <IonRow className={style['header']}>
-        <IonCol size="auto">
-          <Avatar did={user.did} />
-        </IonCol>
-
-        <IonCol size="7">
+    <HeaderContainer className="ion-no-padding">
+      {hasBanner && <Banner />}
+      <Header class="ion-justify-content-center ion-align-items-center">
+        <Avatar did={user.did} />
+        <Info>
           <IonGrid>
             <IonRow>
               <ProfileName>{user ? user.name : ''}</ProfileName>
@@ -82,46 +92,18 @@ const ProfileHeader: React.FC<IProps> = ({
               </IonCol>
             </IonRow>
           </IonGrid>
-        </IonCol>
-        <IonCol size="3" className={style['d-flex']}>
-          <Link
-            to={getPublicProfileLink}
-            target="_blank"
-            onClick={event => {
-              event.preventDefault();
-              window.open(getPublicProfileLink());
-            }}
-            className="mr-2"
-          >
-            <Button
-              type="secondary"
-              text="View Profile"
-              icon={linkIcon}
-              onClick={async () => {}}
-            />
-          </Link>
-          {isFollowing ? (
-            <Button
-              type="primary"
-              text="Unfollow"
-              icon={followIcon}
-              onClick={async () => {
-                unfollowDid();
-              }}
-            />
+        </Info>
+        <Buttons>
+          {signedUserDid === '' ? (
+            <Link to="/sign-did">
+              <FollowButton>Sign in to Follow</FollowButton>
+            </Link>
           ) : (
-            <Button
-              type="primary"
-              text="Follow"
-              icon={followIcon}
-              onClick={async () => {
-                followDid();
-              }}
-            />
+            <FollowOrUnFollowButton did={user.did} userDid={signedUserDid} />
           )}
-        </IonCol>
-      </IonRow>
-    </IonGrid>
+        </Buttons>
+      </Header>
+    </HeaderContainer>
   );
 };
 
