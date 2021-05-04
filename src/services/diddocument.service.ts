@@ -137,6 +137,10 @@ export class DidDocumentService {
     let publishTimes = await AssistService.getPublishTimes(userDid.did);
     let curTime = new Date().getTime();
     if (publishTimes < 5) {
+      if (!userSession.badges?.didPublishTimes._1times.archived) {
+        userSession.badges!.didPublishTimes!._1times.archived = curTime;
+        await UserService.updateSession(userSession);
+      }
     } else if (publishTimes < 10) {
       if (!userSession.badges?.didPublishTimes._5times.archived) {
         userSession.badges!.didPublishTimes!._5times.archived = curTime;

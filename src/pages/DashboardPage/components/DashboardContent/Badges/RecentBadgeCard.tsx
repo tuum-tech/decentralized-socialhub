@@ -9,13 +9,14 @@ import {
   IonRow
 } from '@ionic/react';
 import style from './RecentBadgeCard.module.scss';
+import { timeSince } from 'src/utils/time';
 import badgeDetails from 'src/data/badge_detail.json';
 
 interface Props {
   badges: IBadges;
 }
 
-const OverviewCard: React.FC<Props> = ({ badges }) => {
+const RecentBadgeCard: React.FC<Props> = ({ badges }) => {
   const [archivedBadges, setArchivedBadges] = useState([]);
   useEffect(() => {
     let _archivedBadges: any = [];
@@ -47,12 +48,11 @@ const OverviewCard: React.FC<Props> = ({ badges }) => {
           <p>Your recent achivements</p>
         </IonText>
         <IonGrid>
-          {archivedBadges.slice(0, 5).map((badge, index) => {
+          {archivedBadges.slice(0, 10).map((badge, index) => {
             const { category, name, archived } = badge;
             const { title, description, enbl_icon, dsabl_icon } = badgeDetails[
               category
             ][name];
-            const date = new Date(archived);
             return (
               <IonRow className={style['badge']} key={index}>
                 <div className={style['badge-icon']}>
@@ -61,16 +61,7 @@ const OverviewCard: React.FC<Props> = ({ badges }) => {
                 <div className={style['badge-detail']}>
                   <p className={style['badge-name']}>{title}</p>
                   <p className={style['badge-archive']}>
-                    <span>Archieved</span>{' '}
-                    {(date.getMonth() > 8
-                      ? date.getMonth() + 1
-                      : '0' + (date.getMonth() + 1)) +
-                      '/' +
-                      (date.getDate() > 9
-                        ? date.getDate()
-                        : '0' + date.getDate()) +
-                      '/' +
-                      date.getFullYear()}
+                    <span>Archieved</span> {timeSince(archived)}
                   </p>
                 </div>
               </IonRow>
@@ -82,4 +73,4 @@ const OverviewCard: React.FC<Props> = ({ badges }) => {
   );
 };
 
-export default OverviewCard;
+export default RecentBadgeCard;

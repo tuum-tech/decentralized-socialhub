@@ -32,6 +32,12 @@ interface EducationItem {
   logo?: string;
 }
 
+interface ActivityItem {
+  guid: Guid;
+  did: string;
+  message: string;
+}
+
 interface EducationDTO {
   isEnabled: boolean;
   items: EducationItem[];
@@ -172,6 +178,7 @@ interface SocialBadgeItem {
   phone: BadgeArchiveModel;
 }
 interface DIDBadgeItem {
+  _1times: BadgeArchiveModel;
   _5times: BadgeArchiveModel;
   _10times: BadgeArchiveModel;
   _25times: BadgeArchiveModel;

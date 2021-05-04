@@ -84,7 +84,9 @@ const OverviewCard: React.FC<Props> = ({ badges }) => {
     ).length;
     setTotalBadgeCount(_totalBadgeCount);
     setCompletedBadgeCount(_completedBadgeCount);
-    setProgressPercent((_completedBadgeCount * 100) / _totalBadgeCount);
+    setProgressPercent(
+      Math.floor((_completedBadgeCount * 100) / _totalBadgeCount)
+    );
   }, []);
   return (
     <IonCard className={style['spotlight']}>

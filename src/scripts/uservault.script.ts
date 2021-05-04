@@ -13,12 +13,14 @@ export class UserVaultScripts {
     await hiveClient.Database.createCollection('basic_profile');
     await hiveClient.Database.createCollection('education_profile');
     await hiveClient.Database.createCollection('experience_profile');
+    await hiveClient.Database.createCollection('activities');
   }
 
   static async SetScripts(hiveClient: HiveClient) {
     await this.SetScriptGetFollowing(hiveClient);
     await this.SetScriptsForUserDetails(hiveClient);
     await this.SetScriptsForProfile(hiveClient);
+    await this.SetScriptsForActivities(hiveClient);
   }
 
   static async SetScriptGetFollowing(hiveClient: HiveClient) {
@@ -308,6 +310,24 @@ export class UserVaultScripts {
               data: '$params.data'
             }
           }
+        }
+      }
+    });
+  }
+
+  static async SetScriptsForActivities(hiveClient: HiveClient) {
+    hiveClient.Scripting.SetScript({
+      name: 'add_activity',
+      executable: {
+        type: 'insert',
+        name: 'add_activity',
+        body: {
+          collection: 'activities',
+          document: {
+            did: '$params.did',
+            message: '$params.message'
+          },
+          options: { bypass_document_validation: false }
         }
       }
     });

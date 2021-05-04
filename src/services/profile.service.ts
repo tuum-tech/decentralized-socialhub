@@ -280,6 +280,8 @@ export class ProfileService {
     }
     return;
   }
+
+  static async addActivity(activity: ActivityItem) {}
 }
 
 export const defaultUserInfo: ISessionItem = {

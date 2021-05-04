@@ -24,6 +24,11 @@ export const ProgressArea = styled.div`
   }
 `;
 
+export const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
 export const MainCard = styled(LeftCard)`
   padding: 21px !important;
   min-height: 100px;
@@ -33,6 +38,14 @@ export const MainCard = styled(LeftCard)`
 
 export const CardTitle = styled(LeftCardTitle)`
   margin-bottom: 25px;
+`;
+
+export const ExploreAll = styled.p`
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--theme-primary-blue);
+  cursor: pointer;
 `;
 
 export const CardText = styled.p`

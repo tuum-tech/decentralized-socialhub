@@ -66,7 +66,7 @@ const ActivityPage: React.FC<InferMappedProps> = ({
                 <Header>
                   <PageTitle>Activities</PageTitle>
                 </Header>
-                {/* <ActivityTimeline /> */}
+                <ActivityTimeline />
               </IonCol>
             </IonRow>
           </IonGrid>
