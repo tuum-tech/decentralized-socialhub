@@ -191,14 +191,15 @@ export class UserService {
   public static async SearchUserWithDID(did: string) {
     let response: any = await TuumTechScriptService.searchUserWithDID(did);
     const { data, meta } = response;
+
     if (meta.code === 200 && meta.message === 'OK') {
-      const { get_user_by_did } = data;
+      const { get_users_by_dids } = data;
       if (
-        get_user_by_did &&
-        get_user_by_did.items &&
-        get_user_by_did.items.length > 0
+        get_users_by_dids &&
+        get_users_by_dids.items &&
+        get_users_by_dids.items.length > 0
       ) {
-        const userData = get_user_by_did.items[0];
+        const userData = get_users_by_dids.items[0];
         const isDIDPublished = await DidService.isDIDPublished(userData.did);
 
         return {
@@ -342,7 +343,7 @@ export class UserService {
       sessionItem.code = credential;
 
       sessionItem.badges!.socialVerify!.email.archived = curTime;
-      await TuumTechScriptService.updateEmailUserDidInfo(sessionItem);
+      await TuumTechScriptService.updateTuumEmailUser(sessionItem);
     } else {
       sessionItem.status = 'CONFIRMED';
       if (accountType === AccountType.Twitter) {
@@ -373,24 +374,12 @@ export class UserService {
     notifyUser: boolean = false
   ): Promise<void> {
     let newSessionItem = sessionItem;
-    const userData = await TuumTechScriptService.searchUserWithDID(
-      sessionItem.did
-    );
-    if (
-      userData &&
-      userData.data &&
-      userData.data['get_user_by_did'] &&
-      userData.data['get_user_by_did']['items'] &&
-      userData.data['get_user_by_did']['items'].length > 0 &&
-      userData.data['get_user_by_did']['items'][0].code
-    ) {
-      const code = userData.data['get_user_by_did']['items'][0].code;
-      newSessionItem.code = code;
+    const userData = await UserService.SearchUserWithDID(sessionItem.did);
+    if (userData && userData.code) {
+      newSessionItem.code = userData.code;
     }
 
-    const res: any = await TuumTechScriptService.updateUserDidInfo(
-      newSessionItem
-    );
+    const res: any = await TuumTechScriptService.updateTuumUser(newSessionItem);
     this.lockUser(this.key(sessionItem.did), newSessionItem);
 
     window.localStorage.setItem(

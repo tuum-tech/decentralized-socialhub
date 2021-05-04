@@ -21,7 +21,7 @@ export const getAvatarIfno = async (
 
     if (doc_Avatar !== '') {
       // update userinfo on tuum.tech vault
-      // await TuumTechScriptService.updateUserDidInfo({
+      // await TuumTechScriptService.updateTuumUser({
       //   ...tuumUser,
       //   avatar: doc_Avatar
       // });

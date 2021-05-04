@@ -15,27 +15,30 @@ export interface IHiveChallenge {
 }
 export class HiveService {
   static async getSessionInstance(): Promise<HiveClient | undefined> {
-    let instance = UserService.GetUserSession();
-    if (!instance) return;
+    try {
+      let instance = UserService.GetUserSession();
+      if (!instance) return;
 
-    let isUserDocumentPublished = await DidDocumentService.isDidDocumentPublished(
-      instance.did
-    );
+      let isUserDocumentPublished = await DidDocumentService.isDidDocumentPublished(
+        instance.did
+      );
 
-    if (!isUserDocumentPublished) {
-      alertError(null, 'DID is not published yet');
+      if (!isUserDocumentPublished) {
+        return;
+      }
+
+      let hiveClient = await HiveClient.createInstance(
+        instance.userToken,
+        instance.hiveHost
+      );
+
+      if (hiveClient && hiveClient.isConnected) {
+        await hiveClient.Payment.CreateFreeVault();
+      }
+      return hiveClient;
+    } catch (e) {
       return;
     }
-
-    let hiveClient = await HiveClient.createInstance(
-      instance.userToken,
-      instance.hiveHost
-    );
-
-    if (hiveClient.isConnected) {
-      await hiveClient.Payment.CreateFreeVault();
-    }
-    return hiveClient;
   }
 
   static async isHiveAddressValid(address: string): Promise<boolean> {
@@ -49,10 +52,13 @@ export class HiveService {
     }
   }
 
-  static async getAppHiveClient(): Promise<HiveClient> {
-    let host = `${process.env.REACT_APP_TUUM_TECH_HIVE}`;
-    let hiveClient = await HiveClient.createAnonymousInstance(host);
-    return hiveClient;
+  static async getAppHiveClient(): Promise<HiveClient | undefined> {
+    try {
+      let host = `${process.env.REACT_APP_TUUM_TECH_HIVE}`;
+      let hiveClient = await HiveClient.createAnonymousInstance(host);
+      return hiveClient;
+    } catch (e) {}
+    return;
   }
 
   private static async getHiveOptions(hiveHost: string): Promise<IOptions> {

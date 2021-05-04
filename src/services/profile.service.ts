@@ -1,47 +1,138 @@
 import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
-import { ProfileResponse } from 'src/pages/DashboardPage/types';
+import {
+  BasicProfileResponse,
+  EducationProfileResponse,
+  ExperienceProfileResponse
+} from 'src/pages/DashboardPage/types';
+import { getVerifiedCredential } from 'src/utils/credential';
 
 import { showNotify } from 'src/utils/notify';
+import { DidDocumentService } from './diddocument.service';
 
 import { HiveService } from './hive.service';
 import { UserService, AccountType } from './user.service';
 
 export class ProfileService {
-  static async getFullProfile(did: string): Promise<ProfileDTO | undefined> {
-    {
-      const hiveInstance = await HiveService.getAppHiveClient();
-      if (hiveInstance) {
-        const fullProfileResponse: IRunScriptResponse<ProfileResponse> = await hiveInstance.Scripting.RunScript(
-          {
-            name: 'get_full_profile',
-            context: {
-              target_did: did,
-              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-            }
-          }
-        );
+  static didDocument: any = null;
 
-        if (
-          fullProfileResponse &&
-          fullProfileResponse.response &&
-          fullProfileResponse.response.get_basic &&
-          fullProfileResponse.response.get_basic.items
-        ) {
-          let basicProfile = fullProfileResponse.response!.get_basic.items![0];
-          let educationProfile = fullProfileResponse.response!
-            .get_education_profile;
-          let experienceProfile = fullProfileResponse.response!
-            .get_experience_profile;
+  static isCredVerified = async (key: string, profileValue: string) => {
+    if (ProfileService.didDocument === null) {
+      ProfileService.didDocument = await ProfileService.getDidDocument();
+    }
 
-          return {
-            basicDTO: basicProfile || {},
-            educationDTO: educationProfile,
-            experienceDTO: experienceProfile
-          };
-        }
-      }
+    let vc = getVerifiedCredential(key, ProfileService.didDocument);
+    if (!vc) return false;
+
+    return vc.value === profileValue && vc.isVerified;
+  };
+
+  static getDidDocument = async () => {
+    let userSession = UserService.GetUserSession();
+    if (!userSession) {
       return;
     }
+    let documentState = await DidDocumentService.getUserDocument(userSession);
+    return documentState.diddocument;
+  };
+
+  static async getFullProfile(did: string): Promise<ProfileDTO | undefined> {
+    let basicDTO: any = {};
+    let educationDTO: EducationDTO = {
+      items: [],
+      isEnabled: true
+    };
+    let experienceDTO: ExperienceDTO = {
+      items: [],
+      isEnabled: true
+    };
+    const hiveInstance = await HiveService.getAppHiveClient();
+    if (hiveInstance) {
+      const basicProfileResponse: IRunScriptResponse<BasicProfileResponse> = await hiveInstance.Scripting.RunScript(
+        {
+          name: 'get_basic_profile',
+          context: {
+            target_did: did,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+          }
+        }
+      );
+      if (
+        basicProfileResponse &&
+        basicProfileResponse.isSuccess &&
+        basicProfileResponse.response &&
+        basicProfileResponse.response.get_basic_profile &&
+        basicProfileResponse.response.get_basic_profile.items &&
+        basicProfileResponse.response.get_basic_profile.items.length > 0
+      ) {
+        basicDTO = basicProfileResponse.response.get_basic_profile.items[0];
+      }
+
+      const educationProfileResponse: IRunScriptResponse<EducationProfileResponse> = await hiveInstance.Scripting.RunScript(
+        {
+          name: 'get_education_profile',
+          context: {
+            target_did: did,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+          }
+        }
+      );
+      if (
+        educationProfileResponse &&
+        educationProfileResponse.isSuccess &&
+        educationProfileResponse.response &&
+        educationProfileResponse.response.get_education_profile &&
+        educationProfileResponse.response.get_education_profile.items &&
+        educationProfileResponse.response.get_education_profile.items.length > 0
+      ) {
+        educationDTO.items =
+          educationProfileResponse.response.get_education_profile.items;
+      }
+
+      const experienceProfileResponse: IRunScriptResponse<ExperienceProfileResponse> = await hiveInstance.Scripting.RunScript(
+        {
+          name: 'get_experience_profile',
+          context: {
+            target_did: did,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+          }
+        }
+      );
+      if (
+        experienceProfileResponse &&
+        experienceProfileResponse.isSuccess &&
+        experienceProfileResponse.response &&
+        experienceProfileResponse.response.get_experience_profile &&
+        experienceProfileResponse.response.get_experience_profile.items &&
+        experienceProfileResponse.response.get_experience_profile.items.length >
+          0
+      ) {
+        experienceDTO.items =
+          experienceProfileResponse.response.get_experience_profile.items;
+      }
+
+      /* Calculate verified education credentials starts */
+      educationDTO.items.map(async (x, i) => {
+        educationDTO.items[i].isVerified = await ProfileService.isCredVerified(
+          'education',
+          x.institution
+        );
+      });
+      /* Calculate verified education credentials ends */
+
+      /* Calculate verified experience credentials starts */
+      experienceDTO.items.map(async (x, i) => {
+        experienceDTO.items[i].isVerified = await ProfileService.isCredVerified(
+          'occupation',
+          x.title
+        );
+      });
+      /* Calculate verified experience credentials ends */
+    }
+    return {
+      basicDTO,
+      educationDTO,
+      experienceDTO
+    };
   }
 
   static async updateAbout(basicDTO: BasicDTO) {
@@ -134,28 +225,6 @@ export class ProfileService {
     }
   }
 
-  static async getFollowings(
-    did: string
-  ): Promise<IFollowingResponse | undefined> {
-    const appHiveClient = await HiveService.getAppHiveClient();
-    if (did && did !== '' && appHiveClient) {
-      const followingResponse: IRunScriptResponse<IFollowingResponse> = await appHiveClient.Scripting.RunScript(
-        {
-          name: 'get_following',
-          context: {
-            target_did: did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          }
-        }
-      );
-
-      if (followingResponse.isSuccess) {
-        return followingResponse.response;
-      }
-    }
-    return;
-  }
-
   static async getFollowers(
     dids: string[]
   ): Promise<IFollowerResponse | undefined> {
@@ -237,6 +306,28 @@ export class ProfileService {
     if (userSession) {
       return this.getFollowings(userSession.did);
     }
+  }
+
+  static async getFollowings(
+    did: string
+  ): Promise<IFollowingResponse | undefined> {
+    const appHiveClient = await HiveService.getAppHiveClient();
+    if (did && did !== '' && appHiveClient) {
+      const followingResponse: IRunScriptResponse<IFollowingResponse> = await appHiveClient.Scripting.RunScript(
+        {
+          name: 'get_following',
+          context: {
+            target_did: did,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+          }
+        }
+      );
+
+      if (followingResponse.isSuccess) {
+        return followingResponse.response;
+      }
+    }
+    return;
   }
 
   static async addFollowing(did: string): Promise<any> {

@@ -61,7 +61,7 @@ const RecentBadgeCard: React.FC<Props> = ({ badges }) => {
                 <div className={style['badge-detail']}>
                   <p className={style['badge-name']}>{title}</p>
                   <p className={style['badge-archive']}>
-                    <span>Archieved</span> {timeSince(archived)}
+                    <span>Achieved</span> {timeSince(archived)}
                   </p>
                 </div>
               </IonRow>

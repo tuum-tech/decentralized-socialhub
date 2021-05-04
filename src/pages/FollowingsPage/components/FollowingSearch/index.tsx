@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   IUniversitiesResponse,
-  IUserResponse,
   SearchService
 } from 'src/services/search.service';
 import FollowingTabs from '../FollowingTabs';
@@ -10,13 +9,25 @@ import { ProfileService } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
 import { alertError } from 'src/utils/notify';
 
+export interface IUserResponse {
+  _status?: string;
+  get_users_by_dids: {
+    items: {
+      did: string;
+      name: string;
+      avatar?: string;
+      hiveHost: string;
+    }[];
+  };
+}
+
 const FollowingSearch: React.FC = () => {
   const [filteredUniversities, setFilteredUniversities] = useState<
     IUniversitiesResponse
   >({ get_universities: { items: [] } });
 
   const [filteredUsers, setFilteredUsers] = useState<IUserResponse>({
-    get_users: { items: [] }
+    get_users_by_dids: { items: [] }
   });
   const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
     get_following: { items: [] }
@@ -70,7 +81,7 @@ const FollowingSearch: React.FC = () => {
       );
       setFilteredUsers(listUsers.response);
     } catch (e) {
-      setFilteredUsers({ get_users: { items: [] } });
+      setFilteredUsers({ get_users_by_dids: { items: [] } });
       alertError(null, 'Could not load users');
       return;
     }
@@ -128,7 +139,7 @@ const FollowingSearch: React.FC = () => {
         ></IonSearchbar>
       </IonContent> */}
       <FollowingTabs
-        people={filteredUsers.get_users}
+        people={filteredUsers.get_users_by_dids}
         following={listFollowing.get_following}
         pages={filteredUniversities.get_universities}
         searchKeyword={searchQuery}

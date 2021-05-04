@@ -27,7 +27,6 @@ import {
   defaultUserInfo,
   defaultFullProfile
 } from 'src/services/profile.service';
-import { loginCredSyn } from 'src/utils/socialprofile';
 
 import TutorialComponent from './components/Tutorial';
 import DashboardContent from './components/DashboardContent';
@@ -83,7 +82,6 @@ const ProfilePage = () => {
       return;
     }
     let documentState = await DidDocumentService.getUserDocument(userSession);
-    await loginCredSyn(userSession, documentState.diddocument);
     setDidDocument(documentState.diddocument);
   };
 

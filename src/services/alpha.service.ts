@@ -4,6 +4,7 @@ import { HiveService } from './hive.service';
 export class AlphaService {
   static async isCodeValid(accesscode: string): Promise<boolean> {
     let client = await HiveService.getAppHiveClient();
+    if (!client) return false;
 
     let scriptResponse = await client.Scripting.RunScript<any>({
       name: 'get_requestcode_status',
@@ -24,7 +25,6 @@ export class AlphaService {
     ) {
       return false;
     }
-
     return !scriptResponse.response.requeststatus.items[0].isUsed;
   }
 
@@ -43,7 +43,7 @@ export class AlphaService {
 
   static async useCode(accesscode: string, did: string): Promise<boolean> {
     let client = await HiveService.getAppHiveClient();
-
+    if (!client) return false;
     let scriptResponse = await client.Scripting.RunScript({
       name: 'user_access_code',
       context: {
@@ -74,6 +74,7 @@ export class AlphaService {
       });
 
       let client = await HiveService.getAppHiveClient();
+      if (!client) return false;
       let scriptResponse = await client.Scripting.RunScript({
         name: 'email_request_access',
         context: {
@@ -84,7 +85,6 @@ export class AlphaService {
           email: email
         }
       });
-
       return scriptResponse.isSuccess;
     } catch (error) {
       alertError(null, 'Could not request access code');

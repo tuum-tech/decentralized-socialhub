@@ -24,6 +24,7 @@ const Progress = styled.progress`
 
 interface IProps {
   value?: number;
+  text?: string;
   containerColor?: string;
   progressColor?: string;
   width?: string;
@@ -53,9 +54,7 @@ const ProgressBar: React.FC<IProps> = ({
           height: `${height}px`
         }}
       ></PB>
-      <Progress value={percent} max="100">
-        {percent}%
-      </Progress>
+      <Progress value={value} max="100"></Progress>
     </PBContainer>
   );
 };

@@ -70,7 +70,6 @@ const ProfileEditor: React.FC = () => {
       if (!instance || !instance.userToken) return;
 
       setUserInfo(instance);
-
       if (instance.tutorialStep === 4) {
         await retriveProfile();
       }
@@ -92,7 +91,7 @@ const ProfileEditor: React.FC = () => {
               <BasicCard
                 sessionItem={userInfo}
                 updateFunc={async (userInfo: ISessionItem) => {
-                  await TuumTechScriptService.updateBasicProfile(userInfo);
+                  await TuumTechScriptService.updateTuumUser(userInfo);
                   UserService.updateSession(userInfo, true);
                 }}
               ></BasicCard>
