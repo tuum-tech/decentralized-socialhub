@@ -122,7 +122,6 @@ export const loadFollowerUsers = async (did: string) => {
   }
 
   follwerDids = await syncFollowData(follwerDids);
-  console.log('====>follwerDids', follwerDids);
   const followerUsers: any[] = await addDetailsToFollowData(follwerDids);
   return followerUsers;
 };
