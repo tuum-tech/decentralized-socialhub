@@ -3,38 +3,17 @@ import { RouteComponentProps } from 'react-router';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import { DidDocumentService } from 'src/services/diddocument.service';
-import PublicNavbar from './components/PublicNavbar';
+import LoadingIndicator from 'src/components/LoadingIndicator';
+import ProfileComponent from 'src/components/profile/ProfileComponent';
+import PublicNavbar from 'src/components/profile/PublicNavbar';
 import { UserService } from 'src/services/user.service';
-import PageLoading from 'src/components/layouts/PageLoading';
-import {
-  ProfileService,
-  defaultUserInfo,
-  defaultFullProfile
-} from 'src/services/profile.service';
-import AboutCard from 'src/components/cards/AboutCard';
-import EducationCard from 'src/components/cards/EducationCard';
-import ExperienceCard from 'src/components/cards/ExperienceCard';
-import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
-import FollowCards from 'src/components/FollowCards';
-
-import PublicProfileTabs from './components/PublicProfileTabs';
-import ProfileHeader from './components/ProfileHeader';
+import { defaultUserInfo } from 'src/services/profile.service';
 
 import style from './style.module.scss';
 
 const ContentRow = styled(IonRow)`
   background-color: #f7fafc !important;
   padding: 16px;
-`;
-
-const LeftContent = styled.div`
-  width: calc(100% - 300px);
-  padding-right: 22px;
-`;
-
-const RightContent = styled.div`
-  width: 300px;
 `;
 
 interface MatchParams {
@@ -44,59 +23,9 @@ interface MatchParams {
 const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   props: RouteComponentProps<MatchParams>
 ) => {
-  const [loading, setLoading] = useState(true);
-  const [signedInUser, setSignedInUser] = useState(defaultUserInfo);
-  const [publicUser, setPublicUser] = useState<ISessionItem>(defaultUserInfo);
-  const [didDocument, setDidDocument] = useState<any>({});
-  const [publicUserProfile, setPublicUserProfile] = useState(
-    defaultFullProfile
-  );
-
   let did: string = props.match.params.did;
-
-  // const setTimer = () => {
-  //   const timer = setTimeout(async () => {
-  //     await refreshDidDocument();
-  //     setTimer();
-  //   }, 1000);
-  //   return () => clearTimeout(timer);
-  // };
-  // const refreshDidDocument = async () => {
-  //   let documentState = await DidDocumentService.getUserDocumentByDid(did);
-  //   setDidDocument(documentState.diddocument);
-  // };
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const pUser = await UserService.SearchUserWithDID(did);
-        if (pUser && pUser.did !== '') {
-          setPublicUser(pUser as ISessionItem);
-        }
-        let profile:
-          | ProfileDTO
-          | undefined = await ProfileService.getFullProfile(did);
-        if (profile) {
-          profile.basicDTO.isEnabled = true;
-          profile.experienceDTO.isEnabled = true;
-          profile.educationDTO.isEnabled = true;
-          setPublicUserProfile(profile);
-        }
-        const sUser = UserService.GetUserSession();
-        if (sUser && sUser.did !== '') {
-          setSignedInUser(sUser);
-        }
-        let documentState = await DidDocumentService.getUserDocumentByDid(did);
-        setDidDocument(documentState.diddocument);
-        // setTimer();
-      } catch (error) {
-        // console.log('======>error', error);
-      }
-
-      setLoading(false);
-    })();
-  }, []);
-
+  const [signedUser, setSignedUser] = useState(defaultUserInfo);
+  const [loading, setLoading] = useState(true);
   const [scrollTop, setScrollTop] = useState(0);
 
   const contentRef = useRef<HTMLIonContentElement | null>(null);
@@ -130,10 +59,21 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     setScrollTop(e.detail.scrollTop);
   };
 
-  if (loading) {
-    return <PageLoading />;
-  }
+  useEffect(() => {
+    (async () => {
+      let did: string = props.match.params.did;
+      if (did && did !== '') {
+        setLoading(true);
+        let sUser = await UserService.GetUserSession();
+        if (sUser && sUser.did) setSignedUser(sUser);
+      }
+      setLoading(false);
+    })();
+  }, [props.match.params.did]);
 
+  if (loading) {
+    return <LoadingIndicator loadingText="Loading data..." />;
+  }
   return (
     <IonPage className={style['profilepage']}>
       <IonGrid className={style['profilepagegrid'] + ' ion-no-padding'}>
@@ -142,86 +82,21 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
           scrollEvents={true}
           onIonScroll={handleScroll}
         >
-          <PublicNavbar signedIn={signedInUser && signedInUser.did !== ''} />
-          {!publicUser || publicUser.did === '' ? (
-            'User not found'
-          ) : (
-            <ContentRow className="ion-justify-content-around">
-              <IonCol size="9" className="ion-no-padding">
-                <div className={style['profilecomponent']}>
-                  <ProfileHeader
-                    user={publicUser as ISessionItem}
-                    signedUserDid={signedInUser.did}
-                  />
-
-                  {publicUserProfile.basicDTO.isEnabled === true ? (
-                    <>
-                      <PublicProfileTabs scrollToPosition={scrollToElement} />
-                      <IonGrid className={style['scroll']}>
-                        <IonRow className="ion-justify-content-center">
-                          <IonCol size="12">
-                            <IonGrid>
-                              <IonRow>
-                                <LeftContent>
-                                  <div ref={aboutRef}>
-                                    <AboutCard
-                                      aboutText={
-                                        publicUserProfile.basicDTO.about
-                                      }
-                                      mode="read"
-                                    />
-                                  </div>
-                                  <div ref={experienceRef}>
-                                    <ExperienceCard
-                                      experienceDTO={
-                                        publicUserProfile.experienceDTO
-                                      }
-                                      isEditable={false}
-                                      isPublicPage={true}
-                                    />
-                                  </div>
-                                  <div ref={educationRef}>
-                                    <EducationCard
-                                      educationDTO={
-                                        publicUserProfile.educationDTO
-                                      }
-                                      isEditable={false}
-                                      isPublicPage={true}
-                                    />
-                                  </div>
-                                </LeftContent>
-                                <RightContent>
-                                  {didDocument && didDocument.id && (
-                                    <SocialProfilesCard
-                                      didDocument={didDocument}
-                                      sessionItem={publicUser}
-                                    />
-                                  )}
-
-                                  <FollowCards
-                                    did={publicUser.did}
-                                    signed={signedInUser.did !== ''}
-                                  />
-                                </RightContent>
-                              </IonRow>
-                            </IonGrid>
-                          </IonCol>
-                        </IonRow>
-                      </IonGrid>
-                    </>
-                  ) : (
-                    <IonGrid>
-                      <IonRow className="ion-justify-content-center">
-                        <IonCol size="auto">
-                          The content of this profile is not currently viewable
-                        </IonCol>
-                      </IonRow>
-                    </IonGrid>
-                  )}
-                </div>
-              </IonCol>
-            </ContentRow>
-          )}
+          <PublicNavbar signedIn={signedUser && signedUser.did !== ''} />
+          <ContentRow className="ion-justify-content-around">
+            <IonCol size="9" className="ion-no-padding">
+              <div className={style['profilecomponent']}>
+                <ProfileComponent
+                  hasBanner={true}
+                  targetDid={did}
+                  scrollToElement={scrollToElement}
+                  aboutRef={aboutRef}
+                  experienceRef={experienceRef}
+                  educationRef={educationRef}
+                />
+              </div>
+            </IonCol>
+          </ContentRow>
         </IonContent>
       </IonGrid>
     </IonPage>
