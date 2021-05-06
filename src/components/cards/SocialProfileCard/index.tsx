@@ -54,6 +54,7 @@ const SocialProfiles: React.FC<Props> = ({ didDocument, sessionItem }) => {
         });
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (

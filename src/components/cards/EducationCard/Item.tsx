@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { IonCol, IonGrid, IonPopover, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 import shieldIcon from '../../../assets/icon/shield.svg';
@@ -63,7 +63,11 @@ const EducationItem: React.FC<EducationItemProps> = ({
               <IonRow style={{ float: 'right' }}>
                 <IonCol>
                   {educationItem.isVerified && (
-                    <img src={shieldIcon} style={{ width: '1em' }} />
+                    <img
+                      alt="shield icon"
+                      src={shieldIcon}
+                      style={{ width: '1em' }}
+                    />
                   )}
                 </IonCol>
               </IonRow>

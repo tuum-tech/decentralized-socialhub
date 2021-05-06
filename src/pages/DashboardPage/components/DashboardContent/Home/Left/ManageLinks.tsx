@@ -9,7 +9,7 @@ import {
 } from './ManageProfile';
 import socialCardImg from '../../../../../../assets/dashboard/social.png';
 
-const ManageLink: React.FC = ({}) => {
+const ManageLink: React.FC = () => {
   return (
     <MainCard>
       <CardTitle>Connect your social profiles</CardTitle>

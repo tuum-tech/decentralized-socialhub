@@ -1,4 +1,4 @@
-import request, { BaseplateResp } from 'src/baseplate/request';
+import request from 'src/baseplate/request';
 
 const TwitterApi = {
   GetRequestToken: async () => {

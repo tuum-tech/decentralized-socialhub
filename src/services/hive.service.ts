@@ -4,7 +4,6 @@ import {
   IOptions
 } from '@elastos/elastos-hive-js-sdk';
 import jwt_decode from 'jwt-decode';
-import { alertError } from 'src/utils/notify';
 
 import { DidService } from './did.service';
 import { DidDocumentService } from './diddocument.service';

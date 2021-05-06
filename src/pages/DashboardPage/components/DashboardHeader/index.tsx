@@ -49,6 +49,7 @@ const DashboardHeader: React.FC<IProps> = ({
     (async () => {
       setIsNameVerified(await isCredVerified('name', sessionItem.name));
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [didDocument, sessionItem.name]);
 
   const isCredVerified = async (key: string, profileValue: string) => {
@@ -76,6 +77,7 @@ const DashboardHeader: React.FC<IProps> = ({
               {isNameVerified && (
                 <IonCol>
                   <img
+                    alt="shield icon"
                     src={shieldIcon}
                     className={style['social-profile-badge']}
                   />

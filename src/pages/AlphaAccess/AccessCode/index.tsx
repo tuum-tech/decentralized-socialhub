@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable no-useless-escape */
 /**
  * Page
  */
@@ -26,6 +28,7 @@ const AccessCodePage: React.FC = () => {
         history.push({ pathname: '/create-profile' });
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const messageDiv = () => {
@@ -99,7 +102,7 @@ const AccessCodePage: React.FC = () => {
   const page1 = () => {
     return (
       <div className={style['alpha-div']}>
-        <img className={style['logo']} src={logo} />
+        <img alt="profile logo" className={style['logo']} src={logo} />
         <h1>Welcome to Profile</h1>
         <p>
           We are invitation only at the moment. <br />
@@ -138,7 +141,9 @@ const AccessCodePage: React.FC = () => {
   const page2 = () => {
     return (
       <div className={style['alpha-div']}>
-        <span>🤗</span>
+        <span role="img" aria-label="smile">
+          🤗
+        </span>
         <h1>Invitation request</h1>
         <p>&nbsp;</p>
 
@@ -173,7 +178,9 @@ const AccessCodePage: React.FC = () => {
   const page3 = () => {
     return (
       <div className={style['alpha-div']}>
-        <span>🤗</span>
+        <span role="img" aria-label="smile">
+          🤗
+        </span>
         <h1>All Set!</h1>
         <p>
           We’ve reserved your spot and will email you a code as soon as your

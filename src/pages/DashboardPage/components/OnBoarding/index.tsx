@@ -3,7 +3,7 @@
  */
 
 import React, { useState } from 'react';
-import { IonButton, IonImg, IonText, IonIcon } from '@ionic/react';
+import { IonButton, IonImg } from '@ionic/react';
 import clsx from 'clsx';
 
 import { UserService } from 'src/services/user.service';
@@ -43,7 +43,11 @@ const OnBoardingPage: React.FC<Props> = ({
   return (
     <AlphaContent>
       {stage === 0 && !sessionItem.onBoardingCompleted && (
-        <img className={style['transparent-logo']} src={transparentlogo} />
+        <img
+          alt="transparent logo"
+          className={style['transparent-logo']}
+          src={transparentlogo}
+        />
       )}
       {stage === 1 && !sessionItem.onBoardingCompleted && (
         <div

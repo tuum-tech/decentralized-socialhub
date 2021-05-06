@@ -1,9 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 
-import ProfileCompletion from '../Home/Right/ProfileCompletion';
-
-import styled from 'styled-components';
 import style from './style.module.scss';
 
 import OverviewCard from './OverviewCard';

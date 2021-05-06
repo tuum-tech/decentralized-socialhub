@@ -18,7 +18,6 @@ import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 import Logo from 'src/components/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
-import ActivityTimeline from './components/ActivityTimeline';
 
 const ActivityPage: React.FC<InferMappedProps> = ({
   eProps,

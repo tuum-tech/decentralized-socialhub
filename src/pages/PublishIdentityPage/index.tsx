@@ -51,10 +51,6 @@ const PublishIdentityPage: React.FC<InferMappedProps> = ({
     '-'
   ]);
 
-  const publishDocument = async () => {
-    // let confirmation = await PublishDocument(mnemonic, {})
-  };
-
   const MnemonicItem = (mnemonic: any) => {
     return (
       <>
@@ -76,6 +72,7 @@ const PublishIdentityPage: React.FC<InferMappedProps> = ({
     }
 
     if (!mnemonic || mnemonic[0] === '-') getMnemonic();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

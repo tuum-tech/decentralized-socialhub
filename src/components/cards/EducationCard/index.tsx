@@ -65,12 +65,14 @@ const EducationCard: React.FC<IEducationProps> = ({
     if (x.isVerified) {
       noOfVerifiedEduCred++;
     }
+    return null;
   });
 
   useEffect(() => {
     setEduVerifiedPercent(
       (noOfVerifiedEduCred * 100) / educationDTO.items.length
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentEducationDTO, noOfVerifiedEduCred]);
 
   const [editedItem, setEditedItem] = useState(defaultEducationItem);
@@ -134,7 +136,7 @@ const EducationCard: React.FC<IEducationProps> = ({
 
   if (
     !currentEducationDTO.isEnabled ||
-    (!isEditable && currentEducationDTO.items.length == 0)
+    (!isEditable && currentEducationDTO.items.length === 0)
   ) {
     return <></>;
   }

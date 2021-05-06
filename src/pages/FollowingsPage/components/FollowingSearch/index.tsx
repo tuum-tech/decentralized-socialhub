@@ -22,9 +22,9 @@ export interface IUserResponse {
 }
 
 const FollowingSearch: React.FC = () => {
-  const [filteredUniversities, setFilteredUniversities] = useState<
-    IUniversitiesResponse
-  >({ get_universities: { items: [] } });
+  const [filteredUniversities] = useState<IUniversitiesResponse>({
+    get_universities: { items: [] }
+  });
 
   const [filteredUsers, setFilteredUsers] = useState<IUserResponse>({
     get_users_by_dids: { items: [] }
@@ -97,6 +97,7 @@ const FollowingSearch: React.FC = () => {
     (async () => {
       await loadUsersData();
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listFollowing]);
 
   const invokeSearch = async (searchQuery: string) => {
@@ -118,10 +119,6 @@ const FollowingSearch: React.FC = () => {
       // loadData();
     }
   }, [searchQuery]);
-
-  const search = (e: any) => {
-    setSearchQuery(e.detail.value!);
-  };
 
   const getFollowingCount = (): number => {
     return listFollowing.get_following.items.length;

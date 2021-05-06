@@ -76,7 +76,7 @@ export class SearchService {
 
     let universitiesResponse: IRunScriptResponse<IUniversitiesResponse>;
 
-    if (searchString != null && searchString != '') {
+    if (searchString !== null && searchString !== '') {
       params['name'] = '.*' + searchString + '.*';
 
       universitiesResponse = await this.appHiveClient.Scripting.RunScript({
@@ -131,7 +131,7 @@ export class SearchService {
       skip: offset
     };
 
-    if (searchString != null && searchString != '') {
+    if (searchString != null && searchString !== '') {
       if (this.isDID(searchString)) {
         params['did'] = '.*' + searchString + '.*';
         params['self_did'] = [userSession.did];

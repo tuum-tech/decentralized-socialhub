@@ -11,14 +11,19 @@ const TutorialStep4Component: React.FC<ITutorialStepProp> = ({
 }) => {
   return (
     <div>
-      <h2>✅ Tutorial Complete</h2>
+      <h2>
+        <span role="img" aria-label="check">
+          ✅
+        </span>{' '}
+        Tutorial Complete
+      </h2>
       <p>
         Your profile is now ready. You have also received a completion badge.
         Thanks for completing the tutorial.{' '}
       </p>
 
       <div className={style['tutorial-badge']}>
-        <img src={badge} />
+        <img alt="beginner tutorial badge" src={badge} />
         <span>Beginner Tutorial</span>
       </div>
 

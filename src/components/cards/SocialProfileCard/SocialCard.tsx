@@ -211,19 +211,19 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const getUrlFromService = (service: string, value: string): string => {
-    if (service == 'twitter') return `https://twitter.com/${value}`;
-    if (service == 'linkedin') return `https://linkedin.com/in/${value}`;
-    if (service == 'facebook') return `https://facebook.com/${value}`;
-    if (service == 'google') return `mailto://${value}`;
+    if (service === 'twitter') return `https://twitter.com/${value}`;
+    if (service === 'linkedin') return `https://linkedin.com/in/${value}`;
+    if (service === 'facebook') return `https://facebook.com/${value}`;
+    if (service === 'google') return `mailto://${value}`;
     return '';
   };
 
   const parseValueFromService = (service: string, value: string): string => {
-    if (service == 'twitter')
+    if (service === 'twitter')
       return value.startsWith('@') ? value : `@${value}`;
-    if (service == 'linkedin') return `linkedin.com/in/${value}`;
-    if (service == 'facebook') return `facebook.com/${value}`;
-    if (service == 'google') return `${value}`;
+    if (service === 'linkedin') return `linkedin.com/in/${value}`;
+    if (service === 'facebook') return `facebook.com/${value}`;
+    if (service === 'google') return `${value}`;
     return '';
   };
 
@@ -272,21 +272,25 @@ const SocialProfilesCard: React.FC<Props> = ({
     if (!vc) return;
     return (
       <ProfileItem className={style['social-profile-item']}>
-        <img src={icon} />
-        {(key == 'facebook' || key == 'linkedin') && (
+        <img alt="icon" src={icon} />
+        {(key === 'facebook' || key === 'linkedin') && (
           <span>{parseValueFromService(key, vc.value)}</span>
         )}
-        {(key == 'google' || key == 'twitter') && (
+        {(key === 'google' || key === 'twitter') && (
           <a
             href={getUrlFromService(key, vc.value)}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
           >
             {parseValueFromService(key, vc.value)}
           </a>
         )}
         {vc.isVerified && (
-          <img src={shieldIcon} className={style['social-profile-badge']} />
+          <img
+            alt="shield icon"
+            src={shieldIcon}
+            className={style['social-profile-badge']}
+          />
         )}
       </ProfileItem>
     );

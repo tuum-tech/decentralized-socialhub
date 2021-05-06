@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { Header, MainCard, CardTitle, ExploreAll } from './VerificationStatus';
-import style from './style.module.scss';
 import badgeDetails from 'src/data/badge_detail.json';
 
 const BadgeContainer = styled.div`
@@ -67,6 +66,7 @@ const Badges: React.FC<Props> = ({ badges, exploreAll }) => {
     console.log(_archivedBadges);
     _archivedBadges.sort((a: any, b: any) => b.archived - a.archived);
     setArchivedBadges(_archivedBadges);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -83,17 +83,17 @@ const Badges: React.FC<Props> = ({ badges, exploreAll }) => {
       </Header>
       <BadgeContainer>
         {archivedBadges.slice(0, 5).map((badge, index) => {
-          const { category, name, archived } = badge;
-          const { title, description, enbl_icon, dsabl_icon } = badgeDetails[
-            category
-          ][name];
+          const { category, name } = badge;
+          const { title, description, enbl_icon } = badgeDetails[category][
+            name
+          ];
           return (
             <Badge
               onMouseEnter={() => setShowBadgeNumber(index)}
               onMouseLeave={() => setShowBadgeNumber(-1)}
               key={index}
             >
-              <img src={enbl_icon} height={50} />
+              <img alt="enable icon" src={enbl_icon} height={50} />
               {showBadgeNumber === index && (
                 <ToolTip>
                   <p>{title}</p>

@@ -104,6 +104,7 @@ const PeopleCard: React.FC<IProps> = ({
 
       setListPeople(listPeopleLocal);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [peoplePageOffset, people, following]);
 
   const handlePeoplePageClick = (data: any) => {

@@ -56,7 +56,7 @@ const LinkButton = styled(DefaultLinkButton)`
   padding: 15px 25px;
 `;
 
-const ConnectWithCommunity: React.FC = ({}) => {
+const ConnectWithCommunity: React.FC = () => {
   return (
     <MainCard className={style['img-card']}>
       <CardTitle>Connect with our community</CardTitle>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import {
   IonCard,
@@ -35,6 +36,7 @@ const RecentBadgeCard: React.FC<Props> = ({ badges }) => {
     console.log(_archivedBadges);
     _archivedBadges.sort((a: any, b: any) => b.archived - a.archived);
     setArchivedBadges(_archivedBadges);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <IonCard className={style['spotlight']}>
@@ -56,7 +58,7 @@ const RecentBadgeCard: React.FC<Props> = ({ badges }) => {
             return (
               <IonRow className={style['badge']} key={index}>
                 <div className={style['badge-icon']}>
-                  <img src={enbl_icon} height={40} />
+                  <img alt="enable icon" src={enbl_icon} height={40} />
                 </div>
                 <div className={style['badge-detail']}>
                   <p className={style['badge-name']}>{title}</p>

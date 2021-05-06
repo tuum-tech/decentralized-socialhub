@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { StaticContext, RouteComponentProps } from 'react-router';
-import styled from 'styled-components';
 
 import {
   OnBoardLayout,
@@ -19,7 +18,7 @@ import {
   ArrowButton,
   ButtonWithLogo
 } from 'src/components/buttons';
-import { Text12, ErrorTxt } from 'src/components/texts';
+import { ErrorTxt } from 'src/components/texts';
 import TextInput from 'src/components/inputs/TextInput';
 import { UserService } from 'src/services/user.service';
 import wavinghand from 'src/assets/icon/wavinghand.png';
@@ -34,7 +33,7 @@ const UnlockUserPage: React.FC<RouteComponentProps<
 >> = props => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [dids, setDids] = useState(
+  const [dids] = useState(
     props.location.state && props.location.state.dids
       ? props.location.state.dids
       : []

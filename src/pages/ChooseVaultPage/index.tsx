@@ -8,13 +8,12 @@ import { createStructuredSelector } from 'reselect';
 import injector from 'src/baseplate/injectorWrap';
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
 import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 import style from './style.module.scss';
 import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
-import { fetchSimpleApi } from './fetchapi';
 import Header from 'src/components/oldComponents/OldHeader';
 import ClearlyMeContent from 'src/components/oldComponents/ClearlyMeContent';
 import ButtonDefault from 'src/components/buttons/ButtonDefault';
@@ -26,17 +25,6 @@ const ChooseVault: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
-  /**
-   * Direct method implementation without SAGA
-   * This was to show you dont need to put everything to global state
-   * incoming from Server API calls. Maintain a local state.
-   */
-  const [msg, setMsg] = useState('');
-  const simpleAjaxDirect = async () => {
-    const msg = (await fetchSimpleApi()) as string;
-    setMsg(msg);
-  };
-
   return (
     <IonPage className={style['choosevault']}>
       <ClearlyMeContent>

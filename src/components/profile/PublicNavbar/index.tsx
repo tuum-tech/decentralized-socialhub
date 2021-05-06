@@ -29,7 +29,7 @@ const PublicNavbar: React.FC<Props> = ({ signedIn }) => {
   return (
     <PublicNavbarContainer className="ion-justify-content-between">
       <IonCol size="auto">
-        <img src="../../../assets/logo_profile_black.svg" />
+        <img alt="profile logo" src="../../../assets/logo_profile_black.svg" />
       </IonCol>
       <IonCol size="auto">
         {!signedIn && (

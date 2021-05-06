@@ -50,6 +50,7 @@ const CreateProfileWithDidPage: React.FC<RouteComponentProps<
     if (userInfo.did === '') {
       fetchUserInfo();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (userInfo.did === '') {

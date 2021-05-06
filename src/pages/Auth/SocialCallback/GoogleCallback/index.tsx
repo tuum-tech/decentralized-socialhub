@@ -13,11 +13,9 @@ import {
   requestGoogleToken,
   getUsersWithRegisteredGoogle
 } from './fetchapi';
-import { AssistService } from 'src/services/assist.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service';
-import { TuumTechScriptService } from 'src/services/script.service';
 
 const GoogleCallback: React.FC<RouteComponentProps> = props => {
   /**
@@ -96,6 +94,7 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
         }
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getRedirect = () => {

@@ -125,6 +125,7 @@ const FollowersSearch: React.FC = () => {
       }
       await loadUsersData();
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listFollowers]);
 
   const invokeSearch = async (searchQuery: string) => {
@@ -140,10 +141,6 @@ const FollowersSearch: React.FC = () => {
       // loadData();
     }
   }, [searchQuery]);
-
-  const search = (e: any) => {
-    setSearchQuery(e.detail.value!);
-  };
 
   const getFollowersCount = (did: string): number => {
     let val: number = 0;

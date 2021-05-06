@@ -55,7 +55,7 @@ const LinkButton = styled(DefaultLinkButton)`
   padding: 15px 25px;
 `;
 
-const WhatIsProfile: React.FC = ({}) => {
+const WhatIsProfile: React.FC = _ => {
   return (
     <ColorCard>
       <CardTitle>What is Profile?</CardTitle>
