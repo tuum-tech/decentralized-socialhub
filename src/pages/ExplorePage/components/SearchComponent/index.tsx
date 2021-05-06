@@ -107,6 +107,7 @@ const SearchComponent: React.FC = () => {
       await loadData();
       setIsLoading(false);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchService]);
 
   const invokeSearch = async (searchQuery: string) => {
@@ -132,6 +133,7 @@ const SearchComponent: React.FC = () => {
         setIsLoading(false);
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
 
   const search = (e: any) => {

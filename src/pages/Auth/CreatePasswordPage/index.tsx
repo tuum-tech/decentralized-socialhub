@@ -48,6 +48,7 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
   const [error, setError] = useState('');
   const [session, setSession] = useState<ISessionItem | null>(null);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!session && props.location.state && props.location.state.did) {
       const {

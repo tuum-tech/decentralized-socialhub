@@ -53,6 +53,7 @@ const PagesCard: React.FC<IProps> = ({
         );
 
     setListPages(listPagesLocal);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagesPageOffset, pages]);
 
   const handlePagesPageClick = (data: any) => {

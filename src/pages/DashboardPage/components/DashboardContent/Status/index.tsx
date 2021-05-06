@@ -2,7 +2,6 @@ import React from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 
 import SpotlightCard from 'src/components/cards/SpotlightCard';
-import OverviewCard from 'src/components/cards/OverviewCard';
 
 import style from './style.module.scss';
 

@@ -84,6 +84,7 @@ const AssociatedProfilePage: React.FC<RouteComponentProps<
       });
       setUser(users[0]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [associatedInfo]);
 
   if (!associatedInfo || !user) {

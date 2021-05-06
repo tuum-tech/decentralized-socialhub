@@ -55,6 +55,7 @@ const DashboardHome: React.FC<Props> = ({
   useEffect(() => {
     setTutorialVisible(sessionItem.tutorialStep !== 4);
     setCompletionStats(profileCompletionStats());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionItem, profile]);
 
   useEffect(() => {
@@ -76,6 +77,7 @@ const DashboardHome: React.FC<Props> = ({
       const followingUsers = await loadFollowerUsers(sessionItem.did);
       setFollowUsers(followerUsers.length + followingUsers.length > 0);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const hasSocialProfiles = hasCredentials(didDocument);
@@ -86,7 +88,7 @@ const DashboardHome: React.FC<Props> = ({
         title: 'Setup your account',
         targetList: ['Tutorial Completed', 'Social Media Authenticated'],
         accomplishedList: [
-          sessionItem.tutorialStep == 4 ? 'Tutorial Completed' : '',
+          sessionItem.tutorialStep === 4 ? 'Tutorial Completed' : '',
           sessionItem.loginCred &&
           (sessionItem.loginCred.linkedin ||
             sessionItem.loginCred.twitter ||
@@ -94,7 +96,7 @@ const DashboardHome: React.FC<Props> = ({
             sessionItem.loginCred.facebook)
             ? 'Social Media Authenticated'
             : ''
-        ].filter(a => a != '')
+        ].filter(a => a !== '')
       },
       {
         title: 'Add Content to Profile',
@@ -103,7 +105,7 @@ const DashboardHome: React.FC<Props> = ({
           profile.basicDTO && profile.basicDTO.about ? 'Added About me' : '',
           profile.experienceDTO.items.length ? 'Added Experience' : '',
           profile.educationDTO.items.length ? 'Added Education' : ''
-        ].filter(a => a != '')
+        ].filter(a => a !== '')
       }
     ];
 
@@ -117,7 +119,7 @@ const DashboardHome: React.FC<Props> = ({
           {
             name: 'Tutorial Completed',
             code: 'tutorialCompleted',
-            value: sessionItem.tutorialStep == 4 ? true : false
+            value: sessionItem.tutorialStep === 4 ? true : false
           },
           {
             name: 'Social Media Authenticated',
@@ -169,12 +171,14 @@ const DashboardHome: React.FC<Props> = ({
         if (item.value) {
           completedItems++;
         }
+        return null;
       });
 
       itemsCount.push({
         completedItems: completedItems,
         totalItems: totalItems
       });
+      return null;
     });
 
     for (let i = 0; i < itemsCount.length; i++) {
@@ -263,6 +267,7 @@ const DashboardHome: React.FC<Props> = ({
 
       setVerifiedStats(verified);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
   useEffect(() => {
@@ -278,7 +283,6 @@ const DashboardHome: React.FC<Props> = ({
   }, [verifiedStats]);
   /* Verification ends */
 
-  
   return (
     <IonGrid className="ion-no-padding">
       <IonRow className="ion-no-padding">

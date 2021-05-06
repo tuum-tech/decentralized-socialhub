@@ -1,13 +1,9 @@
-import React, { createRef, useState, useEffect, useRef } from 'react';
+import React, { createRef, useState, useEffect } from 'react';
 import {
-  IonCol,
   IonCard,
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
-  IonGrid,
-  IonRow,
-  IonContent,
   IonText,
   IonRouterLink
 } from '@ionic/react';
@@ -20,8 +16,6 @@ import {
   LightBox,
   Indent
 } from 'src/components/note';
-import { Button } from 'src/components/buttons';
-import Logo from 'src/components/Logo';
 import styled from 'styled-components';
 import style from './style.module.scss';
 const Content: React.FC = () => {

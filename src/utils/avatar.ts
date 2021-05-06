@@ -1,6 +1,4 @@
 import { UserService } from '../services/user.service';
-import { DidDocumentService } from '../services/diddocument.service';
-
 import defaultAvatar from '../assets/dp.jpeg';
 
 export interface GetAvatarRes {
@@ -15,7 +13,7 @@ export const getAvatarIfno = async (
   const didPublished = tuumUser && tuumUser.tutorialStep === 4;
 
   try {
-    const userDoc = await DidDocumentService.getUserDocumentByDid(did);
+    //const userDoc = await DidDocumentService.getUserDocumentByDid(did);
     const vault_avatr = tuumUser.avatar || '';
     const doc_Avatar = '';
 

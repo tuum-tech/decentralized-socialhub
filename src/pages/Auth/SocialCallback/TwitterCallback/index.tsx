@@ -8,7 +8,6 @@ import PageLoading from 'src/components/layouts/PageLoading';
 import { DidService } from 'src/services/did.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
-import { TuumTechScriptService } from 'src/services/script.service';
 import { AccountType, UserService } from 'src/services/user.service';
 
 import { requestTwitterToken, getUsersWithRegisteredTwitter } from './fetchapi';

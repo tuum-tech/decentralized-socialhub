@@ -1,5 +1,4 @@
 import React from 'react';
-import { IonCard } from '@ionic/react';
 import styled from 'styled-components';
 
 import { DefaultButton } from 'src/components/buttons';

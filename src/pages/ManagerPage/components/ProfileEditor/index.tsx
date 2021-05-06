@@ -76,6 +76,7 @@ const ProfileEditor: React.FC = () => {
       setloaded(true);
     })();
     setTimer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -7,9 +7,9 @@ import { defaultUserInfo } from 'src/services/profile.service';
 
 import style from './style.module.scss';
 
-const LeftSideMenu: React.FC = ({}) => {
+const LeftSideMenu: React.FC = _ => {
   const history = useHistory();
-  const [userInfo, setUserInfo] = useState<ISessionItem>(
+  const [userInfo] = useState<ISessionItem>(
     UserService.GetUserSession() || defaultUserInfo
   );
 

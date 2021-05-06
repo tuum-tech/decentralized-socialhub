@@ -45,6 +45,7 @@ const SignDidPage: React.FC<RouteComponentProps<
     ) {
       setUser(props.location.state.user);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

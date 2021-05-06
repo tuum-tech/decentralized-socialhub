@@ -16,7 +16,7 @@ const Container = styled.div`
 const Logo: React.FC = () => {
   return (
     <Container>
-      <img src="../../assets/logo_profile_black.svg" />
+      <img alt="profile logo" src="../../assets/logo_profile_black.svg" />
     </Container>
   );
 };

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-import { IUserResponse, SearchService } from 'src/services/search.service';
 import { loadFollowingUsers, loadFollowerUsers } from 'src/utils/follow';
 
 import FollowerCard from './FollowerCard';

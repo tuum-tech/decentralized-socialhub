@@ -91,6 +91,7 @@ const FacebookCallback: React.FC<RouteComponentProps> = props => {
         }
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getRedirect = () => {

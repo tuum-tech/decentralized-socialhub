@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { IonCard, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import { setTimeout } from 'timers';
-import compress from 'compress-base64';
 
 import { UserService } from 'src/services/user.service';
 import { defaultUserInfo } from 'src/services/profile.service';

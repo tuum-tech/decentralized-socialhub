@@ -5,8 +5,7 @@ import {
   IonCard,
   IonCardHeader,
   IonCardTitle,
-  IonCardContent,
-  IonText
+  IonCardContent
 } from '@ionic/react';
 
 import styled from 'styled-components';
@@ -70,6 +69,7 @@ const BadgeCard: React.FC<Props> = ({ badges, badgeCategory }) => {
     setTotalBadgeCount(_totalBadgeCount);
     setCompletedBadgeCount(_completedBadgeCount);
     setProgressPercent((_completedBadgeCount * 100) / _totalBadgeCount);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <IonCard className={style['badge-card']}>

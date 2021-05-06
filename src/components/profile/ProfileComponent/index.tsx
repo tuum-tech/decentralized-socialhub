@@ -1,5 +1,5 @@
-import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react';
-import React, { useRef, useState, useEffect } from 'react';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import {
@@ -10,7 +10,6 @@ import {
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { UserService } from 'src/services/user.service';
 
-import LoadingIndicator from 'src/components/LoadingIndicator';
 import AboutCard from 'src/components/cards/AboutCard';
 import EducationCard from 'src/components/cards/EducationCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';

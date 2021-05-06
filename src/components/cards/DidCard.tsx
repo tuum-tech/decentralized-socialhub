@@ -57,6 +57,7 @@ const DidCard: React.FC<Props> = ({
     setLoading(true);
     setIsFollowing(computeIsFollowing(did));
     setLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [following]);
 
   const computeIsFollowing = (did: string): boolean => {
@@ -81,7 +82,7 @@ const DidCard: React.FC<Props> = ({
         {type === 'user' ? (
           <Avatar did={did} />
         ) : (
-          <img src={avatar} width={80} height={80} />
+          <img alt="avatar" src={avatar} width={80} height={80} />
         )}
         <div className={style['card-data']}>
           <Link className={style['name-value']} to={getLink(did)}>
