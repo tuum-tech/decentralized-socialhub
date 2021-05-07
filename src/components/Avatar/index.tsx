@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { getAvatarIfno, GetAvatarRes } from 'src/utils/avatar';
-import defaultAvatar from '../../assets/dp.jpeg';
+import defaultAvatar from '../../assets/dp.png';
 import style from './style.module.scss';
 
 interface AvatarProps {
