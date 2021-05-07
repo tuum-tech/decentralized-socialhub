@@ -42,6 +42,7 @@ export const getVerifiedCredential = (
         isVerified: !types.includes('SelfProclaimedCredential')
       };
     }
+    return null;
   });
 
   vcs = vcs.filter(item => {

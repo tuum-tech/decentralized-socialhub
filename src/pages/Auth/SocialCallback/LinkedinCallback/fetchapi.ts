@@ -1,6 +1,5 @@
 import request, { BaseplateResp } from 'src/baseplate/request';
 import { TuumTechScriptService } from 'src/services/script.service';
-import { LinkedinId } from './types';
 
 export function requestLinkedinToken(
   code: string,

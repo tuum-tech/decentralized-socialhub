@@ -12,9 +12,6 @@ import {
 } from '../common';
 import Image from '../../Image';
 import styleWidget from '../WidgetCards.module.scss';
-import { UserService } from 'src/services/user.service';
-import { DidDocumentService } from 'src/services/diddocument.service';
-import { getVerifiedCredential } from 'src/utils/credential';
 import shieldIcon from '../../../assets/icon/shield.svg';
 
 const EditableContent = styled(IonCol)`
@@ -64,7 +61,11 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
               <IonRow style={{ float: 'right' }}>
                 <IonCol>
                   {experienceItem.isVerified && (
-                    <img src={shieldIcon} style={{ width: '1em' }} />
+                    <img
+                      alt="shield icon"
+                      src={shieldIcon}
+                      style={{ width: '1em' }}
+                    />
                   )}
                 </IonCol>
               </IonRow>

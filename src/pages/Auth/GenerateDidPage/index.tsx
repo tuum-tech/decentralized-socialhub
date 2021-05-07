@@ -69,6 +69,7 @@ const GenerateDidPage: React.FC<RouteComponentProps<
         setSession(props.location.state);
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   if (session && session.name) {

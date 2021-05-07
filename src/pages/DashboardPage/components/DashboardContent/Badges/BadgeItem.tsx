@@ -23,7 +23,7 @@ const BadgeItem: React.FC<Props> = ({
     <IonCard className={style['badge-item']}>
       <IonCardContent>
         <BadgeIcon>
-          <img src={image} height={60} />
+          <img alt="badge icon" src={image} height={60} />
         </BadgeIcon>
         <BadgeContent>
           <Title>{title}</Title>

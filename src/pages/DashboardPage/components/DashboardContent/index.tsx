@@ -59,23 +59,19 @@ const DashboardContent: React.FC<Props> = ({
     <Container>
       <IonList>
         <IonItem
-          className={(active === 'home' ? 'tab-active' : '') + ' ' + 'tab-item'}
+          className={(active === 'home' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => setActive('home')}
         >
           <IonLabel className="tab-label">Home</IonLabel>
         </IonItem>
         <IonItem
-          className={
-            (active === 'status' ? 'tab-active' : '') + ' ' + 'tab-item'
-          }
+          className={(active === 'status' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => setActive('status')}
         >
           <IonLabel className="tab-label">Status</IonLabel>
         </IonItem>
         <IonItem
-          className={
-            (active === 'badges' ? 'tab-active' : '') + ' ' + 'tab-item'
-          }
+          className={(active === 'badges' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => setActive('badges')}
         >
           <IonLabel className="tab-label">Badges</IonLabel>

@@ -5,27 +5,19 @@ import styled from 'styled-components';
 import style from './style.module.scss';
 
 interface IProps {
-  profile: ProfileDTO;
   scrollToPosition: any;
-  mode: string;
 }
 
 const Navigation = styled.div`
-  position: sticky;
-  top: 110px;
+  // position: sticky;
+  // top: 284px;
 `;
 
-const PublicProfileTabs: React.FC<IProps> = ({
-  profile,
-  scrollToPosition,
-  mode
-}: IProps) => {
+const PublicProfileTabs: React.FC<IProps> = ({ scrollToPosition }: IProps) => {
   const [active, setActive] = useState('about');
 
   return (
-    <Navigation
-      className={mode === 'normal' ? style['normal'] : style['sticky']}
-    >
+    <Navigation className={style['sticky']}>
       <IonList className={style['tab-list']}>
         <IonItem
           className={

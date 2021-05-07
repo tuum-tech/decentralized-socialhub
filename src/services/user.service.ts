@@ -149,7 +149,7 @@ export class UserService {
     return;
   }
 
-  public static getSignedUsers(): string[] {
+  public static async getSignedUsers() {
     let response: string[] = [];
     for (var i = 0, len = window.localStorage.length; i < len; ++i) {
       let key = window.localStorage.key(i);
@@ -158,6 +158,20 @@ export class UserService {
       }
     }
     return response;
+  }
+
+  public static async removeLocalUser(did: string) {
+    const didStr = did.replace('did:elastos:', '');
+    const removeKeys = [];
+    for (var i = 0, len = window.localStorage.length; i < len; ++i) {
+      let key = window.localStorage.key(i);
+      if (key && key.includes(didStr)) {
+        removeKeys.push(key);
+      }
+    }
+    for (let i = 0; i < removeKeys.length; i++) {
+      window.localStorage.removeItem(removeKeys[i]);
+    }
   }
 
   public static async LockWithDIDAndPwd(
@@ -406,6 +420,7 @@ export class UserService {
     if (userData && userData.code) {
       newSessionItem.code = userData.code;
     }
+
     const res: any = await TuumTechScriptService.updateTuumUser(newSessionItem);
     this.lockUser(this.key(sessionItem.did), newSessionItem);
 

@@ -54,9 +54,10 @@ const FollowOrUnFollowButton: React.FC<IProps> = ({ did, userDid }: IProps) => {
     (async () => {
       await loadData();
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [did]);
 
-  if (userDid == did || text === '') {
+  if (userDid === did || text === '') {
     return <></>;
   }
   return (

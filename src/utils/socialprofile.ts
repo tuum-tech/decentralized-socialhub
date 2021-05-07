@@ -1,6 +1,4 @@
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
-import { UserService } from 'src/services/user.service';
-import { DidDocumentService } from 'src/services/diddocument.service';
 
 interface VerifiedCredential {
   value: string;
@@ -25,6 +23,7 @@ export const getVerifiedCredential = (
         isVerified: !types.includes('SelfProclaimedCredential')
       };
     }
+    return null;
   });
   vcs = vcs.filter(item => {
     return item !== undefined;

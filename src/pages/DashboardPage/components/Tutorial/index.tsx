@@ -39,6 +39,7 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({ onClose }) => {
         setStep(1);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const stepComponent = () => {
@@ -83,7 +84,7 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({ onClose }) => {
       <NoPaddingGrid>
         <IonRow>
           <IonCol className={colLeftStyle()} size="5">
-            <img src={logo} />
+            <img alt="logo" src={logo} />
             <h2>Quick start</h2>
             <p>
               Learn a little about what Profile is, why you need it, and how

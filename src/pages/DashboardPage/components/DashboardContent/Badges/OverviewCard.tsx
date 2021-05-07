@@ -4,9 +4,7 @@ import {
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
-  IonText,
-  IonItem,
-  IonLabel
+  IonText
 } from '@ionic/react';
 import ProgressBar from 'src/components/ProgressBar';
 import styled from 'styled-components';
@@ -87,6 +85,7 @@ const OverviewCard: React.FC<Props> = ({ badges }) => {
     setProgressPercent(
       Math.floor((_completedBadgeCount * 100) / _totalBadgeCount)
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <IonCard className={style['spotlight']}>

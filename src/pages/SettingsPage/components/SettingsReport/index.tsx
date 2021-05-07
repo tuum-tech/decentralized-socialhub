@@ -49,7 +49,7 @@ const SettingsReport: React.FC = () => {
       did: UserService.GetUserSession()?.did,
       email: UserService.GetUserSession()?.loginCred?.email
     };
-    const feedbackType = feedback == '1' ? 'Suggestion' : 'Bug';
+    const feedbackType = feedback === '1' ? 'Suggestion' : 'Bug';
     const bodyContact = {
       subject: `[${feedbackType}] - ${subject}`,
       userinfo: userinfo,

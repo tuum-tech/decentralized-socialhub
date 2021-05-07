@@ -23,12 +23,13 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
   useEffect(() => {
     if (isVerifying) {
       let userSession = UserService.GetUserSession();
-      if (userSession && userSession.accountType != AccountType.DID) {
+      if (userSession && userSession.accountType !== AccountType.DID) {
       } else {
         onContinue();
         return;
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVerifying]);
 
   const viewWords = () => {
@@ -51,11 +52,6 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
         </IonButton>
       </div>
     );
-  };
-
-  const back = () => {
-    setIsVerifying(false);
-    setIsOnError(false);
   };
 
   const onReset = () => {
@@ -110,7 +106,7 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
       {isVerifying ? (
         <>
           {userSession &&
-            userSession.accountType != AccountType.DID &&
+            userSession.accountType !== AccountType.DID &&
             verifyWords()}
         </>
       ) : (

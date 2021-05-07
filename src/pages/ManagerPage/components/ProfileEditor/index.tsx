@@ -76,6 +76,7 @@ const ProfileEditor: React.FC = () => {
       setloaded(true);
     })();
     setTimer();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -111,9 +112,11 @@ const ProfileEditor: React.FC = () => {
                         newBasicDTO.did = userSession.did;
                         newBasicDTO.about = nextAbout;
                         if (
-                          !userSession.badges?.account.basicProfile.archived
+                          userSession.badges &&
+                          userSession.badges.account &&
+                          !userSession.badges.account.basicProfile.archived
                         ) {
-                          userSession.badges!.account!.basicProfile.archived = new Date().getTime();
+                          userSession.badges.account!.basicProfile.archived = new Date().getTime();
                           await UserService.updateSession(userSession);
                           await ProfileService.addActivity(
                             {
@@ -145,9 +148,11 @@ const ProfileEditor: React.FC = () => {
                       const userSession = UserService.GetUserSession();
                       if (
                         userSession &&
-                        !userSession.badges?.account.educationProfile.archived
+                        userSession.badges &&
+                        userSession.badges.account &&
+                        !userSession.badges.account.educationProfile.archived
                       ) {
-                        userSession.badges!.account!.educationProfile.archived = new Date().getTime();
+                        userSession.badges.account.educationProfile.archived = new Date().getTime();
                         await UserService.updateSession(userSession);
                         await ProfileService.addActivity(
                           {
@@ -178,9 +183,11 @@ const ProfileEditor: React.FC = () => {
                       const userSession = UserService.GetUserSession();
                       if (
                         userSession &&
-                        !userSession.badges?.account.experienceProfile.archived
+                        userSession.badges &&
+                        userSession.badges.account &&
+                        !userSession.badges.account.experienceProfile.archived
                       ) {
-                        userSession.badges!.account!.experienceProfile.archived = new Date().getTime();
+                        userSession.badges.account.experienceProfile.archived = new Date().getTime();
                         await UserService.updateSession(userSession);
                         await ProfileService.addActivity(
                           {

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 
 import ProgressBar from 'src/components/ProgressBar';
-import DropDown from 'src/components/arrows/DropDown';
 import {
   MainCard,
   CardTitle,
@@ -10,36 +8,6 @@ import {
   ProgressArea
 } from '../VerificationStatus';
 import ProfileComp from './ProfileComp';
-
-const ProfileStep = styled.div`
-  background: #f5f8fa;
-  border-radius: 16px;
-  padding: 16px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  font-family: 'SF Pro Display';
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 17px;
-
-  margin-bottom: 11px;
-
-  .title {
-    color: #7a7a9d;
-  }
-`;
-
-const ProgressAreaContainer = styled.div`
-  display: flex;
-  align-items: center;
-
-  p {
-    margin-right: 15px;
-  }
-`;
 
 interface Props {
   progress: number;

@@ -1,12 +1,11 @@
 import request from 'src/baseplate/request';
 import { UserVaultScripts } from 'src/scripts/uservault.script';
 
-import { UserService, AccountType } from './user.service';
+import { UserService } from './user.service';
 import { ProfileService } from './profile.service';
 import { HiveService } from './hive.service';
 import { DidService } from './did.service';
 import { alertError } from 'src/utils/notify';
-import { StyleHTMLAttributes } from 'react';
 
 export class TuumTechScriptService {
   private static async runTuumTechScript(script: any) {

@@ -63,6 +63,7 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
       }
       setStatus(response.data.return_code);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getRedirect = () => {

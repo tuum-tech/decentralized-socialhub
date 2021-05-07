@@ -69,12 +69,14 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     if (x.isVerified) {
       noOfVerifiedExpCred++;
     }
+    return null;
   });
 
   useEffect(() => {
     setExpVerifiedPercent(
       (noOfVerifiedExpCred * 100) / experienceDTO.items.length
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentExperienceDTO, noOfVerifiedExpCred]);
 
   const [editedItem, setEditedItem] = useState(defaultExperienceItem);
@@ -138,7 +140,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
 
   if (
     !experienceDTO.isEnabled ||
-    (!isEditable && currentExperienceDTO.items.length == 0)
+    (!isEditable && currentExperienceDTO.items.length === 0)
   ) {
     return <></>;
   }

@@ -9,7 +9,6 @@ import { DidService } from 'src/services/did.service';
 import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
-import { TuumTechScriptService } from 'src/services/script.service';
 import { AccountType, UserService } from 'src/services/user.service';
 
 import { requestTwitterToken, getUsersWithRegisteredTwitter } from './fetchapi';

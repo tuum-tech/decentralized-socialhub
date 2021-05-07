@@ -75,7 +75,7 @@ const SecurityWordsValidate: React.FC<Props> = ({
 
     if (allFilled) {
       let isValidMnemonics = mnemonic.every((word, wordIndex) => {
-        return word == securityWords[wordIndex];
+        return word === securityWords[wordIndex];
       });
 
       if (isValidMnemonics) {

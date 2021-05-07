@@ -159,6 +159,7 @@ const ProfilePage = () => {
     })();
     setTimerForStatus();
     setTimerForDid();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -181,7 +182,7 @@ const ProfilePage = () => {
   if (userInfo.tutorialStep < 4 && onBoardVisible) {
     return (
       <OnBoarding
-        completed={async () => {
+        completed={async (startTutorial: boolean) => {
           let user = UserService.GetUserSession();
           if (!user) return;
 
@@ -195,6 +196,9 @@ const ProfilePage = () => {
               UserService.logout();
               window.location.href = '/';
             }, ExporeTime);
+          }
+          if (startTutorial) {
+            setShowTutorial(true);
           }
         }}
         sessionItem={userInfo}

@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import { IonButton, IonInput, IonRadio, IonRadioGroup } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 
@@ -64,7 +65,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         user.hiveHost = endpoint;
         if (
           selected !== 'tuum' &&
-          endpoint != process.env.REACT_APP_TUUM_TECH_HIVE
+          endpoint !== process.env.REACT_APP_TUUM_TECH_HIVE
         ) {
           user.badges!.dStorage!.ownVault.archived = new Date().getTime();
           // await ProfileService.addActivity(
@@ -169,7 +170,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         <a
           href="https://github.com/elastos/Elastos.NET.Hive.Node"
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
         >
           Elastos Hive Node
         </a>
@@ -206,7 +207,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
             <IonRadio value="tuum"></IonRadio>
 
             <div className={style['tutorial-hive-item']}>
-              <img src={tuumlogo} />
+              <img alt="tuum logo" src={tuumlogo} />
 
               <h2>Tuum Tech</h2>
             </div>

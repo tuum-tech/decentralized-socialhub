@@ -63,7 +63,11 @@ const EducationItem: React.FC<EducationItemProps> = ({
               <IonRow style={{ float: 'right' }}>
                 <IonCol>
                   {educationItem.isVerified && (
-                    <img src={shieldIcon} style={{ width: '1em' }} />
+                    <img
+                      alt="shield icon"
+                      src={shieldIcon}
+                      style={{ width: '1em' }}
+                    />
                   )}
                 </IonCol>
               </IonRow>
