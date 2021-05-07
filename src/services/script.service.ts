@@ -2,6 +2,7 @@ import request from 'src/baseplate/request';
 import { UserVaultScripts } from 'src/scripts/uservault.script';
 
 import { UserService, AccountType } from './user.service';
+import { ProfileService } from './profile.service';
 import { HiveService } from './hive.service';
 import { DidService } from './did.service';
 import { alertError } from 'src/utils/notify';
@@ -221,6 +222,16 @@ export class UserVaultScriptService {
         await UserService.updateSession(user);
         let hiveInstance = await HiveService.getSessionInstance();
         await UserVaultScripts.Execute(hiveInstance!);
+        await ProfileService.addActivity(
+          {
+            guid: '',
+            did: user!.did,
+            message:
+              'Welcome to Profile 👏, Your service to the private web 🔐️',
+            read: false
+          },
+          user!.did
+        );
       } catch (error) {
         console.log('Could not register: ' + error);
         alertError(null, 'Could not register');

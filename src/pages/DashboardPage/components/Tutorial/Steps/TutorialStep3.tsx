@@ -5,6 +5,7 @@ import { DidService } from 'src/services/did.service';
 import { UserService } from 'src/services/user.service';
 import { HiveService } from 'src/services/hive.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
+import { ProfileService } from 'src/services/profile.service';
 import { UserVaultScripts } from 'src/scripts/uservault.script';
 
 import { ITutorialStepProp } from './TutorialStep1';
@@ -66,6 +67,15 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
           endpoint != process.env.REACT_APP_TUUM_TECH_HIVE
         ) {
           user.badges!.dStorage!.ownVault.archived = new Date().getTime();
+          // await ProfileService.addActivity(
+          //   {
+          //     guid: '',
+          //     did: user.did,
+          //     message: 'You received a Ownvault storage badge',
+          //     read: false
+          //   },
+          //   user.did
+          // );
         }
         //TODO: Uncomment when update document publish is fixed
         // if (selected !== "document")
@@ -81,7 +91,35 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         await UserService.updateSession(user);
         let hiveInstance = await HiveService.getSessionInstance();
         await UserVaultScripts.Execute(hiveInstance!);
-
+        await ProfileService.addActivity(
+          {
+            guid: '',
+            did: user!.did,
+            message:
+              'Welcome to Profile 👏, Your service to the private web 🔐️',
+            read: false
+          },
+          user!.did
+        );
+        await ProfileService.addActivity(
+          {
+            guid: '',
+            did: user!.did,
+            message: 'You received a Beginner tutorial badge',
+            read: false
+          },
+          user!.did
+        );
+        user.badges!.dStorage!.ownVault.archived &&
+          (await ProfileService.addActivity(
+            {
+              guid: '',
+              did: user!.did,
+              message: 'You received a Ownvault storage badge',
+              read: false
+            },
+            user!.did
+          ));
         onContinue();
       } catch (error) {
         await DidDocumentService.reloadUserDocument();

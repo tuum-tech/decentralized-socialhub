@@ -5,6 +5,7 @@
   background: #ffffff;
   margin: 30px 50px;
   padding: 0px 10px;
+  overflow: visible;
   .card-header {
     display: flex;
     justify-content: space-between;
@@ -65,12 +66,25 @@
     }
     .activity-list {
       margin: 15px 0px 20px 0px;
+      contain: none;
       .activity-row {
+
+        overflow: visible;
+        z-index: auto;
+        --border-radius: 13px;
+        
+        margin-bottom: 10px;
+
+        &.unread {
+          --background: #f3f9ff;
+          --border-color: white;
+        } 
+
         .d-vert-flex {
           display: flex;
           justify-content: space-between;
           width: 100%;
-          padding: 10px 0px;
+          padding: 5px 0px;
           .left {
             display: flex;
             .avatar {
@@ -108,6 +122,20 @@
           }
         }
       }
+    }
+  }
+  .pagination {
+    font-family: 'SF Pro Display';
+    text-align: center;
+    color: #4c6fff;
+    padding: 0;
+
+    li {
+      display: inline;
+      padding: 0.3em;
+    }
+    .page-active {
+      font-weight: 800;
     }
   }
 }

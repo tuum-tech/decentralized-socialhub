@@ -115,6 +115,15 @@ const ProfileEditor: React.FC = () => {
                         ) {
                           userSession.badges!.account!.basicProfile.archived = new Date().getTime();
                           await UserService.updateSession(userSession);
+                          await ProfileService.addActivity(
+                            {
+                              guid: '',
+                              did: userSession.did,
+                              message: 'You received a Basic profile badge',
+                              read: false
+                            },
+                            userSession.did
+                          );
                         }
                         await ProfileService.updateAbout(newBasicDTO);
                         await retriveProfile();
@@ -140,6 +149,15 @@ const ProfileEditor: React.FC = () => {
                       ) {
                         userSession.badges!.account!.educationProfile.archived = new Date().getTime();
                         await UserService.updateSession(userSession);
+                        await ProfileService.addActivity(
+                          {
+                            guid: '',
+                            did: userSession.did,
+                            message: 'You received a Education profile badge',
+                            read: false
+                          },
+                          userSession.did
+                        );
                       }
                       await ProfileService.updateEducationProfile(
                         educationItem
@@ -164,6 +182,15 @@ const ProfileEditor: React.FC = () => {
                       ) {
                         userSession.badges!.account!.experienceProfile.archived = new Date().getTime();
                         await UserService.updateSession(userSession);
+                        await ProfileService.addActivity(
+                          {
+                            guid: '',
+                            did: userSession.did,
+                            message: 'You received a Experience profile badge',
+                            read: false
+                          },
+                          userSession.did
+                        );
                       }
                       await ProfileService.updateExperienceProfile(
                         experienceItem

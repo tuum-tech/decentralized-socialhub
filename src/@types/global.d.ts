@@ -38,6 +38,7 @@ interface ActivityItem {
   guid: Guid;
   did: string;
   message: string;
+  read: boolean;
 }
 
 interface EducationDTO {

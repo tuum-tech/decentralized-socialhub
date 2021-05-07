@@ -9,6 +9,7 @@ import {
   UserVaultScriptService
 } from './script.service';
 import { Guid } from 'guid-typescript';
+import { ProfileService } from './profile.service';
 
 const CryptoJS = require('crypto-js');
 
@@ -325,17 +326,28 @@ export class UserService {
       mnemonics
     };
     let curTime = new Date().getTime();
+    let messages = [];
     if (loginCred) {
-      if (loginCred.email)
+      if (loginCred.email) {
         sessionItem.badges!.socialVerify!.email.archived = curTime;
-      if (loginCred.facebook)
+        messages.push('You received a Email verfication badge');
+      }
+      if (loginCred.facebook) {
         sessionItem.badges!.socialVerify!.facebook.archived = curTime;
-      if (loginCred.twitter)
+        messages.push('You received a Facebook verfication badge');
+      }
+      if (loginCred.twitter) {
         sessionItem.badges!.socialVerify!.twitter.archived = curTime;
-      if (loginCred.linkedin)
+        messages.push('You received a Twitter verfication badge');
+      }
+      if (loginCred.linkedin) {
         sessionItem.badges!.socialVerify!.linkedin.archived = curTime;
-      if (loginCred.google)
+        messages.push('You received a Linkedin verfication badge');
+      }
+      if (loginCred.google) {
         sessionItem.badges!.socialVerify!.google.archived = curTime;
+        messages.push('You received a Google verfication badge');
+      }
     }
     if (accountType === AccountType.Email) {
       // the confirmation code for email verification is passed as credential in the email flow, we can improve that
@@ -343,24 +355,40 @@ export class UserService {
       sessionItem.code = credential;
 
       sessionItem.badges!.socialVerify!.email.archived = curTime;
+      messages.push('You received a Email verfication badge');
       await TuumTechScriptService.updateTuumEmailUser(sessionItem);
     } else {
       sessionItem.status = 'CONFIRMED';
       if (accountType === AccountType.Twitter) {
         sessionItem.badges!.socialVerify!.twitter.archived = curTime;
+        messages.push('You received a Twitter verfication badge');
       }
       if (accountType === AccountType.Linkedin) {
         sessionItem.badges!.socialVerify!.linkedin.archived = curTime;
+        messages.push('You received a Linkedin verfication badge');
       }
       if (accountType === AccountType.Google) {
         sessionItem.badges!.socialVerify!.google.archived = curTime;
+        messages.push('You received a Google verfication badge');
       }
       if (accountType === AccountType.Facebook) {
         sessionItem.badges!.socialVerify!.facebook.archived = curTime;
+        messages.push('You received a Facebook verfication badge');
       }
       await TuumTechScriptService.addUserToTuumTech(sessionItem);
     }
 
+    Array.from(new Set(messages)).forEach(async message => {
+      await ProfileService.addActivity(
+        {
+          guid: '',
+          did: sessionItem.did,
+          message: message,
+          read: false
+        },
+        sessionItem.did
+      );
+    });
     this.lockUser(this.key(did), sessionItem);
     // SessionService.saveSessionItem(sessionItem);
     window.localStorage.setItem(
@@ -378,7 +406,6 @@ export class UserService {
     if (userData && userData.code) {
       newSessionItem.code = userData.code;
     }
-
     const res: any = await TuumTechScriptService.updateTuumUser(newSessionItem);
     this.lockUser(this.key(sessionItem.did), newSessionItem);
 

@@ -14,6 +14,7 @@ import {
   getUsersWithRegisteredGoogle
 } from './fetchapi';
 import { AssistService } from 'src/services/assist.service';
+import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service';
@@ -70,6 +71,15 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
           userSession.loginCred!.google! = googleId.email;
           userSession.badges!.socialVerify!.google.archived = new Date().getTime();
           await UserService.updateSession(userSession);
+          await ProfileService.addActivity(
+            {
+              guid: '',
+              did: userSession.did,
+              message: 'You received a Google verfication badge',
+              read: false
+            },
+            userSession.did
+          );
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredGoogle(googleId.email);

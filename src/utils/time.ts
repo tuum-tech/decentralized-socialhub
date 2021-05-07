@@ -23,3 +23,20 @@ export const timeSince = (timestamp: any) => {
   }
   return Math.floor(seconds) + ' seconds ago';
 };
+
+export const DateString = (timestamp: any) => {
+  let inputDate = new Date(timestamp);
+  let todayDate = new Date();
+
+  if (inputDate.setHours(0, 0, 0, 0) == todayDate.setHours(0, 0, 0, 0)) {
+    return 'Today';
+  }
+
+  inputDate = new Date(timestamp + 86400 * 1000);
+
+  if (inputDate.setHours(0, 0, 0, 0) == todayDate.setHours(0, 0, 0, 0)) {
+    return 'Yesterday';
+  }
+
+  return new Date(timestamp).toDateString();
+};
