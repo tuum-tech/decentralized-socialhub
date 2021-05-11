@@ -49,6 +49,7 @@ export const retrieveDocInfo = async (
         if (cv.credentialSubject && cv.credentialSubject.linkedin) {
           loginCred.linkedin = cv.credentialSubject.linkedin;
         }
+        console.log('=====>cv', cv);
         if (
           cv.credentialSubject &&
           cv.credentialSubject.avatar &&
