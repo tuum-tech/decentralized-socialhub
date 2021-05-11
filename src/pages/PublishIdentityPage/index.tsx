@@ -17,7 +17,7 @@ import { InferMappedProps, SubState } from './types';
 
 import ClearlyMeContent from 'src/components/oldComponents/ClearlyMeContent';
 import Header from 'src/components/oldComponents/OldHeader';
-import ButtonDefault from 'src/components/buttons/ButtonDefault';
+import { PrimaryLinkButton } from 'src/components/buttons';
 
 import IdentityProgressComponent from './components/IdentityProgressComponent';
 
@@ -127,9 +127,9 @@ const PublishIdentityPage: React.FC<InferMappedProps> = ({
           </div>
 
           <div style={{ textAlign: 'center' }}>
-            <ButtonDefault href="/choosevault">
+            <PrimaryLinkButton href="/choosevault">
               Publish to Blockchain
-            </ButtonDefault>
+            </PrimaryLinkButton>
           </div>
         </div>
       </ClearlyMeContent>

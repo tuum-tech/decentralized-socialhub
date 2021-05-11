@@ -9,6 +9,8 @@ import PublicNavbar from 'src/components/profile/PublicNavbar';
 import { UserService } from 'src/services/user.service';
 import { defaultUserInfo } from 'src/services/profile.service';
 
+import ViewAllModal from 'src/components/follow/ViewAllModal';
+
 import style from './style.module.scss';
 
 const ContentRow = styled(IonRow)`
@@ -93,12 +95,14 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
                   aboutRef={aboutRef}
                   experienceRef={experienceRef}
                   educationRef={educationRef}
+                  viewAllClicked={(isFollower: boolean) => {}}
                 />
               </div>
             </IonCol>
           </ContentRow>
         </IonContent>
       </IonGrid>
+      <ViewAllModal isFollower={true} targetDid={props.match.params.did} />
     </IonPage>
   );
 };

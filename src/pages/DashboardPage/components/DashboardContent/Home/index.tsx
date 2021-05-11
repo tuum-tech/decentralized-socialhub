@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 
-import FollowCards from 'src/components/FollowCards';
+import FollowCards from 'src/components/follow/FollowCards';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
 import { getVerifiedCredential } from 'src/utils/credential';
 import { loadFollowingUsers, loadFollowerUsers } from 'src/utils/follow';
@@ -41,6 +42,7 @@ const DashboardHome: React.FC<Props> = ({
   didDocument,
   activeTab
 }) => {
+  const history = useHistory();
   const [tutorialVisible, setTutorialVisible] = useState(true);
   const [hasFollowUsers, setFollowUsers] = useState(false);
 
@@ -323,7 +325,15 @@ const DashboardHome: React.FC<Props> = ({
             }}
           />
           {sessionItem.tutorialStep === 4 && (
-            <FollowCards did={sessionItem.did} signed={true} />
+            <FollowCards
+              did={sessionItem.did}
+              signed={true}
+              viewAll={(isFollower: boolean) => {
+                history.push(
+                  `/connections/${isFollower ? 'followers' : 'followings'}`
+                );
+              }}
+            />
           )}
         </RightCardCol>
       </IonRow>

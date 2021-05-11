@@ -14,7 +14,7 @@ import AboutCard from 'src/components/cards/AboutCard';
 import EducationCard from 'src/components/cards/EducationCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
-import FollowCards from 'src/components/FollowCards';
+import FollowCards from 'src/components/follow/FollowCards';
 import PublicProfileTabs from '../PublicProfileTabs';
 import ProfileHeader from '../ProfileHeader';
 
@@ -36,6 +36,7 @@ interface Props {
   educationRef: any;
   scrollToElement: (cardName: string) => void;
   hasBanner?: boolean;
+  viewAllClicked?: (isFollower: boolean) => void;
 }
 
 const ProfileComponent: React.FC<Props> = ({
@@ -44,7 +45,8 @@ const ProfileComponent: React.FC<Props> = ({
   experienceRef,
   educationRef,
   scrollToElement,
-  hasBanner = false
+  hasBanner = false,
+  viewAllClicked
 }: Props) => {
   const [publicUser, setPublicUser] = useState(defaultUserInfo);
   const [signedUser, setSignedUser] = useState(defaultUserInfo);
@@ -138,6 +140,9 @@ const ProfileComponent: React.FC<Props> = ({
                         <FollowCards
                           did={publicUser.did}
                           signed={signedUser.did !== ''}
+                          viewAll={(isFollower: boolean) => {
+                            if (viewAllClicked) viewAllClicked(isFollower);
+                          }}
                         />
                       </RightContent>
                     </IonRow>

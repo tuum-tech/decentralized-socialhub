@@ -1,0 +1,76 @@
+.modal {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  min-height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+
+  &_container {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &_content {
+    background: #ffffff;
+    border-radius: 16px;
+
+    padding: 20px;
+    display: block;
+
+    max-width: 587px;
+    width: 90%;
+    min-height: 200px;
+  }
+
+  &_title {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 136.02%;
+    color: #27272e;
+  }
+}
+
+.userRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+
+  &_info {
+    flex-grow: 1;
+    padding: 0 15px;
+
+    .name {
+      font-family: 'SF Pro Display';
+      font-size: 16px;
+      font-weight: 600;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.56;
+      letter-spacing: normal;
+      text-align: left;
+      color: #27272e;
+    }
+    .truncatedDID {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+      font-family: 'SF Pro Display';
+      font-size: 14px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.62;
+      letter-spacing: normal;
+      text-align: left;
+      color: #979797;
+    }
+  }
+}

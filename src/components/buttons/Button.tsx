@@ -2,6 +2,7 @@ import React from 'react';
 import { IonText, IonImg } from '@ionic/react';
 import { style as typestyle } from 'typestyle';
 import clsx from 'clsx';
+
 import style from './Button.module.scss';
 
 interface ButtonTypes {
