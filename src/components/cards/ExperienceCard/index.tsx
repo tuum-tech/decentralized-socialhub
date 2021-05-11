@@ -123,6 +123,9 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
 
   const addItem = () => {
     setMode(MODE.ADD);
+    // workaround: defaultEducationItem will always have the guid generated when the component is created.
+    // We must be generated another guid here or else we will edit the last education item created.
+    defaultExperienceItem.guid = Guid.create();
     setEditedItem(defaultExperienceItem);
   };
 

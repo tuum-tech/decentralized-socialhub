@@ -9,11 +9,12 @@ import clsx from 'clsx';
 import { UserService } from 'src/services/user.service';
 import { RequestStatus } from 'src/services/assist.service';
 import AlphaContent from 'src/components/AlphaContent';
+import Avatar from 'src/components/Avatar';
+
 import PublishingLabel from '../PublishingLabel';
 import transparentlogo from '../../../../assets/logo/transparentlogo.png';
 import wavinghand from '../../../../assets/icon/wavinghand.png';
 import thumbup from '../../../../assets/icon/thumbup.svg';
-import defaultAdamAvatar from '../../../../assets/icon/defaultAdamAvatar.png';
 import emojiCool from '../../../../assets/icon/emoji-cool.png';
 
 import style from './style.module.scss';
@@ -170,10 +171,7 @@ const OnBoardingPage: React.FC<Props> = ({
             </div>
             <div className={clsx(style['stage4-content'], style['v-flex'])}>
               <div className={clsx(style['avatar-container'], style['v-flex'])}>
-                <IonImg
-                  src={defaultAdamAvatar}
-                  className={style['defaultAdamAvatar']}
-                />
+                <Avatar did={sessionItem.did} />
                 <p className={style['name']}>{userSessionName}</p>
                 <p>
                   <PublishingLabel status={RequestStatus.Pending} />
@@ -215,10 +213,7 @@ const OnBoardingPage: React.FC<Props> = ({
             </div>
             <div className={clsx(style['stage5-content'], style['v-flex'])}>
               <div className={clsx(style['avatar-container'], style['v-flex'])}>
-                <IonImg
-                  src={defaultAdamAvatar}
-                  className={style['defaultAdamAvatar']}
-                />
+                <Avatar did={sessionItem.did} />
                 <p className={style['name']}>{userSessionName}</p>
                 <p>
                   <PublishingLabel status={RequestStatus.Completed} />
