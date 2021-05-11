@@ -15,7 +15,7 @@ import style from './style.module.scss';
 import styled from 'styled-components';
 import SelectInput from 'src/components/inputs/SelectInput';
 
-import photo from 'src/assets/dp.jpeg';
+import photo from 'src/assets/dp.png';
 
 const TodayActivities = styled.div``;
 const ActivityTimeline: React.FC = () => {

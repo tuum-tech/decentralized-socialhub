@@ -11,7 +11,7 @@ import {
   CardContentContainer,
   LinkStyleSpan
 } from '../common';
-import defaultAvatar from '../../../assets/dp.jpeg';
+import defaultAvatar from '../../../assets/dp.png';
 import {
   Container,
   TextHeader,
@@ -71,6 +71,7 @@ export default function Upload() {
 
   const _handleReaderLoaded = (readerEvt: any) => {
     let binaryString = readerEvt.target.result;
+    console.log('====>btoa(binaryString)', btoa(binaryString));
     setBase64(btoa(binaryString));
   };
 
