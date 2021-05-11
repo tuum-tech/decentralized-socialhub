@@ -49,17 +49,16 @@ export const retrieveDocInfo = async (
         if (cv.credentialSubject && cv.credentialSubject.linkedin) {
           loginCred.linkedin = cv.credentialSubject.linkedin;
         }
-        console.log('=====>cv', cv);
         if (
           cv.credentialSubject &&
           cv.credentialSubject.avatar &&
           cv.credentialSubject.avatar.data
         ) {
-          uInfo.avatar = cv.credentialSubject.avatar.data;
           let baseStr = cv.credentialSubject.avatar.data;
           if (!baseStr.startsWith('data:image/')) {
             baseStr = `data:${cv.credentialSubject.avatar['content-type']};base64,${baseStr}`;
           }
+          uInfo.avatar = baseStr;
         }
       }
       uInfo.loginCred = loginCred;
