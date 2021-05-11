@@ -11,7 +11,7 @@ import { showNotify } from 'src/utils/notify';
 import { DidDocumentService } from './diddocument.service';
 
 import { HiveService } from './hive.service';
-import { UserService, AccountType } from './user.service';
+import { UserService } from './user.service';
 import { Guid } from 'guid-typescript';
 
 export class ProfileService {
