@@ -8,7 +8,6 @@ import TutorialStep1Component from './Steps/TutorialStep1';
 import TutorialStep2Component from './Steps/TutorialStep2';
 import TutorialStep3Component from './Steps/TutorialStep3';
 import { UserService } from 'src/services/user.service';
-import { ProfileService } from 'src/services/profile.service';
 import TutorialStep4Component from './Steps/TutorialStep4';
 import style from './style.module.scss';
 
@@ -60,7 +59,7 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({ onClose }) => {
     let userSession = UserService.GetUserSession();
     if (step !== 4 && userSession) {
       userSession.tutorialStep = step + 1;
-      if (userSession.tutorialStep == 4) {
+      if (userSession.tutorialStep === 4) {
         userSession.badges!.account!.beginnerTutorial.archived = new Date().getTime();
       }
       await UserService.updateSession(userSession);

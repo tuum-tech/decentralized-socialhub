@@ -215,7 +215,9 @@ export class UserVaultScripts {
             guid: '$params.guid',
             did: '$params.did',
             message: '$params.message',
-            read: '$params.read'
+            read: '$params.read',
+            createdAt: '$params.createdAt',
+            updatedAt: '$params.updatedAt'
           }
         }
       }
@@ -234,7 +236,8 @@ export class UserVaultScripts {
           },
           update: {
             $set: {
-              read: '$params.read'
+              read: '$params.read',
+              updatedAt: '$params.updatedAt'
             }
           },
           options: {

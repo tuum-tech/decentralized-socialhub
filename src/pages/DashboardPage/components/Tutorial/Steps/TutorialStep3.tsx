@@ -68,15 +68,6 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
           endpoint !== process.env.REACT_APP_TUUM_TECH_HIVE
         ) {
           user.badges!.dStorage!.ownVault.archived = new Date().getTime();
-          // await ProfileService.addActivity(
-          //   {
-          //     guid: '',
-          //     did: user.did,
-          //     message: 'You received a Ownvault storage badge',
-          //     read: false
-          //   },
-          //   user.did
-          // );
         }
         //TODO: Uncomment when update document publish is fixed
         // if (selected !== "document")
@@ -92,35 +83,30 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         await UserService.updateSession(user);
         let hiveInstance = await HiveService.getSessionInstance();
         await UserVaultScripts.Execute(hiveInstance!);
-        await ProfileService.addActivity(
-          {
-            guid: '',
-            did: user!.did,
-            message:
-              'Welcome to Profile 👏, Your service to the private web 🔐️',
-            read: false
-          },
-          user!.did
-        );
-        await ProfileService.addActivity(
-          {
-            guid: '',
-            did: user!.did,
-            message: 'You received a Beginner tutorial badge',
-            read: false
-          },
-          user!.did
-        );
+        let activities = await ProfileService.getActivity();
+        activities.push({
+          guid: '',
+          did: user!.did,
+          message: 'You received a Beginner tutorial badge',
+          read: false,
+          createdAt: 0,
+          updatedAt: 0
+        });
         user.badges!.dStorage!.ownVault.archived &&
-          (await ProfileService.addActivity(
-            {
-              guid: '',
-              did: user!.did,
-              message: 'You received a Ownvault storage badge',
-              read: false
-            },
-            user!.did
-          ));
+          activities.push({
+            guid: '',
+            did: user!.did,
+            message: 'You received a Ownvault storage badge',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
+          });
+        activities.forEach(async (activity: ActivityItem) => {
+          await ProfileService.addActivity(activity, activity.did);
+        });
+        window.localStorage.removeItem(
+          `temporary_activities_${user.did.replace('did:elastos:', '')}`
+        );
         onContinue();
       } catch (error) {
         await DidDocumentService.reloadUserDocument();

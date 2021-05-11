@@ -180,7 +180,9 @@ export class DidDocumentService {
           guid: '',
           did: userSession!.did,
           message: message,
-          read: false
+          read: false,
+          createdAt: 0,
+          updatedAt: 0
         },
         userSession!.did
       );

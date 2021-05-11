@@ -13,6 +13,7 @@ import { DidDocumentService } from './diddocument.service';
 import { HiveService } from './hive.service';
 import { UserService, AccountType } from './user.service';
 import { Guid } from 'guid-typescript';
+
 export class ProfileService {
   static didDocument: any = null;
 
@@ -372,7 +373,9 @@ export class ProfileService {
           guid: '',
           did: sDid,
           message: userSession!.name + ' Followed you',
-          read: false
+          read: false,
+          createdAt: 0,
+          updatedAt: 0
         },
         did
       );
@@ -382,7 +385,9 @@ export class ProfileService {
           guid: '',
           did: sDid,
           message: 'You are following ' + followingUser.name,
-          read: false
+          read: false,
+          createdAt: 0,
+          updatedAt: 0
         },
         sDid
       );
@@ -396,6 +401,7 @@ export class ProfileService {
   static async getActivity() {
     const userSession = UserService.GetUserSession();
     const hiveInstance = await HiveService.getSessionInstance();
+
     if (userSession && hiveInstance) {
       const result: IRunScriptResponse<ActivityResponse> = await hiveInstance.Scripting.RunScript(
         {
@@ -417,11 +423,18 @@ export class ProfileService {
         return result.response.get_activity.items;
       }
     }
-    return [];
+    let tmp_activities = JSON.parse(
+      window.localStorage.getItem(
+        `temporary_activities_${userSession!.did.replace('did:elastos:', '')}`
+      ) || '[]'
+    );
+    return tmp_activities;
   }
   static async addActivity(activity: ActivityItem, activityOwner: string) {
     // Assign new guid to activity
-    activity.guid = Guid.create();
+    if (!activity.guid) activity.guid = Guid.create();
+    if (!activity.createdAt) activity.createdAt = new Date().getTime();
+    if (!activity.updatedAt) activity.updatedAt = new Date().getTime();
     const userSession = UserService.GetUserSession();
     const hiveInstance = await HiveService.getSessionInstance();
     if (userSession && hiveInstance) {
@@ -436,10 +449,22 @@ export class ProfileService {
       if (res.isSuccess && res.response._status === 'OK') {
         // showNotify('Activity created', 'success');
       }
+    } else {
+      let tmp_activities = JSON.parse(
+        window.localStorage.getItem(
+          `temporary_activities_${activity.did.replace('did:elastos:', '')}`
+        ) || '[]'
+      );
+      tmp_activities.push(activity);
+      window.localStorage.setItem(
+        `temporary_activities_${activity.did.replace('did:elastos:', '')}`,
+        JSON.stringify(tmp_activities)
+      );
     }
   }
 
   static async updateActivity(activity: ActivityItem) {
+    activity.updatedAt = new Date().getTime();
     const userSession = UserService.GetUserSession();
     const hiveInstance = await HiveService.getSessionInstance();
     if (userSession && hiveInstance) {
@@ -452,8 +477,23 @@ export class ProfileService {
         params: activity
       });
       if (res.isSuccess && res.response._status === 'OK') {
-        showNotify('Activity read by you', 'success');
+        // showNotify('Activity read by you', 'success');
       }
+    } else {
+      let tmp_activities = JSON.parse(
+        window.localStorage.getItem(
+          `temporary_activities_${activity.did.replace('did:elastos:', '')}`
+        ) || '[]'
+      );
+      let index = tmp_activities.findIndex(
+        (_activity: any) => _activity.guid.value === activity.guid.value
+      );
+      if (index < 0) return;
+      tmp_activities[index] = activity;
+      window.localStorage.setItem(
+        `temporary_activities_${activity.did.replace('did:elastos:', '')}`,
+        JSON.stringify(tmp_activities)
+      );
     }
   }
 }

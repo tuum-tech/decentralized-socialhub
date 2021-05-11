@@ -74,7 +74,9 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
               guid: '',
               did: userSession.did,
               message: 'You received a Google verfication badge',
-              read: false
+              read: false,
+              createdAt: 0,
+              updatedAt: 0
             },
             userSession.did
           );

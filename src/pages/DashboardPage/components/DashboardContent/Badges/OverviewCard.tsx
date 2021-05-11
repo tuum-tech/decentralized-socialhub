@@ -86,7 +86,7 @@ const OverviewCard: React.FC<Props> = ({ badges }) => {
       Math.floor((_completedBadgeCount * 100) / _totalBadgeCount)
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [badges]);
   return (
     <IonCard className={style['spotlight']}>
       <IonCardHeader className={style['card-header']}>

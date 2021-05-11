@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
-  IonContent,
   IonCard,
   IonCardHeader,
   IonCardContent,
@@ -20,8 +19,6 @@ import { ProfileService } from 'src/services/profile.service';
 import { timeSince, DateString } from 'src/utils/time';
 import photo from 'src/assets/dp.jpeg';
 
-const Today = styled.div``;
-const Yesterday = styled.div``;
 const Group = styled.div``;
 const Header = styled.div`
   display: flex;
@@ -112,7 +109,7 @@ const ActivityRow: React.FC<IActivityRowData> = props => {
           <div className={style['activity-detail']}>
             <p className={style['activity-text']}>{activity.message}</p>
             <p className={style['activity-time-since']}>
-              {timeSince((activity as any).created.$date)}
+              {timeSince((activity as any).createdAt)}
             </p>
           </div>
         </div>
@@ -150,31 +147,55 @@ const ActivityTimeline: React.FC = () => {
     []
   );
 
-  const setTimerForActivity = () => {
+  const setTimerForActivity = useCallback(() => {
     const timer = setTimeout(async () => {
+      // await refreshActivities();
       let _activities = await ProfileService.getActivity();
       _activities.sort(
-        (a, b) => (b as any).created.$date - (a as any).created.$date
+        (a: any, b: any) => (b as any).createdAt - (a as any).createdAt
       );
       setActivities(_activities);
       setTotalPages(pageCount(_activities.length));
       setTimerForActivity();
-    }, 3000);
+    }, 1000);
     return () => clearTimeout(timer);
-  };
+  }, []);
 
   useEffect(() => {
     setTimerForActivity();
-  }, []);
+  }, [setTimerForActivity]);
+
+  const pageCount = (activityCount: number) => {
+    return (
+      Math.floor(activityCount / perPage) + (activityCount % perPage ? 1 : 0)
+    );
+  };
+
+  const handlePagination = (data: any) => {
+    let selected = data.selected;
+    let offset = Math.ceil(selected * perPage);
+
+    setPageOffset(offset);
+  };
+
+  const handleMarkAllAsRead = useCallback(() => {
+    let _activities = JSON.parse(JSON.stringify(activities));
+    _activities.forEach(async (_activity: any) => {
+      if (!_activity.read) {
+        _activity.read = true;
+        await ProfileService.updateActivity(_activity);
+      }
+    });
+  }, [activities]);
 
   useEffect(() => {
     let groups: any[] = [];
     activities
       .slice(pageOffset, pageOffset + perPage)
       .forEach((activity, index) => {
-        let caption = DateString((activity as any).created.$date);
-        let gIndex = groups.findIndex(item => item.caption == caption);
-        if (gIndex == -1) {
+        let caption = DateString((activity as any).createdAt);
+        let gIndex = groups.findIndex(item => item.caption === caption);
+        if (gIndex === -1) {
           groups.push({
             caption: caption,
             list: [activity]
@@ -188,7 +209,7 @@ const ActivityTimeline: React.FC = () => {
         <Group className={style['activity-list-wrapper']} key={index}>
           <Header>
             <IonText className={style['time']}>{group.caption}</IonText>
-            {index == 0 && (
+            {index === 0 && (
               <IonText
                 className={style['mark-all']}
                 onClick={handleMarkAllAsRead}
@@ -219,7 +240,6 @@ const ActivityTimeline: React.FC = () => {
           </Header>
           <IonList className={style['activity-list']}>
             {group.list.map((activity: any, index: any) => {
-              let show = false;
               return (
                 <ActivityRow
                   activity={activity}
@@ -227,14 +247,6 @@ const ActivityTimeline: React.FC = () => {
                   onRead={async () => {
                     activity.read = true;
                     await ProfileService.updateActivity(activity);
-                    // Update activity in state array
-                    let _activities = JSON.parse(JSON.stringify(activities));
-                    let _index = _activities.findIndex(
-                      (_activity: any) =>
-                        _activity.guid.value == activity.guid.value
-                    );
-                    _activities[_index].read = true;
-                    setActivities(_activities);
                   }}
                   key={index}
                 />
@@ -245,30 +257,8 @@ const ActivityTimeline: React.FC = () => {
       );
     });
     setActivityGroupComponents(_activityGroupComponents);
-  }, [pageOffset, activities]);
+  }, [pageOffset, activities, handleMarkAllAsRead]);
 
-  const pageCount = (activityCount: number) => {
-    return (
-      Math.floor(activityCount / perPage) + (activityCount % perPage ? 1 : 0)
-    );
-  };
-  const handlePagination = (data: any) => {
-    let selected = data.selected;
-    let offset = Math.ceil(selected * perPage);
-
-    setPageOffset(offset);
-  };
-
-  const handleMarkAllAsRead = () => {
-    let _activities = JSON.parse(JSON.stringify(activities));
-    _activities.forEach(async (_activity: any) => {
-      if (!_activity.read) {
-        _activity.read = true;
-        await ProfileService.updateActivity(_activity);
-      }
-    });
-    setActivities(_activities);
-  };
   return (
     <IonCard className={style['timeline-card']}>
       <IonCardHeader className={style['card-header']}>

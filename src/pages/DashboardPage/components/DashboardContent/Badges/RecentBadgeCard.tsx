@@ -33,11 +33,10 @@ const RecentBadgeCard: React.FC<Props> = ({ badges }) => {
         }
       });
     });
-    console.log(_archivedBadges);
     _archivedBadges.sort((a: any, b: any) => b.archived - a.archived);
     setArchivedBadges(_archivedBadges);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [badges]);
   return (
     <IonCard className={style['spotlight']}>
       <IonCardHeader className={style['card-header']}>

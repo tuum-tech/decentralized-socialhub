@@ -390,6 +390,17 @@ export class UserService {
         messages.push('You received a Facebook verfication badge');
       }
       await TuumTechScriptService.addUserToTuumTech(sessionItem);
+      await ProfileService.addActivity(
+        {
+          guid: '',
+          did: sessionItem!.did,
+          message: 'Welcome to Profile 👏, Your service to the private web 🔐️',
+          read: false,
+          createdAt: 0,
+          updatedAt: 0
+        },
+        sessionItem!.did
+      );
     }
 
     Array.from(new Set(messages)).forEach(async message => {
@@ -398,11 +409,14 @@ export class UserService {
           guid: '',
           did: sessionItem.did,
           message: message,
-          read: false
+          read: false,
+          createdAt: 0,
+          updatedAt: 0
         },
         sessionItem.did
       );
     });
+
     this.lockUser(this.key(did), sessionItem);
     // SessionService.saveSessionItem(sessionItem);
     window.localStorage.setItem(

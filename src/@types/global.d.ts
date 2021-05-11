@@ -39,6 +39,8 @@ interface ActivityItem {
   did: string;
   message: string;
   read: boolean;
+  createdAt: number;
+  updatedAt: number;
 }
 
 interface EducationDTO {

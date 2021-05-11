@@ -86,6 +86,7 @@ const DashboardHeader: React.FC<IProps> = ({
               <IonCol>
                 {isNameVerified && (
                   <img
+                    alt="shield icon"
                     src={shieldIcon}
                     className={style['social-profile-badge']}
                   />

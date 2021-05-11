@@ -70,7 +70,9 @@ const FacebookCallback: React.FC<RouteComponentProps> = props => {
               guid: '',
               did: userSession.did,
               message: 'You received a Facebook verfication badge',
-              read: false
+              read: false,
+              createdAt: 0,
+              updatedAt: 0
             },
             userSession.did
           );

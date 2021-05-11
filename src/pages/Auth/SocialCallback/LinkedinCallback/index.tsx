@@ -87,7 +87,9 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
               guid: '',
               did: userSession.did,
               message: 'You received a Linkedin verfication badge',
-              read: false
+              read: false,
+              createdAt: 0,
+              updatedAt: 0
             },
             userSession.did
           );

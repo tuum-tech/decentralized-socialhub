@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { IonCol, IonGrid, IonPopover, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
