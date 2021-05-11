@@ -46,7 +46,7 @@ const CreateProfileWithDidPage: React.FC<RouteComponentProps<
           ? props.location.state.user.loginCred.email
           : ''
       );
-      // setUserInfo(uInfo);
+      setUserInfo(uInfo);
     };
     if (userInfo.did === '') {
       fetchUserInfo();
