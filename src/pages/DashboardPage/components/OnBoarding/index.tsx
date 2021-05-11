@@ -9,6 +9,8 @@ import clsx from 'clsx';
 import { UserService } from 'src/services/user.service';
 import { RequestStatus } from 'src/services/assist.service';
 import AlphaContent from 'src/components/AlphaContent';
+import Avatar from 'src/components/Avatar';
+
 import PublishingLabel from '../PublishingLabel';
 import transparentlogo from '../../../../assets/logo/transparentlogo.png';
 import wavinghand from '../../../../assets/icon/wavinghand.png';
@@ -170,10 +172,11 @@ const OnBoardingPage: React.FC<Props> = ({
             </div>
             <div className={clsx(style['stage4-content'], style['v-flex'])}>
               <div className={clsx(style['avatar-container'], style['v-flex'])}>
-                <IonImg
+                {/* <IonImg
                   src={defaultAdamAvatar}
                   className={style['defaultAdamAvatar']}
-                />
+                /> */}
+                <Avatar did={sessionItem.did} />
                 <p className={style['name']}>{userSessionName}</p>
                 <p>
                   <PublishingLabel status={RequestStatus.Pending} />
