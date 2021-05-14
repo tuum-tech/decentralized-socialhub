@@ -20,6 +20,7 @@ interface Props {
 const RecentBadgeCard: React.FC<Props> = ({ badges }) => {
   const [archivedBadges, setArchivedBadges] = useState([]);
   useEffect(() => {
+    if (!badges) return;
     let _archivedBadges: any = [];
     Object.keys(badges!).forEach(category => {
       Object.keys((badges as any)[category]).forEach(name => {

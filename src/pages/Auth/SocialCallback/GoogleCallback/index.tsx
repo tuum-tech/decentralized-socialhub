@@ -57,7 +57,6 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
             CredentialType.Google,
             googleId.email
           );
-
           let state = await DidDocumentService.getUserDocument(userSession);
 
           await DidService.addVerfiableCredentialToDIDDocument(
@@ -67,19 +66,21 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
 
           DidDocumentService.updateUserDocument(state.diddocument);
           userSession.loginCred!.google! = googleId.email;
-          userSession.badges!.socialVerify!.google.archived = new Date().getTime();
+          if (!userSession.badges!.socialVerify!.google.archived) {
+            userSession.badges!.socialVerify!.google.archived = new Date().getTime();
+            await ProfileService.addActivity(
+              {
+                guid: '',
+                did: userSession.did,
+                message: 'You received a Google verfication badge',
+                read: false,
+                createdAt: 0,
+                updatedAt: 0
+              },
+              userSession.did
+            );
+          }
           await UserService.updateSession(userSession);
-          await ProfileService.addActivity(
-            {
-              guid: '',
-              did: userSession.did,
-              message: 'You received a Google verfication badge',
-              read: false,
-              createdAt: 0,
-              updatedAt: 0
-            },
-            userSession.did
-          );
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredGoogle(googleId.email);

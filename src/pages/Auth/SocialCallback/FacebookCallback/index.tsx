@@ -63,20 +63,21 @@ const FacebookCallback: React.FC<RouteComponentProps> = props => {
           DidDocumentService.updateUserDocument(state.diddocument);
 
           userSession.loginCred!.facebook! = facebookId.name;
-          userSession.badges!.socialVerify!.facebook.archived = new Date().getTime();
+          if (!userSession.badges!.socialVerify!.facebook.archived) {
+            userSession.badges!.socialVerify!.facebook.archived = new Date().getTime();
+            await ProfileService.addActivity(
+              {
+                guid: '',
+                did: userSession.did,
+                message: 'You received a Facebook verfication badge',
+                read: false,
+                createdAt: 0,
+                updatedAt: 0
+              },
+              userSession.did
+            );
+          }
           await UserService.updateSession(userSession);
-          await ProfileService.addActivity(
-            {
-              guid: '',
-              did: userSession.did,
-              message: 'You received a Facebook verfication badge',
-              read: false,
-              createdAt: 0,
-              updatedAt: 0
-            },
-            userSession.did
-          );
-
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredFacebook(facebookId.name);

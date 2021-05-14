@@ -60,6 +60,7 @@ const OverviewCard: React.FC<Props> = ({ badges }) => {
   const [completedBadgeCount, setCompletedBadgeCount] = useState(0);
   const [progressPercent, setProgressPercent] = useState(0);
   useEffect(() => {
+    if (!badges) return;
     let _totalBadgeCount = 0;
     let _completedBadgeCount = 0;
 

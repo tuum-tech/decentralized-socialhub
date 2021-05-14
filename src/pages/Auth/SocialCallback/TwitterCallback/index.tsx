@@ -72,19 +72,21 @@ const TwitterCallback: React.FC<RouteComponentProps> = props => {
           DidDocumentService.updateUserDocument(state.diddocument);
 
           userSession.loginCred!.twitter! = items[1].toString();
-          userSession.badges!.socialVerify!.twitter.archived = new Date().getTime();
+          if (!userSession.badges!.socialVerify!.twitter.archived) {
+            userSession.badges!.socialVerify!.twitter.archived = new Date().getTime();
+            await ProfileService.addActivity(
+              {
+                guid: '',
+                did: userSession.did,
+                message: 'You received a Twitter verfication badge',
+                read: false,
+                createdAt: 0,
+                updatedAt: 0
+              },
+              userSession.did
+            );
+          }
           await UserService.updateSession(userSession);
-          await ProfileService.addActivity(
-            {
-              guid: '',
-              did: userSession.did,
-              message: 'You received a Twitter verfication badge',
-              read: false,
-              createdAt: 0,
-              updatedAt: 0
-            },
-            userSession.did
-          );
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredTwitter(

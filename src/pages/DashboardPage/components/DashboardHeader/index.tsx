@@ -70,33 +70,18 @@ const DashboardHeader: React.FC<IProps> = ({
         </IonCol>
         <IonCol size="8">
           <IonGrid>
-            <IonRow className="ion-justify-content-start">
-              <IonCol size="auto">
-                <ProfileName>{sessionItem.name}</ProfileName>
-              </IonCol>
+            <IonRow className={style['d-flex']}>
+              <ProfileName>{sessionItem.name}</ProfileName>
               {isNameVerified && (
-                <IonCol>
-                  <img
-                    alt="shield icon"
-                    src={shieldIcon}
-                    className={style['social-profile-badge']}
-                  />
-                </IonCol>
+                <img
+                  alt="shield icon"
+                  src={shieldIcon}
+                  className={style['social-profile-badge']}
+                />
               )}
-              <IonCol>
-                {isNameVerified && (
-                  <img
-                    alt="shield icon"
-                    src={shieldIcon}
-                    className={style['social-profile-badge']}
-                  />
-                )}
-              </IonCol>
-              <IonCol>
-                <PublishingLabel status={publishStatus} />
-              </IonCol>
+              <PublishingLabel status={publishStatus} />
             </IonRow>
-            <IonRow className="ion-justify-content-start">
+            <IonRow className={style['d-flex']}>
               <IonCol>
                 <DidSnippet did={sessionItem.did} />
               </IonCol>

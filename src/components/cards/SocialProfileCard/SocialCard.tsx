@@ -23,13 +23,9 @@ import { getVerifiedCredential } from 'src/utils/socialprofile';
 
 import style from './SocialCard.module.scss';
 import linkedinIcon from '../../../assets/icon/Linkedin.svg';
-import linkedinLogo from '../../../assets/icon/ml_linkedin.png';
 import twitterIcon from '../../../assets/icon/Twitter.svg';
-import twitterLogo from '../../../assets/icon/ml_twitter.png';
 import facebookIcon from '../../../assets/icon/Facebook.svg';
-import facebookLogo from '../../../assets/icon/ml_facebook.png';
 import googleIcon from '../../../assets/icon/Google.svg';
-import googleLogo from '../../../assets/icon/google.png';
 import shieldIcon from '../../../assets/icon/shield.svg';
 
 interface Props {
@@ -272,26 +268,37 @@ const SocialProfilesCard: React.FC<Props> = ({
     if (!vc) return;
     return (
       <ProfileItem className={style['social-profile-item']}>
-        <img alt="icon" src={icon} />
-        {(key === 'facebook' || key === 'linkedin') && (
-          <span>{parseValueFromService(key, vc.value)}</span>
-        )}
-        {(key === 'google' || key === 'twitter') && (
-          <a
-            href={getUrlFromService(key, vc.value)}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {parseValueFromService(key, vc.value)}
-          </a>
-        )}
-        {vc.isVerified && (
-          <img
-            alt="shield icon"
-            src={shieldIcon}
-            className={style['social-profile-badge']}
-          />
-        )}
+        <div className="left">
+          <img alt="icon" src={icon} height={40} />
+          {vc.isVerified && (
+            <img
+              alt="shield icon"
+              src={shieldIcon}
+              className={style['social-profile-badge']}
+              height={15}
+            />
+          )}
+        </div>
+        <div className="right">
+          <p className={style['social-profile-network']}>
+            {key.replace(/^./, key[0].toUpperCase())}
+          </p>
+          {(key === 'facebook' || key === 'linkedin') && (
+            <span className={style['social-profile-id']}>
+              {parseValueFromService(key, vc.value)}
+            </span>
+          )}
+          {(key === 'google' || key === 'twitter') && (
+            <a
+              href={getUrlFromService(key, vc.value)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={style['social-profile-id']}
+            >
+              {parseValueFromService(key, vc.value)}
+            </a>
+          )}
+        </div>
       </ProfileItem>
     );
   };
@@ -353,19 +360,19 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const googleModalItem = () => {
-    return createModalIonItem('google', googleLogo);
+    return createModalIonItem('google', googleIcon);
   };
 
   const twitterModalItem = () => {
-    return createModalIonItem('twitter', twitterLogo);
+    return createModalIonItem('twitter', twitterIcon);
   };
 
   const facebookModalItem = () => {
-    return createModalIonItem('facebook', facebookLogo);
+    return createModalIonItem('facebook', facebookIcon);
   };
 
   const linkedinModalItem = () => {
-    return createModalIonItem('linkedin', linkedinLogo);
+    return createModalIonItem('linkedin', linkedinIcon);
   };
 
   // const anyCredential = (): boolean => {
@@ -422,33 +429,22 @@ const SocialProfilesCard: React.FC<Props> = ({
           </IonCardTitle>
         </IonCardHeader>
         <IonCardContent>
-          {showManageButton && (
-            <IonGrid>
-              <IonRow>
-                {containsVerifiedCredential('linkedin') && (
-                  <IonCol size="6">{linkedInItem()}</IonCol>
-                )}
-                {containsVerifiedCredential('twitter') && (
-                  <IonCol size="6">{twitterItem()}</IonCol>
-                )}
-                {containsVerifiedCredential('facebook') && (
-                  <IonCol size="6">{facebookItem()}</IonCol>
-                )}
-                {containsVerifiedCredential('google') && (
-                  <IonCol size="6">{googleItem()}</IonCol>
-                )}
-              </IonRow>
-            </IonGrid>
-          )}
-
-          {!showManageButton && (
-            <IonList>
-              {linkedInItem()}
-              {twitterItem()}
-              {facebookItem()}
-              {googleItem()}
-            </IonList>
-          )}
+          <IonGrid>
+            <IonRow>
+              {containsVerifiedCredential('linkedin') && (
+                <IonCol size="6">{linkedInItem()}</IonCol>
+              )}
+              {containsVerifiedCredential('twitter') && (
+                <IonCol size="6">{twitterItem()}</IonCol>
+              )}
+              {containsVerifiedCredential('facebook') && (
+                <IonCol size="6">{facebookItem()}</IonCol>
+              )}
+              {containsVerifiedCredential('google') && (
+                <IonCol size="6">{googleItem()}</IonCol>
+              )}
+            </IonRow>
+          </IonGrid>
         </IonCardContent>
       </IonCard>
 

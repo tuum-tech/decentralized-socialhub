@@ -43,6 +43,7 @@ const BadgeCard: React.FC<Props> = ({ badges, badgeCategory }) => {
   const [badgeCategoryTitle, setBadgeCategoryTitle] = useState<string>('');
 
   useEffect(() => {
+    if (!badges) return;
     switch (badgeCategory) {
       case 'account':
         setBadgeCategoryTitle('Account');
