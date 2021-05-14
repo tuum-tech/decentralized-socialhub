@@ -6,9 +6,10 @@ export type UserType = {
   name: string;
   hiveHost: string;
   loginCred: LoginCred;
+  avatar: string;
 };
 
-export const retreiveDocInfo = async (
+export const retrieveDocInfo = async (
   did: string,
   mnemonic: string,
   name = '',
@@ -22,7 +23,8 @@ export const retreiveDocInfo = async (
     hiveHost: '',
     loginCred: {
       email: email
-    }
+    },
+    avatar: ''
   };
   if (doc && doc !== undefined && doc.verifiableCredential) {
     if (doc.verifiableCredential && doc.verifiableCredential.length > 0) {
@@ -46,6 +48,17 @@ export const retreiveDocInfo = async (
         }
         if (cv.credentialSubject && cv.credentialSubject.linkedin) {
           loginCred.linkedin = cv.credentialSubject.linkedin;
+        }
+        if (
+          cv.credentialSubject &&
+          cv.credentialSubject.avatar &&
+          cv.credentialSubject.avatar.data
+        ) {
+          let baseStr = cv.credentialSubject.avatar.data;
+          if (!baseStr.startsWith('data:image/')) {
+            baseStr = `data:${cv.credentialSubject.avatar['content-type']};base64,${baseStr}`;
+          }
+          uInfo.avatar = baseStr;
         }
       }
       uInfo.loginCred = loginCred;

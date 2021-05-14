@@ -6,7 +6,7 @@ import { StaticContext, RouteComponentProps } from 'react-router';
 import { AccountType, UserService } from 'src/services/user.service';
 
 import PageLoading from 'src/components/layouts/PageLoading';
-import { retreiveDocInfo, UserType } from 'src/utils/user';
+import { retrieveDocInfo, UserType } from 'src/utils/user';
 
 import ProfileFields from '../components/ProfileFields';
 import SetPassword from '../components/SetPassword';
@@ -31,13 +31,14 @@ const CreateProfileWithDidPage: React.FC<RouteComponentProps<
     hiveHost: '',
     loginCred: {
       email: ''
-    }
+    },
+    avatar: ''
   });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      const uInfo = await retreiveDocInfo(
+      const uInfo = await retrieveDocInfo(
         props.location.state.did,
         props.location.state.mnemonic,
         props.location.state.user ? props.location.state.user.name : '',
@@ -86,7 +87,8 @@ const CreateProfileWithDidPage: React.FC<RouteComponentProps<
           pwd,
           userInfo.did,
           userInfo.mnemonic,
-          userInfo.hiveHost
+          userInfo.hiveHost,
+          userInfo.avatar
         );
         window.location.href = '/profile';
         setLoading(false);

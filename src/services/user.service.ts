@@ -240,7 +240,8 @@ export class UserService {
     storePassword: string,
     newDidStr: string,
     newMnemonicStr: string,
-    hiveHostStr: string
+    hiveHostStr: string,
+    avatar = ''
   ) {
     let did = newDidStr;
     let mnemonics = newMnemonicStr;
@@ -334,7 +335,7 @@ export class UserService {
         hiveHostStr === ''
           ? `${process.env.REACT_APP_TUUM_TECH_HIVE}`
           : hiveHostStr,
-      avatar: '',
+      avatar,
       code: Guid.create().toString(),
       status: 'Created',
       mnemonics

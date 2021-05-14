@@ -119,6 +119,9 @@ const EducationCard: React.FC<IEducationProps> = ({
 
   const addItem = () => {
     setMode(MODE.ADD);
+    // workaround: defaultEducationItem will always have the guid generated when the component is created.
+    // We must be generated another guid here or else we will edit the last education item created.
+    defaultEducationItem.guid = Guid.create();
     setEditedItem(defaultEducationItem);
   };
 

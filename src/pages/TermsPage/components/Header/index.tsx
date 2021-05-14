@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import style from './style.module.scss';
 import { chevronDownOutline, chevronUpOutline } from 'ionicons/icons';
 import { UserService } from 'src/services/user.service';
-import photo from 'src/assets/dp.jpeg';
+import photo from 'src/assets/dp.png';
 import narrow from 'src/assets/narrow.svg';
 const Header: React.FC = () => {
   const history = useHistory();
