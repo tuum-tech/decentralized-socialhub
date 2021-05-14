@@ -17,7 +17,7 @@ import style from './style.module.scss';
 import styled from 'styled-components';
 import { ProfileService } from 'src/services/profile.service';
 import { timeSince, DateString } from 'src/utils/time';
-import photo from 'src/assets/dp.jpeg';
+import photo from 'src/assets/dp.png';
 
 const Group = styled.div``;
 const Header = styled.div`
