@@ -167,7 +167,7 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
           <IonGrid>
             <IonRow>
               <IonCol size="6">
-                <Check text="8+ characteres" isChecked={lengthValid} />
+                <Check text="8+ characters" isChecked={lengthValid} />
                 <Check text="Uppercase" isChecked={hasUppercase} />
                 <Check text="Lowercase" isChecked={hasLowercase} />
               </IonCol>
