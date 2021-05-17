@@ -24,6 +24,8 @@ import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import keyimg from 'src/assets/icon/key.png';
 
 import { LocationState } from './types';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
+import Check from 'src/components/Check';
 
 const ErrorText = styled(Text16)`
   text-align: center;
@@ -47,6 +49,48 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
   const [repeatPassword, setRepeatPassword] = useState('');
   const [error, setError] = useState('');
   const [session, setSession] = useState<ISessionItem | null>(null);
+
+  const [lengthValid, setLengthValid] = useState(false);
+  const [hasUppercase, setHasUppercase] = useState(false);
+  const [hasLowercase, setHasLowercase] = useState(false);
+  const [hasNumber, setHasNumber] = useState(false);
+  const [hasSpecialChar, setHasSpecialChar] = useState(false);
+  const [isInvalidPassword, setIsInvalidPassword] = useState(false);
+
+  const validatePassword = (n: string): any => {
+    setIsInvalidPassword(false);
+
+    if (n.length > 8) setLengthValid(true);
+    else {
+      setLengthValid(false);
+      setIsInvalidPassword(true);
+    }
+
+    if (/[A-Z]/.test(n)) setHasUppercase(true);
+    else {
+      setIsInvalidPassword(true);
+      setHasUppercase(false);
+    }
+
+    if (/[a-z]/.test(n)) setHasLowercase(true);
+    else {
+      setHasLowercase(false);
+      setIsInvalidPassword(true);
+    }
+
+    if (/[0-9]/.test(n)) setHasNumber(true);
+    else {
+      setHasNumber(false);
+      setIsInvalidPassword(true);
+    }
+
+    if (/[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/.test(n))
+      setHasSpecialChar(true);
+    else {
+      setHasSpecialChar(false);
+      setIsInvalidPassword(true);
+    }
+  };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
@@ -113,11 +157,29 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
             type="password"
             onChange={n => {
               setError('');
+              validatePassword(n);
+
               setPassword(n);
             }}
             placeholder="Enter your password"
           />
+
+          <IonGrid>
+            <IonRow>
+              <IonCol size="6">
+                <Check text="8+ characters" isChecked={lengthValid} />
+                <Check text="Uppercase" isChecked={hasUppercase} />
+                <Check text="Lowercase" isChecked={hasLowercase} />
+              </IonCol>
+              <IonCol size="6">
+                {/* <Check text="Alphanumeric" isChecked={hasLetter} /> */}
+                <Check text="Number" isChecked={hasNumber} />
+                <Check text="Special character" isChecked={hasSpecialChar} />
+              </IonCol>
+            </IonRow>
+          </IonGrid>
           <TextInput
+            readonly={isInvalidPassword}
             value={repeatPassword}
             label="Re-enter Password"
             type="password"
