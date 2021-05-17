@@ -103,7 +103,7 @@ const SetPassword: React.FC<Props> = ({
       setIsInvalidPassword(true);
     }
 
-    if (/[ `!@#$%^&*()_+\-=[]{};':"\\|,.<>\/?~]/.test(n))
+    if (/[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/.test(n))
       setHasSpecialChar(true);
     else {
       setHasSpecialChar(false);
