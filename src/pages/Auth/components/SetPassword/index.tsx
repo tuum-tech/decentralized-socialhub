@@ -24,9 +24,8 @@ import LoadingIndicator from 'src/components/LoadingIndicator';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import keyimg from 'src/assets/icon/key.png';
-import check from 'src/assets/check-circle-fill.svg';
-import uncheck from 'src/assets/check-circle.svg';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
+import Check from 'src/components/Check';
 
 const ErrorText = styled(Text16)`
   text-align: center;
@@ -39,24 +38,6 @@ interface Props {
   displayText?: string;
   loading?: boolean;
 }
-
-interface CheckProps {
-  text: string;
-  isChecked: boolean;
-}
-
-const Check: React.FC<CheckProps> = ({ text = '', isChecked = false }) => {
-  return (
-    <div>
-      {isChecked ? (
-        <img alt="check" src={check} />
-      ) : (
-        <img alt="check" src={uncheck} />
-      )}
-      <span>&nbsp;{text}</span>
-    </div>
-  );
-};
 
 const SetPassword: React.FC<Props> = ({
   next,
@@ -71,7 +52,6 @@ const SetPassword: React.FC<Props> = ({
   const [lengthValid, setLengthValid] = useState(false);
   const [hasUppercase, setHasUppercase] = useState(false);
   const [hasLowercase, setHasLowercase] = useState(false);
-  //const [hasLetter, setHasLetter] = useState(false);
   const [hasNumber, setHasNumber] = useState(false);
   const [hasSpecialChar, setHasSpecialChar] = useState(false);
   const [isInvalidPassword, setIsInvalidPassword] = useState(false);
