@@ -26,7 +26,6 @@ import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import keyimg from 'src/assets/icon/key.png';
 import check from 'src/assets/check-circle-fill.svg';
 import uncheck from 'src/assets/check-circle.svg';
-import { validateEmail } from 'src/utils/validation';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 
 const ErrorText = styled(Text16)`
@@ -104,7 +103,7 @@ const SetPassword: React.FC<Props> = ({
       setIsInvalidPassword(true);
     }
 
-    if (/[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(n))
+    if (/[ `!@#$%^&*()_+\-=[]{};':"\\|,.<>\/?~]/.test(n))
       setHasSpecialChar(true);
     else {
       setHasSpecialChar(false);
