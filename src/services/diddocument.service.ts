@@ -3,7 +3,7 @@ import { AssistService } from './assist.service';
 import { DidService, PublishRequestOperation } from './did.service';
 import { EventsService, IEventCallback } from './events.service';
 import { UserService } from './user.service';
-
+import { ProfileService } from './profile.service';
 export interface IDIDDocumentState {
   diddocument: any;
   isChanged: boolean;
@@ -136,38 +136,57 @@ export class DidDocumentService {
     await AssistService.publishDocument(userDid.did, requestPub);
     let publishTimes = await AssistService.getPublishTimes(userDid.did);
     let curTime = new Date().getTime();
+    let messages = [];
     if (publishTimes < 5) {
       if (!userSession.badges?.didPublishTimes._1times.archived) {
         userSession.badges!.didPublishTimes!._1times.archived = curTime;
+        messages.push('You received a 1 time did publish badge');
         await UserService.updateSession(userSession);
       }
     } else if (publishTimes < 10) {
       if (!userSession.badges?.didPublishTimes._5times.archived) {
         userSession.badges!.didPublishTimes!._5times.archived = curTime;
+        messages.push('You received a 5 time did publish badge');
         await UserService.updateSession(userSession);
       }
     } else if (publishTimes < 25) {
       if (!userSession.badges?.didPublishTimes._10times.archived) {
         userSession.badges!.didPublishTimes!._10times.archived = curTime;
+        messages.push('You received a 10 time did publish badge');
         await UserService.updateSession(userSession);
       }
     } else if (publishTimes < 50) {
       if (!userSession.badges?.didPublishTimes._25times.archived) {
         userSession.badges!.didPublishTimes!._25times.archived = curTime;
+        messages.push('You received a 25 time did publish badge');
         await UserService.updateSession(userSession);
       }
     } else if (publishTimes < 100) {
       if (!userSession.badges?.didPublishTimes._50times.archived) {
         userSession.badges!.didPublishTimes!._50times.archived = curTime;
+        messages.push('You received a 50 time did publish badge');
         await UserService.updateSession(userSession);
       }
     } else {
       if (!userSession.badges?.didPublishTimes._100times.archived) {
         userSession.badges!.didPublishTimes!._100times.archived = curTime;
+        messages.push('You received a 100 time did publish badge');
         await UserService.updateSession(userSession);
       }
     }
-
+    Array.from(new Set(messages)).forEach(async message => {
+      await ProfileService.addActivity(
+        {
+          guid: '',
+          did: userSession!.did,
+          message: message,
+          read: false,
+          createdAt: 0,
+          updatedAt: 0
+        },
+        userSession!.did
+      );
+    });
     let documentState = {
       diddocument: signedDocument,
       isChanged: false

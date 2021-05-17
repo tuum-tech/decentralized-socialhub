@@ -15,6 +15,7 @@ import {
   getUsersWithRegisteredLinkedin
 } from './fetchapi';
 import { DidService } from 'src/services/did.service';
+import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 
@@ -79,7 +80,20 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
           DidDocumentService.updateUserDocument(state.diddocument);
 
           userSession.loginCred!.linkedin! = firstName + '' + lastName;
-          userSession.badges!.socialVerify!.linkedin.archived = new Date().getTime();
+          if (!userSession.badges!.socialVerify!.linkedin.archived) {
+            userSession.badges!.socialVerify!.linkedin.archived = new Date().getTime();
+            await ProfileService.addActivity(
+              {
+                guid: '',
+                did: userSession.did,
+                message: 'You received a Linkedin verfication badge',
+                read: false,
+                createdAt: 0,
+                updatedAt: 0
+              },
+              userSession.did
+            );
+          }
           await UserService.updateSession(userSession);
           window.close();
         } else {

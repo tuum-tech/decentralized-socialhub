@@ -102,6 +102,7 @@ const FollowersSearch: React.FC = () => {
         200,
         0
       );
+      console.log('====>listUsers', listUsers.response);
       setFilteredUsers(listUsers.response);
     } catch (e) {
       setFilteredUsers({ get_users_by_dids: { items: [] } });

@@ -6,6 +6,7 @@ import { DidService } from 'src/services/did.service';
 import { UserService } from 'src/services/user.service';
 import { HiveService } from 'src/services/hive.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
+import { ProfileService } from 'src/services/profile.service';
 import { UserVaultScripts } from 'src/scripts/uservault.script';
 
 import { ITutorialStepProp } from './TutorialStep1';
@@ -82,7 +83,30 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         await UserService.updateSession(user);
         let hiveInstance = await HiveService.getSessionInstance();
         await UserVaultScripts.Execute(hiveInstance!);
-
+        let activities = await ProfileService.getActivity();
+        activities.push({
+          guid: '',
+          did: user!.did,
+          message: 'You received a Beginner tutorial badge',
+          read: false,
+          createdAt: 0,
+          updatedAt: 0
+        });
+        user.badges!.dStorage!.ownVault.archived &&
+          activities.push({
+            guid: '',
+            did: user!.did,
+            message: 'You received a Ownvault storage badge',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
+          });
+        activities.forEach(async (activity: ActivityItem) => {
+          await ProfileService.addActivity(activity, activity.did);
+        });
+        window.localStorage.removeItem(
+          `temporary_activities_${user.did.replace('did:elastos:', '')}`
+        );
         onContinue();
       } catch (error) {
         await DidDocumentService.reloadUserDocument();

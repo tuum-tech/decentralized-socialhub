@@ -44,7 +44,7 @@ export const ExploreAll = styled.p`
   font-style: normal;
   font-weight: 700;
   font-size: 12px;
-  color: #4c6fff;
+  color: var(--theme-primary-blue);
   cursor: pointer;
 `;
 

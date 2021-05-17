@@ -30,11 +30,12 @@
   }
 
   .social-profile-item {
+    display: flex;
+    justify-content: flex-start;
     border: 0px;
     --inner-border-width: 0;
     padding: 0px !important;
 
-    height: 35px;
     font-family: 'SF Pro Display';
     font-size: 14px;
     font-weight: 500;
@@ -48,11 +49,22 @@
       color: #000000;
     }
     img {
-      width: 16px;
-      height: 16px;
       margin-right: 10px;
     }
+    .social-profile-network {
+      color: #1a202c;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .social-profile-id {
+      color: #a0aec0;
+      font-size: 13px;
+      font-weight: 400;
+    }
     .social-profile-badge {
+      position: absolute;
+      top: 4px;
+      left: 23px;
       margin-left: 5px;
     }
   }

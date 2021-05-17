@@ -6,6 +6,7 @@ import { Redirect, RouteComponentProps, useHistory } from 'react-router';
 
 import PageLoading from 'src/components/layouts/PageLoading';
 import { DidService } from 'src/services/did.service';
+import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { AccountType, UserService } from 'src/services/user.service';
@@ -71,9 +72,21 @@ const TwitterCallback: React.FC<RouteComponentProps> = props => {
           DidDocumentService.updateUserDocument(state.diddocument);
 
           userSession.loginCred!.twitter! = items[1].toString();
-          userSession.badges!.socialVerify!.twitter.archived = new Date().getTime();
+          if (!userSession.badges!.socialVerify!.twitter.archived) {
+            userSession.badges!.socialVerify!.twitter.archived = new Date().getTime();
+            await ProfileService.addActivity(
+              {
+                guid: '',
+                did: userSession.did,
+                message: 'You received a Twitter verfication badge',
+                read: false,
+                createdAt: 0,
+                updatedAt: 0
+              },
+              userSession.did
+            );
+          }
           await UserService.updateSession(userSession);
-
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredTwitter(

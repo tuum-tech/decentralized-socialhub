@@ -43,6 +43,7 @@ const BadgeCard: React.FC<Props> = ({ badges, badgeCategory }) => {
   const [badgeCategoryTitle, setBadgeCategoryTitle] = useState<string>('');
 
   useEffect(() => {
+    if (!badges) return;
     switch (badgeCategory) {
       case 'account':
         setBadgeCategoryTitle('Account');
@@ -70,7 +71,7 @@ const BadgeCard: React.FC<Props> = ({ badges, badgeCategory }) => {
     setCompletedBadgeCount(_completedBadgeCount);
     setProgressPercent((_completedBadgeCount * 100) / _totalBadgeCount);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [badges]);
   return (
     <IonCard className={style['badge-card']}>
       <IonCardHeader className={style['badge-card-header']}>

@@ -34,6 +34,15 @@ interface EducationItem {
   logo?: string;
 }
 
+interface ActivityItem {
+  guid: Guid;
+  did: string;
+  message: string;
+  read: boolean;
+  createdAt: number;
+  updatedAt: number;
+}
+
 interface EducationDTO {
   isEnabled: boolean;
   items: EducationItem[];

@@ -4,13 +4,15 @@ import {
   EducationProfileResponse,
   ExperienceProfileResponse
 } from 'src/pages/DashboardPage/types';
+import { ActivityResponse } from 'src/pages/ActivityPage/types';
 import { getVerifiedCredential } from 'src/utils/credential';
 
 import { showNotify } from 'src/utils/notify';
 import { DidDocumentService } from './diddocument.service';
 
 import { HiveService } from './hive.service';
-import { UserService, AccountType } from './user.service';
+import { UserService } from './user.service';
+import { Guid } from 'guid-typescript';
 
 export class ProfileService {
   static didDocument: any = null;
@@ -36,7 +38,7 @@ export class ProfileService {
   };
 
   static async getFullProfile(did: string): Promise<ProfileDTO | undefined> {
-    let basicDTO: any = {}
+    let basicDTO: any = {};
     let educationDTO: EducationDTO = {
       items: [],
       isEnabled: true
@@ -84,7 +86,8 @@ export class ProfileService {
         educationProfileResponse.response.get_education_profile.items &&
         educationProfileResponse.response.get_education_profile.items.length > 0
       ) {
-        educationDTO.items = educationProfileResponse.response.get_education_profile.items;
+        educationDTO.items =
+          educationProfileResponse.response.get_education_profile.items;
       }
 
       const experienceProfileResponse: IRunScriptResponse<ExperienceProfileResponse> = await hiveInstance.Scripting.RunScript(
@@ -102,16 +105,16 @@ export class ProfileService {
         experienceProfileResponse.response &&
         experienceProfileResponse.response.get_experience_profile &&
         experienceProfileResponse.response.get_experience_profile.items &&
-        experienceProfileResponse.response.get_experience_profile.items.length > 0
+        experienceProfileResponse.response.get_experience_profile.items.length >
+          0
       ) {
-        experienceDTO.items = experienceProfileResponse.response.get_experience_profile.items;
+        experienceDTO.items =
+          experienceProfileResponse.response.get_experience_profile.items;
       }
 
       /* Calculate verified education credentials starts */
       educationDTO.items.map(async (x, i) => {
-        educationDTO.items[
-          i
-        ].isVerified = await ProfileService.isCredVerified(
+        educationDTO.items[i].isVerified = await ProfileService.isCredVerified(
           'education',
           x.institution
         );
@@ -120,9 +123,7 @@ export class ProfileService {
 
       /* Calculate verified experience credentials starts */
       experienceDTO.items.map(async (x, i) => {
-        experienceDTO.items[
-          i
-        ].isVerified = await ProfileService.isCredVerified(
+        experienceDTO.items[i].isVerified = await ProfileService.isCredVerified(
           'occupation',
           x.title
         );
@@ -130,9 +131,10 @@ export class ProfileService {
       /* Calculate verified experience credentials ends */
     }
     return {
-      basicDTO, educationDTO, experienceDTO
+      basicDTO,
+      educationDTO,
+      experienceDTO
     };
-    
   }
 
   static async updateAbout(basicDTO: BasicDTO) {
@@ -251,7 +253,6 @@ export class ProfileService {
 
   static async unfollow(did: string): Promise<any> {
     const hiveInstance = await HiveService.getSessionInstance();
-
     if (hiveInstance && did && did !== '') {
       await hiveInstance.Database.deleteOne('following', {
         did: did
@@ -365,18 +366,142 @@ export class ProfileService {
         });
       }
 
+      let followingUser = await UserService.SearchUserWithDID(did);
+
+      await this.addActivity(
+        {
+          guid: '',
+          did: sDid,
+          message: userSession!.name + ' Followed you',
+          read: false,
+          createdAt: 0,
+          updatedAt: 0
+        },
+        did
+      );
+
+      await this.addActivity(
+        {
+          guid: '',
+          did: sDid,
+          message: 'You are following ' + followingUser.name,
+          read: false,
+          createdAt: 0,
+          updatedAt: 0
+        },
+        sDid
+      );
+
       if (userSession) {
         return this.getFollowings(userSession.did);
       }
     }
     return;
   }
+  static async getActivity() {
+    const userSession = UserService.GetUserSession();
+    const hiveInstance = await HiveService.getSessionInstance();
+
+    if (userSession && hiveInstance) {
+      const result: IRunScriptResponse<ActivityResponse> = await hiveInstance.Scripting.RunScript(
+        {
+          name: 'get_activity',
+          context: {
+            target_did: userSession.did,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+          }
+        }
+      );
+      if (
+        result &&
+        result.isSuccess &&
+        result.response &&
+        result.response.get_activity &&
+        result.response.get_activity.items &&
+        result.response.get_activity.items.length > 0
+      ) {
+        return result.response.get_activity.items;
+      }
+    }
+    let tmp_activities = JSON.parse(
+      window.localStorage.getItem(
+        `temporary_activities_${userSession!.did.replace('did:elastos:', '')}`
+      ) || '[]'
+    );
+    return tmp_activities;
+  }
+  static async addActivity(activity: ActivityItem, activityOwner: string) {
+    // Assign new guid to activity
+    if (!activity.guid) activity.guid = Guid.create();
+    if (!activity.createdAt) activity.createdAt = new Date().getTime();
+    if (!activity.updatedAt) activity.updatedAt = new Date().getTime();
+    const userSession = UserService.GetUserSession();
+    const hiveInstance = await HiveService.getSessionInstance();
+    if (userSession && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'add_activity',
+        context: {
+          target_did: activityOwner,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: activity
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        // showNotify('Activity created', 'success');
+      }
+    } else {
+      let tmp_activities = JSON.parse(
+        window.localStorage.getItem(
+          `temporary_activities_${activity.did.replace('did:elastos:', '')}`
+        ) || '[]'
+      );
+      tmp_activities.push(activity);
+      window.localStorage.setItem(
+        `temporary_activities_${activity.did.replace('did:elastos:', '')}`,
+        JSON.stringify(tmp_activities)
+      );
+    }
+  }
+
+  static async updateActivity(activity: ActivityItem) {
+    activity.updatedAt = new Date().getTime();
+    const userSession = UserService.GetUserSession();
+    const hiveInstance = await HiveService.getSessionInstance();
+    if (userSession && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'update_activity',
+        context: {
+          target_did: userSession.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: activity
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        // showNotify('Activity read by you', 'success');
+      }
+    } else {
+      let tmp_activities = JSON.parse(
+        window.localStorage.getItem(
+          `temporary_activities_${activity.did.replace('did:elastos:', '')}`
+        ) || '[]'
+      );
+      let index = tmp_activities.findIndex(
+        (_activity: any) => _activity.guid.value === activity.guid.value
+      );
+      if (index < 0) return;
+      tmp_activities[index] = activity;
+      window.localStorage.setItem(
+        `temporary_activities_${activity.did.replace('did:elastos:', '')}`,
+        JSON.stringify(tmp_activities)
+      );
+    }
+  }
 }
 
 export const defaultUserInfo: ISessionItem = {
   hiveHost: '',
   userToken: '',
-  accountType: AccountType.DID,
+  accountType: 'DID',
   did: '',
   // email: '',
   name: '',

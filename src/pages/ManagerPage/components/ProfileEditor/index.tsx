@@ -118,8 +118,30 @@ const ProfileEditor: React.FC = () => {
                         ) {
                           userSession.badges.account!.basicProfile.archived = new Date().getTime();
                           await UserService.updateSession(userSession);
+                          await ProfileService.addActivity(
+                            {
+                              guid: '',
+                              did: userSession.did,
+                              message: 'You received a Basic profile badge',
+                              read: false,
+                              createdAt: 0,
+                              updatedAt: 0
+                            },
+                            userSession.did
+                          );
                         }
                         await ProfileService.updateAbout(newBasicDTO);
+                        await ProfileService.addActivity(
+                          {
+                            guid: '',
+                            did: userSession.did,
+                            message: 'You updated basic profile',
+                            read: false,
+                            createdAt: 0,
+                            updatedAt: 0
+                          },
+                          userSession.did
+                        );
                         await retriveProfile();
                       }
                     }}
@@ -145,9 +167,31 @@ const ProfileEditor: React.FC = () => {
                       ) {
                         userSession.badges.account.educationProfile.archived = new Date().getTime();
                         await UserService.updateSession(userSession);
+                        await ProfileService.addActivity(
+                          {
+                            guid: '',
+                            did: userSession.did,
+                            message: 'You received a Education profile badge',
+                            read: false,
+                            createdAt: 0,
+                            updatedAt: 0
+                          },
+                          userSession.did
+                        );
                       }
                       await ProfileService.updateEducationProfile(
                         educationItem
+                      );
+                      await ProfileService.addActivity(
+                        {
+                          guid: '',
+                          did: userSession!.did,
+                          message: 'You updated education profile',
+                          read: false,
+                          createdAt: 0,
+                          updatedAt: 0
+                        },
+                        userSession!.did
                       );
                       await retriveProfile();
                     }}
@@ -171,9 +215,31 @@ const ProfileEditor: React.FC = () => {
                       ) {
                         userSession.badges.account.experienceProfile.archived = new Date().getTime();
                         await UserService.updateSession(userSession);
+                        await ProfileService.addActivity(
+                          {
+                            guid: '',
+                            did: userSession.did,
+                            message: 'You received a Experience profile badge',
+                            read: false,
+                            createdAt: 0,
+                            updatedAt: 0
+                          },
+                          userSession.did
+                        );
                       }
                       await ProfileService.updateExperienceProfile(
                         experienceItem
+                      );
+                      await ProfileService.addActivity(
+                        {
+                          guid: '',
+                          did: userSession!.did,
+                          message: 'You updated experience profile',
+                          read: false,
+                          createdAt: 0,
+                          updatedAt: 0
+                        },
+                        userSession!.did
                       );
                       await retriveProfile();
                     }}

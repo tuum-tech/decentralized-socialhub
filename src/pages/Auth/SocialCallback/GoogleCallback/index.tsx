@@ -13,6 +13,7 @@ import {
   requestGoogleToken,
   getUsersWithRegisteredGoogle
 } from './fetchapi';
+import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service';
@@ -56,7 +57,6 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
             CredentialType.Google,
             googleId.email
           );
-
           let state = await DidDocumentService.getUserDocument(userSession);
 
           await DidService.addVerfiableCredentialToDIDDocument(
@@ -66,7 +66,20 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
 
           DidDocumentService.updateUserDocument(state.diddocument);
           userSession.loginCred!.google! = googleId.email;
-          userSession.badges!.socialVerify!.google.archived = new Date().getTime();
+          if (!userSession.badges!.socialVerify!.google.archived) {
+            userSession.badges!.socialVerify!.google.archived = new Date().getTime();
+            await ProfileService.addActivity(
+              {
+                guid: '',
+                did: userSession.did,
+                message: 'You received a Google verfication badge',
+                read: false,
+                createdAt: 0,
+                updatedAt: 0
+              },
+              userSession.did
+            );
+          }
           await UserService.updateSession(userSession);
           window.close();
         } else {

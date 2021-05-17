@@ -20,6 +20,7 @@ interface Props {
 const RecentBadgeCard: React.FC<Props> = ({ badges }) => {
   const [archivedBadges, setArchivedBadges] = useState([]);
   useEffect(() => {
+    if (!badges) return;
     let _archivedBadges: any = [];
     Object.keys(badges!).forEach(category => {
       Object.keys((badges as any)[category]).forEach(name => {
@@ -33,11 +34,10 @@ const RecentBadgeCard: React.FC<Props> = ({ badges }) => {
         }
       });
     });
-    console.log(_archivedBadges);
     _archivedBadges.sort((a: any, b: any) => b.archived - a.archived);
     setArchivedBadges(_archivedBadges);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [badges]);
   return (
     <IonCard className={style['spotlight']}>
       <IonCardHeader className={style['card-header']}>

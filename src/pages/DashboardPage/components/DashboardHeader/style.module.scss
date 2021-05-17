@@ -75,6 +75,13 @@
     justify-content: flex-end;
   }
 
+  .d-flex {
+    display: flex;
+    justify-content: flex-start;
+  }
+  .d-flex > * {
+    margin-right: 15px;
+  }
   // .tip {
   //     color: #00000099;
   //     background-color: #E3F3FD;

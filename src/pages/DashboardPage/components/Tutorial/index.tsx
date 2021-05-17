@@ -3,7 +3,6 @@ import { IonGrid, IonRow, IonCol, IonButton } from '@ionic/react';
 import styled from 'styled-components';
 
 import LoadingIndicator from 'src/components/LoadingIndicator';
-
 import TutorialStepsComponent from './TutorialSteps';
 import TutorialStep1Component from './Steps/TutorialStep1';
 import TutorialStep2Component from './Steps/TutorialStep2';
@@ -60,8 +59,9 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({ onClose }) => {
     let userSession = UserService.GetUserSession();
     if (step !== 4 && userSession) {
       userSession.tutorialStep = step + 1;
-      if (userSession.tutorialStep === 4)
+      if (userSession.tutorialStep === 4) {
         userSession.badges!.account!.beginnerTutorial.archived = new Date().getTime();
+      }
       await UserService.updateSession(userSession);
       setStep(step + 1);
     } else {
