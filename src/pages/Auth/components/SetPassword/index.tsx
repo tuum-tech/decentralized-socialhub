@@ -24,6 +24,10 @@ import LoadingIndicator from 'src/components/LoadingIndicator';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import keyimg from 'src/assets/icon/key.png';
+import check from 'src/assets/check-circle-fill.svg';
+import uncheck from 'src/assets/check-circle.svg';
+import { validateEmail } from 'src/utils/validation';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
 
 const ErrorText = styled(Text16)`
   text-align: center;
@@ -37,6 +41,24 @@ interface Props {
   loading?: boolean;
 }
 
+interface CheckProps {
+  text: string;
+  isChecked: boolean;
+}
+
+const Check: React.FC<CheckProps> = ({ text = '', isChecked = false }) => {
+  return (
+    <div>
+      {isChecked ? (
+        <img alt="check" src={check} />
+      ) : (
+        <img alt="check" src={uncheck} />
+      )}
+      <span>&nbsp;{text}</span>
+    </div>
+  );
+};
+
 const SetPassword: React.FC<Props> = ({
   next,
   displayText = '',
@@ -46,6 +68,49 @@ const SetPassword: React.FC<Props> = ({
   const [repeatPassword, setRepeatPassword] = useState('');
   const [error, setError] = useState('');
   const disabled = displayText !== '';
+
+  const [lengthValid, setLengthValid] = useState(false);
+  const [hasUppercase, setHasUppercase] = useState(false);
+  const [hasLowercase, setHasLowercase] = useState(false);
+  //const [hasLetter, setHasLetter] = useState(false);
+  const [hasNumber, setHasNumber] = useState(false);
+  const [hasSpecialChar, setHasSpecialChar] = useState(false);
+  const [isInvalidPassword, setIsInvalidPassword] = useState(false);
+
+  const validatePassword = (n: string): any => {
+    setIsInvalidPassword(false);
+
+    if (n.length > 8) setLengthValid(true);
+    else {
+      setLengthValid(false);
+      setIsInvalidPassword(true);
+    }
+
+    if (/[A-Z]/.test(n)) setHasUppercase(true);
+    else {
+      setIsInvalidPassword(true);
+      setHasUppercase(false);
+    }
+
+    if (/[a-z]/.test(n)) setHasLowercase(true);
+    else {
+      setHasLowercase(false);
+      setIsInvalidPassword(true);
+    }
+
+    if (/[0-9]/.test(n)) setHasNumber(true);
+    else {
+      setHasNumber(false);
+      setIsInvalidPassword(true);
+    }
+
+    if (/[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(n))
+      setHasSpecialChar(true);
+    else {
+      setHasSpecialChar(false);
+      setIsInvalidPassword(true);
+    }
+  };
 
   return (
     <OnBoardLayout>
@@ -74,11 +139,29 @@ const SetPassword: React.FC<Props> = ({
             type="password"
             onChange={n => {
               setError('');
+              validatePassword(n);
+
               setPassword(n);
             }}
             placeholder="Enter your password"
           />
+          <IonGrid>
+            <IonRow>
+              <IonCol size="6">
+                <Check text="8+ characteres" isChecked={lengthValid} />
+                <Check text="Uppercase" isChecked={hasUppercase} />
+                <Check text="Lowercase" isChecked={hasLowercase} />
+              </IonCol>
+              <IonCol size="6">
+                {/* <Check text="Alphanumeric" isChecked={hasLetter} /> */}
+                <Check text="Number" isChecked={hasNumber} />
+                <Check text="Special character" isChecked={hasSpecialChar} />
+              </IonCol>
+            </IonRow>
+          </IonGrid>
+
           <TextInput
+            readonly={isInvalidPassword}
             value={repeatPassword}
             type="password"
             label="Re-enter Password"
