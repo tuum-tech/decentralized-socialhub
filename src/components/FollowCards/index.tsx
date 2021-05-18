@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { loadFollowingUsers, loadFollowerUsers } from 'src/utils/follow';
+import { SearchService } from 'src/services/search.service';
+import { getItemsFromData } from 'src/utils/script';
+import { TuumTechScriptService } from 'src/services/script.service';
 
 import FollowerCard from './FollowerCard';
 import FollowingCard from './FollowingCard';
@@ -11,34 +15,56 @@ interface Props {
 }
 
 const FowllowCards: React.FC<Props> = ({ did, signed }: Props) => {
-  const [followingDids, setFollowingDids] = useState<string[]>([]);
-  const [followerDids, setFollowerDids] = useState<string[]>([]);
+  const [followingUsers, setFollowingUsers] = useState<any[]>([]);
+  const [followerUsers, setFollowerUsers] = useState<any[]>([]);
+  const history = useHistory();
+
   useEffect(() => {
     (async () => {
-      const followingDidArray = await loadFollowingUsers(did);
-      setFollowingDids(followingDidArray);
-      const followerDidArray = await loadFollowerUsers(did);
-      setFollowerDids(followerDidArray);
+      const _followingDids = await loadFollowingUsers(did);
+      const _followersDids = await loadFollowerUsers(did);
+
+      const followings = await TuumTechScriptService.searchUserWithDIDs(
+        _followingDids,
+        5,
+        0
+      );
+      setFollowingUsers(followings);
+
+      const followers = await TuumTechScriptService.searchUserWithDIDs(
+        _followersDids,
+        5,
+        0
+      );
+      setFollowerUsers(followers);
     })();
   }, [did]);
   return (
     <>
-      {followingDids.length > 0 && (
+      {followingUsers.length > 0 && (
         <FollowingCard
           users={
-            followingDids.length > 5 ? followingDids.slice(0, 5) : followingDids
+            followingUsers.length > 5
+              ? followingUsers.slice(0, 5)
+              : followingUsers
           }
           getLinkFunc={(did: string) => '/did/' + did}
           isSigned={signed}
+          viewAllClicked={() => {
+            history.push('/connections/followings');
+          }}
         />
       )}
-      {followerDids.length > 0 && (
+      {followerUsers.length > 0 && (
         <FollowerCard
           users={
-            followerDids.length > 5 ? followerDids.slice(0, 5) : followerDids
+            followerUsers.length > 5 ? followerUsers.slice(0, 5) : followerUsers
           }
           getLinkFunc={(did: string) => '/did/' + did}
           isSigned={signed}
+          viewAllClicked={() => {
+            history.push('/connections/followers');
+          }}
         />
       )}
     </>

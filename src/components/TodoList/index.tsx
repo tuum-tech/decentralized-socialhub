@@ -3,7 +3,7 @@ import { IonGrid, IonRow, IonCol } from '@ionic/react';
 import styled from 'styled-components';
 
 import check from '../../theme/images/checkmark-circle-outline.svg';
-import checkgreen from '../../assets/check-circle-fill.svg';
+import checkgreen from '../../assets/icon/check-circle-fill.svg';
 import ProgressBar from '../ProgressBar';
 import style from './style.module.scss';
 

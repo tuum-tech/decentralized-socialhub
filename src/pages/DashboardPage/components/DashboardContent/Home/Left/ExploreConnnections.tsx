@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 import { ProfileService } from 'src/services/profile.service';
+import { UserService } from 'src/services/user.service';
+
 import {
   MainCard,
   CardText,
@@ -20,23 +22,24 @@ const ExploreConnnections: React.FC<Props> = ({ did }) => {
   useEffect(() => {
     (async () => {
       let fUserDids: string[] = [];
+      let instance = UserService.GetUserSession();
+      if (instance && instance.tutorialStep === 4) {
+        let followings = await ProfileService.getFollowings(did);
+        if (followings) {
+          fUserDids = followings.get_following.items.map(item => item.did);
+        }
 
-      let followings = await ProfileService.getFollowings(did);
-      if (followings) {
-        fUserDids = followings.get_following.items.map(item => item.did);
-      }
-
-      let followers = await ProfileService.getFollowers([did]);
-      if (followers) {
-        for (let i = 0; i < followers.get_followers.items.length; i++) {
-          if (!fUserDids.includes(followers.get_followers.items[i].did)) {
-            fUserDids.push(followers.get_followers.items[i].did);
+        let followers = await ProfileService.getFollowers([did]);
+        if (followers) {
+          for (let i = 0; i < followers.get_followers.items.length; i++) {
+            if (!fUserDids.includes(followers.get_followers.items[i].did)) {
+              fUserDids.push(followers.get_followers.items[i].did);
+            }
           }
         }
-      }
-
-      if (fUserDids.length > 0 && fUserDids.includes(did)) {
-        fUserDids = fUserDids.filter(item => item !== did);
+        if (fUserDids.length > 0 && fUserDids.includes(did)) {
+          fUserDids = fUserDids.filter(item => item !== did);
+        }
       }
       setConnectedDids(fUserDids);
     })();

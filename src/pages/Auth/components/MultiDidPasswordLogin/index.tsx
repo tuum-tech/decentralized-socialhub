@@ -14,7 +14,7 @@ import {
 } from 'src/components/layouts/OnBoardLayout';
 import LoadingIndicator from 'src/components/LoadingIndicator';
 import { SearchService } from 'src/services/search.service';
-
+import { getItemsFromData } from 'src/utils/script';
 import { ButtonWithLogo } from 'src/components/buttons';
 import { Text16, ErrorTxt } from 'src/components/texts';
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
@@ -50,14 +50,9 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
         200,
         0
       );
-      if (
-        getUserRes &&
-        getUserRes.response &&
-        getUserRes.response.get_users_by_dids &&
-        getUserRes.response.get_users_by_dids.items &&
-        getUserRes.response.get_users_by_dids.items.length > 0
-      ) {
-        setLocalUsers(getUserRes.response.get_users_by_dids.items);
+      const users = getItemsFromData(getUserRes, 'get_users_by_dids');
+      if (users.length > 0) {
+        setLocalUsers(users);
         setLoading('');
       }
     })();

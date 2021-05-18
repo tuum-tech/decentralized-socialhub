@@ -8,7 +8,7 @@ import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 
 import ProfileComponent from './components/ProfileComponent';
 import SearchComponent from './components/SearchComponent';
-import arrowLeft from '../../assets/icons/arrow-left-square.svg';
+import arrowLeft from '../../assets/icon/arrow-left-square.svg';
 
 import style from './style.module.scss';
 

@@ -5,6 +5,7 @@ import { UserService } from './user.service';
 import { HiveService } from './hive.service';
 import { DidService } from './did.service';
 import { alertError } from 'src/utils/notify';
+import { getItemsFromData } from 'src/utils/script';
 
 export class TuumTechScriptService {
   private static async runTuumTechScript(script: any) {
@@ -30,7 +31,9 @@ export class TuumTechScriptService {
     const get_users_scripts = {
       name: 'get_users_by_' + credentialType,
       params: {
-        filter: credential
+        filter: credential,
+        limit: 200,
+        skip: 0
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
@@ -124,11 +127,17 @@ export class TuumTechScriptService {
     );
   }
 
-  public static async searchUserWithDID(did: string) {
+  public static async searchUserWithDIDs(
+    dids: string[],
+    limit = 200,
+    skip = 0
+  ) {
     const get_user_by_did_script = {
       name: 'get_users_by_dids',
       params: {
-        dids: [did]
+        dids: dids,
+        limit,
+        skip
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
@@ -136,7 +145,7 @@ export class TuumTechScriptService {
       }
     };
     let response: any = await this.runTuumTechScript(get_user_by_did_script);
-    return response;
+    return getItemsFromData(response, 'get_users_by_dids');
   }
 
   public static async updateTuumUser(params: ISessionItem) {
@@ -196,7 +205,7 @@ export class UserVaultScriptService {
   public static async register() {
     let user = UserService.GetUserSession();
     if (!user) return;
-    let response = await TuumTechScriptService.searchUserWithDID(user.did);
+    let response = await TuumTechScriptService.searchUserWithDIDs([user.did]);
     if (
       response.data &&
       response.data.get_user_by_did &&

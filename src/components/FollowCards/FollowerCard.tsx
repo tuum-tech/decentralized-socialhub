@@ -10,21 +10,24 @@ import {
 } from '@ionic/react';
 import { Link } from 'react-router-dom';
 
-import Avatar from '../Avatar';
 import styleCards from 'src/components/cards/WidgetCards.module.scss';
+import Avatar from '../Avatar';
 import { TruncatedSpan, Name, ViewAll } from './FollowingCard';
+
 import style from './style.module.scss';
 
 interface FollwerWidgetProps {
   users: string[];
   getLinkFunc: any;
   isSigned: boolean;
+  viewAllClicked: () => void;
 }
 
 const FollowerCard: React.FC<FollwerWidgetProps> = ({
   users,
   getLinkFunc,
-  isSigned
+  isSigned,
+  viewAllClicked
 }: FollwerWidgetProps) => {
   return (
     <IonCard className={styleCards['overview']}>
@@ -37,9 +40,7 @@ const FollowerCard: React.FC<FollwerWidgetProps> = ({
               </IonCardTitle>
             </IonCol>
             <IonCol size="auto">
-              <ViewAll href={isSigned ? '/connections/followers' : '/sign-did'}>
-                View All
-              </ViewAll>
+              <ViewAll onClick={viewAllClicked}>View All</ViewAll>
             </IonCol>
           </IonRow>
         </IonGrid>

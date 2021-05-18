@@ -278,7 +278,6 @@ const ProfilePage = () => {
             </IonCol>
             <IonCol size="10" className={style['right-panel']}>
               <DashboardHeader
-                profile={full_profile}
                 sessionItem={userInfo}
                 publishStatus={publishStatus}
               />

@@ -13,17 +13,14 @@ import PublishingLabel from '../PublishingLabel';
 
 import style from './style.module.scss';
 import shieldIcon from '../../../../assets/icon/shield.svg';
-import { UserService } from 'src/services/user.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 
 interface IProps {
-  profile?: ProfileDTO;
   sessionItem: ISessionItem;
   publishStatus: RequestStatus;
 }
 
 const DashboardHeader: React.FC<IProps> = ({
-  profile,
   sessionItem,
   publishStatus
 }: IProps) => {
@@ -37,13 +34,14 @@ const DashboardHeader: React.FC<IProps> = ({
 
   useEffect(() => {
     (async () => {
-      const userSession = UserService.GetUserSession();
-      const documentState = await DidDocumentService.getUserDocument(
-        userSession!
-      );
-      setDidDocument(documentState.diddocument);
+      if (sessionItem.name !== '') {
+        const documentState = await DidDocumentService.getUserDocument(
+          sessionItem
+        );
+        setDidDocument(documentState.diddocument);
+      }
     })();
-  }, []);
+  }, [sessionItem.name]);
 
   useEffect(() => {
     (async () => {

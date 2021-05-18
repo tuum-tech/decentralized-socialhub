@@ -73,12 +73,14 @@ const DashboardHome: React.FC<Props> = ({
 
   useEffect(() => {
     (async () => {
-      const followerUsers = await loadFollowingUsers(sessionItem.did);
-      const followingUsers = await loadFollowerUsers(sessionItem.did);
-      setFollowUsers(followerUsers.length + followingUsers.length > 0);
+      if (sessionItem.did !== '') {
+        const followerUsers = await loadFollowingUsers(sessionItem.did);
+        const followingUsers = await loadFollowerUsers(sessionItem.did);
+        setFollowUsers(followerUsers.length + followingUsers.length > 0);
+      }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [sessionItem, sessionItem.did]);
 
   const hasSocialProfiles = hasCredentials(didDocument);
 

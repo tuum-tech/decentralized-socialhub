@@ -1,5 +1,5 @@
 import { UserService } from '../services/user.service';
-import defaultAvatar from '../assets/dp.png';
+import defaultAvatar from '../assets/icon/dp.png';
 
 export interface GetAvatarRes {
   didPublished: boolean;

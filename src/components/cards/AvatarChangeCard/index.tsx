@@ -11,7 +11,7 @@ import {
   CardContentContainer,
   LinkStyleSpan
 } from '../common';
-import defaultAvatar from '../../../assets/dp.png';
+import defaultAvatar from '../../../assets/icon/dp.png';
 import {
   Container,
   TextHeader,

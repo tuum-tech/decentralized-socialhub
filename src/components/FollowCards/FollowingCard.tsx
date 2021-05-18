@@ -6,8 +6,7 @@ import {
   IonCard,
   IonCardTitle,
   IonCardHeader,
-  IonCardContent,
-  IonRouterLink
+  IonCardContent
 } from '@ionic/react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
@@ -20,6 +19,7 @@ interface FollowingsWidgetProps {
   users: any[];
   getLinkFunc: any;
   isSigned: boolean;
+  viewAllClicked: () => void;
 }
 
 export const TruncatedSpan = styled.span`
@@ -50,7 +50,7 @@ export const Name = styled.span`
   color: #27272e;
 `;
 
-export const ViewAll = styled(IonRouterLink)`
+export const ViewAll = styled.button`
   flex-grow: 0;
   font-family: 'SF Pro Display';
   font-size: 14px;
@@ -61,12 +61,14 @@ export const ViewAll = styled(IonRouterLink)`
   letter-spacing: normal;
   text-align: right;
   color: #4c6fff;
+  background: transparent;
 `;
 
 const FollowingCard: React.FC<FollowingsWidgetProps> = ({
   users,
   getLinkFunc,
-  isSigned
+  isSigned,
+  viewAllClicked
 }: FollowingsWidgetProps) => {
   return (
     <IonCard className={styleCards['overview']}>
@@ -79,11 +81,7 @@ const FollowingCard: React.FC<FollowingsWidgetProps> = ({
               </IonCardTitle>
             </IonCol>
             <IonCol size="auto">
-              <ViewAll
-                href={isSigned ? '/connections/followings' : '/sign-did'}
-              >
-                View All
-              </ViewAll>
+              <ViewAll onClick={viewAllClicked}>View All</ViewAll>
             </IonCol>
           </IonRow>
         </IonGrid>

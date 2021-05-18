@@ -12,7 +12,6 @@ export class UserVaultScripts {
     await hiveClient.Database.createCollection('basic_profile');
     await hiveClient.Database.createCollection('education_profile');
     await hiveClient.Database.createCollection('experience_profile');
-    await hiveClient.Database.createCollection('activities');
   }
 
   static async SetScripts(hiveClient: HiveClient) {
@@ -183,66 +182,6 @@ export class UserVaultScripts {
           collection: 'experience_profile',
           filter: {
             guid: '$params.guid'
-          }
-        }
-      }
-    });
-
-    await hiveClient.Scripting.SetScript({
-      name: 'get_activity',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_activity',
-        output: true,
-        body: {
-          collection: 'activities'
-        }
-      }
-    });
-    await hiveClient.Scripting.SetScript({
-      name: 'add_activity',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'insert',
-        name: 'add_activity',
-        output: true,
-        body: {
-          collection: 'activities',
-          document: {
-            guid: '$params.guid',
-            did: '$params.did',
-            message: '$params.message',
-            read: '$params.read',
-            createdAt: '$params.createdAt',
-            updatedAt: '$params.updatedAt'
-          }
-        }
-      }
-    });
-    await hiveClient.Scripting.SetScript({
-      name: 'update_activity',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'update_activity',
-        body: {
-          collection: 'activities',
-          filter: {
-            guid: '$params.guid'
-          },
-          update: {
-            $set: {
-              read: '$params.read',
-              updatedAt: '$params.updatedAt'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
           }
         }
       }
