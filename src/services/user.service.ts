@@ -267,6 +267,7 @@ export class UserService {
       name,
       userToken: credential,
       isDIDPublished: isDIDPublished ? isDIDPublished : false,
+      didPublishTime: 0,
       onBoardingCompleted: false,
       loginCred: loginCred || {},
       badges: {
@@ -417,7 +418,6 @@ export class UserService {
         sessionItem.did
       );
     });
-
     this.lockUser(this.key(did), sessionItem);
     // SessionService.saveSessionItem(sessionItem);
     window.localStorage.setItem(

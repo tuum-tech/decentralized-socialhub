@@ -81,6 +81,7 @@ interface ISessionItem {
   name: string;
   email?: string;
   isDIDPublished: boolean;
+  didPublishTime: number;
   mnemonics: string;
   passhash: string;
   tutorialStep: number;

@@ -51,7 +51,7 @@ const ProfilePage = () => {
   const [loadingText, setLoadingText] = useState('');
   const [userInfo, setUserInfo] = useState<ISessionItem>(defaultUserInfo);
   const [full_profile, setfull_profile] = useState(defaultFullProfile);
-  const [didDocument, setDidDocument] = useState({});
+  const [didDocument, setDidDocument] = useState<any>({});
   const [publishStatus, setPublishStatus] = useState(RequestStatus.Pending);
   const [onBoardVisible, setOnBoardVisible] = useState(false);
   const history = useHistory();
@@ -178,7 +178,57 @@ const ProfilePage = () => {
       }
     })();
   }, [history.location.pathname]);
+  useEffect(() => {
+    (async () => {
+      if (didDocument && didDocument.id) {
+        let userSession = UserService.GetUserSession();
+        if (!userSession) return;
 
+        const timestamp = new Date(didDocument.proof.created).getTime();
+        let message = '';
+        userSession.didPublishTime += 1;
+        const didPublishTime = userSession.didPublishTime;
+        if (userSession.didPublishTime == 1) {
+          userSession.badges!.didPublishTimes._1times.archived = timestamp;
+          message = 'You received 1 times did publish badge';
+        }
+        if (userSession.didPublishTime == 5) {
+          userSession.badges!.didPublishTimes._5times.archived = timestamp;
+          message = 'You received 5 times did publish badge';
+        }
+        if (userSession.didPublishTime == 10) {
+          userSession.badges!.didPublishTimes._10times.archived = timestamp;
+          message = 'You received 10 times did publish badge';
+        }
+        if (userSession.didPublishTime == 25) {
+          userSession.badges!.didPublishTimes._25times.archived = timestamp;
+          message = 'You received 25 times did publish badge';
+        }
+        if (userSession.didPublishTime == 50) {
+          userSession.badges!.didPublishTimes._50times.archived = timestamp;
+          message = 'You received 50 times did publish badge';
+        }
+        if (userSession.didPublishTime == 100) {
+          userSession.badges!.didPublishTimes._100times.archived = timestamp;
+          message = 'You received 100 times did publish badge';
+        }
+        if (message) {
+          await ProfileService.addActivity(
+            {
+              guid: '',
+              did: userSession.did,
+              message: message,
+              read: false,
+              createdAt: 0,
+              updatedAt: 0
+            },
+            userSession.did
+          );
+          UserService.updateSession(userSession);
+        }
+      }
+    })();
+  }, [JSON.stringify(didDocument)]);
   if (userInfo.tutorialStep < 4 && onBoardVisible) {
     return (
       <OnBoarding

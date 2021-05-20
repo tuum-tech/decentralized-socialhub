@@ -506,6 +506,7 @@ export const defaultUserInfo: ISessionItem = {
   // email: '',
   name: '',
   isDIDPublished: false,
+  didPublishTime: 0,
   loginCred: {},
   mnemonics: '',
   passhash: '',

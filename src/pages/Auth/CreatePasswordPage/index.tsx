@@ -102,6 +102,7 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
         did,
         name,
         isDIDPublished,
+        didPublishTime,
         loginCred
       } = props.location.state;
 
@@ -112,6 +113,7 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
         did,
         name,
         isDIDPublished,
+        didPublishTime,
         loginCred,
         mnemonics: '',
         passhash: '',
