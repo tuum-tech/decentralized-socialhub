@@ -40,6 +40,10 @@
     --padding-end: 16px;
     --padding-start: 16px;
     --placeholder-color: var(--input-muted-placeholder);
+
+    input {
+      border-radius: 6px!important;
+    }
   }
 
   ion-label{
@@ -66,5 +70,6 @@
 .hasError {
   input {
     border-bottom: 1px solid red !important;
+    background-color: #ffecec !important;
   }
 }

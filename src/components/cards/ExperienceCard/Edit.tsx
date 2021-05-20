@@ -44,6 +44,7 @@ const ExperienceCardEdit: React.FC<Props> = ({
             placeholder="e.g. Blockchain developer"
             label="Title"
             name="title"
+            hasError={mode === MODE.ERROR && !experienceItem.title}
             value={experienceItem.title}
             onChange={handleChange}
           />
@@ -55,6 +56,7 @@ const ExperienceCardEdit: React.FC<Props> = ({
             placeholder="Google, Elastos Foundation, ..."
             label="Organization Name"
             name="institution"
+            hasError={mode === MODE.ERROR && !experienceItem.institution}
             value={experienceItem.institution}
             onChange={handleChange}
           />
@@ -67,6 +69,7 @@ const ExperienceCardEdit: React.FC<Props> = ({
             label="Duration"
             name="start"
             type="date"
+            hasError={mode === MODE.ERROR && !experienceItem.start}
             value={experienceItem.start}
             onChange={handleChange}
           />
@@ -77,6 +80,7 @@ const ExperienceCardEdit: React.FC<Props> = ({
             label="&nbsp;"
             name="end"
             type="date"
+            hasError={mode === MODE.ERROR && !experienceItem.end}
             value={experienceItem.end}
             onChange={handleChange}
           />

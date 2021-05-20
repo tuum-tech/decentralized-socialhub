@@ -89,22 +89,4 @@ export class AssistService {
     let didKey = did.replace('did:elastos:', '');
     window.localStorage.removeItem(`publish_${didKey}`);
   };
-
-  static async getPublishTimes(did: string): Promise<Number> {
-    let url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/assist_router/service_count/did_publish/${did}`;
-
-    let postData: any = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: process.env.REACT_APP_PROFILE_API_SERVICE_KEY
-      }
-    };
-
-    let fetchResponse = await fetch(url, postData);
-
-    let json = await fetchResponse.json();
-
-    return json.data.total_count;
-  }
 }

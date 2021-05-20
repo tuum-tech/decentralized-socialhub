@@ -40,6 +40,7 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({
             label="Program / Degree"
             placeholder="e.g. Blockchain developer"
             name="program"
+            hasError={mode === MODE.ERROR && !educationItem.program}
             value={educationItem.program}
             onChange={handleChange}
           />
@@ -51,6 +52,7 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({
             label="University / Institution name"
             placeholder="e.g. Harvard, MIT, ..."
             name="institution"
+            hasError={mode === MODE.ERROR && !educationItem.institution}
             value={educationItem.institution}
             onChange={handleChange}
           />
@@ -63,6 +65,7 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({
             placeholder="Start"
             type="date"
             name="start"
+            hasError={mode === MODE.ERROR && !educationItem.start}
             value={educationItem.start}
             onChange={handleChange}
           />
@@ -73,6 +76,7 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({
             type="date"
             placeholder="End"
             name="end"
+            hasError={mode === MODE.ERROR && !educationItem.end}
             value={educationItem.end}
             onChange={handleChange}
           />

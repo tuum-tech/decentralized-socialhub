@@ -11,7 +11,8 @@ import styled from 'styled-components';
 export enum MODE {
   NONE,
   ADD,
-  EDIT
+  EDIT,
+  ERROR
 }
 
 export const Institution = styled.span`

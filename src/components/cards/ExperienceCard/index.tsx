@@ -98,6 +98,12 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     setEditedItem(item);
   };
 
+  const validate = (item: ExperienceItem) => {
+    if (!item.title || !item.institution || !item.start || !item.end)
+      return false;
+    return true;
+  };
+
   const saveChanges = (item: ExperienceItem) => {
     let items = [...currentExperienceDTO.items];
 
@@ -209,7 +215,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
       </IonCard>
       <MyModal
         onDidDismiss={() => setMode(MODE.NONE)}
-        isOpen={mode === MODE.EDIT || mode === MODE.ADD}
+        isOpen={mode !== MODE.NONE}
         cssClass="my-custom-class"
       >
         <ExperienceCardEdit
@@ -225,8 +231,12 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
               </IonButton>
               <IonButton
                 onClick={() => {
-                  saveChanges(editedItem);
-                  setMode(MODE.NONE);
+                  if (validate(editedItem)) {
+                    saveChanges(editedItem);
+                    setMode(MODE.NONE);
+                  } else {
+                    setMode(MODE.ERROR);
+                  }
                 }}
               >
                 Save
