@@ -94,6 +94,12 @@ const EducationCard: React.FC<IEducationProps> = ({
     setEditedItem(item);
   };
 
+  const validate = (item: EducationItem) => {
+    if (!item.program || !item.institution || !item.start || !item.end)
+      return false;
+    return true;
+  };
+
   const saveChanges = (item: EducationItem) => {
     let items = [...currentEducationDTO.items];
 
@@ -211,7 +217,7 @@ const EducationCard: React.FC<IEducationProps> = ({
           </IonCard>
           <MyModal
             onDidDismiss={() => setMode(MODE.NONE)}
-            isOpen={mode === MODE.EDIT || mode === MODE.ADD}
+            isOpen={mode !== MODE.NONE}
             cssClass="my-custom-class"
           >
             <EducationCardEdit
@@ -227,8 +233,12 @@ const EducationCard: React.FC<IEducationProps> = ({
                   </IonButton>
                   <IonButton
                     onClick={() => {
-                      saveChanges(editedItem);
-                      setMode(MODE.NONE);
+                      if (validate(editedItem)) {
+                        saveChanges(editedItem);
+                        setMode(MODE.NONE);
+                      } else {
+                        setMode(MODE.ERROR);
+                      }
                     }}
                   >
                     Save

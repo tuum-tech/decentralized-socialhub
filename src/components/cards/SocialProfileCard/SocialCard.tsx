@@ -10,7 +10,6 @@ import {
   IonGrid,
   IonImg,
   IonItem,
-  IonList,
   IonModal,
   IonRow
 } from '@ionic/react';

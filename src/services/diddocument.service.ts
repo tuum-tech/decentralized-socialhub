@@ -3,7 +3,6 @@ import { AssistService } from './assist.service';
 import { DidService, PublishRequestOperation } from './did.service';
 import { EventsService, IEventCallback } from './events.service';
 import { UserService } from './user.service';
-import { ProfileService } from './profile.service';
 export interface IDIDDocumentState {
   diddocument: any;
   isChanged: boolean;
