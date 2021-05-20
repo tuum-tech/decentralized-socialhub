@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { loadFollowingUsers, loadFollowerUsers } from 'src/utils/follow';
-import { SearchService } from 'src/services/search.service';
-import { getItemsFromData } from 'src/utils/script';
 import { TuumTechScriptService } from 'src/services/script.service';
 
 import FollowerCard from './FollowerCard';

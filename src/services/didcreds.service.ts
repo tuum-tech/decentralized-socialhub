@@ -1,4 +1,4 @@
-import request, { BaseplateResp } from "src/baseplate/request";
+import request, { BaseplateResp } from 'src/baseplate/request';
 
 export enum CredentialType {
   Linkedin = 'Linkedin',
@@ -37,7 +37,7 @@ export class DidcredsService {
     return json.data.verifiable_credential;
   }
 
-  static async requestLinkedinLogin (): Promise<BaseplateResp>  {
+  static async requestLinkedinLogin(): Promise<BaseplateResp> {
     return request(
       `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/linkedin_request`,
       {
@@ -49,8 +49,8 @@ export class DidcredsService {
       }
     );
   }
-  
-   static async requestGoogleLogin (): Promise<BaseplateResp>  {
+
+  static async requestGoogleLogin(): Promise<BaseplateResp> {
     return request(
       `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/google_request`,
       {
@@ -62,8 +62,8 @@ export class DidcredsService {
       }
     );
   }
-  
-  static async requestFacebookLogin (): Promise<BaseplateResp>  {
+
+  static async requestFacebookLogin(): Promise<BaseplateResp> {
     return request(
       `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/facebook_request`,
       {

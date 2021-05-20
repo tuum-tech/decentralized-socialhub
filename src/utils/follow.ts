@@ -1,9 +1,9 @@
 import { ProfileService } from 'src/services/profile.service';
-import { SearchService } from 'src/services/search.service';
-import { HiveService } from 'src/services/hive.service';
+// import { SearchService } from 'src/services/search.service';
+// import { HiveService } from 'src/services/hive.service';
 import { getItemsFromData } from './script';
 
-const PAGE_LIMIT = 200;
+// const PAGE_LIMIT = 200;
 
 // const getUsersInTuumVault = async (dids: string[]) => {
 //   //  get only users that exist on tuum vault
