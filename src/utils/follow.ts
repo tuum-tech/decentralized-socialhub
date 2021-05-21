@@ -50,6 +50,35 @@ import { getItemsFromData } from './script';
 //   return res_user_dids;
 // };
 
+// export const addDetailsToFollowData = async (
+//   dids: string[],
+//   pageNumber: number,
+//   pageSize: number
+// ) => {
+//   let res_users: any[] = [];
+//   let searchServiceLocal: SearchService;
+
+//   try {
+//     searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
+//     const listUsers: any = await searchServiceLocal.getUsersByDIDs(
+//       dids,
+//       pageSize,
+//       (pageNumber - 1) * pageSize
+//     );
+//     res_users = getItemsFromData(listUsers, 'get_users_by_dids').map(
+//       (user: any) => {
+//         const newobj = {
+//           name: user.name,
+//           avatar: user.avatar || '',
+//           did: user.did
+//         };
+//         return newobj;
+//       }
+//     );
+//   } catch (e) {}
+//   return res_users;
+// };
+
 export const loadFollowingUsers = async (did: string) => {
   const followingRes = (await ProfileService.getFollowings(
     did

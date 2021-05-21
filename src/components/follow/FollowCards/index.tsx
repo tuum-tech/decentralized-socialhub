@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-import { loadFollowingUsers, loadFollowerUsers } from 'src/utils/follow';
+import { SearchService } from 'src/services/search.service';
+import { FollowService } from 'src/services/follow.service';
+import { getItemsFromData } from 'src/utils/script';
 
 import FollowerCard from './FollowerCard';
 import FollowingCard from './FollowingCard';
@@ -12,20 +14,41 @@ interface Props {
 }
 
 const FowllowCards: React.FC<Props> = ({ did, signed, viewAll }: Props) => {
+  const [followingDids, setFollowingDids] = useState<string[]>([]);
+  const [followerDids, setFollowerDids] = useState<string[]>([]);
+
   const [followingUsers, setFollowingUsers] = useState<any[]>([]);
   const [followerUsers, setFollowerUsers] = useState<any[]>([]);
   useEffect(() => {
     (async () => {
-      const _followings = await loadFollowingUsers(did);
-      setFollowingUsers(_followings);
-      const _followers = await loadFollowerUsers(did);
-      setFollowerUsers(_followers);
+      const searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
+
+      const _followingDids = await FollowService.getFollowingDids(did);
+      setFollowingDids(_followingDids);
+      let followings: any = await searchServiceLocal.getUsersByDIDs(
+        _followingDids,
+        5,
+        0
+      );
+      followings = getItemsFromData(followings, 'get_users_by_dids');
+      setFollowerUsers(followings);
+
+      const _followersDids = await FollowService.getFollowerDids(did);
+      setFollowerDids(_followersDids);
+      let followers: any = await searchServiceLocal.getUsersByDIDs(
+        _followersDids,
+        5,
+        0
+      );
+      followers = getItemsFromData(followers, 'get_users_by_dids');
+      setFollowingUsers(followers);
     })();
   }, [did]);
   return (
     <>
-      {followingUsers.length > 0 && (
+      {followingDids.length > 0 && (
         <FollowingCard
+          totalNumber={followingDids.length}
           users={
             followingUsers.length > 5
               ? followingUsers.slice(0, 5)
@@ -36,8 +59,9 @@ const FowllowCards: React.FC<Props> = ({ did, signed, viewAll }: Props) => {
           viewAllClicked={() => viewAll(false)}
         />
       )}
-      {followerUsers.length > 0 && (
+      {followerDids.length > 0 && (
         <FollowerCard
+          totalNumber={followerDids.length}
           users={
             followerUsers.length > 5 ? followerUsers.slice(0, 5) : followerUsers
           }

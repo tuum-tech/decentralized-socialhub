@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import FollowCards from 'src/components/follow/FollowCards';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
 import { getVerifiedCredential } from 'src/utils/credential';
-import { loadFollowingUsers, loadFollowerUsers } from 'src/utils/follow';
+import { FollowService } from 'src/services/follow.service';
 
 import ManageProfile from './Left/ManageProfile';
 import ExploreConnnections from './Left/ExploreConnnections';
@@ -33,6 +33,7 @@ export interface Props {
   sessionItem: ISessionItem;
   didDocument: any;
   activeTab: (tab: string) => void;
+  viewAll: (isFollower: boolean) => void;
 }
 
 const DashboardHome: React.FC<Props> = ({
@@ -40,7 +41,8 @@ const DashboardHome: React.FC<Props> = ({
   profile,
   sessionItem,
   didDocument,
-  activeTab
+  activeTab,
+  viewAll
 }) => {
   const history = useHistory();
   const [tutorialVisible, setTutorialVisible] = useState(true);
@@ -75,11 +77,21 @@ const DashboardHome: React.FC<Props> = ({
 
   useEffect(() => {
     (async () => {
+<<<<<<< HEAD
       if (sessionItem.did !== '') {
         const followerUsers = await loadFollowingUsers(sessionItem.did);
         const followingUsers = await loadFollowerUsers(sessionItem.did);
         setFollowUsers(followerUsers.length + followingUsers.length > 0);
       }
+=======
+      const _followingDids = await FollowService.getFollowingDids(
+        sessionItem.did
+      );
+      const _followersDids = await FollowService.getFollowerDids(
+        sessionItem.did
+      );
+      setFollowUsers(_followingDids.length + _followersDids.length > 0);
+>>>>>>> d638be0... implement view all of followers
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionItem, sessionItem.did]);
@@ -328,11 +340,7 @@ const DashboardHome: React.FC<Props> = ({
             <FollowCards
               did={sessionItem.did}
               signed={true}
-              viewAll={(isFollower: boolean) => {
-                history.push(
-                  `/connections/${isFollower ? 'followers' : 'followings'}`
-                );
-              }}
+              viewAll={viewAll}
             />
           )}
         </RightCardCol>

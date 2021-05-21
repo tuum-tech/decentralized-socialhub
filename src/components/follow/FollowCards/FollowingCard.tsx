@@ -20,6 +20,7 @@ interface FollowingsWidgetProps {
   getLinkFunc: any;
   isSigned: boolean;
   viewAllClicked: () => void;
+  totalNumber: number;
 }
 
 export const TruncatedSpan = styled.span`
@@ -68,6 +69,7 @@ const FollowingCard: React.FC<FollowingsWidgetProps> = ({
   users,
   getLinkFunc,
   isSigned,
+  totalNumber,
   viewAllClicked
 }: FollowingsWidgetProps) => {
   return (
@@ -77,7 +79,7 @@ const FollowingCard: React.FC<FollowingsWidgetProps> = ({
           <IonRow className="ion-justify-content-between">
             <IonCol size="6">
               <IonCardTitle id="education">
-                Following ({users.length})
+                Following ({totalNumber})
               </IonCardTitle>
             </IonCol>
             <IonCol size="auto">

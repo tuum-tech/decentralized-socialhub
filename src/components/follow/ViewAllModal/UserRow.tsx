@@ -23,7 +23,7 @@ const UserRow = ({ name, did, isFollowing, followAction }: Props) => {
           <span className={style['truncatedDID']}>{did}</span>
         </Link>
       </div>
-      <FollowButton onClick={() => {}} width={100}>
+      <FollowButton onClick={() => {}} width={100} height={35}>
         Follow
       </FollowButton>
     </div>

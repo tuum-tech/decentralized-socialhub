@@ -26,6 +26,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   props: RouteComponentProps<MatchParams>
 ) => {
   let did: string = props.match.params.did;
+  const [showAllFollow, setShowAllFollow] = useState(0);
   const [signedUser, setSignedUser] = useState(defaultUserInfo);
   const [loading, setLoading] = useState(true);
   const [scrollTop, setScrollTop] = useState(0);
@@ -57,10 +58,6 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     contentRef.current && contentRef.current.scrollToPoint(0, point, 200);
   };
 
-  const handleScroll = (e: any) => {
-    setScrollTop(e.detail.scrollTop);
-  };
-
   useEffect(() => {
     (async () => {
       let did: string = props.match.params.did;
@@ -82,7 +79,9 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
         <IonContent
           ref={contentRef}
           scrollEvents={true}
-          onIonScroll={handleScroll}
+          onIonScroll={(e: any) => {
+            setScrollTop(e.detail.scrollTop);
+          }}
         >
           <PublicNavbar signedIn={signedUser && signedUser.did !== ''} />
           <ContentRow className="ion-justify-content-around">
@@ -95,14 +94,22 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
                   aboutRef={aboutRef}
                   experienceRef={experienceRef}
                   educationRef={educationRef}
-                  viewAllClicked={(isFollower: boolean) => {}}
+                  viewAllClicked={(isFollower: boolean) => {
+                    setShowAllFollow(isFollower ? 1 : 2);
+                  }}
                 />
               </div>
             </IonCol>
           </ContentRow>
         </IonContent>
       </IonGrid>
-      <ViewAllModal isFollower={true} targetDid={props.match.params.did} />
+      {showAllFollow > 0 && (
+        <ViewAllModal
+          isFollower={showAllFollow === 1}
+          targetDid={props.match.params.did}
+          onClose={() => setShowAllFollow(0)}
+        />
+      )}
     </IonPage>
   );
 };

@@ -21,12 +21,14 @@ interface FollwerWidgetProps {
   getLinkFunc: any;
   isSigned: boolean;
   viewAllClicked: () => void;
+  totalNumber: number;
 }
 
 const FollowerCard: React.FC<FollwerWidgetProps> = ({
   users,
   getLinkFunc,
   isSigned,
+  totalNumber,
   viewAllClicked
 }: FollwerWidgetProps) => {
   return (
@@ -36,7 +38,7 @@ const FollowerCard: React.FC<FollwerWidgetProps> = ({
           <IonRow className="ion-justify-content-between">
             <IonCol size="6">
               <IonCardTitle id="education">
-                Follower ({users.length})
+                Follower ({totalNumber})
               </IonCardTitle>
             </IonCol>
             <IonCol size="auto">

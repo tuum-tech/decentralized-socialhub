@@ -63,6 +63,7 @@ const ProfileComponent: React.FC<Props> = ({
         let sUser = await UserService.GetUserSession();
         if (sUser && sUser.did) setSignedUser(sUser);
         let pUser = await UserService.SearchUserWithDID(targetDid);
+
         if (pUser && pUser.did) {
           setPublicUser(pUser as any);
           let profile = await ProfileService.getFullProfile(targetDid);

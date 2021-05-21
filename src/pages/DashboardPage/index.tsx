@@ -18,6 +18,7 @@ import { ExporeTime } from './constants';
 
 import Logo from 'src/components/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
+import ViewAllModal from 'src/components/follow/ViewAllModal';
 
 import { UserService } from 'src/services/user.service';
 import { AssistService, RequestStatus } from 'src/services/assist.service';
@@ -46,6 +47,7 @@ const TutorialModal = styled(IonModal)`
 `;
 
 const ProfilePage = () => {
+  const [showAllFollow, setShowAllFollow] = useState(0);
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');
@@ -289,6 +291,9 @@ const ProfilePage = () => {
                 profile={full_profile}
                 sessionItem={userInfo}
                 didDocument={didDocument}
+                viewAll={(isFollower: boolean) => {
+                  setShowAllFollow(isFollower ? 1 : 2);
+                }}
               />
             </IonCol>
           </IonRow>
@@ -310,6 +315,13 @@ const ProfilePage = () => {
           />
         </TutorialModal>
       </IonContent>
+      {userInfo && userInfo.did !== '' && showAllFollow > 0 && (
+        <ViewAllModal
+          isFollower={showAllFollow === 1}
+          targetDid={userInfo.did}
+          onClose={() => setShowAllFollow(0)}
+        />
+      )}
     </IonPage>
   );
 };

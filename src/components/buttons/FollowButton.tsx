@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 interface Props {
   width?: number;
+  height?: number;
 }
 
 const FollowButton = styled.button<Props>`
@@ -22,9 +23,18 @@ const FollowButton = styled.button<Props>`
   font-size: 12px;
 
   padding: 0px 20px;
-  width: 100px;
-  height: 40px;
-  line-height: 40px;
+
+  ${props => {
+    return `width: ${props.width ? props.width : 100}px;`;
+  }}
+
+  ${props => {
+    return `height: ${props.height ? props.height : 40}px;`;
+  }}
+
+  ${props => {
+    return `line-height: ${props.height ? props.height : 40}px;`;
+  }}
 
   background: white;
   border-radius: 9px;
