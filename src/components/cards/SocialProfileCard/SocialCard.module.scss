@@ -29,6 +29,14 @@
     color: #425466;
   }
 
+  & ion-grid {
+    --ion-grid-width-xs: 100%;
+    --ion-grid-width-sm: 540px;
+    --ion-grid-width-md: 720px;
+    --ion-grid-width-lg: 960px;
+    --ion-grid-width-xl: 1340px !important;
+  }
+  
   .social-profile-item {
     display: flex;
     justify-content: flex-start;
@@ -48,8 +56,12 @@
     a {
       color: #000000;
     }
-    img {
-      margin-right: 10px;
+
+    .left {
+      position: relative;
+    }
+    .right {
+      margin-left: 10px;
     }
     .social-profile-network {
       color: #1a202c;
@@ -63,9 +75,8 @@
     }
     .social-profile-badge {
       position: absolute;
-      top: 4px;
-      left: 23px;
-      margin-left: 5px;
+      top: 0px;
+      right: 0px;
     }
   }
 

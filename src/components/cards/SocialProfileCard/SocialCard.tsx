@@ -267,7 +267,7 @@ const SocialProfilesCard: React.FC<Props> = ({
     if (!vc) return;
     return (
       <ProfileItem className={style['social-profile-item']}>
-        <div className="left">
+        <div className={style['left']}>
           <img alt="icon" src={icon} height={40} />
           {vc.isVerified && (
             <img
@@ -278,7 +278,7 @@ const SocialProfilesCard: React.FC<Props> = ({
             />
           )}
         </div>
-        <div className="right">
+        <div className={style['right']}>
           <p className={style['social-profile-network']}>
             {key.replace(/^./, key[0].toUpperCase())}
           </p>
@@ -428,19 +428,19 @@ const SocialProfilesCard: React.FC<Props> = ({
           </IonCardTitle>
         </IonCardHeader>
         <IonCardContent>
-          <IonGrid>
+          <IonGrid className={style['social-profile-grid']}>
             <IonRow>
               {containsVerifiedCredential('linkedin') && (
-                <IonCol size="6">{linkedInItem()}</IonCol>
+                <IonCol size-xl="6">{linkedInItem()}</IonCol>
               )}
               {containsVerifiedCredential('twitter') && (
-                <IonCol size="6">{twitterItem()}</IonCol>
+                <IonCol size-xl="6">{twitterItem()}</IonCol>
               )}
               {containsVerifiedCredential('facebook') && (
-                <IonCol size="6">{facebookItem()}</IonCol>
+                <IonCol size-xl="6">{facebookItem()}</IonCol>
               )}
               {containsVerifiedCredential('google') && (
-                <IonCol size="6">{googleItem()}</IonCol>
+                <IonCol size-xl="6">{googleItem()}</IonCol>
               )}
             </IonRow>
           </IonGrid>

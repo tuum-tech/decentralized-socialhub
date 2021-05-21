@@ -9,6 +9,7 @@ import {
   IonCol
 } from '@ionic/react';
 
+import { validateEmail } from 'src/utils/validation';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import SmallTextInput from 'src/components/inputs/SmallTextInput';
 import styled from 'styled-components';
@@ -41,14 +42,24 @@ interface IProps {
 
 const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
   const [currentBasicDTO, setCurrentBasicDTO] = useState(sessionItem);
-
   const handleChange = (evt: any) => {
     const value =
       evt.target.type === 'checkbox' ? evt.target.checked : evt.target.value;
-    setCurrentBasicDTO({
-      ...currentBasicDTO,
-      [evt.target.name]: value
-    });
+    if (evt.target.name === 'email') {
+      if (!validateEmail(value)) {
+        alert('Not correct Email');
+        return;
+      }
+      setCurrentBasicDTO({
+        ...currentBasicDTO,
+        loginCred: { ...currentBasicDTO, email: value }
+      });
+    } else {
+      setCurrentBasicDTO({
+        ...currentBasicDTO,
+        [evt.target.name]: value
+      });
+    }
   };
 
   return (
@@ -86,7 +97,7 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
           <IonRow class="ion-justify-content-start">
             <IonCol size="5">
               <SmallTextInput
-                disabled={true}
+                disabled={sessionItem.tutorialStep !== 4}
                 label="Email"
                 name="email"
                 value={
