@@ -106,6 +106,11 @@ export class UserService {
         window.localStorage.getItem(
           `temporary_${instance.did.replace('did:elastos:', '')}`
         ) || '';
+
+      const decodedMnemonic = JSON.parse(instance.mnemonics);
+      if (decodedMnemonic.mnemonic) {
+        instance.mnemonics = decodedMnemonic.mnemonic;
+      }
     }
     let encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(instance),
