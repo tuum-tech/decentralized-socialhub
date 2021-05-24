@@ -12,6 +12,11 @@ import { UserVaultScripts } from 'src/scripts/uservault.script';
 import { ITutorialStepProp } from './TutorialStep1';
 import style from '../style.module.scss';
 import tuumlogo from '../../../../../assets/tuumtech.png';
+import styled from 'styled-components';
+
+const VersionTag = styled.span`
+  color: green;
+`;
 
 const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   onContinue,
@@ -21,6 +26,8 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   const [hiveDocument, setHiveDocument] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [warningRead, setWarningRead] = useState(false);
+  const [tuumHiveVersion, setTuumHiveVersion] = useState('');
+  const [detectedHiveVersion, setDetectedHiveVersion] = useState('');
   const [selected, setSelected] = useState(
     hiveDocument === '' ? 'tuum' : 'document'
   );
@@ -168,12 +175,21 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     (async () => {
       let sessionUser = UserService.GetUserSession();
       if (!sessionUser) return;
+      setTuumHiveVersion(
+        await HiveService.getHiveVersion(
+          process.env.REACT_APP_TUUM_TECH_HIVE as string
+        )
+      );
       let doc = await DidService.getDidDocument(sessionUser.did);
       if (doc.service && doc.service.length > 0) {
         setSelected('document');
         setHiveDocument(doc.service[0].serviceEndpoint);
+        setDetectedHiveVersion(
+          await HiveService.getHiveVersion(doc.service[0].serviceEndpoint)
+        );
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -218,6 +234,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
                     Using the default detected vault
                   </span>
                 </p>
+                <VersionTag>{detectedHiveVersion}</VersionTag>
               </div>
             </div>
           )}
@@ -229,6 +246,8 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
               <img alt="tuum logo" src={tuumlogo} />
 
               <h2>Tuum Tech</h2>
+
+              <VersionTag>{tuumHiveVersion}</VersionTag>
             </div>
           </div>
           <div className={style['tutorial-hive-row']}>
