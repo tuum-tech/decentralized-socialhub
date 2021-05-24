@@ -62,7 +62,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       if (!(await HiveService.isHiveVersionSet(hiveVersion))) {
         setLoading(false);
         setErrorMessage(
-          `Hive version could not be verified. The minimum required version is ${process.env.REACT_APP_HIVE_MINIMUM_VERSION}. You may continue at your own discretion.`
+          `Hive version could not be verified. The supported versions are ${process.env.REACT_APP_HIVE_VALID_VERSION}. You may continue at your own discretion.`
         );
         setWarningRead(true);
         return;
@@ -75,14 +75,14 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         if (!isVersionSupported) {
           setLoading(false);
           setErrorMessage(
-            `Hive version ${hiveVersion} not supported. The minimum required version is ${process.env.REACT_APP_HIVE_MINIMUM_VERSION}`
+            `Hive version ${hiveVersion} not supported. The supported versions are ${process.env.REACT_APP_HIVE_VALID_VERSION}`
           );
           return;
         }
       } catch (e) {
         setLoading(false);
         setErrorMessage(
-          `Hive version could not be verified. The minimum required version is ${process.env.REACT_APP_HIVE_MINIMUM_VERSION}. You may continue at your own discretion.`
+          `Hive version could not be verified. The supported versions are ${process.env.REACT_APP_HIVE_VALID_VERSION}. You may continue at your own discretion.`
         );
         setWarningRead(true);
         return;

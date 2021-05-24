@@ -62,9 +62,12 @@ export class HiveService {
   }
 
   static async isHiveVersionSupported(version: string): Promise<boolean> {
-    if (version >= `${process.env.REACT_APP_HIVE_MINIMUM_VERSION}`) return true;
+    let supportedVersions = process.env.REACT_APP_HIVE_VALID_VERSION?.replace(
+      /\s/g,
+      ''
+    ).split(',');
 
-    return false;
+    return supportedVersions?.includes(version) as boolean;
   }
 
   static async isHiveVersionSet(version: string): Promise<boolean> {
