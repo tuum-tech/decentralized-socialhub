@@ -51,6 +51,30 @@ export class HiveService {
     }
   }
 
+  static async getHiveVersion(address: string): Promise<string> {
+    const response = await fetch(`${address}/api/v1/hive/version`, {
+      method: 'GET'
+    });
+
+    const { version } = await response.json();
+
+    return version;
+  }
+
+  static async isHiveVersionSupported(version: string): Promise<boolean> {
+    if (version >= `${process.env.REACT_APP_HIVE_MINIMUM_VERSION}`) return true;
+
+    return false;
+  }
+
+  static async isHiveVersionSet(version: string): Promise<boolean> {
+    if (version === `0.0.0`)
+      // default if HIVE_VERSION not set
+      return false;
+
+    return true;
+  }
+
   static async getAppHiveClient(): Promise<HiveClient | undefined> {
     try {
       let host = `${process.env.REACT_APP_TUUM_TECH_HIVE}`;

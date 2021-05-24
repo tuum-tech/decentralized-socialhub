@@ -20,6 +20,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   const [hiveUrl, sethiveUrl] = useState('');
   const [hiveDocument, setHiveDocument] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [warningRead, setWarningRead] = useState(false);
   const [selected, setSelected] = useState(
     hiveDocument === '' ? 'tuum' : 'document'
   );
@@ -54,6 +55,38 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       setLoading(false);
       setErrorMessage('Invalid hive address');
       return;
+    }
+
+    if (!warningRead) {
+      let hiveVersion = await HiveService.getHiveVersion(endpoint);
+      if (!(await HiveService.isHiveVersionSet(hiveVersion))) {
+        setLoading(false);
+        setErrorMessage(
+          `Hive version could not be verified. The minimum required version is ${process.env.REACT_APP_HIVE_MINIMUM_VERSION}. You may continue at your own discretion.`
+        );
+        setWarningRead(true);
+        return;
+      }
+
+      try {
+        let isVersionSupported = await HiveService.isHiveVersionSupported(
+          hiveVersion
+        );
+        if (!isVersionSupported) {
+          setLoading(false);
+          setErrorMessage(
+            `Hive version ${hiveVersion} not supported. The minimum required version is ${process.env.REACT_APP_HIVE_MINIMUM_VERSION}`
+          );
+          return;
+        }
+      } catch (e) {
+        setLoading(false);
+        setErrorMessage(
+          `Hive version could not be verified. The minimum required version is ${process.env.REACT_APP_HIVE_MINIMUM_VERSION}. You may continue at your own discretion.`
+        );
+        setWarningRead(true);
+        return;
+      }
     }
 
     let user = UserService.GetUserSession();
@@ -204,6 +237,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
               disabled={selected !== 'other'}
               value={hiveUrl}
               onIonChange={e => {
+                setWarningRead(false);
                 e.preventDefault();
                 sethiveUrl(e.detail.value!);
                 e.cancelBubble = true;
