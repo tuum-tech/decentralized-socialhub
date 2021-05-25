@@ -1,14 +1,14 @@
-import { alertError } from 'src/utils/notify';
+import { Guid } from 'guid-typescript';
+
+import { alertError, showNotify } from 'src/utils/notify';
 
 import { AssistService } from './assist.service';
 import { DidService, IDID, PublishRequestOperation } from './did.service';
 import { DidDocumentService } from './diddocument.service';
-import { showNotify } from 'src/utils/notify';
 import {
   TuumTechScriptService,
   UserVaultScriptService
 } from './script.service';
-import { Guid } from 'guid-typescript';
 import { ProfileService } from './profile.service';
 
 const CryptoJS = require('crypto-js');
@@ -106,6 +106,11 @@ export class UserService {
         window.localStorage.getItem(
           `temporary_${instance.did.replace('did:elastos:', '')}`
         ) || '';
+
+      const decodedMnemonic = JSON.parse(instance.mnemonics);
+      if (decodedMnemonic.mnemonic) {
+        instance.mnemonics = decodedMnemonic.mnemonic;
+      }
     }
     let encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(instance),
@@ -204,32 +209,18 @@ export class UserService {
   }
 
   public static async SearchUserWithDID(did: string) {
-    let response: any = await TuumTechScriptService.searchUserWithDID(did);
-    const { data, meta } = response;
-
-    if (meta.code === 200 && meta.message === 'OK') {
-      const { get_users_by_dids } = data;
-      if (
-        get_users_by_dids &&
-        get_users_by_dids.items &&
-        get_users_by_dids.items.length > 0
-      ) {
-        const userData = get_users_by_dids.items[0];
-        const isDIDPublished = await DidService.isDIDPublished(userData.did);
-
-        return {
-          ...userData,
-          isDIDPublished: isDIDPublished ? isDIDPublished : false,
-          onBoardingCompleted: userData ? userData.onBoardingCompleted : false,
-          tutorialStep: userData ? userData.tutorialStep : 1
-        };
-      } else {
-        return;
-      }
-    } else {
-      alertError(null, 'Error while searching the user by DID');
-      return;
+    const users = await TuumTechScriptService.searchUserWithDIDs([did]);
+    if (users.length > 0) {
+      const userData = users[0];
+      const isDIDPublished = await DidService.isDIDPublished(userData.did);
+      return {
+        ...userData,
+        isDIDPublished: isDIDPublished ? isDIDPublished : false,
+        onBoardingCompleted: userData ? userData.onBoardingCompleted : false,
+        tutorialStep: userData ? userData.tutorialStep : 1
+      };
     }
+    return;
   }
 
   public static async CreateNewUser(

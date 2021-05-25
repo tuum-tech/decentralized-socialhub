@@ -31,7 +31,6 @@ const OnBoardingPage: React.FC<Props> = ({
   sessionItem
 }) => {
   const [stage, setStage] = useState(1);
-
   const next = () => {
     setStage(stage + 1);
   };
@@ -171,7 +170,10 @@ const OnBoardingPage: React.FC<Props> = ({
             </div>
             <div className={clsx(style['stage4-content'], style['v-flex'])}>
               <div className={clsx(style['avatar-container'], style['v-flex'])}>
-                <Avatar did={sessionItem.did} />
+                {sessionItem.did && sessionItem.did !== '' && (
+                  <Avatar did={sessionItem.did} />
+                )}
+
                 <p className={style['name']}>{userSessionName}</p>
                 <p>
                   <PublishingLabel status={RequestStatus.Pending} />

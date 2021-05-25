@@ -22,8 +22,7 @@ import {
 import SocialLoginLink from './components/SocialLoginLink';
 import Header from 'src/components/oldComponents/OldHeader';
 import ClearlyMeContent from 'src/components/oldComponents/ClearlyMeContent';
-import ButtonDefault from 'src/components/buttons/ButtonDefault';
-import ButtonLight from 'src/components/buttons/ButtonLight';
+import { PrimaryLinkButton, ButtonLight } from 'src/components/buttons';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 // import MnemonicContext from 'src/context/MnemonicContext';
 
@@ -104,9 +103,9 @@ const HomePage: React.FC<InferMappedProps> = ({
           <br />
           <br />
           <div style={{ textAlign: 'center' }}>
-            <ButtonDefault href="/login/elastos/mnemonic">
+            <PrimaryLinkButton href="/login/elastos/mnemonic">
               Sign in with DID
-            </ButtonDefault>
+            </PrimaryLinkButton>
           </div>
 
           <div style={{ textAlign: 'center' }}>
@@ -119,35 +118,35 @@ const HomePage: React.FC<InferMappedProps> = ({
           <div className="social-login">
             <SocialLoginLink href="/login/elastos/qrcode">
               <IonImg
-                src="../../assets/logo_elastos.svg"
+                src="../../assets/icon/logo_elastos.svg"
                 style={{ minWidth: '24px' }}
               />
             </SocialLoginLink>
             <SocialLoginLink>
               <IonImg
                 onClick={googlelogin}
-                src="../../assets/logo_google.svg"
+                src="../../assets/icon/logo_google.svg"
                 style={{ minWidth: '24px' }}
               />
             </SocialLoginLink>
             <SocialLoginLink>
               <IonImg
                 onClick={linkedinlogin}
-                src="../../assets/logo_linkedin.svg"
+                src="../../assets/icon/logo_linkedin.svg"
                 style={{ minWidth: '24px' }}
               />
             </SocialLoginLink>
             <SocialLoginLink>
               <IonImg
                 onClick={twitterlogin}
-                src="../../assets/logo_twitter.svg"
+                src="../../assets/icon/logo_twitter.svg"
                 style={{ minWidth: '24px' }}
               />
             </SocialLoginLink>
             <SocialLoginLink>
               <IonImg
                 onClick={facebooklogin}
-                src="../../assets/logo_facebook.svg"
+                src="../../assets/icon/logo_facebook.svg"
                 style={{ minWidth: '24px' }}
               />
             </SocialLoginLink>

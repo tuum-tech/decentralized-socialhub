@@ -79,6 +79,7 @@ const FollowingSearch: React.FC = () => {
         200,
         0
       );
+
       setFilteredUsers(listUsers.response);
     } catch (e) {
       setFilteredUsers({ get_users_by_dids: { items: [] } });

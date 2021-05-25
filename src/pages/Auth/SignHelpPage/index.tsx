@@ -1,32 +1,18 @@
 /**
  * Page
  */
-import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonButton
-} from '@ionic/react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import injector from 'src/baseplate/injectorWrap';
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
 import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 import style from './style.module.scss';
 import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
-import { fetchSimpleApi } from './fetchapi';
 
 import {
   OnBoardLayout,

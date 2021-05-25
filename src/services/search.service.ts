@@ -1,7 +1,9 @@
+import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 import { HiveClient } from '@elastos/elastos-hive-js-sdk';
+
 import { HiveService } from './hive.service';
 import { UserService } from './user.service';
-import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
+import { getItemsFromData } from '../utils/script';
 
 export interface IUniversitiesResponse {
   _status?: string;
@@ -23,12 +25,6 @@ export interface IUniversityItem {
   did?: string;
   avatar?: string;
 }
-
-//Get users from tuum-tech vault
-// export interface IUserResponse {
-//   _status?: string;
-//   get_users: IGetUsers;
-// }
 
 export interface IUserResponse {
   _status?: string;
@@ -218,7 +214,6 @@ export class SearchService {
     };
 
     params['dids'] = dids;
-
     usersResponse = await this.appHiveClient.Scripting.RunScript({
       name: 'get_users_by_dids', // get all users
       params: params,
@@ -227,10 +222,57 @@ export class SearchService {
         target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
       }
     });
-
     if (usersResponse.isSuccess) {
       return usersResponse;
     }
     return usersResponse.error;
+  }
+
+  async filterUserNameAndDids(
+    searchString: string,
+    dids: string[],
+    limit: number,
+    offset: number
+  ) {
+    let items: any[] = [];
+    const userSession = UserService.GetUserSession();
+    if (!userSession) {
+      return [];
+    }
+
+    let params: any = {
+      limit: limit,
+      skip: offset
+    };
+
+    if (this.isDID(searchString)) {
+      const filteredDids = dids.filter(item => item.includes(searchString));
+      params['dids'] = filteredDids;
+      const usersResponse: any = await this.appHiveClient.Scripting.RunScript({
+        name: 'get_users_by_dids',
+        params,
+        context: {
+          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+        }
+      });
+      items = getItemsFromData(usersResponse, 'get_users_by_dids');
+    } else {
+      params['name'] = '.*' + searchString + '.*';
+      params['self_did'] = [userSession.did];
+      params['dids'] = dids;
+
+      const usersResponse: any = await this.appHiveClient.Scripting.RunScript({
+        name: 'get_users_by_name_and_dids',
+        params: params,
+        context: {
+          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+        }
+      });
+      items = getItemsFromData(usersResponse, 'get_users_by_name_and_dids');
+    }
+
+    return items;
   }
 }

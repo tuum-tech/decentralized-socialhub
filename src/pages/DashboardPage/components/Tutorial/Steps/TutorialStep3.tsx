@@ -12,6 +12,11 @@ import { UserVaultScripts } from 'src/scripts/uservault.script';
 import { ITutorialStepProp } from './TutorialStep1';
 import style from '../style.module.scss';
 import tuumlogo from '../../../../../assets/tuumtech.png';
+import styled from 'styled-components';
+
+const VersionTag = styled.span`
+  color: green;
+`;
 
 const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   onContinue,
@@ -20,6 +25,9 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   const [hiveUrl, sethiveUrl] = useState('');
   const [hiveDocument, setHiveDocument] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [warningRead, setWarningRead] = useState(false);
+  const [tuumHiveVersion, setTuumHiveVersion] = useState('');
+  const [detectedHiveVersion, setDetectedHiveVersion] = useState('');
   const [selected, setSelected] = useState(
     hiveDocument === '' ? 'tuum' : 'document'
   );
@@ -54,6 +62,38 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       setLoading(false);
       setErrorMessage('Invalid hive address');
       return;
+    }
+
+    if (!warningRead) {
+      let hiveVersion = await HiveService.getHiveVersion(endpoint);
+      if (!(await HiveService.isHiveVersionSet(hiveVersion))) {
+        setLoading(false);
+        setErrorMessage(
+          `Hive version could not be verified. The supported versions are ${process.env.REACT_APP_HIVE_VALID_VERSION}. You may continue at your own discretion.`
+        );
+        setWarningRead(true);
+        return;
+      }
+
+      try {
+        let isVersionSupported = await HiveService.isHiveVersionSupported(
+          hiveVersion
+        );
+        if (!isVersionSupported) {
+          setLoading(false);
+          setErrorMessage(
+            `Hive version ${hiveVersion} not supported. The supported versions are ${process.env.REACT_APP_HIVE_VALID_VERSION}`
+          );
+          return;
+        }
+      } catch (e) {
+        setLoading(false);
+        setErrorMessage(
+          `Hive version could not be verified. The supported versions are ${process.env.REACT_APP_HIVE_VALID_VERSION}. You may continue at your own discretion.`
+        );
+        setWarningRead(true);
+        return;
+      }
     }
 
     let user = UserService.GetUserSession();
@@ -135,12 +175,21 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     (async () => {
       let sessionUser = UserService.GetUserSession();
       if (!sessionUser) return;
+      setTuumHiveVersion(
+        await HiveService.getHiveVersion(
+          process.env.REACT_APP_TUUM_TECH_HIVE as string
+        )
+      );
       let doc = await DidService.getDidDocument(sessionUser.did);
       if (doc.service && doc.service.length > 0) {
         setSelected('document');
         setHiveDocument(doc.service[0].serviceEndpoint);
+        setDetectedHiveVersion(
+          await HiveService.getHiveVersion(doc.service[0].serviceEndpoint)
+        );
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -185,6 +234,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
                     Using the default detected vault
                   </span>
                 </p>
+                <VersionTag>{detectedHiveVersion}</VersionTag>
               </div>
             </div>
           )}
@@ -196,6 +246,8 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
               <img alt="tuum logo" src={tuumlogo} />
 
               <h2>Tuum Tech</h2>
+
+              <VersionTag>{tuumHiveVersion}</VersionTag>
             </div>
           </div>
           <div className={style['tutorial-hive-row']}>
@@ -204,6 +256,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
               disabled={selected !== 'other'}
               value={hiveUrl}
               onIonChange={e => {
+                setWarningRead(false);
                 e.preventDefault();
                 sethiveUrl(e.detail.value!);
                 e.cancelBubble = true;

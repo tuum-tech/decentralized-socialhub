@@ -16,8 +16,7 @@ import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 import Header from 'src/components/oldComponents/OldHeader';
 import ClearlyMeContent from 'src/components/oldComponents/ClearlyMeContent';
-import ButtonDefault from 'src/components/buttons/ButtonDefault';
-import ButtonLight from 'src/components/buttons/ButtonLight';
+import { PrimaryLinkButton, ButtonLight } from 'src/components/buttons';
 
 import VaultProgressComponent from './components/VaultProgressComponent';
 
@@ -72,7 +71,7 @@ const ChooseVault: React.FC<InferMappedProps> = ({
           </IonList> */}
           <br />
           <div style={{ textAlign: 'center' }}>
-            <ButtonDefault href="/profile">Next</ButtonDefault>
+            <PrimaryLinkButton href="/profile">Next</PrimaryLinkButton>
           </div>
         </div>
       </ClearlyMeContent>
