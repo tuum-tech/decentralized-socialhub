@@ -3,8 +3,11 @@ import { RouteComponentProps } from 'react-router';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import FollowerAllModal from 'src/components/follow/FollowerAllModal';
-import FollowingAllModal from 'src/components/follow/FollowingAllModal';
+// import FollowerAllModal from 'src/components/follow/FollowerAllModal';
+// import FollowingAllModal from 'src/components/follow/FollowingAllModal';
+import { FollowService } from 'src/services/follow.service';
+
+import ViewAllFollowModal from 'src/components/follow/ViewAllFollowModal';
 import LoadingIndicator from 'src/components/LoadingIndicator';
 import ProfileComponent from 'src/components/profile/ProfileComponent';
 import PublicNavbar from 'src/components/profile/PublicNavbar';
@@ -70,6 +73,23 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     })();
   }, [props.match.params.did]);
 
+  const [followerDids, setFollowerDids] = useState<string[]>([]);
+  const [followingDids, setFollowingDids] = useState<string[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const followerDids = await FollowService.getFollowerDids(
+        props.match.params.did
+      );
+      setFollowerDids(followerDids);
+
+      const followingdids = await FollowService.getFollowingDids(
+        props.match.params.did
+      );
+      setFollowingDids(followingdids);
+    })();
+  }, [props.match.params.did]);
+
   if (loading) {
     return <LoadingIndicator loadingText="Loading data..." />;
   }
@@ -97,28 +117,23 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
                   viewAllClicked={(isFollower: boolean) => {
                     setShowAllFollow(isFollower ? 1 : 2);
                   }}
+                  followerDids={followerDids}
+                  followingDids={followingDids}
                 />
               </div>
             </IonCol>
           </ContentRow>
         </IonContent>
       </IonGrid>
-      {showAllFollow === 1 && (
-        <FollowerAllModal
-          targetDid={props.match.params.did}
+      {showAllFollow > 0 && (
+        <ViewAllFollowModal
+          followerDids={followerDids}
+          followingDids={followingDids}
+          setFollowerDids={setFollowerDids}
+          setFollowingDids={setFollowingDids}
           onClose={() => setShowAllFollow(0)}
-          editable={
-            signedUser.did === props.match.params.did && signedUser.did !== ''
-          }
-        />
-      )}
-      {showAllFollow === 2 && (
-        <FollowingAllModal
-          targetDid={props.match.params.did}
-          onClose={() => setShowAllFollow(0)}
-          editable={
-            signedUser.did === props.match.params.did && signedUser.did !== ''
-          }
+          isFollower={showAllFollow === 1}
+          editable={did === signedUser.did}
         />
       )}
     </IonPage>

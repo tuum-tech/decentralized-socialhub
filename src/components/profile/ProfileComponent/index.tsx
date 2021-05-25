@@ -34,8 +34,10 @@ interface Props {
   aboutRef: any;
   experienceRef: any;
   educationRef: any;
-  scrollToElement: (cardName: string) => void;
   hasBanner?: boolean;
+  followerDids: string[];
+  followingDids: string[];
+  scrollToElement: (cardName: string) => void;
   viewAllClicked?: (isFollower: boolean) => void;
 }
 
@@ -44,8 +46,10 @@ const ProfileComponent: React.FC<Props> = ({
   aboutRef,
   experienceRef,
   educationRef,
-  scrollToElement,
   hasBanner = false,
+  followerDids,
+  followingDids,
+  scrollToElement,
   viewAllClicked
 }: Props) => {
   const [publicUser, setPublicUser] = useState(defaultUserInfo);
@@ -139,7 +143,8 @@ const ProfileComponent: React.FC<Props> = ({
                           />
                         )}
                         <FollowCards
-                          did={publicUser.did}
+                          followerDids={followerDids}
+                          followingDids={followingDids}
                           signed={signedUser.did !== ''}
                           viewAll={(isFollower: boolean) => {
                             if (viewAllClicked) viewAllClicked(isFollower);

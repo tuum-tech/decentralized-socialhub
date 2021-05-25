@@ -376,7 +376,7 @@ let run = async () => {
         collection: 'users',
         filter: {
           name: { $regex: '$params.name', $options: 'i' },
-          did: { $in: '$params.did' }
+          did: { $in: '$params.dids' }
         },
         options: {
           limit: '$params.limit',

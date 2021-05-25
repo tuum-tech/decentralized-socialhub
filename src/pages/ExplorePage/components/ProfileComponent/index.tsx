@@ -1,8 +1,9 @@
+import React, { useEffect, useRef, useState } from 'react';
 import { IonContent } from '@ionic/react';
-import React, { useRef, useState } from 'react';
+
+import { FollowService } from 'src/services/follow.service';
 
 import ProfileComponent from 'src/components/profile/ProfileComponent';
-
 interface Props {
   targetDid: string;
 }
@@ -13,6 +14,19 @@ const ProfileComp: React.FC<Props> = ({ targetDid }: Props) => {
   const experienceRef = useRef<HTMLDivElement | null>(null);
   const educationRef = useRef<HTMLDivElement | null>(null);
   const [scrollTop, setScrollTop] = useState(0);
+
+  const [followerDids, setFollowerDids] = useState<string[]>([]);
+  const [followingDids, setFollowingDids] = useState<string[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const followerDids = await FollowService.getFollowerDids(targetDid);
+      setFollowerDids(followerDids);
+
+      const followingdids = await FollowService.getFollowingDids(targetDid);
+      setFollowingDids(followingdids);
+    })();
+  }, [targetDid]);
 
   const scrollToElement = (cardName: string) => {
     let point: number = 0;
@@ -55,6 +69,8 @@ const ProfileComp: React.FC<Props> = ({ targetDid }: Props) => {
         aboutRef={aboutRef}
         experienceRef={experienceRef}
         educationRef={educationRef}
+        followerDids={followerDids}
+        followingDids={followingDids}
       />
     </IonContent>
   );

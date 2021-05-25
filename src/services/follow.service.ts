@@ -1,11 +1,9 @@
 import { getItemsFromData } from '../utils/script';
 import { ProfileService } from 'src/services/profile.service';
 import { SearchService } from 'src/services/search.service';
-import { HiveService } from 'src/services/hive.service';
 
 export class FollowService {
   private static async getUsersInTuumVault(dids: string[]) {
-    //  get only users that exist on tuum vault
     let usersInTuumVault: string[] = dids;
     let searchServiceLocal: SearchService;
     try {
@@ -18,27 +16,6 @@ export class FollowService {
       usersInTuumVault = getItemsFromData(listUsers, 'get_users_by_dids').map(
         (item: any) => item.did
       );
-
-      // remove users that are not in tuum.vaule users
-      const appHiveClient = await HiveService.getAppHiveClient();
-      if (appHiveClient && dids.length !== usersInTuumVault.length) {
-        let not_existing_users = dids.filter(
-          (did: string) => !usersInTuumVault.includes(did)
-        );
-        const params: any = {
-          limit: 200,
-          skip: 0,
-          dids: not_existing_users
-        };
-        await appHiveClient.Scripting.RunScript({
-          name: 'delete_users',
-          params: params,
-          context: {
-            target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-          }
-        });
-      }
     } catch (e) {}
     return usersInTuumVault;
   }
@@ -87,6 +64,7 @@ export class FollowService {
         pageSize,
         (pageNumber - 1) * pageSize
       );
+
       return getItemsFromData(res, 'get_users_by_dids');
     }
 

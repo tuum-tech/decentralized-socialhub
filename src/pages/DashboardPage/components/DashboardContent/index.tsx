@@ -47,6 +47,8 @@ interface Props {
   sessionItem: ISessionItem;
   didDocument: any;
   viewAll: (isFollower: boolean) => void;
+  followerDids: string[];
+  followingDids: string[];
 }
 
 const DashboardContent: React.FC<Props> = ({
@@ -54,7 +56,9 @@ const DashboardContent: React.FC<Props> = ({
   profile,
   sessionItem,
   didDocument,
-  viewAll
+  viewAll,
+  followerDids,
+  followingDids
 }) => {
   const [active, setActive] = useState('home');
   return (
@@ -89,6 +93,8 @@ const DashboardContent: React.FC<Props> = ({
             setActive(tab);
           }}
           viewAll={viewAll}
+          followerDids={followerDids}
+          followingDids={followingDids}
         />
       )}
       {active === 'status' && <DashboardStatus />}

@@ -1,49 +1,47 @@
 import React, { useEffect, useState } from 'react';
 
 import { SearchService } from 'src/services/search.service';
-import { FollowService } from 'src/services/follow.service';
 import { getItemsFromData } from 'src/utils/script';
 
 import FollowerCard from './FollowerCard';
 import FollowingCard from './FollowingCard';
 
 interface Props {
-  did: string;
   signed: boolean;
   viewAll: (isFollower: boolean) => void;
+  followerDids: string[];
+  followingDids: string[];
 }
 
-const FowllowCards: React.FC<Props> = ({ did, signed, viewAll }: Props) => {
-  const [followingDids, setFollowingDids] = useState<string[]>([]);
-  const [followerDids, setFollowerDids] = useState<string[]>([]);
-
+const FowllowCards: React.FC<Props> = ({
+  followerDids,
+  followingDids,
+  signed,
+  viewAll
+}: Props) => {
   const [followingUsers, setFollowingUsers] = useState<any[]>([]);
   const [followerUsers, setFollowerUsers] = useState<any[]>([]);
   useEffect(() => {
     (async () => {
       const searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
 
-      const _followingDids = await FollowService.getFollowingDids(did);
-      setFollowingDids(_followingDids);
       let followings: any = await searchServiceLocal.getUsersByDIDs(
-        _followingDids,
+        followingDids,
         5,
         0
       );
       followings = getItemsFromData(followings, 'get_users_by_dids');
       setFollowingUsers(followings);
 
-      const _followersDids = await FollowService.getFollowerDids(did);
-      setFollowerDids(_followersDids);
       let followers: any = await searchServiceLocal.getUsersByDIDs(
-        _followersDids,
+        followerDids,
         5,
         0
       );
       followers = getItemsFromData(followers, 'get_users_by_dids');
       setFollowerUsers(followers);
     })();
-  }, [did]);
+  }, [followerDids, followingDids]);
   return (
     <>
       {followingDids.length > 0 && (

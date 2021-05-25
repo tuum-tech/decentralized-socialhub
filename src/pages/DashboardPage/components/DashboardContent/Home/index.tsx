@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
-import { useHistory } from 'react-router-dom';
 
 import FollowCards from 'src/components/follow/FollowCards';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
 import { getVerifiedCredential } from 'src/utils/credential';
-import { FollowService } from 'src/services/follow.service';
 
 import ManageProfile from './Left/ManageProfile';
 import ExploreConnnections from './Left/ExploreConnnections';
@@ -34,6 +32,8 @@ export interface Props {
   didDocument: any;
   activeTab: (tab: string) => void;
   viewAll: (isFollower: boolean) => void;
+  followerDids: string[];
+  followingDids: string[];
 }
 
 const DashboardHome: React.FC<Props> = ({
@@ -42,9 +42,10 @@ const DashboardHome: React.FC<Props> = ({
   sessionItem,
   didDocument,
   activeTab,
-  viewAll
+  viewAll,
+  followerDids,
+  followingDids
 }) => {
-  const history = useHistory();
   const [tutorialVisible, setTutorialVisible] = useState(true);
   const [hasFollowUsers, setFollowUsers] = useState(false);
 
@@ -76,25 +77,8 @@ const DashboardHome: React.FC<Props> = ({
   }, [completionStats]);
 
   useEffect(() => {
-    (async () => {
-<<<<<<< HEAD
-      if (sessionItem.did !== '') {
-        const followerUsers = await loadFollowingUsers(sessionItem.did);
-        const followingUsers = await loadFollowerUsers(sessionItem.did);
-        setFollowUsers(followerUsers.length + followingUsers.length > 0);
-      }
-=======
-      const _followingDids = await FollowService.getFollowingDids(
-        sessionItem.did
-      );
-      const _followersDids = await FollowService.getFollowerDids(
-        sessionItem.did
-      );
-      setFollowUsers(_followingDids.length + _followersDids.length > 0);
->>>>>>> d638be0... implement view all of followers
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionItem, sessionItem.did]);
+    setFollowUsers(followingDids.length + followerDids.length > 0);
+  }, [followingDids, followerDids]);
 
   const hasSocialProfiles = hasCredentials(didDocument);
 
@@ -338,7 +322,8 @@ const DashboardHome: React.FC<Props> = ({
           />
           {sessionItem.tutorialStep === 4 && (
             <FollowCards
-              did={sessionItem.did}
+              followerDids={followerDids}
+              followingDids={followingDids}
               signed={true}
               viewAll={viewAll}
             />
