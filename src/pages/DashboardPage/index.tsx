@@ -18,7 +18,8 @@ import { ExporeTime } from './constants';
 
 import Logo from 'src/components/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
-import ViewAllModal from 'src/components/follow/ViewAllModal';
+import FollowerAllModal from 'src/components/follow/FollowerAllModal';
+import FollowingAllModal from 'src/components/follow/FollowingAllModal';
 
 import { UserService } from 'src/services/user.service';
 import { AssistService, RequestStatus } from 'src/services/assist.service';
@@ -292,6 +293,7 @@ const ProfilePage = () => {
                 sessionItem={userInfo}
                 didDocument={didDocument}
                 viewAll={(isFollower: boolean) => {
+                  console.log('====>isFollower', isFollower);
                   setShowAllFollow(isFollower ? 1 : 2);
                 }}
               />
@@ -315,9 +317,14 @@ const ProfilePage = () => {
           />
         </TutorialModal>
       </IonContent>
-      {userInfo && userInfo.did !== '' && showAllFollow > 0 && (
-        <ViewAllModal
-          isFollower={showAllFollow === 1}
+      {userInfo && userInfo.did !== '' && showAllFollow === 1 && (
+        <FollowerAllModal
+          targetDid={userInfo.did}
+          onClose={() => setShowAllFollow(0)}
+        />
+      )}
+      {userInfo && userInfo.did !== '' && showAllFollow === 2 && (
+        <FollowingAllModal
           targetDid={userInfo.did}
           onClose={() => setShowAllFollow(0)}
         />

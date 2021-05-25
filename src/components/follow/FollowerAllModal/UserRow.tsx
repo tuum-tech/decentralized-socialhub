@@ -9,10 +9,10 @@ import style from './style.module.scss';
 interface Props {
   name: string;
   did: string;
-  isFollowing?: boolean;
+  text: string;
   followAction: () => void;
 }
-const UserRow = ({ name, did, isFollowing, followAction }: Props) => {
+const UserRow = ({ name, did, text, followAction }: Props) => {
   return (
     <div className={style['userRow']}>
       <Avatar did={did} width="50px" />
@@ -23,8 +23,8 @@ const UserRow = ({ name, did, isFollowing, followAction }: Props) => {
           <span className={style['truncatedDID']}>{did}</span>
         </Link>
       </div>
-      <FollowButton onClick={() => {}} width={100} height={35}>
-        Follow
+      <FollowButton onClick={followAction} width={100} height={35}>
+        {text}
       </FollowButton>
     </div>
   );

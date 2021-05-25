@@ -3,13 +3,13 @@ import { RouteComponentProps } from 'react-router';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
+import FollowerAllModal from 'src/components/follow/FollowerAllModal';
+import FollowingAllModal from 'src/components/follow/FollowingAllModal';
 import LoadingIndicator from 'src/components/LoadingIndicator';
 import ProfileComponent from 'src/components/profile/ProfileComponent';
 import PublicNavbar from 'src/components/profile/PublicNavbar';
 import { UserService } from 'src/services/user.service';
 import { defaultUserInfo } from 'src/services/profile.service';
-
-import ViewAllModal from 'src/components/follow/ViewAllModal';
 
 import style from './style.module.scss';
 
@@ -103,11 +103,22 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
           </ContentRow>
         </IonContent>
       </IonGrid>
-      {showAllFollow > 0 && (
-        <ViewAllModal
-          isFollower={showAllFollow === 1}
+      {showAllFollow === 1 && (
+        <FollowerAllModal
           targetDid={props.match.params.did}
           onClose={() => setShowAllFollow(0)}
+          editable={
+            signedUser.did === props.match.params.did && signedUser.did !== ''
+          }
+        />
+      )}
+      {showAllFollow === 2 && (
+        <FollowingAllModal
+          targetDid={props.match.params.did}
+          onClose={() => setShowAllFollow(0)}
+          editable={
+            signedUser.did === props.match.params.did && signedUser.did !== ''
+          }
         />
       )}
     </IonPage>

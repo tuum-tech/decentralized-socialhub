@@ -31,7 +31,7 @@ const FowllowCards: React.FC<Props> = ({ did, signed, viewAll }: Props) => {
         0
       );
       followings = getItemsFromData(followings, 'get_users_by_dids');
-      setFollowerUsers(followings);
+      setFollowingUsers(followings);
 
       const _followersDids = await FollowService.getFollowerDids(did);
       setFollowerDids(_followersDids);
@@ -41,7 +41,7 @@ const FowllowCards: React.FC<Props> = ({ did, signed, viewAll }: Props) => {
         0
       );
       followers = getItemsFromData(followers, 'get_users_by_dids');
-      setFollowingUsers(followers);
+      setFollowerUsers(followers);
     })();
   }, [did]);
   return (
