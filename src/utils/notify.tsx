@@ -1,4 +1,7 @@
 import toastr from 'toastr';
+import { toast, Slide } from 'react-toastify';
+import ToastBox from 'src/components/toast';
+import React from 'react';
 
 const SHOW_INTERVAL = 3000;
 
@@ -15,16 +18,16 @@ export const showNotify = (
     hideDuration: '1000',
     timeOut
   };
-
-  if (type === 'info') {
-    toastr.info(text, 'Information', opts);
-  } else if (type === 'success') {
-    toastr.success(text, 'Success', opts);
-  } else if (type === 'warning') {
-    toastr.warning(text, 'Warning', opts);
-  } else if (type === 'error') {
-    toastr.error(text, 'warning', opts);
-  }
+  toast(
+    <ToastBox
+      text={text}
+      title={type}
+      type={type}
+      onOK={() => {
+        toast.dismiss();
+      }}
+    />
+  );
 };
 
 export const alertError = (err: { message: string } | null, text: string) => {

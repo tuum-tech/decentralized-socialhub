@@ -61,13 +61,30 @@ import FollowingsPage from './pages/FollowingsPage';
 
 import ProtectedRoute from './components/ProtectedRoute';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import styled from 'styled-components';
+
+const StyledToastContainer = styled(ToastContainer)`
+  & .Toastify__toast-body {
+    padding: 20px 25px;
+  }
+`;
 const App: React.FC = () => {
   return (
     <IonApp>
+      <StyledToastContainer
+        autoClose={10000}
+        closeButton={false}
+        hideProgressBar={true}
+        closeOnClick={true}
+        position="top-right"
+      />
       <IonReactRouter>
         <Switch>
           <IonRouterOutlet>
             {/* ====== Private URLs that are log in required ==== */}
+
             <ProtectedRoute
               path="/publish"
               component={PublishIdentityPage}

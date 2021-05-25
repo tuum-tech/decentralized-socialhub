@@ -47,7 +47,7 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
       evt.target.type === 'checkbox' ? evt.target.checked : evt.target.value;
     if (evt.target.name === 'email') {
       if (!validateEmail(value)) {
-        alert('Not correct Email');
+        // alert('Not correct Email');
         return;
       }
       setCurrentBasicDTO({
