@@ -8,6 +8,7 @@ import { ActivityResponse } from 'src/pages/ActivityPage/types';
 import { getVerifiedCredential } from 'src/utils/credential';
 
 import { showNotify } from 'src/utils/notify';
+import { getItemsFromData } from 'src/utils/script';
 import { DidDocumentService } from './diddocument.service';
 
 import { HiveService } from './hive.service';
@@ -49,7 +50,7 @@ export class ProfileService {
     };
     const hiveInstance = await HiveService.getAppHiveClient();
     if (hiveInstance) {
-      const basicProfileResponse: IRunScriptResponse<BasicProfileResponse> = await hiveInstance.Scripting.RunScript(
+      const bpRes: IRunScriptResponse<BasicProfileResponse> = await hiveInstance.Scripting.RunScript(
         {
           name: 'get_basic_profile',
           context: {
@@ -58,18 +59,12 @@ export class ProfileService {
           }
         }
       );
-      if (
-        basicProfileResponse &&
-        basicProfileResponse.isSuccess &&
-        basicProfileResponse.response &&
-        basicProfileResponse.response.get_basic_profile &&
-        basicProfileResponse.response.get_basic_profile.items &&
-        basicProfileResponse.response.get_basic_profile.items.length > 0
-      ) {
-        basicDTO = basicProfileResponse.response.get_basic_profile.items[0];
+      const gbPData = getItemsFromData(bpRes, 'get_basic_profile');
+      if (gbPData.length > 0) {
+        basicDTO = gbPData[0];
       }
 
-      const educationProfileResponse: IRunScriptResponse<EducationProfileResponse> = await hiveInstance.Scripting.RunScript(
+      const edRes: IRunScriptResponse<EducationProfileResponse> = await hiveInstance.Scripting.RunScript(
         {
           name: 'get_education_profile',
           context: {
@@ -78,19 +73,9 @@ export class ProfileService {
           }
         }
       );
-      if (
-        educationProfileResponse &&
-        educationProfileResponse.isSuccess &&
-        educationProfileResponse.response &&
-        educationProfileResponse.response.get_education_profile &&
-        educationProfileResponse.response.get_education_profile.items &&
-        educationProfileResponse.response.get_education_profile.items.length > 0
-      ) {
-        educationDTO.items =
-          educationProfileResponse.response.get_education_profile.items;
-      }
+      educationDTO.items = getItemsFromData(edRes, 'get_education_profile');
 
-      const experienceProfileResponse: IRunScriptResponse<ExperienceProfileResponse> = await hiveInstance.Scripting.RunScript(
+      const epRes: IRunScriptResponse<ExperienceProfileResponse> = await hiveInstance.Scripting.RunScript(
         {
           name: 'get_experience_profile',
           context: {
@@ -99,18 +84,7 @@ export class ProfileService {
           }
         }
       );
-      if (
-        experienceProfileResponse &&
-        experienceProfileResponse.isSuccess &&
-        experienceProfileResponse.response &&
-        experienceProfileResponse.response.get_experience_profile &&
-        experienceProfileResponse.response.get_experience_profile.items &&
-        experienceProfileResponse.response.get_experience_profile.items.length >
-          0
-      ) {
-        experienceDTO.items =
-          experienceProfileResponse.response.get_experience_profile.items;
-      }
+      experienceDTO.items = getItemsFromData(epRes, 'get_experience_profile');
 
       /* Calculate verified education credentials starts */
       educationDTO.items.map(async (x, i) => {
@@ -230,6 +204,11 @@ export class ProfileService {
   static async getFollowers(
     dids: string[]
   ): Promise<IFollowerResponse | undefined> {
+    let userSession = UserService.GetUserSession();
+    if (!userSession || userSession.tutorialStep !== 4) {
+      return;
+    }
+
     const appHiveClient = await HiveService.getAppHiveClient();
     if (appHiveClient && dids && dids.length > 0) {
       let followersResponse: IRunScriptResponse<IFollowerResponse> = await appHiveClient.Scripting.RunScript(
@@ -312,6 +291,11 @@ export class ProfileService {
   static async getFollowings(
     did: string
   ): Promise<IFollowingResponse | undefined> {
+    let userSession = UserService.GetUserSession();
+    if (!userSession || userSession.tutorialStep !== 4) {
+      return;
+    }
+
     const appHiveClient = await HiveService.getAppHiveClient();
     if (did && did !== '' && appHiveClient) {
       const followingResponse: IRunScriptResponse<IFollowingResponse> = await appHiveClient.Scripting.RunScript(
@@ -412,15 +396,9 @@ export class ProfileService {
           }
         }
       );
-      if (
-        result &&
-        result.isSuccess &&
-        result.response &&
-        result.response.get_activity &&
-        result.response.get_activity.items &&
-        result.response.get_activity.items.length > 0
-      ) {
-        return result.response.get_activity.items;
+      const get_activity_items = getItemsFromData(result, 'get_activity');
+      if (get_activity_items.length > 0) {
+        return get_activity_items;
       }
     }
     let tmp_activities = JSON.parse(

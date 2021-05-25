@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   IonCard,
   IonCardContent,
@@ -6,38 +6,33 @@ import {
   IonCardTitle,
   IonCol,
   IonGrid,
-  IonRow,
+  IonRow
 } from '@ionic/react';
 import style from './OverviewCard.module.scss';
 
 export interface Certification {
-  isEnabled: boolean,
-  entity: string,
-  period: string,
-  title: string,
-  description: string,
-  order: string
+  isEnabled: boolean;
+  entity: string;
+  period: string;
+  title: string;
+  description: string;
+  order: string;
 }
 
-
 export interface Certifications {
-  isEnabled: boolean,
-  items: Certification[]
+  isEnabled: boolean;
+  items: Certification[];
 }
 
 interface IProps {
-  certifications: Certifications
+  certifications: Certifications;
 }
-
 
 const certificationItem = (certificationItem: Certification) => {
   return (
     <IonGrid>
       <IonRow>
-
-        <IonCol size="2">
-          image
-      </IonCol>
+        <IonCol size="2">image</IonCol>
         <IonCol size="9">
           <IonGrid>
             <IonRow>{certificationItem.title}</IonRow>
@@ -49,10 +44,12 @@ const certificationItem = (certificationItem: Certification) => {
       </IonRow>
     </IonGrid>
   );
-}
+};
 
 const CertificationsCard: React.FC<IProps> = ({ certifications }: IProps) => {
-  const listCertifications = certifications.items.map(x => certificationItem(x))
+  const listCertifications = certifications.items.map(x =>
+    certificationItem(x)
+  );
 
   return (
     <IonCard className={style['overview']}>
@@ -61,9 +58,7 @@ const CertificationsCard: React.FC<IProps> = ({ certifications }: IProps) => {
         <IonCardTitle>Certifications</IonCardTitle>
       </IonCardHeader>
       <IonCardContent>
-        {
-          listCertifications
-        }
+        {listCertifications}
         {
           //JSON.stringify(experiences)
         }

@@ -119,35 +119,35 @@ const HomePage: React.FC<InferMappedProps> = ({
           <div className="social-login">
             <SocialLoginLink href="/login/elastos/qrcode">
               <IonImg
-                src="../../assets/logo_elastos.svg"
+                src="../../assets/icon/logo_elastos.svg"
                 style={{ minWidth: '24px' }}
               />
             </SocialLoginLink>
             <SocialLoginLink>
               <IonImg
                 onClick={googlelogin}
-                src="../../assets/logo_google.svg"
+                src="../../assets/icon/logo_google.svg"
                 style={{ minWidth: '24px' }}
               />
             </SocialLoginLink>
             <SocialLoginLink>
               <IonImg
                 onClick={linkedinlogin}
-                src="../../assets/logo_linkedin.svg"
+                src="../../assets/icon/logo_linkedin.svg"
                 style={{ minWidth: '24px' }}
               />
             </SocialLoginLink>
             <SocialLoginLink>
               <IonImg
                 onClick={twitterlogin}
-                src="../../assets/logo_twitter.svg"
+                src="../../assets/icon/logo_twitter.svg"
                 style={{ minWidth: '24px' }}
               />
             </SocialLoginLink>
             <SocialLoginLink>
               <IonImg
                 onClick={facebooklogin}
-                src="../../assets/logo_facebook.svg"
+                src="../../assets/icon/logo_facebook.svg"
                 style={{ minWidth: '24px' }}
               />
             </SocialLoginLink>
