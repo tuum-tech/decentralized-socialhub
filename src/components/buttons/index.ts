@@ -1,68 +1,14 @@
 import { IonRouterLink, IonButton } from '@ionic/react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+import SignInButton from './SignInButton';
 import ArrowButton from './ArrowButton';
 import ButtonWithLogo from './ButtonWithLogo';
 import SocialButton from './SocialButton';
+import ButtonLink from './ButtonLink';
+import FollowButton from './FollowButton';
+import { DefaultButton, DefaultLinkButton } from './DefaultButton';
 import Button from './Button';
-
-interface ButtonLinkProps {
-  width?: number;
-}
-
-const ButtonLink = styled(Link)<ButtonLinkProps>`
-  width: 100%;
-  ${props => {
-    if (props.width) {
-      return `max-width: ${props.width}px;`;
-    }
-  }}
-  display: block;
-  margin: 0;
-`;
-
-// for buttons used in logic workflow
-interface SignInButtonProps {
-  width?: number;
-  color?: string;
-}
-const SignInButton = styled(Link)<SignInButtonProps>`
-  width: 100%;
-  background: #3c5cde;
-  border-radius: 10px;
-  margin-top: 14px;
-  padding: 10px;
-
-  ${props => {
-    if (props.width) {
-      return `max-width: ${props.width}px;`;
-    }
-  }}
-
-  ${props => {
-    return `color: ${props.color ? props.color : 'white'};`;
-  }}
-
-  font-family: 'SF Pro Display';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 23px;
-
-  display: block;
-  align-items: center;
-  text-align: center;
-
-  &:hover {
-    ${props => {
-      return `color: ${props.color ? props.color : 'white'};`;
-    }}
-    text-decoration: none;
-  }
-`;
-
-// for buttons used in dashboard
 
 const DashboardSignInButton = styled(IonRouterLink)`
   width: 140px;
@@ -87,87 +33,40 @@ const DashboardSignInButton = styled(IonRouterLink)`
   color: #ffffff;
 `;
 
-const FollowButton = styled(IonButton)`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 10px;
-  --background: #4c6fff;
-  --border-radius: 9px;
-  height: 40px;
+const PrimaryLinkButton = styled(IonButton)`
+  width: 273px;
+  height: 49px;
+
+  background: #363291 0% 0% no-repeat padding-box;
+  border-radius: 8px;
   opacity: 1;
+
   text-align: center;
+  font: normal normal 600 18px/21px 'Open Sans';
   text-transform: none;
   letter-spacing: 0px;
   color: #ffffff;
-  font-family: 'SF Pro Display';
-  font-size: 12px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  width: 100%;
 `;
 
-interface ButtonProps {
-  width?: string;
-  height?: string;
-  bgColor?: string;
-  color?: string;
-  borderRadius?: string;
-  padding?: string;
-}
+const ButtonLight = styled(IonButton)`
+  width: 273px;
+  height: 49px;
 
-const DefaultButton = styled.div<ButtonProps>`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  opacity: 1;
 
-  font-family: 'SF Pro Display';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 12px;
+  text-align: center;
+  font: normal normal 600 18px/21px 'Open Sans';
+  text-transform: none;
+  letter-spacing: 0px;
+  color: #000;
+  --background: #fff 0% 0% no-repeat padding-box;
+  --background-activated: #fff 0% 0% no-repeat padding-box;
 
-  width: 100%;
-  height: 100%;
-
-  padding: ${props => (props.padding ? `${props.padding}` : '15px 25px')};
-  max-width: ${props => (props.width ? `${props.width}` : '100%')};
-  max-height: ${props => (props.height ? `${props.height}` : '100%')};
-  background: ${props => (props.bgColor ? `${props.bgColor}` : '#4c6fff')};
-  color: ${props => (props.color ? `${props.color}` : 'white')};
-  border-radius: ${props =>
-    props.borderRadius ? `${props.borderRadius}` : '9px'};
-
-  cursor: pointer;
-`;
-
-const DefaultLinkButton = styled(IonRouterLink)<ButtonProps>`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  font-family: 'SF Pro Display';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 12px;
-
-  width: 100%;
-  height: 100%;
-
-  padding: ${props => (props.padding ? `${props.padding}` : '15px 25px')};
-  max-width: ${props => (props.width ? `${props.width}` : '100%')};
-  max-height: ${props => (props.height ? `${props.height}` : '100%')};
-  background: ${props => (props.bgColor ? `${props.bgColor}` : '#4c6fff')};
-  color: ${props => (props.color ? `${props.color}` : 'white')};
-  border-radius: ${props =>
-    props.borderRadius ? `${props.borderRadius}` : '9px'};
-
-  cursor: pointer;
+  &:hover {
+    --background-hover: #fff 0% 0% no-repeat padding-box;
+  }
 `;
 
 export {
@@ -178,7 +77,9 @@ export {
   SignInButton,
   DashboardSignInButton,
   FollowButton,
-  Button,
   DefaultButton,
-  DefaultLinkButton
+  DefaultLinkButton,
+  PrimaryLinkButton,
+  ButtonLight,
+  Button
 };

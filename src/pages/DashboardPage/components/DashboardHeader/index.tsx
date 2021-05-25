@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { IonGrid, IonRow, IonCol } from '@ionic/react';
+import { IonGrid, IonRow, IonCol, IonButton } from '@ionic/react';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
 import { getVerifiedCredential } from 'src/utils/credential';
 import { RequestStatus } from 'src/services/assist.service';
 import { ProfileName } from 'src/components/texts';
 import DidSnippet from 'src/components/DidSnippet';
-import { FollowButton } from 'src/components/buttons';
 import Avatar from 'src/components/Avatar';
 
 import PublishingLabel from '../PublishingLabel';
@@ -14,6 +14,28 @@ import PublishingLabel from '../PublishingLabel';
 import style from './style.module.scss';
 import shieldIcon from '../../../../assets/icon/shield.svg';
 import { DidDocumentService } from 'src/services/diddocument.service';
+
+const ViewProfileButton = styled(IonButton)`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  --background: #4c6fff;
+  --border-radius: 9px;
+  height: 40px;
+  opacity: 1;
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0px;
+  color: #ffffff;
+  font-family: 'SF Pro Display';
+  font-size: 12px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  width: 100%;
+`;
 
 interface IProps {
   sessionItem: ISessionItem;
@@ -95,7 +117,7 @@ const DashboardHeader: React.FC<IProps> = ({
               window.open(getPublicProfileLink());
             }}
           >
-            <FollowButton>View profile</FollowButton>
+            <ViewProfileButton>View profile</ViewProfileButton>
           </Link>
         </IonCol>
       </IonRow>

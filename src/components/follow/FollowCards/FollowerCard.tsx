@@ -8,68 +8,29 @@ import {
   IonCardHeader,
   IonCardContent
 } from '@ionic/react';
-import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import Avatar from '../Avatar';
 import styleCards from 'src/components/cards/WidgetCards.module.scss';
+import Avatar from '../../Avatar';
+import { TruncatedSpan, Name, ViewAll } from './FollowingCard';
+
 import style from './style.module.scss';
 
-interface FollowingsWidgetProps {
-  users: any[];
+interface FollwerWidgetProps {
+  users: string[];
   getLinkFunc: any;
   isSigned: boolean;
   viewAllClicked: () => void;
+  totalNumber: number;
 }
 
-export const TruncatedSpan = styled.span`
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
-  font-family: 'SF Pro Display';
-  font-size: 14px;
-  font-weight: normal;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1.62;
-  letter-spacing: normal;
-  text-align: left;
-  color: #979797;
-`;
-
-export const Name = styled.span`
-  font-family: 'SF Pro Display';
-  font-size: 16px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1.56;
-  letter-spacing: normal;
-  text-align: left;
-  color: #27272e;
-`;
-
-export const ViewAll = styled.button`
-  flex-grow: 0;
-  font-family: 'SF Pro Display';
-  font-size: 14px;
-  font-weight: bold;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  text-align: right;
-  color: #4c6fff;
-  background: transparent;
-`;
-
-const FollowingCard: React.FC<FollowingsWidgetProps> = ({
+const FollowerCard: React.FC<FollwerWidgetProps> = ({
   users,
   getLinkFunc,
   isSigned,
+  totalNumber,
   viewAllClicked
-}: FollowingsWidgetProps) => {
+}: FollwerWidgetProps) => {
   return (
     <IonCard className={styleCards['overview']}>
       <IonCardHeader>
@@ -77,7 +38,7 @@ const FollowingCard: React.FC<FollowingsWidgetProps> = ({
           <IonRow className="ion-justify-content-between">
             <IonCol size="6">
               <IonCardTitle id="education">
-                Following ({users.length})
+                Follower ({totalNumber})
               </IonCardTitle>
             </IonCol>
             <IonCol size="auto">
@@ -88,7 +49,7 @@ const FollowingCard: React.FC<FollowingsWidgetProps> = ({
       </IonCardHeader>
       <IonCardContent>
         <IonGrid className={style['following-widget']}>
-          {users.map((user: any, index: number) => (
+          {users.map((user: any, index) => (
             <IonRow key={index} className="mb-3">
               <IonCol size="2">
                 <Avatar did={user.did} width="45px" />
@@ -113,4 +74,4 @@ const FollowingCard: React.FC<FollowingsWidgetProps> = ({
   );
 };
 
-export default FollowingCard;
+export default FollowerCard;

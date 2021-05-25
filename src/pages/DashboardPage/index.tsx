@@ -18,7 +18,9 @@ import { ExporeTime } from './constants';
 
 import Logo from 'src/components/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
+import ViewAllFollowModal from 'src/components/follow/ViewAllFollowModal';
 
+import { FollowService } from 'src/services/follow.service';
 import { UserService } from 'src/services/user.service';
 import { AssistService, RequestStatus } from 'src/services/assist.service';
 import LoadingIndicator from 'src/components/LoadingIndicator';
@@ -46,6 +48,7 @@ const TutorialModal = styled(IonModal)`
 `;
 
 const ProfilePage = () => {
+  const [showAllFollow, setShowAllFollow] = useState(0);
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');
@@ -54,6 +57,10 @@ const ProfilePage = () => {
   const [didDocument, setDidDocument] = useState<any>({});
   const [publishStatus, setPublishStatus] = useState(RequestStatus.Pending);
   const [onBoardVisible, setOnBoardVisible] = useState(false);
+
+  const [followingDids, setFollowingDids] = useState<string[]>([]);
+  const [followerDids, setFollowerDids] = useState<string[]>([]);
+
   const history = useHistory();
 
   const setTimerForDid = () => {
@@ -131,6 +138,7 @@ const ProfilePage = () => {
     }
     setLoadingText('');
   };
+
   useEffect(() => {
     (async () => {
       let userSession = UserService.GetUserSession();
@@ -139,6 +147,16 @@ const ProfilePage = () => {
       }
       await refreshDidDocument();
       setUserInfo(userSession);
+
+      const _followingDids = await FollowService.getFollowingDids(
+        userSession.did
+      );
+      setFollowingDids(_followingDids);
+      const _followersDids = await FollowService.getFollowerDids(
+        userSession.did
+      );
+      setFollowerDids(_followersDids);
+
       setPublishStatus(
         userSession.isDIDPublished
           ? RequestStatus.Completed
@@ -289,6 +307,11 @@ const ProfilePage = () => {
                 profile={full_profile}
                 sessionItem={userInfo}
                 didDocument={didDocument}
+                viewAll={(isFollower: boolean) => {
+                  setShowAllFollow(isFollower ? 1 : 2);
+                }}
+                followerDids={followerDids}
+                followingDids={followingDids}
               />
             </IonCol>
           </IonRow>
@@ -310,6 +333,18 @@ const ProfilePage = () => {
           />
         </TutorialModal>
       </IonContent>
+
+      {userInfo && userInfo.did !== '' && showAllFollow > 0 && (
+        <ViewAllFollowModal
+          followerDids={followerDids}
+          followingDids={followingDids}
+          setFollowerDids={setFollowerDids}
+          setFollowingDids={setFollowingDids}
+          onClose={() => setShowAllFollow(0)}
+          isFollower={showAllFollow === 1}
+          editable={true}
+        />
+      )}
     </IonPage>
   );
 };

@@ -3,6 +3,11 @@ import { RouteComponentProps } from 'react-router';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
+// import FollowerAllModal from 'src/components/follow/FollowerAllModal';
+// import FollowingAllModal from 'src/components/follow/FollowingAllModal';
+import { FollowService } from 'src/services/follow.service';
+
+import ViewAllFollowModal from 'src/components/follow/ViewAllFollowModal';
 import LoadingIndicator from 'src/components/LoadingIndicator';
 import ProfileComponent from 'src/components/profile/ProfileComponent';
 import PublicNavbar from 'src/components/profile/PublicNavbar';
@@ -24,6 +29,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   props: RouteComponentProps<MatchParams>
 ) => {
   let did: string = props.match.params.did;
+  const [showAllFollow, setShowAllFollow] = useState(0);
   const [signedUser, setSignedUser] = useState(defaultUserInfo);
   const [loading, setLoading] = useState(true);
   const [scrollTop, setScrollTop] = useState(0);
@@ -55,10 +61,6 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     contentRef.current && contentRef.current.scrollToPoint(0, point, 200);
   };
 
-  const handleScroll = (e: any) => {
-    setScrollTop(e.detail.scrollTop);
-  };
-
   useEffect(() => {
     (async () => {
       let did: string = props.match.params.did;
@@ -71,6 +73,23 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     })();
   }, [props.match.params.did]);
 
+  const [followerDids, setFollowerDids] = useState<string[]>([]);
+  const [followingDids, setFollowingDids] = useState<string[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const followerDids = await FollowService.getFollowerDids(
+        props.match.params.did
+      );
+      setFollowerDids(followerDids);
+
+      const followingdids = await FollowService.getFollowingDids(
+        props.match.params.did
+      );
+      setFollowingDids(followingdids);
+    })();
+  }, [props.match.params.did]);
+
   if (loading) {
     return <LoadingIndicator loadingText="Loading data..." />;
   }
@@ -80,7 +99,9 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
         <IonContent
           ref={contentRef}
           scrollEvents={true}
-          onIonScroll={handleScroll}
+          onIonScroll={(e: any) => {
+            setScrollTop(e.detail.scrollTop);
+          }}
         >
           <PublicNavbar signedIn={signedUser && signedUser.did !== ''} />
           <ContentRow className="ion-justify-content-around">
@@ -93,12 +114,28 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
                   aboutRef={aboutRef}
                   experienceRef={experienceRef}
                   educationRef={educationRef}
+                  viewAllClicked={(isFollower: boolean) => {
+                    setShowAllFollow(isFollower ? 1 : 2);
+                  }}
+                  followerDids={followerDids}
+                  followingDids={followingDids}
                 />
               </div>
             </IonCol>
           </ContentRow>
         </IonContent>
       </IonGrid>
+      {showAllFollow > 0 && (
+        <ViewAllFollowModal
+          followerDids={followerDids}
+          followingDids={followingDids}
+          setFollowerDids={setFollowerDids}
+          setFollowingDids={setFollowingDids}
+          onClose={() => setShowAllFollow(0)}
+          isFollower={showAllFollow === 1}
+          editable={did === signedUser.did}
+        />
+      )}
     </IonPage>
   );
 };

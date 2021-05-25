@@ -22,8 +22,7 @@ import {
 import SocialLoginLink from './components/SocialLoginLink';
 import Header from 'src/components/oldComponents/OldHeader';
 import ClearlyMeContent from 'src/components/oldComponents/ClearlyMeContent';
-import ButtonDefault from 'src/components/buttons/ButtonDefault';
-import ButtonLight from 'src/components/buttons/ButtonLight';
+import { PrimaryLinkButton, ButtonLight } from 'src/components/buttons';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 // import MnemonicContext from 'src/context/MnemonicContext';
 
@@ -104,9 +103,9 @@ const HomePage: React.FC<InferMappedProps> = ({
           <br />
           <br />
           <div style={{ textAlign: 'center' }}>
-            <ButtonDefault href="/login/elastos/mnemonic">
+            <PrimaryLinkButton href="/login/elastos/mnemonic">
               Sign in with DID
-            </ButtonDefault>
+            </PrimaryLinkButton>
           </div>
 
           <div style={{ textAlign: 'center' }}>

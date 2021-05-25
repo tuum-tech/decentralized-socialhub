@@ -214,7 +214,6 @@ export class SearchService {
     };
 
     params['dids'] = dids;
-
     usersResponse = await this.appHiveClient.Scripting.RunScript({
       name: 'get_users_by_dids', // get all users
       params: params,
@@ -223,7 +222,6 @@ export class SearchService {
         target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
       }
     });
-
     if (usersResponse.isSuccess) {
       return usersResponse;
     }
@@ -249,7 +247,7 @@ export class SearchService {
 
     if (this.isDID(searchString)) {
       const filteredDids = dids.filter(item => item.includes(searchString));
-      params['did'] = filteredDids;
+      params['dids'] = filteredDids;
       const usersResponse: any = await this.appHiveClient.Scripting.RunScript({
         name: 'get_users_by_dids',
         params,
@@ -262,7 +260,7 @@ export class SearchService {
     } else {
       params['name'] = '.*' + searchString + '.*';
       params['self_did'] = [userSession.did];
-      params['did'] = dids;
+      params['dids'] = dids;
 
       const usersResponse: any = await this.appHiveClient.Scripting.RunScript({
         name: 'get_users_by_name_and_dids',

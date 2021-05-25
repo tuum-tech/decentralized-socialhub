@@ -1,16 +1,16 @@
-import React from 'react'
-import { IonText, IonImg } from '@ionic/react'
+import React from 'react';
+import { IonText, IonImg } from '@ionic/react';
 
-import style from './ButtonWithLogo.module.scss'
-import whitelogo from '../../assets/logo/whitelogo.png'
+import style from './ButtonWithLogo.module.scss';
+import whitelogo from '../../assets/logo/whitelogo.png';
 
 interface Props {
-  onClick?: () => void
-  text?: string
-  mt?: number
-  mode?: string
-  hasLogo?: boolean
-  disabled?: boolean
+  onClick?: () => void;
+  text?: string;
+  mt?: number;
+  mode?: string;
+  hasLogo?: boolean;
+  disabled?: boolean;
 }
 
 const ButtonWithLogo: React.FC<Props> = ({
@@ -19,21 +19,21 @@ const ButtonWithLogo: React.FC<Props> = ({
   mt,
   mode = 'blue',
   hasLogo = true,
-  disabled = false,
+  disabled = false
 }) => {
-  const cName = style['logo-btn'] + ' ' + style[`${mode}-mode`]
+  const cName = style['logo-btn'] + ' ' + style[`${mode}-mode`];
 
   return (
     <div
       onClick={() => {
         if (!disabled && onClick) {
-          onClick()
+          onClick();
         }
       }}
       className={cName}
       style={{
         marginTop: mt && `${mt}px`,
-        opacity: disabled ? 0.2 : 1,
+        opacity: disabled ? 0.2 : 1
       }}
     >
       {mode !== 'danger' && hasLogo && (
@@ -44,7 +44,7 @@ const ButtonWithLogo: React.FC<Props> = ({
       )}
       <IonText className={style['logo-btn_txt']}>{text}</IonText>
     </div>
-  )
-}
+  );
+};
 
-export default ButtonWithLogo
+export default ButtonWithLogo;
