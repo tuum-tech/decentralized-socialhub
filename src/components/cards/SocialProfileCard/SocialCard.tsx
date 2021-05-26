@@ -431,16 +431,24 @@ const SocialProfilesCard: React.FC<Props> = ({
           <IonGrid className={style['social-profile-grid']}>
             <IonRow>
               {containsVerifiedCredential('linkedin') && (
-                <IonCol size-xl="6">{linkedInItem()}</IonCol>
+                <IonCol size={showManageButton ? '6' : '12'}>
+                  {linkedInItem()}
+                </IonCol>
               )}
               {containsVerifiedCredential('twitter') && (
-                <IonCol size-xl="6">{twitterItem()}</IonCol>
+                <IonCol size={showManageButton ? '6' : '12'}>
+                  {twitterItem()}
+                </IonCol>
               )}
               {containsVerifiedCredential('facebook') && (
-                <IonCol size-xl="6">{facebookItem()}</IonCol>
+                <IonCol size={showManageButton ? '6' : '12'}>
+                  {facebookItem()}
+                </IonCol>
               )}
               {containsVerifiedCredential('google') && (
-                <IonCol size-xl="6">{googleItem()}</IonCol>
+                <IonCol size={showManageButton ? '6' : '12'}>
+                  {googleItem()}
+                </IonCol>
               )}
             </IonRow>
           </IonGrid>
