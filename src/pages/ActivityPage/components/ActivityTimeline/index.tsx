@@ -107,7 +107,10 @@ const ActivityRow: React.FC<IActivityRowData> = props => {
             className={style['avatar']}
           />
           <div className={style['activity-detail']}>
-            <p className={style['activity-text']}>{activity.message}</p>
+            <div
+              className={style['activity-text']}
+              dangerouslySetInnerHTML={{ __html: activity.message }}
+            ></div>
             <p className={style['activity-time-since']}>
               {timeSince((activity as any).createdAt)}
             </p>

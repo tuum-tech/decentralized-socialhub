@@ -99,7 +99,12 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   };
 
   const validate = (item: ExperienceItem) => {
-    if (!item.title || !item.institution || !item.start || !item.end)
+    if (
+      !item.title ||
+      !item.institution ||
+      !item.start ||
+      (!item.end && !item.still)
+    )
       return false;
     return true;
   };

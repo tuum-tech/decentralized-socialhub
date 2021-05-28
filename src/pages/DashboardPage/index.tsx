@@ -207,11 +207,10 @@ const ProfilePage = () => {
         let userSession = UserService.GetUserSession();
         if (!userSession) return;
 
-        const timestamp = new Date(_didDocument.proof.created).getTime();
+        const timestamp = new Date().getTime();
         let message = '';
         userSession.didPublishTime += 1;
         const didPublishTime = userSession.didPublishTime;
-        console.log(didPublishTime);
         if (didPublishTime === 1) {
           userSession.badges!.didPublishTimes._1times.archived = timestamp;
           message = 'You received 1 times did publish badge';

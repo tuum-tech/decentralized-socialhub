@@ -95,7 +95,12 @@ const EducationCard: React.FC<IEducationProps> = ({
   };
 
   const validate = (item: EducationItem) => {
-    if (!item.program || !item.institution || !item.start || !item.end)
+    if (
+      !item.program ||
+      !item.institution ||
+      !item.start ||
+      (!item.end && !item.still)
+    )
       return false;
     return true;
   };
