@@ -2,7 +2,7 @@
  * Page
  */
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { IonGrid, IonRow, IonCol } from '@ionic/react';
 import { ElastosClient } from '@elastosfoundation/elastos-js-sdk';
@@ -13,6 +13,7 @@ import {
 } from 'src/components/layouts/OnBoardLayout';
 import ButtonWithLogo from 'src/components/buttons/ButtonWithLogo';
 import TextInput from 'src/components/inputs/TextInput';
+import MnemonicInput from 'src/components/inputs/MnemonicInput';
 import { Text16, Text12 } from 'src/components/texts';
 
 import helpSvg from '../../../../assets/icon/help.svg';
@@ -94,6 +95,8 @@ const DidForm: React.FC<Props> = ({
     ''
   ]);
 
+  const itemEls = useRef<any[]>([]);
+
   const [passphrase, setPassphrase] = useState('');
 
   const isMnemonicWordValid = (index: number): boolean => {
@@ -131,14 +134,21 @@ const DidForm: React.FC<Props> = ({
   const renderMnemonicInput = (index: number) => {
     return (
       <IonCol className="ion-no-padding">
-        <TextInput
+        <MnemonicInput
+          onRef={element => itemEls.current.push(element)}
           value={mnemonic[index]}
           flexDirection="column"
           label={(index + 1).toString()}
           placeholder={PlaceHolderTexts[index]}
-          onChange={n => {
+          onInput={e => {
             setError(false);
-            updateMnemonic(index, n);
+            let val = e.currentTarget.value!.replace(/\s+/g, '');
+            let key = e.key;
+            if (key === ' ') {
+              itemEls.current[index].value = val;
+              itemEls.current[(index + 1) % 12].setFocus();
+            }
+            updateMnemonic(index, val);
           }}
           hasError={error}
         />

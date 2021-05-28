@@ -9,7 +9,6 @@ import {
   IonCol
 } from '@ionic/react';
 
-import { validateEmail } from 'src/utils/validation';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import SmallTextInput from 'src/components/inputs/SmallTextInput';
 import styled from 'styled-components';
@@ -46,10 +45,6 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
     const value =
       evt.target.type === 'checkbox' ? evt.target.checked : evt.target.value;
     if (evt.target.name === 'email') {
-      if (!validateEmail(value)) {
-        // alert('Not correct Email');
-        return;
-      }
       setCurrentBasicDTO({
         ...currentBasicDTO,
         loginCred: { ...currentBasicDTO, email: value }

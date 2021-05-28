@@ -356,7 +356,12 @@ export class ProfileService {
         {
           guid: '',
           did: sDid,
-          message: userSession!.name + ' Followed you',
+          message:
+            '<a href="/did/' +
+            sDid +
+            '" target="_blank">' +
+            userSession!.name +
+            '</a> Followed you',
           read: false,
           createdAt: 0,
           updatedAt: 0
@@ -368,7 +373,12 @@ export class ProfileService {
         {
           guid: '',
           did: sDid,
-          message: 'You are following ' + followingUser.name,
+          message:
+            'You are following <a href="/did/' +
+            did +
+            '" target="_blank">' +
+            followingUser.name +
+            '</a>',
           read: false,
           createdAt: 0,
           updatedAt: 0
