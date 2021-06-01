@@ -108,7 +108,6 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
             <IonCol size="9" className="ion-no-padding">
               <div className={style['profilecomponent']}>
                 <ProfileComponent
-                  hasBanner={true}
                   targetDid={did}
                   scrollToElement={scrollToElement}
                   aboutRef={aboutRef}

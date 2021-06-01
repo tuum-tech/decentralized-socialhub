@@ -34,7 +34,6 @@ interface Props {
   aboutRef: any;
   experienceRef: any;
   educationRef: any;
-  hasBanner?: boolean;
   followerDids: string[];
   followingDids: string[];
   scrollToElement: (cardName: string) => void;
@@ -46,7 +45,6 @@ const ProfileComponent: React.FC<Props> = ({
   aboutRef,
   experienceRef,
   educationRef,
-  hasBanner = false,
   followerDids,
   followingDids,
   scrollToElement,
@@ -101,7 +99,6 @@ const ProfileComponent: React.FC<Props> = ({
         onlyText={displayText}
         user={publicUser}
         signedUserDid={signedUser.did}
-        hasBanner={hasBanner}
       />
       {!loading &&
         publicUser.did !== '' &&

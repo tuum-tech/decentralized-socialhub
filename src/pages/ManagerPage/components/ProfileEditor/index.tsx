@@ -13,6 +13,7 @@ import EducationCard from 'src/components/cards/EducationCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
 import AboutCard from 'src/components/cards/AboutCard';
 import AvatarChangeCard from 'src/components/cards/AvatarChangeCard';
+import CoverPhoto from 'src/components/cards/CoverPhoto';
 
 import BasicCard from '../BasicCard';
 import TemplateManagerCard from '../TemplateManagerCard';
@@ -88,6 +89,7 @@ const ProfileEditor: React.FC = () => {
           </IonCol>
           <IonCol size="8">
             <AvatarChangeCard />
+            <CoverPhoto />
             {!error && loaded ? (
               <BasicCard
                 sessionItem={userInfo}

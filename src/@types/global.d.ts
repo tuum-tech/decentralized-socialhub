@@ -89,6 +89,7 @@ interface ISessionItem {
   loginCred?: LoginCred;
   badges?: IBadges;
   avatar?: string;
+  coverPhoto?: string;
   code?: string;
   status?: string;
 }

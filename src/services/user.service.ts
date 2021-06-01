@@ -330,7 +330,8 @@ export class UserService {
       avatar,
       code: Guid.create().toString(),
       status: 'Created',
-      mnemonics
+      mnemonics,
+      coverPhoto: ''
     };
     let curTime = new Date().getTime();
     let messages = [];

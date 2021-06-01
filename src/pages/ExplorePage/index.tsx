@@ -14,9 +14,9 @@ import style from './style.module.scss';
 
 const Header = styled.div`
   width: 100%;
-  height: 83px;
+  // height: 83px;
   background: #fff;
-  padding: 23px 25px 20px 32px;
+  padding: 13px 15px 10px 22px;
   border-bottom: 1px solid #edf2f7;s
 `;
 
