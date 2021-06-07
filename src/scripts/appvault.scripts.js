@@ -112,6 +112,7 @@ let run = async () => {
         update: {
           $set: {
             did: '$params.did',
+            coverPhoto: '$params.coverPhoto',
             accountType: '$params.accountType',
             passhash: '$params.passhash',
             name: '$params.name',
