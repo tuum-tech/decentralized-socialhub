@@ -47,7 +47,7 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
     if (evt.target.name === 'email') {
       setCurrentBasicDTO({
         ...currentBasicDTO,
-        loginCred: { ...currentBasicDTO, email: value }
+        loginCred: { ...currentBasicDTO.loginCred, email: value }
       });
     } else {
       setCurrentBasicDTO({
