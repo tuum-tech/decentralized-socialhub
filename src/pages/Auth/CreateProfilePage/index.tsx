@@ -1,6 +1,5 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components';
 
@@ -30,19 +29,16 @@ import LoadingIndicator from 'src/components/LoadingIndicator';
 
 import { AlphaService } from 'src/services/alpha.service';
 import TwitterApi from 'src/shared-base/api/twitter-api';
-import injector from 'src/baseplate/injectorWrap';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import wavinghand from 'src/assets/icon/wavinghand.png';
 
 import MultiDidPasswordLogin from '../components/MultiDidPasswordLogin';
 import FieldDivider from '../components/FieldDivider';
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
-import { incrementAction, getSimpleAjax } from './actions';
 import style from './style.module.scss';
-import { NameSpace } from './constants';
-import reducer from './reducer';
-import saga from './saga';
+
+import { makeSelectSession, makeSelectUsers } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
 import {
@@ -63,13 +59,6 @@ const DisplayText = styled(Text16)`
   color: green;
   margin-top: 8px;
 `;
-
-export interface ICreateUserResponse {
-  data: {
-    return_code: string;
-    did: string;
-  };
-}
 
 const CreateProfilePage: React.FC<InferMappedProps> = ({
   eProps,
@@ -183,6 +172,10 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
         dids={signedUsers}
         removeUser={removeUser}
         changeMode={() => setMode(0)}
+        afterSuccess={(session: ISessionItem) => {
+          eProps.setSession({ session });
+          window.location.href = '/profile';
+        }}
       />
     );
   }
@@ -265,39 +258,55 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   );
 };
 
-/** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg()
+  session: makeSelectSession(),
+  users: makeSelectUsers()
 });
 
-/** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
   return {
     eProps: {
-      // eProps - Emitter proptypes thats binds to dispatch
-      /** dispatch for counter to increment */
-      onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax())
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
     }
   };
 }
 
-/**
- * Injects prop and saga bindings done via
- * useInjectReducer & useInjectSaga
- */
-const withInjectedMode = injector(CreateProfilePage, {
-  key: NameSpace,
-  reducer,
-  saga
-});
+export default connect(mapStateToProps, mapDispatchToProps)(CreateProfilePage);
 
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
+// /** @returns {object} Contains state props from selectors */
+// export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+//   counter: makeSelectCounter(),
+//   msg: makeSelectAjaxMsg()
+// });
 
-export default compose(
-  withConnect,
-  memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>;
+// /** @returns {object} Contains dispatchable props */
+// export function mapDispatchToProps(dispatch: any) {
+//   return {
+//     eProps: {
+//       // eProps - Emitter proptypes thats binds to dispatch
+//       /** dispatch for counter to increment */
+//       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
+//       onSimpleAjax: () => dispatch(getSimpleAjax())
+//     }
+//   };
+// }
 
-// export default Tab1;
+// /**
+//  * Injects prop and saga bindings done via
+//  * useInjectReducer & useInjectSaga
+//  */
+// const withInjectedMode = injector(CreateProfilePage, {
+//   key: NameSpace,
+//   reducer,
+//   saga
+// });
+
+// const withConnect = connect(mapStateToProps, mapDispatchToProps);
+
+// export default compose(
+//   withConnect,
+//   memo
+// )(withInjectedMode) as React.ComponentType<InferMappedProps>;
+
+// // export default Tab1;

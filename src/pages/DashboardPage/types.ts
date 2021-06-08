@@ -1,40 +1,13 @@
-/**
- * Type defined inside this container
- */
-import { Actions } from './constants';
 
-export type ActionType = typeof Actions;
 
-export interface ProfileInfo {
-  name: string;
-}
+import { mapStateToProps } from './index';
+import { SubState, ActionType, defaultUserInfo } from 'src/store/users/types';
 
-export interface ProfileContent {
-  basic_profile: ProfileInfo;
-}
+export type InferMappedProps = ReturnType<typeof mapStateToProps>;
 
-export interface ProfileResponse {
-  _status: string;
-  get_basic: GetBasic;
-  get_education_profile: EducationDTO;
-  get_experience_profile: ExperienceDTO;
-}
+export { defaultUserInfo }; 
+export type { SubState, ActionType };
 
-export interface BasicProfileResponse {
-  _status: string;
-  get_basic_profile: GetBasic;
-}
 
-export interface EducationProfileResponse {
-  _status: string;
-  get_education_profile: EducationDTO;
-}
 
-export interface ExperienceProfileResponse {
-  _status: string;
-  get_experience_profile: ExperienceDTO;
-}
 
-export interface GetBasic {
-  items?: BasicDTO[] | null;
-}

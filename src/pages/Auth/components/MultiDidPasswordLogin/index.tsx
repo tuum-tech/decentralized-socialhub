@@ -27,6 +27,7 @@ import SelectUsers from './SelectUsers';
 
 interface Props {
   changeMode: () => void;
+  afterSuccess: (session: ISessionItem) => void;
   dids: Array<string>;
   removeUser: (did: string) => void;
 }
@@ -34,7 +35,8 @@ interface Props {
 const MultiDidPasswordLogin: React.FC<Props> = ({
   dids,
   changeMode,
-  removeUser
+  removeUser,
+  afterSuccess
 }) => {
   const [did, setDid] = useState(dids[0]);
   const [localUsers, setLocalUsers] = useState([]);
@@ -109,10 +111,10 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
               }
               setLoading('Signing now...');
               const res = await UserService.UnLockWithDIDAndPwd(did, password);
-              if (res) {
-                window.location.href = '/profile';
-              }
               setLoading('');
+              if (res) {
+                afterSuccess(res);
+              }
             }}
           />
 

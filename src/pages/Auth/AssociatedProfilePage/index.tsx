@@ -1,13 +1,9 @@
-import React, { memo, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StaticContext, RouteComponentProps, useHistory } from 'react-router';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { createStructuredSelector } from 'reselect';
 import Modal from 'react-bootstrap/esm/Modal';
 import Button from 'react-bootstrap/esm/Button';
 import styled from 'styled-components';
 
-import injector from 'src/baseplate/injectorWrap';
 import { AccountType, UserService } from 'src/services/user.service';
 import {
   OnBoardLayout,
@@ -28,28 +24,21 @@ import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import eye from 'src/assets/icon/eye.png';
 import LoadingIndicator from 'src/components/LoadingIndicator';
 
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
-import { incrementAction, getSimpleAjax } from './actions';
-import { NameSpace } from './constants';
-import reducer from './reducer';
-import saga from './saga';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
+import { makeSelectSession, makeSelectUsers } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
 import {
-  InferMappedProps,
   SubState,
   UserProps,
   SessionProp,
-  LocationState
+  LocationState,
+  InferMappedProps
 } from './types';
+
 import { requestForceCreateUser } from './fetchapi';
 import GenerateDid from './components/GenerateDid';
 import style from './style.module.scss';
-
-export interface ICreateUserResponse {
-  data: {
-    return_code: string;
-    did: string;
-  };
-}
 
 const DisplayText = styled(Text16)`
   text-align: center;
@@ -57,11 +46,11 @@ const DisplayText = styled(Text16)`
   margin-top: 8px;
 `;
 
-const AssociatedProfilePage: React.FC<RouteComponentProps<
-  {},
-  StaticContext,
-  LocationState
->> = props => {
+interface PageProps
+  extends InferMappedProps,
+    RouteComponentProps<{}, StaticContext, LocationState> {}
+
+const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
   const history = useHistory();
   const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState<UserProps | null>(null);
@@ -96,6 +85,10 @@ const AssociatedProfilePage: React.FC<RouteComponentProps<
         loginCred={associatedInfo.loginCred}
         credential=""
         service={associatedInfo.service}
+        afterPasswordSet={(session: ISessionItem) => {
+          eProps.setSession({ session });
+          window.location.href = '/profile';
+        }}
       />
     );
   }
@@ -232,39 +225,21 @@ const AssociatedProfilePage: React.FC<RouteComponentProps<
   );
 };
 
-/** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg()
+  session: makeSelectSession(),
+  users: makeSelectUsers()
 });
 
-/** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
   return {
     eProps: {
-      // eProps - Emitter proptypes thats binds to dispatch
-      /** dispatch for counter to increment */
-      onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax())
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
     }
   };
 }
 
-/**
- * Injects prop and saga bindings done via
- * useInjectReducer & useInjectSaga
- */
-const withInjectedMode = injector(AssociatedProfilePage, {
-  key: NameSpace,
-  reducer,
-  saga
-});
-
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
-
-export default compose(
-  withConnect,
-  memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>;
-
-// export default Tab1;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AssociatedProfilePage);

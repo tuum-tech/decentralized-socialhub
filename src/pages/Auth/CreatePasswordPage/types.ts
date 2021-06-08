@@ -1,7 +1,5 @@
-import { Actions } from './constants';
-import { AccountType } from 'src/services/user.service';
 
-export type ActionType = typeof Actions;
+import { AccountType } from 'src/services/user.service';
 
 export type LocationState = {
   from: Location;
@@ -21,3 +19,16 @@ export type LocationState = {
   didPublishTime: number;
   loginCred: LoginCred;
 };
+
+
+import { SubState, ActionType, defaultUserInfo } from 'src/store/users/types';
+import { mapDispatchToProps, mapStateToProps } from './index';
+
+export type InferMappedProps = ReturnType<typeof mapStateToProps> &
+  ReturnType<typeof mapDispatchToProps>;
+
+export { defaultUserInfo }; 
+export type { SubState, ActionType };
+
+
+

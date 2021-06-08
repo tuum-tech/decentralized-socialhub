@@ -1,9 +1,4 @@
 import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
-import {
-  BasicProfileResponse,
-  EducationProfileResponse,
-  ExperienceProfileResponse
-} from 'src/pages/DashboardPage/types';
 import { ActivityResponse } from 'src/pages/ActivityPage/types';
 import { getVerifiedCredential } from 'src/utils/credential';
 
@@ -531,11 +526,13 @@ export const defaultUserInfo: ISessionItem = {
   userToken: '',
   accountType: 'DID',
   did: '',
-  // email: '',
+  email: '',
   name: '',
   isDIDPublished: false,
   didPublishTime: 0,
-  loginCred: {},
+  loginCred: {
+    email: ''
+  },
   mnemonics: '',
   passhash: '',
   onBoardingCompleted: false,

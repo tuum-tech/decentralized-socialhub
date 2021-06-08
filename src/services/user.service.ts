@@ -24,25 +24,6 @@ export enum AccountType {
   Email = 'Email'
 }
 
-export interface ITemporaryDID {
-  mnemonic: string;
-  confirmationId: string;
-}
-
-export interface UserData {
-  did: string;
-  name: string;
-  data: string;
-}
-
-export interface SignInDIDData {
-  name: string;
-  did: string;
-  hiveHost: string;
-  userToken: string;
-  isDIDPublished: boolean;
-}
-
 export class UserService {
   private static key(did: string): string {
     return `user_${did.replace('did:elastos:', '')}`;
@@ -202,12 +183,9 @@ export class UserService {
     }
 
     this.lockUser(this.key(newSessionItem.did), newSessionItem);
-    // SessionService.saveSessionItem(newSessionItem);
-    window.localStorage.setItem(
-      'session_instance',
-      JSON.stringify(newSessionItem, null, '')
-    );
     await UserVaultScriptService.register();
+
+    return newSessionItem;
   }
 
   public static async SearchUserWithDID(did: string) {
@@ -435,11 +413,14 @@ export class UserService {
       );
     });
     this.lockUser(this.key(did), sessionItem);
-    // SessionService.saveSessionItem(sessionItem);
-    window.localStorage.setItem(
-      'session_instance',
-      JSON.stringify(sessionItem, null, '')
-    );
+
+    window.localStorage.setItem('isLoggedIn', 'true');
+    // window.localStorage.setItem(
+    //   'session_instance',
+    //   JSON.stringify(sessionItem, null, '')
+    // );
+
+    return sessionItem;
   }
 
   public static async updateSession(
@@ -455,10 +436,10 @@ export class UserService {
     const res: any = await TuumTechScriptService.updateTuumUser(newSessionItem);
     this.lockUser(this.key(sessionItem.did), newSessionItem);
 
-    window.localStorage.setItem(
-      'session_instance',
-      JSON.stringify(newSessionItem, null, '')
-    );
+    // window.localStorage.setItem(
+    //   'session_instance',
+    //   JSON.stringify(newSessionItem, null, '')
+    // );
 
     if (notifyUser && res.meta.code === 200 && res.data._status === 'OK') {
       showNotify('User info is successfuly saved', 'success');
@@ -468,6 +449,7 @@ export class UserService {
   public static async UnLockWithDIDAndPwd(did: string, storePassword: string) {
     let instance = this.unlockUser(this.key(did), storePassword);
     const res = await this.SearchUserWithDID(did);
+
     if (!res) {
       alertError(null, 'Could not find user with this DID');
     } else if (instance) {
@@ -475,11 +457,7 @@ export class UserService {
       instance.tutorialStep = res.tutorialStep;
       this.lockUser(this.key(instance.did), instance);
 
-      // SessionService.saveSessionItem(instance);
-      window.localStorage.setItem(
-        'session_instance',
-        JSON.stringify(instance, null, '')
-      );
+      window.localStorage.setItem('isLoggedIn', 'true');
 
       await UserVaultScriptService.register();
       return instance;
@@ -490,7 +468,8 @@ export class UserService {
   public static async logout() {
     // SessionService.Logout();
     window.sessionStorage.clear();
-    window.localStorage.removeItem('session_instance');
+    // window.localStorage.removeItem('session_instance');
+    window.localStorage.removeItem('isLoggedIn');
     window.location.href = '/create-profile';
   }
 
@@ -505,39 +484,4 @@ export class UserService {
     }
     return;
   }
-
-  // public static async DuplicateNewSession(did: string) {
-  //   const newSession = (await this.SearchUserWithDID(did)) as ISessionItem;
-  //   if (newSession && newSession && newSession.did) {
-  //     SessionService.saveSessionItem(newSession);
-  //     await UserVaultScriptService.register();
-  //   }
-  // }
 }
-
-//To be
-// class SessionService {
-//   static getSession(): ISessionItem | undefined {
-//     let item = window.sessionStorage.getItem('session_instance');
-
-//     if (!item) {
-//       // alertError(null, 'Not logged in');
-//       return;
-//     }
-
-//     let instance = JSON.parse(item);
-//     return instance;
-//   }
-
-//   static saveSessionItem(item: ISessionItem) {
-//     window.sessionStorage.setItem(
-//       'session_instance',
-//       JSON.stringify(item, null, '')
-//     );
-//   }
-
-//   static Logout() {
-//     window.sessionStorage.clear();
-//     window.location.href = '/create-profile';
-//   }
-// }

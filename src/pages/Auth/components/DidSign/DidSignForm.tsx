@@ -81,18 +81,30 @@ const DidForm: React.FC<Props> = ({
   showModal
 }) => {
   const [mnemonic, setMnemonic] = useState([
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    ''
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // '',
+    // ''
+    'law',
+    'acquire',
+    'forward',
+    'eight',
+    'wife',
+    'cereal',
+    'ribbon',
+    'short',
+    'thing',
+    'ghost',
+    'garment',
+    'enact'
   ]);
 
   const itemEls = useRef<any[]>([]);

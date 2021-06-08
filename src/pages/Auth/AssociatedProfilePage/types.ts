@@ -1,17 +1,12 @@
-/**
- * Type defined inside this container
- */
+import { mapDispatchToProps, mapStateToProps } from './index';
+import { SubState, ActionType, defaultUserInfo } from 'src/store/users/types';
 import { AccountType } from 'src/services/user.service';
 
-import { initialState } from './reducer';
-import { mapDispatchToProps, mapStateToProps } from './index';
-import { Actions } from './constants';
-
-export type SubState = typeof initialState;
 export type InferMappedProps = ReturnType<typeof mapStateToProps> &
   ReturnType<typeof mapDispatchToProps>;
 
-export type ActionType = typeof Actions;
+export { defaultUserInfo }; 
+export type { SubState, ActionType };
 
 export type UserProps = {
   status: string;
