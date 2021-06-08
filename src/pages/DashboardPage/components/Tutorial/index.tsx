@@ -2,10 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { IonGrid, IonRow, IonCol, IonButton } from '@ionic/react';
 import styled from 'styled-components';
 
-import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
-import { makeSelectSession } from 'src/store/users/selectors';
-import { SubState, InferMappedProps } from '../../types';
+import { InferMappedProps } from '../../types';
 import { setSession } from 'src/store/users/actions';
 
 import LoadingIndicator from 'src/components/LoadingIndicator';

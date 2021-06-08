@@ -1,7 +1,7 @@
 import { IonButton } from '@ionic/react';
 import React, { useState, useEffect } from 'react';
 
-import { AccountType, UserService } from 'src/services/user.service';
+import { AccountType } from 'src/services/user.service';
 
 import SecurityWordsView from '../SecurityWords/SecurityWordsView';
 import SecurityWordsValidate from '../SecurityWords/SecurityWordsValidate';

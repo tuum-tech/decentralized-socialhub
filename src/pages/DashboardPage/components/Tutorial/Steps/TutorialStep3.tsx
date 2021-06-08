@@ -9,10 +9,8 @@ import { DidDocumentService } from 'src/services/diddocument.service';
 import { ProfileService } from 'src/services/profile.service';
 import { UserVaultScripts } from 'src/scripts/uservault.script';
 
-import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
-import { makeSelectSession } from 'src/store/users/selectors';
-import { SubState, InferMappedProps } from '../../../types';
+import { InferMappedProps } from '../../../types';
 import { setSession } from 'src/store/users/actions';
 
 import style from '../style.module.scss';
