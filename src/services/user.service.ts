@@ -426,7 +426,7 @@ export class UserService {
   public static async updateSession(
     sessionItem: ISessionItem,
     notifyUser: boolean = false
-  ): Promise<void> {
+  ): Promise<ISessionItem> {
     let newSessionItem = sessionItem;
     const userData = await UserService.SearchUserWithDID(sessionItem.did);
     if (userData && userData.code) {
@@ -436,14 +436,10 @@ export class UserService {
     const res: any = await TuumTechScriptService.updateTuumUser(newSessionItem);
     this.lockUser(this.key(sessionItem.did), newSessionItem);
 
-    // window.localStorage.setItem(
-    //   'session_instance',
-    //   JSON.stringify(newSessionItem, null, '')
-    // );
-
     if (notifyUser && res.meta.code === 200 && res.data._status === 'OK') {
       showNotify('User info is successfuly saved', 'success');
     }
+    return newSessionItem;
   }
 
   public static async UnLockWithDIDAndPwd(did: string, storePassword: string) {

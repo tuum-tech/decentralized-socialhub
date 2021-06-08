@@ -26,7 +26,7 @@ import LoadingIndicator from 'src/components/LoadingIndicator';
 
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
-import { makeSelectSession, makeSelectUsers } from 'src/store/users/selectors';
+import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import {
   SubState,
@@ -226,8 +226,7 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
 };
 
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession(),
-  users: makeSelectUsers()
+  session: makeSelectSession()
 });
 
 export function mapDispatchToProps(dispatch: any) {

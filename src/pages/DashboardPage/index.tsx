@@ -15,7 +15,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
-import { makeSelectSession, makeSelectUsers } from 'src/store/users/selectors';
+import { makeSelectSession } from 'src/store/users/selectors';
 import { SubState, InferMappedProps } from './types';
 import { setSession } from 'src/store/users/actions';
 
@@ -52,12 +52,16 @@ const TutorialModal = styled(IonModal)`
   --box-shadow: none !important;
 `;
 
-const ProfilePage: React.FC<InferMappedProps> = (props: InferMappedProps) => {
+const ProfilePage: React.FC<InferMappedProps> = ({
+  eProps,
+  ...props
+}: InferMappedProps) => {
+  const { session } = props;
   const [showAllFollow, setShowAllFollow] = useState(0);
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');
-  const [userInfo, setUserInfo] = useState<ISessionItem>(props.session);
+  // const [userInfo, setUserInfo] = useState<ISessionItem>(props.session);
   const [full_profile, setfull_profile] = useState(defaultFullProfile);
   const [didDocument, setDidDocument] = useState<any>({});
   const [publishStatus, setPublishStatus] = useState(RequestStatus.Pending);
@@ -120,7 +124,9 @@ const ProfilePage: React.FC<InferMappedProps> = (props: InferMappedProps) => {
     if (props.session && props.session.did !== '') {
       let newSession = props.session;
       newSession.isDIDPublished = true;
-      UserService.updateSession(newSession);
+      eProps.setSession({
+        session: await UserService.updateSession(newSession)
+      });
       await DidDocumentService.reloadUserDocument();
     }
     // let userSession = UserService.GetUserSession();
@@ -205,13 +211,13 @@ const ProfilePage: React.FC<InferMappedProps> = (props: InferMappedProps) => {
   let encoded_did_document = useMemo(() => JSON.stringify(didDocument), [
     didDocument
   ]);
+
   useEffect(() => {
     (async () => {
       const _didDocument = JSON.parse(encoded_did_document);
       if (_didDocument && _didDocument.id) {
         if (props.session && props.session.did !== '') {
           let userSession = props.session;
-          console.log('====>userSession', userSession);
           const timestamp = new Date().getTime();
           let message = '';
           userSession.didPublishTime += 1;
@@ -253,7 +259,7 @@ const ProfilePage: React.FC<InferMappedProps> = (props: InferMappedProps) => {
               },
               userSession.did
             );
-            UserService.updateSession(userSession);
+            // await eProps.updateSession({ session: userSession });
           }
         }
       }
@@ -261,15 +267,17 @@ const ProfilePage: React.FC<InferMappedProps> = (props: InferMappedProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [encoded_did_document]);
 
-  if (userInfo.tutorialStep < 4 && onBoardVisible) {
+  if (session.tutorialStep < 4 && onBoardVisible) {
     return (
       <OnBoarding
         completed={async (startTutorial: boolean) => {
           let user = props.session;
           if (!user) return;
           user.onBoardingCompleted = true;
-          await UserService.updateSession(user);
-          setUserInfo(user);
+
+          // await eProps.updateSession({ session: user });
+          // setUserInfo(user);
+
           setOnBoardVisible(false);
           if (!willExpire) {
             setWillExpire(true);
@@ -282,7 +290,7 @@ const ProfilePage: React.FC<InferMappedProps> = (props: InferMappedProps) => {
             setShowTutorial(true);
           }
         }}
-        sessionItem={userInfo}
+        sessionItem={session}
         publishStatus={publishStatus}
       />
     );
@@ -302,7 +310,7 @@ const ProfilePage: React.FC<InferMappedProps> = (props: InferMappedProps) => {
             </IonCol>
             <IonCol size="10" className={style['right-panel']}>
               <DashboardHeader
-                sessionItem={userInfo}
+                sessionItem={session}
                 publishStatus={publishStatus}
               />
 
@@ -311,7 +319,7 @@ const ProfilePage: React.FC<InferMappedProps> = (props: InferMappedProps) => {
                   setShowTutorial(true);
                 }}
                 profile={full_profile}
-                sessionItem={userInfo}
+                sessionItem={session}
                 didDocument={didDocument}
                 viewAll={(isFollower: boolean) => {
                   setShowAllFollow(isFollower ? 1 : 2);
@@ -330,17 +338,20 @@ const ProfilePage: React.FC<InferMappedProps> = (props: InferMappedProps) => {
         >
           <TutorialComponent
             onClose={() => {
-              let userSession = props.session;
-              if (userSession && userSession.did !== '') {
-                setUserInfo(userSession);
-              }
+              // if (props.session && props.session.did !== '') {
+              //   setUserInfo(props.session);
+              // }
+              // eProps.setSession({
+              //   session: await UserService.updateSession(newSession)
+              // });
               setShowTutorial(false);
             }}
+            session={props.session}
           />
         </TutorialModal>
       </IonContent>
 
-      {userInfo && userInfo.did !== '' && showAllFollow > 0 && (
+      {session && session.did !== '' && showAllFollow > 0 && (
         <ViewAllFollowModal
           followerDids={followerDids}
           followingDids={followingDids}
@@ -355,11 +366,8 @@ const ProfilePage: React.FC<InferMappedProps> = (props: InferMappedProps) => {
   );
 };
 
-// export default ProfilePage;
-
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession(),
-  users: makeSelectUsers()
+  session: makeSelectSession()
 });
 
 export function mapDispatchToProps(dispatch: any) {

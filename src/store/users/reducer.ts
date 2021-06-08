@@ -6,7 +6,6 @@ import { ActionTags } from 'src/baseplate/models';
 
 // The initial state of the App
 export const initialState = {
-  users: [],
   session: defaultUserInfo
 };
 

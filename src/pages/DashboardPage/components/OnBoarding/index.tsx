@@ -6,7 +6,6 @@ import React, { useState } from 'react';
 import { IonButton, IonImg } from '@ionic/react';
 import clsx from 'clsx';
 
-import { UserService } from 'src/services/user.service';
 import { RequestStatus } from 'src/services/assist.service';
 import AlphaContent from 'src/components/AlphaContent';
 import Avatar from 'src/components/Avatar';
@@ -25,7 +24,7 @@ interface Props {
   sessionItem: ISessionItem;
 }
 
-const OnBoardingPage: React.FC<Props> = ({
+const OnBoarding: React.FC<Props> = ({
   completed,
   publishStatus,
   sessionItem
@@ -37,9 +36,7 @@ const OnBoardingPage: React.FC<Props> = ({
   const close = () => {
     completed(false);
   };
-  let userSession = UserService.GetUserSession();
-  let userSessionName = '';
-  if (userSession) userSessionName = userSession.name;
+
   return (
     <AlphaContent>
       {stage === 0 && !sessionItem.onBoardingCompleted && (
@@ -174,7 +171,7 @@ const OnBoardingPage: React.FC<Props> = ({
                   <Avatar did={sessionItem.did} />
                 )}
 
-                <p className={style['name']}>{userSessionName}</p>
+                <p className={style['name']}>{sessionItem.name}</p>
                 <p>
                   <PublishingLabel status={RequestStatus.Pending} />
                 </p>
@@ -216,7 +213,7 @@ const OnBoardingPage: React.FC<Props> = ({
             <div className={clsx(style['stage5-content'], style['v-flex'])}>
               <div className={clsx(style['avatar-container'], style['v-flex'])}>
                 <Avatar did={sessionItem.did} />
-                <p className={style['name']}>{userSessionName}</p>
+                <p className={style['name']}>{sessionItem.name}</p>
                 <p>
                   <PublishingLabel status={RequestStatus.Completed} />
                 </p>
@@ -235,4 +232,4 @@ const OnBoardingPage: React.FC<Props> = ({
   );
 };
 
-export default OnBoardingPage;
+export default OnBoarding;

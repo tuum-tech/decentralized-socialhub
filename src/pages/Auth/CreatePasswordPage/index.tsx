@@ -1,6 +1,6 @@
 import { StaticContext, RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 
 import { UserService } from 'src/services/user.service';
@@ -27,9 +27,9 @@ import keyimg from 'src/assets/icon/key.png';
 
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
-import { makeSelectSession, makeSelectUsers } from 'src/store/users/selectors';
-import { InferMappedProps, LocationState, SubState } from './types';
+import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
+import { InferMappedProps, SubState, LocationState } from './types';
 
 const ErrorText = styled(Text16)`
   text-align: center;
@@ -37,9 +37,8 @@ const ErrorText = styled(Text16)`
   margin-top: 8px;
 `;
 
-interface PageProps
-  extends InferMappedProps,
-    RouteComponentProps<{}, StaticContext, LocationState> {}
+type PageProps = InferMappedProps &
+  RouteComponentProps<{}, StaticContext, LocationState>;
 
 const CreatePasswordPage: React.FC<PageProps> = ({
   eProps,
@@ -161,28 +160,19 @@ const CreatePasswordPage: React.FC<PageProps> = ({
                 setError('Password is different');
               } else {
                 const user = {
-                  hiveHost: props.location.state.hiveHost,
-                  userToken: props.location.state.userToken,
-                  accountType: props.location.state.accountType,
-                  did: props.location.state.did,
-                  name: props.location.state.name,
-                  isDIDPublished: props.location.state.isDIDPublished,
-                  didPublishTime: props.location.state.didPublishTime,
-                  loginCred: props.location.state.loginCred,
                   mnemonics: '',
                   passhash: '',
                   onBoardingCompleted: false,
-                  tutorialStep: 1
+                  tutorialStep: 1,
+                  ...props.location.state
                 };
-
                 setLoading(true);
                 const res = await UserService.LockWithDIDAndPwd(user, password);
                 setLoading(false);
-
                 if (res && res.did !== '') {
                   eProps.setSession({ session: res });
-                  // window.localStorage.setItem('isLoggedIn', 'true');
-                  // window.location.href = '/profile';
+                  window.localStorage.setItem('isLoggedIn', 'true');
+                  window.location.href = '/profile';
                 }
               }
             }}
@@ -194,8 +184,7 @@ const CreatePasswordPage: React.FC<PageProps> = ({
 };
 
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession(),
-  users: makeSelectUsers()
+  session: makeSelectSession()
 });
 
 export function mapDispatchToProps(dispatch: any) {

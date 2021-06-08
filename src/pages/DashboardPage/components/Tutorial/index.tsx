@@ -2,6 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { IonGrid, IonRow, IonCol, IonButton } from '@ionic/react';
 import styled from 'styled-components';
 
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
+import { makeSelectSession } from 'src/store/users/selectors';
+import { SubState, InferMappedProps } from '../../types';
+import { setSession } from 'src/store/users/actions';
+
 import LoadingIndicator from 'src/components/LoadingIndicator';
 import TutorialStepsComponent from './TutorialSteps';
 import TutorialStep1Component from './Steps/TutorialStep1';
@@ -13,8 +19,9 @@ import style from './style.module.scss';
 
 import logo from '../../../../assets/logo/logo_white.svg';
 
-export interface TutorialComponentProps {
+interface TutorialComponentProps extends InferMappedProps {
   onClose: () => void;
+  session: ISessionItem;
 }
 
 const NoPaddingGrid = styled(IonGrid)`
@@ -22,18 +29,19 @@ const NoPaddingGrid = styled(IonGrid)`
   overflow-y: auto !important;
 `;
 
-const TutorialComponent: React.FC<TutorialComponentProps> = ({ onClose }) => {
+const TutorialComponent: React.FC<TutorialComponentProps> = ({
+  eProps,
+  ...props
+}: TutorialComponentProps) => {
+  const { session } = props;
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [mnemonics] = useState<string[]>(
-    UserService.GetUserSession()!.mnemonics.split(' ')
-  );
+  const [mnemonics] = useState<string[]>(session.mnemonics.split(' '));
 
   useEffect(() => {
     if (step === 0) {
-      const userSession = UserService.GetUserSession();
-      if (userSession && userSession.tutorialStep) {
-        setStep(userSession.tutorialStep);
+      if (session && session.tutorialStep) {
+        setStep(session.tutorialStep);
       } else {
         setStep(1);
       }
@@ -41,31 +49,18 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({ onClose }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const stepComponent = () => {
-    if (step === 1) return <TutorialStep1Component onContinue={nextStep} />;
-    if (step === 2)
-      return (
-        <TutorialStep2Component onContinue={nextStep} mnemonics={mnemonics} />
-      );
-    if (step === 3)
-      return (
-        <TutorialStep3Component onContinue={nextStep} setLoading={setLoading} />
-      );
-    return <TutorialStep4Component onContinue={nextStep} />;
-  };
-
   const nextStep = async () => {
     setLoading(true);
-    let userSession = UserService.GetUserSession();
-    if (step !== 4 && userSession) {
-      userSession.tutorialStep = step + 1;
-      if (userSession.tutorialStep === 4) {
-        userSession.badges!.account!.beginnerTutorial.archived = new Date().getTime();
+    if (step !== 4 && session) {
+      session.tutorialStep = step + 1;
+      if (session.tutorialStep === 4) {
+        session.badges!.account!.beginnerTutorial.archived = new Date().getTime();
       }
-      await UserService.updateSession(userSession);
+
+      eProps.setSession({ session: await UserService.updateSession(session) });
       setStep(step + 1);
     } else {
-      onClose();
+      props.onClose();
     }
     setLoading(false);
   };
@@ -75,6 +70,28 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({ onClose }) => {
     if (step === 2) return style['tutorial-col-left-2'];
     if (step === 3) return style['tutorial-col-left-3'];
     return style['tutorial-col-left-4'];
+  };
+
+  const stepComponent = () => {
+    if (step === 1)
+      return <TutorialStep1Component session={session} onContinue={nextStep} />;
+    if (step === 2)
+      return (
+        <TutorialStep2Component
+          session={session}
+          onContinue={nextStep}
+          mnemonics={mnemonics}
+        />
+      );
+    if (step === 3)
+      return (
+        <TutorialStep3Component
+          session={session}
+          onContinue={nextStep}
+          setLoading={setLoading}
+        />
+      );
+    return <TutorialStep4Component session={session} onContinue={nextStep} />;
   };
 
   return (
@@ -92,7 +109,7 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({ onClose }) => {
             <div className={style['tutorial-left-bottom']}>
               <TutorialStepsComponent step={step} />
               <IonButton
-                onClick={() => onClose()}
+                onClick={() => props.onClose()}
                 className={style['tutorial-quit-button']}
               >
                 Quit Tutorial
@@ -108,4 +125,15 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({ onClose }) => {
   );
 };
 
-export default TutorialComponent;
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(null, mapDispatchToProps)(TutorialComponent);
+
+// export default TutorialComponent;

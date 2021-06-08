@@ -9,7 +9,12 @@ import { DidDocumentService } from 'src/services/diddocument.service';
 import { ProfileService } from 'src/services/profile.service';
 import { UserVaultScripts } from 'src/scripts/uservault.script';
 
-import { ITutorialStepProp } from './TutorialStep1';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
+import { makeSelectSession } from 'src/store/users/selectors';
+import { SubState, InferMappedProps } from '../../../types';
+import { setSession } from 'src/store/users/actions';
+
 import style from '../style.module.scss';
 import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
@@ -18,10 +23,17 @@ const VersionTag = styled.span`
   color: green;
 `;
 
+interface ITutorialStepProp extends InferMappedProps {
+  onContinue: () => void;
+  setLoading?: (status: boolean) => void;
+  session: ISessionItem;
+}
+
 const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
-  onContinue,
-  setLoading
+  eProps,
+  ...props
 }) => {
+  const { session } = props;
   const [hiveUrl, sethiveUrl] = useState('');
   const [hiveDocument, setHiveDocument] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -51,15 +63,15 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     let endpoint = getEndpoint();
     let endpointValid = isEndpointValid(endpoint);
 
-    if (!endpointValid || !setLoading) {
+    if (!endpointValid || !props.setLoading) {
       setErrorMessage('Invalid hive address');
       return;
     }
 
-    setLoading(true);
+    props.setLoading(true);
     let isValidHiveAddress = await HiveService.isHiveAddressValid(endpoint);
     if (!isValidHiveAddress) {
-      setLoading(false);
+      props.setLoading(false);
       setErrorMessage('Invalid hive address');
       return;
     }
@@ -67,7 +79,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     if (!warningRead) {
       let hiveVersion = await HiveService.getHiveVersion(endpoint);
       if (!(await HiveService.isHiveVersionSet(hiveVersion))) {
-        setLoading(false);
+        props.setLoading(false);
         setErrorMessage(
           `Hive version could not be verified. The supported versions are ${process.env.REACT_APP_HIVE_VALID_VERSION}. You may continue at your own discretion.`
         );
@@ -80,14 +92,14 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
           hiveVersion
         );
         if (!isVersionSupported) {
-          setLoading(false);
+          props.setLoading(false);
           setErrorMessage(
             `Hive version ${hiveVersion} not supported. The supported versions are ${process.env.REACT_APP_HIVE_VALID_VERSION}`
           );
           return;
         }
       } catch (e) {
-        setLoading(false);
+        props.setLoading(false);
         setErrorMessage(
           `Hive version could not be verified. The supported versions are ${process.env.REACT_APP_HIVE_VALID_VERSION}. You may continue at your own discretion.`
         );
@@ -96,66 +108,68 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       }
     }
 
-    let user = UserService.GetUserSession();
-    if (user) {
-      try {
-        let userToken = await generateUserToken(user.mnemonics, endpoint);
-        user.userToken = userToken;
-        user.tutorialStep = 4;
-        user.hiveHost = endpoint;
-        if (
-          selected !== 'tuum' &&
-          endpoint !== process.env.REACT_APP_TUUM_TECH_HIVE
-        ) {
-          user.badges!.dStorage!.ownVault.archived = new Date().getTime();
-        }
-        //TODO: Uncomment when update document publish is fixed
-        // if (selected !== "document")
-        // {
-        //   let userDid = await DidService.loadDid(user.mnemonics);
-        //   let hivesvc = DidService.generateService(userDid, 'HiveVault', endpoint);
-        //   let documentState = await DidDocumentService.getUserDocument(user)
-        //   let userDocument = documentState.diddocument;
-        //   await DidService.addServiceToDIDDocument(userDocument, hivesvc);
-        //   await DidDocumentService.publishUserDocument(userDocument);
-        // }
+    try {
+      let userToken = await generateUserToken(
+        props.session.mnemonics,
+        endpoint
+      );
+      session.userToken = userToken;
+      session.tutorialStep = 4;
+      session.hiveHost = endpoint;
+      if (
+        selected !== 'tuum' &&
+        endpoint !== process.env.REACT_APP_TUUM_TECH_HIVE
+      ) {
+        session.badges!.dStorage!.ownVault.archived = new Date().getTime();
+      }
+      //TODO: Uncomment when update document publish is fixed
+      // if (selected !== "document")
+      // {
+      //   let userDid = await DidService.loadDid(user.mnemonics);
+      //   let hivesvc = DidService.generateService(userDid, 'HiveVault', endpoint);
+      //   let documentState = await DidDocumentService.getUserDocument(user)
+      //   let userDocument = documentState.diddocument;
+      //   await DidService.addServiceToDIDDocument(userDocument, hivesvc);
+      //   await DidDocumentService.publishUserDocument(userDocument);
+      // }
 
-        await UserService.updateSession(user);
-        let hiveInstance = await HiveService.getSessionInstance();
-        await UserVaultScripts.Execute(hiveInstance!);
-        let activities = await ProfileService.getActivity();
+      // await UserService.updateSession(session);
+      eProps.setSession({ session: await UserService.updateSession(session) });
+      let hiveInstance = await HiveService.getSessionInstance();
+      await UserVaultScripts.Execute(hiveInstance!);
+      let activities = await ProfileService.getActivity();
+      activities.push({
+        guid: '',
+        did: session!.did,
+        message: 'You received a Beginner tutorial badge',
+        read: false,
+        createdAt: 0,
+        updatedAt: 0
+      });
+      session.badges!.dStorage!.ownVault.archived &&
         activities.push({
           guid: '',
-          did: user!.did,
-          message: 'You received a Beginner tutorial badge',
+          did: session!.did,
+          message: 'You received a Ownvault storage badge',
           read: false,
           createdAt: 0,
           updatedAt: 0
         });
-        user.badges!.dStorage!.ownVault.archived &&
-          activities.push({
-            guid: '',
-            did: user!.did,
-            message: 'You received a Ownvault storage badge',
-            read: false,
-            createdAt: 0,
-            updatedAt: 0
-          });
-        activities.forEach(async (activity: ActivityItem) => {
-          await ProfileService.addActivity(activity, activity.did);
-        });
-        window.localStorage.removeItem(
-          `temporary_activities_${user.did.replace('did:elastos:', '')}`
-        );
-        onContinue();
-      } catch (error) {
-        await DidDocumentService.reloadUserDocument();
-        setErrorMessage(
-          'We are not able to process your request at moment. Please try again later'
-        );
-      }
+      activities.forEach(async (activity: ActivityItem) => {
+        await ProfileService.addActivity(activity, activity.did);
+      });
+      window.localStorage.removeItem(
+        `temporary_activities_${session.did.replace('did:elastos:', '')}`
+      );
+      props.onContinue();
+    } catch (error) {
+      await DidDocumentService.reloadUserDocument();
+      setErrorMessage(
+        'We are not able to process your request at moment. Please try again later'
+      );
     }
-    setLoading(false);
+
+    props.setLoading(false);
   };
 
   const generateUserToken = async (mnemonics: string, address: string) => {
@@ -173,14 +187,12 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
 
   useEffect(() => {
     (async () => {
-      let sessionUser = UserService.GetUserSession();
-      if (!sessionUser) return;
       setTuumHiveVersion(
         await HiveService.getHiveVersion(
           process.env.REACT_APP_TUUM_TECH_HIVE as string
         )
       );
-      let doc = await DidService.getDidDocument(sessionUser.did);
+      let doc = await DidService.getDidDocument(session.did);
       if (doc.service && doc.service.length > 0) {
         setSelected('document');
         setHiveDocument(doc.service[0].serviceEndpoint);
@@ -276,4 +288,13 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   );
 };
 
-export default TutorialStep3Component;
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(null, mapDispatchToProps)(TutorialStep3Component);

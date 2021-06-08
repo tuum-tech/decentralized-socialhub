@@ -25,7 +25,7 @@ const RightCardCol = styled(IonCol)`
   padding: 22px 16px;
 `;
 
-export interface Props {
+interface Props {
   onTutorialStart: () => void;
   profile: ProfileDTO;
   sessionItem: ISessionItem;
@@ -37,14 +37,14 @@ export interface Props {
 }
 
 const DashboardHome: React.FC<Props> = ({
-  onTutorialStart,
   profile,
   sessionItem,
   didDocument,
-  activeTab,
-  viewAll,
   followerDids,
-  followingDids
+  followingDids,
+  onTutorialStart,
+  activeTab,
+  viewAll
 }) => {
   const [tutorialVisible, setTutorialVisible] = useState(true);
   const [hasFollowUsers, setFollowUsers] = useState(false);
@@ -316,7 +316,7 @@ const DashboardHome: React.FC<Props> = ({
           )}
           <ManageProfile profile={profile} />
           {!hasFollowUsers && sessionItem.did && sessionItem.did !== '' && (
-            <ExploreConnnections did={sessionItem.did} />
+            <ExploreConnnections session={sessionItem} did={sessionItem.did} />
           )}
           {!hasSocialProfiles && <ManageLinks />}
         </LeftCardCol>

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
 import { ProfileService } from 'src/services/profile.service';
-import { UserService } from 'src/services/user.service';
-
 import {
   MainCard,
   CardText,
@@ -14,16 +12,16 @@ import exploreCardImg from '../../../../../../assets/dashboard/explore.png';
 
 interface Props {
   did: string;
+  session: ISessionItem;
 }
 
-const ExploreConnnections: React.FC<Props> = ({ did }) => {
+const ExploreConnnections: React.FC<Props> = ({ did, session }) => {
   const [connectedDids, setConnectedDids] = useState<string[]>([]);
 
   useEffect(() => {
     (async () => {
       let fUserDids: string[] = [];
-      let instance = UserService.GetUserSession();
-      if (instance && instance.tutorialStep === 4) {
+      if (session && session.tutorialStep === 4) {
         let followings = await ProfileService.getFollowings(did);
         if (followings) {
           fUserDids = followings.get_following.items.map(item => item.did);

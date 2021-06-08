@@ -12,6 +12,7 @@ import style from '../style.module.scss';
 
 const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
   onContinue,
+  session,
   mnemonics = ['', '', '', '', '', '', '', '', '', '', '', '']
 }) => {
   const [mnemonic] = useState(mnemonics);
@@ -22,8 +23,7 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
 
   useEffect(() => {
     if (isVerifying) {
-      let userSession = UserService.GetUserSession();
-      if (userSession && userSession.accountType !== AccountType.DID) {
+      if (session && session.accountType !== AccountType.DID) {
       } else {
         onContinue();
         return;
@@ -99,15 +99,11 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
     );
   };
 
-  let userSession = UserService.GetUserSession();
-
   return (
     <div className={style['tutorial-step-2']}>
       {isVerifying ? (
         <>
-          {userSession &&
-            userSession.accountType !== AccountType.DID &&
-            verifyWords()}
+          {session && session.accountType !== AccountType.DID && verifyWords()}
         </>
       ) : (
         viewWords()

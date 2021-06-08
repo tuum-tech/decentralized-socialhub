@@ -24,7 +24,7 @@ export default function createReducer(
 ): Reducer {
   const rootReducer = combineReducers({
     global: globalReducer,
-    platformuser: userReducer,
+    user: userReducer,
 
     /* language: languageProviderReducer,
     // TODO: i18n Language should be implemented */

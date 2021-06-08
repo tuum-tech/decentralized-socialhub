@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components';
 
 import {
@@ -37,7 +35,9 @@ import MultiDidPasswordLogin from '../components/MultiDidPasswordLogin';
 import FieldDivider from '../components/FieldDivider';
 import style from './style.module.scss';
 
-import { makeSelectSession, makeSelectUsers } from 'src/store/users/selectors';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
+import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
@@ -259,8 +259,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
 };
 
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession(),
-  users: makeSelectUsers()
+  session: makeSelectSession()
 });
 
 export function mapDispatchToProps(dispatch: any) {
@@ -273,40 +272,3 @@ export function mapDispatchToProps(dispatch: any) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateProfilePage);
-
-// /** @returns {object} Contains state props from selectors */
-// export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-//   counter: makeSelectCounter(),
-//   msg: makeSelectAjaxMsg()
-// });
-
-// /** @returns {object} Contains dispatchable props */
-// export function mapDispatchToProps(dispatch: any) {
-//   return {
-//     eProps: {
-//       // eProps - Emitter proptypes thats binds to dispatch
-//       /** dispatch for counter to increment */
-//       onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-//       onSimpleAjax: () => dispatch(getSimpleAjax())
-//     }
-//   };
-// }
-
-// /**
-//  * Injects prop and saga bindings done via
-//  * useInjectReducer & useInjectSaga
-//  */
-// const withInjectedMode = injector(CreateProfilePage, {
-//   key: NameSpace,
-//   reducer,
-//   saga
-// });
-
-// const withConnect = connect(mapStateToProps, mapDispatchToProps);
-
-// export default compose(
-//   withConnect,
-//   memo
-// )(withInjectedMode) as React.ComponentType<InferMappedProps>;
-
-// // export default Tab1;

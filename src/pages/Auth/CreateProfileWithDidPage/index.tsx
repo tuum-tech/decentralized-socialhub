@@ -12,7 +12,7 @@ import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, LocationState, SubState } from './types';
-import { makeSelectSession, makeSelectUsers } from 'src/store/users/selectors';
+import { makeSelectSession } from 'src/store/users/selectors';
 
 interface PageProps
   extends InferMappedProps,
@@ -97,8 +97,7 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
 };
 
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession(),
-  users: makeSelectUsers()
+  session: makeSelectSession()
 });
 
 export function mapDispatchToProps(dispatch: any) {
