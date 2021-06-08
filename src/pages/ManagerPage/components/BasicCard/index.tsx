@@ -11,28 +11,7 @@ import {
 
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import SmallTextInput from 'src/components/inputs/SmallTextInput';
-import styled from 'styled-components';
-
-const SmallLightButton = styled.button`
-  height: 27px;
-  display: inline;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  padding: 7px 13px;
-  border-radius: 6px;
-  background-color: #f3f9ff;
-  font-family: 'SF Pro Display';
-  font-size: 14px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1;
-  letter-spacing: normal;
-  text-align: left;
-  color: #4c6fff;
-`;
+import { SmallLightButton } from 'src/components/buttons';
 
 interface IProps {
   sessionItem: ISessionItem;

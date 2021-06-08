@@ -17,6 +17,7 @@ import CoverPhoto from 'src/components/cards/CoverPhoto';
 
 import BasicCard from '../BasicCard';
 import TemplateManagerCard from '../TemplateManagerCard';
+import PublicFields from '../PublicFields';
 import style from './style.module.scss';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
@@ -86,6 +87,7 @@ const ProfileEditor: React.FC = () => {
         <IonRow>
           <IonCol size="4">
             <TemplateManagerCard sessionItem={userInfo} />
+            <PublicFields sessionItem={userInfo} />
           </IonCol>
           <IonCol size="8">
             <AvatarChangeCard />

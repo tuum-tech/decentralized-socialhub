@@ -38,6 +38,44 @@ export class ProfileService {
     return documentState.diddocument;
   };
 
+  static async getPublicFields(did: string): Promise<string[]> {
+    const hiveInstance = await HiveService.getAppHiveClient();
+    let fields: string[] = [];
+    if (hiveInstance) {
+      const res: IRunScriptResponse<PublicProfileResponse> = await hiveInstance.Scripting.RunScript(
+        {
+          name: 'get_public_fields',
+          context: {
+            target_did: did,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+          }
+        }
+      );
+
+      fields =
+        (getItemsFromData(res, 'get_public_fields')[0] || {}).fields || [];
+    }
+    return fields;
+  }
+
+  static async updatePublicFields(fields: string[]) {
+    const userSession = UserService.GetUserSession();
+    const hiveInstance = await HiveService.getSessionInstance();
+    if (userSession && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'set_public_fields',
+        context: {
+          target_did: userSession.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: { fields, did: userSession.did }
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Public profile fields are successfuly saved', 'success');
+      }
+    }
+  }
+
   static async getFullProfile(did: string): Promise<ProfileDTO | undefined> {
     let basicDTO: any = {};
     let educationDTO: EducationDTO = {
@@ -392,6 +430,7 @@ export class ProfileService {
     }
     return;
   }
+
   static async getActivity() {
     const userSession = UserService.GetUserSession();
     const hiveInstance = await HiveService.getSessionInstance();
@@ -418,6 +457,7 @@ export class ProfileService {
     );
     return tmp_activities;
   }
+
   static async addActivity(activity: ActivityItem, activityOwner: string) {
     // Assign new guid to activity
     if (!activity.guid) activity.guid = Guid.create();

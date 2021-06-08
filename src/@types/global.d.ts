@@ -200,3 +200,15 @@ interface DStorageBadgeItem {
 interface BadgeArchiveModel {
   archived: number | boolean;
 }
+
+interface PublicProfileResponse {
+  _status: string;
+  get_public_fields: {
+    items?:
+      | {
+          did: string;
+          fields: string[];
+        }[]
+      | null;
+  };
+}

@@ -158,7 +158,6 @@ const FollowingAllModal = ({
                 setLoading(user.did);
                 const res = await ProfileService.unfollow(user.did);
                 if (res) {
-                  console.log('====>res', res);
                   setFollowingDids(
                     res['get_following']['items'].map((item: any) => item.did)
                   );

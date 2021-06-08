@@ -38,6 +38,7 @@ interface Props {
   followingDids: string[];
   scrollToElement: (cardName: string) => void;
   viewAllClicked?: (isFollower: boolean) => void;
+  publicFields?: string[];
 }
 
 const ProfileComponent: React.FC<Props> = ({
@@ -48,7 +49,15 @@ const ProfileComponent: React.FC<Props> = ({
   followerDids,
   followingDids,
   scrollToElement,
-  viewAllClicked
+  viewAllClicked,
+  publicFields = [
+    'follower',
+    'following',
+    'about',
+    'experience',
+    'education',
+    'social'
+  ]
 }: Props) => {
   const [publicUser, setPublicUser] = useState(defaultUserInfo);
   const [signedUser, setSignedUser] = useState(defaultUserInfo);
@@ -112,34 +121,44 @@ const ProfileComponent: React.FC<Props> = ({
                     <IonRow>
                       <LeftContent>
                         <div ref={aboutRef}>
-                          <AboutCard
-                            aboutText={publicUserProfile.basicDTO.about}
-                            mode="read"
-                          />
+                          {publicFields.includes('about') && (
+                            <AboutCard
+                              aboutText={publicUserProfile.basicDTO.about}
+                              mode="read"
+                            />
+                          )}
                         </div>
                         <div ref={experienceRef}>
-                          <ExperienceCard
-                            experienceDTO={publicUserProfile.experienceDTO}
-                            isEditable={false}
-                            isPublicPage={true}
-                          />
+                          {publicFields.includes('experience') && (
+                            <ExperienceCard
+                              experienceDTO={publicUserProfile.experienceDTO}
+                              isEditable={false}
+                              isPublicPage={true}
+                            />
+                          )}
                         </div>
                         <div ref={educationRef}>
-                          <EducationCard
-                            educationDTO={publicUserProfile.educationDTO}
-                            isEditable={false}
-                            isPublicPage={true}
-                          />
+                          {publicFields.includes('education') && (
+                            <EducationCard
+                              educationDTO={publicUserProfile.educationDTO}
+                              isEditable={false}
+                              isPublicPage={true}
+                            />
+                          )}
                         </div>
                       </LeftContent>
                       <RightContent>
-                        {didDocument && didDocument.id && (
-                          <SocialProfilesCard
-                            didDocument={didDocument}
-                            sessionItem={publicUser}
-                          />
-                        )}
+                        {publicFields.includes('social') &&
+                          didDocument &&
+                          didDocument.id && (
+                            <SocialProfilesCard
+                              didDocument={didDocument}
+                              sessionItem={publicUser}
+                            />
+                          )}
                         <FollowCards
+                          showFollowerCard={publicFields.includes('follower')}
+                          showFollowingCard={publicFields.includes('following')}
                           followerDids={followerDids}
                           followingDids={followingDids}
                           signed={signedUser.did !== ''}

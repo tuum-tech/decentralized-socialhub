@@ -12,6 +12,8 @@ interface Props {
   followingDids: string[];
   setFollowerDids: (dids: string[]) => void;
   setFollowingDids: (dids: string[]) => void;
+  showFollowerCard?: boolean;
+  showFollowingCard?: boolean;
 }
 
 const ViewAllFollowModal = ({
@@ -21,7 +23,9 @@ const ViewAllFollowModal = ({
   followerDids,
   followingDids,
   setFollowerDids,
-  setFollowingDids
+  setFollowingDids,
+  showFollowerCard = true,
+  showFollowingCard = true
 }: Props) => (
   <div className={style['modal']}>
     <div className={style['modal_container']}>
