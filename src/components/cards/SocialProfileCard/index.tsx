@@ -48,6 +48,22 @@ const SocialProfiles: React.FC<Props> = ({ didDocument, sessionItem }) => {
           );
           vcs.push(vc);
         }
+        if (loginCred.github) {
+          let vc = await DidcredsService.generateVerifiableCredential(
+            sessionItem.did,
+            CredentialType.Github,
+            loginCred.github
+          );
+          vcs.push(vc);
+        }
+        if (loginCred.discord) {
+          let vc = await DidcredsService.generateVerifiableCredential(
+            sessionItem.did,
+            CredentialType.Discord,
+            loginCred.discord
+          );
+          vcs.push(vc);
+        }
         setDocument({
           ...document,
           verifiableCredential: vcs

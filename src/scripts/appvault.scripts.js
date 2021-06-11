@@ -303,6 +303,38 @@ let run = async () => {
     }
   });
   await client.Scripting.SetScript({
+    name: 'get_users_by_github',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'users_found',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          'loginCred.github': '$params.filter'
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'get_users_by_discord',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'users_found',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          'loginCred.discord': '$params.filter'
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
     name: 'verify_code', // is being used in backend
     allowAnonymousUser: true,
     allowAnonymousApp: true,

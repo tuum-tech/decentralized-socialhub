@@ -289,6 +289,12 @@ export class UserService {
           google: {
             archived: false
           },
+          github: {
+            archived: false
+          },
+          discord: {
+            archived: false
+          },
           email: {
             archived: false
           },
@@ -355,6 +361,14 @@ export class UserService {
       if (loginCred.google) {
         sessionItem.badges!.socialVerify!.google.archived = curTime;
         messages.push('You received a Google verfication badge');
+      }
+      if (loginCred.github) {
+        sessionItem.badges!.socialVerify!.github.archived = curTime;
+        messages.push('You received a Github verfication badge');
+      }
+      if (loginCred.discord) {
+        sessionItem.badges!.socialVerify!.discord.archived = curTime;
+        messages.push('You received a Discord verfication badge');
       }
     }
     if (accountType === AccountType.Email) {

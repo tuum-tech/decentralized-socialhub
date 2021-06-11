@@ -127,6 +127,20 @@ export class TuumTechScriptService {
     );
   }
 
+  public static async getUsersWithRegisteredGithub(github: string) {
+    return TuumTechScriptService.getUsersWithRegisteredCredential(
+      github,
+      'github'
+    );
+  }
+
+  public static async getUsersWithRegisteredDiscord(discord: string) {
+    return TuumTechScriptService.getUsersWithRegisteredCredential(
+      discord,
+      'discord'
+    );
+  }
+
   public static async searchUserWithDIDs(
     dids: string[],
     limit = 200,

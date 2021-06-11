@@ -41,7 +41,7 @@ interface VerifiedCredential {
 const ManagerModal = styled(IonModal)`
   --border-radius: 16px;
   --min-height: 200px;
-  --height: 420px;
+  --height: 580px;
   --width: 560px;
   :host(.modal-card) ion-header ion-toolbar:first-of-type {
     padding: 0px;
@@ -58,6 +58,7 @@ const ManagerModalTitle = styled(IonCardTitle)`
   letter-spacing: normal;
   text-align: left;
   color: #27272e;
+  padding: 15px;
 `;
 
 const ManagerModalFooter = styled(IonFooter)`
@@ -194,8 +195,15 @@ const SocialProfilesCard: React.FC<Props> = ({
     } else if (socialType === 'linkedin') {
       // gets the linkedin auth endpoint
       url = (await DidcredsService.requestLinkedinLogin()) as MyType;
+    } else if (socialType === 'github') {
+      // gets the github auth endpoint
+      url = (await DidcredsService.requestGithubLogin()) as MyType;
+    } else if (socialType === 'discord') {
+      // gets the discord auth endpoint
+      url = (await DidcredsService.requestDiscordLogin()) as MyType;
     }
 
+    console.log(url, 'login url');
     if (url) {
       popupCenter(url.data, 'Login', 548, 725);
     }
@@ -210,6 +218,8 @@ const SocialProfilesCard: React.FC<Props> = ({
     if (service === 'linkedin') return `https://linkedin.com/in/${value}`;
     if (service === 'facebook') return `https://facebook.com/${value}`;
     if (service === 'google') return `mailto://${value}`;
+    if (service === 'github') return `https://github.com/${value}`;
+    if (service === 'discord') return `https://discord.com/${value}`;
     return '';
   };
 
@@ -219,6 +229,8 @@ const SocialProfilesCard: React.FC<Props> = ({
     if (service === 'linkedin') return `linkedin.com/in/${value}`;
     if (service === 'facebook') return `facebook.com/${value}`;
     if (service === 'google') return `${value}`;
+    if (service === 'github') return `${value}`;
+    if (service === 'discord') return `${value}`;
     return '';
   };
 
@@ -253,6 +265,10 @@ const SocialProfilesCard: React.FC<Props> = ({
       delete newLoginCred.linkedin;
     } else if (key === 'twitter' && newLoginCred.twitter) {
       delete newLoginCred.twitter;
+    } else if (key === 'github' && newLoginCred.github) {
+      delete newLoginCred.github;
+    } else if (key === 'discord' && newLoginCred.discord) {
+      delete newLoginCred.discord;
     }
     const newUserSession = {
       ...userSession,
@@ -287,7 +303,10 @@ const SocialProfilesCard: React.FC<Props> = ({
               {parseValueFromService(key, vc.value)}
             </span>
           )}
-          {(key === 'google' || key === 'twitter') && (
+          {(key === 'google' ||
+            key === 'twitter' ||
+            key === 'github' ||
+            key === 'discord') && (
             <a
               href={getUrlFromService(key, vc.value)}
               target="_blank"
@@ -308,6 +327,8 @@ const SocialProfilesCard: React.FC<Props> = ({
     if (key === 'twitter') header = 'Twitter Account';
     if (key === 'facebook') header = 'Facebook Account';
     if (key === 'linkedin') header = 'LinkedIn Account';
+    if (key === 'github') header = 'Github Account';
+    if (key === 'discord') header = 'Discord Account';
 
     if (!vc)
       return (
@@ -358,8 +379,24 @@ const SocialProfilesCard: React.FC<Props> = ({
     return createIonItem('twitter', twitterIcon);
   };
 
+  const githubItem = () => {
+    return createIonItem('github', googleIcon);
+  };
+
+  const discordItem = () => {
+    return createIonItem('discord', googleIcon);
+  };
+
   const googleModalItem = () => {
     return createModalIonItem('google', googleIcon);
+  };
+
+  const githubModalItem = () => {
+    return createModalIonItem('github', googleIcon);
+  };
+
+  const discordModalItem = () => {
+    return createModalIonItem('discord', googleIcon);
   };
 
   const twitterModalItem = () => {
@@ -450,6 +487,16 @@ const SocialProfilesCard: React.FC<Props> = ({
                   {googleItem()}
                 </IonCol>
               )}
+              {containsVerifiedCredential('github') && (
+                <IonCol size={showManageButton ? '6' : '12'}>
+                  {githubItem()}
+                </IonCol>
+              )}
+              {containsVerifiedCredential('discord') && (
+                <IonCol size={showManageButton ? '6' : '12'}>
+                  {discordItem()}
+                </IonCol>
+              )}
             </IonRow>
           </IonGrid>
         </IonCardContent>
@@ -475,6 +522,12 @@ const SocialProfilesCard: React.FC<Props> = ({
           </IonRow>
           <IonRow no-padding>
             <IonCol class="ion-no-padding">{googleModalItem()}</IonCol>
+          </IonRow>
+          <IonRow no-padding>
+            <IonCol class="ion-no-padding">{githubModalItem()}</IonCol>
+          </IonRow>
+          <IonRow no-padding>
+            <IonCol class="ion-no-padding">{discordModalItem()}</IonCol>
           </IonRow>
         </MyGrid>
         <ManagerModalFooter className="ion-no-border">

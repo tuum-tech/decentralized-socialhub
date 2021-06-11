@@ -93,7 +93,9 @@ const DashboardHome: React.FC<Props> = ({
           (sessionItem.loginCred.linkedin ||
             sessionItem.loginCred.twitter ||
             sessionItem.loginCred.google ||
-            sessionItem.loginCred.facebook)
+            sessionItem.loginCred.facebook ||
+            sessionItem.loginCred.github ||
+            sessionItem.loginCred.discord)
             ? 'Social Media Authenticated'
             : ''
         ].filter(a => a !== '')
@@ -129,7 +131,9 @@ const DashboardHome: React.FC<Props> = ({
               (sessionItem.loginCred.linkedin ||
                 sessionItem.loginCred.twitter ||
                 sessionItem.loginCred.google ||
-                sessionItem.loginCred.facebook)
+                sessionItem.loginCred.facebook ||
+                sessionItem.loginCred.github ||
+                sessionItem.loginCred.discord)
                 ? true
                 : false
           }
@@ -252,6 +256,23 @@ const DashboardHome: React.FC<Props> = ({
         verified['linkedin'] = false;
       }
 
+      if (sessionItem.loginCred?.github) {
+        verified['github'] = await isCredVerified(
+          'github',
+          sessionItem.loginCred.github
+        );
+      } else {
+        verified['github'] = false;
+      }
+
+      if (sessionItem.loginCred?.discord) {
+        verified['discord'] = await isCredVerified(
+          'discord',
+          sessionItem.loginCred.discord
+        );
+      } else {
+        verified['discord'] = false;
+      }
       /* Calculate verified education credentials starts */
       profile.educationDTO.items.map(async (x, i) => {
         verified['education' + i] = x.isVerified;
