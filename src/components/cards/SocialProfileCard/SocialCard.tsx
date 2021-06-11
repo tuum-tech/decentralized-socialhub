@@ -219,7 +219,7 @@ const SocialProfilesCard: React.FC<Props> = ({
     if (service === 'facebook') return `https://facebook.com/${value}`;
     if (service === 'google') return `mailto://${value}`;
     if (service === 'github') return `https://github.com/${value}`;
-    if (service === 'discord') return `https://discord.com/${value}`;
+    if (service === 'discord') return `https://discordapp.com/users/${value}`;
     return '';
   };
 

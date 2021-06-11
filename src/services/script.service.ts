@@ -74,6 +74,14 @@ export class TuumTechScriptService {
               userItem,
               'linkedin'
             ),
+            github: TuumTechScriptService.getValueFromLoginCred(
+              userItem,
+              'github'
+            ),
+            discord: TuumTechScriptService.getValueFromLoginCred(
+              userItem,
+              'discord'
+            ),
             _id: userItem._id.$oid || ''
           };
           return newUserItem;

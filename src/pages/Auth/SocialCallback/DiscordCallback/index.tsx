@@ -8,17 +8,13 @@ import PageLoading from 'src/components/layouts/PageLoading';
 import { AccountType, UserService } from 'src/services/user.service';
 
 import { TokenResponse } from './types';
-import {
-  requestGoogleId,
-  requestGoogleToken,
-  getUsersWithRegisteredGoogle
-} from './fetchapi';
+import { requestDiscordToken, getUsersWithRegisteredDiscord } from './fetchapi';
 import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service';
 
-const GoogleCallback: React.FC<RouteComponentProps> = props => {
+const DiscordCallback: React.FC<RouteComponentProps> = props => {
   /**
    * Direct method implementation without SAGA
    * This was to show you dont need to put everything to global state
@@ -27,35 +23,29 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
   const history = useHistory();
   const [credentials, setCredentials] = useState({
     loginCred: {
-      google: '',
-      email: ''
+      discord: ''
     },
     name: ''
   });
-  const getToken = async (
-    code: string,
-    state: string
-  ): Promise<TokenResponse> => {
-    return (await requestGoogleToken(code, state)) as TokenResponse;
+  const getToken = async (code: string): Promise<TokenResponse> => {
+    return (await requestDiscordToken(code)) as TokenResponse;
   };
 
   let code: string =
     new URLSearchParams(props.location.search).get('code') || '';
-  let state: string =
-    new URLSearchParams(props.location.search).get('state') || '';
 
   useEffect(() => {
     (async () => {
-      if (code !== '' && state !== '' && credentials.loginCred.google === '') {
-        let t = await getToken(code, state);
-        let googleId = await requestGoogleId(t.data.request_token);
-
+      if (code !== '' && credentials.loginCred.discord === '') {
+        let t = await getToken(code);
+        let discord = t.data.username + '#' + t.data.discriminator;
+        console.log(discord, '===>discord id');
         let userSession = UserService.GetUserSession();
         if (userSession) {
           let vc = await DidcredsService.generateVerifiableCredential(
             userSession.did,
-            CredentialType.Google,
-            googleId.email
+            CredentialType.Discord,
+            discord
           );
           let state = await DidDocumentService.getUserDocument(userSession);
 
@@ -65,14 +55,14 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
           );
 
           DidDocumentService.updateUserDocument(state.diddocument);
-          userSession.loginCred!.google! = googleId.email;
-          if (!userSession.badges!.socialVerify!.google.archived) {
-            userSession.badges!.socialVerify!.google.archived = new Date().getTime();
+          userSession.loginCred!.discord! = discord;
+          if (!userSession.badges!.socialVerify!.discord.archived) {
+            userSession.badges!.socialVerify!.discord.archived = new Date().getTime();
             await ProfileService.addActivity(
               {
                 guid: '',
                 did: userSession.did,
-                message: 'You received a Google verfication badge',
+                message: 'You received a Discord verfication badge',
                 read: false,
                 createdAt: 0,
                 updatedAt: 0
@@ -83,24 +73,23 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
           await UserService.updateSession(userSession);
           window.close();
         } else {
-          let prevUsers = await getUsersWithRegisteredGoogle(googleId.email);
+          let prevUsers = await getUsersWithRegisteredDiscord(discord);
           const loginCred = {
-            email: googleId.email,
-            google: googleId.name
+            discord: discord
           };
           if (prevUsers.length > 0) {
             history.push({
               pathname: '/associated-profile',
               state: {
                 users: prevUsers,
-                name: googleId.name,
-                service: AccountType.Google,
+                name: discord,
+                service: AccountType.Discord,
                 loginCred
               }
             });
           } else {
             setCredentials({
-              name: googleId.name,
+              name: discord,
               loginCred
             });
           }
@@ -111,7 +100,7 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
   }, []);
 
   const getRedirect = () => {
-    if (credentials.loginCred.google !== '') {
+    if (credentials.loginCred.discord !== '') {
       return (
         <Redirect
           to={{
@@ -119,7 +108,7 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
             state: {
               name: credentials.name,
               loginCred: credentials.loginCred,
-              service: AccountType.Google
+              service: AccountType.Discord
             }
           }}
         />
@@ -130,4 +119,4 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
   return getRedirect();
 };
 
-export default GoogleCallback;
+export default DiscordCallback;

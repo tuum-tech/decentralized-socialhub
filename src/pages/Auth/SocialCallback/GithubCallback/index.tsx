@@ -9,17 +9,13 @@ import { AccountType, UserService } from 'src/services/user.service';
 import PageLoading from 'src/components/layouts/PageLoading';
 
 import { TokenResponse } from './types';
-import {
-  requestGithubId,
-  requestGithubToken,
-  getUsersWithRegisteredGithub
-} from './fetchapi';
+import { requestGithubToken, getUsersWithRegisteredGithub } from './fetchapi';
 import { DidService } from 'src/services/did.service';
 import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 
-const LinkedinCallback: React.FC<RouteComponentProps> = props => {
+const GithubCallback: React.FC<RouteComponentProps> = props => {
   /**
    * Direct method implementation without SAGA
    * This was to show you dont need to put everything to global state
@@ -32,88 +28,78 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
       github: ''
     }
   });
-  const getToken = async (
-    code: string,
-    state: string
-  ): Promise<TokenResponse> => {
-    return (await requestGithubToken(code, state)) as TokenResponse;
+  const getToken = async (code: string): Promise<TokenResponse> => {
+    return (await requestGithubToken(code)) as TokenResponse;
   };
 
   let code: string =
     new URLSearchParams(props.location.search).get('code') || '';
-  let state: string =
-    new URLSearchParams(props.location.search).get('state') || '';
 
   useEffect(() => {
     (async () => {
-      if (code !== '' && state !== '' && credentials.loginCred.github === '') {
-        let t = await getToken(code, state);
-        console.log(t.data, '=====Github Token======');
-        //  let github: any = await requestGithubId(
-        //    t.data.request_token
-        //  );
+      if (code !== '' && credentials.loginCred.github === '') {
+        let t = await getToken(code);
+        let github = t.data.login;
 
-        //  let userSession = UserService.GetUserSession();
-        //  debugger;
-        //  if (userSession) {
-        //    console.log('entrou aqui');
-        //    let vc = await DidcredsService.generateVerifiableCredential(
-        //      userSession.did,
-        //      CredentialType.Linkedin,
-        //      github
-        //    );
+        let userSession = UserService.GetUserSession();
+        debugger;
+        if (userSession) {
+          console.log('entrou aqui');
+          let vc = await DidcredsService.generateVerifiableCredential(
+            userSession.did,
+            CredentialType.Github,
+            github
+          );
 
-        //    let state = await DidDocumentService.getUserDocument(userSession);
+          let state = await DidDocumentService.getUserDocument(userSession);
 
-        //    await DidService.addVerfiableCredentialToDIDDocument(
-        //      state.diddocument,
-        //      vc
-        //    );
+          await DidService.addVerfiableCredentialToDIDDocument(
+            state.diddocument,
+            vc
+          );
 
-        //    DidDocumentService.updateUserDocument(state.diddocument);
+          DidDocumentService.updateUserDocument(state.diddocument);
 
-        //    userSession.loginCred!.github! = github
-        //    if (!userSession.badges!.socialVerify!.github.archived) {
-        //      userSession.badges!.socialVerify!.github.archived = new Date().getTime();
-        //      await ProfileService.addActivity(
-        //        {
-        //          guid: '',
-        //          did: userSession.did,
-        //          message: 'You received a Github verfication badge',
-        //          read: false,
-        //          createdAt: 0,
-        //          updatedAt: 0
-        //        },
-        //        userSession.did
-        //      );
-        //    }
-        //    await UserService.updateSession(userSession);
-        //    window.close();
-        //  } else {
-        //    let prevUsers = await getUsersWithRegisteredGithub(
-        //      github
-        //    );
-        //    if (prevUsers.length > 0) {
-        //      history.push({
-        //        pathname: '/associated-profile',
-        //        state: {
-        //          users: prevUsers,
-        //          name: github,
-        //          loginCred: {
-        //            github: github
-        //          },
-        //          service: AccountType.Linkedin
-        //        }
-        //      });
-        //    } else {
-        //      setCredentials({
-        //        name: github,
-        //        loginCred: {
-        //          linkedin: github
-        //        }
-        //      });
-        //    }
-        //  }
+          userSession.loginCred!.github! = github;
+          if (!userSession.badges!.socialVerify!.github.archived) {
+            userSession.badges!.socialVerify!.github.archived = new Date().getTime();
+            await ProfileService.addActivity(
+              {
+                guid: '',
+                did: userSession.did,
+                message: 'You received a Github verfication badge',
+                read: false,
+                createdAt: 0,
+                updatedAt: 0
+              },
+              userSession.did
+            );
+          }
+          await UserService.updateSession(userSession);
+          window.close();
+        } else {
+          let prevUsers = await getUsersWithRegisteredGithub(github);
+          if (prevUsers.length > 0) {
+            history.push({
+              pathname: '/associated-profile',
+              state: {
+                users: prevUsers,
+                name: github,
+                loginCred: {
+                  github: github
+                },
+                service: AccountType.Github
+              }
+            });
+          } else {
+            setCredentials({
+              name: github,
+              loginCred: {
+                github: github
+              }
+            });
+          }
+        }
       }
     })();
   });
@@ -126,7 +112,7 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
             pathname: '/generate-did',
             state: {
               name: credentials.name,
-              service: AccountType.Linkedin,
+              service: AccountType.Github,
               loginCred: credentials.loginCred
             }
           }}
@@ -138,4 +124,4 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
   return getRedirect();
 };
 
-export default LinkedinCallback;
+export default GithubCallback;

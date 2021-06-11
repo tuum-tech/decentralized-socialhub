@@ -23,6 +23,8 @@ export type LocationState = {
     | AccountType.Facebook
     | AccountType.Google
     | AccountType.Twitter
+    | AccountType.Github
+    | AccountType.Discord
     | AccountType.Email;
 };
 
@@ -36,5 +38,7 @@ export type UserSessionProp = {
     | AccountType.Facebook
     | AccountType.Google
     | AccountType.Twitter
+    | AccountType.Github
+    | AccountType.Discord
     | AccountType.Email;
 };
