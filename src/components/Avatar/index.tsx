@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { getAvatarIfno, GetAvatarRes } from 'src/utils/avatar';
-import defaultAvatar from '../../assets/dp.png';
+import defaultAvatar from '../../assets/icon/dp.png';
 import style from './style.module.scss';
 
 interface AvatarProps {
@@ -20,11 +20,9 @@ const Avatar: React.FC<AvatarProps> = ({
 
   useEffect(() => {
     (async () => {
-      if (did) {
-        const avatarRes = await getAvatarIfno(did);
-        if (avatarRes && avatarRes.avatar) {
-          setAvatarInfo(avatarRes);
-        }
+      const avatarRes = await getAvatarIfno(did);
+      if (avatarRes && avatarRes.avatar) {
+        setAvatarInfo(avatarRes);
       }
     })();
   }, [did]);

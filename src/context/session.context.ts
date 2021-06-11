@@ -1,5 +1,4 @@
 import React from 'react';
-
 export interface ISession {
   session?: any;
   setSession?: any;

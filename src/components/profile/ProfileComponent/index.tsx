@@ -14,7 +14,7 @@ import AboutCard from 'src/components/cards/AboutCard';
 import EducationCard from 'src/components/cards/EducationCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
-import FollowCards from 'src/components/FollowCards';
+import FollowCards from 'src/components/follow/FollowCards';
 import PublicProfileTabs from '../PublicProfileTabs';
 import ProfileHeader from '../ProfileHeader';
 
@@ -34,8 +34,10 @@ interface Props {
   aboutRef: any;
   experienceRef: any;
   educationRef: any;
+  followerDids: string[];
+  followingDids: string[];
   scrollToElement: (cardName: string) => void;
-  hasBanner?: boolean;
+  viewAllClicked?: (isFollower: boolean) => void;
 }
 
 const ProfileComponent: React.FC<Props> = ({
@@ -43,8 +45,10 @@ const ProfileComponent: React.FC<Props> = ({
   aboutRef,
   experienceRef,
   educationRef,
+  followerDids,
+  followingDids,
   scrollToElement,
-  hasBanner = false
+  viewAllClicked
 }: Props) => {
   const [publicUser, setPublicUser] = useState(defaultUserInfo);
   const [signedUser, setSignedUser] = useState(defaultUserInfo);
@@ -61,6 +65,7 @@ const ProfileComponent: React.FC<Props> = ({
         let sUser = await UserService.GetUserSession();
         if (sUser && sUser.did) setSignedUser(sUser);
         let pUser = await UserService.SearchUserWithDID(targetDid);
+
         if (pUser && pUser.did) {
           setPublicUser(pUser as any);
           let profile = await ProfileService.getFullProfile(targetDid);
@@ -94,7 +99,6 @@ const ProfileComponent: React.FC<Props> = ({
         onlyText={displayText}
         user={publicUser}
         signedUserDid={signedUser.did}
-        hasBanner={hasBanner}
       />
       {!loading &&
         publicUser.did !== '' &&
@@ -136,8 +140,12 @@ const ProfileComponent: React.FC<Props> = ({
                           />
                         )}
                         <FollowCards
-                          did={publicUser.did}
+                          followerDids={followerDids}
+                          followingDids={followingDids}
                           signed={signedUser.did !== ''}
+                          viewAll={(isFollower: boolean) => {
+                            if (viewAllClicked) viewAllClicked(isFollower);
+                          }}
                         />
                       </RightContent>
                     </IonRow>

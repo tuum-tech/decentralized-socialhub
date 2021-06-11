@@ -81,6 +81,7 @@ let run = async () => {
           name: '$params.name',
           userToken: '$params.userToken',
           isDIDPublished: '$params.isDIDPublished',
+          didPublishTime: '$params.didPublishTime',
           onBoardingCompleted: '$params.onBoardingCompleted',
           loginCred: '$params.loginCred',
           badges: '$params.badges',
@@ -111,13 +112,14 @@ let run = async () => {
         update: {
           $set: {
             did: '$params.did',
+            coverPhoto: '$params.coverPhoto',
             accountType: '$params.accountType',
             passhash: '$params.passhash',
             name: '$params.name',
             userToken: '$params.userToken',
             loginCred: '$params.loginCred',
-            badges: '$params.badges',
             isDIDPublished: '$params.isDIDPublished',
+            didPublishTime: '$params.didPublishTime',
             onBoardingCompleted: '$params.onBoardingCompleted',
             tutorialStep: '$params.tutorialStep',
             hiveHost: '$params.hiveHost',
@@ -149,8 +151,8 @@ let run = async () => {
             name: '$params.name',
             userToken: '$params.userToken',
             loginCred: '$params.loginCred',
-            badges: '$params.badges',
             isDIDPublished: '$params.isDIDPublished',
+            didPublishTime: '$params.didPublishTime',
             onBoardingCompleted: '$params.onBoardingCompleted',
             tutorialStep: '$params.tutorialStep',
             hiveHost: '$params.hiveHost',
@@ -174,8 +176,8 @@ let run = async () => {
           did: { $in: '$params.dids' }
         },
         options: {
-          limit: 150, //'$params.limit',
-          skip: 0 //'$params.skip',
+          limit: '$params.limit',
+          skip: '$params.skip'
         }
       }
     }
@@ -194,8 +196,8 @@ let run = async () => {
           tutorialStep: { $in: '$params.tutorialStep' }
         },
         options: {
-          limit: 150, //'$params.limit',
-          skip: 0 //'$params.skip',
+          limit: '$params.limit',
+          skip: '$params.skip'
         }
       }
     }
@@ -214,8 +216,8 @@ let run = async () => {
           did: { $in: '$params.dids' }
         },
         options: {
-          limit: 150, //'$params.limit',
-          skip: 0 //'$params.skip',
+          limit: '$params.limit',
+          skip: '$params.skip'
         }
       }
     }
@@ -357,14 +359,35 @@ let run = async () => {
           did: { $nin: '$params.self_did' }
         },
         options: {
-          limit: 150, //'$params.limit',
-          skip: 0 //'$params.skip',
+          limit: '$params.limit',
+          skip: '$params.skip'
         }
       }
     }
   });
   await client.Scripting.SetScript({
-    name: 'get_users_by_did', // searching all users with search words of DID
+    name: 'get_users_by_name_and_dids',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_users_by_name_and_dids',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          name: { $regex: '$params.name', $options: 'i' },
+          did: { $in: '$params.dids' }
+        },
+        options: {
+          limit: '$params.limit',
+          skip: '$params.skip'
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'get_users_by_did',
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
@@ -377,8 +400,8 @@ let run = async () => {
           did: { $regex: '$params.did', $nin: '$params.self_did' }
         },
         options: {
-          limit: 150, //'$params.limit',
-          skip: 0 //'$params.skip',
+          limit: '$params.limit',
+          skip: '$params.skip'
         }
       }
     }
@@ -407,8 +430,8 @@ let run = async () => {
       body: {
         collection: 'universities',
         options: {
-          limit: 150, //'$params.limit',
-          skip: 0 //'$params.skip',
+          limit: '$params.limit',
+          skip: '$params.skip'
         }
       }
     }
@@ -428,8 +451,8 @@ let run = async () => {
           name: { $regex: '$params.name', $options: 'i' }
         },
         options: {
-          limit: 150, //'$params.limit',
-          skip: 0 //'$params.skip',
+          limit: '$params.limit',
+          skip: '$params.skip'
         }
       }
     }

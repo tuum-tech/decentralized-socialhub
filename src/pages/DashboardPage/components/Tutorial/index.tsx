@@ -11,7 +11,7 @@ import { UserService } from 'src/services/user.service';
 import TutorialStep4Component from './Steps/TutorialStep4';
 import style from './style.module.scss';
 
-import logo from '../../../../assets/logo_white.svg';
+import logo from '../../../../assets/logo/logo_white.svg';
 
 export interface TutorialComponentProps {
   onClose: () => void;

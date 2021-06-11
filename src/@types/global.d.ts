@@ -81,6 +81,7 @@ interface ISessionItem {
   name: string;
   email?: string;
   isDIDPublished: boolean;
+  didPublishTime: number;
   mnemonics: string;
   passhash: string;
   tutorialStep: number;
@@ -88,6 +89,7 @@ interface ISessionItem {
   loginCred?: LoginCred;
   badges?: IBadges;
   avatar?: string;
+  coverPhoto?: string;
   code?: string;
   status?: string;
 }

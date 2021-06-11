@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { IonItem, IonIcon } from '@ionic/react';
+import styled from 'styled-components';
+import { chevronDownOutline, chevronUpOutline } from 'ionicons/icons';
+
 import { Button } from 'src/components/buttons';
 import Logo from 'src/components/Logo';
-import styled from 'styled-components';
-import style from './style.module.scss';
-import { chevronDownOutline, chevronUpOutline } from 'ionicons/icons';
 import { UserService } from 'src/services/user.service';
-import photo from 'src/assets/dp.png';
-import narrow from 'src/assets/narrow.svg';
+
+import photo from 'src/assets/icon/dp.png';
+import narrow from 'src/assets/icon/narrow.svg';
+
+import style from './style.module.scss';
+
 const Header: React.FC = () => {
   const history = useHistory();
   const [userInfo, setUserInfo] = useState<ISessionItem | undefined>(undefined);

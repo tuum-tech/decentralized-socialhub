@@ -17,7 +17,7 @@ import style from './style.module.scss';
 import styled from 'styled-components';
 import { ProfileService } from 'src/services/profile.service';
 import { timeSince, DateString } from 'src/utils/time';
-import photo from 'src/assets/dp.png';
+import photo from 'src/assets/icon/dp.png';
 
 const Group = styled.div``;
 const Header = styled.div`
@@ -107,7 +107,10 @@ const ActivityRow: React.FC<IActivityRowData> = props => {
             className={style['avatar']}
           />
           <div className={style['activity-detail']}>
-            <p className={style['activity-text']}>{activity.message}</p>
+            <div
+              className={style['activity-text']}
+              dangerouslySetInnerHTML={{ __html: activity.message }}
+            ></div>
             <p className={style['activity-time-since']}>
               {timeSince((activity as any).createdAt)}
             </p>

@@ -46,7 +46,7 @@ export const getVerifiedCredential = (
   });
 
   vcs = vcs.filter(item => {
-    return item !== undefined;
+    return item !== undefined && item !== null;
   });
 
   if (vcs && vcs.length > 0) return vcs[0];

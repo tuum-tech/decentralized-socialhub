@@ -41,7 +41,7 @@ const SmallTextInput: React.FC<Props> = ({
     cName += ` ${style['flex-row']}`;
   }
   if (hasError) {
-    cName += ' hasError';
+    cName += ` ${style['hasError']}`;
   }
 
   return (

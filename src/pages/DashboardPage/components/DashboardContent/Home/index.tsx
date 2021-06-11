@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
-import FollowCards from 'src/components/FollowCards';
+import FollowCards from 'src/components/follow/FollowCards';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
 import { getVerifiedCredential } from 'src/utils/credential';
-import { loadFollowingUsers, loadFollowerUsers } from 'src/utils/follow';
 
 import ManageProfile from './Left/ManageProfile';
 import ExploreConnnections from './Left/ExploreConnnections';
@@ -32,6 +31,9 @@ export interface Props {
   sessionItem: ISessionItem;
   didDocument: any;
   activeTab: (tab: string) => void;
+  viewAll: (isFollower: boolean) => void;
+  followerDids: string[];
+  followingDids: string[];
 }
 
 const DashboardHome: React.FC<Props> = ({
@@ -39,7 +41,10 @@ const DashboardHome: React.FC<Props> = ({
   profile,
   sessionItem,
   didDocument,
-  activeTab
+  activeTab,
+  viewAll,
+  followerDids,
+  followingDids
 }) => {
   const [tutorialVisible, setTutorialVisible] = useState(true);
   const [hasFollowUsers, setFollowUsers] = useState(false);
@@ -72,13 +77,8 @@ const DashboardHome: React.FC<Props> = ({
   }, [completionStats]);
 
   useEffect(() => {
-    (async () => {
-      const followerUsers = await loadFollowingUsers(sessionItem.did);
-      const followingUsers = await loadFollowerUsers(sessionItem.did);
-      setFollowUsers(followerUsers.length + followingUsers.length > 0);
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    setFollowUsers(followingDids.length + followerDids.length > 0);
+  }, [followingDids, followerDids]);
 
   const hasSocialProfiles = hasCredentials(didDocument);
 
@@ -321,7 +321,12 @@ const DashboardHome: React.FC<Props> = ({
             }}
           />
           {sessionItem.tutorialStep === 4 && (
-            <FollowCards did={sessionItem.did} signed={true} />
+            <FollowCards
+              followerDids={followerDids}
+              followingDids={followingDids}
+              signed={true}
+              viewAll={viewAll}
+            />
           )}
         </RightCardCol>
       </IonRow>

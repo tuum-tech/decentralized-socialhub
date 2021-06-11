@@ -4,7 +4,7 @@ import { IonButton } from '@ionic/react';
 import style from '../style.module.scss';
 import { ITutorialStepProp } from './TutorialStep1';
 
-import badge from '../../../../../assets/TutorialBagde.svg';
+import badge from '../../../../../assets/icon/TutorialBagde.svg';
 
 const TutorialStep4Component: React.FC<ITutorialStepProp> = ({
   onContinue

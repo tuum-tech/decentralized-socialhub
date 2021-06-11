@@ -12,13 +12,15 @@ import {
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import style from './style.module.scss';
 import { ExporeTime } from './constants';
 
 import Logo from 'src/components/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
+import ViewAllFollowModal from 'src/components/follow/ViewAllFollowModal';
 
+import { FollowService } from 'src/services/follow.service';
 import { UserService } from 'src/services/user.service';
 import { AssistService, RequestStatus } from 'src/services/assist.service';
 import LoadingIndicator from 'src/components/LoadingIndicator';
@@ -46,14 +48,19 @@ const TutorialModal = styled(IonModal)`
 `;
 
 const ProfilePage = () => {
+  const [showAllFollow, setShowAllFollow] = useState(0);
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');
   const [userInfo, setUserInfo] = useState<ISessionItem>(defaultUserInfo);
   const [full_profile, setfull_profile] = useState(defaultFullProfile);
-  const [didDocument, setDidDocument] = useState({});
+  const [didDocument, setDidDocument] = useState<any>({});
   const [publishStatus, setPublishStatus] = useState(RequestStatus.Pending);
   const [onBoardVisible, setOnBoardVisible] = useState(false);
+
+  const [followingDids, setFollowingDids] = useState<string[]>([]);
+  const [followerDids, setFollowerDids] = useState<string[]>([]);
+
   const history = useHistory();
 
   const setTimerForDid = () => {
@@ -131,6 +138,7 @@ const ProfilePage = () => {
     }
     setLoadingText('');
   };
+
   useEffect(() => {
     (async () => {
       let userSession = UserService.GetUserSession();
@@ -139,6 +147,16 @@ const ProfilePage = () => {
       }
       await refreshDidDocument();
       setUserInfo(userSession);
+
+      const _followingDids = await FollowService.getFollowingDids(
+        userSession.did
+      );
+      setFollowingDids(_followingDids);
+      const _followersDids = await FollowService.getFollowerDids(
+        userSession.did
+      );
+      setFollowerDids(_followersDids);
+
       setPublishStatus(
         userSession.isDIDPublished
           ? RequestStatus.Completed
@@ -178,6 +196,62 @@ const ProfilePage = () => {
       }
     })();
   }, [history.location.pathname]);
+
+  let encoded_did_document = useMemo(() => JSON.stringify(didDocument), [
+    didDocument
+  ]);
+  useEffect(() => {
+    (async () => {
+      const _didDocument = JSON.parse(encoded_did_document);
+      if (_didDocument && _didDocument.id) {
+        let userSession = UserService.GetUserSession();
+        if (!userSession) return;
+
+        const timestamp = new Date().getTime();
+        let message = '';
+        userSession.didPublishTime += 1;
+        const didPublishTime = userSession.didPublishTime;
+        if (didPublishTime === 1) {
+          userSession.badges!.didPublishTimes._1times.archived = timestamp;
+          message = 'You received 1 times did publish badge';
+        }
+        if (didPublishTime === 5) {
+          userSession.badges!.didPublishTimes._5times.archived = timestamp;
+          message = 'You received 5 times did publish badge';
+        }
+        if (didPublishTime === 10) {
+          userSession.badges!.didPublishTimes._10times.archived = timestamp;
+          message = 'You received 10 times did publish badge';
+        }
+        if (didPublishTime === 25) {
+          userSession.badges!.didPublishTimes._25times.archived = timestamp;
+          message = 'You received 25 times did publish badge';
+        }
+        if (didPublishTime === 50) {
+          userSession.badges!.didPublishTimes._50times.archived = timestamp;
+          message = 'You received 50 times did publish badge';
+        }
+        if (didPublishTime === 100) {
+          userSession.badges!.didPublishTimes._100times.archived = timestamp;
+          message = 'You received 100 times did publish badge';
+        }
+        if (message) {
+          await ProfileService.addActivity(
+            {
+              guid: '',
+              did: userSession.did,
+              message: message,
+              read: false,
+              createdAt: 0,
+              updatedAt: 0
+            },
+            userSession.did
+          );
+          UserService.updateSession(userSession);
+        }
+      }
+    })();
+  }, [encoded_did_document]);
 
   if (userInfo.tutorialStep < 4 && onBoardVisible) {
     return (
@@ -221,7 +295,6 @@ const ProfilePage = () => {
             </IonCol>
             <IonCol size="10" className={style['right-panel']}>
               <DashboardHeader
-                profile={full_profile}
                 sessionItem={userInfo}
                 publishStatus={publishStatus}
               />
@@ -233,6 +306,11 @@ const ProfilePage = () => {
                 profile={full_profile}
                 sessionItem={userInfo}
                 didDocument={didDocument}
+                viewAll={(isFollower: boolean) => {
+                  setShowAllFollow(isFollower ? 1 : 2);
+                }}
+                followerDids={followerDids}
+                followingDids={followingDids}
               />
             </IonCol>
           </IonRow>
@@ -254,6 +332,18 @@ const ProfilePage = () => {
           />
         </TutorialModal>
       </IonContent>
+
+      {userInfo && userInfo.did !== '' && showAllFollow > 0 && (
+        <ViewAllFollowModal
+          followerDids={followerDids}
+          followingDids={followingDids}
+          setFollowerDids={setFollowerDids}
+          setFollowingDids={setFollowingDids}
+          onClose={() => setShowAllFollow(0)}
+          isFollower={showAllFollow === 1}
+          editable={true}
+        />
+      )}
     </IonPage>
   );
 };

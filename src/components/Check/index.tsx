@@ -1,6 +1,6 @@
 import React from 'react';
-import check from 'src/assets/check-circle-fill.svg';
-import uncheck from 'src/assets/check-circle.svg';
+import check from 'src/assets/icon/check-circle-fill.svg';
+import uncheck from 'src/assets/icon/check-circle.svg';
 
 export interface CheckProps {
   text: string;

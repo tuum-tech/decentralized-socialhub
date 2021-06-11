@@ -6,9 +6,10 @@ import styled from 'styled-components';
 import DidSnippet from 'src/components/DidSnippet';
 import { ProfileName } from 'src/components/texts';
 import { FollowButton } from 'src/components/buttons';
+import Avatar from 'src/components/Avatar';
 
 import FollowOrUnFollowButton from '../FollowOrUnFollow';
-import Avatar from 'src/components/Avatar';
+import defaultCoverPhoto from 'src/assets/default-cover.png';
 
 const HeaderContainer = styled(IonGrid)`
   background-color: white;
@@ -18,7 +19,7 @@ const HeaderContainer = styled(IonGrid)`
   z-index: 99;
 `;
 
-const Banner = styled.div`
+const Banner = styled.div<{ bgImg: string }>`
   display: flex;
   position: sticky;
   top: 0px;
@@ -27,7 +28,7 @@ const Banner = styled.div`
   justify-content: center;
   align-items: center;
   gap: 10px;
-  background-color: rgba(255, 110, 110, 1);
+
   font-family: 'SF Pro Display';
   font-size: 56px;
   font-weight: bold;
@@ -42,6 +43,12 @@ const Banner = styled.div`
   margin-top: 0px;
   width: 100%;
   padding-bottom: 2px;
+
+  background: #fff;
+  background-image: url(${props => props.bgImg});
+  background-repeat: no-repeat, no-repeat;
+  background-position: 0 0;
+  background-size: 100% 100%;
 `;
 
 const Header = styled(IonRow)`
@@ -68,19 +75,23 @@ const Info = styled.div`
 interface IProps {
   user: ISessionItem;
   signedUserDid: string;
-  hasBanner?: boolean;
   onlyText?: string;
 }
 
 const ProfileHeader: React.FC<IProps> = ({
   user,
   signedUserDid,
-  hasBanner = true,
   onlyText = ''
 }: IProps) => {
   return (
     <HeaderContainer className="ion-no-padding">
-      {hasBanner && <Banner />}
+      <Banner
+        bgImg={
+          user.coverPhoto && user.coverPhoto !== ''
+            ? user.coverPhoto
+            : defaultCoverPhoto
+        }
+      />
       <Header class="ion-justify-content-center ion-align-items-center">
         {onlyText === '' ? (
           <>
