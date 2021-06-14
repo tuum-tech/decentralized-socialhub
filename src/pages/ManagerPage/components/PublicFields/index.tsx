@@ -58,7 +58,7 @@ const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
         <IonGrid>
           <IonRow>
             <IonCol>
-              <IonCardTitle>Manage Publif Profile Fields</IonCardTitle>
+              <IonCardTitle>Manage Content Visibility</IonCardTitle>
             </IonCol>
             <IonCol size="auto">
               <SmallLightButton
@@ -74,7 +74,9 @@ const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
         </IonGrid>
       </IonCardHeader>
       <IonCardContent>
-        <IonText>You can show/hide fields of Public Profile Page.</IonText>
+        <IonText>
+          You can toggle fields to be shown on your public profile page.
+        </IonText>
         <Divider />
         {allFields.map(field => (
           <IonItem key={field}>
