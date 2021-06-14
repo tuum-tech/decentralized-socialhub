@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
 import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
 
+import { ProfileService } from 'src/services/profile.service';
 import Logo from 'src/components/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 
@@ -45,6 +46,16 @@ interface MatchParams {
 const ExplorePage: React.FC<RouteComponentProps<MatchParams>> = (
   props: RouteComponentProps<MatchParams>
 ) => {
+  const [publicFields, setPublicFields] = useState<string[]>([]);
+  useEffect(() => {
+    (async () => {
+      const pFields = await ProfileService.getPublicFields(
+        props.match.params.did
+      );
+      setPublicFields(pFields);
+    })();
+  }, [props.match.params.did]);
+
   return (
     <IonPage className={style['explorepage']}>
       <IonGrid className={style['profilepagegrid']}>
@@ -66,7 +77,10 @@ const ExplorePage: React.FC<RouteComponentProps<MatchParams>> = (
                   />
                   <PageTitle>Explore</PageTitle>
                 </Header>
-                <ProfileComponent targetDid={props.match.params.did} />
+                <ProfileComponent
+                  publicFields={publicFields}
+                  targetDid={props.match.params.did}
+                />
               </div>
             )}
           </IonCol>

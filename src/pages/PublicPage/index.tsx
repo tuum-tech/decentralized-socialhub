@@ -3,9 +3,8 @@ import { RouteComponentProps } from 'react-router';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-// import FollowerAllModal from 'src/components/follow/FollowerAllModal';
-// import FollowingAllModal from 'src/components/follow/FollowingAllModal';
 import { FollowService } from 'src/services/follow.service';
+import { ProfileService } from 'src/services/profile.service';
 
 import ViewAllFollowModal from 'src/components/follow/ViewAllFollowModal';
 import LoadingIndicator from 'src/components/LoadingIndicator';
@@ -29,6 +28,8 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
   props: RouteComponentProps<MatchParams>
 ) => {
   let did: string = props.match.params.did;
+
+  const [publicFields, setPublicFields] = useState<string[]>([]);
   const [showAllFollow, setShowAllFollow] = useState(0);
   const [signedUser, setSignedUser] = useState(defaultUserInfo);
   const [loading, setLoading] = useState(true);
@@ -87,6 +88,11 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
         props.match.params.did
       );
       setFollowingDids(followingdids);
+
+      const pFields = await ProfileService.getPublicFields(
+        props.match.params.did
+      );
+      setPublicFields(pFields);
     })();
   }, [props.match.params.did]);
 
@@ -108,6 +114,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
             <IonCol size="9" className="ion-no-padding">
               <div className={style['profilecomponent']}>
                 <ProfileComponent
+                  publicFields={publicFields}
                   targetDid={did}
                   scrollToElement={scrollToElement}
                   aboutRef={aboutRef}
@@ -126,6 +133,8 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
       </IonGrid>
       {showAllFollow > 0 && (
         <ViewAllFollowModal
+          showFollowerCard={publicFields.includes('follower')}
+          showFollowingCard={publicFields.includes('following')}
           followerDids={followerDids}
           followingDids={followingDids}
           setFollowerDids={setFollowerDids}

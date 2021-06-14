@@ -51,7 +51,6 @@ const ViewAllModal = ({
     pageSize: number,
     pageNumber: number
   ) => {
-    console.log('===>retrieveNewData');
     if (loading === '') {
       setLoading('retrieving new data');
     }
