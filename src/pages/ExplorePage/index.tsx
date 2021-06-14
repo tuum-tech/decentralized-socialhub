@@ -3,7 +3,12 @@ import { IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
 import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
 
-import { ProfileService } from 'src/services/profile.service';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
+import { makeSelectSession } from 'src/store/users/selectors';
+import { SubState, InferMappedProps } from './types';
+import { setSession } from 'src/store/users/actions';
+
 import Logo from 'src/components/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 
@@ -42,10 +47,11 @@ const ArrowImage = styled.img`
 interface MatchParams {
   did: string;
 }
+interface PageProps
+  extends InferMappedProps,
+    RouteComponentProps<MatchParams> {}
 
-const ExplorePage: React.FC<RouteComponentProps<MatchParams>> = (
-  props: RouteComponentProps<MatchParams>
-) => {
+const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   const [publicFields, setPublicFields] = useState<string[]>([]);
   useEffect(() => {
     (async () => {
@@ -66,7 +72,7 @@ const ExplorePage: React.FC<RouteComponentProps<MatchParams>> = (
           </IonCol>
           <IonCol size="10" className={style['right-panel']}>
             {props.match.params.did === undefined ? (
-              <SearchComponent />
+              <SearchComponent userSession={props.session} />
             ) : (
               <div className={style['exploreprofilecomponent']}>
                 <Header>
@@ -79,6 +85,7 @@ const ExplorePage: React.FC<RouteComponentProps<MatchParams>> = (
                 </Header>
                 <ProfileComponent
                   publicFields={publicFields}
+                  userSession={props.session}
                   targetDid={props.match.params.did}
                 />
               </div>
@@ -90,4 +97,18 @@ const ExplorePage: React.FC<RouteComponentProps<MatchParams>> = (
   );
 };
 
-export default ExplorePage;
+// export default ExplorePage;
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ExplorePage);

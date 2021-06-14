@@ -2,11 +2,28 @@
  * Page
  */
 import React, { useEffect, useState } from 'react';
-import { Redirect, RouteComponentProps, useHistory } from 'react-router';
+import {
+  Redirect,
+  RouteComponentProps,
+  useHistory,
+  StaticContext
+} from 'react-router';
 import { AccountType, UserService } from 'src/services/user.service';
 
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import {
+  TokenResponse,
+  LocationState,
+  InferMappedProps,
+  SubState
+} from './types';
+
 import PageLoading from 'src/components/layouts/PageLoading';
-import { TokenResponse } from './types';
+
 import {
   requestFacebookId,
   requestFacebookToken,
@@ -17,12 +34,14 @@ import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 
-const FacebookCallback: React.FC<RouteComponentProps> = props => {
-  /**
-   * Direct method implementation without SAGA
-   * This was to show you dont need to put everything to global state
-   * incoming from Server API calls. Maintain a local state.
-   */
+interface PageProps
+  extends InferMappedProps,
+    RouteComponentProps<{}, StaticContext, LocationState> {}
+
+const FacebookCallback: React.FC<PageProps> = ({
+  eProps,
+  ...props
+}: PageProps) => {
   const history = useHistory();
   const [credentials, setCredentials] = useState({
     name: '',
@@ -48,36 +67,38 @@ const FacebookCallback: React.FC<RouteComponentProps> = props => {
         let t = await getToken(code, state);
         let facebookId = await requestFacebookId(t.data.request_token);
 
-        let userSession = UserService.GetUserSession();
-        if (userSession) {
+        if (props.session && props.session.did !== '') {
           let vc = await DidcredsService.generateVerifiableCredential(
-            userSession.did,
+            props.session.did,
             CredentialType.Facebook,
             facebookId.name
           );
-          let state = await DidDocumentService.getUserDocument(userSession);
+          let state = await DidDocumentService.getUserDocument(props.session);
           await DidService.addVerfiableCredentialToDIDDocument(
             state.diddocument,
             vc
           );
           DidDocumentService.updateUserDocument(state.diddocument);
 
-          userSession.loginCred!.facebook! = facebookId.name;
-          if (!userSession.badges!.socialVerify!.facebook.archived) {
-            userSession.badges!.socialVerify!.facebook.archived = new Date().getTime();
+          let newSession = JSON.parse(JSON.stringify(props.session));
+          newSession.loginCred!.facebook! = facebookId.name;
+          if (!newSession.badges!.socialVerify!.facebook.archived) {
+            newSession.badges!.socialVerify!.facebook.archived = new Date().getTime();
             await ProfileService.addActivity(
               {
                 guid: '',
-                did: userSession.did,
+                did: newSession.did,
                 message: 'You received a Facebook verfication badge',
                 read: false,
                 createdAt: 0,
                 updatedAt: 0
               },
-              userSession.did
+              newSession
             );
           }
-          await UserService.updateSession(userSession);
+          eProps.setSession({
+            session: await UserService.updateSession(newSession)
+          });
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredFacebook(facebookId.name);
@@ -127,4 +148,19 @@ const FacebookCallback: React.FC<RouteComponentProps> = props => {
   return getRedirect();
 };
 
-export default FacebookCallback;
+// export default FacebookCallback;
+
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FacebookCallback);

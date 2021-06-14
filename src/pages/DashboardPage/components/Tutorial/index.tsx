@@ -49,13 +49,16 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({
 
   const nextStep = async () => {
     setLoading(true);
-    if (step !== 4 && session) {
-      session.tutorialStep = step + 1;
-      if (session.tutorialStep === 4) {
-        session.badges!.account!.beginnerTutorial.archived = new Date().getTime();
-      }
+    let newSession = JSON.parse(JSON.stringify(session));
 
-      eProps.setSession({ session: await UserService.updateSession(session) });
+    if (step !== 4 && newSession) {
+      newSession.tutorialStep = step + 1;
+      if (newSession.tutorialStep === 4) {
+        newSession.badges!.account!.beginnerTutorial.archived = new Date().getTime();
+      }
+      eProps.setSession({
+        session: await UserService.updateSession(newSession)
+      });
       setStep(step + 1);
     } else {
       props.onClose();

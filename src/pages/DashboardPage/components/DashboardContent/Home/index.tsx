@@ -2,6 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import { InferMappedProps, SubState } from './types';
+
 import FollowCards from 'src/components/follow/FollowCards';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
 import { getVerifiedCredential } from 'src/utils/credential';
@@ -25,10 +32,9 @@ const RightCardCol = styled(IonCol)`
   padding: 22px 16px;
 `;
 
-interface Props {
+interface Props extends InferMappedProps {
   onTutorialStart: () => void;
   profile: ProfileDTO;
-  sessionItem: ISessionItem;
   didDocument: any;
   activeTab: (tab: string) => void;
   viewAll: (isFollower: boolean) => void;
@@ -36,16 +42,17 @@ interface Props {
   followingDids: string[];
 }
 
-const DashboardHome: React.FC<Props> = ({
-  profile,
-  sessionItem,
-  didDocument,
-  followerDids,
-  followingDids,
-  onTutorialStart,
-  activeTab,
-  viewAll
-}) => {
+const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
+  const {
+    profile,
+    didDocument,
+    followerDids,
+    followingDids,
+    session,
+    onTutorialStart,
+    activeTab,
+    viewAll
+  } = props;
   const [tutorialVisible, setTutorialVisible] = useState(true);
   const [hasFollowUsers, setFollowUsers] = useState(false);
 
@@ -58,10 +65,10 @@ const DashboardHome: React.FC<Props> = ({
   const [verifiedPercent, setVerifiedPercent] = useState(0); //overall verified percent
 
   useEffect(() => {
-    setTutorialVisible(sessionItem.tutorialStep !== 4);
+    setTutorialVisible(session.tutorialStep !== 4);
     setCompletionStats(profileCompletionStats());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionItem, profile]);
+  }, [session, profile]);
 
   useEffect(() => {
     let percentAggregated = '0';
@@ -88,14 +95,14 @@ const DashboardHome: React.FC<Props> = ({
         title: 'Setup your account',
         targetList: ['Tutorial Completed', 'Social Media Authenticated'],
         accomplishedList: [
-          sessionItem.tutorialStep === 4 ? 'Tutorial Completed' : '',
-          sessionItem.loginCred &&
-          (sessionItem.loginCred.linkedin ||
-            sessionItem.loginCred.twitter ||
-            sessionItem.loginCred.google ||
-            sessionItem.loginCred.facebook ||
-            sessionItem.loginCred.github ||
-            sessionItem.loginCred.discord)
+          session.tutorialStep === 4 ? 'Tutorial Completed' : '',
+          session.loginCred &&
+          (session.loginCred.linkedin ||
+            session.loginCred.twitter ||
+            session.loginCred.google ||
+            session.loginCred.facebook ||
+            session.loginCred.github ||
+            session.loginCred.discord)
             ? 'Social Media Authenticated'
             : ''
         ].filter(a => a !== '')
@@ -121,19 +128,19 @@ const DashboardHome: React.FC<Props> = ({
           {
             name: 'Tutorial Completed',
             code: 'tutorialCompleted',
-            value: sessionItem.tutorialStep === 4 ? true : false
+            value: session.tutorialStep === 4 ? true : false
           },
           {
             name: 'Social Media Authenticated',
             code: 'socialMediaAuthenticated',
             value:
-              sessionItem.loginCred &&
-              (sessionItem.loginCred.linkedin ||
-                sessionItem.loginCred.twitter ||
-                sessionItem.loginCred.google ||
-                sessionItem.loginCred.facebook ||
-                sessionItem.loginCred.github ||
-                sessionItem.loginCred.discord)
+              session.loginCred &&
+              (session.loginCred.linkedin ||
+                session.loginCred.twitter ||
+                session.loginCred.google ||
+                session.loginCred.facebook ||
+                session.loginCred.github ||
+                session.loginCred.discord)
                 ? true
                 : false
           }
@@ -209,66 +216,66 @@ const DashboardHome: React.FC<Props> = ({
     (async () => {
       const verified: any = {};
 
-      verified['name'] = await isCredVerified('name', sessionItem.name);
+      verified['name'] = await isCredVerified('name', session.name);
 
-      if (sessionItem.loginCred?.email) {
+      if (session.loginCred?.email) {
         verified['email'] = await isCredVerified(
           'email',
-          sessionItem.loginCred.email
+          session.loginCred.email
         );
       } else {
         verified['email'] = false;
       }
 
-      if (sessionItem.loginCred?.twitter) {
+      if (session.loginCred?.twitter) {
         verified['twitter'] = await isCredVerified(
           'twitter',
-          sessionItem.loginCred.twitter
+          session.loginCred.twitter
         );
       } else {
         verified['twitter'] = false;
       }
 
-      if (sessionItem.loginCred?.google) {
+      if (session.loginCred?.google) {
         verified['google'] = await isCredVerified(
           'google',
-          sessionItem.loginCred.google
+          session.loginCred.google
         );
       } else {
         verified['google'] = false;
       }
 
-      if (sessionItem.loginCred?.facebook) {
+      if (session.loginCred?.facebook) {
         verified['facebook'] = await isCredVerified(
           'facebook',
-          sessionItem.loginCred.facebook
+          session.loginCred.facebook
         );
       } else {
         verified['facebook'] = false;
       }
 
-      if (sessionItem.loginCred?.linkedin) {
+      if (session.loginCred?.linkedin) {
         verified['linkedin'] = await isCredVerified(
           'linkedin',
-          sessionItem.loginCred.linkedin
+          session.loginCred.linkedin
         );
       } else {
         verified['linkedin'] = false;
       }
 
-      if (sessionItem.loginCred?.github) {
+      if (session.loginCred?.github) {
         verified['github'] = await isCredVerified(
           'github',
-          sessionItem.loginCred.github
+          session.loginCred.github
         );
       } else {
         verified['github'] = false;
       }
 
-      if (sessionItem.loginCred?.discord) {
+      if (session.loginCred?.discord) {
         verified['discord'] = await isCredVerified(
           'discord',
-          sessionItem.loginCred.discord
+          session.loginCred.discord
         );
       } else {
         verified['discord'] = false;
@@ -311,12 +318,12 @@ const DashboardHome: React.FC<Props> = ({
           {tutorialVisible && (
             <BeginnersTutorial
               onTutorialStart={onTutorialStart}
-              tutorialStep={sessionItem.tutorialStep}
+              tutorialStep={session.tutorialStep}
             />
           )}
           <ManageProfile profile={profile} />
-          {!hasFollowUsers && sessionItem.did && sessionItem.did !== '' && (
-            <ExploreConnnections session={sessionItem} did={sessionItem.did} />
+          {!hasFollowUsers && session.did && session.did !== '' && (
+            <ExploreConnnections session={session} did={session.did} />
           )}
           {!hasSocialProfiles && <ManageLinks />}
         </LeftCardCol>
@@ -331,17 +338,18 @@ const DashboardHome: React.FC<Props> = ({
           {hasSocialProfiles && (
             <SocialProfilesCard
               diddocument={didDocument}
-              sessionItem={sessionItem}
+              sessionItem={session}
               showManageButton={false}
+              setSession={eProps.setSession}
             />
           )}
           <Badges
-            badges={sessionItem.badges!}
+            badges={session.badges!}
             exploreAll={() => {
               activeTab('badges');
             }}
           />
-          {sessionItem.tutorialStep === 4 && (
+          {session.tutorialStep === 4 && (
             <FollowCards
               followerDids={followerDids}
               followingDids={followingDids}
@@ -355,4 +363,18 @@ const DashboardHome: React.FC<Props> = ({
   );
 };
 
-export default DashboardHome;
+// export default DashboardHome;
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardHome);

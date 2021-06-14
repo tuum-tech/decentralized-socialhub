@@ -8,6 +8,7 @@ import { HiveService } from 'src/services/hive.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { ProfileService } from 'src/services/profile.service';
 import { UserVaultScripts } from 'src/scripts/uservault.script';
+import { UserVaultScriptService } from 'src/services/script.service';
 
 import { connect } from 'react-redux';
 import { InferMappedProps } from '../../../types';
@@ -76,6 +77,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
 
     if (!warningRead) {
       let hiveVersion = await HiveService.getHiveVersion(endpoint);
+
       if (!(await HiveService.isHiveVersionSet(hiveVersion))) {
         props.setLoading(false);
         setErrorMessage(
@@ -111,14 +113,18 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         props.session.mnemonics,
         endpoint
       );
-      session.userToken = userToken;
-      session.tutorialStep = 4;
-      session.hiveHost = endpoint;
+      let newSession = {
+        ...session,
+        userToken,
+        tutorialStep: 4,
+        hiveHost: endpoint
+      };
+
       if (
         selected !== 'tuum' &&
         endpoint !== process.env.REACT_APP_TUUM_TECH_HIVE
       ) {
-        session.badges!.dStorage!.ownVault.archived = new Date().getTime();
+        newSession.badges!.dStorage!.ownVault.archived = new Date().getTime();
       }
       //TODO: Uncomment when update document publish is fixed
       // if (selected !== "document")
@@ -131,11 +137,14 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       //   await DidDocumentService.publishUserDocument(userDocument);
       // }
 
-      // await UserService.updateSession(session);
-      eProps.setSession({ session: await UserService.updateSession(session) });
-      let hiveInstance = await HiveService.getSessionInstance();
+      eProps.setSession({
+        session: await UserService.updateSession(newSession)
+      });
+
+      let hiveInstance = await HiveService.getSessionInstance(newSession);
+
       await UserVaultScripts.Execute(hiveInstance!);
-      let activities = await ProfileService.getActivity();
+      let activities = await ProfileService.getActivity(newSession);
       activities.push({
         guid: '',
         did: session!.did,
@@ -144,7 +153,8 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         createdAt: 0,
         updatedAt: 0
       });
-      session.badges!.dStorage!.ownVault.archived &&
+
+      newSession.badges!.dStorage!.ownVault.archived &&
         activities.push({
           guid: '',
           did: session!.did,
@@ -153,15 +163,17 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
           createdAt: 0,
           updatedAt: 0
         });
+
       activities.forEach(async (activity: ActivityItem) => {
-        await ProfileService.addActivity(activity, activity.did);
+        await ProfileService.addActivity(activity, newSession);
       });
       window.localStorage.removeItem(
-        `temporary_activities_${session.did.replace('did:elastos:', '')}`
+        `temporary_activities_${newSession.did.replace('did:elastos:', '')}`
       );
+
       props.onContinue();
     } catch (error) {
-      await DidDocumentService.reloadUserDocument();
+      await DidDocumentService.reloadUserDocument(props.session);
       setErrorMessage(
         'We are not able to process your request at moment. Please try again later'
       );

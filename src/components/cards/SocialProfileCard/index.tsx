@@ -1,24 +1,32 @@
 import React, { useState, useEffect } from 'react';
 
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import { InferMappedProps, SubState } from './types';
+
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import SocialProfilesCard from './SocialCard';
 
-interface Props {
+interface Props extends InferMappedProps {
   didDocument: any;
-  sessionItem: ISessionItem;
+  targetUser?: ISessionItem;
 }
 
-const SocialProfiles: React.FC<Props> = ({ didDocument, sessionItem }) => {
-  const [document, setDocument] = useState(didDocument);
+const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
+  const [document, setDocument] = useState(props.didDocument);
+  const user = props.targetUser ? props.targetUser : props.session;
 
   useEffect(() => {
     (async () => {
-      if (sessionItem.loginCred) {
-        const { loginCred } = sessionItem;
+      if (user.loginCred) {
+        const { loginCred } = user;
         const vcs = [];
         if (loginCred.google) {
           let vc = await DidcredsService.generateVerifiableCredential(
-            sessionItem.did,
+            props.session.did,
             CredentialType.Google,
             loginCred.google
           );
@@ -26,7 +34,7 @@ const SocialProfiles: React.FC<Props> = ({ didDocument, sessionItem }) => {
         }
         if (loginCred.facebook) {
           let vc = await DidcredsService.generateVerifiableCredential(
-            sessionItem.did,
+            props.session.did,
             CredentialType.Facebook,
             loginCred.facebook
           );
@@ -34,7 +42,7 @@ const SocialProfiles: React.FC<Props> = ({ didDocument, sessionItem }) => {
         }
         if (loginCred.twitter) {
           let vc = await DidcredsService.generateVerifiableCredential(
-            sessionItem.did,
+            props.session.did,
             CredentialType.Twitter,
             loginCred.twitter
           );
@@ -42,7 +50,7 @@ const SocialProfiles: React.FC<Props> = ({ didDocument, sessionItem }) => {
         }
         if (loginCred.linkedin) {
           let vc = await DidcredsService.generateVerifiableCredential(
-            sessionItem.did,
+            props.session.did,
             CredentialType.Linkedin,
             loginCred.linkedin
           );
@@ -79,13 +87,31 @@ const SocialProfiles: React.FC<Props> = ({ didDocument, sessionItem }) => {
   ) {
     return (
       <SocialProfilesCard
+        sessionItem={user}
+        setSession={({ session }) => {
+          if (!props.targetUser) {
+            eProps.setSession({ session });
+          }
+        }}
         showManageButton={false}
         diddocument={document}
-        sessionItem={sessionItem}
       />
     );
   }
   return <></>;
 };
 
-export default SocialProfiles;
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SocialProfiles);

@@ -183,7 +183,7 @@ export class UserService {
     }
 
     this.lockUser(this.key(newSessionItem.did), newSessionItem);
-    await UserVaultScriptService.register();
+    await UserVaultScriptService.register(newSessionItem);
 
     return newSessionItem;
   }
@@ -395,7 +395,8 @@ export class UserService {
           createdAt: 0,
           updatedAt: 0
         },
-        sessionItem!.did
+
+        sessionItem
       );
     }
 
@@ -409,7 +410,8 @@ export class UserService {
           createdAt: 0,
           updatedAt: 0
         },
-        sessionItem.did
+
+        sessionItem
       );
     });
     this.lockUser(this.key(did), sessionItem);
@@ -419,7 +421,6 @@ export class UserService {
     //   'session_instance',
     //   JSON.stringify(sessionItem, null, '')
     // );
-
     return sessionItem;
   }
 
@@ -427,6 +428,7 @@ export class UserService {
     sessionItem: ISessionItem,
     notifyUser: boolean = false
   ): Promise<ISessionItem> {
+    console.log('====>updateSession', sessionItem.userToken);
     let newSessionItem = sessionItem;
     const userData = await UserService.SearchUserWithDID(sessionItem.did);
     if (userData && userData.code) {
@@ -455,7 +457,7 @@ export class UserService {
 
       window.localStorage.setItem('isLoggedIn', 'true');
 
-      await UserVaultScriptService.register();
+      await UserVaultScriptService.register(instance);
       return instance;
     }
     return null;
@@ -467,17 +469,5 @@ export class UserService {
     // window.localStorage.removeItem('session_instance');
     window.localStorage.removeItem('isLoggedIn');
     window.location.href = '/create-profile';
-  }
-
-  public static GetUserSession(): ISessionItem | undefined {
-    // let item = window.sessionStorage.getItem('session_instance');
-    // if (item) {
-    //   return JSON.parse(item);
-    // }
-    let item = window.localStorage.getItem('session_instance');
-    if (item) {
-      return JSON.parse(item);
-    }
-    return;
   }
 }

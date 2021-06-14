@@ -112,15 +112,12 @@ export class SearchService {
   async getUsers(
     searchString: string,
     limit: number,
-    offset: number
+    offset: number,
+    userSession: ISessionItem
   ): Promise<PeopleDTO> {
     let res: PeopleDTO = {
       items: []
     };
-    const userSession = UserService.GetUserSession();
-    if (!userSession) {
-      return res;
-    }
 
     let params: any = {
       limit: limit,
@@ -232,13 +229,10 @@ export class SearchService {
     searchString: string,
     dids: string[],
     limit: number,
-    offset: number
+    offset: number,
+    userSession: ISessionItem
   ) {
     let items: any[] = [];
-    const userSession = UserService.GetUserSession();
-    if (!userSession) {
-      return [];
-    }
 
     let params: any = {
       limit: limit,

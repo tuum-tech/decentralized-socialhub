@@ -85,7 +85,6 @@ const DashboardContent: React.FC<Props> = ({
       </IonList>
       {active === 'home' && (
         <DashboardHome
-          sessionItem={sessionItem}
           profile={profile}
           onTutorialStart={onTutorialStart}
           didDocument={didDocument}

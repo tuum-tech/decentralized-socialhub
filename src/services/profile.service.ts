@@ -13,9 +13,15 @@ import { Guid } from 'guid-typescript';
 export class ProfileService {
   static didDocument: any = null;
 
-  static isCredVerified = async (key: string, profileValue: string) => {
+  static isCredVerified = async (
+    key: string,
+    profileValue: string,
+    userSession: ISessionItem
+  ) => {
     if (ProfileService.didDocument === null) {
-      ProfileService.didDocument = await ProfileService.getDidDocument();
+      ProfileService.didDocument = await ProfileService.getDidDocument(
+        userSession
+      );
     }
 
     let vc = getVerifiedCredential(key, ProfileService.didDocument);
@@ -24,11 +30,7 @@ export class ProfileService {
     return vc.value === profileValue && vc.isVerified;
   };
 
-  static getDidDocument = async () => {
-    let userSession = UserService.GetUserSession();
-    if (!userSession) {
-      return;
-    }
+  static getDidDocument = async (userSession: ISessionItem) => {
     let documentState = await DidDocumentService.getUserDocument(userSession);
     return documentState.diddocument;
   };
@@ -71,7 +73,10 @@ export class ProfileService {
     }
   }
 
-  static async getFullProfile(did: string): Promise<ProfileDTO | undefined> {
+  static async getFullProfile(
+    did: string,
+    userSession: ISessionItem
+  ): Promise<ProfileDTO | undefined> {
     let basicDTO: any = {};
     let educationDTO: EducationDTO = {
       items: [],
@@ -123,7 +128,8 @@ export class ProfileService {
       educationDTO.items.map(async (x, i) => {
         educationDTO.items[i].isVerified = await ProfileService.isCredVerified(
           'education',
-          x.institution
+          x.institution,
+          userSession
         );
       });
       /* Calculate verified education credentials ends */
@@ -132,7 +138,8 @@ export class ProfileService {
       experienceDTO.items.map(async (x, i) => {
         experienceDTO.items[i].isVerified = await ProfileService.isCredVerified(
           'occupation',
-          x.title
+          x.title,
+          userSession
         );
       });
       /* Calculate verified experience credentials ends */
@@ -144,14 +151,13 @@ export class ProfileService {
     };
   }
 
-  static async updateAbout(basicDTO: BasicDTO) {
-    const userSession = UserService.GetUserSession();
-    const hiveInstance = await HiveService.getSessionInstance();
-    if (userSession && hiveInstance) {
+  static async updateAbout(basicDTO: BasicDTO, session: ISessionItem) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
       const res: any = await hiveInstance.Scripting.RunScript({
         name: 'update_basic_profile',
         context: {
-          target_did: userSession.did,
+          target_did: session.did,
           target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
         },
         params: basicDTO
@@ -162,14 +168,16 @@ export class ProfileService {
     }
   }
 
-  static async updateExperienceProfile(experienceItem: ExperienceItem) {
-    const userSession = UserService.GetUserSession();
-    const hiveInstance = await HiveService.getSessionInstance();
-    if (userSession && hiveInstance) {
+  static async updateExperienceProfile(
+    experienceItem: ExperienceItem,
+    session: ISessionItem
+  ) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
       const res: any = await hiveInstance.Scripting.RunScript({
         name: 'update_experience_profile',
         context: {
-          target_did: userSession.did,
+          target_did: session.did,
           target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
         },
         params: experienceItem
@@ -180,14 +188,16 @@ export class ProfileService {
     }
   }
 
-  static async updateEducationProfile(educationItem: EducationItem) {
-    const userSession = UserService.GetUserSession();
-    const hiveInstance = await HiveService.getSessionInstance();
-    if (userSession && hiveInstance) {
+  static async updateEducationProfile(
+    educationItem: EducationItem,
+    session: ISessionItem
+  ) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
       const res: any = await hiveInstance.Scripting.RunScript({
         name: 'update_education_profile',
         context: {
-          target_did: userSession.did,
+          target_did: session.did,
           target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
         },
         params: educationItem
@@ -198,14 +208,16 @@ export class ProfileService {
     }
   }
 
-  static async removeEducationItem(educationItem: EducationItem) {
-    const userSession = UserService.GetUserSession();
-    const hiveInstance = await HiveService.getSessionInstance();
-    if (userSession && hiveInstance) {
+  static async removeEducationItem(
+    educationItem: EducationItem,
+    session: ISessionItem
+  ) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
       const res: any = await hiveInstance.Scripting.RunScript({
         name: 'remove_education_item',
         context: {
-          target_did: userSession.did,
+          target_did: session.did,
           target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
         },
         params: educationItem
@@ -216,14 +228,16 @@ export class ProfileService {
     }
   }
 
-  static async removeExperienceItem(experienceItem: ExperienceItem) {
-    const userSession = UserService.GetUserSession();
-    const hiveInstance = await HiveService.getSessionInstance();
-    if (userSession && hiveInstance) {
+  static async removeExperienceItem(
+    experienceItem: ExperienceItem,
+    session: ISessionItem
+  ) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
       const res: any = await hiveInstance.Scripting.RunScript({
         name: 'remove_experience_item',
         context: {
-          target_did: userSession.did,
+          target_did: session.did,
           target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
         },
         params: experienceItem
@@ -235,13 +249,10 @@ export class ProfileService {
   }
 
   static async getFollowers(
-    dids: string[]
+    dids: string[],
+    session: ISessionItem
   ): Promise<IFollowerResponse | undefined> {
-    let userSession = UserService.GetUserSession();
-    if (!userSession || userSession.tutorialStep !== 4) {
-      return;
-    }
-
+    if (!session || session.tutorialStep !== 4) return;
     const appHiveClient = await HiveService.getAppHiveClient();
     if (appHiveClient && dids && dids.length > 0) {
       let followersResponse: IRunScriptResponse<IFollowerResponse> = await appHiveClient.Scripting.RunScript(
@@ -263,14 +274,14 @@ export class ProfileService {
     return;
   }
 
-  static async unfollow(did: string): Promise<any> {
-    const hiveInstance = await HiveService.getSessionInstance();
+  static async unfollow(did: string, session: ISessionItem): Promise<any> {
+    const hiveInstance = await HiveService.getSessionInstance(session);
     if (hiveInstance && did && did !== '') {
       await hiveInstance.Database.deleteOne('following', {
         did: did
       });
 
-      let followersResponse = await this.getFollowers([did]);
+      let followersResponse = await this.getFollowers([did], session);
       let followersList: string[] = [];
       if (
         followersResponse &&
@@ -280,8 +291,7 @@ export class ProfileService {
         followersList = followersResponse.get_followers.items[0].followers;
       }
 
-      const userSession = UserService.GetUserSession();
-      const sDid = userSession ? userSession.did : '';
+      const sDid = session ? session.did : '';
       if (sDid !== '') {
         followersList = followersList.filter(item => item !== sDid);
       }
@@ -302,40 +312,34 @@ export class ProfileService {
         });
       }
 
-      if (userSession) {
-        return this.getFollowings(userSession.did);
+      if (session) {
+        return this.getFollowings(session.did, session);
       }
     }
 
     return;
   }
 
-  static async resetFollowing(): Promise<any> {
-    const hiveInstance = await HiveService.getSessionInstance();
+  static async resetFollowing(session: ISessionItem): Promise<any> {
+    const hiveInstance = await HiveService.getSessionInstance(session);
     if (!hiveInstance) return;
     await hiveInstance.Database.deleteCollection('following');
     await hiveInstance.Database.createCollection('following');
-    const userSession = UserService.GetUserSession();
-    if (userSession) {
-      return this.getFollowings(userSession.did);
-    }
+    return this.getFollowings(session.did, session);
   }
 
   static async getFollowings(
-    did: string
+    targetDid: string,
+    session: ISessionItem
   ): Promise<IFollowingResponse | undefined> {
-    let userSession = UserService.GetUserSession();
-    if (!userSession || userSession.tutorialStep !== 4) {
-      return;
-    }
-
+    if (!session || session.tutorialStep !== 4) return;
     const appHiveClient = await HiveService.getAppHiveClient();
-    if (did && did !== '' && appHiveClient) {
+    if (session.did && session.did !== '' && appHiveClient) {
       const followingResponse: IRunScriptResponse<IFollowingResponse> = await appHiveClient.Scripting.RunScript(
         {
           name: 'get_following',
           context: {
-            target_did: did,
+            target_did: targetDid,
             target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
           }
         }
@@ -348,20 +352,19 @@ export class ProfileService {
     return;
   }
 
-  static async addFollowing(did: string): Promise<any> {
-    const hiveClient = await HiveService.getSessionInstance();
+  static async addFollowing(did: string, session: ISessionItem): Promise<any> {
+    const hiveClient = await HiveService.getSessionInstance(session);
     if (hiveClient && did && did !== '') {
       await hiveClient.Database.insertOne('following', { did: did }, undefined);
 
-      let followersResponse = await this.getFollowers([did]);
+      let followersResponse = await this.getFollowers([did], session);
 
       let followersList: string[] = [];
       if (followersResponse && followersResponse.get_followers.items.length > 0)
         // TODO: handle this better
         followersList = followersResponse.get_followers.items[0].followers;
 
-      const userSession = UserService.GetUserSession();
-      const sDid = userSession ? userSession.did : '';
+      const sDid = session ? session.did : '';
       if (sDid !== '') {
         followersList.push(sDid);
       }
@@ -393,13 +396,13 @@ export class ProfileService {
             '<a href="/did/' +
             sDid +
             '" target="_blank">' +
-            userSession!.name +
+            session!.name +
             '</a> Followed you',
           read: false,
           createdAt: 0,
           updatedAt: 0
         },
-        did
+        session
       );
 
       await this.addActivity(
@@ -416,26 +419,24 @@ export class ProfileService {
           createdAt: 0,
           updatedAt: 0
         },
-        sDid
+        session
       );
 
-      if (userSession) {
-        return this.getFollowings(userSession.did);
+      if (session) {
+        return this.getFollowings(session.did, session);
       }
     }
     return;
   }
+  static async getActivity(session: ISessionItem) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
 
-  static async getActivity() {
-    const userSession = UserService.GetUserSession();
-    const hiveInstance = await HiveService.getSessionInstance();
-
-    if (userSession && hiveInstance) {
+    if (session && hiveInstance) {
       const result: IRunScriptResponse<ActivityResponse> = await hiveInstance.Scripting.RunScript(
         {
           name: 'get_activity',
           context: {
-            target_did: userSession.did,
+            target_did: session.did,
             target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
           }
         }
@@ -447,24 +448,22 @@ export class ProfileService {
     }
     let tmp_activities = JSON.parse(
       window.localStorage.getItem(
-        `temporary_activities_${userSession!.did.replace('did:elastos:', '')}`
+        `temporary_activities_${session!.did.replace('did:elastos:', '')}`
       ) || '[]'
     );
     return tmp_activities;
   }
-
-  static async addActivity(activity: ActivityItem, activityOwner: string) {
+  static async addActivity(activity: ActivityItem, session: ISessionItem) {
     // Assign new guid to activity
     if (!activity.guid) activity.guid = Guid.create();
     if (!activity.createdAt) activity.createdAt = new Date().getTime();
     if (!activity.updatedAt) activity.updatedAt = new Date().getTime();
-    const userSession = UserService.GetUserSession();
-    const hiveInstance = await HiveService.getSessionInstance();
-    if (userSession && hiveInstance) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
       const res: any = await hiveInstance.Scripting.RunScript({
         name: 'add_activity',
         context: {
-          target_did: activityOwner,
+          target_did: session.did,
           target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
         },
         params: activity
@@ -486,15 +485,14 @@ export class ProfileService {
     }
   }
 
-  static async updateActivity(activity: ActivityItem) {
+  static async updateActivity(activity: ActivityItem, session: ISessionItem) {
     activity.updatedAt = new Date().getTime();
-    const userSession = UserService.GetUserSession();
-    const hiveInstance = await HiveService.getSessionInstance();
-    if (userSession && hiveInstance) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
       const res: any = await hiveInstance.Scripting.RunScript({
         name: 'update_activity',
         context: {
-          target_did: userSession.did,
+          target_did: session.did,
           target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
         },
         params: activity

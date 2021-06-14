@@ -15,6 +15,7 @@ interface Props {
   editable: boolean;
   onClose: () => void;
   setFollowingDids: (newFollowerDids: string[]) => void;
+  userSession: ISessionItem;
 }
 
 const ViewAllModal = ({
@@ -22,7 +23,8 @@ const ViewAllModal = ({
   followingDids,
   onClose,
   editable,
-  setFollowingDids
+  setFollowingDids,
+  userSession
 }: Props) => {
   const [followerUsers, setFollowerUsers] = useState<any[]>([]);
 
@@ -58,7 +60,8 @@ const ViewAllModal = ({
       followerDids,
       searchStr,
       pageSize,
-      pageNumber
+      pageNumber,
+      userSession
     );
 
     if (fUsers.length > 0) {
@@ -123,15 +126,15 @@ const ViewAllModal = ({
               }${loading === user.did ? 'ing' : ''}`}
               followAction={async () => {
                 setLoading(user.did);
-                if (followingDids.includes(user.did)) {
-                  const res = await ProfileService.unfollow(user.did);
+                if (user && followingDids.includes(user.did)) {
+                  const res = await ProfileService.unfollow(user.did, user);
                   if (res) {
                     setFollowingDids(
                       followingDids.filter(item => item !== user.did)
                     );
                   }
                 } else {
-                  const res = await ProfileService.addFollowing(user.did);
+                  const res = await ProfileService.addFollowing(user.did, user);
                   if (res) {
                     setFollowingDids(followingDids.concat(user.did));
                   }

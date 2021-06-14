@@ -61,7 +61,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');
-  // const [userInfo, setUserInfo] = useState<ISessionItem>(props.session);
+
   const [full_profile, setfull_profile] = useState(defaultFullProfile);
   const [didDocument, setDidDocument] = useState<any>({});
   const [publishStatus, setPublishStatus] = useState(RequestStatus.Pending);
@@ -127,21 +127,16 @@ const ProfilePage: React.FC<InferMappedProps> = ({
       eProps.setSession({
         session: await UserService.updateSession(newSession)
       });
-      await DidDocumentService.reloadUserDocument();
+      await DidDocumentService.reloadUserDocument(newSession);
     }
-    // let userSession = UserService.GetUserSession();
-    // if (userSession) {
-    //   userSession.isDIDPublished = true;
-    //   UserService.updateSession(userSession);
-    //   await DidDocumentService.reloadUserDocument();
-    // }
   };
 
   const retriveProfile = async () => {
     if (props.session && props.session.did !== '') {
       setLoadingText('Please wait a moment...');
       let profile: ProfileDTO | undefined = await ProfileService.getFullProfile(
-        props.session.did
+        props.session.did,
+        props.session
       );
       if (profile) {
         profile.experienceDTO.isEnabled = true;
@@ -158,11 +153,13 @@ const ProfilePage: React.FC<InferMappedProps> = ({
         await refreshDidDocument();
 
         const _followingDids = await FollowService.getFollowingDids(
-          props.session.did
+          props.session.did,
+          props.session
         );
         setFollowingDids(_followingDids);
         const _followersDids = await FollowService.getFollowerDids(
-          props.session.did
+          props.session.did,
+          props.session
         );
         setFollowerDids(_followersDids);
 
@@ -217,49 +214,53 @@ const ProfilePage: React.FC<InferMappedProps> = ({
       const _didDocument = JSON.parse(encoded_did_document);
       if (_didDocument && _didDocument.id) {
         if (props.session && props.session.did !== '') {
-          let userSession = props.session;
+          let newSession = JSON.parse(JSON.stringify(props.session));
+
           const timestamp = new Date().getTime();
           let message = '';
-          userSession.didPublishTime += 1;
+          newSession.didPublishTime += 1;
 
-          const didPublishTime = userSession.didPublishTime;
+          const didPublishTime = newSession.didPublishTime;
           if (didPublishTime === 1) {
-            userSession.badges!.didPublishTimes._1times.archived = timestamp;
+            newSession.badges!.didPublishTimes._1times.archived = timestamp;
             message = 'You received 1 times did publish badge';
           }
           if (didPublishTime === 5) {
-            userSession.badges!.didPublishTimes._5times.archived = timestamp;
+            newSession.badges!.didPublishTimes._5times.archived = timestamp;
             message = 'You received 5 times did publish badge';
           }
           if (didPublishTime === 10) {
-            userSession.badges!.didPublishTimes._10times.archived = timestamp;
+            newSession.badges!.didPublishTimes._10times.archived = timestamp;
             message = 'You received 10 times did publish badge';
           }
           if (didPublishTime === 25) {
-            userSession.badges!.didPublishTimes._25times.archived = timestamp;
+            newSession.badges!.didPublishTimes._25times.archived = timestamp;
             message = 'You received 25 times did publish badge';
           }
           if (didPublishTime === 50) {
-            userSession.badges!.didPublishTimes._50times.archived = timestamp;
+            newSession.badges!.didPublishTimes._50times.archived = timestamp;
             message = 'You received 50 times did publish badge';
           }
           if (didPublishTime === 100) {
-            userSession.badges!.didPublishTimes._100times.archived = timestamp;
+            newSession.badges!.didPublishTimes._100times.archived = timestamp;
             message = 'You received 100 times did publish badge';
           }
           if (message) {
             await ProfileService.addActivity(
               {
                 guid: '',
-                did: userSession.did,
+                did: newSession.did,
                 message: message,
                 read: false,
                 createdAt: 0,
                 updatedAt: 0
               },
-              userSession.did
+
+              newSession
             );
-            // await eProps.updateSession({ session: userSession });
+            eProps.setSession({
+              session: await UserService.updateSession(newSession)
+            });
           }
         }
       }
@@ -271,12 +272,16 @@ const ProfilePage: React.FC<InferMappedProps> = ({
     return (
       <OnBoarding
         completed={async (startTutorial: boolean) => {
-          let user = props.session;
-          if (!user) return;
-          user.onBoardingCompleted = true;
+          let session = {
+            ...props.session,
+            onBoardingCompleted: true
+          };
 
-          // await eProps.updateSession({ session: user });
-          // setUserInfo(user);
+          // await eProps.setSession({ session });
+          // session: await UserService.updateSession(newSession);
+          eProps.setSession({
+            session: await UserService.updateSession(session)
+          });
 
           setOnBoardVisible(false);
           if (!willExpire) {
@@ -360,6 +365,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
           onClose={() => setShowAllFollow(0)}
           isFollower={showAllFollow === 1}
           editable={true}
+          userSession={session}
         />
       )}
     </IonPage>

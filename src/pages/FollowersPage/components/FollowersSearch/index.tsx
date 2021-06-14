@@ -3,7 +3,6 @@ import { IonGrid, IonRow } from '@ionic/react';
 
 import PeopleCard from 'src/components/cards/PeopleCard';
 import { ProfileService } from 'src/services/profile.service';
-import { UserService } from 'src/services/user.service';
 import { alertError } from 'src/utils/notify';
 import { SearchService } from 'src/services/search.service';
 
@@ -22,8 +21,12 @@ export interface IUserResponse {
     }[];
   };
 }
+interface Props {
+  userSession: ISessionItem;
+}
 
-const FollowersSearch: React.FC = () => {
+// const FollowersSearch: React.FC = () => {
+const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
   const [filteredUsers, setFilteredUsers] = useState<IUserResponse>({
     get_users_by_dids: { items: [] }
   });
@@ -57,73 +60,64 @@ const FollowersSearch: React.FC = () => {
   //   })();
   // }, []);
 
-  const loadFollowersData = async () => {
-    try {
-      let user = UserService.GetUserSession();
-
-      if (user && user.did) {
-        //Get Followers
-        let listDids = [user.did];
-        let followers = await ProfileService.getFollowers(listDids);
-        setListFollowers(followers as IFollowerResponse);
-      }
-    } catch (e) {
-      alertError(null, 'Could not retrieve your followers');
-    }
-
-    try {
-      let user = UserService.GetUserSession();
-
-      if (user && user.did) {
-        let following = await ProfileService.getFollowings(user.did);
-        setListFollowing(following as IFollowingResponse);
-      }
-    } catch (e) {
-      alertError(null, 'Could not load users that you follow');
-    }
-  };
-
-  const loadUsersData = async () => {
-    let searchServiceLocal: SearchService;
-
-    let dids: string[] = [];
-
-    if (
-      listFollowers.get_followers.items &&
-      listFollowers.get_followers.items.length
-    ) {
-      dids = listFollowers.get_followers.items[0].followers.map(u => u);
-    }
-
-    try {
-      searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-      let listUsers: any = await searchServiceLocal.getUsersByDIDs(
-        dids,
-        200,
-        0
-      );
-      setFilteredUsers(listUsers.response);
-    } catch (e) {
-      setFilteredUsers({ get_users_by_dids: { items: [] } });
-      alertError(null, 'Could not load users');
-      return;
-    }
-  };
-
   useEffect(() => {
     (async () => {
-      await loadFollowersData();
+      try {
+        if (userSession && userSession.did) {
+          //Get Followers
+          let listDids = [userSession.did];
+          let followers = await ProfileService.getFollowers(
+            listDids,
+            userSession
+          );
+          setListFollowers(followers as IFollowerResponse);
+        }
+      } catch (e) {
+        alertError(null, 'Could not retrieve your followers');
+      }
+
+      try {
+        if (userSession && userSession.did) {
+          let following = await ProfileService.getFollowings(
+            userSession.did,
+            userSession
+          );
+          setListFollowing(following as IFollowingResponse);
+        }
+      } catch (e) {
+        alertError(null, 'Could not load users that you follow');
+      }
     })();
-  }, []);
+  }, [userSession, userSession.did]);
 
   useEffect(() => {
     (async () => {
-      let user = UserService.GetUserSession();
-
-      if (user && user.did) {
-        setFollowersCount(getFollowersCount(user.did));
+      if (userSession && userSession.did) {
+        setFollowersCount(getFollowersCount(userSession.did));
       }
-      await loadUsersData();
+
+      let searchServiceLocal: SearchService;
+      let dids: string[] = [];
+      if (
+        listFollowers.get_followers.items &&
+        listFollowers.get_followers.items.length
+      ) {
+        dids = listFollowers.get_followers.items[0].followers.map(u => u);
+      }
+
+      try {
+        searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
+        let listUsers: any = await searchServiceLocal.getUsersByDIDs(
+          dids,
+          200,
+          0
+        );
+        setFilteredUsers(listUsers.response);
+      } catch (e) {
+        setFilteredUsers({ get_users_by_dids: { items: [] } });
+        alertError(null, 'Could not load users');
+        return;
+      }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listFollowers]);

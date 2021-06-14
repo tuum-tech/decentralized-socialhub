@@ -1,19 +1,15 @@
-/**
- * Page
- */
-import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { createStructuredSelector } from 'reselect';
-import injector from 'src/baseplate/injectorWrap';
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
-import { incrementAction, getSimpleAjax } from './actions';
 import React, { memo } from 'react';
-import style from './style.module.scss';
-import { NameSpace } from './constants';
-import reducer from './reducer';
-import saga from './saga';
+import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
+
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
+
+import style from './style.module.scss';
+
 import Logo from 'src/components/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import FollowingSearch from './components/FollowingSearch';
@@ -32,7 +28,7 @@ const FollowingsPage: React.FC<InferMappedProps> = ({
               <LeftSideMenu />
             </IonCol>
             <IonCol size="10" className={style['right-panel']}>
-              <FollowingSearch />
+              <FollowingSearch userSession={props.session} />
             </IonCol>
           </IonRow>
         </IonGrid>
@@ -41,39 +37,17 @@ const FollowingsPage: React.FC<InferMappedProps> = ({
   );
 };
 
-/** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg()
+  session: makeSelectSession()
 });
 
-/** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
   return {
     eProps: {
-      // eProps - Emitter proptypes thats binds to dispatch
-      /** dispatch for counter to increment */
-      onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax())
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
     }
   };
 }
 
-/**
- * Injects prop and saga bindings done via
- * useInjectReducer & useInjectSaga
- */
-const withInjectedMode = injector(FollowingsPage, {
-  key: NameSpace,
-  reducer,
-  saga
-});
-
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
-
-export default compose(
-  withConnect,
-  memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>;
-
-// export default Tab1;
+export default connect(mapStateToProps, mapDispatchToProps)(FollowingsPage);

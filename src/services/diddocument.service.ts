@@ -110,14 +110,9 @@ export class DidDocumentService {
   }
 
   static async publishUserDocument(
-    diddocument: any
+    diddocument: any,
+    userSession: ISessionItem
   ): Promise<IDIDDocumentState | undefined> {
-    let userSession = UserService.GetUserSession();
-    if (!userSession) {
-      // alertError(null, 'User is not logged in');
-      return;
-    }
-
     let userDid = await DidService.loadDid(userSession.mnemonics);
     let signedDocument = DidService.sealDIDDocument(userDid, diddocument);
 
@@ -142,13 +137,9 @@ export class DidDocumentService {
     return documentState;
   }
 
-  static async reloadUserDocument(): Promise<IDIDDocumentState | undefined> {
-    let userSession = UserService.GetUserSession();
-    if (!userSession) {
-      alertError(null, 'User is not logged in');
-      return;
-    }
-
+  static async reloadUserDocument(
+    userSession: ISessionItem
+  ): Promise<IDIDDocumentState | undefined> {
     let documentState = await this.loadFromBlockchain(userSession.did);
     this.setDocumentState(documentState);
 

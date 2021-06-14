@@ -14,10 +14,13 @@ import style from './style.module.scss';
 import TextInput from 'src/components/inputs/TextInput';
 import TextareaInput from 'src/components/inputs/TextareaInput';
 import { Button } from 'src/components/buttons';
-import { UserService } from 'src/services/user.service';
 import { showNotify } from 'src/utils/notify';
 
-const SettingsContact: React.FC = () => {
+interface Props {
+  useSession: ISessionItem;
+}
+
+const SettingsContact: React.FC<Props> = ({ useSession }: Props) => {
   const formRef: any = React.createRef();
 
   const [subject, setSubject] = useState('');
@@ -25,9 +28,9 @@ const SettingsContact: React.FC = () => {
 
   const send = async () => {
     const userinfo = {
-      name: UserService.GetUserSession()?.name,
-      did: UserService.GetUserSession()?.did,
-      email: UserService.GetUserSession()?.loginCred?.email
+      name: useSession.name,
+      did: useSession.did,
+      email: useSession.loginCred?.email
     };
     const bodyContact = {
       subject: `[Contact Us] - ${subject}`,

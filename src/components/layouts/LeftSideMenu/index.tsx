@@ -1,17 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { IonContent, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react';
 
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import { InferMappedProps, SubState } from './types';
+
 import { UserService } from 'src/services/user.service';
-import { defaultUserInfo } from 'src/services/profile.service';
 
 import style from './style.module.scss';
 
-const LeftSideMenu: React.FC = _ => {
+const LeftSideMenu: React.FC<InferMappedProps> = ({
+  eProps,
+  ...props
+}: InferMappedProps) => {
   const history = useHistory();
-  const [userInfo] = useState<ISessionItem>(
-    UserService.GetUserSession() || defaultUserInfo
-  );
 
   return (
     <IonContent>
@@ -54,7 +60,7 @@ const LeftSideMenu: React.FC = _ => {
             </IonLabel>
           </IonItem>
           <IonItem
-            disabled={userInfo.tutorialStep !== 4}
+            disabled={props.session.tutorialStep !== 4}
             className={
               // active === 'connections-followers' ||
               // active === 'connections-followings'
@@ -70,14 +76,14 @@ const LeftSideMenu: React.FC = _ => {
               src="../../assets/icon_connections.svg"
               className={style['img']}
               title={
-                userInfo.tutorialStep === 4
+                props.session.tutorialStep === 4
                   ? ''
                   : 'Please complete the tutorial to access your Connections'
               }
             ></IonIcon>
             <IonLabel
               title={
-                userInfo.tutorialStep === 4
+                props.session.tutorialStep === 4
                   ? ''
                   : 'Please complete the tutorial to access your Connections'
               }
@@ -234,4 +240,18 @@ const LeftSideMenu: React.FC = _ => {
   );
 };
 
-export default LeftSideMenu;
+// export default LeftSideMenu;
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LeftSideMenu);

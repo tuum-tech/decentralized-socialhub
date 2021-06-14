@@ -1,12 +1,14 @@
+import React from 'react';
 import { IonPage, IonButton } from '@ionic/react';
+
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import React from 'react';
-import style from './style.module.scss';
 
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
+
+import style from './style.module.scss';
 
 const SimplePage: React.FC<InferMappedProps> = ({
   eProps,

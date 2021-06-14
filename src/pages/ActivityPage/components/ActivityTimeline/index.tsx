@@ -141,7 +141,11 @@ const ActivityRow: React.FC<IActivityRowData> = props => {
     </IonItem>
   );
 };
-const ActivityTimeline: React.FC = () => {
+
+interface Props {
+  session: ISessionItem;
+}
+const ActivityTimeline: React.FC<Props> = ({ session }: Props) => {
   const perPage = 10;
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
@@ -153,7 +157,7 @@ const ActivityTimeline: React.FC = () => {
   const setTimerForActivity = useCallback(() => {
     const timer = setTimeout(async () => {
       // await refreshActivities();
-      let _activities = await ProfileService.getActivity();
+      let _activities = await ProfileService.getActivity(session);
       _activities.sort(
         (a: any, b: any) => (b as any).createdAt - (a as any).createdAt
       );
@@ -186,7 +190,7 @@ const ActivityTimeline: React.FC = () => {
     _activities.forEach(async (_activity: any) => {
       if (!_activity.read) {
         _activity.read = true;
-        await ProfileService.updateActivity(_activity);
+        await ProfileService.updateActivity(_activity, session);
       }
     });
   }, [activities]);
@@ -249,7 +253,7 @@ const ActivityTimeline: React.FC = () => {
                   zIndex={group.list.length - index}
                   onRead={async () => {
                     activity.read = true;
-                    await ProfileService.updateActivity(activity);
+                    await ProfileService.updateActivity(activity, session);
                   }}
                   key={index}
                 />
