@@ -31,15 +31,14 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({
   eProps,
   ...props
 }: TutorialComponentProps) => {
-  const { session } = props;
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [mnemonics] = useState<string[]>(session.mnemonics.split(' '));
+  const [mnemonics] = useState<string[]>(props.session.mnemonics.split(' '));
 
   useEffect(() => {
     if (step === 0) {
-      if (session && session.tutorialStep) {
-        setStep(session.tutorialStep);
+      if (props.session && props.session.tutorialStep) {
+        setStep(props.session.tutorialStep);
       } else {
         setStep(1);
       }
@@ -49,16 +48,15 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({
 
   const nextStep = async () => {
     setLoading(true);
-    let newSession = JSON.parse(JSON.stringify(session));
+    let newSession = JSON.parse(JSON.stringify(props.session));
 
     if (step !== 4 && newSession) {
       newSession.tutorialStep = step + 1;
       if (newSession.tutorialStep === 4) {
         newSession.badges!.account!.beginnerTutorial.archived = new Date().getTime();
       }
-      eProps.setSession({
-        session: await UserService.updateSession(newSession)
-      });
+      const updatedSession = await UserService.updateSession(newSession);
+      eProps.setSession({ session: updatedSession });
       setStep(step + 1);
     } else {
       props.onClose();
@@ -75,11 +73,13 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({
 
   const stepComponent = () => {
     if (step === 1)
-      return <TutorialStep1Component session={session} onContinue={nextStep} />;
+      return (
+        <TutorialStep1Component session={props.session} onContinue={nextStep} />
+      );
     if (step === 2)
       return (
         <TutorialStep2Component
-          session={session}
+          session={props.session}
           onContinue={nextStep}
           mnemonics={mnemonics}
         />
@@ -87,12 +87,14 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({
     if (step === 3)
       return (
         <TutorialStep3Component
-          session={session}
+          session={props.session}
           onContinue={nextStep}
           setLoading={setLoading}
         />
       );
-    return <TutorialStep4Component session={session} onContinue={nextStep} />;
+    return (
+      <TutorialStep4Component session={props.session} onContinue={nextStep} />
+    );
   };
 
   return (

@@ -16,7 +16,6 @@ import SelectInput from 'src/components/inputs/SelectInput';
 import TextareaInput from 'src/components/inputs/TextareaInput';
 import FileInput from 'src/components/inputs/FileInput';
 import { Button } from 'src/components/buttons';
-import { UserService } from 'src/services/user.service';
 import { showNotify } from 'src/utils/notify';
 
 interface Props {

@@ -2,7 +2,6 @@ import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/S
 import { HiveClient } from '@elastos/elastos-hive-js-sdk';
 
 import { HiveService } from './hive.service';
-import { UserService } from './user.service';
 import { getItemsFromData } from '../utils/script';
 
 export interface IUniversitiesResponse {

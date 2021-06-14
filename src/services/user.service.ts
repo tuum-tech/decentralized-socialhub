@@ -183,8 +183,10 @@ export class UserService {
     }
 
     this.lockUser(this.key(newSessionItem.did), newSessionItem);
-    await UserVaultScriptService.register(newSessionItem);
 
+    if (newSessionItem && newSessionItem.did !== '') {
+      return await UserVaultScriptService.register(newSessionItem);
+    }
     return newSessionItem;
   }
 
@@ -417,10 +419,7 @@ export class UserService {
     this.lockUser(this.key(did), sessionItem);
 
     window.localStorage.setItem('isLoggedIn', 'true');
-    // window.localStorage.setItem(
-    //   'session_instance',
-    //   JSON.stringify(sessionItem, null, '')
-    // );
+
     return sessionItem;
   }
 
@@ -428,13 +427,14 @@ export class UserService {
     sessionItem: ISessionItem,
     notifyUser: boolean = false
   ): Promise<ISessionItem> {
-    console.log('====>updateSession', sessionItem.userToken);
     let newSessionItem = sessionItem;
     const userData = await UserService.SearchUserWithDID(sessionItem.did);
     if (userData && userData.code) {
       newSessionItem.code = userData.code;
+      if (userData.userToken) {
+        newSessionItem.userToken = userData.userToken;
+      }
     }
-
     const res: any = await TuumTechScriptService.updateTuumUser(newSessionItem);
     this.lockUser(this.key(sessionItem.did), newSessionItem);
 
@@ -456,9 +456,7 @@ export class UserService {
       this.lockUser(this.key(instance.did), instance);
 
       window.localStorage.setItem('isLoggedIn', 'true');
-
-      await UserVaultScriptService.register(instance);
-      return instance;
+      return await UserVaultScriptService.register(instance);
     }
     return null;
   }
@@ -466,7 +464,6 @@ export class UserService {
   public static async logout() {
     // SessionService.Logout();
     window.sessionStorage.clear();
-    // window.localStorage.removeItem('session_instance');
     window.localStorage.removeItem('isLoggedIn');
     window.location.href = '/create-profile';
   }

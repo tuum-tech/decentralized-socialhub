@@ -44,7 +44,7 @@ const ExploreConnnections: React.FC<Props> = ({ did, session }) => {
       }
       setConnectedDids(fUserDids);
     })();
-  }, [did]);
+  }, [did, session]);
 
   return (
     <>

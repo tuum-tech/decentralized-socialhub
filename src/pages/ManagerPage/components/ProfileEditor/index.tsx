@@ -52,16 +52,14 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
 
   const setTimer = () => {
     const timer = setTimeout(async () => {
-      await refreshDidDocument();
+      // refresh DID document
+      let documentState = await DidDocumentService.getUserDocument(session);
+      setDidDocument(documentState.diddocument);
+
       if (session.userToken) setUserInfo(session);
       setTimer();
     }, 1000);
     return () => clearTimeout(timer);
-  };
-
-  const refreshDidDocument = async () => {
-    let documentState = await DidDocumentService.getUserDocument(session);
-    setDidDocument(documentState.diddocument);
   };
 
   useEffect(() => {

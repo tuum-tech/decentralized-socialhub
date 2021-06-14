@@ -1,8 +1,6 @@
-import { alertError } from 'src/utils/notify';
 import { AssistService } from './assist.service';
 import { DidService, PublishRequestOperation } from './did.service';
 import { EventsService, IEventCallback } from './events.service';
-import { UserService } from './user.service';
 export interface IDIDDocumentState {
   diddocument: any;
   isChanged: boolean;

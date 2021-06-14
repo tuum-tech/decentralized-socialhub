@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
 
 import { connect } from 'react-redux';

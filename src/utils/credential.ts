@@ -1,5 +1,4 @@
 import { DidDocumentService } from 'src/services/diddocument.service';
-import { UserService } from 'src/services/user.service';
 
 interface VerifiedCredential {
   value: string;

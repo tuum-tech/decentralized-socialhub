@@ -29,7 +29,8 @@ import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState, LocationState } from './types';
+import { SubState } from 'src/store/users/types';
+import { InferMappedProps, LocationState } from './types';
 
 const ErrorText = styled(Text16)`
   text-align: center;

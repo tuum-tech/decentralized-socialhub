@@ -8,7 +8,6 @@ import { HiveService } from 'src/services/hive.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { ProfileService } from 'src/services/profile.service';
 import { UserVaultScripts } from 'src/scripts/uservault.script';
-import { UserVaultScriptService } from 'src/services/script.service';
 
 import { connect } from 'react-redux';
 import { InferMappedProps } from '../../../types';
@@ -137,12 +136,10 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       //   await DidDocumentService.publishUserDocument(userDocument);
       // }
 
-      eProps.setSession({
-        session: await UserService.updateSession(newSession)
-      });
+      const updatedSession = await UserService.updateSession(newSession);
+      eProps.setSession({ session: updatedSession });
 
       let hiveInstance = await HiveService.getSessionInstance(newSession);
-
       await UserVaultScripts.Execute(hiveInstance!);
       let activities = await ProfileService.getActivity(newSession);
       activities.push({
@@ -263,12 +260,9 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
 
           <div className={style['tutorial-hive-row']}>
             <IonRadio value="tuum"></IonRadio>
-
             <div className={style['tutorial-hive-item']}>
               <img alt="tuum logo" src={tuumlogo} />
-
               <h2>Tuum Tech</h2>
-
               <VersionTag>{tuumHiveVersion}</VersionTag>
             </div>
           </div>

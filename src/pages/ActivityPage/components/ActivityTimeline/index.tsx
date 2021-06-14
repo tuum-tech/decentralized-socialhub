@@ -166,7 +166,7 @@ const ActivityTimeline: React.FC<Props> = ({ session }: Props) => {
       setTimerForActivity();
     }, 1000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [session]);
 
   useEffect(() => {
     setTimerForActivity();
@@ -193,7 +193,7 @@ const ActivityTimeline: React.FC<Props> = ({ session }: Props) => {
         await ProfileService.updateActivity(_activity, session);
       }
     });
-  }, [activities]);
+  }, [session, activities]);
 
   useEffect(() => {
     let groups: any[] = [];
@@ -264,7 +264,7 @@ const ActivityTimeline: React.FC<Props> = ({ session }: Props) => {
       );
     });
     setActivityGroupComponents(_activityGroupComponents);
-  }, [pageOffset, activities, handleMarkAllAsRead]);
+  }, [pageOffset, activities, handleMarkAllAsRead, session]);
 
   return (
     <IonCard className={style['timeline-card']}>

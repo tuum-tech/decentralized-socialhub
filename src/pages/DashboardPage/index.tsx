@@ -277,8 +277,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
             onBoardingCompleted: true
           };
 
-          // await eProps.setSession({ session });
-          // session: await UserService.updateSession(newSession);
           eProps.setSession({
             session: await UserService.updateSession(session)
           });
@@ -343,12 +341,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
         >
           <TutorialComponent
             onClose={() => {
-              // if (props.session && props.session.did !== '') {
-              //   setUserInfo(props.session);
-              // }
-              // eProps.setSession({
-              //   session: await UserService.updateSession(newSession)
-              // });
               setShowTutorial(false);
             }}
             session={props.session}
