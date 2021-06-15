@@ -9,6 +9,7 @@ import { makeSelectSession } from 'src/store/users/selectors';
 import { SubState, InferMappedProps } from './types';
 import { setSession } from 'src/store/users/actions';
 
+import { ProfileService } from 'src/services/profile.service';
 import Logo from 'src/components/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 

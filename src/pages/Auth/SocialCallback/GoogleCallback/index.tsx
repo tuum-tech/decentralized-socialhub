@@ -32,7 +32,6 @@ import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service';
 
-// const GoogleCallback: React.FC<RouteComponentProps> = props => {
 interface PageProps
   extends InferMappedProps,
     RouteComponentProps<{}, StaticContext, LocationState> {}

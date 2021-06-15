@@ -3,7 +3,6 @@ import { RouteComponentProps } from 'react-router';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import { ProfileService } from 'src/services/profile.service';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
@@ -11,6 +10,7 @@ import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
+import { ProfileService } from 'src/services/profile.service';
 import { FollowService } from 'src/services/follow.service';
 import ViewAllFollowModal from 'src/components/follow/ViewAllFollowModal';
 import LoadingIndicator from 'src/components/LoadingIndicator';

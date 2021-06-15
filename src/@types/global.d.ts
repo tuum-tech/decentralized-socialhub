@@ -298,3 +298,15 @@ interface ICreateUserResponse {
     did: string;
   };
 }
+
+interface PublicProfileResponse {
+  _status: string;
+  get_public_fields: {
+    items?:
+      | {
+          did: string;
+          fields: string[];
+        }[]
+      | null;
+  };
+}

@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
 import { StaticContext, RouteComponentProps, useHistory } from 'react-router';
+
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import { InferMappedProps, LocationState, UserSessionProp } from './types';
+import { SubState } from 'src/store/users/types';
 
 import { UserService } from 'src/services/user.service';
 import PageLoading from 'src/components/layouts/PageLoading';
 import { AccountType } from 'src/services/user.service';
-import SetPassword from '../components/SetPassword';
 
-import { InferMappedProps, LocationState, UserSessionProp } from './types';
+import SetPassword from '../components/SetPassword';
 import { getUsersWithRegisteredEmail } from './fetchapi';
-import { setSession } from 'src/store/users/actions';
 
 interface PageProps
   extends InferMappedProps,
@@ -83,6 +88,10 @@ const GenerateDidPage: React.FC<PageProps> = ({
   return <PageLoading />;
 };
 
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
 export function mapDispatchToProps(dispatch: any) {
   return {
     eProps: {
@@ -92,4 +101,4 @@ export function mapDispatchToProps(dispatch: any) {
   };
 }
 
-export default connect(mapDispatchToProps)(GenerateDidPage);
+export default connect(mapStateToProps, mapDispatchToProps)(GenerateDidPage);

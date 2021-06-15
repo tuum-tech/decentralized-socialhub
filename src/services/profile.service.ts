@@ -55,9 +55,8 @@ export class ProfileService {
     return fields;
   }
 
-  static async updatePublicFields(fields: string[]) {
-    const userSession = UserService.GetUserSession();
-    const hiveInstance = await HiveService.getSessionInstance();
+  static async updatePublicFields(fields: string[], userSession: ISessionItem) {
+    const hiveInstance = await HiveService.getSessionInstance(userSession);
     if (userSession && hiveInstance) {
       const res: any = await hiveInstance.Scripting.RunScript({
         name: 'set_public_fields',

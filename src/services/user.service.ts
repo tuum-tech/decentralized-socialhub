@@ -462,9 +462,8 @@ export class UserService {
   }
 
   public static async logout() {
-    // SessionService.Logout();
-    window.sessionStorage.clear();
     window.localStorage.removeItem('isLoggedIn');
+    window.localStorage.removeItem('persist:root');
     window.location.href = '/create-profile';
   }
 }
