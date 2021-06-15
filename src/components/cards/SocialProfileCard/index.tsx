@@ -58,7 +58,7 @@ const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
         }
         if (loginCred.github) {
           let vc = await DidcredsService.generateVerifiableCredential(
-            sessionItem.did,
+            props.session.did,
             CredentialType.Github,
             loginCred.github
           );
@@ -66,7 +66,7 @@ const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
         }
         if (loginCred.discord) {
           let vc = await DidcredsService.generateVerifiableCredential(
-            sessionItem.did,
+            props.session.did,
             CredentialType.Discord,
             loginCred.discord
           );
