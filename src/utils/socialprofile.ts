@@ -74,6 +74,22 @@ export const checkLoginCredFromSession = async (
       );
       vcs.push(vc);
     }
+    if (loginCred.github) {
+      let vc = await DidcredsService.generateVerifiableCredential(
+        sessionItem.did,
+        CredentialType.Github,
+        loginCred.github
+      );
+      vcs.push(vc);
+    }
+    if (loginCred.discord) {
+      let vc = await DidcredsService.generateVerifiableCredential(
+        sessionItem.did,
+        CredentialType.Discord,
+        loginCred.discord
+      );
+      vcs.push(vc);
+    }
     return {
       hasSocial: vcs.length > 0,
       doc: {

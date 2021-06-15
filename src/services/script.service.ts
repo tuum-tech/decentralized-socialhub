@@ -74,6 +74,14 @@ export class TuumTechScriptService {
               userItem,
               'linkedin'
             ),
+            github: TuumTechScriptService.getValueFromLoginCred(
+              userItem,
+              'github'
+            ),
+            discord: TuumTechScriptService.getValueFromLoginCred(
+              userItem,
+              'discord'
+            ),
             _id: userItem._id.$oid || ''
           };
           return newUserItem;
@@ -124,6 +132,20 @@ export class TuumTechScriptService {
     return TuumTechScriptService.getUsersWithRegisteredCredential(
       linkedin,
       'linkedin'
+    );
+  }
+
+  public static async getUsersWithRegisteredGithub(github: string) {
+    return TuumTechScriptService.getUsersWithRegisteredCredential(
+      github,
+      'github'
+    );
+  }
+
+  public static async getUsersWithRegisteredDiscord(discord: string) {
+    return TuumTechScriptService.getUsersWithRegisteredCredential(
+      discord,
+      'discord'
     );
   }
 

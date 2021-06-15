@@ -49,6 +49,12 @@ export const retrieveDocInfo = async (
         if (cv.credentialSubject && cv.credentialSubject.linkedin) {
           loginCred.linkedin = cv.credentialSubject.linkedin;
         }
+        if (cv.credentialSubject && cv.credentialSubject.github) {
+          loginCred.github = cv.credentialSubject.github;
+        }
+        if (cv.credentialSubject && cv.credentialSubject.discord) {
+          loginCred.discord = cv.credentialSubject.discord;
+        }
         if (
           cv.credentialSubject &&
           cv.credentialSubject.avatar &&

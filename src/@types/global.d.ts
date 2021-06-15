@@ -99,6 +99,8 @@ interface LoginCred {
   google?: string;
   twitter?: string;
   facebook?: string;
+  github?: string;
+  discord?: string;
   email?: string;
 }
 
@@ -182,6 +184,8 @@ interface SocialBadgeItem {
   facebook: BadgeArchiveModel;
   twitter: BadgeArchiveModel;
   google: BadgeArchiveModel;
+  github: BadgeArchiveModel;
+  discord: BadgeArchiveModel;
   email: BadgeArchiveModel;
   phone: BadgeArchiveModel;
 }

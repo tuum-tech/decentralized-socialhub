@@ -5,6 +5,8 @@ export enum CredentialType {
   Facebook = 'Facebook',
   Google = 'Google',
   Twitter = 'Twitter',
+  Github = 'Github',
+  Discord = 'Discord',
   Email = 'Email',
   DID = 'Did'
 }
@@ -66,6 +68,32 @@ export class DidcredsService {
   static async requestFacebookLogin(): Promise<BaseplateResp> {
     return request(
       `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/facebook_request`,
+      {
+        headers: {
+          'content-type': 'text/plain',
+          Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
+          Accept: 'application/json'
+        }
+      }
+    );
+  }
+
+  static async requestGithubLogin(): Promise<BaseplateResp> {
+    return request(
+      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/github_request`,
+      {
+        headers: {
+          'content-type': 'text/plain',
+          Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
+          Accept: 'application/json'
+        }
+      }
+    );
+  }
+
+  static async requestDiscordLogin(): Promise<BaseplateResp> {
+    return request(
+      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/discord_request`,
       {
         headers: {
           'content-type': 'text/plain',

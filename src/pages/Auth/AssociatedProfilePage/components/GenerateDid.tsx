@@ -14,6 +14,8 @@ interface Props {
     | AccountType.Facebook
     | AccountType.Google
     | AccountType.Twitter
+    | AccountType.Github
+    | AccountType.Discord
     | AccountType.Email;
 }
 

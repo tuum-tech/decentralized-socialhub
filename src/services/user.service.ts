@@ -18,6 +18,8 @@ export enum AccountType {
   Linkedin = 'Linkedin',
   Facebook = 'Facebook',
   Google = 'Google',
+  Github = 'Github',
+  Discord = 'Discord',
   Twitter = 'Twitter',
   Email = 'Email'
 }
@@ -289,6 +291,12 @@ export class UserService {
           google: {
             archived: false
           },
+          github: {
+            archived: false
+          },
+          discord: {
+            archived: false
+          },
           email: {
             archived: false
           },
@@ -356,6 +364,14 @@ export class UserService {
         sessionItem.badges!.socialVerify!.google.archived = curTime;
         messages.push('You received a Google verfication badge');
       }
+      if (loginCred.github) {
+        sessionItem.badges!.socialVerify!.github.archived = curTime;
+        messages.push('You received a Github verfication badge');
+      }
+      if (loginCred.discord) {
+        sessionItem.badges!.socialVerify!.discord.archived = curTime;
+        messages.push('You received a Discord verfication badge');
+      }
     }
     if (accountType === AccountType.Email) {
       // the confirmation code for email verification is passed as credential in the email flow, we can improve that
@@ -382,6 +398,14 @@ export class UserService {
       if (accountType === AccountType.Facebook) {
         sessionItem.badges!.socialVerify!.facebook.archived = curTime;
         messages.push('You received a Facebook verfication badge');
+      }
+      if (accountType === AccountType.Github) {
+        sessionItem.badges!.socialVerify!.github.archived = curTime;
+        messages.push('You received a Github verfication badge');
+      }
+      if (accountType === AccountType.Discord) {
+        sessionItem.badges!.socialVerify!.discord.archived = curTime;
+        messages.push('You received a Discord verfication badge');
       }
       await TuumTechScriptService.addUserToTuumTech(sessionItem);
       await ProfileService.addActivity(

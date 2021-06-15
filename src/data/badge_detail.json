@@ -50,6 +50,18 @@
       "enbl_icon": "assets/badges/enbl_google_verify.svg",
       "dsabl_icon": "assets/badges/dsabl_google_verify.svg"
     },
+    "github": {
+      "title": "Github Verification",
+      "description": "Authenticate and link your Github account",
+      "enbl_icon": "assets/badges/enbl_google_verify.svg",
+      "dsabl_icon": "assets/badges/dsabl_google_verify.svg"
+    },
+    "discord": {
+      "title": "Discord Verification",
+      "description": "Authenticate and link your Discord account",
+      "enbl_icon": "assets/badges/enbl_google_verify.svg",
+      "dsabl_icon": "assets/badges/dsabl_google_verify.svg"
+    },
     "email": {
       "title": "Email Verification",
       "description": "Authenticate and link your Email account",

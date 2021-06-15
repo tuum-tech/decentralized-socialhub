@@ -12,7 +12,9 @@ export type LocationState = {
     | AccountType.Linkedin
     | AccountType.Facebook
     | AccountType.Google
-    | AccountType.Twitter;
+    | AccountType.Twitter
+    | AccountType.Github
+    | AccountType.Discord;
   did: string;
   hiveHost: string;
   isDIDPublished: boolean;

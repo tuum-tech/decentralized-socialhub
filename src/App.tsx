@@ -35,6 +35,8 @@ import {
   TwitterCallback,
   LinkedinCallback,
   FacebookCallback,
+  GithubCallback,
+  DiscordCallback,
   AssociatedProfilePage,
   CreateProfilePage,
   CreateWhyPage,
@@ -140,6 +142,8 @@ const App: React.FC = () => {
             <Route path="/linkedin_callback" component={LinkedinCallback} />
             <Route path="/google_callback" component={GoogleCallback} />
             <Route path="/facebook_callback" component={FacebookCallback} />
+            <Route path="/github_callback" component={GithubCallback} />
+            <Route path="/discord_callback" component={DiscordCallback} />
             <ProtectedRoute
               path="/set-password"
               component={CreatePasswordPage}
