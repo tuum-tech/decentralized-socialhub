@@ -4,7 +4,7 @@ import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 
 import { UserService } from 'src/services/user.service';
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 import { alertError } from 'src/utils/notify';
 import {
   OnBoardLayout,
@@ -25,7 +25,7 @@ import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState, UserType, LocationState } from './types';
 
-const SignDidPage: React.FC<RouteComponentProps<
+const SignDidPageNew: React.FC<RouteComponentProps<
   {},
   StaticContext,
   LocationState
@@ -121,7 +121,7 @@ export function mapDispatchToProps(dispatch: any) {
  * Injects prop and saga bindings done via
  * useInjectReducer & useInjectSaga
  */
-const withInjectedMode = injector(SignDidPage, {
+const withInjectedMode = injector(SignDidPageNew, {
   key: NameSpace,
   reducer,
   saga

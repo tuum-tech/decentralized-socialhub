@@ -11,6 +11,8 @@ import {
 } from './script.service';
 import { ProfileService } from './profile.service';
 
+import { container, injectable } from 'tsyringe';
+
 const CryptoJS = require('crypto-js');
 
 export enum AccountType {
@@ -43,6 +45,7 @@ export interface SignInDIDData {
   isDIDPublished: boolean;
 }
 
+@injectable()
 export class UserService {
   private static key(did: string): string {
     return `user_${did.replace('did:elastos:', '')}`;
