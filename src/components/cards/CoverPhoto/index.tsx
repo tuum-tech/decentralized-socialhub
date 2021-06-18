@@ -2,10 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import { IonCard, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import { setTimeout } from 'timers';
-import styled from 'styled-components';
 
 import { UserService } from 'src/services/user.service';
-import { defaultUserInfo } from 'src/services/profile.service';
+import { defaultUserInfo, ProfileService } from 'src/services/profile.service';
 
 import {
   CardHeaderContent,
@@ -54,6 +53,17 @@ export default function Upload() {
         coverPhoto: base64Str
       };
       await UserService.updateSession(newSession, true);
+      await ProfileService.addActivity(
+        {
+          guid: '',
+          did: newSession!.did,
+          message: 'You updated cover photo',
+          read: false,
+          createdAt: 0,
+          updatedAt: 0
+        },
+        newSession!.did
+      );
       setUserInfo(newSession);
     }
   };
