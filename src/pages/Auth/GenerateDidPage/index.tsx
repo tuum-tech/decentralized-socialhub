@@ -24,7 +24,6 @@ import {
   UserSessionProp
 } from './types';
 import { getUsersWithRegisteredEmail } from './fetchapi';
-import { container } from 'tsyringe';
 import { DidService } from 'src/services/did.service';
 
 const GenerateDidPage: React.FC<RouteComponentProps<

@@ -27,7 +27,6 @@ import facebookIcon from '../../../assets/icon/Facebook.svg';
 import googleIcon from '../../../assets/icon/Google.svg';
 import shieldIcon from '../../../assets/icon/shield.svg';
 
-import { container } from 'tsyringe';
 import { DidService } from 'src/services/did.service';
 
 interface Props {

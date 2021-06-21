@@ -3,7 +3,6 @@ import { AccountType } from 'src/services/user.service';
 
 import SetPassword from '../../components/SetPassword';
 import { UserService } from 'src/services/user.service';
-import { container } from 'tsyringe';
 import { DidService } from 'src/services/did.service';
 
 interface Props {

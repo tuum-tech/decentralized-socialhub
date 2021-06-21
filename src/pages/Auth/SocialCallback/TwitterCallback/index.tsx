@@ -13,7 +13,6 @@ import { AccountType, UserService } from 'src/services/user.service';
 
 import { requestTwitterToken, getUsersWithRegisteredTwitter } from './fetchapi';
 import { TokenResponse } from './types';
-import { container } from 'tsyringe';
 
 const TwitterCallback: React.FC<RouteComponentProps> = props => {
   /**

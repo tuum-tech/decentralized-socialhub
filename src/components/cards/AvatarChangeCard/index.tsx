@@ -5,7 +5,6 @@ import { setTimeout } from 'timers';
 
 import { UserService } from 'src/services/user.service';
 import { defaultUserInfo } from 'src/services/profile.service';
-import { container } from 'tsyringe';
 
 import {
   CardHeaderContent,

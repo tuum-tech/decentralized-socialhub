@@ -6,7 +6,6 @@ import styled from 'styled-components';
 
 import { UserService } from 'src/services/user.service';
 import { defaultUserInfo } from 'src/services/profile.service';
-import { container } from 'tsyringe';
 
 import {
   CardHeaderContent,

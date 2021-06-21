@@ -17,8 +17,6 @@ import {
 } from './script.service';
 import { ProfileService } from './profile.service';
 
-import { container, injectable } from 'tsyringe';
-
 const CryptoJS = require('crypto-js');
 
 export enum AccountType {

@@ -35,7 +35,6 @@ import DashboardContent from './components/DashboardContent';
 import OnBoarding from './components/OnBoarding';
 import DashboardHeader from './components/DashboardHeader';
 import { DidDocumentService } from 'src/services/diddocument.service';
-import { container } from 'tsyringe';
 import { DidService } from 'src/services/did.service';
 
 const TutorialModal = styled(IonModal)`

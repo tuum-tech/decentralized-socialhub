@@ -6,7 +6,6 @@ import { HiveService } from './hive.service';
 import { DidService } from './did.service';
 import { alertError } from 'src/utils/notify';
 import { getItemsFromData } from 'src/utils/script';
-import { container } from 'tsyringe';
 
 export class TuumTechScriptService {
   private static async runTuumTechScript(script: any) {

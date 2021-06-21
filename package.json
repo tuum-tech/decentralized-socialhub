@@ -3,8 +3,8 @@
   "version": "0.7.0",
   "private": true,
   "dependencies": {
-    "@elastosfoundation/did-js-sdk": "^2.0.3",
-    "@elastosfoundation/elastos-hive-js-sdk": "github:elastos/Elastos.NET.Hive.JS.SDK",
+    "@elastos/elastos-hive-js-sdk": "github:elastos/Elastos.NET.Hive.JS.SDK",
+    "@elastosfoundation/did-js-sdk": "^2.0.5",
     "@elastosfoundation/elastos-js-sdk": "^1.2.11",
     "@sentry/react": "^6.7.2",
     "@sentry/tracing": "^6.7.2",
@@ -40,7 +40,6 @@
     "reselect": "^4.0.0",
     "styled-components": "^5.3.0",
     "toastr": "^2.1.4",
-    "tsyringe": "^4.5.0",
     "typescript": "3.9.4",
     "typestyle": "^2.1.0"
   },

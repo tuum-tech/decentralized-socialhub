@@ -12,7 +12,6 @@ import TutorialStep4Component from './Steps/TutorialStep4';
 import style from './style.module.scss';
 
 import logo from '../../../../assets/logo/logo_white.svg';
-import { container } from 'tsyringe';
 import { DidService } from 'src/services/did.service';
 
 export interface TutorialComponentProps {

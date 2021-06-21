@@ -24,7 +24,6 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState, UserType, LocationState } from './types';
-import { container } from 'tsyringe';
 
 const SignDidPage: React.FC<RouteComponentProps<
   {},

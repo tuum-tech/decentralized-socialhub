@@ -1,6 +1,5 @@
 import { UserService } from '../services/user.service';
 import defaultAvatar from '../assets/icon/dp.png';
-import { container } from 'tsyringe';
 import { DidService } from 'src/services/did.service';
 
 export interface GetAvatarRes {

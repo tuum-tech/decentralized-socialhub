@@ -26,7 +26,6 @@ import keyimg from 'src/assets/icon/key.png';
 import { LocationState } from './types';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import Check from 'src/components/Check';
-import { container } from 'tsyringe';
 import { DidService } from 'src/services/did.service';
 
 const ErrorText = styled(Text16)`

@@ -13,7 +13,6 @@ import { ITutorialStepProp } from './TutorialStep1';
 import style from '../style.module.scss';
 import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
-import { container } from 'tsyringe';
 
 const VersionTag = styled.span`
   color: green;

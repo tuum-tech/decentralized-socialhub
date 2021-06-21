@@ -24,7 +24,6 @@ import { UserService } from 'src/services/user.service';
 
 import FieldDivider from '../FieldDivider';
 import SelectUsers from './SelectUsers';
-import { container } from 'tsyringe';
 import { DidService } from 'src/services/did.service';
 
 interface Props {

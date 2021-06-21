@@ -1,4 +1,4 @@
-import { HiveClient } from '@elastosfoundation/elastos-hive-js-sdk';
+import { HiveClient } from '@elastos/elastos-hive-js-sdk';
 
 export class UserVaultScripts {
   static async Execute(hiveClient: HiveClient) {

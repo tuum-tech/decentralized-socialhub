@@ -2,9 +2,8 @@ import {
   HiveClient,
   OptionsBuilder,
   IOptions
-} from '@elastosfoundation/elastos-hive-js-sdk';
+} from '@elastos/elastos-hive-js-sdk';
 import jwt_decode from 'jwt-decode';
-import { container } from 'tsyringe';
 
 import { DidService } from './did.service';
 import { DidDocumentService } from './diddocument.service';

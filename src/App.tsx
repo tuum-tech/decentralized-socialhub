@@ -1,5 +1,4 @@
 import React from 'react';
-import 'reflect-metadata';
 
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { IonApp, IonRouterOutlet } from '@ionic/react';
@@ -68,8 +67,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
-
-import { container, injectable } from 'tsyringe';
 
 const StyledToastContainer = styled(ToastContainer)`
   & .Toastify__toast-body {

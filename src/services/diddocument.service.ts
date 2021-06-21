@@ -1,5 +1,4 @@
 import { alertError } from 'src/utils/notify';
-import { container } from 'tsyringe';
 import { AssistService } from './assist.service';
 import { DidService, PublishRequestOperation } from './did.service';
 import { EventsService, IEventCallback } from './events.service';

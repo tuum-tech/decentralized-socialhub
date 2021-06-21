@@ -1,4 +1,4 @@
-import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/Services/Scripting.Service';
+import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 import {
   BasicProfileResponse,
   EducationProfileResponse,
@@ -14,7 +14,7 @@ import { DidDocumentService } from './diddocument.service';
 import { HiveService } from './hive.service';
 import { UserService } from './user.service';
 import { Guid } from 'guid-typescript';
-import { container } from 'tsyringe';
+
 import { DidService } from './did.service';
 
 export class ProfileService {
