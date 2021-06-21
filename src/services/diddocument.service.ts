@@ -1,4 +1,5 @@
 import { alertError } from 'src/utils/notify';
+import { container } from 'tsyringe';
 import { AssistService } from './assist.service';
 import { DidService, PublishRequestOperation } from './did.service';
 import { EventsService, IEventCallback } from './events.service';
@@ -58,7 +59,8 @@ export class DidDocumentService {
   }
 
   static async isDidDocumentPublished(did: string): Promise<boolean> {
-    let documentOnBlockchain = await DidService.getDidDocument(did);
+    let didService = new DidService();
+    let documentOnBlockchain = await didService.getDidDocument(did);
 
     return documentOnBlockchain;
   }
@@ -84,7 +86,8 @@ export class DidDocumentService {
   private static async loadFromBlockchain(
     did: string
   ): Promise<IDIDDocumentState> {
-    let documentOnBlockchain = await DidService.getDidDocument(did, false);
+    let didService = new DidService();
+    let documentOnBlockchain = await didService.getDidDocument(did, false);
     if (documentOnBlockchain) {
       let documentState = {
         diddocument: documentOnBlockchain,
@@ -117,16 +120,16 @@ export class DidDocumentService {
       // alertError(null, 'User is not logged in');
       return;
     }
-
-    let userDid = await DidService.loadDid(userSession.mnemonics);
-    let signedDocument = DidService.sealDIDDocument(userDid, diddocument);
+    let didService = new DidService();
+    let userDid = await didService.loadDid(userSession.mnemonics);
+    let signedDocument = didService.sealDIDDocument(userDid, diddocument);
 
     if (!signedDocument['proof']) {
       // alertError(null, 'The DID document was not signed');
       return;
     }
 
-    let requestPub = await DidService.generatePublishRequest(
+    let requestPub = await didService.generatePublishRequest(
       signedDocument,
       userDid,
       PublishRequestOperation.Update

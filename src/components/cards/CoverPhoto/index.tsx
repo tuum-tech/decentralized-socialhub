@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 import { UserService } from 'src/services/user.service';
 import { defaultUserInfo } from 'src/services/profile.service';
+import { container } from 'tsyringe';
 
 import {
   CardHeaderContent,
@@ -21,6 +22,7 @@ import {
   Perfil
 } from './upload';
 import styleWidget from '../WidgetCards.module.scss';
+import { DidService } from 'src/services/did.service';
 
 export default function Upload() {
   const [userInfo, setUserInfo] = useState<ISessionItem>(defaultUserInfo);
@@ -53,7 +55,10 @@ export default function Upload() {
         ...userInfo,
         coverPhoto: base64Str
       };
-      await UserService.updateSession(newSession, true);
+
+      let userService = new UserService(new DidService());
+      await userService.updateSession(newSession, true);
+
       setUserInfo(newSession);
     }
   };

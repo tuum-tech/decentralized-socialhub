@@ -26,6 +26,8 @@ import keyimg from 'src/assets/icon/key.png';
 import { LocationState } from './types';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import Check from 'src/components/Check';
+import { container } from 'tsyringe';
+import { DidService } from 'src/services/did.service';
 
 const ErrorText = styled(Text16)`
   text-align: center;
@@ -127,7 +129,9 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
   const afterPasswordSet = async () => {
     if (!session) return;
     setLoading(true);
-    await UserService.LockWithDIDAndPwd(session, password);
+
+    let userService = new UserService(new DidService());
+    await userService.LockWithDIDAndPwd(session, password);
     window.location.href = '/profile';
     setLoading(false);
   };

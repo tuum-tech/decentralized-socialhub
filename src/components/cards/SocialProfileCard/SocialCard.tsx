@@ -27,6 +27,9 @@ import facebookIcon from '../../../assets/icon/Facebook.svg';
 import googleIcon from '../../../assets/icon/Google.svg';
 import shieldIcon from '../../../assets/icon/shield.svg';
 
+import { container } from 'tsyringe';
+import { DidService } from 'src/services/did.service';
+
 interface Props {
   diddocument: any;
   showManageButton: boolean;
@@ -274,7 +277,10 @@ const SocialProfilesCard: React.FC<Props> = ({
       ...userSession,
       loginCred: newLoginCred
     } as ISessionItem;
-    await UserService.updateSession(newUserSession);
+
+    let userService = new UserService(new DidService());
+    await userService.updateSession(newUserSession);
+
     // ===== temporary codes end =====
   };
 

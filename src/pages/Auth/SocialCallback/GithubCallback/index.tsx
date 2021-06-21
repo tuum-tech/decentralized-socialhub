@@ -14,6 +14,7 @@ import { DidService } from 'src/services/did.service';
 import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
+import { container } from 'tsyringe';
 
 const GithubCallback: React.FC<RouteComponentProps> = props => {
   /**
@@ -35,6 +36,7 @@ const GithubCallback: React.FC<RouteComponentProps> = props => {
   let code: string =
     new URLSearchParams(props.location.search).get('code') || '';
 
+  let didService = new DidService();
   useEffect(() => {
     (async () => {
       if (code !== '' && credentials.loginCred.github === '') {
@@ -53,7 +55,7 @@ const GithubCallback: React.FC<RouteComponentProps> = props => {
 
           let state = await DidDocumentService.getUserDocument(userSession);
 
-          await DidService.addVerfiableCredentialToDIDDocument(
+          await didService.addVerfiableCredentialToDIDDocument(
             state.diddocument,
             vc
           );
@@ -75,7 +77,8 @@ const GithubCallback: React.FC<RouteComponentProps> = props => {
               userSession.did
             );
           }
-          await UserService.updateSession(userSession);
+          let userService = new UserService(new DidService());
+          await userService.updateSession(userSession);
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredGithub(github);

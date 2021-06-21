@@ -17,6 +17,7 @@ import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service';
+import { container } from 'tsyringe';
 
 const GoogleCallback: React.FC<RouteComponentProps> = props => {
   /**
@@ -44,6 +45,7 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
   let state: string =
     new URLSearchParams(props.location.search).get('state') || '';
 
+  let didService = new DidService();
   useEffect(() => {
     (async () => {
       if (code !== '' && state !== '' && credentials.loginCred.google === '') {
@@ -59,7 +61,7 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
           );
           let state = await DidDocumentService.getUserDocument(userSession);
 
-          await DidService.addVerfiableCredentialToDIDDocument(
+          await didService.addVerfiableCredentialToDIDDocument(
             state.diddocument,
             vc
           );
@@ -80,7 +82,8 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
               userSession.did
             );
           }
-          await UserService.updateSession(userSession);
+          let userService = new UserService(new DidService());
+          await userService.updateSession(userSession);
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredGoogle(googleId.email);

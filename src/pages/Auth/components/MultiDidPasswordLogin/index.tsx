@@ -24,6 +24,8 @@ import { UserService } from 'src/services/user.service';
 
 import FieldDivider from '../FieldDivider';
 import SelectUsers from './SelectUsers';
+import { container } from 'tsyringe';
+import { DidService } from 'src/services/did.service';
 
 interface Props {
   changeMode: () => void;
@@ -108,7 +110,10 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
                 return;
               }
               setLoading('Signing now...');
-              const res = await UserService.UnLockWithDIDAndPwd(did, password);
+
+              let userService = new UserService(new DidService());
+
+              const res = await userService.UnLockWithDIDAndPwd(did, password);
               if (res) {
                 window.location.href = '/profile';
               }

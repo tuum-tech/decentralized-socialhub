@@ -24,6 +24,7 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState, UserType, LocationState } from './types';
+import { container } from 'tsyringe';
 
 const SignDidPage: React.FC<RouteComponentProps<
   {},
@@ -48,6 +49,8 @@ const SignDidPage: React.FC<RouteComponentProps<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  let didService = new DidService();
+
   return (
     <OnBoardLayout className={style['did-signin']}>
       {loading && <LoadingIndicator loadingText="Signing Now..." />}
@@ -56,11 +59,11 @@ const SignDidPage: React.FC<RouteComponentProps<
       <OnBoardLayoutRight>
         <DidSignForm
           showModal={() => setShowHelp(true)}
-          loadDidFunction={DidService.loadDid}
+          loadDidFunction={didService.loadDid}
           error={error}
           setError={setError}
           onSuccess={async (uDid: string, mnemonic: string) => {
-            const isDidPublished = await DidService.isDIDPublished(uDid);
+            const isDidPublished = await didService.isDIDPublished(uDid);
             if (!isDidPublished) {
               alertError(
                 null,
@@ -68,7 +71,8 @@ const SignDidPage: React.FC<RouteComponentProps<
               );
             } else {
               setLoading(true);
-              const res = await UserService.SearchUserWithDID(uDid);
+              let userService = new UserService(new DidService());
+              const res = await userService.SearchUserWithDID(uDid);
               window.localStorage.setItem(
                 `temporary_${uDid.replace('did:elastos:', '')}`,
                 JSON.stringify({

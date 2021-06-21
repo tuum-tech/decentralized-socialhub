@@ -18,6 +18,8 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState, LocationState } from './types';
+import { container } from 'tsyringe';
+import { DidService } from 'src/services/did.service';
 
 const CreateProfileWithDidPage: React.FC<RouteComponentProps<
   {},
@@ -79,7 +81,8 @@ const CreateProfileWithDidPage: React.FC<RouteComponentProps<
       loading={loading}
       next={async pwd => {
         setLoading(true);
-        await UserService.CreateNewUser(
+        let userService = new UserService(new DidService());
+        await userService.CreateNewUser(
           userInfo.name,
           AccountType.DID,
           userInfo.loginCred,

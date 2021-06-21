@@ -13,6 +13,7 @@ import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service';
+import { container } from 'tsyringe';
 
 const DiscordCallback: React.FC<RouteComponentProps> = props => {
   /**
@@ -34,6 +35,7 @@ const DiscordCallback: React.FC<RouteComponentProps> = props => {
   let code: string =
     new URLSearchParams(props.location.search).get('code') || '';
 
+  let didService = new DidService();
   useEffect(() => {
     (async () => {
       if (code !== '' && credentials.loginCred.discord === '') {
@@ -49,7 +51,7 @@ const DiscordCallback: React.FC<RouteComponentProps> = props => {
           );
           let state = await DidDocumentService.getUserDocument(userSession);
 
-          await DidService.addVerfiableCredentialToDIDDocument(
+          await didService.addVerfiableCredentialToDIDDocument(
             state.diddocument,
             vc
           );
@@ -70,7 +72,8 @@ const DiscordCallback: React.FC<RouteComponentProps> = props => {
               userSession.did
             );
           }
-          await UserService.updateSession(userSession);
+          let userService = new UserService(new DidService());
+          await userService.updateSession(userSession);
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredDiscord(discord);

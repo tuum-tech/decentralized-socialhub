@@ -21,6 +21,8 @@ import PublicFields from '../PublicFields';
 import style from './style.module.scss';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
+import { container } from 'tsyringe';
+import { DidService } from 'src/services/did.service';
 
 const ProfileEditor: React.FC = () => {
   const [error, setError] = useState(false);
@@ -97,7 +99,8 @@ const ProfileEditor: React.FC = () => {
                 sessionItem={userInfo}
                 updateFunc={async (userInfo: ISessionItem) => {
                   await TuumTechScriptService.updateTuumUser(userInfo);
-                  UserService.updateSession(userInfo, true);
+                  let userService = new UserService(new DidService());
+                  userService.updateSession(userInfo, true);
                 }}
               ></BasicCard>
             ) : (
@@ -121,7 +124,8 @@ const ProfileEditor: React.FC = () => {
                           !userSession.badges.account.basicProfile.archived
                         ) {
                           userSession.badges.account!.basicProfile.archived = new Date().getTime();
-                          await UserService.updateSession(userSession);
+                          let userService = new UserService(new DidService());
+                          await userService.updateSession(userSession);
                           await ProfileService.addActivity(
                             {
                               guid: '',
@@ -170,7 +174,9 @@ const ProfileEditor: React.FC = () => {
                         !userSession.badges.account.educationProfile.archived
                       ) {
                         userSession.badges.account.educationProfile.archived = new Date().getTime();
-                        await UserService.updateSession(userSession);
+
+                        let userService = new UserService(new DidService());
+                        await userService.updateSession(userSession);
                         await ProfileService.addActivity(
                           {
                             guid: '',
@@ -218,7 +224,8 @@ const ProfileEditor: React.FC = () => {
                         !userSession.badges.account.experienceProfile.archived
                       ) {
                         userSession.badges.account.experienceProfile.archived = new Date().getTime();
-                        await UserService.updateSession(userSession);
+                        let userService = new UserService(new DidService());
+                        await userService.updateSession(userSession);
                         await ProfileService.addActivity(
                           {
                             guid: '',

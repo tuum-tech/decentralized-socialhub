@@ -13,6 +13,7 @@ import { AccountType, UserService } from 'src/services/user.service';
 
 import { requestTwitterToken, getUsersWithRegisteredTwitter } from './fetchapi';
 import { TokenResponse } from './types';
+import { container } from 'tsyringe';
 
 const TwitterCallback: React.FC<RouteComponentProps> = props => {
   /**
@@ -43,6 +44,7 @@ const TwitterCallback: React.FC<RouteComponentProps> = props => {
   let oauth_verifier: string =
     new URLSearchParams(props.location.search).get('oauth_verifier') || '';
 
+  let didService = new DidService();
   useEffect(() => {
     (async () => {
       if (
@@ -64,7 +66,7 @@ const TwitterCallback: React.FC<RouteComponentProps> = props => {
 
           let state = await DidDocumentService.getUserDocument(userSession);
 
-          await DidService.addVerfiableCredentialToDIDDocument(
+          await didService.addVerfiableCredentialToDIDDocument(
             state.diddocument,
             vc
           );
@@ -86,7 +88,8 @@ const TwitterCallback: React.FC<RouteComponentProps> = props => {
               userSession.did
             );
           }
-          await UserService.updateSession(userSession);
+          let userService = new UserService(new DidService());
+          await userService.updateSession(userSession);
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredTwitter(

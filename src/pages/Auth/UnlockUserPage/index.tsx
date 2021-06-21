@@ -25,6 +25,8 @@ import wavinghand from 'src/assets/icon/wavinghand.png';
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 
 import { LocationState } from './types';
+import { container } from 'tsyringe';
+import { DidService } from 'src/services/did.service';
 
 const UnlockUserPage: React.FC<RouteComponentProps<
   {},
@@ -45,9 +47,10 @@ const UnlockUserPage: React.FC<RouteComponentProps<
     // if (dids.length === 1) {
     //   res = await UserService.UnLockWithDIDAndPwd(dids[0], password);
     // } else {
+    let userService = new UserService(new DidService());
     for (let i = 0; i < dids.length; i++) {
       const did = dids[i];
-      res = await UserService.UnLockWithDIDAndPwd(did, password);
+      res = await userService.UnLockWithDIDAndPwd(did, password);
     }
     // }
     if (res) {

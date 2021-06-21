@@ -1,62 +1,93 @@
-import { DID, RootIdentity } from '@elastosfoundation/did-js-sdk/';
+import {
+  DefaultDIDAdapter,
+  DID,
+  DIDBackend,
+  DIDDocument,
+  DIDStore,
+  RootIdentity
+} from '@elastosfoundation/did-js-sdk/';
 
 import { ElastosClient } from '@elastosfoundation/elastos-js-sdk';
-
-export interface IDID {
-  mnemonic: string;
-  privateKey: string;
-  publicKey: string;
-  did: string;
-}
+import { storefront } from 'ionicons/icons';
+import { IDidService, IDID } from './did.service';
 
 export enum PublishRequestOperation {
   Create = 'create',
   Update = 'update'
 }
 
-export class DidService {
-  static async loadDid(mnemonic: string, password: string = ''): Promise<DID> {
-    let rIdentity = await RootIdentity.newFromMnemonic(mnemonic, password);
+export class DidService implements IDidService {
+  static rootIdentity?: RootIdentity;
+  static store?: DIDStore;
 
-    let did = rIdentity.getDefaultDid();
-
-    return did;
-  }
-
-  // static async generateNew(): Promise<DID> {
-  //   let rIdentity = await DID.  RootIdentity.newFromMnemonic(mnemonic, password);
-
-  //   let did = rIdentity.getDefaultDid();
-
-  //   return did;
-  // }
-
-  static async getDidDocument(
-    did: any,
-    useCache: boolean = true
-  ): Promise<any> {
-    let document = await ElastosClient.didDocuments.getMostRecentDIDDocument(
-      did,
-      { useCache: useCache }
+  async loadDid(mnemonic: string, password: string = ''): Promise<IDID> {
+    debugger;
+    DIDBackend.initialize(new DefaultDIDAdapter('mainnet'));
+    DidService.store = await DIDStore.open('/generated/tmp/DIDStore');
+    DidService.rootIdentity = RootIdentity.createFromMnemonic(
+      mnemonic,
+      password,
+      DidService.store,
+      'passw',
+      true
     );
-    return document;
+
+    let did = DidService.rootIdentity.getDid(0);
+    debugger;
+    // mnemonic: string;
+    // privateKey: string;
+    // publicKey: string;
+    // did: string;
+
+    // Validate all
+    let ret: IDID = {
+      mnemonic: mnemonic,
+      publicKey: DidService.rootIdentity
+        .getPreDerivedPublicKey()
+        .serializeBase58(),
+      privateKey: 'how',
+      did: did.toString()
+    };
+    return ret;
   }
 
-  static async isDIDPublished(did: string): Promise<boolean> {
-    let document = await this.getDidDocument(did);
+  async generateNew(): Promise<IDID> {
+    let newDid = await ElastosClient.did.generateNew();
+
+    return newDid;
+  }
+
+  async getDidDocument(did: any, useCache: boolean = true): Promise<any> {
+    // let document = await ElastosClient.didDocuments.getMostRecentDIDDocument(
+    //   did,
+    //   { useCache: useCache }
+    // );
+    // return document;\
+
+    if (DidService.store?.containsDid(did)) {
+      debugger;
+    }
+    let did2 = DidService.rootIdentity?.getDid(0);
+    debugger;
+    return await did2?.resolve();
+  }
+
+  async isDIDPublished(did: string): Promise<boolean> {
+    let document: DIDDocument = await this.getDidDocument(did);
+    debugger;
     return document && document !== undefined;
   }
 
-  static isSignedDIDDocumentValid(signedDocument: any, did: IDID): boolean {
+  isSignedDIDDocumentValid(signedDocument: any, did: IDID): boolean {
     return ElastosClient.didDocuments.isValid(signedDocument, did);
   }
 
-  static async genereteNewDidDocument(did: IDID): Promise<any> {
+  async genereteNewDidDocument(did: IDID): Promise<any> {
     let document = ElastosClient.didDocuments.newDIDDocument(did);
     return document;
   }
 
-  static sealDIDDocument(did: IDID, diddocument: any): any {
+  sealDIDDocument(did: IDID, diddocument: any): any {
     let isValid = false;
     let signedDocument: any;
     if (diddocument.hasOwnProperty('proof')) {
@@ -73,7 +104,7 @@ export class DidService {
     return signedDocument;
   }
 
-  static async addVerfiableCredentialToDIDDocument(diddocument: any, vc: any) {
+  async addVerfiableCredentialToDIDDocument(diddocument: any, vc: any) {
     if (diddocument.hasOwnProperty('proof')) {
       delete diddocument.proof;
     }
@@ -84,7 +115,7 @@ export class DidService {
     );
   }
 
-  static async addServiceToDIDDocument(diddocument: any, service: any) {
+  async addServiceToDIDDocument(diddocument: any, service: any) {
     if (diddocument.hasOwnProperty('proof')) {
       delete diddocument.proof;
     }
@@ -92,7 +123,7 @@ export class DidService {
     ElastosClient.didDocuments.addServiceToDIDDocument(diddocument, service);
   }
 
-  static generateSelfVerifiableCredential(
+  generateSelfVerifiableCredential(
     did: IDID,
     subjectName: string,
     subjectTypes: string[],
@@ -107,11 +138,11 @@ export class DidService {
     );
   }
 
-  static generateService(did: IDID, type: string, endpoint: string) {
+  generateService(did: IDID, type: string, endpoint: string) {
     return ElastosClient.didDocuments.createService(did.did, type, endpoint);
   }
 
-  static async generateVerifiablePresentationFromUserMnemonics(
+  async generateVerifiablePresentationFromUserMnemonics(
     userMnemonic: string,
     password: string,
     issuer: string,
@@ -137,7 +168,7 @@ export class DidService {
     );
   }
 
-  static async generatePublishRequest(
+  async generatePublishRequest(
     diddocument: any,
     userDID: IDID,
     operation: PublishRequestOperation

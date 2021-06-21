@@ -15,7 +15,8 @@ export const retrieveDocInfo = async (
   name = '',
   email = ''
 ) => {
-  let doc = await DidService.getDidDocument(did);
+  let didService = new DidService();
+  let doc = await didService.getDidDocument(did);
   let uInfo: UserType = {
     did,
     mnemonic,

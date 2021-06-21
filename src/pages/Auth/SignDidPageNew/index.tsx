@@ -48,6 +48,7 @@ const SignDidPageNew: React.FC<RouteComponentProps<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  let didService = new DidService();
   return (
     <OnBoardLayout className={style['did-signin']}>
       {loading && <LoadingIndicator loadingText="Signing Now..." />}
@@ -56,11 +57,11 @@ const SignDidPageNew: React.FC<RouteComponentProps<
       <OnBoardLayoutRight>
         <DidSignForm
           showModal={() => setShowHelp(true)}
-          loadDidFunction={DidService.loadDid}
+          loadDidFunction={didService.loadDid}
           error={error}
           setError={setError}
           onSuccess={async (uDid: string, mnemonic: string) => {
-            const isDidPublished = await DidService.isDIDPublished(uDid);
+            const isDidPublished = await didService.isDIDPublished(uDid);
             if (!isDidPublished) {
               alertError(
                 null,
@@ -68,7 +69,8 @@ const SignDidPageNew: React.FC<RouteComponentProps<
               );
             } else {
               setLoading(true);
-              const res = await UserService.SearchUserWithDID(uDid);
+              let userService = new UserService(didService);
+              const res = await userService.SearchUserWithDID(uDid);
               window.localStorage.setItem(
                 `temporary_${uDid.replace('did:elastos:', '')}`,
                 JSON.stringify({

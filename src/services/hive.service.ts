@@ -2,8 +2,9 @@ import {
   HiveClient,
   OptionsBuilder,
   IOptions
-} from '@elastos/elastos-hive-js-sdk';
+} from '@elastosfoundation/elastos-hive-js-sdk';
 import jwt_decode from 'jwt-decode';
+import { container } from 'tsyringe';
 
 import { DidService } from './did.service';
 import { DidDocumentService } from './diddocument.service';
@@ -91,7 +92,8 @@ export class HiveService {
     //TODO: change to appInstance
     let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
     let appId = `${process.env.REACT_APP_APPLICATION_ID}`;
-    let appDid = await DidService.loadDid(mnemonic);
+    let didService = new DidService();
+    let appDid = await didService.loadDid(mnemonic);
     let builder = new OptionsBuilder();
     await builder.setAppInstance(appId, appDid);
     builder.setHiveHost(hiveHost);
@@ -110,8 +112,9 @@ export class HiveService {
   static async getHiveChallenge(hiveHost: string): Promise<IHiveChallenge> {
     let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
     let options = await this.getHiveOptions(hiveHost);
-    let appDid = await DidService.loadDid(mnemonic);
-    let appDocument = await DidService.getDidDocument(appDid.did, false);
+    let didService = new DidService();
+    let appDid = await didService.loadDid(mnemonic);
+    let appDocument = await didService.getDidDocument(appDid.did, false);
 
     let response = await HiveClient.getApplicationChallenge(
       options,

@@ -13,6 +13,7 @@ import { ITutorialStepProp } from './TutorialStep1';
 import style from '../style.module.scss';
 import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
+import { container } from 'tsyringe';
 
 const VersionTag = styled.span`
   color: green;
@@ -120,7 +121,8 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         //   await DidDocumentService.publishUserDocument(userDocument);
         // }
 
-        await UserService.updateSession(user);
+        let userService = new UserService(new DidService());
+        await userService.updateSession(user);
         let hiveInstance = await HiveService.getSessionInstance();
         await UserVaultScripts.Execute(hiveInstance!);
         let activities = await ProfileService.getActivity();
@@ -160,7 +162,8 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
 
   const generateUserToken = async (mnemonics: string, address: string) => {
     let challenge = await HiveService.getHiveChallenge(address);
-    let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(
+    let didService = new DidService();
+    let presentation = await didService.generateVerifiablePresentationFromUserMnemonics(
       mnemonics,
       '',
       challenge.issuer,
@@ -171,6 +174,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     return userToken;
   };
 
+  let didService = new DidService();
   useEffect(() => {
     (async () => {
       let sessionUser = UserService.GetUserSession();
@@ -180,7 +184,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
           process.env.REACT_APP_TUUM_TECH_HIVE as string
         )
       );
-      let doc = await DidService.getDidDocument(sessionUser.did);
+      let doc = await didService.getDidDocument(sessionUser.did);
       if (doc.service && doc.service.length > 0) {
         setSelected('document');
         setHiveDocument(doc.service[0].serviceEndpoint);

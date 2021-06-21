@@ -12,6 +12,8 @@ import TutorialStep4Component from './Steps/TutorialStep4';
 import style from './style.module.scss';
 
 import logo from '../../../../assets/logo/logo_white.svg';
+import { container } from 'tsyringe';
+import { DidService } from 'src/services/did.service';
 
 export interface TutorialComponentProps {
   onClose: () => void;
@@ -62,7 +64,8 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({ onClose }) => {
       if (userSession.tutorialStep === 4) {
         userSession.badges!.account!.beginnerTutorial.archived = new Date().getTime();
       }
-      await UserService.updateSession(userSession);
+      let userService = new UserService(new DidService());
+      await userService.updateSession(userSession);
       setStep(step + 1);
     } else {
       onClose();

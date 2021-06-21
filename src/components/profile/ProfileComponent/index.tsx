@@ -20,6 +20,8 @@ import ProfileHeader from '../ProfileHeader';
 
 import style from './style.module.scss';
 
+import { DidService } from 'src/services/did.service';
+
 const LeftContent = styled.div`
   width: calc(100% - 300px);
   padding-right: 22px;
@@ -73,7 +75,9 @@ const ProfileComponent: React.FC<Props> = ({
         setLoading(true);
         let sUser = await UserService.GetUserSession();
         if (sUser && sUser.did) setSignedUser(sUser);
-        let pUser = await UserService.SearchUserWithDID(targetDid);
+
+        let userService = new UserService(new DidService());
+        let pUser = await userService.SearchUserWithDID(targetDid);
 
         if (pUser && pUser.did) {
           setPublicUser(pUser as any);

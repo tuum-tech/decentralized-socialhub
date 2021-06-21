@@ -6,6 +6,7 @@ import { HiveService } from './hive.service';
 import { DidService } from './did.service';
 import { alertError } from 'src/utils/notify';
 import { getItemsFromData } from 'src/utils/script';
+import { container } from 'tsyringe';
 
 export class TuumTechScriptService {
   private static async runTuumTechScript(script: any) {
@@ -214,7 +215,8 @@ export class TuumTechScriptService {
 export class UserVaultScriptService {
   private static async generateUserToken(mnemonics: string, address: string) {
     let challenge = await HiveService.getHiveChallenge(address);
-    let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(
+    let didService = new DidService();
+    let presentation = await didService.generateVerifiablePresentationFromUserMnemonics(
       mnemonics,
       '',
       challenge.issuer,
@@ -248,7 +250,8 @@ export class UserVaultScriptService {
           user.hiveHost
         );
         user.userToken = userToken;
-        await UserService.updateSession(user);
+        let userService = new UserService(new DidService());
+        await userService.updateSession(user);
         let hiveInstance = await HiveService.getSessionInstance();
         await UserVaultScripts.Execute(hiveInstance!);
       } catch (error) {

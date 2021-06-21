@@ -35,6 +35,8 @@ import DashboardContent from './components/DashboardContent';
 import OnBoarding from './components/OnBoarding';
 import DashboardHeader from './components/DashboardHeader';
 import { DidDocumentService } from 'src/services/diddocument.service';
+import { container } from 'tsyringe';
+import { DidService } from 'src/services/did.service';
 
 const TutorialModal = styled(IonModal)`
   --border-radius: 16px;
@@ -117,7 +119,8 @@ const ProfilePage = () => {
     let userSession = UserService.GetUserSession();
     if (userSession) {
       userSession.isDIDPublished = true;
-      UserService.updateSession(userSession);
+      let userService = new UserService(new DidService());
+      userService.updateSession(userSession);
       await DidDocumentService.reloadUserDocument();
     }
   };
@@ -247,7 +250,9 @@ const ProfilePage = () => {
             },
             userSession.did
           );
-          UserService.updateSession(userSession);
+
+          let userService = new UserService(new DidService());
+          userService.updateSession(userSession);
         }
       }
     })();
@@ -261,7 +266,8 @@ const ProfilePage = () => {
           if (!user) return;
 
           user.onBoardingCompleted = true;
-          await UserService.updateSession(user);
+          let userService = new UserService(new DidService());
+          await userService.updateSession(user);
           setUserInfo(user);
           setOnBoardVisible(false);
           if (!willExpire) {

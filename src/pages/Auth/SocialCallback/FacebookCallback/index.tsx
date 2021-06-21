@@ -16,6 +16,7 @@ import { DidService } from 'src/services/did.service';
 import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
+import { container } from 'tsyringe';
 
 const FacebookCallback: React.FC<RouteComponentProps> = props => {
   /**
@@ -42,6 +43,7 @@ const FacebookCallback: React.FC<RouteComponentProps> = props => {
   let state: string =
     new URLSearchParams(props.location.search).get('state') || '';
 
+  let didService = new DidService();
   useEffect(() => {
     (async () => {
       if (code !== '' && state !== '' && credentials.name === '') {
@@ -56,7 +58,7 @@ const FacebookCallback: React.FC<RouteComponentProps> = props => {
             facebookId.name
           );
           let state = await DidDocumentService.getUserDocument(userSession);
-          await DidService.addVerfiableCredentialToDIDDocument(
+          await didService.addVerfiableCredentialToDIDDocument(
             state.diddocument,
             vc
           );
@@ -77,7 +79,8 @@ const FacebookCallback: React.FC<RouteComponentProps> = props => {
               userSession.did
             );
           }
-          await UserService.updateSession(userSession);
+          let userService = new UserService(new DidService());
+          await userService.updateSession(userSession);
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredFacebook(facebookId.name);

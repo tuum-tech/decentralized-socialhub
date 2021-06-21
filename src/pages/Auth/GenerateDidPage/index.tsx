@@ -24,6 +24,8 @@ import {
   UserSessionProp
 } from './types';
 import { getUsersWithRegisteredEmail } from './fetchapi';
+import { container } from 'tsyringe';
+import { DidService } from 'src/services/did.service';
 
 const GenerateDidPage: React.FC<RouteComponentProps<
   {},
@@ -79,7 +81,8 @@ const GenerateDidPage: React.FC<RouteComponentProps<
         next={async pwd => {
           if (!session || !session.name) return;
           setLoading(true);
-          await UserService.CreateNewUser(
+          let userService = new UserService(new DidService());
+          await userService.CreateNewUser(
             session.name,
             session.service,
             session.loginCred,

@@ -3,7 +3,13 @@ import { Guid } from 'guid-typescript';
 import { alertError, showNotify } from 'src/utils/notify';
 
 import { AssistService } from './assist.service';
-import { DidService, IDID, PublishRequestOperation } from './did.service';
+import {
+  DidService,
+  IDID,
+  IDidService,
+  PublishRequestOperation
+} from './did.service';
+
 import { DidDocumentService } from './diddocument.service';
 import {
   TuumTechScriptService,
@@ -45,50 +51,42 @@ export interface SignInDIDData {
   isDIDPublished: boolean;
 }
 
-@injectable()
+//@injectable()
 export class UserService {
+  constructor(private didService: IDidService) {}
+
   private static key(did: string): string {
     return `user_${did.replace('did:elastos:', '')}`;
   }
 
-  private static async generateTemporaryDID(
+  private async generateTemporaryDID(
     service: AccountType,
     credential: string,
     name: string
   ): Promise<IDID> {
-    let newDID = await DidService.generateNew();
-    let temporaryDocument = await DidService.genereteNewDidDocument(newDID);
+    let newDID = await this.didService.generateNew();
+    let temporaryDocument = await this.didService.genereteNewDidDocument(
+      newDID
+    );
 
-    let nameVc = DidService.generateSelfVerifiableCredential(
+    let nameVc = this.didService.generateSelfVerifiableCredential(
       newDID,
       'name',
       [''],
       name
     );
-    await DidService.addVerfiableCredentialToDIDDocument(
+    await this.didService.addVerfiableCredentialToDIDDocument(
       temporaryDocument,
       nameVc
     );
 
-    // let nameVc = DidService.generateSelfVerifiableCredential(newDID, "name", ["BasicProfileCredential"], name)
-    // await DidService.addVerfiableCredentialToDIDDocument(temporaryDocument, nameVc)
-
-    // let credentialType: CredentialType = CredentialType.DID
-    // if (service == AccountType.Email) credentialType = CredentialType.Email
-    // if (service == AccountType.Facebook) credentialType = CredentialType.Facebook
-    // if (service == AccountType.Google) credentialType = CredentialType.Google
-    // if (service == AccountType.Linkedin) credentialType = CredentialType.Linkedin
-    // if (service == AccountType.Twitter) credentialType = CredentialType.Twitter
-
-    // if (credentialType !== CredentialType.DID){
-    //   let serviceVc = await DidcredsService.generateVerifiableCredential(newDID.did, credentialType, credential)
-    //   await DidService.addVerfiableCredentialToDIDDocument(temporaryDocument, serviceVc)
-    // }
-
-    let signedDocument = DidService.sealDIDDocument(newDID, temporaryDocument);
+    let signedDocument = this.didService.sealDIDDocument(
+      newDID,
+      temporaryDocument
+    );
     DidDocumentService.updateUserDocument(signedDocument);
 
-    let requestPub = await DidService.generatePublishRequest(
+    let requestPub = await this.didService.generatePublishRequest(
       signedDocument,
       newDID,
       PublishRequestOperation.Create
@@ -105,7 +103,7 @@ export class UserService {
     return newDID;
   }
 
-  private static lockUser(key: string, instance: ISessionItem) {
+  private lockUser(key: string, instance: ISessionItem) {
     if (!instance.mnemonics || instance.mnemonics === '') {
       instance.mnemonics =
         window.localStorage.getItem(
@@ -130,7 +128,7 @@ export class UserService {
     window.localStorage.setItem(key, json);
   }
 
-  private static unlockUser(
+  private unlockUser(
     key: string,
     storePassword: string
   ): ISessionItem | undefined {
@@ -184,7 +182,7 @@ export class UserService {
     }
   }
 
-  public static async LockWithDIDAndPwd(
+  public async LockWithDIDAndPwd(
     sessionItem: ISessionItem,
     password: string = ''
   ) {
@@ -204,7 +202,7 @@ export class UserService {
       newSessionItem.tutorialStep = res.tutorialStep;
     }
 
-    this.lockUser(this.key(newSessionItem.did), newSessionItem);
+    this.lockUser(UserService.key(newSessionItem.did), newSessionItem);
     // SessionService.saveSessionItem(newSessionItem);
     window.localStorage.setItem(
       'session_instance',
@@ -213,11 +211,11 @@ export class UserService {
     await UserVaultScriptService.register();
   }
 
-  public static async SearchUserWithDID(did: string) {
+  public async SearchUserWithDID(did: string) {
     const users = await TuumTechScriptService.searchUserWithDIDs([did]);
     if (users.length > 0) {
       const userData = users[0];
-      const isDIDPublished = await DidService.isDIDPublished(userData.did);
+      const isDIDPublished = await this.didService.isDIDPublished(userData.did);
       return {
         ...userData,
         isDIDPublished: isDIDPublished ? isDIDPublished : false,
@@ -228,7 +226,7 @@ export class UserService {
     return;
   }
 
-  public static async CreateNewUser(
+  public async CreateNewUser(
     name: string,
     accountType: AccountType,
     loginCred: LoginCred,
@@ -255,7 +253,7 @@ export class UserService {
       CryptoJS.enc.Hex
     );
 
-    const isDIDPublished = await DidService.isDIDPublished(did);
+    const isDIDPublished = await this.didService.isDIDPublished(did);
     let sessionItem: ISessionItem = {
       did,
       accountType,
@@ -437,7 +435,7 @@ export class UserService {
         sessionItem.did
       );
     });
-    this.lockUser(this.key(did), sessionItem);
+    this.lockUser(UserService.key(did), sessionItem);
     // SessionService.saveSessionItem(sessionItem);
     window.localStorage.setItem(
       'session_instance',
@@ -445,18 +443,18 @@ export class UserService {
     );
   }
 
-  public static async updateSession(
+  public async updateSession(
     sessionItem: ISessionItem,
     notifyUser: boolean = false
   ): Promise<void> {
     let newSessionItem = sessionItem;
-    const userData = await UserService.SearchUserWithDID(sessionItem.did);
+    const userData = await this.SearchUserWithDID(sessionItem.did);
     if (userData && userData.code) {
       newSessionItem.code = userData.code;
     }
 
     const res: any = await TuumTechScriptService.updateTuumUser(newSessionItem);
-    this.lockUser(this.key(sessionItem.did), newSessionItem);
+    this.lockUser(UserService.key(sessionItem.did), newSessionItem);
 
     window.localStorage.setItem(
       'session_instance',
@@ -468,15 +466,15 @@ export class UserService {
     }
   }
 
-  public static async UnLockWithDIDAndPwd(did: string, storePassword: string) {
-    let instance = this.unlockUser(this.key(did), storePassword);
+  public async UnLockWithDIDAndPwd(did: string, storePassword: string) {
+    let instance = this.unlockUser(UserService.key(did), storePassword);
     const res = await this.SearchUserWithDID(did);
     if (!res) {
       alertError(null, 'Could not find user with this DID');
     } else if (instance) {
       instance.onBoardingCompleted = res.onBoardingCompleted;
       instance.tutorialStep = res.tutorialStep;
-      this.lockUser(this.key(instance.did), instance);
+      this.lockUser(UserService.key(instance.did), instance);
 
       // SessionService.saveSessionItem(instance);
       window.localStorage.setItem(
