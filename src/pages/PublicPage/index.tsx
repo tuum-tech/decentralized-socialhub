@@ -3,16 +3,19 @@ import { RouteComponentProps } from 'react-router';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-// import FollowerAllModal from 'src/components/follow/FollowerAllModal';
-// import FollowingAllModal from 'src/components/follow/FollowingAllModal';
-import { FollowService } from 'src/services/follow.service';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import { InferMappedProps, SubState } from './types';
+
+import { ProfileService } from 'src/services/profile.service';
+import { FollowService } from 'src/services/follow.service';
 import ViewAllFollowModal from 'src/components/follow/ViewAllFollowModal';
 import LoadingIndicator from 'src/components/LoadingIndicator';
 import ProfileComponent from 'src/components/profile/ProfileComponent';
 import PublicNavbar from 'src/components/profile/PublicNavbar';
-import { UserService } from 'src/services/user.service';
-import { defaultUserInfo } from 'src/services/profile.service';
 
 import style from './style.module.scss';
 
@@ -24,15 +27,17 @@ const ContentRow = styled(IonRow)`
 interface MatchParams {
   did: string;
 }
+interface PageProps
+  extends InferMappedProps,
+    RouteComponentProps<MatchParams> {}
 
-const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
-  props: RouteComponentProps<MatchParams>
-) => {
+const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   let did: string = props.match.params.did;
+
+  const [publicFields, setPublicFields] = useState<string[]>([]);
   const [showAllFollow, setShowAllFollow] = useState(0);
-  const [signedUser, setSignedUser] = useState(defaultUserInfo);
-  const [loading, setLoading] = useState(true);
   const [scrollTop, setScrollTop] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const contentRef = useRef<HTMLIonContentElement | null>(null);
   const aboutRef = useRef<HTMLDivElement | null>(null);
@@ -61,38 +66,37 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
     contentRef.current && contentRef.current.scrollToPoint(0, point, 200);
   };
 
-  useEffect(() => {
-    (async () => {
-      let did: string = props.match.params.did;
-      if (did && did !== '') {
-        setLoading(true);
-        let sUser = await UserService.GetUserSession();
-        if (sUser && sUser.did) setSignedUser(sUser);
-      }
-      setLoading(false);
-    })();
-  }, [props.match.params.did]);
-
   const [followerDids, setFollowerDids] = useState<string[]>([]);
   const [followingDids, setFollowingDids] = useState<string[]>([]);
 
   useEffect(() => {
     (async () => {
+      if (!props.session || props.session.did === '') return;
+      setLoading(true);
       const followerDids = await FollowService.getFollowerDids(
-        props.match.params.did
+        props.match.params.did,
+        props.session
       );
       setFollowerDids(followerDids);
 
       const followingdids = await FollowService.getFollowingDids(
-        props.match.params.did
+        props.match.params.did,
+        props.session
       );
       setFollowingDids(followingdids);
+
+      const pFields = await ProfileService.getPublicFields(
+        props.match.params.did
+      );
+      setPublicFields(pFields);
+      setLoading(false);
     })();
-  }, [props.match.params.did]);
+  }, [props.match.params.did, props.session]);
 
   if (loading) {
     return <LoadingIndicator loadingText="Loading data..." />;
   }
+
   return (
     <IonPage className={style['profilepage']}>
       <IonGrid className={style['profilepagegrid'] + ' ion-no-padding'}>
@@ -103,11 +107,12 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
             setScrollTop(e.detail.scrollTop);
           }}
         >
-          <PublicNavbar signedIn={signedUser && signedUser.did !== ''} />
+          <PublicNavbar signedIn={props.session && props.session.did !== ''} />
           <ContentRow className="ion-justify-content-around">
             <IonCol size="9" className="ion-no-padding">
               <div className={style['profilecomponent']}>
                 <ProfileComponent
+                  publicFields={publicFields}
                   targetDid={did}
                   scrollToElement={scrollToElement}
                   aboutRef={aboutRef}
@@ -118,6 +123,7 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
                   }}
                   followerDids={followerDids}
                   followingDids={followingDids}
+                  userSession={props.session}
                 />
               </div>
             </IonCol>
@@ -126,17 +132,35 @@ const PublicPage: React.FC<RouteComponentProps<MatchParams>> = (
       </IonGrid>
       {showAllFollow > 0 && (
         <ViewAllFollowModal
+          showFollowerCard={publicFields.includes('follower')}
+          showFollowingCard={publicFields.includes('following')}
           followerDids={followerDids}
           followingDids={followingDids}
           setFollowerDids={setFollowerDids}
           setFollowingDids={setFollowingDids}
           onClose={() => setShowAllFollow(0)}
           isFollower={showAllFollow === 1}
-          editable={did === signedUser.did}
+          editable={did === props.session.did}
+          userSession={props.session}
         />
       )}
     </IonPage>
   );
 };
 
-export default PublicPage;
+// export default PublicPage;
+
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PublicPage);

@@ -2,10 +2,14 @@
 import React, { useEffect, useState } from 'react';
 import { IonCard, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import { setTimeout } from 'timers';
-import styled from 'styled-components';
 
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import { InferMappedProps, SubState } from './types';
 import { UserService } from 'src/services/user.service';
-import { defaultUserInfo } from 'src/services/profile.service';
+import { ProfileService } from 'src/services/profile.service';
 
 import {
   CardHeaderContent,
@@ -22,39 +26,42 @@ import {
 } from './upload';
 import styleWidget from '../WidgetCards.module.scss';
 
-export default function Upload() {
-  const [userInfo, setUserInfo] = useState<ISessionItem>(defaultUserInfo);
+const Upload: React.FC<InferMappedProps> = ({
+  eProps,
+  ...props
+}: InferMappedProps) => {
   const [imagePreview, setImagePreview] = useState<any>('');
   const [base64, setBase64] = useState<string>();
-  const [defaultImage, setDefaultImage] = useState(defaultCoverPhoto);
+  const [defaultImage, setDefaultImage] = useState(
+    props.session.coverPhoto || defaultCoverPhoto
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [file, setFile] = useState<string>();
   const [name, setName] = useState<string>();
   const [size, setSize] = useState<string>();
-
-  useEffect(() => {
-    (async () => {
-      let instance = UserService.GetUserSession();
-      if (!instance || !instance.did) return;
-      if (instance.coverPhoto && instance.coverPhoto !== '') {
-        setDefaultImage(instance.coverPhoto);
-      }
-      setUserInfo(instance);
-    })();
-  }, []);
 
   const storeUploadedCoverPhoto = async (base64: string) => {
     let base64Str = base64;
     if (!base64Str.startsWith('data:image')) {
       base64Str = `data:image/png;base64,${base64Str}`;
     }
-    if (userInfo) {
-      const newSession = {
-        ...userInfo,
-        coverPhoto: base64Str
-      };
-      await UserService.updateSession(newSession, true);
-      setUserInfo(newSession);
+    if (props.session && props.session.did !== '') {
+      let newSession = JSON.parse(JSON.stringify(props.session));
+      newSession.coverPhoto = base64Str;
+      eProps.setSession({
+        session: await UserService.updateSession(newSession, true)
+      });
+      await ProfileService.addActivity(
+        {
+          guid: '',
+          did: newSession!.did,
+          message: 'You updated cover photo',
+          read: false,
+          createdAt: 0,
+          updatedAt: 0
+        },
+        newSession!.did
+      );
     }
   };
 
@@ -163,4 +170,19 @@ export default function Upload() {
       </CardContentContainer>
     </IonCard>
   );
+};
+
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Upload);

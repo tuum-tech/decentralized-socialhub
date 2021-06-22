@@ -69,6 +69,27 @@ const ButtonLight = styled(IonButton)`
   }
 `;
 
+const SmallLightButton = styled.button`
+  height: 27px;
+  display: inline;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 13px;
+  border-radius: 6px;
+  background-color: #f3f9ff;
+  font-family: 'SF Pro Display';
+  font-size: 14px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-align: left;
+  color: #4c6fff;
+`;
+
 export {
   ButtonLink,
   ArrowButton,
@@ -81,5 +102,6 @@ export {
   DefaultLinkButton,
   PrimaryLinkButton,
   ButtonLight,
-  Button
+  Button,
+  SmallLightButton
 };

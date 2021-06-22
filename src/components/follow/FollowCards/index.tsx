@@ -11,13 +11,17 @@ interface Props {
   viewAll: (isFollower: boolean) => void;
   followerDids: string[];
   followingDids: string[];
+  showFollowerCard?: boolean;
+  showFollowingCard?: boolean;
 }
 
 const FowllowCards: React.FC<Props> = ({
   followerDids,
   followingDids,
   signed,
-  viewAll
+  viewAll,
+  showFollowerCard = true,
+  showFollowingCard = true
 }: Props) => {
   const [followingUsers, setFollowingUsers] = useState<any[]>([]);
   const [followerUsers, setFollowerUsers] = useState<any[]>([]);
@@ -44,7 +48,7 @@ const FowllowCards: React.FC<Props> = ({
   }, [followerDids, followingDids]);
   return (
     <>
-      {followingDids.length > 0 && (
+      {followingDids.length > 0 && showFollowingCard && (
         <FollowingCard
           totalNumber={followingDids.length}
           users={
@@ -57,7 +61,7 @@ const FowllowCards: React.FC<Props> = ({
           viewAllClicked={() => viewAll(false)}
         />
       )}
-      {followerDids.length > 0 && (
+      {followerDids.length > 0 && showFollowerCard && (
         <FollowerCard
           totalNumber={followerDids.length}
           users={

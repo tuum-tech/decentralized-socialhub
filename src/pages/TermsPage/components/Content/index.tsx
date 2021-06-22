@@ -18,6 +18,7 @@ import {
 } from 'src/components/note';
 import styled from 'styled-components';
 import style from './style.module.scss';
+
 const Content: React.FC = () => {
   const [sectionRefs, setSectionRefs] = useState([]);
 

@@ -74,13 +74,13 @@ const Info = styled.div`
 
 interface IProps {
   user: ISessionItem;
-  signedUserDid: string;
+  signedUser: ISessionItem;
   onlyText?: string;
 }
 
 const ProfileHeader: React.FC<IProps> = ({
   user,
-  signedUserDid,
+  signedUser,
   onlyText = ''
 }: IProps) => {
   return (
@@ -109,14 +109,14 @@ const ProfileHeader: React.FC<IProps> = ({
               </IonGrid>
             </Info>
             <Buttons>
-              {signedUserDid === '' ? (
+              {signedUser.did === '' ? (
                 <Link to="/sign-did">
                   <FollowButton>Sign in to Follow</FollowButton>
                 </Link>
               ) : (
                 <FollowOrUnFollowButton
                   did={user.did}
-                  userDid={signedUserDid}
+                  signedUser={signedUser}
                 />
               )}
             </Buttons>

@@ -13,9 +13,49 @@ export class UserVaultScripts {
     await hiveClient.Database.createCollection('education_profile');
     await hiveClient.Database.createCollection('experience_profile');
     await hiveClient.Database.createCollection('activities');
+    await hiveClient.Database.createCollection('public_fields');
   }
 
   static async SetScripts(hiveClient: HiveClient) {
+    // scripts for public fields of profile
+    await hiveClient.Scripting.SetScript({
+      name: 'set_public_fields',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'set_public_fields',
+        body: {
+          collection: 'public_fields',
+          filter: {
+            did: '$params.did'
+          },
+          update: {
+            $set: {
+              fields: '$params.fields'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+    await hiveClient.Scripting.SetScript({
+      name: 'get_public_fields',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_public_fields',
+        output: true,
+        body: {
+          collection: 'public_fields'
+        }
+      }
+    });
+
     // scripts for following users managmeent
     await hiveClient.Scripting.SetScript({
       name: 'get_following',

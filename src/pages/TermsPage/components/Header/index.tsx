@@ -13,25 +13,26 @@ import narrow from 'src/assets/icon/narrow.svg';
 
 import style from './style.module.scss';
 
-const Header: React.FC = () => {
+interface Props {
+  userSession: ISessionItem;
+}
+
+const Header: React.FC<Props> = ({ userSession }: Props) => {
   const history = useHistory();
-  const [userInfo, setUserInfo] = useState<ISessionItem | undefined>(undefined);
   const [publishStatus, setPublishStatus] = useState<boolean>(false);
   const [collapse, setCollapse] = useState<boolean>(false);
+
   useEffect(() => {
-    let sessionItem = UserService.GetUserSession();
-    if (sessionItem) {
-      setUserInfo(sessionItem);
-      setPublishStatus(sessionItem.isDIDPublished);
-    }
-  }, []);
+    setPublishStatus(userSession.isDIDPublished);
+  }, [userSession.isDIDPublished]);
+
   return (
     <Inline>
       <Left>
         <Logo />
       </Left>
       <Right>
-        {userInfo ? (
+        {userSession ? (
           <Menu
             onClick={() => {
               setCollapse(!collapse);
@@ -47,7 +48,7 @@ const Header: React.FC = () => {
               }
               alt="profile"
             />
-            <label>{userInfo.name}</label>
+            <label>{userSession.name}</label>
             <CustomIcon
               slot="end"
               icon={collapse ? chevronDownOutline : chevronUpOutline}
@@ -58,7 +59,7 @@ const Header: React.FC = () => {
                 <Item onClick={async () => history.push('/profile')}>
                   Visit Profile.site
                 </Item>
-                <Item onClick={() => window.open('/did/' + userInfo.did)}>
+                <Item onClick={() => window.open('/did/' + userSession.did)}>
                   View Public Profile
                 </Item>
                 <Item onClick={() => UserService.logout()}>Sign out</Item>

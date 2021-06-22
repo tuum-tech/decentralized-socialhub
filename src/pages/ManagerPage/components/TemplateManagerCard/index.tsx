@@ -14,7 +14,7 @@ import styled from 'styled-components';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import ProfileTemplateManager from '../ProfileTemplateManager';
 
-const Divider = styled.hr`
+export const Divider = styled.hr`
   width: 100%;
   height: 1px;
   text-align: center;

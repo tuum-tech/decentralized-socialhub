@@ -12,6 +12,9 @@ interface Props {
   followingDids: string[];
   setFollowerDids: (dids: string[]) => void;
   setFollowingDids: (dids: string[]) => void;
+  showFollowerCard?: boolean;
+  showFollowingCard?: boolean;
+  userSession: ISessionItem;
 }
 
 const ViewAllFollowModal = ({
@@ -21,7 +24,10 @@ const ViewAllFollowModal = ({
   followerDids,
   followingDids,
   setFollowerDids,
-  setFollowingDids
+  setFollowingDids,
+  showFollowerCard = true,
+  showFollowingCard = true,
+  userSession
 }: Props) => (
   <div className={style['modal']}>
     <div className={style['modal_container']}>
@@ -33,6 +39,7 @@ const ViewAllFollowModal = ({
             editable={editable}
             onClose={onClose}
             setFollowingDids={setFollowingDids}
+            userSession={userSession}
           />
         ) : (
           <FollowingAll
@@ -40,6 +47,7 @@ const ViewAllFollowModal = ({
             onClose={onClose}
             editable={editable}
             setFollowingDids={setFollowingDids}
+            userSession={userSession}
           />
         )}
       </div>

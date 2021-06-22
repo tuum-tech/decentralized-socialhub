@@ -6,9 +6,22 @@ import { FollowService } from 'src/services/follow.service';
 import ProfileComponent from 'src/components/profile/ProfileComponent';
 interface Props {
   targetDid: string;
+  publicFields?: string[];
+  userSession: ISessionItem;
 }
 
-const ProfileComp: React.FC<Props> = ({ targetDid }: Props) => {
+const ProfileComp: React.FC<Props> = ({
+  targetDid,
+  userSession,
+  publicFields = [
+    'follower',
+    'following',
+    'about',
+    'experience',
+    'education',
+    'social'
+  ]
+}: Props) => {
   const contentRef = useRef<HTMLIonContentElement | null>(null);
   const aboutRef = useRef<HTMLDivElement | null>(null);
   const experienceRef = useRef<HTMLDivElement | null>(null);
@@ -20,13 +33,19 @@ const ProfileComp: React.FC<Props> = ({ targetDid }: Props) => {
 
   useEffect(() => {
     (async () => {
-      const followerDids = await FollowService.getFollowerDids(targetDid);
+      const followerDids = await FollowService.getFollowerDids(
+        targetDid,
+        userSession
+      );
       setFollowerDids(followerDids);
 
-      const followingdids = await FollowService.getFollowingDids(targetDid);
+      const followingdids = await FollowService.getFollowingDids(
+        targetDid,
+        userSession
+      );
       setFollowingDids(followingdids);
     })();
-  }, [targetDid]);
+  }, [targetDid, userSession]);
 
   const scrollToElement = (cardName: string) => {
     let point: number = 0;
@@ -64,6 +83,7 @@ const ProfileComp: React.FC<Props> = ({ targetDid }: Props) => {
       onIonScroll={handleScroll}
     >
       <ProfileComponent
+        publicFields={publicFields}
         targetDid={targetDid}
         scrollToElement={scrollToElement}
         aboutRef={aboutRef}
@@ -71,6 +91,7 @@ const ProfileComp: React.FC<Props> = ({ targetDid }: Props) => {
         educationRef={educationRef}
         followerDids={followerDids}
         followingDids={followingDids}
+        userSession={userSession}
       />
     </IonContent>
   );
