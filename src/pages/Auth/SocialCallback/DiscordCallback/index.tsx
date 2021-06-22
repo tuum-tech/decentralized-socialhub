@@ -2,19 +2,39 @@
  * Page
  */
 import React, { useEffect, useState } from 'react';
-import { Redirect, RouteComponentProps, useHistory } from 'react-router';
+import {
+  Redirect,
+  RouteComponentProps,
+  StaticContext,
+  useHistory
+} from 'react-router';
+
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import { TokenResponse, LocationState, InferMappedProps } from './types';
+import { SubState } from 'src/store/users/types';
 
 import PageLoading from 'src/components/layouts/PageLoading';
 import { AccountType, UserService } from 'src/services/user.service';
 
-import { TokenResponse } from './types';
 import { requestDiscordToken, getUsersWithRegisteredDiscord } from './fetchapi';
 import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service';
 
-const DiscordCallback: React.FC<RouteComponentProps> = props => {
+interface PageProps
+  extends InferMappedProps,
+    RouteComponentProps<{}, StaticContext, LocationState> {}
+
+// const DiscordCallback: React.FC<RouteComponentProps> = props => {
+const DiscordCallback: React.FC<PageProps> = ({
+  eProps,
+  ...props
+}: PageProps) => {
   /**
    * Direct method implementation without SAGA
    * This was to show you dont need to put everything to global state
@@ -39,38 +59,40 @@ const DiscordCallback: React.FC<RouteComponentProps> = props => {
       if (code !== '' && credentials.loginCred.discord === '') {
         let t = await getToken(code);
         let discord = t.data.username + '#' + t.data.discriminator;
-        console.log(discord, '===>discord id');
-        let userSession = UserService.GetUserSession();
-        if (userSession) {
+
+        if (props.session && props.session.did !== '') {
           let vc = await DidcredsService.generateVerifiableCredential(
-            userSession.did,
+            props.session.did,
             CredentialType.Discord,
             discord
           );
-          let state = await DidDocumentService.getUserDocument(userSession);
-
+          let state = await DidDocumentService.getUserDocument(props.session);
           await DidService.addVerfiableCredentialToDIDDocument(
             state.diddocument,
             vc
           );
-
           DidDocumentService.updateUserDocument(state.diddocument);
-          userSession.loginCred!.discord! = discord;
-          if (!userSession.badges!.socialVerify!.discord.archived) {
-            userSession.badges!.socialVerify!.discord.archived = new Date().getTime();
+
+          let newSession = JSON.parse(JSON.stringify(props.session));
+          newSession.loginCred!.discord! = discord;
+          if (!newSession.badges!.socialVerify!.discord.archived) {
+            newSession.badges!.socialVerify!.discord.archived = new Date().getTime();
             await ProfileService.addActivity(
               {
                 guid: '',
-                did: userSession.did,
+                did: newSession.did,
                 message: 'You received a Discord verfication badge',
                 read: false,
                 createdAt: 0,
                 updatedAt: 0
               },
-              userSession.did
+              newSession
             );
           }
-          await UserService.updateSession(userSession);
+          // await UserService.updateSession(userSession);
+          eProps.setSession({
+            session: await UserService.updateSession(newSession)
+          });
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredDiscord(discord);
@@ -119,4 +141,17 @@ const DiscordCallback: React.FC<RouteComponentProps> = props => {
   return getRedirect();
 };
 
-export default DiscordCallback;
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DiscordCallback);

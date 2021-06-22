@@ -1,10 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { IonCard, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import { setTimeout } from 'timers';
 
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import { InferMappedProps, SubState } from './types';
 import { UserService } from 'src/services/user.service';
-import { defaultUserInfo, ProfileService } from 'src/services/profile.service';
+import { ProfileService } from 'src/services/profile.service';
 
 import {
   CardHeaderContent,
@@ -22,39 +27,31 @@ import {
 } from './upload';
 import styleWidget from '../WidgetCards.module.scss';
 
-export default function Upload() {
-  const [userInfo, setUserInfo] = useState<ISessionItem>(defaultUserInfo);
+const Upload: React.FC<InferMappedProps> = ({
+  eProps,
+  ...props
+}: InferMappedProps) => {
   const [imagePreview, setImagePreview] = useState<any>('');
   const [base64, setBase64] = useState<string>();
-  const [defaultImage, setDefaultImage] = useState(defaultAvatar);
+  const [defaultImage, setDefaultImage] = useState(
+    props.session.avatar || defaultAvatar
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [file, setFile] = useState<string>();
   const [name, setName] = useState<string>();
   const [size, setSize] = useState<string>();
-
-  useEffect(() => {
-    (async () => {
-      let instance = UserService.GetUserSession();
-      if (!instance || !instance.did) return;
-      // setDefaultImage()
-      if (instance.avatar && instance.avatar !== '') {
-        setDefaultImage(instance.avatar);
-      }
-      setUserInfo(instance);
-    })();
-  }, []);
 
   const storeUploadedAvatar = async (base64: string) => {
     let base64Str = base64;
     if (!base64Str.startsWith('data:image')) {
       base64Str = `data:image/png;base64,${base64Str}`;
     }
-    if (userInfo) {
-      const newSession = {
-        ...userInfo,
-        avatar: base64Str
-      };
-      await UserService.updateSession(newSession, true);
+    if (props.session && props.session.did !== '') {
+      let newSession = JSON.parse(JSON.stringify(props.session));
+      newSession.avatar = base64Str;
+      eProps.setSession({
+        session: await UserService.updateSession(newSession, true)
+      });
       await ProfileService.addActivity(
         {
           guid: '',
@@ -66,7 +63,6 @@ export default function Upload() {
         },
         newSession!.did
       );
-      setUserInfo(newSession);
     }
   };
 
@@ -177,4 +173,19 @@ export default function Upload() {
       </CardContentContainer>
     </IonCard>
   );
+};
+
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Upload);

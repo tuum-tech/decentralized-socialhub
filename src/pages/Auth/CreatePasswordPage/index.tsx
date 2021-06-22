@@ -1,6 +1,7 @@
 import { StaticContext, RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
 
 import { UserService } from 'src/services/user.service';
 import LoadingIndicator from 'src/components/LoadingIndicator';
@@ -19,13 +20,17 @@ import {
 import ButtonWithLogo from 'src/components/buttons/ButtonWithLogo';
 import TextInput from 'src/components/inputs/TextInput';
 import { Text16 } from 'src/components/texts';
+import Check from 'src/components/Check';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import keyimg from 'src/assets/icon/key.png';
 
-import { LocationState } from './types';
-import { IonCol, IonGrid, IonRow } from '@ionic/react';
-import Check from 'src/components/Check';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import { SubState } from 'src/store/users/types';
+import { InferMappedProps, LocationState } from './types';
 
 const ErrorText = styled(Text16)`
   text-align: center;
@@ -33,22 +38,17 @@ const ErrorText = styled(Text16)`
   margin-top: 8px;
 `;
 
-const CreatePasswordPage: React.FC<RouteComponentProps<
-  {},
-  StaticContext,
-  LocationState
->> = props => {
-  /**
-   * Direct method implementation without SAGA
-   * This was to show you dont need to put everything to global state
-   * incoming from Server API calls. Maintain a local state.
-   */
+type PageProps = InferMappedProps &
+  RouteComponentProps<{}, StaticContext, LocationState>;
 
+const CreatePasswordPage: React.FC<PageProps> = ({
+  eProps,
+  ...props
+}: PageProps) => {
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const [error, setError] = useState('');
-  const [session, setSession] = useState<ISessionItem | null>(null);
 
   const [lengthValid, setLengthValid] = useState(false);
   const [hasUppercase, setHasUppercase] = useState(false);
@@ -92,46 +92,6 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
     }
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    if (!session && props.location.state && props.location.state.did) {
-      const {
-        hiveHost,
-        userToken,
-        accountType,
-        did,
-        name,
-        isDIDPublished,
-        didPublishTime,
-        loginCred
-      } = props.location.state;
-
-      let newSession = {
-        hiveHost,
-        userToken,
-        accountType,
-        did,
-        name,
-        isDIDPublished,
-        didPublishTime,
-        loginCred,
-        mnemonics: '',
-        passhash: '',
-        onBoardingCompleted: false,
-        tutorialStep: 1
-      };
-      setSession(newSession);
-    }
-  });
-
-  const afterPasswordSet = async () => {
-    if (!session) return;
-    setLoading(true);
-    await UserService.LockWithDIDAndPwd(session, password);
-    window.location.href = '/profile';
-    setLoading(false);
-  };
-
   return (
     <OnBoardLayout>
       {loading && <LoadingIndicator loadingText="Encrypting now..." />}
@@ -160,12 +120,10 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
             onChange={n => {
               setError('');
               validatePassword(n);
-
               setPassword(n);
             }}
             placeholder="Enter your password"
           />
-
           <IonGrid>
             <IonRow>
               <IonCol size="6">
@@ -202,7 +160,21 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
               } else if (password !== repeatPassword) {
                 setError('Password is different');
               } else {
-                await afterPasswordSet();
+                const user = {
+                  mnemonics: '',
+                  passhash: '',
+                  onBoardingCompleted: false,
+                  tutorialStep: 1,
+                  ...props.location.state
+                };
+                setLoading(true);
+                const res = await UserService.LockWithDIDAndPwd(user, password);
+                setLoading(false);
+                if (res && res.did !== '') {
+                  eProps.setSession({ session: res });
+                  window.localStorage.setItem('isLoggedIn', 'true');
+                  window.location.href = '/profile';
+                }
               }
             }}
           />
@@ -212,4 +184,17 @@ const CreatePasswordPage: React.FC<RouteComponentProps<
   );
 };
 
-export default CreatePasswordPage;
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreatePasswordPage);

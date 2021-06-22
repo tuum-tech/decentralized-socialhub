@@ -7,7 +7,6 @@ import {
 } from 'src/services/search.service';
 import ExploreNav from '../ExploreNav';
 import { ProfileService } from 'src/services/profile.service';
-import { UserService } from 'src/services/user.service';
 import { alertError } from 'src/utils/notify';
 import LoadingIndicator from 'src/components/LoadingIndicator';
 
@@ -23,7 +22,10 @@ export interface IUserResponse {
   };
 }
 
-const SearchComponent: React.FC = () => {
+interface Props {
+  userSession: ISessionItem;
+}
+const SearchComponent: React.FC<Props> = ({ userSession }: Props) => {
   const [filteredUniversities, setFilteredUniversities] = useState<
     IUniversitiesResponse
   >({ get_universities: { items: [] } });
@@ -76,7 +78,12 @@ const SearchComponent: React.FC = () => {
       }
 
       try {
-        let listUsers: any = await searchService.getUsers('', 200, 0);
+        let listUsers: any = await searchService.getUsers(
+          '',
+          200,
+          0,
+          userSession
+        );
         setFilteredUsers(listUsers);
       } catch (e) {
         setFilteredUsers({ items: [] });
@@ -85,11 +92,13 @@ const SearchComponent: React.FC = () => {
       }
     }
 
-    let user = UserService.GetUserSession();
     try {
-      if (user && user.did && user.tutorialStep === 4) {
+      if (userSession && userSession.did && userSession.tutorialStep === 4) {
         //Get Following
-        let following = await ProfileService.getFollowings(user.did);
+        let following = await ProfileService.getFollowings(
+          userSession.did,
+          userSession
+        );
         if (following) {
           setListFollowing(following as IFollowingResponse);
           return;
@@ -118,7 +127,12 @@ const SearchComponent: React.FC = () => {
     );
 
     setFilteredUniversities(listUniversities.response);
-    let listUsers: any = await searchService.getUsers(searchQuery, 200, 0);
+    let listUsers: any = await searchService.getUsers(
+      searchQuery,
+      200,
+      0,
+      userSession
+    );
     setFilteredUsers(listUsers);
   };
 

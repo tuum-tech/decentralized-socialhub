@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { IonItem, IonList, IonSpinner } from '@ionic/react';
-import style from './DidCard.module.scss';
+import { Link } from 'react-router-dom';
+
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import { InferMappedProps, SubState } from '../../pages/DashboardPage/types';
+
+import { ProfileService } from 'src/services/profile.service';
 
 import Avatar from '../Avatar';
-import { ProfileService } from 'src/services/profile.service';
-import { Link } from 'react-router-dom';
-import { UserService } from 'src/services/user.service';
-
-interface Props {
+import style from './DidCard.module.scss';
+interface Props extends InferMappedProps {
   name?: string;
   did: string;
   avatar?: string;
@@ -19,23 +24,24 @@ interface Props {
 }
 
 const DidCard: React.FC<Props> = ({
+  eProps,
   name,
   did = '',
   avatar,
   indexItem,
   following,
   colSize = '100%',
-  type = 'user'
-}) => {
+  type = 'user',
+  session
+}: Props) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const userInfo = UserService.GetUserSession();
-  const tutorialStep = userInfo !== undefined ? userInfo.tutorialStep : 1;
+  const tutorialStep = session ? session.tutorialStep : 1;
 
   const followDid = async (did: string) => {
     setLoading(true);
-    const response = await ProfileService.addFollowing(did);
+    const response = await ProfileService.addFollowing(did, session);
     following = response.get_following;
     setIsFollowing(true);
     setLoading(false);
@@ -43,7 +49,7 @@ const DidCard: React.FC<Props> = ({
 
   const unfollowDid = async (did: string) => {
     setLoading(true);
-    const response = await ProfileService.unfollow(did);
+    const response = await ProfileService.unfollow(did, session);
     following = response.get_following;
     setIsFollowing(false);
     setLoading(false);
@@ -130,4 +136,17 @@ const DidCard: React.FC<Props> = ({
   );
 };
 
-export default DidCard;
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DidCard);

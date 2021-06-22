@@ -1,7 +1,8 @@
-import { Actions } from './constants';
 import { AccountType } from 'src/services/user.service';
+import { mapDispatchToProps, mapStateToProps } from './index';
 
-export type ActionType = typeof Actions;
+export type InferMappedProps = ReturnType<typeof mapStateToProps> &
+  ReturnType<typeof mapDispatchToProps>;
 
 export type LocationState = {
   from: Location;

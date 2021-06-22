@@ -4,14 +4,15 @@ import App from "./App";
 import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
 import configureStore from "./baseplate/configureStore";
-import history from "./baseplate/history";
+import { PersistGate } from 'redux-persist/lib/integration/react'
+
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import packageJson from "../package.json";
 // import { Menu } from './Menu';
 
-const initialState = {}; // Empty | LocalStorage | SessionStorage
-const store = configureStore(initialState, history);
+const { store, persistor } = configureStore();
+
 const projectName =
   process.env.NODE_ENV === "production"
     ? packageJson.name
@@ -31,7 +32,9 @@ Sentry.init({
 ReactDOM.render(
   <Provider store={store}>
     {/* <Menu /> */}
-    <App />
+    <PersistGate loading={null} persistor={persistor}>
+      <App />
+    </PersistGate>
   </Provider>,
   MOUNT_NODE
 );

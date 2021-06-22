@@ -50,6 +50,7 @@ import {
   CreateProfileWithDidPage
 } from './pages/Auth';
 
+import TestPage from './pages/TestPage';
 import DefaultPage from './pages/404Page';
 import AccessCodePage from './pages/AlphaAccess/AccessCode';
 import ExplorePage from './pages/ExplorePage';
@@ -201,6 +202,7 @@ const App: React.FC = () => {
             <Route exact path="/" render={() => <Redirect to="/Alpha" />} />
             <Route path="/Alpha" component={AccessCodePage} exact={true} />
             <Route path="/did/:did" component={PublicPage} exact={true} />
+            <Route path="/test" component={TestPage} exact={true} />
             <Route component={DefaultPage} />
           </IonRouterOutlet>
         </Switch>

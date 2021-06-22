@@ -23,9 +23,13 @@ import { chevronDownOutline, chevronUpOutline } from 'ionicons/icons';
 
 interface Props {
   tab?: string;
+  useSession: ISessionItem;
 }
 
-const SettingsBody: React.FC<Props> = ({ tab = 'settingsaccount' }) => {
+const SettingsBody: React.FC<Props> = ({
+  tab = 'settingsaccount',
+  useSession
+}) => {
   const [active, setActive] = useState(tab);
   const [hCollapse, setHelpCollapse] = useState(false);
 
@@ -157,8 +161,12 @@ const SettingsBody: React.FC<Props> = ({ tab = 'settingsaccount' }) => {
               {/* {active === 'settingshelp' && <SettingsHelp />} */}
               {active === 'settingssubscription' && <SettingsSubscription />}
               {active === 'settingslearn' && <SettingsLearn />}
-              {active === 'settingscontact' && <SettingsContact />}
-              {active === 'settingsreport' && <SettingsReport />}
+              {active === 'settingscontact' && (
+                <SettingsContact useSession={useSession} />
+              )}
+              {active === 'settingsreport' && (
+                <SettingsReport useSession={useSession} />
+              )}
             </IonCol>
           </IonRow>
         </IonGrid>

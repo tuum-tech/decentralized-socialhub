@@ -3,12 +3,28 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { Redirect, RouteComponentProps, useHistory } from 'react-router';
+import {
+  Redirect,
+  RouteComponentProps,
+  useHistory,
+  StaticContext
+} from 'react-router';
 
 import { AccountType, UserService } from 'src/services/user.service';
 import PageLoading from 'src/components/layouts/PageLoading';
 
-import { TokenResponse } from './types';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import {
+  TokenResponse,
+  LocationState,
+  InferMappedProps,
+  SubState
+} from './types';
+
 import {
   requestLinkedinProfile,
   requestLinkedinToken,
@@ -19,12 +35,14 @@ import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 
-const LinkedinCallback: React.FC<RouteComponentProps> = props => {
-  /**
-   * Direct method implementation without SAGA
-   * This was to show you dont need to put everything to global state
-   * incoming from Server API calls. Maintain a local state.
-   */
+interface PageProps
+  extends InferMappedProps,
+    RouteComponentProps<{}, StaticContext, LocationState> {}
+
+const LinkedinCallback: React.FC<PageProps> = ({
+  eProps,
+  ...props
+}: PageProps) => {
   const history = useHistory();
   const [credentials, setCredentials] = useState({
     name: '',
@@ -60,41 +78,40 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
         const firstName = linkedinprofile.data.profile.localizedFirstName.toLowerCase();
         const lastName = linkedinprofile.data.profile.localizedLastName.toLowerCase();
 
-        let userSession = UserService.GetUserSession();
-        debugger;
-        if (userSession) {
+        if (props.session && props.session.did !== '') {
           console.log('entrou aqui');
           let vc = await DidcredsService.generateVerifiableCredential(
-            userSession.did,
+            props.session.did,
             CredentialType.Linkedin,
             firstName + '' + lastName
           );
 
-          let state = await DidDocumentService.getUserDocument(userSession);
-
+          let state = await DidDocumentService.getUserDocument(props.session);
           await DidService.addVerfiableCredentialToDIDDocument(
             state.diddocument,
             vc
           );
-
           DidDocumentService.updateUserDocument(state.diddocument);
 
-          userSession.loginCred!.linkedin! = firstName + '' + lastName;
-          if (!userSession.badges!.socialVerify!.linkedin.archived) {
-            userSession.badges!.socialVerify!.linkedin.archived = new Date().getTime();
+          let newSession = JSON.parse(JSON.stringify(props.session));
+          newSession.loginCred!.linkedin! = firstName + '' + lastName;
+          if (!newSession.badges!.socialVerify!.linkedin.archived) {
+            newSession.badges!.socialVerify!.linkedin.archived = new Date().getTime();
             await ProfileService.addActivity(
               {
                 guid: '',
-                did: userSession.did,
+                did: newSession.did,
                 message: 'You received a Linkedin verfication badge',
                 read: false,
                 createdAt: 0,
                 updatedAt: 0
               },
-              userSession.did
+              newSession
             );
           }
-          await UserService.updateSession(userSession);
+          eProps.setSession({
+            session: await UserService.updateSession(newSession)
+          });
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredLinkedin(
@@ -145,4 +162,19 @@ const LinkedinCallback: React.FC<RouteComponentProps> = props => {
   return getRedirect();
 };
 
-export default LinkedinCallback;
+// export default LinkedinCallback;
+
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LinkedinCallback);

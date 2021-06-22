@@ -16,10 +16,13 @@ import SelectInput from 'src/components/inputs/SelectInput';
 import TextareaInput from 'src/components/inputs/TextareaInput';
 import FileInput from 'src/components/inputs/FileInput';
 import { Button } from 'src/components/buttons';
-import { UserService } from 'src/services/user.service';
 import { showNotify } from 'src/utils/notify';
 
-const SettingsReport: React.FC = () => {
+interface Props {
+  useSession: ISessionItem;
+}
+
+const SettingsReport: React.FC<Props> = ({ useSession }: Props) => {
   const [description, setDescription] = useState('');
   const [subject, setSubject] = useState('');
   const [feedback, setFeedback] = useState('1');
@@ -45,9 +48,9 @@ const SettingsReport: React.FC = () => {
 
   const send = async () => {
     const userinfo = {
-      name: UserService.GetUserSession()?.name,
-      did: UserService.GetUserSession()?.did,
-      email: UserService.GetUserSession()?.loginCred?.email
+      name: useSession.name,
+      did: useSession.did,
+      email: useSession.loginCred?.email
     };
     const feedbackType = feedback === '1' ? 'Suggestion' : 'Bug';
     const bodyContact = {
