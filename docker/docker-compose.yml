@@ -19,7 +19,7 @@ services:
 
   assist-restapi-node:
     container_name: assist-restapi-node
-    image: tuumtech/assist-restapi-node:v2.0.0
+    image: tuumtech/assist-restapi-node:latest
     user: '${UID}:${GID}'
     volumes:
       - ${PWD}/docker/assist-restapi.env:/src/.env
