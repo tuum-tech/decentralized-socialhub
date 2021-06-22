@@ -319,7 +319,8 @@ export class UserService {
       code: Guid.create().toString(),
       status: 'Created',
       mnemonics,
-      coverPhoto: ''
+      coverPhoto: '',
+      pageTemplate: 'default'
     };
     let curTime = new Date().getTime();
     let messages = [];

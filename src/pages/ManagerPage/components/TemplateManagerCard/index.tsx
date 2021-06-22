@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   IonCardTitle,
   IonCardHeader,
@@ -7,12 +7,18 @@ import {
   IonGrid,
   IonRow,
   IonCol,
-  IonText
+  IonText,
+  IonRadioGroup,
+  IonRadio,
+  IonButton
 } from '@ionic/react';
 import styled from 'styled-components';
 
+import { UserService } from 'src/services/user.service';
+import { ProfileName } from 'src/components/texts';
+import Avatar from 'src/components/Avatar';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
-import ProfileTemplateManager from '../ProfileTemplateManager';
+import { useEffect } from 'react';
 
 export const Divider = styled.hr`
   width: 100%;
@@ -24,11 +30,47 @@ export const Divider = styled.hr`
   background-color: #f7fafc;
 `;
 
+const Header3 = styled.span`
+  font-family: 'SF Pro Display';
+  font-size: 14px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.71;
+  letter-spacing: normal;
+  text-align: left;
+  color: #1f2d3d;
+`;
+
+const ProfileStatus = styled.span`
+  font-family: 'SF Pro Display';
+  font-size: 16px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.62;
+  letter-spacing: normal;
+  text-align: left;
+  color: #4c6fff;
+`;
+
 interface IProps {
   sessionItem: ISessionItem;
 }
 
 const TemplateManagerCard: React.FC<IProps> = ({ sessionItem }: IProps) => {
+  const [selected, setSelected] = useState<string>(
+    sessionItem.pageTemplate || 'default'
+  );
+
+  const [updating, setUpdating] = useState(false);
+  useEffect(() => {
+    if (updating) return;
+    if (sessionItem.pageTemplate && sessionItem.pageTemplate !== selected) {
+      setSelected(sessionItem.pageTemplate);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionItem.pageTemplate]);
   return (
     <IonCard className={styleWidget['overview']}>
       <IonCardHeader>
@@ -47,9 +89,70 @@ const TemplateManagerCard: React.FC<IProps> = ({ sessionItem }: IProps) => {
           on Dashboard.
         </IonText>
         <Divider />
-        {sessionItem && sessionItem.did && (
-          <ProfileTemplateManager sessionItem={sessionItem} />
-        )}
+        <IonRadioGroup
+          value={selected}
+          onIonChange={async e => {
+            const newSession = {
+              ...sessionItem,
+              pageTemplate: e.detail.value
+            };
+            await UserService.updateSession(newSession, true);
+            setSelected(e.detail.value);
+          }}
+        >
+          <IonGrid>
+            <IonRow>
+              <IonCol size="auto">
+                <Avatar did={sessionItem.did} />
+              </IonCol>
+              <IonCol size="8">
+                <IonGrid>
+                  <IonRow>
+                    <ProfileName>{sessionItem.name}</ProfileName>
+                  </IonRow>
+                  <IonRow>
+                    <ProfileStatus>
+                      Profile is{' '}
+                      {sessionItem.onBoardingCompleted &&
+                      sessionItem.tutorialStep === 4
+                        ? 'ready'
+                        : 'not yet ready'}
+                    </ProfileStatus>
+                  </IonRow>
+                </IonGrid>
+              </IonCol>
+            </IonRow>
+            <Divider />
+
+            <IonRow className="ion-justify-content-between">
+              <IonCol size="*">
+                <Header3>General Profile</Header3>
+                <h4> Everything displayed</h4>
+              </IonCol>
+
+              <IonCol size="2">
+                <IonRadio value="default"></IonRadio>
+              </IonCol>
+            </IonRow>
+            <Divider />
+
+            <IonRow className="ion-justify-content-between">
+              <IonCol size="*">
+                <Header3>Academic Profile</Header3>
+                <h4> Education based</h4>
+              </IonCol>
+
+              <IonCol size="2">
+                <IonRadio value="academic"></IonRadio>
+              </IonCol>
+            </IonRow>
+            <Divider />
+
+            <IonRow>
+              <IonButton>Learn more about templates</IonButton>
+            </IonRow>
+          </IonGrid>
+        </IonRadioGroup>
       </IonCardContent>
     </IonCard>
   );

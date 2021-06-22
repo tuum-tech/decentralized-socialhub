@@ -89,7 +89,8 @@ let run = async () => {
           hiveHost: '$params.hiveHost',
           avatar: '$params.avatar',
           code: '$params.code',
-          status: '$params.status'
+          status: '$params.status',
+          pageTemplate: '$params.pageTemplate'
         }
       }
     }
@@ -123,7 +124,8 @@ let run = async () => {
             onBoardingCompleted: '$params.onBoardingCompleted',
             tutorialStep: '$params.tutorialStep',
             hiveHost: '$params.hiveHost',
-            avatar: '$params.avatar'
+            avatar: '$params.avatar',
+            pageTemplate: '$params.pageTemplate'
           }
         }
       }

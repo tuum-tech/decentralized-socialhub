@@ -15,7 +15,7 @@ import EducationCard from 'src/components/cards/EducationCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 import FollowCards from 'src/components/follow/FollowCards';
-import PublicProfileTabs from '../PublicProfileTabs';
+import PublicProfileTabs from './PublicProfileTabs';
 import ProfileHeader from '../ProfileHeader';
 
 import style from './style.module.scss';

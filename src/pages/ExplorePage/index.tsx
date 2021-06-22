@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
+import React, { useState, useEffect, useRef } from 'react';
+import { IonPage, IonGrid, IonRow, IonCol, IonContent } from '@ionic/react';
 import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
 
@@ -10,10 +10,12 @@ import { SubState, InferMappedProps } from './types';
 import { setSession } from 'src/store/users/actions';
 
 import { ProfileService } from 'src/services/profile.service';
+import { FollowService } from 'src/services/follow.service';
 import Logo from 'src/components/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 
-import ProfileComponent from './components/ProfileComponent';
+import ProfileComponent from 'src/components/profile/ProfileComponent';
+import ViewAllFollowModal from 'src/components/follow/ViewAllFollowModal';
 import SearchComponent from './components/SearchComponent';
 import arrowLeft from '../../assets/icon/arrow-left-square.svg';
 
@@ -54,14 +56,59 @@ interface PageProps
 
 const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   const [publicFields, setPublicFields] = useState<string[]>([]);
+  const [followerDids, setFollowerDids] = useState<string[]>([]);
+  const [followingDids, setFollowingDids] = useState<string[]>([]);
+
+  const [showAllFollow, setShowAllFollow] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0);
+
+  const contentRef = useRef<HTMLIonContentElement | null>(null);
+  const aboutRef = useRef<HTMLDivElement | null>(null);
+  const experienceRef = useRef<HTMLDivElement | null>(null);
+  const educationRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToElement = (cardName: string) => {
+    let point: number = 0;
+    let adjust = 0;
+    if (scrollTop < 176) adjust = 292 - scrollTop;
+    else {
+      adjust = 260 - scrollTop;
+    }
+
+    if (cardName === 'about') {
+      point = 0;
+    }
+    if (cardName === 'experience') {
+      point = (experienceRef.current!.getBoundingClientRect().top -
+        adjust) as number;
+    }
+    if (cardName === 'education') {
+      point = (educationRef.current!.getBoundingClientRect().top -
+        adjust) as number;
+    }
+    contentRef.current && contentRef.current.scrollToPoint(0, point, 200);
+  };
+
   useEffect(() => {
     (async () => {
       const pFields = await ProfileService.getPublicFields(
         props.match.params.did
       );
       setPublicFields(pFields);
+
+      const followerDids = await FollowService.getFollowerDids(
+        props.match.params.did,
+        props.session
+      );
+      setFollowerDids(followerDids);
+
+      const followingdids = await FollowService.getFollowingDids(
+        props.match.params.did,
+        props.session
+      );
+      setFollowingDids(followingdids);
     })();
-  }, [props.match.params.did]);
+  }, [props.session, props.match.params.did]);
 
   return (
     <IonPage className={style['explorepage']}>
@@ -84,16 +131,50 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
                   />
                   <PageTitle>Explore</PageTitle>
                 </Header>
-                <ProfileComponent
-                  publicFields={publicFields}
-                  userSession={props.session}
-                  targetDid={props.match.params.did}
-                />
+                <IonContent
+                  style={{
+                    height: 'calc(100% - 83px'
+                  }}
+                  ref={contentRef}
+                  scrollEvents={true}
+                  onIonScroll={(e: any) => {
+                    setScrollTop(e.detail.scrollTop);
+                  }}
+                >
+                  <ProfileComponent
+                    publicFields={publicFields}
+                    userSession={props.session}
+                    targetDid={props.match.params.did}
+                    scrollToElement={scrollToElement}
+                    aboutRef={aboutRef}
+                    experienceRef={experienceRef}
+                    educationRef={educationRef}
+                    viewAllClicked={(isFollower: boolean) => {
+                      setShowAllFollow(isFollower ? 1 : 2);
+                    }}
+                    followerDids={followerDids}
+                    followingDids={followingDids}
+                  />
+                </IonContent>
               </div>
             )}
           </IonCol>
         </IonRow>
       </IonGrid>
+      {showAllFollow > 0 && (
+        <ViewAllFollowModal
+          userSession={props.session}
+          showFollowerCard={publicFields.includes('follower')}
+          showFollowingCard={publicFields.includes('following')}
+          followerDids={followerDids}
+          followingDids={followingDids}
+          setFollowerDids={setFollowerDids}
+          setFollowingDids={setFollowingDids}
+          onClose={() => setShowAllFollow(0)}
+          isFollower={showAllFollow === 1}
+          editable={false}
+        />
+      )}
     </IonPage>
   );
 };

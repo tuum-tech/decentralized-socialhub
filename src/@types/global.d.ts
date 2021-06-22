@@ -92,6 +92,7 @@ interface ISessionItem {
   coverPhoto?: string;
   code?: string;
   status?: string;
+  pageTemplate?: string;
 }
 
 interface LoginCred {
