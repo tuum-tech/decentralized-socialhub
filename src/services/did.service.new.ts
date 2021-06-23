@@ -17,39 +17,32 @@ export enum PublishRequestOperation {
 }
 
 export class DidService implements IDidService {
-  static rootIdentity?: RootIdentity;
-  static store?: DIDStore;
+  rootIdentity?: RootIdentity;
+  store?: DIDStore;
 
-  async loadDid(mnemonic: string, password: string = ''): Promise<IDID> {
+  loadDid = async (mnemonic: string, password: string = ''): Promise<IDID> => {
     debugger;
     DIDBackend.initialize(new DefaultDIDAdapter('mainnet'));
-    DidService.store = await DIDStore.open('/generated/tmp/DIDStore');
-    DidService.rootIdentity = RootIdentity.createFromMnemonic(
+    this.store = await DIDStore.open('/generated/tmp/DIDStore');
+    this.rootIdentity = RootIdentity.createFromMnemonic(
       mnemonic,
       password,
-      DidService.store,
+      this.store,
       'passw',
       true
     );
 
-    let did = DidService.rootIdentity.getDid(0);
-    debugger;
-    // mnemonic: string;
-    // privateKey: string;
-    // publicKey: string;
-    // did: string;
+    let did = this.rootIdentity.getDid(0);
 
     // Validate all
     let ret: IDID = {
       mnemonic: mnemonic,
-      publicKey: DidService.rootIdentity
-        .getPreDerivedPublicKey()
-        .serializeBase58(),
+      publicKey: this.rootIdentity.getPreDerivedPublicKey().serializeBase58(),
       privateKey: 'how',
       did: did.toString()
     };
     return ret;
-  }
+  };
 
   async generateNew(): Promise<IDID> {
     let newDid = await ElastosClient.did.generateNew();
@@ -57,26 +50,19 @@ export class DidService implements IDidService {
     return newDid;
   }
 
-  async getDidDocument(did: any, useCache: boolean = true): Promise<any> {
-    // let document = await ElastosClient.didDocuments.getMostRecentDIDDocument(
-    //   did,
-    //   { useCache: useCache }
-    // );
-    // return document;\
-
-    if (DidService.store?.containsDid(did)) {
+  getDidDocument = async (did: any, useCache: boolean = true): Promise<any> => {
+    if (this.store?.containsDid(did)) {
       debugger;
     }
-    let did2 = DidService.rootIdentity?.getDid(0);
+    let did2 = this.rootIdentity?.getDid(0);
     debugger;
     return await did2?.resolve();
-  }
+  };
 
-  async isDIDPublished(did: string): Promise<boolean> {
+  isDIDPublished = async (did: string): Promise<boolean> => {
     let document: DIDDocument = await this.getDidDocument(did);
-    debugger;
     return document && document !== undefined;
-  }
+  };
 
   isSignedDIDDocumentValid(signedDocument: any, did: IDID): boolean {
     return ElastosClient.didDocuments.isValid(signedDocument, did);

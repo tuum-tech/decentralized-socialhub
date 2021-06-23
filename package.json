@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@elastos/elastos-hive-js-sdk": "github:elastos/Elastos.NET.Hive.JS.SDK",
-    "@elastosfoundation/did-js-sdk": "^2.0.5",
+    "@elastosfoundation/did-js-sdk": "^2.0.6",
     "@elastosfoundation/elastos-js-sdk": "^1.2.11",
     "@sentry/react": "^6.7.2",
     "@sentry/tracing": "^6.7.2",
@@ -29,6 +29,7 @@
     "react-dom": "^16.14.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-intl": "^3.12.1",
+    "react-is": "^17.0.2",
     "react-paginate": "^7.1.3",
     "react-redux": "^7.2.2",
     "react-router": "^5.2.0",
@@ -45,7 +46,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "node --max_old_space_size=8192 node_modules/.bin/react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "gen-page": "node internals/simplegen/index.js pages",
