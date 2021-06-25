@@ -79,7 +79,6 @@ const CreateProfileWithDidPageNew: React.FC<PageProps> = ({
       next={async pwd => {
         setLoading(true);
         let userService = new UserService(new DidService());
-        debugger;
         let sessionItem = await userService.CreateNewUser(
           userInfo.name,
           AccountType.DID,
