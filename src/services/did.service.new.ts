@@ -20,14 +20,14 @@ export class DidService implements IDidService {
   rootIdentity?: RootIdentity;
   store?: DIDStore;
 
-  static InitializeMainnet(){
+  static InitializeMainnet() {
     DIDBackend.initialize(new DefaultDIDAdapter('mainnet'));
   }
-  
 
   loadDid = async (mnemonic: string, password: string = ''): Promise<IDID> => {
-  
-    this.store = await DIDStore.open(process.env.REACT_APP_DID_STORE_PATH as string);
+    this.store = await DIDStore.open(
+      process.env.REACT_APP_DID_STORE_PATH as string
+    );
     this.rootIdentity = RootIdentity.createFromMnemonic(
       mnemonic,
       password,
@@ -49,33 +49,26 @@ export class DidService implements IDidService {
   };
 
   async generateNew(): Promise<IDID> {
-    debugger;
     const ind: number = this.rootIdentity?.getIndex() as number;
 
-    let didDocument = this.rootIdentity?.newDid("passw",ind+1);
-    let did: DID = this.rootIdentity?.getDid(ind+1) as DID;
-   
+    //let didDocument = this.rootIdentity?.newDid("passw",ind+1);
+    let did: DID = this.rootIdentity?.getDid(ind + 1) as DID;
+
     let ret: IDID = {
-        mnemonic: this.rootIdentity?.exportMnemonic("passw") as string,
-        publicKey: this.rootIdentity?.getPreDerivedPublicKey().serializeBase58() as string,
-        privateKey: 'how',
-        did: did.toString()
-     };
+      mnemonic: this.rootIdentity?.exportMnemonic('passw') as string,
+      publicKey: this.rootIdentity
+        ?.getPreDerivedPublicKey()
+        .serializeBase58() as string,
+      privateKey: 'how',
+      did: did.toString()
+    };
 
-
-
-    let newDid = await ElastosClient.did.generateNew();
-
-    return newDid;
+    return ret;
   }
 
   getDidDocument = async (did: any, useCache: boolean = true): Promise<any> => {
-    if (this.store?.containsDid(did)) {
-      debugger;
-    }
-    let did2 = this.rootIdentity?.getDid(0);
-    debugger;
-    return await did2?.resolve();
+    let didRoot = this.rootIdentity?.getDid(0) as DID;
+    return await didRoot.resolve();
   };
 
   isDIDPublished = async (did: string): Promise<boolean> => {
@@ -84,7 +77,6 @@ export class DidService implements IDidService {
   };
 
   isSignedDIDDocumentValid(signedDocument: any, did: IDID): boolean {
-
     throw new Error('not implemented');
     //return ElastosClient.didDocuments.isValid(signedDocument, did);
   }
