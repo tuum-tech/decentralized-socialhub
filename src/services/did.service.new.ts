@@ -7,8 +7,6 @@ import {
   RootIdentity
 } from '@elastosfoundation/did-js-sdk/';
 
-import { ElastosClient } from '@elastosfoundation/elastos-js-sdk';
-import { storefront } from 'ionicons/icons';
 import { IDidService, IDID } from './did.service';
 
 export enum PublishRequestOperation {
