@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { AccountType } from 'src/services/user.service';
+
+import { UserService, AccountType } from 'src/services/user.service';
 
 import SetPassword from '../../components/SetPassword';
-import { UserService } from 'src/services/user.service';
 import { DidService } from 'src/services/did.service';
 
 interface Props {
+  afterPasswordSet: (res: ISessionItem) => void;
   name: string;
   loginCred: LoginCred;
   credential: string;
@@ -20,15 +21,14 @@ interface Props {
     | AccountType.Email;
 }
 
-const GenerateDid: React.FC<Props> = props => {
-  /**
-   * Direct method implementation without SAGA
-   * This was to show you dont need to put everything to global state
-   * incoming from Server API calls. Maintain a local state.
-   */
-
+const GenerateDid: React.FC<Props> = ({
+  afterPasswordSet,
+  name,
+  loginCred,
+  service,
+  credential
+}: Props) => {
   const [loading, setLoading] = useState(false);
-  const { name, loginCred, service, credential } = props;
 
   let userService = new UserService(new DidService());
 
@@ -37,7 +37,7 @@ const GenerateDid: React.FC<Props> = props => {
       loading={loading}
       next={async pwd => {
         setLoading(true);
-        await userService.CreateNewUser(
+        const sessionItem = await userService.CreateNewUser(
           name,
           service,
           loginCred,
@@ -47,8 +47,8 @@ const GenerateDid: React.FC<Props> = props => {
           '',
           ''
         );
-        window.location.href = '/profile';
         setLoading(false);
+        afterPasswordSet(sessionItem);
       }}
     />
   );

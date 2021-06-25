@@ -205,6 +205,100 @@ interface BadgeArchiveModel {
   archived: number | boolean;
 }
 
+interface ProfileInfo {
+  name: string;
+}
+
+interface ProfileContent {
+  basic_profile: ProfileInfo;
+}
+
+interface ProfileResponse {
+  _status: string;
+  get_basic: GetBasic;
+  get_education_profile: EducationDTO;
+  get_experience_profile: ExperienceDTO;
+}
+
+interface BasicProfileResponse {
+  _status: string;
+  get_basic_profile: GetBasic;
+}
+
+interface EducationProfileResponse {
+  _status: string;
+  get_education_profile: EducationDTO;
+}
+
+interface ExperienceProfileResponse {
+  _status: string;
+  get_experience_profile: ExperienceDTO;
+}
+
+interface GetBasic {
+  items?: BasicDTO[] | null;
+}
+
+interface ITemporaryDID {
+  mnemonic: string;
+  confirmationId: string;
+}
+
+interface UserData {
+  did: string;
+  name: string;
+  data: string;
+}
+
+interface SignInDIDData {
+  name: string;
+  did: string;
+  hiveHost: string;
+  userToken: string;
+  isDIDPublished: boolean;
+}
+
+interface ProfileInfo {
+  name: string;
+}
+
+interface ProfileContent {
+  basic_profile: ProfileInfo;
+}
+
+interface ProfileResponse {
+  _status: string;
+  get_basic: GetBasic;
+  get_education_profile: EducationDTO;
+  get_experience_profile: ExperienceDTO;
+}
+
+interface BasicProfileResponse {
+  _status: string;
+  get_basic_profile: GetBasic;
+}
+
+interface EducationProfileResponse {
+  _status: string;
+  get_education_profile: EducationDTO;
+}
+
+interface ExperienceProfileResponse {
+  _status: string;
+  get_experience_profile: ExperienceDTO;
+}
+
+interface GetBasic {
+  items?: BasicDTO[] | null;
+}
+
+interface ICreateUserResponse {
+  data: {
+    return_code: string;
+    did: string;
+  };
+}
+
 interface PublicProfileResponse {
   _status: string;
   get_public_fields: {

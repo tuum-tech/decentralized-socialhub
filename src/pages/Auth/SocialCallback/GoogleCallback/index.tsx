@@ -1,24 +1,45 @@
-/**
- * Page
- */
 import React, { useEffect, useState } from 'react';
-import { Redirect, RouteComponentProps, useHistory } from 'react-router';
 
-import PageLoading from 'src/components/layouts/PageLoading';
-import { AccountType, UserService } from 'src/services/user.service';
+import {
+  Redirect,
+  RouteComponentProps,
+  useHistory,
+  StaticContext
+} from 'react-router';
 
-import { TokenResponse } from './types';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import {
+  TokenResponse,
+  LocationState,
+  InferMappedProps,
+  SubState
+} from './types';
+
 import {
   requestGoogleId,
   requestGoogleToken,
   getUsersWithRegisteredGoogle
 } from './fetchapi';
+
+import PageLoading from 'src/components/layouts/PageLoading';
+import { AccountType, UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service';
 
-const GoogleCallback: React.FC<RouteComponentProps> = props => {
+interface PageProps
+  extends InferMappedProps,
+    RouteComponentProps<{}, StaticContext, LocationState> {}
+
+const GoogleCallback: React.FC<PageProps> = ({
+  eProps,
+  ...props
+}: PageProps) => {
   /**
    * Direct method implementation without SAGA
    * This was to show you dont need to put everything to global state
@@ -51,38 +72,41 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
         let t = await getToken(code, state);
         let googleId = await requestGoogleId(t.data.request_token);
 
-        let userSession = UserService.GetUserSession();
-        if (userSession) {
+        if (props.session && props.session.did !== '') {
           let vc = await DidcredsService.generateVerifiableCredential(
-            userSession.did,
+            props.session.did,
             CredentialType.Google,
             googleId.email
           );
-          let state = await DidDocumentService.getUserDocument(userSession);
 
+          let state = await DidDocumentService.getUserDocument(props.session);
           await didService.addVerfiableCredentialToDIDDocument(
             state.diddocument,
             vc
           );
-
           DidDocumentService.updateUserDocument(state.diddocument);
-          userSession.loginCred!.google! = googleId.email;
-          if (!userSession.badges!.socialVerify!.google.archived) {
-            userSession.badges!.socialVerify!.google.archived = new Date().getTime();
+
+          let newSession = JSON.parse(JSON.stringify(props.session));
+          newSession.loginCred!.google! = googleId.email;
+          if (!newSession.badges!.socialVerify!.google.archived) {
+            newSession.badges!.socialVerify!.google.archived = new Date().getTime();
             await ProfileService.addActivity(
               {
                 guid: '',
-                did: userSession.did,
+                did: newSession.did,
                 message: 'You received a Google verfication badge',
                 read: false,
                 createdAt: 0,
                 updatedAt: 0
               },
-              userSession.did
+              newSession
             );
           }
-          let userService = new UserService(new DidService());
-          await userService.updateSession(userSession);
+           let userService = new UserService(didService);
+          eProps.setSession({
+            session: await userService.updateSession(newSession)
+          });
+         
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredGoogle(googleId.email);
@@ -132,4 +156,19 @@ const GoogleCallback: React.FC<RouteComponentProps> = props => {
   return getRedirect();
 };
 
-export default GoogleCallback;
+// export default GoogleCallback;
+
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(GoogleCallback);

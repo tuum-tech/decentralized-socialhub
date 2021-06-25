@@ -31,38 +31,6 @@ services:
       - profile
     tty: true
 
-  vouch-restapi-node:
-    container_name: vouch-restapi-node
-    image: tuumtech/vouch-restapi-node:latest
-    user: '${UID}:${GID}'
-    volumes:
-      - ${PWD}/docker/vouch-restapi.env:/src/.env
-    ports:
-      - 9003:5000
-    depends_on:
-      - restapi-mongo
-      - restapi-redis
-    networks:
-      - profile
-    tty: true
-
-  didcreds-validator-node:
-    container_name: didcreds-validator-node
-    image: tuumtech/didcreds-validator-node:latest
-    user: '${UID}:${GID}'
-    volumes:
-      - ${HOME}/.profile-data/didcreds-didstore:/src/data
-      - ${PWD}/docker/didcreds-validator.env:/src/.env
-    ports:
-      - 9004:5000
-    depends_on:
-      - restapi-mongo
-      - restapi-redis
-      - vouch-restapi-node
-    networks:
-      - profile
-    tty: true
-
   restapi-mongo:
     container_name: restapi-mongo
     image: mongo
@@ -74,18 +42,6 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=mongoadmin
       - MONGO_INITDB_ROOT_PASSWORD=mongopass
-    networks:
-      - profile
-    tty: true
-
-  restapi-redis:
-    container_name: restapi-redis
-    image: redis
-    user: '${UID}:${GID}'
-    volumes:
-      - ${HOME}/.profile-data/restapi-redis-data:/data
-    ports:
-      - 7379:6379
     networks:
       - profile
     tty: true

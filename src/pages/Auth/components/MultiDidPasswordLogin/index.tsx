@@ -28,6 +28,7 @@ import { DidService } from 'src/services/did.service';
 
 interface Props {
   changeMode: () => void;
+  afterSuccess: (session: ISessionItem) => void;
   dids: Array<string>;
   removeUser: (did: string) => void;
 }
@@ -35,7 +36,8 @@ interface Props {
 const MultiDidPasswordLogin: React.FC<Props> = ({
   dids,
   changeMode,
-  removeUser
+  removeUser,
+  afterSuccess
 }) => {
   const [did, setDid] = useState(dids[0]);
   const [localUsers, setLocalUsers] = useState([]);
@@ -114,9 +116,8 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
 
               const res = await userService.UnLockWithDIDAndPwd(did, password);
               if (res) {
-                window.location.href = '/profile';
+                afterSuccess(res);
               }
-              setLoading('');
             }}
           />
 

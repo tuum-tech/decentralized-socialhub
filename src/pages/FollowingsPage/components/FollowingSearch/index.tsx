@@ -6,7 +6,6 @@ import {
 import FollowingTabs from '../FollowingTabs';
 import FollowingHeader from '../FollowingHeader';
 import { ProfileService } from 'src/services/profile.service';
-import { UserService } from 'src/services/user.service';
 import { alertError } from 'src/utils/notify';
 
 export interface IUserResponse {
@@ -21,7 +20,11 @@ export interface IUserResponse {
   };
 }
 
-const FollowingSearch: React.FC = () => {
+interface Props {
+  userSession: ISessionItem;
+}
+
+const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
   const [filteredUniversities] = useState<IUniversitiesResponse>({
     get_universities: { items: [] }
   });
@@ -48,55 +51,50 @@ const FollowingSearch: React.FC = () => {
     return str != null && regex.test(str.trim());
   };
 
-  const loadFollowingData = async () => {
-    try {
-      let user = UserService.GetUserSession();
-      if (user && user.did) {
-        let following = await ProfileService.getFollowings(user.did);
-        setListFollowing(following as IFollowingResponse);
+  useEffect(() => {
+    (async () => {
+      // await loadFollowingData();
+      try {
+        if (userSession && userSession.did) {
+          let following = await ProfileService.getFollowings(
+            userSession.did,
+            userSession
+          );
+          setListFollowing(following as IFollowingResponse);
+        }
+      } catch (e) {
+        alertError(null, 'Could not load users that you follow');
       }
-    } catch (e) {
-      alertError(null, 'Could not load users that you follow');
-    }
-  };
-
-  const loadUsersData = async () => {
-    let searchServiceLocal: SearchService;
-
-    let dids: string[] = [];
-
-    if (
-      listFollowing.get_following.items &&
-      listFollowing.get_following.items.length
-    ) {
-      dids = listFollowing.get_following.items.map(u => u.did);
-    }
-
-    try {
-      searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-      let listUsers: any = await searchServiceLocal.getUsersByDIDs(
-        dids,
-        200,
-        0
-      );
-
-      setFilteredUsers(listUsers.response);
-    } catch (e) {
-      setFilteredUsers({ get_users_by_dids: { items: [] } });
-      alertError(null, 'Could not load users');
-      return;
-    }
-  };
-
-  useEffect(() => {
-    (async () => {
-      await loadFollowingData();
     })();
-  }, []);
+  }, [userSession, userSession.did]);
 
   useEffect(() => {
     (async () => {
-      await loadUsersData();
+      let searchServiceLocal: SearchService;
+
+      let dids: string[] = [];
+
+      if (
+        listFollowing.get_following.items &&
+        listFollowing.get_following.items.length
+      ) {
+        dids = listFollowing.get_following.items.map(u => u.did);
+      }
+
+      try {
+        searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
+        let listUsers: any = await searchServiceLocal.getUsersByDIDs(
+          dids,
+          200,
+          0
+        );
+
+        setFilteredUsers(listUsers.response);
+      } catch (e) {
+        setFilteredUsers({ get_users_by_dids: { items: [] } });
+        alertError(null, 'Could not load users');
+        return;
+      }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listFollowing]);

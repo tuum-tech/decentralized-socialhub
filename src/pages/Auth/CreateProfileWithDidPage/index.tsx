@@ -1,7 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { createStructuredSelector } from 'reselect';
+import React, { useEffect, useState } from 'react';
 import { StaticContext, RouteComponentProps } from 'react-router';
 import { AccountType, UserService } from 'src/services/user.service';
 
@@ -11,20 +8,21 @@ import { retrieveDocInfo, UserType } from 'src/utils/user';
 import ProfileFields from '../components/ProfileFields';
 import SetPassword from '../components/SetPassword';
 
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
-import injector from 'src/baseplate/injectorWrap';
-import { incrementAction, getSimpleAjax } from './actions';
-import { NameSpace } from './constants';
-import reducer from './reducer';
-import saga from './saga';
-import { InferMappedProps, SubState, LocationState } from './types';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
+import { setSession } from 'src/store/users/actions';
+import { InferMappedProps, LocationState, SubState } from './types';
+import { makeSelectSession } from 'src/store/users/selectors';
 import { DidService } from 'src/services/did.service';
 
-const CreateProfileWithDidPage: React.FC<RouteComponentProps<
-  {},
-  StaticContext,
-  LocationState
->> = props => {
+interface PageProps
+  extends InferMappedProps,
+    RouteComponentProps<{}, StaticContext, LocationState> {}
+
+const CreateProfileWithDidPage: React.FC<PageProps> = ({
+  eProps,
+  ...props
+}: PageProps) => {
   const [userInfo, setUserInfo] = useState<UserType>({
     did: '',
     mnemonic: '',
@@ -81,7 +79,7 @@ const CreateProfileWithDidPage: React.FC<RouteComponentProps<
       next={async pwd => {
         setLoading(true);
         let userService = new UserService(new DidService());
-        await userService.CreateNewUser(
+        let sessionItem = await userService.CreateNewUser(
           userInfo.name,
           AccountType.DID,
           userInfo.loginCred,
@@ -92,6 +90,7 @@ const CreateProfileWithDidPage: React.FC<RouteComponentProps<
           userInfo.hiveHost,
           userInfo.avatar
         );
+        eProps.setSession({ session: sessionItem });
         window.location.href = '/profile';
         setLoading(false);
       }}
@@ -99,39 +98,17 @@ const CreateProfileWithDidPage: React.FC<RouteComponentProps<
   );
 };
 
-/** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg()
+  session: makeSelectSession()
 });
 
-/** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
   return {
     eProps: {
-      // eProps - Emitter proptypes thats binds to dispatch
-      /** dispatch for counter to increment */
-      onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax())
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
     }
   };
 }
 
-/**
- * Injects prop and saga bindings done via
- * useInjectReducer & useInjectSaga
- */
-const withInjectedMode = injector(CreateProfileWithDidPage, {
-  key: NameSpace,
-  reducer,
-  saga
-});
-
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
-
-export default compose(
-  withConnect,
-  memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>;
-
-// export default Tab1;
+export default connect(null, mapDispatchToProps)(CreateProfileWithDidPage);

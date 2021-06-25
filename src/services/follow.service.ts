@@ -26,10 +26,11 @@ export class FollowService {
     return res_user_dids;
   }
 
-  public static async getFollowerDids(did: string) {
-    const followersRes = (await ProfileService.getFollowers([
-      did
-    ])) as IFollowerResponse;
+  public static async getFollowerDids(did: string, session: ISessionItem) {
+    const followersRes = (await ProfileService.getFollowers(
+      [did],
+      session
+    )) as IFollowerResponse;
     let followerDids = [];
 
     const array_res = getItemsFromData(followersRes, 'get_followers');
@@ -40,9 +41,10 @@ export class FollowService {
     return followerDids;
   }
 
-  public static async getFollowingDids(did: string) {
+  public static async getFollowingDids(did: string, session: ISessionItem) {
     const followingRes = (await ProfileService.getFollowings(
-      did
+      session.did,
+      session
     )) as IFollowingResponse;
     let followingDids = getItemsFromData(followingRes, 'get_following').map(
       (item: any) => item.did
@@ -55,7 +57,8 @@ export class FollowService {
     dids: string[],
     searchQuery: string,
     pageSize = 200,
-    pageNumber = 1
+    pageNumber = 1,
+    userSession: ISessionItem
   ) {
     const searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
     if (searchQuery === '') {
@@ -72,7 +75,8 @@ export class FollowService {
       searchQuery,
       dids,
       pageSize,
-      (pageNumber - 1) * pageSize
+      (pageNumber - 1) * pageSize,
+      userSession
     );
     return res;
   }

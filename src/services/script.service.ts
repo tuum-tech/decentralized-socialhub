@@ -171,7 +171,7 @@ export class TuumTechScriptService {
   }
 
   public static async updateTuumUser(params: ISessionItem) {
-    const add_user_script = {
+    const update_user_script = {
       name: 'update_user',
       params,
       context: {
@@ -179,7 +179,7 @@ export class TuumTechScriptService {
         target_app_did: process.env.REACT_APP_APPLICATION_ID
       }
     };
-    let response: any = await this.runTuumTechScript(add_user_script);
+    let response: any = await this.runTuumTechScript(update_user_script);
     return response;
   }
 
@@ -225,10 +225,13 @@ export class UserVaultScriptService {
     return userToken;
   }
 
-  public static async register() {
-    let user = UserService.GetUserSession();
+  public static async register(user: ISessionItem) {
     if (!user) return;
-    let response = await TuumTechScriptService.searchUserWithDIDs([user.did]);
+
+    let newUser = user;
+    let response = await TuumTechScriptService.searchUserWithDIDs([
+      newUser.did
+    ]);
     if (
       response.data &&
       response.data.get_user_by_did &&
@@ -245,18 +248,20 @@ export class UserVaultScriptService {
 
       try {
         let userToken = await this.generateUserToken(
-          user.mnemonics,
-          user.hiveHost
+          newUser.mnemonics,
+          newUser.hiveHost
         );
-        user.userToken = userToken;
+        newUser.userToken = userToken;
         let userService = new UserService(new DidService());
-        await userService.updateSession(user);
-        let hiveInstance = await HiveService.getSessionInstance();
+        await userService.updateSession(newUser);
+        let hiveInstance = await HiveService.getSessionInstance(newUser);
+      
         await UserVaultScripts.Execute(hiveInstance!);
       } catch (error) {
         console.log('Could not register: ' + error);
         alertError(null, 'Could not register');
       }
     }
+    return newUser;
   }
 }

@@ -20,15 +20,19 @@ export class DidService implements IDidService {
   rootIdentity?: RootIdentity;
   store?: DIDStore;
 
-  loadDid = async (mnemonic: string, password: string = ''): Promise<IDID> => {
-    debugger;
+  static InitializeMainnet(){
     DIDBackend.initialize(new DefaultDIDAdapter('mainnet'));
-    this.store = await DIDStore.open('/generated/tmp/DIDStore');
+  }
+  
+
+  loadDid = async (mnemonic: string, password: string = ''): Promise<IDID> => {
+  
+    this.store = await DIDStore.open(process.env.REACT_APP_DID_STORE_PATH as string);
     this.rootIdentity = RootIdentity.createFromMnemonic(
       mnemonic,
       password,
       this.store,
-      'passw',
+      process.env.REACT_APP_DID_STORE_PASSWORD as string,
       true
     );
 
@@ -45,6 +49,21 @@ export class DidService implements IDidService {
   };
 
   async generateNew(): Promise<IDID> {
+    debugger;
+    const ind: number = this.rootIdentity?.getIndex() as number;
+
+    let didDocument = this.rootIdentity?.newDid("passw",ind+1);
+    let did: DID = this.rootIdentity?.getDid(ind+1) as DID;
+   
+    let ret: IDID = {
+        mnemonic: this.rootIdentity?.exportMnemonic("passw") as string,
+        publicKey: this.rootIdentity?.getPreDerivedPublicKey().serializeBase58() as string,
+        privateKey: 'how',
+        did: did.toString()
+     };
+
+
+
     let newDid = await ElastosClient.did.generateNew();
 
     return newDid;
@@ -65,48 +84,54 @@ export class DidService implements IDidService {
   };
 
   isSignedDIDDocumentValid(signedDocument: any, did: IDID): boolean {
-    return ElastosClient.didDocuments.isValid(signedDocument, did);
+
+    throw new Error('not implemented');
+    //return ElastosClient.didDocuments.isValid(signedDocument, did);
   }
 
   async genereteNewDidDocument(did: IDID): Promise<any> {
-    let document = ElastosClient.didDocuments.newDIDDocument(did);
-    return document;
+    //let document = ElastosClient.didDocuments.newDIDDocument(did);
+    throw new Error('not implemented');
+    //return document;
   }
 
   sealDIDDocument(did: IDID, diddocument: any): any {
-    let isValid = false;
-    let signedDocument: any;
-    if (diddocument.hasOwnProperty('proof')) {
-      delete diddocument.proof;
-    }
-    while (!isValid) {
-      signedDocument = ElastosClient.didDocuments.sealDocument(
-        did,
-        diddocument
-      );
-      isValid = ElastosClient.didDocuments.isValid(signedDocument, did);
-    }
+    // let isValid = false;
+    // let signedDocument: any;
+    // if (diddocument.hasOwnProperty('proof')) {
+    //   delete diddocument.proof;
+    // }
+    // while (!isValid) {
+    //   signedDocument = ElastosClient.didDocuments.sealDocument(
+    //     did,
+    //     diddocument
+    //   );
+    //   isValid = ElastosClient.didDocuments.isValid(signedDocument, did);
+    // }
 
-    return signedDocument;
+    // return signedDocument;
+    throw new Error('not implemented');
   }
 
   async addVerfiableCredentialToDIDDocument(diddocument: any, vc: any) {
-    if (diddocument.hasOwnProperty('proof')) {
-      delete diddocument.proof;
-    }
+    // if (diddocument.hasOwnProperty('proof')) {
+    //   delete diddocument.proof;
+    // }
 
-    ElastosClient.didDocuments.addVerfiableCredentialToDIDDocument(
-      diddocument,
-      vc
-    );
+    // ElastosClient.didDocuments.addVerfiableCredentialToDIDDocument(
+    //   diddocument,
+    //   vc
+    // );
+    throw new Error('not implemented');
   }
 
   async addServiceToDIDDocument(diddocument: any, service: any) {
-    if (diddocument.hasOwnProperty('proof')) {
-      delete diddocument.proof;
-    }
+    // if (diddocument.hasOwnProperty('proof')) {
+    //   delete diddocument.proof;
+    // }
 
-    ElastosClient.didDocuments.addServiceToDIDDocument(diddocument, service);
+    // ElastosClient.didDocuments.addServiceToDIDDocument(diddocument, service);
+    throw new Error('not implemented');
   }
 
   generateSelfVerifiableCredential(
@@ -115,17 +140,19 @@ export class DidService implements IDidService {
     subjectTypes: string[],
     subjectValue: any
   ) {
-    return ElastosClient.didDocuments.createVerifiableCredential(
-      did,
-      did.did,
-      subjectName,
-      subjectTypes,
-      subjectValue
-    );
+    // return ElastosClient.didDocuments.createVerifiableCredential(
+    //   did,
+    //   did.did,
+    //   subjectName,
+    //   subjectTypes,
+    //   subjectValue
+    // );
+    throw new Error('not implemented');
   }
 
   generateService(did: IDID, type: string, endpoint: string) {
-    return ElastosClient.didDocuments.createService(did.did, type, endpoint);
+    //return ElastosClient.didDocuments.createService(did.did, type, endpoint);
+    throw new Error('not implemented');
   }
 
   async generateVerifiablePresentationFromUserMnemonics(
@@ -134,24 +161,25 @@ export class DidService implements IDidService {
     issuer: string,
     nonce: string
   ): Promise<any> {
-    let appMnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
-    let appId = `${process.env.REACT_APP_APPLICATION_ID}`;
-    let appDid = await this.loadDid(appMnemonic);
-    let userDid = await this.loadDid(userMnemonic, password);
+    // let appMnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
+    // let appId = `${process.env.REACT_APP_APPLICATION_ID}`;
+    // let appDid = await this.loadDid(appMnemonic);
+    // let userDid = await this.loadDid(userMnemonic, password);
 
-    let vc = ElastosClient.didDocuments.createVerifiableCredentialVP(
-      appDid,
-      userDid,
-      appId
-    );
+    // let vc = ElastosClient.didDocuments.createVerifiableCredentialVP(
+    //   appDid,
+    //   userDid,
+    //   appId
+    // );
 
-    return ElastosClient.didDocuments.createVerifiablePresentation(
-      appDid,
-      'VerifiablePresentation',
-      vc,
-      issuer,
-      nonce
-    );
+    // return ElastosClient.didDocuments.createVerifiablePresentation(
+    //   appDid,
+    //   'VerifiablePresentation',
+    //   vc,
+    //   issuer,
+    //   nonce
+    // );
+    throw new Error('not implemented');
   }
 
   async generatePublishRequest(
@@ -159,21 +187,23 @@ export class DidService implements IDidService {
     userDID: IDID,
     operation: PublishRequestOperation
   ): Promise<any> {
-    let newItem: any = {};
-    Object.getOwnPropertyNames(diddocument).forEach(function(key) {
-      newItem[key] = diddocument[key];
-    }, diddocument);
+    // let newItem: any = {};
+    // Object.getOwnPropertyNames(diddocument).forEach(function(key) {
+    //   newItem[key] = diddocument[key];
+    // }, diddocument);
 
-    let isValid = false;
-    let tx: any;
-    while (!isValid) {
-      tx = await ElastosClient.idChainRequest.generateRequest(
-        newItem,
-        userDID,
-        `${operation}`
-      );
-      isValid = ElastosClient.idChainRequest.isValid(tx, userDID);
-    }
-    return tx;
+    // let isValid = false;
+    // let tx: any;
+    // while (!isValid) {
+    //   tx = await ElastosClient.idChainRequest.generateRequest(
+    //     newItem,
+    //     userDID,
+    //     `${operation}`
+    //   );
+    //   isValid = ElastosClient.idChainRequest.isValid(tx, userDID);
+    // }
+    // return tx;
+
+    throw new Error('not implemented');
   }
 }

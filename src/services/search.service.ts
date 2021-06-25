@@ -2,7 +2,6 @@ import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/S
 import { HiveClient } from '@elastos/elastos-hive-js-sdk';
 
 import { HiveService } from './hive.service';
-import { UserService } from './user.service';
 import { getItemsFromData } from '../utils/script';
 
 export interface IUniversitiesResponse {
@@ -112,15 +111,12 @@ export class SearchService {
   async getUsers(
     searchString: string,
     limit: number,
-    offset: number
+    offset: number,
+    userSession: ISessionItem
   ): Promise<PeopleDTO> {
     let res: PeopleDTO = {
       items: []
     };
-    const userSession = UserService.GetUserSession();
-    if (!userSession) {
-      return res;
-    }
 
     let params: any = {
       limit: limit,
@@ -232,13 +228,10 @@ export class SearchService {
     searchString: string,
     dids: string[],
     limit: number,
-    offset: number
+    offset: number,
+    userSession: ISessionItem
   ) {
     let items: any[] = [];
-    const userSession = UserService.GetUserSession();
-    if (!userSession) {
-      return [];
-    }
 
     let params: any = {
       limit: limit,

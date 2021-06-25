@@ -84,7 +84,7 @@ const SignDidPageNew: React.FC<RouteComponentProps<
                 });
               } else {
                 history.push({
-                  pathname: '/create-profile-with-did',
+                  pathname: '/create-profile-with-did-new',
                   state: {
                     did: uDid,
                     mnemonic,

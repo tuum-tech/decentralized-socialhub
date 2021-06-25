@@ -1,42 +1,30 @@
-import React, { memo, useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from 'react';
 import { StaticContext, RouteComponentProps, useHistory } from 'react-router';
-import { compose } from 'redux';
 
+import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import injector from 'src/baseplate/injectorWrap';
+
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import { InferMappedProps, LocationState, UserSessionProp } from './types';
+import { SubState } from 'src/store/users/types';
+
 import { UserService } from 'src/services/user.service';
 import PageLoading from 'src/components/layouts/PageLoading';
 import { AccountType } from 'src/services/user.service';
-// import LoadingIndicator from 'src/components/LoadingIndicator';
 
 import SetPassword from '../components/SetPassword';
-
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
-import { incrementAction, getSimpleAjax } from './actions';
-import { NameSpace } from './constants';
-import reducer from './reducer';
-import saga from './saga';
-import {
-  InferMappedProps,
-  SubState,
-  LocationState,
-  UserSessionProp
-} from './types';
 import { getUsersWithRegisteredEmail } from './fetchapi';
 import { DidService } from 'src/services/did.service';
 
-const GenerateDidPage: React.FC<RouteComponentProps<
-  {},
-  StaticContext,
-  LocationState
->> = props => {
-  /**
-   * Direct method implementation without SAGA
-   * This was to show you dont need to put everything to global state
-   * incoming from Server API calls. Maintain a local state.
-   */
+interface PageProps
+  extends InferMappedProps,
+    RouteComponentProps<{}, StaticContext, LocationState> {}
 
+const GenerateDidPage: React.FC<PageProps> = ({
+  eProps,
+  ...props
+}: PageProps) => {
   const history = useHistory();
 
   const [loading, setLoading] = useState(false);
@@ -81,7 +69,7 @@ const GenerateDidPage: React.FC<RouteComponentProps<
           if (!session || !session.name) return;
           setLoading(true);
           let userService = new UserService(new DidService());
-          await userService.CreateNewUser(
+          let sessionItem = await userService.CreateNewUser(
             session.name,
             session.service,
             session.loginCred,
@@ -91,6 +79,7 @@ const GenerateDidPage: React.FC<RouteComponentProps<
             '',
             ''
           );
+          eProps.setSession({ session: sessionItem });
           window.location.href = '/profile';
           setLoading(false);
         }}
@@ -101,39 +90,17 @@ const GenerateDidPage: React.FC<RouteComponentProps<
   return <PageLoading />;
 };
 
-/** @returns {object} Contains state props from selectors */
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg()
+  session: makeSelectSession()
 });
 
-/** @returns {object} Contains dispatchable props */
 export function mapDispatchToProps(dispatch: any) {
   return {
     eProps: {
-      // eProps - Emitter proptypes thats binds to dispatch
-      /** dispatch for counter to increment */
-      onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax())
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
     }
   };
 }
 
-/**
- * Injects prop and saga bindings done via
- * useInjectReducer & useInjectSaga
- */
-const withInjectedMode = injector(GenerateDidPage, {
-  key: NameSpace,
-  reducer,
-  saga
-});
-
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
-
-export default compose(
-  withConnect,
-  memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>;
-
-// export default Tab1;
+export default connect(mapStateToProps, mapDispatchToProps)(GenerateDidPage);

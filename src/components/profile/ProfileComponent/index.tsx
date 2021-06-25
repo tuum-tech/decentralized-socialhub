@@ -41,6 +41,7 @@ interface Props {
   scrollToElement: (cardName: string) => void;
   viewAllClicked?: (isFollower: boolean) => void;
   publicFields?: string[];
+  userSession: ISessionItem;
 }
 
 const ProfileComponent: React.FC<Props> = ({
@@ -59,10 +60,10 @@ const ProfileComponent: React.FC<Props> = ({
     'experience',
     'education',
     'social'
-  ]
+  ],
+  userSession
 }: Props) => {
   const [publicUser, setPublicUser] = useState(defaultUserInfo);
-  const [signedUser, setSignedUser] = useState(defaultUserInfo);
   const [publicUserProfile, setPublicUserProfile] = useState(
     defaultFullProfile
   );
@@ -73,15 +74,14 @@ const ProfileComponent: React.FC<Props> = ({
     (async () => {
       if (targetDid && targetDid !== '') {
         setLoading(true);
-        let sUser = await UserService.GetUserSession();
-        if (sUser && sUser.did) setSignedUser(sUser);
-
         let userService = new UserService(new DidService());
         let pUser = await userService.SearchUserWithDID(targetDid);
-
         if (pUser && pUser.did) {
           setPublicUser(pUser as any);
-          let profile = await ProfileService.getFullProfile(targetDid);
+          let profile = await ProfileService.getFullProfile(
+            targetDid,
+            userSession
+          );
           if (profile) {
             profile.basicDTO.isEnabled = true;
             profile.experienceDTO.isEnabled = true;
@@ -96,7 +96,7 @@ const ProfileComponent: React.FC<Props> = ({
       }
       setLoading(false);
     })();
-  }, [targetDid]);
+  }, [targetDid, userSession]);
 
   const displayText = loading
     ? 'Loading User Data ...'
@@ -111,7 +111,7 @@ const ProfileComponent: React.FC<Props> = ({
       <ProfileHeader
         onlyText={displayText}
         user={publicUser}
-        signedUserDid={signedUser.did}
+        signedUser={userSession}
       />
       {!loading &&
         publicUser.did !== '' &&
@@ -157,7 +157,8 @@ const ProfileComponent: React.FC<Props> = ({
                           didDocument.id && (
                             <SocialProfilesCard
                               didDocument={didDocument}
-                              sessionItem={publicUser}
+                              // sessionItem={publicUser}
+                              targetUser={publicUser}
                             />
                           )}
                         <FollowCards
@@ -165,7 +166,7 @@ const ProfileComponent: React.FC<Props> = ({
                           showFollowingCard={publicFields.includes('following')}
                           followerDids={followerDids}
                           followingDids={followingDids}
-                          signed={signedUser.did !== ''}
+                          signed={userSession.did !== ''}
                           viewAll={(isFollower: boolean) => {
                             if (viewAllClicked) viewAllClicked(isFollower);
                           }}

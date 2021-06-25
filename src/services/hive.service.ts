@@ -7,17 +7,16 @@ import jwt_decode from 'jwt-decode';
 
 import { DidService } from './did.service';
 import { DidDocumentService } from './diddocument.service';
-import { UserService } from './user.service';
+
 export interface IHiveChallenge {
   issuer: string;
   nonce: string;
 }
 export class HiveService {
-  static async getSessionInstance(): Promise<HiveClient | undefined> {
+  static async getSessionInstance(
+    instance: ISessionItem
+  ): Promise<HiveClient | undefined> {
     try {
-      let instance = UserService.GetUserSession();
-      if (!instance) return;
-
       let isUserDocumentPublished = await DidDocumentService.isDidDocumentPublished(
         instance.did
       );

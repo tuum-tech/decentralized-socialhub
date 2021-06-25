@@ -16,9 +16,9 @@ import {
 import styled from 'styled-components';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 import { DidcredsService } from 'src/services/didcreds.service';
-import { UserService } from 'src/services/user.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { getVerifiedCredential } from 'src/utils/socialprofile';
+import { UserService } from 'src/services/user.service';
 
 import style from './SocialCard.module.scss';
 import linkedinIcon from '../../../assets/icon/Linkedin.svg';
@@ -26,19 +26,7 @@ import twitterIcon from '../../../assets/icon/Twitter.svg';
 import facebookIcon from '../../../assets/icon/Facebook.svg';
 import googleIcon from '../../../assets/icon/Google.svg';
 import shieldIcon from '../../../assets/icon/shield.svg';
-
 import { DidService } from 'src/services/did.service';
-
-interface Props {
-  diddocument: any;
-  showManageButton: boolean;
-  sessionItem: ISessionItem;
-}
-
-interface VerifiedCredential {
-  value: string;
-  isVerified: boolean;
-}
 
 const ManagerModal = styled(IonModal)`
   --border-radius: 16px;
@@ -131,10 +119,18 @@ const CloseButton = styled(IonButton)`
   color: #ffffff;
 `;
 
+interface Props {
+  diddocument: any;
+  showManageButton: boolean;
+  sessionItem: ISessionItem;
+  setSession: (props: { session: ISessionItem }) => void;
+}
+
 const SocialProfilesCard: React.FC<Props> = ({
   diddocument,
   showManageButton,
-  sessionItem
+  sessionItem,
+  setSession
 }) => {
   const [isManagerOpen, setIsManagerOpen] = useState(false);
 
@@ -237,8 +233,7 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const removeVc = async (key: string) => {
-    let userSession = UserService.GetUserSession();
-    let documentState = await DidDocumentService.getUserDocument(userSession!);
+    let documentState = await DidDocumentService.getUserDocument(sessionItem!);
     let keyIndex = -1;
     documentState.diddocument['verifiableCredential'].forEach(
       (element: any, index: number) => {
@@ -254,7 +249,7 @@ const SocialProfilesCard: React.FC<Props> = ({
     }
 
     // ===== temporary codes start =====
-    let newLoginCred = userSession!.loginCred;
+    let newLoginCred = sessionItem!.loginCred;
     if (!newLoginCred) {
       return;
     }
@@ -273,13 +268,14 @@ const SocialProfilesCard: React.FC<Props> = ({
       delete newLoginCred.discord;
     }
     const newUserSession = {
-      ...userSession,
+      ...sessionItem,
       loginCred: newLoginCred
     } as ISessionItem;
 
     let userService = new UserService(new DidService());
-    await userService.updateSession(newUserSession);
-
+    setSession({
+      session: await userService.updateSession(newUserSession)
+    });
     // ===== temporary codes end =====
   };
 
@@ -415,41 +411,6 @@ const SocialProfilesCard: React.FC<Props> = ({
   const linkedinModalItem = () => {
     return createModalIonItem('linkedin', linkedinIcon);
   };
-
-  // const anyCredential = (): boolean => {
-  //   if (!diddocument || !diddocument["id"]) return false
-  //   let vcs: string[] = diddocument["verifiableCredential"].map((vc: any) => {
-  //     return `${vc["id"]}`.replace("#", "")
-  //   })
-  //   if (!vcs || vcs.length === 0) return false;
-
-  //   return vcs.includes("twitter") ||
-  //          vcs.includes("linkedin") ||
-  //          vcs.includes("google") ||
-  //          vcs.includes("linkedin")
-  // }
-
-  // const renderControl = () =>{
-  //   let anycredential = anyCredential();
-  //   if (anycredential) return <IonCard className={style['social-profile']}>
-  //           <IonCardHeader>
-  //             <IonCardTitle className={style['card-title']}>
-  //               Social Profiles <span className={style['card-link']}>Manage Links</span>
-  //             </IonCardTitle>
-  //           </IonCardHeader>
-  //           <IonCardContent>
-  //             <IonList>
-  //               {linkedInItem()}
-  //               {twitterItem()}
-  //               {googleItem()}
-  //               {facebookItem()}
-
-  //             </IonList>
-  //           </IonCardContent>
-  //         </IonCard>
-
-  //   return <div></div>
-  // }
 
   return (
     <div>

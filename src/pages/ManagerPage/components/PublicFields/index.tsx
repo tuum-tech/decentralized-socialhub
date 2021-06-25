@@ -64,7 +64,7 @@ const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
               <SmallLightButton
                 disabled={sessionItem.tutorialStep !== 4}
                 onClick={async () => {
-                  await ProfileService.updatePublicFields(fields);
+                  await ProfileService.updatePublicFields(fields, sessionItem);
                 }}
               >
                 Save

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { IonContent, IonGrid, IonCol, IonRow } from '@ionic/react';
 
-import { UserService } from 'src/services/user.service';
 import { TuumTechScriptService } from 'src/services/script.service';
 import {
   ProfileService,
-  defaultUserInfo,
   defaultFullProfile
 } from 'src/services/profile.service';
 
@@ -23,19 +21,24 @@ import { DidDocumentService } from 'src/services/diddocument.service';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
 import { DidService } from 'src/services/did.service';
 
-const ProfileEditor: React.FC = () => {
+interface Props {
+  session: ISessionItem;
+  updateSession: (props: { session: ISessionItem }) => void;
+}
+
+const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
   const [error, setError] = useState(false);
-  const [userInfo, setUserInfo] = useState<ISessionItem>(defaultUserInfo);
+  const [userInfo, setUserInfo] = useState<ISessionItem>(session);
   const [loaded, setloaded] = useState(false);
   const [didDocument, setDidDocument] = useState({});
   const [profile, setProfile] = useState(defaultFullProfile);
 
   const retriveProfile = async () => {
-    let instance = UserService.GetUserSession();
-    if (!instance || !instance.userToken) return;
+    if (!session.userToken) return;
     try {
       let res: ProfileDTO | undefined = await ProfileService.getFullProfile(
-        instance.did
+        session.did,
+        session
       );
       if (res) {
         res.basicDTO.isEnabled = true;
@@ -50,34 +53,26 @@ const ProfileEditor: React.FC = () => {
 
   const setTimer = () => {
     const timer = setTimeout(async () => {
-      await refreshDidDocument();
-      let instance = UserService.GetUserSession();
-      if (instance && instance.userToken) setUserInfo(instance);
+      // refresh DID document
+      let documentState = await DidDocumentService.getUserDocument(session);
+      setDidDocument(documentState.diddocument);
+
+      if (session.userToken) setUserInfo(session);
       setTimer();
     }, 1000);
     return () => clearTimeout(timer);
   };
 
-  const refreshDidDocument = async () => {
-    let userSession = UserService.GetUserSession();
-    if (!userSession) {
-      return;
-    }
-    let documentState = await DidDocumentService.getUserDocument(userSession);
-    setDidDocument(documentState.diddocument);
-  };
-
   useEffect(() => {
     (async () => {
-      let instance = UserService.GetUserSession();
-      if (!instance || !instance.userToken) return;
-
-      setUserInfo(instance);
-      if (instance.tutorialStep === 4) {
+      if (!session.userToken) return;
+      setUserInfo(session);
+      if (session.tutorialStep === 4) {
         await retriveProfile();
       }
       setloaded(true);
     })();
+
     setTimer();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -98,8 +93,7 @@ const ProfileEditor: React.FC = () => {
                 sessionItem={userInfo}
                 updateFunc={async (userInfo: ISessionItem) => {
                   await TuumTechScriptService.updateTuumUser(userInfo);
-                  let userService = new UserService(new DidService());
-                  userService.updateSession(userInfo, true);
+                  await updateSession({ session: userInfo });
                 }}
               ></BasicCard>
             ) : (
@@ -113,44 +107,45 @@ const ProfileEditor: React.FC = () => {
                     mode="edit"
                     update={async (nextAbout: string) => {
                       const newBasicDTO = { ...profile.basicDTO };
-                      const userSession = UserService.GetUserSession();
-                      if (userSession) {
-                        newBasicDTO.did = userSession.did;
-                        newBasicDTO.about = nextAbout;
-                        if (
-                          userSession.badges &&
-                          userSession.badges.account &&
-                          !userSession.badges.account.basicProfile.archived
-                        ) {
-                          userSession.badges.account!.basicProfile.archived = new Date().getTime();
-                          let userService = new UserService(new DidService());
-                          await userService.updateSession(userSession);
-                          await ProfileService.addActivity(
-                            {
-                              guid: '',
-                              did: userSession.did,
-                              message: 'You received a Basic profile badge',
-                              read: false,
-                              createdAt: 0,
-                              updatedAt: 0
-                            },
-                            userSession.did
-                          );
-                        }
-                        await ProfileService.updateAbout(newBasicDTO);
+
+                      let userSession = JSON.parse(JSON.stringify(session));
+                      newBasicDTO.did = userSession.did;
+                      newBasicDTO.about = nextAbout;
+                      if (
+                        userSession.badges &&
+                        userSession.badges.account &&
+                        !userSession.badges.account.basicProfile.archived
+                      ) {
+                        userSession.badges.account!.basicProfile.archived = new Date().getTime();
+                        await updateSession({ session: userSession });
                         await ProfileService.addActivity(
                           {
                             guid: '',
                             did: userSession.did,
-                            message: 'You updated basic profile',
+                            message: 'You received a Basic profile badge',
                             read: false,
                             createdAt: 0,
                             updatedAt: 0
                           },
-                          userSession.did
+                          userSession
                         );
-                        await retriveProfile();
                       }
+                      await ProfileService.updateAbout(
+                        newBasicDTO,
+                        userSession
+                      );
+                      await ProfileService.addActivity(
+                        {
+                          guid: '',
+                          did: userSession.did,
+                          message: 'You updated basic profile',
+                          read: false,
+                          createdAt: 0,
+                          updatedAt: 0
+                        },
+                        userSession
+                      );
+                      await retriveProfile();
                     }}
                   />
                 )}
@@ -158,14 +153,15 @@ const ProfileEditor: React.FC = () => {
                 <SocialProfilesCard
                   diddocument={didDocument}
                   showManageButton={true}
-                  sessionItem={userInfo}
+                  sessionItem={session}
+                  setSession={updateSession}
                 />
 
                 {profile && profile.educationDTO && (
                   <EducationCard
                     educationDTO={profile.educationDTO}
                     updateFunc={async (educationItem: EducationItem) => {
-                      const userSession = UserService.GetUserSession();
+                      let userSession = JSON.parse(JSON.stringify(session));
                       if (
                         userSession &&
                         userSession.badges &&
@@ -173,9 +169,7 @@ const ProfileEditor: React.FC = () => {
                         !userSession.badges.account.educationProfile.archived
                       ) {
                         userSession.badges.account.educationProfile.archived = new Date().getTime();
-
-                        let userService = new UserService(new DidService());
-                        await userService.updateSession(userSession);
+                        await updateSession({ session: userSession });
                         await ProfileService.addActivity(
                           {
                             guid: '',
@@ -185,11 +179,12 @@ const ProfileEditor: React.FC = () => {
                             createdAt: 0,
                             updatedAt: 0
                           },
-                          userSession.did
+                          userSession
                         );
                       }
                       await ProfileService.updateEducationProfile(
-                        educationItem
+                        educationItem,
+                        userSession
                       );
                       await ProfileService.addActivity(
                         {
@@ -200,12 +195,17 @@ const ProfileEditor: React.FC = () => {
                           createdAt: 0,
                           updatedAt: 0
                         },
-                        userSession!.did
+                        userSession
                       );
                       await retriveProfile();
                     }}
                     removeFunc={async (educationItem: EducationItem) => {
-                      await ProfileService.removeEducationItem(educationItem);
+                      let userSession = JSON.parse(JSON.stringify(session));
+                      if (!userSession) return;
+                      await ProfileService.removeEducationItem(
+                        educationItem,
+                        userSession
+                      );
                       await retriveProfile();
                     }}
                     isEditable={true}
@@ -215,7 +215,8 @@ const ProfileEditor: React.FC = () => {
                   <ExperienceCard
                     experienceDTO={profile.experienceDTO}
                     updateFunc={async (experienceItem: ExperienceItem) => {
-                      const userSession = UserService.GetUserSession();
+                      let userSession = JSON.parse(JSON.stringify(session));
+                      if (!userSession) return;
                       if (
                         userSession &&
                         userSession.badges &&
@@ -223,8 +224,7 @@ const ProfileEditor: React.FC = () => {
                         !userSession.badges.account.experienceProfile.archived
                       ) {
                         userSession.badges.account.experienceProfile.archived = new Date().getTime();
-                        let userService = new UserService(new DidService());
-                        await userService.updateSession(userSession);
+                        await updateSession({ session: userSession });
                         await ProfileService.addActivity(
                           {
                             guid: '',
@@ -234,11 +234,13 @@ const ProfileEditor: React.FC = () => {
                             createdAt: 0,
                             updatedAt: 0
                           },
-                          userSession.did
+
+                          userSession
                         );
                       }
                       await ProfileService.updateExperienceProfile(
-                        experienceItem
+                        experienceItem,
+                        userSession
                       );
                       await ProfileService.addActivity(
                         {
@@ -249,12 +251,17 @@ const ProfileEditor: React.FC = () => {
                           createdAt: 0,
                           updatedAt: 0
                         },
-                        userSession!.did
+
+                        userSession
                       );
                       await retriveProfile();
                     }}
                     removeFunc={async (experienceItem: ExperienceItem) => {
-                      await ProfileService.removeExperienceItem(experienceItem);
+                      let userSession = JSON.parse(JSON.stringify(session));
+                      await ProfileService.removeExperienceItem(
+                        experienceItem,
+                        userSession
+                      );
                       await retriveProfile();
                     }}
                     isEditable={true}

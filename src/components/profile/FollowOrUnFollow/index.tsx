@@ -6,10 +6,13 @@ import { alertError } from 'src/utils/notify';
 
 interface IProps {
   did: string;
-  userDid: string;
+  signedUser: ISessionItem;
 }
 
-const FollowOrUnFollowButton: React.FC<IProps> = ({ did, userDid }: IProps) => {
+const FollowOrUnFollowButton: React.FC<IProps> = ({
+  did,
+  signedUser
+}: IProps) => {
   const [text, setText] = useState('Follow');
   const [loading, setLoading] = useState(true);
 
@@ -17,9 +20,9 @@ const FollowOrUnFollowButton: React.FC<IProps> = ({ did, userDid }: IProps) => {
     setLoading(true);
     try {
       if (follow) {
-        await ProfileService.addFollowing(did);
+        await ProfileService.addFollowing(did, signedUser);
       } else {
-        await ProfileService.unfollow(did);
+        await ProfileService.unfollow(did, signedUser);
       }
       await loadData();
     } catch (e) {
@@ -28,9 +31,8 @@ const FollowOrUnFollowButton: React.FC<IProps> = ({ did, userDid }: IProps) => {
   };
 
   const loadData = async () => {
-    if (!userDid || userDid === '') return;
     try {
-      let following = await ProfileService.getFollowings(userDid);
+      let following = await ProfileService.getFollowings(did, signedUser);
       if (
         following &&
         following.get_following &&
@@ -57,7 +59,7 @@ const FollowOrUnFollowButton: React.FC<IProps> = ({ did, userDid }: IProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [did]);
 
-  if (userDid === did || text === '') {
+  if (signedUser.did === did || text === '') {
     return <></>;
   }
   return (

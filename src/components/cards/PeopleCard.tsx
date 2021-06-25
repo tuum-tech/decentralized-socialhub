@@ -8,8 +8,13 @@ import {
 } from '@ionic/react';
 import ReactPaginate from 'react-paginate';
 
-import { UserService } from 'src/services/user.service';
-import { defaultUserInfo, ProfileService } from 'src/services/profile.service';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import { InferMappedProps, SubState } from './SocialProfileCard/types';
+import { ProfileService } from 'src/services/profile.service';
 
 import style from './PeopleCard.module.scss';
 import DidCard from './DidCard';
@@ -18,15 +23,6 @@ import { alertError } from 'src/utils/notify';
 export interface IFollowingResponse {
   _status?: string;
   get_following: IGetFollowing;
-}
-
-interface IProps {
-  people?: PeopleDTO;
-  following: FollowingDTO;
-  searchKeyword?: string;
-  isSearchKeywordDID?: boolean;
-  size?: string;
-  showHeader?: boolean;
 }
 
 const peopleItem = (
@@ -48,39 +44,39 @@ const peopleItem = (
   );
 };
 
-const PeopleCard: React.FC<IProps> = ({
+interface Props extends InferMappedProps {
+  people?: PeopleDTO;
+  following: FollowingDTO;
+  searchKeyword?: string;
+  isSearchKeywordDID?: boolean;
+  size?: string;
+  showHeader?: boolean;
+}
+
+const PeopleCard: React.FC<Props> = ({
   people,
   following,
   searchKeyword,
   isSearchKeywordDID,
   showHeader = true,
-  size = '12'
-}: IProps) => {
+  size = '12',
+  session
+}: Props) => {
   const perPage = parseInt(size) / 12 === 1 ? 4 : 8;
   const totalPages = people && people.items ? people.items.length / perPage : 1;
 
   const [peoplePageOffset, setPeoplePageOffset] = useState(0);
   const [listPeople, setListPeople] = useState<any[]>([]);
-  const [userInfo, setUserInfo] = useState<ISessionItem>(defaultUserInfo);
-
-  useEffect(() => {
-    (async () => {
-      let instance = UserService.GetUserSession();
-      if (!instance || !instance.userToken) return;
-
-      setUserInfo(instance);
-    })();
-  }, []);
 
   useEffect(() => {
     (async () => {
       let refreshFollowing: FollowingDTO = following;
 
       try {
-        if (userInfo && userInfo.did) {
-          //Get Following
+        if (session && session.did !== '') {
           const response = (await ProfileService.getFollowings(
-            userInfo.did
+            session.did,
+            session
           )) as IFollowingResponse;
           refreshFollowing = response.get_following;
         }
@@ -125,12 +121,6 @@ const PeopleCard: React.FC<IProps> = ({
             <IonCardTitle className={style['card-title']}>People</IonCardTitle>
           </IonCardHeader>
         )}
-        {/* <IonSearchbar
-          // value={searchQuery}
-          // onIonChange={(e) => search(e)}
-          placeholder='Search people, pages by name or DID'
-          className={style['search-input']}
-        ></IonSearchbar> */}
         {listPeople}
         {listPeople && (
           <ReactPaginate
@@ -143,7 +133,6 @@ const PeopleCard: React.FC<IProps> = ({
             pageRangeDisplayed={5}
             onPageChange={handlePeoplePageClick}
             containerClassName={style['pagination']}
-            //  subContainerClassName={'pages pagination'}
             activeClassName={style['page-active']}
           />
         )}
@@ -159,4 +148,19 @@ const PeopleCard: React.FC<IProps> = ({
   );
 };
 
-export default PeopleCard;
+// export default PeopleCard;
+
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PeopleCard);

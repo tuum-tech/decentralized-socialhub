@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
 import { ProfileService } from 'src/services/profile.service';
-import { UserService } from 'src/services/user.service';
-
 import {
   MainCard,
   CardText,
@@ -14,22 +12,25 @@ import exploreCardImg from '../../../../../../assets/dashboard/explore.png';
 
 interface Props {
   did: string;
+  session: ISessionItem;
 }
 
-const ExploreConnnections: React.FC<Props> = ({ did }) => {
+const ExploreConnnections: React.FC<Props> = ({ did, session }) => {
   const [connectedDids, setConnectedDids] = useState<string[]>([]);
 
   useEffect(() => {
     (async () => {
       let fUserDids: string[] = [];
-      let instance = UserService.GetUserSession();
-      if (instance && instance.tutorialStep === 4) {
-        let followings = await ProfileService.getFollowings(did);
+      if (session && session.tutorialStep === 4) {
+        let followings = await ProfileService.getFollowings(
+          session.did,
+          session
+        );
         if (followings) {
           fUserDids = followings.get_following.items.map(item => item.did);
         }
 
-        let followers = await ProfileService.getFollowers([did]);
+        let followers = await ProfileService.getFollowers([did], session);
         if (followers) {
           for (let i = 0; i < followers.get_followers.items.length; i++) {
             if (!fUserDids.includes(followers.get_followers.items[i].did)) {
@@ -43,7 +44,7 @@ const ExploreConnnections: React.FC<Props> = ({ did }) => {
       }
       setConnectedDids(fUserDids);
     })();
-  }, [did]);
+  }, [did, session]);
 
   return (
     <>

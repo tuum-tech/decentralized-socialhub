@@ -162,6 +162,31 @@ let run = async () => {
       }
     }
   });
+  // update verify user, called when user request update email
+  await client.Scripting.SetScript({
+    name: 'update_verify_user',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'update',
+      name: 'update_verify_user',
+      output: false,
+      body: {
+        collection: 'users',
+        filter: {
+          'loginCred.email': '$params.oldEmail',
+          status: 'CONFIRMED'
+        },
+        update: {
+          $set: {
+            'loginCred.email': '$params.newEmail',
+            status: 'WAITING_CONFIRMATION',
+            code: '$params.code'
+          }
+        }
+      }
+    }
+  });
   await client.Scripting.SetScript({
     name: 'delete_users',
     allowAnonymousUser: true,
