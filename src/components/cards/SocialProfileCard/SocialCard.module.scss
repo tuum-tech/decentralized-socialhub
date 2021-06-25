@@ -59,6 +59,9 @@
 
     .left {
       position: relative;
+      & img {
+        border-radius: 50%;
+      }
     }
     .right {
       margin-left: 10px;

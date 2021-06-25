@@ -49,6 +49,7 @@ interface Props {
   viewAll: (isFollower: boolean) => void;
   followerDids: string[];
   followingDids: string[];
+  mutualDids: string[];
 }
 
 const DashboardContent: React.FC<Props> = ({
@@ -58,7 +59,8 @@ const DashboardContent: React.FC<Props> = ({
   didDocument,
   viewAll,
   followerDids,
-  followingDids
+  followingDids,
+  mutualDids
 }) => {
   const [active, setActive] = useState('home');
   return (
@@ -94,6 +96,7 @@ const DashboardContent: React.FC<Props> = ({
           viewAll={viewAll}
           followerDids={followerDids}
           followingDids={followingDids}
+          mutualDids={mutualDids}
         />
       )}
       {active === 'status' && <DashboardStatus />}

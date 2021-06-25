@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
+import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
@@ -9,8 +10,6 @@ import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
-import FollowCards from 'src/components/follow/FollowCards';
-import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
 import { getVerifiedCredential } from 'src/utils/credential';
 
 import ManageProfile from './Left/ManageProfile';
@@ -21,7 +20,7 @@ import WhatIsProfile from './Right/WhatIsProfile';
 import ConnectWithCommunity from './Right/ConnectWithCommunity';
 import ProfileCompletion from './Right/ProfileCompletion';
 import VerificationStatus from './Right/VerificationStatus';
-import Badges from './Right/Badges';
+import ProfileBriefCard from './Right/ProfileBriefCard';
 import { hasCredentials } from 'src/utils/socialprofile';
 
 const LeftCardCol = styled(IonCol)`
@@ -37,9 +36,10 @@ interface Props extends InferMappedProps {
   profile: ProfileDTO;
   didDocument: any;
   activeTab: (tab: string) => void;
-  viewAll: (isFollower: boolean) => void;
+  viewAll?: (isFollower: boolean) => void;
   followerDids: string[];
   followingDids: string[];
+  mutualDids: string[];
 }
 
 const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
@@ -48,11 +48,14 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
     didDocument,
     followerDids,
     followingDids,
+    mutualDids,
     session,
     onTutorialStart,
-    activeTab,
-    viewAll
+    activeTab
   } = props;
+
+  const history = useHistory();
+
   const [tutorialVisible, setTutorialVisible] = useState(true);
   const [hasFollowUsers, setFollowUsers] = useState(false);
 
@@ -336,27 +339,51 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
           <WhatIsProfile />
           <ConnectWithCommunity />
           {hasSocialProfiles && (
-            <SocialProfilesCard
-              diddocument={didDocument}
-              sessionItem={session}
-              showManageButton={false}
-              setSession={eProps.setSession}
+            <ProfileBriefCard
+              category={'social'}
+              title={'Profiles Linked'}
+              data={didDocument}
+              exploreAll={() => {}}
             />
           )}
-          <Badges
-            badges={session.badges!}
+          {followerDids.length > 0 && (
+            <ProfileBriefCard
+              category={'follower'}
+              title={'Followers'}
+              data={followerDids}
+              exploreAll={() => {
+                history.push('/connections/followers');
+              }}
+            />
+          )}
+          {followingDids.length > 0 && (
+            <ProfileBriefCard
+              category={'following'}
+              title={'Following'}
+              data={followingDids}
+              exploreAll={() => {
+                history.push('/connections/followings');
+              }}
+            />
+          )}
+          {mutualDids.length > 0 && (
+            <ProfileBriefCard
+              category={'mutual'}
+              title={'Mutual Follower'}
+              data={mutualDids}
+              exploreAll={() => {
+                history.push('/connections/followings');
+              }}
+            />
+          )}
+          <ProfileBriefCard
+            category={'badge'}
+            title={'Badges'}
+            data={session.badges!}
             exploreAll={() => {
               activeTab('badges');
             }}
           />
-          {session.tutorialStep === 4 && (
-            <FollowCards
-              followerDids={followerDids}
-              followingDids={followingDids}
-              signed={true}
-              viewAll={viewAll}
-            />
-          )}
         </RightCardCol>
       </IonRow>
     </IonGrid>
