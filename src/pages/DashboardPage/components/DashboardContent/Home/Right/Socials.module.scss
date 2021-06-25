@@ -1,0 +1,27 @@
+.social-profile-item {
+  display: flex;
+  justify-content: flex-start;
+  border: 0px;
+  --inner-border-width: 0;
+  padding: 0px !important;
+
+  font-family: 'SF Pro Display';
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: left;
+  color: #7a7a9d;
+
+  .social-profile-icon {
+    border-radius: 50%;
+  }
+
+  .social-profile-badge {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+  }
+}

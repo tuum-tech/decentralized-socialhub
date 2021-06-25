@@ -69,6 +69,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
   const [followingDids, setFollowingDids] = useState<string[]>([]);
   const [followerDids, setFollowerDids] = useState<string[]>([]);
+  const [mutualDids, setMutualDids] = useState<string[]>([]);
 
   const history = useHistory();
 
@@ -162,6 +163,10 @@ const ProfilePage: React.FC<InferMappedProps> = ({
           props.session
         );
         setFollowerDids(_followersDids);
+        const _mutualDids = _followingDids.filter(
+          (did: any) => _followersDids.indexOf(did) > 0
+        );
+        setMutualDids(_mutualDids);
 
         setPublishStatus(
           props.session.isDIDPublished
@@ -329,6 +334,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
                 }}
                 followerDids={followerDids}
                 followingDids={followingDids}
+                mutualDids={mutualDids}
               />
             </IonCol>
           </IonRow>

@@ -118,7 +118,9 @@ export const hasCredentials = (diddocument: any) => {
           credentialSubject.google ||
           credentialSubject.linkedin ||
           credentialSubject.twitter ||
-          credentialSubject.facebook
+          credentialSubject.facebook ||
+          credentialSubject.github ||
+          credentialSubject.discord
         ) {
           has = true;
         }

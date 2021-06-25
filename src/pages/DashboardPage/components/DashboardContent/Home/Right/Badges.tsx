@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-
-import { Header, MainCard, CardTitle, ExploreAll } from './VerificationStatus';
 import badgeDetails from 'src/data/badge_detail.json';
 
 const BadgeContainer = styled.div`
   display: flex;
+  align-items: center;
 `;
 
 const Badge = styled.div`
   position: relative;
-  width: 42px;
-  height: 42px;
+  width: 50px;
+  height: 50px;
   display: block;
   margin-right: 10px;
 `;
@@ -43,11 +42,14 @@ const ToolTip = styled.p`
 
 interface Props {
   badges: IBadges;
-  exploreAll: () => void;
+  cb: (count: number) => void;
 }
-const Badges: React.FC<Props> = ({ badges, exploreAll }) => {
+const Badges: React.FC<Props> = ({ badges, cb }) => {
   const [showBadgeNumber, setShowBadgeNumber] = useState(-1);
   const [archivedBadges, setArchivedBadges] = useState([]);
+
+  const wSize = [1780, 1600, 1350, 1120];
+
   useEffect(() => {
     let _archivedBadges: any = [];
     if (!badges) return;
@@ -63,35 +65,27 @@ const Badges: React.FC<Props> = ({ badges, exploreAll }) => {
         }
       });
     });
-    console.log(_archivedBadges);
     _archivedBadges.sort((a: any, b: any) => b.archived - a.archived);
     setArchivedBadges(_archivedBadges);
+    cb(_archivedBadges.length);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <MainCard>
-      <Header>
-        <CardTitle>Badges</CardTitle>
-        <ExploreAll
-          onClick={() => {
-            exploreAll();
-          }}
-        >
-          Explore all
-        </ExploreAll>
-      </Header>
-      <BadgeContainer>
-        {archivedBadges.slice(0, 5).map((badge, index) => {
-          const { category, name } = badge;
-          const { title, description, enbl_icon } = badgeDetails[category][
-            name
-          ];
-          return (
+    <BadgeContainer>
+      {archivedBadges.slice(0, 5).map((badge, index) => {
+        const { category, name } = badge;
+        const { title, description, enbl_icon } = badgeDetails[category][name];
+        return (
+          <div
+            style={{
+              display: window.innerWidth > wSize[3 - index] ? 'block' : 'none'
+            }}
+            key={index}
+          >
             <Badge
               onMouseEnter={() => setShowBadgeNumber(index)}
               onMouseLeave={() => setShowBadgeNumber(-1)}
-              key={index}
             >
               <img alt="enable icon" src={enbl_icon} height={50} />
               {showBadgeNumber === index && (
@@ -101,10 +95,10 @@ const Badges: React.FC<Props> = ({ badges, exploreAll }) => {
                 </ToolTip>
               )}
             </Badge>
-          );
-        })}
-      </BadgeContainer>
-    </MainCard>
+          </div>
+        );
+      })}
+    </BadgeContainer>
   );
 };
 
