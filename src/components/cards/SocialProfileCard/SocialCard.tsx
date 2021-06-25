@@ -8,7 +8,6 @@ import {
   IonCol,
   IonFooter,
   IonGrid,
-  IonImg,
   IonItem,
   IonModal,
   IonRow
@@ -25,6 +24,8 @@ import linkedinIcon from '../../../assets/icon/Linkedin.svg';
 import twitterIcon from '../../../assets/icon/Twitter.svg';
 import facebookIcon from '../../../assets/icon/Facebook.svg';
 import googleIcon from '../../../assets/icon/Google.svg';
+import githubIcon from '../../../assets/icon/Github.svg';
+import discordIcon from '../../../assets/icon/Discord.svg';
 import shieldIcon from '../../../assets/icon/shield.svg';
 
 const ManagerModal = styled(IonModal)`
@@ -66,10 +67,11 @@ const MyGrid = styled(IonGrid)`
   height: 100 %;
 `;
 
-const ManagerLogo = styled(IonImg)`
+const ManagerLogo = styled.img`
   position: relative;
   float: left;
   width: 42px;
+  border-radius: 50%;
 `;
 
 const ProfileItem = styled(IonItem)`
@@ -378,11 +380,11 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const githubItem = () => {
-    return createIonItem('github', googleIcon);
+    return createIonItem('github', githubIcon);
   };
 
   const discordItem = () => {
-    return createIonItem('discord', googleIcon);
+    return createIonItem('discord', discordIcon);
   };
 
   const googleModalItem = () => {
@@ -390,11 +392,11 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const githubModalItem = () => {
-    return createModalIonItem('github', googleIcon);
+    return createModalIonItem('github', githubIcon);
   };
 
   const discordModalItem = () => {
-    return createModalIonItem('discord', googleIcon);
+    return createModalIonItem('discord', discordIcon);
   };
 
   const twitterModalItem = () => {
