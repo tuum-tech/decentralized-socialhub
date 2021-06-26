@@ -19,7 +19,6 @@ import PublicFields from '../PublicFields';
 import style from './style.module.scss';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
-import { DidService } from 'src/services/did.service';
 
 interface Props {
   session: ISessionItem;

@@ -3,12 +3,7 @@ import { Guid } from 'guid-typescript';
 import { alertError, showNotify } from 'src/utils/notify';
 
 import { AssistService } from './assist.service';
-import {
-  DidService,
-  IDID,
-  IDidService,
-  PublishRequestOperation
-} from './did.service';
+import { IDID, IDidService, PublishRequestOperation } from './did.service';
 
 import { DidDocumentService } from './diddocument.service';
 import {
@@ -189,7 +184,6 @@ export class UserService {
   }
 
   public async SearchUserWithDID(did: string) {
-    
     const users = await TuumTechScriptService.searchUserWithDIDs([did]);
     if (users.length > 0) {
       const userData = users[0];

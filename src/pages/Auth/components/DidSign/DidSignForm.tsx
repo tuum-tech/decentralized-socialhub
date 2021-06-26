@@ -17,7 +17,6 @@ import { Text16, Text12 } from 'src/components/texts';
 
 import helpSvg from '../../../../assets/icon/help.svg';
 import style from './DidSignForm.module.scss';
-import { DidService } from 'src/services/did.service';
 
 const ClearButton = styled.div`
   align-items: center;
