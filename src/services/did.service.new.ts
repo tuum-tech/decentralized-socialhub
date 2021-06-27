@@ -15,31 +15,30 @@ export enum PublishRequestOperation {
 }
 
 export class DidService implements IDidService {
-  rootIdentity?: RootIdentity;
-  store?: DIDStore;
-
   static InitializeMainnet() {
     DIDBackend.initialize(new DefaultDIDAdapter('mainnet'));
   }
 
+  static getStore = async (): Promise<DIDStore> => {
+    return await DIDStore.open(process.env.REACT_APP_DID_STORE_PATH as string);
+  };
+
   loadDid = async (mnemonic: string, password: string = ''): Promise<IDID> => {
-    this.store = await DIDStore.open(
-      process.env.REACT_APP_DID_STORE_PATH as string
-    );
-    this.rootIdentity = RootIdentity.createFromMnemonic(
+    let store = await DidService.getStore();
+    let rootIdentity = RootIdentity.createFromMnemonic(
       mnemonic,
       password,
-      this.store,
+      store,
       process.env.REACT_APP_DID_STORE_PASSWORD as string,
       true
     );
 
-    let did = this.rootIdentity.getDid(0);
+    let did = rootIdentity.getDid(0);
 
     // Validate all
     let ret: IDID = {
       mnemonic: mnemonic,
-      publicKey: this.rootIdentity.getPreDerivedPublicKey().serializeBase58(),
+      publicKey: rootIdentity.getPreDerivedPublicKey().serializeBase58(),
       privateKey: 'how',
       did: did.toString()
     };
@@ -47,14 +46,16 @@ export class DidService implements IDidService {
   };
 
   async generateNew(): Promise<IDID> {
-    const ind: number = this.rootIdentity?.getIndex() as number;
+    let store = await DidService.getStore();
+    let rootIdentity = await store.loadRootIdentity();
+    const ind: number = rootIdentity.getIndex() as number;
 
     //let didDocument = this.rootIdentity?.newDid("passw",ind+1);
-    let did: DID = this.rootIdentity?.getDid(ind + 1) as DID;
+    let did: DID = rootIdentity.getDid(ind + 1) as DID;
 
     let ret: IDID = {
-      mnemonic: this.rootIdentity?.exportMnemonic('passw') as string,
-      publicKey: this.rootIdentity
+      mnemonic: rootIdentity?.exportMnemonic('passw') as string,
+      publicKey: rootIdentity
         ?.getPreDerivedPublicKey()
         .serializeBase58() as string,
       privateKey: 'how',
@@ -65,7 +66,9 @@ export class DidService implements IDidService {
   }
 
   getDidDocument = async (did: any, useCache: boolean = true): Promise<any> => {
-    let didRoot = this.rootIdentity?.getDid(0) as DID;
+    let store = await DidService.getStore();
+    let rootIdentity = await store.loadRootIdentity();
+    let didRoot = rootIdentity.getDid(0) as DID;
     return await didRoot.resolve();
   };
 

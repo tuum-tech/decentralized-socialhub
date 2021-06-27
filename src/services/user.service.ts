@@ -211,7 +211,6 @@ export class UserService {
   ) {
     let did = newDidStr;
     let mnemonics = newMnemonicStr;
-
     if (!did || did === '') {
       const newDid = await this.generateTemporaryDID(
         accountType,

@@ -69,6 +69,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
+import { DidService } from './services/did.service.new';
 
 const StyledToastContainer = styled(ToastContainer)`
   & .Toastify__toast-body {
@@ -76,6 +77,8 @@ const StyledToastContainer = styled(ToastContainer)`
   }
 `;
 const App: React.FC = () => {
+  // TODO: find a good place for this static initialization
+  DidService.InitializeMainnet();
   return (
     <IonApp>
       <StyledToastContainer

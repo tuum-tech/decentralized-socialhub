@@ -71,6 +71,7 @@ const SignDidPage: React.FC<RouteComponentProps<
                 })
               );
               setLoading(false);
+
               if (res) {
                 history.push({
                   pathname: '/set-password',

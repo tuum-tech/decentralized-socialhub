@@ -42,7 +42,6 @@ export enum PublishRequestOperation {
   Update = 'update'
 }
 
-//@injectable()
 export class DidService implements IDidService {
   async loadDid(mnemonic: string, password: string = ''): Promise<IDID> {
     let didLoaded = await ElastosClient.did.loadFromMnemonic(

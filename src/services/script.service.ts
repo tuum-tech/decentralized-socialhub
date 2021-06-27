@@ -255,7 +255,7 @@ export class UserVaultScriptService {
         let userService = new UserService(new DidService());
         await userService.updateSession(newUser);
         let hiveInstance = await HiveService.getSessionInstance(newUser);
-      
+
         await UserVaultScripts.Execute(hiveInstance!);
       } catch (error) {
         console.log('Could not register: ' + error);

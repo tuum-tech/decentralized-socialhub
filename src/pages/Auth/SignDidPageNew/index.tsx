@@ -1,7 +1,5 @@
-import { connect } from 'react-redux';
-import { StaticContext, RouteComponentProps, useHistory } from 'react-router';
-import { compose } from 'redux';
-import { createStructuredSelector } from 'reselect';
+import { StaticContext, RouteComponentProps } from 'react-router';
+import { useHistory } from 'react-router-dom';
 
 import { UserService } from 'src/services/user.service';
 import { DidService } from 'src/services/did.service.new';
@@ -15,17 +13,11 @@ import DidSignForm from '../components/DidSign/DidSignForm';
 import DidLeftSide from '../components/DidSign/DidLeftSide';
 import PassPhraseHelp from '../components/DidSign/PassPhraseHelp';
 
-import injector from 'src/baseplate/injectorWrap';
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
-import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import style from './style.module.scss';
-import { NameSpace } from './constants';
-import reducer from './reducer';
-import saga from './saga';
-import { InferMappedProps, SubState, UserType, LocationState } from './types';
+import { UserType, LocationState } from './types';
 
-const SignDidPageNew: React.FC<RouteComponentProps<
+const SignDidPage: React.FC<RouteComponentProps<
   {},
   StaticContext,
   LocationState
@@ -49,6 +41,7 @@ const SignDidPageNew: React.FC<RouteComponentProps<
   }, []);
 
   let didService = new DidService();
+
   return (
     <OnBoardLayout className={style['did-signin']}>
       {loading && <LoadingIndicator loadingText="Signing Now..." />}
@@ -77,6 +70,8 @@ const SignDidPageNew: React.FC<RouteComponentProps<
                   mnemonic: mnemonic
                 })
               );
+              setLoading(false);
+
               if (res) {
                 history.push({
                   pathname: '/set-password',
@@ -84,7 +79,7 @@ const SignDidPageNew: React.FC<RouteComponentProps<
                 });
               } else {
                 history.push({
-                  pathname: '/create-profile-with-did-new',
+                  pathname: '/create-profile-with-did',
                   state: {
                     did: uDid,
                     mnemonic,
@@ -92,7 +87,6 @@ const SignDidPageNew: React.FC<RouteComponentProps<
                   }
                 });
               }
-              setLoading(false);
             }
           }}
         />
@@ -101,39 +95,4 @@ const SignDidPageNew: React.FC<RouteComponentProps<
   );
 };
 
-/** @returns {object} Contains state props from selectors */
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg()
-});
-
-/** @returns {object} Contains dispatchable props */
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      // eProps - Emitter proptypes thats binds to dispatch
-      /** dispatch for counter to increment */
-      onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax())
-    }
-  };
-}
-
-/**
- * Injects prop and saga bindings done via
- * useInjectReducer & useInjectSaga
- */
-const withInjectedMode = injector(SignDidPageNew, {
-  key: NameSpace,
-  reducer,
-  saga
-});
-
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
-
-export default compose(
-  withConnect,
-  memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>;
-
-// export default Tab1;
+export default SignDidPage;

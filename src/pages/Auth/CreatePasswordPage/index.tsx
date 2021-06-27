@@ -171,6 +171,7 @@ const CreatePasswordPage: React.FC<PageProps> = ({
                 setLoading(true);
                 let userService = new UserService(new DidService());
                 const res = await userService.LockWithDIDAndPwd(user, password);
+
                 setLoading(false);
                 if (res && res.did !== '') {
                   eProps.setSession({ session: res });
