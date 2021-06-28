@@ -4,8 +4,8 @@ import { IonItem, IonIcon } from '@ionic/react';
 import styled from 'styled-components';
 import { chevronDownOutline, chevronUpOutline } from 'ionicons/icons';
 
-import { Button } from 'src/components/buttons';
-import Logo from 'src/components/Logo';
+import { Button } from 'src/elements/buttons';
+import Logo from 'src/elements/Logo';
 import { UserService } from 'src/services/user.service';
 
 import photo from 'src/assets/icon/dp.png';

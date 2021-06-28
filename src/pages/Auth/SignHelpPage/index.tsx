@@ -25,7 +25,7 @@ import {
   OnBoardLayoutRight,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { ButtonLink, ArrowButton } from 'src/components/buttons';
+import { ButtonLink, ArrowButton } from 'src/elements/buttons';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import wavinghand from 'src/assets/icon/wavinghand.png';

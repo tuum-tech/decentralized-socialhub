@@ -3,7 +3,7 @@ import { IonContent, IonSearchbar, IonSpinner } from '@ionic/react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import styled from 'styled-components';
 
-import { FollowButton } from 'src/components/buttons';
+import { FollowButton } from 'src/elements/buttons';
 import { FollowService } from 'src/services/follow.service';
 import { ProfileService } from 'src/services/profile.service';
 

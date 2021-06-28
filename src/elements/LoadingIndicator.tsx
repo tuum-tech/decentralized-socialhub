@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { IonImg } from '@ionic/react';
 
-import loadingimg from '../../assets/icon/loading.png';
+import loadingimg from 'src/assets/icon/loading.png';
 
 const LoadingContainer = styled.div`
   background: rgba(0, 0, 0, 0.62);

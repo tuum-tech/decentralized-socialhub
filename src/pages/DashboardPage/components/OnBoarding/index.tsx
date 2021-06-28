@@ -7,7 +7,7 @@ import { IonButton, IonImg } from '@ionic/react';
 import clsx from 'clsx';
 
 import { RequestStatus } from 'src/services/assist.service';
-import AlphaContent from 'src/components/AlphaContent';
+import AlphaContent from 'src/elements/AlphaContent';
 import Avatar from 'src/components/Avatar';
 
 import PublishingLabel from '../PublishingLabel';

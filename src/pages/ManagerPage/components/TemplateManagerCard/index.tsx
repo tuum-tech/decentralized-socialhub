@@ -15,10 +15,9 @@ import {
 import styled from 'styled-components';
 
 import { UserService } from 'src/services/user.service';
-import { ProfileName } from 'src/components/texts';
+import { ProfileName } from 'src/elements/texts';
 import Avatar from 'src/components/Avatar';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
-import { useEffect } from 'react';
 
 export const Divider = styled.hr`
   width: 100%;
@@ -56,21 +55,13 @@ const ProfileStatus = styled.span`
 
 interface IProps {
   sessionItem: ISessionItem;
+  updateSession: (props: { session: ISessionItem }) => void;
 }
 
-const TemplateManagerCard: React.FC<IProps> = ({ sessionItem }: IProps) => {
-  const [selected, setSelected] = useState<string>(
-    sessionItem.pageTemplate || 'default'
-  );
-
-  const [updating, setUpdating] = useState(false);
-  useEffect(() => {
-    if (updating) return;
-    if (sessionItem.pageTemplate && sessionItem.pageTemplate !== selected) {
-      setSelected(sessionItem.pageTemplate);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionItem.pageTemplate]);
+const TemplateManagerCard: React.FC<IProps> = ({
+  sessionItem,
+  updateSession
+}: IProps) => {
   return (
     <IonCard className={styleWidget['overview']}>
       <IonCardHeader>
@@ -90,14 +81,20 @@ const TemplateManagerCard: React.FC<IProps> = ({ sessionItem }: IProps) => {
         </IonText>
         <Divider />
         <IonRadioGroup
-          value={selected}
+          value={sessionItem.pageTemplate || 'default'}
           onIonChange={async e => {
-            const newSession = {
-              ...sessionItem,
-              pageTemplate: e.detail.value
-            };
-            await UserService.updateSession(newSession, true);
-            setSelected(e.detail.value);
+            const newSelected = e.detail.value;
+            if (!newSelected || newSelected === sessionItem.pageTemplate) {
+              return;
+            }
+            const newSession = await UserService.updateSession(
+              {
+                ...sessionItem,
+                pageTemplate: e.detail.value
+              },
+              true
+            );
+            await updateSession({ session: newSession });
           }}
         >
           <IonGrid>

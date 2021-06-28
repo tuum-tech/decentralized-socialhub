@@ -3,12 +3,12 @@ import { IonGrid, IonRow, IonCol } from '@ionic/react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import DidSnippet from 'src/components/DidSnippet';
-import { ProfileName } from 'src/components/texts';
-import { FollowButton } from 'src/components/buttons';
+import DidSnippet from 'src/elements/DidSnippet';
+import { ProfileName } from 'src/elements/texts';
+import { FollowButton } from 'src/elements/buttons';
 import Avatar from 'src/components/Avatar';
 
-import FollowOrUnFollowButton from '../FollowOrUnFollow';
+import FollowOrUnFollowButton from '../../FollowOrUnFollow';
 import defaultCoverPhoto from 'src/assets/default-cover.png';
 
 const HeaderContainer = styled(IonGrid)`

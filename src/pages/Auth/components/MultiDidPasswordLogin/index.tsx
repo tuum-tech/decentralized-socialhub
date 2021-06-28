@@ -12,14 +12,14 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import LoadingIndicator from 'src/components/LoadingIndicator';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { SearchService } from 'src/services/search.service';
 import { getItemsFromData } from 'src/utils/script';
-import { ButtonWithLogo } from 'src/components/buttons';
-import { Text16, ErrorTxt } from 'src/components/texts';
+import { ButtonWithLogo } from 'src/elements/buttons';
+import { Text16, ErrorTxt } from 'src/elements/texts';
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import eye from 'src/assets/icon/eye.png';
-import TextInput from 'src/components/inputs/TextInput';
+import TextInput from 'src/elements/inputs/TextInput';
 import { UserService } from 'src/services/user.service';
 
 import FieldDivider from '../FieldDivider';

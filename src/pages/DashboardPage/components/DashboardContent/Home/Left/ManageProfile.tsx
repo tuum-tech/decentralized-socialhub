@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { DefaultLinkButton } from 'src/components/buttons';
+import { DefaultLinkButton } from 'src/elements/buttons';
 import AboutCard from 'src/components/cards/AboutCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
 import EducationCard from 'src/components/cards/EducationCard';

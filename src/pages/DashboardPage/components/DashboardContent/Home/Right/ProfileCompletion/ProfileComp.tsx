@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import check from '../../../../../../../theme/images/checkmark-circle-outline.svg';
 import checkgreen from '../../../../../../../assets/icon/check-circle-fill.svg';
-import ProgressBar from 'src/components/ProgressBar';
+import ProgressBar from 'src/elements/ProgressBar';
 import DropButton from './DropButton';
 
 const Container = styled(IonGrid)`

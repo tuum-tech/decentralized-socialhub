@@ -9,13 +9,13 @@ import {
   IonContent,
   IonText
 } from '@ionic/react';
-import { PageTitle, PageCategory, SpaceLs } from 'src/components/note';
+import { PageTitle, PageCategory, SpaceLs } from 'src/elements/note';
 import style from './style.module.scss';
-import TextInput from 'src/components/inputs/TextInput';
-import SelectInput from 'src/components/inputs/SelectInput';
-import TextareaInput from 'src/components/inputs/TextareaInput';
-import FileInput from 'src/components/inputs/FileInput';
-import { Button } from 'src/components/buttons';
+import TextInput from 'src/elements/inputs/TextInput';
+import SelectInput from 'src/elements/inputs/SelectInput';
+import TextareaInput from 'src/elements/inputs/TextareaInput';
+import FileInput from 'src/elements/inputs/FileInput';
+import { Button } from 'src/elements/buttons';
 import { showNotify } from 'src/utils/notify';
 
 interface Props {

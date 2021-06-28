@@ -17,15 +17,15 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import ButtonWithLogo from 'src/components/buttons/ButtonWithLogo';
-import TextInput from 'src/components/inputs/TextInput';
-import { Text16 } from 'src/components/texts';
-import LoadingIndicator from 'src/components/LoadingIndicator';
+import ButtonWithLogo from 'src/elements/buttons/ButtonWithLogo';
+import TextInput from 'src/elements/inputs/TextInput';
+import { Text16 } from 'src/elements/texts';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import keyimg from 'src/assets/icon/key.png';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
-import Check from 'src/components/Check';
+import Check from '../Check';
 
 const ErrorText = styled(Text16)`
   text-align: center;

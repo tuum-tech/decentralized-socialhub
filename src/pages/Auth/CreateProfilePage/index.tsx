@@ -18,12 +18,12 @@ import {
   SocialButton,
   ButtonWithLogo,
   SignInButton
-} from 'src/components/buttons';
-import TextInput from 'src/components/inputs/TextInput';
-import { Text16 } from 'src/components/texts';
+} from 'src/elements/buttons';
+import TextInput from 'src/elements/inputs/TextInput';
+import { Text16 } from 'src/elements/texts';
 import { UserService } from 'src/services/user.service';
 import { validateEmail } from 'src/utils/validation';
-import LoadingIndicator from 'src/components/LoadingIndicator';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 
 import { AlphaService } from 'src/services/alpha.service';
 import TwitterApi from 'src/shared-base/api/twitter-api';

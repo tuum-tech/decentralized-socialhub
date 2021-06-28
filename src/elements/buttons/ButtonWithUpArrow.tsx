@@ -21,7 +21,7 @@ const ButtonWithUpArrow: React.FC<Props> = ({ onClick, text, mt, dark }) => {
       onClick={onClick}
       className={cName}
       style={{
-        marginTop: mt && `${mt}px`,
+        marginTop: mt && `${mt}px`
       }}
     >
       <IonImg src={whiteuparrow} />

@@ -1,5 +1,6 @@
 import {
   IonFooter,
+  IonCard,
   IonCardHeader,
   IonGrid,
   IonModal,
@@ -7,6 +8,7 @@ import {
   IonCardContent
 } from '@ionic/react';
 import styled from 'styled-components';
+import theme from 'src/data/theme';
 
 export enum MODE {
   NONE,
@@ -14,6 +16,32 @@ export enum MODE {
   EDIT,
   ERROR
 }
+
+interface ThemeProps {
+  template: string;
+}
+
+export const CardOverview = styled(IonCard)<ThemeProps>`
+  background-color: ${({ template }: ThemeProps) =>
+    (theme as any)[template].cardBg};
+  box-shadow: ${({ template }: ThemeProps) =>
+    (theme as any)[template].cardShawdow};
+
+  border-radius: 16px;
+  margin: 0px 0px 22px;
+
+  ion-card-title {
+    font-family: 'SF Pro Display';
+    font-size: 18px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: -0.09px;
+    text-align: left;
+    color: ${({ template }: ThemeProps) => (theme as any)[template].cardTitle};
+  }
+`;
 
 export const Institution = styled.span`
   font-family: 'SF Pro Display';

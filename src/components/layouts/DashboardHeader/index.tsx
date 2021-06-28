@@ -1,7 +1,7 @@
 import React from 'react';
 import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react';
-import Logo from '../../Logo';
-import LeftSideMenu from '../../layouts/LeftSideMenu';
+import Logo from '../../../elements/Logo';
+import LeftSideMenu from '../LeftSideMenu';
 
 const Header: React.FC = () => {
   return (

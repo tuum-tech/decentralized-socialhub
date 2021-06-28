@@ -21,7 +21,7 @@ import {
   CardContentContainer
 } from '../common';
 import EducationCardEdit from './Edit';
-import ProgressBar from 'src/components/ProgressBar';
+import ProgressBar from 'src/elements/ProgressBar';
 
 interface IEducationProps {
   educationDTO: EducationDTO;

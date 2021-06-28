@@ -15,8 +15,9 @@ import EducationCard from 'src/components/cards/EducationCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 import FollowCards from 'src/components/follow/FollowCards';
+
 import PublicProfileTabs from './PublicProfileTabs';
-import ProfileHeader from '../ProfileHeader';
+import ProfileHeader from './ProfileHeader';
 
 import style from './style.module.scss';
 
@@ -124,6 +125,7 @@ const ProfileComponent: React.FC<Props> = ({
                         <div ref={aboutRef}>
                           {publicFields.includes('about') && (
                             <AboutCard
+                              template={publicUser.pageTemplate}
                               aboutText={publicUserProfile.basicDTO.about}
                               mode="read"
                             />

@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import Avatar from 'src/components/Avatar';
-import DropDown from 'src//components/arrows/DropDown';
-import DropUp from 'src//components/arrows/DropUp';
-import { Trush } from 'src/components/icons';
+import DropDown from 'src/elements/arrows/DropDown';
+import DropUp from 'src/elements/arrows/DropUp';
+import { Trush } from 'src/elements/icons';
 
 import style from './style.module.scss';
 

@@ -22,7 +22,7 @@ import {
   CardHeaderContent,
   CardContentContainer
 } from '../common';
-import ProgressBar from 'src/components/ProgressBar';
+import ProgressBar from 'src/elements/ProgressBar';
 
 interface IExperienceProps {
   experienceDTO: ExperienceDTO;

@@ -13,9 +13,9 @@ import { InferMappedProps, SubState } from './types';
 import { ProfileService } from 'src/services/profile.service';
 import { FollowService } from 'src/services/follow.service';
 import ViewAllFollowModal from 'src/components/follow/ViewAllFollowModal';
-import LoadingIndicator from 'src/components/LoadingIndicator';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 import ProfileComponent from 'src/components/profile/ProfileComponent';
-import PublicNavbar from 'src/components/profile/PublicNavbar';
+import PublicNavbar from 'src/components/profile/ProfileComponent/PublicNavbar';
 
 import style from './style.module.scss';
 
@@ -113,6 +113,7 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
               <div className={style['profilecomponent']}>
                 <ProfileComponent
                   publicFields={publicFields}
+                  userSession={props.session}
                   targetDid={did}
                   scrollToElement={scrollToElement}
                   aboutRef={aboutRef}
@@ -123,7 +124,6 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
                   }}
                   followerDids={followerDids}
                   followingDids={followingDids}
-                  userSession={props.session}
                 />
               </div>
             </IonCol>

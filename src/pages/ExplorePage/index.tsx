@@ -11,7 +11,7 @@ import { setSession } from 'src/store/users/actions';
 
 import { ProfileService } from 'src/services/profile.service';
 import { FollowService } from 'src/services/follow.service';
-import Logo from 'src/components/Logo';
+import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 
 import ProfileComponent from 'src/components/profile/ProfileComponent';

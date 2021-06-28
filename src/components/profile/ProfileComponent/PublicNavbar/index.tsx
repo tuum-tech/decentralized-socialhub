@@ -2,7 +2,7 @@ import { IonRow, IonCol } from '@ionic/react';
 import React from 'react';
 import styled from 'styled-components';
 
-import { DashboardSignInButton } from 'src/components/buttons';
+import { DashboardSignInButton } from 'src/elements/buttons';
 
 const PublicNavbarContainer = styled(IonRow)`
   width: 100%;

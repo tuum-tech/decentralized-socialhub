@@ -4,7 +4,7 @@
 
 import React from 'react';
 import loadable from 'src/baseplate/loadable';
-import LoadingIndicator from 'src/components/LoadingIndicator';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 
 export default loadable(() => import('./index'), {
   fallback: <LoadingIndicator />

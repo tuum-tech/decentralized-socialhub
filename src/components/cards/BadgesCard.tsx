@@ -9,7 +9,7 @@ import {
 } from '@ionic/react';
 import styled from 'styled-components';
 import style from './BadgesCard.module.scss';
-import ProgressBar from 'src/components/ProgressBar';
+import ProgressBar from 'src/elements/ProgressBar';
 
 const ProgressBarChart = styled.div`
   width: calc(100% - 60px);

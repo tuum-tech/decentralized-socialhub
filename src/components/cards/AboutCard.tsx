@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import {
-  IonButton,
-  IonCard,
-  IonCardTitle,
-  IonCol,
-  IonGrid,
-  IonRow
-} from '@ionic/react';
+import { IonButton, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
+import theme from 'src/data/theme';
 
 import {
+  CardOverview,
   LinkStyleSpan,
   MyModal,
   MyGrid,
@@ -18,9 +13,12 @@ import {
   CardHeaderContent,
   CardContentContainer
 } from './common';
-import styleWidget from './WidgetCards.module.scss';
 
-const About = styled.span`
+interface ThemeProps {
+  template: string;
+}
+
+const AboutText = styled.span<ThemeProps>`
   white-space: break-spaces !important;
   margin: 9px 0 0 0;
   font-family: 'SF Pro Display';
@@ -31,19 +29,23 @@ const About = styled.span`
   line-height: 1.6;
   letter-spacing: normal;
   text-align: left;
-  color: #425466;
+  color: ${({ template }: ThemeProps) => {
+    return (theme as any)[template].overviewText;
+  }};
 `;
 
 interface IProps {
   mode?: string;
   update?: any;
   aboutText: string;
+  template?: string;
 }
 
 const AboutCard: React.FC<IProps> = ({
   aboutText,
   mode = 'read',
-  update
+  update,
+  template = 'default'
 }: IProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [about, setAbout] = useState(aboutText ? aboutText : '');
@@ -58,7 +60,7 @@ const AboutCard: React.FC<IProps> = ({
 
   return (
     <>
-      <IonCard className={styleWidget['overview']}>
+      <CardOverview template={template}>
         <CardHeaderContent>
           <IonGrid className="ion-no-padding">
             <IonRow className="ion-justify-content-between ion-no-padding">
@@ -81,12 +83,12 @@ const AboutCard: React.FC<IProps> = ({
           <IonGrid className="ion-no-padding">
             <IonRow className="ion-no-padding">
               <IonCol size="12" className="ion-no-padding">
-                <About>{about}</About>
+                <AboutText template={template}>{about}</AboutText>
               </IonCol>
             </IonRow>
           </IonGrid>
         </CardContentContainer>
-      </IonCard>
+      </CardOverview>
       <MyModal isOpen={isEditing} cssClass="my-custom-class">
         <MyGrid className="ion-no-padding">
           <IonRow className="ion-no-padding">

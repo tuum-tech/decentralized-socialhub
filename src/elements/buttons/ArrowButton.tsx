@@ -19,7 +19,7 @@ const ArrowButton: React.FC<Props> = ({
   onClick,
   type = 'transparent',
   disabled = false,
-  size = 26,
+  size = 26
 }) => {
   let cName = style['arrow-btn'];
   let arrowColor = 'white';

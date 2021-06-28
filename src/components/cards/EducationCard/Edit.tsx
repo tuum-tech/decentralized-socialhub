@@ -8,7 +8,7 @@ import {
 } from '@ionic/react';
 import styled from 'styled-components';
 
-import SmallTextInput from '../../inputs/SmallTextInput';
+import SmallTextInput from '../../../elements/inputs/SmallTextInput';
 import { MODE, MyGrid, MyTextarea } from '../common';
 
 interface EducationItemProps {

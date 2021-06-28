@@ -11,7 +11,7 @@ import {
   Program,
   TreeDotsButton
 } from '../common';
-import Image from '../../Image';
+import Image from '../../../elements/Image';
 import styleWidget from '../WidgetCards.module.scss';
 
 const EditableContent = styled(IonCol)`
