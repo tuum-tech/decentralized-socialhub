@@ -63,7 +63,6 @@ const SignDidPage: React.FC<RouteComponentProps<
             } else {
               setLoading(true);
               let userService = new UserService(didService);
-              debugger;
               const res = await userService.SearchUserWithDID(uDid);
               window.localStorage.setItem(
                 `temporary_${uDid.replace('did:elastos:', '')}`,
