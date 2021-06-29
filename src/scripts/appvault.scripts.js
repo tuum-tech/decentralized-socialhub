@@ -174,7 +174,7 @@ let run = async () => {
       body: {
         collection: 'users',
         filter: {
-          'loginCred.email': '$params.oldEmail',
+          did: '$params.did',
           status: 'CONFIRMED'
         },
         update: {
