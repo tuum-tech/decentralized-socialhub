@@ -14,6 +14,7 @@ import SignQRPage from './SignQRPage/Loadable';
 import ForgotPasswordPage from './ForgotPasswordPage/Loadable';
 import UnlockUserPage from './UnlockUserPage/Loadable';
 import VerifyEmailPage from './VerifyEmailPage';
+import UpdateEmailPage from './UpdateEmailPage';
 import CreateProfileWithDidPage from './CreateProfileWithDidPage/Loadable';
 
 export {
@@ -33,5 +34,6 @@ export {
   ForgotPasswordPage,
   UnlockUserPage,
   VerifyEmailPage,
+  UpdateEmailPage,
   CreateProfileWithDidPage
 };

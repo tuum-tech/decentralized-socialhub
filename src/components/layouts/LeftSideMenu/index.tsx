@@ -134,6 +134,28 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
                   <h3>Followings</h3>
                 </IonLabel>
               </IonItem>
+              <IonItem
+                className={
+                  // active === 'connections-followings'
+                  history.location.pathname === '/connections/mutual-followers'
+                    ? style['item-active'] +
+                      ' ' +
+                      style['item-connections-active']
+                    : style['item-link'] + ' ' + style['item-connections-link']
+                }
+                onClick={async () =>
+                  history.push('/connections/mutual-followers')
+                }
+              >
+                <IonIcon
+                  slot="start"
+                  src="../../assets/icon_connections.svg"
+                  className={style['img']}
+                ></IonIcon>
+                <IonLabel>
+                  <h3>Mutual Followers</h3>
+                </IonLabel>
+              </IonItem>
             </>
           )}
 

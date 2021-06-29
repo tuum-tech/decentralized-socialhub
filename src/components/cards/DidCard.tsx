@@ -21,6 +21,7 @@ interface Props extends InferMappedProps {
   following?: FollowingDTO;
   colSize?: string;
   type?: string;
+  onUnfollow?: (did: string) => void;
 }
 
 const DidCard: React.FC<Props> = ({
@@ -32,7 +33,8 @@ const DidCard: React.FC<Props> = ({
   following,
   colSize = '100%',
   type = 'user',
-  session
+  session,
+  onUnfollow
 }: Props) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -53,6 +55,7 @@ const DidCard: React.FC<Props> = ({
     following = response.get_following;
     setIsFollowing(false);
     setLoading(false);
+    onUnfollow && onUnfollow(did);
   };
 
   const getLink = (did: string) => {

@@ -20,6 +20,10 @@ import style from './style.module.scss';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
 
+import { showNotify } from 'src/utils/notify';
+
+import { requestUpdateEmail } from './fetchapi';
+
 interface Props {
   session: ISessionItem;
   updateSession: (props: { session: ISessionItem }) => void;
@@ -90,9 +94,36 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
             {!error && loaded ? (
               <BasicCard
                 sessionItem={userInfo}
-                updateFunc={async (userInfo: ISessionItem) => {
-                  await TuumTechScriptService.updateTuumUser(userInfo);
-                  await updateSession({ session: userInfo });
+                updateFunc={async (_userInfo: ISessionItem) => {
+                  const newEmail = _userInfo.loginCred?.email!;
+                  const oldEmail = userInfo.loginCred?.email!;
+                  if (newEmail !== oldEmail) {
+                    let response = (await requestUpdateEmail(
+                      userInfo.did,
+                      newEmail
+                    )) as IUpdateEmailResponse;
+                    if (
+                      response &&
+                      response.data &&
+                      response.data.newEmail === newEmail
+                    ) {
+                      // Alert user
+                      showNotify(
+                        'Verification email is sent to you. Please confirm to complete your updating.',
+                        'info'
+                      );
+                      window.localStorage.setItem(
+                        `updated_email_${userInfo.did.replace(
+                          'did:elastos:',
+                          ''
+                        )}`,
+                        newEmail
+                      );
+                    }
+                    _userInfo.loginCred!.email = oldEmail;
+                  }
+                  await TuumTechScriptService.updateTuumUser(_userInfo);
+                  await updateSession({ session: _userInfo });
                 }}
               ></BasicCard>
             ) : (
