@@ -57,9 +57,7 @@ const PublicProfileTabs: React.FC<IProps> = ({
     <Container template={template}>
       <IonList className="tab-list">
         <IonItem
-          className={
-            (active === 'about' ? 'tab-active' : '') + ' ' + 'tab-item'
-          }
+          className={(active === 'about' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => {
             setActive('about');
             scrollToPosition('about');
@@ -69,7 +67,7 @@ const PublicProfileTabs: React.FC<IProps> = ({
         </IonItem>
         <IonItem
           className={
-            (active === 'experience' ? 'tab-active' : '') + ' ' + 'tab-item'
+            (active === 'experience' ? 'tab-active' : '') + ' tab-item'
           }
           onClick={() => {
             setActive('experience');
@@ -79,9 +77,7 @@ const PublicProfileTabs: React.FC<IProps> = ({
           <IonLabel className="tab-label">Experience</IonLabel>
         </IonItem>
         <IonItem
-          className={
-            (active === 'education' ? 'tab-active' : '') + ' ' + 'tab-item'
-          }
+          className={(active === 'education' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => {
             setActive('education');
             scrollToPosition('education');

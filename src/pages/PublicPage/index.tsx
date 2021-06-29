@@ -1,7 +1,6 @@
-import { IonPage, IonGrid, IonRow, IonContent, IonCol } from '@ionic/react';
+import { IonGrid, IonContent, IonCol } from '@ionic/react';
 import { RouteComponentProps } from 'react-router';
 import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
 
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
