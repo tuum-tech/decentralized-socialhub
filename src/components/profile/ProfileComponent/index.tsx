@@ -1,25 +1,23 @@
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-
-import {
-  ProfileService,
-  defaultUserInfo,
-  defaultFullProfile
-} from 'src/services/profile.service';
-import { DidDocumentService } from 'src/services/diddocument.service';
-import { UserService } from 'src/services/user.service';
 
 import AboutCard from 'src/components/cards/AboutCard';
 import EducationCard from 'src/components/cards/EducationCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 import FollowCards from 'src/components/follow/FollowCards';
+import theme from 'src/data/theme';
 
 import PublicProfileTabs from './PublicProfileTabs';
 import ProfileHeader from './ProfileHeader';
 
-import style from './style.module.scss';
+const GridContent = styled(IonGrid)<ThemeProps>`
+  width: 100%;
+  z-index: 100;
+  background-color: ${({ template }: ThemeProps) =>
+    (theme as any)[template].pageBg};
+`;
 
 const LeftContent = styled.div`
   width: calc(100% - 300px);
@@ -31,7 +29,6 @@ const RightContent = styled.div`
 `;
 
 interface Props {
-  targetDid: string;
   aboutRef: any;
   experienceRef: any;
   educationRef: any;
@@ -41,10 +38,13 @@ interface Props {
   viewAllClicked?: (isFollower: boolean) => void;
   publicFields?: string[];
   userSession: ISessionItem;
+  didDocument: any;
+  publicUser: any;
+  publicUserProfile: any;
+  loading: boolean;
 }
 
 const ProfileComponent: React.FC<Props> = ({
-  targetDid,
   aboutRef,
   experienceRef,
   educationRef,
@@ -60,42 +60,12 @@ const ProfileComponent: React.FC<Props> = ({
     'education',
     'social'
   ],
-  userSession
+  userSession,
+  didDocument,
+  publicUser,
+  publicUserProfile,
+  loading
 }: Props) => {
-  const [publicUser, setPublicUser] = useState(defaultUserInfo);
-  const [publicUserProfile, setPublicUserProfile] = useState(
-    defaultFullProfile
-  );
-  const [didDocument, setDidDocument] = useState<any>({});
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    (async () => {
-      if (targetDid && targetDid !== '') {
-        setLoading(true);
-        let pUser = await UserService.SearchUserWithDID(targetDid);
-        if (pUser && pUser.did) {
-          setPublicUser(pUser as any);
-          let profile = await ProfileService.getFullProfile(
-            targetDid,
-            userSession
-          );
-          if (profile) {
-            profile.basicDTO.isEnabled = true;
-            profile.experienceDTO.isEnabled = true;
-            profile.educationDTO.isEnabled = true;
-            setPublicUserProfile(profile);
-          }
-          let documentState = await DidDocumentService.getUserDocumentByDid(
-            targetDid
-          );
-          setDidDocument(documentState.diddocument);
-        }
-      }
-      setLoading(false);
-    })();
-  }, [targetDid, userSession]);
-
   const displayText = loading
     ? 'Loading User Data ...'
     : publicUser.did === ''
@@ -115,8 +85,11 @@ const ProfileComponent: React.FC<Props> = ({
         publicUser.did !== '' &&
         publicUserProfile.basicDTO.isEnabled === true && (
           <>
-            <PublicProfileTabs scrollToPosition={scrollToElement} />
-            <IonGrid className={style['scroll']}>
+            <PublicProfileTabs
+              template={publicUser.pageTemplate}
+              scrollToPosition={scrollToElement}
+            />
+            <GridContent template={publicUser.pageTemplate || 'default'}>
               <IonRow className="ion-justify-content-center">
                 <IonCol size="12">
                   <IonGrid>
@@ -137,6 +110,7 @@ const ProfileComponent: React.FC<Props> = ({
                               experienceDTO={publicUserProfile.experienceDTO}
                               isEditable={false}
                               isPublicPage={true}
+                              template={publicUser.pageTemplate || 'default'}
                             />
                           )}
                         </div>
@@ -146,6 +120,7 @@ const ProfileComponent: React.FC<Props> = ({
                               educationDTO={publicUserProfile.educationDTO}
                               isEditable={false}
                               isPublicPage={true}
+                              template={publicUser.pageTemplate || 'default'}
                             />
                           )}
                         </div>
@@ -156,7 +131,6 @@ const ProfileComponent: React.FC<Props> = ({
                           didDocument.id && (
                             <SocialProfilesCard
                               didDocument={didDocument}
-                              // sessionItem={publicUser}
                               targetUser={publicUser}
                             />
                           )}
@@ -166,6 +140,7 @@ const ProfileComponent: React.FC<Props> = ({
                           followerDids={followerDids}
                           followingDids={followingDids}
                           signed={userSession.did !== ''}
+                          template={publicUser.pageTemplate || 'default'}
                           viewAll={(isFollower: boolean) => {
                             if (viewAllClicked) viewAllClicked(isFollower);
                           }}
@@ -175,7 +150,7 @@ const ProfileComponent: React.FC<Props> = ({
                   </IonGrid>
                 </IonCol>
               </IonRow>
-            </IonGrid>
+            </GridContent>
           </>
         )}
     </>

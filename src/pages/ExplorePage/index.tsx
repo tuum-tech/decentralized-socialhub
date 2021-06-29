@@ -9,8 +9,15 @@ import { makeSelectSession } from 'src/store/users/selectors';
 import { SubState, InferMappedProps } from './types';
 import { setSession } from 'src/store/users/actions';
 
-import { ProfileService } from 'src/services/profile.service';
+import {
+  ProfileService,
+  defaultUserInfo,
+  defaultFullProfile
+} from 'src/services/profile.service';
 import { FollowService } from 'src/services/follow.service';
+import { UserService } from 'src/services/user.service';
+import { DidDocumentService } from 'src/services/diddocument.service';
+
 import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 
@@ -23,7 +30,6 @@ import style from './style.module.scss';
 
 const Header = styled.div`
   width: 100%;
-  // height: 83px;
   background: #fff;
   padding: 13px 15px 10px 22px;
   border-bottom: 1px solid #edf2f7;s
@@ -59,6 +65,13 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   const [followerDids, setFollowerDids] = useState<string[]>([]);
   const [followingDids, setFollowingDids] = useState<string[]>([]);
 
+  const [publicUser, setPublicUser] = useState(defaultUserInfo);
+  const [publicUserProfile, setPublicUserProfile] = useState(
+    defaultFullProfile
+  );
+  const [didDocument, setDidDocument] = useState<any>({});
+  const [loading, setLoading] = useState(true);
+
   const [showAllFollow, setShowAllFollow] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
 
@@ -91,6 +104,7 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
       const pFields = await ProfileService.getPublicFields(
         props.match.params.did
       );
@@ -107,6 +121,31 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
         props.session
       );
       setFollowingDids(followingdids);
+
+      if (props.match.params.did && props.match.params.did !== '') {
+        let pUser = await UserService.SearchUserWithDID(props.match.params.did);
+        if (pUser && pUser.did) {
+          setPublicUser(pUser as any);
+
+          let profile = await ProfileService.getFullProfile(
+            props.match.params.did,
+            props.session
+          );
+          if (profile) {
+            profile.basicDTO.isEnabled = true;
+            profile.experienceDTO.isEnabled = true;
+            profile.educationDTO.isEnabled = true;
+            setPublicUserProfile(profile);
+          }
+          let documentState = await DidDocumentService.getUserDocumentByDid(
+            props.match.params.did
+          );
+
+          setDidDocument(documentState.diddocument);
+        }
+      }
+
+      setLoading(false);
     })();
   }, [props.session, props.match.params.did]);
 
@@ -144,7 +183,6 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
                   <ProfileComponent
                     publicFields={publicFields}
                     userSession={props.session}
-                    targetDid={props.match.params.did}
                     scrollToElement={scrollToElement}
                     aboutRef={aboutRef}
                     experienceRef={experienceRef}
@@ -154,6 +192,10 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
                     }}
                     followerDids={followerDids}
                     followingDids={followingDids}
+                    publicUser={publicUser}
+                    publicUserProfile={publicUserProfile}
+                    didDocument={didDocument}
+                    loading={loading}
                   />
                 </IonContent>
               </div>

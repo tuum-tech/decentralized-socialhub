@@ -3,16 +3,15 @@ import {
   IonGrid,
   IonRow,
   IonCol,
-  IonCard,
   IonCardTitle,
   IonCardHeader,
   IonCardContent
 } from '@ionic/react';
 import { Link } from 'react-router-dom';
 
-import styleCards from 'src/components/cards/WidgetCards.module.scss';
 import Avatar from '../../Avatar';
 import { TruncatedSpan, Name, ViewAll } from './FollowingCard';
+import { CardOverview } from '../../cards/common';
 
 import style from './style.module.scss';
 
@@ -22,6 +21,7 @@ interface FollwerWidgetProps {
   isSigned: boolean;
   viewAllClicked: () => void;
   totalNumber: number;
+  template: string;
 }
 
 const FollowerCard: React.FC<FollwerWidgetProps> = ({
@@ -29,10 +29,11 @@ const FollowerCard: React.FC<FollwerWidgetProps> = ({
   getLinkFunc,
   isSigned,
   totalNumber,
-  viewAllClicked
+  viewAllClicked,
+  template
 }: FollwerWidgetProps) => {
   return (
-    <IonCard className={styleCards['overview']}>
+    <CardOverview template={template}>
       <IonCardHeader>
         <IonGrid>
           <IonRow className="ion-justify-content-between">
@@ -70,7 +71,7 @@ const FollowerCard: React.FC<FollwerWidgetProps> = ({
           ))}
         </IonGrid>
       </IonCardContent>
-    </IonCard>
+    </CardOverview>
   );
 };
 

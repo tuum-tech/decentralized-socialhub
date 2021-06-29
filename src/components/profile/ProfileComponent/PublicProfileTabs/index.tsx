@@ -2,64 +2,95 @@ import React, { useState } from 'react';
 import { IonList, IonLabel, IonItem } from '@ionic/react';
 import styled from 'styled-components';
 
-import style from './style.module.scss';
+import theme from 'src/data/theme';
 
 interface IProps {
   scrollToPosition: any;
+  template: string;
 }
 
-const Navigation = styled.div`
-  // position: sticky;
-  // top: 284px;
+const Container = styled.div`
+  z-index: 100;
+  .tab-grid {
+    background-color: ${({ template }: ThemeProps) =>
+      (theme as any)[template].cardBg};
+  }
+  .tab-list {
+    background-color: ${({ template }: ThemeProps) =>
+      (theme as any)[template].cardBg};
+    padding: 15px 0px 0px 15px;
+  }
+  .tab-item {
+    cursor: pointer;
+    --inner-border-width: 0 0 2px 0;
+    display: inline-block;
+    --inner-padding-bottom: 0 !important;
+
+    --background: ${({ template }: ThemeProps) =>
+      (theme as any)[template].cardBg};
+    --border-color: ${({ template }: ThemeProps) =>
+      (theme as any)[template].cardBg};
+
+    font-weight: 600;
+    color: #718096;
+  }
+  .tab-active {
+    --border-color: var(--theme-primary-blue);
+    color: ${({ template }: ThemeProps) => (theme as any)[template].cardTitle};
+  }
+  .tab-label {
+    font-family: 'SF Pro Display';
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+    margin-left: 10px;
+    font-size: 14px;
+  }
 `;
 
-const PublicProfileTabs: React.FC<IProps> = ({ scrollToPosition }: IProps) => {
+const PublicProfileTabs: React.FC<IProps> = ({
+  scrollToPosition,
+  template
+}: IProps) => {
   const [active, setActive] = useState('about');
 
   return (
-    <Navigation className={style['sticky']}>
-      <IonList className={style['tab-list']}>
+    <Container template={template}>
+      <IonList className="tab-list">
         <IonItem
           className={
-            (active === 'about' ? style['tab-active'] : '') +
-            ' ' +
-            style['tab-item']
+            (active === 'about' ? 'tab-active' : '') + ' ' + 'tab-item'
           }
           onClick={() => {
             setActive('about');
             scrollToPosition('about');
           }}
         >
-          <IonLabel className={style['tab-label']}>About</IonLabel>
+          <IonLabel className="tab-label">About</IonLabel>
         </IonItem>
         <IonItem
           className={
-            (active === 'experience' ? style['tab-active'] : '') +
-            ' ' +
-            style['tab-item']
+            (active === 'experience' ? 'tab-active' : '') + ' ' + 'tab-item'
           }
           onClick={() => {
             setActive('experience');
             scrollToPosition('experience');
           }}
         >
-          <IonLabel className={style['tab-label']}>Experience</IonLabel>
+          <IonLabel className="tab-label">Experience</IonLabel>
         </IonItem>
         <IonItem
           className={
-            (active === 'education' ? style['tab-active'] : '') +
-            ' ' +
-            style['tab-item']
+            (active === 'education' ? 'tab-active' : '') + ' ' + 'tab-item'
           }
           onClick={() => {
             setActive('education');
             scrollToPosition('education');
           }}
         >
-          <IonLabel className={style['tab-label']}>Education</IonLabel>
+          <IonLabel className="tab-label">Education</IonLabel>
         </IonItem>
       </IonList>
-    </Navigation>
+    </Container>
   );
 };
 

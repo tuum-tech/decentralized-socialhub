@@ -27,6 +27,7 @@ interface ExperienceItemProps {
   initialStatus?: string;
   removeFunc: any;
   isEditable: boolean;
+  template: string;
 }
 
 const ExperienceItem: React.FC<ExperienceItemProps> = ({
@@ -34,7 +35,8 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
   editFunc,
   index,
   removeFunc,
-  isEditable
+  isEditable,
+  template
 }) => {
   const [popoverState, setShowPopover] = useState({
     showPopover: false,
@@ -70,13 +72,15 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
                 </IonCol>
               </IonRow>
               <IonRow className="ion-no-padding">
-                <Institution>{experienceItem.institution}</Institution>
+                <Institution template={template}>
+                  {experienceItem.institution}
+                </Institution>
               </IonRow>
               <IonRow className="ion-no-padding">
-                <Program>{experienceItem.title}</Program>
+                <Program template={template}>{experienceItem.title}</Program>
               </IonRow>
               <IonRow className="ion-no-padding">
-                <Period>
+                <Period template={template}>
                   {experienceItem.start} -
                   {experienceItem.still === true
                     ? ' Present'
@@ -84,7 +88,9 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
                 </Period>
               </IonRow>
               <IonRow className="ion-no-padding">
-                <Description>{experienceItem.description}</Description>
+                <Description template={template}>
+                  {experienceItem.description}
+                </Description>
               </IonRow>
             </IonGrid>
 

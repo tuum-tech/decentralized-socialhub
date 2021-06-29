@@ -160,6 +160,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                   showManageButton={true}
                   sessionItem={session}
                   setSession={updateSession}
+                  mode="edit"
                 />
 
                 {profile && profile.educationDTO && (
@@ -214,6 +215,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                       await retriveProfile();
                     }}
                     isEditable={true}
+                    template="default"
                   />
                 )}
                 {profile && profile.experienceDTO && (
@@ -270,6 +272,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                       await retriveProfile();
                     }}
                     isEditable={true}
+                    template="default"
                   />
                 )}
               </>

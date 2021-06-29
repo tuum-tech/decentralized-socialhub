@@ -8,9 +8,10 @@ import {
 } from '@ionic/react';
 import ReactPaginate from 'react-paginate';
 
-import DidCard from './DidCard';
+import DidCard from '../DidCard';
 import style from './PagesCard.module.scss';
-import universityImg from '../../assets/university.png';
+import universityImg from '../../../assets/university.png';
+
 interface IProps {
   pages?: PageDTO;
   searchKeyword?: string;

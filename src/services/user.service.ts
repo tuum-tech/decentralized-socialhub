@@ -194,7 +194,13 @@ export class UserService {
     const users = await TuumTechScriptService.searchUserWithDIDs([did]);
     if (users.length > 0) {
       const userData = users[0];
-      const isDIDPublished = await DidService.isDIDPublished(userData.did);
+      let isDIDPublished = false;
+      try {
+        isDIDPublished = await DidService.isDIDPublished(userData.did);
+      } catch (e) {
+        isDIDPublished = false;
+      }
+
       return {
         ...userData,
         isDIDPublished: isDIDPublished ? isDIDPublished : false,

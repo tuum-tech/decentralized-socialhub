@@ -12,11 +12,7 @@ import {
   ModalFooter,
   CardHeaderContent,
   CardContentContainer
-} from './common';
-
-interface ThemeProps {
-  template: string;
-}
+} from '../common';
 
 const AboutText = styled.span<ThemeProps>`
   white-space: break-spaces !important;

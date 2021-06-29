@@ -17,10 +17,6 @@ export enum MODE {
   ERROR
 }
 
-interface ThemeProps {
-  template: string;
-}
-
 export const CardOverview = styled(IonCard)<ThemeProps>`
   background-color: ${({ template }: ThemeProps) =>
     (theme as any)[template].cardBg};
@@ -43,7 +39,7 @@ export const CardOverview = styled(IonCard)<ThemeProps>`
   }
 `;
 
-export const Institution = styled.span`
+export const Institution = styled.span<ThemeProps>`
   font-family: 'SF Pro Display';
   font-size: 16px;
   font-weight: 600;
@@ -52,10 +48,10 @@ export const Institution = styled.span`
   line-height: 1.56;
   letter-spacing: normal;
   text-align: left;
-  color: #27272e;
+  color: ${({ template }: ThemeProps) => (theme as any)[template].cardTitle1};
 `;
 
-export const Program = styled.span`
+export const Program = styled.span<ThemeProps>`
   font-family: 'SF Pro Display';
   font-size: 14px;
   font-weight: 500;
@@ -64,10 +60,10 @@ export const Program = styled.span`
   line-height: 1.79;
   letter-spacing: normal;
   text-align: left;
-  color: #27272e;
+  color: ${({ template }: ThemeProps) => (theme as any)[template].cardTitle2};
 `;
 
-export const Period = styled.span`
+export const Period = styled.span<ThemeProps>`
   font-family: 'SF Pro Display';
   font-size: 14px;
   font-weight: 500;
@@ -76,7 +72,8 @@ export const Period = styled.span`
   line-height: 1.71;
   letter-spacing: normal;
   text-align: left;
-  color: #27272e;
+
+  color: ${({ template }: ThemeProps) => (theme as any)[template].cardTitle3};
 `;
 
 export const Divider = styled.hr`
@@ -101,7 +98,7 @@ export const LinkStyleSpan = styled.span`
   cursor: pointer;
 `;
 
-export const Description = styled.span`
+export const Description = styled.span<ThemeProps>`
   white-space: break-spaces !important;
   font-family: 'SF Pro Display';
   font-size: 13px;
@@ -111,7 +108,7 @@ export const Description = styled.span`
   line-height: 1.62;
   letter-spacing: normal;
   text-align: left;
-  color: rgba(66, 84, 102, 0.57);
+  color: ${({ template }: ThemeProps) => (theme as any)[template].cardText};
 `;
 
 export const MyModal = styled(IonModal)`

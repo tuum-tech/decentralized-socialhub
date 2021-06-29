@@ -1,5 +1,17 @@
-.profilepage {
+import { IonPage, IonRow } from '@ionic/react';
+import styled from 'styled-components';
+
+import theme from 'src/data/theme';
+
+export const ContentRow = styled(IonRow)<ThemeProps>`
+  background-color: ${({ template }: ThemeProps) =>
+    (theme as any)[template].pageBg};
+  padding: 16px;
+`;
+
+export const Container = styled(IonPage)`
   height: 100%;
+
   .profilepagegrid {
     background-color: #f7fafc;
     width: 100%;
@@ -148,8 +160,8 @@
       letter-spacing: -0.5px;
     }
   }
-}
+`;
 
-.profilecomponent {
+export const ProfileComponentContainer = styled.div`
   height: 100%;
-}
+`;

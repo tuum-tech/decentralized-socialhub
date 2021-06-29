@@ -311,3 +311,7 @@ interface PublicProfileResponse {
       | null;
   };
 }
+
+interface ThemeProps {
+  template: string;
+}

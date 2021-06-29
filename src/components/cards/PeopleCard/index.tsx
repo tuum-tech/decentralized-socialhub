@@ -13,11 +13,11 @@ import { createStructuredSelector } from 'reselect';
 
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState } from './SocialProfileCard/types';
+import { InferMappedProps, SubState } from '../SocialProfileCard/types';
 import { ProfileService } from 'src/services/profile.service';
 
 import style from './PeopleCard.module.scss';
-import DidCard from './DidCard';
+import DidCard from '../DidCard';
 import { alertError } from 'src/utils/notify';
 
 export interface IFollowingResponse {

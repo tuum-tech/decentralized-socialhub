@@ -6,11 +6,11 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState } from '../../pages/DashboardPage/types';
+import { InferMappedProps, SubState } from '../../../pages/DashboardPage/types';
 
 import { ProfileService } from 'src/services/profile.service';
 
-import Avatar from '../Avatar';
+import Avatar from '../../Avatar';
 import style from './DidCard.module.scss';
 interface Props extends InferMappedProps {
   name?: string;

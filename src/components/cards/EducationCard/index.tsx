@@ -1,17 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import {
-  IonButton,
-  IonCard,
-  IonCardTitle,
-  IonCol,
-  IonGrid,
-  IonRow
-} from '@ionic/react';
+import { IonButton, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import { Guid } from 'guid-typescript';
 
 import EducationItem from './Item';
-import styleWidget from '../WidgetCards.module.scss';
+
 import {
+  CardOverview,
   Divider,
   LinkStyleSpan,
   MyModal,
@@ -29,6 +23,7 @@ interface IEducationProps {
   removeFunc?: any;
   isEditable?: boolean;
   isPublicPage?: boolean;
+  template?: string;
 }
 
 export const defaultEducationItem: EducationItem = {
@@ -50,7 +45,8 @@ const EducationCard: React.FC<IEducationProps> = ({
   updateFunc,
   removeFunc,
   isEditable = false,
-  isPublicPage = false
+  isPublicPage = false,
+  template = 'default'
 }: IEducationProps) => {
   const [currentEducationDTO, setCurrentEducationDTO] = useState(educationDTO);
   const [eduVerifiedPercent, setEduVerifiedPercent] = useState(0);
@@ -159,7 +155,7 @@ const EducationCard: React.FC<IEducationProps> = ({
     <>
       {educationDTO.isEnabled === true ? (
         <>
-          <IonCard className={styleWidget['overview']}>
+          <CardOverview template={template}>
             <CardHeaderContent>
               <IonGrid className="ion-no-padding">
                 <IonRow className="ion-justify-content-between ion-no-padding">
@@ -209,6 +205,7 @@ const EducationCard: React.FC<IEducationProps> = ({
                       index={i}
                       removeFunc={removeItem}
                       isEditable={isEditable}
+                      template={template}
                     />
                     {i < currentEducationDTO.items.length - 1 ? (
                       <Divider />
@@ -219,7 +216,7 @@ const EducationCard: React.FC<IEducationProps> = ({
                 );
               })}
             </CardContentContainer>
-          </IonCard>
+          </CardOverview>
           <MyModal
             onDidDismiss={() => setMode(MODE.NONE)}
             isOpen={mode !== MODE.NONE}
