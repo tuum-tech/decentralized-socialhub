@@ -31,6 +31,21 @@ services:
       - profile
     tty: true
 
+  didcreds-validator-node:
+    container_name: didcreds-validator-node
+    image: tuumtech/didcreds-validator-node:latest
+    user: '${UID}:${GID}'
+    volumes:
+      - ${HOME}/.profile-data/didcreds-didstore:/src/data
+      - ${PWD}/docker/didcreds-validator.env:/src/.env
+    ports:
+      - 9004:5000
+    depends_on:
+      - restapi-mongo
+    networks:
+      - profile
+    tty: true
+
   restapi-mongo:
     container_name: restapi-mongo
     image: mongo
