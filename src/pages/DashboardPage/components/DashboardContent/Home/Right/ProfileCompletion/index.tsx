@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import ProgressBar from 'src/components/ProgressBar';
+import ProgressBar from 'src/elements/ProgressBar';
 import {
   MainCard,
   CardTitle,

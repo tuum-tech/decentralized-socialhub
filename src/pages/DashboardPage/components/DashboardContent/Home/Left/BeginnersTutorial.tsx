@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { DefaultButton } from 'src/components/buttons';
-import ProgressBar from 'src/components/ProgressBar';
+import { DefaultButton } from 'src/elements/buttons';
+import ProgressBar from 'src/elements/ProgressBar';
 
 import badgeImg from '../../../../../../assets/dashboard/tutorialbadge.png';
 import style from './style.module.scss';

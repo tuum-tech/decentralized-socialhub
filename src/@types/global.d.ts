@@ -92,6 +92,7 @@ interface ISessionItem {
   coverPhoto?: string;
   code?: string;
   status?: string;
+  pageTemplate?: string;
 }
 
 interface LoginCred {
@@ -309,4 +310,8 @@ interface PublicProfileResponse {
         }[]
       | null;
   };
+}
+
+interface ThemeProps {
+  template: string;
 }

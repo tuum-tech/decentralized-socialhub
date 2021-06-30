@@ -1,19 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import {
-  IonButton,
-  IonCard,
-  IonCardTitle,
-  IonCol,
-  IonGrid,
-  IonRow
-} from '@ionic/react';
+import { IonButton, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import { Guid } from 'guid-typescript';
 
 import ExperienceItem from './Item';
-import styleWidget from '../WidgetCards.module.scss';
 
 import ExperienceCardEdit from './Edit';
 import {
+  CardOverview,
   LinkStyleSpan,
   MyModal,
   ModalFooter,
@@ -22,7 +15,7 @@ import {
   CardHeaderContent,
   CardContentContainer
 } from '../common';
-import ProgressBar from 'src/components/ProgressBar';
+import ProgressBar from 'src/elements/ProgressBar';
 
 interface IExperienceProps {
   experienceDTO: ExperienceDTO;
@@ -30,6 +23,7 @@ interface IExperienceProps {
   isEditable?: boolean;
   removeFunc?: any;
   isPublicPage?: boolean;
+  template?: string;
 }
 
 export const defaultExperienceItem: ExperienceItem = {
@@ -52,7 +46,8 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   updateFunc,
   isEditable = false,
   removeFunc,
-  isPublicPage = false
+  isPublicPage = false,
+  template = 'default'
 }: IExperienceProps) => {
   const [currentExperienceDTO, setCurrentExperienceDTO] = useState(
     experienceDTO
@@ -161,7 +156,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
 
   return (
     <>
-      <IonCard className={styleWidget['overview']}>
+      <CardOverview template={template}>
         <CardHeaderContent>
           <IonGrid className="ion-no-padding">
             <IonRow className="ion-justify-content-between ion-no-padding">
@@ -211,13 +206,14 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
                   index={i}
                   removeFunc={removeItem}
                   isEditable={isEditable}
+                  template={template}
                 />
                 {i < currentExperienceDTO.items.length - 1 ? <Divider /> : ''}
               </div>
             );
           })}
         </CardContentContainer>
-      </IonCard>
+      </CardOverview>
       <MyModal
         onDidDismiss={() => setMode(MODE.NONE)}
         isOpen={mode !== MODE.NONE}

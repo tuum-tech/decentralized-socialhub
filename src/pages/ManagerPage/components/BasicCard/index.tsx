@@ -10,8 +10,8 @@ import {
 } from '@ionic/react';
 
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
-import SmallTextInput from 'src/components/inputs/SmallTextInput';
-import { SmallLightButton } from 'src/components/buttons';
+import SmallTextInput from 'src/elements/inputs/SmallTextInput';
+import { SmallLightButton } from 'src/elements/buttons';
 
 interface IProps {
   sessionItem: ISessionItem;

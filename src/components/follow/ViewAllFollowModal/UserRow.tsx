@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import Avatar from 'src/components/Avatar';
-import { FollowButton } from 'src/components/buttons';
+import { FollowButton } from 'src/elements/buttons';
 
 import style from './style.module.scss';
 

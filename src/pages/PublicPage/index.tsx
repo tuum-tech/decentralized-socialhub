@@ -1,7 +1,6 @@
-import { IonPage, IonGrid, IonRow, IonContent, IonCol } from '@ionic/react';
+import { IonGrid, IonContent, IonCol } from '@ionic/react';
 import { RouteComponentProps } from 'react-router';
 import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
 
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -10,19 +9,21 @@ import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
-import { ProfileService } from 'src/services/profile.service';
+import {
+  ProfileService,
+  defaultUserInfo,
+  defaultFullProfile
+} from 'src/services/profile.service';
 import { FollowService } from 'src/services/follow.service';
+import { UserService } from 'src/services/user.service';
+import { DidDocumentService } from 'src/services/diddocument.service';
+
 import ViewAllFollowModal from 'src/components/follow/ViewAllFollowModal';
-import LoadingIndicator from 'src/components/LoadingIndicator';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 import ProfileComponent from 'src/components/profile/ProfileComponent';
-import PublicNavbar from 'src/components/profile/PublicNavbar';
+import PublicNavbar from 'src/components/profile/ProfileComponent/PublicNavbar';
 
-import style from './style.module.scss';
-
-const ContentRow = styled(IonRow)`
-  background-color: #f7fafc !important;
-  padding: 16px;
-`;
+import { ContentRow, Container, ProfileComponentContainer } from './layouts';
 
 interface MatchParams {
   did: string;
@@ -33,6 +34,12 @@ interface PageProps
 
 const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   let did: string = props.match.params.did;
+
+  const [publicUser, setPublicUser] = useState(defaultUserInfo);
+  const [publicUserProfile, setPublicUserProfile] = useState(
+    defaultFullProfile
+  );
+  const [didDocument, setDidDocument] = useState<any>({});
 
   const [publicFields, setPublicFields] = useState<string[]>([]);
   const [showAllFollow, setShowAllFollow] = useState(0);
@@ -72,6 +79,7 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   useEffect(() => {
     (async () => {
       if (!props.session || props.session.did === '') return;
+
       setLoading(true);
       const followerDids = await FollowService.getFollowerDids(
         props.match.params.did,
@@ -89,6 +97,25 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
         props.match.params.did
       );
       setPublicFields(pFields);
+
+      let pUser = await UserService.SearchUserWithDID(props.match.params.did);
+      if (pUser && pUser.did) {
+        setPublicUser(pUser as any);
+        let profile = await ProfileService.getFullProfile(
+          props.match.params.did,
+          props.session
+        );
+        if (profile) {
+          profile.basicDTO.isEnabled = true;
+          profile.experienceDTO.isEnabled = true;
+          profile.educationDTO.isEnabled = true;
+          setPublicUserProfile(profile);
+        }
+        let documentState = await DidDocumentService.getUserDocumentByDid(
+          props.match.params.did
+        );
+        setDidDocument(documentState.diddocument);
+      }
       setLoading(false);
     })();
   }, [props.match.params.did, props.session]);
@@ -98,8 +125,8 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   }
 
   return (
-    <IonPage className={style['profilepage']}>
-      <IonGrid className={style['profilepagegrid'] + ' ion-no-padding'}>
+    <Container>
+      <IonGrid className="profilepagegrid ion-no-padding">
         <IonContent
           ref={contentRef}
           scrollEvents={true}
@@ -108,12 +135,15 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
           }}
         >
           <PublicNavbar signedIn={props.session && props.session.did !== ''} />
-          <ContentRow className="ion-justify-content-around">
+          <ContentRow
+            className="ion-justify-content-around"
+            template={publicUser.pageTemplate || 'default'}
+          >
             <IonCol size="9" className="ion-no-padding">
-              <div className={style['profilecomponent']}>
+              <ProfileComponentContainer>
                 <ProfileComponent
                   publicFields={publicFields}
-                  targetDid={did}
+                  userSession={props.session}
                   scrollToElement={scrollToElement}
                   aboutRef={aboutRef}
                   experienceRef={experienceRef}
@@ -123,9 +153,12 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
                   }}
                   followerDids={followerDids}
                   followingDids={followingDids}
-                  userSession={props.session}
+                  publicUser={publicUser}
+                  publicUserProfile={publicUserProfile}
+                  didDocument={didDocument}
+                  loading={loading}
                 />
-              </div>
+              </ProfileComponentContainer>
             </IonCol>
           </ContentRow>
         </IonContent>
@@ -144,7 +177,7 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
           userSession={props.session}
         />
       )}
-    </IonPage>
+    </Container>
   );
 };
 

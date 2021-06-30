@@ -13,13 +13,9 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import {
-  ButtonLink,
-  ArrowButton,
-  ButtonWithLogo
-} from 'src/components/buttons';
-import { ErrorTxt } from 'src/components/texts';
-import TextInput from 'src/components/inputs/TextInput';
+import { ButtonLink, ArrowButton, ButtonWithLogo } from 'src/elements/buttons';
+import { ErrorTxt } from 'src/elements/texts';
+import TextInput from 'src/elements/inputs/TextInput';
 import { UserService } from 'src/services/user.service';
 import wavinghand from 'src/assets/icon/wavinghand.png';
 import whitelogo from 'src/assets/logo/whitetextlogo.png';

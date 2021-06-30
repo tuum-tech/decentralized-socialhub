@@ -10,7 +10,7 @@ import {
   OnBoardLayoutRight,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { SignInButton } from 'src/components/buttons';
+import { SignInButton } from 'src/elements/buttons';
 
 import weird from 'src/assets/icon/weird.png';
 

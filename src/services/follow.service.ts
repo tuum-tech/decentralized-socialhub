@@ -49,6 +49,7 @@ export class FollowService {
     let followingDids = getItemsFromData(followingRes, 'get_following').map(
       (item: any) => item.did
     );
+    console.log('====>followingDids', followingDids);
     followingDids = await this.syncFollowData(followingDids);
     return followingDids;
   }

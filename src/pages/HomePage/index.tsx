@@ -20,9 +20,9 @@ import {
   requestFacebookLogin
 } from './fetchapi';
 import SocialLoginLink from './components/SocialLoginLink';
-import Header from 'src/components/oldComponents/OldHeader';
-import ClearlyMeContent from 'src/components/oldComponents/ClearlyMeContent';
-import { PrimaryLinkButton, ButtonLight } from 'src/components/buttons';
+import Header from 'src/components/layouts/DashboardHeader';
+import ClearlyMeContent from 'src/components/layouts/ClearlyMeContent';
+import { PrimaryLinkButton, ButtonLight } from 'src/elements/buttons';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 // import MnemonicContext from 'src/context/MnemonicContext';
 

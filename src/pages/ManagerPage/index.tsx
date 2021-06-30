@@ -12,12 +12,11 @@ import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
-import Logo from 'src/components/Logo';
+import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import style from './style.module.scss';
 import ProfileEditor from './components/ProfileEditor';
 
-// const ManagerPage: React.FC = () => {
 const ManagerPage: React.FC<InferMappedProps> = ({
   eProps,
   ...props

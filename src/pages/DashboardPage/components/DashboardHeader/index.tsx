@@ -5,8 +5,8 @@ import styled from 'styled-components';
 
 import { getVerifiedCredential } from 'src/utils/credential';
 import { RequestStatus } from 'src/services/assist.service';
-import { ProfileName } from 'src/components/texts';
-import DidSnippet from 'src/components/DidSnippet';
+import { ProfileName } from 'src/elements/texts';
+import DidSnippet from 'src/elements/DidSnippet';
 import Avatar from 'src/components/Avatar';
 
 import PublishingLabel from '../PublishingLabel';

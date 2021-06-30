@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { DefaultLinkButton } from 'src/components/buttons';
+import { DefaultLinkButton } from 'src/elements/buttons';
 import { MainCard, CardTitle, CardText } from './VerificationStatus';
 import style from './style.module.scss';
 

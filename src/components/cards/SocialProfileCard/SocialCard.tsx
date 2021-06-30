@@ -1,18 +1,12 @@
 import React, { useState } from 'react';
 import {
-  IonButton,
-  IonCard,
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
   IonCol,
-  IonFooter,
   IonGrid,
-  IonItem,
-  IonModal,
   IonRow
 } from '@ionic/react';
-import styled from 'styled-components';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 import { DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
@@ -28,112 +22,38 @@ import githubIcon from '../../../assets/icon/Github.svg';
 import discordIcon from '../../../assets/icon/Discord.svg';
 import shieldIcon from '../../../assets/icon/shield.svg';
 
-const ManagerModal = styled(IonModal)`
-  --border-radius: 16px;
-  --min-height: 200px;
-  --height: 580px;
-  --width: 560px;
-  :host(.modal-card) ion-header ion-toolbar:first-of-type {
-    padding: 0px;
-  }
-`;
-
-const ManagerModalTitle = styled(IonCardTitle)`
-  font-family: 'SF Pro Display';
-  font-size: 28px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1.36;
-  letter-spacing: normal;
-  text-align: left;
-  color: #27272e;
-  padding: 15px;
-`;
-
-const ManagerModalFooter = styled(IonFooter)`
-  padding: 12px;
-  border: 0px !important;
-  border-bottom-color: transparent !important;
-  background-image: none !important;
-  border-bottom: none !important;
-  &.footer-md::before {
-    background-image: none;
-  }
-`;
-
-const MyGrid = styled(IonGrid)`
-  margin: 5px 20px 0px 20px;
-  height: 100 %;
-`;
-
-const ManagerLogo = styled.img`
-  position: relative;
-  float: left;
-  width: 42px;
-  border-radius: 50%;
-`;
-
-const ProfileItem = styled(IonItem)`
-  --inner-padding-bottom: 0;
-  --inner-padding-end: 0;
-  --inner-padding-start: 0;
-  --inner-padding-top: 0;
-`;
-
-const ManagerButton = styled(IonButton)`
-  position: relative;
-  --ion-color-primary: transparent !important;
-  --ion-color-primary-tint: transparent;
-  width: 90px;
-  height: 26px;
-  float: right;
-
-  font-family: 'SF Pro Display';
-  border-radius: 8px;
-  border: solid 1px #4c6fff;
-  font-size: 13px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1.92;
-  letter-spacing: normal;
-  text-align: center;
-  color: #4c6fff;
-`;
-
-const CloseButton = styled(IonButton)`
-  --ion-color-primary: #4c6fff !important;
-  --ion-color-primary-tint: #4c7aff;
-  width: 210px;
-  height: 36px;
-  float: right;
-  border-radius: 6px;
-  font-family: 'SF Pro Display';
-  font-size: 12px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1;
-  letter-spacing: normal;
-  text-align: left;
-  color: #ffffff;
-`;
+import {
+  ManagerModal,
+  ManagerModalTitle,
+  ManagerModalFooter,
+  MyGrid,
+  ManagerLogo,
+  ProfileItem,
+  ManagerButton,
+  CloseButton,
+  SocialProfileCard
+} from './elements';
 
 interface Props {
   diddocument: any;
   showManageButton: boolean;
   sessionItem: ISessionItem;
   setSession: (props: { session: ISessionItem }) => void;
+  mode?: string;
 }
 
 const SocialProfilesCard: React.FC<Props> = ({
   diddocument,
   showManageButton,
   sessionItem,
-  setSession
+  setSession,
+  mode = 'view'
 }) => {
   const [isManagerOpen, setIsManagerOpen] = useState(false);
+  let template = 'default';
+  if (mode !== 'edit' && sessionItem.pageTemplate) {
+    template = sessionItem.pageTemplate;
+  }
 
   const popupCenter = (url: string, title: string, w: number, h: number) => {
     const dualScreenLeft =
@@ -282,24 +202,24 @@ const SocialProfilesCard: React.FC<Props> = ({
     let vc = getVerifiedCredential(key, diddocument);
     if (!vc) return;
     return (
-      <ProfileItem className={style['social-profile-item']}>
-        <div className={style['left']}>
+      <ProfileItem template={template}>
+        <div className="left">
           <img alt="icon" src={icon} height={40} />
           {vc.isVerified && (
             <img
               alt="shield icon"
               src={shieldIcon}
-              className={style['social-profile-badge']}
+              className="social-profile-badge"
               height={15}
             />
           )}
         </div>
-        <div className={style['right']}>
-          <p className={style['social-profile-network']}>
+        <div className="right">
+          <p className="social-profile-network">
             {key.replace(/^./, key[0].toUpperCase())}
           </p>
           {(key === 'facebook' || key === 'linkedin') && (
-            <span className={style['social-profile-id']}>
+            <span className="social-profile-id">
               {parseValueFromService(key, vc.value)}
             </span>
           )}
@@ -311,7 +231,7 @@ const SocialProfilesCard: React.FC<Props> = ({
               href={getUrlFromService(key, vc.value)}
               target="_blank"
               rel="noopener noreferrer"
-              className={style['social-profile-id']}
+              className="social-profile-id"
             >
               {parseValueFromService(key, vc.value)}
             </a>
@@ -412,14 +332,14 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   return (
-    <div>
-      <IonCard className={style['social-profile']}>
+    <>
+      <SocialProfileCard template={template}>
         <IonCardHeader>
-          <IonCardTitle className={style['card-title']}>
+          <IonCardTitle className="card-title">
             Social Profiles
             {showManageButton && (
               <span
-                className={style['card-link']}
+                className="card-link"
                 onClick={() => {
                   setIsManagerOpen(true);
                 }}
@@ -429,8 +349,8 @@ const SocialProfilesCard: React.FC<Props> = ({
             )}
           </IonCardTitle>
         </IonCardHeader>
-        <IonCardContent>
-          <IonGrid className={style['social-profile-grid']}>
+        <IonCardContent className="card-content">
+          <IonGrid className="social-profile-grid">
             <IonRow>
               {containsVerifiedCredential('linkedin') && (
                 <IonCol size={showManageButton ? '6' : '12'}>
@@ -465,7 +385,7 @@ const SocialProfilesCard: React.FC<Props> = ({
             </IonRow>
           </IonGrid>
         </IonCardContent>
-      </IonCard>
+      </SocialProfileCard>
 
       <ManagerModal
         isOpen={isManagerOpen}
@@ -509,7 +429,7 @@ const SocialProfilesCard: React.FC<Props> = ({
           </IonRow>
         </ManagerModalFooter>
       </ManagerModal>
-    </div>
+    </>
   );
 };
 

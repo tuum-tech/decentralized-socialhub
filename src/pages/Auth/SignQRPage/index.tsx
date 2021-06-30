@@ -17,8 +17,8 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { Text16 } from 'src/components/texts';
-import { SignInButton } from 'src/components/buttons';
+import { Text16 } from 'src/elements/texts';
+import { SignInButton } from 'src/elements/buttons';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import phone from 'src/assets/icon/phone.png';

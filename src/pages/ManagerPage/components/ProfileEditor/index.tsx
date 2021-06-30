@@ -56,6 +56,8 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
       let documentState = await DidDocumentService.getUserDocument(session);
       setDidDocument(documentState.diddocument);
 
+      if (JSON.stringify(session) === JSON.stringify(userInfo)) return;
+
       if (session.userToken) setUserInfo(session);
       setTimer();
     }, 1000);
@@ -65,6 +67,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
   useEffect(() => {
     (async () => {
       if (!session.userToken) return;
+
       setUserInfo(session);
       if (session.tutorialStep === 4) {
         await retriveProfile();
@@ -81,7 +84,10 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
       <IonGrid className={style['profileeditorgrid']}>
         <IonRow>
           <IonCol size="4">
-            <TemplateManagerCard sessionItem={userInfo} />
+            <TemplateManagerCard
+              sessionItem={session}
+              updateSession={updateSession}
+            />
             <PublicFields sessionItem={userInfo} />
           </IonCol>
           <IonCol size="8">
@@ -154,6 +160,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                   showManageButton={true}
                   sessionItem={session}
                   setSession={updateSession}
+                  mode="edit"
                 />
 
                 {profile && profile.educationDTO && (
@@ -208,6 +215,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                       await retriveProfile();
                     }}
                     isEditable={true}
+                    template="default"
                   />
                 )}
                 {profile && profile.experienceDTO && (
@@ -264,6 +272,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                       await retriveProfile();
                     }}
                     isEditable={true}
+                    template="default"
                   />
                 )}
               </>

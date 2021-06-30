@@ -22,14 +22,14 @@ import { setSession } from 'src/store/users/actions';
 import style from './style.module.scss';
 import { ExporeTime } from './constants';
 
-import Logo from 'src/components/Logo';
+import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import ViewAllFollowModal from 'src/components/follow/ViewAllFollowModal';
 
 import { FollowService } from 'src/services/follow.service';
 import { UserService } from 'src/services/user.service';
 import { AssistService, RequestStatus } from 'src/services/assist.service';
-import LoadingIndicator from 'src/components/LoadingIndicator';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 import {
   ProfileService,
   defaultFullProfile

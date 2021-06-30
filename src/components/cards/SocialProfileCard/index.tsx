@@ -13,6 +13,7 @@ import SocialProfilesCard from './SocialCard';
 interface Props extends InferMappedProps {
   didDocument: any;
   targetUser?: ISessionItem;
+  mode?: string;
 }
 
 const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
@@ -95,6 +96,7 @@ const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
         }}
         showManageButton={false}
         diddocument={document}
+        mode={props.mode}
       />
     );
   }

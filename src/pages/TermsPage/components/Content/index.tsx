@@ -15,7 +15,7 @@ import {
   SectionText,
   LightBox,
   Indent
-} from 'src/components/note';
+} from 'src/elements/note';
 import styled from 'styled-components';
 import style from './style.module.scss';
 
