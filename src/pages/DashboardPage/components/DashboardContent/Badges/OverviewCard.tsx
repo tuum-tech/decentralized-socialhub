@@ -6,7 +6,7 @@ import {
   IonCardTitle,
   IonText
 } from '@ionic/react';
-import ProgressBar from 'src/components/ProgressBar';
+import ProgressBar from 'src/elements/ProgressBar';
 import styled from 'styled-components';
 import style from './OverviewCard.module.scss';
 

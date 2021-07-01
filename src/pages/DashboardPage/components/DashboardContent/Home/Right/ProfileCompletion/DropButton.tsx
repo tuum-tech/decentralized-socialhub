@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import DropDown from '../../../../../../../components/arrows/DropDown';
-import DropUp from '../../../../../../../components/arrows/DropUp';
+import DropDown from '../../../../../../../elements/arrows/DropDown';
+import DropUp from '../../../../../../../elements/arrows/DropUp';
 
 interface IProps {
   onClick: () => void;

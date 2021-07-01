@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { InferMappedProps } from '../../types';
 import { setSession } from 'src/store/users/actions';
 
-import LoadingIndicator from 'src/components/LoadingIndicator';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 import TutorialStepsComponent from './TutorialSteps';
 import TutorialStep1Component from './Steps/TutorialStep1';
 import TutorialStep2Component from './Steps/TutorialStep2';

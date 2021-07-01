@@ -15,7 +15,7 @@ import {
 
 import { ProfileService } from 'src/services/profile.service';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
-import { SmallLightButton } from 'src/components/buttons';
+import { SmallLightButton } from 'src/elements/buttons';
 
 import { Divider } from '../TemplateManagerCard';
 

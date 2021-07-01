@@ -11,7 +11,7 @@ import {
   Program,
   TreeDotsButton
 } from '../common';
-import Image from '../../Image';
+import Image from '../../../elements/Image';
 import styleWidget from '../WidgetCards.module.scss';
 
 const EditableContent = styled(IonCol)`
@@ -27,6 +27,7 @@ interface EducationItemProps {
   initialStatus?: string;
   removeFunc: any;
   isEditable: boolean;
+  template?: string;
 }
 
 const EducationItem: React.FC<EducationItemProps> = ({
@@ -34,7 +35,8 @@ const EducationItem: React.FC<EducationItemProps> = ({
   editFunc,
   index,
   removeFunc,
-  isEditable
+  isEditable,
+  template = 'default'
 }) => {
   const [popoverState, setShowPopover] = useState({
     showPopover: false,
@@ -72,19 +74,23 @@ const EducationItem: React.FC<EducationItemProps> = ({
                 </IonCol>
               </IonRow>
               <IonRow className="ion-no-padding">
-                <Institution>{educationItem.institution}</Institution>
+                <Institution template={template}>
+                  {educationItem.institution}
+                </Institution>
               </IonRow>
               <IonRow className="ion-no-padding">
-                <Program>{educationItem.program}</Program>
+                <Program template={template}>{educationItem.program}</Program>
               </IonRow>
               <IonRow className="ion-no-padding">
-                <Period>
+                <Period template={template}>
                   {educationItem.start} -
                   {educationItem.still ? ' Present' : educationItem.end}
                 </Period>
               </IonRow>
               <IonRow className="ion-no-padding">
-                <Description>{educationItem.description}</Description>
+                <Description template={template}>
+                  {educationItem.description}
+                </Description>
               </IonRow>
             </IonGrid>
 

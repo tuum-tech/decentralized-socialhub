@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import ToastBox from 'src/components/toast';
+import ToastBox from 'src/elements/toast';
 import React from 'react';
 
 export const showNotify = (text: string, type = 'success') => {

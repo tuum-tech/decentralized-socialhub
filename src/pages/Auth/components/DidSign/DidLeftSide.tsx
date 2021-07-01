@@ -9,7 +9,7 @@ import {
   OnBoardLayoutLogo,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { SignInButton } from 'src/components/buttons';
+import { SignInButton } from 'src/elements/buttons';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import markimg from 'src/assets/icon/mark.png';

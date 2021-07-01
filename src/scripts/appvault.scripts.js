@@ -89,7 +89,8 @@ let run = async () => {
           hiveHost: '$params.hiveHost',
           avatar: '$params.avatar',
           code: '$params.code',
-          status: '$params.status'
+          status: '$params.status',
+          pageTemplate: '$params.pageTemplate'
         }
       }
     }
@@ -123,7 +124,8 @@ let run = async () => {
             onBoardingCompleted: '$params.onBoardingCompleted',
             tutorialStep: '$params.tutorialStep',
             hiveHost: '$params.hiveHost',
-            avatar: '$params.avatar'
+            avatar: '$params.avatar',
+            pageTemplate: '$params.pageTemplate'
           }
         }
       }
@@ -157,6 +159,31 @@ let run = async () => {
             tutorialStep: '$params.tutorialStep',
             hiveHost: '$params.hiveHost',
             avatar: '$params.avatar'
+          }
+        }
+      }
+    }
+  });
+  // update verify user, called when user request update email
+  await client.Scripting.SetScript({
+    name: 'update_verify_user',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'update',
+      name: 'update_verify_user',
+      output: false,
+      body: {
+        collection: 'users',
+        filter: {
+          did: '$params.did',
+          status: 'CONFIRMED'
+        },
+        update: {
+          $set: {
+            'loginCred.email': '$params.newEmail',
+            status: 'WAITING_CONFIRMATION',
+            code: '$params.code'
           }
         }
       }

@@ -25,11 +25,7 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import {
-  ButtonLink,
-  ArrowButton,
-  ButtonWithLogo
-} from 'src/components/buttons';
+import { ButtonLink, ArrowButton, ButtonWithLogo } from 'src/elements/buttons';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import weird from 'src/assets/icon/weird.png';

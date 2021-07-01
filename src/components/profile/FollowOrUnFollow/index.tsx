@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { FollowButton } from 'src/components/buttons';
+import { FollowButton } from 'src/elements/buttons';
 import { ProfileService } from 'src/services/profile.service';
 import { alertError } from 'src/utils/notify';
 

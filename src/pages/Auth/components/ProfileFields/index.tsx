@@ -13,9 +13,9 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { ButtonWithLogo, SignInButton } from 'src/components/buttons';
-import TextInput from 'src/components/inputs/TextInput';
-import { Text16 } from 'src/components/texts';
+import { ButtonWithLogo, SignInButton } from 'src/elements/buttons';
+import TextInput from 'src/elements/inputs/TextInput';
+import { Text16 } from 'src/elements/texts';
 import { validateEmail } from 'src/utils/validation';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';

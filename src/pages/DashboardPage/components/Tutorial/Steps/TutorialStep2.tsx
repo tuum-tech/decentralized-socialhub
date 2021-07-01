@@ -5,7 +5,7 @@ import { AccountType } from 'src/services/user.service';
 
 import SecurityWordsView from '../SecurityWords/SecurityWordsView';
 import SecurityWordsValidate from '../SecurityWords/SecurityWordsValidate';
-import LeftArrow from 'src/components/arrows/LeftArrow';
+import LeftArrow from 'src/elements/arrows/LeftArrow';
 
 import { ITutorialStepProp } from './TutorialStep1';
 import style from '../style.module.scss';

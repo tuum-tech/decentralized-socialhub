@@ -13,6 +13,7 @@ interface Props {
   followingDids: string[];
   showFollowerCard?: boolean;
   showFollowingCard?: boolean;
+  template?: string;
 }
 
 const FowllowCards: React.FC<Props> = ({
@@ -21,7 +22,8 @@ const FowllowCards: React.FC<Props> = ({
   signed,
   viewAll,
   showFollowerCard = true,
-  showFollowingCard = true
+  showFollowingCard = true,
+  template = 'default'
 }: Props) => {
   const [followingUsers, setFollowingUsers] = useState<any[]>([]);
   const [followerUsers, setFollowerUsers] = useState<any[]>([]);
@@ -59,6 +61,7 @@ const FowllowCards: React.FC<Props> = ({
           getLinkFunc={(did: string) => '/did/' + did}
           isSigned={signed}
           viewAllClicked={() => viewAll(false)}
+          template={template}
         />
       )}
       {followerDids.length > 0 && showFollowerCard && (
@@ -70,6 +73,7 @@ const FowllowCards: React.FC<Props> = ({
           getLinkFunc={(did: string) => '/did/' + did}
           isSigned={signed}
           viewAllClicked={() => viewAll(true)}
+          template={template}
         />
       )}
     </>

@@ -10,7 +10,7 @@ import {
 
 import styled from 'styled-components';
 import style from './BadgeCard.module.scss';
-import ProgressBar from 'src/components/ProgressBar';
+import ProgressBar from 'src/elements/ProgressBar';
 import BadgeItem from './BadgeItem';
 import badgeDetails from 'src/data/badge_detail.json';
 

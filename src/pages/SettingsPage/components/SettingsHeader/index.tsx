@@ -1,7 +1,7 @@
 import React from 'react';
 import { IonContent, IonGrid, IonRow } from '@ionic/react';
 
-import { ProfileName } from 'src/components/texts';
+import { ProfileName } from 'src/elements/texts';
 import style from './style.module.scss';
 
 const SettingsHeader: React.FC = () => {

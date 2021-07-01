@@ -1,119 +1,105 @@
-.social-profile {
-  background-color: #fff;
-  border-radius: 16px;
-  margin: 0px 0px 22px;
-  box-shadow: 0 3px 8px -1px rgba(50, 50, 71, 0.05),
-    0 0 1px 0 rgba(12, 26, 75, 0.24);
+// .social-profile {
+//   background-color: #fff;
+//   border-radius: 16px;
+//   margin: 0px 0px 22px;
+//   box-shadow: 0 3px 8px -1px rgba(50, 50, 71, 0.05),
+//     0 0 1px 0 rgba(12, 26, 75, 0.24);
 
-  .card-title {
-    font-family: 'SF Pro Display';
-    font-size: 18px;
-    font-weight: bold;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: -0.09px;
-    text-align: left;
-    color: #000000;
-  }
+//   .card-title {
+//     font-family: 'SF Pro Display';
+//     font-size: 18px;
+//     font-weight: bold;
+//     font-stretch: normal;
+//     font-style: normal;
+//     line-height: normal;
+//     letter-spacing: -0.09px;
+//     text-align: left;
+//     color: #000000;
+//   }
 
-  .card-content {
-    font-family: 'SF Pro Display';
-    font-size: 14px;
-    font-weight: normal;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 1.64;
-    letter-spacing: normal;
-    text-align: left;
-    color: #425466;
-  }
+//   .card-content {
+//     font-family: 'SF Pro Display';
+//     font-size: 14px;
+//     font-weight: normal;
+//     font-stretch: normal;
+//     font-style: normal;
+//     line-height: 1.64;
+//     letter-spacing: normal;
+//     text-align: left;
+//     color: #425466;
+//   }
 
-  & ion-grid {
-    --ion-grid-width-xs: 100%;
-    --ion-grid-width-sm: 540px;
-    --ion-grid-width-md: 720px;
-    --ion-grid-width-lg: 960px;
-    --ion-grid-width-xl: 1340px !important;
-  }
-  
-  .social-profile-item {
-    display: flex;
-    justify-content: flex-start;
-    border: 0px;
-    --inner-border-width: 0;
-    padding: 0px !important;
+//   & ion-grid {
+//     --ion-grid-width-xs: 100%;
+//     --ion-grid-width-sm: 540px;
+//     --ion-grid-width-md: 720px;
+//     --ion-grid-width-lg: 960px;
+//     --ion-grid-width-xl: 1340px !important;
+//   }
 
-    font-family: 'SF Pro Display';
-    font-size: 14px;
-    font-weight: 500;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    text-align: left;
-    color: #7a7a9d;
-    a {
-      color: #000000;
-    }
+//   .social-profile-item {
+//     display: flex;
+//     justify-content: flex-start;
+//     border: 0px;
+//     --inner-border-width: 0;
+//     padding: 0px !important;
 
-    .left {
-      position: relative;
-      & img {
-        border-radius: 50%;
-      }
-    }
-    .right {
-      margin-left: 10px;
-    }
-    .social-profile-network {
-      color: #1a202c;
-      font-size: 16px;
-      font-weight: 600;
-    }
-    .social-profile-id {
-      color: #a0aec0;
-      font-size: 13px;
-      font-weight: 400;
-    }
-    .social-profile-badge {
-      position: absolute;
-      top: 0px;
-      right: 0px;
-    }
-  }
+//     font-family: 'SF Pro Display';
+//     font-size: 14px;
+//     font-weight: 500;
+//     font-stretch: normal;
+//     font-style: normal;
+//     line-height: normal;
+//     letter-spacing: normal;
+//     text-align: left;
+//     color: #7a7a9d;
+//     a {
+//       color: #000000;
+//     }
 
-  .social-profile-bg {
-    width: 30.2px;
-    height: 30.2px;
-    background-color: #d9dbe2;
-    transform: rotate(-45deg);
-    transform-origin: 0 100%;
-    margin: 7px 0px -5px 30px;
-    border-radius: 7px;
-    text-align: center;
-  }
+//     .left {
+//       position: relative;
+//     }
+//     .right {
+//       margin-left: 10px;
+//     }
+//     .social-profile-network {
+//       color: #1a202c;
+//       font-size: 16px;
+//       font-weight: 600;
+//     }
+//     .social-profile-id {
+//       color: #a0aec0;
+//       font-size: 13px;
+//       font-weight: 400;
+//     }
+//     .social-profile-badge {
+//       position: absolute;
+//       top: 0px;
+//       right: 0px;
+//     }
+//   }
 
-  .card-link {
-    flex: auto;
-    float: right;
-    font-family: 'SF Pro Display';
-    font-size: 14px;
-    font-weight: 500;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: -0.07px;
-    text-align: left;
-    color: #4c6fff;
-    cursor: pointer;
-    opacity: 1;
+//   .card-link {
+//     flex: auto;
+//     float: right;
+//     font-family: 'SF Pro Display';
+//     font-size: 14px;
+//     font-weight: 500;
+//     font-stretch: normal;
+//     font-style: normal;
+//     line-height: normal;
+//     letter-spacing: -0.07px;
+//     text-align: left;
+//     color: #4c6fff;
+//     cursor: pointer;
+//     opacity: 1;
 
-    &_hover {
-      opacity: 0.5;
-    }
-  }
-}
+//     &_hover {
+//       opacity: 0.5;
+//     }
+//   }
+// }
 
 .manage-links-item {
   border-bottom: 1px solid #f3f9ff;

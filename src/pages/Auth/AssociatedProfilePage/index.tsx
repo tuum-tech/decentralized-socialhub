@@ -17,12 +17,12 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { ButtonWithLogo } from 'src/components/buttons';
-import { Text16 } from 'src/components/texts';
+import { ButtonWithLogo } from 'src/elements/buttons';
+import { Text16 } from 'src/elements/texts';
 import PageLoading from 'src/components/layouts/PageLoading';
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import eye from 'src/assets/icon/eye.png';
-import LoadingIndicator from 'src/components/LoadingIndicator';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
