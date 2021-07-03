@@ -10,7 +10,7 @@ import { InferMappedProps } from './types';
 import { SubState } from 'src/store/users/types';
 
 import style from './style.module.scss';
-import Logo from 'src/components/Logo';
+import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 
 import FollowersSearch from './components/FollowersSearch';

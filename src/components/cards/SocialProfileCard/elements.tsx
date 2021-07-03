@@ -127,6 +127,9 @@ export const ProfileItem = styled(IonItem)<ThemeProps>`
 
   .left {
     position: relative;
+    & > img {
+      border-radius: 50%;
+    }
   }
 
   .right {

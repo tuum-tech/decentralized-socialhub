@@ -15,7 +15,7 @@ import {
   defaultFullProfile
 } from 'src/services/profile.service';
 import { FollowService } from 'src/services/follow.service';
-import { UserService } from 'src/services/user.service';
+import { FollowType, UserService } from 'src/services/user.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 
 import ViewAllFollowModal from 'src/components/follow/ViewAllFollowModal';
@@ -42,7 +42,8 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   const [didDocument, setDidDocument] = useState<any>({});
 
   const [publicFields, setPublicFields] = useState<string[]>([]);
-  const [showAllFollow, setShowAllFollow] = useState(0);
+  const [showAllFollow, setShowAllFollow] = useState<boolean>(false);
+  const [followType, setFollowType] = useState<FollowType>(FollowType.Follower);
   const [scrollTop, setScrollTop] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -75,6 +76,14 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
 
   const [followerDids, setFollowerDids] = useState<string[]>([]);
   const [followingDids, setFollowingDids] = useState<string[]>([]);
+  const [mutualDids, setMutualDids] = useState<string[]>([]);
+
+  useEffect(() => {
+    const mutualDids = followingDids.filter(
+      (did: any) => followerDids.indexOf(did) !== -1
+    );
+    setMutualDids(mutualDids);
+  }, [followerDids, followingDids]);
 
   useEffect(() => {
     (async () => {
@@ -148,11 +157,13 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
                   aboutRef={aboutRef}
                   experienceRef={experienceRef}
                   educationRef={educationRef}
-                  viewAllClicked={(isFollower: boolean) => {
-                    setShowAllFollow(isFollower ? 1 : 2);
+                  viewAllClicked={(ctype: FollowType) => {
+                    setShowAllFollow(true);
+                    setFollowType(ctype);
                   }}
                   followerDids={followerDids}
                   followingDids={followingDids}
+                  mutualDids={mutualDids}
                   publicUser={publicUser}
                   publicUserProfile={publicUserProfile}
                   didDocument={didDocument}
@@ -163,16 +174,15 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
           </ContentRow>
         </IonContent>
       </IonGrid>
-      {showAllFollow > 0 && (
+      {showAllFollow && (
         <ViewAllFollowModal
-          showFollowerCard={publicFields.includes('follower')}
-          showFollowingCard={publicFields.includes('following')}
           followerDids={followerDids}
           followingDids={followingDids}
+          mutualDids={mutualDids}
           setFollowerDids={setFollowerDids}
           setFollowingDids={setFollowingDids}
-          onClose={() => setShowAllFollow(0)}
-          isFollower={showAllFollow === 1}
+          onClose={() => setShowAllFollow(false)}
+          followType={followType}
           editable={did === props.session.did}
           userSession={props.session}
         />

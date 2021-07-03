@@ -22,8 +22,8 @@ import {
   OnBoardLayoutRightContent,
   OnBoardLayoutRightContentTitle
 } from 'src/components/layouts/OnBoardLayout';
-import { ArrowButton, ButtonLink, SignInButton } from 'src/components/buttons';
-import { Text16 } from 'src/components/texts';
+import { ArrowButton, ButtonLink, SignInButton } from 'src/elements/buttons';
+import { Text16 } from 'src/elements/texts';
 
 import { UserService } from 'src/services/user.service';
 

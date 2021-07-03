@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { MainCard } from './VerificationStatus';
 import styled from 'styled-components';
 import Badges from './Badges';
 import Socials from './Socials';
 import Follows from './Follows';
 
 import exploreIcon from 'src/assets/icon/explore_all.svg';
+
+import { CardOverview } from '../common';
 
 interface Props {
   category: string;
@@ -18,13 +19,14 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 10px 20px;
 `;
 
 const Prefix = styled.div`
   display: flex;
   flex-direction: column;
   width: 125px;
-
+  color: black;
   & h1 {
     font-style: normal;
     font-weight: 600;
@@ -71,16 +73,11 @@ const ProfileBriefCard: React.FC<Props> = ({
           }}
         />
       );
-    } else if (category === 'follower') {
-      content = (
-        <Follows
-          users={data}
-          cb={count => {
-            setItemCount(count);
-          }}
-        />
-      );
-    } else if (category === 'following') {
+    } else if (
+      category === 'follower' ||
+      category === 'following' ||
+      category === 'mutual'
+    ) {
       content = (
         <Follows
           users={data}
@@ -103,7 +100,7 @@ const ProfileBriefCard: React.FC<Props> = ({
     return content;
   };
   return (
-    <MainCard>
+    <CardOverview template="default">
       <Container>
         <Prefix>
           <h1>{itemCount}</h1>
@@ -121,7 +118,7 @@ const ProfileBriefCard: React.FC<Props> = ({
           </ExploreAll>
         </Body>
       </Container>
-    </MainCard>
+    </CardOverview>
   );
 };
 

@@ -1,38 +1,39 @@
 import React from 'react';
 
+import { FollowType } from 'src/services/user.service';
+
 import FollowerAll from './FollowerAll';
 import FollowingAll from './FollowingAll';
+import MutualFollowerAll from './MutualFollowerAll';
 import style from './style.module.scss';
 
 interface Props {
-  isFollower: boolean;
+  followType: FollowType;
   editable: boolean;
   onClose: () => void;
   followerDids: string[];
   followingDids: string[];
+  mutualDids: string[];
   setFollowerDids: (dids: string[]) => void;
   setFollowingDids: (dids: string[]) => void;
-  showFollowerCard?: boolean;
-  showFollowingCard?: boolean;
   userSession: ISessionItem;
 }
 
 const ViewAllFollowModal = ({
-  isFollower,
+  followType,
   editable,
   onClose,
   followerDids,
   followingDids,
+  mutualDids,
   setFollowerDids,
   setFollowingDids,
-  showFollowerCard = true,
-  showFollowingCard = true,
   userSession
 }: Props) => (
   <div className={style['modal']}>
     <div className={style['modal_container']}>
       <div className={style['modal_content']}>
-        {isFollower ? (
+        {followType === FollowType.Follower && (
           <FollowerAll
             followerDids={followerDids}
             followingDids={followingDids}
@@ -41,9 +42,19 @@ const ViewAllFollowModal = ({
             setFollowingDids={setFollowingDids}
             userSession={userSession}
           />
-        ) : (
+        )}
+        {followType === FollowType.Following && (
           <FollowingAll
             followingDids={followingDids}
+            onClose={onClose}
+            editable={editable}
+            setFollowingDids={setFollowingDids}
+            userSession={userSession}
+          />
+        )}
+        {followType === FollowType.MutualFollower && (
+          <MutualFollowerAll
+            mutualDids={mutualDids}
             onClose={onClose}
             editable={editable}
             setFollowingDids={setFollowingDids}

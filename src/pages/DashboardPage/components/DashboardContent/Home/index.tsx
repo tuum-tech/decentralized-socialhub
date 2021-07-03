@@ -20,7 +20,7 @@ import WhatIsProfile from './Right/WhatIsProfile';
 import ConnectWithCommunity from './Right/ConnectWithCommunity';
 import ProfileCompletion from './Right/ProfileCompletion';
 import VerificationStatus from './Right/VerificationStatus';
-import ProfileBriefCard from './Right/ProfileBriefCard';
+import ProfileBriefCard from 'src/components/cards/ProfileBriefCard';
 import { hasCredentials } from 'src/utils/socialprofile';
 
 const LeftCardCol = styled(IonCol)`
@@ -36,7 +36,6 @@ interface Props extends InferMappedProps {
   profile: ProfileDTO;
   didDocument: any;
   activeTab: (tab: string) => void;
-  viewAll?: (isFollower: boolean) => void;
   followerDids: string[];
   followingDids: string[];
   mutualDids: string[];
@@ -372,7 +371,7 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
               title={'Mutual Follower'}
               data={mutualDids}
               exploreAll={() => {
-                history.push('/connections/followings');
+                history.push('/connections/mutual-followers');
               }}
             />
           )}
