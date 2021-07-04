@@ -300,6 +300,13 @@ interface ICreateUserResponse {
   };
 }
 
+interface IUpdateEmailResponse {
+  data: {
+    newEmail: string;
+    code: string;
+  };
+}
+
 interface PublicProfileResponse {
   _status: string;
   get_public_fields: {

@@ -32,6 +32,7 @@ const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
     'experience',
     'follower',
     'following',
+    'mutual',
     'social'
   ];
 

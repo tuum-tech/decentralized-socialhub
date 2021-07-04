@@ -47,6 +47,7 @@ import {
   ForgotPasswordPage,
   UnlockUserPage,
   VerifyEmailPage,
+  UpdateEmailPage,
   CreateProfileWithDidPage
 } from './pages/Auth';
 
@@ -61,6 +62,7 @@ import ManagerPage from './pages/ManagerPage';
 import ActivityPage from './pages/ActivityPage';
 import FollowersPage from './pages/FollowersPage';
 import FollowingsPage from './pages/FollowingsPage';
+import MutualFollowersPage from './pages/MutualFollowersPage';
 
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -116,6 +118,11 @@ const App: React.FC = () => {
             <ProtectedRoute
               path="/connections/followers"
               component={FollowersPage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/connections/mutual-followers"
+              component={MutualFollowersPage}
               exact={true}
             />
             <ProtectedRoute
@@ -197,6 +204,7 @@ const App: React.FC = () => {
             />
             <Route path="/terms-of-use" component={TermsPage} />
             <Route path="/verify/email/:code" component={VerifyEmailPage} />
+            <Route path="/update/email/:code" component={UpdateEmailPage} />
 
             {/* ====== Public URLs ==== */}
             <Route exact path="/" render={() => <Redirect to="/Alpha" />} />

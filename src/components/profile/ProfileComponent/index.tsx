@@ -2,11 +2,14 @@ import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import React from 'react';
 import styled from 'styled-components';
 
+import { FollowType } from 'src/services/user.service';
+
 import AboutCard from 'src/components/cards/AboutCard';
 import EducationCard from 'src/components/cards/EducationCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 import FollowCards from 'src/components/follow/FollowCards';
+
 import theme from 'src/data/theme';
 
 import PublicProfileTabs from './PublicProfileTabs';
@@ -34,8 +37,9 @@ interface Props {
   educationRef: any;
   followerDids: string[];
   followingDids: string[];
+  mutualDids: string[];
   scrollToElement: (cardName: string) => void;
-  viewAllClicked?: (isFollower: boolean) => void;
+  viewAllClicked?: (ctype: FollowType) => void;
   publicFields?: string[];
   userSession: ISessionItem;
   didDocument: any;
@@ -50,6 +54,7 @@ const ProfileComponent: React.FC<Props> = ({
   educationRef,
   followerDids,
   followingDids,
+  mutualDids,
   scrollToElement,
   viewAllClicked,
   publicFields = [
@@ -137,12 +142,16 @@ const ProfileComponent: React.FC<Props> = ({
                         <FollowCards
                           showFollowerCard={publicFields.includes('follower')}
                           showFollowingCard={publicFields.includes('following')}
+                          showMutualFollowerCard={publicFields.includes(
+                            'mutual'
+                          )}
                           followerDids={followerDids}
                           followingDids={followingDids}
+                          mutualDids={mutualDids}
                           signed={userSession.did !== ''}
                           template={publicUser.pageTemplate || 'default'}
-                          viewAll={(isFollower: boolean) => {
-                            if (viewAllClicked) viewAllClicked(isFollower);
+                          viewAll={(ctype: FollowType) => {
+                            if (viewAllClicked) viewAllClicked(ctype);
                           }}
                         />
                       </RightContent>

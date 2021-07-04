@@ -204,7 +204,7 @@ const SocialProfilesCard: React.FC<Props> = ({
     return (
       <ProfileItem template={template}>
         <div className="left">
-          <img alt="icon" src={icon} height={40} />
+          <img alt="icon" src={icon} height={50} />
           {vc.isVerified && (
             <img
               alt="shield icon"

@@ -45,21 +45,21 @@ export const LoadMore = () => (
 );
 
 interface Props {
-  followingDids: string[];
+  mutualDids: string[];
   editable: boolean;
   onClose: () => void;
   setFollowingDids: (newFollowerDids: string[]) => void;
   userSession: ISessionItem;
 }
 
-const FollowingAllModal = ({
-  followingDids,
+const MutualFollowerAllModal = ({
+  mutualDids,
   onClose,
   editable,
   setFollowingDids,
   userSession
 }: Props) => {
-  const [followingUsers, setFollowingUsers] = useState<any[]>([]);
+  const [mutualFollowerUsers, setMutualFollowerUsers] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState('');
 
@@ -69,12 +69,12 @@ const FollowingAllModal = ({
   useEffect(() => {
     (async () => {
       const fUsers = await retrieveNewData(
-        followingDids,
+        mutualDids,
         '',
         pageSize,
         pageNumber
       );
-      setFollowingUsers(fUsers);
+      setMutualFollowerUsers(fUsers);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -113,13 +113,13 @@ const FollowingAllModal = ({
           onIonChange={async e => {
             const searchStr = e.detail.value || '';
             const res = await FollowService.invokeSearch(
-              followingDids,
+              mutualDids,
               searchStr,
               200,
               1,
               userSession
             );
-            setFollowingUsers(res);
+            setMutualFollowerUsers(res);
           }}
           placeholder="Search people, pages by name or DID"
           className={style['search-input']}
@@ -128,17 +128,17 @@ const FollowingAllModal = ({
 
       <div className={style['scrollableContent']} id="scrollableDiv">
         <InfiniteScroll
-          dataLength={followingUsers.length}
+          dataLength={mutualFollowerUsers.length}
           next={async () => {
             const fUsers = await retrieveNewData(
-              followingDids,
+              mutualDids,
               '',
               pageSize,
               pageNumber
             );
 
             if (fUsers.length > 0) {
-              setFollowingUsers(followingUsers.concat(fUsers));
+              setMutualFollowerUsers(mutualFollowerUsers.concat(fUsers));
               setPageNumber(pageNumber + 1);
             } else {
               setHasMore(false);
@@ -151,7 +151,7 @@ const FollowingAllModal = ({
           loader={<LoadMore />}
           scrollableTarget="scrollableDiv"
         >
-          {followingUsers.map((user: any) => (
+          {mutualFollowerUsers.map((user: any) => (
             <UserRow
               did={user.did}
               name={user.name}
@@ -169,11 +169,11 @@ const FollowingAllModal = ({
                   setFollowingDids(
                     res['get_following']['items'].map((item: any) => item.did)
                   );
-                  const _followingUsers = followingUsers.filter(
+                  const _mutualFollowerUsers = mutualFollowerUsers.filter(
                     item => item.did !== user.did
                   );
-                  setFollowingUsers(_followingUsers);
-                  if (_followingUsers.length === 0) onClose();
+                  setMutualFollowerUsers(_mutualFollowerUsers);
+                  if (_mutualFollowerUsers.length === 0) onClose();
                 }
                 setLoading('');
               }}
@@ -189,4 +189,4 @@ const FollowingAllModal = ({
   );
 };
 
-export default FollowingAllModal;
+export default MutualFollowerAllModal;

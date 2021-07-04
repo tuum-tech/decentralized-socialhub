@@ -24,6 +24,12 @@ export enum AccountType {
   Email = 'Email'
 }
 
+export enum FollowType {
+  Follower = 'Follower',
+  Following = 'Following',
+  MutualFollower = 'MutualFollower'
+}
+
 export class UserService {
   private static key(did: string): string {
     return `user_${did.replace('did:elastos:', '')}`;
