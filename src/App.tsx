@@ -30,6 +30,7 @@ import './styles/app.scss';
 import PublishIdentityPage from './pages/PublishIdentityPage';
 import ChooseVaultPage from './pages/ChooseVaultPage';
 import TermsPage from './pages/TermsPage';
+import SupportForum from './pages/SupportForum';
 import {
   GoogleCallback,
   TwitterCallback,
@@ -193,6 +194,11 @@ const App: React.FC = () => {
             <ProtectedRoute
               path="/forgot-password"
               component={ForgotPasswordPage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/support-forum"
+              component={SupportForum}
               exact={true}
             />
             <Route path="/terms-of-use" component={TermsPage} />
