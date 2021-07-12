@@ -288,4 +288,13 @@ export class UserVaultScripts {
       }
     });
   }
+
+  static async Delete(hiveClient: HiveClient) {
+    await hiveClient.Database.deleteCollection('following');
+    await hiveClient.Database.deleteCollection('basic_profile');
+    await hiveClient.Database.deleteCollection('education_profile');
+    await hiveClient.Database.deleteCollection('experience_profile');
+    await hiveClient.Database.deleteCollection('activities');
+    await hiveClient.Database.deleteCollection('public_fields');
+  }
 }
