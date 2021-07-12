@@ -82,6 +82,19 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
             </IonCol>
           </IonRow>
           <IonRow class="ion-justify-content-start">
+            <IonCol size="5">
+              <SmallTextInput
+                disabled={sessionItem.tutorialStep !== 4}
+                label="Phone"
+                name="phone"
+                value={
+                  currentBasicDTO.loginCred && currentBasicDTO.loginCred!.phone
+                }
+                onChange={handleChange}
+              />
+            </IonCol>
+          </IonRow>
+          <IonRow class="ion-justify-content-start">
             <IonCol size="7">
               <SmallTextInput
                 disabled={true}

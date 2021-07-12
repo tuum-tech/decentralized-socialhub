@@ -103,6 +103,7 @@ interface LoginCred {
   github?: string;
   discord?: string;
   email?: string;
+  phone?: string;
 }
 
 interface PeopleItem {
