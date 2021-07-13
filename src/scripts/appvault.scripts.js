@@ -119,6 +119,7 @@ let run = async () => {
             name: '$params.name',
             userToken: '$params.userToken',
             loginCred: '$params.loginCred',
+            badges: '$params.badges',
             isDIDPublished: '$params.isDIDPublished',
             didPublishTime: '$params.didPublishTime',
             onBoardingCompleted: '$params.onBoardingCompleted',
