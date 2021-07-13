@@ -8,6 +8,7 @@ import AboutCard from 'src/components/cards/AboutCard';
 import EducationCard from 'src/components/cards/EducationCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
+import BadgeCard from 'src/components/cards/BadgeCard';
 import FollowCards from 'src/components/follow/FollowCards';
 
 import theme from 'src/data/theme';
@@ -63,7 +64,8 @@ const ProfileComponent: React.FC<Props> = ({
     'about',
     'experience',
     'education',
-    'social'
+    'social',
+    'badge'
   ],
   userSession,
   didDocument,
@@ -154,6 +156,9 @@ const ProfileComponent: React.FC<Props> = ({
                             if (viewAllClicked) viewAllClicked(ctype);
                           }}
                         />
+                        {publicFields.includes('badge') && (
+                          <BadgeCard badges={publicUser.badges} />
+                        )}
                       </RightContent>
                     </IonRow>
                   </IonGrid>

@@ -33,7 +33,8 @@ const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
     'follower',
     'following',
     'mutual',
-    'social'
+    'social',
+    'badge'
   ];
 
   useEffect(() => {

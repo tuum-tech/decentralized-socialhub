@@ -118,7 +118,6 @@ const DidForm: React.FC<Props> = ({
         mnemonic.join(' '),
         passphrase || ''
       );
-      console.log(userDid, '====> User DID');
       if (!userDid || !userDid.did) {
         setError(true);
         return;
