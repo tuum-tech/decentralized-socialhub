@@ -3,7 +3,7 @@ import { IonContent, IonSearchbar, IonSpinner } from '@ionic/react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import styled from 'styled-components';
 
-import { FollowButton } from 'src/components/buttons';
+import { FollowButton } from 'src/elements/buttons';
 import { FollowService } from 'src/services/follow.service';
 import { ProfileService } from 'src/services/profile.service';
 
@@ -161,14 +161,19 @@ const FollowingAllModal = ({
               followAction={async () => {
                 if (!user) return;
                 setLoading(user.did);
-                const res = await ProfileService.unfollow(user.did, user);
+                const res = await ProfileService.unfollow(
+                  user.did,
+                  userSession
+                );
                 if (res) {
                   setFollowingDids(
                     res['get_following']['items'].map((item: any) => item.did)
                   );
-                  setFollowingUsers(
-                    followingUsers.filter(item => item.did !== user.did)
+                  const _followingUsers = followingUsers.filter(
+                    item => item.did !== user.did
                   );
+                  setFollowingUsers(_followingUsers);
+                  if (_followingUsers.length === 0) onClose();
                 }
                 setLoading('');
               }}

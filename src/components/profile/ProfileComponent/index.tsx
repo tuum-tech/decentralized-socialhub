@@ -1,26 +1,28 @@
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
-import {
-  ProfileService,
-  defaultUserInfo,
-  defaultFullProfile
-} from 'src/services/profile.service';
-import { DidDocumentService } from 'src/services/diddocument.service';
-import { UserService } from 'src/services/user.service';
+import { FollowType } from 'src/services/user.service';
 
 import AboutCard from 'src/components/cards/AboutCard';
 import EducationCard from 'src/components/cards/EducationCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
+import BadgeCard from 'src/components/cards/BadgeCard';
 import FollowCards from 'src/components/follow/FollowCards';
-import PublicProfileTabs from '../PublicProfileTabs';
-import ProfileHeader from '../ProfileHeader';
 
-import style from './style.module.scss';
-
+import theme from 'src/data/theme';
 import { DidService } from 'src/services/did.service';
+
+import PublicProfileTabs from './PublicProfileTabs';
+import ProfileHeader from './ProfileHeader';
+
+const GridContent = styled(IonGrid)<ThemeProps>`
+  width: 100%;
+  z-index: 100;
+  background-color: ${({ template }: ThemeProps) =>
+    (theme as any)[template].pageBg};
+`;
 
 const LeftContent = styled.div`
   width: calc(100% - 300px);
@@ -32,25 +34,29 @@ const RightContent = styled.div`
 `;
 
 interface Props {
-  targetDid: string;
   aboutRef: any;
   experienceRef: any;
   educationRef: any;
   followerDids: string[];
   followingDids: string[];
+  mutualDids: string[];
   scrollToElement: (cardName: string) => void;
-  viewAllClicked?: (isFollower: boolean) => void;
+  viewAllClicked?: (ctype: FollowType) => void;
   publicFields?: string[];
   userSession: ISessionItem;
+  didDocument: any;
+  publicUser: any;
+  publicUserProfile: any;
+  loading: boolean;
 }
 
 const ProfileComponent: React.FC<Props> = ({
-  targetDid,
   aboutRef,
   experienceRef,
   educationRef,
   followerDids,
   followingDids,
+  mutualDids,
   scrollToElement,
   viewAllClicked,
   publicFields = [
@@ -59,45 +65,15 @@ const ProfileComponent: React.FC<Props> = ({
     'about',
     'experience',
     'education',
-    'social'
+    'social',
+    'badge'
   ],
-  userSession
+  userSession,
+  didDocument,
+  publicUser,
+  publicUserProfile,
+  loading
 }: Props) => {
-  const [publicUser, setPublicUser] = useState(defaultUserInfo);
-  const [publicUserProfile, setPublicUserProfile] = useState(
-    defaultFullProfile
-  );
-  const [didDocument, setDidDocument] = useState<any>({});
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    (async () => {
-      if (targetDid && targetDid !== '') {
-        setLoading(true);
-        let userService = new UserService(new DidService());
-        let pUser = await userService.SearchUserWithDID(targetDid);
-        if (pUser && pUser.did) {
-          setPublicUser(pUser as any);
-          let profile = await ProfileService.getFullProfile(
-            targetDid,
-            userSession
-          );
-          if (profile) {
-            profile.basicDTO.isEnabled = true;
-            profile.experienceDTO.isEnabled = true;
-            profile.educationDTO.isEnabled = true;
-            setPublicUserProfile(profile);
-          }
-          let documentState = await DidDocumentService.getUserDocumentByDid(
-            targetDid
-          );
-          setDidDocument(documentState.diddocument);
-        }
-      }
-      setLoading(false);
-    })();
-  }, [targetDid, userSession]);
-
   const displayText = loading
     ? 'Loading User Data ...'
     : publicUser.did === ''
@@ -117,8 +93,11 @@ const ProfileComponent: React.FC<Props> = ({
         publicUser.did !== '' &&
         publicUserProfile.basicDTO.isEnabled === true && (
           <>
-            <PublicProfileTabs scrollToPosition={scrollToElement} />
-            <IonGrid className={style['scroll']}>
+            <PublicProfileTabs
+              template={publicUser.pageTemplate}
+              scrollToPosition={scrollToElement}
+            />
+            <GridContent template={publicUser.pageTemplate || 'default'}>
               <IonRow className="ion-justify-content-center">
                 <IonCol size="12">
                   <IonGrid>
@@ -127,6 +106,7 @@ const ProfileComponent: React.FC<Props> = ({
                         <div ref={aboutRef}>
                           {publicFields.includes('about') && (
                             <AboutCard
+                              template={publicUser.pageTemplate}
                               aboutText={publicUserProfile.basicDTO.about}
                               mode="read"
                             />
@@ -138,6 +118,7 @@ const ProfileComponent: React.FC<Props> = ({
                               experienceDTO={publicUserProfile.experienceDTO}
                               isEditable={false}
                               isPublicPage={true}
+                              template={publicUser.pageTemplate || 'default'}
                             />
                           )}
                         </div>
@@ -147,6 +128,7 @@ const ProfileComponent: React.FC<Props> = ({
                               educationDTO={publicUserProfile.educationDTO}
                               isEditable={false}
                               isPublicPage={true}
+                              template={publicUser.pageTemplate || 'default'}
                             />
                           )}
                         </div>
@@ -157,26 +139,33 @@ const ProfileComponent: React.FC<Props> = ({
                           didDocument.id && (
                             <SocialProfilesCard
                               didDocument={didDocument}
-                              // sessionItem={publicUser}
                               targetUser={publicUser}
                             />
                           )}
                         <FollowCards
                           showFollowerCard={publicFields.includes('follower')}
                           showFollowingCard={publicFields.includes('following')}
+                          showMutualFollowerCard={publicFields.includes(
+                            'mutual'
+                          )}
                           followerDids={followerDids}
                           followingDids={followingDids}
+                          mutualDids={mutualDids}
                           signed={userSession.did !== ''}
-                          viewAll={(isFollower: boolean) => {
-                            if (viewAllClicked) viewAllClicked(isFollower);
+                          template={publicUser.pageTemplate || 'default'}
+                          viewAll={(ctype: FollowType) => {
+                            if (viewAllClicked) viewAllClicked(ctype);
                           }}
                         />
+                        {publicFields.includes('badge') && (
+                          <BadgeCard badges={publicUser.badges} />
+                        )}
                       </RightContent>
                     </IonRow>
                   </IonGrid>
                 </IonCol>
               </IonRow>
-            </IonGrid>
+            </GridContent>
           </>
         )}
     </>

@@ -8,7 +8,7 @@ import {
   IonRow
 } from '@ionic/react';
 
-import SmallTextInput from '../../inputs/SmallTextInput';
+import SmallTextInput from '../../../elements/inputs/SmallTextInput';
 import styled from 'styled-components';
 import { MODE, MyTextarea } from '../common';
 

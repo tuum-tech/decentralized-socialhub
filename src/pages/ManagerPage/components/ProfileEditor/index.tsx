@@ -21,6 +21,10 @@ import { DidDocumentService } from 'src/services/diddocument.service';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
 
+import { showNotify } from 'src/utils/notify';
+
+import { requestUpdateEmail } from './fetchapi';
+
 interface Props {
   session: ISessionItem;
   updateSession: (props: { session: ISessionItem }) => void;
@@ -57,6 +61,8 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
       let documentState = await DidDocumentService.getUserDocument(session);
       setDidDocument(documentState.diddocument as DIDDocument);
 
+      if (JSON.stringify(session) === JSON.stringify(userInfo)) return;
+
       if (session.userToken) setUserInfo(session);
       setTimer();
     }, 1000);
@@ -66,6 +72,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
   useEffect(() => {
     (async () => {
       if (!session.userToken) return;
+
       setUserInfo(session);
       if (session.tutorialStep === 4) {
         await retriveProfile();
@@ -82,7 +89,10 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
       <IonGrid className={style['profileeditorgrid']}>
         <IonRow>
           <IonCol size="4">
-            <TemplateManagerCard sessionItem={userInfo} />
+            <TemplateManagerCard
+              sessionItem={session}
+              updateSession={updateSession}
+            />
             <PublicFields sessionItem={userInfo} />
           </IonCol>
           <IonCol size="8">
@@ -91,9 +101,36 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
             {!error && loaded ? (
               <BasicCard
                 sessionItem={userInfo}
-                updateFunc={async (userInfo: ISessionItem) => {
-                  await TuumTechScriptService.updateTuumUser(userInfo);
-                  await updateSession({ session: userInfo });
+                updateFunc={async (_userInfo: ISessionItem) => {
+                  const newEmail = _userInfo.loginCred?.email!;
+                  const oldEmail = userInfo.loginCred?.email!;
+                  if (newEmail !== oldEmail) {
+                    let response = (await requestUpdateEmail(
+                      userInfo.did,
+                      newEmail
+                    )) as IUpdateEmailResponse;
+                    if (
+                      response &&
+                      response.data &&
+                      response.data.newEmail === newEmail
+                    ) {
+                      // Alert user
+                      showNotify(
+                        'Verification email is sent to you. Please confirm to complete your updating.',
+                        'info'
+                      );
+                      window.localStorage.setItem(
+                        `updated_email_${userInfo.did.replace(
+                          'did:elastos:',
+                          ''
+                        )}`,
+                        newEmail
+                      );
+                    }
+                    _userInfo.loginCred!.email = oldEmail;
+                  }
+                  await TuumTechScriptService.updateTuumUser(_userInfo);
+                  await updateSession({ session: _userInfo });
                 }}
               ></BasicCard>
             ) : (
@@ -155,6 +192,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                   showManageButton={true}
                   sessionItem={session}
                   setSession={updateSession}
+                  mode="edit"
                 />
 
                 {profile && profile.educationDTO && (
@@ -209,6 +247,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                       await retriveProfile();
                     }}
                     isEditable={true}
+                    template="default"
                   />
                 )}
                 {profile && profile.experienceDTO && (
@@ -265,6 +304,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                       await retriveProfile();
                     }}
                     isEditable={true}
+                    template="default"
                   />
                 )}
               </>

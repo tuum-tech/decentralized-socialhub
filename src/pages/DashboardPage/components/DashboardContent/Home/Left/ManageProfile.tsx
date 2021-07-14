@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { DefaultLinkButton } from 'src/components/buttons';
+import { DefaultLinkButton } from 'src/elements/buttons';
 import AboutCard from 'src/components/cards/AboutCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
 import EducationCard from 'src/components/cards/EducationCard';
@@ -97,9 +97,14 @@ const ManageProfile: React.FC<Props> = ({ profile }) => {
     <>
       {hasAbout && <AboutCard aboutText={profile.basicDTO.about} />}
       {hasExperience && (
-        <ExperienceCard experienceDTO={profile.experienceDTO} />
+        <ExperienceCard
+          experienceDTO={profile.experienceDTO}
+          template="default"
+        />
       )}
-      {hasEducation && <EducationCard educationDTO={profile.educationDTO} />}
+      {hasEducation && (
+        <EducationCard educationDTO={profile.educationDTO} template="default" />
+      )}
     </>
   );
 };

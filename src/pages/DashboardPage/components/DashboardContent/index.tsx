@@ -46,7 +46,6 @@ interface Props {
   profile: ProfileDTO;
   sessionItem: ISessionItem;
   didDocument: any;
-  viewAll: (isFollower: boolean) => void;
   followerDids: string[];
   followingDids: string[];
   mutualDids: string[];
@@ -57,7 +56,6 @@ const DashboardContent: React.FC<Props> = ({
   profile,
   sessionItem,
   didDocument,
-  viewAll,
   followerDids,
   followingDids,
   mutualDids
@@ -93,7 +91,6 @@ const DashboardContent: React.FC<Props> = ({
           activeTab={tab => {
             setActive(tab);
           }}
-          viewAll={viewAll}
           followerDids={followerDids}
           followingDids={followingDids}
           mutualDids={mutualDids}

@@ -1,30 +1,39 @@
 import React, { useEffect, useState } from 'react';
 
 import { SearchService } from 'src/services/search.service';
+import { FollowType } from 'src/services/user.service';
 import { getItemsFromData } from 'src/utils/script';
 
 import FollowerCard from './FollowerCard';
 import FollowingCard from './FollowingCard';
+import MutualFollowerCard from './MutualFollowerCard';
 
 interface Props {
   signed: boolean;
-  viewAll: (isFollower: boolean) => void;
+  viewAll: (ctype: FollowType) => void;
   followerDids: string[];
   followingDids: string[];
+  mutualDids: string[];
   showFollowerCard?: boolean;
   showFollowingCard?: boolean;
+  showMutualFollowerCard?: boolean;
+  template?: string;
 }
 
 const FowllowCards: React.FC<Props> = ({
   followerDids,
   followingDids,
+  mutualDids,
   signed,
   viewAll,
   showFollowerCard = true,
-  showFollowingCard = true
+  showFollowingCard = true,
+  showMutualFollowerCard = true,
+  template = 'default'
 }: Props) => {
   const [followingUsers, setFollowingUsers] = useState<any[]>([]);
   const [followerUsers, setFollowerUsers] = useState<any[]>([]);
+  const [mutualFollowerUsers, setMutualFollowerUsers] = useState<any[]>([]);
   useEffect(() => {
     (async () => {
       const searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
@@ -44,8 +53,16 @@ const FowllowCards: React.FC<Props> = ({
       );
       followers = getItemsFromData(followers, 'get_users_by_dids');
       setFollowerUsers(followers);
+
+      let mutualFollowers: any = await searchServiceLocal.getUsersByDIDs(
+        mutualDids,
+        5,
+        0
+      );
+      mutualFollowers = getItemsFromData(mutualFollowers, 'get_users_by_dids');
+      setMutualFollowerUsers(mutualFollowers);
     })();
-  }, [followerDids, followingDids]);
+  }, [followerDids, followingDids, mutualDids]);
   return (
     <>
       {followingDids.length > 0 && showFollowingCard && (
@@ -58,7 +75,8 @@ const FowllowCards: React.FC<Props> = ({
           }
           getLinkFunc={(did: string) => '/did/' + did}
           isSigned={signed}
-          viewAllClicked={() => viewAll(false)}
+          viewAllClicked={() => viewAll(FollowType.Following)}
+          template={template}
         />
       )}
       {followerDids.length > 0 && showFollowerCard && (
@@ -69,7 +87,22 @@ const FowllowCards: React.FC<Props> = ({
           }
           getLinkFunc={(did: string) => '/did/' + did}
           isSigned={signed}
-          viewAllClicked={() => viewAll(true)}
+          viewAllClicked={() => viewAll(FollowType.Follower)}
+          template={template}
+        />
+      )}
+      {mutualDids.length > 0 && showMutualFollowerCard && (
+        <MutualFollowerCard
+          totalNumber={mutualDids.length}
+          users={
+            mutualFollowerUsers.length > 5
+              ? mutualFollowerUsers.slice(0, 5)
+              : mutualFollowerUsers
+          }
+          getLinkFunc={(did: string) => '/did/' + did}
+          isSigned={signed}
+          viewAllClicked={() => viewAll(FollowType.MutualFollower)}
+          template={template}
         />
       )}
     </>

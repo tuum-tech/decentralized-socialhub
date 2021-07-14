@@ -3,7 +3,6 @@ import {
   IonGrid,
   IonRow,
   IonCol,
-  IonCard,
   IonCardTitle,
   IonCardHeader,
   IonCardContent
@@ -12,7 +11,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 import Avatar from '../../Avatar';
-import styleCards from 'src/components/cards/WidgetCards.module.scss';
+import { CardOverview } from '../../cards/common';
 import style from './style.module.scss';
 
 interface FollowingsWidgetProps {
@@ -21,6 +20,7 @@ interface FollowingsWidgetProps {
   isSigned: boolean;
   viewAllClicked: () => void;
   totalNumber: number;
+  template: string;
 }
 
 export const TruncatedSpan = styled.span`
@@ -70,10 +70,11 @@ const FollowingCard: React.FC<FollowingsWidgetProps> = ({
   getLinkFunc,
   isSigned,
   totalNumber,
-  viewAllClicked
+  viewAllClicked,
+  template
 }: FollowingsWidgetProps) => {
   return (
-    <IonCard className={styleCards['overview']}>
+    <CardOverview template={template}>
       <IonCardHeader>
         <IonGrid>
           <IonRow className="ion-justify-content-between">
@@ -111,7 +112,7 @@ const FollowingCard: React.FC<FollowingsWidgetProps> = ({
           ))}
         </IonGrid>
       </IonCardContent>
-    </IonCard>
+    </CardOverview>
   );
 };
 

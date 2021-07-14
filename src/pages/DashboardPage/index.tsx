@@ -22,14 +22,13 @@ import { setSession } from 'src/store/users/actions';
 import style from './style.module.scss';
 import { ExporeTime } from './constants';
 
-import Logo from 'src/components/Logo';
+import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
-import ViewAllFollowModal from 'src/components/follow/ViewAllFollowModal';
 
 import { FollowService } from 'src/services/follow.service';
 import { UserService } from 'src/services/user.service';
 import { AssistService, RequestStatus } from 'src/services/assist.service';
-import LoadingIndicator from 'src/components/LoadingIndicator';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 import {
   ProfileService,
   defaultFullProfile
@@ -58,7 +57,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
   ...props
 }: InferMappedProps) => {
   const { session } = props;
-  const [showAllFollow, setShowAllFollow] = useState(0);
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');
@@ -155,20 +153,17 @@ const ProfilePage: React.FC<InferMappedProps> = ({
       if (props.session && props.session.did !== '') {
         await refreshDidDocument();
 
-        const _followingDids = await FollowService.getFollowingDids(
+        const followingDids = await FollowService.getFollowingDids(
           props.session.did,
           props.session
         );
-        setFollowingDids(_followingDids);
-        const _followersDids = await FollowService.getFollowerDids(
+        setFollowingDids(followingDids);
+
+        const followerDids = await FollowService.getFollowerDids(
           props.session.did,
           props.session
         );
-        setFollowerDids(_followersDids);
-        const _mutualDids = _followingDids.filter(
-          (did: any) => _followersDids.indexOf(did) > 0
-        );
-        setMutualDids(_mutualDids);
+        setFollowerDids(followerDids);
 
         setPublishStatus(
           props.session.isDIDPublished
@@ -193,6 +188,13 @@ const ProfilePage: React.FC<InferMappedProps> = ({
     setTimerForDid();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const mutualDids = followingDids.filter(
+      (did: any) => followerDids.indexOf(did) !== -1
+    );
+    setMutualDids(mutualDids);
+  }, [followingDids, followerDids]);
 
   useEffect(() => {
     (async () => {
@@ -334,9 +336,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
                 profile={full_profile}
                 sessionItem={session}
                 didDocument={didDocument}
-                viewAll={(isFollower: boolean) => {
-                  setShowAllFollow(isFollower ? 1 : 2);
-                }}
                 followerDids={followerDids}
                 followingDids={followingDids}
                 mutualDids={mutualDids}
@@ -358,19 +357,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
           />
         </TutorialModal>
       </IonContent>
-
-      {session && session.did !== '' && showAllFollow > 0 && (
-        <ViewAllFollowModal
-          followerDids={followerDids}
-          followingDids={followingDids}
-          setFollowerDids={setFollowerDids}
-          setFollowingDids={setFollowingDids}
-          onClose={() => setShowAllFollow(0)}
-          isFollower={showAllFollow === 1}
-          editable={true}
-          userSession={session}
-        />
-      )}
     </IonPage>
   );
 };

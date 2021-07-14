@@ -8,7 +8,7 @@ import {
 import ExploreNav from '../ExploreNav';
 import { ProfileService } from 'src/services/profile.service';
 import { alertError } from 'src/utils/notify';
-import LoadingIndicator from 'src/components/LoadingIndicator';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 
 export interface IUserResponse {
   _status?: string;

@@ -8,8 +8,8 @@ import { createStructuredSelector } from 'reselect';
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
+import SignedPublicPageHeader from 'src/components/layouts/SignedPublicPageHeader';
 
-import Header from './components/Header';
 import Content from './components/Content';
 
 const Container = styled.div`
@@ -34,14 +34,13 @@ const Page = styled(IonPage)`
   overflow: auto;
 `;
 
-// const TermsPage: React.FC = () => {
 const TermsPage: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
   return (
     <Page>
-      <Header userSession={props.session} />
+      <SignedPublicPageHeader userSession={props.session} />
       <Container>
         <Body>
           <ContentWrapper>

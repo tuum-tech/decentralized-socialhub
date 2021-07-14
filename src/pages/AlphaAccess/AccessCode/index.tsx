@@ -5,10 +5,10 @@
  */
 import { useHistory } from 'react-router';
 import React, { useState, useEffect } from 'react';
-import AlphaContent from 'src/components/AlphaContent';
-import TextInput from 'src/components/inputs/TextInput';
+import AlphaContent from 'src/elements/AlphaContent';
+import TextInput from 'src/elements/inputs/TextInput';
 import style from '../style.module.scss';
-import AlphaButtonDefault from 'src/components/AlphaContent/alphabutton';
+import AlphaButtonDefault from 'src/elements/AlphaContent/alphabutton';
 import { AlphaService } from 'src/services/alpha.service';
 
 import logo from '../../../assets/logo/blacklogo.svg';

@@ -92,6 +92,7 @@ interface ISessionItem {
   coverPhoto?: string;
   code?: string;
   status?: string;
+  pageTemplate?: string;
 }
 
 interface LoginCred {
@@ -299,6 +300,13 @@ interface ICreateUserResponse {
   };
 }
 
+interface IUpdateEmailResponse {
+  data: {
+    newEmail: string;
+    code: string;
+  };
+}
+
 interface PublicProfileResponse {
   _status: string;
   get_public_fields: {
@@ -309,4 +317,8 @@ interface PublicProfileResponse {
         }[]
       | null;
   };
+}
+
+interface ThemeProps {
+  template: string;
 }

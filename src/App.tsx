@@ -30,6 +30,7 @@ import './styles/app.scss';
 import PublishIdentityPage from './pages/PublishIdentityPage';
 import ChooseVaultPage from './pages/ChooseVaultPage';
 import TermsPage from './pages/TermsPage';
+import SupportForum from './pages/SupportForum';
 import {
   GoogleCallback,
   TwitterCallback,
@@ -47,6 +48,7 @@ import {
   ForgotPasswordPage,
   UnlockUserPage,
   VerifyEmailPage,
+  UpdateEmailPage,
   CreateProfileWithDidPage
 } from './pages/Auth';
 
@@ -61,6 +63,7 @@ import ManagerPage from './pages/ManagerPage';
 import ActivityPage from './pages/ActivityPage';
 import FollowersPage from './pages/FollowersPage';
 import FollowingsPage from './pages/FollowingsPage';
+import MutualFollowersPage from './pages/MutualFollowersPage';
 
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -119,6 +122,11 @@ const App: React.FC = () => {
             <ProtectedRoute
               path="/connections/followers"
               component={FollowersPage}
+              exact={true}
+            />
+            <ProtectedRoute
+              path="/connections/mutual-followers"
+              component={MutualFollowersPage}
               exact={true}
             />
             <ProtectedRoute
@@ -210,8 +218,14 @@ const App: React.FC = () => {
               component={ForgotPasswordPage}
               exact={true}
             />
+            <ProtectedRoute
+              path="/support-forum"
+              component={SupportForum}
+              exact={true}
+            />
             <Route path="/terms-of-use" component={TermsPage} />
             <Route path="/verify/email/:code" component={VerifyEmailPage} />
+            <Route path="/update/email/:code" component={UpdateEmailPage} />
 
             {/* ====== Public URLs ==== */}
             <Route exact path="/" render={() => <Redirect to="/Alpha" />} />

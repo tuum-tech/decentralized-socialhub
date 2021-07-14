@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   IonCol,
   IonCard,
@@ -14,7 +14,8 @@ import {
 } from '@ionic/react';
 import styled from 'styled-components';
 
-// import ButtonDisabled from 'src/components/buttons/1ButtonDisabled';
+import { HiveService } from 'src/services/hive.service';
+import { UserVaultScripts } from 'src/scripts/uservault.script';
 import style from './style.module.scss';
 
 const ButtonDisabled = styled(IonButton)`
@@ -33,7 +34,26 @@ const ButtonDisabled = styled(IonButton)`
   color: #d0d0d0;
 `;
 
-const SettingsAccount: React.FC = () => {
+const DeleteButton = styled(IonButton)`
+  width: 273px;
+  height: 49px;
+
+  --background: white;
+  border-radius: 8px;
+
+  text-align: center;
+  font: normal normal 600 18px/21px 'Open Sans';
+  text-transform: none;
+  letter-spacing: 0px;
+  color: red;
+`;
+
+interface Props {
+  useSession: ISessionItem;
+}
+
+const SettingsAccount: React.FC<Props> = ({ useSession }) => {
+  const [loading, setLoading] = useState('');
   return (
     <IonContent className={style['settingsaccount']}>
       <IonGrid className={style['tab-grid']}>
@@ -80,7 +100,7 @@ const SettingsAccount: React.FC = () => {
                     </IonText>
                   </div>
                 </IonItem>
-                <IonItem lines="none" className={style['section']}>
+                <IonItem className={style['section']}>
                   <div className={style['section-data']}>
                     <IonText className={style['section-title']}>
                       Deactivate your account
@@ -100,6 +120,40 @@ const SettingsAccount: React.FC = () => {
                     <IonText className={style['coming-soon']}>
                       Coming Soon!
                     </IonText>
+                  </div>
+                </IonItem>
+                <IonItem lines="none" className={style['section']}>
+                  <div className={style['section-data']}>
+                    <IonText className={style['section-title']}>
+                      Delete your account
+                    </IonText>
+                    <IonText className={style['section-description']}>
+                      This should wipe out the vault data from your own user
+                      vault. This is to ensure that each alpha release is wiped
+                      clean before starting over. This is basically the
+                      functionality we need to implement "Delete user data" on
+                      Settings. We will force this upon login on each new alpha
+                      release.
+                    </IonText>
+                    <br></br>
+                    <DeleteButton
+                      className={style['section-button']}
+                      disabled={loading !== ''}
+                      onClick={async () => {
+                        if (!useSession) return;
+
+                        setLoading('Deleting Account');
+                        let hiveInstance = await HiveService.getSessionInstance(
+                          useSession
+                        );
+                        await UserVaultScripts.Delete(hiveInstance!);
+                        setLoading('');
+                      }}
+                    >
+                      {loading === 'Deleting Account'
+                        ? 'Deleting Now...'
+                        : 'Delete'}
+                    </DeleteButton>
                   </div>
                 </IonItem>
               </IonCardContent>

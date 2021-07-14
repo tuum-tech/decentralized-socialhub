@@ -1,0 +1,70 @@
+.spotlight {
+    border-radius: 20px;
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+  
+      padding: 25px 20px 15px 20px;
+    }
+    .card-title {
+      font-family: 'SF Pro Display';
+      font-size: 18px;
+      font-weight: bold;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: -0.09px;
+      text-align: left;
+      color: #000000;
+    }
+  
+    .card-content {
+      font-family: 'SF Pro Display';
+      font-size: 14px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.64;
+      letter-spacing: normal;
+      text-align: left;
+      padding: 0px 20px 15px 20px;
+    }
+  
+    .card-text {
+      & p {
+        margin-bottom: 20px;
+      }
+    }
+  
+    .badge-icon {
+      display: flex;
+      align-items: center;
+      margin: 0px 10px 0px 0px;
+    }
+    .badge-name {
+      font-size: 16px;
+      line-height: 25.92px;
+      color: #425466;
+      font-weight: 500;
+    }
+    .badge-archive {
+      font-size: 13px;
+      line-height: 21.06px;
+      font-weight: 400;
+      span {
+        color: #25c9d1;
+      }
+    }
+    .badge {
+      --ion-grid-column-padding: 0px;
+      margin-bottom: 10px;
+  
+      display: flex;
+      justify-content: flex-start;
+  
+      padding: 6px 14px;
+      border-radius: 16px;
+      background: #f5f8fa;
+    }
+  }
+  

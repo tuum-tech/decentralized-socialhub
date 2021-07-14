@@ -15,9 +15,9 @@ import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 
-import ClearlyMeContent from 'src/components/oldComponents/ClearlyMeContent';
-import Header from 'src/components/oldComponents/OldHeader';
-import { PrimaryLinkButton } from 'src/components/buttons';
+import Header from 'src/components/layouts/DashboardHeader';
+import ClearlyMeContent from 'src/components/layouts/ClearlyMeContent';
+import { PrimaryLinkButton } from 'src/elements/buttons';
 
 import IdentityProgressComponent from './components/IdentityProgressComponent';
 

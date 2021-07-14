@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 
 import { UserService } from 'src/services/user.service';
-import LoadingIndicator from 'src/components/LoadingIndicator';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 import {
   OnBoardLayout,
   OnBoardLayoutLeft,
@@ -17,10 +17,10 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import ButtonWithLogo from 'src/components/buttons/ButtonWithLogo';
-import TextInput from 'src/components/inputs/TextInput';
-import { Text16 } from 'src/components/texts';
-import Check from 'src/components/Check';
+import ButtonWithLogo from 'src/elements/buttons/ButtonWithLogo';
+import TextInput from 'src/elements/inputs/TextInput';
+import { Text16 } from 'src/elements/texts';
+import Check from '../components/Check';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import keyimg from 'src/assets/icon/key.png';

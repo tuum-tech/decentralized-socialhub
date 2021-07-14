@@ -1,0 +1,23 @@
+/** All your component stuyles */
+.connections-header {
+  position: relative;
+  height: 5em;
+
+  .header-content {
+    margin-left: 1em;
+    margin-top: 0.7em;
+
+    h1 {
+      font-family: 'SF Pro Display';
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 0;
+    }
+
+    h2 {
+      font-family: 'SF Pro Display';
+      font-size: 18px;
+      font-weight: normal;
+    }
+  }
+}

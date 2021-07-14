@@ -25,7 +25,7 @@ import {
   SpaceLs,
   PageTitle,
   PageCategory
-} from 'src/components/note';
+} from 'src/elements/note';
 import style from './style.module.scss';
 const SettingsLearn: React.FC = () => {
   return (

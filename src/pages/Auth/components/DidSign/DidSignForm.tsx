@@ -10,10 +10,10 @@ import {
   OnBoardLayoutRightContent,
   OnBoardLayoutRightContentTitle
 } from 'src/components/layouts/OnBoardLayout';
-import ButtonWithLogo from 'src/components/buttons/ButtonWithLogo';
-import TextInput from 'src/components/inputs/TextInput';
-import MnemonicInput from 'src/components/inputs/MnemonicInput';
-import { Text16, Text12 } from 'src/components/texts';
+import ButtonWithLogo from 'src/elements/buttons/ButtonWithLogo';
+import TextInput from 'src/elements/inputs/TextInput';
+import MnemonicInput from 'src/elements/inputs/MnemonicInput';
+import { Text16, Text12 } from 'src/elements/texts';
 
 import helpSvg from '../../../../assets/icon/help.svg';
 import style from './DidSignForm.module.scss';
@@ -115,8 +115,10 @@ const DidForm: React.FC<Props> = ({
     }
     setError(validate === false);
     if (validate) {
-      let userDid = await loadDidFunction(mnemonic.join(' '), passphrase || '');
-      console.log(userDid, '====> User DID');
+      let userDid = await ElastosClient.did.loadFromMnemonic(
+        mnemonic.join(' '),
+        passphrase || ''
+      );
       if (!userDid || !userDid.did) {
         setError(true);
         return;

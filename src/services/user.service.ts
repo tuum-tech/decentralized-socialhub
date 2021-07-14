@@ -26,6 +26,12 @@ export enum AccountType {
   Email = 'Email'
 }
 
+export enum FollowType {
+  Follower = 'Follower',
+  Following = 'Following',
+  MutualFollower = 'MutualFollower'
+}
+
 export class UserService {
   constructor(private didService: IDidService) {}
 
@@ -207,7 +213,13 @@ export class UserService {
     const users = await TuumTechScriptService.searchUserWithDIDs([did]);
     if (users.length > 0) {
       const userData = users[0];
-      const isDIDPublished = await this.didService.isDIDPublished(userData.did);
+      let isDIDPublished = false;
+      try {
+        isDIDPublished = await DidService.isDIDPublished(userData.did);
+      } catch (e) {
+        isDIDPublished = false;
+      }
+
       return {
         ...userData,
         isDIDPublished: isDIDPublished ? isDIDPublished : false,
@@ -331,7 +343,8 @@ export class UserService {
       code: Guid.create().toString(),
       status: 'Created',
       mnemonics,
-      coverPhoto: ''
+      coverPhoto: '',
+      pageTemplate: 'default'
     };
     let curTime = new Date().getTime();
     let messages = [];

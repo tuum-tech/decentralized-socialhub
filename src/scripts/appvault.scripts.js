@@ -89,7 +89,8 @@ let run = async () => {
           hiveHost: '$params.hiveHost',
           avatar: '$params.avatar',
           code: '$params.code',
-          status: '$params.status'
+          status: '$params.status',
+          pageTemplate: '$params.pageTemplate'
         }
       }
     }
@@ -118,12 +119,14 @@ let run = async () => {
             name: '$params.name',
             userToken: '$params.userToken',
             loginCred: '$params.loginCred',
+            badges: '$params.badges',
             isDIDPublished: '$params.isDIDPublished',
             didPublishTime: '$params.didPublishTime',
             onBoardingCompleted: '$params.onBoardingCompleted',
             tutorialStep: '$params.tutorialStep',
             hiveHost: '$params.hiveHost',
-            avatar: '$params.avatar'
+            avatar: '$params.avatar',
+            pageTemplate: '$params.pageTemplate'
           }
         }
       }
@@ -181,6 +184,27 @@ let run = async () => {
           $set: {
             'loginCred.email': '$params.newEmail',
             status: 'WAITING_CONFIRMATION',
+            code: '$params.code'
+          }
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'update_verify_user',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'update',
+      name: 'update_verify_user',
+      output: false,
+      body: {
+        collection: 'users',
+        filter: {
+          did: '$params.did'
+        },
+        update: {
+          $set: {
             code: '$params.code'
           }
         }
@@ -374,8 +398,7 @@ let run = async () => {
           body: {
             collection: 'users',
             filter: {
-              code: '$params.code',
-              status: 'WAITING_CONFIRMATION'
+              code: '$params.code'
             }
           }
         },
@@ -386,8 +409,7 @@ let run = async () => {
           body: {
             collection: 'users',
             filter: {
-              code: '$params.code',
-              status: 'WAITING_CONFIRMATION'
+              code: '$params.code'
             },
             update: {
               $set: {

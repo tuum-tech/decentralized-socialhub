@@ -8,7 +8,7 @@ import {
   OnBoardLayout,
   OnBoardLayoutRight
 } from 'src/components/layouts/OnBoardLayout';
-import LoadingIndicator from 'src/components/LoadingIndicator';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 import DidSignForm from '../components/DidSign/DidSignForm';
 import DidLeftSide from '../components/DidSign/DidLeftSide';
 import PassPhraseHelp from '../components/DidSign/PassPhraseHelp';

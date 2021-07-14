@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { InferMappedProps } from '../../types';
 import { setSession } from 'src/store/users/actions';
 
-import LoadingIndicator from 'src/components/LoadingIndicator';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 import TutorialStepsComponent from './TutorialSteps';
 import TutorialStep1Component from './Steps/TutorialStep1';
 import TutorialStep2Component from './Steps/TutorialStep2';
@@ -56,11 +56,11 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({
       if (newSession.tutorialStep === 4) {
         newSession.badges!.account!.beginnerTutorial.archived = new Date().getTime();
       }
-      
+
       let userService = new UserService(new DidService());
       const updatedSession = await userService.updateSession(newSession);
       eProps.setSession({ session: updatedSession });
-     
+
       setStep(step + 1);
     } else {
       props.onClose();
