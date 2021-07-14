@@ -10,7 +10,6 @@ import CreateWhyPage from './CreateWhyPage/Loadable';
 import CreatePasswordPage from './CreatePasswordPage/Loadable';
 import GenerateDidPage from './GenerateDidPage/Loadable';
 import SignDidPage from './SignDidPage/Loadable';
-import SignDidPageNew from './SignDidPageNew/Loadable';
 import SignQRPage from './SignQRPage/Loadable';
 import ForgotPasswordPage from './ForgotPasswordPage/Loadable';
 import UnlockUserPage from './UnlockUserPage/Loadable';
@@ -31,7 +30,6 @@ export {
   CreatePasswordPage,
   GenerateDidPage,
   SignDidPage,
-  SignDidPageNew,
   SignQRPage,
   ForgotPasswordPage,
   UnlockUserPage,

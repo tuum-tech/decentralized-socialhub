@@ -27,6 +27,7 @@ import SearchComponent from './components/SearchComponent';
 import arrowLeft from '../../assets/icon/arrow-left-square.svg';
 
 import style from './style.module.scss';
+import { DidService } from 'src/services/did.service.new';
 
 const Header = styled.div`
   width: 100%;
@@ -132,7 +133,8 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
       setFollowingDids(followingdids);
 
       if (props.match.params.did && props.match.params.did !== '') {
-        let pUser = await UserService.SearchUserWithDID(props.match.params.did);
+        let userService = new UserService(new DidService());
+        let pUser = await userService.SearchUserWithDID(props.match.params.did);
         if (pUser && pUser.did) {
           setPublicUser(pUser as any);
 

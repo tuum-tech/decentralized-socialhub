@@ -17,6 +17,7 @@ import { Text16, Text12 } from 'src/elements/texts';
 
 import helpSvg from '../../../../assets/icon/help.svg';
 import style from './DidSignForm.module.scss';
+import { DidService } from 'src/services/did.service.new';
 
 const ClearButton = styled.div`
   align-items: center;
@@ -115,7 +116,8 @@ const DidForm: React.FC<Props> = ({
     }
     setError(validate === false);
     if (validate) {
-      let userDid = await ElastosClient.did.loadFromMnemonic(
+      let didService = new DidService();
+      let userDid = await didService.loadDid(
         mnemonic.join(' '),
         passphrase || ''
       );

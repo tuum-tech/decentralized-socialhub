@@ -29,6 +29,7 @@ import { UserService } from 'src/services/user.service';
 
 import { requestVerifyCode } from './fetchapi';
 import style from './style.module.scss';
+import { DidService } from 'src/services/did.service.new';
 
 interface IVerifyCodeResponse {
   data: {
@@ -52,8 +53,9 @@ const UpdateEmailPage: React.FC<any> = ({ eProps, ...props }: any) => {
             `updated_email_${session.did.replace('did:elastos:', '')}`
           );
           console.log(session.loginCred);
+          let userService = new UserService(new DidService());
           eProps.setSession({
-            session: await UserService.updateSession(session)
+            session: await userService.updateSession(session)
           });
         }
         setStatus(response.data.return_code);

@@ -215,7 +215,7 @@ export class UserService {
       const userData = users[0];
       let isDIDPublished = false;
       try {
-        isDIDPublished = await DidService.isDIDPublished(userData.did);
+        isDIDPublished = await this.didService.isDIDPublished(userData.did);
       } catch (e) {
         isDIDPublished = false;
       }
