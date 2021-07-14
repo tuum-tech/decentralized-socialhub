@@ -19,6 +19,7 @@ import PublicFields from '../PublicFields';
 import style from './style.module.scss';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
 
 interface Props {
   session: ISessionItem;
@@ -54,7 +55,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
     const timer = setTimeout(async () => {
       // refresh DID document
       let documentState = await DidDocumentService.getUserDocument(session);
-      setDidDocument(documentState.diddocument);
+      setDidDocument(documentState.diddocument as DIDDocument);
 
       if (session.userToken) setUserInfo(session);
       setTimer();

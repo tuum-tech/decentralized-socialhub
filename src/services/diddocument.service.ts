@@ -1,8 +1,10 @@
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
 import { AssistService } from './assist.service';
 import { DidService, PublishRequestOperation } from './did.service';
+import { DidService as DidServiceNew } from './did.service.new';
 import { EventsService, IEventCallback } from './events.service';
 export interface IDIDDocumentState {
-  diddocument: any;
+  diddocument?: DIDDocument;
   isChanged: boolean;
 }
 
@@ -44,14 +46,17 @@ export class DidDocumentService {
   }
 
   private static setDocumentState(documentState: IDIDDocumentState) {
-    let json = JSON.stringify(documentState);
-    window.localStorage.setItem(
-      `${this.DIDDOCUMENT_KEY}_${documentState.diddocument?.id.replace(
-        'did:elastos:',
-        ''
-      )}`,
-      json
-    );
+    let docStateSerialized = {
+      diddocument: documentState.diddocument?.toString(true),
+      isChanged: documentState.isChanged
+    };
+    let json = JSON.stringify(docStateSerialized);
+
+    let did = documentState.diddocument
+      ?.getSubject()
+      .toString()
+      .replace('did:elastos:', '');
+    window.localStorage.setItem(`${this.DIDDOCUMENT_KEY}_${did}`, json);
     this.triggerDocumentChangeEvent(documentState);
   }
 
@@ -83,8 +88,17 @@ export class DidDocumentService {
   private static async loadFromBlockchain(
     did: string
   ): Promise<IDIDDocumentState> {
-    let didService = new DidService();
-    let documentOnBlockchain = await didService.getDidDocument(did, false);
+    //let didService = new DidService();
+    let didServiceNew = new DidServiceNew();
+
+    let documentNew: DIDDocument = await didServiceNew.getDidDocument(
+      did,
+      false
+    );
+    let docToString = documentNew.toString(true);
+    let documentOnBlockchain = JSON.parse(docToString);
+
+    //let documentOnBlockchain = await didService.getDidDocument(did, false);
     if (documentOnBlockchain) {
       let documentState = {
         diddocument: documentOnBlockchain,
@@ -93,12 +107,12 @@ export class DidDocumentService {
       return documentState;
     }
     return {
-      diddocument: null,
+      diddocument: undefined,
       isChanged: false
     };
   }
 
-  static updateUserDocument(diddocument: any): IDIDDocumentState {
+  static updateUserDocument(diddocument: DIDDocument): IDIDDocumentState {
     let documentState: IDIDDocumentState = {
       diddocument: diddocument,
       isChanged: true
@@ -117,7 +131,6 @@ export class DidDocumentService {
     let userDid = await didService.loadDid(userSession.mnemonics);
     let signedDocument = didService.sealDIDDocument(userDid, diddocument);
 
- 
     if (!signedDocument['proof']) {
       // alertError(null, 'The DID document was not signed');
       return;

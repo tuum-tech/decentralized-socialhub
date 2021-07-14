@@ -33,6 +33,7 @@ import { DidService } from 'src/services/did.service';
 import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
 
 interface PageProps
   extends InferMappedProps,
@@ -74,13 +75,15 @@ const FacebookCallback: React.FC<PageProps> = ({
             CredentialType.Facebook,
             facebookId.name
           );
-          
+
           let state = await DidDocumentService.getUserDocument(props.session);
           await didService.addVerfiableCredentialToDIDDocument(
             state.diddocument,
             vc
           );
-          DidDocumentService.updateUserDocument(state.diddocument);
+          DidDocumentService.updateUserDocument(
+            state.diddocument as DIDDocument
+          );
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.facebook! = facebookId.name;
@@ -103,7 +106,7 @@ const FacebookCallback: React.FC<PageProps> = ({
           eProps.setSession({
             session: await userService.updateSession(newSession)
           });
-        
+
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredFacebook(facebookId.name);

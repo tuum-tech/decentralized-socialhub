@@ -234,21 +234,22 @@ const SocialProfilesCard: React.FC<Props> = ({
     return '';
   };
 
+  // TODO
   const removeVc = async (key: string) => {
-    let documentState = await DidDocumentService.getUserDocument(sessionItem!);
-    let keyIndex = -1;
-    documentState.diddocument['verifiableCredential'].forEach(
-      (element: any, index: number) => {
-        if (`${element['id']}`.endsWith(`#${key.toLowerCase()}`)) {
-          keyIndex = index;
-        }
-      }
-    );
+    // let documentState = await DidDocumentService.getUserDocument(sessionItem!);
+    // let keyIndex = -1;
+    // documentState.diddocument['verifiableCredential'].forEach(
+    //   (element: any, index: number) => {
+    //     if (`${element['id']}`.endsWith(`#${key.toLowerCase()}`)) {
+    //       keyIndex = index;
+    //     }
+    //   }
+    // );
 
-    if (keyIndex >= 0) {
-      documentState.diddocument['verifiableCredential'].splice(keyIndex, 1);
-      DidDocumentService.updateUserDocument(documentState.diddocument);
-    }
+    // if (keyIndex >= 0) {
+    //   documentState.diddocument['verifiableCredential'].splice(keyIndex, 1);
+    //   DidDocumentService.updateUserDocument(documentState.diddocument);
+    // }
 
     // ===== temporary codes start =====
     let newLoginCred = sessionItem!.loginCred;

@@ -43,13 +43,11 @@ import {
   CreatePasswordPage,
   GenerateDidPage,
   SignDidPage,
-  SignDidPageNew,
   SignQRPage,
   ForgotPasswordPage,
   UnlockUserPage,
   VerifyEmailPage,
-  CreateProfileWithDidPage,
-  CreateProfileWithDidPageNew
+  CreateProfileWithDidPage
 } from './pages/Auth';
 
 import TestPage from './pages/TestPage';
@@ -150,62 +148,63 @@ const App: React.FC = () => {
             <Route path="/facebook_callback" component={FacebookCallback} />
             <Route path="/github_callback" component={GithubCallback} />
             <Route path="/discord_callback" component={DiscordCallback} />
+
+            {/* ok */}
             <ProtectedRoute
               path="/set-password"
               component={CreatePasswordPage}
               exact={true}
             />
+            {/* ok */}
             <ProtectedRoute
               path="/unlock-user"
               component={UnlockUserPage}
               exact={true}
             />
+            {/* to test */}
             <ProtectedRoute
               path="/generate-did"
               component={GenerateDidPage}
               exact={true}
             />
+            {/* to test */}
             <ProtectedRoute
               path="/sign-did"
               component={SignDidPage}
               exact={true}
             />
-            <ProtectedRoute
-              path="/sign-did-new"
-              component={SignDidPageNew}
-              exact={true}
-            />
+
+            {/* ok */}
             <ProtectedRoute
               path="/sign-qr"
               component={SignQRPage}
               exact={true}
             />
+            {/* ok */}
             <ProtectedRoute
               path="/associated-profile"
               component={AssociatedProfilePage}
               exact={true}
             />
+            {/* to ckeck */}
             <ProtectedRoute
               path="/create-why"
               component={CreateWhyPage}
               exact={true}
             />
+            {/* to test */}
             <ProtectedRoute
               path="/create-profile"
               component={CreateProfilePage}
               exact={true}
             />
+            {/* to test */}
             <ProtectedRoute
               path="/create-profile-with-did"
               component={CreateProfileWithDidPage}
               exact={true}
             />
 
-            <ProtectedRoute
-              path="/create-profile-with-did-new"
-              component={CreateProfileWithDidPageNew}
-              exact={true}
-            />
             <ProtectedRoute
               path="/forgot-password"
               component={ForgotPasswordPage}

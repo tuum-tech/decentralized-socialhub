@@ -15,7 +15,7 @@ import { AccountType } from 'src/services/user.service';
 
 import SetPassword from '../components/SetPassword';
 import { getUsersWithRegisteredEmail } from './fetchapi';
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 
 interface PageProps
   extends InferMappedProps,

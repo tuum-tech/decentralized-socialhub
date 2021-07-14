@@ -29,6 +29,7 @@ import { DidDocumentService } from 'src/services/diddocument.service';
 import { AccountType, UserService } from 'src/services/user.service';
 
 import { requestTwitterToken, getUsersWithRegisteredTwitter } from './fetchapi';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
 
 interface PageProps
   extends InferMappedProps,
@@ -90,7 +91,9 @@ const TwitterCallback: React.FC<PageProps> = ({
             state.diddocument,
             vc
           );
-          DidDocumentService.updateUserDocument(state.diddocument);
+          DidDocumentService.updateUserDocument(
+            state.diddocument as DIDDocument
+          );
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.twitter! = items[1].toString();
@@ -113,7 +116,7 @@ const TwitterCallback: React.FC<PageProps> = ({
           eProps.setSession({
             session: await userService.updateSession(newSession)
           });
-        
+
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredTwitter(

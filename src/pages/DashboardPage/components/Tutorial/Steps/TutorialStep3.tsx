@@ -2,7 +2,7 @@
 import { IonButton, IonInput, IonRadio, IonRadioGroup } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 import { UserService } from 'src/services/user.service';
 import { HiveService } from 'src/services/hive.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
@@ -16,6 +16,7 @@ import { setSession } from 'src/store/users/actions';
 import style from '../style.module.scss';
 import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
 
 const VersionTag = styled.span`
   color: green;
@@ -152,7 +153,6 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       });
 
       newSession.badges!.dStorage!.ownVault.archived &&
-       
         activities.push({
           guid: '',
           did: session!.did,
@@ -202,13 +202,13 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
           process.env.REACT_APP_TUUM_TECH_HIVE as string
         )
       );
-      let doc = await didService.getDidDocument(session.did);
+      let doc = (await didService.getDidDocument(session.did)) as DIDDocument;
 
-      if (doc.service && doc.service.length > 0) {
+      if (doc.getServices() && doc.getServices().length > 0) {
         setSelected('document');
-        setHiveDocument(doc.service[0].serviceEndpoint);
+        setHiveDocument(doc.getServices()[0].endpoint);
         setDetectedHiveVersion(
-          await HiveService.getHiveVersion(doc.service[0].serviceEndpoint)
+          await HiveService.getHiveVersion(doc.getServices()[0].endpoint)
         );
       }
     })();

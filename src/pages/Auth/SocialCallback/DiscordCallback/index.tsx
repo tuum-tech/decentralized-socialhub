@@ -26,6 +26,8 @@ import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service';
 
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+
 interface PageProps
   extends InferMappedProps,
     RouteComponentProps<{}, StaticContext, LocationState> {}
@@ -72,7 +74,9 @@ const DiscordCallback: React.FC<PageProps> = ({
             state.diddocument,
             vc
           );
-          DidDocumentService.updateUserDocument(state.diddocument);
+          DidDocumentService.updateUserDocument(
+            state.diddocument as DIDDocument
+          );
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.discord! = discord;
@@ -92,10 +96,9 @@ const DiscordCallback: React.FC<PageProps> = ({
           }
           let userService = new UserService(new DidService());
           eProps.setSession({
-                session: await userService.updateSession(newSession)
+            session: await userService.updateSession(newSession)
           });
-          
-         
+
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredDiscord(discord);
