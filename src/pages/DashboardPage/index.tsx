@@ -122,8 +122,9 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
   const updateUserToComplete = async () => {
     if (props.session && props.session.did !== '') {
-      let newSession = props.session;
+      let newSession = JSON.parse(JSON.stringify(props.session)); // it seems that I need to make a clone here because I couldn't set isDIDPublished directly -> Error: Cannot assign to read only property
       newSession.isDIDPublished = true;
+
       let userService = new UserService(new DidService());
       eProps.setSession({
         session: await userService.updateSession(newSession)
