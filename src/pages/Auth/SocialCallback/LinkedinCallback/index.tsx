@@ -94,9 +94,7 @@ const LinkedinCallback: React.FC<PageProps> = ({
             state.diddocument,
             vc
           );
-          DidDocumentService.updateUserDocument(
-            state.diddocument as DIDDocument
-          );
+          DidDocumentService.updateUserDocument(state.diddocument as any);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.linkedin! = firstName + '' + lastName;

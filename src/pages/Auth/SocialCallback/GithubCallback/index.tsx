@@ -58,7 +58,6 @@ const GithubCallback: React.FC<PageProps> = ({
         let github = t.data.login;
 
         if (props.session) {
-          console.log('entrou aqui');
           let vc = await DidcredsService.generateVerifiableCredential(
             props.session.did,
             CredentialType.Github,
@@ -71,9 +70,7 @@ const GithubCallback: React.FC<PageProps> = ({
             state.diddocument,
             vc
           );
-          DidDocumentService.updateUserDocument(
-            state.diddocument as DIDDocument
-          );
+          DidDocumentService.updateUserDocument(state.diddocument as any);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.github! = github;

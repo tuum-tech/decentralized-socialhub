@@ -51,6 +51,7 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
   useEffect(() => {
     (async () => {
       let response = (await requestVerifyCode(code)) as IVerifyCodeResponse;
+      debugger;
       if (response.data.return_code === 'CODE_CONFIRMED') {
         const { name, email } = response.data;
         setCredentials({

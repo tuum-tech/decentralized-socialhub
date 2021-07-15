@@ -65,13 +65,11 @@ export class UserService {
       newDID,
       temporaryDocument
     );
-
-    DidDocumentService.updateUserDocument(signedDocument);
+    DidDocumentService.updateUserDocument(signedDocument.toString(true));
 
     let response: any = {};
     let adapter: any = {
       createIdTransaction: async (payload: any, memo: any) => {
-        debugger;
         let request = JSON.parse(payload);
         let did = request.proof.verificationMethod;
         did = did.substring(0, did.indexOf('#'));

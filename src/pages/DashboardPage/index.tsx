@@ -39,7 +39,7 @@ import DashboardContent from './components/DashboardContent';
 import OnBoarding from './components/OnBoarding';
 import DashboardHeader from './components/DashboardHeader';
 import { DidDocumentService } from 'src/services/diddocument.service';
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 
 const TutorialModal = styled(IonModal)`
   --border-radius: 16px;
@@ -150,6 +150,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
   useEffect(() => {
     (async () => {
+      debugger;
       if (props.session && props.session.did !== '') {
         await refreshDidDocument();
 

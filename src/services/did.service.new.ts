@@ -88,7 +88,7 @@ export class DidService implements IDidService {
     let store = await DidService.getStore();
     let rootIdentity = await store.loadRootIdentity();
     let didRoot = rootIdentity.getDid(0) as DID;
-    let didDocument = await didRoot.resolve();
+    let didDocument = await didRoot.resolve(true);
 
     //await store.storeDid(didDocument);
 
@@ -101,12 +101,10 @@ export class DidService implements IDidService {
   };
 
   isSignedDIDDocumentValid(signedDocument: any, did: IDID): boolean {
-    debugger;
     throw new Error('not implemented');
   }
 
   async genereteNewDidDocument(did: IDID): Promise<any> {
-    debugger;
     let store = await DidService.getStore();
     let rootIdentity = await store.loadRootIdentity();
     let didDocument = await rootIdentity.newDid('passw');
@@ -114,7 +112,10 @@ export class DidService implements IDidService {
     return didDocument;
   }
 
-  async sealDIDDocument(did: IDID, diddocument: DIDDocument): Promise<any> {
+  async sealDIDDocument(
+    did: IDID,
+    diddocument: DIDDocument
+  ): Promise<DIDDocument> {
     let signedDocument: DIDDocument;
     if (diddocument.hasOwnProperty('proof')) {
       diddocument.proofs?.clear();
@@ -129,7 +130,6 @@ export class DidService implements IDidService {
     diddocument: DIDDocument,
     vc: VerifiableCredential
   ) {
-    debugger;
     if (diddocument.getProof()) {
       diddocument.proofs?.clear();
     }
@@ -146,7 +146,6 @@ export class DidService implements IDidService {
     // }
 
     // ElastosClient.didDocuments.addServiceToDIDDocument(diddocument, service);
-    debugger;
     throw new Error('not implemented');
   }
 
@@ -183,7 +182,6 @@ export class DidService implements IDidService {
   }
 
   generateService(did: IDID, type: string, endpoint: string) {
-    debugger;
     //return ElastosClient.didDocuments.createService(did.did, type, endpoint);
     throw new Error('not implemented');
   }
@@ -247,7 +245,6 @@ export class DidService implements IDidService {
     userDID: IDID,
     operation: PublishRequestOperation
   ): Promise<any> {
-    debugger;
     // let newItem: any = {};
     // Object.getOwnPropertyNames(diddocument).forEach(function(key) {
     //   newItem[key] = diddocument[key];

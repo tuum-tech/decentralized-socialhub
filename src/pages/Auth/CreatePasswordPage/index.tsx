@@ -31,7 +31,7 @@ import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { SubState } from 'src/store/users/types';
 import { InferMappedProps, LocationState } from './types';
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 
 const ErrorText = styled(Text16)`
   text-align: center;

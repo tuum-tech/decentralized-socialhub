@@ -79,6 +79,7 @@ const GenerateDidPage: React.FC<PageProps> = ({
             '',
             ''
           );
+          debugger;
           eProps.setSession({ session: sessionItem });
           window.location.href = '/profile';
           setLoading(false);

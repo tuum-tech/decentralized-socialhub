@@ -103,6 +103,11 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
       name,
       email
     )) as ICreateUserResponse;
+    debugger;
+    if (response.meta.code !== 200) {
+      setDisplayText('An error happened when creating user.');
+    }
+
     if (
       response &&
       response.data &&
