@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-declare -a Images=("hive-node" "assist-restapi-node")
-declare -a Containers=("hive-node" "assist-restapi-node" "restapi-mongo")
+declare -a Images=("hive-node" "assist-restapi-node" "didcreds-validator-node")
+declare -a Containers=("hive-node" "assist-restapi-node" "didcreds-validator-node" "restapi-mongo")
 
 function stop () {
     for container in ${Containers[@]}
