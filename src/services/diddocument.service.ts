@@ -86,7 +86,7 @@ export class DidDocumentService {
     let documentOnBlockchain = await didService.getDidDocument(did, false);
     if (documentOnBlockchain) {
       let documentState = {
-        diddocument: documentOnBlockchain,
+        diddocument: documentOnBlockchain.toString(true),
         isChanged: false
       };
       return documentState;
