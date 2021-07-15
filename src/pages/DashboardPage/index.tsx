@@ -150,7 +150,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
   useEffect(() => {
     (async () => {
-      debugger;
       if (props.session && props.session.did !== '') {
         await refreshDidDocument();
 
