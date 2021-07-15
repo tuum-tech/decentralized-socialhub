@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StaticContext, RouteComponentProps, useHistory } from 'react-router';
+import {
+  StaticContext,
+  Redirect,
+  RouteComponentProps,
+  useHistory
+} from 'react-router';
 
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -27,7 +32,7 @@ const GenerateDidPage: React.FC<PageProps> = ({
 }: PageProps) => {
   const history = useHistory();
 
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState(0);
   const [session, setSession] = useState<UserSessionProp | null>(null);
 
   useEffect(() => {
@@ -61,13 +66,17 @@ const GenerateDidPage: React.FC<PageProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
+  if (status === 2) {
+    return <Redirect to="/profile" />;
+  }
+
   if (session && session.name) {
     return (
       <SetPassword
-        loading={loading}
+        loading={status === 1}
         next={async pwd => {
           if (!session || !session.name) return;
-          setLoading(true);
+          setStatus(1);
           let userService = new UserService(new DidService());
           let sessionItem = await userService.CreateNewUser(
             session.name,
@@ -79,10 +88,8 @@ const GenerateDidPage: React.FC<PageProps> = ({
             '',
             ''
           );
-          debugger;
           eProps.setSession({ session: sessionItem });
-          window.location.href = '/profile';
-          setLoading(false);
+          setStatus(2);
         }}
       />
     );
