@@ -26,7 +26,12 @@ const ExploreConnnections: React.FC<Props> = ({ did, session }) => {
           session.did,
           session
         );
-        if (followings) {
+        if (
+          followings &&
+          followings.get_following &&
+          followings.get_following.items &&
+          followings.get_following.items.length > 0
+        ) {
           fUserDids = followings.get_following.items.map(item => item.did);
         }
 
