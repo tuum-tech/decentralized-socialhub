@@ -222,7 +222,8 @@ let run = async () => {
         },
         update: {
           $set: {
-            'loginCred.email': '$params.newEmail',
+            'loginCred.email': '$params.email',
+            'loginCred.phone': '$params.phone',
             status: 'WAITING_CONFIRMATION',
             code: '$params.code'
           }
@@ -230,27 +231,7 @@ let run = async () => {
       }
     }
   });
-  await client.Scripting.SetScript({
-    name: 'update_verify_user',
-    allowAnonymousUser: true,
-    allowAnonymousApp: true,
-    executable: {
-      type: 'update',
-      name: 'update_verify_user',
-      output: false,
-      body: {
-        collection: 'users',
-        filter: {
-          did: '$params.did'
-        },
-        update: {
-          $set: {
-            code: '$params.code'
-          }
-        }
-      }
-    }
-  });
+
   await client.Scripting.SetScript({
     name: 'delete_users',
     allowAnonymousUser: true,

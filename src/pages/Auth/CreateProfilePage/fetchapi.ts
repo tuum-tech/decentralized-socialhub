@@ -6,7 +6,7 @@ export function requestCreateEmailUser(
   email: string
 ): Promise<BaseplateResp> {
   return request(
-    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/create/emailuser`,
+    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/credential/create`,
     {
       method: 'POST',
       headers: {
@@ -16,7 +16,9 @@ export function requestCreateEmailUser(
       },
       body: JSON.stringify({
         name,
-        email
+        email,
+        phone: '',
+        smsCode: false
       })
     }
   );

@@ -93,6 +93,7 @@ interface ISessionItem {
   code?: string;
   status?: string;
   pageTemplate?: string;
+  phonNumber?: string;
 }
 
 interface LoginCred {
@@ -302,10 +303,17 @@ interface ICreateUserResponse {
   };
 }
 
+interface IVerifyCodeResponse {
+  data: {
+    return_code: string;
+    name: string;
+    email: string;
+  };
+}
+
 interface IUpdateEmailResponse {
   data: {
-    newEmail: string;
-    code: string;
+    status: string;
   };
 }
 

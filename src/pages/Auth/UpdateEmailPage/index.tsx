@@ -27,17 +27,9 @@ import { Text16 } from 'src/elements/texts';
 
 import { UserService } from 'src/services/user.service';
 
-import { requestVerifyCode } from './fetchapi';
+import { requestEmailVerifyCode } from '../VerifyEmailPage/fetchapi';
 import style from './style.module.scss';
 import { DidService } from 'src/services/did.service.new';
-
-interface IVerifyCodeResponse {
-  data: {
-    return_code: string;
-    name: string;
-    email: string;
-  };
-}
 
 const UpdateEmailPage: React.FC<any> = ({ eProps, ...props }: any) => {
   const { session } = props;
@@ -47,7 +39,9 @@ const UpdateEmailPage: React.FC<any> = ({ eProps, ...props }: any) => {
   useEffect(() => {
     (async () => {
       if (session.did) {
-        let response = (await requestVerifyCode(code)) as IVerifyCodeResponse;
+        let response = (await requestEmailVerifyCode(
+          code
+        )) as IVerifyCodeResponse;
         if (response.data.return_code === 'CODE_CONFIRMED') {
           session.loginCred.email = window.localStorage.getItem(
             `updated_email_${session.did.replace('did:elastos:', '')}`

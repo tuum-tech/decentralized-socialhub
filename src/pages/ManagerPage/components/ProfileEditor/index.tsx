@@ -101,18 +101,20 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
             {!error && loaded ? (
               <BasicCard
                 sessionItem={userInfo}
-                updateFunc={async (_userInfo: ISessionItem) => {
-                  const newEmail = _userInfo.loginCred?.email!;
+                updateFunc={async (newUserInfo: ISessionItem) => {
+                  const newEmail = newUserInfo.loginCred?.email!;
                   const oldEmail = userInfo.loginCred?.email!;
                   if (newEmail !== oldEmail) {
                     let response = (await requestUpdateEmail(
                       userInfo.did,
-                      newEmail
+                      newEmail,
+                      newUserInfo.loginCred?.phone || ''
                     )) as IUpdateEmailResponse;
+
                     if (
                       response &&
                       response.data &&
-                      response.data.newEmail === newEmail
+                      response.data.status === 'success'
                     ) {
                       // Alert user
                       showNotify(
@@ -127,10 +129,10 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                         newEmail
                       );
                     }
-                    _userInfo.loginCred!.email = oldEmail;
+                    newUserInfo.loginCred!.email = oldEmail;
                   }
-                  await TuumTechScriptService.updateTuumUser(_userInfo);
-                  await updateSession({ session: _userInfo });
+                  await TuumTechScriptService.updateTuumUser(newUserInfo);
+                  await updateSession({ session: newUserInfo });
                 }}
               ></BasicCard>
             ) : (
