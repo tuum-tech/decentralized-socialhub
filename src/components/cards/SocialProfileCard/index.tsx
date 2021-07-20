@@ -8,7 +8,7 @@ import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
-import SocialProfilesCard from './SocialCard';
+import SocialCard from './SocialCard';
 
 interface Props extends InferMappedProps {
   didDocument: any;
@@ -87,14 +87,13 @@ const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
     document.verifiableCredential.length > 0
   ) {
     return (
-      <SocialProfilesCard
+      <SocialCard
         sessionItem={user}
         setSession={({ session }) => {
           if (!props.targetUser) {
             eProps.setSession({ session });
           }
         }}
-        showManageButton={false}
         diddocument={document}
         mode={props.mode}
       />

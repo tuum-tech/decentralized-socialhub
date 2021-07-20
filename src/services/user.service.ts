@@ -2,7 +2,9 @@ import { Guid } from 'guid-typescript';
 
 import { alertError, showNotify } from 'src/utils/notify';
 
+import { HiveService } from './hive.service';
 import { AssistService } from './assist.service';
+import { UserVaultScripts } from '../scripts/uservault.script';
 import { DidService, IDID, PublishRequestOperation } from './did.service';
 import { DidDocumentService } from './diddocument.service';
 import {
@@ -474,9 +476,24 @@ export class UserService {
     return null;
   }
 
-  public static async logout() {
+  public static logout() {
     window.localStorage.removeItem('isLoggedIn');
     window.localStorage.removeItem('persist:root');
-    window.location.href = '/create-profile';
+    window.location.href = '/';
+  }
+
+  public static async deleteUser(useSession: ISessionItem) {
+    let hiveInstance = await HiveService.getSessionInstance(useSession);
+    await UserVaultScripts.Delete(hiveInstance!);
+    window.localStorage.removeItem(
+      `user_${useSession.did.replace('did:elastos:', '')}`
+    );
+    window.localStorage.removeItem(
+      `temporary_${useSession.did.replace('did:elastos:', '')}`
+    );
+    window.localStorage.removeItem(
+      `userdiddocument_${useSession.did.replace('did:elastos:', '')}`
+    );
+    UserService.logout();
   }
 }

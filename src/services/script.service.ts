@@ -231,13 +231,21 @@ export class UserVaultScriptService {
     let response = await TuumTechScriptService.searchUserWithDIDs([
       newUser.did
     ]);
+    let items = [];
+    console.log('====>res', response);
     if (
       response.data &&
       response.data.get_user_by_did &&
       response.data.get_user_by_did.items &&
       response.data.get_user_by_did.items.length > 0
     ) {
-      const userInfo = response.data.get_user_by_did.items[0];
+      items = response.data.get_user_by_did.items[0];
+    } else if (response.length > 0) {
+      items = response;
+    }
+
+    if (items.length > 0) {
+      const userInfo = items[0];
       if (
         !userInfo.tutorialStep ||
         userInfo.tutorialStep !== 4 ||

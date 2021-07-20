@@ -36,7 +36,6 @@ import {
 
 interface Props {
   diddocument: any;
-  showManageButton: boolean;
   sessionItem: ISessionItem;
   setSession: (props: { session: ISessionItem }) => void;
   mode?: string;
@@ -44,7 +43,6 @@ interface Props {
 
 const SocialProfilesCard: React.FC<Props> = ({
   diddocument,
-  showManageButton,
   sessionItem,
   setSession,
   mode = 'view'
@@ -337,7 +335,7 @@ const SocialProfilesCard: React.FC<Props> = ({
         <IonCardHeader>
           <IonCardTitle className="card-title">
             Social Profiles
-            {showManageButton && (
+            {mode === 'edit' && (
               <span
                 className="card-link"
                 onClick={() => {
@@ -353,32 +351,32 @@ const SocialProfilesCard: React.FC<Props> = ({
           <IonGrid className="social-profile-grid">
             <IonRow>
               {containsVerifiedCredential('linkedin') && (
-                <IonCol size={showManageButton ? '6' : '12'}>
+                <IonCol size={mode === 'edit' ? '6' : '12'}>
                   {linkedInItem()}
                 </IonCol>
               )}
               {containsVerifiedCredential('twitter') && (
-                <IonCol size={showManageButton ? '6' : '12'}>
+                <IonCol size={mode === 'edit' ? '6' : '12'}>
                   {twitterItem()}
                 </IonCol>
               )}
               {containsVerifiedCredential('facebook') && (
-                <IonCol size={showManageButton ? '6' : '12'}>
+                <IonCol size={mode === 'edit' ? '6' : '12'}>
                   {facebookItem()}
                 </IonCol>
               )}
               {containsVerifiedCredential('google') && (
-                <IonCol size={showManageButton ? '6' : '12'}>
+                <IonCol size={mode === 'edit' ? '6' : '12'}>
                   {googleItem()}
                 </IonCol>
               )}
               {containsVerifiedCredential('github') && (
-                <IonCol size={showManageButton ? '6' : '12'}>
+                <IonCol size={mode === 'edit' ? '6' : '12'}>
                   {githubItem()}
                 </IonCol>
               )}
               {containsVerifiedCredential('discord') && (
-                <IonCol size={showManageButton ? '6' : '12'}>
+                <IonCol size={mode === 'edit' ? '6' : '12'}>
                   {discordItem()}
                 </IonCol>
               )}

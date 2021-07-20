@@ -9,12 +9,7 @@ export const getVerifiedCredential = (
   id: string,
   didDocument: any
 ): VerifiedCredential | undefined => {
-  if (
-    !didDocument ||
-    !didDocument['id'] ||
-    !didDocument['verifiableCredential']
-  )
-    return;
+  if (!didDocument || !didDocument['verifiableCredential']) return;
   let vcs: any[] = didDocument['verifiableCredential'].map((vc: any) => {
     if (`${vc['id']}`.endsWith(`#${id.toLowerCase()}`)) {
       let types: string[] = vc['type'];
@@ -25,6 +20,7 @@ export const getVerifiedCredential = (
     }
     return null;
   });
+  console.log('=====>vcs', vcs);
   vcs = vcs.filter(item => item);
   if (vcs && vcs.length > 0) return vcs[0];
   return;
