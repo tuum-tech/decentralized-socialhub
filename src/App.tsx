@@ -52,9 +52,7 @@ import {
   CreateProfileWithDidPage
 } from './pages/Auth';
 
-import TestPage from './pages/TestPage';
 import DefaultPage from './pages/404Page';
-import AccessCodePage from './pages/AlphaAccess/AccessCode';
 import ExplorePage from './pages/ExplorePage';
 import SettingsPage from './pages/SettingsPage/Loadable';
 import DashboardPage from './pages/DashboardPage/Loadable';
@@ -228,10 +226,8 @@ const App: React.FC = () => {
             <Route path="/update/email/:code" component={UpdateEmailPage} />
 
             {/* ====== Public URLs ==== */}
-            <Route exact path="/" render={() => <Redirect to="/Alpha" />} />
-            <Route path="/Alpha" component={AccessCodePage} exact={true} />
+            <Route path="/" component={CreateProfilePage} exact={true} />
             <Route path="/did/:did" component={PublicPage} exact={true} />
-            <Route path="/test" component={TestPage} exact={true} />
             <Route component={DefaultPage} />
           </IonRouterOutlet>
         </Switch>
