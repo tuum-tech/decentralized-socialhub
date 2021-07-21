@@ -1,5 +1,6 @@
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { AssistService } from './assist.service';
-import { DidService, PublishRequestOperation } from './did.service.new';
+import { DidService } from './did.service.new';
 import { EventsService, IEventCallback } from './events.service';
 export interface IDIDDocumentState {
   diddocument: any;
@@ -109,27 +110,32 @@ export class DidDocumentService {
   }
 
   static async publishUserDocument(
-    diddocument: any,
+    diddocument: DIDDocument,
     userSession: ISessionItem
   ): Promise<IDIDDocumentState | undefined> {
-    let didService = new DidService();
-    let userDid = await didService.loadDid(userSession.mnemonics);
-    let signedDocument = await didService.sealDIDDocument(userDid, diddocument);
-
-    if (signedDocument.getProof()) {
+   
+    //let userDid = await didService.loadDid(userSession.mnemonics);
+    //let signedDocument = await didService.sealDIDDocument(userDid, diddocument);
+    if (!diddocument.getProof()) {
       // alertError(null, 'The DID document was not signed');
       return;
     }
 
-    let requestPub = await didService.generatePublishRequest(
-      signedDocument,
-      userDid,
-      PublishRequestOperation.Update
-    );
+    let response: any = {};
+    let adapter: any = {
+      createIdTransaction: async (payload: any, memo: any) => {
+        let request = JSON.parse(payload);
+        let did = request.proof.verificationMethod;
+        did = did.substring(0, did.indexOf('#'));
+        response = await AssistService.publishDocument(did, request);
 
-    await AssistService.publishDocument(userDid.did, requestPub);
+        console.log(response);
+      }
+    };
+    diddocument.publish(process.env.REACT_APP_DID_STORE_PASSWORD as string, undefined, undefined, adapter);
+
     let documentState = {
-      diddocument: signedDocument,
+      diddocument: diddocument.toString(true),
       isChanged: false
     };
 

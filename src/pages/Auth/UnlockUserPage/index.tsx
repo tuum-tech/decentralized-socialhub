@@ -21,7 +21,7 @@ import wavinghand from 'src/assets/icon/wavinghand.png';
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 
 import { LocationState } from './types';
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 
 const UnlockUserPage: React.FC<RouteComponentProps<
   {},

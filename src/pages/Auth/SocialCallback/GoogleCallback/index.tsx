@@ -30,8 +30,7 @@ import { AccountType, UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
-import { DidService } from 'src/services/did.service';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
+import { DidService } from 'src/services/did.service.new';
 
 interface PageProps
   extends InferMappedProps,

@@ -9,7 +9,6 @@ import {
 } from '@ionic/react';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 import { DidcredsService } from 'src/services/didcreds.service';
-import { DidDocumentService } from 'src/services/diddocument.service';
 import { getVerifiedCredential } from 'src/utils/socialprofile';
 import { UserService } from 'src/services/user.service';
 
@@ -21,7 +20,7 @@ import googleIcon from '../../../assets/icon/Google.svg';
 import githubIcon from '../../../assets/icon/Github.svg';
 import discordIcon from '../../../assets/icon/Discord.svg';
 import shieldIcon from '../../../assets/icon/shield.svg';
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 
 import {
   ManagerModal,

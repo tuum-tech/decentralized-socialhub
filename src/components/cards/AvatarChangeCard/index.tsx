@@ -26,7 +26,7 @@ import {
   Perfil
 } from './upload';
 import styleWidget from '../WidgetCards.module.scss';
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 
 const Upload: React.FC<InferMappedProps> = ({
   eProps,

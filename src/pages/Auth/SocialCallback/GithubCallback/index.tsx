@@ -22,11 +22,10 @@ import { AccountType, UserService } from 'src/services/user.service';
 import PageLoading from 'src/components/layouts/PageLoading';
 
 import { requestGithubToken, getUsersWithRegisteredGithub } from './fetchapi';
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
 
 interface PageProps
   extends InferMappedProps,

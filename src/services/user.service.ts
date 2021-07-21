@@ -3,7 +3,7 @@ import { Guid } from 'guid-typescript';
 import { alertError, showNotify } from 'src/utils/notify';
 
 import { AssistService } from './assist.service';
-import { IDID, IDidService, PublishRequestOperation } from './did.service';
+import { IDID, IDidService } from './did.service';
 
 import { DidDocumentService } from './diddocument.service';
 import {
@@ -79,16 +79,7 @@ export class UserService {
       }
     };
 
-    signedDocument.publish('passw', undefined, undefined, adapter);
-
-    // let requestPub = await this.didService.generatePublishRequest(
-    //   signedDocument,
-    //   newDID,
-    //   PublishRequestOperation.Create
-    // );
-
-    // //"{\"header\":{\"specification\":\"elastos/did/1.0\",\"operation\":\"create\"},\"payload\":\"eyJpZCI6ImRpZDplbGFzdG9zOmlvR014NDF6WW5FYnk0M0FGNHhZV3B5cFJ4dnJMWWhMWVciLCJwdWJsaWNLZXkiOlt7ImlkIjoiZGlkOmVsYXN0b3M6aW9HTXg0MXpZbkVieTQzQUY0eFlXcHlwUnh2ckxZaExZVyNwcmltYXJ5IiwidHlwZSI6IkVDRFNBc2VjcDI1NnIxIiwiY29udHJvbGxlciI6ImRpZDplbGFzdG9zOmlvR014NDF6WW5FYnk0M0FGNHhZV3B5cFJ4dnJMWWhMWVciLCJwdWJsaWNLZXlCYXNlNTgiOiJwVVRTaHNWRHZxcUhwUDNqZ2JUUjR2YjlRbVE4d3ZWNnF3ZlU3emV4a201ZyJ9XSwiYXV0aGVudGljYXRpb24iOlsiZGlkOmVsYXN0b3M6aW9HTXg0MXpZbkVieTQzQUY0eFlXcHlwUnh2ckxZaExZVyNwcmltYXJ5Il0sInZlcmlmaWFibGVDcmVkZW50aWFsIjpbeyJpZCI6ImRpZDplbGFzdG9zOmlvR014NDF6WW5FYnk0M0FGNHhZV3B5cFJ4dnJMWWhMWVcjbmFtZSIsInR5cGUiOlsiIiwiU2VsZlByb2NsYWltZWRDcmVkZW50aWFsIl0sImlzc3VlciI6ImRpZDplbGFzdG9zOmlvR014NDF6WW5FYnk0M0FGNHhZV3B5cFJ4dnJMWWhMWVciLCJpc3N1YW5jZURhdGUiOiIyMDIxLTA3LTEzVDE5OjEyOjA4WiIsImV4cGlyYXRpb25EYXRlIjoiMjAyNi0wNy0xM1QxOToxMjowOFoiLCJjcmVkZW50aWFsU3ViamVjdCI6eyJpZCI6ImRpZDplbGFzdG9zOmlvR014NDF6WW5FYnk0M0FGNHhZV3B5cFJ4dnJMWWhMWVciLCJuYW1lIjoic2RjYXMifSwicHJvb2YiOnsidHlwZSI6IkVDRFNBc2VjcDI1NnIxIiwidmVyaWZpY2F0aW9uTWV0aG9kIjoiZGlkOmVsYXN0b3M6aW9HTXg0MXpZbkVieTQzQUY0eFlXcHlwUnh2ckxZaExZVyNwcmltYXJ5Iiwic2lnbmF0dXJlIjoiajZrdmo2V0YyTHRSSzdLZ3BkbkZMQjhKMDIxQkRPTjluenJiQkFjX0hPU256MDhoM1RMSVVidmczUGszTG51d01QSFlJcVVQeTNtLWZTUXdNc2d2LVEifX1dLCJleHBpcmVzIjoiMjAyNi0wNy0xM1QxOToxMjowOFoiLCJwcm9vZiI6eyJ0eXBlIjoiRUNEU0FzZWNwMjU2cjEiLCJjcmVhdGVkIjoiMjAyMS0wNy0xM1QxOToxMjoxMVoiLCJjcmVhdG9yIjoiZGlkOmVsYXN0b3M6aW9HTXg0MXpZbkVieTQzQUY0eFlXcHlwUnh2ckxZaExZVyNwcmltYXJ5Iiwic2lnbmF0dXJlVmFsdWUiOiJqMUJUWGFVVzRTVWgwQ1ZLYWhqT0tZZW1CenM2MThLdmFDckRtUGx0aGxSS1ZnNU5zNUZDdGtJLUZVT2VMcFlMV3h0SGxGZjlaYUx1MnpyUE1iZkVfZyJ9fQ\",\"proof\":{\"type\":\"ECDSAsecp256r1\",\"verificationMethod\":\"did:elastos:ioGMx41zYnEby43AF4xYWpypRxvrLYhLYW#primary\",\"signature\":\"bgtLSTuw-ikjDP5Ysm5V2LD650iEq2RC2mGeNSVKXTnWIYVk35ALiUi8yuxIqKK0AbEypOziO7JHz_smmxjFSA\"}}"
-    //await AssistService.publishDocument(newDID.did, requestPub);
+    signedDocument.publish(process.env.REACT_APP_DID_STORE_PASSWORD as string, undefined, undefined, adapter);
 
     window.localStorage.setItem(
       `temporary_${newDID.did.replace('did:elastos:', '')}`,
@@ -454,9 +445,11 @@ export class UserService {
     const userData = await this.SearchUserWithDID(sessionItem.did);
     if (userData && userData.code) {
       newSessionItem.code = userData.code;
-      if (userData.userToken) {
-        newSessionItem.userToken = userData.userToken;
-      }
+      
+      // comment that. It was overriding userToken
+      // if (userData.userToken) {
+      //   newSessionItem.userToken = userData.userToken;
+      // }
     }
     const res: any = await TuumTechScriptService.updateTuumUser(newSessionItem);
     this.lockUser(UserService.key(sessionItem.did), newSessionItem);

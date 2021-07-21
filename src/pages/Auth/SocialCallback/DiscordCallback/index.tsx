@@ -24,9 +24,7 @@ import { requestDiscordToken, getUsersWithRegisteredDiscord } from './fetchapi';
 import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
-import { DidService } from 'src/services/did.service';
-
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { DidService } from 'src/services/did.service.new';
 
 interface PageProps
   extends InferMappedProps,

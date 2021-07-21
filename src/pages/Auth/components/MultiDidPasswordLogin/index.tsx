@@ -24,7 +24,7 @@ import { UserService } from 'src/services/user.service';
 
 import FieldDivider from '../FieldDivider';
 import SelectUsers from './SelectUsers';
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 
 interface Props {
   changeMode: () => void;

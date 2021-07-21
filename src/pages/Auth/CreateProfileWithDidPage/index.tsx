@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, LocationState, SubState } from './types';
 import { makeSelectSession } from 'src/store/users/selectors';
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 
 interface PageProps
   extends InferMappedProps,

@@ -2,7 +2,7 @@ import { StaticContext, RouteComponentProps } from 'react-router';
 import { useHistory } from 'react-router-dom';
 
 import { UserService } from 'src/services/user.service';
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 import { alertError } from 'src/utils/notify';
 import {
   OnBoardLayout,

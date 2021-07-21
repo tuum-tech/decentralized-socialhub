@@ -3,7 +3,7 @@ import { UserVaultScripts } from 'src/scripts/uservault.script';
 
 import { UserService } from './user.service';
 import { HiveService } from './hive.service';
-import { DidService } from './did.service';
+import { DidService } from './did.service.new';
 import { alertError } from 'src/utils/notify';
 import { getItemsFromData } from 'src/utils/script';
 

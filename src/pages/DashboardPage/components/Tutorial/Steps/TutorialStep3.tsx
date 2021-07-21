@@ -16,7 +16,7 @@ import { setSession } from 'src/store/users/actions';
 import style from '../style.module.scss';
 import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 const VersionTag = styled.span`
   color: green;
@@ -27,6 +27,7 @@ interface ITutorialStepProp extends InferMappedProps {
   setLoading?: (status: boolean) => void;
   session: ISessionItem;
 }
+
 
 const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   eProps,
@@ -61,7 +62,6 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     setErrorMessage('');
     let endpoint = getEndpoint();
     let endpointValid = isEndpointValid(endpoint);
-
     if (!endpointValid || !props.setLoading) {
       setErrorMessage('Invalid hive address');
       return;
@@ -129,18 +129,24 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       //TODO: Uncomment when update document publish is fixed
       // if (selected !== "document")
       // {
-      //   let userDid = await DidService.loadDid(user.mnemonics);
-      //   let hivesvc = DidService.generateService(userDid, 'HiveVault', endpoint);
-      //   let documentState = await DidDocumentService.getUserDocument(user)
-      //   let userDocument = documentState.diddocument;
-      //   await DidService.addServiceToDIDDocument(userDocument, hivesvc);
-      //   await DidDocumentService.publishUserDocument(userDocument);
+      //   let userDid = await didService.loadDid(props.session.mnemonics);
+      //   //let hivesvc = didService.generateService(userDid, 'HiveVault', endpoint);
+      //   //let documentState : IDIDDocumentState = await DidDocumentService.getUserDocument(props.session);
+
+      //   let store = await DidService.getStore();
+      //   let userDocument = await store.loadDid(userDid.did);
+      //   let documentWithService = await didService.addServiceToDIDDocument(userDocument, userDid, 'HiveVault', endpoint);
+      //   debugger;
+      //   await DidDocumentService.publishUserDocument(userDocument, props.session);
       // }
       let userService = new UserService(new DidService());
       const updatedSession = await userService.updateSession(newSession);
       eProps.setSession({ session: updatedSession });
 
       let hiveInstance = await HiveService.getSessionInstance(newSession);
+      if (hiveInstance && hiveInstance.isConnected) {
+        await hiveInstance.Payment.CreateFreeVault();
+      }
       await UserVaultScripts.Execute(hiveInstance!);
       let activities = await ProfileService.getActivity(newSession);
       activities.push({

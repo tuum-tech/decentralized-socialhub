@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { UserService, AccountType } from 'src/services/user.service';
 
 import SetPassword from '../../components/SetPassword';
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 
 interface Props {
   afterPasswordSet: (res: ISessionItem) => void;

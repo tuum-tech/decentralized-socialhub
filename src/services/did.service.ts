@@ -1,3 +1,4 @@
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
 import { ElastosClient } from '@elastosfoundation/elastos-js-sdk';
 
 export interface IDID {
@@ -16,7 +17,7 @@ export interface IDidService {
   genereteNewDidDocument(did: IDID): Promise<any>;
   sealDIDDocument(did: IDID, diddocument: any): any;
   addVerfiableCredentialToDIDDocument(diddocument: any, vc: any): any;
-  addServiceToDIDDocument(diddocument: any, service: any): any;
+  addServiceToDIDDocument(diddocument: DIDDocument, did: IDID, type: string, endpoint: string) : Promise<DIDDocument>;
   generateSelfVerifiableCredential(
     did: IDID,
     subjectName: string,
@@ -30,11 +31,6 @@ export interface IDidService {
     issuer: string,
     nonce: string
   ): Promise<any>;
-  generatePublishRequest(
-    diddocument: any,
-    userDID: IDID,
-    operation: PublishRequestOperation
-  ): Promise<any>;
 }
 
 export enum PublishRequestOperation {
@@ -42,7 +38,7 @@ export enum PublishRequestOperation {
   Update = 'update'
 }
 
-export class DidService implements IDidService {
+export class DidService {
   async loadDid(mnemonic: string, password: string = ''): Promise<IDID> {
     let didLoaded = await ElastosClient.did.loadFromMnemonic(
       mnemonic,
