@@ -18,7 +18,8 @@ import TemplateManagerCard from '../TemplateManagerCard';
 import PublicFields from '../PublicFields';
 import style from './style.module.scss';
 import { DidDocumentService } from 'src/services/diddocument.service';
-import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
+// import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
+import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
 
 import { showNotify } from 'src/utils/notify';
@@ -188,10 +189,8 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                 )}
 
                 <SocialProfilesCard
-                  diddocument={didDocument}
-                  showManageButton={true}
-                  sessionItem={session}
-                  setSession={updateSession}
+                  didDocument={didDocument}
+                  targetUser={session}
                   mode="edit"
                 />
 

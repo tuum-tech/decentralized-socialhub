@@ -2,9 +2,11 @@ import { Guid } from 'guid-typescript';
 
 import { alertError, showNotify } from 'src/utils/notify';
 
+import { HiveService } from './hive.service';
 import { AssistService } from './assist.service';
 import { IDID, IDidService } from './did.service';
 
+import { UserVaultScripts } from '../scripts/uservault.script';
 import { DidDocumentService } from './diddocument.service';
 import {
   TuumTechScriptService,
@@ -79,7 +81,12 @@ export class UserService {
       }
     };
 
-    signedDocument.publish(process.env.REACT_APP_DID_STORE_PASSWORD as string, undefined, undefined, adapter);
+    signedDocument.publish(
+      process.env.REACT_APP_DID_STORE_PASSWORD as string,
+      undefined,
+      undefined,
+      adapter
+    );
 
     window.localStorage.setItem(
       `temporary_${newDID.did.replace('did:elastos:', '')}`,
@@ -445,7 +452,7 @@ export class UserService {
     const userData = await this.SearchUserWithDID(sessionItem.did);
     if (userData && userData.code) {
       newSessionItem.code = userData.code;
-      
+
       // comment that. It was overriding userToken
       // if (userData.userToken) {
       //   newSessionItem.userToken = userData.userToken;
@@ -477,9 +484,24 @@ export class UserService {
     return null;
   }
 
-  public static async logout() {
+  public static logout() {
     window.localStorage.removeItem('isLoggedIn');
     window.localStorage.removeItem('persist:root');
-    window.location.href = '/create-profile';
+    window.location.href = '/';
+  }
+
+  public static async deleteUser(useSession: ISessionItem) {
+    let hiveInstance = await HiveService.getSessionInstance(useSession);
+    await UserVaultScripts.Delete(hiveInstance!);
+    window.localStorage.removeItem(
+      `user_${useSession.did.replace('did:elastos:', '')}`
+    );
+    window.localStorage.removeItem(
+      `temporary_${useSession.did.replace('did:elastos:', '')}`
+    );
+    window.localStorage.removeItem(
+      `userdiddocument_${useSession.did.replace('did:elastos:', '')}`
+    );
+    UserService.logout();
   }
 }

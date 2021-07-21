@@ -1,4 +1,4 @@
-import { StaticContext, RouteComponentProps } from 'react-router';
+import { StaticContext, RouteComponentProps, Redirect } from 'react-router';
 import styled from 'styled-components';
 import React, { useState } from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
@@ -46,7 +46,7 @@ const CreatePasswordPage: React.FC<PageProps> = ({
   eProps,
   ...props
 }: PageProps) => {
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState(0);
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const [error, setError] = useState('');
@@ -93,9 +93,13 @@ const CreatePasswordPage: React.FC<PageProps> = ({
     }
   };
 
+  if (status === 2) {
+    return <Redirect to="/profile" />;
+  }
+
   return (
     <OnBoardLayout>
-      {loading && <LoadingIndicator loadingText="Encrypting now..." />}
+      {status === 1 && <LoadingIndicator loadingText="Encrypting now..." />}
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>
@@ -168,15 +172,16 @@ const CreatePasswordPage: React.FC<PageProps> = ({
                   tutorialStep: 1,
                   ...props.location.state
                 };
-                setLoading(true);
+                setStatus(1);
                 let userService = new UserService(new DidService());
                 const res = await userService.LockWithDIDAndPwd(user, password);
-
-                setLoading(false);
                 if (res && res.did !== '') {
                   eProps.setSession({ session: res });
                   window.localStorage.setItem('isLoggedIn', 'true');
                   window.location.href = '/profile';
+                  setStatus(2);
+                } else {
+                  setStatus(0);
                 }
               }
             }}

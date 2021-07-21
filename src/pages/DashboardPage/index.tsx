@@ -180,7 +180,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
           setWillExpire(true);
           setTimeout(() => {
             UserService.logout();
-            window.location.href = '/';
           }, ExporeTime);
         }
       }
@@ -299,7 +298,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
             setWillExpire(true);
             setTimeout(() => {
               UserService.logout();
-              window.location.href = '/';
             }, ExporeTime);
           }
           if (startTutorial) {

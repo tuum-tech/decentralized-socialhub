@@ -122,8 +122,8 @@ const SettingsNavbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           </IonItem>
           <IonItem
             className={style['item-link']}
-            onClick={async () => {
-              await UserService.logout();
+            onClick={() => {
+              UserService.logout();
             }}
           >
             <IonIcon
