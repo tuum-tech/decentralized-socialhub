@@ -251,14 +251,13 @@ export class UserService {
     const passhash = CryptoJS.SHA256(did + storePassword).toString(
       CryptoJS.enc.Hex
     );
-
     const isDIDPublished = await this.didService.isDIDPublished(did);
     let sessionItem: ISessionItem = {
       did,
       accountType,
       passhash,
       name,
-      userToken: credential,
+      userToken: '',
       isDIDPublished: isDIDPublished ? isDIDPublished : false,
       didPublishTime: 0,
       onBoardingCompleted: false,
@@ -453,10 +452,10 @@ export class UserService {
     if (userData && userData.code) {
       newSessionItem.code = userData.code;
 
-      // comment that. It was overriding userToken
-      // if (userData.userToken) {
-      //   newSessionItem.userToken = userData.userToken;
-      // }
+      // workaround the fact that session is not updated inside tutorial
+      if (userData.userToken) {
+        newSessionItem.userToken = userData.userToken;
+      }
     }
     const res: any = await TuumTechScriptService.updateTuumUser(newSessionItem);
     this.lockUser(UserService.key(sessionItem.did), newSessionItem);
