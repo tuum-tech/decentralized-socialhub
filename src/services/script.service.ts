@@ -251,8 +251,9 @@ export class UserVaultScriptService {
         !userInfo.tutorialStep ||
         userInfo.tutorialStep !== 4 ||
         !userInfo.onBoardingCompleted
-      )
-        return;
+      ) {
+        return userInfo;
+      }
 
       try {
         let userToken = await this.generateUserToken(

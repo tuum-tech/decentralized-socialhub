@@ -122,14 +122,17 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
   const updateUserToComplete = async () => {
     if (props.session && props.session.did !== '') {
-      let newSession = JSON.parse(JSON.stringify(props.session)); // it seems that I need to make a clone here because I couldn't set isDIDPublished directly -> Error: Cannot assign to read only property
-      newSession.isDIDPublished = true;
+      let session = {
+        ...props.session,
+        isDIDPublished: true,
+        onBoardingCompleted: true // WORKAROUND: when Onboarding window is closed before publishing, it sets onBoardingCompleted: true, but the session here dont get the updated session
+      };
 
       let userService = new UserService(new DidService());
       eProps.setSession({
-        session: await userService.updateSession(newSession)
+        session: await userService.updateSession(session)
       });
-      await DidDocumentService.reloadUserDocument(newSession);
+      await DidDocumentService.reloadUserDocument(session);
     }
   };
 

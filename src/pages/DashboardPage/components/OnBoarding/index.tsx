@@ -187,9 +187,9 @@ const OnBoarding: React.FC<Props> = ({
               </p>
             </div>
 
-            <IonButton className={style['close-btn']} onClick={close}>
+            {/* <IonButton className={style['close-btn']} onClick={close}>
               Close
-            </IonButton>
+            </IonButton> */}
           </div>
         )}
       {(stage > 3 || sessionItem.onBoardingCompleted) &&
