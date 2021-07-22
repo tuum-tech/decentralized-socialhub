@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-declare -a Images=("hive-node" "assist-restapi-node" "didcreds-validator-node")
+declare -a Images=("hive-node:v2.3.0" "assist-restapi-node:latest" "didcreds-validator-node:latest")
 declare -a Containers=("hive-node" "assist-restapi-node" "didcreds-validator-node" "restapi-mongo")
 
 function stop () {
@@ -23,7 +23,7 @@ function cleanup () {
     stop
     for image in ${Images[@]}
     do
-        docker image rm -f tuumtech/${image}:latest
+        docker image rm -f tuumtech/${image}
     done
     sudo rm -rf ${HOME}/.profile-data
 }
