@@ -29,6 +29,10 @@ import { DidDocumentService } from 'src/services/diddocument.service';
 import { AccountType, UserService } from 'src/services/user.service';
 
 import { requestTwitterToken, getUsersWithRegisteredTwitter } from './fetchapi';
+import {
+  DIDDocument,
+  VerifiableCredential
+} from '@elastosfoundation/did-js-sdk/';
 
 interface PageProps
   extends InferMappedProps,
@@ -86,9 +90,16 @@ const TwitterCallback: React.FC<PageProps> = ({
           );
 
           let state = await DidDocumentService.getUserDocument(props.session);
+
+          let didDocumentJson = JSON.parse(state.diddocument);
+          let store = await DidService.getStore();
+          let didDocument: DIDDocument = await store.loadDid(
+            didDocumentJson.id
+          );
+
           await didService.addVerfiableCredentialToDIDDocument(
-            state.diddocument,
-            vc
+            didDocument,
+            await VerifiableCredential.parseContent(vc)
           );
           DidDocumentService.updateUserDocument(state.diddocument as any);
 

@@ -34,6 +34,11 @@ import { DidService } from 'src/services/did.service.new';
 import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
+import { stat } from 'fs';
+import {
+  DIDDocument,
+  VerifiableCredential
+} from '@elastosfoundation/did-js-sdk/';
 
 interface PageProps
   extends InferMappedProps,
@@ -75,12 +80,11 @@ const LinkedinCallback: React.FC<PageProps> = ({
           t.data.request_token
         );
         if (!linkedinprofile || !linkedinprofile.data) return;
-        console.log('aui');
+
         const firstName = linkedinprofile.data.profile.localizedFirstName.toLowerCase();
         const lastName = linkedinprofile.data.profile.localizedLastName.toLowerCase();
 
         if (props.session && props.session.did !== '') {
-          console.log('entrou aqui');
           let vc = await DidcredsService.generateVerifiableCredential(
             props.session.did,
             CredentialType.Linkedin,
@@ -89,9 +93,19 @@ const LinkedinCallback: React.FC<PageProps> = ({
 
           let state = await DidDocumentService.getUserDocument(props.session);
 
-          await didService.addVerfiableCredentialToDIDDocument(
-            state.diddocument,
+          let didDocumentJson = JSON.parse(state.diddocument);
+          let store = await DidService.getStore();
+          let didDocument: DIDDocument = await store.loadDid(
+            didDocumentJson.id
+          );
+
+          let verifiableCredential: VerifiableCredential = await VerifiableCredential.parseContent(
             vc
+          );
+
+          await didService.addVerfiableCredentialToDIDDocument(
+            didDocument,
+            verifiableCredential
           );
           DidDocumentService.updateUserDocument(state.diddocument as any);
 

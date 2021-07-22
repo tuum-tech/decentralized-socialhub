@@ -12,7 +12,6 @@ import BadgeCard from 'src/components/cards/BadgeCard';
 import FollowCards from 'src/components/follow/FollowCards';
 
 import theme from 'src/data/theme';
-import { DidService } from 'src/services/did.service';
 
 import PublicProfileTabs from './PublicProfileTabs';
 import ProfileHeader from './ProfileHeader';
