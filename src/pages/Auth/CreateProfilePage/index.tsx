@@ -25,7 +25,6 @@ import { UserService } from 'src/services/user.service';
 import { validateEmail } from 'src/utils/validation';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 
-import { AlphaService } from 'src/services/alpha.service';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
@@ -71,15 +70,6 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   const [error, setError] = useState('');
   const [signedUsers, setSignedUsers] = useState<string[]>([]);
   const [mode, setMode] = useState(0); // 0: create new, 1: sign in using pre logged
-
-  useEffect(() => {
-    // UserService.clearPrevLocalData()
-    AlphaService.isLocalCodeValid().then(isLocalCodeValid => {
-      if (!isLocalCodeValid) {
-        window.location.href = '/Alpha';
-      }
-    });
-  }, []);
 
   useEffect(() => {
     (async () => {
