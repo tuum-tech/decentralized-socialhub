@@ -178,7 +178,6 @@ const CreatePasswordPage: React.FC<PageProps> = ({
                 if (res && res.did !== '') {
                   eProps.setSession({ session: res });
                   window.localStorage.setItem('isLoggedIn', 'true');
-                  window.location.href = '/profile';
                   setStatus(2);
                 } else {
                   setStatus(0);
