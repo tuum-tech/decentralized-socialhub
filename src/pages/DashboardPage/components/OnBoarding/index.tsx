@@ -33,9 +33,9 @@ const OnBoarding: React.FC<Props> = ({
   const next = () => {
     setStage(stage + 1);
   };
-  const close = () => {
-    completed(false);
-  };
+  // const close = () => {
+  //   completed(false);
+  // };
 
   return (
     <AlphaContent>

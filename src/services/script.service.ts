@@ -225,8 +225,8 @@ export class UserVaultScriptService {
     return userToken;
   }
 
-  public static async register(user: ISessionItem) {
-    if (!user) return;
+  public static async register(user: ISessionItem): Promise<ISessionItem> {
+    //if (!user) return;
 
     let newUser = user;
     let response = await TuumTechScriptService.searchUserWithDIDs([

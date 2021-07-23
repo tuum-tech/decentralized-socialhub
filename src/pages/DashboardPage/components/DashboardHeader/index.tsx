@@ -14,7 +14,6 @@ import PublishingLabel from '../PublishingLabel';
 import style from './style.module.scss';
 import shieldIcon from '../../../../assets/icon/shield.svg';
 import { DidDocumentService } from 'src/services/diddocument.service';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
 
 const ViewProfileButton = styled(IonButton)`
   display: flex;

@@ -35,7 +35,7 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
   });
 
   const [status, setStatus] = useState(0);
-  const [loading, setLoading] = useState(false);
+  //const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -83,8 +83,6 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
     <SetPassword
       loading={status === 1}
       next={async pwd => {
-        debugger;
-        setLoading(true);
         let userService = new UserService(new DidService());
         let sessionItem = await userService.CreateNewUser(
           userInfo.name,

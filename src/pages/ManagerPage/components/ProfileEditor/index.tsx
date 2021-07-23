@@ -20,7 +20,6 @@ import style from './style.module.scss';
 import { DidDocumentService } from 'src/services/diddocument.service';
 // import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
 
 import { showNotify } from 'src/utils/notify';
 

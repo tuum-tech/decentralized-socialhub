@@ -19,15 +19,22 @@ import TextInput from 'src/elements/inputs/TextInput';
 import { UserService } from 'src/services/user.service';
 import wavinghand from 'src/assets/icon/wavinghand.png';
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
-
-import { LocationState } from './types';
+import { InferMappedProps, LocationState } from './types';
 import { DidService } from 'src/services/did.service.new';
+import { createStructuredSelector } from 'reselect';
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import { connect } from 'react-redux';
+import { SubState } from 'src/store/users/types';
 
-const UnlockUserPage: React.FC<RouteComponentProps<
-  {},
-  StaticContext,
-  LocationState
->> = props => {
+interface PageProps
+  extends InferMappedProps,
+    RouteComponentProps<{}, StaticContext, LocationState> {}
+
+const UnlockUserPage: React.FC<PageProps> = ({
+  eProps,
+  ...props
+}: PageProps) => {
   const [status, setStatus] = useState(0);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -50,6 +57,7 @@ const UnlockUserPage: React.FC<RouteComponentProps<
     }
     // }
     if (res) {
+      eProps.setSession({ session: res });
       setStatus(1);
     }
     // else {
@@ -110,4 +118,17 @@ const UnlockUserPage: React.FC<RouteComponentProps<
   );
 };
 
-export default UnlockUserPage;
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(null, mapDispatchToProps)(UnlockUserPage);
