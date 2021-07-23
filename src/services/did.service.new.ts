@@ -13,11 +13,10 @@ import {
   Mnemonic,
   RootIdentity,
   VerifiableCredential,
-  VerifiablePresentation,
+  VerifiablePresentation
 } from '@elastosfoundation/did-js-sdk/';
 
 import { IDidService, IDID } from './did.service';
-
 
 export class DidService implements IDidService {
   static InitializeMainnet() {
@@ -28,23 +27,29 @@ export class DidService implements IDidService {
     return await DIDStore.open(process.env.REACT_APP_DID_STORE_PATH as string);
   };
 
-
-  getFromStore = async (mnemonic: string, password: string) : Promise<RootIdentity | null> => {
+  getFromStore = async (
+    mnemonic: string,
+    password: string
+  ): Promise<RootIdentity | null> => {
     let id = RootIdentity.getIdFromMnemonic(mnemonic, password);
 
-    if (id !== undefined){
+    if (id !== undefined) {
       let store = await DidService.getStore();
       return store.loadRootIdentity(id);
-    }   
+    }
 
-    return  null;
-  }
+    return null;
+  };
+
+  isMnemonicsValid = (mnemonic: string): boolean => {
+    return Mnemonic.checkIsValid(mnemonic);
+  };
 
   loadDid = async (mnemonic: string, password: string = ''): Promise<IDID> => {
     let identity = await this.getFromStore(mnemonic, password);
     let rootIdentity: RootIdentity;
     let store = await DidService.getStore();
-    if (identity === null){
+    if (identity === null) {
       rootIdentity = RootIdentity.createFromMnemonic(
         mnemonic,
         password,
@@ -52,18 +57,17 @@ export class DidService implements IDidService {
         process.env.REACT_APP_DID_STORE_PASSWORD as string,
         true
       );
-     
+
       store.storeRootIdentity(rootIdentity);
-     
     } else {
       rootIdentity = identity as RootIdentity;
     }
-    
+
     let did = rootIdentity.getDid(0);
     let didDocument = await store.loadDid(did);
 
     if (didDocument === null) store.storeDid(await did.resolve());
-    
+
     let didLoaded = await ElastosClient.did.loadFromMnemonic(
       mnemonic,
       password
@@ -76,7 +80,6 @@ export class DidService implements IDidService {
       did: did.toString()
     };
     return ret;
-
   };
 
   async generateNew(): Promise<IDID> {
@@ -97,7 +100,7 @@ export class DidService implements IDidService {
     //let key : HDKey = HDKey.newWithMnemonic(mnemonicsString, "");
     let didLoaded = await ElastosClient.did.loadFromMnemonic(
       mnemonicsString,
-      ""
+      ''
     );
 
     let ret: IDID = {
@@ -130,7 +133,9 @@ export class DidService implements IDidService {
   async genereteNewDidDocument(did: IDID): Promise<any> {
     let store = await DidService.getStore();
     let rootIdentity = await store.loadRootIdentity();
-    let didDocument = await rootIdentity.newDid(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+    let didDocument = await rootIdentity.newDid(
+      process.env.REACT_APP_DID_STORE_PASSWORD as string
+    );
     store.storeDid(didDocument);
     return didDocument;
   }
@@ -144,7 +149,9 @@ export class DidService implements IDidService {
       diddocument.proofs?.clear();
     }
     let didDocBuilder = await DIDDocumentBuilder.newFromDocument(diddocument);
-    signedDocument = await didDocBuilder.seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+    signedDocument = await didDocBuilder.seal(
+      process.env.REACT_APP_DID_STORE_PASSWORD as string
+    );
 
     return signedDocument as any;
   }
@@ -160,14 +167,24 @@ export class DidService implements IDidService {
     let didDocBuilder = await DIDDocumentBuilder.newFromDocument(diddocument);
     didDocBuilder.addCredential(vc);
 
-    diddocument = await didDocBuilder.seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+    diddocument = await didDocBuilder.seal(
+      process.env.REACT_APP_DID_STORE_PASSWORD as string
+    );
   }
 
-  async addServiceToDIDDocument(diddocument: DIDDocument, did: IDID, type: string, endpoint: string) : Promise<DIDDocument>{
+  async addServiceToDIDDocument(
+    diddocument: DIDDocument,
+    did: IDID,
+    type: string,
+    endpoint: string
+  ): Promise<DIDDocument> {
     let builder = DIDDocumentBuilder.newFromDocument(diddocument);
-    let didUrl: DIDURL = DIDURL.from(`#${type}`, DID.from(did.did as string) as DID) as DIDURL;
+    let didUrl: DIDURL = DIDURL.from(
+      `#${type}`,
+      DID.from(did.did as string) as DID
+    ) as DIDURL;
     builder.addService(didUrl, type, endpoint);
-    return await builder.seal("passw");
+    return await builder.seal('passw');
 
     //ElastosClient.didDocuments.addServiceToDIDDocument(diddocument, service);
   }
@@ -187,7 +204,10 @@ export class DidService implements IDidService {
       didDocument,
       DIDURL.from('#primary', DID.from(did.did) as DID) as DIDURL
     );
-    let vcBuilder = new VerifiableCredential.Builder(issuer, didDocument.getSubject());
+    let vcBuilder = new VerifiableCredential.Builder(
+      issuer,
+      didDocument.getSubject()
+    );
 
     let vc = await vcBuilder
       .expirationDate(date)
@@ -198,10 +218,14 @@ export class DidService implements IDidService {
     return vc;
   }
 
-  generateService(did: IDID, type: string, endpoint: string) : any {
-    let oldService = ElastosClient.didDocuments.createService(did.did, type, endpoint);
+  generateService(did: IDID, type: string, endpoint: string): any {
+    let oldService = ElastosClient.didDocuments.createService(
+      did.did,
+      type,
+      endpoint
+    );
     // let didUrl: DIDURL = DIDURL.from('#primary', DID.from(did.did as string) as DID) as DIDURL;
-    // return new DIDDocumentService(didUrl, type, endpoint); 
+    // return new DIDDocumentService(didUrl, type, endpoint);
     return oldService;
   }
 
@@ -211,7 +235,6 @@ export class DidService implements IDidService {
     issuer: string,
     nonce: string
   ): Promise<any> {
-   
     let appMnemonic = process.env.REACT_APP_APPLICATION_MNEMONICS as string;
     let appId = process.env.REACT_APP_APPLICATION_ID;
     let appDid = await this.loadDid(appMnemonic);
@@ -225,43 +248,53 @@ export class DidService implements IDidService {
     let userDocument: DIDDocument = await store.loadDid(userDid.did);
 
     let key = HDKey.newWithMnemonic(userMnemonic, password);
-    let id: DIDURL = DIDURL.from('#primary', DID.from(userDid.did as string) as DID) as DIDURL;
+    let id: DIDURL = DIDURL.from(
+      '#primary',
+      DID.from(userDid.did as string) as DID
+    ) as DIDURL;
     store.storePrivateKey(
       id as DIDURL,
       key.serialize(),
       process.env.REACT_APP_DID_STORE_PASSWORD as string
     );
-   
+
     let key2 = HDKey.newWithMnemonic(userMnemonic, password);
-    let id2: DIDURL = DIDURL.from('#primary', DID.from(appDid.did as string) as DID) as DIDURL;
+    let id2: DIDURL = DIDURL.from(
+      '#primary',
+      DID.from(appDid.did as string) as DID
+    ) as DIDURL;
     store.storePrivateKey(
       id2 as DIDURL,
       key2.serialize(),
       process.env.REACT_APP_DID_STORE_PASSWORD as string
     );
-   
-    let issuer2 = new Issuer(
-      userDocument,
-      id
+
+    let issuer2 = new Issuer(userDocument, id);
+    let vcBuilder = new VerifiableCredential.Builder(
+      issuer2,
+      DID.from(appDid.did) as DID
     );
-    let vcBuilder = new VerifiableCredential.Builder(issuer2, DID.from(appDid.did) as DID);
     let vc = await vcBuilder
-    .expirationDate(new Date('2026-01-01'))
-    .type('AppIdCredential')
-    .property("appDid", appDid.did)
-    .property("appInstanceDid", appDid.did)
-    .id(DIDURL.from('#app-id-credential', DID.from(appDid.did) as DID) as DIDURL)
-    .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+      .expirationDate(new Date('2026-01-01'))
+      .type('AppIdCredential')
+      .property('appDid', appDid.did)
+      .property('appInstanceDid', appDid.did)
+      .id(
+        DIDURL.from('#app-id-credential', DID.from(appDid.did) as DID) as DIDURL
+      )
+      .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
 
     store.storeCredential(vc);
-    
+
     let pb = await VerifiablePresentation.createFor(appDid.did, null, store);
-    
+
     let vp2 = await pb.realm(issuer);
     let vp3 = await vp2.nonce(nonce);
     let vp4 = await vp3.credentials(vc);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let vp5 = await vp4.seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+    let vp5 = await vp4.seal(
+      process.env.REACT_APP_DID_STORE_PASSWORD as string
+    );
 
     // ******************************************
     // TEMPORARY CODE: using old elastos js sdk while fixing new did-js-sdk issue
@@ -269,7 +302,7 @@ export class DidService implements IDidService {
       appDid,
       userDid,
       appId
-      );
+    );
 
     let vpold = ElastosClient.didDocuments.createVerifiablePresentation(
       appDid,
@@ -277,8 +310,8 @@ export class DidService implements IDidService {
       vcold,
       issuer,
       nonce
-      );
-      return vpold;
+    );
+    return vpold;
     // ******************************************
 
     // console.error("********************");
@@ -287,5 +320,4 @@ export class DidService implements IDidService {
     // console.error("NEW VP:"+JSON.parse(vp5.toString(true)));
     //return JSON.parse(vp5.toString(true));
   }
-
 }

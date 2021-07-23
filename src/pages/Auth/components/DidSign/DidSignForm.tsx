@@ -101,22 +101,12 @@ const DidForm: React.FC<Props> = ({
 
   const [passphrase, setPassphrase] = useState('');
 
-  const isMnemonicWordValid = (index: number): boolean => {
-    let word: string = mnemonic[index];
-    if (!word) {
-      return false;
-    }
-    return word.trim() !== '';
-  };
-
   const signin = async () => {
-    let validate = true;
-    for (let i = 0; i < 12; i++) {
-      validate = isMnemonicWordValid(i);
-    }
-    setError(validate === false);
-    if (validate) {
-      let didService = new DidService();
+    let didService = new DidService();
+    let isMnemonicValid = didService.isMnemonicsValid(mnemonic.join(' '));
+
+    setError(isMnemonicValid === false);
+    if (isMnemonicValid) {
       let userDid = await didService.loadDid(
         mnemonic.join(' '),
         passphrase || ''
