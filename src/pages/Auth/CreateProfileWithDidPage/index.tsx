@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StaticContext, RouteComponentProps } from 'react-router';
+import { StaticContext, RouteComponentProps, Redirect } from 'react-router';
 import { AccountType, UserService } from 'src/services/user.service';
 
 import PageLoading from 'src/components/layouts/PageLoading';
@@ -33,6 +33,8 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
     },
     avatar: ''
   });
+
+  const [status, setStatus] = useState(0);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -73,10 +75,15 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
     );
   }
 
+  if (status === 2) {
+    return <Redirect to="/profile" />;
+  }
+
   return (
     <SetPassword
-      loading={loading}
+      loading={status === 1}
       next={async pwd => {
+        debugger;
         setLoading(true);
         let userService = new UserService(new DidService());
         let sessionItem = await userService.CreateNewUser(
@@ -91,8 +98,7 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
           userInfo.avatar
         );
         eProps.setSession({ session: sessionItem });
-        window.location.href = '/profile';
-        setLoading(false);
+        setStatus(2);
       }}
     />
   );

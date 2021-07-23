@@ -233,7 +233,6 @@ export class UserVaultScriptService {
       newUser.did
     ]);
     let items = [];
-    console.log('====>res', response);
     if (
       response.data &&
       response.data.get_user_by_did &&
