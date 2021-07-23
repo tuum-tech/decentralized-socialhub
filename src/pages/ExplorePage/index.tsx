@@ -152,7 +152,7 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
             props.match.params.did
           );
 
-          setDidDocument(documentState.diddocument);
+          setDidDocument(JSON.parse(documentState.diddocument));
         }
       }
 

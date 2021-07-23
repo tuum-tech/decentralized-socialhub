@@ -125,7 +125,7 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
         let documentState = await DidDocumentService.getUserDocumentByDid(
           props.match.params.did
         );
-        setDidDocument(documentState.diddocument);
+        setDidDocument(JSON.parse(documentState.diddocument));
       }
       setLoading(false);
     })();

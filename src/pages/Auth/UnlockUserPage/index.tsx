@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StaticContext, RouteComponentProps } from 'react-router';
+import { StaticContext, RouteComponentProps, Redirect } from 'react-router';
 
 import {
   OnBoardLayout,
@@ -28,6 +28,7 @@ const UnlockUserPage: React.FC<RouteComponentProps<
   StaticContext,
   LocationState
 >> = props => {
+  const [status, setStatus] = useState(0);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [dids] = useState(
@@ -49,13 +50,16 @@ const UnlockUserPage: React.FC<RouteComponentProps<
     }
     // }
     if (res) {
-      window.location.href = '/profile';
-      return;
+      setStatus(1);
     }
     // else {
     //   setError('User Not found secured by this password');
     // }
   };
+
+  if (status === 1) {
+    return <Redirect to="/profile" />;
+  }
 
   return (
     <OnBoardLayout>
