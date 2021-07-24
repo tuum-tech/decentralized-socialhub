@@ -1,3 +1,4 @@
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
 import { ElastosClient } from '@elastosfoundation/elastos-js-sdk';
 
 export interface IDID {
@@ -7,13 +8,38 @@ export interface IDID {
   did: string;
 }
 
+export interface IDidService {
+  loadDid(mnemonic: string, password: string): Promise<IDID>;
+  generateNew(): Promise<IDID>;
+  getDidDocument(did: any, useCache: boolean): Promise<any>;
+  isDIDPublished(did: string): Promise<boolean>;
+  isSignedDIDDocumentValid(signedDocument: any, did: IDID): boolean;
+  genereteNewDidDocument(did: IDID): Promise<any>;
+  sealDIDDocument(did: IDID, diddocument: any): any;
+  addVerfiableCredentialToDIDDocument(diddocument: any, vc: any): any;
+  addServiceToDIDDocument(diddocument: DIDDocument, did: IDID, type: string, endpoint: string) : Promise<DIDDocument>;
+  generateSelfVerifiableCredential(
+    did: IDID,
+    subjectName: string,
+    subjectTypes: string[],
+    subjectValue: any
+  ): any;
+  generateService(did: IDID, type: string, endpoint: string): any;
+  generateVerifiablePresentationFromUserMnemonics(
+    userMnemonic: string,
+    password: string,
+    issuer: string,
+    nonce: string
+  ): Promise<any>;
+}
+
 export enum PublishRequestOperation {
   Create = 'create',
   Update = 'update'
 }
 
 export class DidService {
-  static async loadDid(mnemonic: string, password: string = ''): Promise<IDID> {
+  async loadDid(mnemonic: string, password: string = ''): Promise<IDID> {
     let didLoaded = await ElastosClient.did.loadFromMnemonic(
       mnemonic,
       password
@@ -21,16 +47,13 @@ export class DidService {
     return didLoaded;
   }
 
-  static async generateNew(): Promise<IDID> {
+  async generateNew(): Promise<IDID> {
     let newDid = await ElastosClient.did.generateNew();
 
     return newDid;
   }
 
-  static async getDidDocument(
-    did: any,
-    useCache: boolean = true
-  ): Promise<any> {
+  async getDidDocument(did: any, useCache: boolean = true): Promise<any> {
     let document = await ElastosClient.didDocuments.getMostRecentDIDDocument(
       did,
       { useCache: useCache }
@@ -38,21 +61,21 @@ export class DidService {
     return document;
   }
 
-  static async isDIDPublished(did: string): Promise<boolean> {
+  async isDIDPublished(did: string): Promise<boolean> {
     let document = await this.getDidDocument(did);
     return document && document !== undefined;
   }
 
-  static isSignedDIDDocumentValid(signedDocument: any, did: IDID): boolean {
+  isSignedDIDDocumentValid(signedDocument: any, did: IDID): boolean {
     return ElastosClient.didDocuments.isValid(signedDocument, did);
   }
 
-  static async genereteNewDidDocument(did: IDID): Promise<any> {
+  async genereteNewDidDocument(did: IDID): Promise<any> {
     let document = ElastosClient.didDocuments.newDIDDocument(did);
     return document;
   }
 
-  static sealDIDDocument(did: IDID, diddocument: any): any {
+  sealDIDDocument(did: IDID, diddocument: any): any {
     let isValid = false;
     let signedDocument: any;
     if (diddocument.hasOwnProperty('proof')) {
@@ -69,7 +92,7 @@ export class DidService {
     return signedDocument;
   }
 
-  static async addVerfiableCredentialToDIDDocument(diddocument: any, vc: any) {
+  async addVerfiableCredentialToDIDDocument(diddocument: any, vc: any) {
     if (diddocument.hasOwnProperty('proof')) {
       delete diddocument.proof;
     }
@@ -80,7 +103,7 @@ export class DidService {
     );
   }
 
-  static async addServiceToDIDDocument(diddocument: any, service: any) {
+  async addServiceToDIDDocument(diddocument: any, service: any) {
     if (diddocument.hasOwnProperty('proof')) {
       delete diddocument.proof;
     }
@@ -88,7 +111,7 @@ export class DidService {
     ElastosClient.didDocuments.addServiceToDIDDocument(diddocument, service);
   }
 
-  static generateSelfVerifiableCredential(
+  generateSelfVerifiableCredential(
     did: IDID,
     subjectName: string,
     subjectTypes: string[],
@@ -103,11 +126,11 @@ export class DidService {
     );
   }
 
-  static generateService(did: IDID, type: string, endpoint: string) {
+  generateService(did: IDID, type: string, endpoint: string) {
     return ElastosClient.didDocuments.createService(did.did, type, endpoint);
   }
 
-  static async generateVerifiablePresentationFromUserMnemonics(
+  async generateVerifiablePresentationFromUserMnemonics(
     userMnemonic: string,
     password: string,
     issuer: string,
@@ -133,7 +156,7 @@ export class DidService {
     );
   }
 
-  static async generatePublishRequest(
+  async generatePublishRequest(
     diddocument: any,
     userDID: IDID,
     operation: PublishRequestOperation

@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StaticContext, RouteComponentProps, useHistory } from 'react-router';
+import {
+  StaticContext,
+  RouteComponentProps,
+  useHistory,
+  Redirect
+} from 'react-router';
 import Modal from 'react-bootstrap/esm/Modal';
 import Button from 'react-bootstrap/esm/Button';
 import styled from 'styled-components';
@@ -52,6 +57,7 @@ interface PageProps
 
 const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
   const history = useHistory();
+  const [status, setStatus] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState<UserProps | null>(null);
   const [screen, setScreen] = useState('');
@@ -87,11 +93,16 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
         service={associatedInfo.service}
         afterPasswordSet={(session: ISessionItem) => {
           eProps.setSession({ session });
-          window.location.href = '/profile';
+          setStatus(1);
         }}
       />
     );
   }
+
+  if (status === 1) {
+    return <Redirect to="/profile" />;
+  }
+
   return (
     <OnBoardLayout>
       {loading && <LoadingIndicator loadingText="Creating new profie now..." />}

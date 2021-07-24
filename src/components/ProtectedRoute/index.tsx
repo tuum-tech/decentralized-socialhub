@@ -11,11 +11,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   component: Component,
   ...routeProps
 }) => {
-  const invitecode = window.localStorage.getItem('invitecode');
-  if (!invitecode && routeProps.path !== '/Alpha') {
-    return <Route {...routeProps} render={() => <Redirect to="/Alpha" />} />;
-  }
-
   const authRoutes = [
     '/twitter_callback',
     '/linkedin_callback',

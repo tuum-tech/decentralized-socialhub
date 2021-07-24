@@ -2,7 +2,7 @@ import { StaticContext, RouteComponentProps } from 'react-router';
 import { useHistory } from 'react-router-dom';
 
 import { UserService } from 'src/services/user.service';
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 import { alertError } from 'src/utils/notify';
 import {
   OnBoardLayout,
@@ -40,6 +40,8 @@ const SignDidPage: React.FC<RouteComponentProps<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  let didService = new DidService();
+
   return (
     <OnBoardLayout className={style['did-signin']}>
       {loading && <LoadingIndicator loadingText="Signing Now..." />}
@@ -48,10 +50,11 @@ const SignDidPage: React.FC<RouteComponentProps<
       <OnBoardLayoutRight>
         <DidSignForm
           showModal={() => setShowHelp(true)}
+          loadDidFunction={didService.loadDid}
           error={error}
           setError={setError}
           onSuccess={async (uDid: string, mnemonic: string) => {
-            const isDidPublished = await DidService.isDIDPublished(uDid);
+            const isDidPublished = await didService.isDIDPublished(uDid);
             if (!isDidPublished) {
               alertError(
                 null,
@@ -59,7 +62,8 @@ const SignDidPage: React.FC<RouteComponentProps<
               );
             } else {
               setLoading(true);
-              const res = await UserService.SearchUserWithDID(uDid);
+              let userService = new UserService(didService);
+              const res = await userService.SearchUserWithDID(uDid);
               window.localStorage.setItem(
                 `temporary_${uDid.replace('did:elastos:', '')}`,
                 JSON.stringify({
@@ -67,6 +71,7 @@ const SignDidPage: React.FC<RouteComponentProps<
                 })
               );
               setLoading(false);
+
               if (res) {
                 history.push({
                   pathname: '/set-password',

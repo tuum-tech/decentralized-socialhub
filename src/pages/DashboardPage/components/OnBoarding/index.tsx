@@ -33,9 +33,9 @@ const OnBoarding: React.FC<Props> = ({
   const next = () => {
     setStage(stage + 1);
   };
-  const close = () => {
-    completed(false);
-  };
+  // const close = () => {
+  //   completed(false);
+  // };
 
   return (
     <AlphaContent>
@@ -187,9 +187,9 @@ const OnBoarding: React.FC<Props> = ({
               </p>
             </div>
 
-            <IonButton className={style['close-btn']} onClick={close}>
+            {/* <IonButton className={style['close-btn']} onClick={close}>
               Close
-            </IonButton>
+            </IonButton> */}
           </div>
         )}
       {(stage > 3 || sessionItem.onBoardingCompleted) &&

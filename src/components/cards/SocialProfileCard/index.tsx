@@ -83,8 +83,8 @@ const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
   }, []);
 
   if (
-    document.verifiableCredential &&
-    document.verifiableCredential.length > 0
+    props.mode === 'edit' ||
+    (document.verifiableCredential && document.verifiableCredential.length > 0)
   ) {
     return (
       <SocialCard

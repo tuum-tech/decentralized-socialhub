@@ -31,6 +31,7 @@ import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { SubState } from 'src/store/users/types';
 import { InferMappedProps, LocationState } from './types';
+import { DidService } from 'src/services/did.service.new';
 
 const ErrorText = styled(Text16)`
   text-align: center;
@@ -172,11 +173,11 @@ const CreatePasswordPage: React.FC<PageProps> = ({
                   ...props.location.state
                 };
                 setStatus(1);
-                const res = await UserService.LockWithDIDAndPwd(user, password);
+                let userService = new UserService(new DidService());
+                const res = await userService.LockWithDIDAndPwd(user, password);
                 if (res && res.did !== '') {
                   eProps.setSession({ session: res });
                   window.localStorage.setItem('isLoggedIn', 'true');
-                  window.location.href = '/profile';
                   setStatus(2);
                 } else {
                   setStatus(0);

@@ -2,7 +2,7 @@
 import { IonButton, IonInput, IonRadio, IonRadioGroup } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 import { UserService } from 'src/services/user.service';
 import { HiveService } from 'src/services/hive.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
@@ -16,6 +16,7 @@ import { setSession } from 'src/store/users/actions';
 import style from '../style.module.scss';
 import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 const VersionTag = styled.span`
   color: green;
@@ -26,6 +27,7 @@ interface ITutorialStepProp extends InferMappedProps {
   setLoading?: (status: boolean) => void;
   session: ISessionItem;
 }
+
 
 const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   eProps,
@@ -60,7 +62,6 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     setErrorMessage('');
     let endpoint = getEndpoint();
     let endpointValid = isEndpointValid(endpoint);
-
     if (!endpointValid || !props.setLoading) {
       setErrorMessage('Invalid hive address');
       return;
@@ -128,18 +129,24 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       //TODO: Uncomment when update document publish is fixed
       // if (selected !== "document")
       // {
-      //   let userDid = await DidService.loadDid(user.mnemonics);
-      //   let hivesvc = DidService.generateService(userDid, 'HiveVault', endpoint);
-      //   let documentState = await DidDocumentService.getUserDocument(user)
-      //   let userDocument = documentState.diddocument;
-      //   await DidService.addServiceToDIDDocument(userDocument, hivesvc);
-      //   await DidDocumentService.publishUserDocument(userDocument);
-      // }
+      //   let userDid = await didService.loadDid(props.session.mnemonics);
+      //   //let hivesvc = didService.generateService(userDid, 'HiveVault', endpoint);
+      //   //let documentState : IDIDDocumentState = await DidDocumentService.getUserDocument(props.session);
 
-      const updatedSession = await UserService.updateSession(newSession);
+      //   let store = await DidService.getStore();
+      //   let userDocument = await store.loadDid(userDid.did);
+      //   let documentWithService = await didService.addServiceToDIDDocument(userDocument, userDid, 'HiveVault', endpoint);
+      //   debugger;
+      //   await DidDocumentService.publishUserDocument(userDocument, props.session);
+      // }
+      let userService = new UserService(new DidService());
+      const updatedSession = await userService.updateSession(newSession);
       eProps.setSession({ session: updatedSession });
 
       let hiveInstance = await HiveService.getSessionInstance(newSession);
+      if (hiveInstance && hiveInstance.isConnected) {
+        await hiveInstance.Payment.CreateFreeVault();
+      }
       await UserVaultScripts.Execute(hiveInstance!);
       let activities = await ProfileService.getActivity(newSession);
       activities.push({
@@ -181,7 +188,8 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
 
   const generateUserToken = async (mnemonics: string, address: string) => {
     let challenge = await HiveService.getHiveChallenge(address);
-    let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(
+    let didService = new DidService();
+    let presentation = await didService.generateVerifiablePresentationFromUserMnemonics(
       mnemonics,
       '',
       challenge.issuer,
@@ -192,6 +200,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     return userToken;
   };
 
+  let didService = new DidService();
   useEffect(() => {
     (async () => {
       setTuumHiveVersion(
@@ -199,12 +208,13 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
           process.env.REACT_APP_TUUM_TECH_HIVE as string
         )
       );
-      let doc = await DidService.getDidDocument(session.did);
-      if (doc.service && doc.service.length > 0) {
+      let doc = (await didService.getDidDocument(session.did)) as DIDDocument;
+
+      if (doc.getServices() && doc.getServices().length > 0) {
         setSelected('document');
-        setHiveDocument(doc.service[0].serviceEndpoint);
+        setHiveDocument(doc.getServices()[0].endpoint);
         setDetectedHiveVersion(
-          await HiveService.getHiveVersion(doc.service[0].serviceEndpoint)
+          await HiveService.getHiveVersion(doc.getServices()[0].endpoint)
         );
       }
     })();

@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { UserService, AccountType } from 'src/services/user.service';
 
 import SetPassword from '../../components/SetPassword';
+import { DidService } from 'src/services/did.service.new';
+import { Redirect } from 'react-router';
 
 interface Props {
   afterPasswordSet: (res: ISessionItem) => void;
@@ -28,13 +30,20 @@ const GenerateDid: React.FC<Props> = ({
   credential
 }: Props) => {
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState(0);
+
+  let userService = new UserService(new DidService());
+
+  if (status === 1) {
+    return <Redirect to="/profile" />;
+  }
 
   return (
     <SetPassword
       loading={loading}
       next={async pwd => {
         setLoading(true);
-        const sessionItem = await UserService.CreateNewUser(
+        const sessionItem = await userService.CreateNewUser(
           name,
           service,
           loginCred,
@@ -46,6 +55,7 @@ const GenerateDid: React.FC<Props> = ({
         );
         setLoading(false);
         afterPasswordSet(sessionItem);
+        setStatus(1);
       }}
     />
   );

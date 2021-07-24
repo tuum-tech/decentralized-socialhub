@@ -24,6 +24,7 @@ import ProfileComponent from 'src/components/profile/ProfileComponent';
 import PublicNavbar from 'src/components/profile/ProfileComponent/PublicNavbar';
 
 import { ContentRow, Container, ProfileComponentContainer } from './layouts';
+import { DidService } from 'src/services/did.service.new';
 
 interface MatchParams {
   did: string;
@@ -32,6 +33,7 @@ interface PageProps
   extends InferMappedProps,
     RouteComponentProps<MatchParams> {}
 
+let userService = new UserService(new DidService());
 const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   let did: string = props.match.params.did;
 
@@ -107,7 +109,7 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
       );
       setPublicFields(pFields);
 
-      let pUser = await UserService.SearchUserWithDID(props.match.params.did);
+      let pUser = await userService.SearchUserWithDID(props.match.params.did);
       if (pUser && pUser.did) {
         setPublicUser(pUser as any);
         let profile = await ProfileService.getFullProfile(
@@ -123,7 +125,7 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
         let documentState = await DidDocumentService.getUserDocumentByDid(
           props.match.params.did
         );
-        setDidDocument(documentState.diddocument);
+        setDidDocument(JSON.parse(documentState.diddocument));
       }
       setLoading(false);
     })();

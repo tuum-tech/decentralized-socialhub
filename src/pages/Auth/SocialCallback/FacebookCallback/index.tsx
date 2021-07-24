@@ -29,7 +29,7 @@ import {
   requestFacebookToken,
   getUsersWithRegisteredFacebook
 } from './fetchapi';
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
@@ -61,6 +61,7 @@ const FacebookCallback: React.FC<PageProps> = ({
   let state: string =
     new URLSearchParams(props.location.search).get('state') || '';
 
+  let didService = new DidService();
   useEffect(() => {
     (async () => {
       if (code !== '' && state !== '' && credentials.name === '') {
@@ -73,12 +74,13 @@ const FacebookCallback: React.FC<PageProps> = ({
             CredentialType.Facebook,
             facebookId.name
           );
+
           let state = await DidDocumentService.getUserDocument(props.session);
-          await DidService.addVerfiableCredentialToDIDDocument(
+          await didService.addVerfiableCredentialToDIDDocument(
             state.diddocument,
             vc
           );
-          DidDocumentService.updateUserDocument(state.diddocument);
+          DidDocumentService.updateUserDocument(state.diddocument as any);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.facebook! = facebookId.name;
@@ -96,9 +98,12 @@ const FacebookCallback: React.FC<PageProps> = ({
               newSession
             );
           }
+
+          let userService = new UserService(new DidService());
           eProps.setSession({
-            session: await UserService.updateSession(newSession)
+            session: await userService.updateSession(newSession)
           });
+
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredFacebook(facebookId.name);

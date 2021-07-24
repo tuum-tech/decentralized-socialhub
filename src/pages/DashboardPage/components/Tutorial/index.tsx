@@ -16,6 +16,7 @@ import TutorialStep4Component from './Steps/TutorialStep4';
 import style from './style.module.scss';
 
 import logo from '../../../../assets/logo/logo_white.svg';
+import { DidService } from 'src/services/did.service.new';
 
 interface TutorialComponentProps extends InferMappedProps {
   onClose: () => void;
@@ -55,8 +56,11 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({
       if (newSession.tutorialStep === 4) {
         newSession.badges!.account!.beginnerTutorial.archived = new Date().getTime();
       }
-      const updatedSession = await UserService.updateSession(newSession);
+
+      let userService = new UserService(new DidService());
+      const updatedSession = await userService.updateSession(newSession);
       eProps.setSession({ session: updatedSession });
+
       setStep(step + 1);
     } else {
       props.onClose();

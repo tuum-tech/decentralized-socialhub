@@ -9,7 +9,6 @@ import {
 } from '@ionic/react';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 import { DidcredsService } from 'src/services/didcreds.service';
-import { DidDocumentService } from 'src/services/diddocument.service';
 import { getVerifiedCredential } from 'src/utils/socialprofile';
 import { UserService } from 'src/services/user.service';
 
@@ -21,6 +20,7 @@ import googleIcon from '../../../assets/icon/Google.svg';
 import githubIcon from '../../../assets/icon/Github.svg';
 import discordIcon from '../../../assets/icon/Discord.svg';
 import shieldIcon from '../../../assets/icon/shield.svg';
+import { DidService } from 'src/services/did.service.new';
 
 import {
   ManagerModal,
@@ -151,21 +151,22 @@ const SocialProfilesCard: React.FC<Props> = ({
     return '';
   };
 
+  // TODO
   const removeVc = async (key: string) => {
-    let documentState = await DidDocumentService.getUserDocument(sessionItem!);
-    let keyIndex = -1;
-    documentState.diddocument['verifiableCredential'].forEach(
-      (element: any, index: number) => {
-        if (`${element['id']}`.endsWith(`#${key.toLowerCase()}`)) {
-          keyIndex = index;
-        }
-      }
-    );
+    // let documentState = await DidDocumentService.getUserDocument(sessionItem!);
+    // let keyIndex = -1;
+    // documentState.diddocument['verifiableCredential'].forEach(
+    //   (element: any, index: number) => {
+    //     if (`${element['id']}`.endsWith(`#${key.toLowerCase()}`)) {
+    //       keyIndex = index;
+    //     }
+    //   }
+    // );
 
-    if (keyIndex >= 0) {
-      documentState.diddocument['verifiableCredential'].splice(keyIndex, 1);
-      DidDocumentService.updateUserDocument(documentState.diddocument);
-    }
+    // if (keyIndex >= 0) {
+    //   documentState.diddocument['verifiableCredential'].splice(keyIndex, 1);
+    //   DidDocumentService.updateUserDocument(documentState.diddocument);
+    // }
 
     // ===== temporary codes start =====
     let newLoginCred = sessionItem!.loginCred;
@@ -190,8 +191,10 @@ const SocialProfilesCard: React.FC<Props> = ({
       ...sessionItem,
       loginCred: newLoginCred
     } as ISessionItem;
+
+    let userService = new UserService(new DidService());
     setSession({
-      session: await UserService.updateSession(newUserSession)
+      session: await userService.updateSession(newUserSession)
     });
     // ===== temporary codes end =====
   };
