@@ -208,6 +208,11 @@ const App: React.FC = () => {
               component={SupportForum}
               exact={true}
             />
+            <ProtectedRoute
+              path="/support-forum/:num"
+              component={SupportForum}
+              exact={true}
+            />
             <Route path="/terms-of-use" component={TermsPage} />
             <Route path="/verify/email/:code" component={VerifyEmailPage} />
             <Route path="/update/email/:code" component={UpdateEmailPage} />

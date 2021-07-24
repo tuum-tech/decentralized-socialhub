@@ -13,60 +13,57 @@ import { SubState } from 'src/store/users/types';
 import { fetchGithubIssues } from './fetchapi';
 
 import SignedPublicPageHeader from 'src/components/layouts/SignedPublicPageHeader';
-import Content from './components/Content';
-import { useEffect } from 'react';
+import List from './components/List';
+import Detail from './components/Detail';
+
+import { useState, useEffect } from 'react';
+
+const Github = require('github-api');
 
 const Page = styled(IonPage)`
   overflow-y: auto;
   justify-content: start;
 `;
 
-const Intro = styled.div`
-  background: #17171b;
-  padding: 65px 12.5%;
-
-  h1 {
-    font-style: normal;
-    font-weight: bold;
-    font-size: 36px;
-    line-height: 136.02%;
-    color: #ffffff;
-  }
-
-  p {
-    font-style: normal;
-    font-weight: 300;
-    font-size: 20px;
-    line-height: 35px;
-
-    letter-spacing: 0.02em;
-
-    color: #cbd5e0;
-  }
-`;
-
-const SupportForumPage: React.FC<InferMappedProps> = ({
-  eProps,
-  ...props
-}: InferMappedProps) => {
+const SupportForumPage: React.FC<any> = ({ eProps, ...props }: any) => {
+  const githubIssueNumber = props.match.params.num;
+  const [githubIssues, setGithubIssues] = useState<any[]>([]);
+  const [githubIssue, setGithubIssue] = useState<any>(null);
   useEffect(() => {
     (async () => {
       await fetchGithubIssues();
     })();
   }, []);
+  const loadData = async () => {
+    const gh = new Github({
+      token: process.env.REACT_APP_GITHUB_ACCESS_TOKEN
+    });
+    const issues = await gh.getIssues('tuum-tech', 'profile').listIssues();
+    setGithubIssues(issues.data);
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    if (githubIssueNumber && githubIssues.length) {
+      const githubIssue = githubIssues.find(
+        item => item.number == githubIssueNumber
+      );
+      setGithubIssue(githubIssue);
+    }
+  }, [githubIssueNumber, githubIssues]);
 
   return (
     <Page>
       <SignedPublicPageHeader userSession={props.session} />
-      <Intro>
-        <h1>Feedbacks, Issues & New Features</h1>
-        <p>
-          Get the lastest on what profile team is working on and catchup product
-          related bugs
-        </p>
-      </Intro>
 
-      <Content />
+      {githubIssue ? (
+        <Detail githubIssue={githubIssue} />
+      ) : (
+        <List githubIssues={githubIssues} />
+      )}
     </Page>
   );
 };
