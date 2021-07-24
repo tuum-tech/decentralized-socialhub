@@ -39,6 +39,7 @@ import DashboardContent from './components/DashboardContent';
 import OnBoarding from './components/OnBoarding';
 import DashboardHeader from './components/DashboardHeader';
 import { DidDocumentService } from 'src/services/diddocument.service';
+import { DidService } from 'src/services/did.service.new';
 
 const TutorialModal = styled(IonModal)`
   --border-radius: 16px;
@@ -121,12 +122,17 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
   const updateUserToComplete = async () => {
     if (props.session && props.session.did !== '') {
-      let newSession = props.session;
-      newSession.isDIDPublished = true;
+      let session = {
+        ...props.session,
+        isDIDPublished: true,
+        onBoardingCompleted: true // WORKAROUND: when Onboarding window is closed before publishing, it sets onBoardingCompleted: true, but the session here dont get the updated session
+      };
+
+      let userService = new UserService(new DidService());
       eProps.setSession({
-        session: await UserService.updateSession(newSession)
+        session: await userService.updateSession(session)
       });
-      await DidDocumentService.reloadUserDocument(newSession);
+      await DidDocumentService.reloadUserDocument(session);
     }
   };
 
@@ -177,7 +183,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
           setWillExpire(true);
           setTimeout(() => {
             UserService.logout();
-            window.location.href = '/';
           }, ExporeTime);
         }
       }
@@ -265,8 +270,10 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
               newSession
             );
+
+            let userService = new UserService(new DidService());
             eProps.setSession({
-              session: await UserService.updateSession(newSession)
+              session: await userService.updateSession(newSession)
             });
           }
         }
@@ -284,8 +291,9 @@ const ProfilePage: React.FC<InferMappedProps> = ({
             onBoardingCompleted: true
           };
 
+          let userService = new UserService(new DidService());
           eProps.setSession({
-            session: await UserService.updateSession(session)
+            session: await userService.updateSession(session)
           });
 
           setOnBoardVisible(false);
@@ -293,7 +301,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
             setWillExpire(true);
             setTimeout(() => {
               UserService.logout();
-              window.location.href = '/';
             }, ExporeTime);
           }
           if (startTutorial) {

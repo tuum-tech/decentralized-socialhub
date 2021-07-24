@@ -3,7 +3,7 @@ version: '3.3'
 services:
   hive-node:
     container_name: hive-node
-    image: tuumtech/hive-node:latest
+    image: tuumtech/hive-node:v2.3.0
     user: '${UID}:${GID}'
     entrypoint: /bin/sh -c "python manage.py -c dev runserver"
     volumes:
@@ -11,22 +11,6 @@ services:
       - ${PWD}/docker/hive.env:/src/.env
     ports:
       - 9001:5000
-    depends_on:
-      - restapi-mongo
-    networks:
-      - profile
-    tty: true
-
-  hive-node-did2:
-    container_name: hive-node-did2
-    image: tuumtech/hive-node:v2.2.0
-    user: '${UID}:${GID}'
-    entrypoint: /bin/sh -c "python manage.py -c dev runserver"
-    volumes:
-      - ${HOME}/.profile-data/hive-data:/src/data
-      - ${PWD}/docker/hive-did2.env:/src/.env
-    ports:
-      - 9003:5000
     depends_on:
       - restapi-mongo
     networks:

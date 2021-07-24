@@ -14,8 +14,7 @@ import {
 } from '@ionic/react';
 import styled from 'styled-components';
 
-import { HiveService } from 'src/services/hive.service';
-import { UserVaultScripts } from 'src/scripts/uservault.script';
+import { UserService } from 'src/services/user.service';
 import style from './style.module.scss';
 
 const ButtonDisabled = styled(IonButton)`
@@ -141,12 +140,8 @@ const SettingsAccount: React.FC<Props> = ({ useSession }) => {
                       disabled={loading !== ''}
                       onClick={async () => {
                         if (!useSession) return;
-
                         setLoading('Deleting Account');
-                        let hiveInstance = await HiveService.getSessionInstance(
-                          useSession
-                        );
-                        await UserVaultScripts.Delete(hiveInstance!);
+                        await UserService.deleteUser(useSession);
                         setLoading('');
                       }}
                     >

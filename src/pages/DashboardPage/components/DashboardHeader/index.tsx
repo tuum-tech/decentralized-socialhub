@@ -60,7 +60,7 @@ const DashboardHeader: React.FC<IProps> = ({
         const documentState = await DidDocumentService.getUserDocument(
           sessionItem
         );
-        setDidDocument(documentState.diddocument);
+        setDidDocument(documentState.diddocument as any);
       }
     })();
   }, [sessionItem, sessionItem.name]);

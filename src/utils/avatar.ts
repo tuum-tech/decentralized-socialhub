@@ -1,5 +1,6 @@
 import { UserService } from '../services/user.service';
 import defaultAvatar from '../assets/icon/dp.png';
+import { DidService } from 'src/services/did.service.new';
 
 export interface GetAvatarRes {
   didPublished: boolean;
@@ -9,7 +10,8 @@ export interface GetAvatarRes {
 export const getAvatarIfno = async (
   did: string
 ): Promise<GetAvatarRes | undefined> => {
-  const tuumUser = await UserService.SearchUserWithDID(did);
+  let userService: UserService = new UserService(new DidService());
+  const tuumUser = await userService.SearchUserWithDID(did);
   const didPublished = tuumUser && tuumUser.tutorialStep === 4;
 
   try {

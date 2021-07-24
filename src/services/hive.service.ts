@@ -3,9 +3,10 @@ import {
   OptionsBuilder,
   IOptions
 } from '@elastos/elastos-hive-js-sdk';
+//import { VerifiablePresentation } from '@elastosfoundation/did-js-sdk/typings';
 import jwt_decode from 'jwt-decode';
 
-import { DidService } from './did.service';
+import { DidService } from './did.service.new';
 import { DidDocumentService } from './diddocument.service';
 
 export interface IHiveChallenge {
@@ -30,9 +31,9 @@ export class HiveService {
         instance.hiveHost
       );
 
-      if (hiveClient && hiveClient.isConnected) {
-        await hiveClient.Payment.CreateFreeVault();
-      }
+      // if (hiveClient && hiveClient.isConnected) {
+      //   await hiveClient.Payment.CreateFreeVault();
+      // }
       return hiveClient;
     } catch (e) {
       return;
@@ -90,7 +91,8 @@ export class HiveService {
     //TODO: change to appInstance
     let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
     let appId = `${process.env.REACT_APP_APPLICATION_ID}`;
-    let appDid = await DidService.loadDid(mnemonic);
+    let didService = new DidService();
+    let appDid = await didService.loadDid(mnemonic);
     let builder = new OptionsBuilder();
     await builder.setAppInstance(appId, appDid);
     builder.setHiveHost(hiveHost);
@@ -109,16 +111,17 @@ export class HiveService {
   static async getHiveChallenge(hiveHost: string): Promise<IHiveChallenge> {
     let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
     let options = await this.getHiveOptions(hiveHost);
-    let appDid = await DidService.loadDid(mnemonic);
-    let appDocument = await DidService.getDidDocument(appDid.did, false);
+    let didService = new DidService();
+    let appDid = await didService.loadDid(mnemonic);
+    let appDocument = await didService.getDidDocument(appDid.did, false);
 
+    let docChallenge = JSON.parse(appDocument.toString(true));
     let response = await HiveClient.getApplicationChallenge(
       options,
-      this.copyDocument(appDocument)
+      docChallenge
     );
 
     let jwt = jwt_decode<any>(response.challenge);
-
     return {
       issuer: jwt.iss,
       nonce: jwt.nonce

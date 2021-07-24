@@ -5,7 +5,6 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { IonGrid, IonRow, IonCol } from '@ionic/react';
-import { ElastosClient } from '@elastosfoundation/elastos-js-sdk';
 
 import {
   OnBoardLayoutRightContent,
@@ -18,6 +17,7 @@ import { Text16, Text12 } from 'src/elements/texts';
 
 import helpSvg from '../../../../assets/icon/help.svg';
 import style from './DidSignForm.module.scss';
+import { DidService } from 'src/services/did.service.new';
 
 const ClearButton = styled.div`
   align-items: center;
@@ -54,6 +54,7 @@ const DidInputRow = styled(IonRow)`
 
 interface Props {
   setError: (error: boolean) => void;
+  loadDidFunction: (mnemonic: string, password: string) => any;
   error: boolean;
   onSuccess: (did: string, mnemonic: string) => void;
   showModal: () => void;
@@ -76,6 +77,7 @@ const PlaceHolderTexts = [
 
 const DidForm: React.FC<Props> = ({
   error = false,
+  loadDidFunction,
   setError,
   onSuccess,
   showModal
@@ -99,22 +101,13 @@ const DidForm: React.FC<Props> = ({
 
   const [passphrase, setPassphrase] = useState('');
 
-  const isMnemonicWordValid = (index: number): boolean => {
-    let word: string = mnemonic[index];
-    if (!word) {
-      return false;
-    }
-    return word.trim() !== '';
-  };
-
   const signin = async () => {
-    let validate = true;
-    for (let i = 0; i < 12; i++) {
-      validate = isMnemonicWordValid(i);
-    }
-    setError(validate === false);
-    if (validate) {
-      let userDid = await ElastosClient.did.loadFromMnemonic(
+    let didService = new DidService();
+    let isMnemonicValid = didService.isMnemonicsValid(mnemonic.join(' '));
+
+    setError(isMnemonicValid === false);
+    if (isMnemonicValid) {
+      let userDid = await didService.loadDid(
         mnemonic.join(' '),
         passphrase || ''
       );

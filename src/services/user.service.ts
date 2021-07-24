@@ -2,14 +2,18 @@ import { Guid } from 'guid-typescript';
 
 import { alertError, showNotify } from 'src/utils/notify';
 
+import { HiveService } from './hive.service';
 import { AssistService } from './assist.service';
-import { DidService, IDID, PublishRequestOperation } from './did.service';
+import { IDID, IDidService } from './did.service';
+
+import { UserVaultScripts } from '../scripts/uservault.script';
 import { DidDocumentService } from './diddocument.service';
 import {
   TuumTechScriptService,
   UserVaultScriptService
 } from './script.service';
 import { ProfileService } from './profile.service';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
 
 const CryptoJS = require('crypto-js');
 
@@ -31,53 +35,58 @@ export enum FollowType {
 }
 
 export class UserService {
+  constructor(private didService: IDidService) {}
+
   private static key(did: string): string {
     return `user_${did.replace('did:elastos:', '')}`;
   }
 
-  private static async generateTemporaryDID(
+  private async generateTemporaryDID(
     service: AccountType,
     credential: string,
     name: string
   ): Promise<IDID> {
-    let newDID = await DidService.generateNew();
-    let temporaryDocument = await DidService.genereteNewDidDocument(newDID);
+    let newDID = await this.didService.generateNew();
+    let temporaryDocument = await this.didService.genereteNewDidDocument(
+      newDID
+    );
 
-    let nameVc = DidService.generateSelfVerifiableCredential(
+    let nameVc = await this.didService.generateSelfVerifiableCredential(
       newDID,
       'name',
       [''],
       name
     );
-    await DidService.addVerfiableCredentialToDIDDocument(
+
+    await this.didService.addVerfiableCredentialToDIDDocument(
       temporaryDocument,
       nameVc
     );
 
-    // let nameVc = DidService.generateSelfVerifiableCredential(newDID, "name", ["BasicProfileCredential"], name)
-    // await DidService.addVerfiableCredentialToDIDDocument(temporaryDocument, nameVc)
-
-    // let credentialType: CredentialType = CredentialType.DID
-    // if (service == AccountType.Email) credentialType = CredentialType.Email
-    // if (service == AccountType.Facebook) credentialType = CredentialType.Facebook
-    // if (service == AccountType.Google) credentialType = CredentialType.Google
-    // if (service == AccountType.Linkedin) credentialType = CredentialType.Linkedin
-    // if (service == AccountType.Twitter) credentialType = CredentialType.Twitter
-
-    // if (credentialType !== CredentialType.DID){
-    //   let serviceVc = await DidcredsService.generateVerifiableCredential(newDID.did, credentialType, credential)
-    //   await DidService.addVerfiableCredentialToDIDDocument(temporaryDocument, serviceVc)
-    // }
-
-    let signedDocument = DidService.sealDIDDocument(newDID, temporaryDocument);
-    DidDocumentService.updateUserDocument(signedDocument);
-
-    let requestPub = await DidService.generatePublishRequest(
-      signedDocument,
+    let signedDocument: DIDDocument = await this.didService.sealDIDDocument(
       newDID,
-      PublishRequestOperation.Create
+      temporaryDocument
     );
-    await AssistService.publishDocument(newDID.did, requestPub);
+    DidDocumentService.updateUserDocument(signedDocument.toString(true));
+
+    let response: any = {};
+    let adapter: any = {
+      createIdTransaction: async (payload: any, memo: any) => {
+        let request = JSON.parse(payload);
+        let did = request.proof.verificationMethod;
+        did = did.substring(0, did.indexOf('#'));
+        response = await AssistService.publishDocument(did, request);
+
+        console.log(response);
+      }
+    };
+
+    signedDocument.publish(
+      process.env.REACT_APP_DID_STORE_PASSWORD as string,
+      undefined,
+      undefined,
+      adapter
+    );
 
     window.localStorage.setItem(
       `temporary_${newDID.did.replace('did:elastos:', '')}`,
@@ -89,7 +98,7 @@ export class UserService {
     return newDID;
   }
 
-  private static lockUser(key: string, instance: ISessionItem) {
+  private lockUser(key: string, instance: ISessionItem) {
     if (!instance.mnemonics || instance.mnemonics === '') {
       instance.mnemonics =
         window.localStorage.getItem(
@@ -114,7 +123,7 @@ export class UserService {
     window.localStorage.setItem(key, json);
   }
 
-  private static unlockUser(
+  private unlockUser(
     key: string,
     storePassword: string
   ): ISessionItem | undefined {
@@ -168,7 +177,7 @@ export class UserService {
     }
   }
 
-  public static async LockWithDIDAndPwd(
+  public async LockWithDIDAndPwd(
     sessionItem: ISessionItem,
     password: string = ''
   ) {
@@ -188,7 +197,7 @@ export class UserService {
       newSessionItem.tutorialStep = res.tutorialStep;
     }
 
-    this.lockUser(this.key(newSessionItem.did), newSessionItem);
+    this.lockUser(UserService.key(newSessionItem.did), newSessionItem);
 
     if (newSessionItem && newSessionItem.did !== '') {
       return await UserVaultScriptService.register(newSessionItem);
@@ -196,13 +205,13 @@ export class UserService {
     return newSessionItem;
   }
 
-  public static async SearchUserWithDID(did: string) {
+  public async SearchUserWithDID(did: string) {
     const users = await TuumTechScriptService.searchUserWithDIDs([did]);
     if (users.length > 0) {
       const userData = users[0];
       let isDIDPublished = false;
       try {
-        isDIDPublished = await DidService.isDIDPublished(userData.did);
+        isDIDPublished = await this.didService.isDIDPublished(userData.did);
       } catch (e) {
         isDIDPublished = false;
       }
@@ -217,7 +226,7 @@ export class UserService {
     return;
   }
 
-  public static async CreateNewUser(
+  public async CreateNewUser(
     name: string,
     accountType: AccountType,
     loginCred: LoginCred,
@@ -230,7 +239,6 @@ export class UserService {
   ) {
     let did = newDidStr;
     let mnemonics = newMnemonicStr;
-
     if (!did || did === '') {
       const newDid = await this.generateTemporaryDID(
         accountType,
@@ -243,14 +251,13 @@ export class UserService {
     const passhash = CryptoJS.SHA256(did + storePassword).toString(
       CryptoJS.enc.Hex
     );
-
-    const isDIDPublished = await DidService.isDIDPublished(did);
+    const isDIDPublished = await this.didService.isDIDPublished(did);
     let sessionItem: ISessionItem = {
       did,
       accountType,
       passhash,
       name,
-      userToken: credential,
+      userToken: '',
       isDIDPublished: isDIDPublished ? isDIDPublished : false,
       didPublishTime: 0,
       onBoardingCompleted: false,
@@ -429,27 +436,29 @@ export class UserService {
         sessionItem
       );
     });
-    this.lockUser(this.key(did), sessionItem);
+    this.lockUser(UserService.key(did), sessionItem);
 
     window.localStorage.setItem('isLoggedIn', 'true');
 
     return sessionItem;
   }
 
-  public static async updateSession(
+  public async updateSession(
     sessionItem: ISessionItem,
     notifyUser: boolean = false
   ): Promise<ISessionItem> {
     let newSessionItem = sessionItem;
-    const userData = await UserService.SearchUserWithDID(sessionItem.did);
+    const userData = await this.SearchUserWithDID(sessionItem.did);
     if (userData && userData.code) {
       newSessionItem.code = userData.code;
+
+      // workaround the fact that session is not updated inside tutorial
       if (userData.userToken) {
         newSessionItem.userToken = userData.userToken;
       }
     }
     const res: any = await TuumTechScriptService.updateTuumUser(newSessionItem);
-    this.lockUser(this.key(sessionItem.did), newSessionItem);
+    this.lockUser(UserService.key(sessionItem.did), newSessionItem);
 
     if (notifyUser && res.meta.code === 200 && res.data._status === 'OK') {
       showNotify('User info is successfuly saved', 'success');
@@ -457,8 +466,8 @@ export class UserService {
     return newSessionItem;
   }
 
-  public static async UnLockWithDIDAndPwd(did: string, storePassword: string) {
-    let instance = this.unlockUser(this.key(did), storePassword);
+  public async UnLockWithDIDAndPwd(did: string, storePassword: string) {
+    let instance = this.unlockUser(UserService.key(did), storePassword);
     const res = await this.SearchUserWithDID(did);
 
     if (!res) {
@@ -466,7 +475,7 @@ export class UserService {
     } else if (instance) {
       instance.onBoardingCompleted = res.onBoardingCompleted;
       instance.tutorialStep = res.tutorialStep;
-      this.lockUser(this.key(instance.did), instance);
+      this.lockUser(UserService.key(instance.did), instance);
 
       window.localStorage.setItem('isLoggedIn', 'true');
       return await UserVaultScriptService.register(instance);
@@ -474,9 +483,24 @@ export class UserService {
     return null;
   }
 
-  public static async logout() {
+  public static logout() {
     window.localStorage.removeItem('isLoggedIn');
     window.localStorage.removeItem('persist:root');
-    window.location.href = '/create-profile';
+    window.location.href = '/';
+  }
+
+  public static async deleteUser(useSession: ISessionItem) {
+    let hiveInstance = await HiveService.getSessionInstance(useSession);
+    await UserVaultScripts.Delete(hiveInstance!);
+    window.localStorage.removeItem(
+      `user_${useSession.did.replace('did:elastos:', '')}`
+    );
+    window.localStorage.removeItem(
+      `temporary_${useSession.did.replace('did:elastos:', '')}`
+    );
+    window.localStorage.removeItem(
+      `userdiddocument_${useSession.did.replace('did:elastos:', '')}`
+    );
+    UserService.logout();
   }
 }

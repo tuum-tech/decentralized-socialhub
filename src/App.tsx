@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { IonApp, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import * as Sentry from '@sentry/react';
@@ -52,9 +52,7 @@ import {
   CreateProfileWithDidPage
 } from './pages/Auth';
 
-import TestPage from './pages/TestPage';
 import DefaultPage from './pages/404Page';
-import AccessCodePage from './pages/AlphaAccess/AccessCode';
 import ExplorePage from './pages/ExplorePage';
 import SettingsPage from './pages/SettingsPage/Loadable';
 import DashboardPage from './pages/DashboardPage/Loadable';
@@ -70,6 +68,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
+import { DidService } from './services/did.service.new';
 
 const StyledToastContainer = styled(ToastContainer)`
   & .Toastify__toast-body {
@@ -77,6 +76,8 @@ const StyledToastContainer = styled(ToastContainer)`
   }
 `;
 const App: React.FC = () => {
+  // TODO: find a good place for this static initialization
+  DidService.InitializeMainnet();
   return (
     <IonApp>
       <StyledToastContainer
@@ -153,51 +154,63 @@ const App: React.FC = () => {
             <Route path="/facebook_callback" component={FacebookCallback} />
             <Route path="/github_callback" component={GithubCallback} />
             <Route path="/discord_callback" component={DiscordCallback} />
+
+            {/* ok */}
             <ProtectedRoute
               path="/set-password"
               component={CreatePasswordPage}
               exact={true}
             />
+            {/* ok */}
             <ProtectedRoute
               path="/unlock-user"
               component={UnlockUserPage}
               exact={true}
             />
+            {/* to test */}
             <ProtectedRoute
               path="/generate-did"
               component={GenerateDidPage}
               exact={true}
             />
+            {/* to test */}
             <ProtectedRoute
               path="/sign-did"
               component={SignDidPage}
               exact={true}
             />
+
+            {/* ok */}
             <ProtectedRoute
               path="/sign-qr"
               component={SignQRPage}
               exact={true}
             />
+            {/* ok */}
             <ProtectedRoute
               path="/associated-profile"
               component={AssociatedProfilePage}
               exact={true}
             />
+            {/* to ckeck */}
             <ProtectedRoute
               path="/create-why"
               component={CreateWhyPage}
               exact={true}
             />
+            {/* to test */}
             <ProtectedRoute
               path="/create-profile"
               component={CreateProfilePage}
               exact={true}
             />
+            {/* to test */}
             <ProtectedRoute
               path="/create-profile-with-did"
               component={CreateProfileWithDidPage}
               exact={true}
             />
+
             <ProtectedRoute
               path="/forgot-password"
               component={ForgotPasswordPage}
@@ -218,10 +231,8 @@ const App: React.FC = () => {
             <Route path="/update/email/:code" component={UpdateEmailPage} />
 
             {/* ====== Public URLs ==== */}
-            <Route exact path="/" render={() => <Redirect to="/Alpha" />} />
-            <Route path="/Alpha" component={AccessCodePage} exact={true} />
+            <Route path="/" component={CreateProfilePage} exact={true} />
             <Route path="/did/:did" component={PublicPage} exact={true} />
-            <Route path="/test" component={TestPage} exact={true} />
             <Route component={DefaultPage} />
           </IonRouterOutlet>
         </Switch>

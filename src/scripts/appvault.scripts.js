@@ -486,57 +486,6 @@ let run = async () => {
     }
   });
 
-  // ===== universities section start =====
-  //store and retrieve universities data from tuum-tech vault
-  await client.Database.deleteCollection('universities');
-  await client.Database.createCollection('universities');
-
-  fs.readFile('./src/data/world_universities_and_domains.json', (err, data) => {
-    if (err) throw err;
-    let universityList = JSON.parse(data);
-    console.log(universityList[0]);
-    client.Database.insertMany('universities', universityList);
-  });
-
-  await client.Scripting.SetScript({
-    name: 'get_all_universities',
-    allowAnonymousUser: true,
-    allowAnonymousApp: true,
-    executable: {
-      type: 'find',
-      name: 'get_universities',
-      output: true,
-      body: {
-        collection: 'universities',
-        options: {
-          limit: '$params.limit',
-          skip: '$params.skip'
-        }
-      }
-    }
-  });
-
-  await client.Scripting.SetScript({
-    name: 'get_universities_by_name',
-    allowAnonymousUser: true,
-    allowAnonymousApp: true,
-    executable: {
-      type: 'find',
-      name: 'get_universities',
-      output: true,
-      body: {
-        collection: 'universities',
-        filter: {
-          name: { $regex: '$params.name', $options: 'i' }
-        },
-        options: {
-          limit: '$params.limit',
-          skip: '$params.skip'
-        }
-      }
-    }
-  });
-
   console.log('All scripts OK');
 };
 

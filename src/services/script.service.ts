@@ -3,7 +3,7 @@ import { UserVaultScripts } from 'src/scripts/uservault.script';
 
 import { UserService } from './user.service';
 import { HiveService } from './hive.service';
-import { DidService } from './did.service';
+import { DidService } from './did.service.new';
 import { alertError } from 'src/utils/notify';
 import { getItemsFromData } from 'src/utils/script';
 
@@ -214,7 +214,8 @@ export class TuumTechScriptService {
 export class UserVaultScriptService {
   private static async generateUserToken(mnemonics: string, address: string) {
     let challenge = await HiveService.getHiveChallenge(address);
-    let presentation = await DidService.generateVerifiablePresentationFromUserMnemonics(
+    let didService = new DidService();
+    let presentation = await didService.generateVerifiablePresentationFromUserMnemonics(
       mnemonics,
       '',
       challenge.issuer,
@@ -224,26 +225,34 @@ export class UserVaultScriptService {
     return userToken;
   }
 
-  public static async register(user: ISessionItem) {
-    if (!user) return;
+  public static async register(user: ISessionItem): Promise<ISessionItem> {
+    //if (!user) return;
 
     let newUser = user;
     let response = await TuumTechScriptService.searchUserWithDIDs([
       newUser.did
     ]);
+    let items = [];
     if (
       response.data &&
       response.data.get_user_by_did &&
       response.data.get_user_by_did.items &&
       response.data.get_user_by_did.items.length > 0
     ) {
-      const userInfo = response.data.get_user_by_did.items[0];
+      items = response.data.get_user_by_did.items[0];
+    } else if (response.length > 0) {
+      items = response;
+    }
+
+    if (items.length > 0) {
+      const userInfo = items[0];
       if (
         !userInfo.tutorialStep ||
         userInfo.tutorialStep !== 4 ||
         !userInfo.onBoardingCompleted
-      )
-        return;
+      ) {
+        return userInfo;
+      }
 
       try {
         let userToken = await this.generateUserToken(
@@ -251,8 +260,10 @@ export class UserVaultScriptService {
           newUser.hiveHost
         );
         newUser.userToken = userToken;
-        await UserService.updateSession(newUser);
+        let userService = new UserService(new DidService());
+        await userService.updateSession(newUser);
         let hiveInstance = await HiveService.getSessionInstance(newUser);
+
         await UserVaultScripts.Execute(hiveInstance!);
       } catch (error) {
         console.log('Could not register: ' + error);

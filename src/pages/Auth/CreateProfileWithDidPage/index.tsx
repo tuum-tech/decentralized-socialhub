@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StaticContext, RouteComponentProps } from 'react-router';
+import { StaticContext, RouteComponentProps, Redirect } from 'react-router';
 import { AccountType, UserService } from 'src/services/user.service';
 
 import PageLoading from 'src/components/layouts/PageLoading';
@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, LocationState, SubState } from './types';
 import { makeSelectSession } from 'src/store/users/selectors';
+import { DidService } from 'src/services/did.service.new';
 
 interface PageProps
   extends InferMappedProps,
@@ -32,7 +33,9 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
     },
     avatar: ''
   });
-  const [loading, setLoading] = useState(false);
+
+  const [status, setStatus] = useState(0);
+  //const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -72,12 +75,16 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
     );
   }
 
+  if (status === 2) {
+    return <Redirect to="/profile" />;
+  }
+
   return (
     <SetPassword
-      loading={loading}
+      loading={status === 1}
       next={async pwd => {
-        setLoading(true);
-        const sessionItem = await UserService.CreateNewUser(
+        let userService = new UserService(new DidService());
+        let sessionItem = await userService.CreateNewUser(
           userInfo.name,
           AccountType.DID,
           userInfo.loginCred,
@@ -89,8 +96,7 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
           userInfo.avatar
         );
         eProps.setSession({ session: sessionItem });
-        window.location.href = '/profile';
-        setLoading(false);
+        setStatus(2);
       }}
     />
   );

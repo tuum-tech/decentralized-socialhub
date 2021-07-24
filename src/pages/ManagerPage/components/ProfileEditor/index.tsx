@@ -18,7 +18,8 @@ import TemplateManagerCard from '../TemplateManagerCard';
 import PublicFields from '../PublicFields';
 import style from './style.module.scss';
 import { DidDocumentService } from 'src/services/diddocument.service';
-import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
+// import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
+import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 
 import { showNotify } from 'src/utils/notify';
 
@@ -58,7 +59,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
     const timer = setTimeout(async () => {
       // refresh DID document
       let documentState = await DidDocumentService.getUserDocument(session);
-      setDidDocument(documentState.diddocument);
+      setDidDocument(documentState.diddocument as any);
 
       if (JSON.stringify(session) === JSON.stringify(userInfo)) return;
 
@@ -187,10 +188,8 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                 )}
 
                 <SocialProfilesCard
-                  diddocument={didDocument}
-                  showManageButton={true}
-                  sessionItem={session}
-                  setSession={updateSession}
+                  didDocument={didDocument}
+                  targetUser={session}
                   mode="edit"
                 />
 

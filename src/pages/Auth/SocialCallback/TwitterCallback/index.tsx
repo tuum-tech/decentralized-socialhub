@@ -22,13 +22,17 @@ import {
 } from './types';
 
 import PageLoading from 'src/components/layouts/PageLoading';
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { AccountType, UserService } from 'src/services/user.service';
 
 import { requestTwitterToken, getUsersWithRegisteredTwitter } from './fetchapi';
+import {
+  DIDDocument,
+  VerifiableCredential
+} from '@elastosfoundation/did-js-sdk/';
 
 interface PageProps
   extends InferMappedProps,
@@ -66,6 +70,7 @@ const TwitterCallback: React.FC<PageProps> = ({
   let oauth_verifier: string =
     new URLSearchParams(props.location.search).get('oauth_verifier') || '';
 
+  let didService = new DidService();
   useEffect(() => {
     (async () => {
       if (
@@ -85,11 +90,18 @@ const TwitterCallback: React.FC<PageProps> = ({
           );
 
           let state = await DidDocumentService.getUserDocument(props.session);
-          await DidService.addVerfiableCredentialToDIDDocument(
-            state.diddocument,
-            vc
+
+          let didDocumentJson = JSON.parse(state.diddocument);
+          let store = await DidService.getStore();
+          let didDocument: DIDDocument = await store.loadDid(
+            didDocumentJson.id
           );
-          DidDocumentService.updateUserDocument(state.diddocument);
+
+          await didService.addVerfiableCredentialToDIDDocument(
+            didDocument,
+            await VerifiableCredential.parseContent(vc)
+          );
+          DidDocumentService.updateUserDocument(state.diddocument as any);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.twitter! = items[1].toString();
@@ -107,9 +119,12 @@ const TwitterCallback: React.FC<PageProps> = ({
               newSession
             );
           }
+
+          let userService = new UserService(didService);
           eProps.setSession({
-            session: await UserService.updateSession(newSession)
+            session: await userService.updateSession(newSession)
           });
+
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredTwitter(

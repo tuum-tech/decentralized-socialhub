@@ -24,7 +24,7 @@ import { requestDiscordToken, getUsersWithRegisteredDiscord } from './fetchapi';
 import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 
 interface PageProps
   extends InferMappedProps,
@@ -54,6 +54,7 @@ const DiscordCallback: React.FC<PageProps> = ({
   let code: string =
     new URLSearchParams(props.location.search).get('code') || '';
 
+  let didService = new DidService();
   useEffect(() => {
     (async () => {
       if (code !== '' && credentials.loginCred.discord === '') {
@@ -67,11 +68,11 @@ const DiscordCallback: React.FC<PageProps> = ({
             discord
           );
           let state = await DidDocumentService.getUserDocument(props.session);
-          await DidService.addVerfiableCredentialToDIDDocument(
+          await didService.addVerfiableCredentialToDIDDocument(
             state.diddocument,
             vc
           );
-          DidDocumentService.updateUserDocument(state.diddocument);
+          DidDocumentService.updateUserDocument(state.diddocument as any);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.discord! = discord;
@@ -89,10 +90,11 @@ const DiscordCallback: React.FC<PageProps> = ({
               newSession
             );
           }
-          // await UserService.updateSession(userSession);
+          let userService = new UserService(new DidService());
           eProps.setSession({
-            session: await UserService.updateSession(newSession)
+            session: await userService.updateSession(newSession)
           });
+
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredDiscord(discord);

@@ -294,6 +294,7 @@ interface GetBasic {
 }
 
 interface ICreateUserResponse {
+  meta: { code: number; message: string };
   data: {
     return_code: string;
     did: string;

@@ -10,6 +10,8 @@ import { HiveService } from './hive.service';
 import { UserService } from './user.service';
 import { Guid } from 'guid-typescript';
 
+import { DidService } from './did.service.new';
+
 export class ProfileService {
   static didDocument: any = null;
 
@@ -385,7 +387,8 @@ export class ProfileService {
         });
       }
 
-      let followingUser = await UserService.SearchUserWithDID(did);
+      let userService = new UserService(new DidService());
+      let followingUser = await userService.SearchUserWithDID(did);
 
       await this.addActivity(
         {

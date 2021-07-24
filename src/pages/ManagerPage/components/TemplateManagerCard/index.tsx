@@ -18,6 +18,7 @@ import { UserService } from 'src/services/user.service';
 import { ProfileName } from 'src/elements/texts';
 import Avatar from 'src/components/Avatar';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
+import { DidService } from 'src/services/did.service.new';
 
 export const Divider = styled.hr`
   width: 100%;
@@ -58,6 +59,8 @@ interface IProps {
   updateSession: (props: { session: ISessionItem }) => void;
 }
 
+let userService = new UserService(new DidService());
+
 const TemplateManagerCard: React.FC<IProps> = ({
   sessionItem,
   updateSession
@@ -87,7 +90,7 @@ const TemplateManagerCard: React.FC<IProps> = ({
             if (!newSelected || newSelected === sessionItem.pageTemplate) {
               return;
             }
-            const newSession = await UserService.updateSession(
+            const newSession = await userService.updateSession(
               {
                 ...sessionItem,
                 pageTemplate: e.detail.value
