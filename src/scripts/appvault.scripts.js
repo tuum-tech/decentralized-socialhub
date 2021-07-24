@@ -405,7 +405,7 @@ let run = async () => {
     }
   });
   await client.Scripting.SetScript({
-    name: 'verify_code', // is being used in backend
+    name: 'verify_email_code', // is being used in backend
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
@@ -420,6 +420,46 @@ let run = async () => {
             collection: 'users',
             filter: {
               code: '$params.code'
+            }
+          }
+        },
+        {
+          type: 'update',
+          name: 'update_status',
+          output: false,
+          body: {
+            collection: 'users',
+            filter: {
+              code: '$params.code'
+            },
+            update: {
+              $set: {
+                status: 'CONFIRMED'
+              }
+            }
+          }
+        }
+      ]
+    }
+  });
+
+  await client.Scripting.SetScript({
+    name: 'verify_sms_code', // is being used in backend
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'aggregated',
+      name: 'find_and_update_code',
+      body: [
+        {
+          type: 'find',
+          name: 'find_code',
+          output: true,
+          body: {
+            collection: 'users',
+            filter: {
+              code: '$params.code',
+              did: '$params.did'
             }
           }
         },

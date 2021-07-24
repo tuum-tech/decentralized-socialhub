@@ -7,6 +7,7 @@ import { isValidPhoneNumber } from 'react-phone-number-input';
 import SmallTextInput from 'src/elements/inputs/SmallTextInput';
 import { SmallLightButton } from 'src/elements/buttons';
 import { Text12, ErrorTxt as ErrorText } from 'src/elements/texts';
+import { showNotify } from 'src/utils/notify';
 
 import { createPhoneUser, updatePhoneNumber, verifyCode } from './fetchapi';
 
@@ -93,6 +94,10 @@ const PhonerNumberComp: React.FC<IProps> = ({
               );
 
               setShowVerifyInput(true);
+              showNotify(
+                'SMS code sent to your phone. Please verify to complete updating.',
+                'info'
+              );
               setLoading(0);
             }}
           >
@@ -119,7 +124,8 @@ const PhonerNumberComp: React.FC<IProps> = ({
               onClick={async () => {
                 setLoading(2);
                 const verifyCodeRes = (await verifyCode(
-                  code
+                  code,
+                  sessionItem.did
                 )) as IVerifyCodeResponse;
 
                 if (

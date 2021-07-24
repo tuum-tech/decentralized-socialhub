@@ -48,7 +48,7 @@ export function updatePhoneNumber(
   );
 }
 
-export function verifyCode(code: string) {
+export function verifyCode(code: string, did: string) {
   return request(
     `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/credential/verify`,
     {
@@ -59,7 +59,8 @@ export function verifyCode(code: string) {
         Accept: 'application/json'
       },
       body: JSON.stringify({
-        code
+        code,
+        did
       })
     }
   );
