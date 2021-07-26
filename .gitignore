@@ -30,11 +30,11 @@ package-lock.json*
 .env.prod
 .mongodb-data
 
-src/scripts/config.json.prod
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+.ebextensions_prod
 
-# Local Netlify folder
-.netlify
+# Custom
+src/scripts/config.json.prod
