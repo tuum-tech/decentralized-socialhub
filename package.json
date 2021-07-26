@@ -1,7 +1,7 @@
 {
   "name": "profile",
   "version": "0.8.0",
-  "private": true,
+  "description": "Profile",
   "dependencies": {
     "@elastos/elastos-hive-js-sdk": "github:elastos/Elastos.NET.Hive.JS.SDK",
     "@elastosfoundation/did-js-sdk": "^2.0.7",
@@ -75,7 +75,6 @@
   "engines": {
     "node": "^12"
   },
-  "description": "Profile",
   "devDependencies": {
     "@ionic/react": "^5.6.11",
     "@ionic/react-router": "^5.6.11",
