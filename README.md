@@ -24,7 +24,6 @@ The following dependent services are now started:
 
 - [Hive Vault](https://github.com/elastos/Elastos.NET.Hive.Node)
 - [Assist RestAPI Backend](https://github.com/tuum-tech/assist-restapi-backend)
-- [Vouch RestAPI Backend](https://github.com/tuum-tech/vouch-restapi-backend)
 - [DIDcreds Validator Service](https://github.com/tuum-tech/didcreds-validator)
 
 ## Profile API Service
@@ -33,33 +32,7 @@ You need to run Profile API service before you can start Profile app
 
 - [Profile API Service](https://github.com/tuum-tech/profile-api-service)
 
-## ALPHA VERSION
-
-Before execute alpha version, you have to:
-
-```
-#Run alpha hive scripts
-
-node ./src/scripts/alpha/alpha.scripts.js
-
-```
-
-To generate alpha invite code:
-
-```
-#Add invite emails on ./src/scripts/alpha/emails.json
-
-node ./src/scripts/alpha/generateAccessCodes.js
-
-```
-
-Now, run all the setup scripts for Tuum Tech vault:
-
-```
-node ./src/scripts/appvault.scripts.js
-```
-
-Clone the repository and run below command on the root of your project.
+## Run the app
 
 - `npm i`
 - `cp .env.example .env`
@@ -67,29 +40,3 @@ Clone the repository and run below command on the root of your project.
 - `npm start`
 
 ## Deploy to production
-
-### Deploy to netlify
-
-- First time only: Install netlify-cli
-
-```
-npm install netlify-cli -g
-```
-
-- Build for production ready environment
-
-```
-npm run build
-```
-
-- Deploy staging
-
-```
-netlify deploy
-```
-
-- Deploy to production
-
-```
-netlify deploy --prod
-```
