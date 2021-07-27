@@ -11,7 +11,47 @@ let run = async () => {
   client.Payment.CreateFreeVault();
 
   const fs = require('fs');
-
+  // ===== comments section start =====
+  await client.Database.createCollection('comments');
+  await client.Scripting.SetScript({
+    name: 'add_comment',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'insert',
+      name: 'add_comment',
+      output: true,
+      body: {
+        collection: 'comments',
+        document: {
+          did: '$params.did',
+          githubIssueId: '$params.githubIssueId',
+          comment: '$params.comment',
+          createdAt: '$params.createdAt'
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'get_comments_by_github_issue_id',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_comments_by_github_issue_id',
+      output: true,
+      body: {
+        collection: 'comments',
+        filter: {
+          githubIssueId: '$params.githubIssueId'
+        },
+        options: {
+          limit: '$params.limit',
+          skip: '$params.skip'
+        }
+      }
+    }
+  });
   // ===== followers section start =====
   await client.Database.createCollection('followers');
   await client.Scripting.SetScript({

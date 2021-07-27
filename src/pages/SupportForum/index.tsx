@@ -7,7 +7,6 @@ import { createStructuredSelector } from 'reselect';
 
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
-import { InferMappedProps } from './types';
 import { SubState } from 'src/store/users/types';
 
 import { fetchGithubIssues } from './fetchapi';
@@ -49,7 +48,7 @@ const SupportForumPage: React.FC<any> = ({ eProps, ...props }: any) => {
   useEffect(() => {
     if (githubIssueNumber && githubIssues.length) {
       const githubIssue = githubIssues.find(
-        item => item.number == githubIssueNumber
+        item => item.number.toString() === githubIssueNumber.toString()
       );
       setGithubIssue(githubIssue);
     }
@@ -60,7 +59,17 @@ const SupportForumPage: React.FC<any> = ({ eProps, ...props }: any) => {
       <SignedPublicPageHeader userSession={props.session} />
 
       {githubIssue ? (
-        <Detail githubIssue={githubIssue} />
+        <Detail
+          githubIssue={githubIssue}
+          githubIssues={githubIssues
+            .sort(
+              (a, b) =>
+                new Date(b.updated_at).getTime() -
+                new Date(a.updated_at).getTime()
+            )
+            .slice(0, 5)}
+          userSession={props.session}
+        />
       ) : (
         <List githubIssues={githubIssues} />
       )}

@@ -209,6 +209,40 @@ export class TuumTechScriptService {
     let response: any = await this.runTuumTechScript(add_user_script);
     return response;
   }
+
+  public static async addGithubComment(params: IGithubCommentItem) {
+    const add_comment_script = {
+      name: 'add_comment',
+      params,
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+    let response: any = await this.runTuumTechScript(add_comment_script);
+    return response;
+  }
+
+  public static async getGithubCommentsByIssueId(
+    githubIssueId: number,
+    limit = 200,
+    skip = 0
+  ) {
+    const get_user_by_did_script = {
+      name: 'get_comments_by_github_issue_id',
+      params: {
+        githubIssueId: githubIssueId,
+        limit,
+        skip
+      },
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+    let response: any = await this.runTuumTechScript(get_user_by_did_script);
+    return getItemsFromData(response, 'get_comments_by_github_issue_id');
+  }
 }
 
 export class UserVaultScriptService {

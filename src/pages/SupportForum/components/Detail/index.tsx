@@ -3,25 +3,34 @@ import { Link } from 'react-router-dom';
 import { IonList, IonItem, IonLabel, IonAvatar } from '@ionic/react';
 import styled from 'styled-components';
 
+import { TuumTechScriptService } from 'src/services/script.service';
+import { UserService } from 'src/services/user.service';
+import { DidService } from 'src/services/did.service.new';
+
 import LeftArrow from 'src/elements/arrows/LeftArrow';
 import { timeSince } from 'src/utils/time';
+import { showNotify } from 'src/utils/notify';
 
 import TextareaInput from 'src/elements/inputs/TextareaInput';
 import { DefaultButton } from 'src/elements/buttons';
 import { TableContent, Category } from '../common';
 
 import voteIcon from 'src/assets/icon/arrow-up-filled.svg';
-import photo from 'src/assets/icon/dp.png';
+import defaultAvatar from 'src/assets/icon/dp.png';
 
 interface DetailProp {
   githubIssue: any;
+  githubIssues: any[];
+  userSession: ISessionItem;
 }
 
 const TopBar = styled.div`
-  display: flex;
-  align-items: center;
   background: #17171b;
   padding: 20px 12.5%;
+  a {
+    display: flex;
+    align-items: center;
+  }
   p {
     font-style: normal;
     font-weight: 400;
@@ -97,17 +106,97 @@ const Issue = styled.div`
   }
 `;
 
+const ExploreBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 30px;
+  h3 {
+    color: #2d3748;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 21px;
+  }
+  a {
+    color: #4c6fff;
+    font-size: 16px;
+    line-height: 162.02%;
+  }
+`;
 const Containr = styled.div`
   padding: 25px 12.5%;
   position: relative;
 `;
 
-const Detail: React.FC<DetailProp> = ({ githubIssue }) => {
+const Detail: React.FC<DetailProp> = ({
+  githubIssue,
+  githubIssues,
+  userSession
+}) => {
+  const [comment, setComment] = useState<string>('');
+  const [commentList, setCommentList] = useState<any[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      let userService = new UserService(new DidService());
+      const commentsInTuumTech = await TuumTechScriptService.getGithubCommentsByIssueId(
+        githubIssue.number
+      );
+      const _commentList = await Promise.all(
+        commentsInTuumTech.map(async (itr: any) => {
+          const commentOwner = await userService.SearchUserWithDID(itr.did);
+          return {
+            owner: {
+              name: commentOwner.name,
+              avatar: commentOwner.avatar || defaultAvatar
+            },
+            timeSince: timeSince(itr.created.$date),
+            content: itr.comment
+          };
+        })
+      );
+      setCommentList(_commentList);
+    })();
+  }, [githubIssue]);
+
+  const handleAddComment = async () => {
+    const params: IGithubCommentItem = {
+      githubIssueId: githubIssue.number,
+      did: userSession.did,
+      comment: comment,
+      createdAt: new Date().getTime()
+    };
+    const response = await TuumTechScriptService.addGithubComment(params);
+    if (response.data && response.data._status === 'OK') {
+      setComment('');
+      setCommentList([
+        ...commentList,
+        {
+          owner: {
+            name: userSession.name,
+            avatar: userSession.avatar || defaultAvatar
+          },
+          timeSince: timeSince(new Date().getTime()),
+          content: comment
+        }
+      ]);
+      showNotify('Add comment succeed', 'success');
+    } else {
+      showNotify('Add comment failed', 'error');
+    }
+  };
+
+  const onInputComment = (text: string) => {
+    setComment(text);
+  };
+
   return (
     <>
       <TopBar onClick={() => {}}>
-        <LeftArrow fill="#cbd5e0" />
-        <p>Back Home</p>
+        <Link to="/support-forum">
+          <LeftArrow fill="#cbd5e0" />
+          <p>Back Home</p>
+        </Link>
       </TopBar>
       <Containr>
         <Issue>
@@ -120,7 +209,7 @@ const Detail: React.FC<DetailProp> = ({ githubIssue }) => {
               <Category>Bug</Category>
             </span>
             <span className="vote">
-              <img src={voteIcon} width="15" />
+              <img src={voteIcon} width="15" alt="vote" />
               1234 votes
             </span>
             <span className=""></span>
@@ -137,13 +226,13 @@ const Detail: React.FC<DetailProp> = ({ githubIssue }) => {
                 label=""
                 cols={10}
                 rows={6}
-                value={''}
-                onChange={() => {}}
+                value={comment}
+                onChange={onInputComment}
                 placeholder="Enter your message here"
               ></TextareaInput>
               <DefaultButton
                 width="100px"
-                onClick={() => {}}
+                onClick={handleAddComment}
                 color="#FFFFFF"
                 bgColor="#4C6FFF"
               >
@@ -152,61 +241,28 @@ const Detail: React.FC<DetailProp> = ({ githubIssue }) => {
             </div>
             <div className="comment-history">
               <IonList>
-                <CommentItem>
-                  <IonAvatar slot="start">
-                    <img src={photo} />
-                  </IonAvatar>
-                  <IonLabel>
-                    <h2>Finn</h2>
-                    <h3>
-                      Have his and saying saying all all. Unto saw drakness so
-                      meat divided bring yeras and gathered rule given two in.
-                    </h3>
-                    <p>Listen, I've had a pretty messed up day...</p>
-                  </IonLabel>
-                </CommentItem>
-                <CommentItem>
-                  <IonAvatar slot="start">
-                    <img src={photo} />
-                  </IonAvatar>
-                  <IonLabel>
-                    <h2>Finn</h2>
-                    <h3>
-                      Unto Divide very. Winged. Thing the fish air all sixth
-                      living blessed divide also him every fill over life you'll
-                      without evening bearing moving of.
-                    </h3>
-                    <p>Listen, I've had a pretty messed up day...</p>
-                  </IonLabel>
-                </CommentItem>
-                <CommentItem>
-                  <IonAvatar slot="start">
-                    <img src={photo} />
-                  </IonAvatar>
-                  <IonLabel>
-                    <h2>Finn</h2>
-                    <h3>Green for. Spirit Appear replenish the female fish.</h3>
-                    <p>Listen, I've had a pretty messed up day...</p>
-                  </IonLabel>
-                </CommentItem>
-                <CommentItem>
-                  <IonAvatar slot="start">
-                    <img src={photo} />
-                  </IonAvatar>
-                  <IonLabel>
-                    <h2>Finn</h2>
-                    <h3>
-                      Good female don't cattle beast whales bring upon dominion
-                      for, mroning a living deep abundantly open living. Given
-                      creeping make had from life. Thing form it good earth.
-                    </h3>
-                    <p>Listen, I've had a pretty messed up day...</p>
-                  </IonLabel>
-                </CommentItem>
+                {commentList.map((comment, index) => {
+                  return (
+                    <CommentItem key={index}>
+                      <IonAvatar slot="start">
+                        <img src={comment.owner.avatar} alt="profile" />
+                      </IonAvatar>
+                      <IonLabel>
+                        <h2>{comment.owner.name}</h2>
+                        <h3>{comment.content}</h3>
+                        <p>{comment.timeSince}</p>
+                      </IonLabel>
+                    </CommentItem>
+                  );
+                })}
               </IonList>
             </div>
           </div>
         </Issue>
+        <ExploreBar>
+          <h3>Explore more topics</h3>
+          <Link to="/support-forum">Explore all</Link>
+        </ExploreBar>
         <TableContent>
           <div className="table-head">
             <div className="topic">Topic</div>
@@ -214,6 +270,23 @@ const Detail: React.FC<DetailProp> = ({ githubIssue }) => {
             <div className="votes">Votes</div>
             <div className="date">DATE</div>
           </div>
+          {githubIssues.map((issue, index) => {
+            const linkUrl = '/support-forum/' + issue.number;
+            return (
+              <div className="table-row" key={index}>
+                <div className="topic">
+                  <Link to={linkUrl}>{issue.title}</Link>
+                </div>
+                <div className="category">
+                  <Category>Bug</Category>
+                </div>
+                <div className="votes">994 Votes</div>
+                <div className="date">
+                  {timeSince(new Date(issue.updated_at).getTime())}
+                </div>
+              </div>
+            );
+          })}
         </TableContent>
       </Containr>
     </>

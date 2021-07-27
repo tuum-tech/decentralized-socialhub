@@ -108,9 +108,22 @@ const Intro = styled.div`
 
 const List: React.FC<ListProp> = ({ githubIssues }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [filteredIssues, setFilteredIssues] = useState<any[]>([]);
   const search = (e: any) => {
     setSearchQuery(e.detail.value!);
   };
+
+  useEffect(() => {
+    setFilteredIssues(githubIssues);
+    if (searchQuery) {
+      setFilteredIssues(
+        githubIssues.filter(issue =>
+          issue.title.toUpperCase().includes(searchQuery.toUpperCase())
+        )
+      );
+    }
+  }, [searchQuery, githubIssues]);
+
   return (
     <>
       <Intro>
@@ -149,7 +162,7 @@ const List: React.FC<ListProp> = ({ githubIssues }) => {
             <div className="date">DATE</div>
           </div>
 
-          {githubIssues.map((issue, index) => {
+          {filteredIssues.map((issue, index) => {
             const linkUrl = '/support-forum/' + issue.number;
             return (
               <div className="table-row" key={index}>
