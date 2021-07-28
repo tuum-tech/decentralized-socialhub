@@ -172,7 +172,7 @@ const List: React.FC<ListProp> = ({ githubIssues }) => {
                 <div className="category">
                   <Category>Bug</Category>
                 </div>
-                <div className="votes">994 Votes</div>
+                <div className="votes">589 Votes</div>
                 <div className="date">
                   {timeSince(new Date(issue.updated_at).getTime())}
                 </div>
