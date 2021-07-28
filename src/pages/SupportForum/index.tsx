@@ -17,8 +17,6 @@ import Detail from './components/Detail';
 
 import { useState, useEffect } from 'react';
 
-const Github = require('github-api');
-
 const Page = styled(IonPage)`
   overflow-y: auto;
   justify-content: start;
@@ -28,21 +26,12 @@ const SupportForumPage: React.FC<any> = ({ eProps, ...props }: any) => {
   const githubIssueNumber = props.match.params.num;
   const [githubIssues, setGithubIssues] = useState<any[]>([]);
   const [githubIssue, setGithubIssue] = useState<any>(null);
-  useEffect(() => {
-    (async () => {
-      await fetchGithubIssues();
-    })();
-  }, []);
-  const loadData = async () => {
-    const gh = new Github({
-      token: process.env.REACT_APP_GITHUB_ACCESS_TOKEN
-    });
-    const issues = await gh.getIssues('tuum-tech', 'profile').listIssues();
-    setGithubIssues(issues.data);
-  };
 
   useEffect(() => {
-    loadData();
+    (async () => {
+      const response: any = await fetchGithubIssues();
+      setGithubIssues(response.data);
+    })();
   }, []);
 
   useEffect(() => {
