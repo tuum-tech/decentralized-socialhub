@@ -127,12 +127,13 @@ const SettingsAccount: React.FC<Props> = ({ useSession }) => {
                       Delete your account
                     </IonText>
                     <IonText className={style['section-description']}>
-                      This should wipe out the vault data from your own user
-                      vault. This is to ensure that each alpha release is wiped
-                      clean before starting over. This is basically the
-                      functionality we need to implement "Delete user data" on
-                      Settings. We will force this upon login on each new alpha
-                      release.
+                      This will wipe out the vault data from your own user
+                      vault. Note that the data stored on Tuum Tech vault will
+                      not be removed with this action. Information stored on
+                      your user vault such as your about section, education and
+                      experience will be deleted. You can always create a new
+                      account with the same DID at a later time but you will
+                      have to enter your personal data again during that time.
                     </IonText>
                     <br></br>
                     <DeleteButton
