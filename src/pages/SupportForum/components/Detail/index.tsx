@@ -215,7 +215,7 @@ const Detail: React.FC<DetailProp> = ({
             </span>
             <span className="vote">
               <img src={voteIcon} width="15" alt="vote" />
-              1234 votes
+              589 votes
             </span>
             <span className=""></span>
           </div>
@@ -287,7 +287,7 @@ const Detail: React.FC<DetailProp> = ({
                     return <Category label={label.name}>{label.name}</Category>;
                   })}
                 </div>
-                <div className="votes">994 Votes</div>
+                <div className="votes">589 Votes</div>
                 <div className="date">
                   {timeSince(new Date(issue.updated_at).getTime())}
                 </div>
