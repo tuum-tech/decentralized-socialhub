@@ -1,19 +1,29 @@
 import styled from 'styled-components';
 
+import { GithubIssueLabel } from '../constants';
+
 interface Props {
-  color?: string;
+  label?: string;
 }
 
 export const Category = styled.div<Props>`
-  background: rgba(76, 111, 255, 0.1);
   border-radius: 8px;
   padding: 3px 10px;
   text-align: center;
-  width: 60px;
-  margin: 0 auto;
-
-  ${props => {
-    return `color: ${props.color ? props.color : '#4c6fff'};`;
+  margin-left: 5px;
+  ${(props: any) => {
+    const label = props.label;
+    if (!label) return `color: #4c6fff;`;
+    return `color: ${
+      (GithubIssueLabel as any)[label.replace(' ', '_')].style.color
+    };`;
+  }}
+  ${(props: any) => {
+    const label = props.label;
+    if (!label) return `background: rgba(76, 111, 255, 0.1);`;
+    return `background: ${
+      (GithubIssueLabel as any)[label.replace(' ', '_')].style.backgroundColor
+    };`;
   }}
 `;
 
@@ -21,10 +31,13 @@ export const TableContent = styled.div`
   width: 100%;
 
   .topic {
-    width: calc(100% - 300px);
+    width: calc((100% - 200px) * 0.8);
   }
   .category {
-    width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    width: calc((100% - 200px) * 0.2);
     text-align: center;
   }
   .votes {

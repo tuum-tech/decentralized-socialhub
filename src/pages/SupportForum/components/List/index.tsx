@@ -7,6 +7,7 @@ import SelectInput from 'src/elements/inputs/SelectInput';
 import { timeSince } from 'src/utils/time';
 
 import { TableContent, Category } from '../common';
+import { GithubIssueLabel } from '../../constants';
 
 interface ListProp {
   githubIssues: any[];
@@ -108,21 +109,31 @@ const Intro = styled.div`
 
 const List: React.FC<ListProp> = ({ githubIssues }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [labels, setLabels] = useState<any[]>([]);
   const [filteredIssues, setFilteredIssues] = useState<any[]>([]);
   const search = (e: any) => {
     setSearchQuery(e.detail.value!);
   };
 
   useEffect(() => {
-    setFilteredIssues(githubIssues);
+    let filteredIssues = [...githubIssues];
+
     if (searchQuery) {
-      setFilteredIssues(
-        githubIssues.filter(issue =>
-          issue.title.toUpperCase().includes(searchQuery.toUpperCase())
-        )
+      filteredIssues = filteredIssues.filter(issue =>
+        issue.title.toUpperCase().includes(searchQuery.toUpperCase())
       );
     }
-  }, [searchQuery, githubIssues]);
+    if (labels) {
+      filteredIssues = filteredIssues.filter(issue => {
+        const lblNames = issue.labels.map((label: any) => label.name);
+        return lblNames
+          .sort()
+          .join()
+          .includes(labels.sort().join());
+      });
+    }
+    setFilteredIssues(filteredIssues);
+  }, [searchQuery, githubIssues, labels]);
 
   return (
     <>
@@ -144,12 +155,15 @@ const List: React.FC<ListProp> = ({ githubIssues }) => {
           <SelectComp>
             <p>Filter by</p>
             <SelectInput
-              values={[
-                { value: 1, text: 'Suggestion' },
-                { value: 2, text: 'Bug' }
-              ]}
-              onChange={e => {}}
-              placeholder="Suggestion"
+              values={Object.keys(GithubIssueLabel).map(key => {
+                const lblName = (GithubIssueLabel as any)[key].name;
+                return { value: lblName, text: lblName };
+              })}
+              onChange={e => {
+                setLabels(e);
+              }}
+              multiple={true}
+              placeholder="All"
             />
           </SelectComp>
         </Header>
@@ -170,7 +184,9 @@ const List: React.FC<ListProp> = ({ githubIssues }) => {
                   <Link to={linkUrl}>{issue.title}</Link>
                 </div>
                 <div className="category">
-                  <Category>Bug</Category>
+                  {issue.labels.map((label: any) => {
+                    return <Category label={label.name}>{label.name}</Category>;
+                  })}
                 </div>
                 <div className="votes">994 Votes</div>
                 <div className="date">

@@ -66,7 +66,10 @@ const Issue = styled.div`
 
       color: #425466;
     }
-
+    .category {
+      display: flex;
+      align-items: center;
+    }
     .vote {
       display: flex;
       align-items: center;
@@ -206,7 +209,9 @@ const Detail: React.FC<DetailProp> = ({
               Posted: {timeSince(new Date(githubIssue.updated_at).getTime())}
             </span>
             <span className="category">
-              <Category>Bug</Category>
+              {githubIssue.labels.map((label: any) => {
+                return <Category label={label.name}>{label.name}</Category>;
+              })}
             </span>
             <span className="vote">
               <img src={voteIcon} width="15" alt="vote" />
@@ -278,7 +283,9 @@ const Detail: React.FC<DetailProp> = ({
                   <Link to={linkUrl}>{issue.title}</Link>
                 </div>
                 <div className="category">
-                  <Category>Bug</Category>
+                  {issue.labels.map((label: any) => {
+                    return <Category label={label.name}>{label.name}</Category>;
+                  })}
                 </div>
                 <div className="votes">994 Votes</div>
                 <div className="date">
