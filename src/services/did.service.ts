@@ -17,7 +17,12 @@ export interface IDidService {
   genereteNewDidDocument(did: IDID): Promise<any>;
   sealDIDDocument(did: IDID, diddocument: any): any;
   addVerfiableCredentialToDIDDocument(diddocument: any, vc: any): any;
-  addServiceToDIDDocument(diddocument: DIDDocument, did: IDID, type: string, endpoint: string) : Promise<DIDDocument>;
+  addServiceToDIDDocument(
+    diddocument: DIDDocument,
+    did: IDID,
+    type: string,
+    endpoint: string
+  ): Promise<DIDDocument>;
   generateSelfVerifiableCredential(
     did: IDID,
     subjectName: string,

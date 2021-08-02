@@ -233,6 +233,23 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
             </IonLabel>
           </IonItem> */}
           <IonItem
+            className={
+              history.location.pathname === '/support-forum'
+                ? style['item-active']
+                : style['item-link']
+            }
+            onClick={async () => history.push('/support-forum')}
+          >
+            <IonIcon
+              slot="start"
+              src="../../assets/icon_support_forum.svg"
+              className={style['img']}
+            ></IonIcon>
+            <IonLabel>
+              <h3>Support Forum</h3>
+            </IonLabel>
+          </IonItem>
+          <IonItem
             className={style['item-link']}
             onClick={() => {
               UserService.logout();

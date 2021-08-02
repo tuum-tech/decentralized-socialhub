@@ -5,7 +5,7 @@ const { HiveClient, OptionsBuilder } = require('@elastos/elastos-hive-js-sdk');
 
 //const { testHelper } = require('./testsHelper');
 
-global.fetch = require("node-fetch");
+global.fetch = require('node-fetch');
 
 let generateUserVerifiablePresentation = async (
   appDid,
@@ -24,8 +24,7 @@ let generateUserVerifiablePresentation = async (
     userDid,
     appId
   );
-console.error("vc:"+JSON.stringify(vc));
-
+  console.error('vc:' + JSON.stringify(vc));
 
   return ElastosClient.didDocuments.createVerifiablePresentation(
     appDid,
@@ -36,15 +35,12 @@ console.error("vc:"+JSON.stringify(vc));
   );
 };
 
-let getApplicationDIDDocument = async (appDid) => {
+let getApplicationDIDDocument = async appDid => {
   let document = ElastosClient.didDocuments.newDIDDocument(appDid);
   return ElastosClient.didDocuments.sealDocument(appDid, document);
 };
 
-
-
 let run = async () => {
-
   async function getHiveInstance(app, user, url, appId) {
     let appDid = await ElastosClient.did.loadFromMnemonic(app);
     let builder = new OptionsBuilder();
@@ -62,19 +58,17 @@ let run = async () => {
       challenge,
       appId
     );
-    
-    
+
     // console.log("options:" + JSON.stringify(options));
     // console.log(`VP : ${JSON.stringify(vp)}`);
 
     vp = JSON.stringify(vp);
     vp = JSON.parse(vp);
-  
+
     let token = await HiveClient.getAuthenticationToken(options, vp);
     console.log(token);
     return await HiveClient.createInstance(token, url);
-  };
-  
+  }
 
   let client = await getHiveInstance(
     config.tuum_tech_mnemonic,

@@ -115,7 +115,6 @@ export class HiveService {
     let appDid = await didService.loadDid(mnemonic);
     let appDocument = await didService.getDidDocument(appDid.did, false);
 
-
     let docChallenge = JSON.parse(appDocument.toString(true));
     let response = await HiveClient.getApplicationChallenge(
       options,

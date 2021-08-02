@@ -28,7 +28,6 @@ interface ITutorialStepProp extends InferMappedProps {
   session: ISessionItem;
 }
 
-
 const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   eProps,
   ...props

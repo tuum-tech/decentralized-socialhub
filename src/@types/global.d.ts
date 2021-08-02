@@ -323,3 +323,10 @@ interface PublicProfileResponse {
 interface ThemeProps {
   template: string;
 }
+
+interface IGithubCommentItem {
+  did?: string;
+  githubIssueId: number;
+  comment: string;
+  createdAt: number;
+}

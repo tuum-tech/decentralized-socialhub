@@ -7,12 +7,13 @@ interface Props {
   placeholder?: string;
   label?: string;
   values?: {
-    value: number;
+    value: number | string;
     text: string;
   }[];
   flexDirection?: string;
   hasError?: boolean;
-  onChange: (e: string) => void;
+  multiple?: boolean;
+  onChange: (e: any) => void;
   className?: string;
 }
 
@@ -23,6 +24,7 @@ const SelectInput: React.FC<Props> = ({
   onChange,
   flexDirection = 'row',
   hasError = false,
+  multiple = false,
   className
 }) => {
   let cName = style['selectinput'];
@@ -45,6 +47,7 @@ const SelectInput: React.FC<Props> = ({
         className={style['selectinput_field']}
         placeholder={placeholder}
         onIonChange={e => onChange(e.detail.value!)}
+        multiple={multiple}
       >
         {options.map(function(item, index) {
           return (

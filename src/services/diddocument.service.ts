@@ -113,7 +113,6 @@ export class DidDocumentService {
     diddocument: DIDDocument,
     userSession: ISessionItem
   ): Promise<IDIDDocumentState | undefined> {
-   
     //let userDid = await didService.loadDid(userSession.mnemonics);
     //let signedDocument = await didService.sealDIDDocument(userDid, diddocument);
     if (!diddocument.getProof()) {
@@ -132,7 +131,12 @@ export class DidDocumentService {
         console.log(response);
       }
     };
-    diddocument.publish(process.env.REACT_APP_DID_STORE_PASSWORD as string, undefined, undefined, adapter);
+    diddocument.publish(
+      process.env.REACT_APP_DID_STORE_PASSWORD as string,
+      undefined,
+      undefined,
+      adapter
+    );
 
     let documentState = {
       diddocument: diddocument.toString(true),

@@ -45,9 +45,9 @@ const TextareaInput: React.FC<Props> = ({
         <IonLabel className={style['textareainput_label']}>{label}</IonLabel>
       )}
       <IonTextarea
-        value={value}
         cols={cols}
         rows={rows}
+        value={value}
         className={style['textareainput_field']}
         placeholder={placeholder}
         readonly={readonly}
