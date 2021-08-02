@@ -13,6 +13,8 @@ import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
 import { UserService } from 'src/services/user.service';
+import { DidService } from 'src/services/did.service.new';
+
 import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import style from './style.module.scss';
@@ -61,10 +63,12 @@ const ManagerPage: React.FC<InferMappedProps> = ({
                     updateSession={async (newSession: {
                       session: ISessionItem;
                     }) => {
-                      const updatedSession = await UserService.updateSession(
-                        newSession.session
-                      );
-                      eProps.setSession({ session: updatedSession });
+                      let userService = new UserService(new DidService());
+                      eProps.setSession({
+                        session: await userService.updateSession(
+                          newSession.session
+                        )
+                      });
                     }}
                   />
                 )}

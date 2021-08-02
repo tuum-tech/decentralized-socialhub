@@ -9,6 +9,7 @@
     "@elastosfoundation/elastos-js-sdk": "^1.2.12",
     "@sentry/react": "^6.9.0",
     "@sentry/tracing": "^6.9.0",
+    "@types/react-phone-number-input": "^3.0.10",
     "@types/styled-components": "^5.1.11",
     "@types/toastr": "^2.1.39",
     "bootstrap": "^4.6.0",

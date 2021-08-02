@@ -446,7 +446,7 @@ export class UserService {
   public async updateSession(
     sessionItem: ISessionItem,
     notifyUser: boolean = false
-  ): Promise<ISessionItem> {
+  ) {
     let newSessionItem = sessionItem;
     const userData = await this.SearchUserWithDID(sessionItem.did);
     if (userData && userData.code) {
