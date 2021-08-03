@@ -2,7 +2,7 @@
  * Page
  */
 import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { connect } from 'react-redux';
@@ -19,11 +19,20 @@ import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import style from './style.module.scss';
 import ProfileEditor from './components/ProfileEditor';
+import { useEffect } from 'react';
 
 const ManagerPage: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
+  const [user, setUser] = useState<ISessionItem>({} as ISessionItem);
+  useEffect(() => {
+    if (props.session && props.session.did !== '') {
+      setUser(props.session);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const Header = styled.div`
     width: 100%;
     height: 83px;
@@ -57,18 +66,19 @@ const ManagerPage: React.FC<InferMappedProps> = ({
                 <Header>
                   <PageTitle>Profile Manager</PageTitle>
                 </Header>
-                {props.session && (
+                {user && user.did && user.did !== '' && (
                   <ProfileEditor
-                    session={props.session}
+                    session={user}
                     updateSession={async (newSession: {
                       session: ISessionItem;
                     }) => {
                       let userService = new UserService(new DidService());
-                      eProps.setSession({
+                      await eProps.setSession({
                         session: await userService.updateSession(
                           newSession.session
                         )
                       });
+                      setUser(newSession.session);
                     }}
                   />
                 )}

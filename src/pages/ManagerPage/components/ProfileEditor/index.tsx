@@ -72,17 +72,15 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
   useEffect(() => {
     (async () => {
       if (!session.userToken) return;
-
       setUserInfo(session);
       if (session.tutorialStep === 4) {
         await retriveProfile();
       }
       setloaded(true);
     })();
-
     setTimer();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [session]);
 
   return (
     <IonContent className={style['profileeditor']}>

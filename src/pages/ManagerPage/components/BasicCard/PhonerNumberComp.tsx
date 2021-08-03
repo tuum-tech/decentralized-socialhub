@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { IonRow, IonCol, IonLabel } from '@ionic/react';
+import { IonRow, IonCol } from '@ionic/react';
 import styled from 'styled-components';
 
 import { isValidPhoneNumber } from 'react-phone-number-input';
 
 import SmallTextInput from 'src/elements/inputs/SmallTextInput';
 import { SmallLightButton } from 'src/elements/buttons';
-import { Text12, ErrorTxt as ErrorText } from 'src/elements/texts';
+import { ErrorTxt as ErrorText } from 'src/elements/texts';
 import { showNotify } from 'src/utils/notify';
 
-import { createPhoneUser, updatePhoneNumber, verifyCode } from './fetchapi';
+import { updatePhoneNumber, verifyCode } from './fetchapi';
 
 const ActionBtnCol = styled(IonCol)`
   margin: 0 0 0 auto;
@@ -39,7 +39,6 @@ const PhonerNumberComp: React.FC<IProps> = ({
   updateFunc
 }: IProps) => {
   const [loading, setLoading] = useState(0);
-  const alreadyHasPhone = sessionItem.loginCred!.phone !== '';
   const [phone, setPhone] = useState(sessionItem.loginCred!.phone || '');
   const [code, setCode] = useState('');
   const [showVerifyInput, setShowVerifyInput] = useState(false);
@@ -48,7 +47,6 @@ const PhonerNumberComp: React.FC<IProps> = ({
   const sendBtnDisabled = () => {
     if (loading) return true;
     if (phone === '') return true;
-
     return !isValidPhoneNumber(phone);
   };
 
@@ -58,7 +56,8 @@ const PhonerNumberComp: React.FC<IProps> = ({
         <IonCol size="5">
           <SmallTextInput
             disabled={sessionItem.tutorialStep !== 4 || loading > 0}
-            label="Phone Number(+79149625769)"
+            label="Phone Number"
+            placeholder="+79149625769"
             name="phoneNumber"
             value={phone}
             onChange={(evt: any) => {
@@ -68,13 +67,6 @@ const PhonerNumberComp: React.FC<IProps> = ({
           />
           {phone !== '' && !isValidPhoneNumber(phone) && (
             <ErrorTxt>Invalid Phone Number</ErrorTxt>
-          )}
-          {error !== '' && <ErrorTxt>{error}</ErrorTxt>}
-          {alreadyHasPhone && (
-            <Text12>
-              If you want to update phone number, please type phone number and
-              click "Send Verification" button.
-            </Text12>
           )}
         </IonCol>
         <ActionBtnCol size="auto">
@@ -92,6 +84,7 @@ const PhonerNumberComp: React.FC<IProps> = ({
                 sessionItem.loginCred?.email || '',
                 phone
               );
+              console.log('updatePhoneNumberRes', updatePhoneNumberRes);
 
               setShowVerifyInput(true);
               showNotify(
@@ -125,7 +118,8 @@ const PhonerNumberComp: React.FC<IProps> = ({
                 setLoading(2);
                 const verifyCodeRes = (await verifyCode(
                   code,
-                  sessionItem.did
+                  sessionItem.did,
+                  phone
                 )) as IVerifyCodeResponse;
 
                 if (
@@ -153,6 +147,14 @@ const PhonerNumberComp: React.FC<IProps> = ({
               Verify your SMS code
             </SmallLightButton>
           </ActionBtnCol>
+        </Container>
+      )}
+
+      {error !== '' && (
+        <Container class="ion-justify-content-start">
+          <IonCol size="6">
+            <ErrorTxt>{error}</ErrorTxt>
+          </IonCol>
         </Container>
       )}
     </>
