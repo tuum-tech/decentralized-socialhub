@@ -20,19 +20,11 @@ import { ArrowButton, ButtonLink, SignInButton } from 'src/elements/buttons';
 import { Text16 } from 'src/elements/texts';
 import { AccountType } from 'src/services/user.service';
 
-import { requestVerifyCode } from './fetchapi';
+import { requestEmailVerifyCode } from './fetchapi';
 import style from './style.module.scss';
 
 interface MatchParams {
   code: string;
-}
-
-interface IVerifyCodeResponse {
-  data: {
-    return_code: string;
-    name: string;
-    email: string;
-  };
 }
 
 const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
@@ -50,7 +42,9 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
 
   useEffect(() => {
     (async () => {
-      let response = (await requestVerifyCode(code)) as IVerifyCodeResponse;
+      let response = (await requestEmailVerifyCode(
+        code
+      )) as IVerifyCodeResponse;
       if (response.data.return_code === 'CODE_CONFIRMED') {
         const { name, email } = response.data;
         setCredentials({

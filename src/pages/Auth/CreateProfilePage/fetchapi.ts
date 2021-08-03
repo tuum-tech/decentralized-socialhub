@@ -1,12 +1,12 @@
 import request, { BaseplateResp } from 'src/baseplate/request';
 import { TuumTechScriptService } from 'src/services/script.service';
 
-export function requestCreateUser(
+export function requestCreateEmailUser(
   name: string,
   email: string
 ): Promise<BaseplateResp> {
   return request(
-    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/create/user`,
+    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/credential/create`,
     {
       method: 'POST',
       headers: {
@@ -16,7 +16,9 @@ export function requestCreateUser(
       },
       body: JSON.stringify({
         name,
-        email
+        email,
+        phone: '',
+        smsCode: false
       })
     }
   );

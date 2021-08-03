@@ -41,7 +41,7 @@ import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
 import {
-  requestCreateUser,
+  requestCreateEmailUser,
   requestGoogleLogin,
   requestLinkedinLogin,
   requestFacebookLogin
@@ -89,7 +89,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
       return;
     }
     setLoading('Creating new profile now');
-    let response = (await requestCreateUser(
+    let response = (await requestCreateEmailUser(
       name,
       email
     )) as ICreateUserResponse;

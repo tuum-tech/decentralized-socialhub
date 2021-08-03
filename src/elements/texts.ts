@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 export const Text12 = styled.p`
   font-weight: 400;
-  font-size: 12px;
+  font-size: 12px !important;
   line-height: 20px;
 `;
 

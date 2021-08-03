@@ -222,7 +222,7 @@ let run = async () => {
         },
         update: {
           $set: {
-            'loginCred.email': '$params.newEmail',
+            'loginCred.email': '$params.email',
             status: 'WAITING_CONFIRMATION',
             code: '$params.code'
           }
@@ -230,27 +230,7 @@ let run = async () => {
       }
     }
   });
-  await client.Scripting.SetScript({
-    name: 'update_verify_user',
-    allowAnonymousUser: true,
-    allowAnonymousApp: true,
-    executable: {
-      type: 'update',
-      name: 'update_verify_user',
-      output: false,
-      body: {
-        collection: 'users',
-        filter: {
-          did: '$params.did'
-        },
-        update: {
-          $set: {
-            code: '$params.code'
-          }
-        }
-      }
-    }
-  });
+
   await client.Scripting.SetScript({
     name: 'delete_users',
     allowAnonymousUser: true,
@@ -424,7 +404,7 @@ let run = async () => {
     }
   });
   await client.Scripting.SetScript({
-    name: 'verify_code', // is being used in backend
+    name: 'verify_email_code', // is being used in backend
     allowAnonymousUser: true,
     allowAnonymousApp: true,
     executable: {
@@ -454,6 +434,47 @@ let run = async () => {
             update: {
               $set: {
                 status: 'CONFIRMED'
+              }
+            }
+          }
+        }
+      ]
+    }
+  });
+
+  await client.Scripting.SetScript({
+    name: 'verify_sms_code', // is being used in backend
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'aggregated',
+      name: 'find_and_update_code',
+      body: [
+        {
+          type: 'find',
+          name: 'find_code',
+          output: true,
+          body: {
+            collection: 'users',
+            filter: {
+              code: '$params.code',
+              did: '$params.did'
+            }
+          }
+        },
+        {
+          type: 'update',
+          name: 'update_status',
+          output: false,
+          body: {
+            collection: 'users',
+            filter: {
+              code: '$params.code'
+            },
+            update: {
+              $set: {
+                status: 'CONFIRMED',
+                'loginCred.phone': '$params.phone'
               }
             }
           }

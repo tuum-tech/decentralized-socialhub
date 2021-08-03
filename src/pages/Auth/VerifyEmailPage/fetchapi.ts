@@ -1,8 +1,8 @@
 import request, { BaseplateResp } from 'src/baseplate/request';
 
-export function requestVerifyCode(code: string): Promise<BaseplateResp> {
+export function requestEmailVerifyCode(code: string): Promise<BaseplateResp> {
   return request(
-    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/verify/email`,
+    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/credential/verify`,
     {
       method: 'POST',
       headers: {
@@ -11,7 +11,7 @@ export function requestVerifyCode(code: string): Promise<BaseplateResp> {
         Accept: 'application/json'
       },
       body: JSON.stringify({
-        code: code
+        code
       })
     }
   );

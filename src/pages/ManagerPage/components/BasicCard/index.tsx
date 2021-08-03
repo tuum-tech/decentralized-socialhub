@@ -12,6 +12,7 @@ import {
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import SmallTextInput from 'src/elements/inputs/SmallTextInput';
 import { SmallLightButton } from 'src/elements/buttons';
+import PhonerNumberComp from './PhonerNumberComp';
 
 interface IProps {
   sessionItem: ISessionItem;
@@ -81,6 +82,7 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
               />
             </IonCol>
           </IonRow>
+
           <IonRow class="ion-justify-content-start">
             <IonCol size="7">
               <SmallTextInput
@@ -104,8 +106,8 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
               {/* <MigrateButton>Migrate Vault</MigrateButton> */}
             </IonCol>
           </IonRow>
+          <PhonerNumberComp sessionItem={sessionItem} updateFunc={updateFunc} />
         </IonGrid>
-        {/* {basicDTO.about} */}
       </IonCardContent>
     </IonCard>
   );

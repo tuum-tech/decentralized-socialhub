@@ -2,10 +2,11 @@ import request, { BaseplateResp } from 'src/baseplate/request';
 
 export function requestUpdateEmail(
   did: string,
-  newEmail: string
+  email: string,
+  phone: string
 ): Promise<BaseplateResp> {
   return request(
-    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/update/email`,
+    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/credential/update`,
     {
       method: 'POST',
       headers: {
@@ -15,7 +16,9 @@ export function requestUpdateEmail(
       },
       body: JSON.stringify({
         did,
-        newEmail
+        email,
+        phone,
+        smsCode: false
       })
     }
   );
