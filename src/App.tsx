@@ -226,7 +226,7 @@ const App: React.FC = () => {
               component={SupportForum}
               exact={true}
             />
-            <Route path="/terms-of-use" component={TermsPage} />
+            <Route path="/terms-of-use" component={TermsPage} exact={true} />
             <Route path="/verify/email/:code" component={VerifyEmailPage} />
             <Route path="/update/email/:code" component={UpdateEmailPage} />
 
