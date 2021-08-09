@@ -69,6 +69,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
 import { DidService } from './services/did.service.new';
+import LoadDid from './pages/LoadDid';
 
 const StyledToastContainer = styled(ToastContainer)`
   & .Toastify__toast-body {
@@ -233,6 +234,7 @@ const App: React.FC = () => {
             {/* ====== Public URLs ==== */}
             <Route path="/" component={CreateProfilePage} exact={true} />
             <Route path="/did/:did" component={PublicPage} exact={true} />
+            <Route path="/load" component={LoadDid} />
             <Route component={DefaultPage} />
           </IonRouterOutlet>
         </Switch>

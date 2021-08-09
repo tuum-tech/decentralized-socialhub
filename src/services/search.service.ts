@@ -1,5 +1,5 @@
-import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
-import { HiveClient } from '@elastos/elastos-hive-js-sdk';
+import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/Services/Scripting.Service';
+import { HiveClient } from '@elastosfoundation/elastos-hive-js-sdk';
 
 import { HiveService } from './hive.service';
 import { getItemsFromData } from '../utils/script';
