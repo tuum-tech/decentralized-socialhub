@@ -1,7 +1,10 @@
 const jwt_decode = require('jwt-decode');
 const { ElastosClient } = require('@elastosfoundation/elastos-js-sdk');
 const config = require('./config.json');
-const { HiveClient, OptionsBuilder } = require('@elastos/elastos-hive-js-sdk');
+const {
+  HiveClient,
+  OptionsBuilder
+} = require('@elastosfoundation/elastos-hive-js-sdk');
 
 //const { testHelper } = require('./testsHelper');
 

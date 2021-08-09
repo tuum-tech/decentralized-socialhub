@@ -1,10 +1,15 @@
 const jwt_decode = require('jwt-decode');
 const { ElastosClient } = require('@elastosfoundation/elastos-js-sdk');
-const { HiveClient, OptionsBuilder } = require('@elastos/elastos-hive-js-sdk');
+const {
+  HiveClient,
+  OptionsBuilder
+} = require('@elastosfoundation/elastos-hive-js-sdk');
 
 const fetch = require('node-fetch');
 
+// eslint-disable-next-line no-undef
 if (!globalThis.fetch) {
+  // eslint-disable-next-line no-undef
   globalThis.fetch = fetch;
 }
 
@@ -32,7 +37,7 @@ let generateUserVerifiablePresentation = async (
   );
 };
 
-let getApplicationDIDDocument = async (appDid) => {
+let getApplicationDIDDocument = async appDid => {
   let document = ElastosClient.didDocuments.newDIDDocument(appDid);
   return ElastosClient.didDocuments.sealDocument(appDid, document);
 };
@@ -57,5 +62,5 @@ module.exports.testHelper = {
     );
     let token = await HiveClient.getAuthenticationToken(options, vp);
     return await HiveClient.createInstance(token, url);
-  },
+  }
 };
