@@ -60,6 +60,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   const saveSelection = async () => {
     setErrorMessage('');
     let endpoint = getEndpoint();
+
     let endpointValid = isEndpointValid(endpoint);
     if (!endpointValid || !props.setLoading) {
       setErrorMessage('Invalid hive address');
@@ -106,7 +107,6 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         return;
       }
     }
-
     try {
       let userToken = await generateUserToken(
         props.session.mnemonics,
@@ -178,7 +178,8 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     } catch (error) {
       await DidDocumentService.reloadUserDocument(props.session);
       setErrorMessage(
-        'We are not able to process your request at moment. Please try again later'
+        'We are not able to process your request at moment. Please try again later. Exception: ' +
+          error
       );
     }
 

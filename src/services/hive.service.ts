@@ -2,7 +2,7 @@ import {
   HiveClient,
   OptionsBuilder,
   IOptions
-} from '@elastos/elastos-hive-js-sdk';
+} from '@elastosfoundation/elastos-hive-js-sdk';
 //import { VerifiablePresentation } from '@elastosfoundation/did-js-sdk/typings';
 import jwt_decode from 'jwt-decode';
 
@@ -114,8 +114,12 @@ export class HiveService {
     let didService = new DidService();
     let appDid = await didService.loadDid(mnemonic);
     let appDocument = await didService.getDidDocument(appDid.did, false);
-
     let docChallenge = JSON.parse(appDocument.toString(true));
+
+    docChallenge.verifiableCredential.forEach((vc: any) => {
+      delete vc.proof.created;
+    });
+
     let response = await HiveClient.getApplicationChallenge(
       options,
       docChallenge

@@ -1,4 +1,4 @@
-import { IRunScriptResponse } from '@elastos/elastos-hive-js-sdk/dist/Services/Scripting.Service';
+import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 import { ActivityResponse } from 'src/pages/ActivityPage/types';
 import { getVerifiedCredential } from 'src/utils/credential';
 
