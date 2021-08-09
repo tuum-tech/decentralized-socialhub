@@ -28,7 +28,13 @@ import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 import { fetchSimpleApi } from './fetchapi';
 import { DidService } from 'src/services/did.service.new';
-import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
+import {
+  DID,
+  DIDDocument,
+  DIDURL,
+  Issuer,
+  VerifiableCredential
+} from '@elastosfoundation/did-js-sdk/';
 import { HiveService } from 'src/services/hive.service';
 
 const LoadDid: React.FC<InferMappedProps> = ({
@@ -41,18 +47,63 @@ const LoadDid: React.FC<InferMappedProps> = ({
     (async () => {
       debugger;
       let service = new DidService();
-      //let did = await service.loadDid("scorpion flock piano man calm label basket sentence curious stove inform whisper");
-      let did = await service.loadDid(
-        'curious push water point border mutual install govern message ordinary fish small'
+      let did_app = await service.loadDid(
+        'scorpion flock piano man calm label basket sentence curious stove inform whisper'
       );
-      console.log('did ' + did.did);
+      let did_user = await service.loadDid(
+        'deliver crane orphan dismiss proud circle lawn cabbage fancy color clever tree'
+      );
+
+      //let did = await service.loadDid(
+      //  'curious push water point border mutual install govern message ordinary fish small'
+      //);
+      console.log('did app' + did_app.did);
+      console.log('did user' + did_user.did);
 
       let store = await DidService.getStore();
-      let didDocument = await store.loadDid(did.did);
+      let appDocument = await store.loadDid(did_app.did);
+      let userDocument = await store.loadDid(did_user.did);
 
-      console.log('didDoc ' + didDocument.toString(true));
+      console.log('app doc valid: ' + appDocument.isValid());
+      console.log('user doc valid: ' + userDocument.isValid());
 
-      setDocument(didDocument.toString(true));
+      console.log('app doc ' + appDocument.toString(true));
+      console.log('user doc ' + userDocument.toString(true));
+
+      let id: DIDURL = DIDURL.from(
+        '#primary',
+        DID.from(did_user.did as string) as DID
+      ) as DIDURL;
+      let issuer = new Issuer(userDocument, id);
+      let vcBuilder = new VerifiableCredential.Builder(
+        issuer,
+        DID.from(did_app.did) as DID
+      );
+      let vc = await vcBuilder
+        .expirationDate(new Date('2026-01-01'))
+        .type('AppIdCredential')
+        .property('appDid', did_app.did)
+        .property('appInstanceDid', did_app.did)
+        .id(
+          DIDURL.from(
+            '#app-id-credential',
+            DID.from(did_app.did) as DID
+          ) as DIDURL
+        )
+        .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+      debugger;
+      console.log(await vc.isValid());
+      console.log(vc.toString(true));
+
+      let a = JSON.parse(vc.toString(true));
+      delete a.proof.created;
+
+      let verif = await VerifiableCredential.parseContent(JSON.stringify(a));
+      console.log(verif.toString(true));
+
+      console.log(await verif.isValid());
+
+      setDocument(vc.toString(true));
 
       let isValidHiveAddress = await HiveService.isHiveAddressValid(
         'https://vault.tuum.tech'
