@@ -170,6 +170,7 @@ const CreatePasswordPage: React.FC<PageProps> = ({
                   passhash: '',
                   onBoardingCompleted: false,
                   tutorialStep: 1,
+                  timestamp: Date.now(),
                   ...props.location.state
                 };
                 setStatus(1);

@@ -536,7 +536,8 @@ export const defaultUserInfo: ISessionItem = {
   mnemonics: '',
   passhash: '',
   onBoardingCompleted: false,
-  tutorialStep: 1
+  tutorialStep: 1,
+  timestamp: Date.now()
 };
 
 export const defaultFullProfile = {

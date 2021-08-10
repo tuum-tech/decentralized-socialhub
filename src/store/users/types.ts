@@ -19,5 +19,6 @@ export const defaultUserInfo: ISessionItem = {
   passhash: '',
   onBoardingCompleted: false,
   tutorialStep: 1,
-  pageTemplate: 'default'
+  pageTemplate: 'default',
+  timestamp: Date.now()
 };
