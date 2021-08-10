@@ -94,6 +94,7 @@ interface ISessionItem {
   status?: string;
   pageTemplate?: string;
   phonNumber?: string;
+  timestamp: number;
 }
 
 interface LoginCred {

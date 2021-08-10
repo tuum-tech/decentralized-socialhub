@@ -130,7 +130,8 @@ let run = async () => {
           avatar: '$params.avatar',
           code: '$params.code',
           status: '$params.status',
-          pageTemplate: '$params.pageTemplate'
+          pageTemplate: '$params.pageTemplate',
+          timestamp: '$params.timestamp'
         }
       }
     }
@@ -247,6 +248,23 @@ let run = async () => {
         options: {
           limit: '$params.limit',
           skip: '$params.skip'
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'delete_expired_users',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'delete',
+      name: 'delete_expired_users',
+      output: true,
+      body: {
+        collection: 'users',
+        filter: {
+          did: '',
+          timestamp: { $lt: '$params.timestamp' }
         }
       }
     }

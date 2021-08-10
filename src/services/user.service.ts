@@ -339,7 +339,8 @@ export class UserService {
       status: 'Created',
       mnemonics,
       coverPhoto: '',
-      pageTemplate: 'default'
+      pageTemplate: 'default',
+      timestamp: Date.now()
     };
     let curTime = new Date().getTime();
     let messages = [];
