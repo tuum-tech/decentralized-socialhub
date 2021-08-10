@@ -1,3 +1,4 @@
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import {
   HiveClient,
   OptionsBuilder,
@@ -116,9 +117,22 @@ export class HiveService {
     let appDocument = await didService.getDidDocument(appDid.did, false);
     let docChallenge = JSON.parse(appDocument.toString(true));
 
-    docChallenge.verifiableCredential.forEach((vc: any) => {
-      delete vc.proof.created;
-    });
+    //console.log("is challenge valid:" + appDocument.isValid());
+    //console.log("DOC Chalenge before:" + JSON.stringify(docChallenge));
+
+    if (!appDocument.isValid()) {
+      docChallenge.verifiableCredential.forEach((vc: any) => {
+        delete vc.proof.created;
+      });
+
+      let didDocumentFixed = await DIDDocument.parseContent(
+        JSON.stringify(docChallenge)
+      );
+      if (!didDocumentFixed.isValid) {
+        console.error('doc is not valid');
+      }
+    }
+    //console.log("DOC Chalenge after:" + JSON.stringify(docChallenge));
 
     let response = await HiveClient.getApplicationChallenge(
       options,
