@@ -8,6 +8,7 @@ interface Props {
 const LeftArrow: React.FC<Props> = ({ fill = 'white', onClick }) => {
   return (
     <div
+      style={{ cursor: 'pointer' }}
       onClick={() => {
         if (onClick) onClick();
       }}
