@@ -35,7 +35,6 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
   const viewWords = () => {
     return (
       <div>
-        <LeftArrow fill="black" />
         <h2 className="mb-15px mt-25px">Decentralized Identity (DID)</h2>
         <p>
           These are your secret keys(also called mnemonics) that control your
@@ -71,7 +70,12 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
   const verifyWords = () => {
     return (
       <div>
-        <LeftArrow fill="black" />
+        <LeftArrow
+          fill="black"
+          onClick={() => {
+            setIsVerifying(false);
+          }}
+        />
         <h2 className="mb-15px mt-25px">
           Re-enter your secret keys(12 word mnemonics)
         </h2>

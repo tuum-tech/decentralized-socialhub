@@ -63,7 +63,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
   const [full_profile, setfull_profile] = useState(defaultFullProfile);
   const [didDocument, setDidDocument] = useState<any>({});
-  const [publishStatus, setPublishStatus] = useState(RequestStatus.Pending);
+  const [publishStatus, setPublishStatus] = useState(RequestStatus.NotFound);
   const [onBoardVisible, setOnBoardVisible] = useState(false);
 
   const [followingDids, setFollowingDids] = useState<string[]>([]);
@@ -187,6 +187,8 @@ const ProfilePage: React.FC<InferMappedProps> = ({
         }
       }
     })();
+
+    refreshStatus(); //making initial request for fast retrieval and avoid delay of 5 sec
     setTimerForStatus();
     setTimerForDid();
     // eslint-disable-next-line react-hooks/exhaustive-deps
