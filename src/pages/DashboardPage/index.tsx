@@ -63,7 +63,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
   const [full_profile, setfull_profile] = useState(defaultFullProfile);
   const [didDocument, setDidDocument] = useState<any>({});
-  const [publishStatus, setPublishStatus] = useState(RequestStatus.Pending);
+  const [publishStatus, setPublishStatus] = useState(RequestStatus.NotFound);
   const [onBoardVisible, setOnBoardVisible] = useState(false);
 
   const [followingDids, setFollowingDids] = useState<string[]>([]);
@@ -114,16 +114,22 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
       if (actual.requestStatus === RequestStatus.Completed) {
         AssistService.removePublishTask(props.session.did);
-        await updateUserToComplete();
+
+        let newSession = JSON.parse(JSON.stringify(props.session));
+
+        if (!newSession.badges!.didPublishTimes!._1times.archived)
+          newSession.badges!.didPublishTimes!._1times.archived = new Date().getTime();
+
+        await updateUserToComplete(newSession);
         return;
       }
     }
   };
 
-  const updateUserToComplete = async () => {
-    if (props.session && props.session.did !== '') {
+  const updateUserToComplete = async (newSession = props.session) => {
+    if (newSession && newSession.did !== '') {
       let session = {
-        ...props.session,
+        ...newSession,
         isDIDPublished: true,
         onBoardingCompleted: true // WORKAROUND: when Onboarding window is closed before publishing, it sets onBoardingCompleted: true, but the session here dont get the updated session
       };
@@ -132,6 +138,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
       eProps.setSession({
         session: await userService.updateSession(session)
       });
+
       await DidDocumentService.reloadUserDocument(session);
     }
   };
@@ -187,6 +194,8 @@ const ProfilePage: React.FC<InferMappedProps> = ({
         }
       }
     })();
+
+    refreshStatus(); //making initial request for fast retrieval and avoid delay of 5 sec
     setTimerForStatus();
     setTimerForDid();
     // eslint-disable-next-line react-hooks/exhaustive-deps

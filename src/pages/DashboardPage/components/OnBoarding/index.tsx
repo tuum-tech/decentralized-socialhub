@@ -147,9 +147,10 @@ const OnBoarding: React.FC<Props> = ({
           </IonButton>
         </div>
       )}
-      {(stage > 3 || sessionItem.onBoardingCompleted) &&
-        sessionItem.tutorialStep < 4 &&
-        publishStatus !== RequestStatus.Completed && (
+      {publishStatus !== RequestStatus.Completed &&
+        publishStatus !== RequestStatus.NotFound &&
+        (stage > 3 || sessionItem.onBoardingCompleted) &&
+        sessionItem.tutorialStep < 4 && (
           <div
             className={clsx(
               style['onboarding-container'],
@@ -192,9 +193,9 @@ const OnBoarding: React.FC<Props> = ({
             </IonButton> */}
           </div>
         )}
-      {(stage > 3 || sessionItem.onBoardingCompleted) &&
-        sessionItem.tutorialStep < 4 &&
-        publishStatus === RequestStatus.Completed && (
+      {publishStatus === RequestStatus.Completed &&
+        (stage > 3 || sessionItem.onBoardingCompleted) &&
+        sessionItem.tutorialStep < 4 && (
           <div
             className={clsx(
               style['onboarding-container'],

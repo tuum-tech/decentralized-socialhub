@@ -48,44 +48,48 @@ export class TuumTechScriptService {
     let prevUsers = [];
     const { meta, data } = get_users_script_response;
     if (meta && meta.code === 200 && meta.message === 'OK') {
-      const { users_found } = data;
-      if (users_found && users_found.items && users_found.items.length > 0) {
-        prevUsers = users_found.items.map((userItem: any) => {
-          const newUserItem = {
-            status: userItem.status || '',
-            did: userItem.did || '',
-            email: TuumTechScriptService.getValueFromLoginCred(
-              userItem,
-              'email'
-            ),
-            facebook: TuumTechScriptService.getValueFromLoginCred(
-              userItem,
-              'facebook'
-            ),
-            google: TuumTechScriptService.getValueFromLoginCred(
-              userItem,
-              'google'
-            ),
-            twitter: TuumTechScriptService.getValueFromLoginCred(
-              userItem,
-              'twitter'
-            ),
-            linkedin: TuumTechScriptService.getValueFromLoginCred(
-              userItem,
-              'linkedin'
-            ),
-            github: TuumTechScriptService.getValueFromLoginCred(
-              userItem,
-              'github'
-            ),
-            discord: TuumTechScriptService.getValueFromLoginCred(
-              userItem,
-              'discord'
-            ),
-            _id: userItem._id.$oid || ''
-          };
-          return newUserItem;
-        });
+      if (data) {
+        const { users_found } = data;
+        if (users_found && users_found.items && users_found.items.length > 0) {
+          prevUsers = users_found.items.map((userItem: any) => {
+            const newUserItem = {
+              status: userItem.status || '',
+              did: userItem.did || '',
+              email: TuumTechScriptService.getValueFromLoginCred(
+                userItem,
+                'email'
+              ),
+              facebook: TuumTechScriptService.getValueFromLoginCred(
+                userItem,
+                'facebook'
+              ),
+              google: TuumTechScriptService.getValueFromLoginCred(
+                userItem,
+                'google'
+              ),
+              twitter: TuumTechScriptService.getValueFromLoginCred(
+                userItem,
+                'twitter'
+              ),
+              linkedin: TuumTechScriptService.getValueFromLoginCred(
+                userItem,
+                'linkedin'
+              ),
+              github: TuumTechScriptService.getValueFromLoginCred(
+                userItem,
+                'github'
+              ),
+              discord: TuumTechScriptService.getValueFromLoginCred(
+                userItem,
+                'discord'
+              ),
+              _id: userItem._id.$oid || ''
+            };
+            return newUserItem;
+          });
+        }
+      } else {
+        return [];
       }
     } else {
       // throw new Error('Error while running get_users script')
