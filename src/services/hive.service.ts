@@ -44,10 +44,12 @@ export class HiveService {
   static async isHiveAddressValid(address: string): Promise<boolean> {
     try {
       let challenge = await HiveService.getHiveChallenge(address);
+      console.log('challenge: ', challenge);
       let isValid: boolean =
         challenge.nonce !== undefined && challenge.nonce.length > 0;
       return isValid;
     } catch (error) {
+      console.log('error: ', error);
       return false;
     }
   }
