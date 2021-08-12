@@ -102,6 +102,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                 updateFunc={async (newUserInfo: ISessionItem) => {
                   const newEmail = newUserInfo.loginCred?.email!;
                   const oldEmail = userInfo.loginCred?.email!;
+
                   if (newEmail !== oldEmail) {
                     let response = (await requestUpdateEmail(
                       userInfo.did,
@@ -131,6 +132,8 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                   }
                   await TuumTechScriptService.updateTuumUser(newUserInfo);
                   await updateSession({ session: newUserInfo });
+
+                  showNotify('Basic info is successfuly saved', 'success');
                 }}
               ></BasicCard>
             ) : (
