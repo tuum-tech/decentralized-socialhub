@@ -10,7 +10,8 @@ import {
   IonItem,
   IonCardContent,
   IonText,
-  IonButton
+  IonButton,
+  IonAlert
 } from '@ionic/react';
 import styled from 'styled-components';
 
@@ -53,6 +54,8 @@ interface Props {
 
 const SettingsAccount: React.FC<Props> = ({ useSession }) => {
   const [loading, setLoading] = useState('');
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+
   return (
     <IonContent className={style['settingsaccount']}>
       <IonGrid className={style['tab-grid']}>
@@ -136,14 +139,38 @@ const SettingsAccount: React.FC<Props> = ({ useSession }) => {
                       have to enter your personal data again during that time.
                     </IonText>
                     <br></br>
+                    <IonAlert
+                      isOpen={isAlertOpen}
+                      onDidDismiss={() => setIsAlertOpen(false)}
+                      cssClass="my-custom-class"
+                      header={'Delete'}
+                      subHeader={'Subtitle'}
+                      message={
+                        'Are you sure you want to delete? This operation is irreversible'
+                      }
+                      buttons={[
+                        {
+                          text: 'Cancel',
+                          role: 'cancel',
+                          cssClass: 'secondary',
+                          handler: () => {}
+                        },
+                        {
+                          text: 'Delete',
+                          handler: async () => {
+                            if (!useSession) return;
+                            setLoading('Deleting Account');
+                            await UserService.deleteUser(useSession);
+                            setLoading('');
+                          }
+                        }
+                      ]}
+                    />
                     <DeleteButton
                       className={style['section-button']}
                       disabled={loading !== ''}
                       onClick={async () => {
-                        if (!useSession) return;
-                        setLoading('Deleting Account');
-                        await UserService.deleteUser(useSession);
-                        setLoading('');
+                        setIsAlertOpen(true);
                       }}
                     >
                       {loading === 'Deleting Account'
