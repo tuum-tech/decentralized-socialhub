@@ -2,17 +2,11 @@
  * Page
  */
 import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
   IonContent,
   IonHeader,
   IonPage,
   IonTitle,
-  IonToolbar,
-  IonButton
+  IonToolbar
 } from '@ionic/react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -26,11 +20,9 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
-import { fetchSimpleApi } from './fetchapi';
 import { DidService } from 'src/services/did.service.new';
 import {
   DID,
-  DIDDocument,
   DIDURL,
   Issuer,
   VerifiableCredential
