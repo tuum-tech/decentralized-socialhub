@@ -27,6 +27,7 @@ import {
 } from './upload';
 import styleWidget from '../WidgetCards.module.scss';
 import { DidService } from 'src/services/did.service.new';
+import { showNotify } from 'src/utils/notify';
 
 const Upload: React.FC<InferMappedProps> = ({
   eProps,
@@ -100,6 +101,18 @@ const Upload: React.FC<InferMappedProps> = ({
     e.preventDefault();
     const reader = new FileReader();
     const file = e.target.files[0];
+
+    let maxSize = 2097152; //in Bytes
+    if (file.size > maxSize) {
+      // workaround for now, hardcoded value can be added as env var
+      console.error('file too big');
+
+      showNotify(
+        `File is too big. Max size is ${maxSize / 1000000}mb`,
+        'success'
+      );
+      return;
+    }
 
     if (reader !== undefined && file !== undefined) {
       reader.onloadend = () => {
