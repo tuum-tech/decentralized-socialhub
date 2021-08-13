@@ -102,15 +102,12 @@ const Upload: React.FC<InferMappedProps> = ({
     const reader = new FileReader();
     const file = e.target.files[0];
 
-    let maxSize = 2097152; //in Bytes
+    let maxSize = 700000; //in Bytes
     if (file.size > maxSize) {
       // workaround for now, hardcoded value can be added as env var
       console.error('file too big');
 
-      showNotify(
-        `File is too big. Max size is ${maxSize / 1000000}mb`,
-        'success'
-      );
+      showNotify(`File is too big. Max size is ${maxSize / 1000}kB`, 'success'); // could improve to show in MB if max size increases
       return;
     }
 
