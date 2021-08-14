@@ -25,6 +25,10 @@ import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service.new';
+import {
+  DIDDocument,
+  VerifiableCredential
+} from '@elastosfoundation/did-js-sdk/';
 
 interface PageProps
   extends InferMappedProps,
@@ -67,10 +71,21 @@ const DiscordCallback: React.FC<PageProps> = ({
             CredentialType.Discord,
             discord
           );
+
           let state = await DidDocumentService.getUserDocument(props.session);
-          await didService.addVerfiableCredentialToDIDDocument(
-            state.diddocument,
+
+          let didDocumentJson = JSON.parse(state.diddocument);
+          let store = await DidService.getStore();
+          let didDocument: DIDDocument = await store.loadDid(
+            didDocumentJson.id
+          );
+
+          let verifiableCredential: VerifiableCredential = await VerifiableCredential.parseContent(
             vc
+          );
+          await didService.addVerfiableCredentialToDIDDocument(
+            didDocument,
+            verifiableCredential
           );
           DidDocumentService.updateUserDocument(state.diddocument as any);
 
@@ -87,10 +102,10 @@ const DiscordCallback: React.FC<PageProps> = ({
                 createdAt: 0,
                 updatedAt: 0
               },
-              newSession
+              newSession.did
             );
           }
-          let userService = new UserService(new DidService());
+          let userService = new UserService(didService);
           eProps.setSession({
             session: await userService.updateSession(newSession)
           });
@@ -98,23 +113,24 @@ const DiscordCallback: React.FC<PageProps> = ({
           window.close();
         } else {
           let prevUsers = await getUsersWithRegisteredDiscord(discord);
-          const loginCred = {
-            discord: discord
-          };
           if (prevUsers.length > 0) {
             history.push({
               pathname: '/associated-profile',
               state: {
                 users: prevUsers,
                 name: discord,
-                service: AccountType.Discord,
-                loginCred
+                loginCred: {
+                  discord: discord
+                },
+                service: AccountType.Discord
               }
             });
           } else {
             setCredentials({
               name: discord,
-              loginCred
+              loginCred: {
+                discord: discord
+              }
             });
           }
         }
