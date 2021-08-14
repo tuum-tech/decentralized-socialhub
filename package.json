@@ -99,6 +99,7 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
+    "dev": "nodemon --watch src -e ts,ejs --exec npm run start",
     "build": "node --max_old_space_size=8192 scripts/build.js",
     "test": "node scripts/test.js",
     "gen-page": "node internals/simplegen/index.js pages",
@@ -151,6 +152,7 @@
     "handlebars": "^4.7.7",
     "husky": "^4.2.3",
     "lint-staged": "^10.0.8",
+    "nodemon": "^2.0.12",
     "prettier": "^1.19.1",
     "tslint-react": "^4.1.0"
   },
