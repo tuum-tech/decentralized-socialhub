@@ -30,7 +30,9 @@ const SupportForumPage: React.FC<any> = ({ eProps, ...props }: any) => {
   useEffect(() => {
     (async () => {
       const response: any = await fetchGithubIssues();
-      setGithubIssues(response.data);
+      if (response && response.data && response.data.length > 0) {
+        setGithubIssues(response.data);
+      }
     })();
   }, []);
 
