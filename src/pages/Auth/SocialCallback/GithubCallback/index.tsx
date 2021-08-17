@@ -1,7 +1,6 @@
 /**
  * Page
  */
-
 import React, { useEffect, useState } from 'react';
 import {
   Redirect,
@@ -60,12 +59,14 @@ const GithubCallback: React.FC<PageProps> = ({
         let t = await getToken(code);
         let github = t.data.login;
 
-        if (props.session) {
+        if (props.session && props.session.did !== '') {
           let vc = await DidcredsService.generateVerifiableCredential(
             props.session.did,
             CredentialType.Github,
             github
           );
+
+          console.log('github vc: ', vc);
 
           let state = await DidDocumentService.getUserDocument(props.session);
 
