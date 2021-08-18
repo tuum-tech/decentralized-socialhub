@@ -13,7 +13,7 @@
 }
 .stage1To3 {
   width: 541px;
-  height: 655px;
+  min-height: 655px;
   padding: 50px 56px;
   .stage2-content {
     flex-grow: 1;
