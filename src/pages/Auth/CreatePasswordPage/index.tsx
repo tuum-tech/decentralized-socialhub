@@ -93,6 +93,33 @@ const CreatePasswordPage: React.FC<PageProps> = ({
     }
   };
 
+  const onButtonClick = async () => {
+    if (password === '' || repeatPassword === '') {
+      setError('You should fill the input fields');
+    } else if (password !== repeatPassword) {
+      setError('Password is different');
+    } else {
+      const user = {
+        mnemonics: '',
+        passhash: '',
+        onBoardingCompleted: false,
+        tutorialStep: 1,
+        timestamp: Date.now(),
+        ...props.location.state
+      };
+      setStatus(1);
+      let userService = new UserService(new DidService());
+      const res = await userService.LockWithDIDAndPwd(user, password);
+      if (res && res.did !== '') {
+        eProps.setSession({ session: res });
+        window.localStorage.setItem('isLoggedIn', 'true');
+        setStatus(2);
+      } else {
+        setStatus(0);
+      }
+    }
+  };
+
   if (status === 2) {
     return <Redirect to="/profile" />;
   }
@@ -152,6 +179,9 @@ const CreatePasswordPage: React.FC<PageProps> = ({
               setError('');
               setRepeatPassword(n);
             }}
+            onHitEnter={async () => {
+              await onButtonClick();
+            }}
             placeholder="Enter your password"
           />
           {error !== '' && <ErrorText>{error}</ErrorText>}
@@ -160,30 +190,7 @@ const CreatePasswordPage: React.FC<PageProps> = ({
             hasLogo={false}
             text="Continue"
             onClick={async () => {
-              if (password === '' || repeatPassword === '') {
-                setError('You should fill the input fields');
-              } else if (password !== repeatPassword) {
-                setError('Password is different');
-              } else {
-                const user = {
-                  mnemonics: '',
-                  passhash: '',
-                  onBoardingCompleted: false,
-                  tutorialStep: 1,
-                  timestamp: Date.now(),
-                  ...props.location.state
-                };
-                setStatus(1);
-                let userService = new UserService(new DidService());
-                const res = await userService.LockWithDIDAndPwd(user, password);
-                if (res && res.did !== '') {
-                  eProps.setSession({ session: res });
-                  window.localStorage.setItem('isLoggedIn', 'true');
-                  setStatus(2);
-                } else {
-                  setStatus(0);
-                }
-              }
+              await onButtonClick();
             }}
           />
         </OnBoardLayoutRightContent>

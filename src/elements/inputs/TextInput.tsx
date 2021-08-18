@@ -11,6 +11,7 @@ interface Props {
   hasError?: boolean;
   readonly?: boolean;
   onChange: (e: string) => void;
+  onHitEnter?: () => void;
   className?: string;
   type?:
     | 'number'
@@ -30,6 +31,7 @@ const TextInput: React.FC<Props> = ({
   label,
   value,
   onChange,
+  onHitEnter = () => {},
   flexDirection = 'row',
   hasError = false,
   type = 'text',
@@ -58,6 +60,12 @@ const TextInput: React.FC<Props> = ({
         className={style['textinput_field']}
         placeholder={placeholder}
         readonly={readonly}
+        onKeyUp={event => {
+          event.preventDefault();
+          if (event.key === 'Enter' && onHitEnter) {
+            onHitEnter();
+          }
+        }}
         onIonChange={e => onChange(e.detail.value!)}
       />
     </div>
