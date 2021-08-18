@@ -69,6 +69,16 @@ const UnlockUserPage: React.FC<PageProps> = ({
     return <Redirect to="/profile" />;
   }
 
+  const onDefaultButtonClick = async () => {
+    if (password === '') {
+      setError('You should fill the password');
+      return;
+    } else {
+      setError('');
+      await unlockUser();
+    }
+  };
+
   return (
     <OnBoardLayout>
       <OnBoardLayoutLeft>
@@ -95,6 +105,9 @@ const UnlockUserPage: React.FC<PageProps> = ({
             value={password}
             label="Password"
             onChange={n => setPassword(n)}
+            onHitEnter={async () => {
+              await onDefaultButtonClick();
+            }}
             placeholder="Enter your password"
           />
           {error !== '' && <ErrorTxt>{error}</ErrorTxt>}
@@ -103,13 +116,7 @@ const UnlockUserPage: React.FC<PageProps> = ({
             hasLogo={false}
             text="Continue"
             onClick={async () => {
-              if (password === '') {
-                setError('You should fill the password');
-                return;
-              } else {
-                setError('');
-                await unlockUser();
-              }
+              await onDefaultButtonClick();
             }}
           />
         </OnBoardLayoutRightContent>
