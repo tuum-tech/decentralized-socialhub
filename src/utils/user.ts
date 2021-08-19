@@ -1,4 +1,4 @@
-import { DidService } from 'src/services/did.service';
+import { DidService } from 'src/services/did.service.new';
 
 export type UserType = {
   did: string;
@@ -27,52 +27,58 @@ export const retrieveDocInfo = async (
     },
     avatar: ''
   };
-  if (doc && doc !== undefined && doc.verifiableCredential) {
-    if (doc.verifiableCredential && doc.verifiableCredential.length > 0) {
+  if (doc && doc !== undefined) {
+    if (doc.credentials && doc.credentials.size > 0) {
       let loginCred: any = {};
-      for (let i = 0; i < doc.verifiableCredential.length; i++) {
-        const cv = doc.verifiableCredential[i];
-        if (cv.credentialSubject && cv.credentialSubject.name) {
-          uInfo.name = cv.credentialSubject.name;
+      doc.credentials.forEach((value, key) => {
+        let subject = value.id.getFragment();
+        let properties = value.subject.getProperties();
+        let propertieValue = properties[subject];
+        switch (subject) {
+          case 'name':
+            uInfo.name = propertieValue as string;
+            break;
+          case 'email':
+            loginCred.email = propertieValue as string;
+            break;
+          case 'google':
+            loginCred.google = propertieValue as string;
+            break;
+          case 'twitter':
+            loginCred.twitter = propertieValue as string;
+            break;
+          case 'facebook':
+            loginCred.facebook = propertieValue as string;
+            break;
+          case 'linkedin':
+            loginCred.linkedin = propertieValue as string;
+            break;
+          case 'github':
+            loginCred.github = propertieValue as string;
+            break;
+          case 'discord':
+            loginCred.discord = propertieValue as string;
+            break;
+          case 'avatar':
+            let avatarObject = JSON.parse(propertieValue.toString());
+            let baseStr = avatarObject['data'];
+            if (!baseStr.startsWith('data:image/')) {
+              baseStr = `data:${avatarObject['content-type']};base64,${baseStr}`;
+            }
+            uInfo.avatar = baseStr;
+            break;
+
+          default:
+            break;
         }
-        if (cv.credentialSubject && cv.credentialSubject.email) {
-          loginCred.email = cv.credentialSubject.email;
-        }
-        if (cv.credentialSubject && cv.credentialSubject.google) {
-          loginCred.google = cv.credentialSubject.google;
-        }
-        if (cv.credentialSubject && cv.credentialSubject.twitter) {
-          loginCred.twitter = cv.credentialSubject.twitter;
-        }
-        if (cv.credentialSubject && cv.credentialSubject.facebook) {
-          loginCred.facebook = cv.credentialSubject.facebook;
-        }
-        if (cv.credentialSubject && cv.credentialSubject.linkedin) {
-          loginCred.linkedin = cv.credentialSubject.linkedin;
-        }
-        if (cv.credentialSubject && cv.credentialSubject.github) {
-          loginCred.github = cv.credentialSubject.github;
-        }
-        if (cv.credentialSubject && cv.credentialSubject.discord) {
-          loginCred.discord = cv.credentialSubject.discord;
-        }
-        if (
-          cv.credentialSubject &&
-          cv.credentialSubject.avatar &&
-          cv.credentialSubject.avatar.data
-        ) {
-          let baseStr = cv.credentialSubject.avatar.data;
-          if (!baseStr.startsWith('data:image/')) {
-            baseStr = `data:${cv.credentialSubject.avatar['content-type']};base64,${baseStr}`;
-          }
-          uInfo.avatar = baseStr;
-        }
-      }
+      });
+
       uInfo.loginCred = loginCred;
     }
 
-    if (doc.service && doc.service.length > 0) {
-      uInfo.hiveHost = doc.service[0].serviceEndpoint;
+    if (doc.services && doc.services.size > 0) {
+      let firstService = doc.services.entries().next().value;
+      uInfo.hiveHost = firstService.endpoint;
     }
   }
   return uInfo;

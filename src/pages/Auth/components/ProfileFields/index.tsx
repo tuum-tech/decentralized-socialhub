@@ -21,16 +21,82 @@ import { validateEmail } from 'src/utils/validation';
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import wavinghand from 'src/assets/icon/wavinghand.png';
 import style from './style.module.scss';
+import { UserType } from 'src/utils/user';
+import request, { BaseplateResp } from 'src/baseplate/request';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
+import styled from 'styled-components';
+
+export function requestCreateEmailUser(
+  name: string,
+  email: string
+): Promise<BaseplateResp> {
+  return request(
+    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/credential/create`,
+    {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
+        Accept: 'application/json'
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        phone: '',
+        smsCode: false
+      })
+    }
+  );
+}
+
+const ErrorText = styled(Text16)`
+  text-align: center;
+  color: red;
+  margin-top: 8px;
+`;
+const DisplayText = styled(Text16)`
+  text-align: center;
+  color: green;
+  margin-top: 8px;
+`;
 
 interface Props {
+  userInfo?: UserType;
   setUserInfo: (name: string, email: string) => void;
   isCreate?: boolean;
 }
 
-const UseDetailsForm: React.FC<Props> = ({ setUserInfo, isCreate = true }) => {
-  const [name, setname] = useState('');
-  const [email, setEmail] = useState('');
+const UseDetailsForm: React.FC<Props> = ({
+  setUserInfo,
+  isCreate = true,
+  userInfo
+}) => {
+  const getUserName = () => {
+    if (userInfo !== undefined) {
+      return userInfo.name;
+    }
+    return '';
+  };
+
+  const isUserNameReadOnly = () => {
+    return getUserName() !== '';
+  };
+
+  const getEmail = () => {
+    if (
+      userInfo !== undefined &&
+      userInfo.loginCred !== undefined &&
+      userInfo.loginCred.email !== undefined
+    )
+      return userInfo.loginCred.email;
+    return '';
+  };
+
+  const [name, setname] = useState(getUserName());
+  const [email, setEmail] = useState(getEmail());
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState('');
+  const [displayText, setDisplayText] = useState('');
 
   const setField = (fieldName: string, fieldValue: string) => {
     setError('');
@@ -38,8 +104,41 @@ const UseDetailsForm: React.FC<Props> = ({ setUserInfo, isCreate = true }) => {
     if (fieldName === 'email') setEmail(fieldValue);
   };
 
+  const onSubmit = async () => {
+    if (name === '' || email === '') {
+      setError('You should fill all the blanks');
+      return;
+    }
+    if (!validateEmail(email)) {
+      setError('Invalid Email address');
+      return;
+    }
+    setLoading('Creating new profile now');
+    let response = (await requestCreateEmailUser(
+      name,
+      email
+    )) as ICreateUserResponse;
+    if (response.meta.code !== 200) {
+      setError('An error happened when creating user.');
+    }
+
+    if (
+      response &&
+      response.data &&
+      response.data.return_code === 'WAITING_CONFIRMATION'
+    ) {
+      setDisplayText(
+        'Verification email is sent to you. Please confirm to complete your registration.'
+      );
+    } else {
+      setUserInfo(name, email);
+    }
+    setLoading('');
+  };
+
   return (
     <OnBoardLayout className={style['create-profile']}>
+      {loading !== '' && <LoadingIndicator loadingText={loading} />}
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo src={whitelogo} />
         <OnBoardLayoutLeftContent>
@@ -79,6 +178,7 @@ const UseDetailsForm: React.FC<Props> = ({ setUserInfo, isCreate = true }) => {
           <TextInput
             value={name}
             label="Name"
+            readonly={isUserNameReadOnly()}
             onChange={n => setField('name', n)}
             placeholder="Enter your full name"
             hasError={error !== '' && name === ''}
@@ -89,26 +189,25 @@ const UseDetailsForm: React.FC<Props> = ({ setUserInfo, isCreate = true }) => {
               error === 'Not correct Email' ? 'Type valid Email' : 'E-mail'
             }
             onChange={n => setField('email', n)}
+            onHitEnter={async () => {
+              await onSubmit();
+            }}
             placeholder="Enter your email"
             hasError={
               (error !== '' && email === '') || error === 'Not correct Email'
             }
             type="email"
           />
+
+          {error !== '' && <ErrorText>{error}</ErrorText>}
+          {displayText !== '' && <DisplayText>{displayText}</DisplayText>}
+
           <ButtonWithLogo
             text={
               isCreate ? 'Create your profile now' : 'Complete your profile now'
             }
-            onClick={() => {
-              if (name === '' || email === '') {
-                setError('You should fill all the blanks');
-                return;
-              }
-              if (!validateEmail(email)) {
-                setError('Not correct Email');
-                return;
-              }
-              setUserInfo(name, email);
+            onClick={async () => {
+              await onSubmit();
             }}
           />
         </OnBoardLayoutRightContent>

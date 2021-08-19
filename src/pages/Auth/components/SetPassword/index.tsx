@@ -91,6 +91,17 @@ const SetPassword: React.FC<Props> = ({
     }
   };
 
+  const onDefaultButtonClick = () => {
+    if (disabled) return;
+    if (password === '' || repeatPassword === '') {
+      setError('You should fill the input fields');
+    } else if (password !== repeatPassword) {
+      setError('Password is different');
+    } else {
+      next(password);
+    }
+  };
+
   return (
     <OnBoardLayout>
       {loading && <LoadingIndicator loadingText="Encrypting Now..." />}
@@ -148,6 +159,9 @@ const SetPassword: React.FC<Props> = ({
               setError('');
               setRepeatPassword(n);
             }}
+            onHitEnter={() => {
+              onDefaultButtonClick();
+            }}
             placeholder="Enter your password"
           />
 
@@ -156,14 +170,7 @@ const SetPassword: React.FC<Props> = ({
             hasLogo={false}
             text={displayText !== '' ? displayText : 'Continue'}
             onClick={() => {
-              if (disabled) return;
-              if (password === '' || repeatPassword === '') {
-                setError('You should fill the input fields');
-              } else if (password !== repeatPassword) {
-                setError('Password is different');
-              } else {
-                next(password);
-              }
+              onDefaultButtonClick();
             }}
           />
           {error !== '' && <ErrorText>{error}</ErrorText>}
