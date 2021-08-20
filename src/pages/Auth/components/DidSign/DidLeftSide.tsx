@@ -35,8 +35,8 @@ const DidLeftSide: React.FC<Props> = ({ error = false }) => {
             start again.
           </OnBoardLayoutLeftContentDescription>
           <OnBoardLayoutLeftContentDescription className="mt-18px">
-            Unforutantly we can not help if you have forgotton your security
-            words. In a decentralized world we all must be responsable for our
+            Unfortunately, we can not help if you have forgotton your security
+            words. In a decentralized world we all must be responsible for our
             identity.
           </OnBoardLayoutLeftContentDescription>
           <OnBoardLayoutLeftContentIntro

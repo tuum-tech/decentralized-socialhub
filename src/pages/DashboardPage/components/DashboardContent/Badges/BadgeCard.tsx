@@ -52,7 +52,7 @@ const BadgeCard: React.FC<Props> = ({ badges, badgeCategory }) => {
         setBadgeCategoryTitle('Social Badges');
         break;
       case 'didPublishTimes':
-        setBadgeCategoryTitle('DID Pubish');
+        setBadgeCategoryTitle('DID Publish');
         break;
       case 'dStorage':
         setBadgeCategoryTitle('Decentralized Storage');
