@@ -122,7 +122,8 @@ export class DidService implements IDidService {
   };
 
   isDIDPublished = async (did: string): Promise<boolean> => {
-    let document: DIDDocument = await this.getDidDocument(did);
+    let didObject = new DID(did);
+    let document = await didObject.resolve(true);
     return document && document !== undefined;
   };
 
