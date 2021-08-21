@@ -73,7 +73,10 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
     const res = await userService.UnLockWithDIDAndPwd(did, password);
     if (res) {
       afterSuccess(res);
+      return;
     }
+
+    setLoading('');
   };
 
   return (
