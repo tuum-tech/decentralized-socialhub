@@ -7,11 +7,13 @@ import style from './style.module.scss';
 interface AvatarProps {
   did: string;
   width?: string;
+  ready?: boolean;
 }
 
 const Avatar: React.FC<AvatarProps> = ({
   did = '',
-  width = '86px'
+  width = '86px',
+  ready = false
 }: AvatarProps) => {
   const [avatarInfo, setAvatarInfo] = useState<GetAvatarRes>({
     avatar: defaultAvatar,
@@ -31,7 +33,9 @@ const Avatar: React.FC<AvatarProps> = ({
       <img
         src={avatarInfo.avatar}
         className={
-          avatarInfo.didPublished
+          ready
+            ? style['border-primary']
+            : avatarInfo.didPublished
             ? style['border-primary']
             : style['border-danger']
         }
