@@ -213,10 +213,7 @@ const OnBoarding: React.FC<Props> = ({
             </div>
             <div className={clsx(style['stage5-content'], style['v-flex'])}>
               <div className={clsx(style['avatar-container'], style['v-flex'])}>
-                <Avatar
-                  did={sessionItem.did}
-                  ready={RequestStatus.Completed === 'Completed'}
-                />
+                <Avatar did={sessionItem.did} ready={true} />
                 <p className={style['name']}>{sessionItem.name}</p>
                 <p>
                   <PublishingLabel status={RequestStatus.Completed} />
