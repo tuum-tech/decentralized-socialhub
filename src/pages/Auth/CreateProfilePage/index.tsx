@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Redirect } from 'react-router';
 
 import {
   OnBoardLayout,
@@ -159,6 +160,11 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
     }
     setLoading('');
   };
+
+  const isLoggedIn = window.localStorage.getItem('isLoggedIn');
+  if (isLoggedIn) {
+    return <Redirect to="/profile" />;
+  }
 
   if (mode === 1) {
     return (
