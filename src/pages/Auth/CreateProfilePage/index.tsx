@@ -47,6 +47,9 @@ import {
   requestLinkedinLogin,
   requestFacebookLogin
 } from './fetchapi';
+import FooterLinks, {
+  Footer
+} from 'src/components/layouts/OnBoardLayout/FooterLinks';
 
 const ErrorText = styled(Text16)`
   text-align: center;
@@ -202,6 +205,9 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
           <SignInButton width={120} to="/sign-did">
             Sign in Here
           </SignInButton>
+          <Footer>
+            <FooterLinks></FooterLinks>
+          </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>

@@ -29,6 +29,9 @@ import { ButtonLink, ArrowButton } from 'src/elements/buttons';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import wavinghand from 'src/assets/icon/wavinghand.png';
+import FooterLinks, {
+  Footer
+} from 'src/components/layouts/OnBoardLayout/FooterLinks';
 
 const SignHelpPage: React.FC<InferMappedProps> = ({
   eProps,
@@ -60,6 +63,9 @@ const SignHelpPage: React.FC<InferMappedProps> = ({
           <ButtonLink width={26} to="/sign-qr">
             <ArrowButton />
           </ButtonLink>
+          <Footer>
+            <FooterLinks></FooterLinks>
+          </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight></OnBoardLayoutRight>

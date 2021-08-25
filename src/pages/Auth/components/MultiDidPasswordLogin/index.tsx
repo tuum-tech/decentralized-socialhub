@@ -25,6 +25,9 @@ import { UserService } from 'src/services/user.service';
 import FieldDivider from '../FieldDivider';
 import SelectUsers from './SelectUsers';
 import { DidService } from 'src/services/did.service.new';
+import FooterLinks, {
+  Footer
+} from 'src/components/layouts/OnBoardLayout/FooterLinks';
 
 interface Props {
   changeMode: () => void;
@@ -92,6 +95,9 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
           <OnBoardLayoutLeftContentDescription className="mt-25px">
             You can select and login using the password you set
           </OnBoardLayoutLeftContentDescription>
+          <Footer>
+            <FooterLinks></FooterLinks>
+          </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>

@@ -44,6 +44,9 @@ import {
 import { requestForceCreateUser } from './fetchapi';
 import GenerateDid from './components/GenerateDid';
 import style from './style.module.scss';
+import FooterLinks, {
+  Footer
+} from 'src/components/layouts/OnBoardLayout/FooterLinks';
 
 const DisplayText = styled(Text16)`
   text-align: center;
@@ -118,6 +121,9 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
             profile. You have two options, sign in to the associated profile or
             create a new one.
           </OnBoardLayoutLeftContentDescription>
+          <Footer>
+            <FooterLinks></FooterLinks>
+          </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
