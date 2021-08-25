@@ -26,6 +26,9 @@ import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import keyimg from 'src/assets/icon/key.png';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import Check from '../Check';
+import FooterLinks, {
+  Footer
+} from 'src/components/layouts/OnBoardLayout/FooterLinks';
 
 const ErrorText = styled(Text16)`
   text-align: center;
@@ -116,6 +119,9 @@ const SetPassword: React.FC<Props> = ({
             This is a locally stored password that protects your main profile
             account (decentralized identity).
           </OnBoardLayoutLeftContentDescription>
+          <Footer>
+            <FooterLinks></FooterLinks>
+          </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>

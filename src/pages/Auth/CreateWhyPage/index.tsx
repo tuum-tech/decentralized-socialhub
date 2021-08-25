@@ -30,6 +30,9 @@ import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 
 import style from './style.module.scss';
+import FooterLinks, {
+  Footer
+} from 'src/components/layouts/OnBoardLayout/FooterLinks';
 
 const CreateWhyPage: React.FC<InferMappedProps> = ({
   eProps,
@@ -55,6 +58,9 @@ const CreateWhyPage: React.FC<InferMappedProps> = ({
           <ButtonLink width={26} to="/associateds-profile">
             <ArrowButton />
           </ButtonLink>
+          <Footer>
+            <FooterLinks></FooterLinks>
+          </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight></OnBoardLayoutRight>
