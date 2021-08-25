@@ -253,14 +253,25 @@ export class DidService implements IDidService {
     let userDocument: DIDDocument = await store.loadDid(userDid.did); //  gets the user DIDDocument from the store, which was stored in another step
 
     let key = HDKey.newWithMnemonic(userMnemonic, password); // this step (form here to line 269) is the most confusing to me, AFAIK we have to create a private key
-    // for the user and store it on the DidStore, or else the next step "new Issuer"
+
+    // for the user and store it on the DidStore, or else the next step "new Issuer"  will fail
+
     let id: DIDURL = DIDURL.from(
-      // will fail
       '#primary',
       DID.from(userDid.did as string) as DID
     ) as DIDURL;
     store.storePrivateKey(
       id as DIDURL,
+      key.serialize(),
+      process.env.REACT_APP_DID_STORE_PASSWORD as string
+    );
+
+    let id2: DIDURL = DIDURL.from(
+      '#primary',
+      DID.from(appDid.did as string) as DID
+    ) as DIDURL;
+    store.storePrivateKey(
+      id2 as DIDURL,
       key.serialize(),
       process.env.REACT_APP_DID_STORE_PASSWORD as string
     );
@@ -291,6 +302,8 @@ export class DidService implements IDidService {
       // We sign the presentation
       process.env.REACT_APP_DID_STORE_PASSWORD as string // Hive node will check if the presentation and the VerifiableCredential
     ); // are valid and give a token so the user can perform operations on his vault
+
+    console.error('is Valid:' + (await vp5.isValid()));
 
     // ******************************************
     // TEMPORARY CODE: using old elastos js sdk while fixing new did-js-sdk issue
