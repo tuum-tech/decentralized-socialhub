@@ -2,6 +2,7 @@ import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { AssistService } from './assist.service';
 import { DidService } from './did.service.new';
 import { EventsService, IEventCallback } from './events.service';
+import { EventEmitter } from 'events';
 export interface IDIDDocumentState {
   diddocument: any;
   isChanged: boolean;
@@ -15,16 +16,15 @@ export class DidDocumentService {
   private static DOCUMENT_CHANGE_EVENT = 'DocumentChangeEvent';
   private static DIDDOCUMENT_KEY = 'userdiddocument';
 
+  private static eventEmmiter: EventEmitter = new EventEmitter();
   static listenDocumentChange(
     id: string,
     callbackMethod: (data: IDIDDocumentState) => void
   ) {
-    // let callbackItem :IDocumentChangeCallback = {
-    //     callback: (data) =>{
-    //         callbackMethod(data);
-    //     }
-    // }
-    // EventsService.addListener(this.DOCUMENT_CHANGE_EVENT, id, callbackItem)
+    DidDocumentService.eventEmmiter.on(
+      this.DOCUMENT_CHANGE_EVENT,
+      callbackMethod
+    );
   }
 
   static unlistenDocumentChange(id: string) {
@@ -32,7 +32,10 @@ export class DidDocumentService {
   }
 
   private static triggerDocumentChangeEvent(documentstate: IDIDDocumentState) {
-    EventsService.trigger(this.DOCUMENT_CHANGE_EVENT, documentstate);
+    DidDocumentService.eventEmmiter.emit(
+      this.DOCUMENT_CHANGE_EVENT,
+      documentstate
+    );
   }
 
   private static getDocumentState(userDID: string): IDIDDocumentState | null {

@@ -35,6 +35,7 @@
     "eslint-loader": "3.0.3",
     "eslint-plugin-flowtype": "4.6.0",
     "eslint-plugin-jsx-a11y": "6.2.3",
+    "events": "^3.3.0",
     "file-loader": "4.3.0",
     "github-api": "^3.4.0",
     "guid-typescript": "^1.0.9",
