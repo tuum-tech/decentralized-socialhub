@@ -25,6 +25,7 @@ import PublicNavbar from 'src/components/profile/ProfileComponent/PublicNavbar';
 
 import { ContentRow, Container, ProfileComponentContainer } from './layouts';
 import { DidService } from 'src/services/did.service.new';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 interface MatchParams {
   did: string;
@@ -125,7 +126,9 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
         let documentState = await DidDocumentService.getUserDocumentByDid(
           props.match.params.did
         );
-        setDidDocument(JSON.parse(documentState.diddocument));
+        setDidDocument(
+          await DIDDocument.parseContent(documentState.diddocument)
+        );
       }
       setLoading(false);
     })();

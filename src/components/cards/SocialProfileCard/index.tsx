@@ -19,6 +19,7 @@ import { DidDocumentService } from 'src/services/diddocument.service';
 interface Props extends InferMappedProps {
   didDocument: DIDDocument;
   targetUser?: ISessionItem;
+  setSession: (props: { session: ISessionItem }) => void;
   mode?: string;
 }
 
@@ -67,6 +68,7 @@ const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
   };
   useEffect(() => {
     (async () => {
+      debugger;
       if (user.loginCred) {
         debugger;
         const { loginCred } = user;
@@ -135,7 +137,6 @@ const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   if (
     (props.mode === 'edit' || document.getCredentialCount() > 0) &&
     isLoaded
@@ -143,11 +144,7 @@ const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
     return (
       <SocialCard
         sessionItem={user}
-        setSession={({ session }) => {
-          if (!props.targetUser) {
-            eProps.setSession({ session });
-          }
-        }}
+        setSession={props.setSession}
         diddocument={document}
         mode={props.mode}
       />

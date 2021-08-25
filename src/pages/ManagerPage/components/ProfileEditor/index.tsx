@@ -18,7 +18,6 @@ import TemplateManagerCard from '../TemplateManagerCard';
 import PublicFields from '../PublicFields';
 import style from './style.module.scss';
 import { DidDocumentService } from 'src/services/diddocument.service';
-// import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 
 import { showNotify } from 'src/utils/notify';
@@ -196,6 +195,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                 <SocialProfilesCard
                   didDocument={didDocument as DIDDocument}
                   targetUser={session}
+                  setSession={updateSession}
                   mode="edit"
                 />
                 {profile && profile.educationDTO && (
