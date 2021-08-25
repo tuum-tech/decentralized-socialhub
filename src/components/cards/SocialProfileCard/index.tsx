@@ -9,9 +9,10 @@ import { InferMappedProps, SubState } from './types';
 
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import SocialCard from './SocialCard';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
 
 interface Props extends InferMappedProps {
-  didDocument: any;
+  didDocument: DIDDocument;
   targetUser?: ISessionItem;
   mode?: string;
 }
@@ -73,19 +74,14 @@ const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
           );
           vcs.push(vc);
         }
-        setDocument({
-          ...document,
-          verifiableCredential: vcs
-        });
+
+        //setDocument(document);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (
-    props.mode === 'edit' ||
-    (document.verifiableCredential && document.verifiableCredential.length > 0)
-  ) {
+  if (props.mode === 'edit' || document.getCredentialCount() > 0) {
     return (
       <SocialCard
         sessionItem={user}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { getVerifiedCredential } from 'src/utils/socialprofile';
+//import { getVerifiedCredential } from 'src/utils/socialprofile';
 
 import style from './Socials.module.scss';
 import linkedinIcon from 'src/assets/icon/Linkedin.svg';
@@ -10,6 +10,7 @@ import googleIcon from 'src/assets/icon/Google.svg';
 import githubIcon from 'src/assets/icon/Github.svg';
 import discordIcon from 'src/assets/icon/Discord.svg';
 import shieldIcon from 'src/assets/icon/shield.svg';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 const SocialContainer = styled.div`
   display: flex;
@@ -21,7 +22,7 @@ const ProfileItem = styled.div`
   margin-right: 10px;
 `;
 interface Props {
-  diddocument: any;
+  diddocument: DIDDocument;
   cb: (count: number) => void;
 }
 const Socials: React.FC<Props> = ({ diddocument, cb }) => {
@@ -65,7 +66,7 @@ const Socials: React.FC<Props> = ({ diddocument, cb }) => {
   }, [diddocument]);
 
   const createIonItem = (key: string, icon: any) => {
-    let vc = getVerifiedCredential(key, diddocument);
+    let vc = diddocument.selectCredentials(key, '')[0]; //  getVerifiedCredential(key, diddocument);
     if (!vc) return;
     return (
       <ProfileItem className={style['social-profile-item']}>
@@ -75,7 +76,7 @@ const Socials: React.FC<Props> = ({ diddocument, cb }) => {
           className={style['social-profile-icon']}
           height={50}
         />
-        {vc.isVerified && (
+        {vc.isValid() && (
           <img
             alt="shield icon"
             src={shieldIcon}
@@ -88,7 +89,9 @@ const Socials: React.FC<Props> = ({ diddocument, cb }) => {
   };
 
   const containsVerifiedCredential = (id: string): boolean => {
-    return getVerifiedCredential(id, diddocument) !== undefined;
+    //return getVerifiedCredential(id, diddocument) !== undefined;
+
+    return diddocument.selectCredentials(id, '')[0] !== undefined;
   };
 
   return (

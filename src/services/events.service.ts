@@ -18,6 +18,9 @@ export class EventsService {
     id: string,
     callback: IEventCallback
   ) {
+    if (this.events[eventName] === undefined) {
+      this.events[eventName] = {} as any;
+    }
     this.events[eventName][id] = callback;
   }
 

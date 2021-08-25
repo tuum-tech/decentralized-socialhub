@@ -17,6 +17,7 @@ import {
 } from '@elastosfoundation/did-js-sdk/';
 
 import { IDidService, IDID } from './did.service';
+import { DidDocumentService } from './diddocument.service';
 
 export class DidService implements IDidService {
   static InitializeMainnet() {
@@ -160,17 +161,23 @@ export class DidService implements IDidService {
   async addVerfiableCredentialToDIDDocument(
     diddocument: DIDDocument,
     vc: VerifiableCredential
-  ) {
+  ): Promise<DIDDocument> {
     if (diddocument.getProof()) {
       diddocument.proofs?.clear();
     }
 
-    let didDocBuilder = await DIDDocumentBuilder.newFromDocument(diddocument);
-    didDocBuilder.addCredential(vc);
+    let store = await DidService.getStore();
+    store.storeDid(diddocument);
+    let d = await store.loadDid(diddocument.getSubject() as DID);
+
+    let didDocBuilder = await DIDDocumentBuilder.newFromDocument(d);
+    didDocBuilder = didDocBuilder.addCredential(vc);
 
     diddocument = await didDocBuilder.seal(
       process.env.REACT_APP_DID_STORE_PASSWORD as string
     );
+
+    return diddocument;
   }
 
   async addServiceToDIDDocument(
@@ -238,18 +245,17 @@ export class DidService implements IDidService {
   ): Promise<any> {
     let appMnemonic = process.env.REACT_APP_APPLICATION_MNEMONICS as string;
     let appId = process.env.REACT_APP_APPLICATION_ID;
-    let appDid = await this.loadDid(appMnemonic);
+    let appDid = await this.loadDid(appMnemonic); // returns object that have did, private key, public key, mnemonics for the app entity (Profile)
 
-    let store = await DidService.getStore();
-    let userDid = await this.loadDid(userMnemonic, password);
+    let store = await DidService.getStore(); // get reference to store (which in profile's case is saved on browse local storage)
+    let userDid = await this.loadDid(userMnemonic, password); // returns object that have did, private key, public key, mnemonics for the user
 
-    //let applicationDidDocument: DIDDocument = await store.loadDid(appDid.did);
-    //store.storeDid(applicationDidDocument);
+    let userDocument: DIDDocument = await store.loadDid(userDid.did); //  gets the user DIDDocument from the store, which was stored in another step
 
-    let userDocument: DIDDocument = await store.loadDid(userDid.did);
-
-    let key = HDKey.newWithMnemonic(userMnemonic, password);
+    let key = HDKey.newWithMnemonic(userMnemonic, password); // this step (form here to line 269) is the most confusing to me, AFAIK we have to create a private key
+    // for the user and store it on the DidStore, or else the next step "new Issuer"
     let id: DIDURL = DIDURL.from(
+      // will fail
       '#primary',
       DID.from(userDid.did as string) as DID
     ) as DIDURL;
@@ -259,43 +265,32 @@ export class DidService implements IDidService {
       process.env.REACT_APP_DID_STORE_PASSWORD as string
     );
 
-    let key2 = HDKey.newWithMnemonic(userMnemonic, password);
-    let id2: DIDURL = DIDURL.from(
-      '#primary',
-      DID.from(appDid.did as string) as DID
-    ) as DIDURL;
-    store.storePrivateKey(
-      id2 as DIDURL,
-      key2.serialize(),
-      process.env.REACT_APP_DID_STORE_PASSWORD as string
-    );
-
-    let issuer2 = new Issuer(userDocument, id);
-    let vcBuilder = new VerifiableCredential.Builder(
-      issuer2,
+    let issuerObject = new Issuer(userDocument, id); // to create a VerifiableCredential we need to use the VerifiableCredential.Builder
+    let vcBuilder = new VerifiableCredential.Builder( // to initialize the builder we need the Issuer (which is the user) and the target, which is the app
+      issuerObject,
       DID.from(appDid.did) as DID
     );
-    let vc = await vcBuilder
+    let vc = await vcBuilder // then we just create the VerifiableCredential
       .expirationDate(new Date('2026-01-01'))
-      .type('AppIdCredential')
-      .property('appDid', appDid.did)
+      .type('AppIdCredential') // with the type expected by Hive Node
+      .property('appDid', appDid.did) // and the properties also he is expecting
       .property('appInstanceDid', appDid.did)
       .id(
         DIDURL.from('#app-id-credential', DID.from(appDid.did) as DID) as DIDURL
       )
-      .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+      .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string); // and we sign so it creates a Proof with method and signature
 
-    store.storeCredential(vc);
+    store.storeCredential(vc); // then we store the credential on DidStore
 
-    let pb = await VerifiablePresentation.createFor(appDid.did, null, store);
-
-    let vp2 = await pb.realm(issuer);
-    let vp3 = await vp2.nonce(nonce);
-    let vp4 = await vp3.credentials(vc);
+    let pb = await VerifiablePresentation.createFor(appDid.did, null, store); // then we create a VerifiablePresentation, which is a way to share some of
+    let vp2 = await pb.realm(issuer); // the users credentials with someone, here basically the user wants to
+    let vp3 = await vp2.nonce(nonce); // share with hive node that he has a credential to access a his vault
+    let vp4 = await vp3.credentials(vc); // Here we add the credential to the presentation
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let vp5 = await vp4.seal(
-      process.env.REACT_APP_DID_STORE_PASSWORD as string
-    );
+      // We sign the presentation
+      process.env.REACT_APP_DID_STORE_PASSWORD as string // Hive node will check if the presentation and the VerifiableCredential
+    ); // are valid and give a token so the user can perform operations on his vault
 
     // ******************************************
     // TEMPORARY CODE: using old elastos js sdk while fixing new did-js-sdk issue
