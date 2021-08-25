@@ -15,7 +15,7 @@ import {
   VerifiableCredential,
   VerifiablePresentation
 } from '@elastosfoundation/did-js-sdk/';
-
+import { DID as ConnDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { IDidService, IDID } from './did.service';
 
 export class DidService implements IDidService {
@@ -122,7 +122,8 @@ export class DidService implements IDidService {
   };
 
   isDIDPublished = async (did: string): Promise<boolean> => {
-    let document: DIDDocument = await this.getDidDocument(did);
+    let didObject = new DID(did);
+    let document = await didObject.resolve(true);
     return document && document !== undefined;
   };
 
@@ -319,5 +320,32 @@ export class DidService implements IDidService {
     // console.error("********************");
     // console.error("NEW VP:"+JSON.parse(vp5.toString(true)));
     //return JSON.parse(vp5.toString(true));
+  }
+  async generateVerifiablePresentationFromEssentialCred(
+    issuer: string,
+    nonce: string
+  ): Promise<any> {
+    let didAccess = new ConnDID.DIDAccess();
+    let {
+      did: appDid,
+      didStore
+    } = await didAccess.getOrCreateAppInstanceDID();
+    let appDidInfo = await didAccess.getExistingAppInstanceDIDInfo();
+    console.log(appDid, appDidInfo);
+
+    let vc = await didAccess.generateAppIdCredential();
+    let vpb = await VerifiablePresentation.createFor(
+      appDidInfo.didString,
+      null,
+      didStore
+    );
+    let vp = await vpb
+      .realm(issuer)
+      .nonce(nonce)
+      .credentials(vc)
+      .seal(appDidInfo.storePassword);
+    console.log(vp.toString(true));
+    console.log('vp validate: => ', await vp.isValid());
+    return vp;
   }
 }

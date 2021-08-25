@@ -217,6 +217,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
             value={email}
             label="E-mail"
             onChange={n => setField('email', n)}
+            onHitEnter={createUser}
             placeholder="Enter your e-mail"
             hasError={error !== '' && email === ''}
             type="email"

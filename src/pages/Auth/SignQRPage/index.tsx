@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -7,7 +7,6 @@ import { DID } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { incrementAction, getSimpleAjax } from './actions';
 import { UserService } from 'src/services/user.service';
 import { DidService } from 'src/services/did.service.new';
-// import { DidService } from 'src/services/did.service';
 
 import {
   OnBoardLayout,
@@ -60,15 +59,12 @@ const SignQRPage: React.FC<InferMappedProps> = ({
       let name = nameCredential.getSubject().getProperty('name');
       let issuer = nameCredential.getIssuer();
       let did = 'did:elastos:' + issuer.getMethodSpecificId();
-      console.log('returned name & did : => ', name, issuer, did);
-      let mnemonic = ''; // should be returned from essential??
+      let mnemonic = '';
       let didStore = await DidService.getStore();
       let didDocument = await didStore.loadDid(issuer);
-      console.log('loaded did document : => ', didDocument);
       if (didDocument === null) didStore.storeDid(await issuer.resolve());
       let isDidPublished = await didService.isDIDPublished(did);
       if (isDidPublished) {
-        showNotify('Did is published on mainnet', 'success');
         let userService = new UserService(didService);
         const res = await userService.SearchUserWithDID(did);
         window.localStorage.setItem(

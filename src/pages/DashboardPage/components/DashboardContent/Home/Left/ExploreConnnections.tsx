@@ -57,10 +57,10 @@ const ExploreConnnections: React.FC<Props> = ({ did, session }) => {
         <MainCard>
           <CardTitle>Connect with friends, companies</CardTitle>
           <CardText>
-            Search for like minded people and make valuable connections. explore
-            your influnce circle
+            Search for like minded people and make valuable connections. Explore
+            your influence circle
           </CardText>
-          <LinkButton href="/explore">Expolore connections &gt;</LinkButton>
+          <LinkButton href="/explore">Explore connections &gt;</LinkButton>
           <CardImg src={exploreCardImg} />
         </MainCard>
       )}

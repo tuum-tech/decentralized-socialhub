@@ -61,6 +61,21 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
     })();
   }, [dids]);
 
+  const onLoginButtonClick = async () => {
+    if (!password || password === '') {
+      setError('Enter your password');
+      return;
+    }
+    setLoading('Signing now...');
+
+    let userService = new UserService(new DidService());
+
+    const res = await userService.UnLockWithDIDAndPwd(did, password);
+    if (res) {
+      afterSuccess(res);
+    }
+  };
+
   return (
     <OnBoardLayout>
       {loading !== '' && <LoadingIndicator loadingText={loading} />}
@@ -97,6 +112,9 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
               setError('');
               setPassword(n);
             }}
+            onHitEnter={async () => {
+              await onLoginButtonClick();
+            }}
             placeholder="Enter your password"
             hasError={error !== '' && password === ''}
           />
@@ -106,18 +124,7 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
             mt={20}
             text="Sign in to profile"
             onClick={async () => {
-              if (!password || password === '') {
-                setError('Enter your password');
-                return;
-              }
-              setLoading('Signing now...');
-
-              let userService = new UserService(new DidService());
-
-              const res = await userService.UnLockWithDIDAndPwd(did, password);
-              if (res) {
-                afterSuccess(res);
-              }
+              await onLoginButtonClick();
             }}
           />
 

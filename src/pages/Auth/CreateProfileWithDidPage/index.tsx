@@ -57,10 +57,49 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
 
   if (userInfo.did === '') {
     return <PageLoading />;
-  } else if (userInfo.name === '') {
+  } else {
+    if (status === 0 && userInfo.name !== '') {
+      if (
+        userInfo.loginCred === undefined ||
+        userInfo.loginCred.email === undefined ||
+        userInfo.loginCred.email.length === 0
+      ) {
+        setStatus(1);
+      }
+    }
+
+    if (status === 1) {
+      return (
+        <SetPassword
+          loading={false}
+          next={async pwd => {
+            let userService = new UserService(new DidService());
+            let sessionItem = await userService.CreateNewUser(
+              userInfo.name,
+              AccountType.DID,
+              userInfo.loginCred,
+              '',
+              pwd,
+              userInfo.did,
+              userInfo.mnemonic,
+              userInfo.hiveHost,
+              userInfo.avatar
+            );
+            eProps.setSession({ session: sessionItem });
+            setStatus(3);
+          }}
+        />
+      );
+    }
+
+    if (status === 3) {
+      return <Redirect to="/profile" />;
+    }
+
     return (
       <ProfileFields
         isCreate={false}
+        userInfo={userInfo}
         setUserInfo={(name, email) => {
           setUserInfo({
             ...userInfo,
@@ -70,36 +109,11 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
               email
             }
           });
+          setStatus(1);
         }}
       />
     );
   }
-
-  if (status === 2) {
-    return <Redirect to="/profile" />;
-  }
-
-  return (
-    <SetPassword
-      loading={status === 1}
-      next={async pwd => {
-        let userService = new UserService(new DidService());
-        let sessionItem = await userService.CreateNewUser(
-          userInfo.name,
-          AccountType.DID,
-          userInfo.loginCred,
-          '',
-          pwd,
-          userInfo.did,
-          userInfo.mnemonic,
-          userInfo.hiveHost,
-          userInfo.avatar
-        );
-        eProps.setSession({ session: sessionItem });
-        setStatus(2);
-      }}
-    />
-  );
 };
 
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({

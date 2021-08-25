@@ -83,6 +83,7 @@ const App: React.FC = () => {
   DidService.InitializeMainnet();
   // Elastos essential connector
   const essentialConnector = new EssentialsConnector();
+  connectivity.setApplicationDID(process.env.REACT_APP_APPLICATION_DID || '');
   connectivity.registerConnector(essentialConnector);
   return (
     <IonApp>
