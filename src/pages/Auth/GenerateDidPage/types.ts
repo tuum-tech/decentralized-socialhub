@@ -9,6 +9,7 @@ export { defaultUserInfo };
 
 export type LocationState = {
   from: Location;
+  did: string;
   name: string;
   loginCred: LoginCred;
   credential: string;
@@ -24,6 +25,7 @@ export type LocationState = {
 };
 
 export type UserSessionProp = {
+  did: string;
   name: string;
   loginCred: LoginCred;
   credential: string;

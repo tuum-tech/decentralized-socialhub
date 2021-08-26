@@ -18,6 +18,7 @@ export function createPhoneUser(
         name,
         email,
         phone,
+        did: '',
         smsCode: true
       })
     }

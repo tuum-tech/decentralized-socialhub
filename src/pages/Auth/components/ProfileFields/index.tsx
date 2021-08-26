@@ -28,7 +28,8 @@ import styled from 'styled-components';
 
 export function requestCreateEmailUser(
   name: string,
-  email: string
+  email: string,
+  did: string
 ): Promise<BaseplateResp> {
   return request(
     `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/credential/create`,
@@ -43,6 +44,7 @@ export function requestCreateEmailUser(
         name,
         email,
         phone: '',
+        did,
         smsCode: false
       })
     }
@@ -116,7 +118,8 @@ const UseDetailsForm: React.FC<Props> = ({
     setLoading('Creating new profile now');
     let response = (await requestCreateEmailUser(
       name,
-      email
+      email,
+      userInfo?.did ?? ''
     )) as ICreateUserResponse;
     if (response.meta.code !== 200) {
       setError('An error happened when creating user.');

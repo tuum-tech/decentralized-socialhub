@@ -98,6 +98,13 @@ export class UserService {
     return newDID;
   }
 
+  public getTemporaryMnemonicFromDid(did: string) {
+    if (!did || did === '') return '';
+    let key = `temporary_${did.replace('did:elastos:', '')}`;
+    let response: any = window.localStorage.getItem(key);
+    if (response) return response.mnemonic;
+  }
+
   private lockUser(key: string, instance: ISessionItem) {
     if (!instance.mnemonics || instance.mnemonics === '') {
       instance.mnemonics =
