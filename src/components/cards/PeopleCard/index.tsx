@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   IonCard,
   IonCardContent,
@@ -74,12 +74,6 @@ const PeopleCard: React.FC<Props> = ({
   const [peoplePageOffset, setPeoplePageOffset] = useState(0);
   const [listPeople, setListPeople] = useState<any[]>([]);
   const [listFollowing, setListFollowing] = useState<FollowingDTO>(following);
-
-  const handleUnfollow = (did: string) => {
-    if (showMutualFollowers) {
-      unfollowMutualFollower && unfollowMutualFollower(did);
-    }
-  };
 
   const followClicked = async (isFollowing: boolean, did: string) => {
     if (!isFollowing && showMutualFollowers && unfollowMutualFollower) {
