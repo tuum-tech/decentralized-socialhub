@@ -101,7 +101,7 @@ const PeopleCard: React.FC<Props> = ({
       setListFollowing({ items: [] });
       return;
     }
-  });
+  }, [session]);
 
   useEffect(() => {
     (async () => {
