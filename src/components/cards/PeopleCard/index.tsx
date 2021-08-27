@@ -30,7 +30,7 @@ const peopleItem = (
   following: FollowingDTO,
   indexItem: number,
   colSize: any,
-  onUnfollow: (did: string) => void
+  followClicked: (isFollow: boolean, did: string) => void
 ) => {
   return (
     <DidCard
@@ -41,7 +41,7 @@ const peopleItem = (
       following={following}
       type="user"
       key={'did-people-card-' + indexItem}
-      onUnfollow={onUnfollow}
+      followClicked={followClicked}
     />
   );
 };
@@ -54,7 +54,7 @@ interface Props extends InferMappedProps {
   size?: string;
   showHeader?: boolean;
   showMutualFollowers?: boolean;
-  onUnfollow?: (did: string) => void;
+  unfollowMutualFollower?: (did: string) => void;
 }
 
 const PeopleCard: React.FC<Props> = ({
@@ -66,7 +66,7 @@ const PeopleCard: React.FC<Props> = ({
   showMutualFollowers = false,
   size = '12',
   session,
-  onUnfollow
+  unfollowMutualFollower
 }: Props) => {
   const perPage = parseInt(size) / 12 === 1 ? 4 : 8;
   const totalPages = people && people.items ? people.items.length / perPage : 1;
@@ -77,28 +77,43 @@ const PeopleCard: React.FC<Props> = ({
 
   const handleUnfollow = (did: string) => {
     if (showMutualFollowers) {
-      onUnfollow && onUnfollow(did);
+      unfollowMutualFollower && unfollowMutualFollower(did);
     }
   };
 
+  const followClicked = async (isFollowing: boolean, did: string) => {
+    if (!isFollowing && showMutualFollowers && unfollowMutualFollower) {
+      unfollowMutualFollower(did);
+    }
+    if (isFollowing) {
+      await ProfileService.addFollowing(did, session);
+    } else {
+      await ProfileService.unfollow(did, session);
+    }
+    await loadFollowing();
+  };
+
+  const loadFollowing = useCallback(async () => {
+    try {
+      if (session && session.did !== '') {
+        const response = (await ProfileService.getFollowings(
+          session.did,
+          session
+        )) as IFollowingResponse;
+        setListFollowing(response.get_following);
+      }
+    } catch (e) {
+      // alertError(null, 'Could not load users that you follow');
+      setListFollowing({ items: [] });
+      return;
+    }
+  });
+
   useEffect(() => {
     (async () => {
-      if (!following.items || following.items.length === 0) {
-        try {
-          if (session && session.did !== '') {
-            const response = (await ProfileService.getFollowings(
-              session.did,
-              session
-            )) as IFollowingResponse;
-            setListFollowing(response.get_following);
-          }
-        } catch (e) {
-          alertError(null, 'Could not load users that you follow');
-          return;
-        }
-      }
+      await loadFollowing();
     })();
-  }, [following, session]);
+  }, [following, loadFollowing, session]);
 
   useEffect(() => {
     (async () => {
@@ -112,7 +127,9 @@ const PeopleCard: React.FC<Props> = ({
               listFollowing,
               index,
               parseInt(size) / 12 === 1 ? '100%' : '50%',
-              handleUnfollow
+              // handleUnfollow,
+              // loadFollowing
+              followClicked
             )
           );
 

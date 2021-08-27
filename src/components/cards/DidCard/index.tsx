@@ -21,41 +21,42 @@ interface Props extends InferMappedProps {
   following?: FollowingDTO;
   colSize?: string;
   type?: string;
-  onUnfollow?: (did: string) => void;
+  // unfollowMutualFollower?: (did: string) => void;
+  // loadFollowing: () => void;
+  followClicked: (isFollow: boolean, did: string) => void;
 }
 
 const DidCard: React.FC<Props> = ({
-  eProps,
   name,
   did = '',
   avatar,
   indexItem,
-  following,
   colSize = '100%',
   type = 'user',
   session,
-  onUnfollow
+  following,
+  followClicked
 }: Props) => {
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [loading, setLoading] = useState(false);
-
   const tutorialStep = session ? session.tutorialStep : 1;
+  const [isFollowing, setIsFollowing] = useState(
+    following?.items
+      .map(f => f.did)
+      .join(', ')
+      .includes(did)
+  );
+
+  const [loading, setLoading] = useState(false);
 
   const followDid = async (did: string) => {
     setLoading(true);
-    const response = await ProfileService.addFollowing(did, session);
-    following = response.get_following;
-    setIsFollowing(true);
+    await followClicked(true, did);
     setLoading(false);
   };
 
   const unfollowDid = async (did: string) => {
     setLoading(true);
-    const response = await ProfileService.unfollow(did, session);
-    following = response.get_following;
-    setIsFollowing(false);
+    await followClicked(false, did);
     setLoading(false);
-    onUnfollow && onUnfollow(did);
   };
 
   const getLink = (did: string) => {
@@ -63,22 +64,13 @@ const DidCard: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    setLoading(true);
-    setIsFollowing(computeIsFollowing(did));
-    setLoading(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [following]);
-
-  const computeIsFollowing = (did: string): boolean => {
-    if (following && following.items) {
-      for (let i = 0; i < following.items.length; i++) {
-        if (following.items[i].did === did) {
-          return true;
-        }
-      }
-    }
-    return false;
-  };
+    setIsFollowing(
+      following?.items
+        .map(f => f.did)
+        .join(', ')
+        .includes(did)
+    );
+  }, [following, did]);
 
   return (
     <IonList
