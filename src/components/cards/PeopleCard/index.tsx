@@ -30,7 +30,7 @@ const peopleItem = (
   following: FollowingDTO,
   indexItem: number,
   colSize: any,
-  onUnfollow: (did: string) => void
+  handleFollow: (follow: boolean, did: string) => void
 ) => {
   return (
     <DidCard
@@ -41,7 +41,7 @@ const peopleItem = (
       following={following}
       type="user"
       key={'did-people-card-' + indexItem}
-      onUnfollow={onUnfollow}
+      handleFollow={handleFollow}
     />
   );
 };
@@ -75,30 +75,35 @@ const PeopleCard: React.FC<Props> = ({
   const [listPeople, setListPeople] = useState<any[]>([]);
   const [listFollowing, setListFollowing] = useState<FollowingDTO>(following);
 
-  const handleUnfollow = (did: string) => {
-    if (showMutualFollowers) {
+  const handleFollow = async (follow: boolean, did: string) => {
+    if (!follow && showMutualFollowers) {
       onUnfollow && onUnfollow(did);
     }
+    await fetchFollowingInfo();
   };
+
+  const fetchFollowingInfo = useCallback(async () => {
+    try {
+      if (session && session.did !== '') {
+        const response = (await ProfileService.getFollowings(
+          session.did,
+          session
+        )) as IFollowingResponse;
+        setListFollowing(response.get_following);
+      }
+    } catch (e) {
+      alertError(null, 'Could not load users that you follow');
+      return;
+    }
+  });
 
   useEffect(() => {
     (async () => {
       if (!following.items || following.items.length === 0) {
-        try {
-          if (session && session.did !== '') {
-            const response = (await ProfileService.getFollowings(
-              session.did,
-              session
-            )) as IFollowingResponse;
-            setListFollowing(response.get_following);
-          }
-        } catch (e) {
-          alertError(null, 'Could not load users that you follow');
-          return;
-        }
+        await fetchFollowingInfo();
       }
     })();
-  }, [following, session]);
+  }, [fetchFollowingInfo, following, session]);
 
   useEffect(() => {
     (async () => {
@@ -112,7 +117,7 @@ const PeopleCard: React.FC<Props> = ({
               listFollowing,
               index,
               parseInt(size) / 12 === 1 ? '100%' : '50%',
-              handleUnfollow
+              handleFollow
             )
           );
 

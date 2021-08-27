@@ -21,7 +21,7 @@ interface Props extends InferMappedProps {
   following?: FollowingDTO;
   colSize?: string;
   type?: string;
-  onUnfollow?: (did: string) => void;
+  handleFollow: (follow: boolean, did: string) => void;
 }
 
 const DidCard: React.FC<Props> = ({
@@ -34,28 +34,28 @@ const DidCard: React.FC<Props> = ({
   colSize = '100%',
   type = 'user',
   session,
-  onUnfollow
+  handleFollow
 }: Props) => {
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(
+    following?.items
+      .map(f => f.did)
+      .join(',')
+      .includes(did)
+  );
   const [loading, setLoading] = useState(false);
 
   const tutorialStep = session ? session.tutorialStep : 1;
 
   const followDid = async (did: string) => {
     setLoading(true);
-    const response = await ProfileService.addFollowing(did, session);
-    following = response.get_following;
-    setIsFollowing(true);
-    setLoading(false);
+    await ProfileService.addFollowing(did, session);
+    await handleFollow(true, did);
   };
 
   const unfollowDid = async (did: string) => {
     setLoading(true);
-    const response = await ProfileService.unfollow(did, session);
-    following = response.get_following;
-    setIsFollowing(false);
-    setLoading(false);
-    onUnfollow && onUnfollow(did);
+    await ProfileService.unfollow(did, session);
+    await handleFollow(false, did);
   };
 
   const getLink = (did: string) => {
@@ -66,8 +66,7 @@ const DidCard: React.FC<Props> = ({
     setLoading(true);
     setIsFollowing(computeIsFollowing(did));
     setLoading(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [following]);
+  }, [following, did, computeIsFollowing]);
 
   const computeIsFollowing = (did: string): boolean => {
     if (following && following.items) {
