@@ -20,14 +20,7 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
-import { DidService } from 'src/services/did.service.new';
-import {
-  DID,
-  DIDURL,
-  Issuer,
-  VerifiableCredential
-} from '@elastosfoundation/did-js-sdk/';
-import { HiveService } from 'src/services/hive.service';
+import { DID } from '@elastosfoundation/did-js-sdk/';
 
 const LoadDid: React.FC<InferMappedProps> = ({
   eProps,
