@@ -66,7 +66,7 @@ const DidCard: React.FC<Props> = ({
     setLoading(true);
     setIsFollowing(computeIsFollowing(did));
     setLoading(false);
-  }, [following, did, computeIsFollowing]);
+  }, [following, did]);
 
   const computeIsFollowing = (did: string): boolean => {
     if (following && following.items) {

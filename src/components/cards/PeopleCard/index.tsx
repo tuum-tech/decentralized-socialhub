@@ -82,7 +82,7 @@ const PeopleCard: React.FC<Props> = ({
     await fetchFollowingInfo();
   };
 
-  const fetchFollowingInfo = useCallback(async () => {
+  const fetchFollowingInfo = async () => {
     try {
       if (session && session.did !== '') {
         const response = (await ProfileService.getFollowings(
@@ -95,7 +95,7 @@ const PeopleCard: React.FC<Props> = ({
       alertError(null, 'Could not load users that you follow');
       return;
     }
-  });
+  };
 
   useEffect(() => {
     (async () => {
