@@ -17,7 +17,6 @@ import {
 } from '@elastosfoundation/did-js-sdk/';
 
 import { IDidService, IDID } from './did.service';
-import { DidDocumentService } from './diddocument.service';
 
 export class DidService implements IDidService {
   static InitializeMainnet() {

@@ -18,7 +18,6 @@ import { ProfileService } from 'src/services/profile.service';
 
 import style from './PeopleCard.module.scss';
 import DidCard from '../DidCard';
-import { alertError } from 'src/utils/notify';
 
 export interface IFollowingResponse {
   _status?: string;
