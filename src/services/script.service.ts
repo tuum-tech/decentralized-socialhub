@@ -252,7 +252,7 @@ export class TuumTechScriptService {
 export class UserVaultScriptService {
   private static async generateUserToken(mnemonics: string, address: string) {
     let challenge = await HiveService.getHiveChallenge(address);
-    let didService = new DidService();
+    let didService = await DidService.getInstance();
     let presentation = await didService.generateVerifiablePresentationFromUserMnemonics(
       mnemonics,
       '',
@@ -298,7 +298,7 @@ export class UserVaultScriptService {
           newUser.hiveHost
         );
         newUser.userToken = userToken;
-        let userService = new UserService(new DidService());
+        let userService = new UserService(await DidService.getInstance());
         await userService.updateSession(newUser);
         let hiveInstance = await HiveService.getSessionInstance(newUser);
 

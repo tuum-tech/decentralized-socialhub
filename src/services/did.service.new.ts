@@ -1,5 +1,3 @@
-import { ElastosClient } from '@elastosfoundation/elastos-js-sdk';
-
 import {
   DefaultDIDAdapter,
   DID,
@@ -15,16 +13,110 @@ import {
   VerifiableCredential,
   VerifiablePresentation
 } from '@elastosfoundation/did-js-sdk/';
+import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { AssistService } from './assist.service';
 
-import { IDidService, IDID } from './did.service';
+export interface IDidService {
+  loadDid(mnemonic: string, password: string): Promise<DID>;
+  generateNewMnemonics(): Promise<string>;
+
+  /* Creates and returns new RootIdentity object*/
+  newRootIdentity(mnemonics: string): RootIdentity;
+  addRootIdentityToStore(rootIdentity: RootIdentity): void;
+
+  /* 
+  Create, store and returns RootIdentity
+  */
+  storeNewRootIdentity(mnemonics: string): RootIdentity;
+
+  /* Creates and returns new DIDDocument from RootIdentity
+  if RootIdentity parameter is not passed, default RootIdentity will be used
+  */
+  newDIDDocument(RootIdentity?: RootIdentity): Promise<DIDDocument>;
+
+  /* Add DidDocument to the store */
+  storeDocument(didDocument: DIDDocument): void;
+
+  /* 
+  Create, store and returns DIDDocument
+  */
+  storeNewDIDDocument(RootIdentity?: RootIdentity): Promise<DIDDocument>;
+
+  /* Creates and returns new Self Verifiable Credential from the parameters */
+  newSelfVerifiableCredential(
+    didDocument: DIDDocument,
+    subjectName: string,
+    subjectValue: any
+  ): Promise<VerifiableCredential>;
+
+  storeNewSelfVerifiableCredential(
+    didDocument: DIDDocument,
+    subjectName: string,
+    subjectValue: any
+  ): Promise<VerifiableCredential>;
+
+  /* 
+  Returns the DIDDocument from the DIDStore
+  */
+  getStoredDocument(did: any): Promise<DIDDocument>;
+
+  /* 
+  Returns the DIDDocument from the Blockchain
+  */
+  getPublishedDocument(did: any): Promise<DIDDocument>;
+
+  /* 
+  isDocumentSynchronized(did: DID) : Promise<boolean>;
+  
+  /* returns true if did is already published */
+  isDIDPublished(did: string): Promise<boolean>;
+
+  publishDocument(didDocument: DIDDocument): Promise<void>;
+
+  addVerifiableCredentialToDIDDocument(
+    diddocument: DIDDocument,
+    vc: VerifiableCredential
+  ): Promise<DIDDocument>;
+
+  addServiceToDIDDocument(
+    diddocument: DIDDocument,
+    did: DID,
+    type: string,
+    endpoint: string
+  ): Promise<DIDDocument>;
+
+  generateService(did: DID, type: string, endpoint: string): any;
+
+  generateVerifiablePresentationFromUserMnemonics(
+    userMnemonic: string,
+    password: string,
+    issuer: string,
+    nonce: string
+  ): Promise<VerifiablePresentation>;
+}
+
+export enum PublishRequestOperation {
+  Create = 'create',
+  Update = 'update'
+}
 
 export class DidService implements IDidService {
   static InitializeMainnet() {
     DIDBackend.initialize(new DefaultDIDAdapter('mainnet'));
   }
+  public Store: DIDStore;
 
-  static getStore = async (): Promise<DIDStore> => {
-    return await DIDStore.open(process.env.REACT_APP_DID_STORE_PATH as string);
+  constructor(store: DIDStore) {
+    this.Store = store;
+  }
+
+  public static getInstance = async () => {
+    let store = await DIDStore.open(
+      process.env.REACT_APP_DID_STORE_PATH as string
+    );
+    const me = new DidService(store);
+
+    return me;
   };
 
   getFromStore = async (
@@ -34,8 +126,7 @@ export class DidService implements IDidService {
     let id = RootIdentity.getIdFromMnemonic(mnemonic, password);
 
     if (id !== undefined) {
-      let store = await DidService.getStore();
-      return store.loadRootIdentity(id);
+      return this.Store.loadRootIdentity(id);
     }
 
     return null;
@@ -45,79 +136,107 @@ export class DidService implements IDidService {
     return Mnemonic.checkIsValid(mnemonic);
   };
 
-  loadDid = async (mnemonic: string, password: string = ''): Promise<IDID> => {
+  getPrivateKey = async (did: string): Promise<string> => {
+    // let buffer = await this.Store.loadPrivateKey(DIDURL.from("primary", new DID(did)) as DIDURL,"passw");
+    // return buffer.toString();
+
+    let didDocument = await this.Store.loadDid(did);
+    let privatekey = didDocument.derive(0, 'passw');
+    return privatekey;
+  };
+
+  loadDid = async (
+    mnemonic: string,
+    password: string = '',
+    index: number = 0
+  ): Promise<DID> => {
     let identity = await this.getFromStore(mnemonic, password);
     let rootIdentity: RootIdentity;
-    let store = await DidService.getStore();
+
     if (identity === null) {
+      debugger;
       rootIdentity = RootIdentity.createFromMnemonic(
         mnemonic,
         password,
-        store,
+        this.Store,
         process.env.REACT_APP_DID_STORE_PASSWORD as string,
         true
       );
 
-      store.storeRootIdentity(rootIdentity);
+      this.Store.storeRootIdentity(rootIdentity);
     } else {
       rootIdentity = identity as RootIdentity;
     }
 
     let did = rootIdentity.getDid(0);
-    let didDocument = await store.loadDid(did);
+    let didDocument = await this.Store.loadDid(did);
 
-    if (didDocument === null) store.storeDid(await did.resolve());
+    if (didDocument === null) {
+      this.Store.storeDid(await did.resolve());
+      debugger;
+      this.storePrivatekey(
+        DIDURL.from('#primary', did) as DIDURL,
+        mnemonic,
+        password,
+        0
+      );
+    }
 
-    let didLoaded = await ElastosClient.did.loadFromMnemonic(
-      mnemonic,
-      password
-    );
-    // Validate all
-    let ret: IDID = {
-      mnemonic: mnemonic,
-      publicKey: didLoaded.publicKey,
-      privateKey: didLoaded.privateKey,
-      did: did.toString()
-    };
-    return ret;
+    return did;
   };
 
-  async generateNew(): Promise<IDID> {
+  async storePrivatekey(
+    id: DIDURL,
+    mnemonics: string,
+    password: string,
+    index: number
+  ): Promise<void> {
+    let storePassw = process.env.REACT_APP_DID_STORE_PASSWORD as string;
+
+    let key = HDKey.newWithMnemonic(mnemonics, password).deriveWithPath(
+      HDKey.DERIVE_PATH_PREFIX + index
+    );
+
+    this.Store.storePrivateKey(id as DIDURL, key.serialize(), storePassw);
+  }
+
+  async generateNewMnemonics(): Promise<string> {
     let mnemonics = Mnemonic.getInstance();
     let mnemonicsString = mnemonics.generate();
-    let store = await DidService.getStore();
 
+    return mnemonicsString;
+  }
+
+  newRootIdentity(mnemonics: string): RootIdentity {
     let newRootId = RootIdentity.createFromMnemonic(
-      mnemonicsString,
+      mnemonics,
       '',
-      store,
+      this.Store,
       process.env.REACT_APP_DID_STORE_PASSWORD as string,
       true
     );
-    store.setDefaultRootIdentity(newRootId);
 
-    let did: DID = newRootId.getDid(0) as DID;
-    //let key : HDKey = HDKey.newWithMnemonic(mnemonicsString, "");
-    let didLoaded = await ElastosClient.did.loadFromMnemonic(
-      mnemonicsString,
-      ''
+    return newRootId;
+  }
+
+  addRootIdentityToStore(rootIdentity: RootIdentity) {
+    this.Store.storeRootIdentity(
+      rootIdentity,
+      process.env.REACT_APP_DID_STORE_PASSWORD as string
     );
+  }
 
-    let ret: IDID = {
-      mnemonic: mnemonicsString as string,
-      publicKey: didLoaded.publicKey,
-      privateKey: didLoaded.privateKey,
-      did: did.toString()
-    };
-    return ret;
+  storeNewRootIdentity(mnemonics: string): RootIdentity {
+    let newRootId = this.newRootIdentity(mnemonics);
+    //this.addRootIdentityToStore(newRootId);
+    return newRootId;
   }
 
   getDidDocument = async (
     did: any,
     useCache: boolean = true
   ): Promise<DIDDocument> => {
-    let store = await DidService.getStore();
-    let didDocument = await store.loadDid(did);
+    let didDocument = await this.Store.loadDid(did);
     return didDocument;
   };
 
@@ -127,37 +246,59 @@ export class DidService implements IDidService {
     return document && document !== undefined;
   };
 
-  isSignedDIDDocumentValid(signedDocument: any, did: IDID): boolean {
-    throw new Error('not implemented');
-  }
-
-  async genereteNewDidDocument(did: IDID): Promise<any> {
-    let store = await DidService.getStore();
-    let rootIdentity = await store.loadRootIdentity();
-    let didDocument = await rootIdentity.newDid(
+  async newDIDDocument(rootIdentity: RootIdentity): Promise<DIDDocument> {
+    return await rootIdentity.newDid(
       process.env.REACT_APP_DID_STORE_PASSWORD as string
     );
-    store.storeDid(didDocument);
+  }
+
+  async storeNewDIDDocument(rootIdentity: RootIdentity): Promise<DIDDocument> {
+    let didDocument = await this.newDIDDocument(rootIdentity);
+    this.Store.storeDid(didDocument);
     return didDocument;
   }
 
-  async sealDIDDocument(
-    did: IDID,
-    diddocument: DIDDocument
-  ): Promise<DIDDocument> {
-    let signedDocument: DIDDocument;
-    if (diddocument.hasOwnProperty('proof')) {
-      diddocument.proofs?.clear();
-    }
-    let didDocBuilder = await DIDDocumentBuilder.newFromDocument(diddocument);
-    signedDocument = await didDocBuilder.seal(
-      process.env.REACT_APP_DID_STORE_PASSWORD as string
-    );
-
-    return signedDocument as any;
+  async getStoredDocument(did: DID): Promise<DIDDocument> {
+    return await this.Store.loadDid(did);
   }
 
-  async addVerfiableCredentialToDIDDocument(
+  async getPublishedDocument(did: DID): Promise<DIDDocument> {
+    return did.resolve(true);
+  }
+
+  async storeDocument(didDocument: DIDDocument) {
+    this.Store.storeDid(didDocument);
+  }
+
+  async isDocumentSynchronized(did: DID): Promise<boolean> {
+    return (
+      (await this.getStoredDocument(did)).toString(true) ===
+      (await this.getPublishedDocument(did)).toString(true)
+    );
+  }
+
+  async publishDocument(didDocument: DIDDocument): Promise<void> {
+    let response: any = {};
+    let adapter: any = {
+      createIdTransaction: async (payload: any, memo: any) => {
+        let request = JSON.parse(payload);
+        let did = request.proof.verificationMethod;
+        did = did.substring(0, did.indexOf('#'));
+        response = await AssistService.publishDocument(did, request);
+
+        console.log(response);
+      }
+    };
+
+    didDocument.publish(
+      process.env.REACT_APP_DID_STORE_PASSWORD as string,
+      undefined,
+      undefined,
+      adapter
+    );
+  }
+
+  async addVerifiableCredentialToDIDDocument(
     diddocument: DIDDocument,
     vc: VerifiableCredential
   ): Promise<DIDDocument> {
@@ -169,10 +310,7 @@ export class DidService implements IDidService {
     store.storeDid(diddocument);
     let d = await store.loadDid(diddocument.getSubject() as DID);
 
-    let didDocBuilder = await DIDDocumentBuilder.newFromDocument(d);
-    didDocBuilder = didDocBuilder.addCredential(vc);
-
-    diddocument = await didDocBuilder.seal(
+    return await didDocBuilder.seal(
       process.env.REACT_APP_DID_STORE_PASSWORD as string
     );
 
@@ -181,59 +319,66 @@ export class DidService implements IDidService {
 
   async addServiceToDIDDocument(
     diddocument: DIDDocument,
-    did: IDID,
+    did: DID,
     type: string,
     endpoint: string
   ): Promise<DIDDocument> {
     let builder = DIDDocumentBuilder.newFromDocument(diddocument);
-    let didUrl: DIDURL = DIDURL.from(
-      `#${type}`,
-      DID.from(did.did as string) as DID
-    ) as DIDURL;
+    let didUrl: DIDURL = DIDURL.from(`#${type}`, did) as DIDURL;
     builder.addService(didUrl, type, endpoint);
     return await builder.seal('passw');
 
     //ElastosClient.didDocuments.addServiceToDIDDocument(diddocument, service);
   }
 
-  async generateSelfVerifiableCredential(
-    did: IDID,
+  async storeNewSelfVerifiableCredential(
+    didDocument: DIDDocument,
     subjectName: string,
-    subjectTypes: string[],
     subjectValue: any
-  ) {
-    let store = await DidService.getStore();
-    let didDocument = await store.loadDid(did.did);
+  ): Promise<VerifiableCredential> {
+    let newSelfVerifiableCred = await this.newSelfVerifiableCredential(
+      didDocument,
+      subjectName,
+      subjectValue
+    );
+    this.Store.storeCredential(newSelfVerifiableCred);
+    return newSelfVerifiableCred;
+  }
+  async newSelfVerifiableCredential(
+    didDocument: DIDDocument,
+    subjectName: string,
+    subjectValue: any
+  ): Promise<VerifiableCredential> {
+    let did = didDocument.getSubject();
 
     let date = new Date();
     date.setFullYear(date.getFullYear() + 5);
     let issuer = new Issuer(
       didDocument,
-      DIDURL.from('#primary', DID.from(did.did) as DID) as DIDURL
+      DIDURL.from('#primary', didDocument.getSubject()) as DIDURL
     );
+
     let vcBuilder = new VerifiableCredential.Builder(
       issuer,
       didDocument.getSubject()
     );
-
-    let vc = await vcBuilder
+    return await vcBuilder
       .expirationDate(date)
       .type('SelfProclaimedCredential')
       .property(subjectName, subjectValue)
-      .id(DIDURL.from('#primary', DID.from(did.did) as DID) as DIDURL)
+      .id(DIDURL.from('#primary', did) as DIDURL)
       .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
-    return vc;
   }
 
-  generateService(did: IDID, type: string, endpoint: string): any {
-    let oldService = ElastosClient.didDocuments.createService(
-      did.did,
-      type,
-      endpoint
-    );
-    // let didUrl: DIDURL = DIDURL.from('#primary', DID.from(did.did as string) as DID) as DIDURL;
-    // return new DIDDocumentService(didUrl, type, endpoint);
-    return oldService;
+  generateService(did: DID, type: string, endpoint: string): any {
+    // let oldService = ElastosClient.didDocuments.createService(
+    //   did.did,
+    //   type,
+    //   endpoint
+    // );
+
+    // return oldService;
+    throw new Error('not implemented');
   }
 
   async generateVerifiablePresentationFromUserMnemonics(
@@ -243,89 +388,85 @@ export class DidService implements IDidService {
     nonce: string
   ): Promise<any> {
     let appMnemonic = process.env.REACT_APP_APPLICATION_MNEMONICS as string;
-    let appId = process.env.REACT_APP_APPLICATION_ID;
-    let appDid = await this.loadDid(appMnemonic); // returns object that have did, private key, public key, mnemonics for the app entity (Profile)
+    let appDid = await this.loadDid(appMnemonic);
 
-    let store = await DidService.getStore(); // get reference to store (which in profile's case is saved on browse local storage)
-    let userDid = await this.loadDid(userMnemonic, password); // returns object that have did, private key, public key, mnemonics for the user
+    let userDid = await this.loadDid(userMnemonic, password);
 
-    let userDocument: DIDDocument = await store.loadDid(userDid.did); //  gets the user DIDDocument from the store, which was stored in another step
+    let userDocument: DIDDocument = await this.Store.loadDid(userDid);
 
-    let key = HDKey.newWithMnemonic(userMnemonic, password); // this step (form here to line 269) is the most confusing to me, AFAIK we have to create a private key
+    // the storePrivateKey method should probably go to loadDid method
+    let id: DIDURL = DIDURL.from('#primary', userDid) as DIDURL;
+    await this.storePrivatekey(id, userMnemonic, password, 0);
 
-    // for the user and store it on the DidStore, or else the next step "new Issuer"  will fail
+    let id2: DIDURL = DIDURL.from('#primary', appDid) as DIDURL;
+    await this.storePrivatekey(id2, userMnemonic, password, 0);
 
-    let id: DIDURL = DIDURL.from(
-      '#primary',
-      DID.from(userDid.did as string) as DID
-    ) as DIDURL;
-    store.storePrivateKey(
-      id as DIDURL,
-      key.serialize(),
-      process.env.REACT_APP_DID_STORE_PASSWORD as string
-    );
-
-    let id2: DIDURL = DIDURL.from(
-      '#primary',
-      DID.from(appDid.did as string) as DID
-    ) as DIDURL;
-    store.storePrivateKey(
-      id2 as DIDURL,
-      key.serialize(),
-      process.env.REACT_APP_DID_STORE_PASSWORD as string
-    );
-
-    let issuerObject = new Issuer(userDocument, id); // to create a VerifiableCredential we need to use the VerifiableCredential.Builder
-    let vcBuilder = new VerifiableCredential.Builder( // to initialize the builder we need the Issuer (which is the user) and the target, which is the app
-      issuerObject,
-      DID.from(appDid.did) as DID
-    );
-    let vc = await vcBuilder // then we just create the VerifiableCredential
-      .expirationDate(new Date('2026-01-01'))
-      .type('AppIdCredential') // with the type expected by Hive Node
-      .property('appDid', appDid.did) // and the properties also he is expecting
-      .property('appInstanceDid', appDid.did)
-      .id(
-        DIDURL.from('#app-id-credential', DID.from(appDid.did) as DID) as DIDURL
-      )
+    let issuerObject = new Issuer(userDocument, id);
+    let vcBuilder = new VerifiableCredential.Builder(issuerObject, appDid);
+    let vc = await vcBuilder
+      .expirationDate(this.getExpirationDate())
+      .type('AppIdCredential')
+      .property('appDid', appDid.toString())
+      .property('appInstanceDid', appDid.toString())
+      .id(DIDURL.from('#app-id-credential', appDid) as DIDURL)
       .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string); // and we sign so it creates a Proof with method and signature
 
-    store.storeCredential(vc); // then we store the credential on DidStore
+    console.log('isValid: ' + (await vc.isValid()));
+    this.Store.storeCredential(vc);
 
-    let pb = await VerifiablePresentation.createFor(appDid.did, null, store); // then we create a VerifiablePresentation, which is a way to share some of
-    let vp2 = await pb.realm(issuer); // the users credentials with someone, here basically the user wants to
-    let vp3 = await vp2.nonce(nonce); // share with hive node that he has a credential to access a his vault
-    let vp4 = await vp3.credentials(vc); // Here we add the credential to the presentation
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let vp5 = await vp4.seal(
-      // We sign the presentation
-      process.env.REACT_APP_DID_STORE_PASSWORD as string // Hive node will check if the presentation and the VerifiableCredential
-    ); // are valid and give a token so the user can perform operations on his vault
+    let vpb = await VerifiablePresentation.createFor(appDid, null, this.Store);
+    let vp = await vpb
+      .realm(issuer)
+      .nonce(nonce)
+      .credentials(vc)
+      .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
 
-    console.error('is Valid:' + (await vp5.isValid()));
+    return vp;
+  }
 
-    // ******************************************
-    // TEMPORARY CODE: using old elastos js sdk while fixing new did-js-sdk issue
-    let vcold = ElastosClient.didDocuments.createVerifiableCredentialVP(
-      appDid,
-      userDid,
-      appId
+  getExpirationDate() {
+    var d = new Date();
+    var year = d.getFullYear();
+    var month = d.getMonth();
+    var day = d.getDate();
+    var c = new Date(year + 5, month, day);
+    return c;
+  }
+
+  async generateVerifiablePresentationFromEssentialCred(
+    issuer: string,
+    nonce: string
+  ): Promise<any> {
+    let appMnemonic = process.env.REACT_APP_APPLICATION_MNEMONICS as string;
+    let appDid = await this.loadDid(appMnemonic);
+
+    let connector = connectivity.getActiveConnector();
+    let vc = await connector?.generateAppIdCredential(
+      process.env.REACT_APP_APPLICATION_DID as string,
+      process.env.REACT_APP_APPLICATION_DID as string
     );
 
-    let vpold = ElastosClient.didDocuments.createVerifiablePresentation(
-      appDid,
-      'VerifiablePresentation',
-      vcold,
-      issuer,
-      nonce
-    );
-    return vpold;
-    // ******************************************
+    console.log(await vc.isValid());
 
-    // console.error("********************");
-    // console.error("OLD VP:"+JSON.stringify(vpold));
-    // console.error("********************");
-    // console.error("NEW VP:"+JSON.parse(vp5.toString(true)));
-    //return JSON.parse(vp5.toString(true));
+    this.Store.storeCredential(vc);
+
+    // store private key
+    let id: DIDURL = DIDURL.from('#primary', appDid) as DIDURL;
+    this.storePrivatekey(id, appMnemonic, '', 0);
+
+    let vpb = await VerifiablePresentation.createFor(
+      process.env.REACT_APP_APPLICATION_DID as string,
+      null,
+      this.Store
+    );
+    let vp = await vpb
+      .realm(issuer)
+      .nonce(nonce)
+      .credentials(vc)
+      .seal(process.env.REACT_APP_APPLICATION_DID as string);
+    console.log(vp.toString(true));
+
+    // can't return VerifiablePresenter object because HiveService still not supporting it
+    return JSON.parse(vp.toString(true));
   }
 }

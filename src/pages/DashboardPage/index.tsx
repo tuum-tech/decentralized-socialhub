@@ -90,10 +90,8 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
   const refreshDidDocument = async () => {
     if (props.session && props.session.did !== '') {
-      let documentState = await DidDocumentService.getUserDocument(
-        props.session
-      );
-      setDidDocument(documentState.diddocument);
+      let document = await DidDocumentService.getUserDocument(props.session);
+      setDidDocument(document);
     }
   };
 
@@ -134,7 +132,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
         onBoardingCompleted: true // WORKAROUND: when Onboarding window is closed before publishing, it sets onBoardingCompleted: true, but the session here dont get the updated session
       };
 
-      let userService = new UserService(new DidService());
+      let userService = new UserService(await DidService.getInstance());
       eProps.setSession({
         session: await userService.updateSession(session)
       });
@@ -226,14 +224,14 @@ const ProfilePage: React.FC<InferMappedProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history.location.pathname]);
 
-  let encoded_did_document = useMemo(() => JSON.stringify(didDocument), [
-    didDocument
-  ]);
+  // let encoded_did_document = useMemo(() => JSON.stringify(didDocument), [
+  //   didDocument
+  // ]);
 
   useEffect(() => {
     (async () => {
-      const _didDocument = JSON.parse(encoded_did_document);
-      if (_didDocument && _didDocument.id) {
+      //const _didDocument = JSON.parse(encoded_did_document);
+      if (didDocument) {
         if (props.session && props.session.did !== '') {
           let newSession = JSON.parse(JSON.stringify(props.session));
 
@@ -280,7 +278,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
               newSession
             );
 
-            let userService = new UserService(new DidService());
+            let userService = new UserService(await DidService.getInstance());
             eProps.setSession({
               session: await userService.updateSession(newSession)
             });
@@ -289,7 +287,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [encoded_did_document]);
+  }, []);
 
   if (session.tutorialStep < 4 && onBoardVisible) {
     return (
@@ -300,7 +298,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
             onBoardingCompleted: true
           };
 
-          let userService = new UserService(new DidService());
+          let userService = new UserService(await DidService.getInstance());
           eProps.setSession({
             session: await userService.updateSession(session)
           });

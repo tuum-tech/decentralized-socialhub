@@ -71,7 +71,7 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
     }
     setLoading('Signing now...');
 
-    let userService = new UserService(new DidService());
+    let userService = new UserService(await DidService.getInstance());
 
     const res = await userService.UnLockWithDIDAndPwd(did, password);
     if (res) {

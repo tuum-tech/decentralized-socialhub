@@ -72,7 +72,7 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   const [publicUserProfile, setPublicUserProfile] = useState(
     defaultFullProfile
   );
-  const [didDocument, setDidDocument] = useState<any>({});
+  const [didDocument, setDidDocument] = useState<DIDDocument | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [followType, setFollowType] = useState<FollowType>(FollowType.Follower);
@@ -134,7 +134,7 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
       setFollowingDids(followingdids);
 
       if (props.match.params.did && props.match.params.did !== '') {
-        let userService = new UserService(new DidService());
+        let userService = new UserService(await DidService.getInstance());
         let pUser = await userService.SearchUserWithDID(props.match.params.did);
         if (pUser && pUser.did) {
           setPublicUser(pUser as any);
@@ -149,17 +149,11 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
             profile.educationDTO.isEnabled = true;
             setPublicUserProfile(profile);
           }
-          let documentState = await DidDocumentService.getUserDocumentByDid(
+          let document = await DidDocumentService.getUserDocumentByDid(
             props.match.params.did
           );
 
-          debugger;
-
-          if (documentState.diddocument !== null) {
-            setDidDocument(
-              await DIDDocument.parseContent(documentState.diddocument)
-            );
-          }
+          setDidDocument(document);
         }
       }
 

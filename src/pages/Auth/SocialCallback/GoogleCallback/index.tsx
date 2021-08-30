@@ -31,10 +31,7 @@ import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service.new';
-import {
-  DIDDocument,
-  VerifiableCredential
-} from '@elastosfoundation/did-js-sdk/';
+import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 interface PageProps
   extends InferMappedProps,
@@ -69,9 +66,10 @@ const GoogleCallback: React.FC<PageProps> = ({
   let state: string =
     new URLSearchParams(props.location.search).get('state') || '';
 
-  let didService = new DidService();
   useEffect(() => {
     (async () => {
+      let didService = await DidService.getInstance();
+
       if (code !== '' && state !== '' && credentials.loginCred.google === '') {
         let t = await getToken(code, state);
         let googleId = await requestGoogleId(t.data.request_token);
@@ -83,16 +81,15 @@ const GoogleCallback: React.FC<PageProps> = ({
             googleId.email
           );
 
-          let state = await DidDocumentService.getUserDocument(props.session);
-          let document = await DIDDocument.parseContent(state.diddocument);
-          let docWithCredential = await didService.addVerfiableCredentialToDIDDocument(
-            document,
-            await VerifiableCredential.parseContent(JSON.stringify(vc))
+          let didDocument: DIDDocument = await didService.getStoredDocument(
+            new DID(props.session.did)
           );
-          console.log(docWithCredential.toString(true));
-          DidDocumentService.updateUserDocument(
-            docWithCredential.toString(true)
+
+          let documentWithGoogleCredential = await didService.addVerifiableCredentialToDIDDocument(
+            didDocument,
+            vc
           );
+          await didService.storeDocument(documentWithGoogleCredential);
 
           let store = await DidService.getStore();
           store.storeDid(docWithCredential);

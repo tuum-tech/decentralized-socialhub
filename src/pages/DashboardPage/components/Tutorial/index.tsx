@@ -57,7 +57,7 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({
         newSession.badges!.account!.beginnerTutorial.archived = new Date().getTime();
       }
 
-      let userService = new UserService(new DidService());
+      let userService = new UserService(await DidService.getInstance());
       const updatedSession = await userService.updateSession(newSession);
       eProps.setSession({ session: updatedSession });
 

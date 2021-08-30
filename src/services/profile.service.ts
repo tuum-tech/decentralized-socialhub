@@ -11,6 +11,7 @@ import { UserService } from './user.service';
 import { Guid } from 'guid-typescript';
 
 import { DidService } from './did.service.new';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 export class ProfileService {
   static didDocument: any = null;
@@ -32,9 +33,11 @@ export class ProfileService {
     return vc.value === profileValue && vc.isVerified;
   };
 
-  static getDidDocument = async (userSession: ISessionItem) => {
-    let documentState = await DidDocumentService.getUserDocument(userSession);
-    return documentState.diddocument;
+  static getDidDocument = async (
+    userSession: ISessionItem
+  ): Promise<DIDDocument> => {
+    let document = await DidDocumentService.getUserDocument(userSession);
+    return document;
   };
 
   static async getPublicFields(did: string): Promise<string[]> {
@@ -387,7 +390,7 @@ export class ProfileService {
         });
       }
 
-      let userService = new UserService(new DidService());
+      let userService = new UserService(await DidService.getInstance());
       let followingUser = await userService.SearchUserWithDID(did);
 
       await this.addActivity(

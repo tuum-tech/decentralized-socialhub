@@ -26,6 +26,7 @@ import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import {
+  DID,
   DIDDocument,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
@@ -52,9 +53,9 @@ const GithubCallback: React.FC<PageProps> = ({
   let code: string =
     new URLSearchParams(props.location.search).get('code') || '';
 
-  let didService = new DidService();
   useEffect(() => {
     (async () => {
+      let didService = await DidService.getInstance();
       if (code !== '' && credentials.loginCred.github === '') {
         let t = await getToken(code);
         let github = t.data.login;
@@ -68,19 +69,20 @@ const GithubCallback: React.FC<PageProps> = ({
 
           console.log('github vc: ', vc);
 
-          let state = await DidDocumentService.getUserDocument(props.session);
-          let document = await DIDDocument.parseContent(state.diddocument);
-          let docWithCredential = await didService.addVerfiableCredentialToDIDDocument(
-            document,
-            await VerifiableCredential.parseContent(JSON.stringify(vc))
-          );
-          console.log(docWithCredential.toString(true));
-          DidDocumentService.updateUserDocument(
-            docWithCredential.toString(true)
+          let didDocument: DIDDocument = await didService.getStoredDocument(
+            new DID(props.session.did)
           );
 
-          let store = await DidService.getStore();
-          store.storeDid(docWithCredential);
+          let verifiableCredential: VerifiableCredential = await VerifiableCredential.parseContent(
+            vc
+          );
+
+          let documentWithGithubCredential = await didService.addVerifiableCredentialToDIDDocument(
+            didDocument,
+            verifiableCredential
+          );
+
+          await didService.storeDocument(documentWithGithubCredential);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.github! = github;

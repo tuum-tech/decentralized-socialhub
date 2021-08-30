@@ -30,6 +30,7 @@ import { AccountType, UserService } from 'src/services/user.service';
 
 import { requestTwitterToken, getUsersWithRegisteredTwitter } from './fetchapi';
 import {
+  DID,
   DIDDocument,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
@@ -70,9 +71,9 @@ const TwitterCallback: React.FC<PageProps> = ({
   let oauth_verifier: string =
     new URLSearchParams(props.location.search).get('oauth_verifier') || '';
 
-  let didService = new DidService();
   useEffect(() => {
     (async () => {
+      let didService = await DidService.getInstance();
       if (
         oauth_token !== '' &&
         oauth_verifier !== '' &&
@@ -89,19 +90,16 @@ const TwitterCallback: React.FC<PageProps> = ({
             items[1].toString()
           );
 
-          let state = await DidDocumentService.getUserDocument(props.session);
-          let document = await DIDDocument.parseContent(state.diddocument);
-          let docWithCredential = await didService.addVerfiableCredentialToDIDDocument(
-            document,
-            await VerifiableCredential.parseContent(JSON.stringify(vc))
-          );
-          console.log(docWithCredential.toString(true));
-          DidDocumentService.updateUserDocument(
-            docWithCredential.toString(true)
+          let didDocument: DIDDocument = await didService.getStoredDocument(
+            new DID(props.session.did)
           );
 
-          let store = await DidService.getStore();
-          store.storeDid(docWithCredential);
+          let documentWithTwitterCredential = await didService.addVerifiableCredentialToDIDDocument(
+            didDocument,
+            await VerifiableCredential.parseContent(vc)
+          );
+
+          await didService.storeDocument(documentWithTwitterCredential);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.twitter! = items[1].toString();

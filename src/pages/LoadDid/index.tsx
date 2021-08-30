@@ -30,19 +30,20 @@ const LoadDid: React.FC<InferMappedProps> = ({
 
   useEffect(() => {
     (async () => {
-      let didObject = new DID('did:elastos:iWVvoZDN7zDoEGLNafwf5WTHkJmQWfE8QY');
-      let didDocument = await didObject.resolve();
+      debugger;
+      let service = await DidService.getInstance();
+      let did_app = await service.loadDid(
+        'scorpion flock piano man calm label basket sentence curious stove inform whisper'
+      );
+      let did_user = await service.loadDid(
+        'deliver crane orphan dismiss proud circle lawn cabbage fancy color clever tree'
+      );
 
-      setDocument(didDocument.toString(true));
+      console.log('did app' + did_app);
+      console.log('did user' + did_user);
 
-      // debugger;
-      // let service = new DidService();
-      // let did_app = await service.loadDid(
-      //   'scorpion flock piano man calm label basket sentence curious stove inform whisper'
-      // );
-      // let did_user = await service.loadDid(
-      //   'deliver crane orphan dismiss proud circle lawn cabbage fancy color clever tree'
-      // );
+      let appDocument = await service.getStoredDocument(did_app);
+      let userDocument = await service.getStoredDocument(did_user);
 
       // //let did = await service.loadDid(
       // //  'curious push water point border mutual install govern message ordinary fish small'
@@ -54,8 +55,24 @@ const LoadDid: React.FC<InferMappedProps> = ({
       // let appDocument = await store.loadDid(did_app.did);
       // let userDocument = await store.loadDid(did_user.did);
 
-      // console.log('app doc valid: ' + appDocument.isValid());
-      // console.log('user doc valid: ' + userDocument.isValid());
+      let id: DIDURL = DIDURL.from('#primary', did_user) as DIDURL;
+      let issuer = new Issuer(userDocument, id);
+      let vcBuilder = new VerifiableCredential.Builder(
+        issuer,
+        DID.from(did_app) as DID
+      );
+      let vc = await vcBuilder
+        .expirationDate(new Date('2026-01-01'))
+        .type('AppIdCredential')
+        .property('appDid', did_app.toString())
+        .property('appInstanceDid', did_app.toString())
+        .id(
+          DIDURL.from('#app-id-credential', DID.from(did_app) as DID) as DIDURL
+        )
+        .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+      debugger;
+      console.log(await vc.isValid());
+      console.log(vc.toString(true));
 
       // console.log('app doc ' + appDocument.toString(true));
       // console.log('user doc ' + userDocument.toString(true));

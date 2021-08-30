@@ -4,7 +4,6 @@ import { alertError, showNotify } from 'src/utils/notify';
 
 import { HiveService } from './hive.service';
 import { AssistService } from './assist.service';
-import { IDID, IDidService } from './did.service';
 
 import { UserVaultScripts } from '../scripts/uservault.script';
 import { DidDocumentService } from './diddocument.service';
@@ -13,7 +12,14 @@ import {
   UserVaultScriptService
 } from './script.service';
 import { ProfileService } from './profile.service';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
+import {
+  DID,
+  DIDDocument,
+  RootIdentity,
+  VerifiableCredential,
+  VerifiablePresentation
+} from '@elastosfoundation/did-js-sdk/';
+import { IDidService } from './did.service.new';
 
 const CryptoJS = require('crypto-js');
 
@@ -41,61 +47,46 @@ export class UserService {
     return `user_${did.replace('did:elastos:', '')}`;
   }
 
-  private async generateTemporaryDID(
+  private async generateTemporaryDocument(
     service: AccountType,
     credential: string,
+    mnemonics: string,
     name: string
-  ): Promise<IDID> {
-    let newDID = await this.didService.generateNew();
-    let temporaryDocument = await this.didService.genereteNewDidDocument(
-      newDID
+  ): Promise<DIDDocument> {
+    debugger;
+    let rootIdentity: RootIdentity = this.didService.storeNewRootIdentity(
+      mnemonics
+    );
+    let temporaryDocument: DIDDocument = await this.didService.storeNewDIDDocument(
+      rootIdentity
     );
 
-    let nameVc = await this.didService.generateSelfVerifiableCredential(
-      newDID,
+    let nameCredential: VerifiableCredential = await this.didService.newSelfVerifiableCredential(
+      temporaryDocument,
       'name',
-      [''],
       name
     );
 
-    await this.didService.addVerfiableCredentialToDIDDocument(
+    let documentWithNameCred = await this.didService.addVerifiableCredentialToDIDDocument(
       temporaryDocument,
-      nameVc
+      nameCredential
     );
 
-    let signedDocument: DIDDocument = await this.didService.sealDIDDocument(
-      newDID,
-      temporaryDocument
-    );
-    DidDocumentService.updateUserDocument(signedDocument.toString(true));
+    this.didService.storeDocument(documentWithNameCred);
 
-    let response: any = {};
-    let adapter: any = {
-      createIdTransaction: async (payload: any, memo: any) => {
-        let request = JSON.parse(payload);
-        let did = request.proof.verificationMethod;
-        did = did.substring(0, did.indexOf('#'));
-        response = await AssistService.publishDocument(did, request);
-
-        console.log(response);
-      }
-    };
-
-    signedDocument.publish(
-      process.env.REACT_APP_DID_STORE_PASSWORD as string,
-      undefined,
-      undefined,
-      adapter
-    );
+    this.didService.publishDocument(documentWithNameCred);
 
     window.localStorage.setItem(
-      `temporary_${newDID.did.replace('did:elastos:', '')}`,
+      `temporary_${documentWithNameCred
+        .getSubject()
+        .toString()
+        .replace('did:elastos:', '')}`,
       JSON.stringify({
-        mnemonic: newDID.mnemonic
+        mnemonic: mnemonics
       })
     );
 
-    return newDID;
+    return documentWithNameCred;
   }
 
   private lockUser(key: string, instance: ISessionItem) {
@@ -240,13 +231,15 @@ export class UserService {
     let did = newDidStr;
     let mnemonics = newMnemonicStr;
     if (!did || did === '') {
-      const newDid = await this.generateTemporaryDID(
+      debugger;
+      mnemonics = await this.didService.generateNewMnemonics();
+      const newDocument = await this.generateTemporaryDocument(
         accountType,
         credential,
+        mnemonics,
         name
       );
-      did = newDid.did;
-      mnemonics = newDid.mnemonic;
+      did = newDocument.getSubject().toString();
     }
     const passhash = CryptoJS.SHA256(did + storePassword).toString(
       CryptoJS.enc.Hex

@@ -1,4 +1,4 @@
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { AssistService } from './assist.service';
 import { DidService } from './did.service.new';
 import { EventsService, IEventCallback } from './events.service';
@@ -20,12 +20,7 @@ export class DidDocumentService {
   static listenDocumentChange(
     id: string,
     callbackMethod: (data: IDIDDocumentState) => void
-  ) {
-    DidDocumentService.eventEmmiter.on(
-      this.DOCUMENT_CHANGE_EVENT,
-      callbackMethod
-    );
-  }
+  ) {}
 
   static unlistenDocumentChange(id: string) {
     EventsService.removeListener(this.DOCUMENT_CHANGE_EVENT, id);
@@ -47,19 +42,8 @@ export class DidDocumentService {
     return JSON.parse(json);
   }
 
-  private static setDocumentState(documentState: IDIDDocumentState) {
-    let json = JSON.stringify(documentState);
-    window.localStorage.setItem(
-      `${this.DIDDOCUMENT_KEY}_${JSON.parse(
-        documentState.diddocument
-      ).id.replace('did:elastos:', '')}`,
-      json
-    );
-    this.triggerDocumentChangeEvent(documentState);
-  }
-
   static async isDidDocumentPublished(did: string): Promise<boolean> {
-    let didService = new DidService();
+    let didService = await DidService.getInstance();
     let documentOnBlockchain = await didService.getDidDocument(did);
 
     return documentOnBlockchain !== null && documentOnBlockchain !== undefined;
@@ -67,62 +51,40 @@ export class DidDocumentService {
 
   static async getUserDocument(
     userSession: ISessionItem
-  ): Promise<IDIDDocumentState> {
-    let documentState = this.getDocumentState(userSession.did);
-    if (documentState) return documentState;
-
-    documentState = await this.loadFromBlockchain(userSession.did);
-    this.setDocumentState(documentState);
-
-    return documentState;
+  ): Promise<DIDDocument> {
+    let document = await this.getUserDocumentByDid(userSession.did);
+    return document;
   }
 
-  static async getUserDocumentByDid(did: string): Promise<IDIDDocumentState> {
-    const documentState = await this.loadFromBlockchain(did);
-    // this.setDocumentState(documentState);
+  static async getUserDocumentByDid(did: string): Promise<DIDDocument> {
+    let didService = await DidService.getInstance();
+    const documentState = await didService.getStoredDocument(new DID(did));
     return documentState;
   }
 
   private static async loadFromBlockchain(
     did: string
-  ): Promise<IDIDDocumentState> {
-    let didService = new DidService();
-    let documentOnBlockchain = await didService.getDidDocument(did, false);
-    if (documentOnBlockchain) {
-      let documentState = {
-        diddocument: documentOnBlockchain.toString(true),
-        isChanged: false
-      };
-      return documentState;
-    }
-    return {
-      diddocument: null,
-      isChanged: false
-    };
+  ): Promise<DIDDocument | null> {
+    let didService = await DidService.getInstance();
+    let documentOnBlockchain = await didService.getPublishedDocument(
+      new DID(did)
+    );
+    return documentOnBlockchain;
   }
 
-  static updateUserDocument(diddocument: any): IDIDDocumentState {
-    let documentState: IDIDDocumentState = {
-      diddocument: diddocument,
-      isChanged: true
-    };
+  static async updateUserDocument(diddocument: DIDDocument): Promise<void> {
+    let document = await this.loadFromBlockchain(
+      diddocument.getSubject().toString()
+    );
 
-    this.setDocumentState(documentState);
-
-    return documentState;
+    let didService = await DidService.getInstance();
+    didService.storeDocument(document as DIDDocument);
   }
 
   static async publishUserDocument(
     diddocument: DIDDocument,
     userSession: ISessionItem
-  ): Promise<IDIDDocumentState | undefined> {
-    //let userDid = await didService.loadDid(userSession.mnemonics);
-    //let signedDocument = await didService.sealDIDDocument(userDid, diddocument);
-    if (!diddocument.getProof()) {
-      // alertError(null, 'The DID document was not signed');
-      return;
-    }
-
+  ): Promise<void> {
     let response: any = {};
     let adapter: any = {
       createIdTransaction: async (payload: any, memo: any) => {
@@ -140,22 +102,16 @@ export class DidDocumentService {
       undefined,
       adapter
     );
-
-    let documentState = {
-      diddocument: diddocument.toString(true),
-      isChanged: false
-    };
-
-    this.setDocumentState(documentState);
-    return documentState;
   }
 
   static async reloadUserDocument(
     userSession: ISessionItem
-  ): Promise<IDIDDocumentState | undefined> {
-    let documentState = await this.loadFromBlockchain(userSession.did);
-    this.setDocumentState(documentState);
+  ): Promise<DIDDocument | null> {
+    let document = await this.loadFromBlockchain(userSession.did);
 
-    return documentState;
+    let didService = await DidService.getInstance();
+    didService.storeDocument(document as DIDDocument);
+
+    return document;
   }
 }

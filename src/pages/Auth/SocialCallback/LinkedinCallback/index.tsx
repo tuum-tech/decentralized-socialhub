@@ -35,6 +35,7 @@ import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import {
+  DID,
   DIDDocument,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
@@ -66,9 +67,9 @@ const LinkedinCallback: React.FC<PageProps> = ({
   let state: string =
     new URLSearchParams(props.location.search).get('state') || '';
 
-  let didService = new DidService();
   useEffect(() => {
     (async () => {
+      let didService = await DidService.getInstance();
       if (
         code !== '' &&
         state !== '' &&
@@ -90,19 +91,20 @@ const LinkedinCallback: React.FC<PageProps> = ({
             firstName + '' + lastName
           );
 
-          let state = await DidDocumentService.getUserDocument(props.session);
-          let document = await DIDDocument.parseContent(state.diddocument);
-          let docWithCredential = await didService.addVerfiableCredentialToDIDDocument(
-            document,
-            await VerifiableCredential.parseContent(JSON.stringify(vc))
-          );
-          console.log(docWithCredential.toString(true));
-          DidDocumentService.updateUserDocument(
-            docWithCredential.toString(true)
+          let didDocument: DIDDocument = await didService.getStoredDocument(
+            new DID(props.session.did)
           );
 
-          let store = await DidService.getStore();
-          store.storeDid(docWithCredential);
+          let verifiableCredential: VerifiableCredential = await VerifiableCredential.parseContent(
+            vc
+          );
+
+          let documentWithLinkedinCredential = await didService.addVerifiableCredentialToDIDDocument(
+            didDocument,
+            verifiableCredential
+          );
+
+          await didService.storeDocument(documentWithLinkedinCredential);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.linkedin! = firstName + '' + lastName;

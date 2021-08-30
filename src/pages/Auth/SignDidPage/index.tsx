@@ -40,8 +40,6 @@ const SignDidPage: React.FC<RouteComponentProps<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  let didService = new DidService();
-
   return (
     <OnBoardLayout className={style['did-signin']}>
       {loading && <LoadingIndicator loadingText="Signing Now..." />}
@@ -50,10 +48,14 @@ const SignDidPage: React.FC<RouteComponentProps<
       <OnBoardLayoutRight>
         <DidSignForm
           showModal={() => setShowHelp(true)}
-          loadDidFunction={didService.loadDid}
+          loadDidFunction={async (mnemonic: string, password: string) => {
+            let didService = await DidService.getInstance();
+            didService.loadDid(mnemonic, password);
+          }}
           error={error}
           setError={setError}
           onSuccess={async (uDid: string, mnemonic: string) => {
+            let didService = await DidService.getInstance();
             const isDidPublished = await didService.isDIDPublished(uDid);
             if (!isDidPublished) {
               alertError(

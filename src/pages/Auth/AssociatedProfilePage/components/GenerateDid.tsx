@@ -32,8 +32,6 @@ const GenerateDid: React.FC<Props> = ({
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(0);
 
-  let userService = new UserService(new DidService());
-
   if (status === 1) {
     return <Redirect to="/profile" />;
   }
@@ -43,6 +41,7 @@ const GenerateDid: React.FC<Props> = ({
       loading={loading}
       next={async pwd => {
         setLoading(true);
+        let userService = new UserService(await DidService.getInstance());
         const sessionItem = await userService.CreateNewUser(
           name,
           service,

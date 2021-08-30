@@ -228,7 +228,7 @@ const SocialProfilesCard: React.FC<Props> = ({
       loginCred: newLoginCred
     } as ISessionItem;
 
-    let userService = new UserService(new DidService());
+    let userService = new UserService(await DidService.getInstance());
     setSession({
       session: await userService.updateSession(newUserSession)
     });

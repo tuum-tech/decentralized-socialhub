@@ -60,6 +60,8 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
   const setTimer = () => {
     const timer = setTimeout(async () => {
       // refresh DID document
+      let document = await DidDocumentService.getUserDocument(session);
+      setDidDocument(document);
 
       if (JSON.stringify(session) === JSON.stringify(userInfo)) return;
 

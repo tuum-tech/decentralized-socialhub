@@ -43,7 +43,63 @@ const SignQRPage: React.FC<InferMappedProps> = ({
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
+  const history = useHistory();
 
+  const connect = async () => {
+    let didAccess = new DID.DIDAccess();
+    const didService = await DidService.getInstance();
+    let presentation = await didAccess.getCredentials({
+      claims: {
+        name: true
+      }
+    });
+    if (presentation) {
+      let nameCredential = presentation.getCredentials().find((c: any) => {
+        return c.getId().getFragment() === 'name';
+      });
+      let name = nameCredential.getSubject().getProperty('name');
+      let issuer = nameCredential.getIssuer();
+      let did = 'did:elastos:' + issuer.getMethodSpecificId();
+      let mnemonic = '';
+
+      let didDocument = await didService.getStoredDocument(issuer);
+      if (didDocument === null)
+        didService.storeDocument(await issuer.resolve());
+      let isDidPublished = await didService.isDIDPublished(did);
+      if (isDidPublished) {
+        let userService = new UserService(didService);
+        const res = await userService.SearchUserWithDID(did);
+        window.localStorage.setItem(
+          `temporary_${did.replace('did:elastos:', '')}`,
+          JSON.stringify({
+            mnemonic: mnemonic
+          })
+        );
+        if (res) {
+          history.push({
+            pathname: '/set-password',
+            state: res
+          });
+        } else {
+          history.push({
+            pathname: '/create-profile-with-did',
+            state: {
+              did: did,
+              mnemonic,
+              user: {
+                name: name,
+                loginCred: {}
+              }
+            }
+          });
+        }
+      } else {
+        showNotify('Did is not published on the blockchain yet', 'error');
+      }
+    } else {
+      showNotify('Unable to get credential from essential', 'error');
+    }
+  };
   return (
     <OnBoardLayout className={style['qr-sign']}>
       <OnBoardLayoutLeft>
