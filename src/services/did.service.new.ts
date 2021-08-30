@@ -306,15 +306,11 @@ export class DidService implements IDidService {
       diddocument.proofs?.clear();
     }
 
-    let store = await DidService.getStore();
-    store.storeDid(diddocument);
-    let d = await store.loadDid(diddocument.getSubject() as DID);
-
-    return await didDocBuilder.seal(
+    let builder = DIDDocumentBuilder.newFromDocument(diddocument);
+    builder.addCredential(vc);
+    return await builder.seal(
       process.env.REACT_APP_DID_STORE_PASSWORD as string
     );
-
-    return diddocument;
   }
 
   async addServiceToDIDDocument(
@@ -467,30 +463,6 @@ export class DidService implements IDidService {
     console.log(vp.toString(true));
 
     // can't return VerifiablePresenter object because HiveService still not supporting it
-    return JSON.parse(vp.toString(true));
-  }
-  async generateVerifiablePresentationFromEssentialCred(
-    issuer: string,
-    nonce: string
-  ): Promise<any> {
-    let didAccess = new ConnDID.DIDAccess();
-    let { did: appDid, didStore } = await didAccess.getOrCreateAppInstanceDID();
-    let appDidInfo = await didAccess.getExistingAppInstanceDIDInfo();
-    console.log(appDid, appDidInfo);
-
-    let vc = await didAccess.generateAppIdCredential();
-    let vpb = await VerifiablePresentation.createFor(
-      appDidInfo.didString,
-      null,
-      didStore
-    );
-    let vp = await vpb
-      .realm(issuer)
-      .nonce(nonce)
-      .credentials(vc)
-      .seal(appDidInfo.storePassword);
-    console.log(vp.toString(true));
-    console.log('vp validate: => ', await vp.isValid());
     return vp;
   }
 }

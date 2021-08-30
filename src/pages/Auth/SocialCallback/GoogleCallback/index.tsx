@@ -91,9 +91,6 @@ const GoogleCallback: React.FC<PageProps> = ({
           );
           await didService.storeDocument(documentWithGoogleCredential);
 
-          let store = await DidService.getStore();
-          store.storeDid(docWithCredential);
-
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.google! = googleId.email;
           if (!newSession.badges!.socialVerify!.google.archived) {

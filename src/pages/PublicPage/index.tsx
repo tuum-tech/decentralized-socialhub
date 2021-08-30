@@ -169,7 +169,7 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
                   mutualDids={mutualDids}
                   publicUser={publicUser}
                   publicUserProfile={publicUserProfile}
-                  didDocument={didDocument}
+                  didDocument={didDocument as DIDDocument}
                   loading={loading}
                 />
               </ProfileComponentContainer>

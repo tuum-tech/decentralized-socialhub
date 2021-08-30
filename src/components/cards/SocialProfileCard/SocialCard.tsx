@@ -34,6 +34,7 @@ import {
   SocialProfileCard
 } from './elements';
 import {
+  DID,
   DIDDocument,
   DIDDocumentBuilder,
   VerifiableCredential
@@ -54,7 +55,7 @@ const SocialProfilesCard: React.FC<Props> = ({
   mode = 'view'
 }) => {
   const [isManagerOpen, setIsManagerOpen] = useState(false);
-  const [parsedDoc, setParsedDoc] = useState<DIDDocument>(diddocument);
+  const [didDocument, setDidDocument] = useState<DIDDocument>(diddocument);
 
   let template = 'default';
   if (mode !== 'edit' && sessionItem.pageTemplate) {
@@ -97,18 +98,15 @@ const SocialProfilesCard: React.FC<Props> = ({
     var timer = setInterval(async function() {
       if (popupwindow!.closed) {
         clearInterval(timer);
-        let store = await DidService.getStore();
-        let updatedDoc = await store.loadDid(sessionItem.did);
+        let didService = await DidService.getInstance();
+        let updatedDoc = await didService.getStoredDocument(
+          new DID(sessionItem.did)
+        );
         console.log(updatedDoc);
 
-        await updateDocEverywhere(updatedDoc);
+        setDidDocument(updatedDoc);
       }
     }, 1000);
-  };
-
-  const updateDocEverywhere = async (doc: DIDDocument) => {
-    setParsedDoc(doc);
-    DidDocumentService.updateUserDocument(doc.toString(true));
   };
 
   const sociallogin = async (socialType: string) => {
@@ -150,14 +148,10 @@ const SocialProfilesCard: React.FC<Props> = ({
     }
   };
 
-  // const getParsedDoc = async() : Promise<DIDDocument> => {
-  //   return await DIDDocument.parseContent(doc);
-  // }
-
   const containsVerifiedCredential = (id: string): boolean => {
     //let docParsed = await getParsedDoc();
     return (
-      parsedDoc!.selectCredentials(id, 'InternetAccountCredential').length > 0
+      didDocument!.selectCredentials(id, 'InternetAccountCredential').length > 0
     );
   };
 
@@ -192,17 +186,17 @@ const SocialProfilesCard: React.FC<Props> = ({
 
   // TODO
   const removeVc = async (key: string) => {
-    let store = await DidService.getStore();
-    let didFromStore = await store.loadDid(diddocument.getSubject());
+    let didService = await DidService.getInstance();
+    let didFromStore = await didService.getStoredDocument(
+      diddocument.getSubject()
+    );
     let builder = DIDDocumentBuilder.newFromDocument(didFromStore);
     builder = builder.removeCredential(key);
     let newDoc = await builder.seal(
       process.env.REACT_APP_DID_STORE_PASSWORD as string
     );
 
-    setParsedDoc(newDoc);
-    DidDocumentService.updateUserDocument(newDoc.toString(true));
-    store.storeDid(newDoc);
+    setDidDocument(newDoc);
 
     // ===== temporary codes start =====
     let newLoginCred = sessionItem!.loginCred;
@@ -236,7 +230,10 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const createIonItem = (key: string, icon: any) => {
-    let vc = parsedDoc!.selectCredentials(key, 'InternetAccountCredential')[0]; //getVerifiedCredential(key, doc);
+    let vc = didDocument!.selectCredentials(
+      key,
+      'InternetAccountCredential'
+    )[0];
     if (!vc) return <></>;
     return (
       <ProfileItem template={template}>
@@ -280,7 +277,7 @@ const SocialProfilesCard: React.FC<Props> = ({
 
   const createModalIonItem = (key: string, icon: any) => {
     //let parsedDoc = await getParsedDoc();
-    let vc = parsedDoc.selectCredentials(key, 'InternetAccountCredential')[0];
+    let vc = didDocument.selectCredentials(key, 'InternetAccountCredential')[0];
     let header = 'Google Account';
     if (key === 'twitter') header = 'Twitter Account';
     if (key === 'facebook') header = 'Facebook Account';

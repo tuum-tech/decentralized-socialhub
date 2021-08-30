@@ -20,7 +20,13 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
-import { DID } from '@elastosfoundation/did-js-sdk/';
+import {
+  DID,
+  DIDURL,
+  Issuer,
+  VerifiableCredential
+} from '@elastosfoundation/did-js-sdk/';
+import { DidService } from 'src/services/did.service.new';
 
 const LoadDid: React.FC<InferMappedProps> = ({
   eProps,
@@ -30,10 +36,9 @@ const LoadDid: React.FC<InferMappedProps> = ({
 
   useEffect(() => {
     (async () => {
-      debugger;
       let service = await DidService.getInstance();
       let did_app = await service.loadDid(
-        'scorpion flock piano man calm label basket sentence curious stove inform whisper'
+        process.env.REACT_APP_APPLICATION_MNEMONICS as string
       );
       let did_user = await service.loadDid(
         'deliver crane orphan dismiss proud circle lawn cabbage fancy color clever tree'

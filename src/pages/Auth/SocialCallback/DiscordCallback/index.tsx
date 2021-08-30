@@ -88,9 +88,6 @@ const DiscordCallback: React.FC<PageProps> = ({
 
           await didService.storeDocument(documentWithDiscordCredential);
 
-          let store = await DidService.getStore();
-          store.storeDid(docWithCredential);
-
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.discord! = discord;
           if (!newSession.badges!.socialVerify!.discord.archived) {
