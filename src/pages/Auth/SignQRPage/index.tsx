@@ -1,9 +1,12 @@
-import { IonImg } from '@ionic/react';
 import React, { memo } from 'react';
+import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
+import { DID } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { incrementAction, getSimpleAjax } from './actions';
+import { UserService } from 'src/services/user.service';
+import { DidService } from 'src/services/did.service.new';
 
 import {
   OnBoardLayout,
@@ -18,12 +21,12 @@ import {
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
 import { Text16 } from 'src/elements/texts';
-import { SignInButton } from 'src/elements/buttons';
+import { SignInButton, Button } from 'src/elements/buttons';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import phone from 'src/assets/icon/phone.png';
 import injector from 'src/baseplate/injectorWrap';
-
+import { showNotify } from 'src/utils/notify';
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
 import style from './style.module.scss';
 import { NameSpace } from './constants';
@@ -44,10 +47,9 @@ const SignQRPage: React.FC<InferMappedProps> = ({
    * incoming from Server API calls. Maintain a local state.
    */
   const history = useHistory();
-
+  const didService = new DidService();
   const connect = async () => {
     let didAccess = new DID.DIDAccess();
-    const didService = await DidService.getInstance();
     let presentation = await didAccess.getCredentials({
       claims: {
         name: true
@@ -61,10 +63,9 @@ const SignQRPage: React.FC<InferMappedProps> = ({
       let issuer = nameCredential.getIssuer();
       let did = 'did:elastos:' + issuer.getMethodSpecificId();
       let mnemonic = '';
-
-      let didDocument = await didService.getStoredDocument(issuer);
-      if (didDocument === null)
-        didService.storeDocument(await issuer.resolve());
+      let didStore = await DidService.getStore();
+      let didDocument = await didStore.loadDid(issuer);
+      if (didDocument === null) didStore.storeDid(await issuer.resolve());
       let isDidPublished = await didService.isDIDPublished(did);
       if (isDidPublished) {
         let userService = new UserService(didService);
@@ -133,14 +134,16 @@ const SignQRPage: React.FC<InferMappedProps> = ({
       <OnBoardLayoutRight>
         <OnBoardLayoutRightContent>
           <OnBoardLayoutRightContentTitle>
-            QR Code
+            Connect essential with WalletConnect
           </OnBoardLayoutRightContentTitle>
           <Text16>Scan the QR code with your elastOS application</Text16>
-          <div className={style['qr-frame']}>
-            <IonImg src="../../assets/qr-code.svg" />
-            <Text16>
-              QR code expires in <span>00:30</span>
-            </Text16>
+          <div className={style['btn-wallet-connect']}>
+            <Button
+              type="primary"
+              text="WalletConnect"
+              mt={20}
+              onClick={connect}
+            />
           </div>
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>

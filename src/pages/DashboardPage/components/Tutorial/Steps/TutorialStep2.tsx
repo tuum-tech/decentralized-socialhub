@@ -22,6 +22,15 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
   const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
+    // Skip mnemonics verify when essential sign-in
+    if (session && session.isDIDPublished && mnemonics.join('').length === 0) {
+      onContinue();
+      return;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session, mnemonics]);
+
+  useEffect(() => {
     if (isVerifying) {
       if (session && session.accountType !== AccountType.DID) {
       } else {

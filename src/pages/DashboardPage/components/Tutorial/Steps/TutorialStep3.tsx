@@ -1,7 +1,6 @@
 /* eslint-disable no-useless-escape */
 import { IonButton, IonInput, IonRadio, IonRadioGroup } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
-
 import { DidService } from 'src/services/did.service.new';
 import { UserService } from 'src/services/user.service';
 import { HiveService } from 'src/services/hive.service';
@@ -207,7 +206,6 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     }
 
     const userToken = await HiveService.getUserHiveToken(address, presentation);
-
     return userToken;
   };
 

@@ -97,9 +97,7 @@ export class UserService {
         ) || '';
 
       const decodedMnemonic = JSON.parse(instance.mnemonics);
-      if (decodedMnemonic.mnemonic) {
-        instance.mnemonics = decodedMnemonic.mnemonic;
-      }
+      instance.mnemonics = decodedMnemonic.mnemonic || '';
     }
     let encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(instance),
@@ -323,10 +321,9 @@ export class UserService {
         }
       },
       tutorialStep: 1,
-      hiveHost:
-        hiveHostStr === ''
-          ? `${process.env.REACT_APP_TUUM_TECH_HIVE}`
-          : hiveHostStr,
+      hiveHost: !hiveHostStr
+        ? `${process.env.REACT_APP_TUUM_TECH_HIVE}`
+        : hiveHostStr,
       avatar,
       code: Guid.create().toString(),
       status: 'Created',
