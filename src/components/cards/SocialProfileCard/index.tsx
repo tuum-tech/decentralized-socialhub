@@ -44,14 +44,12 @@ const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
     key: CredentialType,
     value: string
   ) => {
-    let vc = await DidcredsService.generateVerifiableCredential(
+    let verifiableCredential = await DidcredsService.generateVerifiableCredential(
       props.session.did,
       key,
       value
     );
-    let verifiableCredential = await VerifiableCredential.parseContent(
-      JSON.stringify(vc)
-    );
+
     let didService = await DidService.getInstance();
 
     let docWithCredential = await didService.addVerifiableCredentialToDIDDocument(

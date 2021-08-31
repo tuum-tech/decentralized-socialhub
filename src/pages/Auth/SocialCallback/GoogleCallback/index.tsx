@@ -75,7 +75,7 @@ const GoogleCallback: React.FC<PageProps> = ({
         let googleId = await requestGoogleId(t.data.request_token);
 
         if (props.session && props.session.did !== '') {
-          let vc = await DidcredsService.generateVerifiableCredential(
+          let verifiableCredential = await DidcredsService.generateVerifiableCredential(
             props.session.did,
             CredentialType.Google,
             googleId.email
@@ -87,7 +87,7 @@ const GoogleCallback: React.FC<PageProps> = ({
 
           let documentWithGoogleCredential = await didService.addVerifiableCredentialToDIDDocument(
             didDocument,
-            vc
+            verifiableCredential
           );
           await didService.storeDocument(documentWithGoogleCredential);
 

@@ -1,3 +1,4 @@
+import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/';
 import request, { BaseplateResp } from 'src/baseplate/request';
 
 export enum CredentialType {
@@ -16,7 +17,7 @@ export class DidcredsService {
     did: string,
     credential_type: CredentialType,
     credential_value: string
-  ): Promise<any> {
+  ): Promise<VerifiableCredential> {
     let url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/didcreds_router/validation/internet_account`;
     let data = {
       did: did,
@@ -36,7 +37,9 @@ export class DidcredsService {
     let response = await fetch(url, postData);
 
     let json = await response.json();
-    return json.data.verifiable_credential;
+    return await VerifiableCredential.parseContent(
+      json.data.verifiable_credential
+    );
   }
 
   static async requestLinkedinLogin(): Promise<BaseplateResp> {

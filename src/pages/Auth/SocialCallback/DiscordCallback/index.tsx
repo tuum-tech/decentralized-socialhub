@@ -67,7 +67,7 @@ const DiscordCallback: React.FC<PageProps> = ({
         let discord = t.data.username + '#' + t.data.discriminator;
 
         if (props.session && props.session.did !== '') {
-          let vc = await DidcredsService.generateVerifiableCredential(
+          let verifiableCredential = await DidcredsService.generateVerifiableCredential(
             props.session.did,
             CredentialType.Discord,
             discord
@@ -75,10 +75,6 @@ const DiscordCallback: React.FC<PageProps> = ({
 
           let didDocument: DIDDocument = await didService.getStoredDocument(
             new DID(props.session.did)
-          );
-
-          let verifiableCredential: VerifiableCredential = await VerifiableCredential.parseContent(
-            vc
           );
 
           let documentWithDiscordCredential = await didService.addVerifiableCredentialToDIDDocument(

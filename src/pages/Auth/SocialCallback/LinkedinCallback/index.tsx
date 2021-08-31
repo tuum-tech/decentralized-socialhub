@@ -85,7 +85,7 @@ const LinkedinCallback: React.FC<PageProps> = ({
         const lastName = linkedinprofile.data.profile.localizedLastName.toLowerCase();
 
         if (props.session && props.session.did !== '') {
-          let vc = await DidcredsService.generateVerifiableCredential(
+          let verifiableCredential = await DidcredsService.generateVerifiableCredential(
             props.session.did,
             CredentialType.Linkedin,
             firstName + '' + lastName
@@ -93,10 +93,6 @@ const LinkedinCallback: React.FC<PageProps> = ({
 
           let didDocument: DIDDocument = await didService.getStoredDocument(
             new DID(props.session.did)
-          );
-
-          let verifiableCredential: VerifiableCredential = await VerifiableCredential.parseContent(
-            vc
           );
 
           let documentWithLinkedinCredential = await didService.addVerifiableCredentialToDIDDocument(

@@ -84,7 +84,7 @@ const TwitterCallback: React.FC<PageProps> = ({
         const name = items[0];
 
         if (props.session && props.session.did !== '') {
-          let vc = await DidcredsService.generateVerifiableCredential(
+          let verifiableCredential = await DidcredsService.generateVerifiableCredential(
             props.session.did,
             CredentialType.Twitter,
             items[1].toString()
@@ -96,7 +96,7 @@ const TwitterCallback: React.FC<PageProps> = ({
 
           let documentWithTwitterCredential = await didService.addVerifiableCredentialToDIDDocument(
             didDocument,
-            await VerifiableCredential.parseContent(vc)
+            verifiableCredential
           );
 
           await didService.storeDocument(documentWithTwitterCredential);
