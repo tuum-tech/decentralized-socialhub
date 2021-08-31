@@ -141,7 +141,7 @@ const Detail: React.FC<DetailProp> = ({
 
   useEffect(() => {
     (async () => {
-      let userService = new UserService(new DidService());
+      let userService = new UserService(await DidService.getInstance());
       const commentsInTuumTech = await TuumTechScriptService.getGithubCommentsByIssueId(
         githubIssue.number
       );

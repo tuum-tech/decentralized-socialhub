@@ -102,7 +102,7 @@ const DidForm: React.FC<Props> = ({
   const [passphrase, setPassphrase] = useState('');
 
   const signin = async () => {
-    let didService = new DidService();
+    let didService = await DidService.getInstance();
     let isMnemonicValid = didService.isMnemonicsValid(mnemonic.join(' '));
 
     setError(isMnemonicValid === false);
@@ -111,11 +111,11 @@ const DidForm: React.FC<Props> = ({
         mnemonic.join(' '),
         passphrase || ''
       );
-      if (!userDid || !userDid.did) {
+      if (!userDid) {
         setError(true);
         return;
       }
-      onSuccess(userDid.did, mnemonic.join(' '));
+      onSuccess(userDid.toString(), mnemonic.join(' '));
     }
   };
 

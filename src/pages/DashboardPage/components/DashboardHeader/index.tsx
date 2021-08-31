@@ -57,10 +57,8 @@ const DashboardHeader: React.FC<IProps> = ({
   useEffect(() => {
     (async () => {
       if (sessionItem.name !== '') {
-        const documentState = await DidDocumentService.getUserDocument(
-          sessionItem
-        );
-        setDidDocument(documentState.diddocument as any);
+        const document = await DidDocumentService.getUserDocument(sessionItem);
+        setDidDocument(document);
       }
     })();
   }, [sessionItem, sessionItem.name]);

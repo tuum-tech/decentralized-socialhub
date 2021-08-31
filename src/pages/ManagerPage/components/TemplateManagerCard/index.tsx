@@ -59,8 +59,6 @@ interface IProps {
   updateSession: (props: { session: ISessionItem }) => void;
 }
 
-let userService = new UserService(new DidService());
-
 const TemplateManagerCard: React.FC<IProps> = ({
   sessionItem,
   updateSession
@@ -90,6 +88,7 @@ const TemplateManagerCard: React.FC<IProps> = ({
             if (!newSelected || newSelected === sessionItem.pageTemplate) {
               return;
             }
+            let userService = new UserService(await DidService.getInstance());
             const newSession = await userService.updateSession(
               {
                 ...sessionItem,

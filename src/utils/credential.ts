@@ -1,3 +1,4 @@
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
 import { DidDocumentService } from 'src/services/diddocument.service';
 
 interface VerifiedCredential {
@@ -5,9 +6,10 @@ interface VerifiedCredential {
   isVerified: boolean;
 }
 
-export const getDidDocument = async (userSession: ISessionItem) => {
-  let documentState = await DidDocumentService.getUserDocument(userSession);
-  return documentState.diddocument;
+export const getDidDocument = async (
+  userSession: ISessionItem
+): Promise<DIDDocument> => {
+  return await DidDocumentService.getUserDocument(userSession);
 };
 
 export const containsVerifiedCredential = (

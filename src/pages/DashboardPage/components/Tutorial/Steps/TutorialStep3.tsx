@@ -141,7 +141,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       //   debugger;
       //   await DidDocumentService.publishUserDocument(userDocument, props.session);
       // }
-      let userService = new UserService(new DidService());
+      let userService = new UserService(await DidService.getInstance());
       const updatedSession = await userService.updateSession(newSession);
       eProps.setSession({ session: updatedSession });
       let hiveInstance = await HiveService.getSessionInstance(newSession);
@@ -190,7 +190,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
 
   const generateUserToken = async (mnemonics: string, address: string) => {
     let challenge = await HiveService.getHiveChallenge(address);
-    let didService = new DidService();
+    let didService = await DidService.getInstance();
     let presentation;
     if (mnemonics) {
       presentation = await didService.generateVerifiablePresentationFromUserMnemonics(
@@ -205,19 +205,21 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         challenge.nonce
       );
     }
+
     const userToken = await HiveService.getUserHiveToken(address, presentation);
     return userToken;
   };
 
-  let didService = new DidService();
   useEffect(() => {
     (async () => {
+      let didService = await DidService.getInstance();
+
       setTuumHiveVersion(
         await HiveService.getHiveVersion(
           process.env.REACT_APP_TUUM_TECH_HIVE as string
         )
       );
-      let doc = (await didService.getDidDocument(session.did)) as DIDDocument;
+      let doc = await didService.getDidDocument(session.did);
 
       if (doc.getServices() && doc.getServices().length > 0) {
         setSelected('document');

@@ -47,8 +47,9 @@ const SignQRPage: React.FC<InferMappedProps> = ({
    * incoming from Server API calls. Maintain a local state.
    */
   const history = useHistory();
-  const didService = new DidService();
+
   const connect = async () => {
+    const didService = await DidService.getInstance();
     let didAccess = new DID.DIDAccess();
     let presentation = await didAccess.getCredentials({
       claims: {
@@ -63,9 +64,7 @@ const SignQRPage: React.FC<InferMappedProps> = ({
       let issuer = nameCredential.getIssuer();
       let did = 'did:elastos:' + issuer.getMethodSpecificId();
       let mnemonic = '';
-      let didStore = await DidService.getStore();
-      let didDocument = await didStore.loadDid(issuer);
-      if (didDocument === null) didStore.storeDid(await issuer.resolve());
+      await didService.storeDocument(await issuer.resolve());
       let isDidPublished = await didService.isDIDPublished(did);
       if (isDidPublished) {
         let userService = new UserService(didService);

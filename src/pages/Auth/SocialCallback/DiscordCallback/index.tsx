@@ -26,6 +26,7 @@ import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service.new';
 import {
+  DID,
   DIDDocument,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
@@ -58,33 +59,30 @@ const DiscordCallback: React.FC<PageProps> = ({
   let code: string =
     new URLSearchParams(props.location.search).get('code') || '';
 
-  let didService = new DidService();
   useEffect(() => {
     (async () => {
+      let didService = await DidService.getInstance();
       if (code !== '' && credentials.loginCred.discord === '') {
         let t = await getToken(code);
         let discord = t.data.username + '#' + t.data.discriminator;
 
         if (props.session && props.session.did !== '') {
-          let vc = await DidcredsService.generateVerifiableCredential(
+          let verifiableCredential = await DidcredsService.generateVerifiableCredential(
             props.session.did,
             CredentialType.Discord,
             discord
           );
 
-          let state = await DidDocumentService.getUserDocument(props.session);
-          let document = await DIDDocument.parseContent(state.diddocument);
-          let docWithCredential = await didService.addVerfiableCredentialToDIDDocument(
-            document,
-            await VerifiableCredential.parseContent(JSON.stringify(vc))
-          );
-          console.log(docWithCredential.toString(true));
-          DidDocumentService.updateUserDocument(
-            docWithCredential.toString(true)
+          let didDocument: DIDDocument = await didService.getStoredDocument(
+            new DID(props.session.did)
           );
 
-          let store = await DidService.getStore();
-          store.storeDid(docWithCredential);
+          let documentWithDiscordCredential = await didService.addVerifiableCredentialToDIDDocument(
+            didDocument,
+            verifiableCredential
+          );
+
+          await didService.storeDocument(documentWithDiscordCredential);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.discord! = discord;
