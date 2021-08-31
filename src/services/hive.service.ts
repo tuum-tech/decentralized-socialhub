@@ -37,9 +37,6 @@ export class HiveService {
         instance.hiveHost
       );
 
-      // if (hiveClient && hiveClient.isConnected) {
-      //   await hiveClient.Payment.CreateFreeVault();
-      // }
       return hiveClient;
     } catch (e) {
       return;
@@ -104,7 +101,6 @@ export class HiveService {
     let builder = new OptionsBuilder();
 
     let a = await ElastosClient.did.loadFromMnemonic(mnemonic, '');
-    let pk = await didService.getPrivateKey(appDid.toString());
     await builder.setAppInstance(appId, {
       did: appDid.toString(),
       privateKey: a.privateKey
@@ -130,9 +126,6 @@ export class HiveService {
     let appDocument = await didService.getDidDocument(appDid, false);
     let docChallenge = JSON.parse(appDocument.toString(true));
 
-    //console.log("is challenge valid:" + appDocument.isValid());
-    //console.log("DOC Chalenge before:" + JSON.stringify(docChallenge));
-
     if (!appDocument.isValid()) {
       docChallenge.verifiableCredential.forEach((vc: any) => {
         delete vc.proof.created;
@@ -145,7 +138,6 @@ export class HiveService {
         console.error('doc is not valid');
       }
     }
-    //console.log("DOC Chalenge after:" + JSON.stringify(docChallenge));
 
     let response = await HiveClient.getApplicationChallenge(
       options,
