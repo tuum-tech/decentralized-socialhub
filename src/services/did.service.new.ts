@@ -302,7 +302,6 @@ export class DidService implements IDidService {
     diddocument: DIDDocument,
     vc: VerifiableCredential
   ): Promise<DIDDocument> {
-    debugger;
     if (diddocument.getProof()) {
       diddocument.proofs?.clear();
     }
