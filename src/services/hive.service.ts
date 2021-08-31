@@ -105,7 +105,6 @@ export class HiveService {
 
     let a = await ElastosClient.did.loadFromMnemonic(mnemonic, '');
     let pk = await didService.getPrivateKey(appDid.toString());
-    debugger;
     await builder.setAppInstance(appId, {
       did: appDid.toString(),
       privateKey: a.privateKey

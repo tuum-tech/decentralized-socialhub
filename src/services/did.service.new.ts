@@ -154,7 +154,6 @@ export class DidService implements IDidService {
     let rootIdentity: RootIdentity;
 
     if (identity === null) {
-      debugger;
       rootIdentity = RootIdentity.createFromMnemonic(
         mnemonic,
         password,
@@ -173,7 +172,6 @@ export class DidService implements IDidService {
 
     if (didDocument === null) {
       this.Store.storeDid(await did.resolve());
-      debugger;
       this.storePrivatekey(
         DIDURL.from('#primary', did) as DIDURL,
         mnemonic,
@@ -458,7 +456,7 @@ export class DidService implements IDidService {
       .realm(issuer)
       .nonce(nonce)
       .credentials(vc)
-      .seal(process.env.REACT_APP_APPLICATION_DID as string);
+      .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
     console.log(vp.toString(true));
 
     // can't return VerifiablePresenter object because HiveService still not supporting it

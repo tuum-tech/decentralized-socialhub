@@ -6,7 +6,6 @@ import { HiveService } from './hive.service';
 import { AssistService } from './assist.service';
 
 import { UserVaultScripts } from '../scripts/uservault.script';
-import { DidDocumentService } from './diddocument.service';
 import {
   TuumTechScriptService,
   UserVaultScriptService
@@ -53,7 +52,6 @@ export class UserService {
     mnemonics: string,
     name: string
   ): Promise<DIDDocument> {
-    debugger;
     let rootIdentity: RootIdentity = this.didService.storeNewRootIdentity(
       mnemonics
     );
@@ -229,7 +227,6 @@ export class UserService {
     let did = newDidStr;
     let mnemonics = newMnemonicStr;
     if (!did || did === '') {
-      debugger;
       mnemonics = await this.didService.generateNewMnemonics();
       const newDocument = await this.generateTemporaryDocument(
         accountType,

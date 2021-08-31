@@ -75,7 +75,6 @@ const LoadDid: React.FC<InferMappedProps> = ({
           DIDURL.from('#app-id-credential', DID.from(did_app) as DID) as DIDURL
         )
         .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
-      debugger;
       console.log(await vc.isValid());
       console.log(vc.toString(true));
 
@@ -103,7 +102,6 @@ const LoadDid: React.FC<InferMappedProps> = ({
       //     ) as DIDURL
       //   )
       //   .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
-      // debugger;
       // console.log(await vc.isValid());
       // console.log(vc.toString(true));
 

@@ -64,7 +64,6 @@ const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
   };
   useEffect(() => {
     (async () => {
-      debugger;
       if (user.loginCred) {
         const { loginCred } = user;
         if (
