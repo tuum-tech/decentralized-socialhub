@@ -23,7 +23,8 @@ import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 import { showNotify } from 'src/utils/notify';
 
 import { requestUpdateEmail } from './fetchapi';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { DidService } from 'src/services/did.service.new';
 
 interface Props {
   session: ISessionItem;
@@ -60,6 +61,8 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
   const setTimer = () => {
     const timer = setTimeout(async () => {
       // refresh DID document
+      let document = await DidDocumentService.getUserDocument(session);
+      setDidDocument(document);
 
       if (JSON.stringify(session) === JSON.stringify(userInfo)) return;
 
@@ -76,8 +79,10 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
       if (session.tutorialStep === 4) {
         await retriveProfile();
       }
-      let documentState = await DidDocumentService.getUserDocument(session);
-      setDidDocument(await DIDDocument.parseContent(documentState.diddocument));
+
+      let didService = await DidService.getInstance();
+      let doc = await didService.getStoredDocument(new DID(session.did));
+      setDidDocument(doc);
       setloaded(true);
     })();
     setTimer();

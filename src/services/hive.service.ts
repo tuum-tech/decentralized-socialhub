@@ -1,4 +1,9 @@
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { ElastosClient } from '@elastosfoundation/elastos-js-sdk';
+
+import {
+  DIDDocument,
+  VerifiablePresentation
+} from '@elastosfoundation/did-js-sdk/';
 import {
   HiveClient,
   OptionsBuilder,
@@ -32,9 +37,6 @@ export class HiveService {
         instance.hiveHost
       );
 
-      // if (hiveClient && hiveClient.isConnected) {
-      //   await hiveClient.Payment.CreateFreeVault();
-      // }
       return hiveClient;
     } catch (e) {
       return;
@@ -94,10 +96,15 @@ export class HiveService {
     //TODO: change to appInstance
     let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
     let appId = `${process.env.REACT_APP_APPLICATION_ID}`;
-    let didService = new DidService();
+    let didService = await DidService.getInstance();
     let appDid = await didService.loadDid(mnemonic);
     let builder = new OptionsBuilder();
-    await builder.setAppInstance(appId, appDid);
+
+    let a = await ElastosClient.did.loadFromMnemonic(mnemonic, '');
+    await builder.setAppInstance(appId, {
+      did: appDid.toString(),
+      privateKey: a.privateKey
+    });
     builder.setHiveHost(hiveHost);
     return builder.build();
   }
@@ -114,13 +121,10 @@ export class HiveService {
   static async getHiveChallenge(hiveHost: string): Promise<IHiveChallenge> {
     let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
     let options = await this.getHiveOptions(hiveHost);
-    let didService = new DidService();
+    let didService = await DidService.getInstance();
     let appDid = await didService.loadDid(mnemonic);
-    let appDocument = await didService.getDidDocument(appDid.did, false);
+    let appDocument = await didService.getDidDocument(appDid, false);
     let docChallenge = JSON.parse(appDocument.toString(true));
-
-    //console.log("is challenge valid:" + appDocument.isValid());
-    //console.log("DOC Chalenge before:" + JSON.stringify(docChallenge));
 
     if (!appDocument.isValid()) {
       docChallenge.verifiableCredential.forEach((vc: any) => {
@@ -134,7 +138,6 @@ export class HiveService {
         console.error('doc is not valid');
       }
     }
-    //console.log("DOC Chalenge after:" + JSON.stringify(docChallenge));
 
     let response = await HiveClient.getApplicationChallenge(
       options,
@@ -150,9 +153,12 @@ export class HiveService {
 
   static async getUserHiveToken(
     hiveHost: string,
-    presentation: any
+    presentation: VerifiablePresentation
   ): Promise<string> {
     let options = await this.getHiveOptions(hiveHost);
-    return await HiveClient.getAuthenticationToken(options, presentation);
+    return await HiveClient.getAuthenticationToken(
+      options,
+      JSON.parse(presentation.toString(true))
+    );
   }
 }

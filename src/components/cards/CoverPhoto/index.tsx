@@ -50,7 +50,7 @@ const Upload: React.FC<InferMappedProps> = ({
       let newSession = JSON.parse(JSON.stringify(props.session));
       newSession.coverPhoto = base64Str;
 
-      let userService = new UserService(new DidService());
+      let userService = new UserService(await DidService.getInstance());
       eProps.setSession({
         session: await userService.updateSession(newSession, true)
       });

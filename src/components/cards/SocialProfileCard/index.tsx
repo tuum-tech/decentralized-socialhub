@@ -29,8 +29,6 @@ const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
 
   const user = props.targetUser ? props.targetUser : props.session;
 
-  let didService = new DidService();
-
   const hasCredential = (document: DIDDocument, key: string): boolean => {
     if (
       document.selectCredentials(key.toLowerCase(), 'InternetAccountCredential')
@@ -46,31 +44,25 @@ const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
     key: CredentialType,
     value: string
   ) => {
-    let vc = await DidcredsService.generateVerifiableCredential(
+    let verifiableCredential = await DidcredsService.generateVerifiableCredential(
       props.session.did,
       key,
       value
     );
-    let verifiableCredential = await VerifiableCredential.parseContent(
-      JSON.stringify(vc)
-    );
 
-    let docWithCredential = await didService.addVerfiableCredentialToDIDDocument(
+    let didService = await DidService.getInstance();
+
+    let docWithCredential = await didService.addVerifiableCredentialToDIDDocument(
       document,
       verifiableCredential
     );
-    DidDocumentService.updateUserDocument(docWithCredential.toString(true));
 
-    let store = await DidService.getStore();
-    store.storeDid(docWithCredential);
-
+    await didService.storeDocument(docWithCredential);
     setDocument(docWithCredential);
   };
   useEffect(() => {
     (async () => {
-      debugger;
       if (user.loginCred) {
-        debugger;
         const { loginCred } = user;
         if (
           loginCred.google &&

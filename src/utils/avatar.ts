@@ -10,7 +10,9 @@ export interface GetAvatarRes {
 export const getAvatarIfno = async (
   did: string
 ): Promise<GetAvatarRes | undefined> => {
-  let userService: UserService = new UserService(new DidService());
+  let userService: UserService = new UserService(
+    await DidService.getInstance()
+  );
   const tuumUser = await userService.SearchUserWithDID(did);
   const didPublished = tuumUser && tuumUser.tutorialStep === 4;
 

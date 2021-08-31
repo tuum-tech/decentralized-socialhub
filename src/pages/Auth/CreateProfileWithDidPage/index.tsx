@@ -73,7 +73,7 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
         <SetPassword
           loading={false}
           next={async pwd => {
-            let userService = new UserService(new DidService());
+            let userService = new UserService(await DidService.getInstance());
             let sessionItem = await userService.CreateNewUser(
               userInfo.name,
               AccountType.DID,
