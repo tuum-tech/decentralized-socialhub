@@ -4,7 +4,6 @@ export class UserVaultScripts {
   static async Execute(hiveClient: HiveClient) {
     await this.CreateCollections(hiveClient);
     await this.SetScripts(hiveClient);
-    console.log('uservaultscripts registered');
   }
 
   static async CreateCollections(hiveClient: HiveClient) {

@@ -15,7 +15,7 @@ import {
   VerifiableCredential,
   VerifiablePresentation
 } from '@elastosfoundation/did-js-sdk/';
-import { DID as ConnDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { IDidService, IDID } from './did.service';
 
 export class DidService implements IDidService {
@@ -325,27 +325,23 @@ export class DidService implements IDidService {
     issuer: string,
     nonce: string
   ): Promise<any> {
-    let didAccess = new ConnDID.DIDAccess();
-    let {
-      did: appDid,
-      didStore
-    } = await didAccess.getOrCreateAppInstanceDID();
-    let appDidInfo = await didAccess.getExistingAppInstanceDIDInfo();
-    console.log(appDid, appDidInfo);
+    let appMnemonic = process.env.REACT_APP_APPLICATION_MNEMONICS as string;
+    let appDid = await this.loadDid(appMnemonic);
 
-    let vc = await didAccess.generateAppIdCredential();
-    let vpb = await VerifiablePresentation.createFor(
-      appDidInfo.didString,
-      null,
-      didStore
+    let connector = connectivity.getActiveConnector();
+    let vc = await connector?.generateAppIdCredential(
+      process.env.REACT_APP_APPLICATION_DID as string,
+      process.env.REACT_APP_APPLICATION_DID as string
     );
-    let vp = await vpb
-      .realm(issuer)
-      .nonce(nonce)
-      .credentials(vc)
-      .seal(appDidInfo.storePassword);
-    console.log(vp.toString(true));
-    console.log('vp validate: => ', await vp.isValid());
-    return vp;
+    console.log(await vc.isValid());
+
+    let vpold = ElastosClient.didDocuments.createVerifiablePresentation(
+      appDid,
+      'VerifiablePresentation',
+      JSON.parse(vc.toString(true)),
+      issuer,
+      nonce
+    );
+    return vpold;
   }
 }
