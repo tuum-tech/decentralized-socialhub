@@ -5,7 +5,6 @@ import {
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
-  IonText,
   IonGrid,
   IonRow
 } from '@ionic/react';

@@ -8,7 +8,8 @@ import {
   IonModal
 } from '@ionic/react';
 import styled from 'styled-components';
-import theme from 'src/data/theme';
+
+import { getThemeData } from 'src/data/theme';
 import { CardOverview } from '../common';
 
 export const SocialProfileCard = styled(CardOverview)<ThemeProps>`
@@ -122,7 +123,8 @@ export const ProfileItem = styled(IonItem)<ThemeProps>`
   color: #7a7a9d;
 
   a {
-    color: ${({ template }: ThemeProps) => (theme as any)[template].cardTitle1};
+    color: ${({ template }: ThemeProps) =>
+      getThemeData(template, 'card', 'cardTitle1')};
   }
 
   .left {
@@ -137,13 +139,15 @@ export const ProfileItem = styled(IonItem)<ThemeProps>`
   }
 
   .social-profile-network {
-    color: ${({ template }: ThemeProps) => (theme as any)[template].cardTitle2};
+    color: ${({ template }: ThemeProps) =>
+      getThemeData(template, 'card', 'cardTitle2')};
     font-size: 16px;
     font-weight: 600;
   }
 
   .social-profile-id {
-    color: ${({ template }: ThemeProps) => (theme as any)[template].cardTitle3};
+    color: ${({ template }: ThemeProps) =>
+      getThemeData(template, 'card', 'cardTitle3')};
     font-size: 13px;
     font-weight: 400;
   }

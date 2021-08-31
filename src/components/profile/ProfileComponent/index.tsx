@@ -10,8 +10,7 @@ import ExperienceCard from 'src/components/cards/ExperienceCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 import BadgeCard from 'src/components/cards/BadgeCard';
 import FollowCards from 'src/components/follow/FollowCards';
-
-import theme from 'src/data/theme';
+import { getThemeData } from 'src/data/theme';
 
 import PublicProfileTabs from './PublicProfileTabs';
 import ProfileHeader from './ProfileHeader';
@@ -21,7 +20,7 @@ const GridContent = styled(IonGrid)<ThemeProps>`
   width: 100%;
   z-index: 100;
   background-color: ${({ template }: ThemeProps) =>
-    (theme as any)[template].pageBg};
+    getThemeData(template, 'gridContent', 'backgroundColor')};
 `;
 
 const LeftContent = styled.div`
