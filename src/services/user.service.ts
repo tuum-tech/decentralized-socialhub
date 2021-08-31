@@ -3,7 +3,6 @@ import { Guid } from 'guid-typescript';
 import { alertError, showNotify } from 'src/utils/notify';
 
 import { HiveService } from './hive.service';
-import { AssistService } from './assist.service';
 
 import { UserVaultScripts } from '../scripts/uservault.script';
 import {
@@ -12,11 +11,9 @@ import {
 } from './script.service';
 import { ProfileService } from './profile.service';
 import {
-  DID,
   DIDDocument,
   RootIdentity,
-  VerifiableCredential,
-  VerifiablePresentation
+  VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
 import { IDidService } from './did.service.new';
 

@@ -15,7 +15,6 @@ import { setSession } from 'src/store/users/actions';
 import style from '../style.module.scss';
 import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 const VersionTag = styled.span`
   color: green;

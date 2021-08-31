@@ -11,7 +11,7 @@ import {
 } from '@ionic/react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';

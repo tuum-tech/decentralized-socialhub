@@ -24,12 +24,7 @@ import { requestGithubToken, getUsersWithRegisteredGithub } from './fetchapi';
 import { DidService } from 'src/services/did.service.new';
 import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
-import { DidDocumentService } from 'src/services/diddocument.service';
-import {
-  DID,
-  DIDDocument,
-  VerifiableCredential
-} from '@elastosfoundation/did-js-sdk/';
+import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 interface PageProps
   extends InferMappedProps,

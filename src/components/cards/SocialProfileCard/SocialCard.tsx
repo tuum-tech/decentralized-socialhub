@@ -39,7 +39,6 @@ import {
   DIDDocumentBuilder,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
-import { DidDocumentService } from 'src/services/diddocument.service';
 
 interface Props {
   diddocument: DIDDocument;
@@ -230,7 +229,7 @@ const SocialProfilesCard: React.FC<Props> = ({
     // ===== temporary codes end =====
   };
 
-  const createIonItem = (key: string, icon: any) => {
+  const createIonItem = async (key: string, icon: any) => {
     let vc = didDocument!.selectCredentials(
       key,
       'InternetAccountCredential'
@@ -240,7 +239,7 @@ const SocialProfilesCard: React.FC<Props> = ({
       <ProfileItem template={template}>
         <div className="left">
           <img alt="icon" src={icon} height={50} />
-          {vc.isValid() && (
+          {(await vc.isValid()) && (
             <img
               alt="shield icon"
               src={shieldIcon}

@@ -14,7 +14,7 @@ import { createStructuredSelector } from 'reselect';
 import injector from 'src/baseplate/injectorWrap';
 import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
 import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect } from 'react';
 import style from './style.module.scss';
 import { NameSpace } from './constants';
 import reducer from './reducer';
@@ -32,8 +32,6 @@ const LoadDid: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
-  const [document, setDocument] = useState('');
-
   useEffect(() => {
     (async () => {
       let service = await DidService.getInstance();
@@ -47,7 +45,6 @@ const LoadDid: React.FC<InferMappedProps> = ({
       console.log('did app' + did_app);
       console.log('did user' + did_user);
 
-      let appDocument = await service.getStoredDocument(did_app);
       let userDocument = await service.getStoredDocument(did_user);
 
       // //let did = await service.loadDid(
