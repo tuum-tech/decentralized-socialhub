@@ -33,6 +33,9 @@ import { NameSpace } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
+import FooterLinks, {
+  Footer
+} from 'src/components/layouts/OnBoardLayout/FooterLinks';
 
 const SignQRPage: React.FC<InferMappedProps> = ({
   eProps,
@@ -123,6 +126,9 @@ const SignQRPage: React.FC<InferMappedProps> = ({
           <SignInButton width={120} to="/sign-did">
             Sign In
           </SignInButton>
+          <Footer>
+            <FooterLinks></FooterLinks>
+          </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>

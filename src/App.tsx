@@ -224,12 +224,12 @@ const App: React.FC = () => {
               exact={true}
             />
             <ProtectedRoute
-              path="/support-forum"
+              path="/support-forum/:num"
               component={SupportForum}
               exact={true}
             />
-            <ProtectedRoute
-              path="/support-forum/:num"
+            <Route
+              path="/support-forum"
               component={SupportForum}
               exact={true}
             />

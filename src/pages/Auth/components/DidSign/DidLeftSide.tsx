@@ -14,6 +14,9 @@ import { SignInButton } from 'src/elements/buttons';
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import markimg from 'src/assets/icon/mark.png';
 import wavinghand from 'src/assets/icon/wavinghand.png';
+import FooterLinks, {
+  Footer
+} from 'src/components/layouts/OnBoardLayout/FooterLinks';
 
 interface Props {
   error?: boolean;
@@ -88,6 +91,9 @@ const DidLeftSide: React.FC<Props> = ({ error = false }) => {
         <SignInButton width={120} to="/sign-qr">
           Sign In
         </SignInButton>
+        <Footer>
+          <FooterLinks></FooterLinks>
+        </Footer>
       </OnBoardLayoutLeftContent>
     </OnBoardLayoutLeft>
   );

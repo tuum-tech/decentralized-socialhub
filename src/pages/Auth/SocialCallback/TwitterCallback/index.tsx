@@ -90,18 +90,18 @@ const TwitterCallback: React.FC<PageProps> = ({
           );
 
           let state = await DidDocumentService.getUserDocument(props.session);
+          let document = await DIDDocument.parseContent(state.diddocument);
+          let docWithCredential = await didService.addVerfiableCredentialToDIDDocument(
+            document,
+            await VerifiableCredential.parseContent(JSON.stringify(vc))
+          );
+          console.log(docWithCredential.toString(true));
+          DidDocumentService.updateUserDocument(
+            docWithCredential.toString(true)
+          );
 
-          let didDocumentJson = JSON.parse(state.diddocument);
           let store = await DidService.getStore();
-          let didDocument: DIDDocument = await store.loadDid(
-            didDocumentJson.id
-          );
-
-          await didService.addVerfiableCredentialToDIDDocument(
-            didDocument,
-            await VerifiableCredential.parseContent(vc)
-          );
-          DidDocumentService.updateUserDocument(state.diddocument as any);
+          store.storeDid(docWithCredential);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.twitter! = items[1].toString();

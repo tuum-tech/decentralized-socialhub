@@ -13,15 +13,10 @@ import defaultCoverPhoto from 'src/assets/default-cover.png';
 
 const HeaderContainer = styled(IonGrid)`
   background-color: white;
-  position: sticky;
-  position: -webkit-sticky;
-  top: 0;
-  z-index: 99;
 `;
 
 const Banner = styled.div<{ bgImg: string }>`
   display: flex;
-  position: sticky;
   top: 0px;
   height: 176px;
   flex-direction: column;

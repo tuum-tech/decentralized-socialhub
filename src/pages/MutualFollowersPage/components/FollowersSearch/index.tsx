@@ -52,7 +52,7 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
     return str != null && regex.test(str.trim());
   };
 
-  const onUnfollow = (did: string) => {
+  const unfollowMutualFollower = (did: string) => {
     setListFollowing(listFollowing.filter(item => item.did !== did));
   };
 
@@ -147,7 +147,7 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
             isSearchKeywordDID={isDID(searchQuery)}
             showHeader={false}
             showMutualFollowers={true}
-            onUnfollow={onUnfollow}
+            unfollowMutualFollower={unfollowMutualFollower}
             size="6"
           />
         </IonRow>

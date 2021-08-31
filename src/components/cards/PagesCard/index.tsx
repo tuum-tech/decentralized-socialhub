@@ -28,6 +28,7 @@ const pageItem = (pageItem: any, indexItem: number, colSize: any) => {
       colSize={colSize}
       type="page"
       key={'did-page-card-' + indexItem}
+      followClicked={(isFollow: boolean, did: string) => {}}
     />
   );
 };

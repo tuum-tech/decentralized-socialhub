@@ -28,6 +28,7 @@ import arrowLeft from '../../assets/icon/arrow-left-square.svg';
 
 import style from './style.module.scss';
 import { DidService } from 'src/services/did.service.new';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 const Header = styled.div`
   width: 100%;
@@ -152,7 +153,13 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
             props.match.params.did
           );
 
-          setDidDocument(JSON.parse(documentState.diddocument));
+          debugger;
+
+          if (documentState.diddocument !== null) {
+            setDidDocument(
+              await DIDDocument.parseContent(documentState.diddocument)
+            );
+          }
         }
       }
 

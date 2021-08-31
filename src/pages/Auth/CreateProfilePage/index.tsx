@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Redirect } from 'react-router';
 
 import {
   OnBoardLayout,
@@ -46,6 +47,9 @@ import {
   requestLinkedinLogin,
   requestFacebookLogin
 } from './fetchapi';
+import FooterLinks, {
+  Footer
+} from 'src/components/layouts/OnBoardLayout/FooterLinks';
 
 const ErrorText = styled(Text16)`
   text-align: center;
@@ -160,6 +164,11 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
     setLoading('');
   };
 
+  const isLoggedIn = window.localStorage.getItem('isLoggedIn');
+  if (isLoggedIn) {
+    return <Redirect to="/profile" />;
+  }
+
   if (mode === 1) {
     return (
       <MultiDidPasswordLogin
@@ -196,6 +205,9 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
           <SignInButton width={120} to="/sign-did">
             Sign in Here
           </SignInButton>
+          <Footer>
+            <FooterLinks></FooterLinks>
+          </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
