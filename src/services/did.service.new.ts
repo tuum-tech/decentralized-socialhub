@@ -302,15 +302,15 @@ export class DidService implements IDidService {
     diddocument: DIDDocument,
     vc: VerifiableCredential
   ): Promise<DIDDocument> {
+    debugger;
     if (diddocument.getProof()) {
       diddocument.proofs?.clear();
     }
 
     let builder = DIDDocumentBuilder.newFromDocument(diddocument);
-    builder.addCredential(vc);
-    return await builder.seal(
-      process.env.REACT_APP_DID_STORE_PASSWORD as string
-    );
+    return await builder
+      .addCredential(vc)
+      .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
   }
 
   async addServiceToDIDDocument(
