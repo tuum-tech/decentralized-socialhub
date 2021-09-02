@@ -18,7 +18,7 @@ import { FollowService } from 'src/services/follow.service';
 import { FollowType, UserService } from 'src/services/user.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 
-import ViewAllFollowModal from 'src/components/follow/ViewAllFollowModal';
+import ViewAllFollowModal from 'src/components/ViewAllFollowModal';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 import ProfileComponent from 'src/components/profile/ProfileComponent';
 import PublicNavbar from 'src/components/profile/ProfileComponent/PublicNavbar';

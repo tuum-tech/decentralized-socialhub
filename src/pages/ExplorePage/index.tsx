@@ -22,7 +22,7 @@ import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 
 import ProfileComponent from 'src/components/profile/ProfileComponent';
-import ViewAllFollowModal from 'src/components/follow/ViewAllFollowModal';
+import ViewAllFollowModal from 'src/components/ViewAllFollowModal';
 import SearchComponent from './components/SearchComponent';
 import arrowLeft from '../../assets/icon/arrow-left-square.svg';
 

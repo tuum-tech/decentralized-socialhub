@@ -1,23 +1,29 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from 'react';
+import ReactTooltip from 'react-tooltip';
+
 import {
-  IonCard,
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
+  IonCol,
   IonGrid,
   IonRow
 } from '@ionic/react';
-import style from './BadgeCard.module.scss';
+
 import { timeSince } from 'src/utils/time';
 import badgeDetails from 'src/data/badge_detail.json';
-
+import { CardOverview } from '../common';
+import { ViewAll } from '../FollowCards/FollowCard';
+import style from '../FollowCards/style.module.scss';
 interface Props {
   badges: IBadges;
+  template: string;
 }
 
-const BadgeCard: React.FC<Props> = ({ badges }) => {
+const BadgeCard: React.FC<Props> = ({ badges, template }) => {
   const [archivedBadges, setArchivedBadges] = useState([]);
+  const [maxBadges, setMaxBadges] = useState(6);
   useEffect(() => {
     if (!badges) return;
     let _archivedBadges: any = [];
@@ -37,37 +43,71 @@ const BadgeCard: React.FC<Props> = ({ badges }) => {
     setArchivedBadges(_archivedBadges);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [badges]);
+
   return (
-    <IonCard className={style['spotlight']}>
+    <CardOverview template={template}>
       <IonCardHeader className={style['card-header']}>
-        <IonCardTitle className={style['card-title']}>
-          Badges ({archivedBadges.length})
-        </IonCardTitle>
-      </IonCardHeader>
-      <IonCardContent className={style['card-content']}>
         <IonGrid>
-          {archivedBadges.slice(0, 10).map((badge, index) => {
+          <IonRow className="ion-justify-content-between">
+            <IonCol size="6">
+              <IonCardTitle id="education">
+                Badges ({archivedBadges.length})
+              </IonCardTitle>
+            </IonCol>
+            <IonCol size="auto">
+              <ViewAll
+                onClick={() => {
+                  if (maxBadges === 6) {
+                    setMaxBadges(archivedBadges.length);
+                  } else {
+                    setMaxBadges(6);
+                  }
+                }}
+              >
+                {maxBadges === 6 ? 'View All' : 'Collapse'}
+              </ViewAll>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
+      </IonCardHeader>
+
+      <IonCardContent>
+        <IonGrid
+          className={style['following-widget']}
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap'
+          }}
+        >
+          {archivedBadges.slice(0, maxBadges).map((badge, index) => {
             const { category, name, archived } = badge;
             const { title, description, enbl_icon, dsabl_icon } = badgeDetails[
               category
             ][name];
+            const text = `${title} <br/> Archieved ${timeSince(archived)}`;
             return (
-              <IonRow className={style['badge']} key={index}>
+              <IonCol
+                key={title}
+                size="2"
+                style={{
+                  paddingLeft: '2.5px',
+                  paddingRight: '2.5px',
+                  marginBottom: '10px'
+                }}
+                data-for={title}
+                data-tip={text}
+                data-iscapture="true"
+              >
                 <div className={style['badge-icon']}>
                   <img alt="enable icon" src={enbl_icon} height={40} />
                 </div>
-                <div className={style['badge-detail']}>
-                  <p className={style['badge-name']}>{title}</p>
-                  <p className={style['badge-archive']}>
-                    <span>Achieved</span> {timeSince(archived)}
-                  </p>
-                </div>
-              </IonRow>
+                <ReactTooltip id={title} multiline={true} />
+              </IonCol>
             );
           })}
         </IonGrid>
       </IonCardContent>
-    </IonCard>
+    </CardOverview>
   );
 };
 
