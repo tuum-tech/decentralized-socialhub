@@ -185,7 +185,9 @@ export class DidService implements IDidService {
       DID.from(did.did as string) as DID
     ) as DIDURL;
     builder.addService(didUrl, type, endpoint);
-    return await builder.seal('passw');
+    return await builder.seal(
+      process.env.REACT_APP_DID_STORE_PASSWORD as string
+    );
 
     //ElastosClient.didDocuments.addServiceToDIDDocument(diddocument, service);
   }

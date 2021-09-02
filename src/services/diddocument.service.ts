@@ -113,10 +113,7 @@ export class DidDocumentService {
     diddocument: DIDDocument,
     userSession: ISessionItem
   ): Promise<IDIDDocumentState | undefined> {
-    //let userDid = await didService.loadDid(userSession.mnemonics);
-    //let signedDocument = await didService.sealDIDDocument(userDid, diddocument);
     if (!diddocument.getProof()) {
-      // alertError(null, 'The DID document was not signed');
       return;
     }
 

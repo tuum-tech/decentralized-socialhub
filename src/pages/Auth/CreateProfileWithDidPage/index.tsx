@@ -55,17 +55,17 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  console.log(status, userInfo);
+
   if (userInfo.did === '') {
     return <PageLoading />;
   } else {
-    if (status === 0 && userInfo.name !== '') {
-      if (
-        userInfo.loginCred === undefined ||
-        userInfo.loginCred.email === undefined ||
-        userInfo.loginCred.email.length === 0
-      ) {
-        setStatus(1);
-      }
+    if (
+      status === 0 &&
+      userInfo.name !== '' &&
+      (!userInfo.loginCred.email || userInfo.loginCred.email === '')
+    ) {
+      setStatus(1);
     }
 
     if (status === 1) {

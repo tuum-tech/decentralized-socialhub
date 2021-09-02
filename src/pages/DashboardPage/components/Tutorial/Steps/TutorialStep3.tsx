@@ -16,7 +16,13 @@ import { setSession } from 'src/store/users/actions';
 import style from '../style.module.scss';
 import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import {
+  DIDDocument,
+  DIDDocumentBuilder,
+  RootIdentity
+} from '@elastosfoundation/did-js-sdk/';
+import { AssistService } from 'src/services/assist.service';
+import { DIDTransactionAdapter } from '@elastosfoundation/did-js-sdk/typings/didtransactionadapter';
 
 const VersionTag = styled.span`
   color: green;
@@ -128,18 +134,56 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         newSession.badges!.dStorage!.ownVault.archived = new Date().getTime();
       }
       //TODO: Uncomment when update document publish is fixed
-      // if (selected !== "document")
-      // {
-      //   let userDid = await didService.loadDid(props.session.mnemonics);
-      //   //let hivesvc = didService.generateService(userDid, 'HiveVault', endpoint);
-      //   //let documentState : IDIDDocumentState = await DidDocumentService.getUserDocument(props.session);
+      if (selected !== 'document') {
+        let store = await DidService.getStore();
+        let identity = RootIdentity.createFromMnemonic(
+          props.session.mnemonics,
+          '',
+          store,
+          process.env.REACT_APP_DID_STORE_PASSWORD as string,
+          true
+        );
+        store.setDefaultRootIdentity(identity);
+        await store.synchronize();
+        let did = identity.getDid(0);
+        identity.setDefaultDid(did);
+        let document = await did.resolve();
+        let docBuilder = DIDDocumentBuilder.newFromDID(
+          document.getSubject(),
+          store,
+          document
+        );
+        docBuilder.edit();
+        docBuilder.addService('#HiveVault', 'HiveVault', endpoint);
+        let signedDocument = await docBuilder.seal(
+          process.env.REACT_APP_DID_STORE_PASSWORD as string
+        );
 
-      //   let store = await DidService.getStore();
-      //   let userDocument = await store.loadDid(userDid.did);
-      //   let documentWithService = await didService.addServiceToDIDDocument(userDocument, userDid, 'HiveVault', endpoint);
-      //   debugger;
-      //   await DidDocumentService.publishUserDocument(userDocument, props.session);
-      // }
+        console.log('Signed document', signedDocument.toString());
+        console.log('Is Valid', signedDocument.isValid());
+        console.log('Is Genuine', signedDocument.isGenuine());
+
+        await signedDocument.publish(
+          process.env.REACT_APP_DID_STORE_PASSWORD as string,
+          signedDocument.getDefaultPublicKeyId(),
+          true,
+          {
+            createIdTransaction: async (payload: any, memo: any) => {
+              console.log('Entering publish document adapter');
+              let request = JSON.parse(payload);
+              let did = request.proof.verificationMethod;
+              did = did.substring(0, did.indexOf('#'));
+              let response = await AssistService.publishDocument(did, request);
+              console.log(response);
+            }
+          } as DIDTransactionAdapter
+        );
+
+        await store.storeDid(signedDocument);
+
+        console.log('Signed document published');
+      }
+
       let userService = new UserService(new DidService());
       const updatedSession = await userService.updateSession(newSession);
       eProps.setSession({ session: updatedSession });

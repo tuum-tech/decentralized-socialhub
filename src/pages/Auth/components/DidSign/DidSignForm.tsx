@@ -104,9 +104,10 @@ const DidForm: React.FC<Props> = ({
   const signin = async () => {
     let didService = new DidService();
     let isMnemonicValid = didService.isMnemonicsValid(mnemonic.join(' '));
-
+    console.log(isMnemonicValid);
     setError(isMnemonicValid === false);
     if (isMnemonicValid) {
+      console.log(mnemonic);
       let userDid = await didService.loadDid(
         mnemonic.join(' '),
         passphrase || ''
@@ -135,13 +136,19 @@ const DidForm: React.FC<Props> = ({
           placeholder={PlaceHolderTexts[index]}
           onInput={e => {
             setError(false);
-            let val = e.currentTarget.value!.replace(/\s+/g, '');
-            let key = e.key;
-            if (key === ' ') {
-              itemEls.current[index].value = val;
-              itemEls.current[(index + 1) % 12].setFocus();
+            if (e.currentTarget.value!.split(' ').length === 12) {
+              let words = e.currentTarget.value!.split(' ');
+              setMnemonic(words);
+              itemEls.current[12].setFocus();
+            } else {
+              let val = e.currentTarget.value!.replace(/\s+/g, '');
+              let key = e.key;
+              if (key === ' ') {
+                itemEls.current[index].value = val;
+                itemEls.current[(index + 1) % 12].setFocus();
+              }
+              updateMnemonic(index, val);
             }
-            updateMnemonic(index, val);
           }}
           hasError={error}
         />
@@ -210,10 +217,12 @@ const DidForm: React.FC<Props> = ({
         <DidInputRow>
           <IonCol className="ion-no-padding">
             <TextInput
+              onRef={element => itemEls.current.push(element)}
               flexDirection="column"
               className="mt-12px"
               value={passphrase}
               placeholder="Enter your passphrase here"
+              onHitEnter={signin}
               onChange={n => setPassphrase(n)}
             />
           </IonCol>
