@@ -26,7 +26,7 @@ import {
   Perfil
 } from './upload';
 import styleWidget from '../WidgetCards.module.scss';
-import { DidService } from 'src/services/did.service.new';
+import { DidService, IDidService } from 'src/services/did.service.new';
 import { showNotify } from 'src/utils/notify';
 
 const Upload: React.FC<InferMappedProps> = ({
@@ -52,7 +52,9 @@ const Upload: React.FC<InferMappedProps> = ({
       let newSession = JSON.parse(JSON.stringify(props.session));
       newSession.avatar = base64Str;
 
-      let userService = new UserService(new DidService());
+      let userService = new UserService(
+        (await DidService.getInstance()) as IDidService
+      );
       eProps.setSession({
         session: await userService.updateSession(newSession, true)
       });

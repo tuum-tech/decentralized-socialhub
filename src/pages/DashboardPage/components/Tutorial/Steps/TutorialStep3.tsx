@@ -1,7 +1,6 @@
 /* eslint-disable no-useless-escape */
 import { IonButton, IonInput, IonRadio, IonRadioGroup } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
-
 import { DidService } from 'src/services/did.service.new';
 import { UserService } from 'src/services/user.service';
 import { HiveService } from 'src/services/hive.service';
@@ -234,27 +233,36 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
 
   const generateUserToken = async (mnemonics: string, address: string) => {
     let challenge = await HiveService.getHiveChallenge(address);
-    let didService = new DidService();
-    let presentation = await didService.generateVerifiablePresentationFromUserMnemonics(
-      mnemonics,
-      '',
-      challenge.issuer,
-      challenge.nonce
-    );
-    const userToken = await HiveService.getUserHiveToken(address, presentation);
+    let didService = await DidService.getInstance();
+    let presentation;
+    if (mnemonics) {
+      presentation = await didService.generateVerifiablePresentationFromUserMnemonics(
+        mnemonics,
+        '',
+        challenge.issuer,
+        challenge.nonce
+      );
+    } else {
+      presentation = await didService.generateVerifiablePresentationFromEssentialCred(
+        challenge.issuer,
+        challenge.nonce
+      );
+    }
 
+    const userToken = await HiveService.getUserHiveToken(address, presentation);
     return userToken;
   };
 
-  let didService = new DidService();
   useEffect(() => {
     (async () => {
+      let didService = await DidService.getInstance();
+
       setTuumHiveVersion(
         await HiveService.getHiveVersion(
           process.env.REACT_APP_TUUM_TECH_HIVE as string
         )
       );
-      let doc = (await didService.getDidDocument(session.did)) as DIDDocument;
+      let doc = await didService.getDidDocument(session.did);
 
       if (doc.getServices() && doc.getServices().length > 0) {
         setSelected('document');

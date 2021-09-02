@@ -9,91 +9,134 @@ import { InferMappedProps, SubState } from './types';
 
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import SocialCard from './SocialCard';
+import {
+  DIDDocument,
+  VerifiableCredential
+} from '@elastosfoundation/did-js-sdk/';
+import { DidService } from 'src/services/did.service.new';
+import { DidDocumentService } from 'src/services/diddocument.service';
 
 interface Props extends InferMappedProps {
-  didDocument: any;
+  didDocument: DIDDocument;
   targetUser?: ISessionItem;
+  setSession: (props: { session: ISessionItem }) => void;
   mode?: string;
 }
 
 const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
   const [document, setDocument] = useState(props.didDocument);
+  const [isLoaded, setIsLoaded] = useState(false);
+
   const user = props.targetUser ? props.targetUser : props.session;
 
+  const hasCredential = (document: DIDDocument, key: string): boolean => {
+    if (
+      document.selectCredentials(key.toLowerCase(), 'InternetAccountCredential')
+        .length > 0
+    )
+      return true;
+
+    return false;
+  };
+
+  const addCredentialToDocument = async (
+    document: DIDDocument,
+    key: CredentialType,
+    value: string
+  ) => {
+    let verifiableCredential = await DidcredsService.generateVerifiableCredential(
+      props.session.did,
+      key,
+      value
+    );
+
+    let didService = await DidService.getInstance();
+
+    let docWithCredential = await didService.addVerifiableCredentialToDIDDocument(
+      document,
+      verifiableCredential
+    );
+
+    await didService.storeDocument(docWithCredential);
+    setDocument(docWithCredential);
+  };
   useEffect(() => {
     (async () => {
       if (user.loginCred) {
         const { loginCred } = user;
-        const vcs = [];
-        if (loginCred.google) {
-          let vc = await DidcredsService.generateVerifiableCredential(
-            props.session.did,
+        if (
+          loginCred.google &&
+          !hasCredential(document, CredentialType.Google)
+        ) {
+          await addCredentialToDocument(
+            document,
             CredentialType.Google,
             loginCred.google
           );
-          vcs.push(vc);
         }
-        if (loginCred.facebook) {
-          let vc = await DidcredsService.generateVerifiableCredential(
-            props.session.did,
+        if (
+          loginCred.facebook &&
+          !hasCredential(document, CredentialType.Facebook)
+        ) {
+          await addCredentialToDocument(
+            document,
             CredentialType.Facebook,
             loginCred.facebook
           );
-          vcs.push(vc);
         }
-        if (loginCred.twitter) {
-          let vc = await DidcredsService.generateVerifiableCredential(
-            props.session.did,
+        if (
+          loginCred.twitter &&
+          !hasCredential(document, CredentialType.Twitter)
+        ) {
+          await addCredentialToDocument(
+            document,
             CredentialType.Twitter,
             loginCred.twitter
           );
-          vcs.push(vc);
         }
-        if (loginCred.linkedin) {
-          let vc = await DidcredsService.generateVerifiableCredential(
-            props.session.did,
+        if (
+          loginCred.linkedin &&
+          !hasCredential(document, CredentialType.Linkedin)
+        ) {
+          await addCredentialToDocument(
+            document,
             CredentialType.Linkedin,
             loginCred.linkedin
           );
-          vcs.push(vc);
         }
-        if (loginCred.github) {
-          let vc = await DidcredsService.generateVerifiableCredential(
-            props.session.did,
+        if (
+          loginCred.github &&
+          !hasCredential(document, CredentialType.Github)
+        ) {
+          await addCredentialToDocument(
+            document,
             CredentialType.Github,
             loginCred.github
           );
-          vcs.push(vc);
         }
-        if (loginCred.discord) {
-          let vc = await DidcredsService.generateVerifiableCredential(
-            props.session.did,
+        if (
+          loginCred.discord &&
+          !hasCredential(document, CredentialType.Discord)
+        ) {
+          await addCredentialToDocument(
+            document,
             CredentialType.Discord,
             loginCred.discord
           );
-          vcs.push(vc);
         }
-        setDocument({
-          ...document,
-          verifiableCredential: vcs
-        });
       }
+      setIsLoaded(true);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   if (
-    props.mode === 'edit' ||
-    (document.verifiableCredential && document.verifiableCredential.length > 0)
+    (props.mode === 'edit' || document.getCredentialCount() > 0) &&
+    isLoaded
   ) {
     return (
       <SocialCard
         sessionItem={user}
-        setSession={({ session }) => {
-          if (!props.targetUser) {
-            eProps.setSession({ session });
-          }
-        }}
+        setSession={props.setSession}
         diddocument={document}
         mode={props.mode}
       />

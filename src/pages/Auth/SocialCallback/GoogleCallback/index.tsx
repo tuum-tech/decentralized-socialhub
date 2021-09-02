@@ -31,6 +31,7 @@ import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service.new';
+import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 interface PageProps
   extends InferMappedProps,
@@ -65,26 +66,30 @@ const GoogleCallback: React.FC<PageProps> = ({
   let state: string =
     new URLSearchParams(props.location.search).get('state') || '';
 
-  let didService = new DidService();
   useEffect(() => {
     (async () => {
+      let didService = await DidService.getInstance();
+
       if (code !== '' && state !== '' && credentials.loginCred.google === '') {
         let t = await getToken(code, state);
         let googleId = await requestGoogleId(t.data.request_token);
 
         if (props.session && props.session.did !== '') {
-          let vc = await DidcredsService.generateVerifiableCredential(
+          let verifiableCredential = await DidcredsService.generateVerifiableCredential(
             props.session.did,
             CredentialType.Google,
             googleId.email
           );
 
-          let state = await DidDocumentService.getUserDocument(props.session);
-          await didService.addVerfiableCredentialToDIDDocument(
-            state.diddocument,
-            vc
+          let didDocument: DIDDocument = await didService.getStoredDocument(
+            new DID(props.session.did)
           );
-          DidDocumentService.updateUserDocument(state.diddocument as any);
+
+          let documentWithGoogleCredential = await didService.addVerifiableCredentialToDIDDocument(
+            didDocument,
+            verifiableCredential
+          );
+          await didService.storeDocument(documentWithGoogleCredential);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.google! = googleId.email;

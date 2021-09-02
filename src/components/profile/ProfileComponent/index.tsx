@@ -15,6 +15,7 @@ import theme from 'src/data/theme';
 
 import PublicProfileTabs from './PublicProfileTabs';
 import ProfileHeader from './ProfileHeader';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 const GridContent = styled(IonGrid)<ThemeProps>`
   width: 100%;
@@ -43,7 +44,7 @@ interface Props {
   viewAllClicked?: (ctype: FollowType) => void;
   publicFields?: string[];
   userSession: ISessionItem;
-  didDocument: any;
+  didDocument: DIDDocument;
   publicUser: any;
   publicUserProfile: any;
   loading: boolean;
@@ -133,14 +134,13 @@ const ProfileComponent: React.FC<Props> = ({
                         </div>
                       </LeftContent>
                       <RightContent>
-                        {publicFields.includes('social') &&
-                          didDocument &&
-                          didDocument.id && (
-                            <SocialProfilesCard
-                              didDocument={didDocument}
-                              targetUser={publicUser}
-                            />
-                          )}
+                        {publicFields.includes('social') && didDocument && (
+                          <SocialProfilesCard
+                            setSession={() => {}}
+                            didDocument={didDocument}
+                            targetUser={publicUser}
+                          />
+                        )}
                         <FollowCards
                           showFollowerCard={publicFields.includes('follower')}
                           showFollowingCard={publicFields.includes('following')}

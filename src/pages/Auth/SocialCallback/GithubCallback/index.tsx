@@ -26,6 +26,7 @@ import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import {
+  DID,
   DIDDocument,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
@@ -52,38 +53,30 @@ const GithubCallback: React.FC<PageProps> = ({
   let code: string =
     new URLSearchParams(props.location.search).get('code') || '';
 
-  let didService = new DidService();
   useEffect(() => {
     (async () => {
+      let didService = await DidService.getInstance();
       if (code !== '' && credentials.loginCred.github === '') {
         let t = await getToken(code);
         let github = t.data.login;
 
         if (props.session && props.session.did !== '') {
-          let vc = await DidcredsService.generateVerifiableCredential(
+          let verifiableCredential = await DidcredsService.generateVerifiableCredential(
             props.session.did,
             CredentialType.Github,
             github
           );
 
-          console.log('github vc: ', vc);
-
-          let state = await DidDocumentService.getUserDocument(props.session);
-
-          let didDocumentJson = JSON.parse(state.diddocument);
-          let store = await DidService.getStore();
-          let didDocument: DIDDocument = await store.loadDid(
-            didDocumentJson.id
+          let didDocument: DIDDocument = await didService.getStoredDocument(
+            new DID(props.session.did)
           );
 
-          let verifiableCredential: VerifiableCredential = await VerifiableCredential.parseContent(
-            vc
-          );
-          await didService.addVerfiableCredentialToDIDDocument(
+          let documentWithGithubCredential = await didService.addVerifiableCredentialToDIDDocument(
             didDocument,
             verifiableCredential
           );
-          DidDocumentService.updateUserDocument(state.diddocument as any);
+
+          await didService.storeDocument(documentWithGithubCredential);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.github! = github;

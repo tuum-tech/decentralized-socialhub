@@ -72,7 +72,9 @@ const ManagerPage: React.FC<InferMappedProps> = ({
                     updateSession={async (newSession: {
                       session: ISessionItem;
                     }) => {
-                      let userService = new UserService(new DidService());
+                      let userService = new UserService(
+                        await DidService.getInstance()
+                      );
                       await eProps.setSession({
                         session: await userService.updateSession(
                           newSession.session

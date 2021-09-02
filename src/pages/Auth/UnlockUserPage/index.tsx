@@ -50,7 +50,7 @@ const UnlockUserPage: React.FC<PageProps> = ({
     // if (dids.length === 1) {
     //   res = await UserService.UnLockWithDIDAndPwd(dids[0], password);
     // } else {
-    let userService = new UserService(new DidService());
+    let userService = new UserService(await DidService.getInstance());
     for (let i = 0; i < dids.length; i++) {
       const did = dids[i];
       res = await userService.UnLockWithDIDAndPwd(did, password);

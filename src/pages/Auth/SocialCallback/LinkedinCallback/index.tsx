@@ -35,6 +35,7 @@ import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import {
+  DID,
   DIDDocument,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
@@ -66,9 +67,9 @@ const LinkedinCallback: React.FC<PageProps> = ({
   let state: string =
     new URLSearchParams(props.location.search).get('state') || '';
 
-  let didService = new DidService();
   useEffect(() => {
     (async () => {
+      let didService = await DidService.getInstance();
       if (
         code !== '' &&
         state !== '' &&
@@ -84,29 +85,22 @@ const LinkedinCallback: React.FC<PageProps> = ({
         const lastName = linkedinprofile.data.profile.localizedLastName.toLowerCase();
 
         if (props.session && props.session.did !== '') {
-          let vc = await DidcredsService.generateVerifiableCredential(
+          let verifiableCredential = await DidcredsService.generateVerifiableCredential(
             props.session.did,
             CredentialType.Linkedin,
             firstName + '' + lastName
           );
 
-          let state = await DidDocumentService.getUserDocument(props.session);
-
-          let didDocumentJson = JSON.parse(state.diddocument);
-          let store = await DidService.getStore();
-          let didDocument: DIDDocument = await store.loadDid(
-            didDocumentJson.id
+          let didDocument: DIDDocument = await didService.getStoredDocument(
+            new DID(props.session.did)
           );
 
-          let verifiableCredential: VerifiableCredential = await VerifiableCredential.parseContent(
-            vc
-          );
-
-          await didService.addVerfiableCredentialToDIDDocument(
+          let documentWithLinkedinCredential = await didService.addVerifiableCredentialToDIDDocument(
             didDocument,
             verifiableCredential
           );
-          DidDocumentService.updateUserDocument(state.diddocument as any);
+
+          await didService.storeDocument(documentWithLinkedinCredential);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.linkedin! = firstName + '' + lastName;

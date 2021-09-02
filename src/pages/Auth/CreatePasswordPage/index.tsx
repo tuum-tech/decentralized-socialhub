@@ -32,6 +32,9 @@ import { setSession } from 'src/store/users/actions';
 import { SubState } from 'src/store/users/types';
 import { InferMappedProps, LocationState } from './types';
 import { DidService } from 'src/services/did.service.new';
+import FooterLinks, {
+  Footer
+} from 'src/components/layouts/OnBoardLayout/FooterLinks';
 
 const ErrorText = styled(Text16)`
   text-align: center;
@@ -108,7 +111,7 @@ const CreatePasswordPage: React.FC<PageProps> = ({
         ...props.location.state
       };
       setStatus(1);
-      let userService = new UserService(new DidService());
+      let userService = new UserService(await DidService.getInstance());
       const res = await userService.LockWithDIDAndPwd(user, password);
       if (res && res.did !== '') {
         eProps.setSession({ session: res });
@@ -138,6 +141,9 @@ const CreatePasswordPage: React.FC<PageProps> = ({
             This is a locally stored password that protects your main profile
             account (decentralized identity).
           </OnBoardLayoutLeftContentDescription>
+          <Footer>
+            <FooterLinks></FooterLinks>
+          </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>

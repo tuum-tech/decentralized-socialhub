@@ -77,11 +77,7 @@ const GenerateDidPage: React.FC<PageProps> = ({
         next={async pwd => {
           if (!session || !session.name) return;
           setStatus(1);
-
-          let userService = new UserService(new DidService());
-          let did = session.did;
-          let mnemonic = userService.getTemporaryMnemonicFromDid(did);
-
+          let userService = new UserService(await DidService.getInstance());
           let sessionItem = await userService.CreateNewUser(
             session.name,
             session.service,

@@ -1,3 +1,4 @@
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 
 interface VerifiedCredential {
@@ -5,24 +6,8 @@ interface VerifiedCredential {
   isVerified: boolean;
 }
 
-export const getVerifiedCredential = (
-  id: string,
-  didDocument: any
-): VerifiedCredential | undefined => {
-  if (!didDocument || !didDocument['verifiableCredential']) return;
-  let vcs: any[] = didDocument['verifiableCredential'].map((vc: any) => {
-    if (`${vc['id']}`.endsWith(`#${id.toLowerCase()}`)) {
-      let types: string[] = vc['type'];
-      return {
-        value: vc['credentialSubject'][id.toLowerCase()],
-        isVerified: !types.includes('SelfProclaimedCredential')
-      };
-    }
-    return null;
-  });
-  vcs = vcs.filter(item => item);
-  if (vcs && vcs.length > 0) return vcs[0];
-  return;
+export const getParsedDoc = async (document: string): Promise<DIDDocument> => {
+  return await DIDDocument.parseContent(document);
 };
 
 export interface DidDocWithSessionSocial {

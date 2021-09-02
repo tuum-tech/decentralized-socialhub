@@ -28,6 +28,7 @@ import arrowLeft from '../../assets/icon/arrow-left-square.svg';
 
 import style from './style.module.scss';
 import { DidService } from 'src/services/did.service.new';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 const Header = styled.div`
   width: 100%;
@@ -71,7 +72,7 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   const [publicUserProfile, setPublicUserProfile] = useState(
     defaultFullProfile
   );
-  const [didDocument, setDidDocument] = useState<any>({});
+  const [didDocument, setDidDocument] = useState<DIDDocument | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [followType, setFollowType] = useState<FollowType>(FollowType.Follower);
@@ -133,7 +134,7 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
       setFollowingDids(followingdids);
 
       if (props.match.params.did && props.match.params.did !== '') {
-        let userService = new UserService(new DidService());
+        let userService = new UserService(await DidService.getInstance());
         let pUser = await userService.SearchUserWithDID(props.match.params.did);
         if (pUser && pUser.did) {
           setPublicUser(pUser as any);
@@ -148,11 +149,11 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
             profile.educationDTO.isEnabled = true;
             setPublicUserProfile(profile);
           }
-          let documentState = await DidDocumentService.getUserDocumentByDid(
+          let document = await DidDocumentService.getUserDocumentByDid(
             props.match.params.did
           );
 
-          setDidDocument(JSON.parse(documentState.diddocument));
+          setDidDocument(document);
         }
       }
 
@@ -207,7 +208,7 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
                     mutualDids={mutualDids}
                     publicUser={publicUser}
                     publicUserProfile={publicUserProfile}
-                    didDocument={didDocument}
+                    didDocument={didDocument as DIDDocument}
                     loading={loading}
                   />
                 </IonContent>

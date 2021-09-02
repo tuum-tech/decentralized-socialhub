@@ -70,6 +70,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
 import { DidService } from './services/did.service.new';
 import LoadDid from './pages/LoadDid';
+import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
 
 const StyledToastContainer = styled(ToastContainer)`
   & .Toastify__toast-body {
@@ -79,6 +81,10 @@ const StyledToastContainer = styled(ToastContainer)`
 const App: React.FC = () => {
   // TODO: find a good place for this static initialization
   DidService.InitializeMainnet();
+  // Elastos essential connector
+  const essentialConnector = new EssentialsConnector();
+  connectivity.setApplicationDID(process.env.REACT_APP_APPLICATION_DID || '');
+  connectivity.registerConnector(essentialConnector);
   return (
     <IonApp>
       <StyledToastContainer
@@ -218,12 +224,12 @@ const App: React.FC = () => {
               exact={true}
             />
             <ProtectedRoute
-              path="/support-forum"
+              path="/support-forum/:num"
               component={SupportForum}
               exact={true}
             />
-            <ProtectedRoute
-              path="/support-forum/:num"
+            <Route
+              path="/support-forum"
               component={SupportForum}
               exact={true}
             />

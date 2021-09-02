@@ -9,7 +9,7 @@ import {
 } from '@ionic/react';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 import { DidcredsService } from 'src/services/didcreds.service';
-import { getVerifiedCredential } from 'src/utils/socialprofile';
+//import { getVerifiedCredential } from 'src/utils/socialprofile';
 import { UserService } from 'src/services/user.service';
 
 import style from './SocialCard.module.scss';
@@ -33,9 +33,16 @@ import {
   CloseButton,
   SocialProfileCard
 } from './elements';
+import {
+  DID,
+  DIDDocument,
+  DIDDocumentBuilder,
+  VerifiableCredential
+} from '@elastosfoundation/did-js-sdk/';
+import { DidDocumentService } from 'src/services/diddocument.service';
 
 interface Props {
-  diddocument: any;
+  diddocument: DIDDocument;
   sessionItem: ISessionItem;
   setSession: (props: { session: ISessionItem }) => void;
   mode?: string;
@@ -48,6 +55,8 @@ const SocialProfilesCard: React.FC<Props> = ({
   mode = 'view'
 }) => {
   const [isManagerOpen, setIsManagerOpen] = useState(false);
+  const [didDocument, setDidDocument] = useState<DIDDocument>(diddocument);
+
   let template = 'default';
   if (mode !== 'edit' && sessionItem.pageTemplate) {
     template = sessionItem.pageTemplate;
@@ -74,7 +83,7 @@ const SocialProfilesCard: React.FC<Props> = ({
     const left = (width - w) / 2 / systemZoom + dualScreenLeft;
     const top = (height - h) / 2 / systemZoom + dualScreenTop;
 
-    window.open(
+    let popupwindow = window.open(
       url,
       title,
       `
@@ -85,6 +94,19 @@ const SocialProfilesCard: React.FC<Props> = ({
       left=${left}
       `
     );
+
+    var timer = setInterval(async function() {
+      if (popupwindow!.closed) {
+        clearInterval(timer);
+        let didService = await DidService.getInstance();
+        let updatedDoc = await didService.getStoredDocument(
+          new DID(sessionItem.did)
+        );
+        console.log(updatedDoc);
+
+        setDidDocument(updatedDoc);
+      }
+    }, 1000);
   };
 
   const sociallogin = async (socialType: string) => {
@@ -127,10 +149,17 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const containsVerifiedCredential = (id: string): boolean => {
-    return getVerifiedCredential(id, diddocument) !== undefined;
+    //let docParsed = await getParsedDoc();
+    return (
+      didDocument!.selectCredentials(id, 'InternetAccountCredential').length > 0
+    );
   };
 
-  const getUrlFromService = (service: string, value: string): string => {
+  const getUrlFromService = (
+    service: string,
+    credential: VerifiableCredential
+  ): string => {
+    let value = 'must get';
     if (service === 'twitter') return `https://twitter.com/${value}`;
     if (service === 'linkedin') return `https://linkedin.com/in/${value}`;
     if (service === 'facebook') return `https://facebook.com/${value}`;
@@ -140,9 +169,13 @@ const SocialProfilesCard: React.FC<Props> = ({
     return '';
   };
 
-  const parseValueFromService = (service: string, value: string): string => {
-    if (service === 'twitter')
-      return value.startsWith('@') ? value : `@${value}`;
+  const parseValueFromService = (
+    service: string,
+    credential: VerifiableCredential
+  ): string => {
+    let value = credential.subject.getProperty(service);
+
+    if (service === 'twitter') return value;
     if (service === 'linkedin') return `linkedin.com/in/${value}`;
     if (service === 'facebook') return `facebook.com/${value}`;
     if (service === 'google') return `${value}`;
@@ -153,20 +186,18 @@ const SocialProfilesCard: React.FC<Props> = ({
 
   // TODO
   const removeVc = async (key: string) => {
-    // let documentState = await DidDocumentService.getUserDocument(sessionItem!);
-    // let keyIndex = -1;
-    // documentState.diddocument['verifiableCredential'].forEach(
-    //   (element: any, index: number) => {
-    //     if (`${element['id']}`.endsWith(`#${key.toLowerCase()}`)) {
-    //       keyIndex = index;
-    //     }
-    //   }
-    // );
+    let didService = await DidService.getInstance();
+    let didFromStore = await didService.getStoredDocument(
+      diddocument.getSubject()
+    );
+    let builder = DIDDocumentBuilder.newFromDocument(didFromStore);
+    builder = builder.removeCredential(key);
+    let newDoc = await builder.seal(
+      process.env.REACT_APP_DID_STORE_PASSWORD as string
+    );
 
-    // if (keyIndex >= 0) {
-    //   documentState.diddocument['verifiableCredential'].splice(keyIndex, 1);
-    //   DidDocumentService.updateUserDocument(documentState.diddocument);
-    // }
+    didService.storeDocument(newDoc);
+    setDidDocument(newDoc);
 
     // ===== temporary codes start =====
     let newLoginCred = sessionItem!.loginCred;
@@ -192,7 +223,7 @@ const SocialProfilesCard: React.FC<Props> = ({
       loginCred: newLoginCred
     } as ISessionItem;
 
-    let userService = new UserService(new DidService());
+    let userService = new UserService(await DidService.getInstance());
     setSession({
       session: await userService.updateSession(newUserSession)
     });
@@ -200,13 +231,16 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const createIonItem = (key: string, icon: any) => {
-    let vc = getVerifiedCredential(key, diddocument);
-    if (!vc) return;
+    let vc = didDocument!.selectCredentials(
+      key,
+      'InternetAccountCredential'
+    )[0];
+    if (!vc) return <></>;
     return (
       <ProfileItem template={template}>
         <div className="left">
           <img alt="icon" src={icon} height={50} />
-          {vc.isVerified && (
+          {vc.isValid() && (
             <img
               alt="shield icon"
               src={shieldIcon}
@@ -221,7 +255,7 @@ const SocialProfilesCard: React.FC<Props> = ({
           </p>
           {(key === 'facebook' || key === 'linkedin') && (
             <span className="social-profile-id">
-              {parseValueFromService(key, vc.value)}
+              {parseValueFromService(key, vc)}
             </span>
           )}
           {(key === 'google' ||
@@ -229,12 +263,12 @@ const SocialProfilesCard: React.FC<Props> = ({
             key === 'github' ||
             key === 'discord') && (
             <a
-              href={getUrlFromService(key, vc.value)}
+              href={getUrlFromService(key, vc)}
               target="_blank"
               rel="noopener noreferrer"
               className="social-profile-id"
             >
-              {parseValueFromService(key, vc.value)}
+              {parseValueFromService(key, vc)}
             </a>
           )}
         </div>
@@ -243,7 +277,8 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const createModalIonItem = (key: string, icon: any) => {
-    let vc = getVerifiedCredential(key, diddocument);
+    //let parsedDoc = await getParsedDoc();
+    let vc = didDocument.selectCredentials(key, 'InternetAccountCredential')[0];
     let header = 'Google Account';
     if (key === 'twitter') header = 'Twitter Account';
     if (key === 'facebook') header = 'Facebook Account';
@@ -278,7 +313,7 @@ const SocialProfilesCard: React.FC<Props> = ({
         </ManagerButton>
         <span className={style['manage-links-header']}>{header}</span>
         <span className={style['manage-links-detail']}>
-          {parseValueFromService(key, vc.value)}
+          {parseValueFromService(key, vc)}
         </span>
       </div>
     );
@@ -388,48 +423,52 @@ const SocialProfilesCard: React.FC<Props> = ({
         </IonCardContent>
       </SocialProfileCard>
 
-      <ManagerModal
-        isOpen={isManagerOpen}
-        cssClass="my-custom-class"
-        backdropDismiss={false}
-      >
-        <MyGrid class="ion-no-padding">
-          <IonRow>
-            <ManagerModalTitle>Manage Links</ManagerModalTitle>
-          </IonRow>
-          <IonRow no-padding>
-            <IonCol class="ion-no-padding">{linkedinModalItem()}</IonCol>
-          </IonRow>
-          <IonRow no-padding>
-            <IonCol class="ion-no-padding">{twitterModalItem()}</IonCol>
-          </IonRow>
-          <IonRow no-padding>
-            <IonCol class="ion-no-padding">{facebookModalItem()}</IonCol>
-          </IonRow>
-          <IonRow no-padding>
-            <IonCol class="ion-no-padding">{googleModalItem()}</IonCol>
-          </IonRow>
-          <IonRow no-padding>
-            <IonCol class="ion-no-padding">{githubModalItem()}</IonCol>
-          </IonRow>
-          <IonRow no-padding>
-            <IonCol class="ion-no-padding">{discordModalItem()}</IonCol>
-          </IonRow>
-        </MyGrid>
-        <ManagerModalFooter className="ion-no-border">
-          <IonRow className="ion-justify-content-around">
-            <IonCol size="auto">
-              <CloseButton
-                onClick={() => {
-                  setIsManagerOpen(false);
-                }}
-              >
-                Close
-              </CloseButton>
-            </IonCol>
-          </IonRow>
-        </ManagerModalFooter>
-      </ManagerModal>
+      {isManagerOpen ? (
+        <ManagerModal
+          isOpen={isManagerOpen}
+          cssClass="my-custom-class"
+          backdropDismiss={false}
+        >
+          <MyGrid class="ion-no-padding">
+            <IonRow>
+              <ManagerModalTitle>Manage Links</ManagerModalTitle>
+            </IonRow>
+            <IonRow no-padding>
+              <IonCol class="ion-no-padding">{linkedinModalItem()}</IonCol>
+            </IonRow>
+            <IonRow no-padding>
+              <IonCol class="ion-no-padding">{twitterModalItem()}</IonCol>
+            </IonRow>
+            <IonRow no-padding>
+              <IonCol class="ion-no-padding">{facebookModalItem()}</IonCol>
+            </IonRow>
+            <IonRow no-padding>
+              <IonCol class="ion-no-padding">{googleModalItem()}</IonCol>
+            </IonRow>
+            <IonRow no-padding>
+              <IonCol class="ion-no-padding">{githubModalItem()}</IonCol>
+            </IonRow>
+            <IonRow no-padding>
+              <IonCol class="ion-no-padding">{discordModalItem()}</IonCol>
+            </IonRow>
+          </MyGrid>
+          <ManagerModalFooter className="ion-no-border">
+            <IonRow className="ion-justify-content-around">
+              <IonCol size="auto">
+                <CloseButton
+                  onClick={() => {
+                    setIsManagerOpen(false);
+                  }}
+                >
+                  Close
+                </CloseButton>
+              </IonCol>
+            </IonRow>
+          </ManagerModalFooter>
+        </ManagerModal>
+      ) : (
+        ''
+      )}
     </>
   );
 };

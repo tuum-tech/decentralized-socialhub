@@ -30,6 +30,7 @@ import { AccountType, UserService } from 'src/services/user.service';
 
 import { requestTwitterToken, getUsersWithRegisteredTwitter } from './fetchapi';
 import {
+  DID,
   DIDDocument,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
@@ -70,9 +71,9 @@ const TwitterCallback: React.FC<PageProps> = ({
   let oauth_verifier: string =
     new URLSearchParams(props.location.search).get('oauth_verifier') || '';
 
-  let didService = new DidService();
   useEffect(() => {
     (async () => {
+      let didService = await DidService.getInstance();
       if (
         oauth_token !== '' &&
         oauth_verifier !== '' &&
@@ -83,25 +84,22 @@ const TwitterCallback: React.FC<PageProps> = ({
         const name = items[0];
 
         if (props.session && props.session.did !== '') {
-          let vc = await DidcredsService.generateVerifiableCredential(
+          let verifiableCredential = await DidcredsService.generateVerifiableCredential(
             props.session.did,
             CredentialType.Twitter,
             items[1].toString()
           );
 
-          let state = await DidDocumentService.getUserDocument(props.session);
-
-          let didDocumentJson = JSON.parse(state.diddocument);
-          let store = await DidService.getStore();
-          let didDocument: DIDDocument = await store.loadDid(
-            didDocumentJson.id
+          let didDocument: DIDDocument = await didService.getStoredDocument(
+            new DID(props.session.did)
           );
 
-          await didService.addVerfiableCredentialToDIDDocument(
+          let documentWithTwitterCredential = await didService.addVerifiableCredentialToDIDDocument(
             didDocument,
-            await VerifiableCredential.parseContent(vc)
+            verifiableCredential
           );
-          DidDocumentService.updateUserDocument(state.diddocument as any);
+
+          await didService.storeDocument(documentWithTwitterCredential);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.twitter! = items[1].toString();

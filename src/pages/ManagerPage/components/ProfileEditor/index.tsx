@@ -18,12 +18,13 @@ import TemplateManagerCard from '../TemplateManagerCard';
 import PublicFields from '../PublicFields';
 import style from './style.module.scss';
 import { DidDocumentService } from 'src/services/diddocument.service';
-// import SocialProfilesCard from 'src/components/cards/SocialProfileCard/SocialCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 
 import { showNotify } from 'src/utils/notify';
 
 import { requestUpdateEmail } from './fetchapi';
+import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { DidService } from 'src/services/did.service.new';
 
 interface Props {
   session: ISessionItem;
@@ -34,7 +35,9 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
   const [error, setError] = useState(false);
   const [userInfo, setUserInfo] = useState<ISessionItem>(session);
   const [loaded, setloaded] = useState(false);
-  const [didDocument, setDidDocument] = useState({});
+  const [didDocument, setDidDocument] = useState<DIDDocument | undefined>(
+    undefined
+  );
   const [profile, setProfile] = useState(defaultFullProfile);
 
   const retriveProfile = async () => {
@@ -58,8 +61,8 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
   const setTimer = () => {
     const timer = setTimeout(async () => {
       // refresh DID document
-      let documentState = await DidDocumentService.getUserDocument(session);
-      setDidDocument(documentState.diddocument as any);
+      let document = await DidDocumentService.getUserDocument(session);
+      setDidDocument(document);
 
       if (JSON.stringify(session) === JSON.stringify(userInfo)) return;
 
@@ -76,6 +79,10 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
       if (session.tutorialStep === 4) {
         await retriveProfile();
       }
+
+      let didService = await DidService.getInstance();
+      let doc = await didService.getStoredDocument(new DID(session.did));
+      setDidDocument(doc);
       setloaded(true);
     })();
     setTimer();
@@ -191,11 +198,11 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                 )}
 
                 <SocialProfilesCard
-                  didDocument={didDocument}
+                  didDocument={didDocument as DIDDocument}
                   targetUser={session}
+                  setSession={updateSession}
                   mode="edit"
                 />
-
                 {profile && profile.educationDTO && (
                   <EducationCard
                     educationDTO={profile.educationDTO}

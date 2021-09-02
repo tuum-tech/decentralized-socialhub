@@ -24,7 +24,6 @@ interface Props {
 
 const FollowingTabs: React.FC<Props> = ({
   tab = 'people',
-  // perPage = 1,
   people,
   following,
   pages,

@@ -25,6 +25,7 @@ import PublicNavbar from 'src/components/profile/ProfileComponent/PublicNavbar';
 
 import { ContentRow, Container, ProfileComponentContainer } from './layouts';
 import { DidService } from 'src/services/did.service.new';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 interface MatchParams {
   did: string;
@@ -33,7 +34,6 @@ interface PageProps
   extends InferMappedProps,
     RouteComponentProps<MatchParams> {}
 
-let userService = new UserService(new DidService());
 const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   let did: string = props.match.params.did;
 
@@ -41,7 +41,7 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   const [publicUserProfile, setPublicUserProfile] = useState(
     defaultFullProfile
   );
-  const [didDocument, setDidDocument] = useState<any>({});
+  const [didDocument, setDidDocument] = useState<DIDDocument | null>(null);
 
   const [publicFields, setPublicFields] = useState<string[]>([]);
   const [showAllFollow, setShowAllFollow] = useState<boolean>(false);
@@ -89,6 +89,7 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
 
   useEffect(() => {
     (async () => {
+      let userService = new UserService(await DidService.getInstance());
       if (!props.session || props.session.did === '') return;
 
       setLoading(true);
@@ -122,10 +123,10 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
           profile.educationDTO.isEnabled = true;
           setPublicUserProfile(profile);
         }
-        let documentState = await DidDocumentService.getUserDocumentByDid(
+        let document = await DidDocumentService.getUserDocumentByDid(
           props.match.params.did
         );
-        setDidDocument(JSON.parse(documentState.diddocument));
+        setDidDocument(document);
       }
       setLoading(false);
     })();
@@ -168,7 +169,7 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
                   mutualDids={mutualDids}
                   publicUser={publicUser}
                   publicUserProfile={publicUserProfile}
-                  didDocument={didDocument}
+                  didDocument={didDocument as DIDDocument}
                   loading={loading}
                 />
               </ProfileComponentContainer>
