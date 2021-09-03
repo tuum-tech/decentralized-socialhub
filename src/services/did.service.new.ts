@@ -168,6 +168,7 @@ export class DidService implements IDidService {
     }
 
     let did = rootIdentity.getDid(0);
+    await this.Store.synchronize();
     let didDocument = await this.Store.loadDid(did);
 
     if (didDocument === null) {
@@ -317,6 +318,7 @@ export class DidService implements IDidService {
     endpoint: string
   ): Promise<DIDDocument> {
     let builder = DIDDocumentBuilder.newFromDocument(diddocument);
+    builder.edit();
     let didUrl: DIDURL = DIDURL.from(`#${type}`, did) as DIDURL;
     builder.addService(didUrl, type, endpoint);
     return await builder.seal(

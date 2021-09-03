@@ -9,7 +9,6 @@ import {
 } from '@ionic/react';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 import { DidcredsService } from 'src/services/didcreds.service';
-//import { getVerifiedCredential } from 'src/utils/socialprofile';
 import { UserService } from 'src/services/user.service';
 
 import style from './SocialCard.module.scss';
@@ -39,7 +38,6 @@ import {
   DIDDocumentBuilder,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
-import { DidDocumentService } from 'src/services/diddocument.service';
 
 interface Props {
   diddocument: DIDDocument;
