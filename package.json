@@ -48,7 +48,7 @@
     "hoist-non-react-statics": "^3.3.2",
     "html-webpack-plugin": "4.0.0-beta.11",
     "identity-obj-proxy": "3.0.0",
-    "immer": "^8.0.1",
+    "immer": "^9.0.6",
     "invariant": "^2.2.4",
     "ionicons": "^5.5.3",
     "jest": "24.9.0",
