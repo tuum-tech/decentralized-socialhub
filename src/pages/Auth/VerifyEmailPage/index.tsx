@@ -47,7 +47,6 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
         code
       )) as IVerifyCodeResponse;
       if (response.data.return_code === 'CODE_CONFIRMED') {
-        console.log('response data', response.data);
         const { name, email, did } = response.data;
         setCredentials({
           did,
@@ -112,6 +111,7 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
               pathname: '/generate-did',
               state: {
                 name: credentials.name,
+                did: '',
                 loginCred: {
                   email: credentials.loginCred.email
                 },

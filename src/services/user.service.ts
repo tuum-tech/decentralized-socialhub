@@ -399,7 +399,16 @@ export class UserService {
         sessionItem.badges!.socialVerify!.discord.archived = curTime;
         messages.push('You received a Discord verfication badge');
       }
-      await TuumTechScriptService.addUserToTuumTech(sessionItem);
+
+      let didAlreadyAdded = await TuumTechScriptService.searchUserWithDIDs([
+        did
+      ]);
+      if (didAlreadyAdded.length === 0) {
+        await TuumTechScriptService.addUserToTuumTech(sessionItem);
+      } else {
+        await TuumTechScriptService.updateTuumUser(sessionItem);
+      }
+
       await ProfileService.addActivity(
         {
           guid: '',

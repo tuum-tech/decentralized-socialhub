@@ -138,14 +138,8 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
           process.env.REACT_APP_DID_STORE_PASSWORD as string
         );
 
-        console.log('Signed document', signedDocument.toString());
-        console.log('Is Valid', signedDocument.isValid());
-        console.log('Is Genuine', signedDocument.isGenuine());
-
         didService.storeDocument(signedDocument);
         await didService.publishDocument(signedDocument);
-
-        console.log('Signed document published');
       }
 
       let userService = new UserService(didService);

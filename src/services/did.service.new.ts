@@ -168,7 +168,7 @@ export class DidService implements IDidService {
     }
 
     let did = rootIdentity.getDid(0);
-    await this.Store.synchronize();
+
     let didDocument = await this.Store.loadDid(did);
 
     if (didDocument === null) {
@@ -284,8 +284,6 @@ export class DidService implements IDidService {
         let did = request.proof.verificationMethod;
         did = did.substring(0, did.indexOf('#'));
         response = await AssistService.publishDocument(did, request);
-
-        console.log(response);
       }
     };
 

@@ -46,7 +46,6 @@ const UpdateEmailPage: React.FC<any> = ({ eProps, ...props }: any) => {
           session.loginCred.email = window.localStorage.getItem(
             `updated_email_${session.did.replace('did:elastos:', '')}`
           );
-          console.log(session.loginCred);
           let userService = new UserService(await DidService.getInstance());
           eProps.setSession({
             session: await userService.updateSession(session)
