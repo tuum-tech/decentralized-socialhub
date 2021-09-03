@@ -58,14 +58,12 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
   if (userInfo.did === '') {
     return <PageLoading />;
   } else {
-    if (status === 0 && userInfo.name !== '') {
-      if (
-        userInfo.loginCred === undefined ||
-        userInfo.loginCred.email === undefined ||
-        userInfo.loginCred.email.length === 0
-      ) {
-        setStatus(1);
-      }
+    if (
+      status === 0 &&
+      userInfo.name !== '' &&
+      (!userInfo.loginCred.email || userInfo.loginCred.email === '')
+    ) {
+      setStatus(1);
     }
 
     if (status === 1) {

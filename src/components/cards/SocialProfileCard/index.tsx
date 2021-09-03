@@ -9,12 +9,8 @@ import { InferMappedProps, SubState } from './types';
 
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import SocialCard from './SocialCard';
-import {
-  DIDDocument,
-  VerifiableCredential
-} from '@elastosfoundation/did-js-sdk/';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { DidService } from 'src/services/did.service.new';
-import { DidDocumentService } from 'src/services/diddocument.service';
 
 interface Props extends InferMappedProps {
   didDocument: DIDDocument;

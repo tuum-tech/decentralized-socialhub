@@ -15,7 +15,7 @@ import { setSession } from 'src/store/users/actions';
 import style from '../style.module.scss';
 import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { DID, DIDDocumentBuilder } from '@elastosfoundation/did-js-sdk/';
 
 const VersionTag = styled.span`
   color: green;
@@ -126,20 +126,23 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       ) {
         newSession.badges!.dStorage!.ownVault.archived = new Date().getTime();
       }
-      //TODO: Uncomment when update document publish is fixed
-      // if (selected !== "document")
-      // {
-      //   let userDid = await didService.loadDid(props.session.mnemonics);
-      //   //let hivesvc = didService.generateService(userDid, 'HiveVault', endpoint);
-      //   //let documentState : IDIDDocumentState = await DidDocumentService.getUserDocument(props.session);
+      let didService = await DidService.getInstance();
+      if (selected !== 'document') {
+        let document = await didService.getStoredDocument(
+          new DID(props.session.did)
+        );
+        let docBuilder = DIDDocumentBuilder.newFromDocument(document);
 
-      //   let store = await DidService.getStore();
-      //   let userDocument = await store.loadDid(userDid.did);
-      //   let documentWithService = await didService.addServiceToDIDDocument(userDocument, userDid, 'HiveVault', endpoint);
-      //   debugger;
-      //   await DidDocumentService.publishUserDocument(userDocument, props.session);
-      // }
-      let userService = new UserService(await DidService.getInstance());
+        docBuilder.addService('#HiveVault', 'HiveVault', endpoint);
+        let signedDocument = await docBuilder.seal(
+          process.env.REACT_APP_DID_STORE_PASSWORD as string
+        );
+
+        didService.storeDocument(signedDocument);
+        await didService.publishDocument(signedDocument);
+      }
+
+      let userService = new UserService(didService);
       const updatedSession = await userService.updateSession(newSession);
       eProps.setSession({ session: updatedSession });
 
@@ -212,7 +215,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   useEffect(() => {
     (async () => {
       let didService = await DidService.getInstance();
-
+      debugger;
       setTuumHiveVersion(
         await HiveService.getHiveVersion(
           process.env.REACT_APP_TUUM_TECH_HIVE as string

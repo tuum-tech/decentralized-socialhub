@@ -32,7 +32,7 @@ const LoadDid: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
-  const [document, setDocument] = useState('');
+  const [document] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -47,7 +47,7 @@ const LoadDid: React.FC<InferMappedProps> = ({
       console.log('did app' + did_app);
       console.log('did user' + did_user);
 
-      let appDocument = await service.getStoredDocument(did_app);
+      // let appDocument = await service.getStoredDocument(did_app);
       let userDocument = await service.getStoredDocument(did_user);
 
       // //let did = await service.loadDid(

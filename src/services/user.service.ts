@@ -3,7 +3,6 @@ import { Guid } from 'guid-typescript';
 import { alertError, showNotify } from 'src/utils/notify';
 
 import { HiveService } from './hive.service';
-import { AssistService } from './assist.service';
 
 import { UserVaultScripts } from '../scripts/uservault.script';
 import {
@@ -12,11 +11,9 @@ import {
 } from './script.service';
 import { ProfileService } from './profile.service';
 import {
-  DID,
   DIDDocument,
   RootIdentity,
-  VerifiableCredential,
-  VerifiablePresentation
+  VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
 import { IDidService } from './did.service.new';
 
@@ -85,6 +82,13 @@ export class UserService {
     );
 
     return documentWithNameCred;
+  }
+
+  public getTemporaryMnemonicFromDid(did: string) {
+    if (!did || did === '') return '';
+    let key = `temporary_${did.replace('did:elastos:', '')}`;
+    let response: any = window.localStorage.getItem(key);
+    if (response) return response.mnemonic;
   }
 
   private lockUser(key: string, instance: ISessionItem) {
@@ -395,7 +399,16 @@ export class UserService {
         sessionItem.badges!.socialVerify!.discord.archived = curTime;
         messages.push('You received a Discord verfication badge');
       }
-      await TuumTechScriptService.addUserToTuumTech(sessionItem);
+
+      let didAlreadyAdded = await TuumTechScriptService.searchUserWithDIDs([
+        did
+      ]);
+      if (didAlreadyAdded.length === 0) {
+        await TuumTechScriptService.addUserToTuumTech(sessionItem);
+      } else {
+        await TuumTechScriptService.updateTuumUser(sessionItem);
+      }
+
       await ProfileService.addActivity(
         {
           guid: '',

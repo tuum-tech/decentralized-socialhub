@@ -168,6 +168,7 @@ export class DidService implements IDidService {
     }
 
     let did = rootIdentity.getDid(0);
+
     let didDocument = await this.Store.loadDid(did);
 
     if (didDocument === null) {
@@ -283,8 +284,6 @@ export class DidService implements IDidService {
         let did = request.proof.verificationMethod;
         did = did.substring(0, did.indexOf('#'));
         response = await AssistService.publishDocument(did, request);
-
-        console.log(response);
       }
     };
 
@@ -317,9 +316,12 @@ export class DidService implements IDidService {
     endpoint: string
   ): Promise<DIDDocument> {
     let builder = DIDDocumentBuilder.newFromDocument(diddocument);
+    builder.edit();
     let didUrl: DIDURL = DIDURL.from(`#${type}`, did) as DIDURL;
     builder.addService(didUrl, type, endpoint);
-    return await builder.seal('passw');
+    return await builder.seal(
+      process.env.REACT_APP_DID_STORE_PASSWORD as string
+    );
 
     //ElastosClient.didDocuments.addServiceToDIDDocument(diddocument, service);
   }

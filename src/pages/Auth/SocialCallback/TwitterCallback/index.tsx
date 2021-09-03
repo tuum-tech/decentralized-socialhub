@@ -25,15 +25,10 @@ import PageLoading from 'src/components/layouts/PageLoading';
 import { DidService } from 'src/services/did.service.new';
 import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
-import { DidDocumentService } from 'src/services/diddocument.service';
 import { AccountType, UserService } from 'src/services/user.service';
 
 import { requestTwitterToken, getUsersWithRegisteredTwitter } from './fetchapi';
-import {
-  DID,
-  DIDDocument,
-  VerifiableCredential
-} from '@elastosfoundation/did-js-sdk/';
+import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 interface PageProps
   extends InferMappedProps,
