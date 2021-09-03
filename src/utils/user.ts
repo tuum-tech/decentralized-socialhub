@@ -81,8 +81,5 @@ export const retrieveDocInfo = async (
       uInfo.hiveHost = firstService.endpoint;
     }
   }
-
-  uInfo.name = '';
-  uInfo.loginCred.email = '';
   return uInfo;
 };
