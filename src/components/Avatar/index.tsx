@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 
 import {
   getAvatarIfno,
@@ -7,12 +8,24 @@ import {
 } from 'src/utils/avatar';
 import DefaultAvatar from './DefaultAvatar';
 import ImgAvatar from './ImgAvatar';
-
+import style from './style.module.scss';
 interface AvatarProps {
   did: string;
   width?: string;
   ready?: boolean;
 }
+
+const ContentDiv = styled.div`
+  min-width: 40px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f8fa;
+  color: #7a7a9d;
+  font-weight: bold;
+`;
 
 const Avatar: React.FC<AvatarProps> = ({
   did = '',
@@ -28,22 +41,37 @@ const Avatar: React.FC<AvatarProps> = ({
     })();
   }, [did]);
 
+  const cn = ready
+    ? style['border-primary']
+    : avatarInfo.didPublished
+    ? style['border-primary']
+    : style['border-danger'];
+
   if (avatarInfo.type === 'default') {
     return (
-      <DefaultAvatar
-        name={avatarInfo.name}
-        ready={ready}
-        didPublished={avatarInfo.didPublished}
-      />
+      <div className={style['avatar']} style={{ height: width, width }}>
+        <ContentDiv
+          className={cn}
+          // style={{
+          //   maxWidth: width
+          // }}
+        >
+          {avatarInfo.name[0]} {avatarInfo.name[1]}
+        </ContentDiv>
+      </div>
     );
   }
 
   return (
-    <ImgAvatar
-      ready={ready}
-      didPublished={avatarInfo.didPublished}
-      img={avatarInfo.avatar}
-    />
+    <div className={style['avatar']} style={{ height: width, width }}>
+      <img
+        src={avatarInfo.avatar}
+        className={cn}
+        // style={{ maxWidth: width }}
+        height="auto"
+        alt="avatar"
+      />
+    </div>
   );
 };
 

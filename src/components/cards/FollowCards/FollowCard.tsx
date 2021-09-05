@@ -75,7 +75,7 @@ const FollowCard: React.FC<FollowCardProps> = ({
                   data-tip={`name: ${user.name} <br/> did: ${user.did}`}
                   data-iscapture="true"
                 >
-                  <Avatar did={user.did} />
+                  <Avatar did={user.did} width="50px" />
                 </Link>
                 <ReactTooltip id={user.did} multiline={true} />
               </IonCol>
