@@ -247,6 +247,61 @@ export class TuumTechScriptService {
     let response: any = await this.runTuumTechScript(get_user_by_did_script);
     return getItemsFromData(response, 'get_comments_by_github_issue_id');
   }
+
+  // verification scripts
+  public static async addVerificationRequest(
+    from_did: string,
+    to_did: string,
+    data: any
+  ) {
+    const add_verification_request_script = {
+      name: 'add_verification',
+      params: {
+        from_did,
+        to_did,
+        updated_at: new Date(),
+        data
+      },
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+
+    let response: any = await this.runTuumTechScript(
+      add_verification_request_script
+    );
+    return getItemsFromData(response, 'add_verification');
+  }
+
+  public static async updateVerificationRequest(
+    from_did: string,
+    to_did: string,
+    updated_at: string,
+    status: string,
+    feedbacks: string
+  ) {
+    const update_verification_script = {
+      name: 'update_verification',
+      params: {
+        status,
+        from_did,
+        to_did,
+        updated_at,
+        feedbacks,
+        verified_at: new Date()
+      },
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+
+    let response: any = await this.runTuumTechScript(
+      update_verification_script
+    );
+    return getItemsFromData(response, 'update_verification');
+  }
 }
 
 export class UserVaultScriptService {

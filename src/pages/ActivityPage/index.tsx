@@ -1,42 +1,32 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
 import styled from 'styled-components';
-
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState } from './types';
-
-import style from './style.module.scss';
-
 import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
+
 import ActivityTimeline from './components/ActivityTimeline';
+import VerificationRequests from './components/VerificationRequests';
+import MyRequests from './components/MyRequests';
+import {
+  ActivityPageHeader,
+  Header,
+  PageTitle,
+  ActivityTabsContainer
+} from './components/SubComponents';
+
+import { InferMappedProps, SubState } from './types';
+import style from './style.module.scss';
 
 const ActivityPage: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
-  const Header = styled.div`
-    width: 100%;
-    height: 83px;
-    background: #fff;
-    padding: 27px 25px 20px 48px;
-  `;
-
-  const PageTitle = styled.h2`
-    font-family: 'SF Pro Display';
-    font-size: 28px;
-    font-weight: 600;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 1.36;
-    letter-spacing: normal;
-    text-align: left;
-    color: #27272e;
-  `;
+  const [active, setActive] = useState('myrequests'); // timeline or veificationrequests
 
   useEffect(() => {
     console.log('I am on manager page');
@@ -55,7 +45,18 @@ const ActivityPage: React.FC<InferMappedProps> = ({
                 <Header>
                   <PageTitle>Activities</PageTitle>
                 </Header>
-                <ActivityTimeline session={props.session} />
+                <ActivityTabsContainer template="default">
+                  <ActivityPageHeader active={active} setActive={setActive} />
+                  {active === 'timeline' && (
+                    <ActivityTimeline session={props.session} />
+                  )}
+                  {active === 'myrequests' && (
+                    <MyRequests session={props.session} />
+                  )}
+                  {active === 'verificationrequests' && (
+                    <VerificationRequests session={props.session} />
+                  )}
+                </ActivityTabsContainer>
               </IonCol>
             </IonRow>
           </IonGrid>

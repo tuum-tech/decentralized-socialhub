@@ -1,46 +1,11 @@
 import React, { useState } from 'react';
 import { IonList, IonLabel, IonItem } from '@ionic/react';
-import styled from 'styled-components';
 
+import { TabsContainer } from 'src/components/profile/ProfileComponent/PublicProfileTabs';
 import DashboardHome from './Home';
 import DashboardStatus from './Status';
 import DashboardBadges from './Badges';
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
-
-const Container = styled.div`
-  background: #f7fafc;
-  min-height: 100%;
-  padding: 22px;
-
-  ion-list {
-    background: transparent;
-    padding: 0;
-  }
-  .tab-grid {
-    background: #f7fafc;
-    min-height: 100%;
-  }
-  .tab-list {
-    background: #f7fafc;
-  }
-  .tab-item {
-    cursor: pointer;
-    --border-color: #f7fafc;
-    --inner-border-width: 0 0 2px 0;
-    display: inline-block;
-    --background: #f7fafc;
-    --inner-padding-bottom: 0.5em;
-    font-weight: 600;
-    color: #718096;
-  }
-  .tab-active {
-    --border-color: var(--theme-primary-blue);
-    color: #1a202c;
-  }
-  .tab-label {
-    font-family: 'SF Pro Display';
-  }
-`;
 
 interface Props {
   onTutorialStart: () => void;
@@ -63,7 +28,7 @@ const DashboardContent: React.FC<Props> = ({
 }) => {
   const [active, setActive] = useState('home');
   return (
-    <Container>
+    <TabsContainer template="default">
       <IonList>
         <IonItem
           className={(active === 'home' ? 'tab-active' : '') + ' tab-item'}
@@ -99,7 +64,7 @@ const DashboardContent: React.FC<Props> = ({
       )}
       {active === 'status' && <DashboardStatus />}
       {active === 'badges' && <DashboardBadges sessionItem={sessionItem} />}
-    </Container>
+    </TabsContainer>
   );
 };
 

@@ -101,6 +101,54 @@ let run = async () => {
       }
     }
   });
+  // ===== verifications =====
+  await client.Database.createCollection('verifications');
+  await client.Scripting.SetScript({
+    name: 'add_verification',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'insert',
+      name: 'add_verification',
+      output: true,
+      body: {
+        collection: 'verifications',
+        document: {
+          from_did: '$params.from_did',
+          to_did: '$params.to_did',
+          status: 'requested',
+          updated_at: '$params.updated_at',
+          feedbacks: '',
+          data: '$params.data'
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'update_verification',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'update',
+      name: 'update_verification',
+      output: true,
+      body: {
+        collection: 'verifications',
+        filter: {
+          from_did: '$params.from_did',
+          to_did: '$params.to_did',
+          updated_at: '$params.updated_at'
+        },
+        update: {
+          $set: {
+            status: '$params.status',
+            updated_at: '$params.verified_at',
+            feedbacks: '$params.feedbacks'
+          }
+        }
+      }
+    }
+  });
 
   // ===== users section start =====
   await client.Database.createCollection('users');
