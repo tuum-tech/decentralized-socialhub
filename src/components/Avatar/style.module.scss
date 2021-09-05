@@ -1,7 +1,12 @@
 .avatar {
+  width: 48px;
+  height: 48px;
+
   img {
-    width: 100%;
+    width: 48px;
+    height: 48px;
   }
+
   .border-primary {
     max-width: 5.5em;
     border: 3px solid var(--theme-primary-blue);

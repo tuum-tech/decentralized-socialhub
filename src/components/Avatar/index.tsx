@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
-import { getAvatarIfno, GetAvatarRes } from 'src/utils/avatar';
-import defaultAvatar from '../../assets/icon/dp.png';
-import style from './style.module.scss';
+import {
+  getAvatarIfno,
+  AvatarInterface,
+  defaultAvatar
+} from 'src/utils/avatar';
+import DefaultAvatar from './DefaultAvatar';
+import ImgAvatar from './ImgAvatar';
 
 interface AvatarProps {
   did: string;
@@ -15,35 +19,31 @@ const Avatar: React.FC<AvatarProps> = ({
   width = '86px',
   ready = false
 }: AvatarProps) => {
-  const [avatarInfo, setAvatarInfo] = useState<GetAvatarRes>({
-    avatar: defaultAvatar,
-    didPublished: true
-  });
+  const [avatarInfo, setAvatarInfo] = useState<AvatarInterface>(defaultAvatar);
 
   useEffect(() => {
     (async () => {
       const avatarRes = await getAvatarIfno(did);
-      if (avatarRes && avatarRes.avatar) {
-        setAvatarInfo(avatarRes);
-      }
+      if (avatarRes) setAvatarInfo(avatarRes);
     })();
   }, [did]);
-  return (
-    <div className={style['avatar']}>
-      <img
-        src={avatarInfo.avatar}
-        className={
-          ready
-            ? style['border-primary']
-            : avatarInfo.didPublished
-            ? style['border-primary']
-            : style['border-danger']
-        }
-        style={{ maxWidth: width }}
-        height="auto"
-        alt="avatar"
+
+  if (avatarInfo.type === 'default') {
+    return (
+      <DefaultAvatar
+        name={avatarInfo.name}
+        ready={ready}
+        didPublished={avatarInfo.didPublished}
       />
-    </div>
+    );
+  }
+
+  return (
+    <ImgAvatar
+      ready={ready}
+      didPublished={avatarInfo.didPublished}
+      img={avatarInfo.avatar}
+    />
   );
 };
 
