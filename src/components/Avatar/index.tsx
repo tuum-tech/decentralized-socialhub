@@ -6,8 +6,7 @@ import {
   AvatarInterface,
   defaultAvatar
 } from 'src/utils/avatar';
-import DefaultAvatar from './DefaultAvatar';
-import ImgAvatar from './ImgAvatar';
+
 import style from './style.module.scss';
 interface AvatarProps {
   did: string;

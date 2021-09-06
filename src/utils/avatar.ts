@@ -17,10 +17,13 @@ export const defaultAvatar: AvatarInterface = {
 
 const shortName = (name: string) => {
   const names = name.split(' ');
-  if (names.length > 0) {
-    return name[0][0] + name[1][0];
+  let res = '';
+  if (names.length > 1) {
+    res = names[0][0] + names[1][0];
+  } else {
+    res = names[0][0] + names[0][1];
   }
-  return name[0][0] + name[0][1];
+  return res.toUpperCase();
 };
 
 export const getAvatarIfno = async (did: string): Promise<AvatarInterface> => {
