@@ -174,7 +174,6 @@ export class UserService {
         newSessionItem.did + password
       ).toString(CryptoJS.enc.Hex);
     }
-
     const res = await this.SearchUserWithDID(sessionItem.did);
     if (res) {
       newSessionItem.onBoardingCompleted = res.onBoardingCompleted;

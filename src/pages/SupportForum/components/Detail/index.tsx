@@ -14,6 +14,7 @@ import { showNotify } from 'src/utils/notify';
 import TextareaInput from 'src/elements/inputs/TextareaInput';
 import { DefaultButton } from 'src/elements/buttons';
 import { TableContent, Category } from '../common';
+import { fetchGithubComments } from '../../fetchapi';
 
 import voteIcon from 'src/assets/icon/arrow-up-filled.svg';
 import defaultAvatar from 'src/assets/icon/dp.png';
@@ -142,10 +143,28 @@ const Detail: React.FC<DetailProp> = ({
   useEffect(() => {
     (async () => {
       let userService = new UserService(await DidService.getInstance());
+      // comments in github
+      const { data: commentsInGithub }: any = await fetchGithubComments(
+        githubIssue.number
+      );
+      const commentList1 = await Promise.all(
+        commentsInGithub.map(async (itr: any) => {
+          return {
+            owner: {
+              name: itr.user.login,
+              avatar: defaultAvatar
+            },
+            timeSince: timeSince(new Date(itr.created_at).getTime()),
+            content: itr.body
+          };
+        })
+      );
+      console.log(commentList1);
+      // comments in tuum tech vault
       const commentsInTuumTech = await TuumTechScriptService.getGithubCommentsByIssueId(
         githubIssue.number
       );
-      const _commentList = await Promise.all(
+      const commentList2 = await Promise.all(
         commentsInTuumTech.map(async (itr: any) => {
           const commentOwner = await userService.SearchUserWithDID(itr.did);
           return {
@@ -158,7 +177,8 @@ const Detail: React.FC<DetailProp> = ({
           };
         })
       );
-      setCommentList(_commentList);
+
+      setCommentList(commentList1.concat(commentList2));
     })();
   }, [githubIssue]);
 
@@ -209,8 +229,12 @@ const Detail: React.FC<DetailProp> = ({
               Posted: {timeSince(new Date(githubIssue.updated_at).getTime())}
             </span>
             <span className="category">
-              {githubIssue.labels.map((label: any) => {
-                return <Category label={label.name}>{label.name}</Category>;
+              {githubIssue.labels.map((label: any, index: number) => {
+                return (
+                  <Category label={label.name} key={index}>
+                    {label.name}
+                  </Category>
+                );
               })}
             </span>
             <span className="vote">
@@ -283,8 +307,12 @@ const Detail: React.FC<DetailProp> = ({
                   <Link to={linkUrl}>{issue.title}</Link>
                 </div>
                 <div className="category">
-                  {issue.labels.map((label: any) => {
-                    return <Category label={label.name}>{label.name}</Category>;
+                  {issue.labels.map((label: any, index: number) => {
+                    return (
+                      <Category label={label.name} key={index}>
+                        {label.name}
+                      </Category>
+                    );
                   })}
                 </div>
                 <div className="votes">589 Votes</div>

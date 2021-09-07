@@ -7,7 +7,7 @@ export interface GetAvatarRes {
   avatar: string;
 }
 
-export const getAvatarIfno = async (
+export const getAvatarInfo = async (
   did: string
 ): Promise<GetAvatarRes | undefined> => {
   let userService: UserService = new UserService(

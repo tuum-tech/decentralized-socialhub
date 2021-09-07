@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 
-import { getAvatarIfno, GetAvatarRes } from 'src/utils/avatar';
+import { getAvatarInfo, GetAvatarRes } from 'src/utils/avatar';
 import defaultAvatar from '../../assets/icon/dp.png';
 import style from './style.module.scss';
 
 interface AvatarProps {
   did: string;
+  didPublished?: boolean;
   width?: string;
   ready?: boolean;
 }
 
 const Avatar: React.FC<AvatarProps> = ({
   did = '',
+  didPublished = false,
   width = '86px',
   ready = false
 }: AvatarProps) => {
@@ -22,7 +24,7 @@ const Avatar: React.FC<AvatarProps> = ({
 
   useEffect(() => {
     (async () => {
-      const avatarRes = await getAvatarIfno(did);
+      const avatarRes = await getAvatarInfo(did);
       if (avatarRes && avatarRes.avatar) {
         setAvatarInfo(avatarRes);
       }
@@ -35,7 +37,7 @@ const Avatar: React.FC<AvatarProps> = ({
         className={
           ready
             ? style['border-primary']
-            : avatarInfo.didPublished
+            : avatarInfo.didPublished || didPublished
             ? style['border-primary']
             : style['border-danger']
         }

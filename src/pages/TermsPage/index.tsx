@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonCard, IonCardContent, IonPage } from '@ionic/react';
 import styled from 'styled-components';
 
@@ -38,9 +38,14 @@ const TermsPage: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
+  const [isLoggedIn, setIsLoggedIn] = useState<string | null>(null);
+  useEffect(() => {
+    const isLoggedIn = window.localStorage.getItem('isLoggedIn');
+    setIsLoggedIn(isLoggedIn);
+  }, []);
   return (
     <Page>
-      <SignedPublicPageHeader userSession={props.session} />
+      <SignedPublicPageHeader userSession={isLoggedIn ? props.session : null} />
       <Container>
         <Body>
           <ContentWrapper>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   IonCardContent,
   IonCardHeader,
@@ -55,6 +55,12 @@ const SocialProfilesCard: React.FC<Props> = ({
 }) => {
   const [isManagerOpen, setIsManagerOpen] = useState(false);
   const [didDocument, setDidDocument] = useState<DIDDocument>(diddocument);
+  const [linkedInItem, setLinkedInItem] = useState<any>(null);
+  const [facebookItem, setFacebookItem] = useState<any>(null);
+  const [twitterItem, setTwitterItem] = useState<any>(null);
+  const [githubItem, setGithubItem] = useState<any>(null);
+  const [discordItem, setDiscordItem] = useState<any>(null);
+  const [googleItem, setGoogleItem] = useState<any>(null);
 
   let template = 'default';
   if (mode !== 'edit' && sessionItem.pageTemplate) {
@@ -149,6 +155,11 @@ const SocialProfilesCard: React.FC<Props> = ({
 
   const containsVerifiedCredential = (id: string): boolean => {
     //let docParsed = await getParsedDoc();
+    const data = didDocument!.selectCredentials(
+      id,
+      'InternetAccountCredential'
+    );
+    console.log(data);
     return (
       didDocument!.selectCredentials(id, 'InternetAccountCredential').length > 0
     );
@@ -318,30 +329,6 @@ const SocialProfilesCard: React.FC<Props> = ({
     );
   };
 
-  const linkedInItem = () => {
-    return createIonItem('linkedin', linkedinIcon);
-  };
-
-  const facebookItem = () => {
-    return createIonItem('facebook', facebookIcon);
-  };
-
-  const googleItem = () => {
-    return createIonItem('google', googleIcon);
-  };
-
-  const twitterItem = () => {
-    return createIonItem('twitter', twitterIcon);
-  };
-
-  const githubItem = () => {
-    return createIonItem('github', githubIcon);
-  };
-
-  const discordItem = () => {
-    return createIonItem('discord', discordIcon);
-  };
-
   const googleModalItem = () => {
     return createModalIonItem('google', googleIcon);
   };
@@ -366,6 +353,29 @@ const SocialProfilesCard: React.FC<Props> = ({
     return createModalIonItem('linkedin', linkedinIcon);
   };
 
+  useEffect(() => {
+    (async () => {
+      if (containsVerifiedCredential('linkedin')) {
+        setLinkedInItem(await createIonItem('linkedin', linkedinIcon));
+      }
+      if (containsVerifiedCredential('twitter')) {
+        setTwitterItem(await createIonItem('twitter', twitterIcon));
+      }
+      if (containsVerifiedCredential('facebook')) {
+        setFacebookItem(await createIonItem('facebook', facebookIcon));
+      }
+      if (containsVerifiedCredential('google')) {
+        setGoogleItem(await createIonItem('google', googleIcon));
+      }
+      if (containsVerifiedCredential('github')) {
+        setGithubItem(await createIonItem('github', githubIcon));
+      }
+      if (containsVerifiedCredential('discord')) {
+        setDiscordItem(await createIonItem('discord', discordIcon));
+      }
+    })();
+  }, [containsVerifiedCredential, createIonItem, didDocument]);
+
   return (
     <>
       <SocialProfileCard template={template}>
@@ -387,34 +397,34 @@ const SocialProfilesCard: React.FC<Props> = ({
         <IonCardContent className="card-content">
           <IonGrid className="social-profile-grid">
             <IonRow>
-              {containsVerifiedCredential('linkedin') && (
+              {linkedInItem && (
                 <IonCol size={mode === 'edit' ? '6' : '12'}>
-                  {linkedInItem()}
+                  {linkedInItem}
                 </IonCol>
               )}
-              {containsVerifiedCredential('twitter') && (
+              {twitterItem && (
                 <IonCol size={mode === 'edit' ? '6' : '12'}>
-                  {twitterItem()}
+                  {twitterItem}
                 </IonCol>
               )}
-              {containsVerifiedCredential('facebook') && (
+              {facebookItem && (
                 <IonCol size={mode === 'edit' ? '6' : '12'}>
-                  {facebookItem()}
+                  {facebookItem}
                 </IonCol>
               )}
-              {containsVerifiedCredential('google') && (
+              {googleItem && (
                 <IonCol size={mode === 'edit' ? '6' : '12'}>
-                  {googleItem()}
+                  {googleItem}
                 </IonCol>
               )}
-              {containsVerifiedCredential('github') && (
+              {githubItem && (
                 <IonCol size={mode === 'edit' ? '6' : '12'}>
-                  {githubItem()}
+                  {githubItem}
                 </IonCol>
               )}
-              {containsVerifiedCredential('discord') && (
+              {discordItem && (
                 <IonCol size={mode === 'edit' ? '6' : '12'}>
-                  {discordItem()}
+                  {discordItem}
                 </IonCol>
               )}
             </IonRow>

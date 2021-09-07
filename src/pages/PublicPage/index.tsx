@@ -109,7 +109,6 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
         props.match.params.did
       );
       setPublicFields(pFields);
-
       let pUser = await userService.SearchUserWithDID(props.match.params.did);
       if (pUser && pUser.did) {
         setPublicUser(pUser as any);

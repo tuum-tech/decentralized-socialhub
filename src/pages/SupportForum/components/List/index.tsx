@@ -184,8 +184,12 @@ const List: React.FC<ListProp> = ({ githubIssues }) => {
                   <Link to={linkUrl}>{issue.title}</Link>
                 </div>
                 <div className="category">
-                  {issue.labels.map((label: any) => {
-                    return <Category label={label.name}>{label.name}</Category>;
+                  {issue.labels.map((label: any, index: number) => {
+                    return (
+                      <Category label={label.name} key={index}>
+                        {label.name}
+                      </Category>
+                    );
                   })}
                 </div>
                 <div className="votes">589 Votes</div>

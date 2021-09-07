@@ -14,7 +14,7 @@ import narrow from 'src/assets/icon/narrow.svg';
 import style from './style.module.scss';
 
 interface Props {
-  userSession: ISessionItem;
+  userSession: ISessionItem | null;
 }
 
 const SignedPublicPageHeader: React.FC<Props> = ({ userSession }: Props) => {
@@ -23,8 +23,9 @@ const SignedPublicPageHeader: React.FC<Props> = ({ userSession }: Props) => {
   const [collapse, setCollapse] = useState<boolean>(false);
 
   useEffect(() => {
-    setPublishStatus(userSession.isDIDPublished);
-  }, [userSession.isDIDPublished]);
+    if (userSession && userSession.isDIDPublished)
+      setPublishStatus(userSession.isDIDPublished);
+  }, [userSession]);
 
   return (
     <Inline>
