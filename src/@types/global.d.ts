@@ -19,6 +19,13 @@ interface Template {
   title: string;
   intro: string;
 }
+interface VerificationData {
+  category: string;
+  records: {
+    field: string;
+    value: string;
+  }[];
+}
 
 interface ExperienceDTO {
   isEnabled: boolean;

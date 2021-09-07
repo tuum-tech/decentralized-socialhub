@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { IonRow, IonCol, IonModal } from '@ionic/react';
 
-import RequestModalContent, { RequestModal } from './RequestModal';
-import TopInfoCard from './InfoCard';
+import NewVerification from './NewVerification';
+import TopInfoCard from '../TopInfoCard';
+import UserRows from './UserRows';
 
 const PageContainer = styled.div`
   padding: 0 20px 20px 20px;
@@ -17,12 +18,27 @@ const PageContent = styled.div`
   padding: 17px 20px;
 `;
 
+const NewVerificationModal = styled(IonModal)`
+  --border-radius: 16px;
+  --width: 1100px;
+  --height: 678px;
+  :host(.modal-card) ion-header ion-toolbar:first-of-type {
+    padding: 0px;
+  }
+`;
+
 interface Props {
   session: ISessionItem;
+  closeNewVerificationModal: () => void;
+  showNewVerificationModal: boolean;
 }
 
-const MyRequests: React.FC<Props> = ({ session }: Props) => {
-  const [svID, setSVID] = useState(-1); // svID: selected verification ID
+const MyRequests: React.FC<Props> = ({
+  session,
+  closeNewVerificationModal,
+  showNewVerificationModal
+}: Props) => {
+  const [showModal, setShowModal] = useState(false); // svID: selected verification ID
 
   return (
     <PageContainer>
@@ -45,18 +61,20 @@ const MyRequests: React.FC<Props> = ({ session }: Props) => {
           <TopInfoCard img="" title="Rejected" text="1.2K" bgColor="#FF5A5A" />
         </IonCol>
       </IonRow>
-      <PageContent>dsfsd</PageContent>
-      <RequestModal
-        isOpen={true}
+      <PageContent>
+        <UserRows session={session} />
+      </PageContent>
+      <NewVerificationModal
+        isOpen={showNewVerificationModal}
         cssClass="my-custom-class"
         backdropDismiss={false}
       >
-        <RequestModalContent
+        <NewVerification
           session={session}
-          onClose={() => {}}
+          onClose={closeNewVerificationModal}
           targetUser={session}
         />
-      </RequestModal>
+      </NewVerificationModal>
     </PageContainer>
   );
 };

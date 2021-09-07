@@ -32,16 +32,6 @@ export const ActivityTabsContainer = styled(TabsContainer)`
   }
 `;
 
-interface ActivityPageHeaderProps {
-  active: string;
-  setActive: (avtive: string) => void;
-}
-
-const ActivityPageHeaderContainer = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
 export const BlueButton = styled.button`
   height: 40px;
 
@@ -61,9 +51,21 @@ export const BlueButton = styled.button`
   margin: 0 20px 0 auto;
 `;
 
-export const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
+interface ActivityPageHeaderProps {
+  active: string;
+  setActive: (avtive: string) => void;
+  newVerificationClicked: () => void;
+}
+
+const ActivityPageHeaderContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
   active,
-  setActive
+  setActive,
+  newVerificationClicked
 }) => {
   return (
     <ActivityPageHeaderContainer>
@@ -93,8 +95,12 @@ export const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
         </IonItem>
       </IonList>
       {active === 'myrequests' && (
-        <BlueButton onClick={() => {}}>New Verification Request</BlueButton>
+        <BlueButton onClick={newVerificationClicked}>
+          New Verification Request
+        </BlueButton>
       )}
     </ActivityPageHeaderContainer>
   );
 };
+
+export default ActivityPageHeader;

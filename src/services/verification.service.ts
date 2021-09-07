@@ -1,8 +1,3 @@
-import {
-  TuumTechScriptService,
-  UserVaultScriptService
-} from './script.service';
-
 export enum VerificationStatus {
   requested = 'requested',
   verified = 'verified',
@@ -10,96 +5,137 @@ export enum VerificationStatus {
 }
 
 export class VerificationService {
-  public async generatePersonalInfoVerificaiotnData() {
-    const firstName = '';
-    const lastName = '';
-    const location = '';
-    const email = '';
+  public retrieveUsersVerificationCategories(
+    profile: ProfileDTO,
+    session: ISessionItem
+  ) {
+    const { experienceDTO, educationDTO } = profile;
 
-    const data = {
-      category: 'Personal Info',
-      records: [
-        {
-          field: 'lastName',
-          value: lastName
-        },
-        {
-          field: 'firstName',
-          value: firstName
-        },
-        {
-          field: 'location',
-          value: location
-        },
-        {
-          field: 'email',
-          value: email
-        }
-      ]
-    };
+    const personInfoData: VerificationData[] = this.generatePersonalInfoVerificaiotnData(
+      session.name || '',
+      session.email || '',
+      session.phonNumber || ''
+    );
 
-    return data;
+    const educationData: VerificationData[] = this.generateEducationVerificationData(
+      educationDTO.items
+    );
+
+    const experienceData: VerificationData[] = this.generateExperienceVerificationData(
+      experienceDTO.items
+    );
+
+    return [...personInfoData, ...educationData, ...experienceData];
   }
 
-  public async generateEducationVerificationData() {
-    const start = '';
-    const end = '';
-    const institution = '';
-    const program = '';
+  public generatePersonalInfoVerificaiotnData(
+    name: string,
+    email: string,
+    phonNumber: string
+  ) {
+    const category = 'Personal Info';
+    const records = [];
+    if (name !== '') {
+      records.push({
+        field: 'name',
+        value: name
+      });
+    }
+    if (email !== '') {
+      records.push({
+        field: 'email',
+        value: email
+      });
+    }
+    if (phonNumber !== '') {
+      records.push({
+        field: 'phonNumber',
+        value: phonNumber
+      });
+    }
 
-    const data = {
-      category: 'Education Info',
-      records: [
-        {
-          field: 'start',
-          value: start
-        },
-        {
-          field: 'end',
-          value: end
-        },
-        {
-          field: 'institution',
-          value: institution
-        },
-        {
-          field: 'program',
-          value: program
-        }
-      ]
-    };
-
-    return data;
+    return [{ category, records }];
   }
 
-  public async generateExperienceVerificaitonData() {
-    const start = '';
-    const end = '';
-    const title = '';
-    const organization = '';
-
-    const data = {
-      category: 'Education Info',
-      records: [
-        {
-          field: 'start',
-          value: start
-        },
-        {
-          field: 'end',
-          value: end
-        },
-        {
-          field: 'title',
-          value: title
-        },
-        {
-          field: 'organization',
-          value: organization
+  public generateEducationVerificationData(items: EducationItem[]) {
+    if (items.length > 0) {
+      const data = [];
+      const category = 'Education';
+      for (let i = 0; i < items.length; i++) {
+        const edu = items[i];
+        const records = [];
+        if (edu.institution) {
+          records.push({
+            field: 'institution',
+            value: edu.institution
+          });
         }
-      ]
-    };
+        if (edu.program) {
+          records.push({
+            field: 'program',
+            value: edu.program
+          });
+        }
+        if (edu.start) {
+          records.push({
+            field: 'start',
+            value: edu.start
+          });
+        }
+        if (edu.end) {
+          records.push({
+            field: 'end',
+            value: edu.end
+          });
+        }
+        data.push({
+          category,
+          records
+        });
+      }
+      return data;
+    }
+    return [];
+  }
 
-    return data;
+  public generateExperienceVerificationData(items: ExperienceItem[]) {
+    if (items.length > 0) {
+      const data = [];
+      const category = 'Experience';
+      for (let i = 0; i < items.length; i++) {
+        const edu = items[i];
+        const records = [];
+        if (edu.institution) {
+          records.push({
+            field: 'institution',
+            value: edu.institution
+          });
+        }
+        if (edu.title) {
+          records.push({
+            field: 'title',
+            value: edu.title
+          });
+        }
+        if (edu.start) {
+          records.push({
+            field: 'start',
+            value: edu.start
+          });
+        }
+        if (edu.end) {
+          records.push({
+            field: 'end',
+            value: edu.end
+          });
+        }
+        data.push({
+          category,
+          records
+        });
+      }
+      return data;
+    }
+    return [];
   }
 }

@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-interface ContainerProps {
+interface TopInfoCardContainerProps {
   bgColor?: string;
 }
 
-const Container = styled.div<ContainerProps>`
+const TopInfoCardContainer = styled.div<TopInfoCardContainerProps>`
   background: #ffffff;
   border-radius: 16px;
   width: 100%;
@@ -39,21 +39,27 @@ const Container = styled.div<ContainerProps>`
   }
 `;
 
-interface Props {
+interface TopInfoCardProps {
   img: string;
   title: string;
   text: string;
   bgColor: string;
 }
-const TopInfoCard: React.FC<Props> = ({ img, title, text, bgColor }) => {
+
+const TopInfoCard: React.FC<TopInfoCardProps> = ({
+  img,
+  title,
+  text,
+  bgColor
+}) => {
   return (
-    <Container bgColor={bgColor}>
+    <TopInfoCardContainer bgColor={bgColor}>
       <div className="left"></div>
       <div className="right">
         <p className="title">Total Requests</p>
         <p className="text"> 1.2K</p>
       </div>
-    </Container>
+    </TopInfoCardContainer>
   );
 };
 

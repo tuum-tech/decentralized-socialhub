@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
-import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
@@ -12,12 +11,11 @@ import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import ActivityTimeline from './components/ActivityTimeline';
 import VerificationRequests from './components/VerificationRequests';
 import MyRequests from './components/MyRequests';
-import {
-  ActivityPageHeader,
+import ActivityPageHeader, {
   Header,
   PageTitle,
   ActivityTabsContainer
-} from './components/SubComponents';
+} from './components/ActivityPageHeader';
 
 import { InferMappedProps, SubState } from './types';
 import style from './style.module.scss';
@@ -27,6 +25,9 @@ const ActivityPage: React.FC<InferMappedProps> = ({
   ...props
 }: InferMappedProps) => {
   const [active, setActive] = useState('myrequests'); // timeline or veificationrequests
+  const [showNewVerificationModal, setShowNewVerificationModal] = useState(
+    true
+  );
 
   useEffect(() => {
     console.log('I am on manager page');
@@ -46,12 +47,24 @@ const ActivityPage: React.FC<InferMappedProps> = ({
                   <PageTitle>Activities</PageTitle>
                 </Header>
                 <ActivityTabsContainer template="default">
-                  <ActivityPageHeader active={active} setActive={setActive} />
+                  <ActivityPageHeader
+                    active={active}
+                    setActive={setActive}
+                    newVerificationClicked={() =>
+                      setShowNewVerificationModal(!showNewVerificationModal)
+                    }
+                  />
                   {active === 'timeline' && (
                     <ActivityTimeline session={props.session} />
                   )}
                   {active === 'myrequests' && (
-                    <MyRequests session={props.session} />
+                    <MyRequests
+                      session={props.session}
+                      showNewVerificationModal={showNewVerificationModal}
+                      closeNewVerificationModal={() =>
+                        setShowNewVerificationModal(false)
+                      }
+                    />
                   )}
                   {active === 'verificationrequests' && (
                     <VerificationRequests session={props.session} />

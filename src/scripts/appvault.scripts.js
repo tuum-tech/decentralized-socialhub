@@ -116,9 +116,8 @@ let run = async () => {
         document: {
           from_did: '$params.from_did',
           to_did: '$params.to_did',
-          status: 'requested',
           updated_at: '$params.updated_at',
-          feedbacks: '',
+          status: 'requested',
           data: '$params.data'
         }
       }
@@ -142,8 +141,7 @@ let run = async () => {
         update: {
           $set: {
             status: '$params.status',
-            updated_at: '$params.verified_at',
-            feedbacks: '$params.feedbacks'
+            updated_at: '$params.verified_at'
           }
         }
       }

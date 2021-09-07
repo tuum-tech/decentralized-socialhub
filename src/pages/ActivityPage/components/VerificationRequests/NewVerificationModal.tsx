@@ -174,7 +174,7 @@ interface Props {
   onClose: () => void;
 }
 
-const RequestModalContent: React.FC<Props> = ({
+const NewVerificationModal: React.FC<Props> = ({
   session,
   onClose,
   targetUser
@@ -218,4 +218,4 @@ const RequestModalContent: React.FC<Props> = ({
   );
 };
 
-export default RequestModalContent;
+export default NewVerificationModal;
