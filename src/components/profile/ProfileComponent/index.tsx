@@ -9,9 +9,8 @@ import EducationCard from 'src/components/cards/EducationCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 import BadgeCard from 'src/components/cards/BadgeCard';
-import FollowCards from 'src/components/follow/FollowCards';
-
-import theme from 'src/data/theme';
+import FollowCards from 'src/components/cards/FollowCards';
+import { getThemeData } from 'src/data/theme';
 
 import PublicProfileTabs from './PublicProfileTabs';
 import ProfileHeader from './ProfileHeader';
@@ -21,16 +20,16 @@ const GridContent = styled(IonGrid)<ThemeProps>`
   width: 100%;
   z-index: 100;
   background-color: ${({ template }: ThemeProps) =>
-    (theme as any)[template].pageBg};
+    getThemeData(template, 'gridContent', 'backgroundColor')};
 `;
 
 const LeftContent = styled.div`
-  width: calc(100% - 300px);
+  width: calc(100% - 360px);
   padding-right: 22px;
 `;
 
 const RightContent = styled.div`
-  width: 300px;
+  width: 360px;
 `;
 
 interface Props {
@@ -157,7 +156,10 @@ const ProfileComponent: React.FC<Props> = ({
                           }}
                         />
                         {publicFields.includes('badge') && (
-                          <BadgeCard badges={publicUser.badges} />
+                          <BadgeCard
+                            badges={publicUser.badges}
+                            template={publicUser.pageTemplate || 'default'}
+                          />
                         )}
                       </RightContent>
                     </IonRow>

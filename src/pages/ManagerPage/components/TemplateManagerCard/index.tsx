@@ -19,6 +19,7 @@ import { ProfileName } from 'src/elements/texts';
 import Avatar from 'src/components/Avatar';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import { DidService } from 'src/services/did.service.new';
+import { templates } from 'src/data/theme';
 
 export const Divider = styled.hr`
   width: 100%;
@@ -123,29 +124,23 @@ const TemplateManagerCard: React.FC<IProps> = ({
             </IonRow>
             <Divider />
 
-            <IonRow className="ion-justify-content-between">
-              <IonCol size="*">
-                <Header3>General Profile</Header3>
-                <h4> Everything displayed</h4>
-              </IonCol>
+            {templates.map(template => {
+              return (
+                <>
+                  <IonRow className="ion-justify-content-between">
+                    <IonCol size="*">
+                      <Header3>{template.title}</Header3>
+                      <h4> {template.intro}</h4>
+                    </IonCol>
 
-              <IonCol size="2">
-                <IonRadio value="default"></IonRadio>
-              </IonCol>
-            </IonRow>
-            <Divider />
-
-            <IonRow className="ion-justify-content-between">
-              <IonCol size="*">
-                <Header3>Academic Profile</Header3>
-                <h4> Education based</h4>
-              </IonCol>
-
-              <IonCol size="2">
-                <IonRadio value="academic"></IonRadio>
-              </IonCol>
-            </IonRow>
-            <Divider />
+                    <IonCol size="2">
+                      <IonRadio value={template.value}></IonRadio>
+                    </IonCol>
+                  </IonRow>
+                  <Divider />
+                </>
+              );
+            })}
 
             <IonRow>
               <IonButton>Learn more about templates</IonButton>

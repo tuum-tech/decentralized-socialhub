@@ -4,9 +4,7 @@ import { SearchService } from 'src/services/search.service';
 import { FollowType } from 'src/services/user.service';
 import { getItemsFromData } from 'src/utils/script';
 
-import FollowerCard from './FollowerCard';
-import FollowingCard from './FollowingCard';
-import MutualFollowerCard from './MutualFollowerCard';
+import FollowCard from './FollowCard';
 
 interface Props {
   signed: boolean;
@@ -66,41 +64,38 @@ const FowllowCards: React.FC<Props> = ({
   return (
     <>
       {followingDids.length > 0 && showFollowingCard && (
-        <FollowingCard
-          totalNumber={followingDids.length}
+        <FollowCard
+          title={`Following ${followingDids.length}`}
           users={
             followingUsers.length > 5
               ? followingUsers.slice(0, 5)
               : followingUsers
           }
           getLinkFunc={(did: string) => '/did/' + did}
-          isSigned={signed}
           viewAllClicked={() => viewAll(FollowType.Following)}
           template={template}
         />
       )}
       {followerDids.length > 0 && showFollowerCard && (
-        <FollowerCard
-          totalNumber={followerDids.length}
+        <FollowCard
+          title={`Follower ${followerDids.length}`}
           users={
             followerUsers.length > 5 ? followerUsers.slice(0, 5) : followerUsers
           }
           getLinkFunc={(did: string) => '/did/' + did}
-          isSigned={signed}
           viewAllClicked={() => viewAll(FollowType.Follower)}
           template={template}
         />
       )}
       {mutualDids.length > 0 && showMutualFollowerCard && (
-        <MutualFollowerCard
-          totalNumber={mutualDids.length}
+        <FollowCard
+          title={`Mutual Follower ${mutualDids.length}`}
           users={
             mutualFollowerUsers.length > 5
               ? mutualFollowerUsers.slice(0, 5)
               : mutualFollowerUsers
           }
           getLinkFunc={(did: string) => '/did/' + did}
-          isSigned={signed}
           viewAllClicked={() => viewAll(FollowType.MutualFollower)}
           template={template}
         />

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { IonList, IonLabel, IonItem } from '@ionic/react';
 import styled from 'styled-components';
 
-import theme from 'src/data/theme';
+import { getThemeData } from 'src/data/theme';
 
 interface IProps {
   scrollToPosition: any;
@@ -13,11 +13,11 @@ const Container = styled.div`
   z-index: 100;
   .tab-grid {
     background-color: ${({ template }: ThemeProps) =>
-      (theme as any)[template].cardBg};
+      getThemeData(template, 'card', 'backgroundColor')};
   }
   .tab-list {
     background-color: ${({ template }: ThemeProps) =>
-      (theme as any)[template].cardBg};
+      getThemeData(template, 'card', 'backgroundColor')};
     padding: 15px 0px 0px 15px;
   }
   .tab-item {
@@ -27,16 +27,17 @@ const Container = styled.div`
     --inner-padding-bottom: 0 !important;
 
     --background: ${({ template }: ThemeProps) =>
-      (theme as any)[template].cardBg};
+      getThemeData(template, 'card', 'backgroundColor')};
     --border-color: ${({ template }: ThemeProps) =>
-      (theme as any)[template].cardBg};
+      getThemeData(template, 'card', 'backgroundColor')};
 
     font-weight: 600;
     color: #718096;
   }
   .tab-active {
     --border-color: var(--theme-primary-blue);
-    color: ${({ template }: ThemeProps) => (theme as any)[template].cardTitle};
+    color: ${({ template }: ThemeProps) =>
+      getThemeData(template, 'card', 'cardTitle')};
   }
   .tab-label {
     font-family: 'SF Pro Display';
