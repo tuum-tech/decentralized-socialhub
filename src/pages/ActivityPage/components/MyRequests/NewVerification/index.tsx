@@ -3,16 +3,11 @@ import { IonRow, IonCol, IonButton } from '@ionic/react';
 
 import TimeLine from './TimeLine';
 import { VerificationService } from 'src/services/verification.service';
-import {
-  ProfileService,
-  defaultUserInfo,
-  defaultFullProfile
-} from 'src/services/profile.service';
+import { ProfileService } from 'src/services/profile.service';
 import UsersView from './steps/step2';
 import CredentialView from './steps/step1';
 import style from './style.module.scss';
 import shield from '../../../../../assets/icon/shield.png';
-// VerificationService
 
 interface Props {
   session: ISessionItem;
@@ -25,7 +20,7 @@ const NewVerificationModal: React.FC<Props> = ({
   onClose,
   targetUser
 }: Props) => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
   const [categories, setCateogries] = useState<VerificationData[]>([]);
   const [credentials, setCredentials] = useState<VerificationData[]>([]);
   const [selectedDids, setSelectedDids] = useState<string[]>([]);
@@ -56,16 +51,18 @@ const NewVerificationModal: React.FC<Props> = ({
     if (step === 1) {
       return (
         <CredentialView
-          session={session}
           categories={categories}
           credentials={credentials}
           setCredentials={setCredentials}
+          onNext={() => setStep(2)}
         />
       );
     }
     if (step === 2) {
       return (
         <UsersView
+          onPrev={() => setStep(1)}
+          onNext={() => setStep(3)}
           session={session}
           selectedDids={selectedDids}
           updateSelectedUserDids={setSelectedDids}

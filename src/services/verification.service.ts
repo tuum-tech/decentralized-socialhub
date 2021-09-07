@@ -60,7 +60,7 @@ export class VerificationService {
   public generateEducationVerificationData(items: EducationItem[]) {
     if (items.length > 0) {
       const data = [];
-      const category = 'Education';
+      // const category = 'Education';
       for (let i = 0; i < items.length; i++) {
         const edu = items[i];
         const records = [];
@@ -89,7 +89,7 @@ export class VerificationService {
           });
         }
         data.push({
-          category,
+          category: `Education: ${edu.institution}(${edu.program})`,
           records
         });
       }
@@ -103,34 +103,34 @@ export class VerificationService {
       const data = [];
       const category = 'Experience';
       for (let i = 0; i < items.length; i++) {
-        const edu = items[i];
+        const exp = items[i];
         const records = [];
-        if (edu.institution) {
+        if (exp.institution) {
           records.push({
             field: 'institution',
-            value: edu.institution
+            value: exp.institution
           });
         }
-        if (edu.title) {
+        if (exp.title) {
           records.push({
             field: 'title',
-            value: edu.title
+            value: exp.title
           });
         }
-        if (edu.start) {
+        if (exp.start) {
           records.push({
             field: 'start',
-            value: edu.start
+            value: exp.start
           });
         }
-        if (edu.end) {
+        if (exp.end) {
           records.push({
             field: 'end',
-            value: edu.end
+            value: exp.end
           });
         }
         data.push({
-          category,
+          category: `Experience: ${exp.title} at: ${exp.institution}`,
           records
         });
       }

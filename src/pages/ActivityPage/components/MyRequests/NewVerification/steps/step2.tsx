@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { IonSearchbar } from '@ionic/react';
 import styled from 'styled-components';
 
+import arrowLeft from 'src/assets/icon/arrow-left-square.svg';
 import { SearchService } from 'src/services/search.service';
 import { alertError } from 'src/utils/notify';
 import Avatar from 'src/components/Avatar';
+import { Container, NextButton } from './step1';
 
-const Container = styled.div`
+const UsersContainer = styled.div`
   ion-searchbar {
     padding: 0;
   }
@@ -76,12 +78,16 @@ interface Props {
   session: ISessionItem;
   selectedDids: string[];
   updateSelectedUserDids: (newDids: string[]) => void;
+  onPrev: () => void;
+  onNext: () => void;
 }
 
 const UsersView = ({
   session,
   selectedDids,
-  updateSelectedUserDids
+  updateSelectedUserDids,
+  onNext,
+  onPrev
 }: Props) => {
   const [filteredUsers, setFilteredUsers] = useState<PeopleDTO>({ items: [] });
   const [searchService, setSearchService] = useState(new SearchService());
@@ -152,43 +158,57 @@ const UsersView = ({
 
   return (
     <Container>
-      <IonSearchbar
-        value={searchQuery}
-        onIonChange={e => search(e)}
-        placeholder="Search people, pages by name or DID"
-      ></IonSearchbar>
-      <div className="usersContainer">
-        {isLoading ? (
-          <p>Loading...</p>
-        ) : (
-          filteredUsers.items.map(({ name, did }) => (
-            <div className="userRow">
-              <Avatar did={did} width="45px" />
-              <div className="userRow_info">
-                <span className="name">{name}</span>
-                <br />
-                <span className="truncatedDID">{did}</span>
-              </div>
-              <button
-                className="userRow_button"
-                onClick={() => {
-                  if (selectedDids.includes(did)) {
-                    const newSelectedDids = selectedDids.filter(
-                      sDid => sDid !== did
-                    );
-                    updateSelectedUserDids(newSelectedDids);
-                  } else {
-                    const newSelectedDids = selectedDids.concat(did);
-                    updateSelectedUserDids(newSelectedDids);
-                  }
-                }}
-              >
-                {selectedDids.includes(did) ? 'Remove' : 'Add'}
-              </button>
-            </div>
-          ))
-        )}
+      <img
+        onClick={() => onPrev()}
+        src={arrowLeft}
+        alt="arrow-left"
+        className="mb-1"
+      />
+      <div className="title mb-2">Choose Verifiers</div>
+      <div className="intro mb-2" style={{ color: 'black' }}>
+        Select user(s) to verify your credentials
+        <span style={{ color: 'red' }}>(max 3 users)</span>
       </div>
+      <UsersContainer>
+        <IonSearchbar
+          value={searchQuery}
+          onIonChange={e => search(e)}
+          placeholder="Search people, pages by name or DID"
+        ></IonSearchbar>
+        <div className="usersContainer">
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : (
+            filteredUsers.items.map(({ name, did }) => (
+              <div className="userRow">
+                <Avatar did={did} width="45px" />
+                <div className="userRow_info">
+                  <span className="name">{name}</span>
+                  <br />
+                  <span className="truncatedDID">{did}</span>
+                </div>
+                <button
+                  className="userRow_button"
+                  onClick={() => {
+                    if (selectedDids.includes(did)) {
+                      const newSelectedDids = selectedDids.filter(
+                        sDid => sDid !== did
+                      );
+                      updateSelectedUserDids(newSelectedDids);
+                    } else {
+                      const newSelectedDids = selectedDids.concat(did);
+                      updateSelectedUserDids(newSelectedDids);
+                    }
+                  }}
+                >
+                  {selectedDids.includes(did) ? 'Remove' : 'Add'}
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+      </UsersContainer>
+      <NextButton onClick={onNext}>Continue</NextButton>
     </Container>
   );
 };
