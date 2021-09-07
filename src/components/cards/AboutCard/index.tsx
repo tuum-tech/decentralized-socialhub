@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { IonButton, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
-import theme from 'src/data/theme';
 
+import { getThemeData } from 'src/data/theme';
 import {
   CardOverview,
   LinkStyleSpan,
@@ -25,9 +25,8 @@ const AboutText = styled.span<ThemeProps>`
   line-height: 1.6;
   letter-spacing: normal;
   text-align: left;
-  color: ${({ template }: ThemeProps) => {
-    return (theme as any)[template].overviewText;
-  }};
+  color: ${({ template }: ThemeProps) =>
+    getThemeData(template, 'card', 'overviewText')};
 `;
 
 interface IProps {

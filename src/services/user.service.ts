@@ -84,6 +84,13 @@ export class UserService {
     return documentWithNameCred;
   }
 
+  public getTemporaryMnemonicFromDid(did: string) {
+    if (!did || did === '') return '';
+    let key = `temporary_${did.replace('did:elastos:', '')}`;
+    let response: any = window.localStorage.getItem(key);
+    if (response) return response.mnemonic;
+  }
+
   private lockUser(key: string, instance: ISessionItem) {
     if (!instance.mnemonics || instance.mnemonics === '') {
       instance.mnemonics =
@@ -391,7 +398,16 @@ export class UserService {
         sessionItem.badges!.socialVerify!.discord.archived = curTime;
         messages.push('You received a Discord verfication badge');
       }
-      await TuumTechScriptService.addUserToTuumTech(sessionItem);
+
+      let didAlreadyAdded = await TuumTechScriptService.searchUserWithDIDs([
+        did
+      ]);
+      if (didAlreadyAdded.length === 0) {
+        await TuumTechScriptService.addUserToTuumTech(sessionItem);
+      } else {
+        await TuumTechScriptService.updateTuumUser(sessionItem);
+      }
+
       await ProfileService.addActivity(
         {
           guid: '',

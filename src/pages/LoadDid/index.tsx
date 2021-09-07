@@ -8,6 +8,7 @@ import {
   IonTitle,
   IonToolbar
 } from '@ionic/react';
+import { useState } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
@@ -32,6 +33,8 @@ const LoadDid: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
+  const [document] = useState('');
+
   useEffect(() => {
     (async () => {
       let service = await DidService.getInstance();
@@ -45,6 +48,7 @@ const LoadDid: React.FC<InferMappedProps> = ({
       console.log('did app' + did_app);
       console.log('did user' + did_user);
 
+      // let appDocument = await service.getStoredDocument(did_app);
       let userDocument = await service.getStoredDocument(did_user);
 
       // //let did = await service.loadDid(

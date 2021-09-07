@@ -78,14 +78,17 @@ const GenerateDidPage: React.FC<PageProps> = ({
           if (!session || !session.name) return;
           setStatus(1);
           let userService = new UserService(await DidService.getInstance());
+
+          let did = session.did;
+          let mnemonic = userService.getTemporaryMnemonicFromDid(did);
           let sessionItem = await userService.CreateNewUser(
             session.name,
             session.service,
             session.loginCred,
             session.credential,
             pwd,
-            '',
-            '',
+            did,
+            mnemonic,
             ''
           );
           eProps.setSession({ session: sessionItem });

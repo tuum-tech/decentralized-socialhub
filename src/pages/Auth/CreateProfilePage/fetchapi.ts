@@ -18,6 +18,7 @@ export function requestCreateEmailUser(
         name,
         email,
         phone: '',
+        did: '',
         smsCode: false
       })
     }

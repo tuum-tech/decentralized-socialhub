@@ -12,6 +12,7 @@ interface Props {
   readonly?: boolean;
   onChange: (e: string) => void;
   onHitEnter?: () => void;
+  onRef?: (e: any) => void;
   className?: string;
   type?:
     | 'number'
@@ -32,6 +33,7 @@ const TextInput: React.FC<Props> = ({
   value,
   onChange,
   onHitEnter = () => {},
+  onRef = () => {},
   flexDirection = 'row',
   hasError = false,
   type = 'text',
@@ -55,6 +57,7 @@ const TextInput: React.FC<Props> = ({
         <IonLabel className={style['textinput_label']}>{label}</IonLabel>
       )}
       <IonInput
+        ref={element => onRef(element)}
         type={type}
         value={value}
         className={style['textinput_field']}

@@ -33,6 +33,7 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
   let code: string = props.match.params.code;
   const [status, setStatus] = useState('');
   const [credentials, setCredentials] = useState({
+    did: '',
     loginCred: {
       email: ''
     },
@@ -46,8 +47,9 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
         code
       )) as IVerifyCodeResponse;
       if (response.data.return_code === 'CODE_CONFIRMED') {
-        const { name, email } = response.data;
+        const { name, email, did } = response.data;
         setCredentials({
+          did,
           name,
           loginCred: {
             email
@@ -85,21 +87,41 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
       );
     }
     if (status === 'CODE_CONFIRMED') {
-      return (
-        <Redirect
-          to={{
-            pathname: '/generate-did',
-            state: {
-              name: credentials.name,
-              loginCred: {
-                email: credentials.loginCred.email
-              },
-              service: AccountType.Email,
-              credential: credentials.credential
-            }
-          }}
-        />
-      );
+      if (credentials.did && credentials.did.length > 0) {
+        return (
+          <Redirect
+            to={{
+              pathname: '/generate-did',
+              state: {
+                did: credentials.did,
+                name: credentials.name,
+                loginCred: {
+                  email: credentials.loginCred.email
+                },
+                service: AccountType.DID,
+                credential: credentials.credential
+              }
+            }}
+          />
+        );
+      } else {
+        return (
+          <Redirect
+            to={{
+              pathname: '/generate-did',
+              state: {
+                name: credentials.name,
+                did: '',
+                loginCred: {
+                  email: credentials.loginCred.email
+                },
+                service: AccountType.Email,
+                credential: credentials.credential
+              }
+            }}
+          />
+        );
+      }
     } else
       return (
         <OnBoardLayout className={style['create-profile']}>

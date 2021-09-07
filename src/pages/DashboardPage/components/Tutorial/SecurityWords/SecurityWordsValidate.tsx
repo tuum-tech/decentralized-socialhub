@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { IonGrid, IonRow, IonCol, IonInput, IonButton } from '@ionic/react';
 
@@ -88,6 +88,8 @@ const SecurityWordsValidate: React.FC<Props> = ({
     }
   };
 
+  const itemEls = useRef<any[]>([]);
+
   const clear = () => {
     setMnemonic(['', '', '', '', '', '', '', '', '', '', '', '']);
   };
@@ -106,9 +108,24 @@ const SecurityWordsValidate: React.FC<Props> = ({
             {(index + 1).toString()}
           </span>
           <IonInput
+            ref={element => itemEls.current.push(element)}
             className={style['security-view-textinput']}
             value={mnemonic[index]}
-            onIonChange={n => updateMnemonic(index, n.detail.value!)}
+            onKeyUp={e => {
+              let val = e.currentTarget.value! as string;
+              if (val.split(' ').length === 12) {
+                let words = val.split(' ');
+                setMnemonic(words);
+              } else {
+                let value = val.replace(/\s+/g, '');
+                let key = e.key;
+                if (key === ' ') {
+                  itemEls.current[index].value = value;
+                  itemEls.current[(index + 1) % 12].setFocus();
+                }
+                updateMnemonic(index, value);
+              }
+            }}
           />
         </div>
       </IonCol>

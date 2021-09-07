@@ -309,6 +309,7 @@ interface IVerifyCodeResponse {
     return_code: string;
     name: string;
     email: string;
+    did: string;
   };
 }
 

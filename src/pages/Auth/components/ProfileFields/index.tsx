@@ -28,7 +28,8 @@ import styled from 'styled-components';
 
 export function requestCreateEmailUser(
   name: string,
-  email: string
+  email: string,
+  did: string
 ): Promise<BaseplateResp> {
   return request(
     `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/credential/create`,
@@ -43,6 +44,7 @@ export function requestCreateEmailUser(
         name,
         email,
         phone: '',
+        did,
         smsCode: false
       })
     }
@@ -82,6 +84,10 @@ const UseDetailsForm: React.FC<Props> = ({
     return getUserName() !== '';
   };
 
+  const isEmailReadOnly = () => {
+    return getEmail() !== '';
+  };
+
   const getEmail = () => {
     if (
       userInfo !== undefined &&
@@ -105,35 +111,40 @@ const UseDetailsForm: React.FC<Props> = ({
   };
 
   const onSubmit = async () => {
-    if (name === '' || email === '') {
+    if (name === '') {
       setError('You should fill all the blanks');
       return;
     }
-    if (!validateEmail(email)) {
-      setError('Invalid Email address');
-      return;
-    }
-    setLoading('Creating new profile now');
-    let response = (await requestCreateEmailUser(
-      name,
-      email
-    )) as ICreateUserResponse;
-    if (response.meta.code !== 200) {
-      setError('An error happened when creating user.');
-    }
+    if (email !== '') {
+      if (!validateEmail(email)) {
+        setError('Invalid Email address');
+        return;
+      }
+      setLoading('Creating new profile now');
+      let response = (await requestCreateEmailUser(
+        name,
+        email,
+        userInfo?.did ?? ''
+      )) as ICreateUserResponse;
+      if (response.meta.code !== 200) {
+        setError('An error happened when creating user.');
+      }
 
-    if (
-      response &&
-      response.data &&
-      response.data.return_code === 'WAITING_CONFIRMATION'
-    ) {
-      setDisplayText(
-        'Verification email is sent to you. Please confirm to complete your registration.'
-      );
+      if (
+        response &&
+        response.data &&
+        response.data.return_code === 'WAITING_CONFIRMATION'
+      ) {
+        setDisplayText(
+          'Verification email is sent to you. Please confirm to complete your registration.'
+        );
+      } else {
+        setUserInfo(name, email);
+      }
+      setLoading('');
     } else {
       setUserInfo(name, email);
     }
-    setLoading('');
   };
 
   return (
@@ -186,13 +197,14 @@ const UseDetailsForm: React.FC<Props> = ({
           <TextInput
             value={email}
             label={
-              error === 'Not correct Email' ? 'Type valid Email' : 'E-mail'
+              error === 'Invalid Email address' ? 'Type valid Email' : 'E-mail'
             }
             onChange={n => setField('email', n)}
             onHitEnter={async () => {
               await onSubmit();
             }}
             placeholder="Enter your email"
+            readonly={isEmailReadOnly()}
             hasError={
               (error !== '' && email === '') || error === 'Not correct Email'
             }

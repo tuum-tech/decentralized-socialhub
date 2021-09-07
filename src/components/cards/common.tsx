@@ -8,7 +8,7 @@ import {
   IonCardContent
 } from '@ionic/react';
 import styled from 'styled-components';
-import theme from 'src/data/theme';
+import { getThemeData } from 'src/data/theme';
 
 export enum MODE {
   NONE,
@@ -19,9 +19,10 @@ export enum MODE {
 
 export const CardOverview = styled(IonCard)<ThemeProps>`
   background-color: ${({ template }: ThemeProps) =>
-    (theme as any)[template].cardBg};
+    getThemeData(template, 'card', 'backgroundColor')};
+
   box-shadow: ${({ template }: ThemeProps) =>
-    (theme as any)[template].cardShawdow};
+    getThemeData(template, 'card', 'cardShawdow')};
 
   border-radius: 16px;
   margin: 0px 0px 22px;
@@ -35,7 +36,8 @@ export const CardOverview = styled(IonCard)<ThemeProps>`
     line-height: normal;
     letter-spacing: -0.09px;
     text-align: left;
-    color: ${({ template }: ThemeProps) => (theme as any)[template].cardTitle};
+    color: ${({ template }: ThemeProps) =>
+      getThemeData(template, 'card', 'cardTitle')};
   }
 `;
 
@@ -48,7 +50,8 @@ export const Institution = styled.span<ThemeProps>`
   line-height: 1.56;
   letter-spacing: normal;
   text-align: left;
-  color: ${({ template }: ThemeProps) => (theme as any)[template].cardTitle1};
+  color: ${({ template }: ThemeProps) =>
+    getThemeData(template, 'card', 'cardTitle1')};
 `;
 
 export const Program = styled.span<ThemeProps>`
@@ -60,7 +63,8 @@ export const Program = styled.span<ThemeProps>`
   line-height: 1.79;
   letter-spacing: normal;
   text-align: left;
-  color: ${({ template }: ThemeProps) => (theme as any)[template].cardTitle2};
+  color: ${({ template }: ThemeProps) =>
+    getThemeData(template, 'card', 'cardTitle2')};
 `;
 
 export const Period = styled.span<ThemeProps>`
@@ -73,7 +77,8 @@ export const Period = styled.span<ThemeProps>`
   letter-spacing: normal;
   text-align: left;
 
-  color: ${({ template }: ThemeProps) => (theme as any)[template].cardTitle3};
+  color: ${({ template }: ThemeProps) =>
+    getThemeData(template, 'card', 'cardTitle3')};
 `;
 
 export const Divider = styled.hr`
@@ -108,7 +113,8 @@ export const Description = styled.span<ThemeProps>`
   line-height: 1.62;
   letter-spacing: normal;
   text-align: left;
-  color: ${({ template }: ThemeProps) => (theme as any)[template].cardText};
+  color: ${({ template }: ThemeProps) =>
+    getThemeData(template, 'card', 'cardText')};
 `;
 
 export const MyModal = styled(IonModal)`

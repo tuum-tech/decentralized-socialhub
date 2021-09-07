@@ -1,6 +1,6 @@
 {
   "name": "profile",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Profile",
   "dependencies": {
     "@babel/core": "7.9.0",
@@ -48,7 +48,7 @@
     "hoist-non-react-statics": "^3.3.2",
     "html-webpack-plugin": "4.0.0-beta.11",
     "identity-obj-proxy": "3.0.0",
-    "immer": "^8.0.1",
+    "immer": "^9.0.6",
     "invariant": "^2.2.4",
     "ionicons": "^5.5.3",
     "jest": "24.9.0",
@@ -82,6 +82,7 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-toastify": "^7.0.4",
+    "react-tooltip": "^4.2.21",
     "redux": "^4.1.1",
     "redux-persist": "^6.0.0",
     "redux-saga": "^1.1.3",
