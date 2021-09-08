@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Avatar from 'src/components/Avatar';
 import DropDown from 'src/elements/arrows/DropDown';
 import DropUp from 'src/elements/arrows/DropUp';
-import { Trush } from 'src/elements/icons';
+import { Trush, WhiteTrush } from 'src/elements/icons';
 
 import style from './style.module.scss';
 
@@ -17,9 +17,15 @@ interface Props {
   users: UserType[];
   selectDID: (did: string) => void;
   removeUser: (did: string) => void;
+  openModal: () => void;
 }
 
-const SelectUser: React.FC<Props> = ({ users, selectDID, removeUser }) => {
+const SelectUser: React.FC<Props> = ({
+  users,
+  selectDID,
+  removeUser,
+  openModal
+}) => {
   const [selectedItem, setSelectedItem] = useState(users[0]);
   const [showItems, setShowItems] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -99,6 +105,25 @@ const SelectUser: React.FC<Props> = ({ users, selectDID, removeUser }) => {
             </div>
           </div>
         ))}
+
+        <div
+          onClick={() => {
+            setShowItems(false);
+            openModal();
+          }}
+          className={style['selectBox-items_row']}
+        >
+          <span className={style['clear-path']}>
+            <WhiteTrush />
+          </span>
+
+          <div>
+            <p className={style['name-clear']}>Clear All Data</p>
+            <p className={style['did']}>
+              This will clear all the data stored on this browser
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
