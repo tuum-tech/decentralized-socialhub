@@ -215,7 +215,6 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   useEffect(() => {
     (async () => {
       let didService = await DidService.getInstance();
-      debugger;
       setTuumHiveVersion(
         await HiveService.getHiveVersion(
           process.env.REACT_APP_TUUM_TECH_HIVE as string

@@ -22,6 +22,7 @@ import ProfileCompletion from './Right/ProfileCompletion';
 import VerificationStatus from './Right/VerificationStatus';
 import ProfileBriefCard from 'src/components/cards/ProfileBriefCard';
 import { hasCredentials } from 'src/utils/socialprofile';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 const LeftCardCol = styled(IonCol)`
   padding: 22px 16px;
@@ -34,7 +35,7 @@ const RightCardCol = styled(IonCol)`
 interface Props extends InferMappedProps {
   onTutorialStart: () => void;
   profile: ProfileDTO;
-  didDocument: any;
+  didDocument: DIDDocument;
   activeTab: (tab: string) => void;
   followerDids: string[];
   followingDids: string[];

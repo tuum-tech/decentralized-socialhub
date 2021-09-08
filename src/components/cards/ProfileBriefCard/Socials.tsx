@@ -66,7 +66,10 @@ const Socials: React.FC<Props> = ({ diddocument, cb }) => {
   }, [diddocument]);
 
   const createIonItem = (key: string, icon: any) => {
-    let vc = diddocument.selectCredentials(key, '')[0]; //  getVerifiedCredential(key, diddocument);
+    let vc = diddocument.selectCredentials(
+      `${diddocument.getSubject()}#${key}`,
+      'InternetAccountCredential'
+    )[0]; //  getVerifiedCredential(key, diddocument);
     if (!vc) return;
     return (
       <ProfileItem className={style['social-profile-item']}>
@@ -90,8 +93,13 @@ const Socials: React.FC<Props> = ({ diddocument, cb }) => {
 
   const containsVerifiedCredential = (id: string): boolean => {
     //return getVerifiedCredential(id, diddocument) !== undefined;
-
-    return diddocument.selectCredentials(id, '')[0] !== undefined;
+    if (diddocument === null) return false;
+    return (
+      diddocument.selectCredentials(
+        `${diddocument.getSubject()}#${id}`,
+        'InternetAccountCredential'
+      ).length > 0
+    );
   };
 
   return (
