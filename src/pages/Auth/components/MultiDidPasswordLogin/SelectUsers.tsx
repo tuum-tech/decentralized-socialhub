@@ -120,7 +120,7 @@ const SelectUser: React.FC<Props> = ({
           <div>
             <p className={style['name-clear']}>Clear All Data</p>
             <p className={style['did']}>
-              This will clear all the data stored on this browser
+              This will remove all your past login credentials from the site.
             </p>
           </div>
         </div>

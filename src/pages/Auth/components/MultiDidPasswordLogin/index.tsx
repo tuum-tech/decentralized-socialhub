@@ -200,7 +200,7 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
 
       <ClearStorageModal
         isOpen={showTutorial}
-        backdropDismiss={true}
+        backdropDismiss={false}
         cssClass={style['ClearStorageModal']}
       >
         <div className={style['tutorial-component']}>
@@ -209,12 +209,15 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
               <IonCol size="12">
                 <h2>Attention</h2>
                 <p>
-                  Do you really want to clear all application data from this
-                  browser. This action cannot be undone.
+                  This will remove all your past login credentials from the
+                  site. You will not lose any data in the process. You will have
+                  to relogin using the mnmonics. Do you still want to proceed?
                 </p>
                 <div className={style['tutorial-left-bottom']}>
                   <DefaultButton
                     onClick={() => {
+                      setShowTutorial(false);
+                      setLoading('Clearing browser data');
                       window.localStorage.clear();
                       window.location.reload();
                     }}
