@@ -202,7 +202,6 @@ const SocialProfilesCard: React.FC<Props> = ({
     if (!newLoginCred) {
       return;
     }
-
     if (key === 'google' && newLoginCred.google) {
       delete newLoginCred.google;
     } else if (key === 'facebook' && newLoginCred.facebook) {

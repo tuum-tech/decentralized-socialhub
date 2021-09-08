@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import DashboardHome from './Home';
 import DashboardStatus from './Status';
 import DashboardBadges from './Badges';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 const Container = styled.div`
   background: #f7fafc;
@@ -45,7 +46,7 @@ interface Props {
   onTutorialStart: () => void;
   profile: ProfileDTO;
   sessionItem: ISessionItem;
-  didDocument: any;
+  didDocument: DIDDocument;
   followerDids: string[];
   followingDids: string[];
   mutualDids: string[];

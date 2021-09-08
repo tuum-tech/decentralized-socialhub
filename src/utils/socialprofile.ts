@@ -1,4 +1,9 @@
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import {
+  DID,
+  DIDDocument,
+  VerifiableCredential
+} from '@elastosfoundation/did-js-sdk/';
+import { DidService } from 'src/services/did.service.new';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 
 interface VerifiedCredential {
@@ -84,28 +89,25 @@ export const checkLoginCredFromSession = async (
   };
 };
 
-export const hasCredentials = (diddocument: any) => {
-  let has = false;
+const hasCredential = (document: DIDDocument, key: string): boolean => {
   if (
-    diddocument &&
-    diddocument.verifiableCredential &&
-    diddocument.verifiableCredential.length > 0
-  ) {
-    for (let i = 0; i < diddocument.verifiableCredential.length; i++) {
-      if (diddocument.verifiableCredential[i].credentialSubject) {
-        const { credentialSubject } = diddocument.verifiableCredential[i];
-        if (
-          credentialSubject.google ||
-          credentialSubject.linkedin ||
-          credentialSubject.twitter ||
-          credentialSubject.facebook ||
-          credentialSubject.github ||
-          credentialSubject.discord
-        ) {
-          has = true;
-        }
-      }
-    }
-  }
-  return has;
+    document.selectCredentials(key.toLowerCase(), 'InternetAccountCredential')
+      .length > 0
+  )
+    return true;
+
+  return false;
+};
+
+export const hasCredentials = async (didDocument: DIDDocument) => {
+  if (didDocument === null) return false;
+
+  if (hasCredential(didDocument, 'google')) return true;
+  if (hasCredential(didDocument, 'linkedin')) return true;
+  if (hasCredential(didDocument, 'twitter')) return true;
+  if (hasCredential(didDocument, 'facebook')) return true;
+  if (hasCredential(didDocument, 'github')) return true;
+  if (hasCredential(didDocument, 'discord')) return true;
+
+  return false;
 };

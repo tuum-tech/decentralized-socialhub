@@ -80,10 +80,12 @@ const FacebookCallback: React.FC<PageProps> = ({
             new DID(props.session.did)
           );
 
-          await didService.addVerifiableCredentialToDIDDocument(
+          let documentWithFacebookCredential = await didService.addVerifiableCredentialToDIDDocument(
             didDocument,
             verifiableCredential
           );
+
+          await didService.storeDocument(documentWithFacebookCredential);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.facebook! = facebookId.name;

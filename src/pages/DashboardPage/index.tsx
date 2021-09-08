@@ -40,6 +40,7 @@ import OnBoarding from './components/OnBoarding';
 import DashboardHeader from './components/DashboardHeader';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service.new';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 const TutorialModal = styled(IonModal)`
   --border-radius: 16px;
@@ -62,7 +63,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
   const [loadingText, setLoadingText] = useState('');
 
   const [full_profile, setfull_profile] = useState(defaultFullProfile);
-  const [didDocument, setDidDocument] = useState<any>({});
+  const [didDocument, setDidDocument] = useState<DIDDocument | null>(null);
   const [publishStatus, setPublishStatus] = useState(RequestStatus.NotFound);
   const [onBoardVisible, setOnBoardVisible] = useState(false);
 
@@ -80,12 +81,11 @@ const ProfilePage: React.FC<InferMappedProps> = ({
     return () => clearTimeout(timer);
   };
 
+  let timer: NodeJS.Timeout;
   const setTimerForStatus = () => {
-    const timer = setTimeout(async () => {
+    timer = setInterval(async () => {
       await refreshStatus();
-      setTimerForStatus();
     }, 5000);
-    return () => clearTimeout(timer);
   };
 
   const refreshDidDocument = async () => {
@@ -111,6 +111,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
       setPublishStatus(actual.requestStatus);
 
       if (actual.requestStatus === RequestStatus.Completed) {
+        clearInterval(timer);
         AssistService.removePublishTask(props.session.did);
 
         let newSession = JSON.parse(JSON.stringify(props.session));
@@ -224,14 +225,9 @@ const ProfilePage: React.FC<InferMappedProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history.location.pathname]);
 
-  // let encoded_did_document = useMemo(() => JSON.stringify(didDocument), [
-  //   didDocument
-  // ]);
-
   useEffect(() => {
     (async () => {
-      //const _didDocument = JSON.parse(encoded_did_document);
-      if (didDocument) {
+      if (didDocument !== null) {
         if (props.session && props.session.did !== '') {
           let newSession = JSON.parse(JSON.stringify(props.session));
 
@@ -344,7 +340,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
                 }}
                 profile={full_profile}
                 sessionItem={session}
-                didDocument={didDocument}
+                didDocument={didDocument as DIDDocument}
                 followerDids={followerDids}
                 followingDids={followingDids}
                 mutualDids={mutualDids}
