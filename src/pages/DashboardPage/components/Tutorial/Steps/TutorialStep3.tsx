@@ -113,12 +113,14 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         props.session.mnemonics,
         endpoint
       );
-      let newSession = {
-        ...session,
-        userToken,
-        tutorialStep: 4,
-        hiveHost: endpoint
-      };
+      let newSession = JSON.parse(
+        JSON.stringify({
+          ...session,
+          userToken,
+          tutorialStep: 4,
+          hiveHost: endpoint
+        })
+      );
 
       if (
         selected !== 'tuum' &&
