@@ -103,11 +103,13 @@ const DidForm: React.FC<Props> = ({
 
   const signin = async () => {
     let didService = await DidService.getInstance();
+    const mnemonic = itemEls.current.map(el => {
+      return el.value;
+    });
+    if (mnemonic.length > 12) mnemonic.pop();
     let isMnemonicValid = didService.isMnemonicsValid(mnemonic.join(' '));
-    console.log(isMnemonicValid);
     setError(isMnemonicValid === false);
     if (isMnemonicValid) {
-      console.log(mnemonic);
       let userDid = await didService.loadDid(
         mnemonic.join(' '),
         passphrase || ''
