@@ -28,6 +28,9 @@ import { DidService } from 'src/services/did.service.new';
 import FooterLinks, {
   Footer
 } from 'src/components/layouts/OnBoardLayout/FooterLinks';
+import styled from 'styled-components';
+import { IonButton, IonCol, IonGrid, IonModal, IonRow } from '@ionic/react';
+import style from './style.module.scss';
 
 interface Props {
   changeMode: () => void;
@@ -35,6 +38,51 @@ interface Props {
   dids: Array<string>;
   removeUser: (did: string) => void;
 }
+
+const ClearStorageModal = styled(IonModal)`
+  --border-radius: 16px;
+  --min-height: 200px;
+  --height: 100%;
+  --width: 100%;
+  height: 100% !important;
+  width: 100% !important;
+  --background: transparent !important;
+  --box-shadow: none !important;
+`;
+const NoPaddingGrid = styled(IonGrid)`
+  padding: 0 !important;
+  overflow-y: auto !important;
+`;
+
+const DefaultButton = styled(IonButton)`
+  border-radius: 6px;
+  background-color: #4c6fff;
+  min-width: 80px;
+  text-align: center;
+  font: 'SF Pro Display';
+  text-transform: none;
+  letter-spacing: 0px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  --background: #4c6fff 0% 0% no-repeat padding-box;
+  --background-activated: #4c6fff 0% 0% no-repeat padding-box;
+  margin-top: 1em;
+
+  &:hover {
+    --background-hover: #4c6f00 0% 0% no-repeat padding-box;
+  }
+`;
+
+const SecondaryButton = styled(DefaultButton)`
+  background-color: #fffff;
+  --background: #fff 0% 0% no-repeat padding-box;
+  --background-activated: #fff 0% 0% no-repeat padding-box;
+  color: #000;
+  &:hover {
+    --background-hover: #e3e3e3 0% 0% no-repeat padding-box;
+  }
+`;
 
 const MultiDidPasswordLogin: React.FC<Props> = ({
   dids,
@@ -47,6 +95,7 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState('');
+  const [showTutorial, setShowTutorial] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -111,6 +160,9 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
               users={localUsers}
               selectDID={(did: string) => setDid(did)}
               removeUser={removeUser}
+              openModal={() => {
+                setShowTutorial(true);
+              }}
             />
           )}
           <TextInput
@@ -145,6 +197,46 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
           />
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
+
+      <ClearStorageModal
+        isOpen={showTutorial}
+        backdropDismiss={false}
+        cssClass={style['ClearStorageModal']}
+      >
+        <div className={style['tutorial-component']}>
+          <NoPaddingGrid>
+            <IonRow>
+              <IonCol size="12">
+                <h2>Attention</h2>
+                <p>
+                  This will remove all your past login credentials from the
+                  site. You will not lose any data in the process. You will have
+                  to relogin using the mnmonics. Do you still want to proceed?
+                </p>
+                <div className={style['tutorial-left-bottom']}>
+                  <DefaultButton
+                    onClick={() => {
+                      setShowTutorial(false);
+                      setLoading('Clearing browser data');
+                      window.localStorage.clear();
+                      window.location.reload();
+                    }}
+                  >
+                    Yes
+                  </DefaultButton>
+                  <SecondaryButton
+                    onClick={() => {
+                      setShowTutorial(false);
+                    }}
+                  >
+                    No
+                  </SecondaryButton>
+                </div>
+              </IonCol>
+            </IonRow>
+          </NoPaddingGrid>
+        </div>
+      </ClearStorageModal>
     </OnBoardLayout>
   );
 };
