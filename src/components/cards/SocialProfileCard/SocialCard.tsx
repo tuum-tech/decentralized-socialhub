@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   IonCardContent,
   IonCardHeader,
@@ -152,17 +152,16 @@ const SocialProfilesCard: React.FC<Props> = ({
     }
   };
 
-  const containsVerifiedCredential = (id: string): boolean => {
-    //let docParsed = await getParsedDoc();
-    const data = didDocument!.selectCredentials(
-      id,
-      'InternetAccountCredential'
-    );
-    console.log(data);
-    return (
-      didDocument!.selectCredentials(id, 'InternetAccountCredential').length > 0
-    );
-  };
+  const containsVerifiedCredential = useCallback(
+    (id: string): boolean => {
+      //let docParsed = await getParsedDoc();
+      return (
+        didDocument!.selectCredentials(id, 'InternetAccountCredential').length >
+        0
+      );
+    },
+    [didDocument]
+  );
 
   const getUrlFromService = (
     service: string,
@@ -239,51 +238,54 @@ const SocialProfilesCard: React.FC<Props> = ({
     // ===== temporary codes end =====
   };
 
-  const createIonItem = async (key: string, icon: any) => {
-    let vc = didDocument!.selectCredentials(
-      key,
-      'InternetAccountCredential'
-    )[0];
-    if (!vc) return <></>;
-    return (
-      <ProfileItem template={template}>
-        <div className="left">
-          <img alt="icon" src={icon} height={50} />
-          {(await vc.isValid()) && (
-            <img
-              alt="shield icon"
-              src={shieldIcon}
-              className="social-profile-badge"
-              height={15}
-            />
-          )}
-        </div>
-        <div className="right">
-          <p className="social-profile-network">
-            {key.replace(/^./, key[0].toUpperCase())}
-          </p>
-          {(key === 'facebook' || key === 'linkedin') && (
-            <span className="social-profile-id">
-              {parseValueFromService(key, vc)}
-            </span>
-          )}
-          {(key === 'google' ||
-            key === 'twitter' ||
-            key === 'github' ||
-            key === 'discord') && (
-            <a
-              href={getUrlFromService(key, vc)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="social-profile-id"
-            >
-              {parseValueFromService(key, vc)}
-            </a>
-          )}
-        </div>
-      </ProfileItem>
-    );
-  };
+  const createIonItem = useCallback(
+    async (key: string, icon: any) => {
+      let vc = didDocument!.selectCredentials(
+        key,
+        'InternetAccountCredential'
+      )[0];
+      if (!vc) return <></>;
+      return (
+        <ProfileItem template={template}>
+          <div className="left">
+            <img alt="icon" src={icon} height={50} />
+            {(await vc.isValid()) && (
+              <img
+                alt="shield icon"
+                src={shieldIcon}
+                className="social-profile-badge"
+                height={15}
+              />
+            )}
+          </div>
+          <div className="right">
+            <p className="social-profile-network">
+              {key.replace(/^./, key[0].toUpperCase())}
+            </p>
+            {(key === 'facebook' || key === 'linkedin') && (
+              <span className="social-profile-id">
+                {parseValueFromService(key, vc)}
+              </span>
+            )}
+            {(key === 'google' ||
+              key === 'twitter' ||
+              key === 'github' ||
+              key === 'discord') && (
+              <a
+                href={getUrlFromService(key, vc)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="social-profile-id"
+              >
+                {parseValueFromService(key, vc)}
+              </a>
+            )}
+          </div>
+        </ProfileItem>
+      );
+    },
+    [didDocument, template]
+  );
 
   const createModalIonItem = (key: string, icon: any) => {
     //let parsedDoc = await getParsedDoc();

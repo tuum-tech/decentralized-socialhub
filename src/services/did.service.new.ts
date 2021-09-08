@@ -277,13 +277,12 @@ export class DidService implements IDidService {
   }
 
   async publishDocument(didDocument: DIDDocument): Promise<void> {
-    let response: any = {};
     let adapter: any = {
       createIdTransaction: async (payload: any, memo: any) => {
         let request = JSON.parse(payload);
         let did = request.proof.verificationMethod;
         did = did.substring(0, did.indexOf('#'));
-        response = await AssistService.publishDocument(did, request);
+        await AssistService.publishDocument(did, request);
       }
     };
 
