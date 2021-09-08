@@ -1,10 +1,7 @@
 import React, { memo } from 'react';
+import { StaticContext, RouteComponentProps } from 'react-router';
 import { useHistory } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { createStructuredSelector } from 'reselect';
 import { DID } from '@elastosfoundation/elastos-connectivity-sdk-js';
-import { incrementAction, getSimpleAjax } from './actions';
 import { UserService } from 'src/services/user.service';
 import { DidService } from 'src/services/did.service.new';
 
@@ -25,22 +22,13 @@ import { SignInButton, Button } from 'src/elements/buttons';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import phone from 'src/assets/icon/phone.png';
-import injector from 'src/baseplate/injectorWrap';
 import { showNotify } from 'src/utils/notify';
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
 import style from './style.module.scss';
-import { NameSpace } from './constants';
-import reducer from './reducer';
-import saga from './saga';
-import { InferMappedProps, SubState } from './types';
 import FooterLinks, {
   Footer
 } from 'src/components/layouts/OnBoardLayout/FooterLinks';
 
-const SignQRPage: React.FC<InferMappedProps> = ({
-  eProps,
-  ...props
-}: InferMappedProps) => {
+const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
   /**
    * Direct method implementation without SAGA
    * This was to show you dont need to put everything to global state
@@ -150,39 +138,4 @@ const SignQRPage: React.FC<InferMappedProps> = ({
   );
 };
 
-/** @returns {object} Contains state props from selectors */
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg()
-});
-
-/** @returns {object} Contains dispatchable props */
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      // eProps - Emitter proptypes thats binds to dispatch
-      /** dispatch for counter to increment */
-      onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax())
-    }
-  };
-}
-
-/**
- * Injects prop and saga bindings done via
- * useInjectReducer & useInjectSaga
- */
-const withInjectedMode = injector(SignQRPage, {
-  key: NameSpace,
-  reducer,
-  saga
-});
-
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
-
-export default compose(
-  withConnect,
-  memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>;
-
-// export default Tab1;
+export default SignQRPage;
