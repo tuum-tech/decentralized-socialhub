@@ -302,7 +302,6 @@ export class DidService implements IDidService {
     if (diddocument.getProof()) {
       diddocument.proofs?.clear();
     }
-    debugger;
     let builder = DIDDocumentBuilder.newFromDocument(diddocument);
     return await builder
       .addCredential(vc)
