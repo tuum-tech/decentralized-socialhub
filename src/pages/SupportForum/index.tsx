@@ -27,12 +27,17 @@ const SupportForumPage: React.FC<any> = ({ eProps, ...props }: any) => {
   const [githubIssues, setGithubIssues] = useState<any[]>([]);
   const [githubIssue, setGithubIssue] = useState<any>(null);
 
+  const [isLoggedIn, setIsLoggedIn] = useState<string | null>(null);
+
   useEffect(() => {
     (async () => {
       const response: any = await fetchGithubIssues();
       if (response && response.data && response.data.length > 0) {
         setGithubIssues(response.data);
       }
+
+      const isLoggedIn = window.localStorage.getItem('isLoggedIn');
+      setIsLoggedIn(isLoggedIn);
     })();
   }, []);
 
@@ -47,7 +52,7 @@ const SupportForumPage: React.FC<any> = ({ eProps, ...props }: any) => {
 
   return (
     <Page>
-      <SignedPublicPageHeader userSession={props.session} />
+      <SignedPublicPageHeader userSession={isLoggedIn ? props.session : null} />
 
       {githubIssue ? (
         <Detail
