@@ -81,12 +81,11 @@ const ProfilePage: React.FC<InferMappedProps> = ({
     return () => clearTimeout(timer);
   };
 
+  let timer: NodeJS.Timeout;
   const setTimerForStatus = () => {
-    const timer = setTimeout(async () => {
+    timer = setInterval(async () => {
       await refreshStatus();
-      setTimerForStatus();
     }, 5000);
-    return () => clearTimeout(timer);
   };
 
   const refreshDidDocument = async () => {
@@ -112,6 +111,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
       setPublishStatus(actual.requestStatus);
 
       if (actual.requestStatus === RequestStatus.Completed) {
+        clearInterval(timer);
         AssistService.removePublishTask(props.session.did);
 
         let newSession = JSON.parse(JSON.stringify(props.session));
