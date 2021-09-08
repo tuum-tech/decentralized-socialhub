@@ -10,6 +10,7 @@ import {
 import style from './style.module.scss';
 interface AvatarProps {
   did: string;
+  didPublished?: boolean;
   width?: string;
   ready?: boolean;
 }
@@ -28,6 +29,7 @@ const ContentDiv = styled.div`
 
 const Avatar: React.FC<AvatarProps> = ({
   did = '',
+  didPublished = false,
   width = '86px',
   ready = false
 }: AvatarProps) => {
@@ -42,7 +44,7 @@ const Avatar: React.FC<AvatarProps> = ({
 
   const cn = ready
     ? style['border-primary']
-    : avatarInfo.didPublished
+    : avatarInfo.didPublished || didPublished
     ? style['border-primary']
     : style['border-danger'];
 
