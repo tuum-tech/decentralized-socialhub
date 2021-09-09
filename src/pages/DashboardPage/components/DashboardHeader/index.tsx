@@ -83,7 +83,12 @@ const DashboardHeader: React.FC<IProps> = ({
       <IonRow className={style['header']}>
         <IonCol size="auto">
           {sessionItem.did && sessionItem.did !== '' && (
-            <Avatar did={sessionItem.did} />
+            <Avatar
+              did={sessionItem.did}
+              didPublished={
+                sessionItem.isDIDPublished && sessionItem.tutorialStep === 4
+              }
+            />
           )}
         </IonCol>
         <IonCol size="8">
