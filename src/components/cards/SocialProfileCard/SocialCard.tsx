@@ -54,6 +54,7 @@ const SocialProfilesCard: React.FC<Props> = ({
 }) => {
   const [isManagerOpen, setIsManagerOpen] = useState(false);
   const [didDocument, setDidDocument] = useState<DIDDocument>(diddocument);
+  const [isRemoving, setIsRemoving] = useState<boolean>(false);
 
   let template = 'default';
   if (mode !== 'edit' && sessionItem.pageTemplate) {
@@ -182,8 +183,10 @@ const SocialProfilesCard: React.FC<Props> = ({
     return '';
   };
 
+  const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
   // TODO
   const removeVc = async (key: string) => {
+    setIsRemoving(true);
     let didService = await DidService.getInstance();
     let didFromStore = await didService.getStoredDocument(
       diddocument.getSubject()
@@ -197,8 +200,11 @@ const SocialProfilesCard: React.FC<Props> = ({
     didService.storeDocument(newDoc);
     setDidDocument(newDoc);
 
+    let userService = new UserService(didService);
+    let currentSession = await userService.SearchUserWithDID(sessionItem.did);
+
     // ===== temporary codes start =====
-    let newLoginCred = sessionItem!.loginCred;
+    let newLoginCred = currentSession!.loginCred;
     if (!newLoginCred) {
       return;
     }
@@ -220,11 +226,12 @@ const SocialProfilesCard: React.FC<Props> = ({
       loginCred: newLoginCred
     } as ISessionItem;
 
-    let userService = new UserService(await DidService.getInstance());
     setSession({
       session: await userService.updateSession(newUserSession)
     });
     // ===== temporary codes end =====
+
+    setIsRemoving(false);
   };
 
   const createIonItem = (key: string, icon: any) => {
@@ -302,6 +309,7 @@ const SocialProfilesCard: React.FC<Props> = ({
       <div className={style['manage-links-item']}>
         <ManagerLogo src={icon} />
         <ManagerButton
+          disabled={isRemoving}
           onClick={() => {
             removeVc(key);
           }}
@@ -453,6 +461,7 @@ const SocialProfilesCard: React.FC<Props> = ({
             <IonRow className="ion-justify-content-around">
               <IonCol size="auto">
                 <CloseButton
+                  disabled={isRemoving}
                   onClick={() => {
                     setIsManagerOpen(false);
                   }}
