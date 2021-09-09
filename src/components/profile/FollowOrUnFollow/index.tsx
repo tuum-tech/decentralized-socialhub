@@ -32,7 +32,10 @@ const FollowOrUnFollowButton: React.FC<IProps> = ({
 
   const loadData = async () => {
     try {
-      let following = await ProfileService.getFollowings(did, signedUser);
+      let following = await ProfileService.getFollowings(
+        signedUser.did,
+        signedUser
+      );
       if (
         following &&
         following.get_following &&
