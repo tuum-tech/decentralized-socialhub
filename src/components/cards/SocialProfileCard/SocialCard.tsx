@@ -200,8 +200,11 @@ const SocialProfilesCard: React.FC<Props> = ({
     didService.storeDocument(newDoc);
     setDidDocument(newDoc);
 
+    let userService = new UserService(didService);
+    let currentSession = await userService.SearchUserWithDID(sessionItem.did);
+
     // ===== temporary codes start =====
-    let newLoginCred = sessionItem!.loginCred;
+    let newLoginCred = currentSession!.loginCred;
     if (!newLoginCred) {
       return;
     }
@@ -223,7 +226,6 @@ const SocialProfilesCard: React.FC<Props> = ({
       loginCred: newLoginCred
     } as ISessionItem;
 
-    let userService = new UserService(didService);
     setSession({
       session: await userService.updateSession(newUserSession)
     });
