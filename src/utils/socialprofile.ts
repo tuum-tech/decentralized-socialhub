@@ -12,7 +12,7 @@ interface VerifiedCredential {
 }
 
 export const getParsedDoc = async (document: string): Promise<DIDDocument> => {
-  return await DIDDocument.parseContent(document);
+  return await DIDDocument.parseAsync(document);
 };
 
 export interface DidDocWithSessionSocial {

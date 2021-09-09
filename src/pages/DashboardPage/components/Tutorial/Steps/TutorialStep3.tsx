@@ -15,7 +15,7 @@ import { setSession } from 'src/store/users/actions';
 import style from '../style.module.scss';
 import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
-import { DID, DIDDocumentBuilder } from '@elastosfoundation/did-js-sdk/';
+import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 const VersionTag = styled.span`
   color: green;
@@ -133,7 +133,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         let document = await didService.getStoredDocument(
           new DID(props.session.did)
         );
-        let docBuilder = DIDDocumentBuilder.newFromDocument(document);
+        let docBuilder = DIDDocument.Builder.newFromDocument(document);
 
         docBuilder.addService('#HiveVault', 'HiveVault', endpoint);
         let signedDocument = await docBuilder.seal(
@@ -225,9 +225,9 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
 
       if (doc.getServices() && doc.getServices().length > 0) {
         setSelected('document');
-        setHiveDocument(doc.getServices()[0].endpoint);
+        setHiveDocument(doc.getServices()[0].serviceEndpoint);
         setDetectedHiveVersion(
-          await HiveService.getHiveVersion(doc.getServices()[0].endpoint)
+          await HiveService.getHiveVersion(doc.getServices()[0].serviceEndpoint)
         );
       }
     })();

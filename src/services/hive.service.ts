@@ -131,7 +131,7 @@ export class HiveService {
         delete vc.proof.created;
       });
 
-      let didDocumentFixed = await DIDDocument.parseContent(
+      let didDocumentFixed = await DIDDocument.parseAsync(
         JSON.stringify(docChallenge)
       );
       if (!didDocumentFixed.isValid) {

@@ -35,7 +35,6 @@ import {
 import {
   DID,
   DIDDocument,
-  DIDDocumentBuilder,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
 
@@ -188,7 +187,7 @@ const SocialProfilesCard: React.FC<Props> = ({
     let didFromStore = await didService.getStoredDocument(
       diddocument.getSubject()
     );
-    let builder = DIDDocumentBuilder.newFromDocument(didFromStore);
+    let builder = DIDDocument.Builder.newFromDocument(didFromStore);
     builder = builder.removeCredential(key);
     let newDoc = await builder.seal(
       process.env.REACT_APP_DID_STORE_PASSWORD as string
