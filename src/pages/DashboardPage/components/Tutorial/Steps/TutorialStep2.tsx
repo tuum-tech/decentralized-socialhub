@@ -102,7 +102,9 @@ const TutorialStep2Component: React.FC<ITutorialStepProp> = ({
         />
 
         <IonButton
-          onClick={onContinue}
+          onClick={() => {
+            onContinue();
+          }}
           className={style['tutorial-button']}
           disabled={!isValid}
         >

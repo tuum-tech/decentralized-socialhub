@@ -47,9 +47,11 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const nextStep = async () => {
+  const nextStep = async (session: ISessionItem | null = null) => {
     setLoading(true);
-    let newSession = JSON.parse(JSON.stringify(props.session));
+    let newSession = JSON.parse(
+      JSON.stringify(session ? session : props.session)
+    );
 
     if (step !== 4 && newSession) {
       newSession.tutorialStep = step + 1;

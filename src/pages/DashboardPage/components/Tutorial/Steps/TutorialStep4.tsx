@@ -31,7 +31,12 @@ const TutorialStep4Component: React.FC<ITutorialStepProp> = ({
         <b>Next steps:</b>&nbsp;You can now access your Profile Manager where
         you can start adding content to your profile.
       </p>
-      <IonButton onClick={onContinue} className={style['tutorial-button']}>
+      <IonButton
+        onClick={() => {
+          onContinue();
+        }}
+        className={style['tutorial-button']}
+      >
         Continue
       </IonButton>
     </div>

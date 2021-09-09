@@ -22,7 +22,7 @@ const VersionTag = styled.span`
 `;
 
 interface ITutorialStepProp extends InferMappedProps {
-  onContinue: () => void;
+  onContinue: (session?: ISessionItem) => void;
   setLoading?: (status: boolean) => void;
   session: ISessionItem;
 }
@@ -143,7 +143,6 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         didService.storeDocument(signedDocument);
         await didService.publishDocument(signedDocument);
       }
-
       let userService = new UserService(didService);
       const updatedSession = await userService.updateSession(newSession);
       eProps.setSession({ session: updatedSession });
@@ -180,7 +179,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         `temporary_activities_${newSession.did.replace('did:elastos:', '')}`
       );
 
-      props.onContinue();
+      props.onContinue(newSession);
     } catch (error) {
       await DidDocumentService.reloadUserDocument(props.session);
       setErrorMessage(
