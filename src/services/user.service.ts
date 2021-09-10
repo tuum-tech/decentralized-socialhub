@@ -12,6 +12,7 @@ import {
 import { ProfileService } from './profile.service';
 import {
   DIDDocument,
+  DIDDocumentBuilder,
   Exceptions,
   RootIdentity,
   VerifiableCredential
@@ -88,6 +89,32 @@ export class UserService {
       return documentWithCredentials;
     }
     return document;
+  };
+
+  updateCredential = async (
+    document: DIDDocument,
+    credentialType: CredentialType,
+    credentialValue: string
+  ): Promise<DIDDocument> => {
+    let verifiableCredential = await DidcredsService.generateVerifiableCredential(
+      document.getSubject().toString(),
+      credentialType,
+      credentialValue as string
+    );
+
+    let builder = DIDDocumentBuilder.newFromDocument(document);
+    if (
+      this.containsInternetAccountCredential(
+        document,
+        credentialType.toLowerCase() as string
+      )
+    ) {
+      builder = builder.removeCredential(credentialType.toLowerCase());
+    }
+
+    return builder
+      .addCredential(verifiableCredential)
+      .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
   };
 
   private async generateTemporaryDocument(
