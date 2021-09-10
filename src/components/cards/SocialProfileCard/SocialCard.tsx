@@ -148,7 +148,6 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const containsVerifiedCredential = (id: string): boolean => {
-    //let docParsed = await getParsedDoc();
     return (
       didDocument!.selectCredentials(id, 'InternetAccountCredential').length > 0
     );

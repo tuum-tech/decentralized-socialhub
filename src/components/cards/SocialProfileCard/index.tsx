@@ -125,10 +125,7 @@ const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
   //   })();
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
-  if (
-    (props.mode === 'edit' || document.getCredentialCount() > 0) &&
-    isLoaded
-  ) {
+  if (props.mode === 'edit' || document.getCredentialCount() > 0) {
     return (
       <SocialCard
         sessionItem={user}

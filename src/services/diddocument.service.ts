@@ -49,7 +49,6 @@ export class DidDocumentService {
     userSession: ISessionItem
   ): Promise<void> {
     let response: any = {};
-    debugger;
     let adapter: any = {
       createIdTransaction: async (payload: any, memo: any) => {
         let request = JSON.parse(payload);

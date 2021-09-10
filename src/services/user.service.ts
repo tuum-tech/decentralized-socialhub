@@ -45,6 +45,51 @@ export class UserService {
     return `user_${did.replace('did:elastos:', '')}`;
   }
 
+  hasOwnProperty<X extends {}, Y extends PropertyKey>(
+    obj: X,
+    prop: Y
+  ): obj is X & Record<Y, unknown> {
+    return obj.hasOwnProperty(prop);
+  }
+
+  containsInternetAccountCredential = (
+    document: DIDDocument,
+    id: string
+  ): boolean => {
+    return (
+      document.selectCredentials(id, 'InternetAccountCredential').length > 0
+    );
+  };
+
+  addCredentialIfInexistant = async (
+    credentialValue: any | undefined,
+    document: DIDDocument,
+    credentialType: CredentialType
+  ): Promise<DIDDocument> => {
+    if (credentialValue === undefined) return document;
+
+    if (
+      !this.containsInternetAccountCredential(
+        document,
+        credentialType as string
+      )
+    ) {
+      let verifiableCredential = await DidcredsService.generateVerifiableCredential(
+        document.getSubject().toString(),
+        credentialType,
+        credentialValue as string
+      );
+
+      let documentWithCredentials = await this.didService.addVerifiableCredentialToDIDDocument(
+        document,
+        verifiableCredential
+      );
+
+      return documentWithCredentials;
+    }
+    return document;
+  };
+
   private async generateTemporaryDocument(
     service: AccountType,
     credential: string,
@@ -70,50 +115,35 @@ export class UserService {
       nameCredential
     );
 
-    let verifiableCredential: VerifiableCredential;
-    if (loginCred.email) {
-      verifiableCredential = await DidcredsService.generateVerifiableCredential(
-        documentWithCredentials.getSubject().toString(),
-        CredentialType.Email,
-        loginCred.email
-      );
-    } else if (loginCred.google) {
-      verifiableCredential = await DidcredsService.generateVerifiableCredential(
-        documentWithCredentials.getSubject().toString(),
-        CredentialType.Google,
-        loginCred.google
-      );
-    } else if (loginCred.facebook) {
-      verifiableCredential = await DidcredsService.generateVerifiableCredential(
-        documentWithCredentials.getSubject().toString(),
-        CredentialType.Facebook,
-        loginCred.facebook
-      );
-    } else if (loginCred.github) {
-      verifiableCredential = await DidcredsService.generateVerifiableCredential(
-        documentWithCredentials.getSubject().toString(),
-        CredentialType.Github,
-        loginCred.github
-      );
-    } else if (loginCred.discord) {
-      verifiableCredential = await DidcredsService.generateVerifiableCredential(
-        documentWithCredentials.getSubject().toString(),
-        CredentialType.Discord,
-        loginCred.discord
-      );
-    } else if (loginCred.linkedin) {
-      verifiableCredential = await DidcredsService.generateVerifiableCredential(
-        documentWithCredentials.getSubject().toString(),
-        CredentialType.Linkedin,
-        loginCred.linkedin
-      );
-    } else {
-      throw new Error('User cannot be created without a login credential');
-    }
-
-    documentWithCredentials = await this.didService.addVerifiableCredentialToDIDDocument(
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.email,
       documentWithCredentials,
-      verifiableCredential
+      CredentialType.Email
+    );
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.google,
+      documentWithCredentials,
+      CredentialType.Google
+    );
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.facebook,
+      documentWithCredentials,
+      CredentialType.Facebook
+    );
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.linkedin,
+      documentWithCredentials,
+      CredentialType.Linkedin
+    );
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.discord,
+      documentWithCredentials,
+      CredentialType.Discord
+    );
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.github,
+      documentWithCredentials,
+      CredentialType.Github
     );
 
     this.didService.storeDocument(documentWithCredentials);
