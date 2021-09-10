@@ -23,7 +23,12 @@ const TutorialStep1Component: React.FC<ITutorialStepProp> = ({
         networking online begins. It's free and easy to setup!
       </p>
       {session.isDIDPublished ? (
-        <IonButton onClick={onContinue} className={style['tutorial-button']}>
+        <IonButton
+          onClick={() => {
+            onContinue();
+          }}
+          className={style['tutorial-button']}
+        >
           Continue
         </IonButton>
       ) : (

@@ -3,7 +3,6 @@ import {
   DID,
   DIDBackend,
   DIDDocument,
-  DIDDocumentBuilder,
   DIDStore,
   DIDURL,
   HDKey,
@@ -302,7 +301,7 @@ export class DidService implements IDidService {
     if (diddocument.getProof()) {
       diddocument.proofs?.clear();
     }
-    let builder = DIDDocumentBuilder.newFromDocument(diddocument);
+    let builder = DIDDocument.Builder.newFromDocument(diddocument);
     return await builder
       .addCredential(vc)
       .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
@@ -314,7 +313,7 @@ export class DidService implements IDidService {
     type: string,
     endpoint: string
   ): Promise<DIDDocument> {
-    let builder = DIDDocumentBuilder.newFromDocument(diddocument);
+    let builder = DIDDocument.Builder.newFromDocument(diddocument);
     builder.edit();
     let didUrl: DIDURL = DIDURL.from(`#${type}`, did) as DIDURL;
     builder.addService(didUrl, type, endpoint);

@@ -253,12 +253,20 @@ export class UserVaultScriptService {
   private static async generateUserToken(mnemonics: string, address: string) {
     let challenge = await HiveService.getHiveChallenge(address);
     let didService = await DidService.getInstance();
-    let presentation = await didService.generateVerifiablePresentationFromUserMnemonics(
-      mnemonics,
-      '',
-      challenge.issuer,
-      challenge.nonce
-    );
+    let presentation;
+    if (mnemonics) {
+      presentation = await didService.generateVerifiablePresentationFromUserMnemonics(
+        mnemonics,
+        '',
+        challenge.issuer,
+        challenge.nonce
+      );
+    } else {
+      presentation = await didService.generateVerifiablePresentationFromEssentialCred(
+        challenge.issuer,
+        challenge.nonce
+      );
+    }
     const userToken = await HiveService.getUserHiveToken(address, presentation);
     return userToken;
   }
@@ -293,15 +301,16 @@ export class UserVaultScriptService {
       }
 
       try {
-        let userToken = await this.generateUserToken(
-          newUser.mnemonics,
-          newUser.hiveHost
-        );
-        newUser.userToken = userToken;
+        if (!newUser.userToken) {
+          let userToken = await this.generateUserToken(
+            newUser.mnemonics,
+            newUser.hiveHost
+          );
+          newUser.userToken = userToken;
+        }
         let userService = new UserService(await DidService.getInstance());
         await userService.updateSession(newUser);
         let hiveInstance = await HiveService.getSessionInstance(newUser);
-
         await UserVaultScripts.Execute(hiveInstance!);
       } catch (error) {
         console.log('Could not register: ' + error);

@@ -37,9 +37,7 @@ export class DidcredsService {
     let response = await fetch(url, postData);
 
     let json = await response.json();
-    return await VerifiableCredential.parseContent(
-      json.data.verifiable_credential
-    );
+    return await VerifiableCredential.parse(json.data.verifiable_credential);
   }
 
   static async requestLinkedinLogin(): Promise<BaseplateResp> {
