@@ -12,7 +12,6 @@ import {
 import { ProfileService } from './profile.service';
 import {
   DIDDocument,
-  DIDDocumentBuilder,
   RootIdentity,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
@@ -101,7 +100,7 @@ export class UserService {
       credentialValue as string
     );
 
-    let builder = DIDDocumentBuilder.newFromDocument(document);
+    let builder = DIDDocument.Builder.newFromDocument(document);
     if (
       this.containsInternetAccountCredential(
         document,
