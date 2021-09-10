@@ -13,7 +13,6 @@ import { ProfileService } from './profile.service';
 import {
   DIDDocument,
   DIDDocumentBuilder,
-  Exceptions,
   RootIdentity,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';

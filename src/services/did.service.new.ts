@@ -137,9 +137,6 @@ export class DidService implements IDidService {
   };
 
   getPrivateKey = async (did: string): Promise<string> => {
-    // let buffer = await this.Store.loadPrivateKey(DIDURL.from("primary", new DID(did)) as DIDURL,"passw");
-    // return buffer.toString();
-
     let didDocument = await this.Store.loadDid(did);
     let privatekey = didDocument.derive(0, 'passw');
     return privatekey;
@@ -277,6 +274,7 @@ export class DidService implements IDidService {
   }
 
   async publishDocument(didDocument: DIDDocument): Promise<void> {
+    // eslint-disable-next-line
     let response: any = {};
     let adapter: any = {
       createIdTransaction: async (payload: any, memo: any) => {

@@ -1,9 +1,4 @@
-import {
-  DID,
-  DIDDocument,
-  VerifiableCredential
-} from '@elastosfoundation/did-js-sdk/';
-import { DidService } from 'src/services/did.service.new';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 
 interface VerifiedCredential {

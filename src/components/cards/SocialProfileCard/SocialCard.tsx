@@ -182,8 +182,6 @@ const SocialProfilesCard: React.FC<Props> = ({
     return '';
   };
 
-  const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
-  // TODO
   const removeVc = async (key: string) => {
     setIsRemoving(true);
     let didService = await DidService.getInstance();
