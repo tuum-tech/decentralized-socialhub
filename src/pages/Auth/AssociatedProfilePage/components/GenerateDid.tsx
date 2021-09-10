@@ -53,6 +53,7 @@ const GenerateDid: React.FC<Props> = ({
           ''
         );
         setLoading(false);
+
         afterPasswordSet(sessionItem);
         setStatus(1);
       }}

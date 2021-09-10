@@ -277,6 +277,7 @@ export class DidService implements IDidService {
   }
 
   async publishDocument(didDocument: DIDDocument): Promise<void> {
+    debugger;
     let response: any = {};
     let adapter: any = {
       createIdTransaction: async (payload: any, memo: any) => {

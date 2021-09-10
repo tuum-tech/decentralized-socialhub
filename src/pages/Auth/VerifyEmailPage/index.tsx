@@ -47,6 +47,7 @@ const VerifyEmailPage: React.FC<RouteComponentProps<MatchParams>> = (
         code
       )) as IVerifyCodeResponse;
       if (response.data.return_code === 'CODE_CONFIRMED') {
+        debugger;
         const { name, email, did } = response.data;
         setCredentials({
           did,
