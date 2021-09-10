@@ -223,7 +223,6 @@ let run = async () => {
         },
         update: {
           $set: {
-            'loginCred.email': '$params.email',
             status: 'WAITING_CONFIRMATION',
             code: '$params.code'
           }

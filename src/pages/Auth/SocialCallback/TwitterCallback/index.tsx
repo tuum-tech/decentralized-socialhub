@@ -104,7 +104,7 @@ const TwitterCallback: React.FC<PageProps> = ({
               {
                 guid: '',
                 did: newSession.did,
-                message: 'You received a Twitter verfication badge',
+                message: 'You received a Twitter verification badge',
                 read: false,
                 createdAt: 0,
                 updatedAt: 0

@@ -12,10 +12,12 @@ import {
 import { ProfileService } from './profile.service';
 import {
   DIDDocument,
+  DIDDocumentBuilder,
   RootIdentity,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
 import { IDidService } from './did.service.new';
+import { CredentialType, DidcredsService } from './didcreds.service';
 
 const CryptoJS = require('crypto-js');
 
@@ -43,11 +45,83 @@ export class UserService {
     return `user_${did.replace('did:elastos:', '')}`;
   }
 
+  hasOwnProperty<X extends {}, Y extends PropertyKey>(
+    obj: X,
+    prop: Y
+  ): obj is X & Record<Y, unknown> {
+    return obj.hasOwnProperty(prop);
+  }
+
+  containsInternetAccountCredential = (
+    document: DIDDocument,
+    id: string
+  ): boolean => {
+    return (
+      document.selectCredentials(id, 'InternetAccountCredential').length > 0
+    );
+  };
+
+  addCredentialIfInexistant = async (
+    credentialValue: any | undefined,
+    document: DIDDocument,
+    credentialType: CredentialType
+  ): Promise<DIDDocument> => {
+    if (credentialValue === undefined) return document;
+
+    if (
+      !this.containsInternetAccountCredential(
+        document,
+        credentialType as string
+      )
+    ) {
+      let verifiableCredential = await DidcredsService.generateVerifiableCredential(
+        document.getSubject().toString(),
+        credentialType,
+        credentialValue as string
+      );
+
+      let documentWithCredentials = await this.didService.addVerifiableCredentialToDIDDocument(
+        document,
+        verifiableCredential
+      );
+
+      return documentWithCredentials;
+    }
+    return document;
+  };
+
+  updateCredential = async (
+    document: DIDDocument,
+    credentialType: CredentialType,
+    credentialValue: string
+  ): Promise<DIDDocument> => {
+    let verifiableCredential = await DidcredsService.generateVerifiableCredential(
+      document.getSubject().toString(),
+      credentialType,
+      credentialValue as string
+    );
+
+    let builder = DIDDocumentBuilder.newFromDocument(document);
+    if (
+      this.containsInternetAccountCredential(
+        document,
+        credentialType.toLowerCase() as string
+      )
+    ) {
+      builder = builder.removeCredential(credentialType.toLowerCase());
+    }
+
+    return builder
+      .addCredential(verifiableCredential)
+      .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+  };
+
   private async generateTemporaryDocument(
     service: AccountType,
     credential: string,
     mnemonics: string,
-    name: string
+    name: string,
+    loginCred: LoginCred
   ): Promise<DIDDocument> {
     let rootIdentity: RootIdentity = this.didService.storeNewRootIdentity(
       mnemonics
@@ -62,17 +136,47 @@ export class UserService {
       name
     );
 
-    let documentWithNameCred = await this.didService.addVerifiableCredentialToDIDDocument(
+    let documentWithCredentials: DIDDocument = await this.didService.addVerifiableCredentialToDIDDocument(
       temporaryDocument,
       nameCredential
     );
 
-    this.didService.storeDocument(documentWithNameCred);
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.email,
+      documentWithCredentials,
+      CredentialType.Email
+    );
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.google,
+      documentWithCredentials,
+      CredentialType.Google
+    );
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.facebook,
+      documentWithCredentials,
+      CredentialType.Facebook
+    );
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.linkedin,
+      documentWithCredentials,
+      CredentialType.Linkedin
+    );
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.discord,
+      documentWithCredentials,
+      CredentialType.Discord
+    );
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.github,
+      documentWithCredentials,
+      CredentialType.Github
+    );
 
-    this.didService.publishDocument(documentWithNameCred);
+    this.didService.storeDocument(documentWithCredentials);
+    this.didService.publishDocument(documentWithCredentials);
 
     window.localStorage.setItem(
-      `temporary_${documentWithNameCred
+      `temporary_${documentWithCredentials
         .getSubject()
         .toString()
         .replace('did:elastos:', '')}`,
@@ -81,7 +185,7 @@ export class UserService {
       })
     );
 
-    return documentWithNameCred;
+    return documentWithCredentials;
   }
 
   public getTemporaryMnemonicFromDid(did: string) {
@@ -236,10 +340,12 @@ export class UserService {
         accountType,
         credential,
         mnemonics,
-        name
+        name,
+        loginCred
       );
       did = newDocument.getSubject().toString();
     }
+
     const passhash = CryptoJS.SHA256(did + storePassword).toString(
       CryptoJS.enc.Hex
     );

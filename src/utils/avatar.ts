@@ -1,6 +1,5 @@
 import { UserService } from '../services/user.service';
 import { DidService } from 'src/services/did.service.new';
-import { DidDocumentService } from 'src/services/diddocument.service';
 export interface AvatarInterface {
   didPublished: boolean;
   avatar: string;

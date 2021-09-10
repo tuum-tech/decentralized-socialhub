@@ -30,6 +30,8 @@ import { UserService } from 'src/services/user.service';
 import { requestEmailVerifyCode } from '../VerifyEmailPage/fetchapi';
 import style from './style.module.scss';
 import { DidService } from 'src/services/did.service.new';
+import { DID } from '@elastosfoundation/did-js-sdk/';
+import { CredentialType } from 'src/services/didcreds.service';
 
 const UpdateEmailPage: React.FC<any> = ({ eProps, ...props }: any) => {
   const { session } = props;
@@ -46,7 +48,20 @@ const UpdateEmailPage: React.FC<any> = ({ eProps, ...props }: any) => {
           session.loginCred.email = window.localStorage.getItem(
             `updated_email_${session.did.replace('did:elastos:', '')}`
           );
-          let userService = new UserService(await DidService.getInstance());
+
+          let didService = await DidService.getInstance();
+          let userService = new UserService(didService);
+
+          let didDocument = await didService.getStoredDocument(
+            new DID(session.did)
+          );
+          let updatedDoc = await userService.updateCredential(
+            didDocument,
+            CredentialType.Email,
+            session.loginCred.email
+          );
+          await didService.storeDocument(updatedDoc);
+
           eProps.setSession({
             session: await userService.updateSession(session)
           });
