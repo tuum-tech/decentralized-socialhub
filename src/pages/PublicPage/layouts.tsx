@@ -7,6 +7,7 @@ export const ContentRow = styled(IonRow)<ThemeProps>`
   background-color: ${({ template }: ThemeProps) =>
     getThemeData(template, 'container', 'backgroundColor')};
   padding: 16px;
+  min-height: 100%;
 `;
 
 export const Container = styled(IonPage)`
