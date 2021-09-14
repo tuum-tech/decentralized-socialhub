@@ -398,6 +398,7 @@ export class DidService implements IDidService {
     let vc = await vcBuilder
       .expirationDate(this.getExpirationDate())
       .type('AppIdCredential')
+      .properties({})
       .property('appDid', appDid.toString())
       .property('appInstanceDid', appDid.toString())
       .id(DIDURL.from('#app-id-credential', appDid) as DIDURL)
