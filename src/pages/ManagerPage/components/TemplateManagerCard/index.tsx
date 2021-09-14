@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   IonCardTitle,
   IonCardHeader,
@@ -14,6 +14,7 @@ import {
 } from '@ionic/react';
 import styled from 'styled-components';
 
+import { SmallLightButton } from 'src/elements/buttons';
 import { UserService } from 'src/services/user.service';
 import { ProfileName } from 'src/elements/texts';
 import Avatar from 'src/components/Avatar';
@@ -64,6 +65,9 @@ const TemplateManagerCard: React.FC<IProps> = ({
   sessionItem,
   updateSession
 }: IProps) => {
+  const [template, setTemplate] = useState(
+    sessionItem.pageTemplate || 'default'
+  );
   return (
     <IonCard className={styleWidget['overview']}>
       <IonCardHeader>
@@ -71,6 +75,27 @@ const TemplateManagerCard: React.FC<IProps> = ({
           <IonRow>
             <IonCol>
               <IonCardTitle>Profile Template Selection</IonCardTitle>
+            </IonCol>
+            <IonCol size="auto" className="ion-no-padding">
+              <SmallLightButton
+                onClick={async () => {
+                  if (sessionItem.pageTemplate !== template) {
+                    let userService = new UserService(
+                      await DidService.getInstance()
+                    );
+                    const newSession = await userService.updateSession(
+                      {
+                        ...sessionItem,
+                        pageTemplate: template
+                      },
+                      true
+                    );
+                    await updateSession({ session: newSession });
+                  }
+                }}
+              >
+                Save
+              </SmallLightButton>
             </IonCol>
           </IonRow>
         </IonGrid>
@@ -83,21 +108,9 @@ const TemplateManagerCard: React.FC<IProps> = ({
         </IonText>
         <Divider />
         <IonRadioGroup
-          value={sessionItem.pageTemplate || 'default'}
-          onIonChange={async e => {
-            const newSelected = e.detail.value;
-            if (!newSelected || newSelected === sessionItem.pageTemplate) {
-              return;
-            }
-            let userService = new UserService(await DidService.getInstance());
-            const newSession = await userService.updateSession(
-              {
-                ...sessionItem,
-                pageTemplate: e.detail.value
-              },
-              true
-            );
-            await updateSession({ session: newSession });
+          value={template}
+          onIonChange={e => {
+            setTemplate(e.detail.value);
           }}
         >
           <IonGrid>
