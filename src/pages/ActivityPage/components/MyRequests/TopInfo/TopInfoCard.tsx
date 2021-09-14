@@ -19,6 +19,9 @@ const TopInfoCardContainer = styled.div`
   .left {
     display: block;
     border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     width: 38px;
     height: 38px;
@@ -55,7 +58,9 @@ const TopInfoCard: React.FC<TopInfoCardProps> = ({
         style={{
           background: bgColor || '#1D1D1B'
         }}
-      ></div>
+      >
+        <img src={img} alt="info" />
+      </div>
       <div className="right">
         <p className="title">{title}</p>
         <p className="text"> {count}</p>

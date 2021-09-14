@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-import { TuumTechScriptService } from 'src/services/script.service';
 import UserRows from './UserRows';
 import { PageContainer, PageContent } from '../MyRequests';
 import TopInfo from '../MyRequests/TopInfo';
@@ -10,21 +9,11 @@ import SelectedVerificationContent, {
 
 interface Props {
   session: ISessionItem;
+  verifications: Verification[];
 }
 
-const MyRequests: React.FC<Props> = ({ session }: Props) => {
-  const [verifications, setVerifications] = useState<Verification[]>([]);
+const MyRequests: React.FC<Props> = ({ session, verifications }: Props) => {
   const [selectedVerification, setSelectVerification] = useState<any>(null);
-
-  useEffect(() => {
-    (async () => {
-      const requests_by_me: Verification[] = await TuumTechScriptService.getVerifications(
-        session.did,
-        false
-      );
-      setVerifications(requests_by_me);
-    })();
-  }, [session.did]);
 
   return (
     <PageContainer>

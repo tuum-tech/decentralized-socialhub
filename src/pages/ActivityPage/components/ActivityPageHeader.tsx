@@ -55,6 +55,8 @@ interface ActivityPageHeaderProps {
   active: string;
   setActive: (avtive: string) => void;
   newVerificationClicked: () => void;
+  myverifications: number;
+  verificationRequests: number;
 }
 
 const ActivityPageHeaderContainer = styled.div`
@@ -65,7 +67,9 @@ const ActivityPageHeaderContainer = styled.div`
 const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
   active,
   setActive,
-  newVerificationClicked
+  newVerificationClicked,
+  myverifications,
+  verificationRequests
 }) => {
   return (
     <ActivityPageHeaderContainer>
@@ -82,7 +86,9 @@ const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
           }
           onClick={() => setActive('myrequests')}
         >
-          <IonLabel className="tab-label">MyRequests</IonLabel>
+          <IonLabel className="tab-label">
+            MyRequests{myverifications > 0 && `(${myverifications})`}
+          </IonLabel>
         </IonItem>
         <IonItem
           className={
@@ -91,7 +97,10 @@ const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
           }
           onClick={() => setActive('verificationrequests')}
         >
-          <IonLabel className="tab-label">Verification Requests</IonLabel>
+          <IonLabel className="tab-label">
+            Verification Requests
+            {verificationRequests > 0 && `(${verificationRequests})`}
+          </IonLabel>
         </IonItem>
       </IonList>
       {active === 'myrequests' && (

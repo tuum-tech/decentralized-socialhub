@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { IonModal } from '@ionic/react';
 import { VerificationService } from 'src/services/verification.service';
-import { TuumTechScriptService } from 'src/services/script.service';
 
 import SelectedVerificationContent, {
   SelectedVerificationModal
@@ -37,15 +36,16 @@ interface Props {
   session: ISessionItem;
   closeNewVerificationModal: () => void;
   showNewVerificationModal: boolean;
+  verifications: Verification[];
 }
 
 const MyRequests: React.FC<Props> = ({
   session,
   closeNewVerificationModal,
-  showNewVerificationModal
+  showNewVerificationModal,
+  verifications
 }: Props) => {
   const [showSentModal, setShowSentModal] = useState(false);
-  const [verifications, setVerifications] = useState<Verification[]>([]);
   const [selectedVerification, setSelectVerification] = useState<any>(null);
 
   const sendReuqest = async (
@@ -57,16 +57,6 @@ const MyRequests: React.FC<Props> = ({
     closeNewVerificationModal();
     setShowSentModal(true);
   };
-
-  useEffect(() => {
-    (async () => {
-      const requests_by_me: Verification[] = await TuumTechScriptService.getVerifications(
-        session.did,
-        true
-      );
-      setVerifications(requests_by_me);
-    })();
-  }, [session.did]);
 
   return (
     <PageContainer>

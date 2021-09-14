@@ -7,6 +7,7 @@ import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
+import { TuumTechScriptService } from 'src/services/script.service';
 
 import ActivityTimeline from './components/ActivityTimeline';
 import VerificationRequests from './components/VerificationRequests';
@@ -24,7 +25,28 @@ const ActivityPage: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
-  const [active, setActive] = useState('verificationrequests'); // timeline or veificationrequests
+  const [active, setActive] = useState('timeline'); // timeline or veificationrequests
+  const [myverifications, setMyVerification] = useState<Verification[]>([]);
+  const [verificationRequests, setVerificationRequests] = useState<
+    Verification[]
+  >([]);
+
+  useEffect(() => {
+    (async () => {
+      const requests_by_me: Verification[] = await TuumTechScriptService.getVerifications(
+        props.session.did,
+        true
+      );
+      setMyVerification(requests_by_me);
+
+      const vRequests: Verification[] = await TuumTechScriptService.getVerifications(
+        props.session.did,
+        false
+      );
+      setVerificationRequests(vRequests);
+    })();
+  }, [props.session.did]);
+
   const [showNewVerificationModal, setShowNewVerificationModal] = useState(
     false
   );
@@ -50,6 +72,8 @@ const ActivityPage: React.FC<InferMappedProps> = ({
                   <ActivityPageHeader
                     active={active}
                     setActive={setActive}
+                    myverifications={myverifications.length}
+                    verificationRequests={verificationRequests.length}
                     newVerificationClicked={() =>
                       setShowNewVerificationModal(!showNewVerificationModal)
                     }
@@ -59,6 +83,7 @@ const ActivityPage: React.FC<InferMappedProps> = ({
                   )}
                   {active === 'myrequests' && (
                     <MyRequests
+                      verifications={myverifications}
                       session={props.session}
                       showNewVerificationModal={showNewVerificationModal}
                       closeNewVerificationModal={() =>
@@ -67,7 +92,10 @@ const ActivityPage: React.FC<InferMappedProps> = ({
                     />
                   )}
                   {active === 'verificationrequests' && (
-                    <VerificationRequests session={props.session} />
+                    <VerificationRequests
+                      session={props.session}
+                      verifications={verificationRequests}
+                    />
                   )}
                 </ActivityTabsContainer>
               </IonCol>

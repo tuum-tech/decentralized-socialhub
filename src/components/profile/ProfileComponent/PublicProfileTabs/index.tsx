@@ -34,7 +34,7 @@ export const TabsContainer = styled.div`
     color: #718096;
   }
   .tab-active {
-    --border-color: var(--theme-primary-blue);
+    --border-color: var(--theme-primary-blue) !important;
     color: ${({ template }: ThemeProps) =>
       getThemeData(template, 'card', 'cardTitle')};
   }
