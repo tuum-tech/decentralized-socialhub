@@ -281,28 +281,32 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
             </div>
           )}
 
-          <div className={style['tutorial-hive-row']}>
-            <IonRadio value="tuum"></IonRadio>
-            <div className={style['tutorial-hive-item']}>
-              <img alt="tuum logo" src={tuumlogo} />
-              <h2>Tuum Tech</h2>
-              <VersionTag>{tuumHiveVersion}</VersionTag>
-            </div>
-          </div>
-          <div className={style['tutorial-hive-row']}>
-            <IonRadio value="other"></IonRadio>
-            <IonInput
-              disabled={selected !== 'other'}
-              value={hiveUrl}
-              onIonChange={e => {
-                setWarningRead(false);
-                e.preventDefault();
-                sethiveUrl(e.detail.value!);
-                e.cancelBubble = true;
-              }}
-              placeholder="Enter your vault url"
-            ></IonInput>
-          </div>
+          {hiveDocument === '' && (
+            <>
+              <div className={style['tutorial-hive-row']}>
+                <IonRadio value="tuum"></IonRadio>
+                <div className={style['tutorial-hive-item']}>
+                  <img alt="tuum logo" src={tuumlogo} />
+                  <h2>Tuum Tech</h2>
+                  <VersionTag>{tuumHiveVersion}</VersionTag>
+                </div>
+              </div>
+              <div className={style['tutorial-hive-row']}>
+                <IonRadio value="other"></IonRadio>
+                <IonInput
+                  disabled={selected !== 'other'}
+                  value={hiveUrl}
+                  onIonChange={e => {
+                    setWarningRead(false);
+                    e.preventDefault();
+                    sethiveUrl(e.detail.value!);
+                    e.cancelBubble = true;
+                  }}
+                  placeholder="Enter your vault url"
+                ></IonInput>
+              </div>
+            </>
+          )}
         </IonRadioGroup>
       </div>
       {errorMessage !== '' && (
