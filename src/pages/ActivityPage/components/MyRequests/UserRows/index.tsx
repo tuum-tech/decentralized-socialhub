@@ -1,14 +1,47 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 
 import { SearchService } from 'src/services/search.service';
+import { getItemsFromData } from 'src/utils/script';
+import Avatar from 'src/components/Avatar';
+import { timeSince } from 'src/utils/time';
 import { SmallLightButton } from 'src/elements/buttons';
 
-import Avatar from 'src/components/Avatar';
-import { UserRow } from '../MyRequests/UserRows';
-import { getItemsFromData } from 'src/utils/script';
-import { timeSince } from 'src/utils/time';
+export const UserRow = styled.div`
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0px 3px 8px -1px rgba(50, 50, 71, 0.05);
+  filter: drop-shadow(0px 0px 1px rgba(12, 26, 75, 0.24));
 
-interface Props {
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  padding: 14px;
+
+  .left {
+    display: block;
+    margin-right: 20px;
+  }
+
+  .right {
+    display: block;
+
+    .top {
+      font-size: 16px;
+      line-height: 162.02%;
+      color: #425466;
+    }
+
+    .bottom {
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 162.02%;
+      color: #425466;
+    }
+  }
+`;
+
+export interface Props {
   session: ISessionItem;
   verifications: Verification[];
   setSelectVerification: (v: any) => void;
@@ -24,7 +57,7 @@ const UserRows: React.FC<Props> = ({
     (async () => {
       const searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
       let usersRes: any = await searchServiceLocal.getUsersByDIDs(
-        verifications.map(v => v.from_did),
+        verifications.map(v => v.to_did),
         verifications.length,
         0
       );
@@ -33,7 +66,7 @@ const UserRows: React.FC<Props> = ({
   }, [verifications]);
 
   const rednerUserRow = (v: Verification) => {
-    const user = users.filter((user: any) => user.did === v.from_did)[0];
+    const user = users.filter((user: any) => user.did === v.to_did)[0];
 
     let statusColor = '#FF5A5A';
     if (v.status === 'approved') {
@@ -42,14 +75,14 @@ const UserRows: React.FC<Props> = ({
       statusColor = '#FF9840';
     }
     return (
-      <UserRow key={v.from_did + v.to_did + v.status + v.category}>
+      <UserRow>
         <div className="left">
-          <Avatar did={v.from_did} width="50px" />
+          <Avatar did={v.to_did} width="50px" />
         </div>
         <div className="right">
           <p className="top">
-            {v.category} <span style={{ fontWeight: 'bold' }}>from </span>
-            {user ? user.name : v.from_did}
+            {v.category} <span style={{ fontWeight: 'bold' }}>sent to </span>
+            {user ? user.name : v.to_did}
           </p>
           <p className="bottom" style={{ display: 'flex' }}>
             {timeSince(new Date(v.updated_at))}

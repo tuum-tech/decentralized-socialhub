@@ -24,9 +24,9 @@ const ActivityPage: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
-  const [active, setActive] = useState('myrequests'); // timeline or veificationrequests
+  const [active, setActive] = useState('verificationrequests'); // timeline or veificationrequests
   const [showNewVerificationModal, setShowNewVerificationModal] = useState(
-    true
+    false
   );
 
   useEffect(() => {

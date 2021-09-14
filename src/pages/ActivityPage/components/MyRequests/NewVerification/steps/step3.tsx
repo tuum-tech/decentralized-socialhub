@@ -1,17 +1,36 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
+import { IonTextarea, IonCol, IonRow } from '@ionic/react';
 
 import arrowLeft from 'src/assets/icon/arrow-left-square.svg';
-import { SearchService } from 'src/services/search.service';
+import Avatar from 'src/components/Avatar';
+import Expander from 'src/elements/Expander';
 import { Container, NextButton } from './step1';
+
+const InfoTxt = styled.p`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 17px;
+  color: #425466;
+`;
 
 interface Props {
   selectedDids: string[];
   credentials: VerificationData[];
   onPrev: () => void;
+  sendRequest: () => void;
   session: ISessionItem;
 }
 
-const UsersView = ({ selectedDids, credentials, session, onPrev }: Props) => {
+const ReviewPage = ({
+  selectedDids,
+  credentials,
+  session,
+  onPrev,
+  sendRequest
+}: Props) => {
+  const [msg, setMsg] = useState('');
   return (
     <Container>
       <img
@@ -19,16 +38,49 @@ const UsersView = ({ selectedDids, credentials, session, onPrev }: Props) => {
         src={arrowLeft}
         alt="arrow-left"
         className="mb-1"
+        width="20px"
       />
-      <div className="title mb-2">Choose Verifiers</div>
+      <div className="title mb-2">Revuew request</div>
       <div className="intro mb-2" style={{ color: 'black' }}>
-        Select user(s) to verify your credentials
-        <span style={{ color: 'red' }}>(max 3 users)</span>
+        Please review the details from confirming the request
+      </div>
+      <div>
+        {credentials.map(c => (
+          <Expander title={c.category} cateogiries={c.records} />
+        ))}
       </div>
 
-      <NextButton onClick={() => {}}>Continue</NextButton>
+      <IonRow>
+        <IonCol size="5">
+          <InfoTxt>Seleceted Verifiers</InfoTxt>
+          <div style={{ display: 'flex' }}>
+            {selectedDids.map(did => (
+              <div className="mr-2">
+                <Avatar did={did} width="40px" />
+              </div>
+            ))}
+          </div>
+        </IonCol>
+
+        <IonCol size="7">
+          <InfoTxt>Message (Optional)</InfoTxt>
+          <IonTextarea
+            placeholder="Enter a message for the verifiers"
+            value={msg}
+            style={{
+              background: '#EDF2F7',
+              borderRadius: '8px'
+            }}
+            onIonChange={n => setMsg(n.detail.value!)}
+          />
+        </IonCol>
+      </IonRow>
+      <div className="intro mb-2" style={{ color: 'black' }}>
+        By continuing, you agree to the terms and community guidelines
+      </div>
+      <NextButton onClick={sendRequest}>Send Request</NextButton>
     </Container>
   );
 };
 
-export default UsersView;
+export default ReviewPage;

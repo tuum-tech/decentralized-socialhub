@@ -1,3 +1,5 @@
+import { TuumTechScriptService } from 'src/services/script.service';
+
 export enum VerificationStatus {
   requested = 'requested',
   verified = 'verified',
@@ -101,7 +103,7 @@ export class VerificationService {
   public generateExperienceVerificationData(items: ExperienceItem[]) {
     if (items.length > 0) {
       const data = [];
-      const category = 'Experience';
+
       for (let i = 0; i < items.length; i++) {
         const exp = items[i];
         const records = [];
@@ -137,5 +139,32 @@ export class VerificationService {
       return data;
     }
     return [];
+  }
+
+  public async sendRequest(
+    fromDid: string,
+    toDids: string[],
+    verificationData: VerificationData[]
+  ) {
+    try {
+      for (let i = 0; i < toDids.length; i++) {
+        for (let j = 0; j < verificationData.length; j++) {
+          await TuumTechScriptService.addVerificationRequest(
+            fromDid,
+            toDids[i],
+            verificationData[j]
+          );
+        }
+      }
+      return {
+        status: 'successed',
+        error: ''
+      };
+    } catch (e) {
+      return {
+        status: 'failed',
+        error: e
+      };
+    }
   }
 }

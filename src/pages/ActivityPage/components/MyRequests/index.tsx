@@ -1,16 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { IonRow, IonCol, IonModal } from '@ionic/react';
+import { IonModal } from '@ionic/react';
+import { VerificationService } from 'src/services/verification.service';
+import { TuumTechScriptService } from 'src/services/script.service';
 
+import SelectedVerificationContent, {
+  SelectedVerificationModal
+} from './SelectedVerification';
 import NewVerification from './NewVerification';
-import TopInfoCard from '../TopInfoCard';
+import SentModalContent, { SentModal } from './SentModal';
 import UserRows from './UserRows';
+import TopInfo from './TopInfo';
 
-const PageContainer = styled.div`
+export const PageContainer = styled.div`
   padding: 0 20px 20px 20px;
 `;
 
-const PageContent = styled.div`
+export const PageContent = styled.div`
   background: #ffffff;
   box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24),
     0px 3px 8px -1px rgba(50, 50, 71, 0.05);
@@ -38,31 +44,40 @@ const MyRequests: React.FC<Props> = ({
   closeNewVerificationModal,
   showNewVerificationModal
 }: Props) => {
-  const [showModal, setShowModal] = useState(false); // svID: selected verification ID
+  const [showSentModal, setShowSentModal] = useState(false);
+  const [verifications, setVerifications] = useState<Verification[]>([]);
+  const [selectedVerification, setSelectVerification] = useState<any>(null);
+
+  const sendReuqest = async (
+    dids: string[],
+    credentials: VerificationData[]
+  ) => {
+    const vService = new VerificationService();
+    await vService.sendRequest(session.did, dids, credentials);
+    closeNewVerificationModal();
+    setShowSentModal(true);
+  };
+
+  useEffect(() => {
+    (async () => {
+      const requests_by_me: Verification[] = await TuumTechScriptService.getVerifications(
+        session.did,
+        true
+      );
+      setVerifications(requests_by_me);
+    })();
+  }, [session.did]);
 
   return (
     <PageContainer>
-      <IonRow>
-        <IonCol>
-          <TopInfoCard
-            img=""
-            title="Total Requestss"
-            text="1.2K"
-            bgColor="#1D1D1B"
-          />
-        </IonCol>
-        <IonCol>
-          <TopInfoCard img="" title="Approved" text="1.2K" bgColor="#2FD5DD" />
-        </IonCol>
-        <IonCol>
-          <TopInfoCard img="" title="Pending" text="1.2K" bgColor="#FF9840" />
-        </IonCol>
-        <IonCol>
-          <TopInfoCard img="" title="Rejected" text="1.2K" bgColor="#FF5A5A" />
-        </IonCol>
-      </IonRow>
+      <TopInfo verificationStatus={verifications.map((v: any) => v.status)} />
+
       <PageContent>
-        <UserRows session={session} />
+        <UserRows
+          session={session}
+          verifications={verifications}
+          setSelectVerification={setSelectVerification}
+        />
       </PageContent>
       <NewVerificationModal
         isOpen={showNewVerificationModal}
@@ -73,8 +88,32 @@ const MyRequests: React.FC<Props> = ({
           session={session}
           onClose={closeNewVerificationModal}
           targetUser={session}
+          sendRequest={sendReuqest}
         />
       </NewVerificationModal>
+
+      <SentModal
+        isOpen={showSentModal}
+        cssClass="my-custom-class"
+        backdropDismiss={false}
+      >
+        <SentModalContent
+          onClose={() => {
+            setShowSentModal(false);
+          }}
+        />
+      </SentModal>
+      <SelectedVerificationModal
+        isOpen={selectedVerification !== null}
+        onDidDismiss={() => setSelectVerification(null)}
+      >
+        {selectedVerification !== null && (
+          <SelectedVerificationContent
+            verification={selectedVerification.verification}
+            user={selectedVerification.user}
+          />
+        )}
+      </SelectedVerificationModal>
     </PageContainer>
   );
 };

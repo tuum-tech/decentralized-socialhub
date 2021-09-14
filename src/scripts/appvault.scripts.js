@@ -118,7 +118,8 @@ let run = async () => {
           to_did: '$params.to_did',
           updated_at: '$params.updated_at',
           status: 'requested',
-          data: '$params.data'
+          category: '$params.category', // personal info
+          records: '$params.records'
         }
       }
     }
@@ -136,13 +137,54 @@ let run = async () => {
         filter: {
           from_did: '$params.from_did',
           to_did: '$params.to_did',
-          updated_at: '$params.updated_at'
+          updated_at: '$params.updated_at',
+          category: '$params.category'
         },
         update: {
           $set: {
             status: '$params.status',
-            updated_at: '$params.verified_at'
+            updated_at: '$params.new_updated_at'
           }
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'get_requests_to_me',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_requests_to_me',
+      output: true,
+      body: {
+        collection: 'verifications',
+        filter: {
+          to_did: '$params.did'
+        },
+        options: {
+          limit: '$params.limit',
+          skip: '$params.skip'
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'get_requests_by_me',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_requests_by_me',
+      output: true,
+      body: {
+        collection: 'verifications',
+        filter: {
+          from_did: '$params.did'
+        },
+        options: {
+          limit: '$params.limit',
+          skip: '$params.skip'
         }
       }
     }

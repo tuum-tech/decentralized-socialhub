@@ -11,6 +11,9 @@ import style from '../../../../../Auth/components/MultiDidPasswordLogin/style.mo
 export const Container = styled.div`
   position: relative;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   .title {
     font-weight: 600;
@@ -29,7 +32,6 @@ export const Container = styled.div`
 export const NextButton = styled.button`
   padding: 0px 20px;
 
-  position: absolute;
   width: 296px;
   height: 36px;
   line-height: 36px;
@@ -76,65 +78,76 @@ const CredentialView = ({
 
   return (
     <Container>
-      <p className="title">Choose Credentials</p>
-      <p>Please select one record per request</p>
+      <div>
+        <p className="title">Choose Credentials</p>
+        <p>Please select one record per request</p>
 
-      <div className={style['selectBox-box']} ref={wrapperRef}>
-        <div
-          className={style['selectBox-container']}
-          style={{
-            borderBottomLeftRadius: showItems ? '0' : '6px',
-            borderBottomRightRadius: showItems ? '0' : '6px'
-          }}
-        >
+        <div className={style['selectBox-box']} ref={wrapperRef}>
           <div
-            className={style['selectBox-selected-item']}
-            onClick={() => setShowItems(!showItems)}
+            className={style['selectBox-container']}
+            style={{
+              borderBottomLeftRadius: showItems ? '0' : '6px',
+              borderBottomRightRadius: showItems ? '0' : '6px'
+            }}
           >
-            <div>{selectedItem.category}</div>
-            <div className={style['selectBox-arrow']}>
-              {showItems ? <DropUp /> : <DropDown />}
+            <div
+              className={style['selectBox-selected-item']}
+              onClick={() => setShowItems(!showItems)}
+            >
+              <div>{selectedItem.category}</div>
+              <div className={style['selectBox-arrow']}>
+                {showItems ? <DropUp /> : <DropDown />}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div
-          style={{ display: showItems ? 'block' : 'none' }}
-          className={style['selectBox-items']}
-        >
-          {categories.map((cate: VerificationData) => (
-            <div
-              key={cate.category}
-              onClick={() => {
-                if (selectedCategoreis.includes(cate.category)) {
-                  setCredentials(
-                    credentials.filter(c => c.category !== cate.category)
-                  );
-                } else {
-                  setCredentials(credentials.concat([cate]));
-                }
-                setSelectedItem(cate);
-                setShowItems(false);
-              }}
-              className={style['selectBox-items_row']}
-              style={{
-                justifyContent: 'space-between'
-              }}
-            >
-              <div>{cate.category}</div>
-              <img
-                src={
-                  selectedCategoreis.includes(cate.category)
-                    ? CheckFill
-                    : CheckEmpty
-                }
-                alt="check"
-              />
-            </div>
-          ))}
+          <div
+            style={{ display: showItems ? 'block' : 'none' }}
+            className={style['selectBox-items']}
+          >
+            {categories.map((cate: VerificationData) => (
+              <div
+                key={cate.category}
+                onClick={() => {
+                  if (selectedCategoreis.includes(cate.category)) {
+                    setCredentials(
+                      credentials.filter(c => c.category !== cate.category)
+                    );
+                  } else {
+                    setCredentials(credentials.concat([cate]));
+                  }
+                  setSelectedItem(cate);
+                  setShowItems(false);
+                }}
+                className={style['selectBox-items_row']}
+                style={{
+                  justifyContent: 'space-between'
+                }}
+              >
+                <div>{cate.category}</div>
+                <img
+                  src={
+                    selectedCategoreis.includes(cate.category)
+                      ? CheckFill
+                      : CheckEmpty
+                  }
+                  alt="check"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-      <NextButton onClick={onNext}>Next</NextButton>
+
+      <NextButton
+        disabled={selectedCategoreis.length === 0}
+        style={{
+          cursor: selectedCategoreis.length === 0 ? 'not-allowed' : 'pointer'
+        }}
+        onClick={onNext}
+      >
+        Next
+      </NextButton>
     </Container>
   );
 };

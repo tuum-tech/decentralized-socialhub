@@ -163,6 +163,7 @@ const UsersView = ({
         src={arrowLeft}
         alt="arrow-left"
         className="mb-1"
+        width="20px"
       />
       <div className="title mb-2">Choose Verifiers</div>
       <div className="intro mb-2" style={{ color: 'black' }}>
@@ -195,7 +196,7 @@ const UsersView = ({
                         sDid => sDid !== did
                       );
                       updateSelectedUserDids(newSelectedDids);
-                    } else {
+                    } else if (selectedDids.length < 3) {
                       const newSelectedDids = selectedDids.concat(did);
                       updateSelectedUserDids(newSelectedDids);
                     }
@@ -208,7 +209,15 @@ const UsersView = ({
           )}
         </div>
       </UsersContainer>
-      <NextButton onClick={onNext}>Continue</NextButton>
+      <NextButton
+        style={{
+          cursor: selectedDids.length === 0 ? 'not-allowed' : 'pointer'
+        }}
+        onClick={onNext}
+        disabled={selectedDids.length === 0}
+      >
+        Continue
+      </NextButton>
     </Container>
   );
 };

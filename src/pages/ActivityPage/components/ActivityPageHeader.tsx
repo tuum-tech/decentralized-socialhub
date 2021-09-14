@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { IonList, IonLabel, IonItem } from '@ionic/react';
 import styled from 'styled-components';
 
@@ -91,7 +91,7 @@ const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
           }
           onClick={() => setActive('verificationrequests')}
         >
-          <IonLabel className="tab-label">Badges</IonLabel>
+          <IonLabel className="tab-label">Verification Requests</IonLabel>
         </IonItem>
       </IonList>
       {active === 'myrequests' && (

@@ -6,6 +6,7 @@ import { VerificationService } from 'src/services/verification.service';
 import { ProfileService } from 'src/services/profile.service';
 import UsersView from './steps/step2';
 import CredentialView from './steps/step1';
+import ReviewPage from './steps/step3';
 import style from './style.module.scss';
 import shield from '../../../../../assets/icon/shield.png';
 
@@ -13,14 +14,16 @@ interface Props {
   session: ISessionItem;
   targetUser: ISessionItem;
   onClose: () => void;
+  sendRequest: (dids: string[], credentials: VerificationData[]) => void;
 }
 
 const NewVerificationModal: React.FC<Props> = ({
   session,
   onClose,
-  targetUser
+  targetUser,
+  sendRequest
 }: Props) => {
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(1);
   const [categories, setCateogries] = useState<VerificationData[]>([]);
   const [credentials, setCredentials] = useState<VerificationData[]>([]);
   const [selectedDids, setSelectedDids] = useState<string[]>([]);
@@ -66,6 +69,17 @@ const NewVerificationModal: React.FC<Props> = ({
           session={session}
           selectedDids={selectedDids}
           updateSelectedUserDids={setSelectedDids}
+        />
+      );
+    }
+    if (step === 3) {
+      return (
+        <ReviewPage
+          selectedDids={selectedDids}
+          credentials={credentials}
+          session={session}
+          onPrev={() => setStep(2)}
+          sendRequest={() => sendRequest(selectedDids, credentials)}
         />
       );
     }

@@ -27,6 +27,18 @@ interface VerificationData {
   }[];
 }
 
+interface Verification {
+  from_did: string;
+  to_did: string;
+  updated_at: Date;
+  category: string;
+  status: string;
+  records: {
+    field: string;
+    value: string;
+  }[];
+}
+
 interface ExperienceDTO {
   isEnabled: boolean;
   items: ExperienceItem[];
