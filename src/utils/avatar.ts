@@ -49,7 +49,7 @@ export const getAvatarIfno = async (did: string): Promise<AvatarInterface> => {
   //   }
   // } else
 
-  if (tuumUser.avatar) {
+  if (tuumUser && tuumUser.avatar) {
     res.type = 'vault';
     res.avatar = tuumUser.avatar;
   }
