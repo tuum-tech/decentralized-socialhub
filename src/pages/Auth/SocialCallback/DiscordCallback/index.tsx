@@ -69,6 +69,8 @@ const DiscordCallback: React.FC<PageProps> = ({
             discord
           );
 
+          console.log(verifiableCredential);
+
           if (props.session.mnemonics === '') {
             let essentialsService = new EssentialsService(didService);
             await essentialsService.addVerifiableCredentialEssentials(

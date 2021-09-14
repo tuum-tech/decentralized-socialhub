@@ -301,6 +301,8 @@ const SocialProfilesCard: React.FC<Props> = ({
     if (key === 'github') header = 'Github Account';
     if (key === 'discord') header = 'Discord Account';
 
+    let isEssentials = sessionItem.mnemonics === '';
+
     if (!vc)
       return (
         <div className={style['manage-links-item']}>
@@ -320,7 +322,7 @@ const SocialProfilesCard: React.FC<Props> = ({
       <div className={style['manage-links-item']}>
         <ManagerLogo src={icon} />
         <ManagerButton
-          disabled={isRemoving}
+          disabled={isRemoving || isEssentials}
           onClick={() => {
             removeVc(key);
           }}

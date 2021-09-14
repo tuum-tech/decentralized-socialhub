@@ -12,12 +12,17 @@ export class EssentialsService {
   addVerifiableCredentialEssentials = async (vc: VerifiableCredential) => {
     let cn = connectivity.getActiveConnector();
 
-    let response = await cn?.importCredentials([vc], {
+    await cn?.importCredentials([vc], {
       forceToPublishCredentials: true
     });
 
-    if (response?.length! > 0) {
-      this.DidService.Store.synchronize();
-    }
+    let document = await this.DidService.getDidDocument(
+      vc.getId().getDid(),
+      false
+    );
+
+    await this.DidService.storeDocument(document);
+
+    this.DidService.Store.synchronize();
   };
 }
