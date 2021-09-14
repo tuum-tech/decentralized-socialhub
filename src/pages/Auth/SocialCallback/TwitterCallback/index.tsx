@@ -29,6 +29,7 @@ import { AccountType, UserService } from 'src/services/user.service';
 
 import { requestTwitterToken, getUsersWithRegisteredTwitter } from './fetchapi';
 import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { EssentialsService } from 'src/services/essentials.service';
 
 interface PageProps
   extends InferMappedProps,
@@ -85,16 +86,23 @@ const TwitterCallback: React.FC<PageProps> = ({
             items[1].toString()
           );
 
-          let didDocument: DIDDocument = await didService.getStoredDocument(
-            new DID(props.session.did)
-          );
+          if (props.session.mnemonics === '') {
+            let essentialsService = new EssentialsService(didService);
+            await essentialsService.addVerifiableCredentialEssentials(
+              verifiableCredential
+            );
+          } else {
+            let didDocument: DIDDocument = await didService.getStoredDocument(
+              new DID(props.session.did)
+            );
 
-          let documentWithTwitterCredential = await didService.addVerifiableCredentialToDIDDocument(
-            didDocument,
-            verifiableCredential
-          );
+            let documentWithTwitterCredential = await didService.addVerifiableCredentialToDIDDocument(
+              didDocument,
+              verifiableCredential
+            );
 
-          await didService.storeDocument(documentWithTwitterCredential);
+            await didService.storeDocument(documentWithTwitterCredential);
+          }
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.twitter! = items[1].toString();

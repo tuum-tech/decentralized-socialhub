@@ -31,6 +31,7 @@ import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidService } from 'src/services/did.service.new';
 import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { EssentialsService } from 'src/services/essentials.service';
 
 interface PageProps
   extends InferMappedProps,
@@ -53,6 +54,7 @@ const GoogleCallback: React.FC<PageProps> = ({
     },
     name: ''
   });
+
   const getToken = async (
     code: string,
     state: string
@@ -79,16 +81,24 @@ const GoogleCallback: React.FC<PageProps> = ({
             CredentialType.Google,
             googleId.email
           );
+          if (props.session.mnemonics === '') {
+            let essentialsService = new EssentialsService(didService);
+            await essentialsService.addVerifiableCredentialEssentials(
+              verifiableCredential
+            );
+          } else {
+            let didDocument: DIDDocument = await didService.getStoredDocument(
+              new DID(props.session.did)
+            );
 
-          let didDocument: DIDDocument = await didService.getStoredDocument(
-            new DID(props.session.did)
-          );
+            let documentWithGoogleCredential = await didService.addVerifiableCredentialToDIDDocument(
+              didDocument,
+              verifiableCredential
+            );
+            await didService.storeDocument(documentWithGoogleCredential);
 
-          let documentWithGoogleCredential = await didService.addVerifiableCredentialToDIDDocument(
-            didDocument,
-            verifiableCredential
-          );
-          await didService.storeDocument(documentWithGoogleCredential);
+            await didService.publishDocument(documentWithGoogleCredential);
+          }
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.google! = googleId.email;

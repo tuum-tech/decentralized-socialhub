@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { StaticContext, RouteComponentProps } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import { DID } from '@elastosfoundation/elastos-connectivity-sdk-js';
