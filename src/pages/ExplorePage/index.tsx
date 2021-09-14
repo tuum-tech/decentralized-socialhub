@@ -184,7 +184,7 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
                 </Header>
                 <IonContent
                   style={{
-                    height: 'calc(100% - 83px'
+                    height: 'calc(100% - 83px)'
                   }}
                   ref={contentRef}
                   scrollEvents={true}

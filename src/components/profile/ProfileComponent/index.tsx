@@ -18,6 +18,7 @@ import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 const GridContent = styled(IonGrid)<ThemeProps>`
   width: 100%;
+  min-height: 600px;
   z-index: 100;
   background-color: ${({ template }: ThemeProps) =>
     getThemeData(template, 'gridContent', 'backgroundColor')};
@@ -80,6 +81,7 @@ const ProfileComponent: React.FC<Props> = ({
     : !publicUserProfile.basicDTO.isEnabled
     ? 'This profile is not visible'
     : '';
+  const template = publicUser.pageTemplate || 'default';
 
   return (
     <>
@@ -92,11 +94,13 @@ const ProfileComponent: React.FC<Props> = ({
         publicUser.did !== '' &&
         publicUserProfile.basicDTO.isEnabled === true && (
           <>
-            <PublicProfileTabs
-              template={publicUser.pageTemplate}
-              scrollToPosition={scrollToElement}
-            />
-            <GridContent template={publicUser.pageTemplate || 'default'}>
+            {template === 'default' && (
+              <PublicProfileTabs
+                template={template}
+                scrollToPosition={scrollToElement}
+              />
+            )}
+            <GridContent template={template}>
               <IonRow className="ion-justify-content-center">
                 <IonCol size="12">
                   <IonGrid>
@@ -117,7 +121,7 @@ const ProfileComponent: React.FC<Props> = ({
                               experienceDTO={publicUserProfile.experienceDTO}
                               isEditable={false}
                               isPublicPage={true}
-                              template={publicUser.pageTemplate || 'default'}
+                              template={template}
                             />
                           )}
                         </div>
@@ -127,7 +131,7 @@ const ProfileComponent: React.FC<Props> = ({
                               educationDTO={publicUserProfile.educationDTO}
                               isEditable={false}
                               isPublicPage={true}
-                              template={publicUser.pageTemplate || 'default'}
+                              template={template}
                             />
                           )}
                         </div>
@@ -150,7 +154,7 @@ const ProfileComponent: React.FC<Props> = ({
                           followingDids={followingDids}
                           mutualDids={mutualDids}
                           signed={userSession.did !== ''}
-                          template={publicUser.pageTemplate || 'default'}
+                          template={template}
                           viewAll={(ctype: FollowType) => {
                             if (viewAllClicked) viewAllClicked(ctype);
                           }}
@@ -158,7 +162,7 @@ const ProfileComponent: React.FC<Props> = ({
                         {publicFields.includes('badge') && (
                           <BadgeCard
                             badges={publicUser.badges}
-                            template={publicUser.pageTemplate || 'default'}
+                            template={template}
                           />
                         )}
                       </RightContent>

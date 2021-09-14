@@ -1,71 +1,30 @@
 import React from 'react';
-import { IonGrid, IonRow, IonCol } from '@ionic/react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
 
-import DidSnippet from 'src/elements/DidSnippet';
-import { ProfileName } from 'src/elements/texts';
-import { FollowButton } from 'src/elements/buttons';
-import Avatar from 'src/components/Avatar';
+import Default from './Default';
+import Crypto from './Crypto';
+import Gamer from './Gamer';
+import Education from './Education';
+import Soccer from './Soccer';
 
-import FollowOrUnFollowButton from '../../FollowOrUnFollow';
-import defaultCoverPhoto from 'src/assets/default-cover.png';
+import defaultCoverPhoto from '../../../../assets/cover/default-cover.png';
+import soccerCoverPhoto from '../../../../assets/cover/soccer-cover.png';
+import gamerCoverPhoto from '../../../../assets/cover/gamer-cover.png';
+import cryptoCoverPhoto from '../../../../assets/cover/crypto-cover.png';
 
-const HeaderContainer = styled(IonGrid)`
-  background-color: white;
-`;
-
-const Banner = styled.div<{ bgImg: string }>`
-  display: flex;
-  top: 0px;
-  height: 176px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-
-  font-family: 'SF Pro Display';
-  font-size: 56px;
-  font-weight: bold;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1;
-  letter-spacing: normal;
-  text-align: left;
-  color: #ffffff;
-  box-shadow: 0px 3px 3px #00000005;
-
-  margin-top: 0px;
-  width: 100%;
-  padding-bottom: 2px;
-
-  background: #fff;
-  background-image: url(${props => props.bgImg});
-  background-repeat: no-repeat, no-repeat;
-  background-position: 0 0;
-  background-size: 100% 100%;
-`;
-
-const Header = styled(IonRow)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 13px 32px;
-  img {
-    margin: 0;
-    display: block;
+export const getCoverPhoto = (user: ISessionItem) => {
+  if (user.coverPhoto && user.coverPhoto !== '') {
+    return user.coverPhoto;
   }
-`;
-
-const Buttons = styled.div`
-  display: flex;
-  width: 110px;
-`;
-
-const Info = styled.div`
-  flex-grow: 1;
-  padding: 0 10px;
-`;
+  const template = user.pageTemplate || 'default';
+  if (template === 'soccer' || template === 'education') {
+    return soccerCoverPhoto;
+  } else if (template === 'gamer') {
+    return gamerCoverPhoto;
+  } else if (template === 'crypto') {
+    return cryptoCoverPhoto;
+  }
+  return defaultCoverPhoto;
+};
 
 interface IProps {
   user: ISessionItem;
@@ -78,50 +37,28 @@ const ProfileHeader: React.FC<IProps> = ({
   signedUser,
   onlyText = ''
 }: IProps) => {
-  return (
-    <HeaderContainer className="ion-no-padding">
-      <Banner
-        bgImg={
-          user.coverPhoto && user.coverPhoto !== ''
-            ? user.coverPhoto
-            : defaultCoverPhoto
-        }
-      />
-      <Header class="ion-justify-content-center ion-align-items-center">
-        {onlyText === '' ? (
-          <>
-            <Avatar did={user.did} />
-            <Info>
-              <IonGrid>
-                <IonRow>
-                  <ProfileName>{user ? user.name : ''}</ProfileName>
-                </IonRow>
-                <IonRow className="ion-justify-content-start">
-                  <IonCol>
-                    <DidSnippet did={user.did} />
-                  </IonCol>
-                </IonRow>
-              </IonGrid>
-            </Info>
-            <Buttons>
-              {signedUser.did === '' ? (
-                <Link to="/sign-did">
-                  <FollowButton>Sign in to Follow</FollowButton>
-                </Link>
-              ) : (
-                <FollowOrUnFollowButton
-                  did={user.did}
-                  signedUser={signedUser}
-                />
-              )}
-            </Buttons>
-          </>
-        ) : (
-          <p>{onlyText}</p>
-        )}
-      </Header>
-    </HeaderContainer>
-  );
+  if (onlyText !== '') {
+    return <p>{onlyText}</p>;
+  }
+  const template = user.pageTemplate || 'default';
+
+  if (template === 'crypto') {
+    return <Crypto user={user} signedUser={signedUser} />;
+  }
+
+  if (template === 'gamer') {
+    return <Gamer user={user} signedUser={signedUser} />;
+  }
+
+  if (template === 'soccer') {
+    return <Soccer user={user} signedUser={signedUser} />;
+  }
+
+  if (template === 'education') {
+    return <Education user={user} signedUser={signedUser} />;
+  }
+
+  return <Default user={user} signedUser={signedUser} />;
 };
 
 export default ProfileHeader;

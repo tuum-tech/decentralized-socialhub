@@ -10,13 +10,19 @@ import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 import { UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
+import { SmallLightButton } from 'src/elements/buttons';
 
 import {
   CardHeaderContent,
   CardContentContainer,
   LinkStyleSpan
 } from '../common';
-import defaultCoverPhoto from '../../../assets/default-cover.png';
+
+import defaultCoverPhoto from '../../../assets/cover/default-cover.png';
+import soccerCoverPhoto from '../../../assets/cover/soccer-cover.png';
+import gamerCoverPhoto from '../../../assets/cover/gamer-cover.png';
+import cryptoCoverPhoto from '../../../assets/cover/crypto-cover.png';
+
 import {
   Container,
   TextHeader,
@@ -27,6 +33,17 @@ import {
 import styleWidget from '../WidgetCards.module.scss';
 import { DidService } from 'src/services/did.service.new';
 
+const getDefaultCoverPhoto = (template: string) => {
+  if (template === 'soccer' || template === 'education') {
+    return soccerCoverPhoto;
+  } else if (template === 'gamer') {
+    return gamerCoverPhoto;
+  } else if (template === 'crypto') {
+    return cryptoCoverPhoto;
+  }
+  return defaultCoverPhoto;
+};
+
 const Upload: React.FC<InferMappedProps> = ({
   eProps,
   ...props
@@ -34,7 +51,8 @@ const Upload: React.FC<InferMappedProps> = ({
   const [imagePreview, setImagePreview] = useState<any>('');
   const [base64, setBase64] = useState<string>();
   const [defaultImage, setDefaultImage] = useState(
-    props.session.coverPhoto || defaultCoverPhoto
+    props.session.coverPhoto ||
+      getDefaultCoverPhoto(props.session.pageTemplate || 'default')
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [file, setFile] = useState<string>();
@@ -129,16 +147,16 @@ const Upload: React.FC<InferMappedProps> = ({
             </IonCol>
 
             <IonCol size="auto" className="ion-no-padding">
-              <LinkStyleSpan className="mr-4" onClick={remove}>
+              <SmallLightButton className="mr-2" onClick={remove}>
                 Cancel
-              </LinkStyleSpan>
-              <LinkStyleSpan
+              </SmallLightButton>
+              <SmallLightButton
                 onClick={async () => {
                   if (base64) await storeUploadedCoverPhoto(base64);
                 }}
               >
                 Save
-              </LinkStyleSpan>
+              </SmallLightButton>
             </IonCol>
           </IonRow>
         </IonGrid>

@@ -10,12 +10,9 @@ import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 import { UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
+import { SmallLightButton } from 'src/elements/buttons';
 
-import {
-  CardHeaderContent,
-  CardContentContainer,
-  LinkStyleSpan
-} from '../common';
+import { CardHeaderContent, CardContentContainer } from '../common';
 import defaultAvatar from '../../../assets/icon/dp.png';
 import {
   Container,
@@ -142,16 +139,16 @@ const Upload: React.FC<InferMappedProps> = ({
             </IonCol>
 
             <IonCol size="auto" className="ion-no-padding">
-              <LinkStyleSpan className="mr-4" onClick={remove}>
+              <SmallLightButton className="mr-2" onClick={remove}>
                 Cancel
-              </LinkStyleSpan>
-              <LinkStyleSpan
+              </SmallLightButton>
+              <SmallLightButton
                 onClick={async () => {
                   if (base64) await storeUploadedAvatar(base64);
                 }}
               >
                 Save
-              </LinkStyleSpan>
+              </SmallLightButton>
             </IonCol>
           </IonRow>
         </IonGrid>
