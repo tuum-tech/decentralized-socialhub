@@ -356,7 +356,6 @@ export class DidService implements IDidService {
     return await vcBuilder
       .expirationDate(date)
       .type('SelfProclaimedCredential')
-      .properties({})
       .property(subjectName, subjectValue)
       .id(DIDURL.from('#primary', did) as DIDURL)
       .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
@@ -398,7 +397,6 @@ export class DidService implements IDidService {
     let vc = await vcBuilder
       .expirationDate(this.getExpirationDate())
       .type('AppIdCredential')
-      .properties({})
       .property('appDid', appDid.toString())
       .property('appInstanceDid', appDid.toString())
       .id(DIDURL.from('#app-id-credential', appDid) as DIDURL)
