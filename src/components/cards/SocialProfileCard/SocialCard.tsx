@@ -231,7 +231,6 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const createIonItem = (key: string, icon: any) => {
-    debugger;
     let vc = didDocument!.selectCredentials(key, 'BasicProfileCredential')[0];
     if (!vc) return <></>;
     return (
