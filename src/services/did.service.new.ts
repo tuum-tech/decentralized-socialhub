@@ -166,7 +166,7 @@ export class DidService implements IDidService {
     let did = rootIdentity.getDid(0);
 
     let didDocument = await this.Store.loadDid(did);
-
+    debugger;
     if (didDocument === null) {
       this.Store.storeDid(await did.resolve());
       this.storePrivatekey(
@@ -299,6 +299,7 @@ export class DidService implements IDidService {
     if (diddocument.getProof()) {
       diddocument.proofs?.clear();
     }
+    debugger;
     let builder = DIDDocument.Builder.newFromDocument(diddocument);
     return await builder
       .addCredential(vc)

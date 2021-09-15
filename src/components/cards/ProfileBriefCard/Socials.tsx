@@ -68,7 +68,7 @@ const Socials: React.FC<Props> = ({ diddocument, cb }) => {
   const createIonItem = (key: string, icon: any) => {
     let vc = diddocument.selectCredentials(
       `${diddocument.getSubject()}#${key}`,
-      'InternetAccountCredential'
+      'BasicProfileCredential'
     )[0]; //  getVerifiedCredential(key, diddocument);
     if (!vc) return;
     return (
@@ -97,7 +97,7 @@ const Socials: React.FC<Props> = ({ diddocument, cb }) => {
     return (
       diddocument.selectCredentials(
         `${diddocument.getSubject()}#${id}`,
-        'InternetAccountCredential'
+        'BasicProfileCredential'
       ).length > 0
     );
   };
