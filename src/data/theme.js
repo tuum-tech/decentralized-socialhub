@@ -8,6 +8,21 @@ export const templates = [
     value: 'crypto',
     title: 'Crypto Profile',
     intro: 'Everything displayed'
+  },
+  {
+    value: 'gamer',
+    title: 'Gamer Profile',
+    intro: 'Everything displayed'
+  },
+  {
+    value: 'soccer',
+    title: 'Soccer Fan',
+    intro: 'Everything displayed'
+  },
+  {
+    value: 'education',
+    title: 'Education Profile',
+    intro: 'Everything displayed'
   }
 ];
 
@@ -70,6 +85,25 @@ const themeData = {
     },
     gridContent: {
       backgroundColor: '#1A202C'
+    },
+    card: {
+      backgroundColor: '#141419',
+      overviewText: '#6980A2',
+      cardTitle: '#718096',
+      cardTitle1: '#CBD5E0',
+      cardTitle2: '#A0AEC0',
+      cardTitle3: '#A0AEC0',
+      cardText: '#718096',
+      cardShawdow:
+        'box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24), 0px 3px 8px -1px rgba(50, 50, 71, 0.05);'
+    }
+  },
+  gamer: {
+    container: {
+      backgroundColor: '#1F1F35'
+    },
+    gridContent: {
+      backgroundColor: '#1F1F35'
     },
     card: {
       backgroundColor: '#141419',

@@ -86,7 +86,7 @@ export const checkLoginCredFromSession = async (
 
 const hasCredential = (document: DIDDocument, key: string): boolean => {
   if (
-    document.selectCredentials(key.toLowerCase(), 'InternetAccountCredential')
+    document.selectCredentials(key.toLowerCase(), 'BasicProfileCredential')
       .length > 0
   )
     return true;
