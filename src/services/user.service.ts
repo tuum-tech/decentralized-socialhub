@@ -55,9 +55,7 @@ export class UserService {
     document: DIDDocument,
     id: string
   ): boolean => {
-    return (
-      document.selectCredentials(id, 'InternetAccountCredential').length > 0
-    );
+    return document.selectCredentials(id, 'BasicProfileCredential').length > 0;
   };
 
   addCredentialIfInexistant = async (

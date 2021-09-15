@@ -148,7 +148,7 @@ const SocialProfilesCard: React.FC<Props> = ({
 
   const containsVerifiedCredential = (id: string): boolean => {
     return (
-      didDocument!.selectCredentials(id, 'InternetAccountCredential').length > 0
+      didDocument!.selectCredentials(id, 'BasicProfileCredential').length > 0
     );
   };
 
@@ -231,10 +231,7 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const createIonItem = (key: string, icon: any) => {
-    let vc = didDocument!.selectCredentials(
-      key,
-      'InternetAccountCredential'
-    )[0];
+    let vc = didDocument!.selectCredentials(key, 'BasicProfileCredential')[0];
     if (!vc) return <></>;
     return (
       <ProfileItem template={template}>
@@ -278,7 +275,7 @@ const SocialProfilesCard: React.FC<Props> = ({
 
   const createModalIonItem = (key: string, icon: any) => {
     //let parsedDoc = await getParsedDoc();
-    let vc = didDocument.selectCredentials(key, 'InternetAccountCredential')[0];
+    let vc = didDocument.selectCredentials(key, 'BasicProfileCredential')[0];
     let header = 'Google Account';
     if (key === 'twitter') header = 'Twitter Account';
     if (key === 'facebook') header = 'Facebook Account';
