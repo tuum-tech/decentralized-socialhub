@@ -77,7 +77,6 @@ const TwitterCallback: React.FC<PageProps> = ({
         let t = await getToken(oauth_token, oauth_verifier);
         let items: string[] = atob(t.data.response).split(';');
         const name = items[0];
-
         if (props.session && props.session.did !== '') {
           let verifiableCredential = await DidcredsService.generateVerifiableCredential(
             props.session.did,

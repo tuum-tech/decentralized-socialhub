@@ -168,6 +168,11 @@ export class UserService {
       documentWithCredentials,
       CredentialType.Github
     );
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.twitter,
+      documentWithCredentials,
+      CredentialType.Twitter
+    );
 
     this.didService.storeDocument(documentWithCredentials);
     this.didService.publishDocument(documentWithCredentials);
