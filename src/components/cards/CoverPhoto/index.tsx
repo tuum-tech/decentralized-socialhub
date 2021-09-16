@@ -12,16 +12,13 @@ import { UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
 import { SmallLightButton } from 'src/elements/buttons';
 
-import {
-  CardHeaderContent,
-  CardContentContainer,
-  LinkStyleSpan
-} from '../common';
+import { CardHeaderContent, CardContentContainer } from '../common';
 
-import defaultCoverPhoto from '../../../assets/cover/default-cover.png';
-import soccerCoverPhoto from '../../../assets/cover/soccer-cover.png';
-import gamerCoverPhoto from '../../../assets/cover/gamer-cover.png';
-import cryptoCoverPhoto from '../../../assets/cover/crypto-cover.png';
+import defaultCoverPhoto from '../../../assets/cover/default.png';
+import soccerCoverPhoto from '../../../assets/cover/soccer.png';
+import educationCoverPhoto from '../../../assets/cover/edu.png';
+import gamerCoverPhoto from '../../../assets/cover/gamer.png';
+import cryptoCoverPhoto from '../../../assets/cover/crypto.png';
 
 import {
   Container,
@@ -33,9 +30,16 @@ import {
 import styleWidget from '../WidgetCards.module.scss';
 import { DidService } from 'src/services/did.service.new';
 
-const getDefaultCoverPhoto = (template: string) => {
-  if (template === 'soccer' || template === 'education') {
+export const getCoverPhoto = (user: ISessionItem) => {
+  if (user.coverPhoto && user.coverPhoto !== '') {
+    return user.coverPhoto;
+  }
+
+  const template = user.pageTemplate || 'default';
+  if (template === 'soccer') {
     return soccerCoverPhoto;
+  } else if (template === 'education') {
+    return educationCoverPhoto;
   } else if (template === 'gamer') {
     return gamerCoverPhoto;
   } else if (template === 'crypto') {
@@ -51,8 +55,7 @@ const Upload: React.FC<InferMappedProps> = ({
   const [imagePreview, setImagePreview] = useState<any>('');
   const [base64, setBase64] = useState<string>();
   const [defaultImage, setDefaultImage] = useState(
-    props.session.coverPhoto ||
-      getDefaultCoverPhoto(props.session.pageTemplate || 'default')
+    getCoverPhoto(props.session)
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [file, setFile] = useState<string>();
