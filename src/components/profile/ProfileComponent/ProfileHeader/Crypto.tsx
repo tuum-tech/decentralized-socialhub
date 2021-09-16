@@ -7,7 +7,7 @@ import DidSnippet from 'src/elements/DidSnippet';
 import { FollowButton } from 'src/elements/buttons';
 import Avatar from 'src/components/Avatar';
 
-import { getCoverPhoto } from './index';
+import { getCoverPhoto } from 'src/components/cards/CoverPhoto';
 import FollowOrUnFollowButton from '../../FollowOrUnFollow';
 
 export const HeaderContainer = styled(IonRow)`
@@ -43,15 +43,6 @@ export const HeaderContent = styled(IonCol)`
     color: #ffffff;
     margin-bottom: 11px;
   }
-
-  .intro {
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 162.02%;
-    font-feature-settings: 'salt' on;
-    color: #ffffff;
-    margin-bottom: 11px;
-  }
 `;
 
 export const HeaderImg = styled(IonCol)<{
@@ -66,6 +57,7 @@ export const HeaderImg = styled(IonCol)<{
 export const Buttons = styled.div`
   display: flex;
   width: 110px;
+  margin-top: 10px;
 `;
 
 export interface IProps {
@@ -80,9 +72,7 @@ const Crypto: React.FC<IProps> = ({ user, signedUser }: IProps) => {
         <div className="content">
           <Avatar did={user.did} />
           <p className="name">{user.name}</p>
-          <div className="intro">
-            <DidSnippet did={user.did} />
-          </div>
+          <DidSnippet did={user.did} color="white" />
           <Buttons>
             {signedUser.did === '' ? (
               <Link to="/sign-did">

@@ -7,7 +7,7 @@ import DidSnippet from 'src/elements/DidSnippet';
 import { ProfileName } from 'src/elements/texts';
 import { FollowButton } from 'src/elements/buttons';
 import Avatar from 'src/components/Avatar';
-import { getCoverPhoto } from './index';
+import { getCoverPhoto } from 'src/components/cards/CoverPhoto';
 
 import FollowOrUnFollowButton from '../../FollowOrUnFollow';
 
@@ -60,6 +60,7 @@ const Header = styled(IonRow)`
 const Buttons = styled.div`
   display: flex;
   width: 110px;
+  margin-top: 10px;
 `;
 
 const Info = styled.div`

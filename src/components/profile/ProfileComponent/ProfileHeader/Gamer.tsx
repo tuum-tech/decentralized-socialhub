@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import DidSnippet from 'src/elements/DidSnippet';
 import { FollowButton } from 'src/elements/buttons';
 import Avatar from 'src/components/Avatar';
+import { getCoverPhoto } from 'src/components/cards/CoverPhoto';
 
 import FollowOrUnFollowButton from '../../FollowOrUnFollow';
-import { getCoverPhoto } from './index';
 import {
   HeaderContainer,
   HeaderContent,
@@ -23,9 +23,7 @@ const Gamer: React.FC<IProps> = ({ user, signedUser }: IProps) => {
         <div className="content">
           <Avatar did={user.did} />
           <p className="name">{user.name}</p>
-          <div className="intro">
-            <DidSnippet did={user.did} />
-          </div>
+          <DidSnippet did={user.did} color="white" />
           <Buttons>
             {signedUser.did === '' ? (
               <Link to="/sign-did">
