@@ -36,7 +36,7 @@ interface Props {
   session: ISessionItem;
   closeNewVerificationModal: () => void;
   showNewVerificationModal: boolean;
-  verifications: Verification[];
+  verifications: VerificationRequest[];
 }
 
 const MyRequests: React.FC<Props> = ({
@@ -50,10 +50,11 @@ const MyRequests: React.FC<Props> = ({
 
   const sendReuqest = async (
     dids: string[],
-    credentials: VerificationData[]
+    credentials: VerificationData[],
+    msg: string
   ) => {
     const vService = new VerificationService();
-    await vService.sendRequest(session.did, dids, credentials);
+    await vService.sendRequest(session.did, dids, credentials, msg);
     closeNewVerificationModal();
     setShowSentModal(true);
   };

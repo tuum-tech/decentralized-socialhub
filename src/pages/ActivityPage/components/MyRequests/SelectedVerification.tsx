@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { IonModal } from '@ionic/react';
+import { IonModal, IonTextarea } from '@ionic/react';
 
 import { SmallLightButton } from 'src/elements/buttons';
 import { TuumTechScriptService } from 'src/services/script.service';
@@ -13,6 +13,14 @@ export const SelectedVerificationModal = styled(IonModal)`
   :host(.modal-card) ion-header ion-toolbar:first-of-type {
     padding: 0px;
   }
+`;
+
+const InfoTxt = styled.p`
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 17px;
+  color: #425466;
 `;
 
 const Container = styled.div`
@@ -35,7 +43,7 @@ const Container = styled.div`
 `;
 
 interface Props {
-  verification: Verification;
+  verification: VerificationRequest;
   user: ISessionItem;
   approvable?: boolean;
 }
@@ -46,6 +54,7 @@ const SelectedVerificationContent = ({
   approvable = false
 }: Props) => {
   const [loading, setLoading] = useState(0);
+  const [feedbacks, setFeedbacks] = useState('');
   const { category, records } = verification;
 
   const handleAction = async (approve: boolean) => {
@@ -56,7 +65,9 @@ const SelectedVerificationContent = ({
       verification.to_did,
       verification.updated_at.toString(),
       approve ? 'approved' : 'rejected',
-      verification.category
+      verification.category,
+      verification.msg,
+      feedbacks
     );
     console.log(res);
 
@@ -76,6 +87,16 @@ const SelectedVerificationContent = ({
           </SmallLightButton>
         </div>
       )}
+      <InfoTxt>Feedbacks</InfoTxt>
+      <IonTextarea
+        placeholder="Enter a message for the verifiers"
+        value={feedbacks}
+        style={{
+          background: '#EDF2F7',
+          borderRadius: '8px'
+        }}
+        onIonChange={n => setFeedbacks(n.detail.value!)}
+      />
     </Container>
   );
 };

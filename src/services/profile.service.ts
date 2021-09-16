@@ -148,6 +148,12 @@ export class ProfileService {
       });
       /* Calculate verified experience credentials ends */
     }
+
+    // let mvCredentials = await TuumTechScriptService.getMyVerifiedCredentials(
+    //   props.session.did,
+    //   false
+    // );
+
     return {
       basicDTO,
       educationDTO,

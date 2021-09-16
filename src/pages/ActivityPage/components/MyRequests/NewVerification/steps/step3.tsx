@@ -19,7 +19,7 @@ interface Props {
   selectedDids: string[];
   credentials: VerificationData[];
   onPrev: () => void;
-  sendRequest: () => void;
+  sendRequest: (msg: string) => void;
   session: ISessionItem;
 }
 
@@ -40,7 +40,7 @@ const ReviewPage = ({
         className="mb-1"
         width="20px"
       />
-      <div className="title mb-2">Revuew request</div>
+      <div className="title mb-2">Review request</div>
       <div className="intro mb-2" style={{ color: 'black' }}>
         Please review the details from confirming the request
       </div>
@@ -78,7 +78,7 @@ const ReviewPage = ({
       <div className="intro mb-2" style={{ color: 'black' }}>
         By continuing, you agree to the terms and community guidelines
       </div>
-      <NextButton onClick={sendRequest}>Send Request</NextButton>
+      <NextButton onClick={() => sendRequest(msg)}>Send Request</NextButton>
     </Container>
   );
 };

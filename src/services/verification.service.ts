@@ -144,7 +144,8 @@ export class VerificationService {
   public async sendRequest(
     fromDid: string,
     toDids: string[],
-    verificationData: VerificationData[]
+    verificationData: VerificationData[],
+    msg: string
   ) {
     try {
       for (let i = 0; i < toDids.length; i++) {
@@ -152,7 +153,8 @@ export class VerificationService {
           await TuumTechScriptService.addVerificationRequest(
             fromDid,
             toDids[i],
-            verificationData[j]
+            verificationData[j],
+            msg
           );
         }
       }

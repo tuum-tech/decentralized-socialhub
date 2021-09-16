@@ -14,7 +14,11 @@ interface Props {
   session: ISessionItem;
   targetUser: ISessionItem;
   onClose: () => void;
-  sendRequest: (dids: string[], credentials: VerificationData[]) => void;
+  sendRequest: (
+    dids: string[],
+    credentials: VerificationData[],
+    msg: string
+  ) => void;
 }
 
 const NewVerificationModal: React.FC<Props> = ({
@@ -79,7 +83,9 @@ const NewVerificationModal: React.FC<Props> = ({
           credentials={credentials}
           session={session}
           onPrev={() => setStep(2)}
-          sendRequest={() => sendRequest(selectedDids, credentials)}
+          sendRequest={(msg: string) =>
+            sendRequest(selectedDids, credentials, msg)
+          }
         />
       );
     }

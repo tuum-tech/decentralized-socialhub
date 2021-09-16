@@ -43,7 +43,7 @@ export const UserRow = styled.div`
 
 export interface Props {
   session: ISessionItem;
-  verifications: Verification[];
+  verifications: VerificationRequest[];
   setSelectVerification: (v: any) => void;
 }
 
@@ -65,7 +65,7 @@ const UserRows: React.FC<Props> = ({
     })();
   }, [verifications]);
 
-  const rednerUserRow = (v: Verification) => {
+  const rednerUserRow = (v: VerificationRequest) => {
     const user = users.filter((user: any) => user.did === v.to_did)[0];
 
     let statusColor = '#FF5A5A';

@@ -73,6 +73,7 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
     defaultFullProfile
   );
   const [didDocument, setDidDocument] = useState<DIDDocument | null>(null);
+
   const [loading, setLoading] = useState(true);
 
   const [followType, setFollowType] = useState<FollowType>(FollowType.Follower);

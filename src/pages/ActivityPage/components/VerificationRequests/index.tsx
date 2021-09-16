@@ -9,7 +9,7 @@ import SelectedVerificationContent, {
 
 interface Props {
   session: ISessionItem;
-  verifications: Verification[];
+  verifications: VerificationRequest[];
 }
 
 const MyRequests: React.FC<Props> = ({ session, verifications }: Props) => {

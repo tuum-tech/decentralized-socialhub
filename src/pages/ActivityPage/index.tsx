@@ -26,20 +26,22 @@ const ActivityPage: React.FC<InferMappedProps> = ({
   ...props
 }: InferMappedProps) => {
   const [active, setActive] = useState('timeline'); // timeline or veificationrequests
-  const [myverifications, setMyVerification] = useState<Verification[]>([]);
+  const [myverifications, setMyVerification] = useState<VerificationRequest[]>(
+    []
+  );
   const [verificationRequests, setVerificationRequests] = useState<
-    Verification[]
+    VerificationRequest[]
   >([]);
 
   useEffect(() => {
     (async () => {
-      const requests_by_me: Verification[] = await TuumTechScriptService.getVerifications(
+      const requests_by_me: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
         props.session.did,
         true
       );
       setMyVerification(requests_by_me);
 
-      const vRequests: Verification[] = await TuumTechScriptService.getVerifications(
+      const vRequests: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
         props.session.did,
         false
       );

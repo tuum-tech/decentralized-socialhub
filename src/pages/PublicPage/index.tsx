@@ -128,6 +128,7 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
         );
         setDidDocument(document);
       }
+
       setLoading(false);
     })();
   }, [props.match.params.did, props.session]);

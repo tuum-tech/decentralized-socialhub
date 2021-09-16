@@ -119,7 +119,9 @@ let run = async () => {
           updated_at: '$params.updated_at',
           status: 'requested',
           category: '$params.category', // personal info
-          records: '$params.records'
+          records: '$params.records',
+          feedbacks: '$params.feedbacks',
+          msg: '$params.msg'
         }
       }
     }
@@ -138,12 +140,14 @@ let run = async () => {
           from_did: '$params.from_did',
           to_did: '$params.to_did',
           updated_at: '$params.updated_at',
-          category: '$params.category'
+          category: '$params.category',
+          msg: '$params.msg'
         },
         update: {
           $set: {
             status: '$params.status',
-            updated_at: '$params.new_updated_at'
+            updated_at: '$params.new_updated_at',
+            feedbacks: '$params.feedbacks'
           }
         }
       }
@@ -181,6 +185,27 @@ let run = async () => {
         collection: 'verifications',
         filter: {
           from_did: '$params.did'
+        },
+        options: {
+          limit: '$params.limit',
+          skip: '$params.skip'
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'get_my_verified_credentials',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_my_verified_credentials',
+      output: true,
+      body: {
+        collection: 'verifications',
+        filter: {
+          from_did: '$params.did',
+          status: 'approved'
         },
         options: {
           limit: '$params.limit',

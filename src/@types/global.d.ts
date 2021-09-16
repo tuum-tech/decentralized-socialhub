@@ -12,6 +12,11 @@ interface ExperienceItem {
   order: string;
   isEmpty: boolean;
   logo?: string;
+  verified?: {
+    did: string[];
+    name?: string[];
+    avatar?: string[];
+  }[];
 }
 
 interface Template {
@@ -27,7 +32,9 @@ interface VerificationData {
   }[];
 }
 
-interface Verification {
+interface VerificationRequest {
+  feedback: string;
+  msg: string;
   from_did: string;
   to_did: string;
   updated_at: Date;
@@ -57,6 +64,11 @@ interface EducationItem {
   description: string;
   order: string;
   logo?: string;
+  verified?: {
+    did: string[];
+    name?: string[];
+    avatar?: string[];
+  }[];
 }
 
 interface ActivityItem {

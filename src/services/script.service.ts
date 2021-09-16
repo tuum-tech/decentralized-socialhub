@@ -252,7 +252,8 @@ export class TuumTechScriptService {
   public static async addVerificationRequest(
     from_did: string,
     to_did: string,
-    data: VerificationData
+    data: VerificationData,
+    msg: string
   ) {
     const add_verification_request_script = {
       name: 'add_verification',
@@ -261,7 +262,9 @@ export class TuumTechScriptService {
         to_did,
         updated_at: new Date(),
         category: data.category,
-        records: data.records
+        records: data.records,
+        msg,
+        feedbacks: ''
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
@@ -277,7 +280,9 @@ export class TuumTechScriptService {
     to_did: string,
     updated_at: string,
     status: string,
-    category: string
+    category: string,
+    msg: string,
+    feedbacks: string
   ) {
     const update_verification_script = {
       name: 'update_verification',
@@ -287,7 +292,9 @@ export class TuumTechScriptService {
         to_did,
         updated_at,
         category,
-        new_updated_at: new Date()
+        new_updated_at: new Date(),
+        msg,
+        feedbacks
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
@@ -298,7 +305,7 @@ export class TuumTechScriptService {
     await this.runTuumTechScript(update_verification_script);
   }
 
-  public static async getVerifications(did: string, my = true) {
+  public static async getVerificationRequests(did: string, my = true) {
     const get_verifications_script = {
       name: my ? 'get_requests_by_me' : 'get_requests_to_me',
       params: {
@@ -313,11 +320,28 @@ export class TuumTechScriptService {
     };
 
     let response: any = await this.runTuumTechScript(get_verifications_script);
-    console.log('===>response', response);
     return getItemsFromData(
       response,
       my ? 'get_requests_by_me' : 'get_requests_to_me'
     );
+  }
+
+  public static async getMyVerifiedCredentials(did: string, my = true) {
+    const get_verifications_script = {
+      name: 'get_my_verified_credentials',
+      params: {
+        did,
+        limit: 200,
+        skip: 0
+      },
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+
+    let response: any = await this.runTuumTechScript(get_verifications_script);
+    return getItemsFromData(response, 'get_my_verified_credentials');
   }
 }
 
