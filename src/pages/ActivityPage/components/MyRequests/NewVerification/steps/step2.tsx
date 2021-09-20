@@ -158,57 +158,60 @@ const UsersView = ({
 
   return (
     <Container>
-      <img
-        onClick={() => onPrev()}
-        src={arrowLeft}
-        alt="arrow-left"
-        className="mb-1"
-        width="20px"
-      />
-      <div className="title mb-2">Choose Verifiers</div>
-      <div className="intro mb-2" style={{ color: 'black' }}>
-        Select user(s) to verify your credentials
-        <span style={{ color: 'red' }}>(max 3 users)</span>
-      </div>
-      <UsersContainer>
-        <IonSearchbar
-          value={searchQuery}
-          onIonChange={e => search(e)}
-          placeholder="Search people, pages by name or DID"
-        ></IonSearchbar>
-        <div className="usersContainer">
-          {isLoading ? (
-            <p>Loading...</p>
-          ) : (
-            filteredUsers.items.map(({ name, did }) => (
-              <div className="userRow">
-                <Avatar did={did} width="45px" />
-                <div className="userRow_info">
-                  <span className="name">{name}</span>
-                  <br />
-                  <span className="truncatedDID">{did}</span>
-                </div>
-                <button
-                  className="userRow_button"
-                  onClick={() => {
-                    if (selectedDids.includes(did)) {
-                      const newSelectedDids = selectedDids.filter(
-                        sDid => sDid !== did
-                      );
-                      updateSelectedUserDids(newSelectedDids);
-                    } else if (selectedDids.length < 3) {
-                      const newSelectedDids = selectedDids.concat(did);
-                      updateSelectedUserDids(newSelectedDids);
-                    }
-                  }}
-                >
-                  {selectedDids.includes(did) ? 'Remove' : 'Add'}
-                </button>
-              </div>
-            ))
-          )}
+      <div>
+        <img
+          onClick={() => onPrev()}
+          src={arrowLeft}
+          alt="arrow-left"
+          className="mb-1"
+          width="20px"
+        />
+        <div className="title mb-2">Choose Verifiers</div>
+        <div className="intro mb-2" style={{ color: 'black' }}>
+          Select user(s) to verify your credentials
+          <span style={{ color: 'red' }}>(max 3 users)</span>
         </div>
-      </UsersContainer>
+        <UsersContainer>
+          <IonSearchbar
+            value={searchQuery}
+            onIonChange={e => search(e)}
+            placeholder="Search people, pages by name or DID"
+          ></IonSearchbar>
+          <div className="usersContainer">
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : (
+              filteredUsers.items.map(({ name, did }) => (
+                <div className="userRow">
+                  <Avatar did={did} width="45px" />
+                  <div className="userRow_info">
+                    <span className="name">{name}</span>
+                    <br />
+                    <span className="truncatedDID">{did}</span>
+                  </div>
+                  <button
+                    className="userRow_button"
+                    onClick={() => {
+                      if (selectedDids.includes(did)) {
+                        const newSelectedDids = selectedDids.filter(
+                          sDid => sDid !== did
+                        );
+                        updateSelectedUserDids(newSelectedDids);
+                      } else if (selectedDids.length < 3) {
+                        const newSelectedDids = selectedDids.concat(did);
+                        updateSelectedUserDids(newSelectedDids);
+                      }
+                    }}
+                  >
+                    {selectedDids.includes(did) ? 'Remove' : 'Add'}
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+        </UsersContainer>
+      </div>
+
       <NextButton
         style={{
           cursor: selectedDids.length === 0 ? 'not-allowed' : 'pointer'

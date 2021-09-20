@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 import { SearchService } from 'src/services/search.service';
 import { getItemsFromData } from 'src/utils/script';
@@ -41,6 +42,15 @@ export const UserRow = styled.div`
   }
 `;
 
+export const getStatusColor = (status: string) => {
+  let statusColor = '#FF5A5A';
+  if (status === 'approved') {
+    statusColor = '#2FD5DD';
+  } else if (status === 'requested') {
+    statusColor = '#FF9840';
+  }
+  return statusColor;
+};
 export interface Props {
   session: ISessionItem;
   verifications: VerificationRequest[];
@@ -65,28 +75,31 @@ const UserRows: React.FC<Props> = ({
     })();
   }, [verifications]);
 
+  const renderUserName = (user: ISessionItem, v: VerificationRequest) => {
+    if (user && user.name) {
+      return <Link to={'/did/' + user.did}>{user.name}</Link>;
+    }
+    return <Link to={'/did/' + v.to_did}>{v.to_did}</Link>;
+  };
+
   const rednerUserRow = (v: VerificationRequest) => {
     const user = users.filter((user: any) => user.did === v.to_did)[0];
 
-    let statusColor = '#FF5A5A';
-    if (v.status === 'approved') {
-      statusColor = '#2FD5DD';
-    } else if (v.status === 'requested') {
-      statusColor = '#FF9840';
-    }
     return (
-      <UserRow>
+      <UserRow key={v.from_did + v.to_did + v.status + v.category}>
         <div className="left">
           <Avatar did={v.to_did} width="50px" />
         </div>
         <div className="right">
           <p className="top">
             {v.category} <span style={{ fontWeight: 'bold' }}>sent to </span>
-            {user ? user.name : v.to_did}
+            {renderUserName(user, v)}
           </p>
           <p className="bottom" style={{ display: 'flex' }}>
             {timeSince(new Date(v.updated_at))}
-            <li style={{ color: statusColor, marginLeft: ' 20px' }}>
+            <li
+              style={{ color: getStatusColor(v.status), marginLeft: ' 20px' }}
+            >
               {v.status}
             </li>
           </p>

@@ -91,7 +91,7 @@ export class VerificationService {
           });
         }
         data.push({
-          category: `Education: ${edu.institution}(${edu.program})`,
+          category: `Education: ${edu.institution} at ${edu.program}`,
           records
         });
       }

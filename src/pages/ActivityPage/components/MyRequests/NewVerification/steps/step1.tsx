@@ -14,6 +14,8 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: auto;
+  height: 600px;
 
   .title {
     font-weight: 600;

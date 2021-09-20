@@ -3,16 +3,21 @@ import React, { useState } from 'react';
 import UserRows from './UserRows';
 import { PageContainer, PageContent } from '../MyRequests';
 import TopInfo from '../MyRequests/TopInfo';
-import SelectedVerificationContent, {
-  SelectedVerificationModal
-} from '../MyRequests/SelectedVerification';
+import VerificationDetailContent, {
+  VerificationDetailModal
+} from './VerificationDetail';
 
 interface Props {
   session: ISessionItem;
   verifications: VerificationRequest[];
+  forceReFetch: () => void;
 }
 
-const MyRequests: React.FC<Props> = ({ session, verifications }: Props) => {
+const VerificationRequests: React.FC<Props> = ({
+  session,
+  verifications,
+  forceReFetch
+}: Props) => {
   const [selectedVerification, setSelectVerification] = useState<any>(null);
 
   return (
@@ -24,21 +29,24 @@ const MyRequests: React.FC<Props> = ({ session, verifications }: Props) => {
           session={session}
           verifications={verifications}
         />
-        <SelectedVerificationModal
+        <VerificationDetailModal
           isOpen={selectedVerification !== null}
           onDidDismiss={() => setSelectVerification(null)}
         >
           {selectedVerification !== null && (
-            <SelectedVerificationContent
+            <VerificationDetailContent
               verification={selectedVerification.verification}
               user={selectedVerification.user}
-              approvable={true}
+              closeModal={() => {
+                setSelectVerification(null);
+                forceReFetch();
+              }}
             />
           )}
-        </SelectedVerificationModal>
+        </VerificationDetailModal>
       </PageContent>
     </PageContainer>
   );
 };
 
-export default MyRequests;
+export default VerificationRequests;

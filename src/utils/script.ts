@@ -13,7 +13,14 @@ export const getItemsFromData = (res: any, scriptName: string) => {
       data[scriptName].items &&
       data[scriptName].items.length > 0
     ) {
-      return data[scriptName].items;
+      let items = data[scriptName].items;
+      if ((items[0] as any).updated_at) {
+        items = items.sort(
+          (a: any, b: any) =>
+            new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+        );
+      }
+      return items;
     }
   }
   return [];

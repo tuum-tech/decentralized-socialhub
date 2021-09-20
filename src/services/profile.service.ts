@@ -154,6 +154,10 @@ export class ProfileService {
     //   false
     // );
 
+    console.log('===>basicDTO', basicDTO);
+    console.log('===>educationDTO', educationDTO);
+    console.log('===>experienceDTO', experienceDTO);
+
     return {
       basicDTO,
       educationDTO,

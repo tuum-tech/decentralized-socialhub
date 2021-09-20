@@ -33,7 +33,7 @@ interface VerificationData {
 }
 
 interface VerificationRequest {
-  feedback: string;
+  feedbacks: string;
   msg: string;
   from_did: string;
   to_did: string;

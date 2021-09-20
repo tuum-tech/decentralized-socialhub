@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { IonModal } from '@ionic/react';
 import { VerificationService } from 'src/services/verification.service';
 
-import SelectedVerificationContent, {
-  SelectedVerificationModal
-} from './SelectedVerification';
-import NewVerification from './NewVerification';
+import VerificationDetailContent, {
+  VerificationDetailModal
+} from './VerificationDetail';
+import NewVerificationContent, {
+  NewVerificationModal
+} from './NewVerification';
 import SentModalContent, { SentModal } from './SentModal';
 import UserRows from './UserRows';
 import TopInfo from './TopInfo';
@@ -21,15 +22,6 @@ export const PageContent = styled.div`
     0px 3px 8px -1px rgba(50, 50, 71, 0.05);
   border-radius: 16px;
   padding: 17px 20px;
-`;
-
-const NewVerificationModal = styled(IonModal)`
-  --border-radius: 16px;
-  --width: 1100px;
-  --height: 678px;
-  :host(.modal-card) ion-header ion-toolbar:first-of-type {
-    padding: 0px;
-  }
 `;
 
 interface Props {
@@ -75,7 +67,7 @@ const MyRequests: React.FC<Props> = ({
         cssClass="my-custom-class"
         backdropDismiss={false}
       >
-        <NewVerification
+        <NewVerificationContent
           session={session}
           onClose={closeNewVerificationModal}
           targetUser={session}
@@ -94,17 +86,17 @@ const MyRequests: React.FC<Props> = ({
           }}
         />
       </SentModal>
-      <SelectedVerificationModal
+      <VerificationDetailModal
         isOpen={selectedVerification !== null}
         onDidDismiss={() => setSelectVerification(null)}
       >
         {selectedVerification !== null && (
-          <SelectedVerificationContent
+          <VerificationDetailContent
             verification={selectedVerification.verification}
             user={selectedVerification.user}
           />
         )}
-      </SelectedVerificationModal>
+      </VerificationDetailModal>
     </PageContainer>
   );
 };

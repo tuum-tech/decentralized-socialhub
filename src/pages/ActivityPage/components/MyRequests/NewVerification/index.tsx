@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { IonRow, IonCol, IonButton } from '@ionic/react';
+import { IonRow, IonCol, IonButton, IonModal } from '@ionic/react';
+import styled from 'styled-components';
 
 import TimeLine from './TimeLine';
 import { VerificationService } from 'src/services/verification.service';
@@ -21,7 +22,16 @@ interface Props {
   ) => void;
 }
 
-const NewVerificationModal: React.FC<Props> = ({
+export const NewVerificationModal = styled(IonModal)`
+  --border-radius: 16px;
+  --width: 1100px;
+  --height: 678px;
+  :host(.modal-card) ion-header ion-toolbar:first-of-type {
+    padding: 0px;
+  }
+`;
+
+const NewVerificationContent: React.FC<Props> = ({
   session,
   onClose,
   targetUser,
@@ -119,4 +129,4 @@ const NewVerificationModal: React.FC<Props> = ({
   );
 };
 
-export default NewVerificationModal;
+export default NewVerificationContent;

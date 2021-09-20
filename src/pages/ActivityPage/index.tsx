@@ -35,19 +35,26 @@ const ActivityPage: React.FC<InferMappedProps> = ({
 
   useEffect(() => {
     (async () => {
-      const requests_by_me: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
-        props.session.did,
-        true
-      );
-      setMyVerification(requests_by_me);
-
-      const vRequests: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
-        props.session.did,
-        false
-      );
-      setVerificationRequests(vRequests);
+      await fetchMyVerifications();
+      await fetchVerificationRequestToMe();
     })();
-  }, [props.session.did]);
+  }, [fetchMyVerifications, fetchVerificationRequestToMe, props.session.did]);
+
+  const fetchMyVerifications = async () => {
+    const requests_by_me: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
+      props.session.did,
+      true
+    );
+    setMyVerification(requests_by_me);
+  };
+
+  const fetchVerificationRequestToMe = useCallback(async () => {
+    const vRequests: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
+      props.session.did,
+      false
+    );
+    setVerificationRequests(vRequests);
+  });
 
   const [showNewVerificationModal, setShowNewVerificationModal] = useState(
     false
@@ -97,6 +104,9 @@ const ActivityPage: React.FC<InferMappedProps> = ({
                     <VerificationRequests
                       session={props.session}
                       verifications={verificationRequests}
+                      forceReFetch={async () => {
+                        await fetchVerificationRequestToMe();
+                      }}
                     />
                   )}
                 </ActivityTabsContainer>
