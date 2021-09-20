@@ -38,7 +38,7 @@ export const defaultExperienceItem: ExperienceItem = {
   description: '',
   order: '',
   isEnabled: false,
-  isVerified: false
+  verifiers: []
 };
 
 const ExperienceCard: React.FC<IExperienceProps> = ({
@@ -60,12 +60,9 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
 
   let noOfVerifiedExpCred = 0;
 
-  experienceDTO.items.map((x, i) => {
-    if (x.isVerified) {
-      noOfVerifiedExpCred++;
-    }
-    return null;
-  });
+  for (let i = 0; i < experienceDTO.items.length; i++) {
+    noOfVerifiedExpCred += (experienceDTO.items[i].verifiers || []).length;
+  }
 
   useEffect(() => {
     setExpVerifiedPercent(

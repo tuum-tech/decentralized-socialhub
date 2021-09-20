@@ -43,10 +43,10 @@ export const UserRow = styled.div`
 `;
 
 export const getStatusColor = (status: string) => {
-  let statusColor = '#FF5A5A';
-  if (status === 'approved') {
-    statusColor = '#2FD5DD';
-  } else if (status === 'requested') {
+  let statusColor = '#2FD5DD';
+  if (status === 'requested') {
+    statusColor = '#FF5A5A';
+  } else if (status === 'rejected') {
     statusColor = '#FF9840';
   }
   return statusColor;

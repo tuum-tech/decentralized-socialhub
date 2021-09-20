@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { IonModal } from '@ionic/react';
 
+import { DidService, IDidService } from 'src/services/did.service.new';
+import { DIDDocument, DID } from '@elastosfoundation/did-js-sdk/';
+import { TuumTechScriptService } from 'src/services/script.service';
+
 import Expander from 'src/elements/Expander';
 import { timeSince } from 'src/utils/time';
 import { getStatusColor } from './UserRows';
@@ -46,10 +50,17 @@ export const VerificationDetailModal = styled(IonModal)`
 interface Props {
   verification: VerificationRequest;
   user: ISessionItem;
+  me: ISessionItem;
   onClose: () => void;
 }
 
-const VerificationDetailContent = ({ verification, user, onClose }: Props) => {
+const VerificationDetailContent = ({
+  verification,
+  user,
+  me,
+  onClose
+}: Props) => {
+  const [loading, setLoading] = useState(false);
   const { category, records } = verification;
 
   return (
@@ -95,11 +106,44 @@ const VerificationDetailContent = ({ verification, user, onClose }: Props) => {
       {verification.status === 'approved' && (
         <BlueButton
           style={{ textAlign: 'center' }}
-          onClick={() => {
+          disabled={loading}
+          onClick={async () => {
+            setLoading(true);
+
+            // publish this verified credential into didDocument
+            const didServiceInstance = (await DidService.getInstance()) as IDidService;
+            let didDocument: DIDDocument = await didServiceInstance.getStoredDocument(
+              new DID(me.did)
+            );
+            let credential = await didServiceInstance.newSelfVerifiableCredential(
+              didDocument,
+              verification.category,
+              `Verified_By_${user.name}(${user.did})`
+            );
+            let documentWithCredentials: DIDDocument = await didServiceInstance.addVerifiableCredentialToDIDDocument(
+              didDocument,
+              credential
+            );
+            await didServiceInstance.storeDocument(documentWithCredentials);
+            await didServiceInstance.publishDocument(documentWithCredentials);
+
+            // update tuum.tech vault
+            const res = await TuumTechScriptService.updateVerificationRequest(
+              verification.from_did,
+              verification.to_did,
+              verification.updated_at.toString(),
+              'Approved & Published',
+              verification.category,
+              verification.msg,
+              verification.feedbacks
+            );
+            console.log(res);
+
+            setLoading(false);
             onClose();
           }}
         >
-          Save signed credential
+          Save{loading && 'ing'} signed credential
         </BlueButton>
       )}
     </Container>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { IonCol, IonGrid, IonPopover, IonRow } from '@ionic/react';
 import styled from 'styled-components';
-import shieldIcon from '../../../assets/icon/shield.svg';
 
 import {
   Description,
@@ -13,6 +12,7 @@ import {
 } from '../common';
 import Image from '../../../elements/Image';
 import styleWidget from '../WidgetCards.module.scss';
+import Verifiers from '../ExperienceCard/Verifiers';
 
 const EditableContent = styled(IonCol)`
   display: flex;
@@ -64,13 +64,10 @@ const EducationItem: React.FC<EducationItemProps> = ({
             <IonGrid className="ion-no-padding">
               <IonRow style={{ float: 'right' }}>
                 <IonCol>
-                  {educationItem.isVerified && (
-                    <img
-                      alt="shield icon"
-                      src={shieldIcon}
-                      style={{ width: '1em' }}
-                    />
-                  )}
+                  {educationItem.verifiers &&
+                    educationItem.verifiers.length > 0 && (
+                      <Verifiers users={educationItem.verifiers} />
+                    )}
                 </IonCol>
               </IonRow>
               <IonRow className="ion-no-padding">

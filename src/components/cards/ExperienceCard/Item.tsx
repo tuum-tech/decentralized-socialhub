@@ -13,6 +13,7 @@ import {
 import Image from '../../../elements/Image';
 import styleWidget from '../WidgetCards.module.scss';
 import shieldIcon from '../../../assets/icon/shield.svg';
+import Verifiers from './Verifiers';
 
 const EditableContent = styled(IonCol)`
   display: flex;
@@ -62,13 +63,10 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
             <IonGrid className="ion-no-padding">
               <IonRow style={{ float: 'right' }}>
                 <IonCol>
-                  {experienceItem.isVerified && (
-                    <img
-                      alt="shield icon"
-                      src={shieldIcon}
-                      style={{ width: '1em' }}
-                    />
-                  )}
+                  {experienceItem.verifiers &&
+                    experienceItem.verifiers.length > 0 && (
+                      <Verifiers users={experienceItem.verifiers} />
+                    )}
                 </IonCol>
               </IonRow>
               <IonRow className="ion-no-padding">

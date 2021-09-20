@@ -1,11 +1,6 @@
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 
-interface VerifiedCredential {
-  value: string;
-  isVerified: boolean;
-}
-
 export const getParsedDoc = async (document: string): Promise<DIDDocument> => {
   return await DIDDocument.parseAsync(document);
 };

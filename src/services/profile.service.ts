@@ -1,6 +1,6 @@
 import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 import { ActivityResponse } from 'src/pages/ActivityPage/types';
-import { getVerifiedCredential } from 'src/utils/credential';
+import { getCredentials } from 'src/utils/credential';
 
 import { showNotify } from 'src/utils/notify';
 import { getItemsFromData } from 'src/utils/script';
@@ -16,7 +16,7 @@ import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 export class ProfileService {
   static didDocument: any = null;
 
-  static isCredVerified = async (
+  static getVerifiers = async (
     key: string,
     profileValue: string,
     userSession: ISessionItem
@@ -27,10 +27,11 @@ export class ProfileService {
       );
     }
 
-    let vc = getVerifiedCredential(key, ProfileService.didDocument);
-    if (!vc) return false;
+    if (!profileValue) {
+      return [];
+    }
 
-    return vc.value === profileValue && vc.isVerified;
+    return getCredentials(key, ProfileService.didDocument);
   };
 
   static getDidDocument = async (
@@ -130,8 +131,8 @@ export class ProfileService {
 
       /* Calculate verified education credentials starts */
       educationDTO.items.map(async (x, i) => {
-        educationDTO.items[i].isVerified = await ProfileService.isCredVerified(
-          'education',
+        educationDTO.items[i].verifiers = await ProfileService.getVerifiers(
+          `Education: ${x.institution} at ${x.program}`,
           x.institution,
           userSession
         );
@@ -140,8 +141,8 @@ export class ProfileService {
 
       /* Calculate verified experience credentials starts */
       experienceDTO.items.map(async (x, i) => {
-        experienceDTO.items[i].isVerified = await ProfileService.isCredVerified(
-          'occupation',
+        experienceDTO.items[i].verifiers = await ProfileService.getVerifiers(
+          `Experience: ${x.title} at: ${x.institution}`,
           x.title,
           userSession
         );
@@ -153,10 +154,6 @@ export class ProfileService {
     //   props.session.did,
     //   false
     // );
-
-    console.log('===>basicDTO', basicDTO);
-    console.log('===>educationDTO', educationDTO);
-    console.log('===>experienceDTO', experienceDTO);
 
     return {
       basicDTO,

@@ -6,17 +6,15 @@ interface ExperienceItem {
   start: string;
   end: string;
   still: boolean;
-  isVerified: boolean;
+  verifiers: {
+    name: string;
+    did: string;
+  }[];
   title: string;
   description: string;
   order: string;
   isEmpty: boolean;
   logo?: string;
-  verified?: {
-    did: string[];
-    name?: string[];
-    avatar?: string[];
-  }[];
 }
 
 interface Template {
@@ -59,16 +57,14 @@ interface EducationItem {
   start: string;
   end: string;
   still: boolean;
-  isVerified: boolean;
+  verifiers: {
+    name: string;
+    did: string;
+  }[];
   title: string;
   description: string;
   order: string;
   logo?: string;
-  verified?: {
-    did: string[];
-    name?: string[];
-    avatar?: string[];
-  }[];
 }
 
 interface ActivityItem {

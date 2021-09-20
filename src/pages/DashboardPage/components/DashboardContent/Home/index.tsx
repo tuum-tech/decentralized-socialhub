@@ -283,18 +283,17 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
       } else {
         verified['discord'] = false;
       }
-      /* Calculate verified education credentials starts */
-      profile.educationDTO.items.map(async (x, i) => {
-        verified['education' + i] = x.isVerified;
-      });
-      /* Calculate verified education credentials ends */
+      // /* Calculate verified education credentials starts */
+      // profile.educationDTO.items.map(async (x, i) => {
+      //   verified['education' + i] = x.isVerified;
+      // });
+      // /* Calculate verified education credentials ends */
 
-      /* Calculate verified experience credentials starts */
-
-      profile.experienceDTO.items.map(async (x, i) => {
-        verified['experience' + i] = x.isVerified;
-      });
-      /* Calculate verified experience credentials ends */
+      // /* Calculate verified experience credentials starts */
+      // profile.experienceDTO.items.map(async (x, i) => {
+      //   verified['experience' + i] = x.isVerified;
+      // });
+      // /* Calculate verified experience credentials ends */
 
       setVerifiedStats(verified);
     })();

@@ -33,13 +33,6 @@ const ActivityPage: React.FC<InferMappedProps> = ({
     VerificationRequest[]
   >([]);
 
-  useEffect(() => {
-    (async () => {
-      await fetchMyVerifications();
-      await fetchVerificationRequestToMe();
-    })();
-  }, [fetchMyVerifications, fetchVerificationRequestToMe, props.session.did]);
-
   const fetchMyVerifications = async () => {
     const requests_by_me: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
       props.session.did,
@@ -56,13 +49,17 @@ const ActivityPage: React.FC<InferMappedProps> = ({
     setVerificationRequests(vRequests);
   });
 
+  useEffect(() => {
+    (async () => {
+      await fetchMyVerifications();
+      await fetchVerificationRequestToMe();
+    })();
+  }, [fetchMyVerifications, fetchVerificationRequestToMe, props.session.did]);
+
   const [showNewVerificationModal, setShowNewVerificationModal] = useState(
     false
   );
 
-  useEffect(() => {
-    console.log('I am on manager page');
-  }, []);
   return (
     <>
       <IonPage className={style['activitypage']}>
