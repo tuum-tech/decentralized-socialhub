@@ -94,6 +94,7 @@ const MyRequests: React.FC<Props> = ({
           <VerificationDetailContent
             verification={selectedVerification.verification}
             user={selectedVerification.user}
+            onClose={() => setSelectVerification(null)}
           />
         )}
       </VerificationDetailModal>

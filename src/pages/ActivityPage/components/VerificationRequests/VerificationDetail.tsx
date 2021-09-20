@@ -91,10 +91,12 @@ const VerificationDetailContent = ({
     <RowContainer>
       <ProfileContent>
         <Avatar did={verification.from_did} />
-        <p className="name">{user.name}</p>
+        <p className="mb-2 name">{user.name}</p>
         <DidSnippet did={user.did} />
 
-        <Link to={'/did/' + user.did}>View Profile</Link>
+        <Link className="mt-2" to={'/did/' + user.did}>
+          View Profile
+        </Link>
       </ProfileContent>
 
       <ContentArea>
@@ -122,17 +124,21 @@ const VerificationDetailContent = ({
           </div>
         )}
 
-        <InfoTxt className="mt-4 mb-2">Message I sent</InfoTxt>
-        <p>{verification.msg}</p>
+        {verification.msg && verification.msg !== '' && (
+          <div className="mt-4 mb-2">
+            <InfoTxt>Message</InfoTxt>
+            <p>{verification.msg}</p>
+          </div>
+        )}
 
         {verification.status !== 'requested' ? (
-          <>
-            <InfoTxt className="mt-4 mb-2">Feedbacks</InfoTxt>
+          <div className="mt-4 mb-2">
+            <InfoTxt>Feedbacks</InfoTxt>
             <p>{verification.feedbacks}</p>
-          </>
+          </div>
         ) : (
-          <>
-            <InfoTxt className="mt-4 mb-2"> Feedbacks</InfoTxt>
+          <div className="mt-4 mb-2">
+            <InfoTxt> Feedbacks</InfoTxt>
             <IonTextarea
               placeholder="Enter a message for the verifiers"
               value={feedbacks}
@@ -142,7 +148,7 @@ const VerificationDetailContent = ({
               }}
               onIonChange={n => setFeedbacks(n.detail.value!)}
             />
-          </>
+          </div>
         )}
       </ContentArea>
     </RowContainer>

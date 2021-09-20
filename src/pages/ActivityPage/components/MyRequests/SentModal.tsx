@@ -13,7 +13,7 @@ export const SentModal = styled(IonModal)`
   }
 `;
 
-const BlueButton = styled.button`
+export const BlueButton = styled.button`
   height: 40px;
   margin-top: 20px;
 
