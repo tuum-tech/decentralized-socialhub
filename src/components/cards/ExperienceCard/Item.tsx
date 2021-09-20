@@ -12,7 +12,6 @@ import {
 } from '../common';
 import Image from '../../../elements/Image';
 import styleWidget from '../WidgetCards.module.scss';
-import shieldIcon from '../../../assets/icon/shield.svg';
 import Verifiers from './Verifiers';
 
 const EditableContent = styled(IonCol)`

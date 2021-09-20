@@ -41,20 +41,21 @@ const ActivityPage: React.FC<InferMappedProps> = ({
     setMyVerification(requests_by_me);
   };
 
-  const fetchVerificationRequestToMe = useCallback(async () => {
+  const fetchVerificationRequestToMe = async () => {
     const vRequests: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
       props.session.did,
       false
     );
     setVerificationRequests(vRequests);
-  });
+  };
 
   useEffect(() => {
     (async () => {
       await fetchMyVerifications();
       await fetchVerificationRequestToMe();
     })();
-  }, [fetchMyVerifications, fetchVerificationRequestToMe, props.session.did]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.session.did]);
 
   const [showNewVerificationModal, setShowNewVerificationModal] = useState(
     false
