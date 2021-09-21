@@ -1,6 +1,6 @@
 import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 import { ActivityResponse } from 'src/pages/ActivityPage/types';
-import { getCredentials } from 'src/utils/credential';
+import { getCredentials } from 'src/utils/verification';
 
 import { showNotify } from 'src/utils/notify';
 import { getItemsFromData } from 'src/utils/script';
@@ -132,7 +132,7 @@ export class ProfileService {
       /* Calculate verified education credentials starts */
       educationDTO.items.map(async (x, i) => {
         educationDTO.items[i].verifiers = await ProfileService.getVerifiers(
-          `Education: ${x.institution} at ${x.program}`,
+          `${x.institution} at ${x.program}`,
           x.institution,
           userSession
         );
@@ -142,7 +142,7 @@ export class ProfileService {
       /* Calculate verified experience credentials starts */
       experienceDTO.items.map(async (x, i) => {
         experienceDTO.items[i].verifiers = await ProfileService.getVerifiers(
-          `Experience: ${x.title} at: ${x.institution}`,
+          `${x.title} at: ${x.institution}`,
           x.title,
           userSession
         );

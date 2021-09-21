@@ -16,6 +16,7 @@ import Verifiers from '../ExperienceCard/Verifiers';
 
 const EditableContent = styled(IonCol)`
   display: flex;
+  padding-left: 10px;
 `;
 
 interface EducationItemProps {

@@ -35,7 +35,7 @@ export class VerificationService {
     email: string,
     phonNumber: string
   ) {
-    const category = 'Personal Info';
+    const category = 'PersonalInfo: ';
     const records = [];
     if (name !== '') {
       records.push({

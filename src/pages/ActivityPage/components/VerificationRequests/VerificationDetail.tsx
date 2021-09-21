@@ -79,7 +79,7 @@ const VerificationDetailContent = ({
       approve ? 'approved' : 'rejected',
       verification.category,
       verification.msg,
-      feedbacks
+      verification.feedbacks
     );
     console.log(res);
     setLoading(0);

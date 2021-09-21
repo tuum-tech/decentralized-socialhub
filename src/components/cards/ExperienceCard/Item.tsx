@@ -16,6 +16,7 @@ import Verifiers from './Verifiers';
 
 const EditableContent = styled(IonCol)`
   display: flex;
+  padding-left: 10px;
 `;
 
 interface ExperienceItemProps {
