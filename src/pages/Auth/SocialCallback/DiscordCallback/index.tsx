@@ -69,25 +69,29 @@ const DiscordCallback: React.FC<PageProps> = ({
             discord
           );
 
-          console.log(verifiableCredential);
+          let didDocument: DIDDocument = await didService.getStoredDocument(
+            new DID(props.session.did)
+          );
+
+          let documentWithDiscordCredential: DIDDocument;
 
           if (props.session.mnemonics === '') {
             let essentialsService = new EssentialsService(didService);
             await essentialsService.addVerifiableCredentialEssentials(
               verifiableCredential
             );
-          } else {
-            let didDocument: DIDDocument = await didService.getStoredDocument(
+
+            documentWithDiscordCredential = await didService.getPublishedDocument(
               new DID(props.session.did)
             );
-
-            let documentWithDiscordCredential = await didService.addVerifiableCredentialToDIDDocument(
+          } else {
+            documentWithDiscordCredential = await didService.addVerifiableCredentialToDIDDocument(
               didDocument,
               verifiableCredential
             );
-
-            await didService.storeDocument(documentWithDiscordCredential);
           }
+
+          await didService.storeDocument(documentWithDiscordCredential);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.discord! = discord;

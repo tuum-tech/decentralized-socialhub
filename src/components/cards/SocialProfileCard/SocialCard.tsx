@@ -185,6 +185,16 @@ const SocialProfilesCard: React.FC<Props> = ({
   const removeVcEssentials = async (key: string, didService: DidService) => {
     // eslint-disable-next-line
     let cn = connectivity.getActiveConnector();
+    let vcKey = diddocument.getSubject().toString() + '#' + key;
+
+    await cn?.deleteCredentials([vcKey]);
+
+    let newDoc = await didService.getPublishedDocument(
+      diddocument.getSubject()
+    );
+
+    didService.storeDocument(newDoc);
+    setDidDocument(newDoc);
   };
 
   const removeVcDefault = async (key: string, didService: DidService) => {
@@ -319,7 +329,7 @@ const SocialProfilesCard: React.FC<Props> = ({
       <div className={style['manage-links-item']}>
         <ManagerLogo src={icon} />
         <ManagerButton
-          disabled={isRemoving || isEssentials}
+          disabled={isRemoving}
           onClick={() => {
             removeVc(key);
           }}

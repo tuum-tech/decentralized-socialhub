@@ -77,23 +77,27 @@ const FacebookCallback: React.FC<PageProps> = ({
             facebookId.name
           );
 
+          let didDocument: DIDDocument = await didService.getStoredDocument(
+            new DID(props.session.did)
+          );
+          let documentWithFacebookCredential: DIDDocument;
           if (props.session.mnemonics === '') {
             let essentialsService = new EssentialsService(didService);
             await essentialsService.addVerifiableCredentialEssentials(
               verifiableCredential
             );
-          } else {
-            let didDocument: DIDDocument = await didService.getStoredDocument(
+
+            documentWithFacebookCredential = await didService.getPublishedDocument(
               new DID(props.session.did)
             );
-
-            let documentWithFacebookCredential = await didService.addVerifiableCredentialToDIDDocument(
+          } else {
+            documentWithFacebookCredential = await didService.addVerifiableCredentialToDIDDocument(
               didDocument,
               verifiableCredential
             );
-
-            await didService.storeDocument(documentWithFacebookCredential);
           }
+
+          await didService.storeDocument(documentWithFacebookCredential);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.facebook! = facebookId.name;

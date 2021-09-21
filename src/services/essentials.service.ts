@@ -1,5 +1,8 @@
 import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/';
-import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import {
+  connectivity,
+  DID as CnDID
+} from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { DidService } from './did.service.new';
 
 export class EssentialsService {
@@ -10,19 +13,9 @@ export class EssentialsService {
   }
 
   addVerifiableCredentialEssentials = async (vc: VerifiableCredential) => {
-    let cn = connectivity.getActiveConnector();
-
+    let cn = new CnDID.DIDAccess();
     await cn?.importCredentials([vc], {
       forceToPublishCredentials: true
     });
-
-    let document = await this.DidService.getDidDocument(
-      vc.getId().getDid(),
-      false
-    );
-
-    await this.DidService.storeDocument(document);
-
-    this.DidService.Store.synchronize();
   };
 }

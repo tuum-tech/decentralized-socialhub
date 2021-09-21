@@ -87,23 +87,29 @@ const LinkedinCallback: React.FC<PageProps> = ({
             firstName + '' + lastName
           );
 
+          let didDocument: DIDDocument = await didService.getStoredDocument(
+            new DID(props.session.did)
+          );
+
+          let documentWithLinkedinCredential: DIDDocument;
+
           if (props.session.mnemonics === '') {
             let essentialsService = new EssentialsService(didService);
             await essentialsService.addVerifiableCredentialEssentials(
               verifiableCredential
             );
-          } else {
-            let didDocument: DIDDocument = await didService.getStoredDocument(
+
+            documentWithLinkedinCredential = await didService.getPublishedDocument(
               new DID(props.session.did)
             );
-
-            let documentWithLinkedinCredential = await didService.addVerifiableCredentialToDIDDocument(
+          } else {
+            documentWithLinkedinCredential = await didService.addVerifiableCredentialToDIDDocument(
               didDocument,
               verifiableCredential
             );
-
-            await didService.storeDocument(documentWithLinkedinCredential);
           }
+
+          await didService.storeDocument(documentWithLinkedinCredential);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.linkedin! = firstName + '' + lastName;

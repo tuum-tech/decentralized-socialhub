@@ -63,23 +63,28 @@ const GithubCallback: React.FC<PageProps> = ({
             github
           );
 
+          let didDocument: DIDDocument = await didService.getStoredDocument(
+            new DID(props.session.did)
+          );
+
+          let documentWithGithubCredential: DIDDocument;
+
           if (props.session.mnemonics === '') {
             let essentialsService = new EssentialsService(didService);
             await essentialsService.addVerifiableCredentialEssentials(
               verifiableCredential
             );
-          } else {
-            let didDocument: DIDDocument = await didService.getStoredDocument(
+
+            documentWithGithubCredential = await didService.getPublishedDocument(
               new DID(props.session.did)
             );
-
-            let documentWithGithubCredential = await didService.addVerifiableCredentialToDIDDocument(
+          } else {
+            documentWithGithubCredential = await didService.addVerifiableCredentialToDIDDocument(
               didDocument,
               verifiableCredential
             );
-
-            await didService.storeDocument(documentWithGithubCredential);
           }
+          await didService.storeDocument(documentWithGithubCredential);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.github! = github;

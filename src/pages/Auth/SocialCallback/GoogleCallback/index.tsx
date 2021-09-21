@@ -81,24 +81,30 @@ const GoogleCallback: React.FC<PageProps> = ({
             CredentialType.Google,
             googleId.email
           );
+
+          let didDocument: DIDDocument = await didService.getStoredDocument(
+            new DID(props.session.did)
+          );
+
+          let documentWithGoogleCredential: DIDDocument;
+
           if (props.session.mnemonics === '') {
             let essentialsService = new EssentialsService(didService);
             await essentialsService.addVerifiableCredentialEssentials(
               verifiableCredential
             );
-          } else {
-            let didDocument: DIDDocument = await didService.getStoredDocument(
+
+            documentWithGoogleCredential = await didService.getPublishedDocument(
               new DID(props.session.did)
             );
-
-            let documentWithGoogleCredential = await didService.addVerifiableCredentialToDIDDocument(
+          } else {
+            documentWithGoogleCredential = await didService.addVerifiableCredentialToDIDDocument(
               didDocument,
               verifiableCredential
             );
-            await didService.storeDocument(documentWithGoogleCredential);
-
-            await didService.publishDocument(documentWithGoogleCredential);
           }
+
+          await didService.storeDocument(documentWithGoogleCredential);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.google! = googleId.email;
