@@ -295,13 +295,29 @@ export class DidService implements IDidService {
     diddocument: DIDDocument,
     vc: VerifiableCredential
   ): Promise<DIDDocument> {
-    if (diddocument.getProof()) {
-      diddocument.proofs?.clear();
-    }
+    console.log('Add verified');
     let builder = DIDDocument.Builder.newFromDocument(diddocument);
+    builder.edit();
     return await builder
       .addCredential(vc)
       .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+  }
+
+  async addVerifiableCredentialToEssentialsDIDDocument(
+    diddocument: DIDDocument,
+    vc: VerifiableCredential
+  ): Promise<DIDDocument> {
+    if (diddocument.proofs?.size! > 0) {
+      diddocument.proofs?.clear();
+    }
+
+    if (diddocument.credentials?.has(vc.getId())) {
+      diddocument.credentials.delete(vc.getId());
+    }
+
+    diddocument.credentials?.set(vc.getId(), vc);
+
+    return diddocument;
   }
 
   async addServiceToDIDDocument(

@@ -37,6 +37,7 @@ import {
   DIDDocument,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
+import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 
 interface Props {
   diddocument: DIDDocument;
@@ -181,9 +182,22 @@ const SocialProfilesCard: React.FC<Props> = ({
     return '';
   };
 
-  const removeVc = async (key: string) => {
-    setIsRemoving(true);
-    let didService = await DidService.getInstance();
+  const removeVcEssentials = async (key: string, didService: DidService) => {
+    // eslint-disable-next-line
+    let cn = connectivity.getActiveConnector();
+    let vcKey = diddocument.getSubject().toString() + '#' + key;
+
+    await cn?.deleteCredentials([vcKey]);
+
+    let newDoc = await didService.getPublishedDocument(
+      diddocument.getSubject()
+    );
+
+    didService.storeDocument(newDoc);
+    setDidDocument(newDoc);
+  };
+
+  const removeVcDefault = async (key: string, didService: DidService) => {
     let didFromStore = await didService.getStoredDocument(
       diddocument.getSubject()
     );
@@ -195,6 +209,17 @@ const SocialProfilesCard: React.FC<Props> = ({
 
     didService.storeDocument(newDoc);
     setDidDocument(newDoc);
+  };
+
+  const removeVc = async (key: string) => {
+    setIsRemoving(true);
+    let didService = await DidService.getInstance();
+
+    if (sessionItem.mnemonics === '') {
+      removeVcEssentials(key, didService);
+    } else {
+      removeVcDefault(key, didService);
+    }
 
     let userService = new UserService(didService);
     let currentSession = await userService.SearchUserWithDID(sessionItem.did);
@@ -282,6 +307,8 @@ const SocialProfilesCard: React.FC<Props> = ({
     if (key === 'linkedin') header = 'LinkedIn Account';
     if (key === 'github') header = 'Github Account';
     if (key === 'discord') header = 'Discord Account';
+
+    let isEssentials = sessionItem.mnemonics === '';
 
     if (!vc)
       return (
