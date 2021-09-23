@@ -5,10 +5,10 @@
   "dependencies": {
     "@babel/core": "7.9.0",
     "@elastosfoundation/did-js-sdk": "^2.1.1",
-    "@elastosfoundation/elastos-connectivity-sdk-js": "^1.0.8",
+    "@elastosfoundation/elastos-connectivity-sdk-js": "^1.0.9",
     "@elastosfoundation/elastos-hive-js-sdk": "github:elastos/Elastos.NET.Hive.JS.SDK",
     "@elastosfoundation/elastos-js-sdk": "^1.2.12",
-    "@elastosfoundation/essentials-connector-client-browser": "^1.0.18",
+    "@elastosfoundation/essentials-connector-client-browser": "^1.0.19",
     "@sentry/react": "^6.12.0",
     "@sentry/tracing": "^6.12.0",
     "@svgr/webpack": "4.3.3",
