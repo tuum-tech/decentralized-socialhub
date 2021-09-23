@@ -187,7 +187,9 @@ const SocialProfilesCard: React.FC<Props> = ({
     let cn = connectivity.getActiveConnector();
     let vcKey = diddocument.getSubject().toString() + '#' + key;
 
-    await cn?.deleteCredentials([vcKey]);
+    await cn?.deleteCredentials([vcKey], {
+      forceToPublishCredentials: true
+    });
 
     let newDoc = await didService.getPublishedDocument(
       diddocument.getSubject()
