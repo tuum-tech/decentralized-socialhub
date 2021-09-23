@@ -41,6 +41,7 @@ import DashboardHeader from './components/DashboardHeader';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service.new';
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import SyncBar from 'src/components/SyncBar';
 
 const TutorialModal = styled(IonModal)`
   --border-radius: 16px;

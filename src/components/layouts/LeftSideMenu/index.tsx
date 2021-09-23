@@ -44,7 +44,8 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
           <IonItem
             className={
               // active === 'profile_manager'
-              history.location.pathname === '/manager'
+              history.location.pathname === '/manager' ||
+              history.location.pathname === '/sync'
                 ? style['item-active']
                 : style['item-link']
             }

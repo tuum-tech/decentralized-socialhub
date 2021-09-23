@@ -6,6 +6,7 @@ import DashboardHome from './Home';
 import DashboardStatus from './Status';
 import DashboardBadges from './Badges';
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import SyncBar from 'src/components/SyncBar';
 
 const Container = styled.div`
   background: #f7fafc;
@@ -64,6 +65,7 @@ const DashboardContent: React.FC<Props> = ({
   const [active, setActive] = useState('home');
   return (
     <Container>
+      <SyncBar></SyncBar>
       <IonList>
         <IonItem
           className={(active === 'home' ? 'tab-active' : '') + ' tab-item'}

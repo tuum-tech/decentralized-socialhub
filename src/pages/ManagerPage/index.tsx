@@ -20,6 +20,7 @@ import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import style from './style.module.scss';
 import ProfileEditor from './components/ProfileEditor';
 import { useEffect } from 'react';
+import SyncBar from 'src/components/SyncBar';
 
 const ManagerPage: React.FC<InferMappedProps> = ({
   eProps,
@@ -66,6 +67,7 @@ const ManagerPage: React.FC<InferMappedProps> = ({
                 <Header>
                   <PageTitle>Profile Manager</PageTitle>
                 </Header>
+
                 {user && user.did && user.did !== '' && (
                   <ProfileEditor
                     session={user}

@@ -25,6 +25,7 @@ import { showNotify } from 'src/utils/notify';
 import { requestUpdateEmail } from './fetchapi';
 import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { DidService } from 'src/services/did.service.new';
+import SyncBar from 'src/components/SyncBar';
 
 interface Props {
   session: ISessionItem;
@@ -92,6 +93,11 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
   return (
     <IonContent className={style['profileeditor']}>
       <IonGrid className={style['profileeditorgrid']}>
+        <IonRow>
+          <IonCol size="12">
+            <SyncBar></SyncBar>
+          </IonCol>
+        </IonRow>
         <IonRow>
           <IonCol size="4">
             <TemplateManagerCard
