@@ -32,6 +32,8 @@ import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 
 import arrowLeft from '../../assets/icon/arrow-left-square.svg';
+import SyncProgressCard from './components/SyncProgressCard';
+import SyncItemsCard from './components/SyncItemsCard';
 
 const SyncPage: React.FC<InferMappedProps> = ({
   eProps,
@@ -43,7 +45,7 @@ const SyncPage: React.FC<InferMappedProps> = ({
   return (
     <>
       <IonPage className={style['syncpage']}>
-        <IonContent className={style['content-page']}>
+        <IonContent className={style['profilecontent']}>
           <IonGrid className={style['profilepagegrid']}>
             <IonRow className={style['profilecontent']}>
               <IonCol size="2" className={style['left-panel']}>
@@ -62,7 +64,13 @@ const SyncPage: React.FC<InferMappedProps> = ({
                     <PageSubtitle>Sync Profile</PageSubtitle>
                   </HeaderInfo>
                 </Header>
-                <Content></Content>
+                <Content>
+                  <SyncProgressCard
+                    totalAmount={10}
+                    onSync={async () => {}}
+                  ></SyncProgressCard>
+                  <SyncItemsCard></SyncItemsCard>
+                </Content>
               </IonCol>
             </IonRow>
           </IonGrid>

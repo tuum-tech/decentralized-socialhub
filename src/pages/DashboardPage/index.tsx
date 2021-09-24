@@ -324,6 +324,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
       )}
       <IonContent className={style['profilepage']}>
         <IonGrid className={style['profilepagegrid']}>
+          ``
           <IonRow className={style['profilecontent']}>
             <IonCol size="2" className={style['left-panel']}>
               <Logo />

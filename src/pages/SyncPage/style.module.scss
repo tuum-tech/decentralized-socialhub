@@ -1,13 +1,16 @@
 .syncpage {
-    min-height: 99%;
-    height: 99%;
+    position: absolute;
+    top: 0px; /* Header Height */
+    bottom: 0px; /* Footer Height */
     background-color: #f7fafc;
   
     .profilepagegrid {
       padding: 0;
       margin: 0;
-      min-height: 91%;
-      height: 91%;
+      position: absolute;
+      top: 0px; /* Header Height */
+      bottom: 0px; /* Footer Height */
+      width: 100%;
     }
   
     .profilecontent {

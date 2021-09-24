@@ -23,8 +23,8 @@ export const HeaderInfo = styled.div`
 `;
 
 export const Content = styled.div`
-  width: 100%;
-  height: 100%;
+  height: 100%
+  margin: 0;
   padding: 20px;
 `;
 
