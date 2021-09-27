@@ -2,15 +2,11 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { IonModal } from '@ionic/react';
 
-import { DidService } from 'src/services/did.service.new';
-import { DIDDocument, DID } from '@elastosfoundation/did-js-sdk/';
-import { TuumTechScriptService } from 'src/services/script.service';
-import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
-
 import Expander from 'src/elements/Expander';
 import { timeSince } from 'src/utils/time';
 import { getStatusColor } from './UserRows';
 import { BlueButton } from './SentModal';
+import { VerificationService } from 'src/services/verification.service';
 
 export const InfoTxt = styled.span`
   font-style: normal;
@@ -51,16 +47,10 @@ export const VerificationDetailModal = styled(IonModal)`
 interface Props {
   verification: VerificationRequest;
   user: ISessionItem;
-  me: ISessionItem;
   onClose: () => void;
 }
 
-const VerificationDetailContent = ({
-  verification,
-  user,
-  me,
-  onClose
-}: Props) => {
+const VerificationDetailContent = ({ verification, user, onClose }: Props) => {
   const [loading, setLoading] = useState(false);
   const { category, records } = verification;
 
@@ -77,7 +67,7 @@ const VerificationDetailContent = ({
         </p>
 
         <p className="bottom mt-4" style={{ display: 'flex' }}>
-          {timeSince(new Date(verification.updated_at))}
+          {timeSince(new Date(verification.modified.$date))}
           <li
             style={{
               color: getStatusColor(verification.status),
@@ -110,49 +100,8 @@ const VerificationDetailContent = ({
           disabled={loading}
           onClick={async () => {
             setLoading(true);
-
-            // format data
-            let category = 'PersonalInfo';
-            if (verification.category.startsWith('Education: ')) {
-              category = 'Education';
-            } else if (verification.category.startsWith('Experience: ')) {
-              category = 'Experience';
-            }
-            const content =
-              verification.category +
-              '***' +
-              `Verified_By_${user.name}(${user.did})`;
-
-            // // publish this verified credential into didDocument
-            let didService = await DidService.getInstance();
-            let verifiableCredential = await DidcredsService.generateVerifiableCredential(
-              me.did,
-              category as CredentialType,
-              content
-            );
-
-            let didDocument: DIDDocument = await didService.getStoredDocument(
-              new DID(me.did)
-            );
-            let documentWithCredential = await didService.addVerifiableCredentialToDIDDocument(
-              didDocument,
-              verifiableCredential
-            );
-
-            await didService.storeDocument(documentWithCredential);
-            await didService.publishDocument(documentWithCredential);
-
-            // update tuum.tech vault
-            const res = await TuumTechScriptService.updateVerificationRequest(
-              verification.from_did,
-              verification.to_did,
-              verification.updated_at.toString(),
-              'Approved & Published',
-              verification.category,
-              verification.msg,
-              verification.feedbacks
-            );
-            console.log(res);
+            const vService = new VerificationService();
+            await vService.storeNewCredential(verification);
             setLoading(false);
             onClose();
           }}

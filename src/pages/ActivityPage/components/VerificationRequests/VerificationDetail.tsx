@@ -4,7 +4,7 @@ import { IonTextarea, IonModal } from '@ionic/react';
 import { Link } from 'react-router-dom';
 
 import { SmallLightButton } from 'src/elements/buttons';
-import { TuumTechScriptService } from 'src/services/script.service';
+import { VerificationService } from 'src/services/verification.service';
 import Expander from 'src/elements/Expander';
 import { timeSince } from 'src/utils/time';
 import DidSnippet from 'src/elements/DidSnippet';
@@ -72,18 +72,10 @@ const VerificationDetailContent = ({
   const handleAction = async (approve: boolean) => {
     setLoading(approve ? 1 : 2);
 
-    const res = await TuumTechScriptService.updateVerificationRequest(
-      verification.from_did,
-      verification.to_did,
-      verification.updated_at.toString(),
-      approve ? 'approved' : 'rejected',
-      verification.category,
-      verification.msg,
-      verification.feedbacks
-    );
-    console.log(res);
-    setLoading(0);
+    const vService = new VerificationService();
+    await vService.approveCredential(verification, approve, feedbacks);
 
+    setLoading(0);
     closeModal();
   };
 
@@ -101,7 +93,7 @@ const VerificationDetailContent = ({
 
       <ContentArea>
         <p className="bottom mt-4" style={{ display: 'flex' }}>
-          {timeSince(new Date(verification.updated_at))}
+          {timeSince(new Date(verification.modified.$date))}
           <li
             style={{
               color: getStatusColor(verification.status),

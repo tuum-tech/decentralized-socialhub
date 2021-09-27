@@ -96,7 +96,7 @@ const UserRows: React.FC<Props> = ({
             {renderUserName(user, v)}
           </p>
           <p className="bottom" style={{ display: 'flex' }}>
-            {timeSince(new Date(v.updated_at))}
+            {timeSince(new Date(v.modified.$date))}
             <li
               style={{ color: getStatusColor(v.status), marginLeft: ' 20px' }}
             >

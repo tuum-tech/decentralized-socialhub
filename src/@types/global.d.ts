@@ -23,6 +23,7 @@ interface Template {
   intro: string;
 }
 interface VerificationData {
+  idKey: string;
   category: string;
   records: {
     field: string;
@@ -35,13 +36,15 @@ interface VerificationRequest {
   msg: string;
   from_did: string;
   to_did: string;
-  updated_at: Date;
   category: string;
   status: string;
+  idKey: string;
   records: {
     field: string;
     value: string;
   }[];
+  modified: { $date: string };
+  credential: any;
 }
 
 interface ExperienceDTO {

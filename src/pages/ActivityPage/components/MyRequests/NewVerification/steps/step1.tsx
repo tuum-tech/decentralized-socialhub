@@ -57,7 +57,7 @@ const CredentialView = ({
   setCredentials,
   onNext
 }: Props) => {
-  const selectedCategoreis = credentials.map(c => c.category);
+  const selectedCategoreis = credentials.map(c => c.idKey);
   const [selectedItem, setSelectedItem] = useState(categories[0]);
   const [showItems, setShowItems] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -96,7 +96,7 @@ const CredentialView = ({
               className={style['selectBox-selected-item']}
               onClick={() => setShowItems(!showItems)}
             >
-              <div>{selectedItem.category}</div>
+              <div>{selectedItem.idKey}</div>
               <div className={style['selectBox-arrow']}>
                 {showItems ? <DropUp /> : <DropDown />}
               </div>
@@ -109,27 +109,26 @@ const CredentialView = ({
           >
             {categories.map((cate: VerificationData) => (
               <div
-                key={cate.category}
+                key={cate.idKey}
                 onClick={() => {
-                  if (selectedCategoreis.includes(cate.category)) {
+                  if (selectedCategoreis.includes(cate.idKey)) {
                     setCredentials(
-                      credentials.filter(c => c.category !== cate.category)
+                      credentials.filter(c => c.idKey !== cate.idKey)
                     );
                   } else {
                     setCredentials(credentials.concat([cate]));
                   }
                   setSelectedItem(cate);
-                  setShowItems(false);
                 }}
                 className={style['selectBox-items_row']}
                 style={{
                   justifyContent: 'space-between'
                 }}
               >
-                <div>{cate.category}</div>
+                <div>{cate.idKey}</div>
                 <img
                   src={
-                    selectedCategoreis.includes(cate.category)
+                    selectedCategoreis.includes(cate.idKey)
                       ? CheckFill
                       : CheckEmpty
                   }

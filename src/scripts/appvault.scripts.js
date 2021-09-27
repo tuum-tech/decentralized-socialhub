@@ -116,12 +116,12 @@ let run = async () => {
         document: {
           from_did: '$params.from_did',
           to_did: '$params.to_did',
-          updated_at: '$params.updated_at',
           status: 'requested',
           category: '$params.category', // personal info
           records: '$params.records',
-          feedbacks: '$params.feedbacks',
-          msg: '$params.msg'
+          feedbacks: '',
+          msg: '$params.msg',
+          idKey: '$params.idKey'
         }
       }
     }
@@ -137,17 +137,17 @@ let run = async () => {
       body: {
         collection: 'verifications',
         filter: {
-          from_did: '$params.from_did',
-          to_did: '$params.to_did',
-          updated_at: '$params.updated_at',
           category: '$params.category',
-          msg: '$params.msg'
+          idKey: '$params.idKey',
+          msg: '$params.msg',
+          from_did: '$params.from_did',
+          to_did: '$params.to_did'
         },
         update: {
           $set: {
             status: '$params.status',
-            updated_at: '$params.new_updated_at',
-            feedbacks: '$params.feedbacks'
+            feedbacks: '$params.feedbacks',
+            credential: '$params.credential'
           }
         }
       }

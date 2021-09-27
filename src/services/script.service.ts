@@ -253,18 +253,18 @@ export class TuumTechScriptService {
     from_did: string,
     to_did: string,
     data: VerificationData,
-    msg: string
+    msg: string,
+    idKey: string
   ) {
     const add_verification_request_script = {
       name: 'add_verification',
       params: {
         from_did,
         to_did,
-        updated_at: new Date(),
         category: data.category,
         records: data.records,
         msg,
-        feedbacks: ''
+        idKey
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
@@ -276,25 +276,26 @@ export class TuumTechScriptService {
   }
 
   public static async updateVerificationRequest(
-    from_did: string,
-    to_did: string,
-    updated_at: string,
     status: string,
     category: string,
     msg: string,
-    feedbacks: string
+    feedbacks: string,
+    credential: any,
+    idKey: string,
+    from_did: string,
+    to_did: string
   ) {
     const update_verification_script = {
       name: 'update_verification',
       params: {
         status,
-        from_did,
-        to_did,
-        updated_at,
         category,
-        new_updated_at: new Date(),
         msg,
-        feedbacks
+        feedbacks,
+        idKey,
+        credential,
+        from_did,
+        to_did
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
