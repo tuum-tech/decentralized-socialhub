@@ -24,27 +24,60 @@ export class VerificationService {
   ) {
     const { experienceDTO, educationDTO } = profile;
 
-    const personInfoData: VerificationData[] = this.generatePersonalInfoVerificaiotnData(
-      session.name || '',
-      session.email || '',
-      session.phonNumber || ''
-    );
+    let requests: VerificationData[] = [];
+
+    // name
+    if (session.name && session.name !== '') {
+      const data: VerificationData = this.generateGeneralVerificatoinData(
+        'name',
+        'name',
+        session.name
+      );
+      requests = requests.concat([data]);
+    }
+
+    // email
+    if (
+      session.loginCred &&
+      session.loginCred.email &&
+      session.loginCred.email !== ''
+    ) {
+      const data: VerificationData = this.generateGeneralVerificatoinData(
+        'email',
+        'email',
+        session.loginCred.email
+      );
+      requests = requests.concat([data]);
+    }
+
+    // phone
+    if (session.phone && session.phone !== '') {
+      const data: VerificationData = this.generateGeneralVerificatoinData(
+        'phone',
+        'phone',
+        session.phone
+      );
+      requests = requests.concat([data]);
+    }
 
     const educationData: VerificationData[] = this.generateEducationVerificationData(
       educationDTO.items
     );
+    requests = requests.concat(educationData);
 
     const experienceData: VerificationData[] = this.generateExperienceVerificationData(
       experienceDTO.items
     );
+    requests = requests.concat(experienceData);
 
-    return [...personInfoData, ...educationData, ...experienceData];
+    console.log('===>requests', requests);
+    return requests;
   }
 
   public generatePersonalInfoVerificaiotnData(
     name: string,
     email: string,
-    phonNumber: string
+    phone: string
   ) {
     const category = 'PersonalInfo';
     const records = [];
@@ -60,10 +93,10 @@ export class VerificationService {
         value: email
       });
     }
-    if (phonNumber !== '') {
+    if (phone !== '') {
       records.push({
-        field: 'phonNumber',
-        value: phonNumber
+        field: 'phone',
+        value: phone
       });
     }
 
@@ -76,6 +109,23 @@ export class VerificationService {
         records
       }
     ];
+  }
+
+  public generateGeneralVerificatoinData(
+    category: string,
+    field: string,
+    value: string
+  ) {
+    return {
+      idKey: `${category[0].toUpperCase() + category.slice(1)}: ${value}`,
+      category: category,
+      records: [
+        {
+          field,
+          value
+        }
+      ]
+    };
   }
 
   public generateEducationVerificationData(items: EducationItem[]) {
@@ -110,7 +160,7 @@ export class VerificationService {
         }
         data.push({
           idKey: `Education: ${edu.program} at ${edu.institution}`,
-          category: 'Education',
+          category: 'education',
           records
         });
       }
@@ -152,7 +202,7 @@ export class VerificationService {
         }
         data.push({
           idKey: `Experience: ${exp.title} at ${exp.institution}`,
-          category: 'Experience',
+          category: 'experience',
           records
         });
       }
@@ -256,7 +306,7 @@ export class VerificationService {
           new Date().getDate()
         )
       )
-      .type(`${v.category}Credential`)
+      .type(`${v.category[0].toUpperCase() + v.category.slice(1)}Credential`)
       .property(v.category, content)
       .id(DIDURL.from(`${v.from_did}#${v.idKey}`) as DIDURL)
       .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
@@ -330,6 +380,7 @@ export class VerificationService {
     if (!diddocument || diddocument.getCredentialCount() === 0) return [];
 
     const vcs = diddocument.getCredentials();
+
     let issuerDids: string[] = [];
     for (let i = 0; i < vcs.length; i++) {
       const subject: VerifiableCredential.Subject = vcs[i].getSubject();

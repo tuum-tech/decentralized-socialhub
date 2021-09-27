@@ -131,7 +131,7 @@ export class ProfileService {
       educationDTO.items.map(async (x, i) => {
         educationDTO.items[i].verifiers = await ProfileService.getVerifiers(
           x,
-          'Education',
+          'education',
           userSession
         );
       });
@@ -141,7 +141,7 @@ export class ProfileService {
       experienceDTO.items.map(async (x, i) => {
         experienceDTO.items[i].verifiers = await ProfileService.getVerifiers(
           x,
-          'Experience',
+          'experience',
           userSession
         );
       });

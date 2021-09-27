@@ -129,7 +129,7 @@ interface ISessionItem {
   code?: string;
   status?: string;
   pageTemplate?: string;
-  phonNumber?: string;
+  phone?: string;
   timestamp: number;
 }
 

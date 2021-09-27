@@ -321,10 +321,12 @@ export class TuumTechScriptService {
     };
 
     let response: any = await this.runTuumTechScript(get_verifications_script);
-    return getItemsFromData(
+    let items = getItemsFromData(
       response,
       my ? 'get_requests_by_me' : 'get_requests_to_me'
     );
+    items = items.sort((a: any, b: any) => b.modified.$date - a.modified.$date);
+    return items;
   }
 
   public static async getMyVerifiedCredentials(did: string, my = true) {
@@ -342,7 +344,9 @@ export class TuumTechScriptService {
     };
 
     let response: any = await this.runTuumTechScript(get_verifications_script);
-    return getItemsFromData(response, 'get_my_verified_credentials');
+    let items = getItemsFromData(response, 'get_my_verified_credentials');
+    items = items.sort((a: any, b: any) => b.modified.$date - a.modified.$date);
+    return items;
   }
 }
 
