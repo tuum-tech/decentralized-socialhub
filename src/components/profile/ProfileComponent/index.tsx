@@ -10,7 +10,7 @@ import ExperienceCard from 'src/components/cards/ExperienceCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 import BadgeCard from 'src/components/cards/BadgeCard';
 import FollowCards from 'src/components/cards/FollowCards';
-import { getThemeData } from 'src/data/theme';
+import { getThemeData } from 'src/utils/template';
 
 import PublicProfileTabs from './PublicProfileTabs';
 import ProfileHeader from './ProfileHeader';

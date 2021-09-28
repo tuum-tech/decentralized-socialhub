@@ -14,6 +14,12 @@ interface ExperienceItem {
   logo?: string;
 }
 
+interface Template {
+  value: string;
+  title: string;
+  intro: string;
+}
+
 interface ExperienceDTO {
   isEnabled: boolean;
   items: ExperienceItem[];

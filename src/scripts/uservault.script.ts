@@ -14,9 +14,51 @@ export class UserVaultScripts {
     await hiveClient.Database.createCollection('experience_profile');
     await hiveClient.Database.createCollection('activities');
     await hiveClient.Database.createCollection('public_fields');
+    await hiveClient.Database.createCollection('templates');
   }
 
   static async SetScripts(hiveClient: HiveClient) {
+    // templates
+    await hiveClient.Scripting.SetScript({
+      name: 'get_my_templates',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_my_templates',
+        output: true,
+        body: {
+          collection: 'templates'
+        }
+      }
+    });
+
+    await hiveClient.Scripting.SetScript({
+      name: 'set_my_templates',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'set_my_templates',
+        output: true,
+        body: {
+          collection: 'templates',
+          filter: {
+            did: '$params.did'
+          },
+          update: {
+            $set: {
+              templates: '$params.templates'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+
     // scripts for public fields of profile
     await hiveClient.Scripting.SetScript({
       name: 'set_public_fields',
@@ -228,6 +270,7 @@ export class UserVaultScripts {
       }
     });
 
+    // activies
     await hiveClient.Scripting.SetScript({
       name: 'get_activity',
       allowAnonymousUser: true,
@@ -296,5 +339,6 @@ export class UserVaultScripts {
     await hiveClient.Database.deleteCollection('experience_profile');
     await hiveClient.Database.deleteCollection('activities');
     await hiveClient.Database.deleteCollection('public_fields');
+    await hiveClient.Database.deleteCollection('templates');
   }
 }

@@ -194,8 +194,6 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   );
 };
 
-// export default PublicPage;
-
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
   session: makeSelectSession()
 });

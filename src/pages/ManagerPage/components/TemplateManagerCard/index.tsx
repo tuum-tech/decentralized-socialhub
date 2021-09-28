@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   IonCardTitle,
   IonCardHeader,
@@ -9,8 +9,7 @@ import {
   IonCol,
   IonText,
   IonRadioGroup,
-  IonRadio,
-  IonButton
+  IonRadio
 } from '@ionic/react';
 import styled from 'styled-components';
 
@@ -20,7 +19,9 @@ import { ProfileName } from 'src/elements/texts';
 import Avatar from 'src/components/Avatar';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import { DidService } from 'src/services/did.service.new';
-import { templates } from 'src/data/theme';
+import { TemplateService } from 'src/services/template.service';
+
+import TemplateModalContent, { TemplateModal } from './Modal/TemplateModal';
 
 export const Divider = styled.hr`
   width: 100%;
@@ -56,18 +57,53 @@ const ProfileStatus = styled.span`
   color: #4c6fff;
 `;
 
-interface IProps {
+const AddNewTemplateButton = styled.div`
+  border: 1px solid #4c6fff;
+  box-sizing: border-box;
+  border-radius: 8px;
+  width: 100%;
+  padding: 16px;
+  background: white;
+
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 14px;
+  color: #4c6fff;
+
+  text-align: center;
+  cursor: pointer;
+`;
+
+const allTemplates = TemplateService.getAllTemplates();
+
+interface PageProps {
   sessionItem: ISessionItem;
   updateSession: (props: { session: ISessionItem }) => void;
 }
 
-const TemplateManagerCard: React.FC<IProps> = ({
+const TemplateManagerCard: React.FC<PageProps> = ({
   sessionItem,
   updateSession
-}: IProps) => {
+}: PageProps) => {
+  const [myTemplates, setMyTemplates] = useState<Template[]>([]);
+  const [showModal, setShowModal] = useState(false);
   const [template, setTemplate] = useState(
     sessionItem.pageTemplate || 'default'
   );
+
+  useEffect(() => {
+    (async () => {
+      if (sessionItem && sessionItem.did) {
+        const mTemplates = await TemplateService.getMyTemplates(
+          sessionItem.did
+        );
+        setMyTemplates(mTemplates);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionItem]);
+
   return (
     <IonCard className={styleWidget['overview']}>
       <IonCardHeader>
@@ -137,30 +173,59 @@ const TemplateManagerCard: React.FC<IProps> = ({
             </IonRow>
             <Divider />
 
-            {templates.map(template => {
-              return (
-                <>
-                  <IonRow className="ion-justify-content-between">
-                    <IonCol size="*">
-                      <Header3>{template.title}</Header3>
-                      <h4> {template.intro}</h4>
-                    </IonCol>
+            {[
+              {
+                value: 'default',
+                title: 'General Profile',
+                intro: 'Everything displayed'
+              }
+            ]
+              .concat(myTemplates)
+              .map((t: Template) => {
+                return (
+                  <div key={t.value}>
+                    <IonRow className="ion-justify-content-between">
+                      <IonCol size="*">
+                        <Header3>{t.title}</Header3>
+                        <h4> {t.intro}</h4>
+                      </IonCol>
 
-                    <IonCol size="2">
-                      <IonRadio value={template.value}></IonRadio>
-                    </IonCol>
-                  </IonRow>
-                  <Divider />
-                </>
-              );
-            })}
+                      <IonCol size="2">
+                        <IonRadio value={t.value}></IonRadio>
+                      </IonCol>
+                    </IonRow>
+                    <Divider />
+                  </div>
+                );
+              })}
 
             <IonRow>
-              <IonButton>Learn more about templates</IonButton>
+              <AddNewTemplateButton onClick={() => setShowModal(true)}>
+                + Add New Template
+              </AddNewTemplateButton>
             </IonRow>
           </IonGrid>
         </IonRadioGroup>
       </IonCardContent>
+
+      <TemplateModal
+        isOpen={showModal}
+        cssClass="my-custom-class"
+        onDidDismiss={() => setShowModal(false)}
+      >
+        <TemplateModalContent
+          activeTemplate={template}
+          myTemplates={myTemplates.map((t: Template) => t.value)}
+          allTemplates={allTemplates}
+          updateTemplates={async (newTemplateValues: string[]) => {
+            const newMyTemplates = allTemplates.filter((t: Template) =>
+              newTemplateValues.includes(t.value)
+            );
+            await TemplateService.setMyTemplates(sessionItem, newMyTemplates);
+            setMyTemplates(newMyTemplates);
+          }}
+        />
+      </TemplateModal>
     </IonCard>
   );
 };
