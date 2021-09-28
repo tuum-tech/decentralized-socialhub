@@ -1,7 +1,7 @@
 import { IonPage, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
-import { getThemeData } from 'src/data/theme';
+import { getThemeData } from 'src/utils/template';
 
 export const ContentRow = styled(IonRow)<ThemeProps>`
   background-color: ${({ template }: ThemeProps) =>

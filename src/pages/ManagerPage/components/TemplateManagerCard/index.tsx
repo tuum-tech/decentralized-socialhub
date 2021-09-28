@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   IonCardTitle,
   IonCardHeader,
@@ -9,10 +9,16 @@ import {
   IonCol,
   IonText,
   IonRadioGroup,
-  IonRadio,
-  IonButton
+  IonRadio
 } from '@ionic/react';
 import styled from 'styled-components';
+
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+
+import { makeSelectMyTemplates } from 'src/store/templates/selectors';
+import { setMyTemplates } from 'src/store/templates/actions';
+import { InferMappedProps, SubState } from './types';
 
 import { SmallLightButton } from 'src/elements/buttons';
 import { UserService } from 'src/services/user.service';
@@ -20,7 +26,9 @@ import { ProfileName } from 'src/elements/texts';
 import Avatar from 'src/components/Avatar';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import { DidService } from 'src/services/did.service.new';
-import { templates } from 'src/data/theme';
+import { allTemplates } from 'src/data/theme';
+
+import TemplateModalContent, { TemplateModal } from './Modal/TemplateModal';
 
 export const Divider = styled.hr`
   width: 100%;
@@ -56,18 +64,40 @@ const ProfileStatus = styled.span`
   color: #4c6fff;
 `;
 
-interface IProps {
+const AddNewTemplateButton = styled.div`
+  border: 1px solid #4c6fff;
+  box-sizing: border-box;
+  border-radius: 8px;
+  width: 100%;
+  padding: 16px;
+  background: white;
+
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 14px;
+  color: #4c6fff;
+
+  text-align: center;
+
+  cursor: pointer;
+`;
+
+interface PageProps extends InferMappedProps {
   sessionItem: ISessionItem;
   updateSession: (props: { session: ISessionItem }) => void;
 }
 
-const TemplateManagerCard: React.FC<IProps> = ({
-  sessionItem,
-  updateSession
-}: IProps) => {
+const TemplateManagerCard: React.FC<PageProps> = ({
+  eProps,
+  ...props
+}: PageProps) => {
+  const { sessionItem, updateSession, myTemplates } = props;
+  const [showModal, setShowModal] = useState(false);
   const [template, setTemplate] = useState(
     sessionItem.pageTemplate || 'default'
   );
+
   return (
     <IonCard className={styleWidget['overview']}>
       <IonCardHeader>
@@ -110,6 +140,7 @@ const TemplateManagerCard: React.FC<IProps> = ({
         <IonRadioGroup
           value={template}
           onIonChange={e => {
+            console.log('====>onIonChange', e.detail.value);
             setTemplate(e.detail.value);
           }}
         >
@@ -137,32 +168,77 @@ const TemplateManagerCard: React.FC<IProps> = ({
             </IonRow>
             <Divider />
 
-            {templates.map(template => {
-              return (
-                <>
-                  <IonRow className="ion-justify-content-between">
-                    <IonCol size="*">
-                      <Header3>{template.title}</Header3>
-                      <h4> {template.intro}</h4>
-                    </IonCol>
+            {[
+              {
+                value: 'default',
+                title: 'General Profile',
+                intro: 'Everything displayed'
+              }
+            ]
+              .concat(myTemplates)
+              .map((t: Template) => {
+                return (
+                  <div key={t.value}>
+                    <IonRow className="ion-justify-content-between">
+                      <IonCol size="*">
+                        <Header3>{t.title}</Header3>
+                        <h4> {t.intro}</h4>
+                      </IonCol>
 
-                    <IonCol size="2">
-                      <IonRadio value={template.value}></IonRadio>
-                    </IonCol>
-                  </IonRow>
-                  <Divider />
-                </>
-              );
-            })}
+                      <IonCol size="2">
+                        <IonRadio value={t.value}></IonRadio>
+                      </IonCol>
+                    </IonRow>
+                    <Divider />
+                  </div>
+                );
+              })}
 
             <IonRow>
-              <IonButton>Learn more about templates</IonButton>
+              <AddNewTemplateButton onClick={() => setShowModal(true)}>
+                + Add New Template
+              </AddNewTemplateButton>
             </IonRow>
           </IonGrid>
         </IonRadioGroup>
       </IonCardContent>
+
+      <TemplateModal
+        isOpen={showModal}
+        cssClass="my-custom-class"
+        onDidDismiss={() => setShowModal(false)}
+      >
+        <TemplateModalContent
+          activeTemplate={template}
+          myTemplates={myTemplates.map((t: Template) => t.value)}
+          updateTemplates={(newTemplateValues: string[]) => {
+            const newMyTemplates = allTemplates.filter((t: Template) =>
+              newTemplateValues.includes(t.value)
+            );
+            eProps.setMyTemplates({
+              myTemplates: newMyTemplates
+            });
+          }}
+        />
+      </TemplateModal>
     </IonCard>
   );
 };
 
-export default TemplateManagerCard;
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  myTemplates: makeSelectMyTemplates()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setMyTemplates: (props: { myTemplates: Template[] }) =>
+        dispatch(setMyTemplates(props))
+    }
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TemplateManagerCard);

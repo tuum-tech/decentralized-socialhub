@@ -3,6 +3,7 @@ import { IonList, IonLabel, IonItem } from '@ionic/react';
 import styled from 'styled-components';
 
 import { getThemeData } from 'src/utils/template';
+
 interface IProps {
   scrollToPosition: any;
   template: string;
@@ -47,10 +48,7 @@ const Container = styled.div`
   }
 `;
 
-const PublicProfileTabs: React.FC<IProps> = ({
-  scrollToPosition,
-  template
-}: IProps) => {
+const TemplateTabs: React.FC<IProps> = ({ template }: IProps) => {
   const [active, setActive] = useState('about');
 
   return (
@@ -60,7 +58,6 @@ const PublicProfileTabs: React.FC<IProps> = ({
           className={(active === 'about' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => {
             setActive('about');
-            scrollToPosition('about');
           }}
         >
           <IonLabel className="tab-label">About</IonLabel>
@@ -71,7 +68,6 @@ const PublicProfileTabs: React.FC<IProps> = ({
           }
           onClick={() => {
             setActive('experience');
-            scrollToPosition('experience');
           }}
         >
           <IonLabel className="tab-label">Experience</IonLabel>
@@ -80,7 +76,6 @@ const PublicProfileTabs: React.FC<IProps> = ({
           className={(active === 'education' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => {
             setActive('education');
-            scrollToPosition('education');
           }}
         >
           <IonLabel className="tab-label">Education</IonLabel>
@@ -90,4 +85,4 @@ const PublicProfileTabs: React.FC<IProps> = ({
   );
 };
 
-export default PublicProfileTabs;
+export default TemplateTabs;

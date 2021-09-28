@@ -1,4 +1,4 @@
-export const templates = [
+export const allTemplates: Template[] = [
   {
     value: 'default',
     title: 'General Profile',
@@ -6,27 +6,27 @@ export const templates = [
   },
   {
     value: 'crypto',
-    title: 'Crypto Profile',
-    intro: 'Everything displayed'
+    title: 'Crypto Enthusiast',
+    intro: 'Stocks, Investors or buzz-word enthusiast'
   },
   {
     value: 'gamer',
-    title: 'Gamer Profile',
-    intro: 'Everything displayed'
+    title: 'Computer Gaming',
+    intro: 'Computers are my thing and I rule it'
   },
   {
     value: 'soccer',
-    title: 'Soccer Fan',
-    intro: 'Everything displayed'
+    title: 'Soccer/Football',
+    intro: 'For Players & die hard fans'
   },
   {
     value: 'education',
-    title: 'Education Profile',
-    intro: 'Everything displayed'
+    title: 'Academic',
+    intro: 'For students, teachers, researchers'
   }
 ];
 
-const themeData = {
+export const themeData = {
   default: {
     container: {
       backgroundColor: '#F7FAFC'
@@ -118,16 +118,3 @@ const themeData = {
     }
   }
 };
-
-export const getThemeData = (template, component, style) => {
-  if (
-    themeData[template] &&
-    themeData[template][component] &&
-    themeData[template][component][style]
-  ) {
-    return themeData[template][component][style];
-  }
-  return themeData['default'][component][style];
-};
-
-export default themeData;

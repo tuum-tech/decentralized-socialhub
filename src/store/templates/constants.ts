@@ -1,0 +1,4 @@
+export const Actions = {
+  GET_MY_TEMPLATES: 'GET_MY_TEMPLATES',
+  SET_MY_TEMPLATES: 'SET_MY_TEMPLATES'
+};
