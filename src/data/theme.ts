@@ -1,31 +1,3 @@
-export const allTemplates: Template[] = [
-  {
-    value: 'default',
-    title: 'General Profile',
-    intro: 'Everything displayed'
-  },
-  {
-    value: 'crypto',
-    title: 'Crypto Enthusiast',
-    intro: 'Stocks, Investors or buzz-word enthusiast'
-  },
-  {
-    value: 'gamer',
-    title: 'Computer Gaming',
-    intro: 'Computers are my thing and I rule it'
-  },
-  {
-    value: 'soccer',
-    title: 'Soccer/Football',
-    intro: 'For Players & die hard fans'
-  },
-  {
-    value: 'education',
-    title: 'Academic',
-    intro: 'For students, teachers, researchers'
-  }
-];
-
 export const themeData = {
   default: {
     container: {

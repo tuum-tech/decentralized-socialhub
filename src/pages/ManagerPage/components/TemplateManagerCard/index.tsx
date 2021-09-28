@@ -13,20 +13,13 @@ import {
 } from '@ionic/react';
 import styled from 'styled-components';
 
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-
-import { makeSelectMyTemplates } from 'src/store/templates/selectors';
-import { setMyTemplates } from 'src/store/templates/actions';
-import { InferMappedProps, SubState } from './types';
-
 import { SmallLightButton } from 'src/elements/buttons';
 import { UserService } from 'src/services/user.service';
 import { ProfileName } from 'src/elements/texts';
 import Avatar from 'src/components/Avatar';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import { DidService } from 'src/services/did.service.new';
-import { allTemplates } from 'src/data/theme';
+import { TemplateService } from 'src/services/template.service';
 
 import TemplateModalContent, { TemplateModal } from './Modal/TemplateModal';
 
@@ -79,24 +72,37 @@ const AddNewTemplateButton = styled.div`
   color: #4c6fff;
 
   text-align: center;
-
   cursor: pointer;
 `;
 
-interface PageProps extends InferMappedProps {
+const allTemplates = TemplateService.getAllTemplates();
+
+interface PageProps {
   sessionItem: ISessionItem;
   updateSession: (props: { session: ISessionItem }) => void;
 }
 
 const TemplateManagerCard: React.FC<PageProps> = ({
-  eProps,
-  ...props
+  sessionItem,
+  updateSession
 }: PageProps) => {
-  const { sessionItem, updateSession, myTemplates } = props;
+  const [myTemplates, setMyTemplates] = useState<Template[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [template, setTemplate] = useState(
     sessionItem.pageTemplate || 'default'
   );
+
+  useEffect(() => {
+    (async () => {
+      if (sessionItem && sessionItem.did) {
+        const mTemplates = await TemplateService.getMyTemplates(
+          sessionItem.did
+        );
+        setMyTemplates(mTemplates);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionItem]);
 
   return (
     <IonCard className={styleWidget['overview']}>
@@ -140,7 +146,6 @@ const TemplateManagerCard: React.FC<PageProps> = ({
         <IonRadioGroup
           value={template}
           onIonChange={e => {
-            console.log('====>onIonChange', e.detail.value);
             setTemplate(e.detail.value);
           }}
         >
@@ -211,13 +216,13 @@ const TemplateManagerCard: React.FC<PageProps> = ({
         <TemplateModalContent
           activeTemplate={template}
           myTemplates={myTemplates.map((t: Template) => t.value)}
-          updateTemplates={(newTemplateValues: string[]) => {
+          allTemplates={allTemplates}
+          updateTemplates={async (newTemplateValues: string[]) => {
             const newMyTemplates = allTemplates.filter((t: Template) =>
               newTemplateValues.includes(t.value)
             );
-            eProps.setMyTemplates({
-              myTemplates: newMyTemplates
-            });
+            await TemplateService.setMyTemplates(sessionItem, newMyTemplates);
+            setMyTemplates(newMyTemplates);
           }}
         />
       </TemplateModal>
@@ -225,20 +230,4 @@ const TemplateManagerCard: React.FC<PageProps> = ({
   );
 };
 
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  myTemplates: makeSelectMyTemplates()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setMyTemplates: (props: { myTemplates: Template[] }) =>
-        dispatch(setMyTemplates(props))
-    }
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TemplateManagerCard);
+export default TemplateManagerCard;

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { IonSearchbar } from '@ionic/react';
 import styled from 'styled-components';
 
-import { allTemplates } from 'src/data/theme';
 import { SearchComponent } from 'src/elements/inputs/SearchInput';
 import { showNotify } from 'src/utils/notify';
 
@@ -87,34 +86,28 @@ export const TemplateCard = styled.div`
 
 interface Props {
   myTemplates: string[];
+  allTemplates: Template[];
   updateTemplates: (newMyTemplates: string[]) => void;
   activeTemplate: string;
 }
 
-const allTemplatesExceptDefault = allTemplates.filter(
-  (t: Template) => t.value !== 'default'
-);
-
 const TemplatesTab = ({
   myTemplates,
   updateTemplates,
-  activeTemplate
+  activeTemplate,
+  allTemplates
 }: Props) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredTemplates, setFilteredTemplates] = useState(
-    allTemplatesExceptDefault
-  );
+  const [filteredTemplates, setFilteredTemplates] = useState(allTemplates);
 
   useEffect(() => {
     (async () => {
       if (searchQuery !== '' && searchQuery.length > 2) {
         setFilteredTemplates(
-          allTemplatesExceptDefault.filter((t: any) =>
-            t.value.includes(searchQuery)
-          )
+          allTemplates.filter((t: any) => t.value.includes(searchQuery))
         );
       } else if (searchQuery === '') {
-        setFilteredTemplates(allTemplatesExceptDefault);
+        setFilteredTemplates(allTemplates);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps

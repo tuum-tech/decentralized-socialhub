@@ -27,13 +27,15 @@ export const TemplateModal = styled(IonModal)`
 interface Props {
   activeTemplate: string;
   myTemplates: string[];
+  allTemplates: Template[];
   updateTemplates: (templates: string[]) => void;
 }
 
 const TemplateModalContent = ({
   activeTemplate,
   myTemplates,
-  updateTemplates
+  updateTemplates,
+  allTemplates
 }: Props) => {
   const [tab, setTab] = useState('templates');
 
@@ -46,12 +48,14 @@ const TemplateModalContent = ({
             activeTemplate={activeTemplate}
             myTemplates={myTemplates}
             updateTemplates={updateTemplates}
+            allTemplates={allTemplates}
           />
         ) : (
           <ManageTab
             activeTemplate={activeTemplate}
             myTemplates={myTemplates}
             updateTemplates={updateTemplates}
+            allTemplates={allTemplates}
           />
         )}
       </Container>

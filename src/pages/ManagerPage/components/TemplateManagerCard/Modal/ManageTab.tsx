@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { allTemplates } from 'src/data/theme';
 import { showNotify } from 'src/utils/notify';
 
 import { getTemplateImg, Content, TemplateCard } from './TemplatesTab';
@@ -9,9 +8,15 @@ interface Props {
   myTemplates: string[];
   updateTemplates: (newMyTemplates: string[]) => void;
   activeTemplate: string;
+  allTemplates: Template[];
 }
 
-const ManageTab = ({ myTemplates, updateTemplates, activeTemplate }: Props) => {
+const ManageTab = ({
+  myTemplates,
+  updateTemplates,
+  activeTemplate,
+  allTemplates
+}: Props) => {
   const templates = allTemplates.filter((v: Template) =>
     myTemplates.includes(v.value)
   );
