@@ -34,6 +34,7 @@ export const retrieveDocInfo = async (
         let subject = value.id.getFragment();
         let properties = value.subject.getProperties();
         let propertieValue = properties[subject];
+
         switch (subject) {
           case 'name':
             uInfo.name = propertieValue as string;
@@ -60,7 +61,7 @@ export const retrieveDocInfo = async (
             loginCred.discord = propertieValue as string;
             break;
           case 'avatar':
-            let avatarObject = JSON.parse(propertieValue.toString());
+            let avatarObject = JSON.parse(JSON.stringify(propertieValue));
             let baseStr = avatarObject['data'];
             if (!baseStr.startsWith('data:image/')) {
               baseStr = `data:${avatarObject['content-type']};base64,${baseStr}`;
