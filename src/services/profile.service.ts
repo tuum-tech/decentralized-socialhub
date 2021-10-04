@@ -1,6 +1,5 @@
 import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 import { ActivityResponse } from 'src/pages/ActivityPage/types';
-// import { getCredentials } from 'src/utils/verification';
 import { VerificationService } from 'src/services/verification.service';
 
 import { showNotify } from 'src/utils/notify';

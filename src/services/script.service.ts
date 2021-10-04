@@ -6,6 +6,7 @@ import { HiveService } from './hive.service';
 import { DidService } from './did.service.new';
 import { alertError } from 'src/utils/notify';
 import { getItemsFromData } from 'src/utils/script';
+import { Guid } from 'guid-typescript';
 
 export class TuumTechScriptService {
   private static async runTuumTechScript(script: any) {
@@ -264,7 +265,8 @@ export class TuumTechScriptService {
         category: data.category,
         records: data.records,
         msg,
-        idKey
+        idKey,
+        guid: Guid.create()
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
@@ -277,25 +279,17 @@ export class TuumTechScriptService {
 
   public static async updateVerificationRequest(
     status: string,
-    category: string,
-    msg: string,
     feedbacks: string,
     credential: any,
-    idKey: string,
-    from_did: string,
-    to_did: string
+    guid: Guid
   ) {
     const update_verification_script = {
       name: 'update_verification',
       params: {
         status,
-        category,
-        msg,
         feedbacks,
-        idKey,
         credential,
-        from_did,
-        to_did
+        guid
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,

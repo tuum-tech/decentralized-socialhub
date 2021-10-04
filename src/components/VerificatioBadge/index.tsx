@@ -69,27 +69,24 @@ const VerificationBadge: React.FC<Props> = ({ users, userSession }) => {
         <Container>
           <p className="title">Verifiers</p>
           {users.map((user: any) => {
-            if (userSession.did !== user.did) {
-              return (
-                <div className="userRow" key={user.did}>
-                  <Avatar did={user.did} width="45px" />
-                  <p
-                    className="ml-2"
-                    key={user.did}
-                    onClick={() => {
-                      setShowModal(false);
-                      history.push('/did/' + user.did);
-                    }}
-                  >
-                    {user.name}
-                    <br />
-                    <span>{user.did}</span>
-                  </p>
-                </div>
-              );
-            } else {
-              return <div key={user.did} />;
-            }
+            return (
+              <div className="userRow" key={user.did}>
+                <Avatar did={user.did} width="45px" />
+                <p
+                  className="ml-2"
+                  key={user.did}
+                  onClick={() => {
+                    setShowModal(false);
+                    history.push('/did/' + user.did);
+                  }}
+                >
+                  {user.name}
+                  {user.did === userSession.did && ' (Self-Proclaimed)'}
+                  <br />
+                  <span>{user.did}</span>
+                </p>
+              </div>
+            );
           })}
         </Container>
       </VerifierModal>

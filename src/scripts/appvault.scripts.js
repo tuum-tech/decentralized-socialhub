@@ -121,7 +121,8 @@ let run = async () => {
           records: '$params.records',
           feedbacks: '',
           msg: '$params.msg',
-          idKey: '$params.idKey'
+          idKey: '$params.idKey',
+          guid: '$params.guid'
         }
       }
     }
@@ -137,11 +138,7 @@ let run = async () => {
       body: {
         collection: 'verifications',
         filter: {
-          category: '$params.category',
-          idKey: '$params.idKey',
-          msg: '$params.msg',
-          from_did: '$params.from_did',
-          to_did: '$params.to_did'
+          guid: '$params.guid'
         },
         update: {
           $set: {

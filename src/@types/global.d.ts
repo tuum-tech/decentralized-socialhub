@@ -45,6 +45,7 @@ interface VerificationRequest {
   }[];
   modified: { $date: string };
   credential: any;
+  guid: Guid;
 }
 
 interface ExperienceDTO {

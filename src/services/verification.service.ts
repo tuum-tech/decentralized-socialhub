@@ -257,10 +257,13 @@ export class VerificationService {
     category: string,
     from_did: string
   ) {
-    let vcTypeStrings = category.split(':');
-    let vcType = vcTypeStrings[0] + 'Credential';
-    if (vcTypeStrings.length > 0) {
-      vcType = vcType + vcTypeStrings[1] || '';
+    let vcType = '';
+
+    if (category.includes(':')) {
+      let vcTypeStrings = category.split(':');
+      vcType = vcTypeStrings[0] + 'Credential' + vcTypeStrings[1];
+    } else {
+      vcType = category + 'Credential';
     }
 
     return {
@@ -314,13 +317,9 @@ export class VerificationService {
 
     await TuumTechScriptService.updateVerificationRequest(
       approve ? 'approved' : 'rejected',
-      v.category,
-      v.msg,
       feedbacks,
       vc.toJSON(),
-      v.idKey,
-      v.from_did,
-      v.to_did
+      v.guid
     );
   }
 
@@ -367,13 +366,9 @@ export class VerificationService {
 
     await TuumTechScriptService.updateVerificationRequest(
       'saved to identity',
-      v.category,
-      v.msg,
       v.feedbacks,
       v.credential,
-      v.idKey,
-      v.from_did,
-      v.to_did
+      v.guid
     );
   }
 
