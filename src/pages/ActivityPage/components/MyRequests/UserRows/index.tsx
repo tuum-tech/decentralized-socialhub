@@ -7,6 +7,7 @@ import { getItemsFromData } from 'src/utils/script';
 import Avatar from 'src/components/Avatar';
 import { timeSince } from 'src/utils/time';
 import { SmallLightButton } from 'src/elements/buttons';
+import { getCategoryTitle } from 'src/utils/credential';
 
 export const UserRow = styled.div`
   background: #ffffff;
@@ -86,13 +87,14 @@ const UserRows: React.FC<Props> = ({
     const user = users.filter((user: any) => user.did === v.to_did)[0];
 
     return (
-      <UserRow key={v.from_did + v.to_did + v.status + v.category}>
+      <UserRow key={(v as any)._id.$oid}>
         <div className="left">
           <Avatar did={v.to_did} width="50px" />
         </div>
         <div className="right">
           <p className="top">
-            {v.category} <span style={{ fontWeight: 'bold' }}>sent to </span>
+            {getCategoryTitle(v)}
+            <span style={{ fontWeight: 'bold' }}>sent to </span>
             {renderUserName(user, v)}
           </p>
           <p className="bottom" style={{ display: 'flex' }}>

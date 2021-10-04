@@ -8,6 +8,7 @@ import Avatar from 'src/components/Avatar';
 import { UserRow, getStatusColor } from '../MyRequests/UserRows';
 import { getItemsFromData } from 'src/utils/script';
 import { timeSince } from 'src/utils/time';
+import { getCategoryTitle } from 'src/utils/credential';
 
 interface Props {
   session: ISessionItem;
@@ -44,13 +45,14 @@ const UserRows: React.FC<Props> = ({
     };
 
     return (
-      <UserRow key={v.from_did + v.to_did + v.status + v.category}>
+      <UserRow key={(v as any)._id.$oid}>
         <div className="left">
           <Avatar did={v.from_did} width="50px" />
         </div>
         <div className="right">
           <p className="top">
-            {v.category} <span style={{ fontWeight: 'bold' }}>from </span>
+            {getCategoryTitle(v)}
+            <span style={{ fontWeight: 'bold' }}>from </span>
             {renderUserName(user, v)}
           </p>
           <p className="bottom" style={{ display: 'flex' }}>

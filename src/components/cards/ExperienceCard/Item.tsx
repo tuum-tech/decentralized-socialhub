@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { IonCol, IonGrid, IonPopover, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
+import VerificatioBadge from '../../VerificatioBadge';
 import {
   Description,
   Institution,
@@ -12,7 +13,6 @@ import {
 } from '../common';
 import Image from '../../../elements/Image';
 import styleWidget from '../WidgetCards.module.scss';
-import Verifiers from './Verifiers';
 
 const EditableContent = styled(IonCol)`
   display: flex;
@@ -29,6 +29,7 @@ interface ExperienceItemProps {
   removeFunc: any;
   isEditable: boolean;
   template: string;
+  userSession: ISessionItem;
 }
 
 const ExperienceItem: React.FC<ExperienceItemProps> = ({
@@ -37,7 +38,8 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
   index,
   removeFunc,
   isEditable,
-  template
+  template,
+  userSession
 }) => {
   const [popoverState, setShowPopover] = useState({
     showPopover: false,
@@ -65,7 +67,10 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
                 <IonCol>
                   {experienceItem.verifiers &&
                     experienceItem.verifiers.length > 0 && (
-                      <Verifiers users={experienceItem.verifiers} />
+                      <VerificatioBadge
+                        userSession={userSession}
+                        users={experienceItem.verifiers}
+                      />
                     )}
                 </IonCol>
               </IonRow>

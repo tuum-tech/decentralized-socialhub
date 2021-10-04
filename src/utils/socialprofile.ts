@@ -89,7 +89,7 @@ const hasCredential = (document: DIDDocument, key: string): boolean => {
   return false;
 };
 
-export const hasCredentials = async (didDocument: DIDDocument) => {
+export const hasCredentials = (didDocument: DIDDocument) => {
   if (didDocument === null) return false;
 
   if (hasCredential(didDocument, 'google')) return true;

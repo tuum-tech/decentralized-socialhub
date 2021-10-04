@@ -104,6 +104,13 @@ interface BasicDTO {
 }
 
 interface ProfileDTO {
+  name: {
+    name: string;
+    verifiers: {
+      name: string;
+      did: string;
+    }[];
+  };
   basicDTO: BasicDTO;
   experienceDTO: ExperienceDTO;
   educationDTO: EducationDTO;

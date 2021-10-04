@@ -5,6 +5,8 @@ import { IonTextarea, IonCol, IonRow } from '@ionic/react';
 import arrowLeft from 'src/assets/icon/arrow-left-square.svg';
 import Avatar from 'src/components/Avatar';
 import Expander from 'src/elements/Expander';
+import { getCategoryTitle } from 'src/utils/credential';
+
 import { Container, NextButton } from './step1';
 
 const InfoTxt = styled.p`
@@ -31,6 +33,7 @@ const ReviewPage = ({
   sendRequest
 }: Props) => {
   const [msg, setMsg] = useState('');
+
   return (
     <Container>
       <img
@@ -46,7 +49,11 @@ const ReviewPage = ({
       </div>
       <div>
         {credentials.map(c => (
-          <Expander title={c.category} cateogiries={c.records} />
+          <Expander
+            title={getCategoryTitle(c)}
+            cateogiries={c.records}
+            key={c.idKey}
+          />
         ))}
       </div>
 
@@ -55,7 +62,7 @@ const ReviewPage = ({
           <InfoTxt>Seleceted Verifiers</InfoTxt>
           <div style={{ display: 'flex' }}>
             {selectedDids.map(did => (
-              <div className="mr-2">
+              <div className="mr-2" key={did}>
                 <Avatar did={did} width="40px" />
               </div>
             ))}

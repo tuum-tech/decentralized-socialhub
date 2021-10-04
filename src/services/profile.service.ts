@@ -29,7 +29,11 @@ export class ProfileService {
     }
 
     const vService = new VerificationService();
-    return await vService.getCredentials(x, type, ProfileService.didDocument);
+    return await vService.getCredentialVerifiers(
+      x,
+      type,
+      ProfileService.didDocument
+    );
   };
 
   static getDidDocument = async (
@@ -79,7 +83,7 @@ export class ProfileService {
   static async getFullProfile(
     did: string,
     userSession: ISessionItem
-  ): Promise<ProfileDTO | undefined> {
+  ): Promise<ProfileDTO> {
     let basicDTO: any = {};
     let educationDTO: EducationDTO = {
       items: [],
@@ -148,12 +152,14 @@ export class ProfileService {
       /* Calculate verified experience credentials ends */
     }
 
-    // let mvCredentials = await TuumTechScriptService.getMyVerifiedCredentials(
-    //   props.session.did,
-    //   false
-    // );
+    // add name credentials
+    const nameCredential = {
+      name: basicDTO.name,
+      verifiers: await ProfileService.getVerifiers({}, 'name', userSession)
+    };
 
     return {
+      name: nameCredential,
       basicDTO,
       educationDTO,
       experienceDTO
@@ -549,6 +555,10 @@ export const defaultUserInfo: ISessionItem = {
 };
 
 export const defaultFullProfile = {
+  name: {
+    name: '',
+    verifiers: []
+  },
   basicDTO: {
     isEnabled: false,
     name: '',

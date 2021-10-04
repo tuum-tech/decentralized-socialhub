@@ -38,7 +38,7 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   let did: string = props.match.params.did;
 
   const [publicUser, setPublicUser] = useState(defaultUserInfo);
-  const [publicUserProfile, setPublicUserProfile] = useState(
+  const [publicUserProfile, setPublicUserProfile] = useState<ProfileDTO>(
     defaultFullProfile
   );
   const [didDocument, setDidDocument] = useState<DIDDocument | null>(null);

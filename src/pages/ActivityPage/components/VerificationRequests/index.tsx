@@ -37,9 +37,9 @@ const VerificationRequests: React.FC<Props> = ({
             <VerificationDetailContent
               verification={selectedVerification.verification}
               user={selectedVerification.user}
-              closeModal={() => {
+              closeModal={async () => {
                 setSelectVerification(null);
-                forceReFetch();
+                await forceReFetch();
               }}
             />
           )}

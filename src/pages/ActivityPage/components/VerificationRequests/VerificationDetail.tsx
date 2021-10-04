@@ -12,6 +12,7 @@ import Avatar from 'src/components/Avatar';
 
 import { InfoTxt, Container } from '../MyRequests/VerificationDetail';
 import { getStatusColor } from '../MyRequests/UserRows';
+import { getCategoryTitle } from 'src/utils/credential';
 
 export const VerificationDetailModal = styled(IonModal)`
   --border-radius: 16px;
@@ -67,7 +68,7 @@ const VerificationDetailContent = ({
 }: Props) => {
   const [loading, setLoading] = useState(0);
   const [feedbacks, setFeedbacks] = useState('');
-  const { category, records } = verification;
+  const { records } = verification;
 
   const handleAction = async (approve: boolean) => {
     setLoading(approve ? 1 : 2);
@@ -104,7 +105,10 @@ const VerificationDetailContent = ({
           </li>
         </p>
 
-        <Expander title={category} cateogiries={records} />
+        <Expander
+          title={getCategoryTitle(verification)}
+          cateogiries={records}
+        />
         {verification.status === 'requested' && (
           <div className="buttons">
             <SmallLightButton onClick={async () => await handleAction(true)}>

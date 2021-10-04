@@ -182,7 +182,7 @@ const UsersView = ({
               <p>Loading...</p>
             ) : (
               filteredUsers.items.map(({ name, did }) => (
-                <div className="userRow">
+                <div className="userRow" key={did}>
                   <Avatar did={did} width="45px" />
                   <div className="userRow_info">
                     <span className="name">{name}</span>

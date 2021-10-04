@@ -61,9 +61,10 @@ export const LinkButton = styled(DefaultLinkButton)`
 
 interface Props {
   profile: ProfileDTO;
+  userSession: ISessionItem;
 }
 
-const ManageProfile: React.FC<Props> = ({ profile }) => {
+const ManageProfile: React.FC<Props> = ({ profile, userSession }) => {
   let filledContent = false;
   let hasAbout =
     profile.basicDTO && profile.basicDTO.about && profile.basicDTO.about !== '';
@@ -100,10 +101,15 @@ const ManageProfile: React.FC<Props> = ({ profile }) => {
         <ExperienceCard
           experienceDTO={profile.experienceDTO}
           template="default"
+          userSession={userSession}
         />
       )}
       {hasEducation && (
-        <EducationCard educationDTO={profile.educationDTO} template="default" />
+        <EducationCard
+          educationDTO={profile.educationDTO}
+          template="default"
+          userSession={userSession}
+        />
       )}
     </>
   );

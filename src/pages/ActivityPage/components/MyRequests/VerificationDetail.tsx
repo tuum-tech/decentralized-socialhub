@@ -7,6 +7,7 @@ import { timeSince } from 'src/utils/time';
 import { getStatusColor } from './UserRows';
 import { BlueButton } from './SentModal';
 import { VerificationService } from 'src/services/verification.service';
+import { getCategoryTitle } from 'src/utils/credential';
 
 export const InfoTxt = styled.span`
   font-style: normal;
@@ -52,7 +53,7 @@ interface Props {
 
 const VerificationDetailContent = ({ verification, user, onClose }: Props) => {
   const [loading, setLoading] = useState(false);
-  const { category, records } = verification;
+  const { records } = verification;
 
   return (
     <Container
@@ -78,7 +79,10 @@ const VerificationDetailContent = ({ verification, user, onClose }: Props) => {
           </li>
         </p>
 
-        <Expander title={category} cateogiries={records} />
+        <Expander
+          title={getCategoryTitle(verification)}
+          cateogiries={records}
+        />
 
         {verification.msg && verification.msg !== '' && (
           <div className="mt-4 mb-2">

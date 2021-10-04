@@ -14,7 +14,7 @@ export enum VerificationStatus {
   requested = 'requested',
   verified = 'verified',
   rejected = 'rejected',
-  published = 'published'
+  savedtoidentity = 'saved to identity'
 }
 
 export class VerificationService {
@@ -70,7 +70,6 @@ export class VerificationService {
     );
     requests = requests.concat(experienceData);
 
-    console.log('===>requests', requests);
     return requests;
   }
 
@@ -158,9 +157,10 @@ export class VerificationService {
             value: edu.end
           });
         }
+        const idKey = `Education: ${edu.program} at ${edu.institution}`;
         data.push({
-          idKey: `Education: ${edu.program} at ${edu.institution}`,
-          category: 'education',
+          idKey,
+          category: idKey.toLowerCase().replaceAll(' ', '_'),
           records
         });
       }
@@ -200,9 +200,11 @@ export class VerificationService {
             value: exp.end
           });
         }
+
+        const idKey = `Experience: ${exp.title} at ${exp.institution}`;
         data.push({
-          idKey: `Experience: ${exp.title} at ${exp.institution}`,
-          category: 'experience',
+          idKey,
+          category: idKey.toLowerCase().replaceAll(' ', '_'),
           records
         });
       }
@@ -220,15 +222,12 @@ export class VerificationService {
     try {
       for (let i = 0; i < toDids.length; i++) {
         for (let j = 0; j < verificationData.length; j++) {
-          const { unique_id } = this.get_content_from_verification_data(
-            verificationData[j].records
-          );
           await TuumTechScriptService.addVerificationRequest(
             fromDid,
             toDids[i],
             verificationData[j],
             msg,
-            unique_id
+            verificationData[j].idKey
           );
         }
       }
@@ -244,35 +243,30 @@ export class VerificationService {
     }
   }
 
-  // temporary
-  public async removeVerifiableCredential(diddocument: DIDDocument) {
-    const didurl = diddocument.getCredentials()[0].id;
-    if (didurl) {
-      let builder = DIDDocument.Builder.newFromDocument(diddocument);
-
-      // builder.removeCredential(didurl);
-      const documentWithCredential = await builder
-        .removeCredential(didurl)
-        .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
-
-      let didService = await DidService.getInstance();
-      await didService.storeDocument(documentWithCredential);
-    }
-  }
-
   private get_content_from_verification_data(records: any[]) {
     let content = {} as any;
-    let unique_id = '';
-
     for (let i = 0; i < records.length; i++) {
       const field = records[i].field;
       const value = records[i].value;
       content[field] = value;
-      unique_id += (records[i].field + '_' + records[i].value)
-        .replaceAll(' ', '_')
-        .toLowerCase();
     }
-    return { content, unique_id };
+    return content;
+  }
+
+  private generate_DID_id_from_verification(
+    category: string,
+    from_did: string
+  ) {
+    let vcTypeStrings = category.split(':');
+    let vcType = vcTypeStrings[0] + 'Credential';
+    if (vcTypeStrings.length > 0) {
+      vcType = vcType + vcTypeStrings[1] || '';
+    }
+
+    return {
+      vcType: vcType.toLowerCase(),
+      DIDstring: `${from_did}#${vcType}`
+    };
   }
 
   public async approveCredential(
@@ -283,33 +277,40 @@ export class VerificationService {
     const requester_didUrl = DID.from(v.from_did);
     if (!requester_didUrl) return;
 
-    const signerDidDoc: DIDDocument = await (
-      await DidService.getInstance()
-    ).getStoredDocument(new DID(v.to_did));
+    let vc: any = {};
+    if (approve) {
+      const signerDidDoc: DIDDocument = await (
+        await DidService.getInstance()
+      ).getStoredDocument(new DID(v.to_did));
 
-    let issuer = new Issuer(
-      signerDidDoc,
-      DIDURL.from('#primary', signerDidDoc.getSubject()) as DIDURL
-    );
-    let vcBuilder = new VerifiableCredential.Builder(
-      issuer,
-      (await requester_didUrl.resolve()).getSubject() // requester did
-    );
+      let issuer = new Issuer(
+        signerDidDoc,
+        DIDURL.from('#primary', signerDidDoc.getSubject()) as DIDURL
+      );
+      let vcBuilder = new VerifiableCredential.Builder(
+        issuer,
+        (await requester_didUrl.resolve()).getSubject() // requester did
+      );
 
-    const { content } = this.get_content_from_verification_data(v.records);
+      let content = this.get_content_from_verification_data(v.records);
+      const { vcType, DIDstring } = this.generate_DID_id_from_verification(
+        v.category,
+        v.from_did
+      );
 
-    const vc = await vcBuilder
-      .expirationDate(
-        new Date(
-          new Date().getFullYear() + 5,
-          new Date().getMonth(),
-          new Date().getDate()
+      vc = await vcBuilder
+        .expirationDate(
+          new Date(
+            new Date().getFullYear() + 5,
+            new Date().getMonth(),
+            new Date().getDate()
+          )
         )
-      )
-      .type(`${v.category[0].toUpperCase() + v.category.slice(1)}Credential`)
-      .property(v.category, content)
-      .id(DIDURL.from(`${v.from_did}#${v.idKey}`) as DIDURL)
-      .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+        .type(vcType)
+        .property(vcType, content)
+        .id(DIDURL.from(DIDstring) as DIDURL)
+        .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+    }
 
     await TuumTechScriptService.updateVerificationRequest(
       approve ? 'approved' : 'rejected',
@@ -331,7 +332,11 @@ export class VerificationService {
       return;
     }
 
-    const didUrl = DIDURL.from(`${v.from_did}#${v.idKey}`) as DIDURL;
+    const { DIDstring } = this.generate_DID_id_from_verification(
+      v.category,
+      v.from_did
+    );
+    const didUrl = DIDURL.from(DIDstring) as DIDURL;
     const existingVerifiableCredential = didDocument.getCredential(didUrl);
 
     if (existingVerifiableCredential) {
@@ -361,7 +366,7 @@ export class VerificationService {
     await didService.storeDocument(docWithCredential);
 
     await TuumTechScriptService.updateVerificationRequest(
-      'published',
+      'saved to identity',
       v.category,
       v.msg,
       v.feedbacks,
@@ -372,7 +377,7 @@ export class VerificationService {
     );
   }
 
-  public async getCredentials(
+  public async getCredentialVerifiers(
     x: any,
     type: string,
     diddocument: any
@@ -384,11 +389,15 @@ export class VerificationService {
     let issuerDids: string[] = [];
     for (let i = 0; i < vcs.length; i++) {
       const subject: VerifiableCredential.Subject = vcs[i].getSubject();
+
       const subjectProperties = subject.getProperties();
+      const key = Object.keys(subjectProperties)[0];
 
-      if (subjectProperties && subjectProperties[type]) {
+      let issuerDid = '';
+      if (key.toLowerCase() === type.toLowerCase()) {
+        issuerDid = JSON.parse(JSON.stringify(vcs[i].issuer));
+      } else if (key.toLowerCase().startsWith(type.toLowerCase())) {
         const credential = Object.values(subjectProperties)[0] as any;
-
         if (
           x.institution === credential.institution &&
           x.program === credential.program &&
@@ -401,12 +410,13 @@ export class VerificationService {
             same = true;
           }
           if (same) {
-            let issuerDid = JSON.parse(JSON.stringify(vcs[i].issuer));
-            if (!issuerDids.includes(issuerDid)) {
-              issuerDids.push(issuerDid);
-            }
+            issuerDid = JSON.parse(JSON.stringify(vcs[i].issuer));
           }
         }
+      }
+
+      if (issuerDid !== '' && !issuerDids.includes(issuerDid)) {
+        issuerDids.push(issuerDid);
       }
     }
 

@@ -12,7 +12,7 @@ import {
 } from '../common';
 import Image from '../../../elements/Image';
 import styleWidget from '../WidgetCards.module.scss';
-import Verifiers from '../ExperienceCard/Verifiers';
+import VerificatioBadge from '../../VerificatioBadge';
 
 const EditableContent = styled(IonCol)`
   display: flex;
@@ -29,6 +29,7 @@ interface EducationItemProps {
   removeFunc: any;
   isEditable: boolean;
   template?: string;
+  userSession: ISessionItem;
 }
 
 const EducationItem: React.FC<EducationItemProps> = ({
@@ -37,7 +38,8 @@ const EducationItem: React.FC<EducationItemProps> = ({
   index,
   removeFunc,
   isEditable,
-  template = 'default'
+  template = 'default',
+  userSession
 }) => {
   const [popoverState, setShowPopover] = useState({
     showPopover: false,
@@ -67,7 +69,10 @@ const EducationItem: React.FC<EducationItemProps> = ({
                 <IonCol>
                   {educationItem.verifiers &&
                     educationItem.verifiers.length > 0 && (
-                      <Verifiers users={educationItem.verifiers} />
+                      <VerificatioBadge
+                        userSession={userSession}
+                        users={educationItem.verifiers}
+                      />
                     )}
                 </IonCol>
               </IonRow>

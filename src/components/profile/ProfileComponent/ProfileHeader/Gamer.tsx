@@ -14,23 +14,42 @@ import {
   Buttons,
   IProps
 } from './Crypto';
+import VerificationBadge from '../../../VerificatioBadge';
 
-const Gamer: React.FC<IProps> = ({ user, signedUser }: IProps) => {
+const Gamer: React.FC<IProps> = ({
+  publicUser,
+  signedUser,
+  publicUserProfile
+}: IProps) => {
   return (
     <HeaderContainer className="ion-no-padding">
-      <HeaderImg bgImg={getCoverPhoto(user)} />
+      <HeaderImg bgImg={getCoverPhoto(publicUser)} />
       <HeaderContent>
         <div className="content">
-          <Avatar did={user.did} />
-          <p className="name">{user.name}</p>
-          <DidSnippet did={user.did} color="white" />
+          <Avatar did={publicUser.did} />
+          <div className="name">
+            <p>{publicUser.name}</p>
+            {publicUserProfile.name &&
+              publicUserProfile.name.verifiers &&
+              publicUserProfile.name.verifiers.length > 0 && (
+                <VerificationBadge
+                  users={publicUserProfile.name.verifiers}
+                  userSession={publicUser}
+                />
+              )}
+          </div>
+
+          <DidSnippet did={publicUser.did} color="white" />
           <Buttons>
             {signedUser.did === '' ? (
               <Link to="/sign-did">
                 <FollowButton>Sign in to Follow</FollowButton>
               </Link>
             ) : (
-              <FollowOrUnFollowButton did={user.did} signedUser={signedUser} />
+              <FollowOrUnFollowButton
+                did={publicUser.did}
+                signedUser={signedUser}
+              />
             )}
           </Buttons>
         </div>

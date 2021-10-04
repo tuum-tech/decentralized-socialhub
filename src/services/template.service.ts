@@ -36,7 +36,7 @@ export class TemplateService {
   ) {
     const hiveInstance = await HiveService.getSessionInstance(userSession);
     if (userSession && hiveInstance) {
-      const res: any = await hiveInstance.Scripting.RunScript({
+      await hiveInstance.Scripting.RunScript({
         name: 'set_my_templates',
         context: {
           target_did: userSession.did,

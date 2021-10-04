@@ -24,6 +24,7 @@ interface IExperienceProps {
   removeFunc?: any;
   isPublicPage?: boolean;
   template?: string;
+  userSession: ISessionItem;
 }
 
 export const defaultExperienceItem: ExperienceItem = {
@@ -47,7 +48,8 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   isEditable = false,
   removeFunc,
   isPublicPage = false,
-  template = 'default'
+  template = 'default',
+  userSession
 }: IExperienceProps) => {
   const [currentExperienceDTO, setCurrentExperienceDTO] = useState(
     experienceDTO
@@ -204,6 +206,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
                   removeFunc={removeItem}
                   isEditable={isEditable}
                   template={template}
+                  userSession={userSession}
                 />
                 {i < currentExperienceDTO.items.length - 1 ? <Divider /> : ''}
               </div>

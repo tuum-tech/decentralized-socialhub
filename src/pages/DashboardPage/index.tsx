@@ -62,7 +62,9 @@ const ProfilePage: React.FC<InferMappedProps> = ({
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');
 
-  const [full_profile, setfull_profile] = useState(defaultFullProfile);
+  const [full_profile, setfull_profile] = useState<ProfileDTO>(
+    defaultFullProfile
+  );
   const [didDocument, setDidDocument] = useState<DIDDocument | null>(null);
   const [publishStatus, setPublishStatus] = useState(RequestStatus.NotFound);
   const [onBoardVisible, setOnBoardVisible] = useState(false);
@@ -145,7 +147,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
   const retriveProfile = async () => {
     if (props.session && props.session.did !== '') {
       setLoadingText('Please wait a moment...');
-      let profile: ProfileDTO | undefined = await ProfileService.getFullProfile(
+      let profile: ProfileDTO = await ProfileService.getFullProfile(
         props.session.did,
         props.session
       );
@@ -217,7 +219,9 @@ const ProfilePage: React.FC<InferMappedProps> = ({
             props.session.tutorialStep === 4 &&
             props.session.onBoardingCompleted
           ) {
+            setLoadingText('loading Profile Data');
             await retriveProfile();
+            setLoadingText('');
           }
         }
       }
@@ -318,50 +322,52 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
   return (
     <IonPage>
-      {loadingText && loadingText !== '' && (
+      {loadingText && loadingText !== '' ? (
         <LoadingIndicator loadingText={loadingText} />
+      ) : (
+        <IonContent className={style['profilepage']}>
+          <IonGrid className={style['profilepagegrid']}>
+            <IonRow className={style['profilecontent']}>
+              <IonCol size="2" className={style['left-panel']}>
+                <Logo />
+                <LeftSideMenu />
+              </IonCol>
+              <IonCol size="10" className={style['right-panel']}>
+                <DashboardHeader
+                  sessionItem={session}
+                  publishStatus={publishStatus}
+                  profile={full_profile}
+                />
+
+                <DashboardContent
+                  onTutorialStart={() => {
+                    setShowTutorial(true);
+                  }}
+                  profile={full_profile}
+                  sessionItem={session}
+                  didDocument={didDocument as DIDDocument}
+                  followerDids={followerDids}
+                  followingDids={followingDids}
+                  mutualDids={mutualDids}
+                />
+              </IonCol>
+            </IonRow>
+          </IonGrid>
+
+          <TutorialModal
+            isOpen={showTutorial}
+            backdropDismiss={false}
+            cssClass={style['tutorialpage']}
+          >
+            <TutorialComponent
+              onClose={() => {
+                setShowTutorial(false);
+              }}
+              session={props.session}
+            />
+          </TutorialModal>
+        </IonContent>
       )}
-      <IonContent className={style['profilepage']}>
-        <IonGrid className={style['profilepagegrid']}>
-          <IonRow className={style['profilecontent']}>
-            <IonCol size="2" className={style['left-panel']}>
-              <Logo />
-              <LeftSideMenu />
-            </IonCol>
-            <IonCol size="10" className={style['right-panel']}>
-              <DashboardHeader
-                sessionItem={session}
-                publishStatus={publishStatus}
-              />
-
-              <DashboardContent
-                onTutorialStart={() => {
-                  setShowTutorial(true);
-                }}
-                profile={full_profile}
-                sessionItem={session}
-                didDocument={didDocument as DIDDocument}
-                followerDids={followerDids}
-                followingDids={followingDids}
-                mutualDids={mutualDids}
-              />
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-
-        <TutorialModal
-          isOpen={showTutorial}
-          backdropDismiss={false}
-          cssClass={style['tutorialpage']}
-        >
-          <TutorialComponent
-            onClose={() => {
-              setShowTutorial(false);
-            }}
-            session={props.session}
-          />
-        </TutorialModal>
-      </IonContent>
     </IonPage>
   );
 };

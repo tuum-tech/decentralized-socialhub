@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { IonCol, IonModal } from '@ionic/react';
+import { IonModal } from '@ionic/react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 
 import Avatar from 'src/components/Avatar';
-import shieldIcon from '../../../assets/icon/shield.svg';
+import shieldIcon from '../../assets/icon/shield.svg';
 
 const VerifierModal = styled(IonModal)`
   --border-radius: 16px;
@@ -31,7 +31,7 @@ const Container = styled.div`
   .userRow {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+
     cursor: pointer;
 
     span {
@@ -45,18 +45,19 @@ interface Props {
     name: string;
     did: string;
   }[];
+  userSession: ISessionItem;
 }
 
-const Verifiers: React.FC<Props> = ({ users }) => {
+const VerificationBadge: React.FC<Props> = ({ users, userSession }) => {
   const [showModal, setShowModal] = useState(false);
   const history = useHistory();
 
   return (
-    <IonCol>
+    <>
       <img
         alt="shield icon"
         src={shieldIcon}
-        style={{ width: '1em' }}
+        style={{ width: '1em', marginLeft: '5px' }}
         onClick={() => setShowModal(true)}
       />
 
@@ -67,27 +68,33 @@ const Verifiers: React.FC<Props> = ({ users }) => {
       >
         <Container>
           <p className="title">Verifiers</p>
-          {users.map((user: any) => (
-            <div className="userRow">
-              <Avatar did={user.did} width="45px" />
-              <p
-                className="ml-2"
-                key={user.did}
-                onClick={() => {
-                  setShowModal(false);
-                  history.push('/did/' + user.did);
-                }}
-              >
-                {user.name}
-                <br />
-                <span>{user.did}</span>
-              </p>
-            </div>
-          ))}
+          {users.map((user: any) => {
+            if (userSession.did !== user.did) {
+              return (
+                <div className="userRow" key={user.did}>
+                  <Avatar did={user.did} width="45px" />
+                  <p
+                    className="ml-2"
+                    key={user.did}
+                    onClick={() => {
+                      setShowModal(false);
+                      history.push('/did/' + user.did);
+                    }}
+                  >
+                    {user.name}
+                    <br />
+                    <span>{user.did}</span>
+                  </p>
+                </div>
+              );
+            } else {
+              return <div key={user.did} />;
+            }
+          })}
         </Container>
       </VerifierModal>
-    </IonCol>
+    </>
   );
 };
 
-export default Verifiers;
+export default VerificationBadge;
