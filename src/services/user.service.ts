@@ -127,20 +127,9 @@ export class UserService {
       rootIdentity
     );
 
-    let nameCredential: VerifiableCredential = await this.didService.newSelfVerifiableCredential(
-      temporaryDocument,
-      'name',
-      name
-    );
-
-    let documentWithCredentials: DIDDocument = await this.didService.addVerifiableCredentialToDIDDocument(
-      temporaryDocument,
-      nameCredential
-    );
-
-    documentWithCredentials = await this.addCredentialIfInexistant(
+    let documentWithCredentials: DIDDocument = await this.addCredentialIfInexistant(
       loginCred.email,
-      documentWithCredentials,
+      temporaryDocument,
       CredentialType.Email
     );
     documentWithCredentials = await this.addCredentialIfInexistant(
