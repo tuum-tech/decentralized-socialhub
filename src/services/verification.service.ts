@@ -323,46 +323,33 @@ export class VerificationService {
     );
   }
 
-  private async removeCredentialIfExist(
-    didDocument: DIDDocument,
-    v: VerificationRequest
-  ) {
-    if (didDocument.getCredentialCount() === 0) {
-      return;
-    }
-
-    const { DIDstring } = this.generate_DID_id_from_verification(
-      v.category,
-      v.from_did
-    );
-    const didUrl = DIDURL.from(DIDstring) as DIDURL;
-    const existingVerifiableCredential = didDocument.getCredential(didUrl);
-
-    if (existingVerifiableCredential) {
-      const didService = await DidService.getInstance();
-      const builder = DIDDocument.Builder.newFromDocument(didDocument);
-      const updatedDoc = await builder
-        .removeCredential(didUrl)
-        .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
-
-      await didService.storeDocument(updatedDoc);
-    }
-  }
-
   public async storeNewCredential(v: VerificationRequest) {
     const didService = await DidService.getInstance();
     let didDocument: DIDDocument = await didService.getStoredDocument(
       new DID(v.from_did)
     );
 
-    await this.removeCredentialIfExist(didDocument, v);
+    // remove if exist
+    const { DIDstring } = this.generate_DID_id_from_verification(
+      v.category,
+      v.from_did
+    );
+    const didUrl = DIDURL.from(DIDstring) as DIDURL;
+    const existingVerifiableCredential = didDocument.getCredential(didUrl);
+    if (existingVerifiableCredential) {
+      const builder = DIDDocument.Builder.newFromDocument(didDocument);
+      didDocument = await builder
+        .removeCredential(didUrl)
+        .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+    }
 
+    // add new credential
     const builder = DIDDocument.Builder.newFromDocument(didDocument);
-    const docWithCredential = await builder
+    didDocument = await builder
       .addCredential(VerifiableCredential.parse(v.credential))
       .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
 
-    await didService.storeDocument(docWithCredential);
+    await didService.storeDocument(didDocument);
 
     await TuumTechScriptService.updateVerificationRequest(
       'saved to identity',

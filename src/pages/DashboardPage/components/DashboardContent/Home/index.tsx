@@ -345,7 +345,11 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
     setVerifiedPercent(
       nameScore + emailScore + experienceScore + educationScore / 4
     );
-  }, [profile.educationDTO.items.length, profile.experienceDTO.items.length, verifiedStats]);
+  }, [
+    profile.educationDTO.items.length,
+    profile.experienceDTO.items.length,
+    verifiedStats
+  ]);
   /* Verification ends */
 
   return (
