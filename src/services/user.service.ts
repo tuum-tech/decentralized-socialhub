@@ -10,11 +10,7 @@ import {
   UserVaultScriptService
 } from './script.service';
 import { ProfileService } from './profile.service';
-import {
-  DIDDocument,
-  RootIdentity,
-  VerifiableCredential
-} from '@elastosfoundation/did-js-sdk/';
+import { DIDDocument, RootIdentity } from '@elastosfoundation/did-js-sdk/';
 import { IDidService } from './did.service.new';
 import { CredentialType, DidcredsService } from './didcreds.service';
 

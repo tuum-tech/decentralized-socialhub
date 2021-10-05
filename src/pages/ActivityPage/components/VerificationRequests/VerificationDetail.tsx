@@ -112,7 +112,7 @@ const VerificationDetailContent = ({
         {verification.status === 'requested' && (
           <div className="buttons">
             <SmallLightButton onClick={async () => await handleAction(true)}>
-              Approve{loading === 1 ? 'ing' : ''}
+              {loading === 1 ? 'Approving' : 'Approve'}
             </SmallLightButton>
             <SmallLightButton onClick={async () => await handleAction(false)}>
               Reject{loading === 2 ? 'ing' : ''}
