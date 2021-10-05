@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 
 import DidSnippet from 'src/elements/DidSnippet';
 import { FollowButton } from 'src/elements/buttons';
-import Avatar from 'src/components/Avatar';
-import { getCoverPhoto } from 'src/components/cards/CoverPhoto';
 
+import Avatar from '../../../Avatar';
+import { getCoverPhoto } from '../../../cards/CoverPhoto';
+import VerificationBadge from '../../../VerificatioBadge';
 import FollowOrUnFollowButton from '../../FollowOrUnFollow';
 import {
   HeaderContainer,
@@ -15,26 +16,44 @@ import {
   IProps
 } from './Crypto';
 
-const Education: React.FC<IProps> = ({ user, signedUser }: IProps) => {
+const Education: React.FC<IProps> = ({
+  publicUser,
+  signedUser,
+  publicUserProfile
+}: IProps) => {
   return (
     <HeaderContainer className="ion-no-padding">
       <HeaderContent>
         <div className="content">
-          <Avatar did={user.did} />
-          <p className="name">{user.name}</p>
-          <DidSnippet did={user.did} color="white" />
+          <Avatar did={publicUser.did} />
+          <div className="name">
+            <p>{publicUser.name}</p>
+            {publicUserProfile.name &&
+              publicUserProfile.name.verifiers &&
+              publicUserProfile.name.verifiers.length > 0 && (
+                <VerificationBadge
+                  users={publicUserProfile.name.verifiers}
+                  userSession={publicUser}
+                />
+              )}
+          </div>
+
+          <DidSnippet did={publicUser.did} color="white" />
           <Buttons>
             {signedUser.did === '' ? (
               <Link to="/sign-did">
                 <FollowButton>Sign in to Follow</FollowButton>
               </Link>
             ) : (
-              <FollowOrUnFollowButton did={user.did} signedUser={signedUser} />
+              <FollowOrUnFollowButton
+                did={publicUser.did}
+                signedUser={signedUser}
+              />
             )}
           </Buttons>
         </div>
       </HeaderContent>
-      <HeaderImg bgImg={getCoverPhoto(user)} />
+      <HeaderImg bgImg={getCoverPhoto(publicUser)} />
     </HeaderContainer>
   );
 };

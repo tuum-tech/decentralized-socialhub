@@ -1,8 +1,5 @@
 import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/';
-import {
-  connectivity,
-  DID as CnDID
-} from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { DID as CnDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { DidService } from './did.service.new';
 
 export class EssentialsService {

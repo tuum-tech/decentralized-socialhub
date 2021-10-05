@@ -27,7 +27,6 @@ const Header = styled.div`
 
   margin: 10px 0px;
 `;
-
 const SubMenu = styled.div`
   position: absolute;
   top: 50px;

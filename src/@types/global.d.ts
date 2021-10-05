@@ -6,7 +6,10 @@ interface ExperienceItem {
   start: string;
   end: string;
   still: boolean;
-  isVerified: boolean;
+  verifiers: {
+    name: string;
+    did: string;
+  }[];
   title: string;
   description: string;
   order: string;
@@ -18,6 +21,31 @@ interface Template {
   value: string;
   title: string;
   intro: string;
+}
+interface VerificationData {
+  idKey: string;
+  category: string;
+  records: {
+    field: string;
+    value: string;
+  }[];
+}
+
+interface VerificationRequest {
+  feedbacks: string;
+  msg: string;
+  from_did: string;
+  to_did: string;
+  category: string;
+  status: string;
+  idKey: string;
+  records: {
+    field: string;
+    value: string;
+  }[];
+  modified: { $date: string };
+  credential: any;
+  guid: Guid;
 }
 
 interface ExperienceDTO {
@@ -33,7 +61,10 @@ interface EducationItem {
   start: string;
   end: string;
   still: boolean;
-  isVerified: boolean;
+  verifiers: {
+    name: string;
+    did: string;
+  }[];
   title: string;
   description: string;
   order: string;
@@ -74,6 +105,13 @@ interface BasicDTO {
 }
 
 interface ProfileDTO {
+  name: {
+    name: string;
+    verifiers: {
+      name: string;
+      did: string;
+    }[];
+  };
   basicDTO: BasicDTO;
   experienceDTO: ExperienceDTO;
   educationDTO: EducationDTO;
@@ -99,7 +137,7 @@ interface ISessionItem {
   code?: string;
   status?: string;
   pageTemplate?: string;
-  phonNumber?: string;
+  phone?: string;
   timestamp: number;
 }
 

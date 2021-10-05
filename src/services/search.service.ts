@@ -47,6 +47,14 @@ export interface IUserItem {
   hiveHost: string;
 }
 
+export const isDID = (str: string): boolean => {
+  // Following are the valid patterns:
+  // did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX
+  // icJ4z2DULrHEzYSvjKNJpKyhqFDxvYV7pN
+  const regex = /^(did:elastos:i|i)+[a-zA-Z0-9]+$/g;
+  return str != null && regex.test(str.trim());
+};
+
 export class SearchService {
   appHiveClient!: HiveClient;
 

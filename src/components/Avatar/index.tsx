@@ -40,9 +40,9 @@ const Avatar: React.FC<AvatarProps> = ({
   useEffect(() => {
     (async () => {
       const avatarRes = await getAvatarIfno(did, fromDid);
-      console.log('===>avatarRes', avatarRes);
       if (avatarRes) setAvatarInfo(avatarRes);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [did, fromDid]);
 
   const cn = ready

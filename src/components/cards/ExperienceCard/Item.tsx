@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { IonCol, IonGrid, IonPopover, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
+import VerificatioBadge from '../../VerificatioBadge';
 import {
   Description,
   Institution,
@@ -12,10 +13,10 @@ import {
 } from '../common';
 import Image from '../../../elements/Image';
 import styleWidget from '../WidgetCards.module.scss';
-import shieldIcon from '../../../assets/icon/shield.svg';
 
 const EditableContent = styled(IonCol)`
   display: flex;
+  padding-left: 10px;
 `;
 
 interface ExperienceItemProps {
@@ -28,6 +29,7 @@ interface ExperienceItemProps {
   removeFunc: any;
   isEditable: boolean;
   template: string;
+  userSession: ISessionItem;
 }
 
 const ExperienceItem: React.FC<ExperienceItemProps> = ({
@@ -36,7 +38,8 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
   index,
   removeFunc,
   isEditable,
-  template
+  template,
+  userSession
 }) => {
   const [popoverState, setShowPopover] = useState({
     showPopover: false,
@@ -62,13 +65,13 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
             <IonGrid className="ion-no-padding">
               <IonRow style={{ float: 'right' }}>
                 <IonCol>
-                  {experienceItem.isVerified && (
-                    <img
-                      alt="shield icon"
-                      src={shieldIcon}
-                      style={{ width: '1em' }}
-                    />
-                  )}
+                  {experienceItem.verifiers &&
+                    experienceItem.verifiers.length > 0 && (
+                      <VerificatioBadge
+                        userSession={userSession}
+                        users={experienceItem.verifiers}
+                      />
+                    )}
                 </IonCol>
               </IonRow>
               <IonRow className="ion-no-padding">

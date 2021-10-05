@@ -1,6 +1,6 @@
 import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 import { ActivityResponse } from 'src/pages/ActivityPage/types';
-import { getVerifiedCredential } from 'src/utils/credential';
+import { VerificationService } from 'src/services/verification.service';
 
 import { showNotify } from 'src/utils/notify';
 import { getItemsFromData } from 'src/utils/script';
@@ -16,9 +16,9 @@ import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 export class ProfileService {
   static didDocument: any = null;
 
-  static isCredVerified = async (
-    key: string,
-    profileValue: string,
+  static getVerifiers = async (
+    x: any,
+    type: string,
     userSession: ISessionItem
   ) => {
     if (ProfileService.didDocument === null) {
@@ -27,10 +27,12 @@ export class ProfileService {
       );
     }
 
-    let vc = getVerifiedCredential(key, ProfileService.didDocument);
-    if (!vc) return false;
-
-    return vc.value === profileValue && vc.isVerified;
+    const vService = new VerificationService();
+    return await vService.getCredentialVerifiers(
+      x,
+      type,
+      ProfileService.didDocument
+    );
   };
 
   static getDidDocument = async (
@@ -80,7 +82,7 @@ export class ProfileService {
   static async getFullProfile(
     did: string,
     userSession: ISessionItem
-  ): Promise<ProfileDTO | undefined> {
+  ): Promise<ProfileDTO> {
     let basicDTO: any = {};
     let educationDTO: EducationDTO = {
       items: [],
@@ -130,9 +132,9 @@ export class ProfileService {
 
       /* Calculate verified education credentials starts */
       educationDTO.items.map(async (x, i) => {
-        educationDTO.items[i].isVerified = await ProfileService.isCredVerified(
+        educationDTO.items[i].verifiers = await ProfileService.getVerifiers(
+          x,
           'education',
-          x.institution,
           userSession
         );
       });
@@ -140,15 +142,23 @@ export class ProfileService {
 
       /* Calculate verified experience credentials starts */
       experienceDTO.items.map(async (x, i) => {
-        experienceDTO.items[i].isVerified = await ProfileService.isCredVerified(
-          'occupation',
-          x.title,
+        experienceDTO.items[i].verifiers = await ProfileService.getVerifiers(
+          x,
+          'experience',
           userSession
         );
       });
       /* Calculate verified experience credentials ends */
     }
+
+    // add name credentials
+    const nameCredential = {
+      name: basicDTO.name,
+      verifiers: await ProfileService.getVerifiers({}, 'name', userSession)
+    };
+
     return {
+      name: nameCredential,
       basicDTO,
       educationDTO,
       experienceDTO
@@ -544,6 +554,10 @@ export const defaultUserInfo: ISessionItem = {
 };
 
 export const defaultFullProfile = {
+  name: {
+    name: '',
+    verifiers: []
+  },
   basicDTO: {
     isEnabled: false,
     name: '',
