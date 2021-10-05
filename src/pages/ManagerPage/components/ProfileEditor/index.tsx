@@ -38,7 +38,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
   const [didDocument, setDidDocument] = useState<DIDDocument | undefined>(
     undefined
   );
-  const [profile, setProfile] = useState(defaultFullProfile);
+  const [profile, setProfile] = useState<ProfileDTO>(defaultFullProfile);
 
   const retriveProfile = async () => {
     if (!session.userToken) return;
@@ -256,6 +256,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                     }}
                     isEditable={true}
                     template="default"
+                    userSession={JSON.parse(JSON.stringify(session))}
                   />
                 )}
                 {profile && profile.experienceDTO && (
@@ -313,6 +314,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                     }}
                     isEditable={true}
                     template="default"
+                    userSession={JSON.parse(JSON.stringify(session))}
                   />
                 )}
               </>

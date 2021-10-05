@@ -1,11 +1,6 @@
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 
-interface VerifiedCredential {
-  value: string;
-  isVerified: boolean;
-}
-
 export const getParsedDoc = async (document: string): Promise<DIDDocument> => {
   return await DIDDocument.parseAsync(document);
 };
@@ -94,7 +89,7 @@ const hasCredential = (document: DIDDocument, key: string): boolean => {
   return false;
 };
 
-export const hasCredentials = async (didDocument: DIDDocument) => {
+export const hasCredentials = (didDocument: DIDDocument) => {
   if (didDocument === null) return false;
 
   if (hasCredential(didDocument, 'google')) return true;

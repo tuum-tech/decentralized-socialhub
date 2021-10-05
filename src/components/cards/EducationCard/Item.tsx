@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { IonCol, IonGrid, IonPopover, IonRow } from '@ionic/react';
 import styled from 'styled-components';
-import shieldIcon from '../../../assets/icon/shield.svg';
 
 import {
   Description,
@@ -13,9 +12,11 @@ import {
 } from '../common';
 import Image from '../../../elements/Image';
 import styleWidget from '../WidgetCards.module.scss';
+import VerificatioBadge from '../../VerificatioBadge';
 
 const EditableContent = styled(IonCol)`
   display: flex;
+  padding-left: 10px;
 `;
 
 interface EducationItemProps {
@@ -28,6 +29,7 @@ interface EducationItemProps {
   removeFunc: any;
   isEditable: boolean;
   template?: string;
+  userSession: ISessionItem;
 }
 
 const EducationItem: React.FC<EducationItemProps> = ({
@@ -36,7 +38,8 @@ const EducationItem: React.FC<EducationItemProps> = ({
   index,
   removeFunc,
   isEditable,
-  template = 'default'
+  template = 'default',
+  userSession
 }) => {
   const [popoverState, setShowPopover] = useState({
     showPopover: false,
@@ -64,13 +67,13 @@ const EducationItem: React.FC<EducationItemProps> = ({
             <IonGrid className="ion-no-padding">
               <IonRow style={{ float: 'right' }}>
                 <IonCol>
-                  {educationItem.isVerified && (
-                    <img
-                      alt="shield icon"
-                      src={shieldIcon}
-                      style={{ width: '1em' }}
-                    />
-                  )}
+                  {educationItem.verifiers &&
+                    educationItem.verifiers.length > 0 && (
+                      <VerificatioBadge
+                        userSession={userSession}
+                        users={educationItem.verifiers}
+                      />
+                    )}
                 </IonCol>
               </IonRow>
               <IonRow className="ion-no-padding">

@@ -101,6 +101,116 @@ let run = async () => {
       }
     }
   });
+  // ===== verifications =====
+  await client.Database.createCollection('verifications');
+  await client.Scripting.SetScript({
+    name: 'add_verification',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'insert',
+      name: 'add_verification',
+      output: true,
+      body: {
+        collection: 'verifications',
+        document: {
+          from_did: '$params.from_did',
+          to_did: '$params.to_did',
+          status: 'requested',
+          category: '$params.category', // personal info
+          records: '$params.records',
+          feedbacks: '',
+          msg: '$params.msg',
+          idKey: '$params.idKey',
+          guid: '$params.guid'
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'update_verification',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'update',
+      name: 'update_verification',
+      output: true,
+      body: {
+        collection: 'verifications',
+        filter: {
+          guid: '$params.guid'
+        },
+        update: {
+          $set: {
+            status: '$params.status',
+            feedbacks: '$params.feedbacks',
+            credential: '$params.credential'
+          }
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'get_requests_to_me',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_requests_to_me',
+      output: true,
+      body: {
+        collection: 'verifications',
+        filter: {
+          to_did: '$params.did'
+        },
+        options: {
+          limit: '$params.limit',
+          skip: '$params.skip'
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'get_requests_by_me',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_requests_by_me',
+      output: true,
+      body: {
+        collection: 'verifications',
+        filter: {
+          from_did: '$params.did'
+        },
+        options: {
+          limit: '$params.limit',
+          skip: '$params.skip'
+        }
+      }
+    }
+  });
+  await client.Scripting.SetScript({
+    name: 'get_my_verified_credentials',
+    allowAnonymousUser: true,
+    allowAnonymousApp: true,
+    executable: {
+      type: 'find',
+      name: 'get_my_verified_credentials',
+      output: true,
+      body: {
+        collection: 'verifications',
+        filter: {
+          from_did: '$params.did',
+          status: 'approved'
+        },
+        options: {
+          limit: '$params.limit',
+          skip: '$params.skip'
+        }
+      }
+    }
+  });
 
   // ===== users section start =====
   await client.Database.createCollection('users');

@@ -9,7 +9,10 @@ export enum CredentialType {
   Github = 'Github',
   Discord = 'Discord',
   Email = 'Email',
-  DID = 'Did'
+  DID = 'Did',
+  Education = 'Education',
+  Experience = 'Experience',
+  PersonalInfo = 'PersonalInfo'
 }
 
 export class DidcredsService {

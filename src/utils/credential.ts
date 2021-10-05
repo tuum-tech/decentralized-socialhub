@@ -1,9 +1,14 @@
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
+// import { DIDDocument } from '@elastosfoundation/did-js-sdk/typings';
 import { DidDocumentService } from 'src/services/diddocument.service';
-
-interface VerifiedCredential {
-  value: string;
+import {
+  VerifiableCredential,
+  DIDDocument
+} from '@elastosfoundation/did-js-sdk/';
+export interface VCType {
+  vc: VerifiableCredential;
+  isValid: boolean;
   isVerified: boolean;
+  id: string;
 }
 
 export const getDidDocument = async (
@@ -12,41 +17,55 @@ export const getDidDocument = async (
   return await DidDocumentService.getUserDocument(userSession);
 };
 
-export const containsVerifiedCredential = (
+export const containingVerifiableCredentialDetails = async (
   id: string,
   diddocument: any
-): boolean => {
-  return getVerifiedCredential(id, diddocument) !== undefined;
+): Promise<VCType> => {
+  if (!diddocument || diddocument.getCredentialCount() === 0) {
+    return {
+      id,
+      vc: {} as VerifiableCredential,
+      isVerified: false,
+      isValid: false
+    };
+  }
+
+  let vcIndex = -1;
+  const vcs = diddocument.getCredentials();
+  for (let i = 0; i < vcs.length; i++) {
+    const subject: VerifiableCredential.Subject = vcs[i].getSubject();
+    const subjectProperties = subject.getProperties();
+    const key = Object.keys(subjectProperties)[0];
+
+    if (key.toLowerCase() === id.toLowerCase()) {
+      vcIndex = i;
+    } else if (key.toLowerCase().startsWith(id.toLowerCase())) {
+      vcIndex = i;
+    }
+  }
+
+  if (vcIndex === -1) {
+    return {
+      id,
+      vc: {} as VerifiableCredential,
+      isVerified: false,
+      isValid: false
+    };
+  }
+
+  const vc: VerifiableCredential = vcs[vcIndex];
+  const isValid = await vc.isValid();
+  return { id, vc, isVerified: vcIndex > -1, isValid };
 };
 
-export const getVerifiedCredential = (
-  id: string,
-  diddocument: any
-): VerifiedCredential | undefined => {
-  if (
-    !diddocument ||
-    !diddocument['id'] ||
-    !diddocument['verifiableCredential']
-  )
-    return;
+export const getCategoryTitle = (vc: VerificationData) => {
+  let cateogryTitle = vc.category;
 
-  let vcs: any[] = diddocument['verifiableCredential'].map((vc: any) => {
-    if (`${vc['id']}`.endsWith(`#${id.toLowerCase()}`)) {
-      let types: string[] = vc['type'];
-
-      return {
-        value: vc['credentialSubject'][id.toLowerCase()],
-        isVerified: !types.includes('SelfProclaimedCredential')
-      };
-    }
-    return null;
-  });
-
-  vcs = vcs.filter(item => {
-    return item !== undefined && item !== null;
-  });
-
-  if (vcs && vcs.length > 0) return vcs[0];
-
-  return;
+  let formatedTitle = '';
+  const strings = cateogryTitle.split('_');
+  for (let i = 0; i < strings.length; i++) {
+    const word = strings[i];
+    formatedTitle += word[0].toUpperCase() + word.slice(1) + ' ';
+  }
+  return formatedTitle;
 };

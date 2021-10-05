@@ -46,7 +46,6 @@ export const getAvatarIfno = async (
     ).getDidDocument(did);
     if (doc && doc !== undefined) {
       if (doc.credentials && doc.credentials.size > 0) {
-        let loginCred: any = {};
         doc.credentials.forEach((value, key) => {
           let subject = value.id.getFragment();
           let properties = value.subject.getProperties();

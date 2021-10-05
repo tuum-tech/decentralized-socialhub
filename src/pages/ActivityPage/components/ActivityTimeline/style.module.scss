@@ -3,9 +3,10 @@
   box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24),
     0px 3px 8px -1px rgba(50, 50, 71, 0.05);
   background: #ffffff;
-  margin: 30px 50px;
+  margin: 30px 16px;
   padding: 0px 10px;
   overflow: visible;
+
   .card-header {
     display: flex;
     justify-content: space-between;
@@ -43,7 +44,7 @@
       width: 130px;
       height: 30px;
     }
-  
+
     ion-label {
       text-align: left;
     }
@@ -68,17 +69,16 @@
       margin: 15px 0px 20px 0px;
       contain: none;
       .activity-row {
-
         overflow: visible;
         z-index: auto;
         --border-radius: 13px;
-        
+
         margin-bottom: 10px;
 
         &.unread {
           --background: #f3f9ff;
           --border-color: white;
-        } 
+        }
 
         .d-vert-flex {
           display: flex;
@@ -115,7 +115,7 @@
             display: flex;
             align-items: center;
             cursor: pointer;
-            &:hover path{
+            &:hover path {
               fill: var(--theme-primary-blue);
               stroke: var(--theme-primary-blue);
             }

@@ -10,11 +10,7 @@ import {
   UserVaultScriptService
 } from './script.service';
 import { ProfileService } from './profile.service';
-import {
-  DIDDocument,
-  RootIdentity,
-  VerifiableCredential
-} from '@elastosfoundation/did-js-sdk/';
+import { DIDDocument, RootIdentity } from '@elastosfoundation/did-js-sdk/';
 import { IDidService } from './did.service.new';
 import { CredentialType, DidcredsService } from './didcreds.service';
 
@@ -127,20 +123,9 @@ export class UserService {
       rootIdentity
     );
 
-    let nameCredential: VerifiableCredential = await this.didService.newSelfVerifiableCredential(
-      temporaryDocument,
-      'name',
-      name
-    );
-
-    let documentWithCredentials: DIDDocument = await this.didService.addVerifiableCredentialToDIDDocument(
-      temporaryDocument,
-      nameCredential
-    );
-
-    documentWithCredentials = await this.addCredentialIfInexistant(
+    let documentWithCredentials: DIDDocument = await this.addCredentialIfInexistant(
       loginCred.email,
-      documentWithCredentials,
+      temporaryDocument,
       CredentialType.Email
     );
     documentWithCredentials = await this.addCredentialIfInexistant(

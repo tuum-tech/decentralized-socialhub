@@ -1,0 +1,145 @@
+.verification-modal {
+  background-color: transparent !important;
+  width: 100%;
+  height: 100%;
+  font-family: 'SF Pro Display';
+  text-align: center;
+
+  ion-row {
+    background-color: transparent !important;
+    height: 100%;
+  }
+
+  .col-left {
+    background-color: #4c6fff;
+    color: #ffffff;
+    padding: 0px 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    h2 {
+      font-style: normal;
+      font-weight: bold;
+      font-size: 40px;
+      line-height: 48px;
+    }
+
+    p {
+      margin-top: 25px;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 24px;
+    }
+
+    img {
+      margin-top: 50px;
+      margin-bottom: 30px;
+    }
+
+    .verification-left-bottom {
+      width: 100%;
+      margin-top: 80px;
+
+      .verification-quit-button {
+        width: 137px;
+        height: 32px;
+        --ion-color-primary: #16192c1e;
+
+        display: block;
+        margin: 50px auto;
+      }
+    }
+  }
+
+  .verification-col-right {
+    background-color: #fbfbfd;
+    text-align: left;
+    padding: 40px;
+    color: #27272e;
+
+    p {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 16px;
+      line-height: 162.02%;
+      font-feature-settings: 'salt' on;
+      margin-top: 50px;
+    }
+
+    h2 {
+      font-style: normal;
+      font-weight: 600;
+      font-size: 28px;
+      line-height: 136.02%;
+    }
+  }
+}
+
+.timeline {
+  height: 80px;
+  width: 90%;
+  margin: 0 auto;
+
+  padding-left: 20px;
+  padding-right: 20px;
+  position: relative;
+  display: flex;
+
+  &:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    border: 1px dashed rgba(255, 255, 255, 0.5);
+    height: 1px;
+    top: 12.5px;
+    transition: all ease-in-out 0.3s;
+  }
+
+  .step {
+    position: absolute;
+
+    .dot {
+      position: relative;
+
+      .empty {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        border: 2px solid white;
+        background-color: #4c6fff;
+        position: absolute;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .active {
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+
+        background-color: white;
+        z-index: 2;
+      }
+    }
+
+    &:nth-child(1) {
+      left: 0px;
+    }
+
+    &:nth-child(2) {
+      left: 50%;
+    }
+
+    &:nth-child(3) {
+      left: 99%;
+    }
+  }
+}
+
+.userRow {
+}
