@@ -269,7 +269,6 @@ export class ProfileService {
     dids: string[],
     session: ISessionItem
   ): Promise<IFollowerResponse | undefined> {
-    if (!session || session.tutorialStep !== 4) return;
     const appHiveClient = await HiveService.getAppHiveClient();
     if (appHiveClient && dids && dids.length > 0) {
       let followersResponse: IRunScriptResponse<IFollowerResponse> = await appHiveClient.Scripting.RunScript(
@@ -349,9 +348,8 @@ export class ProfileService {
     targetDid: string,
     session: ISessionItem
   ): Promise<IFollowingResponse | undefined> {
-    if (!session || session.tutorialStep !== 4) return;
     const appHiveClient = await HiveService.getAppHiveClient();
-    if (session.did && session.did !== '' && appHiveClient) {
+    if (targetDid && targetDid !== '' && appHiveClient) {
       const followingResponse: IRunScriptResponse<IFollowingResponse> = await appHiveClient.Scripting.RunScript(
         {
           name: 'get_following',

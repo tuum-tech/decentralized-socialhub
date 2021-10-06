@@ -43,7 +43,7 @@ export class FollowService {
 
   public static async getFollowingDids(did: string, session: ISessionItem) {
     const followingRes = (await ProfileService.getFollowings(
-      session.did,
+      did,
       session
     )) as IFollowingResponse;
     let followingDids = getItemsFromData(followingRes, 'get_following').map(
