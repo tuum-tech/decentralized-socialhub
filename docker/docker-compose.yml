@@ -3,7 +3,7 @@ version: '3.3'
 services:
   hive-node:
     container_name: hive-node
-    image: tuumtech/hive-node:v2.3.2
+    image: tuumtech/hive-node:v2.3.14
     user: '${UID}:${GID}'
     entrypoint: /bin/sh -c "python manage.py -c dev runserver"
     volumes:
@@ -25,21 +25,6 @@ services:
       - ${PWD}/docker/assist-restapi.env:/src/.env
     ports:
       - 9002:5000
-    depends_on:
-      - restapi-mongo
-    networks:
-      - profile
-    tty: true
-
-  didcreds-validator-node:
-    container_name: didcreds-validator-node
-    image: tuumtech/didcreds-validator-node:latest
-    user: '${UID}:${GID}'
-    volumes:
-      - ${HOME}/.profile-data/didcreds-didstore:/src/data
-      - ${PWD}/docker/didcreds-validator.env:/src/.env
-    ports:
-      - 9004:5000
     depends_on:
       - restapi-mongo
     networks:
