@@ -21,6 +21,9 @@ export class ProfileService {
     type: string,
     userSession: ISessionItem
   ) => {
+    if (userSession.did === '') {
+      return [];
+    }
     if (ProfileService.didDocument === null) {
       ProfileService.didDocument = await ProfileService.getDidDocument(
         userSession

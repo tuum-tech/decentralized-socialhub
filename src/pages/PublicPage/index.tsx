@@ -90,7 +90,6 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   useEffect(() => {
     (async () => {
       let userService = new UserService(await DidService.getInstance());
-      if (!props.session || props.session.did === '') return;
 
       setLoading(true);
       const followerDids = await FollowService.getFollowerDids(
