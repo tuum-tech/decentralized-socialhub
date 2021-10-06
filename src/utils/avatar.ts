@@ -40,13 +40,14 @@ export const getAvatarIfno = async (
   let name = 'Anonymous';
   let didPublished = false;
 
+  let didService = await DidService.getInstance();
+  didPublished = await didService.isDIDPublished(did);
+
   if (fromDid) {
-    let doc: DIDDocument = await (
-      await DidService.getInstance()
-    ).getDidDocument(did);
+    let doc = await didService.getDidDocument(did);
     if (doc && doc !== undefined) {
       if (doc.credentials && doc.credentials.size > 0) {
-        doc.credentials.forEach((value, key) => {
+        for (const [key, value] of doc.credentials.entries()) {
           let subject = value.id.getFragment();
           let properties = value.subject.getProperties();
           let propertieValue = properties[subject];
@@ -66,17 +67,12 @@ export const getAvatarIfno = async (
             default:
               break;
           }
-        });
+        }
       }
     }
-  } else if (
-    tuumUser &&
-    tuumUser.did !== '' &&
-    tuumUser.avatar &&
-    tuumUser.avatar !== ''
-  ) {
+  } else if (tuumUser && tuumUser.did) {
     avatar = tuumUser.avatar;
-    type = 'vault';
+    type = avatar ? 'vault' : 'default';
     name = tuumUser.name;
   }
 
