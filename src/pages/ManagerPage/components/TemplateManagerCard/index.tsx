@@ -86,6 +86,7 @@ const TemplateManagerCard: React.FC<PageProps> = ({
   sessionItem,
   updateSession
 }: PageProps) => {
+  console.log('====>sessionItem', sessionItem);
   const [myTemplates, setMyTemplates] = useState<Template[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [template, setTemplate] = useState(
@@ -114,6 +115,7 @@ const TemplateManagerCard: React.FC<PageProps> = ({
             </IonCol>
             <IonCol size="auto" className="ion-no-padding">
               <SmallLightButton
+                disabled={sessionItem.tutorialStep !== 4}
                 onClick={async () => {
                   if (sessionItem.pageTemplate !== template) {
                     let userService = new UserService(
@@ -142,6 +144,16 @@ const TemplateManagerCard: React.FC<PageProps> = ({
           public profile as seen by others. This does not apply to your profile
           on Dashboard.
         </IonText>
+        {sessionItem.tutorialStep !== 4 && (
+          <>
+            <br />
+            <br />
+            <IonText style={{ color: 'red' }}>
+              Complete tutorial first to update the template!
+            </IonText>
+          </>
+        )}
+
         <Divider />
         <IonRadioGroup
           value={template}
