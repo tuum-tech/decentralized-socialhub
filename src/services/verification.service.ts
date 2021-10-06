@@ -318,7 +318,7 @@ export class VerificationService {
     await TuumTechScriptService.updateVerificationRequest(
       approve ? 'approved' : 'rejected',
       feedbacks,
-      vc.toJSON(),
+      approve ? vc.toJSON() : '',
       v.guid
     );
   }
