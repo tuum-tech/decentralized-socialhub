@@ -17,7 +17,7 @@ const TopInfo: React.FC<Props> = ({ verificationStatus }: Props) => {
       <IonCol>
         <TopInfoCard
           img={totalIcon}
-          title="Total Requestss"
+          title="Total Requests"
           count={verificationStatus.length}
           bgColor="#1D1D1B"
         />
