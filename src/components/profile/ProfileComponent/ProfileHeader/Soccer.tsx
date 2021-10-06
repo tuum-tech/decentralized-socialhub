@@ -49,7 +49,7 @@ const Soccer: React.FC<IProps> = ({
           <Buttons>
             {signedUser.did === '' ? (
               <Link to="/sign-did">
-                <FollowButton>Sign in to Follow</FollowButton>
+                <FollowButton width={140}>Sign in to Follow</FollowButton>
               </Link>
             ) : (
               <FollowOrUnFollowButton
