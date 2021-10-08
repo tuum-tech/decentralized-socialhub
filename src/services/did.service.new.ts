@@ -372,7 +372,7 @@ export class DidService implements IDidService {
       .expirationDate(date)
       .type('SelfProclaimedCredential')
       .property(subjectName, subjectValue)
-      .id(DIDURL.from('#primary', did) as DIDURL)
+      .id(DIDURL.from('#' + subjectName.toLowerCase(), did) as DIDURL)
       .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
   }
 

@@ -15,7 +15,12 @@ import { setSession } from 'src/store/users/actions';
 import style from '../style.module.scss';
 import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
-import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import {
+  DID,
+  DIDDocument,
+  VerifiableCredential
+} from '@elastosfoundation/did-js-sdk/';
+import { DidcredsService } from 'src/services/didcreds.service';
 
 const VersionTag = styled.span`
   color: green;
@@ -143,6 +148,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         didService.storeDocument(signedDocument);
         await didService.publishDocument(signedDocument);
       }
+
       let userService = new UserService(didService);
       const updatedSession = await userService.updateSession(newSession);
       eProps.setSession({ session: updatedSession });
@@ -152,6 +158,15 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         await hiveInstance.Payment.CreateFreeVault();
       }
       await UserVaultScripts.Execute(hiveInstance!);
+
+      let blockchainDocument = await didService.getPublishedDocument(
+        new DID(props.session.did)
+      );
+
+      blockchainDocument.credentials?.forEach(async vc => {
+        await DidcredsService.addOrUpdateCredentialToVault(newSession, vc);
+      });
+
       let activities = await ProfileService.getActivity(newSession);
       activities.push({
         guid: '',

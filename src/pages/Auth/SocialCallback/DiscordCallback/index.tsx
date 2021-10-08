@@ -77,9 +77,14 @@ const DiscordCallback: React.FC<PageProps> = ({
 
           if (props.session.mnemonics === '') {
             let essentialsService = new EssentialsService(didService);
-            await essentialsService.addVerifiableCredentialEssentials(
+            let isAdded = await essentialsService.addVerifiableCredentialEssentials(
               verifiableCredential
             );
+
+            if (!isAdded) {
+              window.close();
+              return;
+            }
 
             documentWithDiscordCredential = await didService.getPublishedDocument(
               new DID(props.session.did)
@@ -92,6 +97,10 @@ const DiscordCallback: React.FC<PageProps> = ({
           }
 
           await didService.storeDocument(documentWithDiscordCredential);
+          await DidcredsService.addOrUpdateCredentialToVault(
+            props.session,
+            verifiableCredential
+          );
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.discord! = discord;

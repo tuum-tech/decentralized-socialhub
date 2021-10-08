@@ -12,10 +12,14 @@ export class EssentialsService {
     this.DidService = didService;
   }
 
-  addVerifiableCredentialEssentials = async (vc: VerifiableCredential) => {
+  addVerifiableCredentialEssentials = async (
+    vc: VerifiableCredential
+  ): Promise<boolean> => {
     let cn = new CnDID.DIDAccess();
-    await cn?.importCredentials([vc], {
+    let response = await cn?.importCredentials([vc], {
       forceToPublishCredentials: true
     });
+
+    return response.length > 0;
   };
 }

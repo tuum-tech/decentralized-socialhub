@@ -9,6 +9,8 @@ import {
 } from 'src/components/cards/common';
 import { DefaultButton } from 'src/elements/buttons';
 import ProgressBar from 'src/elements/ProgressBar';
+import { ISyncItem } from 'src/services/sync.service';
+import SyncItemElement from '../SyncItemElement';
 
 const TotalItemsText = styled.span<ThemeProps>`
   font-family: 'SF Pro Display';
@@ -22,51 +24,72 @@ const TotalItemsText = styled.span<ThemeProps>`
   color: #4c6fff;
 `;
 
-const ProgressText = styled.span`
+const SyncGroupHeader = styled.span`
   font-family: 'SF Pro Display';
-  font-size: 12px;
-  font-weight: 600;
-  font-stretch: normal;
   font-style: normal;
-  line-height: 1.6;
-  letter-spacing: normal;
-  text-align: left;
-  color: #000000;
-  margin-left: 12px;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 21px;
+  letter-spacing: -0.005em;
+  color: #27272e;
 `;
 
-const LocalProgressBar = styled(ProgressBar)`
-  display: inline !important;
+const SyncGroupHeaderRow = styled(IonRow)`
+  margin-top: 10px;
+  --ion-background-color: #111d12 !important;
+  background-color: #edf2f7 !important;
+  font-family: 'SF Pro Display';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 22px;
+  font-feature-settings: 'salt' on;
+  color: #425466;
+  border-radius: 11px;
+  padding: 5px 20px;
 `;
 
-const LocalProgressColumn = styled(IonCol)`
-  padding-top: 8px;
+const SyncGroupHeaderCol = styled(IonCol)`
+  --ion-background-color: transparent !important;
+  background-color: transparent !important;
 `;
 
 interface IProps {
-  // amountCompleted?: number;
-  // totalAmount: number;
+  syncItems: ISyncItem[];
   template?: string;
-  // onSync: () => void;
+  updateSyncItem: (syncItem: ISyncItem) => void;
 }
 
 const SyncItemsCard: React.FC<IProps> = ({
-  // amountCompleted = 5,
-  // totalAmount = 0,
-  template = 'default'
-}: // onSync = () => { }
-IProps) => {
-  // const getProgress = (): number => {
-  //     if (totalAmount === 0) return 100;
-  //     return (amountCompleted * 100) / totalAmount
-  // }
-
-  // if (totalAmount === 0) return <></>;
-
+  syncItems = [],
+  template = 'default',
+  updateSyncItem = (syncItem: ISyncItem) => {}
+}: IProps) => {
   return (
     <>
       <CardOverview template={template}>
-        <CardContentContainer>asfasdf</CardContentContainer>
+        <CardContentContainer>
+          <SyncGroupHeader>Personal Information</SyncGroupHeader>
+
+          <IonGrid>
+            <SyncGroupHeaderRow>
+              <SyncGroupHeaderCol size="5">Current</SyncGroupHeaderCol>
+
+              <SyncGroupHeaderCol size="5">Blockchain</SyncGroupHeaderCol>
+
+              <SyncGroupHeaderCol size="2">
+                Keep version from
+              </SyncGroupHeaderCol>
+            </SyncGroupHeaderRow>
+
+            {syncItems.map(item => (
+              <SyncItemElement
+                syncItem={item}
+                updateSyncItem={updateSyncItem}
+              ></SyncItemElement>
+            ))}
+          </IonGrid>
+        </CardContentContainer>
       </CardOverview>
     </>
   );

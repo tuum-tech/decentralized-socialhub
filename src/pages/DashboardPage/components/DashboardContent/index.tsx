@@ -51,6 +51,7 @@ interface Props {
   followerDids: string[];
   followingDids: string[];
   mutualDids: string[];
+  hasDifferences: boolean;
 }
 
 const DashboardContent: React.FC<Props> = ({
@@ -60,12 +61,13 @@ const DashboardContent: React.FC<Props> = ({
   didDocument,
   followerDids,
   followingDids,
-  mutualDids
+  mutualDids,
+  hasDifferences
 }) => {
   const [active, setActive] = useState('home');
   return (
     <Container>
-      <SyncBar></SyncBar>
+      {hasDifferences && <SyncBar></SyncBar>}
       <IonList>
         <IonItem
           className={(active === 'home' ? 'tab-active' : '') + ' tab-item'}

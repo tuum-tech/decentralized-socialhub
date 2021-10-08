@@ -51,12 +51,7 @@ const Avatar: React.FC<AvatarProps> = ({
   if (avatarInfo.type === 'default') {
     return (
       <div className={style['avatar']} style={{ height: width, width }}>
-        <ContentDiv
-          className={cn}
-          // style={{
-          //   maxWidth: width
-          // }}
-        >
+        <ContentDiv className={cn}>
           {avatarInfo.name[0]} {avatarInfo.name[1]}
         </ContentDiv>
       </div>

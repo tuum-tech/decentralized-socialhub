@@ -1,12 +1,11 @@
 import { mapDispatchToProps, mapStateToProps } from './index';
-import { SubState, ActionType, defaultUserInfo } from 'src/store/users/types';
+
 import { IonButton } from '@ionic/react';
 import styled from 'styled-components';
-// export type InferMappedProps = ReturnType<typeof mapStateToProps> &
-//   ReturnType<typeof mapDispatchToProps>;
+import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/typings';
 
-// export { defaultUserInfo };
-// export type { SubState, ActionType };
+export type InferMappedProps = ReturnType<typeof mapStateToProps> &
+  ReturnType<typeof mapDispatchToProps>;
 
 export const Header = styled.div`
   width: 100%;

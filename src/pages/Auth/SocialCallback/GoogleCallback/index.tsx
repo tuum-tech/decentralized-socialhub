@@ -90,9 +90,14 @@ const GoogleCallback: React.FC<PageProps> = ({
 
           if (props.session.mnemonics === '') {
             let essentialsService = new EssentialsService(didService);
-            await essentialsService.addVerifiableCredentialEssentials(
+            let isAdded = await essentialsService.addVerifiableCredentialEssentials(
               verifiableCredential
             );
+
+            if (!isAdded) {
+              window.close();
+              return;
+            }
 
             documentWithGoogleCredential = await didService.getPublishedDocument(
               new DID(props.session.did)
@@ -105,6 +110,10 @@ const GoogleCallback: React.FC<PageProps> = ({
           }
 
           await didService.storeDocument(documentWithGoogleCredential);
+          await DidcredsService.addOrUpdateCredentialToVault(
+            props.session,
+            verifiableCredential
+          );
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.google! = googleId.email;

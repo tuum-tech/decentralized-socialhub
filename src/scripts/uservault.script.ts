@@ -14,6 +14,7 @@ export class UserVaultScripts {
     await hiveClient.Database.createCollection('experience_profile');
     await hiveClient.Database.createCollection('activities');
     await hiveClient.Database.createCollection('public_fields');
+    await hiveClient.Database.createCollection('verifiable_credentials');
   }
 
   static async SetScripts(hiveClient: HiveClient) {
@@ -287,6 +288,81 @@ export class UserVaultScripts {
         }
       }
     });
+
+    // await hiveClient.Scripting.SetScript({
+    //   name: 'add_verifiablecredential',
+    //   allowAnonymousUser: true,
+    //   allowAnonymousApp: true,
+    //   executable: {
+    //     type: 'insert',
+    //     name: 'add_verifiablecredential',
+    //     output: true,
+    //     body: {
+    //       collection: 'verifiable_credentials',
+    //       document: {
+    //         id: '$params.id',
+    //         vc: '$params.vc',
+
+    //       }
+    //     }
+    //   }
+    // });
+
+    await hiveClient.Scripting.SetScript({
+      name: 'add_verifiablecredential',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'add_verifiablecredential',
+        body: {
+          collection: 'verifiable_credentials',
+          filter: {
+            id: '$params.id'
+          },
+          update: {
+            $set: {
+              id: '$params.id',
+              vc: '$params.vc'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+
+    await hiveClient.Scripting.SetScript({
+      name: 'remove_verifiablecredential',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'delete',
+        name: 'remove_verifiablecredential',
+        body: {
+          collection: 'verifiable_credentials',
+          filter: {
+            id: '$params.id'
+          }
+        }
+      }
+    });
+
+    await hiveClient.Scripting.SetScript({
+      name: 'get_verifiable_credentials',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_verifiable_credentials',
+        output: true,
+        body: {
+          collection: 'verifiable_credentials'
+        }
+      }
+    });
   }
 
   static async Delete(hiveClient: HiveClient) {
@@ -296,5 +372,6 @@ export class UserVaultScripts {
     await hiveClient.Database.deleteCollection('experience_profile');
     await hiveClient.Database.deleteCollection('activities');
     await hiveClient.Database.deleteCollection('public_fields');
+    await hiveClient.Database.deleteCollection('verifiable_credentials');
   }
 }

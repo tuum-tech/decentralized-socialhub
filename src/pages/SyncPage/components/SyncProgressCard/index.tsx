@@ -112,8 +112,8 @@ const SyncProgressCard: React.FC<IProps> = ({
             <IonRow className="ion-no-padding">
               <IonCol size="8" className="ion-no-padding">
                 <TotalItemsText template={template}>
-                  {' '}
-                  {totalAmount} items needs to be reviewed
+                  {totalAmount} {totalAmount === 1 ? 'item' : 'items'} needs to
+                  be reviewed
                 </TotalItemsText>
                 <ProgressDiv>
                   <IonGrid className="ion-no-padding">

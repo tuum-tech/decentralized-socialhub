@@ -26,6 +26,8 @@ import { requestUpdateEmail } from './fetchapi';
 import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { DidService } from 'src/services/did.service.new';
 import SyncBar from 'src/components/SyncBar';
+import { SyncService } from 'src/services/sync.service';
+import { DidcredsService } from 'src/services/didcreds.service';
 
 interface Props {
   session: ISessionItem;
@@ -36,6 +38,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
   const [error, setError] = useState(false);
   const [userInfo, setUserInfo] = useState<ISessionItem>(session);
   const [loaded, setloaded] = useState(false);
+  const [hasDifferences, setHasDifferences] = useState(false);
   const [didDocument, setDidDocument] = useState<DIDDocument | undefined>(
     undefined
   );
@@ -64,6 +67,9 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
       // refresh DID document
       let document = await DidDocumentService.getUserDocument(session);
       setDidDocument(document);
+
+      let hasDiff = await SyncService.HasDifferences(session);
+      setHasDifferences(hasDiff);
 
       if (JSON.stringify(session) === JSON.stringify(userInfo)) return;
 
@@ -94,9 +100,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
     <IonContent className={style['profileeditor']}>
       <IonGrid className={style['profileeditorgrid']}>
         <IonRow>
-          <IonCol size="12">
-            <SyncBar></SyncBar>
-          </IonCol>
+          <IonCol size="12">{hasDifferences && <SyncBar></SyncBar>}</IonCol>
         </IonRow>
         <IonRow>
           <IonCol size="4">
@@ -115,6 +119,9 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                 updateFunc={async (newUserInfo: ISessionItem) => {
                   const newEmail = newUserInfo.loginCred?.email!;
                   const oldEmail = userInfo.loginCred?.email!;
+
+                  const newName = newUserInfo.name!;
+                  const oldName = userInfo.name!;
 
                   if (newEmail !== oldEmail) {
                     let response = (await requestUpdateEmail(
@@ -143,6 +150,24 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                     }
                     newUserInfo.loginCred!.email = oldEmail;
                   }
+
+                  if (newName !== oldName) {
+                    let didService = await DidService.getInstance();
+                    let doc = await didService.getStoredDocument(
+                      new DID(session.did)
+                    );
+                    let vc = await didService.newSelfVerifiableCredential(
+                      doc,
+                      'name',
+                      newName
+                    );
+
+                    await DidcredsService.addOrUpdateCredentialToVault(
+                      session,
+                      vc
+                    );
+                  }
+
                   await TuumTechScriptService.updateTuumUser(newUserInfo);
                   await updateSession({ session: newUserInfo });
 

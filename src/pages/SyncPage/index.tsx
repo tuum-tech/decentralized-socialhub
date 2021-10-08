@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   IonContent,
   IonPage,
@@ -17,7 +17,6 @@ import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import {
   InferMappedProps,
-  SubState,
   Header,
   ArrowImage,
   HeaderInfo,
@@ -34,14 +33,42 @@ import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import arrowLeft from '../../assets/icon/arrow-left-square.svg';
 import SyncProgressCard from './components/SyncProgressCard';
 import SyncItemsCard from './components/SyncItemsCard';
+import { SubState } from 'src/store/users/types';
+import { ISyncItem, SyncService, SyncState } from 'src/services/sync.service';
 
 const SyncPage: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
+  const [syncItems, setSyncItems] = useState<ISyncItem[]>([]);
+
+  const updateSyncItem = async (syncItem: ISyncItem) => {
+    let index = syncItems.findIndex(local => {
+      return local.Label === syncItem.Label;
+    });
+
+    syncItems[index].State = syncItem.State;
+    setSyncItems([...syncItems]);
+  };
+
+  const amountCompleted = () => {
+    return syncItems.filter(item => item.State !== SyncState.Waiting).length;
+  };
+
+  const onSync = async () => {
+    eProps.setSession({
+      session: await SyncService.UpdateDifferences(props.session, syncItems)
+    });
+
+    //window.location.href = '/manager'
+  };
+
   useEffect(() => {
-    console.log('I am on manager page');
-  }, []);
+    (async () => {
+      let items = await SyncService.GetSyncDifferences(props.session);
+      setSyncItems(items);
+    })();
+  }, [props.session]);
   return (
     <>
       <IonPage className={style['syncpage']}>
@@ -66,10 +93,14 @@ const SyncPage: React.FC<InferMappedProps> = ({
                 </Header>
                 <Content>
                   <SyncProgressCard
-                    totalAmount={10}
-                    onSync={async () => {}}
+                    totalAmount={syncItems.length}
+                    amountCompleted={amountCompleted()}
+                    onSync={onSync}
                   ></SyncProgressCard>
-                  <SyncItemsCard></SyncItemsCard>
+                  <SyncItemsCard
+                    syncItems={syncItems}
+                    updateSyncItem={updateSyncItem}
+                  ></SyncItemsCard>
                 </Content>
               </IonCol>
             </IonRow>
