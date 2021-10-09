@@ -65,7 +65,7 @@ const FowllowCards: React.FC<Props> = ({
     <>
       {followingDids.length > 0 && showFollowingCard && (
         <FollowCard
-          title={`Following ${followingDids.length}`}
+          title={`Following (${followingDids.length})`}
           users={
             followingUsers.length > 5
               ? followingUsers.slice(0, 5)
@@ -78,7 +78,7 @@ const FowllowCards: React.FC<Props> = ({
       )}
       {followerDids.length > 0 && showFollowerCard && (
         <FollowCard
-          title={`Follower ${followerDids.length}`}
+          title={`Follower (${followerDids.length})`}
           users={
             followerUsers.length > 5 ? followerUsers.slice(0, 5) : followerUsers
           }
@@ -89,7 +89,7 @@ const FowllowCards: React.FC<Props> = ({
       )}
       {mutualDids.length > 0 && showMutualFollowerCard && (
         <FollowCard
-          title={`Mutual Follower ${mutualDids.length}`}
+          title={`Mutual Follower (${mutualDids.length})`}
           users={
             mutualFollowerUsers.length > 5
               ? mutualFollowerUsers.slice(0, 5)

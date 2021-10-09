@@ -51,7 +51,12 @@ const BadgeCard: React.FC<Props> = ({ badges, template }) => {
           <IonRow className="ion-justify-content-between">
             <IonCol size="6">
               <IonCardTitle id="education">
-                Badges ({archivedBadges.length})
+                Badges{' '}
+                {`${
+                  archivedBadges.length > 0
+                    ? '(' + archivedBadges.length + ')'
+                    : ''
+                }`}
               </IonCardTitle>
             </IonCol>
             <IonCol size="auto">

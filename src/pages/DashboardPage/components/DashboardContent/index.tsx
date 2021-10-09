@@ -36,12 +36,12 @@ const DashboardContent: React.FC<Props> = ({
         >
           <IonLabel className="tab-label">Home</IonLabel>
         </IonItem>
-        <IonItem
+        {/* <IonItem
           className={(active === 'status' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => setActive('status')}
         >
           <IonLabel className="tab-label">Status</IonLabel>
-        </IonItem>
+        </IonItem> */}
         <IonItem
           className={(active === 'badges' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => setActive('badges')}
@@ -62,7 +62,7 @@ const DashboardContent: React.FC<Props> = ({
           mutualDids={mutualDids}
         />
       )}
-      {active === 'status' && <DashboardStatus />}
+      {/* {active === 'status' && <DashboardStatus />} */}
       {active === 'badges' && <DashboardBadges sessionItem={sessionItem} />}
     </TabsContainer>
   );

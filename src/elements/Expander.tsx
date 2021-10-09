@@ -52,7 +52,7 @@ const Expander = ({ title, cateogiries }: Props) => {
           {title}
         </div>
         <div>
-          {cateogiries.length} record {cateogiries.length > 1 ? 's' : ''}{' '}
+          {cateogiries.length} record{cateogiries.length > 1 ? 's' : ''}{' '}
         </div>
       </Header>
       {expanded && (
