@@ -92,22 +92,23 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
       let userService = new UserService(await DidService.getInstance());
 
       setLoading(true);
-      const followerDids = await FollowService.getFollowerDids(
-        props.match.params.did,
-        props.session
-      );
-      setFollowerDids(followerDids);
 
-      const followingdids = await FollowService.getFollowingDids(
-        props.match.params.did,
-        props.session
-      );
-      setFollowingDids(followingdids);
+      if (props.session.tutorialStep === 4) {
+        const followerDids = await FollowService.getFollowerDids(
+          props.match.params.did
+        );
+        setFollowerDids(followerDids);
 
-      const pFields = await ProfileService.getPublicFields(
-        props.match.params.did
-      );
-      setPublicFields(pFields);
+        const followingdids = await FollowService.getFollowingDids(
+          props.match.params.did
+        );
+        setFollowingDids(followingdids);
+
+        const pFields = await ProfileService.getPublicFields(
+          props.match.params.did
+        );
+        setPublicFields(pFields);
+      }
 
       let pUser = await userService.SearchUserWithDID(props.match.params.did);
       if (pUser && pUser.did) {

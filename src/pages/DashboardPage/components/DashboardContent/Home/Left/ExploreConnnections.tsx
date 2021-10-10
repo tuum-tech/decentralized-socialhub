@@ -22,10 +22,7 @@ const ExploreConnnections: React.FC<Props> = ({ did, session }) => {
     (async () => {
       let fUserDids: string[] = [];
       if (session && session.tutorialStep === 4) {
-        let followings = await ProfileService.getFollowings(
-          session.did,
-          session
-        );
+        let followings = await ProfileService.getFollowings(session.did);
         if (
           followings &&
           followings.get_following &&
@@ -35,7 +32,7 @@ const ExploreConnnections: React.FC<Props> = ({ did, session }) => {
           fUserDids = followings.get_following.items.map(item => item.did);
         }
 
-        let followers = await ProfileService.getFollowers([did], session);
+        let followers = await ProfileService.getFollowers([did]);
         if (followers) {
           for (let i = 0; i < followers.get_followers.items.length; i++) {
             if (!fUserDids.includes(followers.get_followers.items[i].did)) {

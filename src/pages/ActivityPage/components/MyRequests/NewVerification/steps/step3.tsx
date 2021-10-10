@@ -33,7 +33,6 @@ const ReviewPage = ({
   sendRequest
 }: Props) => {
   const [msg, setMsg] = useState('');
-  console.log('====>selectedDids', selectedDids);
 
   return (
     <Container>

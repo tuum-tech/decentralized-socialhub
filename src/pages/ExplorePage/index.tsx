@@ -117,22 +117,23 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const pFields = await ProfileService.getPublicFields(
-        props.match.params.did
-      );
-      setPublicFields(pFields);
 
-      const followerDids = await FollowService.getFollowerDids(
-        props.match.params.did,
-        props.session
-      );
-      setFollowerDids(followerDids);
+      if (props.session.tutorialStep === 4) {
+        const pFields = await ProfileService.getPublicFields(
+          props.match.params.did
+        );
+        setPublicFields(pFields);
 
-      const followingdids = await FollowService.getFollowingDids(
-        props.match.params.did,
-        props.session
-      );
-      setFollowingDids(followingdids);
+        const followerDids = await FollowService.getFollowerDids(
+          props.match.params.did
+        );
+        setFollowerDids(followerDids);
+
+        const followingdids = await FollowService.getFollowingDids(
+          props.match.params.did
+        );
+        setFollowingDids(followingdids);
+      }
 
       if (props.match.params.did && props.match.params.did !== '') {
         let userService = new UserService(await DidService.getInstance());
