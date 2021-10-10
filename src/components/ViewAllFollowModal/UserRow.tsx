@@ -24,7 +24,7 @@ const UserRow = ({
     <div className={style['userRow']}>
       <Avatar did={did} width="50px" />
       <div className={style['userRow_info']}>
-        <Link to={'/did' + did}>
+        <Link to={'/did/' + did}>
           <span className={style['name']}>{name}</span>
           <br />
           <span className={style['truncatedDID']}>{did}</span>
