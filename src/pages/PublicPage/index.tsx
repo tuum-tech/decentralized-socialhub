@@ -1,3 +1,4 @@
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { IonGrid, IonContent, IonCol } from '@ionic/react';
 import { RouteComponentProps } from 'react-router';
 import React, { useEffect, useRef, useState } from 'react';
@@ -17,15 +18,16 @@ import {
 import { FollowService } from 'src/services/follow.service';
 import { FollowType, UserService } from 'src/services/user.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
+import { DidService } from 'src/services/did.service.new';
 
-import ViewAllFollowModal from 'src/components/ViewAllFollowModal';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
+import ViewAllFollowModal from 'src/components/ViewAllFollowModal';
 import ProfileComponent from 'src/components/profile/ProfileComponent';
 import PublicNavbar from 'src/components/profile/ProfileComponent/PublicNavbar';
 
+import { getDIDString } from 'src/utils/did';
+
 import { ContentRow, Container, ProfileComponentContainer } from './layouts';
-import { DidService } from 'src/services/did.service.new';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 interface MatchParams {
   did: string;
@@ -35,7 +37,7 @@ interface PageProps
     RouteComponentProps<MatchParams> {}
 
 const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
-  let did: string = props.match.params.did;
+  let did: string = getDIDString(props.match.params.did, false);
 
   const [publicUser, setPublicUser] = useState(defaultUserInfo);
   const [publicUserProfile, setPublicUserProfile] = useState<ProfileDTO>(
@@ -94,44 +96,33 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
       setLoading(true);
 
       if (props.session.tutorialStep === 4) {
-        const followerDids = await FollowService.getFollowerDids(
-          props.match.params.did
-        );
+        const followerDids = await FollowService.getFollowerDids(did);
         setFollowerDids(followerDids);
 
-        const followingdids = await FollowService.getFollowingDids(
-          props.match.params.did
-        );
+        const followingdids = await FollowService.getFollowingDids(did);
         setFollowingDids(followingdids);
 
-        const pFields = await ProfileService.getPublicFields(
-          props.match.params.did
-        );
+        const pFields = await ProfileService.getPublicFields(did);
         setPublicFields(pFields);
       }
 
-      let pUser = await userService.SearchUserWithDID(props.match.params.did);
+      let pUser = await userService.SearchUserWithDID(did);
       if (pUser && pUser.did) {
         setPublicUser(pUser as any);
-        let profile = await ProfileService.getFullProfile(
-          props.match.params.did,
-          props.session
-        );
+        let profile = await ProfileService.getFullProfile(did, props.session);
         if (profile) {
           profile.basicDTO.isEnabled = true;
           profile.experienceDTO.isEnabled = true;
           profile.educationDTO.isEnabled = true;
           setPublicUserProfile(profile);
         }
-        let document = await DidDocumentService.getUserDocumentByDid(
-          props.match.params.did
-        );
+        let document = await DidDocumentService.getUserDocumentByDid(did);
         setDidDocument(document);
       }
 
       setLoading(false);
     })();
-  }, [props.match.params.did, props.session]);
+  }, [did, props.session]);
 
   if (loading) {
     return <LoadingIndicator loadingText="Loading data..." />;

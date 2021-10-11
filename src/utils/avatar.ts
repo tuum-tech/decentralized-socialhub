@@ -1,4 +1,3 @@
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { DidService } from 'src/services/did.service.new';
 import { UserService } from 'src/services/user.service';
 export interface AvatarInterface {

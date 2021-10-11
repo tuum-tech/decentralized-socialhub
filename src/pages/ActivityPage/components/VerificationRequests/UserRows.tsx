@@ -5,11 +5,13 @@ import { SearchService } from 'src/services/search.service';
 import { SmallLightButton } from 'src/elements/buttons';
 
 import Avatar from 'src/components/Avatar';
-import { UserRow, getStatusColor } from '../MyRequests/UserRows';
+
 import { getItemsFromData } from 'src/utils/script';
+import { getDIDString } from 'src/utils/did';
 import { timeSince } from 'src/utils/time';
 import { getCategoryTitle } from 'src/utils/credential';
 
+import { UserRow, getStatusColor } from '../MyRequests/UserRows';
 interface Props {
   session: ISessionItem;
   verifications: VerificationRequest[];
@@ -39,9 +41,9 @@ const UserRows: React.FC<Props> = ({
 
     const renderUserName = (user: ISessionItem, v: VerificationRequest) => {
       if (user && user.name) {
-        return <Link to={'/did/' + user.did}>{user.name}</Link>;
+        return <Link to={getDIDString('/did/' + user.did)}>{user.name}</Link>;
       }
-      return <Link to={'/did/' + v.from_did}>{v.from_did}</Link>;
+      return <Link to={getDIDString('/did/' + v.from_did)}>{v.from_did}</Link>;
     };
 
     return (

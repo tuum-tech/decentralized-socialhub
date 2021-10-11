@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-import { SearchService } from 'src/services/search.service';
-import { getItemsFromData } from 'src/utils/script';
 import Avatar from 'src/components/Avatar';
-import { timeSince } from 'src/utils/time';
 import { SmallLightButton } from 'src/elements/buttons';
+
+import { SearchService } from 'src/services/search.service';
+
+import { getItemsFromData } from 'src/utils/script';
+import { getDIDString } from 'src/utils/did';
+import { timeSince } from 'src/utils/time';
 import { getCategoryTitle } from 'src/utils/credential';
 
 export const UserRow = styled.div`
@@ -78,9 +81,9 @@ const UserRows: React.FC<Props> = ({
 
   const renderUserName = (user: ISessionItem, v: VerificationRequest) => {
     if (user && user.name) {
-      return <Link to={'/did/' + user.did}>{user.name}</Link>;
+      return <Link to={getDIDString('/did/' + user.did)}>{user.name}</Link>;
     }
-    return <Link to={'/did/' + v.to_did}>{v.to_did}</Link>;
+    return <Link to={getDIDString('/did/' + v.to_did)}>{v.to_did}</Link>;
   };
 
   const rednerUserRow = (v: VerificationRequest) => {
