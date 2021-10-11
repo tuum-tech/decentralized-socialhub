@@ -88,10 +88,9 @@ const PeopleCard: React.FC<Props> = ({
 
   const loadFollowing = useCallback(async () => {
     try {
-      if (session && session.did !== '') {
+      if (session && session.did !== '' && session.tutorialStep === 4) {
         const response = (await ProfileService.getFollowings(
-          session.did,
-          session
+          session.did
         )) as IFollowingResponse;
         setListFollowing(response.get_following);
       }

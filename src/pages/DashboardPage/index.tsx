@@ -162,18 +162,20 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
   useEffect(() => {
     (async () => {
-      if (props.session && props.session.did !== '') {
+      if (
+        props.session &&
+        props.session.did !== '' &&
+        props.session.tutorialStep === 4
+      ) {
         await refreshDidDocument();
 
         const followingDids = await FollowService.getFollowingDids(
-          props.session.did,
-          props.session
+          props.session.did
         );
         setFollowingDids(followingDids);
 
         const followerDids = await FollowService.getFollowerDids(
-          props.session.did,
-          props.session
+          props.session.did
         );
         setFollowerDids(followerDids);
 

@@ -266,8 +266,7 @@ export class ProfileService {
   }
 
   static async getFollowers(
-    dids: string[],
-    session: ISessionItem
+    dids: string[]
   ): Promise<IFollowerResponse | undefined> {
     const appHiveClient = await HiveService.getAppHiveClient();
     if (appHiveClient && dids && dids.length > 0) {
@@ -297,7 +296,7 @@ export class ProfileService {
         did: did
       });
 
-      let followersResponse = await this.getFollowers([did], session);
+      let followersResponse = await this.getFollowers([did]);
       let followersList: string[] = [];
       if (
         followersResponse &&
@@ -329,7 +328,7 @@ export class ProfileService {
       }
 
       if (session) {
-        return this.getFollowings(session.did, session);
+        return this.getFollowings(session.did);
       }
     }
 
@@ -341,12 +340,11 @@ export class ProfileService {
     if (!hiveInstance) return;
     await hiveInstance.Database.deleteCollection('following');
     await hiveInstance.Database.createCollection('following');
-    return this.getFollowings(session.did, session);
+    return this.getFollowings(session.did);
   }
 
   static async getFollowings(
-    targetDid: string,
-    session: ISessionItem
+    targetDid: string
   ): Promise<IFollowingResponse | undefined> {
     const appHiveClient = await HiveService.getAppHiveClient();
     if (targetDid && targetDid !== '' && appHiveClient) {
@@ -372,7 +370,7 @@ export class ProfileService {
     if (hiveClient && did && did !== '') {
       await hiveClient.Database.insertOne('following', { did: did }, undefined);
 
-      let followersResponse = await this.getFollowers([did], session);
+      let followersResponse = await this.getFollowers([did]);
 
       let followersList: string[] = [];
       if (followersResponse && followersResponse.get_followers.items.length > 0)
@@ -439,7 +437,7 @@ export class ProfileService {
       );
 
       if (session) {
-        return this.getFollowings(session.did, session);
+        return this.getFollowings(session.did);
       }
     }
     return;

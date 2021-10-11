@@ -62,30 +62,29 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
 
   useEffect(() => {
     (async () => {
-      try {
-        if (userSession && userSession.did) {
-          //Get Followers
-          let listDids = [userSession.did];
-          let followers = await ProfileService.getFollowers(
-            listDids,
-            userSession
-          );
-          setListFollowers(followers as IFollowerResponse);
+      if (
+        userSession &&
+        userSession.did !== '' &&
+        userSession.tutorialStep === 4
+      ) {
+        try {
+          if (userSession && userSession.did) {
+            let listDids = [userSession.did];
+            let followers = await ProfileService.getFollowers(listDids);
+            setListFollowers(followers as IFollowerResponse);
+          }
+        } catch (e) {
+          alertError(null, 'Could not retrieve your followers');
         }
-      } catch (e) {
-        alertError(null, 'Could not retrieve your followers');
-      }
 
-      try {
-        if (userSession && userSession.did) {
-          let following = await ProfileService.getFollowings(
-            userSession.did,
-            userSession
-          );
-          setListFollowing(following as IFollowingResponse);
+        try {
+          if (userSession && userSession.did) {
+            let following = await ProfileService.getFollowings(userSession.did);
+            setListFollowing(following as IFollowingResponse);
+          }
+        } catch (e) {
+          alertError(null, 'Could not load users that you follow');
         }
-      } catch (e) {
-        alertError(null, 'Could not load users that you follow');
       }
     })();
   }, [userSession, userSession.did]);

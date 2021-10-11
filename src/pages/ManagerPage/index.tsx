@@ -21,6 +21,13 @@ import style from './style.module.scss';
 import ProfileEditor from './components/ProfileEditor';
 import { useEffect } from 'react';
 
+const WarningText = styled.div`
+  color: red;
+  font-size: 15px;
+  margin-top: 20px;
+  padding: 0 40px;
+`;
+
 const ManagerPage: React.FC<InferMappedProps> = ({
   eProps,
   ...props
@@ -64,8 +71,15 @@ const ManagerPage: React.FC<InferMappedProps> = ({
               </IonCol>
               <IonCol size="10" className={style['right-panel']}>
                 <Header>
-                  <PageTitle>Profile Manager</PageTitle>
+                  <PageTitle>Profile Manager &nbsp;&nbsp;&nbsp;</PageTitle>
                 </Header>
+                {user.tutorialStep !== 4 && (
+                  <WarningText>
+                    Please complete the tutorial first before managing your
+                    Profile.
+                  </WarningText>
+                )}
+
                 {user && user.did && user.did !== '' && (
                   <ProfileEditor
                     session={user}

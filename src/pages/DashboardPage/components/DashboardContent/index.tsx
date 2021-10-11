@@ -3,7 +3,7 @@ import { IonList, IonLabel, IonItem } from '@ionic/react';
 
 import { TabsContainer } from 'src/components/profile/ProfileComponent/PublicProfileTabs';
 import DashboardHome from './Home';
-import DashboardStatus from './Status';
+// import DashboardStatus from './Status';
 import DashboardBadges from './Badges';
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
