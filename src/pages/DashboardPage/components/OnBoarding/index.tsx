@@ -149,7 +149,7 @@ const OnBoarding: React.FC<Props> = ({
   const step4Item = () => {
     if (
       sessionItem.isDIDPublished ||
-      publishStatus == RequestStatus.Completed
+      publishStatus === RequestStatus.Completed
     ) {
       return (
         <div
