@@ -19,7 +19,6 @@ import ManageProfile from './Left/ManageProfile';
 import ExploreConnnections from './Left/ExploreConnnections';
 import ManageLinks from './Left/ManageLinks';
 import BeginnersTutorial from './Left/BeginnersTutorial';
-import WhatIsProfile from './Right/WhatIsProfile';
 import ConnectWithCommunity from './Right/ConnectWithCommunity';
 import ProfileCompletion from './Right/ProfileCompletion';
 import VerificationStatus from './Right/VerificationStatus';
@@ -374,7 +373,6 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
             progress={completionPercent}
             completionStats={completionStatsDisplay}
           />
-          <WhatIsProfile />
           <ConnectWithCommunity />
           {hasSocialProfiles && (
             <ProfileBriefCard
