@@ -4,14 +4,17 @@ import { IonTextarea, IonModal } from '@ionic/react';
 import { Link } from 'react-router-dom';
 
 import { SmallLightButton } from 'src/elements/buttons';
-import { VerificationService } from 'src/services/verification.service';
 import Expander from 'src/elements/Expander';
-import { timeSince } from 'src/utils/time';
 import DidSnippet from 'src/elements/DidSnippet';
 import Avatar from 'src/components/Avatar';
 
 import { InfoTxt, Container } from '../MyRequests/VerificationDetail';
 import { getStatusColor } from '../MyRequests/UserRows';
+
+import { VerificationService } from 'src/services/verification.service';
+
+import { timeSince } from 'src/utils/time';
+import { getDIDString } from 'src/utils/did';
 import { getCategoryTitle } from 'src/utils/credential';
 
 export const VerificationDetailModal = styled(IonModal)`
@@ -87,7 +90,7 @@ const VerificationDetailContent = ({
         <p className="mb-2 name">{user.name}</p>
         <DidSnippet did={user.did} />
 
-        <Link className="mt-2" to={'/did/' + user.did}>
+        <Link className="mt-2" to={getDIDString('/did/' + user.did)}>
           View Profile
         </Link>
       </ProfileContent>

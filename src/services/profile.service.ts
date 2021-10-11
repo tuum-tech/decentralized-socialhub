@@ -1,17 +1,16 @@
+import { Guid } from 'guid-typescript';
 import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/Services/Scripting.Service';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { ActivityResponse } from 'src/pages/ActivityPage/types';
 import { VerificationService } from 'src/services/verification.service';
 
 import { showNotify } from 'src/utils/notify';
 import { getItemsFromData } from 'src/utils/script';
-import { DidDocumentService } from './diddocument.service';
 
+import { DidDocumentService } from './diddocument.service';
 import { HiveService } from './hive.service';
 import { UserService } from './user.service';
-import { Guid } from 'guid-typescript';
-
 import { DidService } from './did.service.new';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 export class ProfileService {
   static didDocument: any = null;
@@ -408,7 +407,7 @@ export class ProfileService {
           did: sDid,
           message:
             '<a href="/did/' +
-            sDid +
+            sDid.replaceAll('did:elastos:', '') +
             '" target="_blank">' +
             session!.name +
             '</a> Followed you',
@@ -425,7 +424,7 @@ export class ProfileService {
           did: sDid,
           message:
             'You are following <a href="/did/' +
-            did +
+            did.replaceAll('did:elastos:', '') +
             '" target="_blank">' +
             followingUser.name +
             '</a>',

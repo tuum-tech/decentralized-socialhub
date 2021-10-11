@@ -10,6 +10,7 @@ import { InferMappedProps, SubState } from '../../../pages/DashboardPage/types';
 
 import Avatar from '../../Avatar';
 import style from './DidCard.module.scss';
+import { getDIDString } from 'src/utils/did';
 interface Props extends InferMappedProps {
   name?: string;
   did: string;
@@ -58,7 +59,7 @@ const DidCard: React.FC<Props> = ({
   };
 
   const getLink = (did: string) => {
-    return '/explore/' + did;
+    return '/explore/' + getDIDString(did, true);
   };
 
   useEffect(() => {

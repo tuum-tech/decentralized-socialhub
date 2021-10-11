@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { SearchService } from 'src/services/search.service';
 import { FollowType } from 'src/services/user.service';
 import { getItemsFromData } from 'src/utils/script';
+import { getDIDString } from 'src/utils/did';
 
 import FollowCard from './FollowCard';
 
@@ -71,7 +72,7 @@ const FowllowCards: React.FC<Props> = ({
               ? followingUsers.slice(0, 5)
               : followingUsers
           }
-          getLinkFunc={(did: string) => '/did/' + did}
+          getLinkFunc={(did: string) => getDIDString('/did/' + did)}
           viewAllClicked={() => viewAll(FollowType.Following)}
           template={template}
         />
@@ -82,7 +83,7 @@ const FowllowCards: React.FC<Props> = ({
           users={
             followerUsers.length > 5 ? followerUsers.slice(0, 5) : followerUsers
           }
-          getLinkFunc={(did: string) => '/did/' + did}
+          getLinkFunc={(did: string) => getDIDString('/did/' + did)}
           viewAllClicked={() => viewAll(FollowType.Follower)}
           template={template}
         />
@@ -95,7 +96,7 @@ const FowllowCards: React.FC<Props> = ({
               ? mutualFollowerUsers.slice(0, 5)
               : mutualFollowerUsers
           }
-          getLinkFunc={(did: string) => '/did/' + did}
+          getLinkFunc={(did: string) => getDIDString('/did/' + did)}
           viewAllClicked={() => viewAll(FollowType.MutualFollower)}
           template={template}
         />

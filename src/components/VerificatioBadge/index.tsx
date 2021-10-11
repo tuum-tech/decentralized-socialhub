@@ -4,6 +4,9 @@ import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 
 import Avatar from 'src/components/Avatar';
+
+import { getDIDString } from 'src/utils/did';
+
 import shieldIcon from '../../assets/icon/shield.svg';
 
 const VerifierModal = styled(IonModal)`
@@ -77,7 +80,7 @@ const VerificationBadge: React.FC<Props> = ({ users, userSession }) => {
                   key={user.did}
                   onClick={() => {
                     setShowModal(false);
-                    history.push('/did/' + user.did);
+                    history.push(getDIDString('/did/' + user.did));
                   }}
                 >
                   {user.name}
