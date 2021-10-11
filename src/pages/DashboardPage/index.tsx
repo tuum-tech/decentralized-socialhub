@@ -131,8 +131,8 @@ const ProfilePage: React.FC<InferMappedProps> = ({
     if (newSession && newSession.did !== '') {
       let session = {
         ...newSession,
-        isDIDPublished: true,
-        onBoardingCompleted: true // WORKAROUND: when Onboarding window is closed before publishing, it sets onBoardingCompleted: true, but the session here dont get the updated session
+        isDIDPublished: true
+        // onBoardingCompleted: true // WORKAROUND: when Onboarding window is closed before publishing, it sets onBoardingCompleted: true, but the session here dont get the updated session
       };
 
       let userService = new UserService(await DidService.getInstance());
@@ -215,7 +215,8 @@ const ProfilePage: React.FC<InferMappedProps> = ({
     (async () => {
       if (props.session && props.session.did !== '') {
         if (history.location.pathname === '/profile') {
-          setOnBoardVisible(true);
+          if (!props.session.onBoardingCompleted) setOnBoardVisible(true);
+
           if (
             props.session.tutorialStep &&
             props.session.tutorialStep === 4 &&
