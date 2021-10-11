@@ -9,23 +9,23 @@ export class TemplateService {
     return [
       {
         value: 'crypto',
-        title: 'Crypto Enthusiast',
-        intro: 'Stocks, Investors or buzz-word enthusiast'
+        title: 'Crypto',
+        intro: 'Step into Web3'
       },
       {
         value: 'gamer',
-        title: 'Computer Gaming',
-        intro: 'Computers are my thing and I rule it'
+        title: 'Gaming',
+        intro: 'Interactive Dreamland'
       },
       {
         value: 'soccer',
-        title: 'Soccer/Football',
-        intro: 'For Players & die hard fans'
+        title: 'Athletics',
+        intro: 'Wide World of Sports'
       },
       {
         value: 'education',
-        title: 'Academic',
-        intro: 'For students, teachers, researchers'
+        title: 'Academics',
+        intro: 'Classmates to Co-workers'
       }
     ];
   }

@@ -1,11 +1,11 @@
 export const templates = {
   default: {
-    title: 'General Profile',
-    intro: 'Everything displayed'
+    title: 'General',
+    intro: 'Anything and Everything'
   },
   crypto: {
-    title: 'Crypto Profile',
-    intro: 'Everything displayed'
+    title: 'Crypto',
+    intro: 'Step into Web3'
   }
 };
 

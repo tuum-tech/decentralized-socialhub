@@ -89,7 +89,7 @@ const BadgeCard: React.FC<Props> = ({ badges, template }) => {
             const { title, description, enbl_icon, dsabl_icon } = badgeDetails[
               category
             ][name];
-            const text = `${title} <br/> Archieved ${timeSince(archived)}`;
+            const text = `${title} <br/> Achieved ${timeSince(archived)}`;
             return (
               <IonCol
                 key={title}

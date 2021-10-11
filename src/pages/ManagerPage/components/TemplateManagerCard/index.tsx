@@ -178,8 +178,8 @@ const TemplateManagerCard: React.FC<PageProps> = ({
             {[
               {
                 value: 'default',
-                title: 'General Profile',
-                intro: 'Everything displayed'
+                title: 'General',
+                intro: 'Anything and Everything'
               }
             ]
               .concat(myTemplates)
