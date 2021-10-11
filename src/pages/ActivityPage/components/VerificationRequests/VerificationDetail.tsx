@@ -90,7 +90,11 @@ const VerificationDetailContent = ({
         <p className="mb-2 name">{user.name}</p>
         <DidSnippet did={user.did} />
 
-        <Link className="mt-2" to={getDIDString('/did/' + user.did)}>
+        <Link
+          className="mt-2"
+          to={getDIDString('/did/' + user.did)}
+          target="_blank"
+        >
           View Profile
         </Link>
       </ProfileContent>

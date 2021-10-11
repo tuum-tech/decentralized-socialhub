@@ -4,14 +4,16 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { RequestStatus } from 'src/services/assist.service';
+import { ProfileService } from 'src/services/profile.service';
 import { ProfileName } from 'src/elements/texts';
 import DidSnippet from 'src/elements/DidSnippet';
 import Avatar from 'src/components/Avatar';
 import VerificatioBadge from 'src/components/VerificatioBadge';
+import { getDIDString } from 'src/utils/did';
+
 import PublishingLabel from '../PublishingLabel';
 
 import style from './style.module.scss';
-import { ProfileService } from 'src/services/profile.service';
 
 const ViewProfileButton = styled(IonButton)`
   display: flex;
@@ -87,7 +89,7 @@ const DashboardHeader: React.FC<IProps> = ({
           </IonGrid>
         </IonCol>
         <IonCol size="2">
-          <Link to={`/did/${sessionItem.did}`} target="_blank">
+          <Link to={getDIDString('/did/' + sessionItem.did)} target="_blank">
             <ViewProfileButton>View profile</ViewProfileButton>
           </Link>
         </IonCol>
