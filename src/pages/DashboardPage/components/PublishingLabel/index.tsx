@@ -10,9 +10,18 @@ interface Props {
 }
 
 const PublishingLabel: React.FC<Props> = ({ status }) => {
-  const label = status === RequestStatus.Completed ? 'Ready' : 'Publishing';
-  const icon = status === RequestStatus.Completed ? ready : waiting;
-  const color = status === RequestStatus.Completed ? '#4c6fff' : '#ff5a5a';
+  const label =
+    status === RequestStatus.Completed || status === RequestStatus.NotFound
+      ? 'Ready'
+      : 'Publishing';
+  const icon =
+    status === RequestStatus.Completed || status === RequestStatus.NotFound
+      ? ready
+      : waiting;
+  const color =
+    status === RequestStatus.Completed || status === RequestStatus.NotFound
+      ? '#4c6fff'
+      : '#ff5a5a';
   return (
     <Wrapper style={{ backgroundColor: color }}>
       <span>{label}</span>
