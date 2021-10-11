@@ -121,19 +121,13 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
       setLoading(true);
 
       if (props.session.tutorialStep === 4) {
-        const pFields = await ProfileService.getPublicFields(
-          props.match.params.did
-        );
+        const pFields = await ProfileService.getPublicFields(did);
         setPublicFields(pFields);
 
-        const followerDids = await FollowService.getFollowerDids(
-          props.match.params.did
-        );
+        const followerDids = await FollowService.getFollowerDids(did);
         setFollowerDids(followerDids);
 
-        const followingdids = await FollowService.getFollowingDids(
-          props.match.params.did
-        );
+        const followingdids = await FollowService.getFollowingDids(did);
         setFollowingDids(followingdids);
       }
 
@@ -158,7 +152,7 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
 
       setLoading(false);
     })();
-  }, [props.session, did, props.match.params.did]);
+  }, [props.session, did]);
 
   return (
     <IonPage className={style['explorepage']}>

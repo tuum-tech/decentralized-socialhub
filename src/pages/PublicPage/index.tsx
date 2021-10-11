@@ -38,7 +38,6 @@ interface PageProps
 
 const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   let did: string = getDIDString(props.match.params.did, false);
-  console.log('===>did', did);
 
   const [publicUser, setPublicUser] = useState(defaultUserInfo);
   const [publicUserProfile, setPublicUserProfile] = useState<ProfileDTO>(
@@ -97,19 +96,13 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
       setLoading(true);
 
       if (props.session.tutorialStep === 4) {
-        const followerDids = await FollowService.getFollowerDids(
-          props.match.params.did
-        );
+        const followerDids = await FollowService.getFollowerDids(did);
         setFollowerDids(followerDids);
 
-        const followingdids = await FollowService.getFollowingDids(
-          props.match.params.did
-        );
+        const followingdids = await FollowService.getFollowingDids(did);
         setFollowingDids(followingdids);
 
-        const pFields = await ProfileService.getPublicFields(
-          props.match.params.did
-        );
+        const pFields = await ProfileService.getPublicFields(did);
         setPublicFields(pFields);
       }
 
@@ -129,7 +122,7 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
 
       setLoading(false);
     })();
-  }, [did, props.match.params.did, props.session]);
+  }, [did, props.session]);
 
   if (loading) {
     return <LoadingIndicator loadingText="Loading data..." />;
