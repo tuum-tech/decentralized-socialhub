@@ -2,8 +2,9 @@
  * Page
  */
 import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -16,10 +17,33 @@ import { UserService } from 'src/services/user.service';
 import { DidService } from 'src/services/did.service.new';
 
 import Logo from 'src/elements/Logo';
+import { ViewProfileButton } from 'src/elements/buttons';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import style from './style.module.scss';
 import ProfileEditor from './components/ProfileEditor';
-import { useEffect } from 'react';
+import { getDIDString } from 'src/utils/did';
+
+const Header = styled.div`
+  width: 100%;
+  height: 83px;
+  background: #fff;
+  padding: 27px 48px 20px;
+
+  display: flex;
+  justify-content: space-between;
+`;
+
+const PageTitle = styled.h2`
+  font-family: 'SF Pro Display';
+  font-size: 28px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.36;
+  letter-spacing: normal;
+  text-align: left;
+  color: #27272e;
+`;
 
 const WarningText = styled.div`
   color: red;
@@ -40,25 +64,6 @@ const ManagerPage: React.FC<InferMappedProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const Header = styled.div`
-    width: 100%;
-    height: 83px;
-    background: #fff;
-    padding: 27px 25px 20px 48px;
-  `;
-
-  const PageTitle = styled.h2`
-    font-family: 'SF Pro Display';
-    font-size: 28px;
-    font-weight: 600;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 1.36;
-    letter-spacing: normal;
-    text-align: left;
-    color: #27272e;
-  `;
-
   return (
     <>
       <IonPage className={style['managerpage']}>
@@ -71,7 +76,21 @@ const ManagerPage: React.FC<InferMappedProps> = ({
               </IonCol>
               <IonCol size="10" className={style['right-panel']}>
                 <Header>
-                  <PageTitle>Profile Manager &nbsp;&nbsp;&nbsp;</PageTitle>
+                  <PageTitle>Profile Manager</PageTitle>
+                  <ViewProfileButton
+                    onClick={() => {
+                      if (user.tutorialStep === 4) {
+                        window.open(getDIDString('/did/' + user.did));
+                      }
+                    }}
+                    style={{
+                      width: '200px',
+                      cursor:
+                        user.tutorialStep === 4 ? ' pointer' : 'not-allowed'
+                    }}
+                  >
+                    View profile
+                  </ViewProfileButton>
                 </Header>
                 {user.tutorialStep !== 4 && (
                   <WarningText>
