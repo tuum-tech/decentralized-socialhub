@@ -37,8 +37,6 @@ const OnBoarding: React.FC<Props> = ({
   //   completed(false);
   // };
 
-  console.log(stage, publishStatus, sessionItem);
-
   const step1Item = () => {
     return (
       <div
