@@ -48,17 +48,17 @@ export class ProfileService {
   static async getPublicFields(did: string): Promise<string[]> {
     let fields: string[] = [];
     let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-    let userResponse = await searchServiceLocal.getUsersByDIDs([did], 1, 0);
+    let userResponse = await searchServiceLocal.searchUsersByDIDs([did], 1, 0);
     if (
       !userResponse.isSuccess ||
       !userResponse.response ||
-      !userResponse.response.get_users_by_tutorialStep ||
-      userResponse.response.get_users_by_tutorialStep.items.length === 0
+      !userResponse.response.get_users_by_dids ||
+      userResponse.response.get_users_by_dids.items.length <= 0
     )
       return fields;
 
     const hiveInstance = await HiveService.getReadOnlyUserHiveClient(
-      userResponse.response.get_users_by_tutorialStep.items[0].hiveHost
+      userResponse.response!.get_users_by_dids.items[0].hiveHost
     );
 
     if (hiveInstance) {
@@ -110,15 +110,16 @@ export class ProfileService {
     };
 
     let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-    let userResponse = await searchServiceLocal.getUsersByDIDs([did], 1, 0);
+
+    let userResponse = await searchServiceLocal.searchUsersByDIDs([did], 1, 0);
     if (
       userResponse.isSuccess &&
       userResponse.response &&
-      userResponse.response.get_users_by_tutorialStep &&
-      userResponse.response.get_users_by_tutorialStep.items.length > 0
+      userResponse.response.get_users_by_dids &&
+      userResponse.response!.get_users_by_dids.items.length > 0
     ) {
       const hiveInstance = await HiveService.getReadOnlyUserHiveClient(
-        userResponse.response.get_users_by_tutorialStep.items[0].hiveHost
+        userResponse.response!.get_users_by_dids.items[0].hiveHost
       );
 
       if (hiveInstance) {
@@ -127,7 +128,7 @@ export class ProfileService {
             name: 'get_basic_profile',
             context: {
               target_did: did,
-              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
             }
           }
         );
@@ -378,7 +379,7 @@ export class ProfileService {
 
     if (targetDid && targetDid !== '') {
       let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-      let userResponse = await searchServiceLocal.getUsersByDIDs(
+      let userResponse = await searchServiceLocal.searchUsersByDIDs(
         [targetDid],
         1,
         0
@@ -386,13 +387,13 @@ export class ProfileService {
       if (
         !userResponse.isSuccess ||
         !userResponse.response ||
-        !userResponse.response.get_users_by_tutorialStep ||
-        userResponse.response.get_users_by_tutorialStep.items.length === 0
+        !userResponse.response.get_users_by_dids ||
+        userResponse.response.get_users_by_dids.items.length === 0
       )
         return response;
 
       const hiveInstance = await HiveService.getReadOnlyUserHiveClient(
-        userResponse.response.get_users_by_tutorialStep.items[0].hiveHost
+        userResponse.response.get_users_by_dids.items[0].hiveHost
       );
 
       if (hiveInstance) {

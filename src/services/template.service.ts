@@ -52,17 +52,17 @@ export class TemplateService {
     let templates: Template[] = [];
 
     let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-    let userResponse = await searchServiceLocal.getUsersByDIDs([did], 1, 0);
+    let userResponse = await searchServiceLocal.searchUsersByDIDs([did], 1, 0);
     if (
       !userResponse.isSuccess ||
       !userResponse.response ||
-      !userResponse.response.get_users_by_tutorialStep ||
-      userResponse.response.get_users_by_tutorialStep.items.length === 0
+      !userResponse.response.get_users_by_dids ||
+      userResponse.response.get_users_by_dids.items.length === 0
     )
       return templates;
 
     const hiveInstance = await HiveService.getReadOnlyUserHiveClient(
-      userResponse.response.get_users_by_tutorialStep.items[0].hiveHost
+      userResponse.response.get_users_by_dids.items[0].hiveHost
     );
 
     if (hiveInstance) {
