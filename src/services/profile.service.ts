@@ -372,23 +372,46 @@ export class ProfileService {
   static async getFollowings(
     targetDid: string
   ): Promise<IFollowingResponse | undefined> {
-    const appHiveClient = await HiveService.getAppHiveClient();
-    if (targetDid && targetDid !== '' && appHiveClient) {
-      const followingResponse: IRunScriptResponse<IFollowingResponse> = await appHiveClient.Scripting.RunScript(
-        {
-          name: 'get_following',
-          context: {
-            target_did: targetDid,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          }
-        }
+    let response: IFollowingResponse = {
+      get_following: { items: [] }
+    };
+
+    if (targetDid && targetDid !== '') {
+      let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
+      let userResponse = await searchServiceLocal.getUsersByDIDs(
+        [targetDid],
+        1,
+        0
+      );
+      if (
+        !userResponse.isSuccess ||
+        !userResponse.response ||
+        !userResponse.response.get_users_by_tutorialStep ||
+        userResponse.response.get_users_by_tutorialStep.items.length === 0
+      )
+        return response;
+
+      const hiveInstance = await HiveService.getReadOnlyUserHiveClient(
+        userResponse.response.get_users_by_tutorialStep.items[0].hiveHost
       );
 
-      if (followingResponse.isSuccess) {
-        return followingResponse.response;
+      if (hiveInstance) {
+        const followingResponse: IRunScriptResponse<IFollowingResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_following',
+            context: {
+              target_did: targetDid,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            }
+          }
+        );
+
+        if (followingResponse.isSuccess) {
+          return followingResponse.response;
+        }
       }
     }
-    return;
+    return response;
   }
 
   static async addFollowing(did: string, session: ISessionItem): Promise<any> {

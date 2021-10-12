@@ -167,7 +167,11 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
         <IonRow>
           <PeopleCard
             people={filteredUsers.get_users_by_dids}
-            following={listFollowing.get_following}
+            following={
+              listFollowing && listFollowing.get_following
+                ? listFollowing.get_following
+                : { items: [] }
+            }
             searchKeyword={searchQuery}
             isSearchKeywordDID={isDID(searchQuery)}
             showHeader={false}
