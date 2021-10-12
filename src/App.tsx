@@ -190,11 +190,11 @@ const App: React.FC = () => {
             />
 
             {/* ok */}
-            <ProtectedRoute
+            {/* <ProtectedRoute
               path="/sign-qr"
               component={SignQRPage}
               exact={true}
-            />
+            /> */}
             {/* ok */}
             <ProtectedRoute
               path="/associated-profile"
