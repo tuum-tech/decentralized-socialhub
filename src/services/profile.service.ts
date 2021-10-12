@@ -11,6 +11,7 @@ import { DidDocumentService } from './diddocument.service';
 import { HiveService } from './hive.service';
 import { UserService } from './user.service';
 import { DidService } from './did.service.new';
+import { SearchService } from './search.service';
 
 export class ProfileService {
   static didDocument: any = null;
@@ -45,8 +46,21 @@ export class ProfileService {
   };
 
   static async getPublicFields(did: string): Promise<string[]> {
-    const hiveInstance = await HiveService.getAppHiveClient();
     let fields: string[] = [];
+    let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
+    let userResponse = await searchServiceLocal.getUsersByDIDs([did], 1, 0);
+    if (
+      !userResponse.isSuccess ||
+      !userResponse.response ||
+      !userResponse.response.get_users_by_tutorialStep ||
+      userResponse.response.get_users_by_tutorialStep.items.length === 0
+    )
+      return fields;
+
+    const hiveInstance = await HiveService.getReadOnlyUserHiveClient(
+      userResponse.response.get_users_by_tutorialStep.items[0].hiveHost
+    );
+
     if (hiveInstance) {
       const res: IRunScriptResponse<PublicProfileResponse> = await hiveInstance.Scripting.RunScript(
         {
@@ -94,63 +108,76 @@ export class ProfileService {
       items: [],
       isEnabled: true
     };
-    const hiveInstance = await HiveService.getAppHiveClient();
-    if (hiveInstance) {
-      const bpRes: IRunScriptResponse<BasicProfileResponse> = await hiveInstance.Scripting.RunScript(
-        {
-          name: 'get_basic_profile',
-          context: {
-            target_did: did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          }
-        }
+
+    let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
+    let userResponse = await searchServiceLocal.getUsersByDIDs([did], 1, 0);
+    if (
+      userResponse.isSuccess &&
+      userResponse.response &&
+      userResponse.response.get_users_by_tutorialStep &&
+      userResponse.response.get_users_by_tutorialStep.items.length > 0
+    ) {
+      const hiveInstance = await HiveService.getReadOnlyUserHiveClient(
+        userResponse.response.get_users_by_tutorialStep.items[0].hiveHost
       );
-      const gbPData = getItemsFromData(bpRes, 'get_basic_profile');
-      if (gbPData.length > 0) {
-        basicDTO = gbPData[0];
+
+      if (hiveInstance) {
+        const bpRes: IRunScriptResponse<BasicProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_basic_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            }
+          }
+        );
+        const gbPData = getItemsFromData(bpRes, 'get_basic_profile');
+        if (gbPData.length > 0) {
+          basicDTO = gbPData[0];
+        }
+
+        const edRes: IRunScriptResponse<EducationProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_education_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            }
+          }
+        );
+        educationDTO.items = getItemsFromData(edRes, 'get_education_profile');
+
+        const epRes: IRunScriptResponse<ExperienceProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_experience_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            }
+          }
+        );
+        experienceDTO.items = getItemsFromData(epRes, 'get_experience_profile');
+
+        /* Calculate verified education credentials starts */
+        educationDTO.items.map(async (x, i) => {
+          educationDTO.items[i].verifiers = await ProfileService.getVerifiers(
+            x,
+            'education',
+            userSession
+          );
+        });
+        /* Calculate verified education credentials ends */
+
+        /* Calculate verified experience credentials starts */
+        experienceDTO.items.map(async (x, i) => {
+          experienceDTO.items[i].verifiers = await ProfileService.getVerifiers(
+            x,
+            'experience',
+            userSession
+          );
+        });
+        /* Calculate verified experience credentials ends */
       }
-
-      const edRes: IRunScriptResponse<EducationProfileResponse> = await hiveInstance.Scripting.RunScript(
-        {
-          name: 'get_education_profile',
-          context: {
-            target_did: did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          }
-        }
-      );
-      educationDTO.items = getItemsFromData(edRes, 'get_education_profile');
-
-      const epRes: IRunScriptResponse<ExperienceProfileResponse> = await hiveInstance.Scripting.RunScript(
-        {
-          name: 'get_experience_profile',
-          context: {
-            target_did: did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          }
-        }
-      );
-      experienceDTO.items = getItemsFromData(epRes, 'get_experience_profile');
-
-      /* Calculate verified education credentials starts */
-      educationDTO.items.map(async (x, i) => {
-        educationDTO.items[i].verifiers = await ProfileService.getVerifiers(
-          x,
-          'education',
-          userSession
-        );
-      });
-      /* Calculate verified education credentials ends */
-
-      /* Calculate verified experience credentials starts */
-      experienceDTO.items.map(async (x, i) => {
-        experienceDTO.items[i].verifiers = await ProfileService.getVerifiers(
-          x,
-          'experience',
-          userSession
-        );
-      });
-      /* Calculate verified experience credentials ends */
     }
 
     // add name credentials

@@ -92,6 +92,16 @@ export class HiveService {
     return;
   }
 
+  static async getReadOnlyUserHiveClient(
+    hiveHost: string
+  ): Promise<HiveClient | undefined> {
+    try {
+      let hiveClient = await HiveClient.createAnonymousInstance(hiveHost);
+      return hiveClient;
+    } catch (e) {}
+    return;
+  }
+
   private static async getHiveOptions(hiveHost: string): Promise<IOptions> {
     //TODO: change to appInstance
     let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;

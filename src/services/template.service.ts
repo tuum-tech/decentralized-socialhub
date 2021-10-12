@@ -3,6 +3,7 @@ import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/
 import { getItemsFromData } from 'src/utils/script';
 
 import { HiveService } from './hive.service';
+import { SearchService } from './search.service';
 
 export class TemplateService {
   static getAllTemplates() {
@@ -48,8 +49,22 @@ export class TemplateService {
   }
 
   static async getMyTemplates(did: string) {
-    const hiveInstance = await HiveService.getAppHiveClient();
     let templates: Template[] = [];
+
+    let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
+    let userResponse = await searchServiceLocal.getUsersByDIDs([did], 1, 0);
+    if (
+      !userResponse.isSuccess ||
+      !userResponse.response ||
+      !userResponse.response.get_users_by_tutorialStep ||
+      userResponse.response.get_users_by_tutorialStep.items.length === 0
+    )
+      return templates;
+
+    const hiveInstance = await HiveService.getReadOnlyUserHiveClient(
+      userResponse.response.get_users_by_tutorialStep.items[0].hiveHost
+    );
+
     if (hiveInstance) {
       const res: IRunScriptResponse<PublicProfileResponse> = await hiveInstance.Scripting.RunScript(
         {
