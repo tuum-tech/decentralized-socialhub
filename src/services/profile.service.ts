@@ -457,23 +457,6 @@ export class ProfileService {
           guid: '',
           did: sDid,
           message:
-            '<a href="/did/' +
-            sDid.replaceAll('did:elastos:', '') +
-            '" target="_blank">' +
-            session!.name +
-            '</a> Followed you',
-          read: false,
-          createdAt: 0,
-          updatedAt: 0
-        },
-        session
-      );
-
-      await this.addActivity(
-        {
-          guid: '',
-          did: sDid,
-          message:
             'You are following <a href="/did/' +
             did.replaceAll('did:elastos:', '') +
             '" target="_blank">' +
