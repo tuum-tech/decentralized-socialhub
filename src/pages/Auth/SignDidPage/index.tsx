@@ -16,6 +16,8 @@ import PassPhraseHelp from '../components/DidSign/PassPhraseHelp';
 import React, { useState, useEffect } from 'react';
 import style from './style.module.scss';
 import { UserType, LocationState } from './types';
+import { DIDURL } from '@elastosfoundation/did-js-sdk/';
+import { HiveService } from 'src/services/hive.service';
 
 const SignDidPage: React.FC<RouteComponentProps<
   {},
@@ -63,6 +65,27 @@ const SignDidPage: React.FC<RouteComponentProps<
                 'Did is not published yet, You can only login with published DID user'
               );
             } else {
+              let didDocument = await didService.getDidDocument(uDid, false);
+              if (didDocument.services && didDocument.services.size > 0) {
+                let hiveUrl = new DIDURL(uDid + '#HiveVault');
+                if (didDocument.services.has(hiveUrl)) {
+                  let service = didDocument.services.get(hiveUrl);
+                  let hiveVersion = await HiveService.getHiveVersion(
+                    service.serviceEndpoint
+                  );
+                  let isHiveValid = await HiveService.isHiveVersionSupported(
+                    hiveVersion
+                  );
+                  if (!isHiveValid) {
+                    alertError(
+                      null,
+                      `Hive version ${hiveVersion} not supported. The supported versions are ${process.env.REACT_APP_HIVE_VALID_VERSION}`
+                    );
+                    return;
+                  }
+                }
+              }
+
               setLoading(true);
               let userService = new UserService(didService);
               const res = await userService.SearchUserWithDID(uDid);

@@ -22,11 +22,13 @@ import { SignInButton, Button } from 'src/elements/buttons';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import phone from 'src/assets/icon/phone.png';
-import { showNotify } from 'src/utils/notify';
+import { alertError, showNotify } from 'src/utils/notify';
 import style from './style.module.scss';
 import FooterLinks, {
   Footer
 } from 'src/components/layouts/OnBoardLayout/FooterLinks';
+import { HiveService } from 'src/services/hive.service';
+import { DIDURL } from '@elastosfoundation/did-js-sdk/';
 
 const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
   /**
@@ -55,6 +57,27 @@ const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
       await didService.storeDocument(await issuer.resolve());
       let isDidPublished = await didService.isDIDPublished(did);
       if (isDidPublished) {
+        let didDocument = await didService.getDidDocument(did, false);
+        if (didDocument.services && didDocument.services.size > 0) {
+          let hiveUrl = new DIDURL(did + '#HiveVault');
+          if (didDocument.services.has(hiveUrl)) {
+            let service = didDocument.services.get(hiveUrl);
+            let hiveVersion = await HiveService.getHiveVersion(
+              service.serviceEndpoint
+            );
+            let isHiveValid = await HiveService.isHiveVersionSupported(
+              hiveVersion
+            );
+            if (!isHiveValid) {
+              alertError(
+                null,
+                `Hive version ${hiveVersion} not supported. The supported versions are ${process.env.REACT_APP_HIVE_VALID_VERSION}`
+              );
+              return;
+            }
+          }
+        }
+
         let userService = new UserService(didService);
         const res = await userService.SearchUserWithDID(did);
         window.localStorage.setItem(
