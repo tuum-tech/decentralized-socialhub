@@ -30,7 +30,7 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
                 ? style['item-active']
                 : style['item-link']
             }
-            onClick={async () => history.push('/profile')}
+            onClick={() => history.push('/profile')}
           >
             <IonIcon
               slot="start"

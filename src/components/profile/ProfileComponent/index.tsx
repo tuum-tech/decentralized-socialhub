@@ -10,7 +10,7 @@ import ExperienceCard from 'src/components/cards/ExperienceCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 import BadgeCard from 'src/components/cards/BadgeCard';
 import FollowCards from 'src/components/cards/FollowCards';
-import { getThemeData } from 'src/data/theme';
+import { getThemeData } from 'src/utils/template';
 
 import PublicProfileTabs from './PublicProfileTabs';
 import ProfileHeader from './ProfileHeader';
@@ -45,8 +45,8 @@ interface Props {
   publicFields?: string[];
   userSession: ISessionItem;
   didDocument: DIDDocument;
-  publicUser: any;
-  publicUserProfile: any;
+  publicUser: ISessionItem;
+  publicUserProfile: ProfileDTO;
   loading: boolean;
 }
 
@@ -87,7 +87,8 @@ const ProfileComponent: React.FC<Props> = ({
     <>
       <ProfileHeader
         onlyText={displayText}
-        user={publicUser}
+        publicUser={publicUser}
+        publicUserProfile={publicUserProfile}
         signedUser={userSession}
       />
       {!loading &&
@@ -122,6 +123,7 @@ const ProfileComponent: React.FC<Props> = ({
                               isEditable={false}
                               isPublicPage={true}
                               template={template}
+                              userSession={publicUser}
                             />
                           )}
                         </div>
@@ -132,6 +134,7 @@ const ProfileComponent: React.FC<Props> = ({
                               isEditable={false}
                               isPublicPage={true}
                               template={template}
+                              userSession={publicUser}
                             />
                           )}
                         </div>
@@ -159,12 +162,13 @@ const ProfileComponent: React.FC<Props> = ({
                             if (viewAllClicked) viewAllClicked(ctype);
                           }}
                         />
-                        {publicFields.includes('badge') && (
-                          <BadgeCard
-                            badges={publicUser.badges}
-                            template={template}
-                          />
-                        )}
+                        {publicFields.includes('badge') &&
+                          publicUser.badges && (
+                            <BadgeCard
+                              badges={publicUser.badges}
+                              template={template}
+                            />
+                          )}
                       </RightContent>
                     </IonRow>
                   </IonGrid>

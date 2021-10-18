@@ -10,6 +10,7 @@ import Avatar from 'src/components/Avatar';
 import { getCoverPhoto } from 'src/components/cards/CoverPhoto';
 
 import FollowOrUnFollowButton from '../../FollowOrUnFollow';
+import VerificationBadge from '../../../VerificatioBadge';
 
 const HeaderContainer = styled(IonGrid)`
   background-color: white;
@@ -69,24 +70,37 @@ const Info = styled.div`
 `;
 
 interface IProps {
-  user: ISessionItem;
+  publicUser: ISessionItem;
   signedUser: ISessionItem;
+  publicUserProfile: ProfileDTO;
 }
 
-const Default: React.FC<IProps> = ({ user, signedUser }: IProps) => {
+const Default: React.FC<IProps> = ({
+  publicUser,
+  signedUser,
+  publicUserProfile
+}: IProps) => {
   return (
     <HeaderContainer className="ion-no-padding">
-      <Banner bgImg={getCoverPhoto(user)} />
+      <Banner bgImg={getCoverPhoto(publicUser)} />
       <Header class="ion-justify-content-center ion-align-items-center">
-        <Avatar did={user.did} />
+        <Avatar did={publicUser.did} />
         <Info>
           <IonGrid>
             <IonRow>
-              <ProfileName>{user ? user.name : ''}</ProfileName>
+              <ProfileName>{publicUser ? publicUser.name : ''}</ProfileName>
+              {publicUserProfile.name &&
+                publicUserProfile.name.verifiers &&
+                publicUserProfile.name.verifiers.length > 0 && (
+                  <VerificationBadge
+                    users={publicUserProfile.name.verifiers}
+                    userSession={publicUser}
+                  />
+                )}
             </IonRow>
             <IonRow className="ion-justify-content-start">
               <IonCol>
-                <DidSnippet did={user.did} />
+                <DidSnippet did={publicUser.did} />
               </IonCol>
             </IonRow>
           </IonGrid>
@@ -94,10 +108,13 @@ const Default: React.FC<IProps> = ({ user, signedUser }: IProps) => {
         <Buttons>
           {signedUser.did === '' ? (
             <Link to="/sign-did">
-              <FollowButton>Sign in to Follow</FollowButton>
+              <FollowButton width={140}>Sign in to Follow</FollowButton>
             </Link>
           ) : (
-            <FollowOrUnFollowButton did={user.did} signedUser={signedUser} />
+            <FollowOrUnFollowButton
+              did={publicUser.did}
+              signedUser={signedUser}
+            />
           )}
         </Buttons>
       </Header>

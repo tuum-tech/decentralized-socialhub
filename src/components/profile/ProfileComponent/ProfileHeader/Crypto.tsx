@@ -9,6 +9,7 @@ import Avatar from 'src/components/Avatar';
 
 import { getCoverPhoto } from 'src/components/cards/CoverPhoto';
 import FollowOrUnFollowButton from '../../FollowOrUnFollow';
+import VerificationBadge from '../../../VerificatioBadge';
 
 export const HeaderContainer = styled(IonRow)`
   background-color: #141419;
@@ -28,12 +29,17 @@ export const HeaderContent = styled(IonCol)`
   }
 
   .name {
-    font-weight: 600;
-    font-size: 28px;
-    line-height: 136.02%;
-    color: #ffffff;
     margin-top: 20px;
     margin-bottom: 11px;
+    display: flex;
+    align-items: center;
+
+    p {
+      font-weight: 600;
+      font-size: 28px;
+      line-height: 136.02%;
+      color: #ffffff;
+    }
   }
 
   .overview {
@@ -61,30 +67,49 @@ export const Buttons = styled.div`
 `;
 
 export interface IProps {
-  user: ISessionItem;
+  publicUser: ISessionItem;
   signedUser: ISessionItem;
+  publicUserProfile: ProfileDTO;
 }
 
-const Crypto: React.FC<IProps> = ({ user, signedUser }: IProps) => {
+const Crypto: React.FC<IProps> = ({
+  publicUser,
+  signedUser,
+  publicUserProfile
+}: IProps) => {
   return (
     <HeaderContainer className="ion-no-padding">
       <HeaderContent>
         <div className="content">
-          <Avatar did={user.did} />
-          <p className="name">{user.name}</p>
-          <DidSnippet did={user.did} color="white" />
+          <Avatar did={publicUser.did} />
+          <div className="name">
+            <p>{publicUser.name}</p>
+            {publicUserProfile.name &&
+              publicUserProfile.name.verifiers &&
+              publicUserProfile.name.verifiers.length > 0 && (
+                <VerificationBadge
+                  users={publicUserProfile.name.verifiers}
+                  userSession={publicUser}
+                />
+              )}
+          </div>
+
+          <DidSnippet did={publicUser.did} color="white" />
           <Buttons>
             {signedUser.did === '' ? (
               <Link to="/sign-did">
-                <FollowButton>Sign in to Follow</FollowButton>
+                <FollowButton width={140}>Sign in to Follow</FollowButton>
               </Link>
             ) : (
-              <FollowOrUnFollowButton did={user.did} signedUser={signedUser} />
+              <FollowOrUnFollowButton
+                did={publicUser.did}
+                signedUser={signedUser}
+              />
             )}
           </Buttons>
         </div>
       </HeaderContent>
-      <HeaderImg bgImg={getCoverPhoto(user)} />
+      <HeaderImg bgImg={getCoverPhoto(publicUser)} />
     </HeaderContainer>
   );
 };

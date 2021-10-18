@@ -8,7 +8,7 @@ import {
   IonCardContent
 } from '@ionic/react';
 import styled from 'styled-components';
-import { getThemeData } from 'src/data/theme';
+import { getThemeData } from 'src/utils/template';
 
 export enum MODE {
   NONE,

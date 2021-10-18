@@ -51,7 +51,12 @@ const BadgeCard: React.FC<Props> = ({ badges, template }) => {
           <IonRow className="ion-justify-content-between">
             <IonCol size="6">
               <IonCardTitle id="education">
-                Badges ({archivedBadges.length})
+                Badges{' '}
+                {`${
+                  archivedBadges.length > 0
+                    ? '(' + archivedBadges.length + ')'
+                    : ''
+                }`}
               </IonCardTitle>
             </IonCol>
             <IonCol size="auto">
@@ -84,7 +89,7 @@ const BadgeCard: React.FC<Props> = ({ badges, template }) => {
             const { title, description, enbl_icon, dsabl_icon } = badgeDetails[
               category
             ][name];
-            const text = `${title} <br/> Archieved ${timeSince(archived)}`;
+            const text = `${title} <br/> Achieved ${timeSince(archived)}`;
             return (
               <IonCol
                 key={title}

@@ -13,6 +13,7 @@ interface AvatarProps {
   didPublished?: boolean;
   width?: string;
   ready?: boolean;
+  fromDid?: boolean;
 }
 
 const ContentDiv = styled.div`
@@ -31,16 +32,18 @@ const Avatar: React.FC<AvatarProps> = ({
   did = '',
   didPublished = false,
   width = '86px',
-  ready = false
+  ready = false,
+  fromDid = false
 }: AvatarProps) => {
   const [avatarInfo, setAvatarInfo] = useState<AvatarInterface>(defaultAvatar);
 
   useEffect(() => {
     (async () => {
-      const avatarRes = await getAvatarIfno(did);
+      const avatarRes = await getAvatarIfno(did, fromDid);
       if (avatarRes) setAvatarInfo(avatarRes);
     })();
-  }, [did]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [did, fromDid]);
 
   const cn = ready
     ? style['border-primary']
@@ -60,13 +63,7 @@ const Avatar: React.FC<AvatarProps> = ({
 
   return (
     <div className={style['avatar']} style={{ height: width, width }}>
-      <img
-        src={avatarInfo.avatar}
-        className={cn}
-        // style={{ maxWidth: width }}
-        height="auto"
-        alt="avatar"
-      />
+      <img src={avatarInfo.avatar} className={cn} height="auto" alt="avatar" />
     </div>
   );
 };

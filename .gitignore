@@ -38,3 +38,7 @@ package-lock.json*
 
 # Custom
 src/scripts/config.json.prod
+
+
+# IDE
+todo.md

@@ -10,13 +10,15 @@ import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
-import { getVerifiedCredential } from 'src/utils/credential';
+import {
+  containingVerifiableCredentialDetails,
+  VCType
+} from 'src/utils/credential';
 
 import ManageProfile from './Left/ManageProfile';
 import ExploreConnnections from './Left/ExploreConnnections';
 import ManageLinks from './Left/ManageLinks';
 import BeginnersTutorial from './Left/BeginnersTutorial';
-import WhatIsProfile from './Right/WhatIsProfile';
 import ConnectWithCommunity from './Right/ConnectWithCommunity';
 import ProfileCompletion from './Right/ProfileCompletion';
 import VerificationStatus from './Right/VerificationStatus';
@@ -209,16 +211,17 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
 
   /* Verification starts */
   const isCredVerified = async (key: string, profileValue: string) => {
-    let vc = getVerifiedCredential(key, didDocument);
-    if (!vc) return false;
+    let {
+      isVerified,
+      isValid
+    }: VCType = await containingVerifiableCredentialDetails(key, didDocument);
 
-    return vc.value === profileValue && vc.isVerified;
+    return isVerified && isValid;
   };
 
   useEffect(() => {
     (async () => {
       const verified: any = {};
-
       verified['name'] = await isCredVerified('name', session.name);
 
       if (session.loginCred?.email) {
@@ -283,18 +286,18 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
       } else {
         verified['discord'] = false;
       }
+
       /* Calculate verified education credentials starts */
       profile.educationDTO.items.map(async (x, i) => {
-        verified['education' + i] = x.isVerified;
+        verified['education' + i] = x.verifiers && x.verifiers.length > 0;
       });
       /* Calculate verified education credentials ends */
 
       /* Calculate verified experience credentials starts */
-
       profile.experienceDTO.items.map(async (x, i) => {
-        verified['experience' + i] = x.isVerified;
+        verified['experience' + i] = x.verifiers && x.verifiers.length > 0;
       });
-      /* Calculate verified experience credentials ends */
+      // /* Calculate verified experience credentials ends */
 
       setVerifiedStats(verified);
     })();
@@ -302,16 +305,50 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
   }, [profile]);
 
   useEffect(() => {
-    let verifiedCred = 0;
-    let totalCred = 0;
+    // nameScore
+    let nameScore = 0;
+    if ((verifiedStats as any)['name']) {
+      nameScore = 25;
+    }
 
-    Object.keys(verifiedStats).forEach((key: any) => {
-      if (verifiedStats[key]) verifiedCred++;
-      totalCred++;
-    });
+    // emailScore
+    let emailScore = 0;
+    if ((verifiedStats as any)['email']) {
+      emailScore += 25;
+    }
 
-    setVerifiedPercent((verifiedCred * 100) / totalCred);
-  }, [verifiedStats]);
+    // experienceScore
+    let experienceScore = 0;
+    if (profile.experienceDTO.items.length > 0) {
+      for (let i = 0; i < profile.experienceDTO.items.length; i++) {
+        if ((verifiedStats as any)['experience' + i]) {
+          experienceScore++;
+        }
+      }
+      experienceScore =
+        (experienceScore / profile.experienceDTO.items.length) * 25;
+    }
+
+    //  educationScore
+    let educationScore = 0;
+    if (profile.educationDTO.items.length > 0) {
+      for (let i = 0; i < profile.educationDTO.items.length; i++) {
+        if ((verifiedStats as any)['education' + i]) {
+          educationScore++;
+        }
+      }
+      educationScore =
+        (educationScore / profile.educationDTO.items.length) * 25;
+    }
+
+    setVerifiedPercent(
+      nameScore + emailScore + experienceScore + educationScore / 4
+    );
+  }, [
+    profile.educationDTO.items.length,
+    profile.experienceDTO.items.length,
+    verifiedStats
+  ]);
   /* Verification ends */
 
   return (
@@ -324,7 +361,7 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
               tutorialStep={session.tutorialStep}
             />
           )}
-          <ManageProfile profile={profile} />
+          <ManageProfile profile={profile} userSession={session} />
           {!hasFollowUsers && session.did && session.did !== '' && (
             <ExploreConnnections session={session} did={session.did} />
           )}
@@ -336,7 +373,6 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
             progress={completionPercent}
             completionStats={completionStatsDisplay}
           />
-          <WhatIsProfile />
           <ConnectWithCommunity />
           {hasSocialProfiles && (
             <ProfileBriefCard

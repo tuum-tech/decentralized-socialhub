@@ -106,7 +106,7 @@ const Upload: React.FC<InferMappedProps> = ({
       // workaround for now, hardcoded value can be added as env var
       console.error('file too big');
 
-      showNotify(`File is too big. Max size is ${maxSize / 1000}kB`, 'success'); // could improve to show in MB if max size increases
+      showNotify(`File is too big. Max size is ${maxSize / 1000}kB`, 'warning'); // could improve to show in MB if max size increases
       return;
     }
 

@@ -1,82 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import { IonGrid, IonRow, IonCol, IonButton } from '@ionic/react';
+import { IonGrid, IonRow, IonCol } from '@ionic/react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
 
-import { getVerifiedCredential } from 'src/utils/credential';
 import { RequestStatus } from 'src/services/assist.service';
+import { ProfileService } from 'src/services/profile.service';
 import { ProfileName } from 'src/elements/texts';
+import { ViewProfileButton } from 'src/elements/buttons';
 import DidSnippet from 'src/elements/DidSnippet';
 import Avatar from 'src/components/Avatar';
+import VerificatioBadge from 'src/components/VerificatioBadge';
+import { getDIDString } from 'src/utils/did';
 
 import PublishingLabel from '../PublishingLabel';
 
 import style from './style.module.scss';
-import shieldIcon from '../../../../assets/icon/shield.svg';
-import { DidDocumentService } from 'src/services/diddocument.service';
-
-const ViewProfileButton = styled(IonButton)`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 10px;
-  --background: #4c6fff;
-  --border-radius: 9px;
-  height: 40px;
-  opacity: 1;
-  text-align: center;
-  text-transform: none;
-  letter-spacing: 0px;
-  color: #ffffff;
-  font-family: 'SF Pro Display';
-  font-size: 12px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  width: 100%;
-`;
 
 interface IProps {
   sessionItem: ISessionItem;
   publishStatus: RequestStatus;
+  profile: ProfileDTO;
 }
 
 const DashboardHeader: React.FC<IProps> = ({
   sessionItem,
   publishStatus
 }: IProps) => {
-  const getPublicProfileLink = (): string => {
-    return `/did/${sessionItem.did}`;
-  };
-
-  //Verification Shield code starts
-  const [isNameVerified, setIsNameVerified] = useState(false);
-  const [didDocument, setDidDocument] = useState({});
+  const [verifiers, setVerifiers] = useState([]);
 
   useEffect(() => {
     (async () => {
       if (sessionItem.name !== '') {
-        const document = await DidDocumentService.getUserDocument(sessionItem);
-        setDidDocument(document);
+        const vfs = await ProfileService.getVerifiers({}, 'name', sessionItem);
+        setVerifiers(vfs);
       }
     })();
   }, [sessionItem, sessionItem.name]);
-
-  useEffect(() => {
-    (async () => {
-      setIsNameVerified(await isCredVerified('name', sessionItem.name));
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [didDocument, sessionItem.name]);
-
-  const isCredVerified = async (key: string, profileValue: string) => {
-    let vc = getVerifiedCredential(key, didDocument);
-    if (!vc) return false;
-
-    return vc.value === profileValue && vc.isVerified;
-  };
-  //Verification Shield code ends
 
   return (
     <IonGrid className={style['profileheader']}>
@@ -95,13 +53,10 @@ const DashboardHeader: React.FC<IProps> = ({
           <IonGrid>
             <IonRow className={style['d-flex']}>
               <ProfileName>{sessionItem.name}</ProfileName>
-              {isNameVerified && (
-                <img
-                  alt="shield icon"
-                  src={shieldIcon}
-                  className={style['social-profile-badge']}
-                />
+              {verifiers.length > 0 && (
+                <VerificatioBadge users={verifiers} userSession={sessionItem} />
               )}
+
               <PublishingLabel status={publishStatus} />
             </IonRow>
             <IonRow className={style['d-flex']}>
@@ -112,14 +67,7 @@ const DashboardHeader: React.FC<IProps> = ({
           </IonGrid>
         </IonCol>
         <IonCol size="2">
-          <Link
-            to={getPublicProfileLink}
-            target="_blank"
-            onClick={event => {
-              event.preventDefault();
-              window.open(getPublicProfileLink());
-            }}
-          >
+          <Link to={getDIDString('/did/' + sessionItem.did)} target="_blank">
             <ViewProfileButton>View profile</ViewProfileButton>
           </Link>
         </IonCol>

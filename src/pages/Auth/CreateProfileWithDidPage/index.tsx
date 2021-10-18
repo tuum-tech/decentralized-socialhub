@@ -2,18 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { StaticContext, RouteComponentProps, Redirect } from 'react-router';
 import { AccountType, UserService } from 'src/services/user.service';
 
-import PageLoading from 'src/components/layouts/PageLoading';
-import { retrieveDocInfo, UserType } from 'src/utils/user';
-
-import ProfileFields from '../components/ProfileFields';
-import SetPassword from '../components/SetPassword';
-
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, LocationState, SubState } from './types';
 import { makeSelectSession } from 'src/store/users/selectors';
+
 import { DidService } from 'src/services/did.service.new';
+import PageLoading from 'src/components/layouts/PageLoading';
+import { retrieveDocInfo, UserType } from 'src/utils/user';
+import SetPassword from '../components/SetPassword';
+import { InferMappedProps, LocationState, SubState } from './types';
+import ProfileFields from './components/ProfileFields';
 
 interface PageProps
   extends InferMappedProps,
@@ -35,7 +34,6 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
   });
 
   const [status, setStatus] = useState(0);
-  //const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserInfo = async () => {

@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import { IonList, IonLabel, IonItem } from '@ionic/react';
 import styled from 'styled-components';
 
-import { getThemeData } from 'src/data/theme';
-
+import { getThemeData } from 'src/utils/template';
 interface IProps {
   scrollToPosition: any;
   template: string;
 }
 
-const Container = styled.div`
+export const TabsContainer = styled.div`
   z-index: 100;
   .tab-grid {
     background-color: ${({ template }: ThemeProps) =>
@@ -35,7 +34,7 @@ const Container = styled.div`
     color: #718096;
   }
   .tab-active {
-    --border-color: var(--theme-primary-blue);
+    --border-color: var(--theme-primary-blue) !important;
     color: ${({ template }: ThemeProps) =>
       getThemeData(template, 'card', 'cardTitle')};
   }
@@ -55,7 +54,7 @@ const PublicProfileTabs: React.FC<IProps> = ({
   const [active, setActive] = useState('about');
 
   return (
-    <Container template={template}>
+    <TabsContainer template={template}>
       <IonList className="tab-list">
         <IonItem
           className={(active === 'about' ? 'tab-active' : '') + ' tab-item'}
@@ -87,7 +86,7 @@ const PublicProfileTabs: React.FC<IProps> = ({
           <IonLabel className="tab-label">Education</IonLabel>
         </IonItem>
       </IonList>
-    </Container>
+    </TabsContainer>
   );
 };
 

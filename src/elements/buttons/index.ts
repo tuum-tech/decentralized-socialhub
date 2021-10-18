@@ -90,6 +90,45 @@ const SmallLightButton = styled.button`
   color: #4c6fff;
 `;
 
+// const ViewProfileButton = styled(IonButton)`
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: flex-start;
+//   align-items: center;
+//   gap: 10px;
+//   --background: #4c6fff;
+//   --border-radius: 9px;
+//   height: 40px;
+//   opacity: 1;
+//   text-align: center;
+//   text-transform: none;
+//   letter-spacing: 0px;
+//   color: #ffffff;
+//   font-family: 'SF Pro Display';
+//   font-size: 12px;
+//   font-weight: 600;
+//   font-stretch: normal;
+//   font-style: normal;
+//   width: 100%;
+// `;
+
+const ViewProfileButton = styled.button`
+  background-color: #4c6fff;
+  border-radius: 9px;
+  height: 40px;
+  opacity: 1;
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0px;
+  color: #ffffff;
+  font-family: 'SF Pro Display';
+  font-size: 12px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  width: 100%;
+`;
+
 export {
   ButtonLink,
   ArrowButton,
@@ -103,5 +142,6 @@ export {
   PrimaryLinkButton,
   ButtonLight,
   Button,
-  SmallLightButton
+  SmallLightButton,
+  ViewProfileButton
 };

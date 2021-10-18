@@ -13,7 +13,8 @@ export const getItemsFromData = (res: any, scriptName: string) => {
       data[scriptName].items &&
       data[scriptName].items.length > 0
     ) {
-      return data[scriptName].items;
+      let items = data[scriptName].items;
+      return items;
     }
   }
   return [];

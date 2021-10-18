@@ -36,6 +36,13 @@ export interface IUserResponse {
     }[];
   };
 }
+
+export interface ISearchUserResponse {
+  _status?: string;
+  get_users_by_dids: {
+    items: ISessionItem[];
+  };
+}
 export interface IGetUsers {
   items: IUserItem[];
 }
@@ -46,6 +53,14 @@ export interface IUserItem {
   avatar?: string;
   hiveHost: string;
 }
+
+export const isDID = (str: string): boolean => {
+  // Following are the valid patterns:
+  // did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX
+  // icJ4z2DULrHEzYSvjKNJpKyhqFDxvYV7pN
+  const regex = /^(did:elastos:i|i)+[a-zA-Z0-9]+$/g;
+  return str != null && regex.test(str.trim());
+};
 
 export class SearchService {
   appHiveClient!: HiveClient;
@@ -207,6 +222,36 @@ export class SearchService {
     let usersResponse: IRunScriptResponse<IUserResponse> = {
       isSuccess: false,
       response: { get_users_by_tutorialStep: { items: [] } }
+    };
+
+    params['dids'] = dids;
+    usersResponse = await this.appHiveClient.Scripting.RunScript({
+      name: 'get_users_by_dids', // get all users
+      params: params,
+      context: {
+        target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+      }
+    });
+    if (usersResponse.isSuccess) {
+      return usersResponse;
+    }
+    return usersResponse.error;
+  }
+
+  async searchUsersByDIDs(
+    dids: string[],
+    limit: number,
+    offset: number
+  ): Promise<IRunScriptResponse<ISearchUserResponse | undefined>> {
+    let params: any = {
+      limit: limit,
+      skip: offset
+    };
+
+    let usersResponse: IRunScriptResponse<ISearchUserResponse> = {
+      isSuccess: false,
+      response: { get_users_by_dids: { items: [] } }
     };
 
     params['dids'] = dids;

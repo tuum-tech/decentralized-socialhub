@@ -166,6 +166,7 @@ export class DidService implements IDidService {
     let did = rootIdentity.getDid(0);
 
     let didDocument = await this.Store.loadDid(did);
+
     if (didDocument === null) {
       this.Store.storeDid(await did.resolve());
       this.storePrivatekey(

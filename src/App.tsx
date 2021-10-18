@@ -85,7 +85,9 @@ const App: React.FC = () => {
   // Elastos essential connector
   const essentialConnector = new EssentialsConnector();
   connectivity.setApplicationDID(process.env.REACT_APP_APPLICATION_DID || '');
-  connectivity.registerConnector(essentialConnector);
+  let connectors = connectivity.getAvailableConnectors();
+  if (!connectors.find(connector => connector.name === 'essentials'))
+    connectivity.registerConnector(essentialConnector);
   return (
     <IonApp>
       <StyledToastContainer
@@ -191,11 +193,11 @@ const App: React.FC = () => {
             />
 
             {/* ok */}
-            <ProtectedRoute
+            {/* <ProtectedRoute
               path="/sign-qr"
               component={SignQRPage}
               exact={true}
-            />
+            /> */}
             {/* ok */}
             <ProtectedRoute
               path="/associated-profile"

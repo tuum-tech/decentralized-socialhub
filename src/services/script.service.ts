@@ -6,6 +6,7 @@ import { HiveService } from './hive.service';
 import { DidService } from './did.service.new';
 import { alertError } from 'src/utils/notify';
 import { getItemsFromData } from 'src/utils/script';
+import { Guid } from 'guid-typescript';
 
 export class TuumTechScriptService {
   private static async runTuumTechScript(script: any) {
@@ -246,6 +247,100 @@ export class TuumTechScriptService {
     };
     let response: any = await this.runTuumTechScript(get_user_by_did_script);
     return getItemsFromData(response, 'get_comments_by_github_issue_id');
+  }
+
+  // verification scripts
+  public static async addVerificationRequest(
+    from_did: string,
+    to_did: string,
+    data: VerificationData,
+    msg: string,
+    idKey: string
+  ) {
+    const add_verification_request_script = {
+      name: 'add_verification',
+      params: {
+        from_did,
+        to_did,
+        category: data.category,
+        records: data.records,
+        msg,
+        idKey,
+        guid: Guid.create()
+      },
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+
+    await this.runTuumTechScript(add_verification_request_script);
+  }
+
+  public static async updateVerificationRequest(
+    status: string,
+    feedbacks: string,
+    credential: any,
+    guid: Guid
+  ) {
+    const update_verification_script = {
+      name: 'update_verification',
+      params: {
+        status,
+        feedbacks,
+        credential,
+        guid
+      },
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+
+    await this.runTuumTechScript(update_verification_script);
+  }
+
+  public static async getVerificationRequests(did: string, my = true) {
+    const get_verifications_script = {
+      name: my ? 'get_requests_by_me' : 'get_requests_to_me',
+      params: {
+        did,
+        limit: 200,
+        skip: 0
+      },
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+
+    let response: any = await this.runTuumTechScript(get_verifications_script);
+    let items = getItemsFromData(
+      response,
+      my ? 'get_requests_by_me' : 'get_requests_to_me'
+    );
+    items = items.sort((a: any, b: any) => b.modified.$date - a.modified.$date);
+    return items;
+  }
+
+  public static async getMyVerifiedCredentials(did: string, my = true) {
+    const get_verifications_script = {
+      name: 'get_my_verified_credentials',
+      params: {
+        did,
+        limit: 200,
+        skip: 0
+      },
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+
+    let response: any = await this.runTuumTechScript(get_verifications_script);
+    let items = getItemsFromData(response, 'get_my_verified_credentials');
+    items = items.sort((a: any, b: any) => b.modified.$date - a.modified.$date);
+    return items;
   }
 }
 

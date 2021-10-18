@@ -1,4 +1,5 @@
 import { IonRow, IonCol } from '@ionic/react';
+import { useHistory } from 'react-router-dom';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -26,9 +27,18 @@ interface Props {
 }
 
 const PublicNavbar: React.FC<Props> = ({ signedIn }) => {
+  const history = useHistory();
   return (
     <PublicNavbarContainer className="ion-justify-content-between">
-      <IonCol size="auto">
+      <IonCol
+        size="auto"
+        onClick={() => {
+          history.push('/profile');
+        }}
+        style={{
+          cursor: 'pointer'
+        }}
+      >
         <img alt="profile logo" src="../../../assets/logo_profile_black.svg" />
       </IonCol>
       <IonCol size="auto">

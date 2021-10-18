@@ -4,6 +4,7 @@ import styled from 'styled-components';
 interface SignInButtonProps {
   width?: number;
   color?: string;
+  disabled?: boolean;
 }
 const SignInButton = styled(Link)<SignInButtonProps>`
   width: 100%;
@@ -20,6 +21,10 @@ const SignInButton = styled(Link)<SignInButtonProps>`
 
   ${props => {
     return `color: ${props.color ? props.color : 'white'};`;
+  }}
+
+  ${props => {
+    return `disabled: ${props.disabled ? props.disabled : false};`;
   }}
 
   font-family: 'SF Pro Display';

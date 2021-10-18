@@ -7,38 +7,70 @@ import Education from './Education';
 import Soccer from './Soccer';
 
 interface IProps {
-  user: ISessionItem;
+  publicUser: ISessionItem;
+  publicUserProfile: ProfileDTO;
   signedUser: ISessionItem;
   onlyText?: string;
 }
 
 const ProfileHeader: React.FC<IProps> = ({
-  user,
+  publicUser,
+  publicUserProfile,
   signedUser,
   onlyText = ''
 }: IProps) => {
   if (onlyText !== '') {
     return <p>{onlyText}</p>;
   }
-  const template = user.pageTemplate || 'default';
+  const template = publicUser.pageTemplate || 'default';
 
   if (template === 'crypto') {
-    return <Crypto user={user} signedUser={signedUser} />;
+    return (
+      <Crypto
+        publicUser={publicUser}
+        publicUserProfile={publicUserProfile}
+        signedUser={signedUser}
+      />
+    );
   }
 
   if (template === 'gamer') {
-    return <Gamer user={user} signedUser={signedUser} />;
+    return (
+      <Gamer
+        publicUser={publicUser}
+        publicUserProfile={publicUserProfile}
+        signedUser={signedUser}
+      />
+    );
   }
 
   if (template === 'soccer') {
-    return <Soccer user={user} signedUser={signedUser} />;
+    return (
+      <Soccer
+        publicUser={publicUser}
+        signedUser={signedUser}
+        publicUserProfile={publicUserProfile}
+      />
+    );
   }
 
   if (template === 'education') {
-    return <Education user={user} signedUser={signedUser} />;
+    return (
+      <Education
+        publicUser={publicUser}
+        signedUser={signedUser}
+        publicUserProfile={publicUserProfile}
+      />
+    );
   }
 
-  return <Default user={user} signedUser={signedUser} />;
+  return (
+    <Default
+      publicUser={publicUser}
+      signedUser={signedUser}
+      publicUserProfile={publicUserProfile}
+    />
+  );
 };
 
 export default ProfileHeader;

@@ -1,3 +1,5 @@
+import { DidService } from 'src/services/did.service.new';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import React, { useState, useEffect, useRef } from 'react';
 import { IonPage, IonGrid, IonRow, IonCol, IonContent } from '@ionic/react';
 import { RouteComponentProps } from 'react-router';
@@ -27,8 +29,7 @@ import SearchComponent from './components/SearchComponent';
 import arrowLeft from '../../assets/icon/arrow-left-square.svg';
 
 import style from './style.module.scss';
-import { DidService } from 'src/services/did.service.new';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { getDIDString } from 'src/utils/did';
 
 const Header = styled.div`
   width: 100%;
@@ -63,16 +64,18 @@ interface PageProps
     RouteComponentProps<MatchParams> {}
 
 const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
+  let did = getDIDString(props.match.params.did, false);
   const [publicFields, setPublicFields] = useState<string[]>([]);
   const [followerDids, setFollowerDids] = useState<string[]>([]);
   const [followingDids, setFollowingDids] = useState<string[]>([]);
   const [mutualDids, setMutualDids] = useState<string[]>([]);
 
   const [publicUser, setPublicUser] = useState(defaultUserInfo);
-  const [publicUserProfile, setPublicUserProfile] = useState(
+  const [publicUserProfile, setPublicUserProfile] = useState<ProfileDTO>(
     defaultFullProfile
   );
   const [didDocument, setDidDocument] = useState<DIDDocument | null>(null);
+
   const [loading, setLoading] = useState(true);
 
   const [followType, setFollowType] = useState<FollowType>(FollowType.Follower);
@@ -116,42 +119,32 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const pFields = await ProfileService.getPublicFields(
-        props.match.params.did
-      );
-      setPublicFields(pFields);
 
-      const followerDids = await FollowService.getFollowerDids(
-        props.match.params.did,
-        props.session
-      );
-      setFollowerDids(followerDids);
+      if (props.session.tutorialStep === 4) {
+        const pFields = await ProfileService.getPublicFields(did);
+        setPublicFields(pFields);
 
-      const followingdids = await FollowService.getFollowingDids(
-        props.match.params.did,
-        props.session
-      );
-      setFollowingDids(followingdids);
+        const followerDids = await FollowService.getFollowerDids(did);
+        setFollowerDids(followerDids);
 
-      if (props.match.params.did && props.match.params.did !== '') {
+        const followingdids = await FollowService.getFollowingDids(did);
+        setFollowingDids(followingdids);
+      }
+
+      if (did && did !== '') {
         let userService = new UserService(await DidService.getInstance());
-        let pUser = await userService.SearchUserWithDID(props.match.params.did);
+        let pUser = await userService.SearchUserWithDID(did);
         if (pUser && pUser.did) {
           setPublicUser(pUser as any);
 
-          let profile = await ProfileService.getFullProfile(
-            props.match.params.did,
-            props.session
-          );
+          let profile = await ProfileService.getFullProfile(did, props.session);
           if (profile) {
             profile.basicDTO.isEnabled = true;
             profile.experienceDTO.isEnabled = true;
             profile.educationDTO.isEnabled = true;
             setPublicUserProfile(profile);
           }
-          let document = await DidDocumentService.getUserDocumentByDid(
-            props.match.params.did
-          );
+          let document = await DidDocumentService.getUserDocumentByDid(did);
 
           setDidDocument(document);
         }
@@ -159,7 +152,7 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
 
       setLoading(false);
     })();
-  }, [props.session, props.match.params.did]);
+  }, [props.session, did]);
 
   return (
     <IonPage className={style['explorepage']}>
@@ -170,7 +163,7 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
             <LeftSideMenu />
           </IonCol>
           <IonCol size="10" className={style['right-panel']}>
-            {props.match.params.did === undefined ? (
+            {did === undefined ? (
               <SearchComponent userSession={props.session} />
             ) : (
               <div className={style['exploreprofilecomponent']}>

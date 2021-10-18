@@ -145,7 +145,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
           process.env.REACT_APP_DID_STORE_PASSWORD as string
         );
 
-        didService.storeDocument(signedDocument);
+        await didService.storeDocument(signedDocument);
         await didService.publishDocument(signedDocument);
       }
 

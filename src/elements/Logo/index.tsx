@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -14,8 +15,13 @@ const Container = styled.div`
 `;
 
 const Logo: React.FC = () => {
+  const history = useHistory();
   return (
-    <Container>
+    <Container
+      onClick={() => {
+        history.push('/profile');
+      }}
+    >
       <img alt="profile logo" src="../../assets/logo_profile_black.svg" />
     </Container>
   );

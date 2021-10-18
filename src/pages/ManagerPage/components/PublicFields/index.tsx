@@ -39,7 +39,13 @@ const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
 
   useEffect(() => {
     (async () => {
-      if (!sessionItem || sessionItem.did === '' || loaded) return;
+      if (
+        !sessionItem ||
+        sessionItem.did === '' ||
+        loaded ||
+        sessionItem.tutorialStep !== 4
+      )
+        return;
       const orgFields = await ProfileService.getPublicFields(sessionItem.did);
       setFields(orgFields);
       setLoaded(true);

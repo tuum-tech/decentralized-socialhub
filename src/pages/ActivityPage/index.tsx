@@ -1,46 +1,66 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
-import styled from 'styled-components';
-
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState } from './types';
-
-import style from './style.module.scss';
-
 import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
+import { TuumTechScriptService } from 'src/services/script.service';
+
 import ActivityTimeline from './components/ActivityTimeline';
+import VerificationRequests from './components/VerificationRequests';
+import MyRequests from './components/MyRequests';
+import ActivityPageHeader, {
+  Header,
+  PageTitle,
+  ActivityTabsContainer
+} from './components/ActivityPageHeader';
+
+import { InferMappedProps, SubState } from './types';
+import style from './style.module.scss';
 
 const ActivityPage: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
-  const Header = styled.div`
-    width: 100%;
-    height: 83px;
-    background: #fff;
-    padding: 27px 25px 20px 48px;
-  `;
+  const [active, setActive] = useState('timeline'); // timeline or veificationrequests
+  const [myverifications, setMyVerification] = useState<VerificationRequest[]>(
+    []
+  );
+  const [verificationRequests, setVerificationRequests] = useState<
+    VerificationRequest[]
+  >([]);
 
-  const PageTitle = styled.h2`
-    font-family: 'SF Pro Display';
-    font-size: 28px;
-    font-weight: 600;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 1.36;
-    letter-spacing: normal;
-    text-align: left;
-    color: #27272e;
-  `;
+  const fetchMyVerifications = async () => {
+    const requests_by_me: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
+      props.session.did,
+      true
+    );
+    setMyVerification(requests_by_me);
+  };
+
+  const fetchVerificationRequestToMe = async () => {
+    const vRequests: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
+      props.session.did,
+      false
+    );
+    setVerificationRequests(vRequests);
+  };
 
   useEffect(() => {
-    console.log('I am on manager page');
-  }, []);
+    (async () => {
+      await fetchMyVerifications();
+      await fetchVerificationRequestToMe();
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.session.did]);
+
+  const [showNewVerificationModal, setShowNewVerificationModal] = useState(
+    false
+  );
+
   return (
     <>
       <IonPage className={style['activitypage']}>
@@ -55,7 +75,39 @@ const ActivityPage: React.FC<InferMappedProps> = ({
                 <Header>
                   <PageTitle>Activities</PageTitle>
                 </Header>
-                <ActivityTimeline session={props.session} />
+                <ActivityTabsContainer template="default">
+                  <ActivityPageHeader
+                    active={active}
+                    setActive={setActive}
+                    myverifications={myverifications.length}
+                    verificationRequests={verificationRequests.length}
+                    newVerificationClicked={() =>
+                      setShowNewVerificationModal(!showNewVerificationModal)
+                    }
+                  />
+                  {active === 'timeline' && (
+                    <ActivityTimeline session={props.session} />
+                  )}
+                  {active === 'myrequests' && (
+                    <MyRequests
+                      verifications={myverifications}
+                      session={props.session}
+                      showNewVerificationModal={showNewVerificationModal}
+                      closeNewVerificationModal={() =>
+                        setShowNewVerificationModal(false)
+                      }
+                    />
+                  )}
+                  {active === 'verificationrequests' && (
+                    <VerificationRequests
+                      session={props.session}
+                      verifications={verificationRequests}
+                      forceReFetch={async () => {
+                        await fetchVerificationRequestToMe();
+                      }}
+                    />
+                  )}
+                </ActivityTabsContainer>
               </IonCol>
             </IonRow>
           </IonGrid>

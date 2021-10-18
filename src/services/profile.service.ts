@@ -1,36 +1,41 @@
+import { Guid } from 'guid-typescript';
 import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/Services/Scripting.Service';
+import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { ActivityResponse } from 'src/pages/ActivityPage/types';
-import { getVerifiedCredential } from 'src/utils/credential';
+import { VerificationService } from 'src/services/verification.service';
 
 import { showNotify } from 'src/utils/notify';
 import { getItemsFromData } from 'src/utils/script';
-import { DidDocumentService } from './diddocument.service';
 
+import { DidDocumentService } from './diddocument.service';
 import { HiveService } from './hive.service';
 import { UserService } from './user.service';
-import { Guid } from 'guid-typescript';
-
 import { DidService } from './did.service.new';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { SearchService } from './search.service';
 
 export class ProfileService {
   static didDocument: any = null;
 
-  static isCredVerified = async (
-    key: string,
-    profileValue: string,
+  static getVerifiers = async (
+    x: any,
+    type: string,
     userSession: ISessionItem
   ) => {
+    if (userSession.did === '') {
+      return [];
+    }
     if (ProfileService.didDocument === null) {
       ProfileService.didDocument = await ProfileService.getDidDocument(
         userSession
       );
     }
 
-    let vc = getVerifiedCredential(key, ProfileService.didDocument);
-    if (!vc) return false;
-
-    return vc.value === profileValue && vc.isVerified;
+    const vService = new VerificationService();
+    return await vService.getCredentialVerifiers(
+      x,
+      type,
+      ProfileService.didDocument
+    );
   };
 
   static getDidDocument = async (
@@ -41,8 +46,21 @@ export class ProfileService {
   };
 
   static async getPublicFields(did: string): Promise<string[]> {
-    const hiveInstance = await HiveService.getAppHiveClient();
     let fields: string[] = [];
+    let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
+    let userResponse = await searchServiceLocal.searchUsersByDIDs([did], 1, 0);
+    if (
+      !userResponse.isSuccess ||
+      !userResponse.response ||
+      !userResponse.response.get_users_by_dids ||
+      userResponse.response.get_users_by_dids.items.length <= 0
+    )
+      return fields;
+
+    const hiveInstance = await HiveService.getReadOnlyUserHiveClient(
+      userResponse.response!.get_users_by_dids.items[0].hiveHost
+    );
+
     if (hiveInstance) {
       const res: IRunScriptResponse<PublicProfileResponse> = await hiveInstance.Scripting.RunScript(
         {
@@ -80,7 +98,7 @@ export class ProfileService {
   static async getFullProfile(
     did: string,
     userSession: ISessionItem
-  ): Promise<ProfileDTO | undefined> {
+  ): Promise<ProfileDTO> {
     let basicDTO: any = {};
     let educationDTO: EducationDTO = {
       items: [],
@@ -90,65 +108,87 @@ export class ProfileService {
       items: [],
       isEnabled: true
     };
-    const hiveInstance = await HiveService.getAppHiveClient();
-    if (hiveInstance) {
-      const bpRes: IRunScriptResponse<BasicProfileResponse> = await hiveInstance.Scripting.RunScript(
-        {
-          name: 'get_basic_profile',
-          context: {
-            target_did: did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          }
-        }
+
+    let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
+
+    let userResponse = await searchServiceLocal.searchUsersByDIDs([did], 1, 0);
+    if (
+      userResponse.isSuccess &&
+      userResponse.response &&
+      userResponse.response.get_users_by_dids &&
+      userResponse.response!.get_users_by_dids.items.length > 0
+    ) {
+      const hiveInstance = await HiveService.getReadOnlyUserHiveClient(
+        userResponse.response!.get_users_by_dids.items[0].hiveHost
       );
-      const gbPData = getItemsFromData(bpRes, 'get_basic_profile');
-      if (gbPData.length > 0) {
-        basicDTO = gbPData[0];
+
+      if (hiveInstance) {
+        const bpRes: IRunScriptResponse<BasicProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_basic_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+            }
+          }
+        );
+        const gbPData = getItemsFromData(bpRes, 'get_basic_profile');
+        if (gbPData.length > 0) {
+          basicDTO = gbPData[0];
+        }
+
+        const edRes: IRunScriptResponse<EducationProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_education_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            }
+          }
+        );
+        educationDTO.items = getItemsFromData(edRes, 'get_education_profile');
+
+        const epRes: IRunScriptResponse<ExperienceProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_experience_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            }
+          }
+        );
+        experienceDTO.items = getItemsFromData(epRes, 'get_experience_profile');
+
+        /* Calculate verified education credentials starts */
+        educationDTO.items.map(async (x, i) => {
+          educationDTO.items[i].verifiers = await ProfileService.getVerifiers(
+            x,
+            'education',
+            userSession
+          );
+        });
+        /* Calculate verified education credentials ends */
+
+        /* Calculate verified experience credentials starts */
+        experienceDTO.items.map(async (x, i) => {
+          experienceDTO.items[i].verifiers = await ProfileService.getVerifiers(
+            x,
+            'experience',
+            userSession
+          );
+        });
+        /* Calculate verified experience credentials ends */
       }
-
-      const edRes: IRunScriptResponse<EducationProfileResponse> = await hiveInstance.Scripting.RunScript(
-        {
-          name: 'get_education_profile',
-          context: {
-            target_did: did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          }
-        }
-      );
-      educationDTO.items = getItemsFromData(edRes, 'get_education_profile');
-
-      const epRes: IRunScriptResponse<ExperienceProfileResponse> = await hiveInstance.Scripting.RunScript(
-        {
-          name: 'get_experience_profile',
-          context: {
-            target_did: did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          }
-        }
-      );
-      experienceDTO.items = getItemsFromData(epRes, 'get_experience_profile');
-
-      /* Calculate verified education credentials starts */
-      educationDTO.items.map(async (x, i) => {
-        educationDTO.items[i].isVerified = await ProfileService.isCredVerified(
-          'education',
-          x.institution,
-          userSession
-        );
-      });
-      /* Calculate verified education credentials ends */
-
-      /* Calculate verified experience credentials starts */
-      experienceDTO.items.map(async (x, i) => {
-        experienceDTO.items[i].isVerified = await ProfileService.isCredVerified(
-          'occupation',
-          x.title,
-          userSession
-        );
-      });
-      /* Calculate verified experience credentials ends */
     }
+
+    // add name credentials
+    const nameCredential = {
+      name: basicDTO.name,
+      verifiers: await ProfileService.getVerifiers({}, 'name', userSession)
+    };
+
     return {
+      name: nameCredential,
       basicDTO,
       educationDTO,
       experienceDTO
@@ -253,10 +293,8 @@ export class ProfileService {
   }
 
   static async getFollowers(
-    dids: string[],
-    session: ISessionItem
+    dids: string[]
   ): Promise<IFollowerResponse | undefined> {
-    if (!session || session.tutorialStep !== 4) return;
     const appHiveClient = await HiveService.getAppHiveClient();
     if (appHiveClient && dids && dids.length > 0) {
       let followersResponse: IRunScriptResponse<IFollowerResponse> = await appHiveClient.Scripting.RunScript(
@@ -285,7 +323,7 @@ export class ProfileService {
         did: did
       });
 
-      let followersResponse = await this.getFollowers([did], session);
+      let followersResponse = await this.getFollowers([did]);
       let followersList: string[] = [];
       if (
         followersResponse &&
@@ -317,7 +355,7 @@ export class ProfileService {
       }
 
       if (session) {
-        return this.getFollowings(session.did, session);
+        return this.getFollowings(session.did);
       }
     }
 
@@ -329,31 +367,52 @@ export class ProfileService {
     if (!hiveInstance) return;
     await hiveInstance.Database.deleteCollection('following');
     await hiveInstance.Database.createCollection('following');
-    return this.getFollowings(session.did, session);
+    return this.getFollowings(session.did);
   }
 
   static async getFollowings(
-    targetDid: string,
-    session: ISessionItem
+    targetDid: string
   ): Promise<IFollowingResponse | undefined> {
-    if (!session || session.tutorialStep !== 4) return;
-    const appHiveClient = await HiveService.getAppHiveClient();
-    if (session.did && session.did !== '' && appHiveClient) {
-      const followingResponse: IRunScriptResponse<IFollowingResponse> = await appHiveClient.Scripting.RunScript(
-        {
-          name: 'get_following',
-          context: {
-            target_did: targetDid,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          }
-        }
+    let response: IFollowingResponse = {
+      get_following: { items: [] }
+    };
+
+    if (targetDid && targetDid !== '') {
+      let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
+      let userResponse = await searchServiceLocal.searchUsersByDIDs(
+        [targetDid],
+        1,
+        0
+      );
+      if (
+        !userResponse.isSuccess ||
+        !userResponse.response ||
+        !userResponse.response.get_users_by_dids ||
+        userResponse.response.get_users_by_dids.items.length === 0
+      )
+        return response;
+
+      const hiveInstance = await HiveService.getReadOnlyUserHiveClient(
+        userResponse.response.get_users_by_dids.items[0].hiveHost
       );
 
-      if (followingResponse.isSuccess) {
-        return followingResponse.response;
+      if (hiveInstance) {
+        const followingResponse: IRunScriptResponse<IFollowingResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_following',
+            context: {
+              target_did: targetDid,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            }
+          }
+        );
+
+        if (followingResponse.isSuccess) {
+          return followingResponse.response;
+        }
       }
     }
-    return;
+    return response;
   }
 
   static async addFollowing(did: string, session: ISessionItem): Promise<any> {
@@ -361,7 +420,7 @@ export class ProfileService {
     if (hiveClient && did && did !== '') {
       await hiveClient.Database.insertOne('following', { did: did }, undefined);
 
-      let followersResponse = await this.getFollowers([did], session);
+      let followersResponse = await this.getFollowers([did]);
 
       let followersList: string[] = [];
       if (followersResponse && followersResponse.get_followers.items.length > 0)
@@ -398,25 +457,8 @@ export class ProfileService {
           guid: '',
           did: sDid,
           message:
-            '<a href="/did/' +
-            sDid +
-            '" target="_blank">' +
-            session!.name +
-            '</a> Followed you',
-          read: false,
-          createdAt: 0,
-          updatedAt: 0
-        },
-        session
-      );
-
-      await this.addActivity(
-        {
-          guid: '',
-          did: sDid,
-          message:
             'You are following <a href="/did/' +
-            did +
+            did.replaceAll('did:elastos:', '') +
             '" target="_blank">' +
             followingUser.name +
             '</a>',
@@ -428,7 +470,7 @@ export class ProfileService {
       );
 
       if (session) {
-        return this.getFollowings(session.did, session);
+        return this.getFollowings(session.did);
       }
     }
     return;
@@ -544,6 +586,10 @@ export const defaultUserInfo: ISessionItem = {
 };
 
 export const defaultFullProfile = {
+  name: {
+    name: '',
+    verifiers: []
+  },
   basicDTO: {
     isEnabled: false,
     name: '',

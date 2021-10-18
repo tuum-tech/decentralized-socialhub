@@ -24,6 +24,7 @@ import style from './style.module.scss';
 import { UserType } from 'src/utils/user';
 import request, { BaseplateResp } from 'src/baseplate/request';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
+import Avatar from 'src/components/Avatar';
 import styled from 'styled-components';
 
 export function requestCreateEmailUser(
@@ -56,10 +57,18 @@ const ErrorText = styled(Text16)`
   color: red;
   margin-top: 8px;
 `;
+
 const DisplayText = styled(Text16)`
   text-align: center;
   color: green;
   margin-top: 8px;
+`;
+
+const AvatarArea = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  marign: 0 0 20px;
 `;
 
 interface Props {
@@ -176,6 +185,10 @@ const UseDetailsForm: React.FC<Props> = ({
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
         <OnBoardLayoutRightContent>
+          <AvatarArea>
+            <Avatar did={userInfo ? userInfo.did : ''} fromDid={true} />
+          </AvatarArea>
+
           {isCreate && (
             <OnBoardLayoutRightContentTitle>
               Create your profile

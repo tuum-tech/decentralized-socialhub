@@ -38,7 +38,7 @@ const DefaultPage = () => {
             Or create new profile here
           </OnBoardLayoutLeftContentIntro>
 
-          <SignInButton width={120} to="/create-profile">
+          <SignInButton width={160} to="/create-profile">
             Create new Profile
           </SignInButton>
         </OnBoardLayoutLeftContent>

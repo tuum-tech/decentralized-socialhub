@@ -64,18 +64,18 @@ const SearchComponent: React.FC<Props> = ({ userSession }: Props) => {
 
   const loadData = async () => {
     if (searchService.appHiveClient) {
-      try {
-        let listUniversities: any = await searchService.getUniversities(
-          '',
-          200,
-          0
-        );
-        setFilteredUniversities(listUniversities.response);
-      } catch (e) {
-        setFilteredUniversities({ get_universities: { items: [] } });
-        alertError(null, 'Could not load universities');
-        return;
-      }
+      // try {
+      //   let listUniversities: any = await searchService.getUniversities(
+      //     '',
+      //     200,
+      //     0
+      //   );
+      //   setFilteredUniversities(listUniversities.response);
+      // } catch (e) {
+      //   setFilteredUniversities({ get_universities: { items: [] } });
+      //   alertError(null, 'Could not load universities');
+      //   return;
+      // }
 
       try {
         let listUsers: any = await searchService.getUsers(
@@ -94,11 +94,7 @@ const SearchComponent: React.FC<Props> = ({ userSession }: Props) => {
 
     try {
       if (userSession && userSession.did && userSession.tutorialStep === 4) {
-        //Get Following
-        let following = await ProfileService.getFollowings(
-          userSession.did,
-          userSession
-        );
+        let following = await ProfileService.getFollowings(userSession.did);
         if (following) {
           setListFollowing(following as IFollowingResponse);
           return;
@@ -120,13 +116,12 @@ const SearchComponent: React.FC<Props> = ({ userSession }: Props) => {
   }, [searchService]);
 
   const invokeSearch = async (searchQuery: string) => {
-    let listUniversities: any = await searchService.getUniversities(
-      searchQuery,
-      200,
-      0
-    );
-
-    setFilteredUniversities(listUniversities.response);
+    // let listUniversities: any = await searchService.getUniversities(
+    //   searchQuery,
+    //   200,
+    //   0
+    // );
+    // setFilteredUniversities(listUniversities.response);
     let listUsers: any = await searchService.getUsers(
       searchQuery,
       200,

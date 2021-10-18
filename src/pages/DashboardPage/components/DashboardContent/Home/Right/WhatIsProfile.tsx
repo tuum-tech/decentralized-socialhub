@@ -69,7 +69,7 @@ const WhatIsProfile: React.FC = _ => {
         identities, personalized vaults & more...
       </CardText>
 
-      <LinkButton href="https://www.tuum.tech/products/profile" target="_blank">
+      <LinkButton href="https://www.tuum.tech" target="_blank">
         Read more
       </LinkButton>
       <Logo />

@@ -7,6 +7,7 @@ import { chevronDownOutline, chevronUpOutline } from 'ionicons/icons';
 import { Button } from 'src/elements/buttons';
 import Logo from 'src/elements/Logo';
 import { UserService } from 'src/services/user.service';
+import { getDIDString } from 'src/utils/did';
 
 import photo from 'src/assets/icon/dp.png';
 import narrow from 'src/assets/icon/narrow.svg';
@@ -59,7 +60,11 @@ const Header: React.FC<Props> = ({ userSession }: Props) => {
                 <Item onClick={async () => history.push('/profile')}>
                   Visit Profile.site
                 </Item>
-                <Item onClick={() => window.open('/did/' + userSession.did)}>
+                <Item
+                  onClick={() =>
+                    window.open(getDIDString('/did/' + userSession.did))
+                  }
+                >
                   View Public Profile
                 </Item>
                 <Item onClick={() => UserService.logout()}>Sign out</Item>

@@ -53,10 +53,10 @@ const DidLeftSide: React.FC<Props> = ({ error = false }) => {
           <OnBoardLayoutLeftContentIntro
             style={{ marginTop: '25px', marginBottom: '5px' }}
           >
-            Have a last QR code?
+            Using Essentials?
           </OnBoardLayoutLeftContentIntro>
-          <SignInButton width={120} to="/sign-qr">
-            Sign In
+          <SignInButton disabled={true} width={180} to="/sign-qr">
+            Sign In (Coming Soon)
           </SignInButton>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
@@ -86,10 +86,10 @@ const DidLeftSide: React.FC<Props> = ({ error = false }) => {
         <OnBoardLayoutLeftContentIntro
           style={{ marginTop: '44px', marginBottom: '5px' }}
         >
-          Have a last QR code?
+          Using Essentials?
         </OnBoardLayoutLeftContentIntro>
-        <SignInButton width={120} to="/sign-qr">
-          Sign In
+        <SignInButton disabled={true} width={180} to="/sign-qr">
+          Sign In (Coming Soon)
         </SignInButton>
         <Footer>
           <FooterLinks></FooterLinks>

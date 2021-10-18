@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import ReactTooltip from 'react-tooltip';
+
 import badgeDetails from 'src/data/badge_detail.json';
+import { timeSince } from 'src/utils/time';
 
 const BadgeContainer = styled.div`
   display: flex;
@@ -74,8 +77,9 @@ const Badges: React.FC<Props> = ({ badges, cb }) => {
   return (
     <BadgeContainer>
       {archivedBadges.slice(0, 5).map((badge, index) => {
-        const { category, name } = badge;
+        const { category, name, archived } = badge;
         const { title, description, enbl_icon } = badgeDetails[category][name];
+        const text = `${title} <br/> Achieved ${timeSince(archived)}`;
         return (
           <div
             style={{
@@ -83,10 +87,7 @@ const Badges: React.FC<Props> = ({ badges, cb }) => {
             }}
             key={index}
           >
-            <Badge
-              onMouseEnter={() => setShowBadgeNumber(index)}
-              onMouseLeave={() => setShowBadgeNumber(-1)}
-            >
+            <Badge data-for={title} data-tip={text} data-iscapture="true">
               <img alt="enable icon" src={enbl_icon} height={50} />
               {showBadgeNumber === index && (
                 <ToolTip>
@@ -94,6 +95,8 @@ const Badges: React.FC<Props> = ({ badges, cb }) => {
                   <p>{description}</p>
                 </ToolTip>
               )}
+
+              <ReactTooltip id={title} multiline={true} />
             </Badge>
           </div>
         );

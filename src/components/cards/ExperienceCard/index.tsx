@@ -24,6 +24,7 @@ interface IExperienceProps {
   removeFunc?: any;
   isPublicPage?: boolean;
   template?: string;
+  userSession: ISessionItem;
 }
 
 export const defaultExperienceItem: ExperienceItem = {
@@ -38,7 +39,7 @@ export const defaultExperienceItem: ExperienceItem = {
   description: '',
   order: '',
   isEnabled: false,
-  isVerified: false
+  verifiers: []
 };
 
 const ExperienceCard: React.FC<IExperienceProps> = ({
@@ -47,7 +48,8 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   isEditable = false,
   removeFunc,
   isPublicPage = false,
-  template = 'default'
+  template = 'default',
+  userSession
 }: IExperienceProps) => {
   const [currentExperienceDTO, setCurrentExperienceDTO] = useState(
     experienceDTO
@@ -60,12 +62,9 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
 
   let noOfVerifiedExpCred = 0;
 
-  experienceDTO.items.map((x, i) => {
-    if (x.isVerified) {
-      noOfVerifiedExpCred++;
-    }
-    return null;
-  });
+  for (let i = 0; i < experienceDTO.items.length; i++) {
+    noOfVerifiedExpCred += (experienceDTO.items[i].verifiers || []).length;
+  }
 
   useEffect(() => {
     setExpVerifiedPercent(
@@ -207,6 +206,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
                   removeFunc={removeItem}
                   isEditable={isEditable}
                   template={template}
+                  userSession={userSession}
                 />
                 {i < currentExperienceDTO.items.length - 1 ? <Divider /> : ''}
               </div>

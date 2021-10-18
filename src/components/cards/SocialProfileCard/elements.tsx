@@ -9,7 +9,7 @@ import {
 } from '@ionic/react';
 import styled from 'styled-components';
 
-import { getThemeData } from 'src/data/theme';
+import { getThemeData } from 'src/utils/template';
 import { CardOverview } from '../common';
 
 export const SocialProfileCard = styled(CardOverview)<ThemeProps>`

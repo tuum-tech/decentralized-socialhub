@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { SearchService } from 'src/services/search.service';
 import { FollowType } from 'src/services/user.service';
 import { getItemsFromData } from 'src/utils/script';
+import { getDIDString } from 'src/utils/did';
 
 import FollowCard from './FollowCard';
 
@@ -65,37 +66,37 @@ const FowllowCards: React.FC<Props> = ({
     <>
       {followingDids.length > 0 && showFollowingCard && (
         <FollowCard
-          title={`Following ${followingDids.length}`}
+          title={`Following (${followingDids.length})`}
           users={
             followingUsers.length > 5
               ? followingUsers.slice(0, 5)
               : followingUsers
           }
-          getLinkFunc={(did: string) => '/did/' + did}
+          getLinkFunc={(did: string) => getDIDString('/did/' + did)}
           viewAllClicked={() => viewAll(FollowType.Following)}
           template={template}
         />
       )}
       {followerDids.length > 0 && showFollowerCard && (
         <FollowCard
-          title={`Follower ${followerDids.length}`}
+          title={`Follower (${followerDids.length})`}
           users={
             followerUsers.length > 5 ? followerUsers.slice(0, 5) : followerUsers
           }
-          getLinkFunc={(did: string) => '/did/' + did}
+          getLinkFunc={(did: string) => getDIDString('/did/' + did)}
           viewAllClicked={() => viewAll(FollowType.Follower)}
           template={template}
         />
       )}
       {mutualDids.length > 0 && showMutualFollowerCard && (
         <FollowCard
-          title={`Mutual Follower ${mutualDids.length}`}
+          title={`Mutual Follower (${mutualDids.length})`}
           users={
             mutualFollowerUsers.length > 5
               ? mutualFollowerUsers.slice(0, 5)
               : mutualFollowerUsers
           }
-          getLinkFunc={(did: string) => '/did/' + did}
+          getLinkFunc={(did: string) => getDIDString('/did/' + did)}
           viewAllClicked={() => viewAll(FollowType.MutualFollower)}
           template={template}
         />

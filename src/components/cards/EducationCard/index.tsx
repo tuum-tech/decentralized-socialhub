@@ -24,6 +24,7 @@ interface IEducationProps {
   isEditable?: boolean;
   isPublicPage?: boolean;
   template?: string;
+  userSession: ISessionItem;
 }
 
 export const defaultEducationItem: EducationItem = {
@@ -37,7 +38,7 @@ export const defaultEducationItem: EducationItem = {
   title: '',
   description: '',
   order: '',
-  isVerified: false
+  verifiers: []
 };
 
 const EducationCard: React.FC<IEducationProps> = ({
@@ -46,7 +47,8 @@ const EducationCard: React.FC<IEducationProps> = ({
   removeFunc,
   isEditable = false,
   isPublicPage = false,
-  template = 'default'
+  template = 'default',
+  userSession
 }: IEducationProps) => {
   const [currentEducationDTO, setCurrentEducationDTO] = useState(educationDTO);
   const [eduVerifiedPercent, setEduVerifiedPercent] = useState(0);
@@ -57,12 +59,9 @@ const EducationCard: React.FC<IEducationProps> = ({
 
   let noOfVerifiedEduCred = 0;
 
-  educationDTO.items.map((x, i) => {
-    if (x.isVerified) {
-      noOfVerifiedEduCred++;
-    }
-    return null;
-  });
+  for (let i = 0; i < educationDTO.items.length; i++) {
+    noOfVerifiedEduCred += (educationDTO.items[i].verifiers || []).length;
+  }
 
   useEffect(() => {
     setEduVerifiedPercent(
@@ -206,6 +205,7 @@ const EducationCard: React.FC<IEducationProps> = ({
                       removeFunc={removeItem}
                       isEditable={isEditable}
                       template={template}
+                      userSession={userSession}
                     />
                     {i < currentEducationDTO.items.length - 1 ? (
                       <Divider />

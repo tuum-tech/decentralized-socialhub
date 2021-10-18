@@ -1,12 +1,12 @@
 {
   "name": "profile",
-  "version": "0.10.0",
+  "version": "1.0.0",
   "description": "Profile",
   "dependencies": {
     "@babel/core": "7.9.0",
     "@elastosfoundation/did-js-sdk": "^2.1.1",
     "@elastosfoundation/elastos-connectivity-sdk-js": "^1.0.9",
-    "@elastosfoundation/elastos-hive-js-sdk": "github:elastos/Elastos.NET.Hive.JS.SDK",
+    "@elastosfoundation/elastos-hive-js-sdk": "0.3.0",
     "@elastosfoundation/elastos-js-sdk": "^1.2.12",
     "@elastosfoundation/essentials-connector-client-browser": "^1.0.19",
     "@sentry/react": "^6.12.0",
@@ -174,7 +174,7 @@
     }
   },
   "lint-staged": {
-    "src/**/*.{js,jsx,json,css,ts,tsx}": [
+    "src/**/*.{js,jsx,css,ts,tsx}": [
       "prettier --write",
       "eslint --fix"
     ]

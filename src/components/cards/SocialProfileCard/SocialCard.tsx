@@ -317,7 +317,7 @@ const SocialProfilesCard: React.FC<Props> = ({
     if (key === 'github') header = 'Github Account';
     if (key === 'discord') header = 'Discord Account';
 
-    let isEssentials = sessionItem.mnemonics === '';
+    // let isEssentials = sessionItem.mnemonics === '';
 
     if (!vc)
       return (
