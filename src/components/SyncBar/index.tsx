@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import style from './style.module.scss';
 import { IonButton, IonCol, IonGrid, IonIcon, IonRow } from '@ionic/react';
 import { syncOutline, alertCircle } from 'ionicons/icons';
+import { SyncService } from 'src/services/sync.service';
 const ButtonOrange = styled(IonButton)`
   border-radius: 6px;
   background-color: #ffffff;
@@ -23,22 +24,48 @@ const ButtonOrange = styled(IonButton)`
     --background-hover: #ffffff 0% 0% no-repeat padding-box;
   }
 `;
-interface SyncBarProps {}
+interface SyncBarProps {
+  session: ISessionItem;
+}
 
-const SyncBar: React.FC<SyncBarProps> = ({}: SyncBarProps) => {
+const SyncBar: React.FC<SyncBarProps> = ({ session }: SyncBarProps) => {
   const history = useHistory();
+  const [hasDifferences, setHasDifferences] = useState(false);
+  const verifyDifferences = useCallback(async () => {
+    if (session && session.did !== '' && session.tutorialStep === 4) {
+      let hasDiff = await SyncService.HasDifferences(session);
+      setHasDifferences(hasDiff);
+    }
+  });
 
-  return (
-    <div className={style['syncbar']}>
-      <span>
-        <IonIcon icon={alertCircle}></IonIcon> &nbsp; Please sync your profile
-        with the blockchain.
-      </span>
-      <ButtonOrange onClick={async () => history.push('/sync')}>
-        <IonIcon icon={syncOutline}></IonIcon> &nbsp; Review &amp; Sync
-      </ButtonOrange>
-    </div>
-  );
+  let timer: NodeJS.Timeout;
+  useEffect(() => {
+    (async () => {
+      await verifyDifferences();
+    })();
+    setTimerForVerifyDifferences();
+  }, [setTimerForVerifyDifferences, verifyDifferences]);
+
+  const setTimerForVerifyDifferences = () => {
+    timer = setInterval(async () => {
+      await verifyDifferences();
+    }, 1000 * 10);
+  };
+
+  const divBar = () => {
+    return (
+      <div className={style['syncbar']}>
+        <span>
+          <IonIcon icon={alertCircle}></IonIcon> &nbsp; Please sync your profile
+          with the blockchain.
+        </span>
+        <ButtonOrange onClick={async () => history.push('/sync')}>
+          <IonIcon icon={syncOutline}></IonIcon> &nbsp; Review &amp; Sync
+        </ButtonOrange>
+      </div>
+    );
+  };
+  return <>{hasDifferences && divBar}</>;
 };
 
 export default SyncBar;

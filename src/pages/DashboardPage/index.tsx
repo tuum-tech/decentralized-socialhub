@@ -42,7 +42,6 @@ import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service.new';
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import SyncBar from 'src/components/SyncBar';
-import { SyncService } from 'src/services/sync.service';
 
 const TutorialModal = styled(IonModal)`
   --border-radius: 16px;
@@ -63,7 +62,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');
-  const [hasDifferences, setHasDifferences] = useState(false);
   const [full_profile, setfull_profile] = useState<ProfileDTO>(
     defaultFullProfile
   );
@@ -94,10 +92,8 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
   const refreshDidDocument = async () => {
     if (props.session && props.session.did !== '') {
-      let hasDiff = await SyncService.HasDifferences(props.session);
       let document = await DidDocumentService.getUserDocument(props.session);
       setDidDocument(document);
-      setHasDifferences(hasDiff);
     }
   };
 
@@ -350,7 +346,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
                   onTutorialStart={() => {
                     setShowTutorial(true);
                   }}
-                  hasDifferences={hasDifferences}
                   profile={full_profile}
                   sessionItem={session}
                   didDocument={didDocument as DIDDocument}

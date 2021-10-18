@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { IonButton, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
-import { getThemeData } from 'src/data/theme';
 import {
   CardContentContainer,
   CardOverview
 } from 'src/components/cards/common';
 import { DefaultButton } from 'src/elements/buttons';
 import ProgressBar from 'src/elements/ProgressBar';
+import { getThemeData } from 'src/utils/template';
 
 const AboutText = styled.span<ThemeProps>`
   white-space: break-spaces !important;

@@ -100,7 +100,9 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
     <IonContent className={style['profileeditor']}>
       <IonGrid className={style['profileeditorgrid']}>
         <IonRow>
-          <IonCol size="12">{hasDifferences && <SyncBar></SyncBar>}</IonCol>
+          <IonCol size="12">
+            <SyncBar session={session}></SyncBar>
+          </IonCol>
         </IonRow>
         <IonRow>
           <IonCol size="4">

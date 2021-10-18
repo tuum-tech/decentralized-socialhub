@@ -92,6 +92,7 @@ const ManagerPage: React.FC<InferMappedProps> = ({
                     View profile
                   </ViewProfileButton>
                 </Header>
+
                 {user.tutorialStep !== 4 && (
                   <WarningText>
                     Please complete the tutorial first before managing your

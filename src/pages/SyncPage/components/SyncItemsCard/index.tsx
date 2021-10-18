@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
-import { getThemeData } from 'src/data/theme';
 import {
   CardContentContainer,
   CardOverview
