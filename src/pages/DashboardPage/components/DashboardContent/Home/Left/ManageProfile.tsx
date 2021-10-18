@@ -84,7 +84,7 @@ const ManageProfile: React.FC<Props> = ({ profile, userSession }) => {
   if (!filledContent) {
     return (
       <MainCard>
-        <CardTitle>Manage Your profiles</CardTitle>
+        <CardTitle>Manage Your profile</CardTitle>
         <CardText>
           Add, edit and manage your profile information from profile manager.
         </CardText>
