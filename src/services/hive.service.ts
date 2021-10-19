@@ -67,12 +67,50 @@ export class HiveService {
   }
 
   static async isHiveVersionSupported(version: string): Promise<boolean> {
-    let supportedVersions = process.env.REACT_APP_HIVE_VALID_VERSION?.replace(
-      /\s/g,
+    let pattern = /[v\s]*/gi;
+    let minVersion = process.env.REACT_APP_HIVE_MIN_VERSION?.replace(
+      pattern,
       ''
-    ).split(',');
+    ).split('.');
+    let maxVersion = process.env.REACT_APP_HIVE_MAX_VERSION?.replace(
+      pattern,
+      ''
+    ).split('.');
+    let actualVersion = version?.replace(pattern, '').split('.');
 
-    return supportedVersions?.includes(version) as boolean;
+    if (minVersion === undefined || maxVersion === undefined) return false;
+
+    let majorMin = Number(minVersion[0]);
+    let majorMax = Number(maxVersion[0]);
+    let majorActual = Number(actualVersion[0]);
+
+    if (majorActual < majorMin || majorActual > majorMax) return false;
+
+    let minorMin = Number(minVersion[1]);
+    let minorMax = Number(maxVersion[1]);
+    let minorActual = Number(actualVersion[1]);
+
+    if (majorActual === majorMin && minorActual < minorMin) return false;
+    if (majorActual === majorMax && minorActual > minorMax) return false;
+
+    let versionMin = Number(minVersion[2]);
+    let versionMax = Number(maxVersion[2]);
+    let versionActual = Number(actualVersion[2]);
+
+    if (
+      majorActual === majorMin &&
+      minorActual === minorMin &&
+      versionActual < versionMin
+    )
+      return false;
+    if (
+      majorActual === majorMax &&
+      minorActual === minorMax &&
+      versionActual > versionMax
+    )
+      return false;
+
+    return true;
   }
 
   static async isHiveVersionSet(version: string): Promise<boolean> {

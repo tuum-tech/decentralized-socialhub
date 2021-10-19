@@ -71,7 +71,7 @@ const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
             if (!isHiveValid) {
               alertError(
                 null,
-                `Hive version ${hiveVersion} not supported. The supported versions are ${process.env.REACT_APP_HIVE_VALID_VERSION}`
+                `Hive version ${hiveVersion} not supported. The minimal supported version is ${process.env.REACT_APP_HIVE_MIN_VERSION} and maximun is ${process.env.REACT_APP_HIVE_MAX_VERSION}`
               );
               return;
             }

@@ -110,7 +110,6 @@ const DidForm: React.FC<Props> = ({
     let isMnemonicValid = didService.isMnemonicsValid(mnemonic.join(' '));
     setError(isMnemonicValid === false);
     if (isMnemonicValid) {
-      console.log(mnemonic);
       let userDid = await didService.loadDid(
         mnemonic.join(' '),
         passphrase || ''
