@@ -8,6 +8,8 @@ import {
 import { TuumTechScriptService } from 'src/services/script.service';
 import { DidService } from './did.service.new';
 import { SearchService } from './search.service';
+import { UserService } from './user.service';
+import { ProfileService } from './profile.service';
 import { getItemsFromData } from 'src/utils/script';
 
 export enum VerificationStatus {
@@ -214,22 +216,40 @@ export class VerificationService {
   }
 
   public async sendRequest(
-    fromDid: string,
+    session: ISessionItem,
     toDids: string[],
     verificationData: VerificationData[],
     msg: string
   ) {
     try {
+      let userService = new UserService(await DidService.getInstance());
       for (let i = 0; i < toDids.length; i++) {
         for (let j = 0; j < verificationData.length; j++) {
           await TuumTechScriptService.addVerificationRequest(
-            fromDid,
+            session.did,
             toDids[i],
             verificationData[j],
             msg,
             verificationData[j].idKey
           );
         }
+        let toUser = await userService.SearchUserWithDID(toDids[i]);
+        await ProfileService.addActivity(
+          {
+            guid: '',
+            did: session.did,
+            message:
+              `You've sent verification request to <a href="/did/` +
+              toDids[i].replaceAll('did:elastos:', '') +
+              `" target="_blank">` +
+              toUser.name +
+              `</a>`,
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
+          },
+          session
+        );
       }
       return {
         status: 'successed',
@@ -273,6 +293,7 @@ export class VerificationService {
   }
 
   public async approveCredential(
+    session: ISessionItem,
     v: VerificationRequest,
     approve = true,
     feedbacks = ''
@@ -320,6 +341,26 @@ export class VerificationService {
       feedbacks,
       approve ? vc.toJSON() : '',
       v.guid
+    );
+    let userService = new UserService(await DidService.getInstance());
+    let fromUser = await userService.SearchUserWithDID(v.from_did);
+    await ProfileService.addActivity(
+      {
+        guid: '',
+        did: session.did,
+        message:
+          `You've ${
+            approve ? 'approved' : 'rejected'
+          } verification request from <a href="/did/` +
+          v.from_did.replaceAll('did:elastos:', '') +
+          `" target="_blank">` +
+          fromUser.name +
+          `</a>`,
+        read: false,
+        createdAt: 0,
+        updatedAt: 0
+      },
+      session
     );
   }
 

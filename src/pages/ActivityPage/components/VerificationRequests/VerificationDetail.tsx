@@ -61,12 +61,14 @@ const ContentArea = styled.div`
 interface Props {
   verification: VerificationRequest;
   user: ISessionItem;
+  session: ISessionItem;
   closeModal: () => void;
 }
 
 const VerificationDetailContent = ({
   verification,
   user,
+  session,
   closeModal
 }: Props) => {
   const [loading, setLoading] = useState(0);
@@ -77,7 +79,7 @@ const VerificationDetailContent = ({
     setLoading(approve ? 1 : 2);
 
     const vService = new VerificationService();
-    await vService.approveCredential(verification, approve, feedbacks);
+    await vService.approveCredential(session, verification, approve, feedbacks);
 
     setLoading(0);
     closeModal();

@@ -173,7 +173,7 @@ const Upload: React.FC<InferMappedProps> = ({
                     type="file"
                     name="avatar"
                     id="file"
-                    accept=".jpef, .png, .jpg"
+                    accept=".jpeg, .png, .jpg"
                     onChange={photoUpload}
                     src={imagePreview}
                   />
