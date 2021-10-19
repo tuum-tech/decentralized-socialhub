@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import style from './style.module.scss';
@@ -35,17 +35,10 @@ const SyncBar: React.FC<SyncBarProps> = ({ session }: SyncBarProps) => {
   const verifyDifferences = useCallback(async () => {
     if (session && session.did !== '' && session.tutorialStep === 4) {
       let hasDiff = await SyncService.HasDifferences(session);
-      console.log('Hass differences', hasDiff);
+      console.log('Has differences', hasDiff);
       setHasDifferences(hasDiff);
     }
-  });
-
-  useEffect(() => {
-    (async () => {
-      await verifyDifferences();
-    })();
-    setTimerForVerifyDifferences();
-  }, [setTimerForVerifyDifferences, verifyDifferences]);
+  }, [session]);
 
   const setTimerForVerifyDifferences = useCallback(() => {
     const timer = setTimeout(async () => {
@@ -53,7 +46,15 @@ const SyncBar: React.FC<SyncBarProps> = ({ session }: SyncBarProps) => {
       setTimerForVerifyDifferences();
     }, 1000 * 10);
     return () => clearTimeout(timer);
-  });
+  }, [verifyDifferences]);
+
+  //NO CALLBACK
+  useEffect(() => {
+    (async () => {
+      await verifyDifferences();
+    })();
+    setTimerForVerifyDifferences();
+  }, [setTimerForVerifyDifferences, verifyDifferences]);
 
   const divBar = () => {
     return (
