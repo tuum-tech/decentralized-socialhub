@@ -193,28 +193,32 @@ const EducationCard: React.FC<IEducationProps> = ({
               </IonGrid>
             </CardHeaderContent>
             <CardContentContainer>
-              {currentEducationDTO.items.map((x, i) => {
-                return (
-                  <div key={i}>
-                    <EducationItem
-                      educationItem={x}
-                      handleChange={handleChange}
-                      updateFunc={saveChanges}
-                      editFunc={editItem}
-                      index={i}
-                      removeFunc={removeItem}
-                      isEditable={isEditable}
-                      template={template}
-                      userSession={userSession}
-                    />
-                    {i < currentEducationDTO.items.length - 1 ? (
-                      <Divider />
-                    ) : (
-                      ''
-                    )}
-                  </div>
-                );
-              })}
+              {currentEducationDTO.items.sort(
+                (a: any, b: any) =>
+                  new Date(b.start).getTime() - new Date(a.start).getTime()
+              ) &&
+                currentEducationDTO.items.map((x, i) => {
+                  return (
+                    <div key={i}>
+                      <EducationItem
+                        educationItem={x}
+                        handleChange={handleChange}
+                        updateFunc={saveChanges}
+                        editFunc={editItem}
+                        index={i}
+                        removeFunc={removeItem}
+                        isEditable={isEditable}
+                        template={template}
+                        userSession={userSession}
+                      />
+                      {i < currentEducationDTO.items.length - 1 ? (
+                        <Divider />
+                      ) : (
+                        ''
+                      )}
+                    </div>
+                  );
+                })}
             </CardContentContainer>
           </CardOverview>
           <MyModal

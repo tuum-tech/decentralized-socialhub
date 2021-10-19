@@ -195,7 +195,8 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
         </CardHeaderContent>
         <CardContentContainer>
           {currentExperienceDTO.items.sort(
-            (a: any, b: any) => a.start - b.start
+            (a: any, b: any) =>
+              new Date(b.start).getTime() - new Date(a.start).getTime()
           ) &&
             currentExperienceDTO.items.map((x, i) => {
               return (
