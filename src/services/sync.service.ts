@@ -1,5 +1,6 @@
 import {
   DID,
+  DIDDocument,
   JSONObject,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
@@ -7,6 +8,7 @@ import session from 'redux-persist/lib/storage/session';
 
 import { DidService } from './did.service.new';
 import { DidcredsService } from './didcreds.service';
+import { EssentialsService } from './essentials.service';
 import { HiveService } from './hive.service';
 import { TuumTechScriptService } from './script.service';
 import { UserService } from './user.service';
@@ -152,36 +154,34 @@ export class SyncService {
   ): Promise<void> {
     if (differences.length <= 0) return;
 
-    //TODO: update implementation
+    let vcs = differences.map(value => value.VaultCredential!);
+    let didService = await DidService.getInstance();
+    let didDocument: DIDDocument = await didService.getStoredDocument(
+      new DID(sessionItem.did)
+    );
 
-    // let didDocument: DIDDocument = await didService.getStoredDocument(
-    //     new DID(props.session.did)
-    //   );
+    let updatedDidDocument: DIDDocument;
+    if (sessionItem.mnemonics === '') {
+      let essentialsService = new EssentialsService(didService);
+      let isAdded = await essentialsService.addMultipleVerifiableCredentialsToEssentials(
+        vcs
+      );
 
-    //   let documentWithTwitterCredential: DIDDocument;
+      if (!isAdded) {
+        window.close();
+        return;
+      }
+      updatedDidDocument = await didService.getPublishedDocument(
+        new DID(sessionItem.did)
+      );
+    } else {
+      updatedDidDocument = await didService.addMultipleVerifiableCredentialsToDIDDocument(
+        didDocument,
+        vcs
+      );
+    }
 
-    //   if (props.session.mnemonics === '') {
-    //     let essentialsService = new EssentialsService(didService);
-    //     let isAdded = await essentialsService.addVerifiableCredentialEssentials(
-    //       verifiableCredential
-    //     );
-
-    //     if (!isAdded){
-    //       window.close();
-    //       return;
-    //     }
-
-    //     documentWithTwitterCredential = await didService.getPublishedDocument(
-    //       new DID(props.session.did)
-    //     );
-    //   } else {
-    //     documentWithTwitterCredential = await didService.addVerifiableCredentialToDIDDocument(
-    //       didDocument,
-    //       verifiableCredential
-    //     );
-    //   }
-
-    //   await didService.storeDocument(documentWithTwitterCredential);
+    await didService.storeDocument(updatedDidDocument);
   }
 
   private static async UpdateVault(
@@ -193,7 +193,7 @@ export class SyncService {
     differences.forEach(async item => {
       await DidcredsService.addOrUpdateCredentialToVault(
         sessionItem,
-        item.VaultCredential!
+        item.BlockchainCredential!
       );
       let value = this.getValue(item);
 
@@ -227,9 +227,9 @@ export class SyncService {
           break;
 
         case 'avatar':
-          let atavarValue = item.VaultCredential!.getSubject().getProperties()[
-            'avatar'
-          ];
+          let atavarValue = item
+            .BlockchainCredential!.getSubject()
+            .getProperties()['avatar'];
           let avatarObject = JSON.parse(atavarValue.toString());
           let baseStr = avatarObject['data'];
           sessionItem.avatar = `data:${avatarObject['content-type']};base64,${baseStr}`;

@@ -12,8 +12,14 @@ export class EssentialsService {
   addVerifiableCredentialEssentials = async (
     vc: VerifiableCredential
   ): Promise<boolean> => {
+    return this.addMultipleVerifiableCredentialsToEssentials([vc]);
+  };
+
+  addMultipleVerifiableCredentialsToEssentials = async (
+    vcs: VerifiableCredential[]
+  ): Promise<boolean> => {
     let cn = new CnDID.DIDAccess();
-    let response = await cn?.importCredentials([vc], {
+    let response = await cn?.importCredentials(vcs, {
       forceToPublishCredentials: true
     });
 

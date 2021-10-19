@@ -304,6 +304,25 @@ export class DidService implements IDidService {
       .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
   }
 
+  async addMultipleVerifiableCredentialsToDIDDocument(
+    diddocument: DIDDocument,
+    vcs: VerifiableCredential[]
+  ): Promise<DIDDocument> {
+    let builder = DIDDocument.Builder.newFromDocument(diddocument);
+    builder.edit();
+
+    vcs.forEach(vc => {
+      if (diddocument.credentials?.has(vc.getId())) {
+        builder.removeCredential(vc.getId());
+      }
+      builder.addCredential(vc);
+    });
+
+    return await builder.seal(
+      process.env.REACT_APP_DID_STORE_PASSWORD as string
+    );
+  }
+
   async addVerifiableCredentialToEssentialsDIDDocument(
     diddocument: DIDDocument,
     vc: VerifiableCredential

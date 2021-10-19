@@ -7,6 +7,7 @@ import DashboardHome from './Home';
 import DashboardBadges from './Badges';
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import SyncBar from 'src/components/SyncBar';
+import styled from 'styled-components';
 
 interface Props {
   onTutorialStart: () => void;
@@ -30,7 +31,6 @@ const DashboardContent: React.FC<Props> = ({
   const [active, setActive] = useState('home');
   return (
     <TabsContainer template="default">
-      <SyncBar session={sessionItem}></SyncBar>
       <IonList>
         <IonItem
           className={(active === 'home' ? 'tab-active' : '') + ' tab-item'}
@@ -51,18 +51,22 @@ const DashboardContent: React.FC<Props> = ({
           <IonLabel className="tab-label">Badges</IonLabel>
         </IonItem>
       </IonList>
+
       {active === 'home' && (
-        <DashboardHome
-          profile={profile}
-          onTutorialStart={onTutorialStart}
-          didDocument={didDocument}
-          activeTab={tab => {
-            setActive(tab);
-          }}
-          followerDids={followerDids}
-          followingDids={followingDids}
-          mutualDids={mutualDids}
-        />
+        <>
+          <SyncBar session={sessionItem}></SyncBar>
+          <DashboardHome
+            profile={profile}
+            onTutorialStart={onTutorialStart}
+            didDocument={didDocument}
+            activeTab={tab => {
+              setActive(tab);
+            }}
+            followerDids={followerDids}
+            followingDids={followingDids}
+            mutualDids={mutualDids}
+          />
+        </>
       )}
       {/* {active === 'status' && <DashboardStatus />} */}
       {active === 'badges' && <DashboardBadges sessionItem={sessionItem} />}
