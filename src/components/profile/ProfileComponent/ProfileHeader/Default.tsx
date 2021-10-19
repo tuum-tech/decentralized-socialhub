@@ -44,7 +44,7 @@ const Banner = styled.div<{ bgImg: string }>`
   background-image: url(${props => props.bgImg});
   background-repeat: no-repeat, no-repeat;
   background-position: 0 0;
-  background-size: 100% 100%;
+  background-size: cover;
 `;
 
 const Header = styled(IonRow)`

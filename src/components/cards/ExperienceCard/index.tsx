@@ -194,24 +194,27 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
           </IonGrid>
         </CardHeaderContent>
         <CardContentContainer>
-          {currentExperienceDTO.items.map((x, i) => {
-            return (
-              <div key={i}>
-                <ExperienceItem
-                  experienceItem={x}
-                  handleChange={handleChange}
-                  updateFunc={saveChanges}
-                  editFunc={editItem}
-                  index={i}
-                  removeFunc={removeItem}
-                  isEditable={isEditable}
-                  template={template}
-                  userSession={userSession}
-                />
-                {i < currentExperienceDTO.items.length - 1 ? <Divider /> : ''}
-              </div>
-            );
-          })}
+          {currentExperienceDTO.items.sort(
+            (a: any, b: any) => a.start - b.start
+          ) &&
+            currentExperienceDTO.items.map((x, i) => {
+              return (
+                <div key={i}>
+                  <ExperienceItem
+                    experienceItem={x}
+                    handleChange={handleChange}
+                    updateFunc={saveChanges}
+                    editFunc={editItem}
+                    index={i}
+                    removeFunc={removeItem}
+                    isEditable={isEditable}
+                    template={template}
+                    userSession={userSession}
+                  />
+                  {i < currentExperienceDTO.items.length - 1 ? <Divider /> : ''}
+                </div>
+              );
+            })}
         </CardContentContainer>
       </CardOverview>
       <MyModal
