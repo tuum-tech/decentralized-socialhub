@@ -266,15 +266,16 @@
     .tutorial-hive-item {
       margin-left: 15px;
       position: relative;
-      background: #f7fafc;
+      background: #edf2f7;
       border: 1px solid #dfdfdf4f;
       border-radius: 16px;
       width: 380px;
       height: 81px;
       display: flex;
-      justify-content: center;
+      justify-content: space-around;
       padding: 10px 15px;
       box-shadow: 1px 1px #dfdfdf4f;
+
       img {
         float: left;
         display: inline;
