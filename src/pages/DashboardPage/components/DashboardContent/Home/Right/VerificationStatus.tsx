@@ -37,7 +37,7 @@ export const MainCard = styled(LeftCard)`
 `;
 
 export const CardTitle = styled(LeftCardTitle)`
-  margin-bottom: 25px;
+  margin-bottom: 17px;
 `;
 
 export const ExploreAll = styled.p`
