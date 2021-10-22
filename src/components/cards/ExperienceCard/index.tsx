@@ -4,7 +4,7 @@ import { Guid } from 'guid-typescript';
 
 import ExperienceItem from './Item';
 
-import ExperienceCardEdit from './Edit';
+import ExperienceCardEdit, { pattern } from './Edit';
 import {
   CardOverview,
   LinkStyleSpan,
@@ -100,6 +100,9 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
       (!item.end && !item.still)
     )
       return false;
+
+    if (!pattern.test(item.title)) return false;
+    if (!pattern.test(item.institution)) return false;
     return true;
   };
 

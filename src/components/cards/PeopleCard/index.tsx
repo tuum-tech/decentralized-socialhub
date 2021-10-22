@@ -163,7 +163,6 @@ const PeopleCard: React.FC<Props> = ({
             activeClassName={style['page-active']}
           />
         )}
-
         {!listPeople && (
           <IonCardContent>
             No user found with the {isSearchKeywordDID ? 'DID' : 'keyword'}:{' '}

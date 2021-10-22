@@ -5,10 +5,8 @@ import PeopleCard from 'src/components/cards/PeopleCard';
 import { ProfileService } from 'src/services/profile.service';
 import { alertError } from 'src/utils/notify';
 import { SearchService } from 'src/services/search.service';
-
+import NoConnectionComp from 'src/components/NoConnection';
 import FollowersHeader from '../FollowersHeader';
-
-import style from './style.module.scss';
 
 export interface IUserResponse {
   _status?: string;
@@ -163,20 +161,24 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
           className={style['search-input']}
         ></IonSearchbar>
       </IonContent> */}
-      <IonGrid className={style['tab-grid']}>
+      <IonGrid>
         <IonRow>
-          <PeopleCard
-            people={filteredUsers.get_users_by_dids}
-            following={
-              listFollowing && listFollowing.get_following
-                ? listFollowing.get_following
-                : { items: [] }
-            }
-            searchKeyword={searchQuery}
-            isSearchKeywordDID={isDID(searchQuery)}
-            showHeader={false}
-            size="6"
-          />
+          {followersCount === 0 ? (
+            <NoConnectionComp pageType="followers" />
+          ) : (
+            <PeopleCard
+              people={filteredUsers.get_users_by_dids}
+              following={
+                listFollowing && listFollowing.get_following
+                  ? listFollowing.get_following
+                  : { items: [] }
+              }
+              searchKeyword={searchQuery}
+              isSearchKeywordDID={isDID(searchQuery)}
+              showHeader={false}
+              size="6"
+            />
+          )}
         </IonRow>
       </IonGrid>
     </>

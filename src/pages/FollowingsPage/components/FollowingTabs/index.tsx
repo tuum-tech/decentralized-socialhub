@@ -10,6 +10,7 @@ import {
 
 import PeopleCard from 'src/components/cards/PeopleCard';
 import PagesCard from 'src/components/cards/PagesCard';
+import NoConnectionComp from 'src/components/NoConnection';
 
 import style from './style.module.scss';
 
@@ -31,6 +32,7 @@ const FollowingTabs: React.FC<Props> = ({
   isSearchKeywordDID = false
 }) => {
   const [active, setActive] = useState(tab);
+  console.log('===>people', people, following);
 
   return (
     <IonContent className={style['followingtabs']}>
@@ -60,19 +62,27 @@ const FollowingTabs: React.FC<Props> = ({
       {active === 'people' && (
         <IonGrid className={style['tab-grid']}>
           <IonRow>
-            <PeopleCard
-              people={people}
-              following={following}
-              searchKeyword={searchKeyword}
-              size="6"
-            />
+            {people?.items.length === 0 ? (
+              <NoConnectionComp pageType="followingPeople" />
+            ) : (
+              <PeopleCard
+                people={people}
+                following={following}
+                searchKeyword={searchKeyword}
+                size="6"
+              />
+            )}
           </IonRow>
         </IonGrid>
       )}
       {active === 'pages' && (
         <IonGrid className={style['tab-grid']}>
           <IonRow>
-            <PagesCard pages={pages} searchKeyword={searchKeyword} size="6" />
+            {pages?.items.length === 0 ? (
+              <NoConnectionComp pageType="followingPages" />
+            ) : (
+              <PagesCard pages={pages} searchKeyword={searchKeyword} size="6" />
+            )}
           </IonRow>
         </IonGrid>
       )}
