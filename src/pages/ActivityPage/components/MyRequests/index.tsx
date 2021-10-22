@@ -46,7 +46,7 @@ const MyRequests: React.FC<Props> = ({
     msg: string
   ) => {
     const vService = new VerificationService();
-    await vService.sendRequest(session.did, dids, credentials, msg);
+    await vService.sendRequest(session, dids, credentials, msg);
     closeNewVerificationModal();
     setShowSentModal(true);
   };

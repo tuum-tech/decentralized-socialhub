@@ -14,7 +14,7 @@ import {
   CardHeaderContent,
   CardContentContainer
 } from '../common';
-import EducationCardEdit from './Edit';
+import EducationCardEdit, { pattern } from './Edit';
 import ProgressBar from 'src/elements/ProgressBar';
 
 interface IEducationProps {
@@ -97,6 +97,9 @@ const EducationCard: React.FC<IEducationProps> = ({
       (!item.end && !item.still)
     )
       return false;
+
+    if (!pattern.test(item.program)) return false;
+    if (!pattern.test(item.institution)) return false;
     return true;
   };
 
@@ -193,28 +196,32 @@ const EducationCard: React.FC<IEducationProps> = ({
               </IonGrid>
             </CardHeaderContent>
             <CardContentContainer>
-              {currentEducationDTO.items.map((x, i) => {
-                return (
-                  <div key={i}>
-                    <EducationItem
-                      educationItem={x}
-                      handleChange={handleChange}
-                      updateFunc={saveChanges}
-                      editFunc={editItem}
-                      index={i}
-                      removeFunc={removeItem}
-                      isEditable={isEditable}
-                      template={template}
-                      userSession={userSession}
-                    />
-                    {i < currentEducationDTO.items.length - 1 ? (
-                      <Divider />
-                    ) : (
-                      ''
-                    )}
-                  </div>
-                );
-              })}
+              {currentEducationDTO.items.sort(
+                (a: any, b: any) =>
+                  new Date(b.start).getTime() - new Date(a.start).getTime()
+              ) &&
+                currentEducationDTO.items.map((x, i) => {
+                  return (
+                    <div key={i}>
+                      <EducationItem
+                        educationItem={x}
+                        handleChange={handleChange}
+                        updateFunc={saveChanges}
+                        editFunc={editItem}
+                        index={i}
+                        removeFunc={removeItem}
+                        isEditable={isEditable}
+                        template={template}
+                        userSession={userSession}
+                      />
+                      {i < currentEducationDTO.items.length - 1 ? (
+                        <Divider />
+                      ) : (
+                        ''
+                      )}
+                    </div>
+                  );
+                })}
             </CardContentContainer>
           </CardOverview>
           <MyModal

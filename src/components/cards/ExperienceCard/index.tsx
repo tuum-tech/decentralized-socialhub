@@ -4,7 +4,7 @@ import { Guid } from 'guid-typescript';
 
 import ExperienceItem from './Item';
 
-import ExperienceCardEdit from './Edit';
+import ExperienceCardEdit, { pattern } from './Edit';
 import {
   CardOverview,
   LinkStyleSpan,
@@ -100,6 +100,9 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
       (!item.end && !item.still)
     )
       return false;
+
+    if (!pattern.test(item.title)) return false;
+    if (!pattern.test(item.institution)) return false;
     return true;
   };
 
@@ -194,24 +197,28 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
           </IonGrid>
         </CardHeaderContent>
         <CardContentContainer>
-          {currentExperienceDTO.items.map((x, i) => {
-            return (
-              <div key={i}>
-                <ExperienceItem
-                  experienceItem={x}
-                  handleChange={handleChange}
-                  updateFunc={saveChanges}
-                  editFunc={editItem}
-                  index={i}
-                  removeFunc={removeItem}
-                  isEditable={isEditable}
-                  template={template}
-                  userSession={userSession}
-                />
-                {i < currentExperienceDTO.items.length - 1 ? <Divider /> : ''}
-              </div>
-            );
-          })}
+          {currentExperienceDTO.items.sort(
+            (a: any, b: any) =>
+              new Date(b.start).getTime() - new Date(a.start).getTime()
+          ) &&
+            currentExperienceDTO.items.map((x, i) => {
+              return (
+                <div key={i}>
+                  <ExperienceItem
+                    experienceItem={x}
+                    handleChange={handleChange}
+                    updateFunc={saveChanges}
+                    editFunc={editItem}
+                    index={i}
+                    removeFunc={removeItem}
+                    isEditable={isEditable}
+                    template={template}
+                    userSession={userSession}
+                  />
+                  {i < currentExperienceDTO.items.length - 1 ? <Divider /> : ''}
+                </div>
+              );
+            })}
         </CardContentContainer>
       </CardOverview>
       <MyModal

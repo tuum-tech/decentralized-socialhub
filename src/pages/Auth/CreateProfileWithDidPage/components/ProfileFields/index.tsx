@@ -186,7 +186,7 @@ const UseDetailsForm: React.FC<Props> = ({
       <OnBoardLayoutRight>
         <OnBoardLayoutRightContent>
           <AvatarArea>
-            <Avatar did={userInfo ? userInfo.did : ''} fromDid={true} />
+            <Avatar did={userInfo ? userInfo.did : ''} />
           </AvatarArea>
 
           {isCreate && (
