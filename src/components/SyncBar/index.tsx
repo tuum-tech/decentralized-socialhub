@@ -35,7 +35,6 @@ const SyncBar: React.FC<SyncBarProps> = ({ session }: SyncBarProps) => {
   const verifyDifferences = useCallback(async () => {
     if (session && session.did !== '' && session.tutorialStep === 4) {
       let hasDiff = await SyncService.HasDifferences(session);
-      console.log('Has differences', hasDiff);
       setHasDifferences(hasDiff);
     }
   }, [session]);
@@ -44,7 +43,7 @@ const SyncBar: React.FC<SyncBarProps> = ({ session }: SyncBarProps) => {
     const timer = setTimeout(async () => {
       await verifyDifferences();
       setTimerForVerifyDifferences();
-    }, 1000 * 10);
+    }, 1000 * 60 * 10); //ten minutes
     return () => clearTimeout(timer);
   }, [verifyDifferences]);
 

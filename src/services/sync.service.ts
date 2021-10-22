@@ -53,8 +53,9 @@ export class SyncService {
     sessionItem: ISessionItem
   ): Promise<Map<string, VerifiableCredential>> {
     let didService = await DidService.getInstance();
-    let recentDocument = await didService.getPublishedDocument(
-      new DID(sessionItem.did)
+    let recentDocument = await didService.getDidDocument(
+      new DID(sessionItem.did),
+      true
     );
     let response = new Map<string, VerifiableCredential>();
 
@@ -102,24 +103,31 @@ export class SyncService {
       };
 
       if (
-        syncItem.BlockchainCredential !== undefined &&
-        syncItem.VaultCredential !== undefined &&
-        syncItem.BlockchainCredential.getSubject().getProperties()[
-          field.toLowerCase()
-        ] !==
-          syncItem.VaultCredential.getSubject().getProperties()[
+        (syncItem.BlockchainCredential === undefined &&
+          syncItem.VaultCredential === undefined) ||
+        (syncItem.BlockchainCredential !== undefined &&
+          syncItem.VaultCredential !== undefined &&
+          syncItem.BlockchainCredential.getSubject().getProperties()[
             field.toLowerCase()
-          ]
+          ] ===
+            syncItem.VaultCredential.getSubject().getProperties()[
+              field.toLowerCase()
+            ])
       )
-        response.push(syncItem);
+        return;
 
       if (
         (syncItem.BlockchainCredential === undefined &&
           syncItem.VaultCredential !== undefined) ||
         (syncItem.BlockchainCredential !== undefined &&
           syncItem.VaultCredential === undefined)
-      )
-        response.push(syncItem);
+      ) {
+        if (syncItem.BlockchainCredential == undefined)
+          syncItem.State = SyncState.Vault;
+        if (syncItem.VaultCredential == undefined)
+          syncItem.State = SyncState.Blockchain;
+      }
+      response.push(syncItem);
     });
 
     return response;
@@ -139,8 +147,13 @@ export class SyncService {
     sessionItem: ISessionItem,
     differences: Array<ISyncItem>
   ): Promise<ISessionItem> {
-    let toVault = differences.filter(s => s.State === SyncState.Blockchain);
-    let toBlockchain = differences.filter(s => s.State === SyncState.Vault);
+    let toVault = differences.filter(
+      s =>
+        s.State === SyncState.Blockchain && s.BlockchainCredential !== undefined
+    );
+    let toBlockchain = differences.filter(
+      s => s.State === SyncState.Vault && s.VaultCredential !== undefined
+    );
 
     await this.UpdateDidDocument(sessionItem, toBlockchain);
     sessionItem = await this.UpdateVault(sessionItem, toVault);
@@ -152,6 +165,7 @@ export class SyncService {
     sessionItem: ISessionItem,
     differences: Array<ISyncItem>
   ): Promise<void> {
+    console.log('update did document', differences);
     if (differences.length <= 0) return;
 
     let vcs = differences.map(value => value.VaultCredential!);
@@ -182,6 +196,8 @@ export class SyncService {
     }
 
     await didService.storeDocument(updatedDidDocument);
+
+    console.log('diddocument stored', updatedDidDocument);
   }
 
   private static async UpdateVault(

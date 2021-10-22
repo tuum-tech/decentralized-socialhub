@@ -60,7 +60,7 @@ const SyncPage: React.FC<InferMappedProps> = ({
       session: await SyncService.UpdateDifferences(props.session, syncItems)
     });
 
-    //window.location.href = '/manager'
+    window.location.href = '/manager';
   };
 
   useEffect(() => {
