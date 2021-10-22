@@ -560,9 +560,30 @@ export class UserService {
     return newSessionItem;
   }
 
+  private async isHiveVersionValid(
+    sessionItem: ISessionItem
+  ): Promise<boolean> {
+    if (sessionItem.hiveHost === undefined || sessionItem.hiveHost.length <= 0)
+      return false;
+
+    let hiveVersion = await HiveService.getHiveVersion(sessionItem.hiveHost);
+    let isHiveValid = await HiveService.isHiveVersionSupported(hiveVersion);
+    if (!isHiveValid) {
+      alertError(
+        null,
+        `Hive version ${hiveVersion} not supported. The minimal supported version is ${process.env.REACT_APP_HIVE_MIN_VERSION} and maximun is ${process.env.REACT_APP_HIVE_MAX_VERSION}`
+      );
+      return false;
+    }
+    return true;
+  }
+
   public async UnLockWithDIDAndPwd(did: string, storePassword: string) {
     let instance = this.unlockUser(UserService.key(did), storePassword);
     if (!instance) return null;
+    let isHiveVersionValid = await this.isHiveVersionValid(instance);
+    if (!isHiveVersionValid) return null;
+
     const res = await this.SearchUserWithDID(did);
 
     if (!res) {
