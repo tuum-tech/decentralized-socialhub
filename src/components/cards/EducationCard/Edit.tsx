@@ -11,6 +11,8 @@ import styled from 'styled-components';
 import SmallTextInput from '../../../elements/inputs/SmallTextInput';
 import { MODE, MyGrid, MyTextarea } from '../common';
 
+export const pattern = new RegExp('^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$');
+
 interface EducationItemProps {
   educationItem: EducationItem;
   handleChange: any;
@@ -30,9 +32,7 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({
   return (
     <MyGrid>
       <IonRow>
-        <IonCardTitle>
-          {mode === MODE.EDIT ? 'Edit education' : 'Add new education'}
-        </IonCardTitle>
+        <IonCardTitle>Education</IonCardTitle>
       </IonRow>
       <IonRow class="ion-justify-content-start">
         <IonCol size="5">
@@ -40,7 +40,10 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({
             label="Program / Degree"
             placeholder="e.g. Blockchain developer"
             name="program"
-            hasError={mode === MODE.ERROR && !educationItem.program}
+            hasError={
+              (mode === MODE.ERROR && !educationItem.program) ||
+              !pattern.test(educationItem.program)
+            }
             value={educationItem.program}
             onChange={handleChange}
           />
@@ -52,7 +55,10 @@ const EducationCardEdit: React.FC<EducationItemProps> = ({
             label="University / Institution name"
             placeholder="e.g. Harvard, MIT, ..."
             name="institution"
-            hasError={mode === MODE.ERROR && !educationItem.institution}
+            hasError={
+              (mode === MODE.ERROR && !educationItem.institution) ||
+              !pattern.test(educationItem.institution)
+            }
             value={educationItem.institution}
             onChange={handleChange}
           />

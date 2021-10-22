@@ -14,7 +14,7 @@ import {
   CardHeaderContent,
   CardContentContainer
 } from '../common';
-import EducationCardEdit from './Edit';
+import EducationCardEdit, { pattern } from './Edit';
 import ProgressBar from 'src/elements/ProgressBar';
 
 interface IEducationProps {
@@ -97,6 +97,9 @@ const EducationCard: React.FC<IEducationProps> = ({
       (!item.end && !item.still)
     )
       return false;
+
+    if (!pattern.test(item.program)) return false;
+    if (!pattern.test(item.institution)) return false;
     return true;
   };
 

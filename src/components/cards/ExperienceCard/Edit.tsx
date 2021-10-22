@@ -7,11 +7,12 @@ import {
   IonLabel,
   IonRow
 } from '@ionic/react';
+import styled from 'styled-components';
 
 import SmallTextInput from '../../../elements/inputs/SmallTextInput';
-import styled from 'styled-components';
 import { MODE, MyTextarea } from '../common';
 
+export const pattern = new RegExp('^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$');
 interface Props {
   experienceItem: ExperienceItem;
   handleChange: any;
@@ -34,9 +35,7 @@ const ExperienceCardEdit: React.FC<Props> = ({
   return (
     <MyGrid>
       <IonRow>
-        <IonCardTitle>
-          {mode === MODE.EDIT ? 'Edit experience' : 'Add new experience'}
-        </IonCardTitle>
+        <IonCardTitle>Experience</IonCardTitle>
       </IonRow>
       <IonRow class="ion-justify-content-start">
         <IonCol size="5">
@@ -44,7 +43,10 @@ const ExperienceCardEdit: React.FC<Props> = ({
             placeholder="e.g. Blockchain developer"
             label="Title"
             name="title"
-            hasError={mode === MODE.ERROR && !experienceItem.title}
+            hasError={
+              (mode === MODE.ERROR && !experienceItem.title) ||
+              !pattern.test(experienceItem.title)
+            }
             value={experienceItem.title}
             onChange={handleChange}
           />
@@ -56,7 +58,10 @@ const ExperienceCardEdit: React.FC<Props> = ({
             placeholder="Google, Elastos Foundation, ..."
             label="Organization Name"
             name="institution"
-            hasError={mode === MODE.ERROR && !experienceItem.institution}
+            hasError={
+              (mode === MODE.ERROR && !experienceItem.institution) ||
+              !pattern.test(experienceItem.institution)
+            }
             value={experienceItem.institution}
             onChange={handleChange}
           />
