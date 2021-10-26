@@ -44,7 +44,7 @@ const Banner = styled.div<{ bgImg: string }>`
   background-image: url(${props => props.bgImg});
   background-repeat: no-repeat, no-repeat;
   background-position: 0 0;
-  background-size: cover;
+  background-size: 100% 100%;
 `;
 
 const Header = styled(IonRow)`
@@ -83,6 +83,9 @@ const Default: React.FC<IProps> = ({
   return (
     <HeaderContainer className="ion-no-padding">
       <Banner bgImg={getCoverPhoto(publicUser)} />
+      {/* <Banner>
+        <img src={getCoverPhoto(publicUser)} />
+      </Banner> */}
       <Header class="ion-justify-content-center ion-align-items-center">
         <Avatar did={publicUser.did} />
         <Info>
