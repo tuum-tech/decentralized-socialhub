@@ -11,7 +11,9 @@ import {
   Program,
   TreeDotsButton
 } from '../common';
-import Image from '../../../elements/Image';
+
+import darkDefaultExpImg from '../../../assets/default/default-exp_dark.png';
+import defaultExpImg from '../../../assets/default/default-exp.png';
 import styleWidget from '../WidgetCards.module.scss';
 
 const EditableContent = styled(IonCol)`
@@ -50,16 +52,21 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
     removeFunc(index);
   };
 
+  const experienceItemLogo = () => {
+    if (experienceItem.logo) {
+      return experienceItem.logo;
+    } else if (template === 'gamer' || template === 'crypto') {
+      return darkDefaultExpImg;
+    }
+    return defaultExpImg;
+  };
+
   return (
     <>
       <IonGrid className="ion-no-padding">
         <IonRow className="ion-justify-content-between ion-no-padding">
           <IonCol size="2" className="ion-no-padding">
-            <Image
-              src={experienceItem.logo}
-              alt="company logo"
-              maxWidth="100px"
-            />
+            <img src={experienceItemLogo()} alt="company logo" width="100px" />
           </IonCol>
           <EditableContent size="10">
             <IonGrid className="ion-no-padding">
