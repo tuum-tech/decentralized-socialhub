@@ -7,9 +7,9 @@ const FollowContainer = styled.div`
   align-items: center;
 `;
 const Wrapper = styled.div`
+  margin-right: 5px;
   & img {
     border-radius: 50% !important;
-    margin-right: 10px;
   }
 `;
 interface Props {
