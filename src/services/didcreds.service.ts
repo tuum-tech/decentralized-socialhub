@@ -118,16 +118,12 @@ export class DidcredsService {
       name: 'add_verifiablecredential',
       params: {
         id: vc.getId().toString(),
-        vc: vc.toString()
+        vc: vc.toJSON()
       }
     });
 
     console.log(hiveResponse);
   }
-
-  // static async updateCredentialToVault(sessionItem: ISessionItem, vc: VerifiableCredential) :Promise<void>{
-
-  // }
 
   static async removeCredentialToVault(
     sessionItem: ISessionItem,

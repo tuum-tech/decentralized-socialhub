@@ -27,6 +27,18 @@ export interface ISyncItem {
 }
 
 export class SyncService {
+  static fields = [
+    'Name',
+    'Email',
+    'Avatar',
+    'Google',
+    'Facebook',
+    'Twitter',
+    'Linkedin',
+    'Discord',
+    'Github'
+  ];
+
   private static async GetVerifiableCredentialsFromVault(
     sessionItem: ISessionItem
   ): Promise<Map<string, VerifiableCredential>> {
@@ -53,10 +65,10 @@ export class SyncService {
     sessionItem: ISessionItem
   ): Promise<Map<string, VerifiableCredential>> {
     let didService = await DidService.getInstance();
-    let recentDocument = await didService.getDidDocument(
-      new DID(sessionItem.did),
-      true
+    let recentDocument = await didService.getStoredDocument(
+      new DID(sessionItem.did)
     );
+
     let response = new Map<string, VerifiableCredential>();
 
     recentDocument.credentials!.forEach(vc => {
@@ -71,27 +83,39 @@ export class SyncService {
     return differences.length > 0;
   }
 
+  static async TempInitializeSignedUsers(sessionItem: ISessionItem) {
+    if (
+      !sessionItem ||
+      !sessionItem.onBoardingCompleted ||
+      !sessionItem.tutorialStep ||
+      sessionItem.tutorialStep < 4
+    )
+      return;
+
+    let vaultVcs = await this.GetVerifiableCredentialsFromVault(sessionItem);
+
+    if (vaultVcs.has(sessionItem.did + '#name')) return;
+
+    let documentVcs = await this.GetVerifiableCredentialsFromRecentDocument(
+      sessionItem
+    );
+
+    documentVcs.forEach(async item => {
+      console.log('Saving to vault', item);
+      await DidcredsService.addOrUpdateCredentialToVault(sessionItem, item);
+    });
+  }
+
   static async GetSyncDifferences(
     sessionItem: ISessionItem
   ): Promise<Array<ISyncItem>> {
-    let fields = [
-      'Name',
-      'Email',
-      'Avatar',
-      'Google',
-      'Facebook',
-      'Twitter',
-      'Linkedin',
-      'Discord',
-      'Github'
-    ];
     let vaultVcs = await this.GetVerifiableCredentialsFromVault(sessionItem);
     let documentVcs = await this.GetVerifiableCredentialsFromRecentDocument(
       sessionItem
     );
     let response = new Array<ISyncItem>();
 
-    fields.forEach(field => {
+    this.fields.forEach(field => {
       let key = sessionItem.did + '#' + field.toLowerCase();
       var syncItem: ISyncItem = {
         Label: field,
@@ -196,8 +220,7 @@ export class SyncService {
     }
 
     await didService.storeDocument(updatedDidDocument);
-
-    console.log('diddocument stored', updatedDidDocument);
+    await didService.publishDocument(updatedDidDocument);
   }
 
   private static async UpdateVault(
