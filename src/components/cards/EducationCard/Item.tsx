@@ -11,6 +11,8 @@ import {
   TreeDotsButton
 } from '../common';
 import Image from '../../../elements/Image';
+import darkDefaultEduImg from '../../../assets/default/default-edu_dark.png';
+import defaultEduImg from '../../../assets/default/default-edu.png';
 import styleWidget from '../WidgetCards.module.scss';
 import VerificatioBadge from '../../VerificatioBadge';
 
@@ -50,16 +52,25 @@ const EducationItem: React.FC<EducationItemProps> = ({
     removeFunc(index);
   };
 
+  const experienceItemLogo = () => {
+    if (educationItem.logo) {
+      return educationItem.logo;
+    } else if (template === 'gamer' || template === 'crypto') {
+      return darkDefaultEduImg;
+    }
+    return defaultEduImg;
+  };
+
   return (
     <>
       <IonGrid className="ion-no-padding">
         <IonRow className="ion-justify-content-between ion-no-padding">
           <IonCol size="2" className="ion-no-padding">
             <div>
-              <Image
-                src={educationItem.logo}
+              <img
+                src={experienceItemLogo()}
                 alt="university logo"
-                maxWidth="100px"
+                width="100px"
               />
             </div>
           </IonCol>
