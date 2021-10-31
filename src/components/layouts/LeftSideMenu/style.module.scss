@@ -1,7 +1,12 @@
 .navbar {
+  border-right: 1px solid #edf2f7;
+  border-bottom: 1px solid #edf2f7;
+  background-color: white;
+  min-height: 700px;
   width: 100%;
   line-height: 50px;
   text-align: right;
+  position: relative;
 
   .item-active {
     // border-left: 3px solid var(--theme-primary-blue);

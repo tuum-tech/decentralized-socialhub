@@ -16,9 +16,7 @@
 
   .left-panel {
     background-color: #f7fafc;
-    // border-top-left-radius: 5em;
-    // border-bottom-left-radius: 5em;
-    border-right: 1px solid #edf2f7;
+
     margin: 0;
     padding: 0;
   }
@@ -62,7 +60,7 @@
       color: #fff !important;
       opacity: 1;
       line-height: 50px;
-      font: "normal normal 600 14px/34px Open Sans";
+      font: 'normal normal 600 14px/34px Open Sans';
     }
   }
 }

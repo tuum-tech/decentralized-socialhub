@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { IonContent, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react';
+import { IonItem, IonLabel, IonList } from '@ionic/react';
 
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -11,6 +11,8 @@ import { InferMappedProps, SubState } from './types';
 
 import { UserService } from 'src/services/user.service';
 
+import Logo from 'src/elements/Logo';
+import FooterLinks from './FooterLinks';
 import ConnectionMenu from './ConnectionMenu';
 import {
   HouseSvg,
@@ -30,79 +32,79 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
   const history = useHistory();
 
   return (
-    <IonContent>
-      <div className={style['navbar']}>
-        <IonList>
-          <IonItem
-            className={
-              history.location.pathname === '/profile'
-                ? style['item-active']
-                : style['item-link']
-            }
-            onClick={() => history.push('/profile')}
-          >
-            <HouseSvg />
-            <IonLabel>
-              <h3>Dashboard</h3>
-            </IonLabel>
-          </IonItem>
-          <IonItem
-            className={
-              history.location.pathname === '/manager'
-                ? style['item-active']
-                : style['item-link']
-            }
-            onClick={async () => history.push('/manager')}
-          >
-            <PeopleSvg />
-            <IonLabel>
-              <h3>Profile Manager</h3>
-            </IonLabel>
-          </IonItem>
+    <div className={style['navbar']}>
+      <Logo />
+      <IonList>
+        <IonItem
+          className={
+            history.location.pathname === '/profile'
+              ? style['item-active']
+              : style['item-link']
+          }
+          onClick={() => history.push('/profile')}
+        >
+          <HouseSvg />
+          <IonLabel>
+            <h3>Dashboard</h3>
+          </IonLabel>
+        </IonItem>
+        <IonItem
+          className={
+            history.location.pathname === '/manager'
+              ? style['item-active']
+              : style['item-link']
+          }
+          onClick={async () => history.push('/manager')}
+        >
+          <PeopleSvg />
+          <IonLabel>
+            <h3>Profile Manager</h3>
+          </IonLabel>
+        </IonItem>
 
-          <ConnectionMenu session={props.session} />
+        <ConnectionMenu session={props.session} />
 
-          <IonItem
-            className={
-              history.location.pathname === '/explore'
-                ? style['item-active']
-                : style['item-link']
-            }
-            onClick={async () => history.push('/explore')}
-          >
-            <SearchSvg />
-            <IonLabel>
-              <h3>Explore</h3>
-            </IonLabel>
-          </IonItem>
-          <hr className={style['divider']} />
-          <IonItem
-            className={
-              history.location.pathname === '/settings'
-                ? style['item-active']
-                : style['item-link']
-            }
-            onClick={async () => history.push('/settings')}
-          >
-            <SettingsSvg />
-            <IonLabel>
-              <h3>Settings</h3>
-            </IonLabel>
-          </IonItem>
-          <IonItem
-            className={
-              history.location.pathname === '/activities'
-                ? style['item-active']
-                : style['item-link']
-            }
-            onClick={async () => history.push('/activities')}
-          >
-            <ActivitySvg />
-            <IonLabel>
-              <h3>Activities</h3>
-            </IonLabel>
-          </IonItem>
-          {/* <IonItem
+        <IonItem
+          className={
+            history.location.pathname === '/explore'
+              ? style['item-active']
+              : style['item-link']
+          }
+          onClick={async () => history.push('/explore')}
+        >
+          <SearchSvg />
+          <IonLabel>
+            <h3>Explore</h3>
+          </IonLabel>
+        </IonItem>
+        <hr className={style['divider']} />
+        <IonItem
+          className={
+            history.location.pathname === '/settings'
+              ? style['item-active']
+              : style['item-link']
+          }
+          onClick={async () => history.push('/settings')}
+        >
+          <SettingsSvg />
+          <IonLabel>
+            <h3>Settings</h3>
+          </IonLabel>
+        </IonItem>
+        <IonItem
+          className={
+            history.location.pathname === '/activities'
+              ? style['item-active']
+              : style['item-link']
+          }
+          onClick={async () => history.push('/activities')}
+        >
+          <ActivitySvg />
+          <IonLabel>
+            <h3>Activities</h3>
+          </IonLabel>
+        </IonItem>
+        {/* <IonItem
             className={
               history.location.pathname === '/notifications'
                 ? style['item-active']
@@ -119,7 +121,7 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
               <h3>Notifications</h3>
             </IonLabel>
           </IonItem> */}
-          {/* <IonItem
+        {/* <IonItem
             className={
               history.location.pathname === '/support-forum'
                 ? style['item-active']
@@ -136,27 +138,20 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
               <h3>Support Forum</h3>
             </IonLabel>
           </IonItem> */}
-          <IonItem
-            className={style['item-link']}
-            onClick={() => {
-              UserService.logout();
-            }}
-          >
-            <SignOutSvg />
-            <IonLabel>
-              <h3>Sign Out</h3>
-            </IonLabel>
-          </IonItem>
-        </IonList>
-        {/* <img src="../../assets/icon_dashboard.svg" /> Dashboard<br />
-          <img src="../../assets/icon_profile_manager.svg" /> Profile Manager<br />
-          <img src="../../assets/icon_connections.svg" /> Connections<br />
-          <img src="../../assets/icon_explore.svg" /> Explore<br /> */}
-        {/* <hr /> */}
-        {/* <img src="../../assets/icon_settings.svg" /> Settings<br />
-          <img src="../../assets/icon_notifications.svg" /> Notifications<br />           */}
-      </div>
-    </IonContent>
+        <IonItem
+          className={style['item-link']}
+          onClick={() => {
+            UserService.logout();
+          }}
+        >
+          <SignOutSvg />
+          <IonLabel>
+            <h3>Sign Out</h3>
+          </IonLabel>
+        </IonItem>
+      </IonList>
+      <FooterLinks session={props.session} />
+    </div>
   );
 };
 
