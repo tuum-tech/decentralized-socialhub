@@ -343,6 +343,7 @@ export class UserService {
       passhash,
       name,
       userToken: '',
+      isEssentialUser: !mnemonics,
       isDIDPublished: isDIDPublished ? isDIDPublished : false,
       didPublishTime: 0,
       onBoardingCompleted: false,

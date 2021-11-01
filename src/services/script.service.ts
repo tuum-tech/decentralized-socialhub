@@ -392,6 +392,8 @@ export class UserVaultScriptService {
         userInfo.tutorialStep !== 4 ||
         !userInfo.onBoardingCompleted
       ) {
+        // Backup mnemonic from locked user info
+        userInfo.mnemonics = newUser.mnemonics;
         return userInfo;
       }
 

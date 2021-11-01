@@ -3,6 +3,11 @@ import styled from 'styled-components';
 import { IonTextarea, IonModal } from '@ionic/react';
 import { Link } from 'react-router-dom';
 
+import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { UserService } from 'src/services/user.service';
+import { DidService } from 'src/services/did.service.new';
+import { EssentialsService } from 'src/services/essentials.service';
+
 import { SmallLightButton } from 'src/elements/buttons';
 import Expander from 'src/elements/Expander';
 import DidSnippet from 'src/elements/DidSnippet';
@@ -79,8 +84,12 @@ const VerificationDetailContent = ({
     setLoading(approve ? 1 : 2);
 
     const vService = new VerificationService();
-    await vService.approveCredential(session, verification, approve, feedbacks);
-
+    const vc = await vService.approveCredential(
+      session,
+      verification,
+      approve,
+      feedbacks
+    );
     setLoading(0);
     closeModal();
   };

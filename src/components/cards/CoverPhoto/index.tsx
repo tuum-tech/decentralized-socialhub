@@ -14,7 +14,7 @@ import { SmallLightButton } from 'src/elements/buttons';
 
 import { CardHeaderContent, CardContentContainer } from '../common';
 
-import defaultCoverPhoto from '../../../assets/cover/default.png';
+import defaultCoverPhoto from '../../../assets/default/default-cover.png';
 import soccerCoverPhoto from '../../../assets/cover/soccer.png';
 import educationCoverPhoto from '../../../assets/cover/edu.png';
 import gamerCoverPhoto from '../../../assets/cover/gamer.png';
