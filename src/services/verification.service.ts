@@ -11,6 +11,7 @@ import { SearchService } from './search.service';
 import { UserService } from './user.service';
 import { ProfileService } from './profile.service';
 import { getItemsFromData } from 'src/utils/script';
+import { DID as ConnDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
 
 export enum VerificationStatus {
   requested = 'requested',
@@ -297,49 +298,59 @@ export class VerificationService {
     v: VerificationRequest,
     approve = true,
     feedbacks = ''
-  ) {
+  ): Promise<any> {
+    let vc: any = null;
+    const essentialUser = !session.mnemonics;
     const requester_didUrl = DID.from(v.from_did);
-    if (!requester_didUrl) return;
+    if (!requester_didUrl) return vc;
 
-    let vc: any = {};
     if (approve) {
-      const signerDidDoc: DIDDocument = await (
-        await DidService.getInstance()
-      ).getStoredDocument(new DID(v.to_did));
-
-      let issuer = new Issuer(
-        signerDidDoc,
-        DIDURL.from('#primary', signerDidDoc.getSubject()) as DIDURL
-      );
-      let vcBuilder = new VerifiableCredential.Builder(
-        issuer,
-        (await requester_didUrl.resolve()).getSubject() // requester did
-      );
-
       let content = this.get_content_from_verification_data(v.records);
       const { vcType, DIDstring } = this.generate_DID_id_from_verification(
         v.category,
         v.from_did
       );
-
-      vc = await vcBuilder
-        .expirationDate(
-          new Date(
-            new Date().getFullYear() + 5,
-            new Date().getMonth(),
-            new Date().getDate()
+      if (!essentialUser) {
+        const signerDidDoc: DIDDocument = await (
+          await DidService.getInstance()
+        ).getStoredDocument(new DID(v.to_did));
+        let issuer = new Issuer(
+          signerDidDoc,
+          DIDURL.from('#primary', signerDidDoc.getSubject()) as DIDURL
+        );
+        let vcBuilder = new VerifiableCredential.Builder(
+          issuer,
+          (await requester_didUrl.resolve()).getSubject() // requester did
+        );
+        vc = await vcBuilder
+          .expirationDate(
+            new Date(
+              new Date().getFullYear() + 5,
+              new Date().getMonth(),
+              new Date().getDate()
+            )
           )
-        )
-        .type(vcType)
-        .property(vcType, content)
-        .id(DIDURL.from(DIDstring) as DIDURL)
-        .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+          .type(vcType)
+          .property(vcType, content)
+          .id(DIDURL.from(DIDstring) as DIDURL)
+          .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+      } else {
+        let didAccess = new ConnDID.DIDAccess();
+        let property: any = {};
+        property[vcType] = content;
+        vc = await didAccess.issueCredential(
+          v.from_did,
+          [vcType],
+          property,
+          vcType
+        );
+      }
     }
 
     await TuumTechScriptService.updateVerificationRequest(
       approve ? 'approved' : 'rejected',
       feedbacks,
-      approve ? vc.toJSON() : '',
+      !approve || !vc ? '' : vc.toJSON(),
       v.guid
     );
     let userService = new UserService(await DidService.getInstance());
@@ -362,6 +373,7 @@ export class VerificationService {
       },
       session
     );
+    return vc;
   }
 
   public async storeNewCredential(v: VerificationRequest) {

@@ -3,6 +3,11 @@ import styled from 'styled-components';
 import { IonTextarea, IonModal } from '@ionic/react';
 import { Link } from 'react-router-dom';
 
+import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { UserService } from 'src/services/user.service';
+import { DidService } from 'src/services/did.service.new';
+import { EssentialsService } from 'src/services/essentials.service';
+
 import { SmallLightButton } from 'src/elements/buttons';
 import Expander from 'src/elements/Expander';
 import DidSnippet from 'src/elements/DidSnippet';
@@ -79,8 +84,39 @@ const VerificationDetailContent = ({
     setLoading(approve ? 1 : 2);
 
     const vService = new VerificationService();
-    await vService.approveCredential(session, verification, approve, feedbacks);
-
+    const vc = await vService.approveCredential(
+      session,
+      verification,
+      approve,
+      feedbacks
+    );
+    if (vc) {
+      let didService = await DidService.getInstance();
+      let userService = new UserService(didService);
+      let reqSenderDID = verification.from_did;
+      let reqSender = await userService.SearchUserWithDID(reqSenderDID);
+      let didDocumentWithVRC: DIDDocument;
+      let didDocument: DIDDocument = await didService.getStoredDocument(
+        new DID(reqSenderDID)
+      );
+      if (reqSender.isEssentialUser) {
+        // let essentialsService = new EssentialsService(didService);
+        // await essentialsService.addVerifiableCredentialEssentials(vc);
+        // didDocumentWithVRC = await didService.getPublishedDocument(
+        //   new DID(reqSenderDID)
+        // );
+        didDocumentWithVRC = await didService.addVerifiableCredentialToEssentialsDIDDocument(
+          didDocument,
+          vc
+        );
+      } else {
+        didDocumentWithVRC = await didService.addVerifiableCredentialToDIDDocument(
+          didDocument,
+          vc
+        );
+      }
+      await didService.storeDocument(didDocumentWithVRC);
+    }
     setLoading(0);
     closeModal();
   };
