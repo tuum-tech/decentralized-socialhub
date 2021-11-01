@@ -150,7 +150,7 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
           </IonLabel>
         </IonItem>
       </IonList>
-      <FooterLinks session={props.session} />
+      {/* <FooterLinks session={props.session} /> */}
     </div>
   );
 };
