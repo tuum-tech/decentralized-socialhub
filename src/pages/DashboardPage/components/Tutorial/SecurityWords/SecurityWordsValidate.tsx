@@ -92,7 +92,9 @@ const SecurityWordsValidate: React.FC<Props> = ({
               let val = e.currentTarget.value! as string;
               if (val.split(' ').length === 12) {
                 let words = val.split(' ');
-                // setMnemonic(words);
+                itemEls.current.map((el, index) => {
+                  el.value = words[index];
+                });
               } else {
                 let value = val.replace(/\s+/g, '');
                 let key = e.key;

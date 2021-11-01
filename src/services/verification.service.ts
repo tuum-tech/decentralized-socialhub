@@ -429,9 +429,10 @@ export class VerificationService {
       const key = Object.keys(subjectProperties)[0];
 
       let issuerDid = '';
-      if (key.toLowerCase() === type.toLowerCase()) {
-        issuerDid = JSON.parse(JSON.stringify(vcs[i].issuer));
-      } else if (key.toLowerCase().startsWith(type.toLowerCase())) {
+      if (
+        key.toLowerCase() !== type.toLowerCase() &&
+        key.toLowerCase().startsWith(type.toLowerCase())
+      ) {
         const credential = Object.values(subjectProperties)[0] as any;
         if (
           x.institution === credential.institution &&

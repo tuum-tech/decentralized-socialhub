@@ -90,33 +90,6 @@ const VerificationDetailContent = ({
       approve,
       feedbacks
     );
-    if (vc) {
-      let didService = await DidService.getInstance();
-      let userService = new UserService(didService);
-      let reqSenderDID = verification.from_did;
-      let reqSender = await userService.SearchUserWithDID(reqSenderDID);
-      let didDocumentWithVRC: DIDDocument;
-      let didDocument: DIDDocument = await didService.getStoredDocument(
-        new DID(reqSenderDID)
-      );
-      if (reqSender.isEssentialUser) {
-        // let essentialsService = new EssentialsService(didService);
-        // await essentialsService.addVerifiableCredentialEssentials(vc);
-        // didDocumentWithVRC = await didService.getPublishedDocument(
-        //   new DID(reqSenderDID)
-        // );
-        didDocumentWithVRC = await didService.addVerifiableCredentialToEssentialsDIDDocument(
-          didDocument,
-          vc
-        );
-      } else {
-        didDocumentWithVRC = await didService.addVerifiableCredentialToDIDDocument(
-          didDocument,
-          vc
-        );
-      }
-      await didService.storeDocument(didDocumentWithVRC);
-    }
     setLoading(0);
     closeModal();
   };
