@@ -22,7 +22,6 @@ import { setSession } from 'src/store/users/actions';
 import style from './style.module.scss';
 import { ExporeTime } from './constants';
 
-import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 
 import { FollowService } from 'src/services/follow.service';
@@ -330,7 +329,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
           <IonGrid className={style['profilepagegrid']}>
             <IonRow className={style['profilecontent']}>
               <IonCol size="2" className={style['left-panel']}>
-                <Logo />
                 <LeftSideMenu />
               </IonCol>
               <IonCol size="10" className={style['right-panel']}>

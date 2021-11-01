@@ -13,7 +13,6 @@ import { InferMappedProps, SubState } from './types';
 
 import style from './style.module.scss';
 
-import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import SettingsBody from './components/SettingsBody';
 
@@ -27,8 +26,6 @@ const SettingsPage: React.FC<InferMappedProps> = ({
         <IonGrid className={style['settingspagegrid']}>
           <IonRow className={style['settingscontent']}>
             <IonCol size="2" className={style['left-panel']}>
-              <Logo />
-
               <LeftSideMenu />
             </IonCol>
             <IonCol size="10" className={style['right-panel']}>

@@ -10,7 +10,6 @@ import { InferMappedProps } from './types';
 import { SubState } from 'src/store/users/types';
 
 import style from './style.module.scss';
-import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 
 import FollowersSearch from './components/FollowersSearch';
@@ -25,7 +24,6 @@ const MutualFollowersPage: React.FC<InferMappedProps> = ({
         <IonGrid className={style['profilepagegrid']}>
           <IonRow className={style['profilecontent']}>
             <IonCol size="2" className={style['left-panel']}>
-              <Logo />
               <LeftSideMenu />
             </IonCol>
             <IonCol size="10" className={style['right-panel']}>
