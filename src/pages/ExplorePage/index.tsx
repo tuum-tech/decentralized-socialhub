@@ -20,7 +20,6 @@ import { FollowService } from 'src/services/follow.service';
 import { FollowType, UserService } from 'src/services/user.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 
-import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 
 import ProfileComponent from 'src/components/profile/ProfileComponent';
@@ -159,7 +158,6 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
       <IonGrid className={style['profilepagegrid']}>
         <IonRow className={style['profilecontent']}>
           <IonCol size="2" className={style['left-panel']}>
-            <Logo />
             <LeftSideMenu />
           </IonCol>
           <IonCol size="10" className={style['right-panel']}>

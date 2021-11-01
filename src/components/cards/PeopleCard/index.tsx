@@ -83,29 +83,25 @@ const PeopleCard: React.FC<Props> = ({
     } else {
       await ProfileService.unfollow(did, session);
     }
-    await loadFollowing();
-  };
 
-  const loadFollowing = useCallback(async () => {
-    try {
-      if (session && session.did !== '' && session.tutorialStep === 4) {
-        const response = (await ProfileService.getFollowings(
-          session.did
-        )) as IFollowingResponse;
-        setListFollowing(response.get_following);
-      }
-    } catch (e) {
-      // alertError(null, 'Could not load users that you follow');
-      setListFollowing({ items: [] });
-      return;
-    }
-  }, [session]);
+    const response = (await ProfileService.getFollowings(
+      session.did
+    )) as IFollowingResponse;
+    setListFollowing(response.get_following);
+    console.log('====>card', response.get_following);
+  };
 
   useEffect(() => {
     (async () => {
-      await loadFollowing();
+      if (!session.did || session.did === '' || session.tutorialStep !== 4)
+        return;
+
+      const response = (await ProfileService.getFollowings(
+        session.did
+      )) as IFollowingResponse;
+      setListFollowing(response.get_following);
     })();
-  }, [following, loadFollowing, session]);
+  }, [session]);
 
   useEffect(() => {
     (async () => {
