@@ -126,10 +126,7 @@ const SyncItemElement: React.FC<IProps> = ({
       <IonCol size="2">
         <SyncSelect
           value={syncItem.State.toString()}
-          disabled={
-            syncItem.BlockchainCredential === undefined ||
-            syncItem.VaultCredential === undefined
-          }
+          disabled={syncItem.BlockchainCredential === undefined}
           onChange={e => {
             updateItem(e.currentTarget.value);
           }}

@@ -287,7 +287,7 @@ export class DidService implements IDidService {
     didDocument.publish(
       process.env.REACT_APP_DID_STORE_PASSWORD as string,
       undefined,
-      undefined,
+      true,
       adapter
     );
   }
@@ -304,9 +304,10 @@ export class DidService implements IDidService {
       .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
   }
 
-  async addMultipleVerifiableCredentialsToDIDDocument(
+  async updateMultipleVerifiableCredentialsToDIDDocument(
     diddocument: DIDDocument,
-    vcs: VerifiableCredential[]
+    vcs: VerifiableCredential[],
+    toRemove: string[] | undefined = undefined
   ): Promise<DIDDocument> {
     let builder = DIDDocument.Builder.newFromDocument(diddocument);
     builder.edit();
@@ -316,6 +317,34 @@ export class DidService implements IDidService {
         builder.removeCredential(vc.getId());
       }
       builder.addCredential(vc);
+    });
+
+    if (toRemove && toRemove.length > 0) {
+      toRemove.forEach(value => {
+        let vcurlid = new DIDURL(value);
+        if (diddocument.credentials?.has(vcurlid)) {
+          builder.removeCredential(vcurlid);
+        }
+      });
+    }
+
+    return await builder.seal(
+      process.env.REACT_APP_DID_STORE_PASSWORD as string
+    );
+  }
+
+  async removeMultipleVerifiableCredentialsToDIDDocument(
+    diddocument: DIDDocument,
+    vcsId: string[]
+  ): Promise<DIDDocument> {
+    let builder = DIDDocument.Builder.newFromDocument(diddocument);
+    builder.edit();
+
+    vcsId.forEach(vc => {
+      let vcidurl = new DIDURL(vc);
+      if (diddocument.credentials?.has(vcidurl)) {
+        builder.removeCredential(vcidurl);
+      }
     });
 
     return await builder.seal(

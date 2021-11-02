@@ -25,4 +25,15 @@ export class EssentialsService {
 
     return response.length > 0;
   };
+
+  removeMultipleVerifiableCredentialsToEssentials = async (
+    vcs: string[]
+  ): Promise<boolean> => {
+    let cn = new CnDID.DIDAccess();
+    let response = await cn?.deleteCredentials(vcs, {
+      forceToPublishCredentials: true
+    });
+
+    return response.length > 0;
+  };
 }

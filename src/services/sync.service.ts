@@ -5,9 +5,11 @@ import {
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
 import session from 'redux-persist/lib/storage/session';
+import { AssistService } from './assist.service';
 
 import { DidService } from './did.service.new';
 import { DidcredsService } from './didcreds.service';
+import { DidDocumentService } from './diddocument.service';
 import { EssentialsService } from './essentials.service';
 import { HiveService } from './hive.service';
 import { TuumTechScriptService } from './script.service';
@@ -65,9 +67,11 @@ export class SyncService {
     sessionItem: ISessionItem
   ): Promise<Map<string, VerifiableCredential>> {
     let didService = await DidService.getInstance();
-    let recentDocument = await didService.getStoredDocument(
+    let recentDocument = await didService.getPublishedDocument(
       new DID(sessionItem.did)
     );
+
+    console.log('DID Published', recentDocument);
 
     let response = new Map<string, VerifiableCredential>();
 
@@ -79,6 +83,16 @@ export class SyncService {
   }
 
   static async HasDifferences(sessionItem: ISessionItem): Promise<boolean> {
+    if (
+      !sessionItem ||
+      !sessionItem.onBoardingCompleted ||
+      !sessionItem.tutorialStep ||
+      sessionItem.tutorialStep < 4
+    )
+      return false;
+
+    if (!AssistService.getPublishStatusTask(sessionItem.did)) return false;
+
     let differences = await this.GetSyncDifferences(sessionItem);
     return differences.length > 0;
   }
@@ -100,8 +114,12 @@ export class SyncService {
       sessionItem
     );
 
-    documentVcs.forEach(async item => {
-      console.log('Saving to vault', item);
+    let didService = await DidService.getInstance();
+    let recentDocument = await didService.getStoredDocument(
+      new DID(sessionItem.did)
+    );
+
+    recentDocument.credentials?.forEach(async item => {
       await DidcredsService.addOrUpdateCredentialToVault(sessionItem, item);
     });
   }
@@ -148,8 +166,6 @@ export class SyncService {
       ) {
         if (syncItem.BlockchainCredential == undefined)
           syncItem.State = SyncState.Vault;
-        if (syncItem.VaultCredential == undefined)
-          syncItem.State = SyncState.Blockchain;
       }
       response.push(syncItem);
     });
@@ -175,9 +191,7 @@ export class SyncService {
       s =>
         s.State === SyncState.Blockchain && s.BlockchainCredential !== undefined
     );
-    let toBlockchain = differences.filter(
-      s => s.State === SyncState.Vault && s.VaultCredential !== undefined
-    );
+    let toBlockchain = differences.filter(s => s.State === SyncState.Vault);
 
     await this.UpdateDidDocument(sessionItem, toBlockchain);
     sessionItem = await this.UpdateVault(sessionItem, toVault);
@@ -193,6 +207,14 @@ export class SyncService {
     if (differences.length <= 0) return;
 
     let vcs = differences.map(value => value.VaultCredential!);
+    let toRemoveFromBlockchain = differences
+      .filter(
+        value =>
+          value.BlockchainCredential !== undefined &&
+          value.VaultCredential === undefined
+      )
+      .map(m => m.BlockchainCredential!.getId().toString());
+
     let didService = await DidService.getInstance();
     let didDocument: DIDDocument = await didService.getStoredDocument(
       new DID(sessionItem.did)
@@ -209,13 +231,26 @@ export class SyncService {
         window.close();
         return;
       }
+
+      if (toRemoveFromBlockchain.length > 0) {
+        let isRemoved = await essentialsService.removeMultipleVerifiableCredentialsToEssentials(
+          toRemoveFromBlockchain
+        );
+
+        if (!isRemoved) {
+          window.close();
+          return;
+        }
+      }
+
       updatedDidDocument = await didService.getPublishedDocument(
         new DID(sessionItem.did)
       );
     } else {
-      updatedDidDocument = await didService.addMultipleVerifiableCredentialsToDIDDocument(
+      updatedDidDocument = await didService.updateMultipleVerifiableCredentialsToDIDDocument(
         didDocument,
-        vcs
+        vcs,
+        toRemoveFromBlockchain
       );
     }
 
