@@ -378,6 +378,7 @@ export class VerificationService {
 
   public async storeNewCredential(v: VerificationRequest) {
     const didService = await DidService.getInstance();
+    const userService = new UserService(didService);
     let didDocument: DIDDocument = await didService.getStoredDocument(
       new DID(v.from_did)
     );
@@ -395,12 +396,19 @@ export class VerificationService {
         .removeCredential(didUrl)
         .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
     }
-
     // add new credential
-    const builder = DIDDocument.Builder.newFromDocument(didDocument);
-    didDocument = await builder
-      .addCredential(VerifiableCredential.parse(v.credential))
-      .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+    const holder = await userService.SearchUserWithDID(v.from_did);
+    if (holder.isEssentialUser) {
+      didDocument = await didService.addVerifiableCredentialToEssentialsDIDDocument(
+        didDocument,
+        VerifiableCredential.parse(v.credential)
+      );
+    } else {
+      didDocument = await didService.addVerifiableCredentialToDIDDocument(
+        didDocument,
+        VerifiableCredential.parse(v.credential)
+      );
+    }
 
     await didService.storeDocument(didDocument);
 
