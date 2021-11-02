@@ -22,7 +22,6 @@ import { setSession } from 'src/store/users/actions';
 import style from './style.module.scss';
 import { ExporeTime } from './constants';
 
-import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 
 import { FollowService } from 'src/services/follow.service';
@@ -145,19 +144,26 @@ const ProfilePage: React.FC<InferMappedProps> = ({
   };
 
   const retriveProfile = async () => {
-    if (props.session && props.session.did !== '') {
-      setLoadingText('Please wait a moment...');
-      let profile: ProfileDTO = await ProfileService.getFullProfile(
-        props.session.did,
-        props.session
-      );
-      if (profile) {
-        profile.experienceDTO.isEnabled = true;
-        profile.educationDTO.isEnabled = true;
-        setfull_profile(profile);
-      }
-      setLoadingText('');
+    setLoadingText('Please wait a moment...');
+    let profile: ProfileDTO = await ProfileService.getFullProfile(
+      props.session.did,
+      props.session
+    );
+    if (profile) {
+      profile.experienceDTO.isEnabled = true;
+      profile.educationDTO.isEnabled = true;
+      setfull_profile(profile);
     }
+
+    const followingDids = await FollowService.getFollowingDids(
+      props.session.did
+    );
+    setFollowingDids(followingDids);
+
+    const followerDids = await FollowService.getFollowerDids(props.session.did);
+    setFollowerDids(followerDids);
+
+    setLoadingText('');
   };
 
   useEffect(() => {
@@ -168,16 +174,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
         props.session.tutorialStep === 4
       ) {
         await refreshDidDocument();
-
-        const followingDids = await FollowService.getFollowingDids(
-          props.session.did
-        );
-        setFollowingDids(followingDids);
-
-        const followerDids = await FollowService.getFollowerDids(
-          props.session.did
-        );
-        setFollowerDids(followerDids);
 
         setPublishStatus(
           props.session.isDIDPublished
@@ -213,6 +209,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
   useEffect(() => {
     (async () => {
+      console.log('====>history', history.location.pathname);
       if (props.session && props.session.did !== '') {
         if (history.location.pathname === '/profile') {
           if (!props.session.onBoardingCompleted) setOnBoardVisible(true);
@@ -332,7 +329,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
           <IonGrid className={style['profilepagegrid']}>
             <IonRow className={style['profilecontent']}>
               <IonCol size="2" className={style['left-panel']}>
-                <Logo />
                 <LeftSideMenu />
               </IonCol>
               <IonCol size="10" className={style['right-panel']}>

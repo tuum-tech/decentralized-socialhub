@@ -5,7 +5,6 @@ import { createStructuredSelector } from 'reselect';
 
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
-import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import { TuumTechScriptService } from 'src/services/script.service';
 
@@ -68,7 +67,6 @@ const ActivityPage: React.FC<InferMappedProps> = ({
           <IonGrid className={style['profilepagegrid']}>
             <IonRow className={style['profilecontent']}>
               <IonCol size="2" className={style['left-panel']}>
-                <Logo />
                 <LeftSideMenu />
               </IonCol>
               <IonCol size="10" className={style['right-panel']}>

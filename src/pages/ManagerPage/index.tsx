@@ -15,7 +15,6 @@ import { InferMappedProps, SubState } from './types';
 import { UserService } from 'src/services/user.service';
 import { DidService } from 'src/services/did.service.new';
 
-import Logo from 'src/elements/Logo';
 import { ViewProfileButton } from 'src/elements/buttons';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import style from './style.module.scss';
@@ -71,7 +70,6 @@ const ManagerPage: React.FC<InferMappedProps> = ({
           <IonGrid className={style['profilepagegrid']}>
             <IonRow className={style['profilecontent']}>
               <IonCol size="2" className={style['left-panel']}>
-                <Logo />
                 <LeftSideMenu />
               </IonCol>
               <IonCol size="10" className={style['right-panel']}>
