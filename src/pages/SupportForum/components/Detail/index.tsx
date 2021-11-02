@@ -7,7 +7,7 @@ import { TuumTechScriptService } from 'src/services/script.service';
 import { UserService } from 'src/services/user.service';
 import { DidService } from 'src/services/did.service.new';
 
-import LeftArrow from 'src/elements/arrows/LeftArrow';
+import LeftArrow from 'src/elements/svg/LeftArrow';
 import { timeSince } from 'src/utils/time';
 import { showNotify } from 'src/utils/notify';
 
