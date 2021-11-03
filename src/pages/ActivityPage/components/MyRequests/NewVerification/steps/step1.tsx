@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 
-import DropDown from 'src/elements/arrows/DropDown';
-import DropUp from 'src/elements/arrows/DropUp';
+import DropDown from 'src/elements/svg/DropDown';
+import DropUp from 'src/elements/svg/DropUp';
 import CheckFill from 'src/assets/icon/check-circle-fill.svg';
 import CheckEmpty from 'src/assets/icon/check-circle.svg';
 

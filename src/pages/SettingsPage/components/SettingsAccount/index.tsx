@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   IonCol,
   IonCard,
@@ -9,53 +9,17 @@ import {
   IonContent,
   IonItem,
   IonCardContent,
-  IonText,
-  IonButton,
-  IonAlert
+  IonText
 } from '@ionic/react';
-import styled from 'styled-components';
 
-import { UserService } from 'src/services/user.service';
+import ManageAccount, { ButtonDisabled } from './ManageAccount';
 import style from './style.module.scss';
 
-const ButtonDisabled = styled(IonButton)`
-  width: 273px;
-  height: 49px;
-
-  background: #f0f0f0 0% 0% no-repeat padding-box;
-  --background: #f0f0f0;
-  border-radius: 8px;
-  opacity: 1;
-
-  text-align: center;
-  font: normal normal 600 18px/21px 'Open Sans';
-  text-transform: none;
-  letter-spacing: 0px;
-  color: #d0d0d0;
-`;
-
-const DeleteButton = styled(IonButton)`
-  width: 273px;
-  height: 49px;
-
-  --background: white;
-  border-radius: 8px;
-
-  text-align: center;
-  font: normal normal 600 18px/21px 'Open Sans';
-  text-transform: none;
-  letter-spacing: 0px;
-  color: red;
-`;
-
 interface Props {
-  useSession: ISessionItem;
+  userSession: ISessionItem;
 }
 
-const SettingsAccount: React.FC<Props> = ({ useSession }) => {
-  const [loading, setLoading] = useState('');
-  const [isAlertOpen, setIsAlertOpen] = useState(false);
-
+const SettingsAccount: React.FC<Props> = ({ userSession }) => {
   return (
     <IonContent className={style['settingsaccount']}>
       <IonGrid className={style['tab-grid']}>
@@ -102,29 +66,9 @@ const SettingsAccount: React.FC<Props> = ({ useSession }) => {
                     </IonText>
                   </div>
                 </IonItem>
-                <IonItem className={style['section']}>
-                  <div className={style['section-data']}>
-                    <IonText className={style['section-title']}>
-                      Deactivate your account
-                    </IonText>
-                    <IonText className={style['section-description']}>
-                      Begin the process of deactivating your Profile account.
-                      Both your private and public pages will no longer be
-                      accessible by anyone however, since the data is stored on
-                      the vault of your choosing, you own your data so you can
-                      always access your data by connecting to your vault
-                      manually.
-                    </IonText>
-                    <br></br>
-                    <ButtonDisabled className={style['section-button']}>
-                      Deactivate
-                    </ButtonDisabled>
-                    <IonText className={style['coming-soon']}>
-                      Coming Soon!
-                    </IonText>
-                  </div>
-                </IonItem>
-                <IonItem lines="none" className={style['section']}>
+
+                <ManageAccount userSession={userSession} />
+                {/* <IonItem lines="none" className={style['section']}>
                   <div className={style['section-data']}>
                     <IonText className={style['section-title']}>
                       Delete your account
@@ -158,9 +102,9 @@ const SettingsAccount: React.FC<Props> = ({ useSession }) => {
                         {
                           text: 'Delete',
                           handler: async () => {
-                            if (!useSession) return;
+                            if (!userSession) return;
                             setLoading('Deleting Account');
-                            await UserService.deleteUser(useSession);
+                            await UserService.deleteUser(userSession);
                             setLoading('');
                           }
                         }
@@ -178,7 +122,7 @@ const SettingsAccount: React.FC<Props> = ({ useSession }) => {
                         : 'Delete'}
                     </DeleteButton>
                   </div>
-                </IonItem>
+                </IonItem> */}
               </IonCardContent>
             </IonCard>
           </IonCol>
