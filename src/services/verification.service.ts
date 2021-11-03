@@ -10,6 +10,7 @@ import { DidService } from './did.service.new';
 import { SearchService } from './search.service';
 import { UserService } from './user.service';
 import { ProfileService } from './profile.service';
+import { EssentialsService } from 'src/services/essentials.service';
 import { getItemsFromData } from 'src/utils/script';
 import { DID as ConnDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
 
@@ -399,10 +400,15 @@ export class VerificationService {
     // add new credential
     const holder = await userService.SearchUserWithDID(v.from_did);
     if (holder.isEssentialUser) {
-      didDocument = await didService.addVerifiableCredentialToEssentialsDIDDocument(
-        didDocument,
+      let essentialsService = new EssentialsService(didService);
+      await essentialsService.addVerifiableCredentialEssentials(
         VerifiableCredential.parse(v.credential)
       );
+      didDocument = await didService.getPublishedDocument(new DID(v.from_did));
+      // didDocument = await didService.addVerifiableCredentialToEssentialsDIDDocument(
+      //   didDocument,
+      //   VerifiableCredential.parse(v.credential)
+      // );
     } else {
       didDocument = await didService.addVerifiableCredentialToDIDDocument(
         didDocument,

@@ -308,9 +308,9 @@ export class DidService implements IDidService {
     diddocument: DIDDocument,
     vc: VerifiableCredential
   ): Promise<DIDDocument> {
-    // if (diddocument.proofs?.size! > 0) {
-    //   diddocument.proofs?.clear();
-    // }
+    if (diddocument.proofs?.size! > 0) {
+      diddocument.proofs?.clear();
+    }
 
     if (diddocument.credentials?.has(vc.getId())) {
       diddocument.credentials.delete(vc.getId());
