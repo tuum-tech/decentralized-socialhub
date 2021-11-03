@@ -2,20 +2,38 @@
   .tab-card {
     border-radius: 16px;
     background: #fff;
+    overflow: visible;
   }
 
-  .pagination {
-    font-family: 'SF Pro Display';
-    text-align: center;
-    color: #4c6fff;
-    padding: 0;
+  .pagination-footer {
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 21px;
+    padding-bottom: 16px;
 
-    li {
-      display: inline;
-      padding: 0.3em;
+    .pagination {
+      font-family: 'SF Pro Display';
+      text-align: center;
+      color: #4c6fff;
+      padding: 0;
+      margin-bottom: 0px;
+
+      li {
+        display: inline;
+        padding: 0.3em;
+      }
+      .page-active {
+        font-weight: 800;
+      }
     }
-    .page-active {
-      font-weight: 800;
+
+    .page-count-select {
+      display: flex;
+      align-items: center;
+
+      & > div {
+        margin-right: 11px;
+      }
     }
   }
 }

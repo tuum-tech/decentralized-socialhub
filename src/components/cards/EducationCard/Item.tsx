@@ -10,7 +10,7 @@ import {
   Program,
   TreeDotsButton
 } from '../common';
-import Image from '../../../elements/Image';
+// import Image from '../../../elements/Image';
 import darkDefaultEduImg from '../../../assets/default/default-edu_dark.png';
 import defaultEduImg from '../../../assets/default/default-edu.png';
 import styleWidget from '../WidgetCards.module.scss';
