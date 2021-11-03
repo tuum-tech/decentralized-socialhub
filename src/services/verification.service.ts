@@ -14,6 +14,8 @@ import { EssentialsService } from 'src/services/essentials.service';
 import { getItemsFromData } from 'src/utils/script';
 import { DID as ConnDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
 
+import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
+
 export enum VerificationStatus {
   requested = 'requested',
   verified = 'verified',
@@ -380,6 +382,8 @@ export class VerificationService {
   public async storeNewCredential(v: VerificationRequest) {
     const didService = await DidService.getInstance();
     const userService = new UserService(didService);
+    const holder = await userService.SearchUserWithDID(v.from_did);
+
     let didDocument: DIDDocument = await didService.getStoredDocument(
       new DID(v.from_did)
     );
@@ -392,13 +396,19 @@ export class VerificationService {
     const didUrl = DIDURL.from(DIDstring) as DIDURL;
     const existingVerifiableCredential = didDocument.getCredential(didUrl);
     if (existingVerifiableCredential) {
-      const builder = DIDDocument.Builder.newFromDocument(didDocument);
-      didDocument = await builder
-        .removeCredential(didUrl)
-        .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+      if (holder.isEssentialUser) {
+        const cn = connectivity.getActiveConnector();
+        await cn?.deleteCredentials([DIDstring], {
+          forceToPublishCredentials: true
+        });
+      } else {
+        const builder = DIDDocument.Builder.newFromDocument(didDocument);
+        didDocument = await builder
+          .removeCredential(didUrl)
+          .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+      }
     }
     // add new credential
-    const holder = await userService.SearchUserWithDID(v.from_did);
     if (holder.isEssentialUser) {
       let essentialsService = new EssentialsService(didService);
       await essentialsService.addVerifiableCredentialEssentials(
