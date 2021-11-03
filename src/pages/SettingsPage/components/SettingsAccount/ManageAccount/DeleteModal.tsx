@@ -127,6 +127,7 @@ const DeleteAccountContent = ({
           setPwd(e.detail.value!);
         }}
         placeholder="Enter your password"
+        type="password"
       />
       {error !== '' && <ErrorTxt>{error}</ErrorTxt>}
 
