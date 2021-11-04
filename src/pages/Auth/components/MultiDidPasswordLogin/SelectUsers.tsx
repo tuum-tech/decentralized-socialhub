@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import Avatar from 'src/components/Avatar';
-import DropDown from 'src/elements/arrows/DropDown';
-import DropUp from 'src/elements/arrows/DropUp';
+import DropDown from 'src/elements/svg/DropDown';
+import DropUp from 'src/elements/svg/DropUp';
 import { Trush, WhiteTrush } from 'src/elements/icons';
 
 import style from './style.module.scss';

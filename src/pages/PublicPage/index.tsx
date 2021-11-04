@@ -95,20 +95,21 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
 
       setLoading(true);
 
-      if (props.session.tutorialStep === 4) {
-        const followerDids = await FollowService.getFollowerDids(did);
-        setFollowerDids(followerDids);
-
-        const followingdids = await FollowService.getFollowingDids(did);
-        setFollowingDids(followingdids);
-
-        const pFields = await ProfileService.getPublicFields(did);
-        setPublicFields(pFields);
-      }
-
       let pUser = await userService.SearchUserWithDID(did);
       if (pUser && pUser.did) {
         setPublicUser(pUser as any);
+
+        if (pUser.tutorialStep === 4) {
+          const followerDids = await FollowService.getFollowerDids(did);
+          setFollowerDids(followerDids);
+
+          const followingdids = await FollowService.getFollowingDids(did);
+          setFollowingDids(followingdids);
+
+          const pFields = await ProfileService.getPublicFields(did);
+          setPublicFields(pFields);
+        }
+
         let profile = await ProfileService.getFullProfile(did, props.session);
         if (profile) {
           profile.basicDTO.isEnabled = true;
