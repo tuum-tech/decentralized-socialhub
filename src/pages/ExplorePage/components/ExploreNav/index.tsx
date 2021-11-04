@@ -63,6 +63,7 @@ const ExploreNav: React.FC<Props> = ({
             style['tab-item']
           }
           onClick={() => setActive('pages')}
+          disabled
         >
           <IonLabel className={style['tab-label']}>Pages</IonLabel>
         </IonItem>
@@ -71,16 +72,17 @@ const ExploreNav: React.FC<Props> = ({
         <IonGrid className={style['tab-grid']}>
           <IonRow>
             <PeopleCard
+              size="6"
               people={people}
               following={following}
               searchKeyword={searchKeyword}
               isSearchKeywordDID={isSearchKeywordDID}
             />
-            <PagesCard
+            {/* <PagesCard
               pages={pages}
               searchKeyword={searchKeyword}
               isSearchKeywordDID={isSearchKeywordDID}
-            />
+            /> */}
           </IonRow>
         </IonGrid>
       )}

@@ -171,13 +171,15 @@ const PeopleCard: React.FC<Props> = ({
               activeClassName={style['page-active']}
             />
             <div className={style['page-count-select']}>
-              <div>Rows per page</div>
+              <div className={style['rows-per-page-text']}>Rows per page</div>
               <Select
                 className="items-per-page"
                 classNamePrefix="select"
                 name="pagecount"
                 options={ITEMS_PER_PAGE}
+                defaultValue={ITEMS_PER_PAGE[0]}
                 onChange={handlePageCount}
+                components={{ IndicatorSeparator: null }}
               />
             </div>
           </IonRow>
