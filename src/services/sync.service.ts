@@ -91,7 +91,7 @@ export class SyncService {
     )
       return false;
 
-    if (!AssistService.getPublishStatusTask(sessionItem.did)) return false;
+    // if (!AssistService.getPublishStatusTask(sessionItem.did)) return false;
 
     let differences = await this.GetSyncDifferences(sessionItem);
     return differences.length > 0;
