@@ -56,8 +56,13 @@ const SyncPage: React.FC<InferMappedProps> = ({
   };
 
   const onSync = async () => {
+    const newSession = await SyncService.UpdateDifferences(
+      JSON.parse(JSON.stringify(props.session)),
+      syncItems
+    );
+
     eProps.setSession({
-      session: await SyncService.UpdateDifferences(props.session, syncItems)
+      session: newSession
     });
 
     window.location.href = '/manager';
