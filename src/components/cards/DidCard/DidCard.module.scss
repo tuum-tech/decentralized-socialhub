@@ -40,6 +40,12 @@
     padding: 12px 0;
     font-family: 'SF Pro Display';
 
+    .did-card-wrapper {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+    }
+
     .card-data {
       padding: 0.5em;
       width: 60%;
@@ -65,7 +71,12 @@
         letter-spacing: normal;
         text-align: left;
         color: rgba(50, 50, 71, 0.3);
-        display: block;
+        display: flex;
+
+        & img {
+          margin-right: 4px;
+          background-color: transparent;
+        }
       }
     }
 
@@ -99,6 +110,8 @@
     letter-spacing: normal;
     text-align: right;
     color: var(--theme-primary-blue);
+    display: flex;
+    justify-content: flex-end;
 
     .card-link-inner {
       border-radius: 8px;
@@ -107,6 +120,7 @@
       padding: 0.5em 1.5em;
       cursor: pointer;
       opacity: 1;
+      width: fit-content;
 
       &:hover {
         background: #f7fafc;
@@ -117,6 +131,23 @@
       span {
         margin-left: 1rem;
       }
+    }
+
+    .card-link-unfollow {
+      border: 1px solid #edf2f7;
+    }
+  }
+
+  &.col-3 {
+    display: flex;
+
+    .did-card-wrapper {
+      flex-direction: column;
+    }
+
+    .card-link {
+      margin: 0 8px;
+      width: fit-content;
     }
   }
 }

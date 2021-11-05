@@ -17,6 +17,7 @@
     display: inline-block;
     --background: #f7fafc;
     --inner-padding-bottom: 0.5em;
+    --inner-padding-end: 0px;
     font-weight: 600;
     color: #718096;
   }
@@ -26,6 +27,8 @@
   }
   .tab-label {
     font-family: 'SF Pro Display';
+    display: flex;
+    align-items: center;
   }
 
   .tab-card {

@@ -3,6 +3,7 @@
     border-radius: 16px;
     background: #fff;
     overflow: visible;
+    padding: 16px 8px;
   }
 
   .pagination-footer {
@@ -10,6 +11,13 @@
     align-items: center;
     padding: 16px;
     border-top: 1px solid #f6f7f9;
+
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 23px;
+    color: #7a7a9d;
 
     .pagination {
       font-family: 'SF Pro Display';

@@ -109,6 +109,8 @@ const PeopleCard: React.FC<Props> = ({
 
   useEffect(() => {
     (async () => {
+      let peopleCardRatio = parseInt(size) / 12 === 1 ? '100%' : '50%';
+      peopleCardRatio = perPage > 10 ? '33.33%' : '50%';
       let listPeopleLocal: any =
         people &&
         people.items
@@ -118,7 +120,7 @@ const PeopleCard: React.FC<Props> = ({
               p,
               listFollowing,
               index,
-              parseInt(size) / 12 === 1 ? '100%' : '50%',
+              peopleCardRatio,
               // handleUnfollow,
               // loadFollowing
               followClicked
