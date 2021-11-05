@@ -12,6 +12,7 @@ import PeopleCard from 'src/components/cards/PeopleCard';
 import PagesCard from 'src/components/cards/PagesCard';
 
 import style from './style.module.scss';
+import ComingSoon from 'src/components/ComingSoon';
 
 interface Props {
   tab?: string;
@@ -23,7 +24,7 @@ interface Props {
 }
 
 const ExploreNav: React.FC<Props> = ({
-  tab = 'all',
+  tab = 'people',
   // perPage = 1,
   people,
   pages,
@@ -36,7 +37,7 @@ const ExploreNav: React.FC<Props> = ({
   return (
     <IonContent className={style['explorenav']}>
       <IonList className={style['tab-list']}>
-        <IonItem
+        {/* <IonItem
           className={
             (active === 'all' ? style['tab-active'] : '') +
             ' ' +
@@ -45,7 +46,7 @@ const ExploreNav: React.FC<Props> = ({
           onClick={() => setActive('all')}
         >
           <IonLabel className={style['tab-label']}>All</IonLabel>
-        </IonItem>
+        </IonItem> */}
         <IonItem
           className={
             (active === 'people' ? style['tab-active'] : '') +
@@ -64,23 +65,26 @@ const ExploreNav: React.FC<Props> = ({
           }
           onClick={() => setActive('pages')}
         >
-          <IonLabel className={style['tab-label']}>Pages</IonLabel>
+          <IonLabel className={style['tab-label']}>
+            Pages <ComingSoon />
+          </IonLabel>
         </IonItem>
       </IonList>
       {active === 'all' && (
         <IonGrid className={style['tab-grid']}>
           <IonRow>
             <PeopleCard
+              size="6"
               people={people}
               following={following}
               searchKeyword={searchKeyword}
               isSearchKeywordDID={isSearchKeywordDID}
             />
-            <PagesCard
+            {/* <PagesCard
               pages={pages}
               searchKeyword={searchKeyword}
               isSearchKeywordDID={isSearchKeywordDID}
-            />
+            /> */}
           </IonRow>
         </IonGrid>
       )}
@@ -88,6 +92,7 @@ const ExploreNav: React.FC<Props> = ({
         <IonGrid className={style['tab-grid']}>
           <IonRow>
             <PeopleCard
+              showHeader={false}
               people={people}
               following={following}
               searchKeyword={searchKeyword}

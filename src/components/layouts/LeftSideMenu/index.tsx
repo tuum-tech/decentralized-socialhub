@@ -12,7 +12,7 @@ import { InferMappedProps, SubState } from './types';
 import { UserService } from 'src/services/user.service';
 
 import Logo from 'src/elements/Logo';
-import FooterLinks from './FooterLinks';
+// import FooterLinks from './FooterLinks';
 import ConnectionMenu from './ConnectionMenu';
 import {
   HouseSvg,

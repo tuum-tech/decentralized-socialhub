@@ -26,6 +26,7 @@ interface Props {
   userSession: ISessionItem;
 }
 const SearchComponent: React.FC<Props> = ({ userSession }: Props) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [filteredUniversities, setFilteredUniversities] = useState<
     IUniversitiesResponse
   >({ get_universities: { items: [] } });
