@@ -611,6 +611,27 @@ let run = async () => {
       }
     });
 
+    // ===== For feedbacks ==========
+    await client.Database.createCollection('feedbacks');
+    await client.Scripting.SetScript({
+      name: 'add_feedback',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'insert',
+        name: 'add_feedback',
+        output: true,
+        body: {
+          collection: 'feedbacks',
+          document: {
+            did: '$params.did',
+            createdAt: '$params.createdAt',
+            feedbacks: '$params.feedbacks'
+          }
+        }
+      }
+    });
+
     // ===== For searching on explore page =====
     await client.Scripting.SetScript({
       name: 'get_users_by_name',

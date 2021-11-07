@@ -1,9 +1,9 @@
 import React from 'react';
 
-import LeftArrow from '../arrows/LeftArrow';
-import RightArrow from '../arrows/RightArrow';
-import SmallLeftArrow from '../arrows/SmallLeftArrow';
-import SmallRightArrow from '../arrows/SmallRightArrow';
+import LeftArrow from '../svg/LeftArrow';
+import RightArrow from '../svg/RightArrow';
+import SmallLeftArrow from '../svg/SmallLeftArrow';
+import SmallRightArrow from '../svg/SmallRightArrow';
 import style from './ArrowButton.module.scss';
 
 interface Props {

@@ -157,7 +157,7 @@ const SettingsBody: React.FC<Props> = ({
             </IonCol>
             <IonCol size="10" className={style['right-panel']}>
               {active === 'settingsaccount' && (
-                <SettingsAccount useSession={useSession} />
+                <SettingsAccount userSession={useSession} />
               )}
               {active === 'settingsterms' && <SettingsTerms />}
               {/* {active === 'settingshelp' && <SettingsHelp />} */}
