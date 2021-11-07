@@ -100,7 +100,7 @@ const SignDidPage: React.FC<RouteComponentProps<
               if (res) {
                 history.push({
                   pathname: '/set-password',
-                  state: res
+                  state: { ...res, isEssentialUser: false }
                 });
               } else {
                 history.push({

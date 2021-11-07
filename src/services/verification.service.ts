@@ -415,10 +415,6 @@ export class VerificationService {
         VerifiableCredential.parse(v.credential)
       );
       didDocument = await didService.getPublishedDocument(new DID(v.from_did));
-      // didDocument = await didService.addVerifiableCredentialToEssentialsDIDDocument(
-      //   didDocument,
-      //   VerifiableCredential.parse(v.credential)
-      // );
     } else {
       didDocument = await didService.addVerifiableCredentialToDIDDocument(
         didDocument,
@@ -442,9 +438,7 @@ export class VerificationService {
     diddocument: any
   ): Promise<[]> {
     if (!diddocument || diddocument.getCredentialCount() === 0) return [];
-
     const vcs = diddocument.getCredentials();
-
     let issuerDids: string[] = [];
     for (let i = 0; i < vcs.length; i++) {
       const subject: VerifiableCredential.Subject = vcs[i].getSubject();

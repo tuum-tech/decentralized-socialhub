@@ -274,6 +274,7 @@ let run = async () => {
               loginCred: '$params.loginCred',
               badges: '$params.badges',
               isDIDPublished: '$params.isDIDPublished',
+              isEssentialUser: '$params.isEssentialUser',
               didPublishTime: '$params.didPublishTime',
               onBoardingCompleted: '$params.onBoardingCompleted',
               tutorialStep: '$params.tutorialStep',
