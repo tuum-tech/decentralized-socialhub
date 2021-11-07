@@ -91,6 +91,7 @@ const ProfileComponent: React.FC<Props> = ({
         publicUserProfile={publicUserProfile}
         signedUser={userSession}
       />
+
       {!loading &&
         publicUser.did !== '' &&
         publicUserProfile.basicDTO.isEnabled === true && (

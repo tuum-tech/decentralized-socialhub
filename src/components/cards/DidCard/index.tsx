@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IonItem, IonList, IonSpinner } from '@ionic/react';
 import { Link } from 'react-router-dom';
+import clsx from 'clsx';
 
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -9,8 +10,10 @@ import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from '../../../pages/DashboardPage/types';
 
 import Avatar from '../../Avatar';
-import style from './DidCard.module.scss';
 import { getDIDString } from 'src/utils/did';
+import FingerPrintFill from 'src/assets/icon/fingerprint-fill.svg';
+
+import style from './DidCard.module.scss';
 interface Props extends InferMappedProps {
   name?: string;
   did: string;
@@ -73,7 +76,7 @@ const DidCard: React.FC<Props> = ({
 
   return (
     <IonList
-      className={style['did']}
+      className={clsx(style['did'], { [style['col-3']]: colSize === '33.33%' })}
       style={{ width: colSize, display: 'inline-block' }}
       key={indexItem}
     >
@@ -84,47 +87,54 @@ const DidCard: React.FC<Props> = ({
         ) : (
           <img alt="avatar" src={avatar} width={80} height={80} />
         )}
-        <div className={style['card-data']}>
-          <Link className={style['name-value']} to={getLink(did)}>
-            {name}
-          </Link>
-          <span className={style['did-value']}>
-            {'DID:' + did.replace('did:elastos:', '')}
-          </span>
-        </div>
-        {type === 'user' && tutorialStep === 4 && (
-          <div className={style['card-link']}>
-            {loading && (
-              <span className={style['card-link-inner']}>
-                <IonSpinner
-                  color="#007bff"
-                  style={{
-                    width: '1rem',
-                    height: '1rem'
-                  }}
-                />
-                {/* <span>Wait a while...</span> */}
-              </span>
-            )}
-            {!loading && isFollowing && (
-              <span
-                className={style['card-link-inner']}
-                onClick={() => unfollowDid(did)}
-              >
-                -Unfollow
-              </span>
-            )}
-
-            {!loading && !isFollowing && (
-              <span
-                className={style['card-link-inner']}
-                onClick={() => followDid(did)}
-              >
-                +Follow
-              </span>
-            )}
+        <div className={style['did-card-wrapper']}>
+          <div className={style['card-data']}>
+            <Link className={style['name-value']} to={getLink(did)}>
+              {name}
+            </Link>
+            <span className={style['did-value']}>
+              <img src={FingerPrintFill} alt="filgerprint" />
+              {'DID:' + did.replace('did:elastos:', '')}
+            </span>
           </div>
-        )}
+
+          {type === 'user' && tutorialStep === 4 && (
+            <div className={style['card-link']}>
+              {loading && (
+                <span className={style['card-link-inner']}>
+                  <IonSpinner
+                    color="#007bff"
+                    style={{
+                      width: '1rem',
+                      height: '1rem'
+                    }}
+                  />
+                  {/* <span>Wait a while...</span> */}
+                </span>
+              )}
+              {!loading && isFollowing && (
+                <span
+                  className={clsx(
+                    style['card-link-inner'],
+                    style['card-link-unfollow']
+                  )}
+                  onClick={() => unfollowDid(did)}
+                >
+                  - Unfollow
+                </span>
+              )}
+
+              {!loading && !isFollowing && (
+                <span
+                  className={style['card-link-inner']}
+                  onClick={() => followDid(did)}
+                >
+                  + Follow
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </IonItem>
     </IonList>
   );
