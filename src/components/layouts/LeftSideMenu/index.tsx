@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { IonItem, IonLabel, IonList } from '@ionic/react';
 
@@ -12,8 +12,9 @@ import { InferMappedProps, SubState } from './types';
 import { UserService } from 'src/services/user.service';
 
 import Logo from 'src/elements/Logo';
-// import FooterLinks from './FooterLinks';
-import ConnectionMenu from './ConnectionMenu';
+import FooterLinks from './components/FooterLinks';
+import ConnectionMenu from './components/ConnectionMenu';
+
 import {
   HouseSvg,
   PeopleSvg,
@@ -21,7 +22,8 @@ import {
   SettingsSvg,
   ActivitySvg,
   SignOutSvg
-} from './icons';
+} from './components/icons';
+import HelpModalContent, { HelpModal } from './modals/Help';
 
 import style from './style.module.scss';
 
@@ -30,6 +32,7 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
   ...props
 }: InferMappedProps) => {
   const history = useHistory();
+  const [showSupportModal, setShowSupportModal] = useState(true);
 
   return (
     <div className={style['navbar']}>
@@ -150,7 +153,16 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
           </IonLabel>
         </IonItem>
       </IonList>
-      {/* <FooterLinks session={props.session} /> */}
+
+      <FooterLinks session={props.session} />
+
+      <HelpModal
+        isOpen={showSupportModal}
+        cssClass="my-custom-class"
+        backdropDismiss={false}
+      >
+        <HelpModalContent session={props.session} />
+      </HelpModal>
     </div>
   );
 };

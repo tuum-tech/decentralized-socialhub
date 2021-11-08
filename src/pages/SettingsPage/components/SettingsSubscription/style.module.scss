@@ -1,10 +1,12 @@
 .settingssubscription {
-  .tab-grid {
-    background: #f7fafc;
-    min-height: 100%;
-  }
+  background: #f7fafc;
+  padding-left: 36px;
+
   .tab-card {
     border-radius: 16px;
     background: #fff;
+
+    min-height: 200px;
+    padding: 16px;
   }
 }

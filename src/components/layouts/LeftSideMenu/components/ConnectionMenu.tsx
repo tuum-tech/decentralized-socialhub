@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { ConnectionSvg, ArrowUpSvg, ArrowDownSvg } from './icons';
 
-import style from './style.module.scss';
+import style from '../style.module.scss';
 
 interface Props {
   session: ISessionItem;

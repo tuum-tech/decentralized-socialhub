@@ -15,6 +15,9 @@ import style from './style.module.scss';
 
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import SettingsBody from './components/SettingsBody';
+import SettingsHeader from './components/SettingsHeader/Loadable';
+import SettingsAccount from './components/SettingsAccount/Loadable';
+import SettingsSubscription from './components/SettingsSubscription/Loadable';
 
 const SettingsPage: React.FC<InferMappedProps> = ({
   eProps,
@@ -30,6 +33,9 @@ const SettingsPage: React.FC<InferMappedProps> = ({
             </IonCol>
             <IonCol size="10" className={style['right-panel']}>
               <SettingsBody useSession={props.session} />
+              <SettingsHeader />
+              <SettingsAccount useSession={props.session} />
+              <SettingsSubscription />
             </IonCol>
           </IonRow>
         </IonGrid>

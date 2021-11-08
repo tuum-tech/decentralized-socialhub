@@ -1,6 +1,5 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-
 import styled from 'styled-components';
 
 interface Props {
@@ -27,6 +26,7 @@ const Container = styled.div`
     display: block;
     cursor: pointer;
     margin-bottom: 10px;
+    float: left;
   }
 `;
 
@@ -35,27 +35,23 @@ const FooterLinks: React.FC<Props> = ({ session }) => {
 
   return (
     <Container>
-      <div
-        className="item"
-        onClick={async () => history.push('/terms-of-use')}
-        style={{ float: 'left' }}
-      >
+      <div className="item" onClick={() => history.push('/terms-of-use')}>
         Terms of use
       </div>
-      <div
-        className="item"
-        onClick={async () => window.open('/terms-of-use')}
-        style={{ float: 'left' }}
-      >
+      <div className="item" onClick={() => {}}>
         Help & Support
       </div>
       <div
         className="item"
-        onClick={async () =>
-          window.open('https://www.tuum.tech/products/profile')
-        }
+        onClick={() => window.open('https://www.tuum.tech/products/profile')}
       >
         About Profile
+      </div>
+      <div
+        className="item"
+        onClick={() => window.open('https://www.tuum.tech')}
+      >
+        Tuum.Tech
       </div>
     </Container>
   );
