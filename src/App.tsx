@@ -44,7 +44,7 @@ import {
   CreatePasswordPage,
   GenerateDidPage,
   SignDidPage,
-  // SignQRPage,
+  SignQRPage,
   ForgotPasswordPage,
   UnlockUserPage,
   VerifyEmailPage,
