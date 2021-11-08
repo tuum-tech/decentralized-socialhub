@@ -44,6 +44,7 @@ import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 const TutorialModal = styled(IonModal)`
   --border-radius: 16px;
   --min-height: 200px;
+  --max-width: 1250px;
   --height: 100%;
   --width: 100%;
   height: 100% !important;
