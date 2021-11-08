@@ -125,6 +125,7 @@ interface ISessionItem {
   name: string;
   email?: string;
   isDIDPublished: boolean;
+  isEssentialUser?: boolean;
   didPublishTime: number;
   mnemonics: string;
   passhash: string;
