@@ -142,6 +142,7 @@ const Upload: React.FC<InferMappedProps> = ({
         setSize(file.size);
         setName(file.name);
         setImagePreview(reader.result);
+        setDefaultImage(file);
       };
       reader.readAsDataURL(file);
     }
@@ -153,6 +154,7 @@ const Upload: React.FC<InferMappedProps> = ({
     setBase64('');
     setName('');
     setSize('');
+    setDefaultImage(props.session.avatar || defaultAvatar);
   };
 
   return (

@@ -475,6 +475,7 @@ export class DidService implements IDidService {
       .credentials(vc)
       .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
 
+    console.log('vp: ' + vp.toString(true));
     return vp;
   }
 

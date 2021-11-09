@@ -89,7 +89,7 @@ const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
         if (res) {
           history.push({
             pathname: '/set-password',
-            state: res
+            state: { ...res, isEssentialUser: true }
           });
         } else {
           history.push({

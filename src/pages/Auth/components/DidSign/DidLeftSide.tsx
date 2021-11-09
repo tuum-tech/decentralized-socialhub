@@ -55,8 +55,8 @@ const DidLeftSide: React.FC<Props> = ({ error = false }) => {
           >
             Using Essentials?
           </OnBoardLayoutLeftContentIntro>
-          <SignInButton disabled={true} width={180} to="/sign-qr">
-            Sign In (Coming Soon)
+          <SignInButton disabled={false} width={180} to="/sign-qr">
+            Sign In
           </SignInButton>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
@@ -88,8 +88,8 @@ const DidLeftSide: React.FC<Props> = ({ error = false }) => {
         >
           Using Essentials?
         </OnBoardLayoutLeftContentIntro>
-        <SignInButton disabled={true} width={180} to="/sign-qr">
-          Sign In (Coming Soon)
+        <SignInButton disabled={false} width={180} to="/sign-qr">
+          Sign In
         </SignInButton>
         <Footer>
           <FooterLinks></FooterLinks>

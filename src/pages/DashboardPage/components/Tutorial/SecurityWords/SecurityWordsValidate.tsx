@@ -30,68 +30,46 @@ const SecurityWordsValidate: React.FC<Props> = ({
   const [securityWords] = useState(mnemonics);
   const [isOnError, setIsOnError] = useState(false);
   const [isValid, setIsValid] = useState(false);
-  const [mnemonic, setMnemonic] = useState([
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    ''
-  ]);
 
   useEffect(() => {});
-
-  const updateMnemonic = (index: number, n: string) => {
-    mnemonic[index] = n;
-    setMnemonic(mnemonic);
-
-    clearTimeout(timer);
-
-    timer = setTimeout(() => {
-      validate();
-    }, 500);
-  };
 
   const validate = () => {
     if (isOnError) {
       setIsOnError(false);
       onReset();
     }
-
     if (isValid) {
       setIsValid(false);
       onReset();
     }
-
+    const mnemonic = itemEls.current.map(el => {
+      return el.value;
+    });
     let allFilled = mnemonic.every((word, wordIndex) => {
       return word.length > 0;
     });
+    if (!allFilled) return;
+    let isValidMnemonics = mnemonic.every((word, wordIndex) => {
+      return word === securityWords[wordIndex];
+    });
 
-    if (allFilled) {
-      let isValidMnemonics = mnemonic.every((word, wordIndex) => {
-        return word === securityWords[wordIndex];
-      });
-
-      if (isValidMnemonics) {
-        setIsValid(true);
-        onSuccess();
-      } else {
-        setIsOnError(true);
-        onError();
-      }
+    if (isValidMnemonics) {
+      setIsValid(true);
+      onSuccess();
+    } else {
+      setIsOnError(true);
+      onError();
     }
   };
 
   const itemEls = useRef<any[]>([]);
 
   const clear = () => {
-    setMnemonic(['', '', '', '', '', '', '', '', '', '', '', '']);
+    itemEls.current.forEach(el => {
+      el.value = '';
+    });
+    setIsOnError(false);
+    onReset();
   };
 
   const renderMnemonicInput = (index: number) => {
@@ -110,12 +88,13 @@ const SecurityWordsValidate: React.FC<Props> = ({
           <IonInput
             ref={element => itemEls.current.push(element)}
             className={style['security-view-textinput']}
-            value={mnemonic[index]}
             onKeyUp={e => {
               let val = e.currentTarget.value! as string;
               if (val.split(' ').length === 12) {
                 let words = val.split(' ');
-                setMnemonic(words);
+                itemEls.current.map((el, index) => {
+                  el.value = words[index];
+                });
               } else {
                 let value = val.replace(/\s+/g, '');
                 let key = e.key;
@@ -123,7 +102,7 @@ const SecurityWordsValidate: React.FC<Props> = ({
                   itemEls.current[index].value = value;
                   itemEls.current[(index + 1) % 12].setFocus();
                 }
-                updateMnemonic(index, value);
+                validate();
               }
             }}
           />
