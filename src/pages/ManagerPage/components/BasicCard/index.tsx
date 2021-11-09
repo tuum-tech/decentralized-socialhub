@@ -8,11 +8,11 @@ import {
   IonRow,
   IonCol
 } from '@ionic/react';
+import { isEqual } from 'lodash';
 
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import SmallTextInput from 'src/elements/inputs/SmallTextInput';
-import { SmallLightButton } from 'src/elements/buttons';
-import EmailComp from './EmailComp';
+import EmailComp, { SaveButton } from './EmailComp';
 import PhoneComp from './PhoneComp';
 
 interface IProps {
@@ -41,12 +41,15 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
               <IonCardTitle>Basic Information</IonCardTitle>
             </IonCol>
             <IonCol size="auto">
-              <SmallLightButton
-                disabled={sessionItem.tutorialStep !== 4}
+              <SaveButton
+                disabled={
+                  sessionItem.tutorialStep !== 4 ||
+                  isEqual(sessionItem, currentBasicDTO)
+                }
                 onClick={() => updateFunc(currentBasicDTO)}
               >
                 Save
-              </SmallLightButton>
+              </SaveButton>
             </IonCol>
           </IonRow>
         </IonGrid>

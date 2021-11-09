@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { IonCol } from '@ionic/react';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 
-import { SmallLightButton } from 'src/elements/buttons';
 import SmallTextInput from 'src/elements/inputs/SmallTextInput';
 
 import PhoneVerificationDetailContent, {
   PhoneVerificationDetailModal
 } from 'src/components/Auth/Phone';
+
 import { updatePhoneNumber } from 'src/components/Auth/fetchapi';
 
-import { ActionBtnCol, Container, ErrorText } from './EmailComp';
+import { ActionBtnCol, Container, ErrorText, SaveButton } from './EmailComp';
 
 interface Props {
   phoneUpdated: (phone: string) => void;
@@ -43,21 +43,12 @@ const UpdatePhoneComp: React.FC<Props> = ({ phoneUpdated, sessionItem }) => {
     setLoading(false);
   };
 
-  const isPhoneInvalid = () => {
-    if (sessionItem.tutorialStep !== 4) return true;
-    if (loading) return true;
-    if (phone === '') return true;
-    if (sessionItem.loginCred?.phone && phone === sessionItem.loginCred?.phone)
-      return true;
-    return !isValidPhoneNumber(phone);
-  };
-
-  const checkError = (p: string) => {
-    if (p === '') {
-      setError('');
-    } else if (p === sessionItem.loginCred?.phone) {
+  const checkError = (newPhone: string) => {
+    if (newPhone === '') {
+      setError('No Phone');
+    } else if (newPhone === sessionItem.loginCred?.phone) {
       setError('Same Phone');
-    } else if (!isValidPhoneNumber(p)) {
+    } else if (!isValidPhoneNumber(newPhone)) {
       setError('Invalid Phone');
     } else {
       setError('');
@@ -81,14 +72,19 @@ const UpdatePhoneComp: React.FC<Props> = ({ phoneUpdated, sessionItem }) => {
         {error !== '' && <ErrorText>{error}</ErrorText>}
       </IonCol>
       <ActionBtnCol size="auto">
-        <SmallLightButton
-          disabled={isPhoneInvalid()}
+        <SaveButton
+          disabled={
+            sessionItem.tutorialStep !== 4 ||
+            loading ||
+            error !== '' ||
+            phone === sessionItem.loginCred?.phone
+          }
           onClick={async () => {
             await sendVerification();
           }}
         >
           {loading ? 'Sending Verificaiton' : 'Send Verificaiton'}
-        </SmallLightButton>
+        </SaveButton>
       </ActionBtnCol>
 
       <PhoneVerificationDetailModal

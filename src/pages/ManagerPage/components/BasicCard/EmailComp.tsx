@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { IonRow, IonCol } from '@ionic/react';
 
@@ -33,6 +33,12 @@ export const ErrorText = styled(Text16)`
   margin-top: 8px;
 `;
 
+export const SaveButton = styled(SmallLightButton)<{ disabled: boolean }>`
+  color: ${props => {
+    return props.disabled ? '#6B829A' : '#4c6fff';
+  }};
+`;
+
 interface Props {
   emailUpdated: (email: string) => void;
   sessionItem: ISessionItem;
@@ -44,21 +50,12 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const isEmailValid = () => {
-    if (sessionItem.tutorialStep !== 4) return true;
-    if (loading) return true;
-    if (email === '') return true;
-    if (sessionItem.loginCred?.email && email === sessionItem.loginCred?.email)
-      return true;
-    return !validateEmail(email);
-  };
-
-  const checkError = (e: string) => {
-    if (e === '') {
-      setError('');
-    } else if (e === sessionItem.loginCred?.email) {
+  const checkError = (newEmail: string) => {
+    if (newEmail === '') {
+      setError('No Email');
+    } else if (newEmail === sessionItem.loginCred?.email) {
       setError('Same Email');
-    } else if (!validateEmail(e)) {
+    } else if (!validateEmail(newEmail)) {
       setError('Invalid Email');
     } else {
       setError('');
@@ -102,16 +99,20 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
         {error !== '' && <ErrorText>{error}</ErrorText>}
       </IonCol>
       <ActionBtnCol size="auto">
-        <SmallLightButton
-          disabled={!isEmailValid()}
+        <SaveButton
+          disabled={
+            sessionItem.tutorialStep !== 4 ||
+            loading ||
+            error !== '' ||
+            email === sessionItem.loginCred?.email
+          }
           onClick={async () => {
             await sendVerification();
           }}
         >
           {loading ? 'Sending Verificaiton' : 'Send Verificaiton'}
-        </SmallLightButton>
+        </SaveButton>
       </ActionBtnCol>
-
       <EmailVerificationDetailModal
         isOpen={showEmailVerifyModal}
         backdropDismiss={false}
