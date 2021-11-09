@@ -56,16 +56,18 @@ const Upload: React.FC<InferMappedProps> = ({
       let did = new DID(props.session.did);
       let didDocument: DIDDocument = await didService.getStoredDocument(did);
 
-      let avatarVC = await didService.newSelfVerifiableCredential(
-        didDocument,
-        'avatar',
-        getAvatarVCData(base64Str)
-      );
+      if (props.session.mnemonics !== '') {
+        let avatarVC = await didService.newSelfVerifiableCredential(
+          didDocument,
+          'avatar',
+          getAvatarVCData(base64Str)
+        );
 
-      await DidcredsService.addOrUpdateCredentialToVault(
-        props.session,
-        avatarVC
-      );
+        await DidcredsService.addOrUpdateCredentialToVault(
+          props.session,
+          avatarVC
+        );
+      }
 
       eProps.setSession({
         session: await userService.updateSession(newSession, true)
