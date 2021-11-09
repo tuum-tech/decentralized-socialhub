@@ -49,6 +49,7 @@ export class ProfileService {
     let fields: string[] = [];
     let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
     let userResponse = await searchServiceLocal.searchUsersByDIDs([did], 1, 0);
+
     if (
       !userResponse.isSuccess ||
       !userResponse.response ||
@@ -108,9 +109,7 @@ export class ProfileService {
       items: [],
       isEnabled: true
     };
-
     let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-
     let userResponse = await searchServiceLocal.searchUsersByDIDs([did], 1, 0);
     if (
       userResponse.isSuccess &&
@@ -132,6 +131,7 @@ export class ProfileService {
             }
           }
         );
+
         const gbPData = getItemsFromData(bpRes, 'get_basic_profile');
         if (gbPData.length > 0) {
           basicDTO = gbPData[0];

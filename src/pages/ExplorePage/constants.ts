@@ -27,3 +27,12 @@ export const Api = {
   sample: `${baseConst.base}v2/5e88d29a3100007700d39adc`
 };
 /** Component Constants - END */
+
+/** Pagination Dropdown Select - START */
+export const ITEMS_PER_PAGE = [
+  { value: 0, label: 10 },
+  { value: 1, label: 25 },
+  { value: 2, label: 50 },
+  { value: 3, label: 100 }
+];
+/** Pagination Dropdown Select - END */

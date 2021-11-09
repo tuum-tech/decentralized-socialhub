@@ -202,6 +202,23 @@ export class TuumTechScriptService {
     return response;
   }
 
+  public static async addFeedback(did: string, feedbacks: string) {
+    const add_feedback_script = {
+      name: 'add_feedback',
+      params: {
+        did,
+        feedbacks,
+        createdAt: new Date().toUTCString()
+      },
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+    let response: any = await this.runTuumTechScript(add_feedback_script);
+    return response;
+  }
+
   public static async addUserToTuumTech(params: ISessionItem) {
     const add_user_script = {
       name: 'add_user',

@@ -600,6 +600,24 @@ export class UserService {
     return null;
   }
 
+  public async validateWithPwd(
+    userSession: ISessionItem,
+    storePassword: string
+  ) {
+    let instance = this.unlockUser(
+      UserService.key(userSession.did),
+      storePassword
+    );
+    if (!instance) {
+      return false;
+    }
+    let isHiveVersionValid = await this.isHiveVersionValid(instance);
+    if (!isHiveVersionValid) {
+      return false;
+    }
+    return instance.did === userSession.did;
+  }
+
   public static logout() {
     window.localStorage.removeItem('isLoggedIn');
     window.localStorage.removeItem('persist:root');

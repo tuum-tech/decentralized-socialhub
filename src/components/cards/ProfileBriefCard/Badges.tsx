@@ -48,6 +48,7 @@ interface Props {
   cb: (count: number) => void;
 }
 const Badges: React.FC<Props> = ({ badges, cb }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [showBadgeNumber, setShowBadgeNumber] = useState(-1);
   const [archivedBadges, setArchivedBadges] = useState([]);
 
