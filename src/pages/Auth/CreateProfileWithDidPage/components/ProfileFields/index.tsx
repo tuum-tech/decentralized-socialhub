@@ -1,56 +1,35 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 
+import LoadingIndicator from 'src/elements/LoadingIndicator';
+import { ButtonWithLogo } from 'src/elements/buttons';
+import TextInput from 'src/elements/inputs/TextInput';
+import { Text16 } from 'src/elements/texts';
+import Avatar from 'src/components/Avatar';
 import {
   OnBoardLayout,
   OnBoardLayoutLeft,
   OnBoardLayoutLeftContent,
   OnBoardLayoutLeftContentTitle,
   OnBoardLayoutLeftContentDescription,
-  OnBoardLayoutLeftContentIntro,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
-  OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { ButtonWithLogo, SignInButton } from 'src/elements/buttons';
-import TextInput from 'src/elements/inputs/TextInput';
-import { Text16 } from 'src/elements/texts';
-import { validateEmail } from 'src/utils/validation';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import wavinghand from 'src/assets/icon/wavinghand.png';
-import style from './style.module.scss';
-import { UserType } from 'src/utils/user';
-import request, { BaseplateResp } from 'src/baseplate/request';
-import LoadingIndicator from 'src/elements/LoadingIndicator';
-import Avatar from 'src/components/Avatar';
-import styled from 'styled-components';
 
-export function requestCreateEmailUser(
-  name: string,
-  email: string,
-  did: string
-): Promise<BaseplateResp> {
-  return request(
-    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/credential/create`,
-    {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
-        Accept: 'application/json'
-      },
-      body: JSON.stringify({
-        name,
-        email,
-        phone: '',
-        did,
-        smsCode: false
-      })
-    }
-  );
-}
+import style from './style.module.scss';
+
+import { validateEmail } from 'src/utils/validation';
+import { UserType } from 'src/utils/user';
+
+import EmailVerificationDetailContent, {
+  EmailVerificationDetailModal
+} from 'src/components/Auth/Email';
+import { requestCreateEmailUser } from 'src/components/Auth/fetchapi';
 
 const ErrorText = styled(Text16)`
   text-align: center;
@@ -74,14 +53,9 @@ const AvatarArea = styled.div`
 interface Props {
   userInfo?: UserType;
   setUserInfo: (name: string, email: string) => void;
-  isCreate?: boolean;
 }
 
-const UseDetailsForm: React.FC<Props> = ({
-  setUserInfo,
-  isCreate = true,
-  userInfo
-}) => {
+const UseDetailsForm: React.FC<Props> = ({ setUserInfo, userInfo }) => {
   const getUserName = () => {
     if (userInfo !== undefined) {
       return userInfo.name;
@@ -107,6 +81,7 @@ const UseDetailsForm: React.FC<Props> = ({
     return '';
   };
 
+  const [showEmailVerifyModal, setShowEmailVerifyModal] = useState(false);
   const [name, setname] = useState(getUserName());
   const [email, setEmail] = useState(getEmail());
   const [error, setError] = useState('');
@@ -164,23 +139,14 @@ const UseDetailsForm: React.FC<Props> = ({
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={wavinghand} />
           <OnBoardLayoutLeftContentTitle className="mt-18px">
-            {isCreate ? 'A better way to be online.' : 'Complete your profile'}
+            Complete your profile
           </OnBoardLayoutLeftContentTitle>
           <OnBoardLayoutLeftContentDescription className="mt-25px">
-            {isCreate
-              ? 'Having multiple profiles is messy. Your personal information is copied and stored on every app. Profile gives you total control of your digital world, in one place. Finally unlock the power of your content online.'
-              : 'Complete your profile by filling your first name, last name, and email'}
+            Having multiple profiles is messy. Your personal information is
+            copied and stored on every app. Profile gives you total control of
+            your digital world, in one place. Finally unlock the power of your
+            content online.
           </OnBoardLayoutLeftContentDescription>
-          {isCreate && (
-            <OnBoardLayoutLeftContentIntro className="mt-25px mb-0">
-              Already have a profile?
-            </OnBoardLayoutLeftContentIntro>
-          )}
-          {isCreate && (
-            <SignInButton width={120} to="/sign-did">
-              Sign in
-            </SignInButton>
-          )}
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -189,16 +155,6 @@ const UseDetailsForm: React.FC<Props> = ({
             <Avatar did={userInfo ? userInfo.did : ''} />
           </AvatarArea>
 
-          {isCreate && (
-            <OnBoardLayoutRightContentTitle>
-              Create your profile
-            </OnBoardLayoutRightContentTitle>
-          )}
-          {isCreate && (
-            <Text16 style={{ marginBottom: '54px' }}>
-              It’s free and easy to get set up.
-            </Text16>
-          )}
           <TextInput
             value={name}
             label="Name"
@@ -229,12 +185,33 @@ const UseDetailsForm: React.FC<Props> = ({
 
           <ButtonWithLogo
             text={
-              isCreate ? 'Create your profile now' : 'Complete your profile now'
+              displayText ===
+              'Verification email is sent to you. Please confirm to complete your registration.'
+                ? 'Verify'
+                : 'Create new profile'
             }
             onClick={async () => {
-              await onSubmit();
+              if (
+                displayText ===
+                'Verification email is sent to you. Please confirm to complete your registration.'
+              ) {
+                setShowEmailVerifyModal(true);
+              } else {
+                await onSubmit();
+              }
             }}
           />
+
+          <EmailVerificationDetailModal
+            isOpen={showEmailVerifyModal}
+            backdropDismiss={false}
+          >
+            <EmailVerificationDetailContent
+              close={() => setShowEmailVerifyModal(false)}
+              email={email}
+              resend={onSubmit}
+            />
+          </EmailVerificationDetailModal>
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>

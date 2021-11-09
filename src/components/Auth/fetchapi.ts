@@ -1,9 +1,26 @@
 import request, { BaseplateResp } from 'src/baseplate/request';
 
-export function createPhoneUser(
+export function requestEmailVerifyCode(code: string): Promise<BaseplateResp> {
+  return request(
+    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/credential/verify`,
+    {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
+        Accept: 'application/json'
+      },
+      body: JSON.stringify({
+        code
+      })
+    }
+  );
+}
+
+export function requestCreateEmailUser(
   name: string,
   email: string,
-  phone: string
+  did: string
 ): Promise<BaseplateResp> {
   return request(
     `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/credential/create`,
@@ -17,9 +34,31 @@ export function createPhoneUser(
       body: JSON.stringify({
         name,
         email,
-        phone,
-        did: '',
-        smsCode: true
+        phone: '',
+        did
+      })
+    }
+  );
+}
+
+export function requestUpdateEmail(
+  did: string,
+  email: string,
+  phone: string
+): Promise<BaseplateResp> {
+  return request(
+    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/credential/update`,
+    {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
+        Accept: 'application/json'
+      },
+      body: JSON.stringify({
+        did,
+        email,
+        phone
       })
     }
   );
@@ -42,14 +81,13 @@ export function updatePhoneNumber(
       body: JSON.stringify({
         did,
         email,
-        phone,
-        smsCode: true
+        phone
       })
     }
   );
 }
 
-export function verifyCode(code: string, did: string, phone: string) {
+export function verifyPhoneCode(code: string, did: string, phone: string) {
   return request(
     `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/credential/verify`,
     {
