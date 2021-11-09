@@ -32,7 +32,6 @@ const UpdatePhoneComp: React.FC<Props> = ({ phoneUpdated, sessionItem }) => {
       phone
     )) as IUpdateEmailResponse;
 
-    console.log('====>', response.data.status);
     if (response && response.data && response.data.status === 'success') {
       if (!showPhoneVerifyModal) {
         setShowPhoneVerifyModal(true);
@@ -60,6 +59,8 @@ const UpdatePhoneComp: React.FC<Props> = ({ phoneUpdated, sessionItem }) => {
       setError('Same Phone');
     } else if (!isValidPhoneNumber(p)) {
       setError('Invalid Phone');
+    } else {
+      setError('');
     }
   };
 
@@ -86,7 +87,7 @@ const UpdatePhoneComp: React.FC<Props> = ({ phoneUpdated, sessionItem }) => {
             await sendVerification();
           }}
         >
-          Send Verification
+          {loading ? 'Sending Verificaiton' : 'Send Verificaiton'}
         </SmallLightButton>
       </ActionBtnCol>
 

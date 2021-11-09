@@ -60,6 +60,8 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
       setError('Same Email');
     } else if (!validateEmail(e)) {
       setError('Invalid Email');
+    } else {
+      setError('');
     }
   };
 
@@ -106,7 +108,7 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
             await sendVerification();
           }}
         >
-          Send Verification
+          {loading ? 'Sending Verificaiton' : 'Send Verificaiton'}
         </SmallLightButton>
       </ActionBtnCol>
 
