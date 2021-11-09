@@ -296,7 +296,6 @@ export class DidService implements IDidService {
     diddocument: DIDDocument,
     vc: VerifiableCredential
   ): Promise<DIDDocument> {
-    console.log('Add verified');
     let builder = DIDDocument.Builder.newFromDocument(diddocument);
     builder.edit();
     return await builder
@@ -310,8 +309,8 @@ export class DidService implements IDidService {
     toRemove: string[] | undefined = undefined
   ): Promise<DIDDocument> {
     let builder = DIDDocument.Builder.newFromDocument(diddocument);
-    builder.edit();
 
+    builder.edit();
     vcs.forEach(vc => {
       if (diddocument.credentials?.has(vc.getId())) {
         builder.removeCredential(vc.getId());

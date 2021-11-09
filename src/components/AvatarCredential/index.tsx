@@ -29,7 +29,9 @@ const AvatarCredential: React.FC<AvatarCredentialProps> = ({
     if (credential === undefined) return '';
 
     let value = credential.getSubject().getProperties()['avatar'];
-    let avatarObject = JSON.parse(value.toString());
+
+    let jsonValue = JSON.stringify(value);
+    let avatarObject = JSON.parse(jsonValue);
     let baseStr = avatarObject['data'];
     if (!baseStr.startsWith('data:image/'))
       return `data:${avatarObject['content-type']};base64,${baseStr}`;

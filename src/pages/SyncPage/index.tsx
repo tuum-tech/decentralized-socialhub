@@ -81,7 +81,6 @@ const SyncPage: React.FC<InferMappedProps> = ({
           <IonGrid className={style['profilepagegrid']}>
             <IonRow className={style['profilecontent']}>
               <IonCol size="2" className={style['left-panel']}>
-                <Logo />
                 <LeftSideMenu />
               </IonCol>
               <IonCol size="10" className={style['right-panel']}>

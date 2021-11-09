@@ -8,14 +8,14 @@
     .border-primary {
       max-width: 5.5em;
       border: 3px solid var(--theme-primary-blue);
-      border-radius: 1.5em 2em 1.5em 2em;
+      border-radius: 100%;
       padding: 3px;
     }
   
     .border-danger {
       max-width: 5.5em;
       border: 3px solid var(--theme-danger-blue);
-      border-radius: 1.5em 2em 1.5em 2em;
+      border-radius: 100%;
       padding: 3px;
     }
   

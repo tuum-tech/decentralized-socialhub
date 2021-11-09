@@ -71,8 +71,6 @@ export class SyncService {
       new DID(sessionItem.did)
     );
 
-    console.log('DID Published', recentDocument);
-
     let response = new Map<string, VerifiableCredential>();
 
     recentDocument.credentials!.forEach(vc => {
@@ -91,7 +89,9 @@ export class SyncService {
     )
       return false;
 
-    // if (!AssistService.getPublishStatusTask(sessionItem.did)) return false;
+    let publishingStatus = AssistService.getPublishStatusTask(sessionItem.did);
+
+    if (publishingStatus !== undefined) return false;
 
     let differences = await this.GetSyncDifferences(sessionItem);
     return differences.length > 0;
@@ -167,6 +167,23 @@ export class SyncService {
         if (syncItem.BlockchainCredential == undefined)
           syncItem.State = SyncState.Vault;
       }
+
+      if (field.toLowerCase() === 'avatar') {
+        let imgVault = '';
+        let imgBlockchain = '';
+
+        if (syncItem.VaultCredential)
+          imgVault = syncItem.VaultCredential.getSubject().getProperty(
+            'avatar'
+          )['data'];
+        if (syncItem.BlockchainCredential)
+          imgBlockchain = syncItem.BlockchainCredential.getSubject().getProperty(
+            'avatar'
+          )['data'];
+
+        if (imgVault === imgBlockchain) return;
+      }
+
       response.push(syncItem);
     });
 
@@ -203,10 +220,12 @@ export class SyncService {
     sessionItem: ISessionItem,
     differences: Array<ISyncItem>
   ): Promise<void> {
-    console.log('update did document', differences);
     if (differences.length <= 0) return;
 
-    let vcs = differences.map(value => value.VaultCredential!);
+    let vcs = differences
+      .filter(value => value.VaultCredential !== undefined)
+      .map(value => value.VaultCredential!);
+
     let toRemoveFromBlockchain = differences
       .filter(
         value =>
@@ -216,9 +235,9 @@ export class SyncService {
       .map(m => m.BlockchainCredential!.getId().toString());
 
     let didService = await DidService.getInstance();
-    let didDocument: DIDDocument = await didService.getStoredDocument(
-      new DID(sessionItem.did)
-    );
+    let did = new DID(sessionItem.did);
+    let didDocument: DIDDocument = await didService.getPublishedDocument(did);
+    await didService.Store.storeDid(didDocument);
 
     let updatedDidDocument: DIDDocument;
     if (sessionItem.mnemonics === '') {
@@ -264,6 +283,8 @@ export class SyncService {
   ): Promise<ISessionItem> {
     if (differences.length <= 0) return sessionItem;
 
+    var newSessionItem = { ...sessionItem };
+
     differences.forEach(async item => {
       await DidcredsService.addOrUpdateCredentialToVault(
         sessionItem,
@@ -271,43 +292,42 @@ export class SyncService {
       );
       let value = this.getValue(item);
 
-      if (sessionItem.loginCred == undefined) sessionItem.loginCred = {};
+      if (newSessionItem.loginCred == undefined) newSessionItem.loginCred = {};
 
       switch (item.Label.toLowerCase()) {
         case 'name':
-          sessionItem.name = value;
+          newSessionItem.name = value;
           break;
 
         case 'email':
-          sessionItem.email = value;
-          sessionItem.loginCred!.email = value;
+          newSessionItem.email = value;
+          newSessionItem.loginCred!.email = value;
           break;
 
         case 'linkedin':
-          sessionItem.loginCred!.linkedin = value;
+          newSessionItem.loginCred!.linkedin = value;
           break;
 
         case 'twitter':
-          sessionItem.loginCred!.twitter = value;
+          newSessionItem.loginCred!.twitter = value;
           break;
         case 'facebook':
-          sessionItem.loginCred!.facebook = value;
+          newSessionItem.loginCred!.facebook = value;
           break;
         case 'github':
-          sessionItem.loginCred!.github = value;
+          newSessionItem.loginCred!.github = value;
           break;
         case 'discord':
-          sessionItem.loginCred!.discord = value;
+          newSessionItem.loginCred!.discord = value;
           break;
 
         case 'avatar':
           let atavarValue = item
             .BlockchainCredential!.getSubject()
             .getProperties()['avatar'];
-          let avatarObject = JSON.parse(atavarValue.toString());
+          let avatarObject = JSON.parse(JSON.stringify(atavarValue));
           let baseStr = avatarObject['data'];
-          sessionItem.avatar = `data:${avatarObject['content-type']};base64,${baseStr}`;
-
+          newSessionItem.avatar = `data:${avatarObject['content-type']};base64,${baseStr}`;
           break;
         default:
           break;
@@ -315,6 +335,6 @@ export class SyncService {
     });
 
     let userService = new UserService(await DidService.getInstance());
-    return await userService.updateSession(sessionItem, true);
+    return await userService.updateSession(newSessionItem, true);
   }
 }

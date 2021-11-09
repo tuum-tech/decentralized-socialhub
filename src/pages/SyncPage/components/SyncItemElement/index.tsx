@@ -80,6 +80,16 @@ const SyncItemElement: React.FC<IProps> = ({
     if (state === syncItem.State) stateStyle = 'SyncItemElementSelected';
 
     if (label.toLowerCase() == 'avatar') {
+      if (vc === undefined) {
+        let value = ' - ';
+        return (
+          <>
+            <SyncLabel className={style[stateStyle]}>{label}</SyncLabel>
+            <SyncTextValue className={style[stateStyle]}>{value}</SyncTextValue>
+          </>
+        );
+      }
+
       return (
         <>
           <SyncLabel className={style[stateStyle]}>{label}</SyncLabel>

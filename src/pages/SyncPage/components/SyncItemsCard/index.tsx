@@ -83,6 +83,7 @@ const SyncItemsCard: React.FC<IProps> = ({
 
             {syncItems.map(item => (
               <SyncItemElement
+                key={item.Label}
                 syncItem={item}
                 updateSyncItem={updateSyncItem}
               ></SyncItemElement>
