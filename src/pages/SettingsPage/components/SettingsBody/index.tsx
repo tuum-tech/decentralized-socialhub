@@ -160,7 +160,6 @@ const SettingsBody: React.FC<Props> = ({
                 <SettingsAccount userSession={useSession} />
               )}
               {active === 'settingsterms' && <SettingsTerms />}
-              {/* {active === 'settingshelp' && <SettingsHelp />} */}
               {active === 'settingssubscription' && <SettingsSubscription />}
               {active === 'settingslearn' && <SettingsLearn />}
               {active === 'settingscontact' && (

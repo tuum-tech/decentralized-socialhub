@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 interface Props {
   session: ISessionItem;
+  toggleHelpSupport: () => void;
 }
 
 const Container = styled.div`
@@ -30,7 +31,7 @@ const Container = styled.div`
   }
 `;
 
-const FooterLinks: React.FC<Props> = ({ session }) => {
+const FooterLinks: React.FC<Props> = ({ session, toggleHelpSupport }) => {
   const history = useHistory();
 
   return (
@@ -38,7 +39,7 @@ const FooterLinks: React.FC<Props> = ({ session }) => {
       <div className="item" onClick={() => history.push('/terms-of-use')}>
         Terms of use
       </div>
-      <div className="item" onClick={() => {}}>
+      <div className="item" onClick={toggleHelpSupport}>
         Help & Support
       </div>
       <div

@@ -32,7 +32,11 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
   ...props
 }: InferMappedProps) => {
   const history = useHistory();
-  const [showSupportModal, setShowSupportModal] = useState(true);
+  const [showSupportModal, setShowSupportModal] = useState(false);
+
+  const toggleHelpSupport = () => {
+    setShowSupportModal(!showSupportModal);
+  };
 
   return (
     <div className={style['navbar']}>
@@ -154,7 +158,10 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
         </IonItem>
       </IonList>
 
-      <FooterLinks session={props.session} />
+      <FooterLinks
+        session={props.session}
+        toggleHelpSupport={toggleHelpSupport}
+      />
 
       <HelpModal
         isOpen={showSupportModal}
