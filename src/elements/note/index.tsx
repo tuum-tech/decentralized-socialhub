@@ -70,6 +70,16 @@ const Indent = styled('div')`
   padding-left: 15px;
 `;
 
+const CountLabel = styled.div`
+  background: #edf2f7;
+  border-radius: 9px;
+  padding: 2px 12px;
+  margin: 0px 10px;
+  font-size: 13px;
+  font-weight: normal;
+  display: inline-flex;
+`;
+
 export {
   Title,
   Section,
@@ -83,5 +93,6 @@ export {
   PrimaryText,
   PageTitle,
   PageCategory,
-  Indent
+  Indent,
+  CountLabel
 };

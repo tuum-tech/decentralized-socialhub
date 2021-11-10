@@ -7,7 +7,11 @@ import ButtonWithLogo from './ButtonWithLogo';
 import SocialButton from './SocialButton';
 import ButtonLink from './ButtonLink';
 import FollowButton from './FollowButton';
-import { DefaultButton, DefaultLinkButton } from './DefaultButton';
+import {
+  DefaultButton,
+  DefaultLinkButton,
+  StyledButton
+} from './DefaultButton';
 import Button from './Button';
 
 const DashboardSignInButton = styled(IonRouterLink)`
@@ -143,5 +147,6 @@ export {
   ButtonLight,
   Button,
   SmallLightButton,
+  StyledButton,
   ViewProfileButton
 };

@@ -27,11 +27,12 @@ const SnippetSvg = ({ color = '#979797' }) => (
   </svg>
 );
 
-const TruncatedSpan = styled.span`
-  width: 100px;
+const TruncatedSpan = styled.h1`
+  font-size: 14px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin: 0px;
 `;
 
 const ProfileDesignation = styled(IonText)`
@@ -44,18 +45,28 @@ const ProfileDesignation = styled(IonText)`
   letter-spacing: normal;
   text-align: left;
   color: #979797;
+  display: flex;
+  align-items: center;
 `;
 
 interface IProp {
   did: string;
   color?: string;
+  width?: string;
 }
 
-const DidSnippet: React.FC<IProp> = ({ did, color = '#979797' }: IProp) => {
+const DidSnippet: React.FC<IProp> = ({
+  did,
+  color = '#979797',
+  width
+}: IProp) => {
   return (
     <ProfileDesignation>
       <SnippetSvg color={color} />
-      &nbsp;<TruncatedSpan style={{ color: color }}>{did}</TruncatedSpan>
+      &nbsp;
+      <TruncatedSpan style={{ color: color, width: width }}>
+        {did}
+      </TruncatedSpan>
     </ProfileDesignation>
   );
 };
