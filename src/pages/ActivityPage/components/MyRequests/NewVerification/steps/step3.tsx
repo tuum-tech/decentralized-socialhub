@@ -59,7 +59,7 @@ const ReviewPage = ({
 
       <IonRow>
         <IonCol size="5">
-          <InfoTxt>Seleceted Verifiers</InfoTxt>
+          <InfoTxt>Selected Verifiers</InfoTxt>
           <div style={{ display: 'flex' }}>
             {selectedDids.map(did => (
               <div className="mr-2" key={did}>

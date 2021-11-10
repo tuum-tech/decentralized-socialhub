@@ -36,6 +36,29 @@ const DefaultButton = styled.div<ButtonProps>`
   cursor: pointer;
 `;
 
+const StyledButton = styled.button<ButtonProps>`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  font-family: 'SF Pro Display';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 12px;
+
+  padding: ${props => (props.padding ? `${props.padding}` : '15px 25px')};
+  width: ${props => (props.width ? `${props.width}` : '100%')};
+  height: ${props => (props.height ? `${props.height}` : '100%')};
+  background: ${props => (props.bgColor ? `${props.bgColor}` : '#4c6fff')};
+  color: ${props => (props.color ? `${props.color}` : 'white')};
+  border-radius: ${props =>
+    props.borderRadius ? `${props.borderRadius}` : '9px'};
+
+  cursor: pointer;
+`;
+
 const DefaultLinkButton = styled(IonRouterLink)<ButtonProps>`
   display: flex;
   flex-direction: column;
@@ -62,4 +85,4 @@ const DefaultLinkButton = styled(IonRouterLink)<ButtonProps>`
   cursor: pointer;
 `;
 
-export { DefaultButton, DefaultLinkButton };
+export { DefaultButton, DefaultLinkButton, StyledButton };
