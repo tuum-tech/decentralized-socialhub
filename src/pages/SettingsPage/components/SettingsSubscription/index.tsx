@@ -16,7 +16,7 @@ const SettingsSubscription: React.FC = () => {
           <IonCard className={style['tab-card']}>
             <IonCardHeader>
               <IonCardTitle className={style['card-title']}>
-                Subscription & payments
+                Subscription &amp; payments
               </IonCardTitle>
             </IonCardHeader>
           </IonCard>

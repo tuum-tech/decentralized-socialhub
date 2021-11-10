@@ -30,6 +30,10 @@
         font-feature-settings: 'salt' on;
         color: #425466;
         display: block;
+
+        &.delete {
+          color: #ff5a5a;
+        }
       }
 
       .section-description {
@@ -45,12 +49,17 @@
         width: 113px;
         height: 32px;
         font: normal normal 600 12px/12px 'SF Pro Display';
+
+        &.delete-button {
+          --background: rgba(255, 90, 90, 0.1);
+          color: #ff5a5a;
+        }
       }
 
       .coming-soon {
         font-size: 12px;
         font-weight: 600;
-        color: #4c6fff;
+        color: #ff9840;
       }
     }
 

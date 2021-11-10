@@ -39,8 +39,10 @@ const FooterLinks: React.FC<Props> = ({ session, toggleHelpSupport }) => {
       <div className="item" onClick={() => history.push('/terms-of-use')}>
         Terms of use
       </div>
+
       <div className="item" onClick={toggleHelpSupport}>
-        Help & Support
+        <span>&middot;</span>
+        Help &amp; Support
       </div>
       <div
         className="item"
@@ -48,11 +50,12 @@ const FooterLinks: React.FC<Props> = ({ session, toggleHelpSupport }) => {
       >
         About Profile
       </div>
+
       <div
         className="item"
         onClick={() => window.open('https://www.tuum.tech')}
       >
-        Tuum.Tech
+        <span>&middot;</span>Tuum.Tech
       </div>
     </Container>
   );

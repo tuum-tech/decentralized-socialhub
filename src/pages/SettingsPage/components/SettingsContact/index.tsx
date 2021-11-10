@@ -66,7 +66,7 @@ const SettingsContact: React.FC<Props> = ({ useSession }: Props) => {
           <IonCol>
             <IonCard className={style['tab-card']}>
               <IonCardHeader>
-                <PageCategory>Help & Support</PageCategory>
+                <PageCategory>Help &amp; Support</PageCategory>
                 <PageTitle>Contact Us</PageTitle>
               </IonCardHeader>
               <IonCardContent>

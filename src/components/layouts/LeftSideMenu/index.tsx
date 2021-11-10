@@ -168,7 +168,10 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
         cssClass="my-custom-class"
         backdropDismiss={false}
       >
-        <HelpModalContent session={props.session} />
+        <HelpModalContent
+          session={props.session}
+          toggleHelpSupport={toggleHelpSupport}
+        />
       </HelpModal>
     </div>
   );

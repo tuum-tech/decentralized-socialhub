@@ -10,12 +10,13 @@ import CloseButton from './CloseButton';
 
 interface Props {
   session: ISessionItem;
+  toggleHelpSupport: () => void;
 }
 
 export const HelpModal = styled(IonModal)`
   --border-radius: 16px;
   --width: 513px;
-  --height: 325px;
+  --height: 345px;
 
   :host(.modal-card) ion-header ion-toolbar:first-of-type {
     padding: 0px;
@@ -31,12 +32,13 @@ const Container = styled.div`
     line-height: 136.02%;
     color: #27272e;
 
-    margin-bottom: 26px;
+    margin-bottom: 18px;
   }
 
   .item {
     display: flex;
     align-items: center;
+    padding: 8px 0;
 
     .title {
       font-style: normal;
@@ -74,11 +76,11 @@ const Container = styled.div`
   }
 `;
 
-const HelpModalContent: React.FC<Props> = ({ session }) => {
+const HelpModalContent: React.FC<Props> = ({ session, toggleHelpSupport }) => {
   return (
     <Container>
-      <p className="header">HelpModalContent</p>
-      <CloseButton onClick={() => {}} />
+      <p className="header">Help &amp; Support</p>
+      <CloseButton onClick={toggleHelpSupport} />
       <div className="item">
         <div className="img">
           <img src={supportIcon} alt="support" width={22} />

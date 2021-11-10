@@ -83,7 +83,7 @@ const SettingsBody: React.FC<Props> = ({
                     }}
                   >
                     <IonLabel>
-                      <h3>Help & Support</h3>
+                      <h3>Help &amp; Support</h3>
                     </IonLabel>
                     <CustomIcon
                       slot="end"
