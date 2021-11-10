@@ -24,6 +24,7 @@ import {
   SignOutSvg
 } from './components/icons';
 import HelpModalContent, { HelpModal } from './modals/Help';
+import ReportModalContent, { ReportModal } from './modals/Report';
 
 import style from './style.module.scss';
 
@@ -33,9 +34,17 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
 }: InferMappedProps) => {
   const history = useHistory();
   const [showSupportModal, setShowSupportModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
 
   const toggleHelpSupport = () => {
     setShowSupportModal(!showSupportModal);
+  };
+  const toggleReportProblem = () => {
+    setShowReportModal(!showReportModal);
+  };
+  const toggleContactUs = () => {
+    setShowContactModal(!showContactModal);
   };
 
   return (
@@ -171,8 +180,21 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
         <HelpModalContent
           session={props.session}
           toggleHelpSupport={toggleHelpSupport}
+          toggleReportProblem={toggleReportProblem}
+          toggleContactUs={toggleContactUs}
         />
       </HelpModal>
+
+      <ReportModal
+        isOpen={showReportModal}
+        cssClass="my-custom-class"
+        backdropDismiss={false}
+      >
+        <ReportModalContent
+          session={props.session}
+          toggleReportProblem={toggleReportProblem}
+        />
+      </ReportModal>
     </div>
   );
 };

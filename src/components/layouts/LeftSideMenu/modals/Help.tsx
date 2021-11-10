@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { IonModal } from '@ionic/react';
 import styled from 'styled-components';
 
@@ -11,6 +12,8 @@ import CloseButton from './CloseButton';
 interface Props {
   session: ISessionItem;
   toggleHelpSupport: () => void;
+  toggleReportProblem: () => void;
+  toggleContactUs: () => void;
 }
 
 export const HelpModal = styled(IonModal)`
@@ -39,6 +42,7 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     padding: 8px 0;
+    cursor: pointer;
 
     .title {
       font-style: normal;
@@ -76,12 +80,22 @@ const Container = styled.div`
   }
 `;
 
-const HelpModalContent: React.FC<Props> = ({ session, toggleHelpSupport }) => {
+const HelpModalContent: React.FC<Props> = ({
+  session,
+  toggleHelpSupport,
+  toggleReportProblem,
+  toggleContactUs
+}) => {
+  const history = useHistory();
+  const toSupportForum = () => {
+    history.push('/support-forum');
+  };
+
   return (
     <Container>
       <p className="header">Help &amp; Support</p>
       <CloseButton onClick={toggleHelpSupport} />
-      <div className="item">
+      <div className="item" onClick={toSupportForum}>
         <div className="img">
           <img src={supportIcon} alt="support" width={22} />
         </div>
@@ -96,12 +110,14 @@ const HelpModalContent: React.FC<Props> = ({ session, toggleHelpSupport }) => {
           <img src={helpIcon} alt="help" width={21} />
         </div>
         <div>
-          <div className="title">Help Articles</div>
+          <a href="https://docs.tuum.tech">
+            <div className="title">Help Articles</div>
+          </a>
           <div className="intro">Get to know more about profile </div>
         </div>
       </div>
 
-      <div className="item">
+      <div className="item" onClick={toggleReportProblem}>
         <div className="img">
           <img src={reportIcon} alt="report" width={24} />
         </div>
@@ -111,13 +127,13 @@ const HelpModalContent: React.FC<Props> = ({ session, toggleHelpSupport }) => {
         </div>
       </div>
 
-      <div className="item">
+      <div className="item" onClick={toggleContactUs}>
         <div className="img">
           <img src={contractIcon} alt="contact" width={24} />
         </div>
         <div>
           <div className="title">Contact us</div>
-          <div className="intro">Suggestions & feedbacks</div>
+          <div className="intro">Suggestions &amp; feedbacks</div>
         </div>
       </div>
     </Container>
