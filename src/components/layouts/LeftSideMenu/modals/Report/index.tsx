@@ -1,18 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import {
-  IonModal,
-  IonCol,
-  IonCard,
-  IonCardHeader,
-  IonCardContent,
-  IonGrid,
-  IonRow,
-  IonContent,
-  IonText
-} from '@ionic/react';
-import { PageTitle, PageCategory, SpaceLs } from 'src/elements/note';
+import { IonModal, IonText } from '@ionic/react';
+import { SpaceLs } from 'src/elements/note';
 import style from './style.module.scss';
 import TextInput from 'src/elements/inputs/TextInput';
 import SelectInput from 'src/elements/inputs/SelectInput';
@@ -30,7 +20,7 @@ interface Props {
 export const ReportModal = styled(IonModal)`
   --border-radius: 16px;
   --width: 513px;
-  --height: 345px;
+  --height: 647px;
 
   :host(.modal-card) ion-header ion-toolbar:first-of-type {
     padding: 0px;
@@ -156,67 +146,52 @@ const ReportModalContent: React.FC<Props> = ({
 
   return (
     <Container>
-      <p className="header">Report a problem</p>
+      <p className="header mb-0">Report a problem</p>
       <CloseButton onClick={toggleReportProblem} />
-      <IonContent className={style['settingsreport']}>
-        <IonGrid className={style['tab-grid']}>
-          <IonRow>
-            <IonCol>
-              <IonCard className={style['tab-card']}>
-                <IonCardHeader>
-                  <PageCategory>Help &amp; Support</PageCategory>
-                  <PageTitle>Report a problem</PageTitle>
-                </IonCardHeader>
-                <IonCardContent>
-                  <IonText>
-                    <p>
-                      Please use this form to submit any suggestions you may
-                      have for Profile. You can also use this form to submit any
-                      bugs you may have found while using the site. Ensure that
-                      you have linked at least one social media account or an
-                      email address linked to your Profile so we can get back to
-                      you.
-                    </p>
-                  </IonText>
-                  <SelectInput
-                    label="Feedback type"
-                    values={[
-                      { value: 1, text: 'Suggestion' },
-                      { value: 2, text: 'Bug' }
-                    ]}
-                    onChange={e => setFeedback(e)}
-                    placeholder="Suggestion"
-                  ></SelectInput>
-                  <TextInput
-                    label="Subject"
-                    value={subject}
-                    onChange={(e: any) => setSubject(e)}
-                    placeholder="Give it a short name"
-                  ></TextInput>
-                  <TextareaInput
-                    label="Comments"
-                    cols={20}
-                    rows={6}
-                    value={description}
-                    onChange={(e: any) => setDescription(e)}
-                    placeholder="Write your message here..."
-                  ></TextareaInput>
-                  <FileInput
-                    label="Attachment"
-                    onChange={e => setFile(e)}
-                  ></FileInput>
-                  <SpaceLs></SpaceLs>
-                  <Button
-                    type="primary"
-                    text="Send Message"
-                    onClick={send}
-                  ></Button>
-                </IonCardContent>
-              </IonCard>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </IonContent>
+      <div className={style['settingsreport']}>
+        <div>
+          <IonText>
+            <p className={style.description}>
+              Facing any issues, problems or something not working right share
+              it with us.
+            </p>
+          </IonText>
+          <SelectInput
+            label="Feedback type"
+            values={[
+              { value: 1, text: 'Suggestion' },
+              { value: 2, text: 'Bug' }
+            ]}
+            onChange={e => setFeedback(e)}
+            placeholder="Suggestion"
+            className={style.margin30}
+          ></SelectInput>
+          <TextInput
+            label="Subject"
+            value={subject}
+            onChange={(e: any) => setSubject(e)}
+            placeholder="Give it a short name"
+            className={style.margin30}
+          ></TextInput>
+          <TextareaInput
+            label="Comments"
+            cols={20}
+            rows={2}
+            value={description}
+            onChange={(e: any) => setDescription(e)}
+            placeholder="Write your message here..."
+            className={style.margin30}
+          ></TextareaInput>
+          <FileInput
+            label="Attachment a picture or a video"
+            onChange={e => setFile(e)}
+          ></FileInput>
+          <SpaceLs></SpaceLs>
+          <SpaceLs></SpaceLs>
+          <SpaceLs></SpaceLs>
+          <Button type="primary" text="Send Message" onClick={send}></Button>
+        </div>
+      </div>
     </Container>
   );
 };

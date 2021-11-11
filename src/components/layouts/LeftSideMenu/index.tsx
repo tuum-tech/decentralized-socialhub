@@ -25,6 +25,7 @@ import {
 } from './components/icons';
 import HelpModalContent, { HelpModal } from './modals/Help';
 import ReportModalContent, { ReportModal } from './modals/Report';
+import ContactModalContent, { ContactModal } from './modals/Contact';
 
 import style from './style.module.scss';
 
@@ -195,6 +196,17 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
           toggleReportProblem={toggleReportProblem}
         />
       </ReportModal>
+
+      <ContactModal
+        isOpen={showContactModal}
+        cssClass="my-custom-class"
+        backdropDismiss={false}
+      >
+        <ContactModalContent
+          session={props.session}
+          toggleContactUs={toggleContactUs}
+        />
+      </ContactModal>
     </div>
   );
 };
