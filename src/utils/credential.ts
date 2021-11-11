@@ -63,9 +63,11 @@ export const getCategoryTitle = (vc: VerificationData) => {
 
   let formatedTitle = '';
   const strings = cateogryTitle.split('_');
-  for (let i = 0; i < strings.length; i++) {
-    const word = strings[i];
-    formatedTitle += word[0].toUpperCase() + word.slice(1) + ' ';
-  }
+  // for (let i = 0; i < strings.length; i++) {
+  //   const word = strings[i];
+  //   formatedTitle += word[0].toUpperCase() + word.slice(1) + ' ';
+  // }
+  const word = strings[0].replace(':', '');
+  formatedTitle += word[0].toUpperCase() + word.slice(1) + ' ';
   return formatedTitle;
 };
