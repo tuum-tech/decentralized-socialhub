@@ -15,6 +15,7 @@ import { getItemsFromData } from 'src/utils/script';
 import { DID as ConnDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
 
 import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { DidcredsService } from './didcreds.service';
 
 export enum VerificationStatus {
   requested = 'requested',
@@ -379,7 +380,7 @@ export class VerificationService {
     return vc;
   }
 
-  public async storeNewCredential(v: VerificationRequest) {
+  public async storeNewCredential(v: VerificationRequest, user: ISessionItem) {
     const didService = await DidService.getInstance();
     const userService = new UserService(didService);
     const holder = await userService.SearchUserWithDID(v.from_did);
@@ -421,6 +422,11 @@ export class VerificationService {
         VerifiableCredential.parse(v.credential)
       );
     }
+
+    await DidcredsService.addOrUpdateCredentialToVault(
+      user,
+      VerifiableCredential.parse(v.credential)
+    );
 
     await didService.storeDocument(didDocument);
 

@@ -4,6 +4,7 @@ import {
   JSONObject,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
+import { isEqual } from 'lodash';
 import session from 'redux-persist/lib/storage/session';
 import { AssistService } from './assist.service';
 
@@ -67,7 +68,7 @@ export class SyncService {
     sessionItem: ISessionItem
   ): Promise<Map<string, VerifiableCredential>> {
     let didService = await DidService.getInstance();
-    let recentDocument = await didService.getPublishedDocument(
+    let recentDocument = await didService.getStoredDocument(
       new DID(sessionItem.did)
     );
 
@@ -110,10 +111,6 @@ export class SyncService {
 
     if (vaultVcs.has(sessionItem.did + '#name')) return;
 
-    let documentVcs = await this.GetVerifiableCredentialsFromRecentDocument(
-      sessionItem
-    );
-
     let didService = await DidService.getInstance();
     let recentDocument = await didService.getStoredDocument(
       new DID(sessionItem.did)
@@ -131,6 +128,7 @@ export class SyncService {
     let documentVcs = await this.GetVerifiableCredentialsFromRecentDocument(
       sessionItem
     );
+
     let response = new Array<ISyncItem>();
 
     this.fields.forEach(field => {
@@ -158,16 +156,6 @@ export class SyncService {
       )
         return;
 
-      if (
-        (syncItem.BlockchainCredential === undefined &&
-          syncItem.VaultCredential !== undefined) ||
-        (syncItem.BlockchainCredential !== undefined &&
-          syncItem.VaultCredential === undefined)
-      ) {
-        if (syncItem.BlockchainCredential == undefined)
-          syncItem.State = SyncState.Vault;
-      }
-
       if (field.toLowerCase() === 'avatar') {
         let imgVault = '';
         let imgBlockchain = '';
@@ -187,7 +175,83 @@ export class SyncService {
       response.push(syncItem);
     });
 
+    let multipleTypes = ['Education', 'Experience'];
+
+    multipleTypes.forEach(vcType => {
+      let differences = this.GetDifferencesFromMultipleIds(
+        vaultVcs,
+        documentVcs,
+        vcType
+      );
+
+      if (differences.length > 0) response.push(...differences);
+    });
+
     return response;
+  }
+
+  private static GetDifferencesFromMultipleIds(
+    vaultVcs: Map<string, VerifiableCredential>,
+    documentVcs: Map<string, VerifiableCredential>,
+    vcType: string
+  ): Array<ISyncItem> {
+    let response = new Array<ISyncItem>();
+    vaultVcs.forEach((vaultVc, key) => {
+      if (!key.startsWith(vcType.toLowerCase())) return;
+      let syncItem: ISyncItem = {
+        Label: vcType,
+        State: SyncState.Waiting,
+        BlockchainCredential: documentVcs.has(key)
+          ? documentVcs.get(key)
+          : undefined,
+        VaultCredential: vaultVc
+      };
+
+      if (
+        documentVcs.has(key) &&
+        !this.IsVcEqual(
+          vaultVc.getSubject().getProperty(key),
+          documentVcs
+            .get(key)!
+            .getSubject()
+            .getProperty(key)
+        )
+      )
+        return;
+
+      response.push(syncItem);
+    });
+
+    documentVcs.forEach((docVc, key) => {
+      if (vaultVcs.has(key)) return;
+
+      let syncItem: ISyncItem = {
+        Label: vcType,
+        State: SyncState.Waiting,
+        BlockchainCredential: documentVcs.get(key),
+        VaultCredential: undefined
+      };
+      response.push(syncItem);
+    });
+
+    return response;
+  }
+
+  private static IsVcEqual(vc1: any, vc2: any): boolean {
+    let vc1Keys = Object.keys(vc1);
+    let vc2Keys = Object.keys(vc2);
+
+    let isEqualResponse = true;
+
+    vc1Keys.forEach(key => {
+      if (vc2[key] === undefined || vc1[key] !== vc2[key])
+        isEqualResponse = false;
+    });
+
+    vc2Keys.forEach(key => {
+      if (vc1[key] === undefined) isEqualResponse = false;
+    });
+    return isEqualResponse;
   }
 
   static getValue(syncItem: ISyncItem) {
