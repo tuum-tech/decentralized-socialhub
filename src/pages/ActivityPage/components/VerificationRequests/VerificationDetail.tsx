@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { IonTextarea, IonModal } from '@ionic/react';
 import { Link } from 'react-router-dom';
 
-import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
-import { UserService } from 'src/services/user.service';
-import { DidService } from 'src/services/did.service.new';
-import { EssentialsService } from 'src/services/essentials.service';
+// import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
+// import { UserService } from 'src/services/user.service';
+// import { DidService } from 'src/services/did.service.new';
+// import { EssentialsService } from 'src/services/essentials.service';
 
 import { StyledButton } from 'src/elements/buttons';
 import Expander from 'src/elements/Expander';
@@ -16,7 +16,7 @@ import Avatar from 'src/components/Avatar';
 import { InfoTxt, Container } from '../MyRequests/VerificationDetail';
 import { getStatusColor } from '../MyRequests/UserRows';
 
-import { VerificationService } from 'src/services/verification.service';
+// import { VerificationService } from 'src/services/verification.service';
 
 import { timeSince } from 'src/utils/time';
 import { getDIDString } from 'src/utils/did';
@@ -117,13 +117,13 @@ const VerificationDetailContent = ({
   const handleAction = async (approve: boolean) => {
     setLoading(approve ? 1 : 2);
 
-    const vService = new VerificationService();
-    const vc = await vService.approveCredential(
-      session,
-      verification,
-      approve,
-      feedbacks
-    );
+    // const vService = new VerificationService();
+    // const vc = await vService.approveCredential(
+    //   session,
+    //   verification,
+    //   approve,
+    //   feedbacks
+    // );
     setLoading(0);
     closeModal();
   };

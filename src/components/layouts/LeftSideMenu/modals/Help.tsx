@@ -88,7 +88,18 @@ const HelpModalContent: React.FC<Props> = ({
 }) => {
   const history = useHistory();
   const toSupportForum = () => {
+    toggleHelpSupport();
     history.push('/support-forum');
+  };
+
+  const handleReportProblem = () => {
+    toggleHelpSupport();
+    toggleReportProblem();
+  };
+
+  const handleContactUs = () => {
+    toggleHelpSupport();
+    toggleContactUs();
   };
 
   return (
@@ -110,14 +121,14 @@ const HelpModalContent: React.FC<Props> = ({
           <img src={helpIcon} alt="help" width={21} />
         </div>
         <div>
-          <a href="https://docs.tuum.tech">
+          <a href="https://docs.tuum.tech" style={{ textDecoration: 'none' }}>
             <div className="title">Help Articles</div>
           </a>
           <div className="intro">Get to know more about profile </div>
         </div>
       </div>
 
-      <div className="item" onClick={toggleReportProblem}>
+      <div className="item" onClick={handleReportProblem}>
         <div className="img">
           <img src={reportIcon} alt="report" width={24} />
         </div>
@@ -127,7 +138,7 @@ const HelpModalContent: React.FC<Props> = ({
         </div>
       </div>
 
-      <div className="item" onClick={toggleContactUs}>
+      <div className="item" onClick={handleContactUs}>
         <div className="img">
           <img src={contractIcon} alt="contact" width={24} />
         </div>

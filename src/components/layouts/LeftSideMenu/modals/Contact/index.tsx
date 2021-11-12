@@ -118,6 +118,8 @@ const ContactModalContent: React.FC<Props> = ({ session, toggleContactUs }) => {
     } else {
       showNotify('Error sending email. Please try again another time', 'error');
     }
+
+    toggleContactUs();
   };
 
   return (

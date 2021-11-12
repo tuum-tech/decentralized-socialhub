@@ -142,6 +142,8 @@ const ReportModalContent: React.FC<Props> = ({
     } else {
       showNotify('Error sending email. Please try again another time', 'error');
     }
+
+    toggleReportProblem();
   };
 
   return (
