@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { IonItem, IonLabel, IonList } from '@ionic/react';
 
@@ -12,8 +12,9 @@ import { InferMappedProps, SubState } from './types';
 import { UserService } from 'src/services/user.service';
 
 import Logo from 'src/elements/Logo';
-// import FooterLinks from './FooterLinks';
-import ConnectionMenu from './ConnectionMenu';
+import FooterLinks from './components/FooterLinks';
+import ConnectionMenu from './components/ConnectionMenu';
+
 import {
   HouseSvg,
   PeopleSvg,
@@ -21,7 +22,10 @@ import {
   SettingsSvg,
   ActivitySvg,
   SignOutSvg
-} from './icons';
+} from './components/icons';
+import HelpModalContent, { HelpModal } from './modals/Help';
+import ReportModalContent, { ReportModal } from './modals/Report';
+import ContactModalContent, { ContactModal } from './modals/Contact';
 
 import style from './style.module.scss';
 
@@ -30,6 +34,19 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
   ...props
 }: InferMappedProps) => {
   const history = useHistory();
+  const [showSupportModal, setShowSupportModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
+
+  const toggleHelpSupport = () => {
+    setShowSupportModal(!showSupportModal);
+  };
+  const toggleReportProblem = () => {
+    setShowReportModal(!showReportModal);
+  };
+  const toggleContactUs = () => {
+    setShowContactModal(!showContactModal);
+  };
 
   return (
     <div className={style['navbar']}>
@@ -150,7 +167,46 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
           </IonLabel>
         </IonItem>
       </IonList>
-      {/* <FooterLinks session={props.session} /> */}
+
+      <FooterLinks
+        session={props.session}
+        toggleHelpSupport={toggleHelpSupport}
+      />
+
+      <HelpModal
+        isOpen={showSupportModal}
+        cssClass="my-custom-class"
+        backdropDismiss={false}
+      >
+        <HelpModalContent
+          session={props.session}
+          toggleHelpSupport={toggleHelpSupport}
+          toggleReportProblem={toggleReportProblem}
+          toggleContactUs={toggleContactUs}
+        />
+      </HelpModal>
+
+      <ReportModal
+        isOpen={showReportModal}
+        cssClass="my-custom-class"
+        backdropDismiss={false}
+      >
+        <ReportModalContent
+          session={props.session}
+          toggleReportProblem={toggleReportProblem}
+        />
+      </ReportModal>
+
+      <ContactModal
+        isOpen={showContactModal}
+        cssClass="my-custom-class"
+        backdropDismiss={false}
+      >
+        <ContactModalContent
+          session={props.session}
+          toggleContactUs={toggleContactUs}
+        />
+      </ContactModal>
     </div>
   );
 };

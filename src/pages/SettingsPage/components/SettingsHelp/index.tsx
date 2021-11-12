@@ -20,7 +20,7 @@ const SettingsHelp: React.FC = () => {
             <IonCard className={style['tab-card']}>
               <IonCardHeader>
                 <IonCardTitle className={style['card-title']}>
-                  Help & Support
+                  Help &amp; Support
                 </IonCardTitle>
               </IonCardHeader>
             </IonCard>

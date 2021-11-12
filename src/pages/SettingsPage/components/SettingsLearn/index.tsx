@@ -35,7 +35,7 @@ const SettingsLearn: React.FC = () => {
           <IonCol>
             <IonCard className={style['tab-card']}>
               <IonCardHeader>
-                <PageCategory>Help & Support</PageCategory>
+                <PageCategory>Help &amp; Support</PageCategory>
                 <PageTitle>Learn About Profile</PageTitle>
               </IonCardHeader>
               <IonCardContent>
