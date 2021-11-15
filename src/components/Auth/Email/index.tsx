@@ -10,7 +10,7 @@ import {
   CodeInput
 } from '../components';
 import { AccountType } from 'src/services/user.service';
-import { requestEmailVerifyCode } from '../fetchapi';
+import { requestVerifyCode } from '../fetchapi';
 
 export const EmailVerificationDetailModal = styled(IonModal)`
   --border-radius: 16px;
@@ -49,8 +49,13 @@ const EmailVerificationDetailContent: React.FC<Props> = ({
 
   const verify = async () => {
     setLoading(true);
-    let response = (await requestEmailVerifyCode(code)) as IVerifyCodeResponse;
-    if (response.data.return_code === 'CODE_CONFIRMED') {
+    let response = (await requestVerifyCode(
+      code,
+      email,
+      ''
+    )) as IVerifyCodeResponse;
+
+    if (response.data.return_code === 'CONFIRMED') {
       const { name, email, did } = response.data;
       setCredentials({
         did,
@@ -62,8 +67,9 @@ const EmailVerificationDetailContent: React.FC<Props> = ({
       });
     }
 
+    console.log('=====>response', response);
     let status = response.data.return_code;
-    if (status === 'CODE_CONFIRMED') {
+    if (status === 'CONFIRMED') {
       if (afterVerified) {
         afterVerified();
       } else if (credentials.did && credentials.did.length > 0) {

@@ -8,7 +8,7 @@ import {
   CancelButton,
   CodeInput
 } from '../components';
-import { verifyPhoneCode } from '../fetchapi';
+import { requestVerifyCode } from '../fetchapi';
 
 export const PhoneVerificationDetailModal = styled(IonModal)`
   --border-radius: 16px;
@@ -40,9 +40,9 @@ const PhoneVerificationDetailContent: React.FC<Props> = ({
 
   const verify = async () => {
     setLoading(true);
-    const verifyCodeRes = (await verifyPhoneCode(
+    const verifyCodeRes = (await requestVerifyCode(
       code,
-      did,
+      '',
       phone
     )) as IVerifyCodeResponse;
     setLoading(false);
@@ -50,7 +50,7 @@ const PhoneVerificationDetailContent: React.FC<Props> = ({
     if (
       verifyCodeRes &&
       verifyCodeRes.data &&
-      verifyCodeRes.data.return_code === 'CODE_CONFIRMED'
+      verifyCodeRes.data.return_code === 'CONFIRMED'
     ) {
       afterVerified();
     } else {

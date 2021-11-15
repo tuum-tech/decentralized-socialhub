@@ -52,7 +52,10 @@ import FooterLinks, {
 import EmailVerificationDetailContent, {
   EmailVerificationDetailModal
 } from 'src/components/Auth/Email';
-import { requestCreateEmailUser } from 'src/components/Auth/fetchapi';
+import {
+  requestCreateEmailUser,
+  requestUpdateEmailOrPhone
+} from 'src/components/Auth/fetchapi';
 
 const ErrorText = styled(Text16)`
   text-align: center;
@@ -101,7 +104,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
     let response = (await requestCreateEmailUser(
       name,
       email,
-      ''
+      'temporary_' + name + email
     )) as ICreateUserResponse;
     if (response.meta.code !== 200) {
       setDisplayText('An error happened when creating user.');
@@ -167,6 +170,26 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
     } else {
       setSignedUsers(newSignedUsers);
     }
+    setLoading('');
+  };
+
+  const resendVerificaitonCode = async () => {
+    setLoading('Resending Verification Code');
+
+    let response = (await requestUpdateEmailOrPhone(
+      'temporary_' + name + email,
+      email,
+      ''
+    )) as IUpdateEmailResponse;
+
+    if (response && response.data && response.data.status === 'success') {
+      if (!showEmailVerifyModal) {
+        setShowEmailVerifyModal(true);
+      }
+    } else {
+      setError('Failed to send verification');
+    }
+
     setLoading('');
   };
 
@@ -290,7 +313,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
             <EmailVerificationDetailContent
               close={() => setShowEmailVerifyModal(false)}
               email={email}
-              resend={createUser}
+              resend={resendVerificaitonCode}
             />
           </EmailVerificationDetailModal>
         </OnBoardLayoutRightContent>

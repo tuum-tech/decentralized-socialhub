@@ -9,7 +9,7 @@ import SmallTextInput from 'src/elements/inputs/SmallTextInput';
 import EmailVerificationDetailContent, {
   EmailVerificationDetailModal
 } from 'src/components/Auth/Email';
-import { requestUpdateEmail } from 'src/components/Auth/fetchapi';
+import { requestUpdateEmailOrPhone } from 'src/components/Auth/fetchapi';
 
 import { validateEmail } from 'src/utils/validation';
 
@@ -34,6 +34,7 @@ export const ErrorText = styled(Text16)`
 `;
 
 export const SaveButton = styled(SmallLightButton)<{ disabled: boolean }>`
+  margin-left: 10px;
   color: ${props => {
     return props.disabled ? '#6B829A' : '#4c6fff';
   }};
@@ -65,10 +66,10 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
   const sendVerification = async () => {
     setLoading(true);
 
-    let response = (await requestUpdateEmail(
+    let response = (await requestUpdateEmailOrPhone(
       sessionItem.did,
       email,
-      sessionItem.phone || ''
+      sessionItem.loginCred?.phone || ''
     )) as IUpdateEmailResponse;
 
     if (response && response.data && response.data.status === 'success') {
@@ -80,6 +81,16 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
     }
 
     setLoading(false);
+  };
+
+  const disableButton = () => {
+    return (
+      sessionItem.tutorialStep !== 4 ||
+      loading ||
+      error !== '' ||
+      email === sessionItem.loginCred?.email ||
+      email === ''
+    );
   };
 
   return (
@@ -100,12 +111,7 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
       </IonCol>
       <ActionBtnCol size="auto">
         <SaveButton
-          disabled={
-            sessionItem.tutorialStep !== 4 ||
-            loading ||
-            error !== '' ||
-            email === sessionItem.loginCred?.email
-          }
+          disabled={disableButton()}
           onClick={async () => {
             await sendVerification();
           }}

@@ -8,7 +8,7 @@ import PhoneVerificationDetailContent, {
   PhoneVerificationDetailModal
 } from 'src/components/Auth/Phone';
 
-import { updatePhoneNumber } from 'src/components/Auth/fetchapi';
+import { requestUpdateEmailOrPhone } from 'src/components/Auth/fetchapi';
 
 import { ActionBtnCol, Container, ErrorText, SaveButton } from './EmailComp';
 
@@ -26,9 +26,9 @@ const UpdatePhoneComp: React.FC<Props> = ({ phoneUpdated, sessionItem }) => {
   const sendVerification = async () => {
     setLoading(true);
 
-    let response = (await updatePhoneNumber(
+    let response = (await requestUpdateEmailOrPhone(
       sessionItem.did,
-      sessionItem.loginCred?.phone || '',
+      sessionItem.loginCred?.email || '',
       phone
     )) as IUpdateEmailResponse;
 
@@ -55,6 +55,16 @@ const UpdatePhoneComp: React.FC<Props> = ({ phoneUpdated, sessionItem }) => {
     }
   };
 
+  const disableButton = () => {
+    return (
+      sessionItem.tutorialStep !== 4 ||
+      loading ||
+      error !== '' ||
+      phone === sessionItem.loginCred?.phone ||
+      phone === ''
+    );
+  };
+
   return (
     <Container class="ion-justify-content-start">
       <IonCol size="5">
@@ -73,17 +83,21 @@ const UpdatePhoneComp: React.FC<Props> = ({ phoneUpdated, sessionItem }) => {
       </IonCol>
       <ActionBtnCol size="auto">
         <SaveButton
-          disabled={
-            sessionItem.tutorialStep !== 4 ||
-            loading ||
-            error !== '' ||
-            phone === sessionItem.loginCred?.phone
-          }
+          disabled={disableButton()}
           onClick={async () => {
             await sendVerification();
           }}
         >
           {loading ? 'Sending Verificaiton' : 'Send Verificaiton'}
+        </SaveButton>
+        <SaveButton
+          disabled={phone === ''}
+          onClick={() => {
+            setPhone('');
+            phoneUpdated('');
+          }}
+        >
+          Clear
         </SaveButton>
       </ActionBtnCol>
 

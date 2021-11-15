@@ -329,8 +329,7 @@ let run = async () => {
         body: {
           collection: 'users',
           filter: {
-            did: '$params.did',
-            status: 'CONFIRMED'
+            did: '$params.did'
           },
           update: {
             $set: {
@@ -537,7 +536,7 @@ let run = async () => {
       allowAnonymousApp: true,
       executable: {
         type: 'aggregated',
-        name: 'find_and_update_code',
+        name: 'verify_email_code',
         body: [
           {
             type: 'find',
@@ -561,7 +560,8 @@ let run = async () => {
               },
               update: {
                 $set: {
-                  status: 'CONFIRMED'
+                  status: 'CONFIRMED',
+                  'loginCred.email': '$params.email'
                 }
               }
             }
@@ -571,12 +571,12 @@ let run = async () => {
     });
 
     await client.Scripting.SetScript({
-      name: 'verify_sms_code', // is being used in backend
+      name: 'verify_phone_code', // is being used in backend
       allowAnonymousUser: true,
       allowAnonymousApp: true,
       executable: {
         type: 'aggregated',
-        name: 'find_and_update_code',
+        name: 'verify_phone_code',
         body: [
           {
             type: 'find',
@@ -585,8 +585,7 @@ let run = async () => {
             body: {
               collection: 'users',
               filter: {
-                code: '$params.code',
-                did: '$params.did'
+                code: '$params.code'
               }
             }
           },

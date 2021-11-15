@@ -108,7 +108,6 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                 updateFunc={async (newUserInfo: ISessionItem) => {
                   await TuumTechScriptService.updateTuumUser(newUserInfo);
                   await updateSession({ session: newUserInfo });
-
                   showNotify('Basic info is successfuly saved', 'success');
                 }}
               ></BasicCard>
