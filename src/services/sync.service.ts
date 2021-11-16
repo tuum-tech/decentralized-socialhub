@@ -4,6 +4,7 @@ import {
   JSONObject,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
+import { Guid } from 'guid-typescript';
 import { isEqual } from 'lodash';
 import session from 'redux-persist/lib/storage/session';
 import { AssistService } from './assist.service';
@@ -13,6 +14,7 @@ import { DidcredsService } from './didcreds.service';
 import { DidDocumentService } from './diddocument.service';
 import { EssentialsService } from './essentials.service';
 import { HiveService } from './hive.service';
+import { ProfileService } from './profile.service';
 import { TuumTechScriptService } from './script.service';
 import { UserService } from './user.service';
 
@@ -39,7 +41,8 @@ export class SyncService {
     'Twitter',
     'Linkedin',
     'Discord',
-    'Github'
+    'Github',
+    'Phone'
   ];
 
   private static async GetVerifiableCredentialsFromVault(
@@ -197,7 +200,14 @@ export class SyncService {
   ): Array<ISyncItem> {
     let response = new Array<ISyncItem>();
     vaultVcs.forEach((vaultVc, key) => {
-      if (!key.startsWith(vcType.toLowerCase())) return;
+      let fragment = vcType.toLowerCase();
+      if (
+        !vaultVc
+          .getId()
+          .getFragment()
+          .startsWith(fragment)
+      )
+        return;
       let syncItem: ISyncItem = {
         Label: vcType,
         State: SyncState.Waiting,
@@ -209,12 +219,12 @@ export class SyncService {
 
       if (
         documentVcs.has(key) &&
-        !this.IsVcEqual(
-          vaultVc.getSubject().getProperty(key),
+        this.IsVcEqual(
+          vaultVc.getSubject().getProperty(fragment),
           documentVcs
             .get(key)!
             .getSubject()
-            .getProperty(key)
+            .getProperty(fragment)
         )
       )
         return;
@@ -223,6 +233,13 @@ export class SyncService {
     });
 
     documentVcs.forEach((docVc, key) => {
+      if (
+        !docVc
+          .getId()
+          .getFragment()
+          .startsWith(vcType.toLowerCase())
+      )
+        return;
       if (vaultVcs.has(key)) return;
 
       let syncItem: ISyncItem = {
@@ -238,6 +255,10 @@ export class SyncService {
   }
 
   private static IsVcEqual(vc1: any, vc2: any): boolean {
+    if (vc1 === undefined && vc2 === undefined) return true;
+    if (vc1 === undefined && vc2 !== undefined) return false;
+    if (vc1 !== undefined && vc2 === undefined) return false;
+
     let vc1Keys = Object.keys(vc1);
     let vc2Keys = Object.keys(vc2);
 
@@ -384,6 +405,88 @@ export class SyncService {
         case 'discord':
           newSessionItem.loginCred!.discord = value;
           break;
+
+        case 'phone':
+          newSessionItem.loginCred!.phone = value;
+          break;
+
+        case 'education':
+          let subjectEducation = item.BlockchainCredential?.getSubject().getProperty(
+            item.BlockchainCredential.getId()
+              .getFragment()
+              .toLowerCase()
+          );
+          let educationItem: EducationItem = {
+            end:
+              subjectEducation['end'] === undefined
+                ? ''
+                : subjectEducation['end'],
+            institution: subjectEducation['institution'],
+            start: subjectEducation['start'],
+            still:
+              subjectEducation['still'] === undefined
+                ? false
+                : subjectEducation['still'],
+            program: subjectEducation['program'],
+            guid: Guid.create(),
+            isEmpty: false,
+            title: '',
+            description: '',
+            order: '',
+            verifiers: []
+          };
+          await ProfileService.updateEducationProfile(
+            educationItem,
+            sessionItem
+          );
+
+        case 'experience':
+          let subjectExperience = item.BlockchainCredential?.getSubject().getProperty(
+            item.BlockchainCredential.getId()
+              .getFragment()
+              .toLowerCase()
+          );
+          let experienceItem: ExperienceItem = {
+            end:
+              subjectExperience['end'] === undefined
+                ? ''
+                : subjectExperience['end'],
+            institution:
+              subjectExperience['institution'] === undefined
+                ? ''
+                : subjectExperience['institution'],
+            start: subjectExperience['start'],
+            still:
+              subjectExperience['still'] === undefined
+                ? false
+                : subjectExperience['still'],
+            program: subjectExperience['program'],
+            guid: Guid.create(),
+            isEmpty: false,
+            title:
+              subjectExperience['title'] === undefined
+                ? ''
+                : subjectExperience['title'],
+            description:
+              subjectExperience['description'] === undefined
+                ? ''
+                : subjectExperience['description'],
+            order:
+              subjectExperience['order'] === undefined
+                ? ''
+                : subjectExperience['order'],
+            verifiers: [],
+            isEnabled: true
+          };
+          await ProfileService.updateExperienceProfile(
+            experienceItem,
+            sessionItem
+          );
+
+          await DidcredsService.addOrUpdateCredentialToVault(
+            sessionItem,
+            item.BlockchainCredential!
+          );
 
         case 'avatar':
           let atavarValue = item

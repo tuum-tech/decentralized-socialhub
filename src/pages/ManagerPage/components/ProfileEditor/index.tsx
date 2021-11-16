@@ -125,6 +125,11 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                   const newName = newUserInfo.name!;
                   const oldName = userInfo.name!;
 
+                  const newPhone = newUserInfo.loginCred?.phone;
+                  const oldPhone = userInfo.loginCred?.phone;
+
+                  console.log(newUserInfo);
+
                   if (newEmail !== oldEmail) {
                     let response = (await requestUpdateEmail(
                       userInfo.did,
@@ -153,15 +158,30 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                     newUserInfo.loginCred!.email = oldEmail;
                   }
 
+                  let didService = await DidService.getInstance();
+                  let doc = await didService.getStoredDocument(
+                    new DID(session.did)
+                  );
+
                   if (newName !== oldName) {
-                    let didService = await DidService.getInstance();
-                    let doc = await didService.getStoredDocument(
-                      new DID(session.did)
-                    );
                     let vc = await didService.newSelfVerifiableCredential(
                       doc,
                       'name',
                       newName
+                    );
+
+                    await DidcredsService.addOrUpdateCredentialToVault(
+                      session,
+                      vc
+                    );
+                  }
+
+                  console.log('updating phone', newPhone, oldPhone);
+                  if (newPhone !== oldPhone) {
+                    let vc = await didService.newSelfVerifiableCredential(
+                      doc,
+                      'phone',
+                      newPhone
                     );
 
                     await DidcredsService.addOrUpdateCredentialToVault(

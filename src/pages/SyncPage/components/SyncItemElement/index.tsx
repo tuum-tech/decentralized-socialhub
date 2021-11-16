@@ -96,6 +96,42 @@ const SyncItemElement: React.FC<IProps> = ({
           <AvatarCredential credential={vc}></AvatarCredential>
         </>
       );
+    } else if (
+      label.toLowerCase() == 'education' ||
+      label.toLowerCase() == 'experience'
+    ) {
+      // let vcSubject =  vaultVc.getSubject().getProperty(key)
+      // let array = Object.getOwnPropertyNames(a);
+
+      let mapItens: Array<any> = [];
+
+      if (vc !== undefined) {
+        let fragment = vc
+          .getId()
+          .getFragment()
+          .toLowerCase();
+        let subjectItem = vc.getSubject().getProperty(fragment);
+        let keys = Object.keys(subjectItem);
+        keys.forEach(key => {
+          mapItens.push(
+            <SyncTextValue className={style[stateStyle]}>
+              {key}: {subjectItem[key]}
+            </SyncTextValue>
+          );
+        });
+      }
+
+      return (
+        <>
+          <SyncLabel className={style[stateStyle]}>{label}</SyncLabel>
+          {vc === undefined && (
+            <SyncTextValue className={style[stateStyle]}>
+              &nbsp;-&nbsp;
+            </SyncTextValue>
+          )}
+          {vc !== undefined && mapItens.map(item => item)}
+        </>
+      );
     } else {
       let value = ' - ';
       if (vc !== undefined) value = getValue(vc);
