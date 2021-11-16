@@ -8,11 +8,12 @@ import {
   IonRow,
   IonCol
 } from '@ionic/react';
+import { isEqual } from 'lodash';
 
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import SmallTextInput from 'src/elements/inputs/SmallTextInput';
-import { SmallLightButton } from 'src/elements/buttons';
-import PhonerNumberComp from './PhonerNumberComp';
+import EmailComp, { SaveButton } from './EmailComp';
+import PhoneComp from './PhoneComp';
 
 interface IProps {
   sessionItem: ISessionItem;
@@ -24,17 +25,11 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
   const handleChange = (evt: any) => {
     const value =
       evt.target.type === 'checkbox' ? evt.target.checked : evt.target.value;
-    if (evt.target.name === 'email') {
-      setCurrentBasicDTO({
-        ...currentBasicDTO,
-        loginCred: { ...currentBasicDTO.loginCred, email: value }
-      });
-    } else {
-      setCurrentBasicDTO({
-        ...currentBasicDTO,
-        [evt.target.name]: value
-      });
-    }
+
+    setCurrentBasicDTO({
+      ...currentBasicDTO,
+      [evt.target.name]: value
+    });
   };
 
   return (
@@ -46,12 +41,15 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
               <IonCardTitle>Basic Information</IonCardTitle>
             </IonCol>
             <IonCol size="auto">
-              <SmallLightButton
-                disabled={sessionItem.tutorialStep !== 4}
+              <SaveButton
+                disabled={
+                  sessionItem.tutorialStep !== 4 ||
+                  isEqual(sessionItem, currentBasicDTO)
+                }
                 onClick={() => updateFunc(currentBasicDTO)}
               >
                 Save
-              </SmallLightButton>
+              </SaveButton>
             </IonCol>
           </IonRow>
         </IonGrid>
@@ -69,20 +67,16 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
               />
             </IonCol>
           </IonRow>
-          <IonRow class="ion-justify-content-start">
-            <IonCol size="5">
-              <SmallTextInput
-                disabled={sessionItem.tutorialStep !== 4}
-                label="Email"
-                name="email"
-                value={
-                  currentBasicDTO.loginCred && currentBasicDTO.loginCred!.email
-                }
-                onChange={handleChange}
-              />
-            </IonCol>
-          </IonRow>
 
+          <EmailComp
+            sessionItem={sessionItem}
+            emailUpdated={(newEmail: string) => {
+              setCurrentBasicDTO({
+                ...currentBasicDTO,
+                loginCred: { ...currentBasicDTO.loginCred, email: newEmail }
+              });
+            }}
+          />
           <IonRow class="ion-justify-content-start">
             <IonCol size="7">
               <SmallTextInput
@@ -102,11 +96,17 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
                 onChange={handleChange}
               />
             </IonCol>
-            <IonCol size="auto">
-              {/* <MigrateButton>Migrate Vault</MigrateButton> */}
-            </IonCol>
+            <IonCol size="auto"></IonCol>
           </IonRow>
-          <PhonerNumberComp sessionItem={sessionItem} updateFunc={updateFunc} />
+          <PhoneComp
+            sessionItem={sessionItem}
+            phoneUpdated={(newPhon: string) => {
+              setCurrentBasicDTO({
+                ...currentBasicDTO,
+                loginCred: { ...currentBasicDTO.loginCred, phone: newPhon }
+              });
+            }}
+          />
         </IonGrid>
       </IonCardContent>
     </IonCard>

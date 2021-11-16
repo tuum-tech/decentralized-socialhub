@@ -94,7 +94,6 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
 
     return (
       <ProfileFields
-        isCreate={false}
         userInfo={userInfo}
         setUserInfo={(name, email) => {
           setUserInfo({
