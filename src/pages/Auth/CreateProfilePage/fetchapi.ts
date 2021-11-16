@@ -1,30 +1,6 @@
 import request, { BaseplateResp } from 'src/baseplate/request';
 import { TuumTechScriptService } from 'src/services/script.service';
 
-export function requestCreateEmailUser(
-  name: string,
-  email: string
-): Promise<BaseplateResp> {
-  return request(
-    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/credential/create`,
-    {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
-        Accept: 'application/json'
-      },
-      body: JSON.stringify({
-        name,
-        email,
-        phone: '',
-        did: '',
-        smsCode: false
-      })
-    }
-  );
-}
-
 export function requestLinkedinLogin(): Promise<BaseplateResp> {
   return request(
     `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/linkedin_request`,

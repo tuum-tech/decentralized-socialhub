@@ -47,8 +47,6 @@ import {
   SignQRPage,
   ForgotPasswordPage,
   UnlockUserPage,
-  VerifyEmailPage,
-  UpdateEmailPage,
   CreateProfileWithDidPage
 } from './pages/Auth';
 
@@ -239,8 +237,6 @@ const App: React.FC = () => {
               exact={true}
             />
             <Route path="/terms-of-use" component={TermsPage} exact={true} />
-            <Route path="/verify/email/:code" component={VerifyEmailPage} />
-            <Route path="/update/email/:code" component={UpdateEmailPage} />
 
             {/* ====== Public URLs ==== */}
             <Route path="/" component={CreateProfilePage} exact={true} />

@@ -22,7 +22,6 @@ import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 
 import { showNotify } from 'src/utils/notify';
 
-import { requestUpdateEmail } from './fetchapi';
 import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { DidService } from 'src/services/did.service.new';
 import SyncBar from 'src/components/SyncBar';
@@ -119,80 +118,8 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
               <BasicCard
                 sessionItem={userInfo}
                 updateFunc={async (newUserInfo: ISessionItem) => {
-                  const newEmail = newUserInfo.loginCred?.email!;
-                  const oldEmail = userInfo.loginCred?.email!;
-
-                  const newName = newUserInfo.name!;
-                  const oldName = userInfo.name!;
-
-                  const newPhone = newUserInfo.loginCred?.phone;
-                  const oldPhone = userInfo.loginCred?.phone;
-
-                  console.log(newUserInfo);
-
-                  if (newEmail !== oldEmail) {
-                    let response = (await requestUpdateEmail(
-                      userInfo.did,
-                      newEmail,
-                      newUserInfo.loginCred?.phone || ''
-                    )) as IUpdateEmailResponse;
-
-                    if (
-                      response &&
-                      response.data &&
-                      response.data.status === 'success'
-                    ) {
-                      // Alert user
-                      showNotify(
-                        'Verification email is sent to you. Please confirm to complete your updating.',
-                        'info'
-                      );
-                      window.localStorage.setItem(
-                        `updated_email_${userInfo.did.replace(
-                          'did:elastos:',
-                          ''
-                        )}`,
-                        newEmail
-                      );
-                    }
-                    newUserInfo.loginCred!.email = oldEmail;
-                  }
-
-                  let didService = await DidService.getInstance();
-                  let doc = await didService.getStoredDocument(
-                    new DID(session.did)
-                  );
-
-                  if (newName !== oldName) {
-                    let vc = await didService.newSelfVerifiableCredential(
-                      doc,
-                      'name',
-                      newName
-                    );
-
-                    await DidcredsService.addOrUpdateCredentialToVault(
-                      session,
-                      vc
-                    );
-                  }
-
-                  console.log('updating phone', newPhone, oldPhone);
-                  if (newPhone !== oldPhone) {
-                    let vc = await didService.newSelfVerifiableCredential(
-                      doc,
-                      'phone',
-                      newPhone
-                    );
-
-                    await DidcredsService.addOrUpdateCredentialToVault(
-                      session,
-                      vc
-                    );
-                  }
-
                   await TuumTechScriptService.updateTuumUser(newUserInfo);
                   await updateSession({ session: newUserInfo });
-
                   showNotify('Basic info is successfuly saved', 'success');
                 }}
               ></BasicCard>

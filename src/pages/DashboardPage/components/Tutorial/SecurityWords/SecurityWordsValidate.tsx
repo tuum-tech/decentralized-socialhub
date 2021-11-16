@@ -25,7 +25,7 @@ const SecurityWordsValidate: React.FC<Props> = ({
   onSuccess,
   onReset
 }) => {
-  let timer: any = null;
+  // let timer: any = null;
 
   const [securityWords] = useState(mnemonics);
   const [isOnError, setIsOnError] = useState(false);
@@ -92,6 +92,7 @@ const SecurityWordsValidate: React.FC<Props> = ({
               let val = e.currentTarget.value! as string;
               if (val.split(' ').length === 12) {
                 let words = val.split(' ');
+                // eslint-disable-next-line
                 itemEls.current.map((el, index) => {
                   el.value = words[index];
                 });

@@ -1,6 +1,7 @@
-import React from 'react';
-
+import React, { useRef } from 'react';
 import { IonLabel } from '@ionic/react';
+
+import Attachment from 'src/assets/icon/attachment.svg';
 import style from './FileInput.module.scss';
 
 interface Props {
@@ -20,6 +21,7 @@ const FileInput: React.FC<Props> = ({
   hasError = false,
   className
 }) => {
+  const fileInput = useRef(null);
   let cName = style['fileinput'];
   if (flexDirection === 'column') {
     cName += ` ${style['flex-row']}`;
@@ -37,6 +39,8 @@ const FileInput: React.FC<Props> = ({
         <IonLabel className={style['fileinput_label']}>{label}</IonLabel>
       )}
       <input
+        ref={fileInput}
+        hidden
         className={style['fileinput_field']}
         onChange={e => {
           onChange(e.target.files![0]);
@@ -44,6 +48,16 @@ const FileInput: React.FC<Props> = ({
         type="file"
         accept="*/*"
       />
+      <div
+        className={style.fileinput_input}
+        onClick={() => {
+          // @ts-ignore
+          fileInput?.current?.click();
+        }}
+      >
+        <img src={Attachment} alt="attachment" />
+        Attach a file
+      </div>
     </div>
   );
 };

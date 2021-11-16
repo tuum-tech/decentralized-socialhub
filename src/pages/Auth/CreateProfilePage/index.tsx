@@ -42,7 +42,6 @@ import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
 import {
-  requestCreateEmailUser,
   requestGoogleLogin,
   requestLinkedinLogin,
   requestFacebookLogin
@@ -50,6 +49,13 @@ import {
 import FooterLinks, {
   Footer
 } from 'src/components/layouts/OnBoardLayout/FooterLinks';
+import EmailVerificationDetailContent, {
+  EmailVerificationDetailModal
+} from 'src/components/Auth/Email';
+import {
+  requestCreateEmailUser,
+  requestUpdateEmailOrPhone
+} from 'src/components/Auth/fetchapi';
 
 const ErrorText = styled(Text16)`
   text-align: center;
@@ -67,6 +73,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
+  const [showEmailVerifyModal, setShowEmailVerifyModal] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState('');
@@ -92,10 +99,12 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
       setError('Not correct Email');
       return;
     }
+
     setLoading('Creating new profile now');
     let response = (await requestCreateEmailUser(
       name,
-      email
+      email,
+      'temporary_' + name + email
     )) as ICreateUserResponse;
     if (response.meta.code !== 200) {
       setDisplayText('An error happened when creating user.');
@@ -161,6 +170,26 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
     } else {
       setSignedUsers(newSignedUsers);
     }
+    setLoading('');
+  };
+
+  const resendVerificaitonCode = async () => {
+    setLoading('Resending Verification Code');
+
+    let response = (await requestUpdateEmailOrPhone(
+      'temporary_' + name + email,
+      email,
+      ''
+    )) as IUpdateEmailResponse;
+
+    if (response && response.data && response.data.status === 'success') {
+      if (!showEmailVerifyModal) {
+        setShowEmailVerifyModal(true);
+      }
+    } else {
+      setError('Failed to send verification');
+    }
+
     setLoading('');
   };
 
@@ -238,7 +267,24 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
           {error !== '' && <ErrorText>{error}</ErrorText>}
           {displayText !== '' && <DisplayText>{displayText}</DisplayText>}
 
-          <ButtonWithLogo text="Create new profile" onClick={createUser} />
+          <ButtonWithLogo
+            text={
+              displayText ===
+              'Verification email is sent to you. Please confirm to complete your registration.'
+                ? 'Verify'
+                : 'Create new profile'
+            }
+            onClick={async () => {
+              if (
+                displayText ===
+                'Verification email is sent to you. Please confirm to complete your registration.'
+              ) {
+                setShowEmailVerifyModal(true);
+              } else {
+                await createUser();
+              }
+            }}
+          />
 
           <FieldDivider text="or connect with" />
           <div className={style['social-btn-group']}>
@@ -259,6 +305,17 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
               onClick={async () => await sociallogin('facebook')}
             />
           </div>
+
+          <EmailVerificationDetailModal
+            isOpen={showEmailVerifyModal}
+            backdropDismiss={false}
+          >
+            <EmailVerificationDetailContent
+              close={() => setShowEmailVerifyModal(false)}
+              email={email}
+              resend={resendVerificaitonCode}
+            />
+          </EmailVerificationDetailModal>
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>
