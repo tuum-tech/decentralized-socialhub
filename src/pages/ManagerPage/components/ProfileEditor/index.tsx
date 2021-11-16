@@ -1,32 +1,27 @@
+import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
-import { IonContent, IonGrid, IonCol, IonRow } from '@ionic/react';
-
-import { TuumTechScriptService } from 'src/services/script.service';
-import {
-  ProfileService,
-  defaultFullProfile
-} from 'src/services/profile.service';
-
-import EducationCard from 'src/components/cards/EducationCard';
-import ExperienceCard from 'src/components/cards/ExperienceCard';
 import AboutCard from 'src/components/cards/AboutCard';
 import AvatarChangeCard from 'src/components/cards/AvatarChangeCard';
 import CoverPhoto from 'src/components/cards/CoverPhoto';
-
-import BasicCard from '../BasicCard';
-import TemplateManagerCard from '../TemplateManagerCard';
-import PublicFields from '../PublicFields';
-import style from './style.module.scss';
-import { DidDocumentService } from 'src/services/diddocument.service';
+import EducationCard from 'src/components/cards/EducationCard';
+import ExperienceCard from 'src/components/cards/ExperienceCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
-
-import { showNotify } from 'src/utils/notify';
-
-import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
-import { DidService } from 'src/services/did.service.new';
 import SyncBar from 'src/components/SyncBar';
-import { SyncService } from 'src/services/sync.service';
+import { DidService } from 'src/services/did.service.new';
 import { DidcredsService } from 'src/services/didcreds.service';
+import { DidDocumentService } from 'src/services/diddocument.service';
+import {
+  defaultFullProfile,
+  ProfileService
+} from 'src/services/profile.service';
+import { TuumTechScriptService } from 'src/services/script.service';
+import { SyncService } from 'src/services/sync.service';
+import { showNotify } from 'src/utils/notify';
+import BasicCard from '../BasicCard';
+import PublicFields from '../PublicFields';
+import TemplateManagerCard from '../TemplateManagerCard';
+import style from './style.module.scss';
 
 interface Props {
   session: ISessionItem;
@@ -118,6 +113,43 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
               <BasicCard
                 sessionItem={userInfo}
                 updateFunc={async (newUserInfo: ISessionItem) => {
+                  const newName = newUserInfo.name!;
+                  const oldName = userInfo.name!;
+
+                  const newPhone = newUserInfo.loginCred?.phone;
+                  const oldPhone = userInfo.loginCred?.phone;
+
+                  let didService = await DidService.getInstance();
+                  let doc = await didService.getStoredDocument(
+                    new DID(session.did)
+                  );
+
+                  if (newName !== oldName) {
+                    let vc = await didService.newSelfVerifiableCredential(
+                      doc,
+                      'name',
+                      newName
+                    );
+
+                    await DidcredsService.addOrUpdateCredentialToVault(
+                      session,
+                      vc
+                    );
+                  }
+
+                  if (newPhone !== oldPhone) {
+                    let vc = await didService.newSelfVerifiableCredential(
+                      doc,
+                      'phone',
+                      newPhone
+                    );
+
+                    await DidcredsService.addOrUpdateCredentialToVault(
+                      session,
+                      vc
+                    );
+                  }
+
                   await TuumTechScriptService.updateTuumUser(newUserInfo);
                   await updateSession({ session: newUserInfo });
                   showNotify('Basic info is successfuly saved', 'success');
