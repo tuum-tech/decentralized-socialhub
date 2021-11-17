@@ -158,7 +158,6 @@ export class ProfileService {
           }
         );
         experienceDTO.items = getItemsFromData(epRes, 'get_experience_profile');
-
         /* Calculate verified education credentials starts */
         educationDTO.items.map(async (x, i) => {
           educationDTO.items[i].verifiers = await ProfileService.getVerifiers(
@@ -214,7 +213,8 @@ export class ProfileService {
 
   static async updateExperienceProfile(
     experienceItem: ExperienceItem,
-    session: ISessionItem
+    session: ISessionItem,
+    archivedBadge: boolean
   ) {
     const hiveInstance = await HiveService.getSessionInstance(session);
     if (session && hiveInstance) {
@@ -228,13 +228,40 @@ export class ProfileService {
       });
       if (res.isSuccess && res.response._status === 'OK') {
         showNotify('Experience info is successfuly saved', 'success');
+        if (!archivedBadge) {
+          await ProfileService.addActivity(
+            {
+              guid: '',
+              did: session.did,
+              message: 'You received a Experience profile badge',
+              read: false,
+              createdAt: 0,
+              updatedAt: 0
+            },
+
+            session
+          );
+        }
+        await ProfileService.addActivity(
+          {
+            guid: '',
+            did: session!.did,
+            message: 'You updated experience profile',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
+          },
+
+          session
+        );
       }
     }
   }
 
   static async updateEducationProfile(
     educationItem: EducationItem,
-    session: ISessionItem
+    session: ISessionItem,
+    archivedBadge: boolean
   ) {
     const hiveInstance = await HiveService.getSessionInstance(session);
     if (session && hiveInstance) {
@@ -248,6 +275,30 @@ export class ProfileService {
       });
       if (res.isSuccess && res.response._status === 'OK') {
         showNotify('Education info is successfuly saved', 'success');
+        if (!archivedBadge) {
+          await this.addActivity(
+            {
+              guid: '',
+              did: session.did,
+              message: 'You received a Education profile badge',
+              read: false,
+              createdAt: 0,
+              updatedAt: 0
+            },
+            session
+          );
+        }
+        await this.addActivity(
+          {
+            guid: '',
+            did: session!.did,
+            message: 'You updated education profile',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
+          },
+          session
+        );
       }
     }
   }
