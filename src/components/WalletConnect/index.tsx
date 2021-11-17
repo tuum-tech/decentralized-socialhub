@@ -6,8 +6,8 @@ const WalletConnectBtn = () => {
   const {
     active,
     account,
-    library,
-    connector,
+    // library,
+    // connector,
     activate,
     deactivate
   } = useWeb3React();

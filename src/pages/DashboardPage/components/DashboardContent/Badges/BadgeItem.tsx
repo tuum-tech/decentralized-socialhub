@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IonCard, IonCardContent, IonText } from '@ionic/react';
 
 import styled from 'styled-components';
+import clsx from 'clsx';
 import style from './BadgeItem.module.scss';
 
 import { timeSince } from 'src/utils/time';
+import { DefaultButton } from 'src/elements/buttons/DefaultButton';
 
 interface Props {
   image: string;
@@ -19,15 +21,33 @@ const BadgeItem: React.FC<Props> = ({
   description,
   archived
 }) => {
+  const [showGetBadgeButton, setShowGetBadgeButton] = useState<boolean>(false);
+
+  const handleMouseEvent = (isHover: boolean) => {
+    if (!archived) {
+      setShowGetBadgeButton(isHover);
+    }
+  };
+
   return (
-    <IonCard className={style['badge-item']}>
+    <IonCard
+      className={clsx(style['badge-item'], !archived && style['non-archived'])}
+      onMouseEnter={() => handleMouseEvent(true)}
+      onMouseLeave={() => handleMouseEvent(false)}
+    >
       <IonCardContent>
         <BadgeIcon>
           <img alt="badge icon" src={image} height={60} />
         </BadgeIcon>
         <BadgeContent>
           <Title>{title}</Title>
-          <Description>{description}</Description>
+          {!showGetBadgeButton ? (
+            <Description>{description}</Description>
+          ) : (
+            <DefaultButton borderColor="white" padding="3px 5px" width="60%">
+              Add Experience
+            </DefaultButton>
+          )}
         </BadgeContent>
       </IonCardContent>
       <TimeSince>{archived ? timeSince(archived) : ' '}</TimeSince>
