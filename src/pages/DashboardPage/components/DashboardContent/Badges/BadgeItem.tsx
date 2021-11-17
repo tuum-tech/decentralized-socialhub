@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { IonCard, IonCardContent, IonText } from '@ionic/react';
+import { useHistory } from 'react-router';
 
 import styled from 'styled-components';
 import clsx from 'clsx';
@@ -21,12 +22,17 @@ const BadgeItem: React.FC<Props> = ({
   description,
   archived
 }) => {
+  const history = useHistory();
   const [showGetBadgeButton, setShowGetBadgeButton] = useState<boolean>(false);
 
   const handleMouseEvent = (isHover: boolean) => {
     if (!archived) {
       setShowGetBadgeButton(isHover);
     }
+  };
+
+  const handleAddExperience = () => {
+    history.push('/manager');
   };
 
   return (
@@ -44,7 +50,12 @@ const BadgeItem: React.FC<Props> = ({
           {!showGetBadgeButton ? (
             <Description>{description}</Description>
           ) : (
-            <DefaultButton borderColor="white" padding="3px 5px" width="60%">
+            <DefaultButton
+              borderColor="white"
+              padding="3px 5px"
+              width="60%"
+              onClick={handleAddExperience}
+            >
               Add Experience
             </DefaultButton>
           )}
