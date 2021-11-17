@@ -56,40 +56,111 @@ const SyncGroupHeaderCol = styled(IonCol)`
 interface IProps {
   syncItems: ISyncItem[];
   template?: string;
+  userSession: ISessionItem;
   updateSyncItem: (syncItem: ISyncItem) => void;
 }
 
 const SyncItemsCard: React.FC<IProps> = ({
   syncItems = [],
   template = 'default',
+  userSession,
   updateSyncItem = (syncItem: ISyncItem) => {}
 }: IProps) => {
+  const getPersonalInfoItems = () => {
+    return syncItems.filter(
+      s => s.Label !== 'Education' && s.Label !== 'Experience'
+    );
+  };
+
+  const getEducationItems = () => {
+    return syncItems.filter(s => s.Label === 'Education');
+  };
+
+  const getExperienceItems = () => {
+    return syncItems.filter(s => s.Label === 'Experience');
+  };
+
   return (
     <>
       <CardOverview template={template}>
-        <CardContentContainer>
-          <SyncGroupHeader>Personal Information</SyncGroupHeader>
+        {getPersonalInfoItems().length > 0 && (
+          <CardContentContainer>
+            <SyncGroupHeader>Personal Information</SyncGroupHeader>
 
-          <IonGrid>
-            <SyncGroupHeaderRow>
-              <SyncGroupHeaderCol size="5">Current</SyncGroupHeaderCol>
+            <IonGrid>
+              <SyncGroupHeaderRow>
+                <SyncGroupHeaderCol size="5">Current</SyncGroupHeaderCol>
 
-              <SyncGroupHeaderCol size="5">Blockchain</SyncGroupHeaderCol>
+                <SyncGroupHeaderCol size="5">Blockchain</SyncGroupHeaderCol>
 
-              <SyncGroupHeaderCol size="2">
-                Keep version from
-              </SyncGroupHeaderCol>
-            </SyncGroupHeaderRow>
+                <SyncGroupHeaderCol size="2">
+                  Keep version from
+                </SyncGroupHeaderCol>
+              </SyncGroupHeaderRow>
 
-            {syncItems.map(item => (
-              <SyncItemElement
-                key={item.Label}
-                syncItem={item}
-                updateSyncItem={updateSyncItem}
-              ></SyncItemElement>
-            ))}
-          </IonGrid>
-        </CardContentContainer>
+              {getPersonalInfoItems().map(item => (
+                <SyncItemElement
+                  userSession={userSession}
+                  key={item.Label}
+                  syncItem={item}
+                  updateSyncItem={updateSyncItem}
+                ></SyncItemElement>
+              ))}
+            </IonGrid>
+          </CardContentContainer>
+        )}
+        {getExperienceItems().length > 0 && (
+          <CardContentContainer>
+            <SyncGroupHeader>Experience</SyncGroupHeader>
+
+            <IonGrid>
+              <SyncGroupHeaderRow>
+                <SyncGroupHeaderCol size="5">Current</SyncGroupHeaderCol>
+
+                <SyncGroupHeaderCol size="5">Blockchain</SyncGroupHeaderCol>
+
+                <SyncGroupHeaderCol size="2">
+                  Keep version from
+                </SyncGroupHeaderCol>
+              </SyncGroupHeaderRow>
+
+              {getExperienceItems().map(item => (
+                <SyncItemElement
+                  userSession={userSession}
+                  key={item.Label}
+                  syncItem={item}
+                  updateSyncItem={updateSyncItem}
+                ></SyncItemElement>
+              ))}
+            </IonGrid>
+          </CardContentContainer>
+        )}
+        {getEducationItems().length > 0 && (
+          <CardContentContainer>
+            <SyncGroupHeader>Education</SyncGroupHeader>
+
+            <IonGrid>
+              <SyncGroupHeaderRow>
+                <SyncGroupHeaderCol size="5">Current</SyncGroupHeaderCol>
+
+                <SyncGroupHeaderCol size="5">Blockchain</SyncGroupHeaderCol>
+
+                <SyncGroupHeaderCol size="2">
+                  Keep version from
+                </SyncGroupHeaderCol>
+              </SyncGroupHeaderRow>
+
+              {getEducationItems().map(item => (
+                <SyncItemElement
+                  userSession={userSession}
+                  key={item.Label}
+                  syncItem={item}
+                  updateSyncItem={updateSyncItem}
+                ></SyncItemElement>
+              ))}
+            </IonGrid>
+          </CardContentContainer>
+        )}
       </CardOverview>
     </>
   );

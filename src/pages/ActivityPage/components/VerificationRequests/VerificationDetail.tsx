@@ -21,6 +21,7 @@ import { getStatusColor } from '../MyRequests/UserRows';
 import { timeSince } from 'src/utils/time';
 import { getDIDString } from 'src/utils/did';
 import { getCategoryTitle } from 'src/utils/credential';
+import { VerificationService } from 'src/services/verification.service';
 
 export const VerificationDetailModal = styled(IonModal)`
   --border-radius: 16px;
@@ -117,13 +118,13 @@ const VerificationDetailContent = ({
   const handleAction = async (approve: boolean) => {
     setLoading(approve ? 1 : 2);
 
-    // const vService = new VerificationService();
-    // const vc = await vService.approveCredential(
-    //   session,
-    //   verification,
-    //   approve,
-    //   feedbacks
-    // );
+    const vService = new VerificationService();
+    const vc = await vService.approveCredential(
+      session,
+      verification,
+      approve,
+      feedbacks
+    );
     setLoading(0);
     closeModal();
   };

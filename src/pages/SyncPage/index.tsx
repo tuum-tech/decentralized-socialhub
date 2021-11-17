@@ -102,6 +102,7 @@ const SyncPage: React.FC<InferMappedProps> = ({
                     onSync={onSync}
                   ></SyncProgressCard>
                   <SyncItemsCard
+                    userSession={props.session}
                     syncItems={syncItems}
                     updateSyncItem={updateSyncItem}
                   ></SyncItemsCard>

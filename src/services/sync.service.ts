@@ -71,7 +71,7 @@ export class SyncService {
     sessionItem: ISessionItem
   ): Promise<Map<string, VerifiableCredential>> {
     let didService = await DidService.getInstance();
-    let recentDocument = await didService.getStoredDocument(
+    let recentDocument = await didService.getPublishedDocument(
       new DID(sessionItem.did)
     );
 
@@ -199,6 +199,7 @@ export class SyncService {
     vcType: string
   ): Array<ISyncItem> {
     let response = new Array<ISyncItem>();
+
     vaultVcs.forEach((vaultVc, key) => {
       let fragment = vcType.toLowerCase();
       if (
@@ -208,6 +209,7 @@ export class SyncService {
           .startsWith(fragment)
       )
         return;
+
       let syncItem: ISyncItem = {
         Label: vcType,
         State: SyncState.Waiting,
@@ -217,15 +219,11 @@ export class SyncService {
         VaultCredential: vaultVc
       };
 
+      console.log(syncItem);
+
       if (
         documentVcs.has(key) &&
-        this.IsVcEqual(
-          vaultVc.getSubject().getProperty(fragment),
-          documentVcs
-            .get(key)!
-            .getSubject()
-            .getProperty(fragment)
-        )
+        this.IsVcEqual(vaultVc, documentVcs.get(key)!)
       )
         return;
 
@@ -254,25 +252,21 @@ export class SyncService {
     return response;
   }
 
-  private static IsVcEqual(vc1: any, vc2: any): boolean {
+  private static IsVcEqual(
+    vc1: VerifiableCredential | undefined,
+    vc2: VerifiableCredential | undefined
+  ): boolean {
     if (vc1 === undefined && vc2 === undefined) return true;
     if (vc1 === undefined && vc2 !== undefined) return false;
     if (vc1 !== undefined && vc2 === undefined) return false;
 
-    let vc1Keys = Object.keys(vc1);
-    let vc2Keys = Object.keys(vc2);
+    console.log(
+      vc1?.getProof().getSignature(),
+      vc2?.getProof().getSignature(),
+      vc1?.getProof().getSignature() === vc2?.getProof().getSignature()
+    );
 
-    let isEqualResponse = true;
-
-    vc1Keys.forEach(key => {
-      if (vc2[key] === undefined || vc1[key] !== vc2[key])
-        isEqualResponse = false;
-    });
-
-    vc2Keys.forEach(key => {
-      if (vc1[key] === undefined) isEqualResponse = false;
-    });
-    return isEqualResponse;
+    return vc1?.getProof().getSignature() === vc2?.getProof().getSignature();
   }
 
   static getValue(syncItem: ISyncItem) {
@@ -289,10 +283,7 @@ export class SyncService {
     sessionItem: ISessionItem,
     differences: Array<ISyncItem>
   ): Promise<ISessionItem> {
-    let toVault = differences.filter(
-      s =>
-        s.State === SyncState.Blockchain && s.BlockchainCredential !== undefined
-    );
+    let toVault = differences.filter(s => s.State === SyncState.Blockchain);
     let toBlockchain = differences.filter(s => s.State === SyncState.Vault);
 
     await this.UpdateDidDocument(sessionItem, toBlockchain);
@@ -371,133 +362,244 @@ export class SyncService {
     var newSessionItem = { ...sessionItem };
 
     differences.forEach(async item => {
-      await DidcredsService.addOrUpdateCredentialToVault(
-        sessionItem,
-        item.BlockchainCredential!
-      );
-      let value = this.getValue(item);
+      if (item.BlockchainCredential === undefined) {
+        await DidcredsService.removeCredentialToVault(
+          sessionItem,
+          item.VaultCredential!.getId().toString()
+        );
 
-      if (newSessionItem.loginCred == undefined) newSessionItem.loginCred = {};
+        if (newSessionItem.loginCred == undefined)
+          newSessionItem.loginCred = {};
 
-      switch (item.Label.toLowerCase()) {
-        case 'name':
-          newSessionItem.name = value;
-          break;
+        switch (item.Label.toLowerCase()) {
+          case 'email':
+            newSessionItem.email = '';
+            newSessionItem.loginCred!.email = '';
+            break;
 
-        case 'email':
-          newSessionItem.email = value;
-          newSessionItem.loginCred!.email = value;
-          break;
+          case 'linkedin':
+            newSessionItem.loginCred!.linkedin = '';
+            break;
 
-        case 'linkedin':
-          newSessionItem.loginCred!.linkedin = value;
-          break;
+          case 'twitter':
+            newSessionItem.loginCred!.twitter = '';
+            break;
+          case 'facebook':
+            newSessionItem.loginCred!.facebook = '';
+            break;
+          case 'github':
+            newSessionItem.loginCred!.github = '';
+            break;
+          case 'discord':
+            newSessionItem.loginCred!.discord = '';
+            break;
 
-        case 'twitter':
-          newSessionItem.loginCred!.twitter = value;
-          break;
-        case 'facebook':
-          newSessionItem.loginCred!.facebook = value;
-          break;
-        case 'github':
-          newSessionItem.loginCred!.github = value;
-          break;
-        case 'discord':
-          newSessionItem.loginCred!.discord = value;
-          break;
+          case 'phone':
+            newSessionItem.loginCred!.phone = '';
+            break;
 
-        case 'phone':
-          newSessionItem.loginCred!.phone = value;
-          break;
+          case 'education':
+            let subjectEducationExc = item.VaultCredential?.getSubject().getProperty(
+              item.VaultCredential.getId()
+                .getFragment()
+                .toLowerCase()
+            );
+            let educationItemExc: EducationItem = {
+              end:
+                subjectEducationExc['end'] === undefined
+                  ? ''
+                  : subjectEducationExc['end'],
+              institution: subjectEducationExc['institution'],
+              start: subjectEducationExc['start'],
+              still: subjectEducationExc['end'] === undefined,
+              program: subjectEducationExc['program'],
+              guid: Guid.create(),
+              isEmpty: false,
+              title: '',
+              description: '',
+              order: '',
+              verifiers: []
+            };
 
-        case 'education':
-          let subjectEducation = item.BlockchainCredential?.getSubject().getProperty(
-            item.BlockchainCredential.getId()
-              .getFragment()
-              .toLowerCase()
-          );
-          let educationItem: EducationItem = {
-            end:
-              subjectEducation['end'] === undefined
-                ? ''
-                : subjectEducation['end'],
-            institution: subjectEducation['institution'],
-            start: subjectEducation['start'],
-            still:
-              subjectEducation['still'] === undefined
-                ? false
-                : subjectEducation['still'],
-            program: subjectEducation['program'],
-            guid: Guid.create(),
-            isEmpty: false,
-            title: '',
-            description: '',
-            order: '',
-            verifiers: []
-          };
-          await ProfileService.updateEducationProfile(
-            educationItem,
-            sessionItem
-          );
+            await ProfileService.removeEducationItem(
+              educationItemExc,
+              sessionItem
+            );
 
-        case 'experience':
-          let subjectExperience = item.BlockchainCredential?.getSubject().getProperty(
-            item.BlockchainCredential.getId()
-              .getFragment()
-              .toLowerCase()
-          );
-          let experienceItem: ExperienceItem = {
-            end:
-              subjectExperience['end'] === undefined
-                ? ''
-                : subjectExperience['end'],
-            institution:
-              subjectExperience['institution'] === undefined
-                ? ''
-                : subjectExperience['institution'],
-            start: subjectExperience['start'],
-            still:
-              subjectExperience['still'] === undefined
-                ? false
-                : subjectExperience['still'],
-            program: subjectExperience['program'],
-            guid: Guid.create(),
-            isEmpty: false,
-            title:
-              subjectExperience['title'] === undefined
-                ? ''
-                : subjectExperience['title'],
-            description:
-              subjectExperience['description'] === undefined
-                ? ''
-                : subjectExperience['description'],
-            order:
-              subjectExperience['order'] === undefined
-                ? ''
-                : subjectExperience['order'],
-            verifiers: [],
-            isEnabled: true
-          };
-          await ProfileService.updateExperienceProfile(
-            experienceItem,
-            sessionItem
-          );
+          case 'experience':
+            let subjectExperienceExc = item.VaultCredential?.getSubject().getProperty(
+              item.VaultCredential.getId()
+                .getFragment()
+                .toLowerCase()
+            );
+            let experienceItemExc: ExperienceItem = {
+              end:
+                subjectExperienceExc['end'] === undefined
+                  ? ''
+                  : subjectExperienceExc['end'],
+              institution:
+                subjectExperienceExc['institution'] === undefined
+                  ? ''
+                  : subjectExperienceExc['institution'],
+              start: subjectExperienceExc['start'],
+              still: subjectExperienceExc['end'] === undefined,
+              program: subjectExperienceExc['program'],
+              guid: Guid.create(),
+              isEmpty: false,
+              title:
+                subjectExperienceExc['title'] === undefined
+                  ? ''
+                  : subjectExperienceExc['title'],
+              description:
+                subjectExperienceExc['description'] === undefined
+                  ? ''
+                  : subjectExperienceExc['description'],
+              order:
+                subjectExperienceExc['order'] === undefined
+                  ? ''
+                  : subjectExperienceExc['order'],
+              verifiers: [],
+              isEnabled: true
+            };
 
-          await DidcredsService.addOrUpdateCredentialToVault(
-            sessionItem,
-            item.BlockchainCredential!
-          );
+            await ProfileService.removeEducationItem(
+              experienceItemExc,
+              sessionItem
+            );
 
-        case 'avatar':
-          let atavarValue = item
-            .BlockchainCredential!.getSubject()
-            .getProperties()['avatar'];
-          let avatarObject = JSON.parse(JSON.stringify(atavarValue));
-          let baseStr = avatarObject['data'];
-          newSessionItem.avatar = `data:${avatarObject['content-type']};base64,${baseStr}`;
-          break;
-        default:
-          break;
+          case 'avatar':
+            newSessionItem.avatar = '';
+            break;
+          default:
+            break;
+        }
+      } else {
+        await DidcredsService.addOrUpdateCredentialToVault(
+          sessionItem,
+          item.BlockchainCredential!
+        );
+
+        let value = this.getValue(item);
+
+        if (newSessionItem.loginCred == undefined)
+          newSessionItem.loginCred = {};
+
+        switch (item.Label.toLowerCase()) {
+          case 'name':
+            newSessionItem.name = value;
+            break;
+
+          case 'email':
+            newSessionItem.email = value;
+            newSessionItem.loginCred!.email = value;
+            break;
+
+          case 'linkedin':
+            newSessionItem.loginCred!.linkedin = value;
+            break;
+
+          case 'twitter':
+            newSessionItem.loginCred!.twitter = value;
+            break;
+          case 'facebook':
+            newSessionItem.loginCred!.facebook = value;
+            break;
+          case 'github':
+            newSessionItem.loginCred!.github = value;
+            break;
+          case 'discord':
+            newSessionItem.loginCred!.discord = value;
+            break;
+
+          case 'phone':
+            newSessionItem.loginCred!.phone = value;
+            break;
+
+          case 'education':
+            let subjectEducation = item.BlockchainCredential?.getSubject().getProperty(
+              item.BlockchainCredential.getId()
+                .getFragment()
+                .toLowerCase()
+            );
+            let educationItem: EducationItem = {
+              end:
+                subjectEducation['end'] === undefined
+                  ? ''
+                  : subjectEducation['end'],
+              institution: subjectEducation['institution'],
+              start: subjectEducation['start'],
+              still: subjectEducation['end'] === undefined,
+              program: subjectEducation['program'],
+              guid: Guid.create(),
+              isEmpty: false,
+              title: '',
+              description: '',
+              order: '',
+              verifiers: []
+            };
+
+            await ProfileService.updateEducationProfile(
+              educationItem,
+              sessionItem
+            );
+
+          case 'experience':
+            let subjectExperience = item.BlockchainCredential?.getSubject().getProperty(
+              item.BlockchainCredential.getId()
+                .getFragment()
+                .toLowerCase()
+            );
+            let experienceItem: ExperienceItem = {
+              end:
+                subjectExperience['end'] === undefined
+                  ? ''
+                  : subjectExperience['end'],
+              institution:
+                subjectExperience['institution'] === undefined
+                  ? ''
+                  : subjectExperience['institution'],
+              start: subjectExperience['start'],
+              still: subjectExperience['end'] === undefined,
+              program: subjectExperience['program'],
+              guid: Guid.create(),
+              isEmpty: false,
+              title:
+                subjectExperience['title'] === undefined
+                  ? ''
+                  : subjectExperience['title'],
+              description:
+                subjectExperience['description'] === undefined
+                  ? ''
+                  : subjectExperience['description'],
+              order:
+                subjectExperience['order'] === undefined
+                  ? ''
+                  : subjectExperience['order'],
+              verifiers: [],
+              isEnabled: true
+            };
+            console.log('experience', experienceItem);
+            await ProfileService.updateExperienceProfile(
+              experienceItem,
+              sessionItem
+            );
+
+            await DidcredsService.addOrUpdateCredentialToVault(
+              sessionItem,
+              item.BlockchainCredential!
+            );
+
+          case 'avatar':
+            let atavarValue = item
+              .BlockchainCredential!.getSubject()
+              .getProperties()['avatar'];
+            let avatarObject = JSON.parse(JSON.stringify(atavarValue));
+            let baseStr = avatarObject['data'];
+            newSessionItem.avatar = `data:${avatarObject['content-type']};base64,${baseStr}`;
+            break;
+          default:
+            break;
+        }
       }
     });
 

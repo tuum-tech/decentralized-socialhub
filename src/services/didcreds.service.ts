@@ -113,6 +113,7 @@ export class DidcredsService {
     sessionItem: ISessionItem,
     vc: VerifiableCredential
   ): Promise<void> {
+    console.log('add vc credential', vc);
     let hiveClient = await HiveService.getSessionInstance(sessionItem);
     let hiveResponse = await hiveClient?.Scripting.RunScript<any>({
       name: 'add_verifiablecredential',

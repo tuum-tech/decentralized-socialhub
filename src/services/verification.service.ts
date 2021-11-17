@@ -269,6 +269,9 @@ export class VerificationService {
   }
 
   private get_content_from_verification_data(records: any[]) {
+    if (records.length === 1) {
+      return records[0].value;
+    }
     let content = {} as any;
     for (let i = 0; i < records.length; i++) {
       const field = records[i].field;
@@ -288,7 +291,7 @@ export class VerificationService {
       let vcTypeStrings = category.split(':');
       vcType = vcTypeStrings[0] + 'Credential' + vcTypeStrings[1];
     } else {
-      vcType = category + 'Credential';
+      vcType = category;
     }
 
     return {
@@ -389,6 +392,11 @@ export class VerificationService {
       new DID(v.from_did)
     );
 
+    await DidcredsService.addOrUpdateCredentialToVault(
+      user,
+      VerifiableCredential.parse(v.credential)
+    );
+
     // remove if exist
     const { DIDstring } = this.generate_DID_id_from_verification(
       v.category,
@@ -422,11 +430,6 @@ export class VerificationService {
         VerifiableCredential.parse(v.credential)
       );
     }
-
-    await DidcredsService.addOrUpdateCredentialToVault(
-      user,
-      VerifiableCredential.parse(v.credential)
-    );
 
     await didService.storeDocument(didDocument);
 

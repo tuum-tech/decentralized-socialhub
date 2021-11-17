@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IonCol, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
@@ -6,6 +6,12 @@ import { ISyncItem, SyncState } from 'src/services/sync.service';
 import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/';
 import style from './style.module.scss';
 import AvatarCredential from 'src/components/AvatarCredential';
+import { Guid } from 'guid-typescript';
+import EducationCard from 'src/components/cards/EducationCard';
+import EducationElement from '../EducationElement';
+import ExperienceElement from '../ExperienceElement';
+import { DidService } from 'src/services/did.service.new';
+import { UserService } from 'src/services/user.service';
 
 const SyncLabel = styled.span`
   font-family: 'SF Pro Display';
@@ -59,16 +65,59 @@ const SyncRowItem = styled(IonRow)`
 interface IProps {
   syncItem: ISyncItem;
   updateSyncItem: (syncItem: ISyncItem) => void;
+  userSession: ISessionItem;
+}
+
+interface verifier {
+  name: string;
+  did: string;
 }
 
 const SyncItemElement: React.FC<IProps> = ({
   syncItem,
+  userSession,
   updateSyncItem = (syncItem: ISyncItem) => {}
 }: IProps) => {
+  const [verifiers, setVerifiers] = useState<Map<string, verifier>>();
+
   const getValue = (vc: VerifiableCredential): string => {
     let fragment = vc.getId().getFragment();
     let value = vc.getSubject().getProperties()[fragment];
     return value.toString();
+  };
+
+  const hasVerifier = (vc: VerifiableCredential): boolean => {
+    if (vc === undefined) return false;
+    if (
+      vc
+        .getId()
+        .getDid()
+        .equals(vc.issuer)
+    )
+      return false;
+
+    if (verifiers === undefined || !verifiers.has(vc.issuer.toString())) {
+      let verifiersCollection = verifiers ?? new Map<string, verifier>();
+      verifiersCollection.set(vc.issuer.toString(), {
+        name: 'Loading',
+        did: vc.issuer.toString()
+      });
+      setVerifiers(verifiersCollection);
+
+      DidService.getInstance().then(s => {
+        let userService = new UserService(s);
+        userService.SearchUserWithDID(vc.issuer.toString()).then(response => {
+          let newCollection = verifiers ?? new Map<string, verifier>();
+          newCollection?.set(response.did, {
+            name: response.name,
+            did: response.did
+          });
+          setVerifiers(newCollection);
+        });
+      });
+    }
+
+    return true;
   };
 
   const renderElement = (
@@ -79,69 +128,125 @@ const SyncItemElement: React.FC<IProps> = ({
     let stateStyle = 'SyncItemElementNormal';
     if (state === syncItem.State) stateStyle = 'SyncItemElementSelected';
 
-    if (label.toLowerCase() == 'avatar') {
-      if (vc === undefined) {
-        let value = ' - ';
-        return (
-          <>
-            <SyncLabel className={style[stateStyle]}>{label}</SyncLabel>
-            <SyncTextValue className={style[stateStyle]}>{value}</SyncTextValue>
-          </>
-        );
-      }
-
-      return (
-        <>
-          <SyncLabel className={style[stateStyle]}>{label}</SyncLabel>
-          <AvatarCredential credential={vc}></AvatarCredential>
-        </>
-      );
-    } else if (
-      label.toLowerCase() == 'education' ||
-      label.toLowerCase() == 'experience'
-    ) {
-      // let vcSubject =  vaultVc.getSubject().getProperty(key)
-      // let array = Object.getOwnPropertyNames(a);
-
-      let mapItens: Array<any> = [];
-
-      if (vc !== undefined) {
-        let fragment = vc
-          .getId()
-          .getFragment()
-          .toLowerCase();
-        let subjectItem = vc.getSubject().getProperty(fragment);
-        let keys = Object.keys(subjectItem);
-        keys.forEach(key => {
-          mapItens.push(
-            <SyncTextValue className={style[stateStyle]}>
-              {key}: {subjectItem[key]}
-            </SyncTextValue>
-          );
-        });
-      }
-
-      return (
-        <>
-          <SyncLabel className={style[stateStyle]}>{label}</SyncLabel>
-          {vc === undefined && (
-            <SyncTextValue className={style[stateStyle]}>
-              &nbsp;-&nbsp;
-            </SyncTextValue>
-          )}
-          {vc !== undefined && mapItens.map(item => item)}
-        </>
-      );
-    } else {
+    if (vc === undefined) {
       let value = ' - ';
-      if (vc !== undefined) value = getValue(vc);
-
       return (
         <>
-          <SyncLabel className={style[stateStyle]}>{label}</SyncLabel>
+          {label !== 'Education' && label !== 'Experience' && (
+            <SyncLabel className={style[stateStyle]}>{label}</SyncLabel>
+          )}
           <SyncTextValue className={style[stateStyle]}>{value}</SyncTextValue>
         </>
       );
+    }
+
+    switch (label) {
+      case 'Avatar':
+        return (
+          <>
+            <SyncLabel className={style[stateStyle]}>{label}</SyncLabel>
+            <AvatarCredential credential={vc}></AvatarCredential>
+          </>
+        );
+        break;
+
+      case 'Education':
+        let subjectEducation = vc!.getSubject().getProperty(
+          vc!
+            .getId()
+            .getFragment()
+            .toLowerCase()
+        );
+        let educationItem: EducationItem = {
+          end:
+            subjectEducation['end'] === undefined
+              ? ''
+              : subjectEducation['end'],
+          institution: subjectEducation['institution'],
+          start: subjectEducation['start'],
+          still: subjectEducation['end'] === undefined,
+          program: subjectEducation['program'],
+          guid: Guid.create(),
+          isEmpty: false,
+          title: '',
+          description: '',
+          order: '',
+          verifiers: []
+        };
+
+        return (
+          <EducationElement
+            userSession={userSession}
+            educationItem={educationItem}
+          ></EducationElement>
+        );
+
+      case 'Experience':
+        let subjectExperience = vc!.getSubject().getProperty(
+          vc!
+            .getId()
+            .getFragment()
+            .toLowerCase()
+        );
+        let experienceItem: ExperienceItem = {
+          end:
+            subjectExperience['end'] === undefined
+              ? ''
+              : subjectExperience['end'],
+          institution:
+            subjectExperience['institution'] === undefined
+              ? ''
+              : subjectExperience['institution'],
+          start: subjectExperience['start'],
+          still: subjectExperience['end'] === undefined,
+          program: subjectExperience['program'],
+          guid: Guid.create(),
+          isEmpty: false,
+          title:
+            subjectExperience['title'] === undefined
+              ? ''
+              : subjectExperience['title'],
+          description:
+            subjectExperience['description'] === undefined
+              ? ''
+              : subjectExperience['description'],
+          order:
+            subjectExperience['order'] === undefined
+              ? ''
+              : subjectExperience['order'],
+          verifiers: [],
+          isEnabled: true
+        };
+
+        let hasExpVerifier = hasVerifier(vc);
+        let issuerDidExp = vc.getIssuer().toString();
+
+        return (
+          <ExperienceElement
+            userSession={userSession}
+            isSelected={state === syncItem.State}
+            experienceItem={experienceItem}
+            verifiedby={verifiers && verifiers!.get(issuerDidExp)!}
+          ></ExperienceElement>
+        );
+
+      default:
+        let defaultValue = getValue(vc);
+        let hasVerifierToShow = hasVerifier(vc);
+        let issuerDid = vc.getIssuer().toString();
+        return (
+          <>
+            <SyncLabel className={style[stateStyle]}>{label}</SyncLabel>
+            <SyncTextValue className={style[stateStyle]}>
+              {defaultValue}
+            </SyncTextValue>
+            {verifiers && hasVerifierToShow && (
+              <SyncTextValue className={style[stateStyle]}>
+                Verified by: {verifiers!.get(issuerDid)!.name}
+              </SyncTextValue>
+            )}
+          </>
+        );
     }
   };
 
