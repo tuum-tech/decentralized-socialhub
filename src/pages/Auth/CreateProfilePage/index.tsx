@@ -215,7 +215,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
 
   return (
     <OnBoardLayout className={style['create-profile']}>
-      <WalletConnectBtn />
+      {/* <WalletConnectBtn /> */}
       {loading !== '' && <LoadingIndicator loadingText={loading} />}
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo src={whitelogo} />
