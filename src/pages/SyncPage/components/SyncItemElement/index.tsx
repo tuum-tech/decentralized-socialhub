@@ -107,6 +107,7 @@ const SyncItemElement: React.FC<IProps> = ({
       DidService.getInstance().then(s => {
         let userService = new UserService(s);
         userService.SearchUserWithDID(vc.issuer.toString()).then(response => {
+          if (response === undefined) return;
           let newCollection = verifiers ?? new Map<string, verifier>();
           newCollection?.set(response.did, {
             name: response.name,
@@ -174,10 +175,15 @@ const SyncItemElement: React.FC<IProps> = ({
           verifiers: []
         };
 
+        let hasEduVerifier = hasVerifier(vc);
+        let issuerDidEdu = vc.getIssuer().toString();
+
         return (
           <EducationElement
             userSession={userSession}
             educationItem={educationItem}
+            isSelected={state === syncItem.State}
+            verifiedby={verifiers && verifiers!.get(issuerDidEdu)!}
           ></EducationElement>
         );
 
@@ -225,8 +231,8 @@ const SyncItemElement: React.FC<IProps> = ({
           <ExperienceElement
             userSession={userSession}
             isSelected={state === syncItem.State}
-            experienceItem={experienceItem}
             verifiedby={verifiers && verifiers!.get(issuerDidExp)!}
+            experienceItem={experienceItem}
           ></ExperienceElement>
         );
 
@@ -241,9 +247,14 @@ const SyncItemElement: React.FC<IProps> = ({
               {defaultValue}
             </SyncTextValue>
             {verifiers && hasVerifierToShow && (
-              <SyncTextValue className={style[stateStyle]}>
-                Verified by: {verifiers!.get(issuerDid)!.name}
-              </SyncTextValue>
+              <>
+                <SyncTextValue className={style[stateStyle]}>
+                  Verified by: {verifiers!.get(issuerDid)!.name}
+                </SyncTextValue>
+                <SyncTextValue className={style[stateStyle]}>
+                  {verifiers!.get(issuerDid)!.did}
+                </SyncTextValue>
+              </>
             )}
           </>
         );

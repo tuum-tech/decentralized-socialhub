@@ -53,6 +53,8 @@ export class SyncService {
       name: 'get_verifiable_credentials'
     });
 
+    console.log('hive response get_verifiable_credentials', hiveResponse);
+
     let response = new Map<string, VerifiableCredential>();
 
     if (!hiveResponse?.isSuccess) return response;
@@ -63,6 +65,8 @@ export class SyncService {
       var vc = VerifiableCredential.parse(item.vc);
       response.set(vc.getId().toString(), vc);
     });
+
+    console.log('map get_verifiable_credentials', response);
 
     return response;
   }
@@ -259,12 +263,6 @@ export class SyncService {
     if (vc1 === undefined && vc2 === undefined) return true;
     if (vc1 === undefined && vc2 !== undefined) return false;
     if (vc1 !== undefined && vc2 === undefined) return false;
-
-    console.log(
-      vc1?.getProof().getSignature(),
-      vc2?.getProof().getSignature(),
-      vc1?.getProof().getSignature() === vc2?.getProof().getSignature()
-    );
 
     return vc1?.getProof().getSignature() === vc2?.getProof().getSignature();
   }

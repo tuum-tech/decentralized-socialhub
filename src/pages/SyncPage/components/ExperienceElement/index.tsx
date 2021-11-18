@@ -2,29 +2,65 @@ import React, { useState } from 'react';
 import { IonCol, IonGrid, IonPopover, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
-// import VerificatioBadge from '../../VerificatioBadge';
-import {
-  Description,
-  Institution,
-  Period,
-  PopoverMenuItem,
-  Program,
-  TreeDotsButton
-} from '../../../../components/cards/common';
-
 import darkDefaultExpImg from '../../../../assets/default/default-exp_dark.png';
 import defaultExpImg from '../../../../assets/default/default-exp.png';
-import { is } from 'immer/dist/internal';
-// import styleWidget from '../WidgetCards.module.scss';
-import VerificatioBadge from '../../../../components/VerificatioBadge/index';
 
 const EditableContent = styled(IonCol)`
   display: flex;
   padding-left: 10px;
 `;
 
-const Wrapper = styled.div`
+const SelectedDiv = styled.div`
   color: #27272e !important;
+`;
+
+const UnselectedDiv = styled.div`
+  color: #a0aec0;
+`;
+
+const LocalInstitution = styled.span<ThemeProps>`
+  font-family: 'SF Pro Display';
+  font-size: 16px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.56;
+  letter-spacing: normal;
+  text-align: left;
+`;
+
+const LocalProgram = styled.span<ThemeProps>`
+  font-family: 'SF Pro Display';
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.79;
+  letter-spacing: normal;
+  text-align: left;
+`;
+
+const LocalPeriod = styled.span<ThemeProps>`
+  font-family: 'SF Pro Display';
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.71;
+  letter-spacing: normal;
+  text-align: left;
+`;
+
+const LocalDescription = styled.span<ThemeProps>`
+  white-space: break-spaces !important;
+  font-family: 'SF Pro Display';
+  font-size: 13px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.62;
+  letter-spacing: normal;
+  text-align: left;
 `;
 
 interface ExperienceElementProps {
@@ -66,40 +102,51 @@ const ExperienceElement: React.FC<ExperienceElementProps> = ({
           <EditableContent size="10">
             <IonGrid className="ion-no-padding">
               <IonRow className="ion-no-padding">
-                <Institution template={template}>
+                <LocalInstitution template={template}>
                   {experienceItem.institution}
-                  {verifiedby && (
-                    <div style={{ float: 'right' }}>
-                      <VerificatioBadge
-                        userSession={userSession}
-                        users={[verifiedby]}
-                      />
-                    </div>
-                  )}
-                </Institution>
+                  {/* {verifiedby && (
+                                        <div style={{ float: 'right' }}>
+                                        <VerificatioBadge
+                                            userSession={userSession}
+                                            users={[verifiedby]}
+                                        />
+                                        </div>
+                                    )} */}
+                </LocalInstitution>
               </IonRow>
               <IonRow className="ion-no-padding">
-                <Program template={template}>{experienceItem.title}</Program>
+                <LocalProgram template={template}>
+                  {experienceItem.title}
+                </LocalProgram>
               </IonRow>
               <IonRow className="ion-no-padding">
-                <Period template={template}>
+                <LocalPeriod template={template}>
                   {experienceItem.start} -
                   {experienceItem.still === true
                     ? ' Present'
                     : experienceItem.end}
-                </Period>
+                </LocalPeriod>
               </IonRow>
               <IonRow className="ion-no-padding">
-                <Description template={template}>
+                <LocalDescription template={template}>
                   {experienceItem.description}
-                </Description>
+                </LocalDescription>
               </IonRow>
 
-              {/* {verifiedby && (
-          <IonRow className="ion-no-padding">
-                <Program template={template}>Verified by: {verifiedby.name}</Program>
-          </IonRow>
-          )} */}
+              {verifiedby && (
+                <>
+                  <IonRow className="ion-no-padding">
+                    <LocalDescription template={template}>
+                      <b>Verified by:</b> {verifiedby.name}
+                    </LocalDescription>
+                  </IonRow>
+                  <IonRow className="ion-no-padding">
+                    <LocalDescription template={template}>
+                      {verifiedby.did}
+                    </LocalDescription>
+                  </IonRow>
+                </>
+              )}
             </IonGrid>
           </EditableContent>
         </IonRow>
@@ -111,12 +158,16 @@ const ExperienceElement: React.FC<ExperienceElementProps> = ({
     if (isSelected) {
       return (
         <>
-          <Wrapper>{getElement()}</Wrapper>
+          <SelectedDiv>{getElement()}</SelectedDiv>
         </>
       );
     }
 
-    return getElement();
+    return (
+      <>
+        <UnselectedDiv>{getElement()}</UnselectedDiv>
+      </>
+    );
   };
 
   return <>{getStyled()}</>;
