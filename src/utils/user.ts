@@ -124,7 +124,7 @@ export const retrieveDocInfo = async (
         itr2 =>
           itr1.institution === itr2.institution &&
           itr1.description === itr2.description &&
-          itr1.program === itr2.program &&
+          itr1.title === itr2.title &&
           itr1.start === itr2.start &&
           itr1.end === itr2.end
       ) === index

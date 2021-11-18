@@ -380,6 +380,7 @@ export class VerificationService {
   }
 
   public async storeNewCredential(v: VerificationRequest) {
+    debugger;
     const didService = await DidService.getInstance();
     const userService = new UserService(didService);
     const holder = await userService.SearchUserWithDID(v.from_did);
@@ -455,6 +456,7 @@ export class VerificationService {
         if (
           x.institution === credential.institution &&
           x.program === credential.program &&
+          x.title === credential.title &&
           x.start === credential.start
         ) {
           let same = false;
