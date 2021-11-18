@@ -380,7 +380,6 @@ export class VerificationService {
   }
 
   public async storeNewCredential(v: VerificationRequest) {
-    debugger;
     const didService = await DidService.getInstance();
     const userService = new UserService(didService);
     const holder = await userService.SearchUserWithDID(v.from_did);
