@@ -46,7 +46,7 @@ const ProfileEditor: React.FC<Props> = ({
   const [profile, setProfile] = useState<ProfileDTO>(defaultFullProfile);
 
   const {
-    account: { basicProfile, educationProfile }
+    account: { basicProfile, educationProfile, experienceProfile }
   } = badgeDetails;
   const handleRouteParam = (title: string) => {
     if (badgeUrl?.badge && badgeUrl.badge === title) {
@@ -301,6 +301,7 @@ const ProfileEditor: React.FC<Props> = ({
                     isEditable={true}
                     template="default"
                     userSession={JSON.parse(JSON.stringify(session))}
+                    openModal={handleRouteParam(experienceProfile.title)}
                   />
                 )}
               </>
