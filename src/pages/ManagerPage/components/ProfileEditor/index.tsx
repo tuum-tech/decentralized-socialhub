@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ObjectHTMLAttributes, useEffect, useState } from 'react';
 import { IonContent, IonGrid, IonCol, IonRow } from '@ionic/react';
 
 import { TuumTechScriptService } from 'src/services/script.service';
@@ -24,13 +24,19 @@ import { showNotify } from 'src/utils/notify';
 
 import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { DidService } from 'src/services/did.service.new';
+import badgeDetails from 'src/data/badge_detail.json';
 
 interface Props {
   session: ISessionItem;
+  badgeUrl?: any;
   updateSession: (props: { session: ISessionItem }) => void;
 }
 
-const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
+const ProfileEditor: React.FC<Props> = ({
+  session,
+  badgeUrl,
+  updateSession
+}) => {
   const [error, setError] = useState(false);
   const [userInfo, setUserInfo] = useState<ISessionItem>(session);
   const [loaded, setloaded] = useState(false);
@@ -38,6 +44,16 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
     undefined
   );
   const [profile, setProfile] = useState<ProfileDTO>(defaultFullProfile);
+
+  const {
+    account: { basicProfile, educationProfile }
+  } = badgeDetails;
+  const handleRouteParam = (title: string) => {
+    if (badgeUrl?.badge && badgeUrl.badge === title) {
+      return true;
+    }
+    return false;
+  };
 
   const retriveProfile = async () => {
     if (!session.userToken) return;
@@ -162,6 +178,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                       );
                       await retriveProfile();
                     }}
+                    openModal={handleRouteParam(basicProfile.title)}
                   />
                 )}
 
@@ -225,6 +242,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                     isEditable={true}
                     template="default"
                     userSession={JSON.parse(JSON.stringify(session))}
+                    openModal={handleRouteParam(educationProfile.title)}
                   />
                 )}
                 {profile && profile.experienceDTO && (

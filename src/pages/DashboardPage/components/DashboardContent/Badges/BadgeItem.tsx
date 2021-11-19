@@ -32,7 +32,7 @@ const BadgeItem: React.FC<Props> = ({
   };
 
   const handleAddExperience = () => {
-    history.push('/manager');
+    history.push(`/manager/${title}`);
   };
 
   return (
