@@ -1,29 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { IonButton, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import React from 'react';
+import { IonButton, IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
 import {
   CardContentContainer,
   CardOverview
 } from 'src/components/cards/common';
-import { DefaultButton } from 'src/elements/buttons';
 import ProgressBar from 'src/elements/ProgressBar';
-import { getThemeData } from 'src/utils/template';
-
-const AboutText = styled.span<ThemeProps>`
-  white-space: break-spaces !important;
-  margin: 9px 0 0 0;
-  font-family: 'SF Pro Display';
-  font-size: 14px;
-  font-weight: normal;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1.6;
-  letter-spacing: normal;
-  text-align: left;
-  color: ${({ template }: ThemeProps) =>
-    getThemeData(template, 'card', 'overviewText')};
-`;
 
 const ButtonDefault = styled(IonButton)`
   --border-radius: 12px;

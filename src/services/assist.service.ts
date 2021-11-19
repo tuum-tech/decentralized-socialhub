@@ -44,6 +44,11 @@ export class AssistService {
 
     window.localStorage.setItem(`publish_${didKey}`, JSON.stringify(response));
 
+    console.log(
+      `publish_${didKey}`,
+      window.localStorage.getItem(`publish_${didKey}`)
+    );
+
     return response;
   }
 
@@ -51,6 +56,14 @@ export class AssistService {
     confirmationId: string,
     did: string
   ): Promise<IPublishDocumentResponse> {
+    if (confirmationId === undefined) {
+      this.removePublishTask(did);
+      return {
+        requestStatus: RequestStatus.NotFound,
+        confirmationId: ''
+      };
+    }
+
     let url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/assist_router/didtx/confirmation_id/${confirmationId}`;
 
     let postData: any = {
@@ -72,6 +85,11 @@ export class AssistService {
     };
     window.localStorage.setItem(`publish_${didKey}`, JSON.stringify(response));
 
+    console.log(
+      `refreshRequestStatus publish_${didKey}`,
+      window.localStorage.getItem(`publish_${didKey}`)
+    );
+
     return response;
   }
 
@@ -80,12 +98,13 @@ export class AssistService {
   ): IPublishDocumentResponse | undefined => {
     let didKey = did.replace('did:elastos:', '');
     let item = window.localStorage.getItem(`publish_${didKey}`);
-
+    console.log(`getPublishStatusTask publish_${didKey}`, item);
     if (!item) return;
     return JSON.parse(item);
   };
 
   static removePublishTask = (did: string) => {
+    console.log('Removing publish status', did);
     let didKey = did.replace('did:elastos:', '');
     window.localStorage.removeItem(`publish_${didKey}`);
   };

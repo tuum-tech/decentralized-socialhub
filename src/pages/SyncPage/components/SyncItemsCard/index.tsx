@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
@@ -6,22 +6,9 @@ import {
   CardContentContainer,
   CardOverview
 } from 'src/components/cards/common';
-import { DefaultButton } from 'src/elements/buttons';
-import ProgressBar from 'src/elements/ProgressBar';
+
 import { ISyncItem } from 'src/services/sync.service';
 import SyncItemElement from '../SyncItemElement';
-
-const TotalItemsText = styled.span<ThemeProps>`
-  font-family: 'SF Pro Display';
-  font-size: 20px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1.6;
-  letter-spacing: normal;
-  text-align: left;
-  color: #4c6fff;
-`;
 
 const SyncGroupHeader = styled.span`
   font-family: 'SF Pro Display';
@@ -56,14 +43,13 @@ const SyncGroupHeaderCol = styled(IonCol)`
 interface IProps {
   syncItems: ISyncItem[];
   template?: string;
-  userSession: ISessionItem;
   updateSyncItem: (syncItem: ISyncItem) => void;
 }
 
 const SyncItemsCard: React.FC<IProps> = ({
   syncItems = [],
   template = 'default',
-  userSession,
+
   updateSyncItem = (syncItem: ISyncItem) => {}
 }: IProps) => {
   const getPersonalInfoItems = () => {
@@ -100,7 +86,6 @@ const SyncItemsCard: React.FC<IProps> = ({
 
               {getPersonalInfoItems().map(item => (
                 <SyncItemElement
-                  userSession={userSession}
                   key={item.Label}
                   syncItem={item}
                   updateSyncItem={updateSyncItem}
@@ -126,7 +111,6 @@ const SyncItemsCard: React.FC<IProps> = ({
 
               {getExperienceItems().map(item => (
                 <SyncItemElement
-                  userSession={userSession}
                   key={item.Label}
                   syncItem={item}
                   updateSyncItem={updateSyncItem}
@@ -152,7 +136,6 @@ const SyncItemsCard: React.FC<IProps> = ({
 
               {getEducationItems().map(item => (
                 <SyncItemElement
-                  userSession={userSession}
                   key={item.Label}
                   syncItem={item}
                   updateSyncItem={updateSyncItem}

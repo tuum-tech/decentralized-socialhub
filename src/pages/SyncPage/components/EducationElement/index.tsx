@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { IonCol, IonGrid, IonPopover, IonRow } from '@ionic/react';
+import React from 'react';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 import darkDefaultEduImg from '../../../../assets/default/default-edu_dark.png';
 import defaultEduImg from '../../../../assets/default/default-edu.png';
@@ -9,7 +9,6 @@ interface EducationElementProps {
   verifiedby?: { name: string; did: string };
   isSelected: boolean;
   template?: string;
-  userSession: ISessionItem;
 }
 
 const SelectedDiv = styled.div`
@@ -69,14 +68,9 @@ const EducationElement: React.FC<EducationElementProps> = ({
   educationItem,
   verifiedby = undefined,
   isSelected = false,
-  userSession,
+
   template = 'default'
 }) => {
-  const [popoverState, setShowPopover] = useState({
-    showPopover: false,
-    event: undefined
-  });
-
   const EditableContent = styled(IonCol)`
     display: flex;
     padding-left: 10px;
@@ -107,17 +101,6 @@ const EducationElement: React.FC<EducationElementProps> = ({
             </IonCol>
             <EditableContent size="10">
               <IonGrid className="ion-no-padding">
-                {/* <IonRow style={{ float: 'right' }}>
-                    <IonCol>
-                      {educationItem.verifiers &&
-                        educationItem.verifiers.length > 0 && (
-                          <VerificatioBadge
-                            userSession={userSession}
-                            users={educationItem.verifiers}
-                          />
-                        )}
-                    </IonCol>
-                  </IonRow> */}
                 <IonRow className="ion-no-padding">
                   <LocalInstitution template={template}>
                     {educationItem.institution}

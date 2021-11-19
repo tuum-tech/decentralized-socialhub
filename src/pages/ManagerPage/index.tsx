@@ -20,7 +20,6 @@ import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import style from './style.module.scss';
 import ProfileEditor from './components/ProfileEditor';
 import { getDIDString } from 'src/utils/did';
-import SyncBar from 'src/components/SyncBar';
 
 const Header = styled.div`
   width: 100%;

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { IonCol, IonGrid, IonPopover, IonRow } from '@ionic/react';
+import React from 'react';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
 import darkDefaultExpImg from '../../../../assets/default/default-exp_dark.png';
@@ -68,21 +68,14 @@ interface ExperienceElementProps {
   verifiedby?: { name: string; did: string };
   isSelected: boolean;
   template?: string;
-  userSession: ISessionItem;
 }
 
 const ExperienceElement: React.FC<ExperienceElementProps> = ({
   experienceItem,
   verifiedby = undefined,
   isSelected = false,
-  userSession,
   template = 'default'
 }) => {
-  const [popoverState, setShowPopover] = useState({
-    showPopover: false,
-    event: undefined
-  });
-
   const experienceItemLogo = () => {
     if (experienceItem.logo) {
       return experienceItem.logo;
@@ -104,14 +97,6 @@ const ExperienceElement: React.FC<ExperienceElementProps> = ({
               <IonRow className="ion-no-padding">
                 <LocalInstitution template={template}>
                   {experienceItem.institution}
-                  {/* {verifiedby && (
-                                        <div style={{ float: 'right' }}>
-                                        <VerificatioBadge
-                                            userSession={userSession}
-                                            users={[verifiedby]}
-                                        />
-                                        </div>
-                                    )} */}
                 </LocalInstitution>
               </IonRow>
               <IonRow className="ion-no-padding">

@@ -5,17 +5,14 @@ import {
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
 import { Guid } from 'guid-typescript';
-import { isEqual } from 'lodash';
-import session from 'redux-persist/lib/storage/session';
+
 import { AssistService } from './assist.service';
 
 import { DidService } from './did.service.new';
 import { DidcredsService } from './didcreds.service';
-import { DidDocumentService } from './diddocument.service';
 import { EssentialsService } from './essentials.service';
 import { HiveService } from './hive.service';
 import { ProfileService } from './profile.service';
-import { TuumTechScriptService } from './script.service';
 import { UserService } from './user.service';
 
 export enum SyncState {
@@ -53,8 +50,6 @@ export class SyncService {
       name: 'get_verifiable_credentials'
     });
 
-    console.log('hive response get_verifiable_credentials', hiveResponse);
-
     let response = new Map<string, VerifiableCredential>();
 
     if (!hiveResponse?.isSuccess) return response;
@@ -65,8 +60,6 @@ export class SyncService {
       var vc = VerifiableCredential.parse(item.vc);
       response.set(vc.getId().toString(), vc);
     });
-
-    console.log('map get_verifiable_credentials', response);
 
     return response;
   }
@@ -223,8 +216,6 @@ export class SyncService {
         VaultCredential: vaultVc
       };
 
-      console.log(syncItem);
-
       if (
         documentVcs.has(key) &&
         this.IsVcEqual(vaultVc, documentVcs.get(key)!)
@@ -314,7 +305,7 @@ export class SyncService {
     await didService.Store.storeDid(didDocument);
 
     let updatedDidDocument: DIDDocument;
-    if (sessionItem.mnemonics === '') {
+    if (sessionItem.isEssentialUser) {
       let essentialsService = new EssentialsService(didService);
       let isAdded = await essentialsService.addMultipleVerifiableCredentialsToEssentials(
         vcs
@@ -339,16 +330,18 @@ export class SyncService {
       updatedDidDocument = await didService.getPublishedDocument(
         new DID(sessionItem.did)
       );
+      await didService.storeDocument(updatedDidDocument);
     } else {
+      console.log('Updating document');
       updatedDidDocument = await didService.updateMultipleVerifiableCredentialsToDIDDocument(
         didDocument,
         vcs,
         toRemoveFromBlockchain
       );
+      console.log('Updated');
+      await didService.storeDocument(updatedDidDocument);
+      await didService.publishDocument(updatedDidDocument);
     }
-
-    await didService.storeDocument(updatedDidDocument);
-    await didService.publishDocument(updatedDidDocument);
   }
 
   private static async UpdateVault(
@@ -366,7 +359,7 @@ export class SyncService {
           item.VaultCredential!.getId().toString()
         );
 
-        if (newSessionItem.loginCred == undefined)
+        if (newSessionItem.loginCred === undefined)
           newSessionItem.loginCred = {};
 
         switch (item.Label.toLowerCase()) {
@@ -423,7 +416,7 @@ export class SyncService {
               educationItemExc,
               sessionItem
             );
-
+            break;
           case 'experience':
             let subjectExperienceExc = item.VaultCredential?.getSubject().getProperty(
               item.VaultCredential.getId()
@@ -464,7 +457,7 @@ export class SyncService {
               experienceItemExc,
               sessionItem
             );
-
+            break;
           case 'avatar':
             newSessionItem.avatar = '';
             break;
@@ -479,7 +472,7 @@ export class SyncService {
 
         let value = this.getValue(item);
 
-        if (newSessionItem.loginCred == undefined)
+        if (newSessionItem.loginCred === undefined)
           newSessionItem.loginCred = {};
 
         switch (item.Label.toLowerCase()) {
@@ -540,7 +533,7 @@ export class SyncService {
               educationItem,
               sessionItem
             );
-
+            break;
           case 'experience':
             let subjectExperience = item.BlockchainCredential?.getSubject().getProperty(
               item.BlockchainCredential.getId()
@@ -586,7 +579,7 @@ export class SyncService {
               sessionItem,
               item.BlockchainCredential!
             );
-
+            break;
           case 'avatar':
             let atavarValue = item
               .BlockchainCredential!.getSubject()

@@ -15,11 +15,7 @@ import { setSession } from 'src/store/users/actions';
 import style from '../style.module.scss';
 import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
-import {
-  DID,
-  DIDDocument,
-  VerifiableCredential
-} from '@elastosfoundation/did-js-sdk/';
+import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { DidcredsService } from 'src/services/didcreds.service';
 
 const VersionTag = styled.div`

@@ -19,6 +19,12 @@ interface Props {
   mutualDids: string[];
 }
 
+const SyncDiv = styled.div`
+  margin-left: 25px;
+  margin-top: 15px;
+  margin-right: 25px;
+`;
+
 const DashboardContent: React.FC<Props> = ({
   onTutorialStart,
   profile,
@@ -54,7 +60,9 @@ const DashboardContent: React.FC<Props> = ({
 
       {active === 'home' && (
         <>
-          <SyncBar session={sessionItem}></SyncBar>
+          <SyncDiv>
+            <SyncBar session={sessionItem}></SyncBar>
+          </SyncDiv>
           <DashboardHome
             profile={profile}
             onTutorialStart={onTutorialStart}

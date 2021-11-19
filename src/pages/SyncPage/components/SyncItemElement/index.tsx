@@ -7,7 +7,7 @@ import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/';
 import style from './style.module.scss';
 import AvatarCredential from 'src/components/AvatarCredential';
 import { Guid } from 'guid-typescript';
-import EducationCard from 'src/components/cards/EducationCard';
+
 import EducationElement from '../EducationElement';
 import ExperienceElement from '../ExperienceElement';
 import { DidService } from 'src/services/did.service.new';
@@ -65,7 +65,6 @@ const SyncRowItem = styled(IonRow)`
 interface IProps {
   syncItem: ISyncItem;
   updateSyncItem: (syncItem: ISyncItem) => void;
-  userSession: ISessionItem;
 }
 
 interface verifier {
@@ -75,7 +74,7 @@ interface verifier {
 
 const SyncItemElement: React.FC<IProps> = ({
   syncItem,
-  userSession,
+
   updateSyncItem = (syncItem: ISyncItem) => {}
 }: IProps) => {
   const [verifiers, setVerifiers] = useState<Map<string, verifier>>();
@@ -149,7 +148,6 @@ const SyncItemElement: React.FC<IProps> = ({
             <AvatarCredential credential={vc}></AvatarCredential>
           </>
         );
-        break;
 
       case 'Education':
         let subjectEducation = vc!.getSubject().getProperty(
@@ -175,12 +173,11 @@ const SyncItemElement: React.FC<IProps> = ({
           verifiers: []
         };
 
-        let hasEduVerifier = hasVerifier(vc);
+        hasVerifier(vc);
         let issuerDidEdu = vc.getIssuer().toString();
 
         return (
           <EducationElement
-            userSession={userSession}
             educationItem={educationItem}
             isSelected={state === syncItem.State}
             verifiedby={verifiers && verifiers!.get(issuerDidEdu)!}
@@ -224,12 +221,11 @@ const SyncItemElement: React.FC<IProps> = ({
           isEnabled: true
         };
 
-        let hasExpVerifier = hasVerifier(vc);
+        hasVerifier(vc);
         let issuerDidExp = vc.getIssuer().toString();
 
         return (
           <ExperienceElement
-            userSession={userSession}
             isSelected={state === syncItem.State}
             verifiedby={verifiers && verifiers!.get(issuerDidExp)!}
             experienceItem={experienceItem}

@@ -2,7 +2,6 @@ import { mapDispatchToProps, mapStateToProps } from './index';
 
 import { IonButton } from '@ionic/react';
 import styled from 'styled-components';
-import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/typings';
 
 export type InferMappedProps = ReturnType<typeof mapStateToProps> &
   ReturnType<typeof mapDispatchToProps>;

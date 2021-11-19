@@ -5,10 +5,8 @@ import {
   IonGrid,
   IonRow,
   IonCol,
-  IonButton,
   IonImg
 } from '@ionic/react';
-import styled from 'styled-components';
 
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -27,7 +25,6 @@ import {
 
 import style from './style.module.scss';
 
-import Logo from 'src/elements/Logo';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 
 import arrowLeft from '../../assets/icon/arrow-left-square.svg';
@@ -61,11 +58,14 @@ const SyncPage: React.FC<InferMappedProps> = ({
       syncItems
     );
 
+    //
     eProps.setSession({
       session: newSession
     });
 
-    window.location.href = '/manager';
+    setTimeout(() => {
+      window.location.href = '/profile';
+    }, 1000);
   };
 
   useEffect(() => {
@@ -85,9 +85,7 @@ const SyncPage: React.FC<InferMappedProps> = ({
               </IonCol>
               <IonCol size="10" className={style['right-panel']}>
                 <Header>
-                  <ArrowImage
-                    onClick={() => (window.location.href = '/manager')}
-                  >
+                  <ArrowImage onClick={() => (window.location.href = '/')}>
                     <IonImg src={arrowLeft}></IonImg>
                   </ArrowImage>
                   <HeaderInfo>
@@ -102,7 +100,6 @@ const SyncPage: React.FC<InferMappedProps> = ({
                     onSync={onSync}
                   ></SyncProgressCard>
                   <SyncItemsCard
-                    userSession={props.session}
                     syncItems={syncItems}
                     updateSyncItem={updateSyncItem}
                   ></SyncItemsCard>

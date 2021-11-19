@@ -16,7 +16,6 @@ import {
   ProfileService
 } from 'src/services/profile.service';
 import { TuumTechScriptService } from 'src/services/script.service';
-import { SyncService } from 'src/services/sync.service';
 import { showNotify } from 'src/utils/notify';
 import BasicCard from '../BasicCard';
 import PublicFields from '../PublicFields';
@@ -32,7 +31,6 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
   const [error, setError] = useState(false);
   const [userInfo, setUserInfo] = useState<ISessionItem>(session);
   const [loaded, setloaded] = useState(false);
-  const [hasDifferences, setHasDifferences] = useState(false);
   const [didDocument, setDidDocument] = useState<DIDDocument | undefined>(
     undefined
   );
@@ -61,9 +59,6 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
       // refresh DID document
       let document = await DidDocumentService.getUserDocument(session);
       setDidDocument(document);
-
-      let hasDiff = await SyncService.HasDifferences(session);
-      setHasDifferences(hasDiff);
 
       if (JSON.stringify(session) === JSON.stringify(userInfo)) return;
 

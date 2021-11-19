@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import style from './style.module.scss';
-import { IonButton, IonCol, IonGrid, IonIcon, IonRow } from '@ionic/react';
+import { IonButton, IonIcon } from '@ionic/react';
 import { syncOutline, alertCircle } from 'ionicons/icons';
 import { SyncService } from 'src/services/sync.service';
+import { Guid } from 'guid-typescript';
 const ButtonOrange = styled(IonButton)`
   border-radius: 6px;
   background-color: #ffffff;
@@ -32,28 +33,45 @@ const SyncBar: React.FC<SyncBarProps> = ({ session }: SyncBarProps) => {
   const history = useHistory();
   const [hasDifferences, setHasDifferences] = useState(false);
 
-  const verifyDifferences = useCallback(async () => {
-    if (session && session.did !== '' && session.tutorialStep === 4) {
-      let hasDiff = await SyncService.HasDifferences(session);
-      setHasDifferences(hasDiff);
-    }
-  }, [session]);
-
-  const setTimerForVerifyDifferences = useCallback(() => {
-    const timer = setTimeout(async () => {
-      await verifyDifferences();
-      setTimerForVerifyDifferences();
-    }, 1000 * 60 * 10); //ten minutes
-    return () => clearTimeout(timer);
-  }, [verifyDifferences]);
+  const [id] = useState(Guid.create().toString());
 
   //NO CALLBACK
   useEffect(() => {
-    (async () => {
-      await verifyDifferences();
-    })();
-    setTimerForVerifyDifferences();
-  }, [setTimerForVerifyDifferences, verifyDifferences]);
+    const timer = setInterval(async () => {
+      console.log('Verify differences', new Date().toISOString(), id);
+      if (session && session.did !== '' && session.tutorialStep === 4) {
+        let hasDiff = await SyncService.HasDifferences(session);
+        setHasDifferences(hasDiff);
+      }
+    }, 1000 * 60);
+    return () => clearInterval(timer);
+  }, [session, id]);
+
+  // const verifyDifferences = async () => {
+
+  //   if (session && session.did !== '' && session.tutorialStep === 4) {
+  //     let hasDiff = await SyncService.HasDifferences(session);
+  //     setHasDifferences(hasDiff);
+  //   }
+  //   setTimerForVerifyDifferences();
+  // };
+
+  // const setTimerForVerifyDifferences = () => {
+
+  //   n = setTimeout(() =>{
+  //     (async () => {
+  //       await verifyDifferences();
+  //     })();
+  //     clearTimeout(n)
+  //   }, 1000 * 10)
+
+  // };
+
+  // useEffect(() => {
+  //   (async () => {
+  //     await verifyDifferences();
+  //   })();
+  // }, []);
 
   const divBar = () => {
     return (
