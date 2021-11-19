@@ -98,8 +98,8 @@ export class AssistService {
   ): IPublishDocumentResponse | undefined => {
     let didKey = did.replace('did:elastos:', '');
     let item = window.localStorage.getItem(`publish_${didKey}`);
-    console.log(`getPublishStatusTask publish_${didKey}`, item);
     if (!item) return;
+    console.log(`getPublishStatusTask publish_${didKey}`, item);
     return JSON.parse(item);
   };
 
