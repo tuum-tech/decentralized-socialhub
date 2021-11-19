@@ -70,7 +70,7 @@ const OverviewCard: React.FC<Props> = ({ badges }) => {
     _totalBadgeCount += Object.keys(badges?.dStorage).length;
 
     _completedBadgeCount += Object.keys(badges?.account).filter(
-      key => badges?.account[key].archived
+      key => (badges?.account as any)[key].archived
     ).length;
     _completedBadgeCount += Object.keys(badges?.socialVerify).filter(
       key => (badges?.socialVerify as any)[key].archived

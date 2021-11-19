@@ -221,7 +221,7 @@ interface IBadges {
   dStorage: DStorageBadgeItem;
 }
 
-interface AccontBadgeItem {
+interface AccountBadgeItem {
   beginnerTutorial: BadgeArchiveModel;
   basicProfile: BadgeArchiveModel;
   educationProfile: BadgeArchiveModel;

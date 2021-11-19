@@ -1,4 +1,7 @@
+import { Guid } from 'guid-typescript';
 import { DidService } from 'src/services/did.service.new';
+import { defaultEducationItem } from 'src/components/cards/EducationCard';
+import { defaultExperienceItem } from 'src/components/cards/ExperienceCard';
 
 export type UserType = {
   did: string;
@@ -27,13 +30,17 @@ export const retrieveDocInfo = async (
     },
     avatar: ''
   };
+  let educations: EducationItem[] = [];
+  let experiences: ExperienceItem[] = [];
   if (doc && doc !== undefined) {
     if (doc.credentials && doc.credentials.size > 0) {
+      debugger;
       let loginCred: any = {};
-      doc.credentials.forEach((value, key) => {
-        let subject = value.id.getFragment();
+      doc.credentials.forEach(value => {
+        let fragment = value.id.getFragment().toLowerCase();
+        let subject = fragment.split('credential')[0];
         let properties = value.subject.getProperties();
-        let propertieValue = properties[subject];
+        let propertieValue: any = properties[fragment];
 
         switch (subject) {
           case 'name':
@@ -68,7 +75,24 @@ export const retrieveDocInfo = async (
             }
             uInfo.avatar = baseStr;
             break;
-
+          case 'education':
+            let education = {
+              ...defaultEducationItem,
+              ...propertieValue,
+              guid: Guid.create(),
+              still: !propertieValue.end
+            };
+            educations.push(education);
+            break;
+          case 'experience':
+            let experience = {
+              ...defaultExperienceItem,
+              ...propertieValue,
+              guid: Guid.create(),
+              still: !propertieValue.end
+            };
+            experiences.push(experience);
+            break;
           default:
             break;
         }
@@ -82,5 +106,29 @@ export const retrieveDocInfo = async (
       uInfo.hiveHost = firstService.endpoint;
     }
   }
-  return uInfo;
+  educations = educations.filter((itr1, index) => {
+    return (
+      educations.findIndex(
+        itr2 =>
+          itr1.institution === itr2.institution &&
+          itr1.description === itr2.description &&
+          itr1.program === itr2.program &&
+          itr1.start === itr2.start &&
+          itr1.end === itr2.end
+      ) === index
+    );
+  });
+  experiences = experiences.filter((itr1, index) => {
+    return (
+      experiences.findIndex(
+        itr2 =>
+          itr1.institution === itr2.institution &&
+          itr1.description === itr2.description &&
+          itr1.title === itr2.title &&
+          itr1.start === itr2.start &&
+          itr1.end === itr2.end
+      ) === index
+    );
+  });
+  return { uInfo, experiences, educations };
 };
