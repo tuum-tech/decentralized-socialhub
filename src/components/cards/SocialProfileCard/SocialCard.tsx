@@ -44,15 +44,18 @@ interface Props {
   sessionItem: ISessionItem;
   setSession: (props: { session: ISessionItem }) => void;
   mode?: string;
+  openModal?: boolean;
 }
 
 const SocialProfilesCard: React.FC<Props> = ({
   diddocument,
   sessionItem,
   setSession,
-  mode = 'view'
+  mode = 'view',
+  openModal = false
 }) => {
-  const [isManagerOpen, setIsManagerOpen] = useState(false);
+  console.log('openmodal', openModal);
+  const [isManagerOpen, setIsManagerOpen] = useState(openModal);
   const [didDocument, setDidDocument] = useState<DIDDocument>(diddocument);
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
 
@@ -450,53 +453,49 @@ const SocialProfilesCard: React.FC<Props> = ({
         </IonCardContent>
       </SocialProfileCard>
 
-      {isManagerOpen ? (
-        <ManagerModal
-          isOpen={isManagerOpen}
-          cssClass="my-custom-class"
-          backdropDismiss={false}
-        >
-          <MyGrid class="ion-no-padding">
-            <IonRow>
-              <ManagerModalTitle>Manage Links</ManagerModalTitle>
-            </IonRow>
-            <IonRow no-padding>
-              <IonCol class="ion-no-padding">{linkedinModalItem()}</IonCol>
-            </IonRow>
-            <IonRow no-padding>
-              <IonCol class="ion-no-padding">{twitterModalItem()}</IonCol>
-            </IonRow>
-            <IonRow no-padding>
-              <IonCol class="ion-no-padding">{facebookModalItem()}</IonCol>
-            </IonRow>
-            <IonRow no-padding>
-              <IonCol class="ion-no-padding">{googleModalItem()}</IonCol>
-            </IonRow>
-            <IonRow no-padding>
-              <IonCol class="ion-no-padding">{githubModalItem()}</IonCol>
-            </IonRow>
-            <IonRow no-padding>
-              <IonCol class="ion-no-padding">{discordModalItem()}</IonCol>
-            </IonRow>
-          </MyGrid>
-          <ManagerModalFooter className="ion-no-border">
-            <IonRow className="ion-justify-content-around">
-              <IonCol size="auto">
-                <CloseButton
-                  disabled={isRemoving}
-                  onClick={() => {
-                    setIsManagerOpen(false);
-                  }}
-                >
-                  Close
-                </CloseButton>
-              </IonCol>
-            </IonRow>
-          </ManagerModalFooter>
-        </ManagerModal>
-      ) : (
-        ''
-      )}
+      <ManagerModal
+        isOpen={isManagerOpen}
+        cssClass="my-custom-class"
+        backdropDismiss={false}
+      >
+        <MyGrid class="ion-no-padding">
+          <IonRow>
+            <ManagerModalTitle>Manage Links</ManagerModalTitle>
+          </IonRow>
+          <IonRow no-padding>
+            <IonCol class="ion-no-padding">{linkedinModalItem()}</IonCol>
+          </IonRow>
+          <IonRow no-padding>
+            <IonCol class="ion-no-padding">{twitterModalItem()}</IonCol>
+          </IonRow>
+          <IonRow no-padding>
+            <IonCol class="ion-no-padding">{facebookModalItem()}</IonCol>
+          </IonRow>
+          <IonRow no-padding>
+            <IonCol class="ion-no-padding">{googleModalItem()}</IonCol>
+          </IonRow>
+          <IonRow no-padding>
+            <IonCol class="ion-no-padding">{githubModalItem()}</IonCol>
+          </IonRow>
+          <IonRow no-padding>
+            <IonCol class="ion-no-padding">{discordModalItem()}</IonCol>
+          </IonRow>
+        </MyGrid>
+        <ManagerModalFooter className="ion-no-border">
+          <IonRow className="ion-justify-content-around">
+            <IonCol size="auto">
+              <CloseButton
+                disabled={isRemoving}
+                onClick={() => {
+                  setIsManagerOpen(false);
+                }}
+              >
+                Close
+              </CloseButton>
+            </IonCol>
+          </IonRow>
+        </ManagerModalFooter>
+      </ManagerModal>
     </>
   );
 };

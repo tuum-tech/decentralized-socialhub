@@ -1,4 +1,4 @@
-import React, { ObjectHTMLAttributes, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonContent, IonGrid, IonCol, IonRow } from '@ionic/react';
 
 import { TuumTechScriptService } from 'src/services/script.service';
@@ -46,13 +46,41 @@ const ProfileEditor: React.FC<Props> = ({
   const [profile, setProfile] = useState<ProfileDTO>(defaultFullProfile);
 
   const {
-    account: { basicProfile, educationProfile, experienceProfile }
+    account: { basicProfile, educationProfile, experienceProfile },
+    socialVerify: {
+      linkedin,
+      facebook,
+      twitter,
+      google,
+      github,
+      discord,
+      email,
+      phone
+    }
   } = badgeDetails;
   const handleRouteParam = (title: string) => {
     if (badgeUrl?.badge && badgeUrl.badge === title) {
       return true;
     }
     return false;
+  };
+
+  const handleSocialRouteParam = () => {
+    if (
+      badgeUrl?.badge &&
+      [
+        linkedin.title,
+        facebook.title,
+        twitter.title,
+        google.title,
+        github.title,
+        discord.title,
+        email.title,
+        phone.title
+      ].includes(badgeUrl.badge)
+    ) {
+      return true;
+    } else return false;
   };
 
   const retriveProfile = async () => {
@@ -187,6 +215,7 @@ const ProfileEditor: React.FC<Props> = ({
                   targetUser={session}
                   setSession={updateSession}
                   mode="edit"
+                  openModal={handleSocialRouteParam()}
                 />
                 {profile && profile.educationDTO && (
                   <EducationCard
