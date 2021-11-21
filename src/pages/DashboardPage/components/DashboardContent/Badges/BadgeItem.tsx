@@ -14,19 +14,24 @@ interface Props {
   title: string;
   description: string;
   archived: number | boolean;
+  badgeCategory?: string;
 }
 
 const BadgeItem: React.FC<Props> = ({
   image,
   title,
   description,
-  archived
+  archived,
+  badgeCategory
 }) => {
   const history = useHistory();
   const [showGetBadgeButton, setShowGetBadgeButton] = useState<boolean>(false);
 
   const handleMouseEvent = (isHover: boolean) => {
-    if (!archived) {
+    if (
+      !archived &&
+      (badgeCategory === 'account' || badgeCategory === 'socialVerify')
+    ) {
       setShowGetBadgeButton(isHover);
     }
   };
@@ -37,7 +42,10 @@ const BadgeItem: React.FC<Props> = ({
 
   return (
     <IonCard
-      className={clsx(style['badge-item'], !archived && style['non-archived'])}
+      className={clsx(
+        style['badge-item'],
+        showGetBadgeButton && style['non-archived']
+      )}
       onMouseEnter={() => handleMouseEvent(true)}
       onMouseLeave={() => handleMouseEvent(false)}
     >

@@ -54,7 +54,6 @@ const SocialProfilesCard: React.FC<Props> = ({
   mode = 'view',
   openModal = false
 }) => {
-  console.log('openmodal', openModal);
   const [isManagerOpen, setIsManagerOpen] = useState(openModal);
   const [didDocument, setDidDocument] = useState<DIDDocument>(diddocument);
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
