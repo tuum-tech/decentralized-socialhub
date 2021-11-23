@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { injected } from './connector';
 
-const WalletConnectBtn = () => {
+import { StyledButton } from 'src/elements/buttons';
+import MetaMaskIcon from 'src/assets/meta-mask.svg';
+
+const WalletConnectBtn = (props: any) => {
+  const { onConnectMetaMask } = props;
   const {
     active,
     account,
@@ -28,28 +32,47 @@ const WalletConnectBtn = () => {
     }
   }
 
+  useEffect(() => {
+    if (account) {
+      onConnectMetaMask(account);
+    }
+  }, [account, onConnectMetaMask]);
   return (
-    <div className="flex flex-col items-center justify-center">
-      <button
-        onClick={connect}
-        className="py-2 mt-20 mb-4 text-lg font-bold text-white rounded-lg w-56 bg-blue-600 hover:bg-blue-800"
-      >
-        Connect to MetaMask
-      </button>
-      {active ? (
-        <span>
-          Connected with <b>{account}</b>
-        </span>
+    <StyledButton
+      width={'182px'}
+      height={'40px'}
+      onClick={() => {
+        if (account) {
+          disconnect();
+        } else {
+          connect();
+        }
+      }}
+    >
+      {account ? (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          <img
+            src={MetaMaskIcon}
+            alt="meta-mask"
+            width="25"
+            style={{
+              marginRight: '10px'
+            }}
+          />
+          {`${account.substring(0, 8)} ... ${account.substring(
+            account.length - 4
+          )}`}
+        </div>
       ) : (
-        <span>Not connected</span>
+        'Connect Wallet'
       )}
-      <button
-        onClick={disconnect}
-        className="py-2 mt-20 mb-4 text-lg font-bold text-white rounded-lg w-56 bg-blue-600 hover:bg-blue-800"
-      >
-        Disconnect
-      </button>
-    </div>
+    </StyledButton>
   );
 };
 

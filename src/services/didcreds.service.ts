@@ -12,7 +12,10 @@ export enum CredentialType {
   DID = 'Did',
   Education = 'Education',
   Experience = 'Experience',
-  PersonalInfo = 'PersonalInfo'
+  PersonalInfo = 'PersonalInfo',
+  ETHAddress = 'ETHAddress',
+  EIDAddress = 'EIDAddress',
+  ESCAddress = 'ESCAddress'
 }
 
 export class DidcredsService {
@@ -36,7 +39,6 @@ export class DidcredsService {
       },
       body: JSON.stringify(data)
     };
-
     let response = await fetch(url, postData);
 
     let json = await response.json();
