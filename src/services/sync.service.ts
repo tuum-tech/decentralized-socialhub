@@ -531,7 +531,8 @@ export class SyncService {
 
             await ProfileService.updateEducationProfile(
               educationItem,
-              sessionItem
+              sessionItem,
+              false
             );
             break;
           case 'experience':
@@ -572,7 +573,8 @@ export class SyncService {
             console.log('experience', experienceItem);
             await ProfileService.updateExperienceProfile(
               experienceItem,
-              sessionItem
+              sessionItem,
+              false
             );
 
             await DidcredsService.addOrUpdateCredentialToVault(
