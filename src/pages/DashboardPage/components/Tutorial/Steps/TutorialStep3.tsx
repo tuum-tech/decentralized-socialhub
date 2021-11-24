@@ -201,6 +201,53 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       window.localStorage.removeItem(
         `temporary_activities_${newSession.did.replace('did:elastos:', '')}`
       );
+      // import education & experience profile
+      let educations = JSON.parse(
+        window.localStorage.getItem(
+          `temp_educations_${newSession.did.replace('did:elastos:', '')}`
+        ) || '[]'
+      );
+      let experiences = JSON.parse(
+        window.localStorage.getItem(
+          `temp_experiences_${newSession.did.replace('did:elastos:', '')}`
+        ) || '[]'
+      );
+
+      if (educations.length > 0 || experiences.length > 0) {
+        newSession = JSON.parse(JSON.stringify({ ...newSession }));
+        newSession.badges!.account!.educationProfile.archived =
+          educations.length > 0 ? new Date().getTime() : false;
+        newSession.badges!.account!.experienceProfile.archived =
+          experiences.length > 0 ? new Date().getTime() : false;
+        const updatedSession = await userService.updateSession(newSession);
+        eProps.setSession({ session: updatedSession });
+      }
+
+      educations.forEach(
+        async (educationItem: EducationItem, index: number) => {
+          await ProfileService.updateEducationProfile(
+            educationItem,
+            newSession,
+            !!index
+          );
+        }
+      );
+      experiences.forEach(
+        async (experienceItem: ExperienceItem, index: number) => {
+          await ProfileService.updateExperienceProfile(
+            experienceItem,
+            newSession,
+            !!index
+          );
+        }
+      );
+
+      window.localStorage.removeItem(
+        `temp_educations_${newSession.did.replace('did:elastos:', '')}`
+      );
+      window.localStorage.removeItem(
+        `temp_experiences_${newSession.did.replace('did:elastos:', '')}`
+      );
 
       props.onContinue(newSession);
     } catch (error) {

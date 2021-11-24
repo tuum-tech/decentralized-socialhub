@@ -464,6 +464,7 @@ export class VerificationService {
         if (
           x.institution === credential.institution &&
           x.program === credential.program &&
+          x.title === credential.title &&
           x.start === credential.start
         ) {
           let same = false;

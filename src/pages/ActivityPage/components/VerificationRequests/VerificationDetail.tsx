@@ -16,12 +16,11 @@ import Avatar from 'src/components/Avatar';
 import { InfoTxt, Container } from '../MyRequests/VerificationDetail';
 import { getStatusColor } from '../MyRequests/UserRows';
 
-// import { VerificationService } from 'src/services/verification.service';
+import { VerificationService } from 'src/services/verification.service';
 
 import { timeSince } from 'src/utils/time';
 import { getDIDString } from 'src/utils/did';
 import { getCategoryTitle } from 'src/utils/credential';
-import { VerificationService } from 'src/services/verification.service';
 
 export const VerificationDetailModal = styled(IonModal)`
   --border-radius: 16px;
@@ -119,7 +118,12 @@ const VerificationDetailContent = ({
     setLoading(approve ? 1 : 2);
 
     const vService = new VerificationService();
-    await vService.approveCredential(session, verification, approve, feedbacks);
+    const vc = await vService.approveCredential(
+      session,
+      verification,
+      approve,
+      feedbacks
+    );
     setLoading(0);
     closeModal();
   };

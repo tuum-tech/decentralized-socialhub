@@ -215,6 +215,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                     educationDTO={profile.educationDTO}
                     updateFunc={async (educationItem: EducationItem) => {
                       let userSession = JSON.parse(JSON.stringify(session));
+                      let archivedBadge = true;
                       if (
                         userSession &&
                         userSession.badges &&
@@ -223,32 +224,12 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                       ) {
                         userSession.badges.account.educationProfile.archived = new Date().getTime();
                         await updateSession({ session: userSession });
-                        await ProfileService.addActivity(
-                          {
-                            guid: '',
-                            did: userSession.did,
-                            message: 'You received a Education profile badge',
-                            read: false,
-                            createdAt: 0,
-                            updatedAt: 0
-                          },
-                          userSession
-                        );
+                        archivedBadge = false;
                       }
                       await ProfileService.updateEducationProfile(
                         educationItem,
-                        userSession
-                      );
-                      await ProfileService.addActivity(
-                        {
-                          guid: '',
-                          did: userSession!.did,
-                          message: 'You updated education profile',
-                          read: false,
-                          createdAt: 0,
-                          updatedAt: 0
-                        },
-                        userSession
+                        userSession,
+                        archivedBadge
                       );
                       await retriveProfile();
                     }}
@@ -271,6 +252,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                     experienceDTO={profile.experienceDTO}
                     updateFunc={async (experienceItem: ExperienceItem) => {
                       let userSession = JSON.parse(JSON.stringify(session));
+                      let archivedBadge = true;
                       if (!userSession) return;
                       if (
                         userSession &&
@@ -280,34 +262,12 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                       ) {
                         userSession.badges.account.experienceProfile.archived = new Date().getTime();
                         await updateSession({ session: userSession });
-                        await ProfileService.addActivity(
-                          {
-                            guid: '',
-                            did: userSession.did,
-                            message: 'You received a Experience profile badge',
-                            read: false,
-                            createdAt: 0,
-                            updatedAt: 0
-                          },
-
-                          userSession
-                        );
+                        archivedBadge = false;
                       }
                       await ProfileService.updateExperienceProfile(
                         experienceItem,
-                        userSession
-                      );
-                      await ProfileService.addActivity(
-                        {
-                          guid: '',
-                          did: userSession!.did,
-                          message: 'You updated experience profile',
-                          read: false,
-                          createdAt: 0,
-                          updatedAt: 0
-                        },
-
-                        userSession
+                        userSession,
+                        archivedBadge
                       );
                       await retriveProfile();
                     }}

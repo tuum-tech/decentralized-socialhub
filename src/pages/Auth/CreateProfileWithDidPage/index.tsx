@@ -37,7 +37,7 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      const uInfo = await retrieveDocInfo(
+      const { uInfo, experiences, educations } = await retrieveDocInfo(
         props.location.state.did,
         props.location.state.mnemonic,
         props.location.state.user ? props.location.state.user.name : '',
@@ -45,6 +45,18 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
           ? props.location.state.user.loginCred.email
           : ''
       );
+      if (educations.length > 0) {
+        window.localStorage.setItem(
+          `temp_educations_${uInfo.did.replace('did:elastos:', '')}`,
+          JSON.stringify(educations)
+        );
+      }
+      if (experiences.length > 0) {
+        window.localStorage.setItem(
+          `temp_experiences_${uInfo.did.replace('did:elastos:', '')}`,
+          JSON.stringify(experiences)
+        );
+      }
       setUserInfo(uInfo);
     };
     if (userInfo.did === '') {
