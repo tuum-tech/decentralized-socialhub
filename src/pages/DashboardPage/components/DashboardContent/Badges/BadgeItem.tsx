@@ -17,6 +17,21 @@ interface Props {
   badgeCategory?: string;
 }
 
+const titles = {
+  'Beginner Tutorial': 'Add Beginner',
+  'Add Basic Profile': 'Add About me',
+  'Add Education Profile': 'Add Education',
+  'Add Experience Profile': 'Add Experience',
+  'Linkedin Verification': 'Add Linkedin',
+  'Facebook Verification': 'Add Facebook',
+  'Twitter Verification': 'Add Twitter',
+  'Google Verification': 'Add Google',
+  'Github Verification': 'Add Github',
+  'Discord Verification': 'Add Discord',
+  'Email Verification': 'Add Email',
+  'Phone Verification': 'Add Phone'
+};
+
 const BadgeItem: React.FC<Props> = ({
   image,
   title,
@@ -64,7 +79,7 @@ const BadgeItem: React.FC<Props> = ({
               width="60%"
               onClick={handleAddExperience}
             >
-              Add Experience
+              {(titles as any)[title]}
             </DefaultButton>
           )}
         </BadgeContent>
