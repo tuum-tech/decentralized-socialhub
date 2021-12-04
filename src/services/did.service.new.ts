@@ -12,7 +12,7 @@ import {
   VerifiableCredential,
   VerifiablePresentation
 } from '@elastosfoundation/did-js-sdk/';
-import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { DID as CNDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { AssistService } from './assist.service';
 
 export interface IDidService {
@@ -443,7 +443,6 @@ export class DidService implements IDidService {
   ): Promise<any> {
     let appMnemonic = process.env.REACT_APP_APPLICATION_MNEMONICS as string;
     let appDid = await this.loadDid(appMnemonic);
-
     let userDid = await this.loadDid(userMnemonic, password);
 
     let userDocument: DIDDocument = await this.Store.loadDid(userDid);
@@ -493,35 +492,31 @@ export class DidService implements IDidService {
     nonce: string
   ): Promise<any> {
     let appMnemonic = process.env.REACT_APP_APPLICATION_MNEMONICS as string;
-    let appDid = await this.loadDid(appMnemonic);
+    let appDidInstance = await this.loadDid(appMnemonic);
 
-    let connector = connectivity.getActiveConnector();
-    let vc = await connector?.generateAppIdCredential(
-      process.env.REACT_APP_APPLICATION_DID as string,
-      process.env.REACT_APP_APPLICATION_DID as string
-    );
-
-    console.log(await vc.isValid());
+    let didAccess = new CNDID.DIDAccess();
+    let vc: VerifiableCredential = await didAccess.generateAppIdCredential();
 
     this.Store.storeCredential(vc);
 
     // store private key
-    let id: DIDURL = DIDURL.from('#primary', appDid) as DIDURL;
+    let id: DIDURL = DIDURL.from('#primary', appDidInstance) as DIDURL;
     this.storePrivatekey(id, appMnemonic, '', 0);
+    let response = await didAccess.getExistingAppInstanceDIDInfo();
+    let didStore = await DIDStore.open(response.storeId);
 
     let vpb = await VerifiablePresentation.createFor(
-      process.env.REACT_APP_APPLICATION_DID as string,
+      response.didString,
       null,
-      this.Store
+      didStore
     );
+
     let vp = await vpb
       .realm(issuer)
       .nonce(nonce)
       .credentials(vc)
-      .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
-    console.log(vp.toString(true));
+      .seal(response.storePassword);
 
-    // can't return VerifiablePresenter object because HiveService still not supporting it
     return vp;
   }
 }

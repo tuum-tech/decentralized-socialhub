@@ -363,7 +363,11 @@ export class TuumTechScriptService {
 
 export class UserVaultScriptService {
   private static async generateUserToken(mnemonics: string, address: string) {
-    let challenge = await HiveService.getHiveChallenge(address);
+    let isEssentialUser = mnemonics === undefined || mnemonics === '';
+    let challenge = await HiveService.getHiveChallenge(
+      address,
+      isEssentialUser
+    );
     let didService = await DidService.getInstance();
     let presentation;
     if (mnemonics) {
@@ -379,7 +383,11 @@ export class UserVaultScriptService {
         challenge.nonce
       );
     }
-    const userToken = await HiveService.getUserHiveToken(address, presentation);
+    const userToken = await HiveService.getUserHiveToken(
+      address,
+      presentation,
+      isEssentialUser
+    );
     return userToken;
   }
 

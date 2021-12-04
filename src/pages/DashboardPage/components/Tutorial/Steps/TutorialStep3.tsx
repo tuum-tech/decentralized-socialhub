@@ -81,7 +81,10 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     }
 
     props.setLoading(true);
-    let isValidHiveAddress = await HiveService.isHiveAddressValid(endpoint);
+    let isValidHiveAddress = await HiveService.isHiveAddressValid(
+      endpoint,
+      props.session.isDIDPublished
+    );
     if (!isValidHiveAddress) {
       props.setLoading(false);
       console.log('Not valid address: ', endpoint);
@@ -262,7 +265,11 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   };
 
   const generateUserToken = async (mnemonics: string, address: string) => {
-    let challenge = await HiveService.getHiveChallenge(address);
+    let isEssentialsUser = mnemonics === undefined || mnemonics === '';
+    let challenge = await HiveService.getHiveChallenge(
+      address,
+      isEssentialsUser
+    );
     let didService = await DidService.getInstance();
     let presentation;
     if (mnemonics) {
@@ -279,7 +286,11 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       );
     }
 
-    const userToken = await HiveService.getUserHiveToken(address, presentation);
+    const userToken = await HiveService.getUserHiveToken(
+      address,
+      presentation,
+      isEssentialsUser
+    );
     return userToken;
   };
 
