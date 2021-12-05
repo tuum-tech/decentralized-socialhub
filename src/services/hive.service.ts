@@ -198,8 +198,9 @@ export class HiveService {
     let docChallenge: any;
     if (isEssentialUser) {
       let didAccess = new CNDID.DIDAccess();
+      await didAccess.getOrCreateAppInstanceDID();
+
       let response = await didAccess.getExistingAppInstanceDIDInfo();
-      console.log(response);
       let didStore = await DIDStore.open(response.storeId);
 
       let document = await didStore.loadDid(response.didString);

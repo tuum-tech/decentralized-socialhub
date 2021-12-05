@@ -83,7 +83,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     props.setLoading(true);
     let isValidHiveAddress = await HiveService.isHiveAddressValid(
       endpoint,
-      props.session.isDIDPublished
+      props.session.isEssentialUser!
     );
     if (!isValidHiveAddress) {
       props.setLoading(false);
