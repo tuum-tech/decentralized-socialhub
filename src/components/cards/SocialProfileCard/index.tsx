@@ -15,6 +15,7 @@ interface Props extends InferMappedProps {
   targetUser?: ISessionItem;
   setSession: (props: { session: ISessionItem }) => void;
   mode?: string;
+  openModal?: boolean;
 }
 
 const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
@@ -27,6 +28,7 @@ const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
         setSession={props.setSession}
         diddocument={props.didDocument}
         mode={props.mode}
+        openModal={props.openModal}
       />
     );
   }
