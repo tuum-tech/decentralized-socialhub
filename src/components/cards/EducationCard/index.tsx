@@ -25,6 +25,7 @@ interface IEducationProps {
   isPublicPage?: boolean;
   template?: string;
   userSession: ISessionItem;
+  openModal?: boolean;
 }
 
 export const defaultEducationItem: EducationItem = {
@@ -48,7 +49,8 @@ const EducationCard: React.FC<IEducationProps> = ({
   isEditable = false,
   isPublicPage = false,
   template = 'default',
-  userSession
+  userSession,
+  openModal = false
 }: IEducationProps) => {
   const [currentEducationDTO, setCurrentEducationDTO] = useState(educationDTO);
   const [eduVerifiedPercent, setEduVerifiedPercent] = useState(0);
@@ -71,7 +73,14 @@ const EducationCard: React.FC<IEducationProps> = ({
   }, [currentEducationDTO, noOfVerifiedEduCred]);
 
   const [editedItem, setEditedItem] = useState(defaultEducationItem);
+  const [isEditing, setIsEditing] = useState(openModal);
   const [mode, setMode] = useState<MODE>(MODE.NONE);
+
+  useEffect(() => {
+    if (mode !== MODE.NONE) {
+      setIsEditing(true);
+    }
+  }, [mode]);
 
   const handleChange = (evt: any) => {
     let v: any;
@@ -120,10 +129,12 @@ const EducationCard: React.FC<IEducationProps> = ({
     // 5. Set the state to our new copy
     setCurrentEducationDTO({ isEnabled: true, items: items });
     updateFunc(item);
+    setIsEditing(false);
   };
 
   const cancel = () => {
     setMode(MODE.NONE);
+    setIsEditing(false);
   };
 
   const addItem = () => {
@@ -225,8 +236,11 @@ const EducationCard: React.FC<IEducationProps> = ({
             </CardContentContainer>
           </CardOverview>
           <MyModal
-            onDidDismiss={() => setMode(MODE.NONE)}
-            isOpen={mode !== MODE.NONE}
+            onDidDismiss={() => {
+              setMode(MODE.NONE);
+              setIsEditing(false);
+            }}
+            isOpen={isEditing}
             cssClass="my-custom-class"
           >
             <EducationCardEdit

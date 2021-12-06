@@ -25,7 +25,7 @@ const btnTypes: ButtonTypes = {
 
 interface Props {
   onClick?: () => void;
-  type: string;
+  type?: string;
   text?: string;
   mt?: number;
   ml?: number;

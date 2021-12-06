@@ -1,33 +1,87 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IonCard, IonCardContent, IonText } from '@ionic/react';
+import { useHistory } from 'react-router';
 
 import styled from 'styled-components';
+import clsx from 'clsx';
 import style from './BadgeItem.module.scss';
 
 import { timeSince } from 'src/utils/time';
+import { DefaultButton } from 'src/elements/buttons/DefaultButton';
 
 interface Props {
   image: string;
   title: string;
   description: string;
   archived: number | boolean;
+  badgeCategory?: string;
 }
+
+const titles = {
+  'Beginner Tutorial': 'Add Beginner',
+  'Add Basic Profile': 'Add About me',
+  'Add Education Profile': 'Add Education',
+  'Add Experience Profile': 'Add Experience',
+  'Linkedin Verification': 'Add Linkedin',
+  'Facebook Verification': 'Add Facebook',
+  'Twitter Verification': 'Add Twitter',
+  'Google Verification': 'Add Google',
+  'Github Verification': 'Add Github',
+  'Discord Verification': 'Add Discord',
+  'Email Verification': 'Add Email',
+  'Phone Verification': 'Add Phone'
+};
 
 const BadgeItem: React.FC<Props> = ({
   image,
   title,
   description,
-  archived
+  archived,
+  badgeCategory
 }) => {
+  const history = useHistory();
+  const [showGetBadgeButton, setShowGetBadgeButton] = useState<boolean>(false);
+
+  const handleMouseEvent = (isHover: boolean) => {
+    if (
+      !archived &&
+      (badgeCategory === 'account' || badgeCategory === 'socialVerify')
+    ) {
+      setShowGetBadgeButton(isHover);
+    }
+  };
+
+  const handleAddExperience = () => {
+    history.push(`/manager/${title}`);
+  };
+
   return (
-    <IonCard className={style['badge-item']}>
+    <IonCard
+      className={clsx(
+        style['badge-item'],
+        showGetBadgeButton && style['non-archived']
+      )}
+      onMouseEnter={() => handleMouseEvent(true)}
+      onMouseLeave={() => handleMouseEvent(false)}
+    >
       <IonCardContent>
         <BadgeIcon>
           <img alt="badge icon" src={image} height={60} />
         </BadgeIcon>
         <BadgeContent>
           <Title>{title}</Title>
-          <Description>{description}</Description>
+          {!showGetBadgeButton ? (
+            <Description>{description}</Description>
+          ) : (
+            <DefaultButton
+              borderColor="white"
+              padding="3px 5px"
+              width="60%"
+              onClick={handleAddExperience}
+            >
+              {(titles as any)[title]}
+            </DefaultButton>
+          )}
         </BadgeContent>
       </IonCardContent>
       <TimeSince>{archived ? timeSince(archived) : ' '}</TimeSince>
