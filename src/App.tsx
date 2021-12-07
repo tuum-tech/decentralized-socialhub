@@ -60,6 +60,7 @@ import DashboardPage from './pages/DashboardPage/Loadable';
 import PublicPage from './pages/PublicPage/Loadable';
 import ManagerPage from './pages/ManagerPage';
 import ActivityPage from './pages/ActivityPage';
+import SyncPage from './pages/SyncPage';
 import FollowersPage from './pages/FollowersPage';
 import FollowingsPage from './pages/FollowingsPage';
 import MutualFollowersPage from './pages/MutualFollowersPage';
@@ -168,6 +169,9 @@ const App: React.FC = () => {
                 component={ActivityPage}
                 exact={true}
               />
+
+              <ProtectedRoute path="/sync" component={SyncPage} exact={true} />
+
               {/* // login workflow */}
               <Route path="/twitter_callback" component={TwitterCallback} />
               <Route path="/linkedin_callback" component={LinkedinCallback} />

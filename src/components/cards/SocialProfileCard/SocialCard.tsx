@@ -189,6 +189,8 @@ const SocialProfilesCard: React.FC<Props> = ({
     let cn = connectivity.getActiveConnector();
     let vcKey = diddocument.getSubject().toString() + '#' + key;
 
+    await DidcredsService.removeCredentialToVault(sessionItem, vcKey);
+
     await cn?.deleteCredentials([vcKey], {
       forceToPublishCredentials: true
     });
@@ -205,6 +207,11 @@ const SocialProfilesCard: React.FC<Props> = ({
     let didFromStore = await didService.getStoredDocument(
       diddocument.getSubject()
     );
+
+    let vcKey = diddocument.getSubject().toString() + '#' + key;
+
+    await DidcredsService.removeCredentialToVault(sessionItem, vcKey);
+
     let builder = DIDDocument.Builder.newFromDocument(didFromStore);
     builder = builder.removeCredential(key);
     let newDoc = await builder.seal(

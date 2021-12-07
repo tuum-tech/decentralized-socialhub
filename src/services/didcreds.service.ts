@@ -1,5 +1,6 @@
 import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/';
 import request, { BaseplateResp } from 'src/baseplate/request';
+import { HiveService } from './hive.service';
 
 export enum CredentialType {
   Linkedin = 'Linkedin',
@@ -106,5 +107,37 @@ export class DidcredsService {
         }
       }
     );
+  }
+
+  static async addOrUpdateCredentialToVault(
+    sessionItem: ISessionItem,
+    vc: VerifiableCredential
+  ): Promise<void> {
+    console.log('add vc credential', vc);
+    let hiveClient = await HiveService.getSessionInstance(sessionItem);
+    let hiveResponse = await hiveClient?.Scripting.RunScript<any>({
+      name: 'add_verifiablecredential',
+      params: {
+        id: vc.getId().toString(),
+        vc: vc.toJSON()
+      }
+    });
+
+    console.log(hiveResponse);
+  }
+
+  static async removeCredentialToVault(
+    sessionItem: ISessionItem,
+    vcKey: string
+  ): Promise<void> {
+    let hiveClient = await HiveService.getSessionInstance(sessionItem);
+    let hiveResponse = await hiveClient?.Scripting.RunScript<any>({
+      name: 'remove_verifiablecredential',
+      params: {
+        id: vcKey
+      }
+    });
+
+    console.log(hiveResponse);
   }
 }

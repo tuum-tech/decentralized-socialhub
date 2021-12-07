@@ -9,10 +9,31 @@ export class EssentialsService {
     this.DidService = didService;
   }
 
-  addVerifiableCredentialEssentials = async (vc: VerifiableCredential) => {
+  addVerifiableCredentialEssentials = async (
+    vc: VerifiableCredential
+  ): Promise<boolean> => {
+    return this.addMultipleVerifiableCredentialsToEssentials([vc]);
+  };
+
+  addMultipleVerifiableCredentialsToEssentials = async (
+    vcs: VerifiableCredential[]
+  ): Promise<boolean> => {
     let cn = new CnDID.DIDAccess();
-    await cn?.importCredentials([vc], {
+    let response = await cn?.importCredentials(vcs, {
       forceToPublishCredentials: true
     });
+
+    return response.length > 0;
+  };
+
+  removeMultipleVerifiableCredentialsToEssentials = async (
+    vcs: string[]
+  ): Promise<boolean> => {
+    let cn = new CnDID.DIDAccess();
+    let response = await cn?.deleteCredentials(vcs, {
+      forceToPublishCredentials: true
+    });
+
+    return response.length > 0;
   };
 }

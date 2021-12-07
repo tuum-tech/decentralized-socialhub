@@ -15,6 +15,7 @@ import { getItemsFromData } from 'src/utils/script';
 import { DID as ConnDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
 
 import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { DidcredsService } from './didcreds.service';
 
 export enum VerificationStatus {
   requested = 'requested',
@@ -268,6 +269,9 @@ export class VerificationService {
   }
 
   private get_content_from_verification_data(records: any[]) {
+    if (records.length === 1) {
+      return records[0].value;
+    }
     let content = {} as any;
     for (let i = 0; i < records.length; i++) {
       const field = records[i].field;
@@ -287,7 +291,7 @@ export class VerificationService {
       let vcTypeStrings = category.split(':');
       vcType = vcTypeStrings[0] + 'Credential' + vcTypeStrings[1];
     } else {
-      vcType = category + 'Credential';
+      vcType = category;
     }
 
     return {
@@ -379,13 +383,18 @@ export class VerificationService {
     return vc;
   }
 
-  public async storeNewCredential(v: VerificationRequest) {
+  public async storeNewCredential(v: VerificationRequest, user: ISessionItem) {
     const didService = await DidService.getInstance();
     const userService = new UserService(didService);
     const holder = await userService.SearchUserWithDID(v.from_did);
 
     let didDocument: DIDDocument = await didService.getStoredDocument(
       new DID(v.from_did)
+    );
+
+    await DidcredsService.addOrUpdateCredentialToVault(
+      user,
+      VerifiableCredential.parse(v.credential)
     );
 
     // remove if exist

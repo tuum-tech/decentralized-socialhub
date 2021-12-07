@@ -93,7 +93,7 @@ const MyRequests: React.FC<Props> = ({
         {selectedVerification !== null && (
           <VerificationDetailContent
             verification={selectedVerification.verification}
-            user={selectedVerification.user}
+            user={session}
             onClose={() => setSelectVerification(null)}
           />
         )}

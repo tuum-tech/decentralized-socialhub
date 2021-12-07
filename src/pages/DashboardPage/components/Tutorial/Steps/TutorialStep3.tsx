@@ -16,6 +16,7 @@ import style from '../style.module.scss';
 import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
 import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { DidcredsService } from 'src/services/didcreds.service';
 
 const VersionTag = styled.div`
   display: flex;
@@ -80,7 +81,10 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     }
 
     props.setLoading(true);
-    let isValidHiveAddress = await HiveService.isHiveAddressValid(endpoint);
+    let isValidHiveAddress = await HiveService.isHiveAddressValid(
+      endpoint,
+      props.session.isEssentialUser!
+    );
     if (!isValidHiveAddress) {
       props.setLoading(false);
       console.log('Not valid address: ', endpoint);
@@ -155,6 +159,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         await didService.storeDocument(signedDocument);
         await didService.publishDocument(signedDocument);
       }
+
       let userService = new UserService(didService);
       const updatedSession = await userService.updateSession(newSession);
       eProps.setSession({ session: updatedSession });
@@ -164,6 +169,15 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         await hiveInstance.Payment.CreateFreeVault();
       }
       await UserVaultScripts.Execute(hiveInstance!);
+
+      let blockchainDocument = await didService.getPublishedDocument(
+        new DID(props.session.did)
+      );
+
+      blockchainDocument.credentials?.forEach(async vc => {
+        await DidcredsService.addOrUpdateCredentialToVault(newSession, vc);
+      });
+
       let activities = await ProfileService.getActivity(newSession);
       activities.push({
         guid: '',
@@ -251,7 +265,11 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   };
 
   const generateUserToken = async (mnemonics: string, address: string) => {
-    let challenge = await HiveService.getHiveChallenge(address);
+    let isEssentialsUser = mnemonics === undefined || mnemonics === '';
+    let challenge = await HiveService.getHiveChallenge(
+      address,
+      isEssentialsUser
+    );
     let didService = await DidService.getInstance();
     let presentation;
     if (mnemonics) {
@@ -268,7 +286,11 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       );
     }
 
-    const userToken = await HiveService.getUserHiveToken(address, presentation);
+    const userToken = await HiveService.getUserHiveToken(
+      address,
+      presentation,
+      isEssentialsUser
+    );
     return userToken;
   };
 
