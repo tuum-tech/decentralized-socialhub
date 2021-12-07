@@ -160,6 +160,11 @@ const App: React.FC = () => {
                 exact={true}
               />
               <ProtectedRoute
+                path="/manager/:badge"
+                component={ManagerPage}
+                exact={true}
+              />
+              <ProtectedRoute
                 path="/activities"
                 component={ActivityPage}
                 exact={true}

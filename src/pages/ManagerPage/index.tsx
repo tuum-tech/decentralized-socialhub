@@ -3,6 +3,7 @@
  */
 import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
 import React, { useState, useEffect } from 'react';
+import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
 
 import { connect } from 'react-redux';
@@ -50,11 +51,12 @@ const WarningText = styled.div`
   padding: 0 40px;
 `;
 
-const ManagerPage: React.FC<InferMappedProps> = ({
+const ManagerPage: React.FC<InferMappedProps & RouteComponentProps> = ({
   eProps,
   ...props
-}: InferMappedProps) => {
+}: InferMappedProps & RouteComponentProps) => {
   const [user, setUser] = useState<ISessionItem>({} as ISessionItem);
+
   useEffect(() => {
     if (props.session && props.session.did !== '') {
       setUser(props.session);
@@ -100,6 +102,7 @@ const ManagerPage: React.FC<InferMappedProps> = ({
                 {user && user.did && user.did !== '' && (
                   <ProfileEditor
                     session={user}
+                    badgeUrl={props.match.params}
                     updateSession={async (newSession: {
                       session: ISessionItem;
                     }) => {

@@ -1,4 +1,11 @@
 .badge-item {
-    border-radius: 16px;
-    min-height: 220px;
+  border-radius: 16px;
+  min-height: 220px;
+
+  &.non-archived {
+    &:hover {
+      background-color: #4c6fff;
+      color: #ffffff;
+    }
+  }
 }

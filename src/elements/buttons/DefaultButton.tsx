@@ -7,7 +7,9 @@ interface ButtonProps {
   bgColor?: string;
   color?: string;
   borderRadius?: string;
+  borderColor?: string;
   padding?: string;
+  margin?: string;
 }
 
 const DefaultButton = styled.div<ButtonProps>`
@@ -32,6 +34,9 @@ const DefaultButton = styled.div<ButtonProps>`
   color: ${props => (props.color ? `${props.color}` : 'white')};
   border-radius: ${props =>
     props.borderRadius ? `${props.borderRadius}` : '9px'};
+  border: ${props =>
+    props.borderColor ? `1px solid ${props.borderColor}` : '1px solid #4c6fff'};
+  margin: ${props => (props.margin ? props.margin : 'auto')};
 
   cursor: pointer;
 `;

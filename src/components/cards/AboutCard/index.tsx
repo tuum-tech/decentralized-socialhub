@@ -34,15 +34,17 @@ interface IProps {
   update?: any;
   aboutText: string;
   template?: string;
+  openModal?: boolean;
 }
 
 const AboutCard: React.FC<IProps> = ({
   aboutText,
   mode = 'read',
   update,
-  template = 'default'
+  template = 'default',
+  openModal = false
 }: IProps) => {
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(openModal);
   const [about, setAbout] = useState(aboutText ? aboutText : '');
 
   useEffect(() => {
@@ -84,7 +86,11 @@ const AboutCard: React.FC<IProps> = ({
           </IonGrid>
         </CardContentContainer>
       </CardOverview>
-      <MyModal isOpen={isEditing} cssClass="my-custom-class">
+      <MyModal
+        isOpen={isEditing}
+        onDidDismiss={() => setIsEditing(false)}
+        cssClass="my-custom-class"
+      >
         <MyGrid className="ion-no-padding">
           <IonRow className="ion-no-padding">
             <IonCardTitle>Edit About</IonCardTitle>

@@ -21,13 +21,19 @@ import BasicCard from '../BasicCard';
 import PublicFields from '../PublicFields';
 import TemplateManagerCard from '../TemplateManagerCard';
 import style from './style.module.scss';
+import badgeDetails from 'src/data/badge_detail.json';
 
 interface Props {
   session: ISessionItem;
+  badgeUrl?: any;
   updateSession: (props: { session: ISessionItem }) => void;
 }
 
-const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
+const ProfileEditor: React.FC<Props> = ({
+  session,
+  badgeUrl,
+  updateSession
+}) => {
   const [error, setError] = useState(false);
   const [userInfo, setUserInfo] = useState<ISessionItem>(session);
   const [loaded, setloaded] = useState(false);
@@ -35,6 +41,44 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
     undefined
   );
   const [profile, setProfile] = useState<ProfileDTO>(defaultFullProfile);
+
+  const {
+    account: { basicProfile, educationProfile, experienceProfile },
+    socialVerify: {
+      linkedin,
+      facebook,
+      twitter,
+      google,
+      github,
+      discord,
+      email,
+      phone
+    }
+  } = badgeDetails;
+  const handleRouteParam = (title: string) => {
+    if (badgeUrl?.badge && badgeUrl.badge === title) {
+      return true;
+    }
+    return false;
+  };
+
+  const handleSocialRouteParam = () => {
+    if (
+      badgeUrl?.badge &&
+      [
+        linkedin.title,
+        facebook.title,
+        twitter.title,
+        google.title,
+        github.title,
+        discord.title,
+        email.title,
+        phone.title
+      ].includes(badgeUrl.badge)
+    ) {
+      return true;
+    } else return false;
+  };
 
   const retriveProfile = async () => {
     if (!session.userToken) return;
@@ -201,6 +245,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                       );
                       await retriveProfile();
                     }}
+                    openModal={handleRouteParam(basicProfile.title)}
                   />
                 )}
 
@@ -209,6 +254,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                   targetUser={session}
                   setSession={updateSession}
                   mode="edit"
+                  openModal={handleSocialRouteParam()}
                 />
                 {profile && profile.educationDTO && (
                   <EducationCard
@@ -245,6 +291,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                     isEditable={true}
                     template="default"
                     userSession={JSON.parse(JSON.stringify(session))}
+                    openModal={handleRouteParam(educationProfile.title)}
                   />
                 )}
                 {profile && profile.experienceDTO && (
@@ -282,6 +329,7 @@ const ProfileEditor: React.FC<Props> = ({ session, updateSession }) => {
                     isEditable={true}
                     template="default"
                     userSession={JSON.parse(JSON.stringify(session))}
+                    openModal={handleRouteParam(experienceProfile.title)}
                   />
                 )}
               </>

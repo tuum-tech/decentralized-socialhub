@@ -25,6 +25,7 @@ interface IExperienceProps {
   isPublicPage?: boolean;
   template?: string;
   userSession: ISessionItem;
+  openModal?: boolean;
 }
 
 export const defaultExperienceItem: ExperienceItem = {
@@ -49,7 +50,8 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   removeFunc,
   isPublicPage = false,
   template = 'default',
-  userSession
+  userSession,
+  openModal = false
 }: IExperienceProps) => {
   const [currentExperienceDTO, setCurrentExperienceDTO] = useState(
     experienceDTO
@@ -74,7 +76,14 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   }, [currentExperienceDTO, noOfVerifiedExpCred]);
 
   const [editedItem, setEditedItem] = useState(defaultExperienceItem);
+  const [isEditing, setIsEditing] = useState(openModal);
   const [mode, setMode] = useState(MODE.NONE);
+
+  useEffect(() => {
+    if (mode !== MODE.NONE) {
+      setIsEditing(true);
+    }
+  }, [mode]);
 
   const handleChange = (evt: any) => {
     let v: any;
@@ -123,10 +132,12 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     // 5. Set the state to our new copy
     setCurrentExperienceDTO({ isEnabled: true, items: items });
     updateFunc(item);
+    setIsEditing(false);
   };
 
   const cancel = () => {
     setMode(MODE.NONE);
+    setIsEditing(false);
   };
 
   const addItem = () => {
@@ -222,8 +233,11 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
         </CardContentContainer>
       </CardOverview>
       <MyModal
-        onDidDismiss={() => setMode(MODE.NONE)}
-        isOpen={mode !== MODE.NONE}
+        onDidDismiss={() => {
+          setMode(MODE.NONE);
+          setIsEditing(false);
+        }}
+        isOpen={isEditing}
         cssClass="my-custom-class"
       >
         <ExperienceCardEdit
