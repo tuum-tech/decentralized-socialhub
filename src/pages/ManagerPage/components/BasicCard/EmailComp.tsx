@@ -15,6 +15,8 @@ import { validateEmail } from 'src/utils/validation';
 
 export const ActionBtnCol = styled(IonCol)`
   margin: 0 0 0 auto;
+  display: flex;
+  align-items: flex-end;
 `;
 
 export const Container = styled(IonRow)`

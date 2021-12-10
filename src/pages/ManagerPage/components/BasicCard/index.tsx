@@ -9,11 +9,22 @@ import {
   IonCol
 } from '@ionic/react';
 import { isEqual } from 'lodash';
+import styled from 'styled-components';
 
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import SmallTextInput from 'src/elements/inputs/SmallTextInput';
 import EmailComp, { SaveButton } from './EmailComp';
 import PhoneComp from './PhoneComp';
+
+const Divider = styled.hr`
+  width: 100%;
+  height: 1px;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 5px;
+
+  background-color: #f7fafc;
+`;
 
 interface IProps {
   sessionItem: ISessionItem;
@@ -68,15 +79,6 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
             </IonCol>
           </IonRow>
 
-          <EmailComp
-            sessionItem={sessionItem}
-            emailUpdated={(newEmail: string) => {
-              setCurrentBasicDTO({
-                ...currentBasicDTO,
-                loginCred: { ...currentBasicDTO.loginCred, email: newEmail }
-              });
-            }}
-          />
           <IonRow class="ion-justify-content-start">
             <IonCol size="7">
               <SmallTextInput
@@ -98,6 +100,18 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
             </IonCol>
             <IonCol size="auto"></IonCol>
           </IonRow>
+
+          <Divider />
+
+          <EmailComp
+            sessionItem={sessionItem}
+            emailUpdated={(newEmail: string) => {
+              updateFunc({
+                ...currentBasicDTO,
+                loginCred: { ...currentBasicDTO.loginCred, email: newEmail }
+              });
+            }}
+          />
           <PhoneComp
             sessionItem={sessionItem}
             phoneUpdated={(newPhon: string) => {
