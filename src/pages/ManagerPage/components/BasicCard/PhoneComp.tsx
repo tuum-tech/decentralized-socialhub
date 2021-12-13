@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IonCol } from '@ionic/react';
+import { IonCol, IonRow } from '@ionic/react';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 
 import SmallTextInput from 'src/elements/inputs/SmallTextInput';
@@ -67,39 +67,48 @@ const UpdatePhoneComp: React.FC<Props> = ({ phoneUpdated, sessionItem }) => {
 
   return (
     <Container class="ion-justify-content-start">
-      <IonCol size="5">
-        <SmallTextInput
-          disabled={sessionItem.tutorialStep !== 4 || loading}
-          label="Phone Number"
-          placeholder="+79149625769"
-          name="phoneNumber"
-          value={phone}
-          onChange={(evt: any) => {
-            setPhone(evt.target.value);
-            checkError(evt.target.value);
-          }}
-        />
-        {error !== '' && <ErrorText>{error}</ErrorText>}
-      </IonCol>
-      <ActionBtnCol size="auto">
-        <SaveButton
-          disabled={disableButton()}
-          onClick={async () => {
-            await sendVerification();
-          }}
-        >
-          {loading ? 'Sending Verificaiton' : 'Send Verificaiton'}
-        </SaveButton>
-        <SaveButton
-          disabled={phone === ''}
-          onClick={() => {
-            setPhone('');
-            phoneUpdated('');
-          }}
-        >
-          Clear
-        </SaveButton>
-      </ActionBtnCol>
+      <IonRow style={{ width: '100%', paddingLeft: 0, paddingRight: 0 }}>
+        <IonCol size="5">
+          <SmallTextInput
+            disabled={sessionItem.tutorialStep !== 4 || loading}
+            label="Phone Number"
+            placeholder="+79149625769"
+            name="phoneNumber"
+            value={phone}
+            onChange={(evt: any) => {
+              setPhone(evt.target.value);
+              checkError(evt.target.value);
+            }}
+          />
+        </IonCol>
+        <ActionBtnCol size="auto">
+          <SaveButton
+            disabled={disableButton()}
+            onClick={async () => {
+              await sendVerification();
+            }}
+          >
+            {loading ? 'Sending Verificaiton' : 'Send Verificaiton'}
+          </SaveButton>
+          <SaveButton
+            disabled={phone === ''}
+            onClick={() => {
+              setPhone('');
+              phoneUpdated('');
+            }}
+          >
+            Clear
+          </SaveButton>
+        </ActionBtnCol>
+      </IonRow>
+
+      {error !== '' && (
+        <IonRow style={{ width: '100%' }}>
+          <IonCol size="12" style={{ paddingTop: 0 }}>
+            <ErrorText>{error}</ErrorText>
+          </IonCol>
+        </IonRow>
+      )}
 
       <PhoneVerificationDetailModal
         isOpen={showPhoneVerifyModal}
