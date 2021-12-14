@@ -2,10 +2,13 @@ import React from 'react';
 import { IonGrid, IonRow, IonCol } from '@ionic/react';
 import styled from 'styled-components';
 
-import check from '../../../../../../../theme/images/checkmark-circle-outline.svg';
-import checkgreen from '../../../../../../../assets/icon/check-circle-fill.svg';
 import ProgressBar from 'src/elements/ProgressBar';
 import DropButton from './DropButton';
+import check from '../../../../../../../assets/icon/check-gray.svg';
+import checkgreen from '../../../../../../../assets/icon/check-dark-green.svg';
+import PersonIcon from 'src/assets/icon/profile-person.svg';
+import EducationIcon from 'src/assets/icon/profile-education.svg';
+import BagIcon from 'src/assets/icon/profile-bag.svg';
 
 const Container = styled(IonGrid)`
   margin-bottom: 10px;
@@ -87,6 +90,12 @@ const ProfileComp: React.FC<IProps> = ({
   expanded,
   expandClicked
 }) => {
+  const icons = {
+    'Add About me': PersonIcon,
+    'Add Experience': BagIcon,
+    'Add Education': EducationIcon
+  };
+
   const percent =
     accomplishedList.length === 0
       ? 0
@@ -97,15 +106,23 @@ const ProfileComp: React.FC<IProps> = ({
     return (
       <ItemRow key={`todoItem_${text}`}>
         <ItemImgColum size="auto">
+          {(icons as any)[text] &&
+            (isDone ? (
+              <img src={(icons as any)[text]} alt={text} />
+            ) : (
+              <img src={(icons as any)[text]} alt={text} />
+            ))}
+        </ItemImgColum>
+        <ItemTxtColum color={isDone ? '#00b715' : 'rgba(0, 0, 0, 0.6)'}>
+          {text}
+        </ItemTxtColum>
+        <ItemImgColum size="auto">
           {isDone ? (
             <img src={checkgreen} alt="check" />
           ) : (
             <img src={check} alt="task" />
           )}
         </ItemImgColum>
-        <ItemTxtColum color={isDone ? '#00b715' : 'rgba(0, 0, 0, 0.6)'}>
-          {text}
-        </ItemTxtColum>
       </ItemRow>
     );
   };
