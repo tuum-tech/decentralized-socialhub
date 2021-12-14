@@ -25,6 +25,8 @@ import {
 import styleWidget from '../WidgetCards.module.scss';
 import { DidService, IDidService } from 'src/services/did.service.new';
 import { showNotify } from 'src/utils/notify';
+import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { DidcredsService } from 'src/services/didcreds.service';
 
 const Upload: React.FC<InferMappedProps> = ({
   eProps,
@@ -49,9 +51,24 @@ const Upload: React.FC<InferMappedProps> = ({
       let newSession = JSON.parse(JSON.stringify(props.session));
       newSession.avatar = base64Str;
 
-      let userService = new UserService(
-        (await DidService.getInstance()) as IDidService
-      );
+      let didService: IDidService = await DidService.getInstance();
+      let userService = new UserService(didService);
+      let did = new DID(props.session.did);
+      let didDocument: DIDDocument = await didService.getStoredDocument(did);
+
+      if (props.session.mnemonics !== '') {
+        let avatarVC = await didService.newSelfVerifiableCredential(
+          didDocument,
+          'avatar',
+          getAvatarVCData(base64Str)
+        );
+
+        await DidcredsService.addOrUpdateCredentialToVault(
+          props.session,
+          avatarVC
+        );
+      }
+
       eProps.setSession({
         session: await userService.updateSession(newSession, true)
       });
@@ -67,6 +84,17 @@ const Upload: React.FC<InferMappedProps> = ({
         newSession!.did
       );
     }
+  };
+
+  const getAvatarVCData = (base64str: string): any => {
+    let contenttypes = base64str.replace('data:', '').split(';');
+    let strtype = contenttypes[1].split(',');
+    let data = {
+      'content-type': contenttypes[0],
+      data: strtype[1],
+      type: strtype[0]
+    };
+    return data;
   };
 
   const onChange = (e: any) => {

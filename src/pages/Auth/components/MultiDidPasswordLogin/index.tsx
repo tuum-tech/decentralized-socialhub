@@ -31,6 +31,7 @@ import FooterLinks, {
 import styled from 'styled-components';
 import { IonButton, IonCol, IonGrid, IonModal, IonRow } from '@ionic/react';
 import style from './style.module.scss';
+import { SyncService } from 'src/services/sync.service';
 
 interface Props {
   changeMode: () => void;
@@ -124,6 +125,8 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
 
     const res = await userService.UnLockWithDIDAndPwd(did, password);
     if (res) {
+      await SyncService.TempInitializeSignedUsers(res);
+
       afterSuccess(res);
       return;
     }

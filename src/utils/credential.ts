@@ -37,6 +37,8 @@ export const containingVerifiableCredentialDetails = async (
     const subjectProperties = subject.getProperties();
     const key = Object.keys(subjectProperties)[0];
 
+    //if (key.toLowerCase().startsWith("education")) console.log(subjectProperties)
+
     if (key.toLowerCase() === id.toLowerCase()) {
       vcIndex = i;
     } else if (key.toLowerCase().startsWith(id.toLowerCase())) {

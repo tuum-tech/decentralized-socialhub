@@ -61,7 +61,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');
-
   const [full_profile, setfull_profile] = useState<ProfileDTO>(
     defaultFullProfile
   );

@@ -1,7 +1,12 @@
 import { ElastosClient } from '@elastosfoundation/elastos-js-sdk';
-
+import { DIDAccess } from '@elastosfoundation/elastos-connectivity-sdk-js/typings/did';
+import {
+  DID as CNDID,
+  connectivity
+} from '@elastosfoundation/elastos-connectivity-sdk-js';
 import {
   DIDDocument,
+  DIDStore,
   VerifiablePresentation
 } from '@elastosfoundation/did-js-sdk/';
 import {
@@ -43,9 +48,15 @@ export class HiveService {
     }
   }
 
-  static async isHiveAddressValid(address: string): Promise<boolean> {
+  static async isHiveAddressValid(
+    address: string,
+    isEssentialsUser: boolean
+  ): Promise<boolean> {
     try {
-      let challenge = await HiveService.getHiveChallenge(address);
+      let challenge = await HiveService.getHiveChallenge(
+        address,
+        isEssentialsUser
+      );
       console.log('challenge: ', challenge);
       let isValid: boolean =
         challenge.nonce !== undefined && challenge.nonce.length > 0;
@@ -140,19 +151,30 @@ export class HiveService {
     return;
   }
 
-  private static async getHiveOptions(hiveHost: string): Promise<IOptions> {
+  private static async getHiveOptions(
+    hiveHost: string,
+    isEssentialUser: boolean
+  ): Promise<IOptions> {
     //TODO: change to appInstance
-    let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
-    let appId = `${process.env.REACT_APP_APPLICATION_ID}`;
-    let didService = await DidService.getInstance();
-    let appDid = await didService.loadDid(mnemonic);
     let builder = new OptionsBuilder();
+    let mnemonic = '';
+    let appDid = '';
+    if (isEssentialUser) {
+      // let didAccess = new CNDID.DIDAccess();
+      // let response = await didAccess.getExistingAppInstanceDIDInfo()
+      mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
+      appDid = `${process.env.REACT_APP_APPLICATION_ID}`;
+    } else {
+      mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
+      appDid = `${process.env.REACT_APP_APPLICATION_ID}`;
+    }
 
     let a = await ElastosClient.did.loadFromMnemonic(mnemonic, '');
-    await builder.setAppInstance(appId, {
-      did: appDid.toString(),
+    await builder.setAppInstance(appDid, {
+      did: appDid,
       privateKey: a.privateKey
     });
+
     builder.setHiveHost(hiveHost);
     return builder.build();
   }
@@ -166,24 +188,40 @@ export class HiveService {
     return newItem;
   }
 
-  static async getHiveChallenge(hiveHost: string): Promise<IHiveChallenge> {
+  static async getHiveChallenge(
+    hiveHost: string,
+    isEssentialUser: boolean
+  ): Promise<IHiveChallenge> {
     let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
-    let options = await this.getHiveOptions(hiveHost);
+    let options = await this.getHiveOptions(hiveHost, isEssentialUser);
     let didService = await DidService.getInstance();
-    let appDid = await didService.loadDid(mnemonic);
-    let appDocument = await didService.getDidDocument(appDid, false);
-    let docChallenge = JSON.parse(appDocument.toString(true));
+    let docChallenge: any;
+    if (isEssentialUser) {
+      let didAccess = new CNDID.DIDAccess();
+      await didAccess.getOrCreateAppInstanceDID();
 
-    if (!appDocument.isValid()) {
-      docChallenge.verifiableCredential.forEach((vc: any) => {
-        delete vc.proof.created;
-      });
+      let response = await didAccess.getExistingAppInstanceDIDInfo();
+      let didStore = await DIDStore.open(response.storeId);
 
-      let didDocumentFixed = await DIDDocument.parseAsync(
-        JSON.stringify(docChallenge)
-      );
-      if (!didDocumentFixed.isValid) {
-        console.error('doc is not valid');
+      let document = await didStore.loadDid(response.didString);
+
+      docChallenge = JSON.parse(document.toString(true));
+    } else {
+      let appDid = await didService.loadDid(mnemonic);
+      let appDocument = await didService.getDidDocument(appDid, false);
+      docChallenge = JSON.parse(appDocument.toString(true));
+
+      if (!appDocument.isValid()) {
+        docChallenge.verifiableCredential.forEach((vc: any) => {
+          delete vc.proof.created;
+        });
+
+        let didDocumentFixed = await DIDDocument.parseAsync(
+          JSON.stringify(docChallenge)
+        );
+        if (!didDocumentFixed.isValid) {
+          console.error('doc is not valid');
+        }
       }
     }
 
@@ -201,9 +239,10 @@ export class HiveService {
 
   static async getUserHiveToken(
     hiveHost: string,
-    presentation: VerifiablePresentation
+    presentation: VerifiablePresentation,
+    isEssentialUser: boolean
   ): Promise<string> {
-    let options = await this.getHiveOptions(hiveHost);
+    let options = await this.getHiveOptions(hiveHost, isEssentialUser);
     return await HiveClient.getAuthenticationToken(
       options,
       JSON.parse(presentation.toString(true))

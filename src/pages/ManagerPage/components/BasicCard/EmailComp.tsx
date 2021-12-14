@@ -15,6 +15,8 @@ import { validateEmail } from 'src/utils/validation';
 
 export const ActionBtnCol = styled(IonCol)`
   margin: 0 0 0 auto;
+  display: flex;
+  align-items: flex-end;
 `;
 
 export const Container = styled(IonRow)`
@@ -30,7 +32,7 @@ export const Container = styled(IonRow)`
 export const ErrorText = styled(Text16)`
   text-align: left;
   color: red;
-  margin-top: 8px;
+  margin-top: 0;
 `;
 
 export const SaveButton = styled(SmallLightButton)<{ disabled: boolean }>`
@@ -95,30 +97,40 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
 
   return (
     <Container class="ion-justify-content-start">
-      <IonCol size="5">
-        <SmallTextInput
-          disabled={sessionItem.tutorialStep !== 4 || loading}
-          label="Email"
-          placeholder={sessionItem.loginCred?.email}
-          name="email"
-          value={email}
-          onChange={(evt: any) => {
-            setEmail(evt.target.value);
-            checkError(evt.target.value);
-          }}
-        />
-        {error !== '' && <ErrorText>{error}</ErrorText>}
-      </IonCol>
-      <ActionBtnCol size="auto">
-        <SaveButton
-          disabled={disableButton()}
-          onClick={async () => {
-            await sendVerification();
-          }}
-        >
-          {loading ? 'Sending Verificaiton' : 'Send Verificaiton'}
-        </SaveButton>
-      </ActionBtnCol>
+      <IonRow style={{ width: '100%', paddingLeft: 0, paddingRight: 0 }}>
+        <IonCol size="5">
+          <SmallTextInput
+            disabled={sessionItem.tutorialStep !== 4 || loading}
+            label="Email"
+            placeholder={sessionItem.loginCred?.email}
+            name="email"
+            value={email}
+            onChange={(evt: any) => {
+              setEmail(evt.target.value);
+              checkError(evt.target.value);
+            }}
+          />
+        </IonCol>
+        <ActionBtnCol size="auto">
+          <SaveButton
+            disabled={disableButton()}
+            onClick={async () => {
+              await sendVerification();
+            }}
+          >
+            {loading ? 'Sending Verificaiton' : 'Send Verificaiton'}
+          </SaveButton>
+        </ActionBtnCol>
+      </IonRow>
+
+      {error !== '' && (
+        <IonRow style={{ width: '100%' }}>
+          <IonCol size="12" style={{ paddingTop: 0 }}>
+            <ErrorText>{error}</ErrorText>
+          </IonCol>
+        </IonRow>
+      )}
+
       <EmailVerificationDetailModal
         isOpen={showEmailVerifyModal}
         backdropDismiss={false}

@@ -105,7 +105,7 @@ const VerificationDetailContent = ({ verification, user, onClose }: Props) => {
           onClick={async () => {
             setLoading(true);
             const vService = new VerificationService();
-            await vService.storeNewCredential(verification);
+            await vService.storeNewCredential(verification, user);
             setLoading(false);
             onClose();
           }}

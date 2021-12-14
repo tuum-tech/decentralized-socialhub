@@ -12,7 +12,7 @@ import {
   VerifiableCredential,
   VerifiablePresentation
 } from '@elastosfoundation/did-js-sdk/';
-import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { DID as CNDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { AssistService } from './assist.service';
 
 export interface IDidService {
@@ -287,7 +287,7 @@ export class DidService implements IDidService {
     didDocument.publish(
       process.env.REACT_APP_DID_STORE_PASSWORD as string,
       undefined,
-      undefined,
+      true,
       adapter
     );
   }
@@ -296,12 +296,59 @@ export class DidService implements IDidService {
     diddocument: DIDDocument,
     vc: VerifiableCredential
   ): Promise<DIDDocument> {
-    console.log('Add verified');
     let builder = DIDDocument.Builder.newFromDocument(diddocument);
     builder.edit();
     return await builder
       .addCredential(vc)
       .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+  }
+
+  async updateMultipleVerifiableCredentialsToDIDDocument(
+    diddocument: DIDDocument,
+    vcs: VerifiableCredential[],
+    toRemove: string[] | undefined = undefined
+  ): Promise<DIDDocument> {
+    let builder = DIDDocument.Builder.newFromDocument(diddocument);
+
+    builder.edit();
+    vcs.forEach(vc => {
+      if (diddocument.credentials?.has(vc.getId())) {
+        builder.removeCredential(vc.getId());
+      }
+      builder.addCredential(vc);
+    });
+
+    if (toRemove && toRemove.length > 0) {
+      toRemove.forEach(value => {
+        let vcurlid = new DIDURL(value);
+        if (diddocument.credentials?.has(vcurlid)) {
+          builder.removeCredential(vcurlid);
+        }
+      });
+    }
+
+    return await builder.seal(
+      process.env.REACT_APP_DID_STORE_PASSWORD as string
+    );
+  }
+
+  async removeMultipleVerifiableCredentialsToDIDDocument(
+    diddocument: DIDDocument,
+    vcsId: string[]
+  ): Promise<DIDDocument> {
+    let builder = DIDDocument.Builder.newFromDocument(diddocument);
+    builder.edit();
+
+    vcsId.forEach(vc => {
+      let vcidurl = new DIDURL(vc);
+      if (diddocument.credentials?.has(vcidurl)) {
+        builder.removeCredential(vcidurl);
+      }
+    });
+
+    return await builder.seal(
+      process.env.REACT_APP_DID_STORE_PASSWORD as string
+    );
   }
 
   async addVerifiableCredentialToEssentialsDIDDocument(
@@ -373,7 +420,7 @@ export class DidService implements IDidService {
       .expirationDate(date)
       .type('SelfProclaimedCredential')
       .property(subjectName, subjectValue)
-      .id(DIDURL.from('#primary', did) as DIDURL)
+      .id(DIDURL.from('#' + subjectName.toLowerCase(), did) as DIDURL)
       .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
   }
 
@@ -396,7 +443,6 @@ export class DidService implements IDidService {
   ): Promise<any> {
     let appMnemonic = process.env.REACT_APP_APPLICATION_MNEMONICS as string;
     let appDid = await this.loadDid(appMnemonic);
-
     let userDid = await this.loadDid(userMnemonic, password);
 
     let userDocument: DIDDocument = await this.Store.loadDid(userDid);
@@ -446,35 +492,31 @@ export class DidService implements IDidService {
     nonce: string
   ): Promise<any> {
     let appMnemonic = process.env.REACT_APP_APPLICATION_MNEMONICS as string;
-    let appDid = await this.loadDid(appMnemonic);
+    let appDidInstance = await this.loadDid(appMnemonic);
 
-    let connector = connectivity.getActiveConnector();
-    let vc = await connector?.generateAppIdCredential(
-      process.env.REACT_APP_APPLICATION_DID as string,
-      process.env.REACT_APP_APPLICATION_DID as string
-    );
-
-    console.log(await vc.isValid());
+    let didAccess = new CNDID.DIDAccess();
+    let vc: VerifiableCredential = await didAccess.generateAppIdCredential();
 
     this.Store.storeCredential(vc);
 
     // store private key
-    let id: DIDURL = DIDURL.from('#primary', appDid) as DIDURL;
+    let id: DIDURL = DIDURL.from('#primary', appDidInstance) as DIDURL;
     this.storePrivatekey(id, appMnemonic, '', 0);
+    let response = await didAccess.getExistingAppInstanceDIDInfo();
+    let didStore = await DIDStore.open(response.storeId);
 
     let vpb = await VerifiablePresentation.createFor(
-      process.env.REACT_APP_APPLICATION_DID as string,
+      response.didString,
       null,
-      this.Store
+      didStore
     );
+
     let vp = await vpb
       .realm(issuer)
       .nonce(nonce)
       .credentials(vc)
-      .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
-    console.log(vp.toString(true));
+      .seal(response.storePassword);
 
-    // can't return VerifiablePresenter object because HiveService still not supporting it
     return vp;
   }
 }
