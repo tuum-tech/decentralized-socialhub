@@ -22,7 +22,6 @@ import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 
 import { ViewProfileButton } from 'src/elements/buttons';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
-import WalletConnectBtn from 'src/components/WalletConnect';
 import style from './style.module.scss';
 import ProfileEditor from './components/ProfileEditor';
 import { getDIDString } from 'src/utils/did';
@@ -135,7 +134,6 @@ const ManagerPage: React.FC<InferMappedProps & RouteComponentProps> = ({
               <IonCol size="10" className={style['right-panel']}>
                 <Header>
                   <PageTitle>Profile Manager</PageTitle>
-                  <WalletConnectBtn onConnectMetaMask={onConnectMetaMask} />
                   <ViewProfileButton
                     onClick={() => {
                       if (user.tutorialStep === 4) {

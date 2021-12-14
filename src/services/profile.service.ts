@@ -109,6 +109,38 @@ export class ProfileService {
       items: [],
       isEnabled: true
     };
+    let walletDTO: WalletDTO = {
+      items: [],
+      isEnabled: true
+    };
+    let teamDTO: TeamDTO = {
+      items: [],
+      isEnabled: true
+    };
+    let thesisDTO: ThesisDTO = {
+      items: [],
+      isEnabled: true
+    };
+    let paperDTO: PaperDTO = {
+      items: [],
+      isEnabled: true
+    };
+    let licenseDTO: LicenseDTO = {
+      items: [],
+      isEnabled: true
+    };
+    let certificationDTO: CertificationDTO = {
+      items: [],
+      isEnabled: true
+    };
+    let gameExpDTO: GameExpDTO = {
+      items: [],
+      isEnabled: true
+    };
+    let gamerTagDTO: GamerTagDTO = {
+      items: [],
+      isEnabled: true
+    };
     let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
     let userResponse = await searchServiceLocal.searchUsersByDIDs([did], 1, 0);
     if (
@@ -136,6 +168,86 @@ export class ProfileService {
         if (gbPData.length > 0) {
           basicDTO = gbPData[0];
         }
+
+        const wpRes: IRunScriptResponse<WalletProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_wallets',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            }
+          }
+        );
+        walletDTO.items = getItemsFromData(wpRes, 'get_wallets');
+
+        const tpRes: IRunScriptResponse<TeamProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_team_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            }
+          }
+        );
+        teamDTO.items = getItemsFromData(tpRes, 'get_team_profile');
+
+        const thpRes: IRunScriptResponse<ThesisProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_thesis_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            }
+          }
+        );
+        thesisDTO.items = getItemsFromData(thpRes, 'get_thesis_profile');
+
+        const p2Res: IRunScriptResponse<PaperProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_paper_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            }
+          }
+        );
+        thesisDTO.items = getItemsFromData(p2Res, 'get_paper_profile');
+
+        const lpRes: IRunScriptResponse<LicenseProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_license_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            }
+          }
+        );
+        licenseDTO.items = getItemsFromData(lpRes, 'get_license_profile');
+
+        const cpRes: IRunScriptResponse<CertificationProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_certification_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            }
+          }
+        );
+        certificationDTO.items = getItemsFromData(
+          cpRes,
+          'get_certification_profile'
+        );
+
+        const gexpRes: IRunScriptResponse<GameExpProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_game_exp_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            }
+          }
+        );
+        gameExpDTO.items = getItemsFromData(gexpRes, 'get_game_exp_profile');
 
         const edRes: IRunScriptResponse<EducationProfileResponse> = await hiveInstance.Scripting.RunScript(
           {
@@ -190,7 +302,15 @@ export class ProfileService {
       name: nameCredential,
       basicDTO,
       educationDTO,
-      experienceDTO
+      experienceDTO,
+      walletDTO,
+      teamDTO,
+      thesisDTO,
+      paperDTO,
+      licenseDTO,
+      certificationDTO,
+      gameExpDTO,
+      gamerTagDTO
     };
   }
 
@@ -303,6 +423,214 @@ export class ProfileService {
     }
   }
 
+  static async updateWallet(wallet: WalletItem, session: ISessionItem) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'update_wallet',
+        context: {
+          target_did: session.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: wallet
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Wallet is successfuly saved', 'success');
+        await this.addActivity(
+          {
+            guid: '',
+            did: session!.did,
+            message: 'You updated wallet',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
+          },
+          session
+        );
+      }
+    }
+  }
+
+  static async updateTeamProfile(teamItem: TeamItem, session: ISessionItem) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'update_team_profile',
+        context: {
+          target_did: session.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: teamItem
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Team profile is successfuly saved', 'success');
+        await this.addActivity(
+          {
+            guid: '',
+            did: session!.did,
+            message: 'You updated team profile',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
+          },
+          session
+        );
+      }
+    }
+  }
+
+  static async updateThesisProfile(
+    thesisItem: ThesisItem,
+    session: ISessionItem
+  ) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'update_thesis_profile',
+        context: {
+          target_did: session.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: thesisItem
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Thesis profile is successfuly saved', 'success');
+        await this.addActivity(
+          {
+            guid: '',
+            did: session!.did,
+            message: 'You updated thesis profile',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
+          },
+          session
+        );
+      }
+    }
+  }
+
+  static async updatePaperProfile(paperItem: PaperItem, session: ISessionItem) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'update_paper_profile',
+        context: {
+          target_did: session.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: paperItem
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Paper profile is successfuly saved', 'success');
+        await this.addActivity(
+          {
+            guid: '',
+            did: session!.did,
+            message: 'You updated paper profile',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
+          },
+          session
+        );
+      }
+    }
+  }
+
+  static async updateLicenseProfile(
+    licenseItem: LicenseItem,
+    session: ISessionItem
+  ) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'update_license_profile',
+        context: {
+          target_did: session.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: licenseItem
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('License profile is successfuly saved', 'success');
+        await this.addActivity(
+          {
+            guid: '',
+            did: session!.did,
+            message: 'You updated license profile',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
+          },
+          session
+        );
+      }
+    }
+  }
+
+  static async updateCertificationProfile(
+    certificationItem: CertificationItem,
+    session: ISessionItem
+  ) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'update_certification_profile',
+        context: {
+          target_did: session.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: certificationItem
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Certification profile is successfuly saved', 'success');
+        await this.addActivity(
+          {
+            guid: '',
+            did: session!.did,
+            message: 'You updated certification profile',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
+          },
+          session
+        );
+      }
+    }
+  }
+
+  static async updateGameExpProfile(
+    gameExpItem: GameExpItem,
+    session: ISessionItem
+  ) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'update_game_exp_profile',
+        context: {
+          target_did: session.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: gameExpItem
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Game experience profile is successfuly saved', 'success');
+        await this.addActivity(
+          {
+            guid: '',
+            did: session!.did,
+            message: 'You updated game experience profile',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
+          },
+          session
+        );
+      }
+    }
+  }
+
   static async removeEducationItem(
     educationItem: EducationItem,
     session: ISessionItem
@@ -319,6 +647,140 @@ export class ProfileService {
       });
       if (res.isSuccess && res.response._status === 'OK') {
         showNotify('Education info is successfuly removed', 'success');
+      }
+    }
+  }
+
+  static async removeWallet(wallet: WalletItem, session: ISessionItem) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'remove_wallet',
+        context: {
+          target_did: session.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: wallet
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Wallet is successfuly removed', 'success');
+      }
+    }
+  }
+
+  static async removeTeamItem(teamItem: TeamItem, session: ISessionItem) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'remove_team_item',
+        context: {
+          target_did: session.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: teamItem
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Team profile info is successfuly removed', 'success');
+      }
+    }
+  }
+
+  static async removeThesisItem(thesisItem: ThesisItem, session: ISessionItem) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'remove_thesis_item',
+        context: {
+          target_did: session.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: thesisItem
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Thesis profile info is successfuly removed', 'success');
+      }
+    }
+  }
+
+  static async removePaperItem(paperItem: PaperItem, session: ISessionItem) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'remove_paper_item',
+        context: {
+          target_did: session.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: paperItem
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Paper profile info is successfuly removed', 'success');
+      }
+    }
+  }
+
+  static async removeLicenseItem(
+    licenseItem: LicenseItem,
+    session: ISessionItem
+  ) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'remove_license_item',
+        context: {
+          target_did: session.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: licenseItem
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('License profile info is successfuly removed', 'success');
+      }
+    }
+  }
+
+  static async removeCertificationItem(
+    certificationItem: CertificationItem,
+    session: ISessionItem
+  ) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'remove_certification_item',
+        context: {
+          target_did: session.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: certificationItem
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify(
+          'Certification profile info is successfuly removed',
+          'success'
+        );
+      }
+    }
+  }
+
+  static async removeGameExpItem(
+    gameExpItem: GameExpItem,
+    session: ISessionItem
+  ) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'remove_game_exp_item',
+        context: {
+          target_did: session.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: gameExpItem
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify(
+          'Game experience profile info is successfuly removed',
+          'success'
+        );
       }
     }
   }
@@ -664,5 +1126,37 @@ export const defaultFullProfile = {
   experienceDTO: {
     isEnabled: false,
     items: [] as ExperienceItem[]
+  },
+  walletDTO: {
+    isEnabled: false,
+    items: [] as WalletItem[]
+  },
+  teamDTO: {
+    isEnabled: false,
+    items: [] as TeamItem[]
+  },
+  thesisDTO: {
+    isEnabled: false,
+    items: [] as ThesisItem[]
+  },
+  paperDTO: {
+    isEnabled: false,
+    items: [] as PaperItem[]
+  },
+  licenseDTO: {
+    isEnabled: false,
+    items: [] as LicenseItem[]
+  },
+  certificationDTO: {
+    isEnabled: false,
+    items: [] as CertificationItem[]
+  },
+  gameExpDTO: {
+    isEnabled: false,
+    items: [] as GameExpItem[]
+  },
+  gamerTagDTO: {
+    isEnabled: false,
+    items: [] as GamerTagItem[]
   }
 };

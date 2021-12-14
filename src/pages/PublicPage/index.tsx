@@ -55,6 +55,13 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   const aboutRef = useRef<HTMLDivElement | null>(null);
   const experienceRef = useRef<HTMLDivElement | null>(null);
   const educationRef = useRef<HTMLDivElement | null>(null);
+  const walletRef = useRef<HTMLDivElement | null>(null);
+  const teamRef = useRef<HTMLDivElement | null>(null);
+  const thesisRef = useRef<HTMLDivElement | null>(null);
+  const paperRef = useRef<HTMLDivElement | null>(null);
+  const gameExpRef = useRef<HTMLDivElement | null>(null);
+  const licenseRef = useRef<HTMLDivElement | null>(null);
+  const certificationRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToElement = (cardName: string) => {
     let point: number = 0;
@@ -115,6 +122,13 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
           profile.basicDTO.isEnabled = true;
           profile.experienceDTO.isEnabled = true;
           profile.educationDTO.isEnabled = true;
+          profile.walletDTO.isEnabled = true;
+          profile.teamDTO.isEnabled = true;
+          profile.thesisDTO.isEnabled = true;
+          profile.paperDTO.isEnabled = true;
+          profile.licenseDTO.isEnabled = true;
+          profile.certificationDTO.isEnabled = true;
+          profile.gameExpDTO.isEnabled = true;
           setPublicUserProfile(profile);
         }
         let document = await DidDocumentService.getUserDocumentByDid(did);
@@ -153,6 +167,13 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
                   aboutRef={aboutRef}
                   experienceRef={experienceRef}
                   educationRef={educationRef}
+                  walletRef={walletRef}
+                  teamRef={teamRef}
+                  thesisRef={thesisRef}
+                  paperRef={paperRef}
+                  gameExpRef={gameExpRef}
+                  licenseRef={licenseRef}
+                  certificationRef={certificationRef}
                   viewAllClicked={(ctype: FollowType) => {
                     setShowAllFollow(true);
                     setFollowType(ctype);

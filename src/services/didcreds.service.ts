@@ -21,7 +21,7 @@ export enum CredentialType {
 export class DidcredsService {
   static async generateVerifiableCredential(
     did: string,
-    credential_type: CredentialType,
+    credential_type: string,
     credential_value: string
   ): Promise<VerifiableCredential> {
     let url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/didcreds_router/validation/internet_account`;

@@ -10,6 +10,13 @@ import ExperienceCard from 'src/components/cards/ExperienceCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 import BadgeCard from 'src/components/cards/BadgeCard';
 import FollowCards from 'src/components/cards/FollowCards';
+import TeamCard from 'src/components/cards/TeamCard';
+import ThesisCard from 'src/components/cards/ThesisCard';
+import PaperCard from 'src/components/cards/PaperCard';
+import LicenseCard from 'src/components/cards/LicenseCard';
+import CertificationCard from 'src/components/cards/CertificationCard';
+import GameExpCard from 'src/components/cards/GameExpCard';
+import WalletCard from 'src/components/cards/WalletCard';
 import { getThemeData } from 'src/utils/template';
 
 import PublicProfileTabs from './PublicProfileTabs';
@@ -37,6 +44,13 @@ interface Props {
   aboutRef: any;
   experienceRef: any;
   educationRef: any;
+  walletRef: any;
+  teamRef: any;
+  thesisRef: any;
+  paperRef: any;
+  gameExpRef: any;
+  licenseRef: any;
+  certificationRef: any;
   followerDids: string[];
   followingDids: string[];
   mutualDids: string[];
@@ -54,6 +68,13 @@ const ProfileComponent: React.FC<Props> = ({
   aboutRef,
   experienceRef,
   educationRef,
+  walletRef,
+  teamRef,
+  thesisRef,
+  paperRef,
+  gameExpRef,
+  licenseRef,
+  certificationRef,
   followerDids,
   followingDids,
   mutualDids,
@@ -138,6 +159,136 @@ const ProfileComponent: React.FC<Props> = ({
                               userSession={publicUser}
                             />
                           )}
+                        </div>
+                        <div ref={walletRef}>
+                          {publicFields.includes('wallet') &&
+                            template === 'crypto' && (
+                              <WalletCard
+                                walletDTO={publicUserProfile.walletDTO}
+                                isEditable={false}
+                                isPublicPage={true}
+                                template={template}
+                                userSession={publicUser}
+                              />
+                            )}
+                        </div>
+                        <div ref={gameExpRef}>
+                          {publicFields.includes('played games') &&
+                            template === 'gamer' && (
+                              <GameExpCard
+                                gameExpDTO={publicUserProfile.gameExpDTO}
+                                isEditable={false}
+                                isPublicPage={true}
+                                template={template}
+                                userSession={publicUser}
+                              />
+                            )}
+                        </div>
+                        {/* <div ref={educationRef}>
+                          {publicFields.includes('gamer tags') && (
+                            <EducationCard
+                              educationDTO={publicUserProfile.educationDTO}
+                              isEditable={false}
+                              isPublicPage={true}
+                              template={template}
+                              userSession={publicUser}
+                            />
+                          )}
+                        </div>
+                        <div ref={educationRef}>
+                          {publicFields.includes('gamer profile') && (
+                            <EducationCard
+                              educationDTO={publicUserProfile.educationDTO}
+                              isEditable={false}
+                              isPublicPage={true}
+                              template={template}
+                              userSession={publicUser}
+                            />
+                          )}
+                        </div> */}
+                        {/* <div ref={educationRef}>
+                          {publicFields.includes('sports') && (
+                            <EducationCard
+                              educationDTO={publicUserProfile.educationDTO}
+                              isEditable={false}
+                              isPublicPage={true}
+                              template={template}
+                              userSession={publicUser}
+                            />
+                          )}
+                        </div> */}
+                        <div ref={teamRef}>
+                          {publicFields.includes('teams') &&
+                            template === 'soccer' && (
+                              <TeamCard
+                                teamDTO={publicUserProfile.teamDTO}
+                                isEditable={false}
+                                isPublicPage={true}
+                                template={template}
+                                userSession={publicUser}
+                              />
+                            )}
+                        </div>
+                        {/* <div ref={educationRef}>
+                          {publicFields.includes('developer') && (
+                            <EducationCard
+                              educationDTO={publicUserProfile.educationDTO}
+                              isEditable={false}
+                              isPublicPage={true}
+                              template={template}
+                              userSession={publicUser}
+                            />
+                          )}
+                        </div> */}
+                        <div ref={thesisRef}>
+                          {publicFields.includes('thesis') &&
+                            template === 'education' && (
+                              <ThesisCard
+                                thesisDTO={publicUserProfile.thesisDTO}
+                                isEditable={false}
+                                isPublicPage={true}
+                                template={template}
+                                userSession={publicUser}
+                              />
+                            )}
+                        </div>
+                        <div ref={paperRef}>
+                          {publicFields.includes('paper') &&
+                            template === 'education' && (
+                              <PaperCard
+                                paperDTO={publicUserProfile.paperDTO}
+                                isEditable={false}
+                                isPublicPage={true}
+                                template={template}
+                                userSession={publicUser}
+                              />
+                            )}
+                        </div>
+                        <div ref={licenseRef}>
+                          {publicFields.includes('license') &&
+                            template === 'education' && (
+                              <LicenseCard
+                                licenseDTO={publicUserProfile.licenseDTO}
+                                isEditable={false}
+                                isPublicPage={true}
+                                template={template}
+                                userSession={publicUser}
+                              />
+                            )}
+                        </div>
+                        <div ref={certificationRef}>
+                          {publicFields.includes('certification') &&
+                            template === 'education' && (
+                              <CertificationCard
+                                certificationDTO={
+                                  publicUserProfile.certificationDTO
+                                }
+                                isEditable={false}
+                                isPublicPage={true}
+                                template={template}
+                                userSession={publicUser}
+                              />
+                            )}
                         </div>
                       </LeftContent>
                       <RightContent>

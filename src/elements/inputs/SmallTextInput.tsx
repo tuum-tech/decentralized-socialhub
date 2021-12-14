@@ -23,6 +23,7 @@ interface Props {
     | 'tel'
     | 'url'
     | undefined;
+  inputRef?: any;
 }
 
 const SmallTextInput: React.FC<Props> = ({
@@ -34,7 +35,8 @@ const SmallTextInput: React.FC<Props> = ({
   flexDirection = 'row',
   hasError = false,
   type = 'text',
-  disabled = false
+  disabled = false,
+  inputRef
 }) => {
   let cName = style['textinput'];
   if (flexDirection === 'column') {
@@ -57,6 +59,7 @@ const SmallTextInput: React.FC<Props> = ({
         placeholder={placeholder}
         onIonChange={e => onChange(e)}
         disabled={disabled}
+        ref={inputRef}
       />
     </div>
   );

@@ -1,3 +1,128 @@
+interface TeamItem {
+  guid: Guid;
+  name: string;
+  start: string;
+  end: string;
+  still: boolean;
+  verifiers: {
+    name: string;
+    did: string;
+  }[];
+  description: string;
+  order: string;
+  isEmpty: boolean;
+  logo?: string;
+}
+interface TeamDTO {
+  isEnabled: boolean;
+  items: TeamItem[];
+}
+interface ThesisItem {
+  guid: Guid;
+  title: string;
+  publish: string;
+  still: boolean;
+  verifiers: {
+    name: string;
+    did: string;
+  }[];
+  description: string;
+  order: string;
+  isEmpty: boolean;
+  logo?: string;
+}
+interface ThesisDTO {
+  isEnabled: boolean;
+  items: ThesisItem[];
+}
+interface PaperItem {
+  guid: Guid;
+  title: string;
+  publish: string;
+  still: boolean;
+  verifiers: {
+    name: string;
+    did: string;
+  }[];
+  description: string;
+  order: string;
+  isEmpty: boolean;
+  logo?: string;
+}
+interface PaperDTO {
+  isEnabled: boolean;
+  items: PaperItem[];
+}
+interface LicenseItem {
+  guid: Guid;
+  title: string;
+  acknowledger: string;
+  awardDate: string;
+  verifiers: {
+    name: string;
+    did: string;
+  }[];
+  description: string;
+  order: string;
+  isEmpty: boolean;
+  logo?: string;
+}
+interface LicenseDTO {
+  isEnabled: boolean;
+  items: LicenseItem[];
+}
+interface CertificationItem {
+  guid: Guid;
+  title: string;
+  acknowledger: string;
+  awardDate: string;
+  verifiers: {
+    name: string;
+    did: string;
+  }[];
+  description: string;
+  order: string;
+  isEmpty: boolean;
+  logo?: string;
+}
+interface CertificationDTO {
+  isEnabled: boolean;
+  items: CertificationItem[];
+}
+
+interface GameExpItem {
+  guid: Guid;
+  name: string;
+  like: number;
+  verifiers: {
+    name: string;
+    did: string;
+  }[];
+  description: string;
+  order: string;
+  isEmpty: boolean;
+  logo?: string;
+}
+interface GameExpDTO {
+  isEnabled: boolean;
+  items: GameExpItem[];
+}
+interface GamerTagItem {
+  guid: Guid;
+  game: string;
+  character: string;
+  verifiers: {
+    name: string;
+    did: string;
+  }[];
+  order: string;
+  isEmpty: boolean;
+  logo?: string;
+}
+interface GamerTagDTO {
+  isEnabled: boolean;
+  items: GamerTagItem[];
+}
 interface ExperienceItem {
   guid: Guid;
   isEnabled: boolean;
@@ -17,6 +142,17 @@ interface ExperienceItem {
   logo?: string;
 }
 
+interface WalletItem {
+  guid: Guid;
+  logo?: string;
+  name: string;
+  address: string;
+}
+
+interface WalletDTO {
+  isEnabled: boolean;
+  items: WalletItem[];
+}
 interface Template {
   value: string;
   title: string;
@@ -115,6 +251,14 @@ interface ProfileDTO {
   basicDTO: BasicDTO;
   experienceDTO: ExperienceDTO;
   educationDTO: EducationDTO;
+  walletDTO: WalletDTO;
+  teamDTO: TeamDTO;
+  thesisDTO: ThesisDTO;
+  paperDTO: PaperDTO;
+  licenseDTO: LicenseDTO;
+  certificationDTO: CertificationDTO;
+  gameExpDTO: GameExpDTO;
+  gamerTagDTO: GamerTagDTO;
 }
 
 interface ISessionItem {
@@ -273,7 +417,34 @@ interface BasicProfileResponse {
   _status: string;
   get_basic_profile: GetBasic;
 }
-
+interface WalletProfileResponse {
+  _status: string;
+  get_wallets: WalletDTO;
+}
+interface TeamProfileResponse {
+  _status: string;
+  get_team_profile: TeamDTO;
+}
+interface ThesisProfileResponse {
+  _status: string;
+  get_thesis_profile: ThesisDTO;
+}
+interface PaperProfileResponse {
+  _status: string;
+  get_paper_profile: PaperDTO;
+}
+interface LicenseProfileResponse {
+  _status: string;
+  get_license_profile: LicenseDTO;
+}
+interface CertificationProfileResponse {
+  _status: string;
+  get_certification_profile: CertificationDTO;
+}
+interface GameExpProfileResponse {
+  _status: string;
+  get_game_exp_profile: GameExpDTO;
+}
 interface EducationProfileResponse {
   _status: string;
   get_education_profile: EducationDTO;
