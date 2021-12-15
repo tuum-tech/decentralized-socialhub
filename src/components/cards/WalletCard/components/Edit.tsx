@@ -24,18 +24,10 @@ const WalletCardEdit: React.FC<WalletItemProps> = ({
 }: WalletItemProps) => {
   const inputRef = useRef<HTMLIonInputElement>(null);
   const [address, setAddress] = useState(wallet.address);
-  const [connected, setConnected] = useState(false);
   const onConnectMetamask = (account: string) => {
     setAddress(account);
-    setConnected(true);
+    handleChange({ target: { name: 'address', value: account } });
   };
-  useEffect(() => {
-    if (address && connected) {
-      if (inputRef && inputRef.current) {
-        handleChange({ target: { name: 'address', value: address } });
-      }
-    }
-  }, [address, connected, handleChange, inputRef]);
   return (
     <MyGrid>
       <IonRow>

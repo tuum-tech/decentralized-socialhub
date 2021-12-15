@@ -41,9 +41,11 @@ const WalletConnectBtn = (props: any) => {
       })();
     }
   }, [account, library, onConnectMetamask, clicked]);
+
   useEffect(() => {
-    disconnect();
-  }, [disconnect]);
+    if (account) disconnect();
+  }, [account, disconnect]);
+
   return (
     <StyledButton
       width={'182px'}
