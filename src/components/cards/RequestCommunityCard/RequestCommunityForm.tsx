@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { IonCardTitle, IonCol, IonRow, IonButton } from '@ionic/react';
-
+import Web3 from 'web3';
 import SmallTextInput from '../../../elements/inputs/SmallTextInput';
 import { MyGrid } from '../common';
 import SmallSelectInput from 'src/elements/inputs/SmallSelectInput';
@@ -15,13 +15,10 @@ const RequestCommunityForm: React.FC<Props> = ({
   sendRequest,
   onClose
 }: Props) => {
-  const [request, setRequest] = useState<any>({ category: 'university', network: 'eth' });
-  const category = useMemo(() => {
-    return request.category;
-  }, [request.category]);
-  const network = useMemo(() => {
-    return request.network;
-  }, [request.network]);
+  const [request, setRequest] = useState<any>({
+    category: 'university',
+    network: 'eth'
+  });
   const categories = [
     {
       text: 'NFT Collection',
@@ -68,7 +65,7 @@ const RequestCommunityForm: React.FC<Props> = ({
           <SmallSelectInput
             onChange={onSelectCategory}
             values={categories}
-            defaultValue={category}
+            defaultValue={request.category}
             label="Space Category"
             placeholder="NFT Collection, Company, University..."
           ></SmallSelectInput>
@@ -80,7 +77,7 @@ const RequestCommunityForm: React.FC<Props> = ({
             <SmallSelectInput
               onChange={onSelectNetwork}
               values={networks}
-              defaultValue={network}
+              defaultValue={request.network}
               label="Network"
               placeholder="Select Network(Ethereum, Elastos...)"
             ></SmallSelectInput>
@@ -94,6 +91,8 @@ const RequestCommunityForm: React.FC<Props> = ({
             placeholder="BoredApeYatchClub, CryptoPunks. PUNKS Comic..."
             name="name"
             onChange={onInputChange}
+            value={request.name}
+            hasError={!request.name}
           ></SmallTextInput>
         </IonCol>
       </IonRow>
@@ -106,6 +105,10 @@ const RequestCommunityForm: React.FC<Props> = ({
                 name="contract"
                 placeholder="e.g.0x5d07b4f9cA73589d84E70A8191ed7fc948f169c0"
                 onChange={onInputChange}
+                value={request.contract}
+                hasError={
+                  !request.contract || !Web3.utils.isAddress(request.contract)
+                }
               ></SmallTextInput>
             </IonCol>
           </IonRow>
@@ -116,6 +119,7 @@ const RequestCommunityForm: React.FC<Props> = ({
                 name="nftlink"
                 placeholder="https://opensea.io/BoredApeYatchClub"
                 onChange={onInputChange}
+                value={request.nftlink}
               ></SmallTextInput>
             </IonCol>
           </IonRow>
@@ -130,6 +134,7 @@ const RequestCommunityForm: React.FC<Props> = ({
                 name="description"
                 placeholder="https://company.com"
                 onChange={onInputChange}
+                value={request.description}
               ></SmallTextInput>
             </IonCol>
           </IonRow>
@@ -140,6 +145,7 @@ const RequestCommunityForm: React.FC<Props> = ({
                 name="profilelink"
                 placeholder="https://company.com"
                 onChange={onInputChange}
+                value={request.profilelink}
               ></SmallTextInput>
             </IonCol>
           </IonRow>
@@ -150,6 +156,7 @@ const RequestCommunityForm: React.FC<Props> = ({
                 name="sociallink"
                 placeholder="https://company.com"
                 onChange={onInputChange}
+                value={request.sociallink}
               ></SmallTextInput>
             </IonCol>
           </IonRow>
