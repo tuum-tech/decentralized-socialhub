@@ -16,11 +16,9 @@ const WalletConnectBtn = (props: any) => {
     deactivate
   } = useWeb3React();
 
-  const [clicked, setClicked] = useState(false);
   async function connect() {
     try {
       await activate(injected);
-      setClicked(true);
     } catch (ex) {
       console.log(ex);
     }
@@ -35,12 +33,12 @@ const WalletConnectBtn = (props: any) => {
   }
 
   useEffect(() => {
-    if (account && clicked) {
+    if (account) {
       (async () => {
         onConnectMetamask(account);
       })();
     }
-  }, [account, library, onConnectMetamask, clicked]);
+  }, [account, library, onConnectMetamask]);
 
   useEffect(() => {
     if (account) disconnect();
