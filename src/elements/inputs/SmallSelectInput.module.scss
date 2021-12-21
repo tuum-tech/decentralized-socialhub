@@ -1,25 +1,12 @@
-
-
-.textinput {
-  margin-top: 5px;
+.selectinput {
   &_label {
     font-weight: 500;
     font-size: 14px;
     line-height: 17px;
-    //color: var(--text-body-light);
-    font-family: 'SF Pro Display';
-    font-size: 14px;
-    font-weight: 500;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    text-align: left;
-    color: #425466;
-    
+    color: var(--text-body-light);
   }
   &_field {
-    width: 100%;
+    width: 90%;
     height: 32.7px;
     margin-top: 8px;
     background: #edf2f7;
@@ -40,13 +27,8 @@
     --padding-end: 16px;
     --padding-start: 16px;
     --placeholder-color: var(--input-muted-placeholder);
-
-    input {
-      border-radius: 6px!important;
-    }
   }
-
-  ion-label{
+  ion-label {
     text-align: left;
   }
 }
@@ -54,15 +36,14 @@
 .flex-row {
   display: flex;
   align-items: center;
-  .textinput {
+  .selectinput {
     margin-top: 12px;
   }
 
-  .textinput_label {
-    
+  .selectinput_label {
     margin: 0 12px 0 0;
   }
-  .textinput_field {
+  .selectinput_field {
     margin: 0 25px 0 0;
   }
 }

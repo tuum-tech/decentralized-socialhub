@@ -1,0 +1,30 @@
+.request-community-card {
+  border-radius: 20px;
+  width: 100%;
+  .card-content {
+    margin: 15px 10px;
+
+    ion-row {
+      display: flex;
+      justify-content: space-between;
+      div {
+        display:flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+    }
+
+    h3 {
+      color: #27272e;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 136.52%;
+    }
+    h4 {
+      color: #4A5568;
+      font-size: 14px;
+      font-weight: normal;
+      line-height: 162.502%;
+    }
+  }
+}
