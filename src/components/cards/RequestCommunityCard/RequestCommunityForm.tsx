@@ -1,13 +1,13 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { IonCardTitle, IonCol, IonRow, IonButton } from '@ionic/react';
 import Web3 from 'web3';
 import SmallTextInput from '../../../elements/inputs/SmallTextInput';
 import { MyGrid } from '../common';
 import SmallSelectInput from 'src/elements/inputs/SmallSelectInput';
 import style from './RequestCommunityForm.module.scss';
-
+import { categories, networks } from './constants';
 interface Props {
-  sendRequest: () => void;
+  sendRequest: (request: any) => void;
   onClose: () => void;
 }
 
@@ -16,33 +16,9 @@ const RequestCommunityForm: React.FC<Props> = ({
   onClose
 }: Props) => {
   const [request, setRequest] = useState<any>({
-    category: 'university',
+    category: 'nft',
     network: 'eth'
   });
-  const categories = [
-    {
-      text: 'NFT Collection',
-      value: 'nft'
-    },
-    {
-      text: 'University',
-      value: 'university'
-    },
-    {
-      text: 'Company',
-      value: 'company'
-    }
-  ];
-  const networks = [
-    {
-      text: 'Ethereum',
-      value: 'eth'
-    },
-    {
-      text: 'Elastos',
-      value: 'ela'
-    }
-  ];
   const onSelectCategory = (value: string) => {
     setRequest({ ...request, category: value });
   };
@@ -54,6 +30,11 @@ const RequestCommunityForm: React.FC<Props> = ({
       ...request,
       [evt.target.name]: evt.target.value
     });
+  };
+  const validateRequest = () => {
+    return (
+      request.name && request.contract && Web3.utils.isAddress(request.contract)
+    );
   };
   return (
     <MyGrid className={style['form']}>
@@ -170,7 +151,22 @@ const RequestCommunityForm: React.FC<Props> = ({
           <IonButton
             shape="round"
             onClick={() => {
-              sendRequest();
+              if (validateRequest()) {
+                const category = categories.find(
+                  cg => cg.value === request.category
+                );
+                const network = networks.find(
+                  nt => nt.value === request.network
+                );
+                // dedicate code for nft collection space.
+                sendRequest({
+                  'Space Category': category?.text,
+                  Network: network?.text,
+                  Name: request.name,
+                  'Smart Contract Address': request.contract,
+                  'NFT Collection URL': request.nftlink || ''
+                });
+              }
             }}
           >
             Send Request

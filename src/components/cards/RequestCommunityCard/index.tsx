@@ -1,25 +1,61 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   IonCard,
   IonCardContent,
   IonRow,
   IonText,
-  IonModal,
+  IonModal
 } from '@ionic/react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import { InferMappedProps, SubState } from './types';
 import style from './RequestCommunityCard.module.scss';
 import { StyledButton } from 'src/elements/buttons';
-import { MyModal, ModalFooter } from '../common';
 import RequestCommunityForm from './RequestCommunityForm';
-
+import { showNotify } from 'src/utils/notify';
 const CustomModal = styled(IonModal)`
   --height: 540px;
   --width: 450px;
   --min-height: 400px;
   --border-radius: 16px;
 `;
-const RequestCommunityCard = () => {
+const RequestCommunityCard: React.FC<InferMappedProps> = ({ session }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const sendRequest = async (request: any) => {
+    const userinfo = {
+      name: session.name,
+      did: session.did,
+      email: session.loginCred?.email
+    };
+    const bodyContact = {
+      subject: `[Community Space Request] - ${request['Space Category']}`,
+      userinfo: userinfo,
+      description: JSON.stringify(request)
+    };
+    console.log(bodyContact);
+    const emailresponse: Response = await fetch(
+      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/send_email`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`
+        },
+        body: JSON.stringify(bodyContact)
+      }
+    );
+
+    if (emailresponse.status === 200) {
+      setIsModalOpen(false);
+      showNotify('Email sent successfully', 'success');
+    } else {
+      showNotify('Error sending email. Please try again another time', 'error');
+    }
+  };
   return (
     <>
       <IonCard className={style['request-community-card']}>
@@ -27,11 +63,11 @@ const RequestCommunityCard = () => {
           <IonRow>
             <div>
               <IonText>
-                <h3>Request for a community page?</h3>
+                <h3>Request for a community space?</h3>
               </IonText>
               <IonText>
                 <h4>
-                  Suggest us content like NFT Collections, pages, profiles,
+                  Suggest us content like NFT Collections, univerisites, companies,
                   etc..
                 </h4>
               </IonText>
@@ -44,7 +80,7 @@ const RequestCommunityCard = () => {
                   setIsModalOpen(true);
                 }}
               >
-                Request Community Page
+                Request Community Space
               </StyledButton>
             </div>
           </IonRow>
@@ -61,13 +97,27 @@ const RequestCommunityCard = () => {
           onClose={() => {
             setIsModalOpen(false);
           }}
-          sendRequest={() => {
-            setIsModalOpen(false);
-          }}
+          sendRequest={sendRequest}
         />
       </CustomModal>
     </>
   );
 };
 
-export default RequestCommunityCard;
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(RequestCommunityCard);
