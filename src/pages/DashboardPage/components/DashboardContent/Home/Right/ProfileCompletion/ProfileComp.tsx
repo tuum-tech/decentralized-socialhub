@@ -6,9 +6,14 @@ import ProgressBar from 'src/elements/ProgressBar';
 import DropButton from './DropButton';
 import check from '../../../../../../../assets/icon/check-gray.svg';
 import checkgreen from '../../../../../../../assets/icon/check-dark-green.svg';
-import PersonIcon from 'src/assets/icon/profile-person.svg';
-import EducationIcon from 'src/assets/icon/profile-education.svg';
-import BagIcon from 'src/assets/icon/profile-bag.svg';
+
+import PersonIcon from 'src/assets/icon/profile-person-green.svg';
+import EducationIcon from 'src/assets/icon/profile-education-green.svg';
+import BagIcon from 'src/assets/icon/profile-bag-green.svg';
+
+import PersonBlueIcon from 'src/assets/icon/profile-person-blue.svg';
+import EducationBlueIcon from 'src/assets/icon/profile-education-blue.svg';
+import BagBlueIcon from 'src/assets/icon/profile-bag-blue.svg';
 
 const Container = styled(IonGrid)`
   margin-bottom: 10px;
@@ -67,12 +72,31 @@ const ItemImgColum = styled(IonCol)`
     display: block;
   }
 `;
-const ItemTxtColum = styled(IonCol)`
+const ItemImgColumRound = styled(IonCol)<{ background: string }>`
+  background-color: ${props => props.background};
+  width: 26px !important;
+  height: 26px;
+  border-radius: 100px;
+  padding: 2px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const ItemTxtColum = styled.div`
   font-size: 14px;
   font-weight: normal;
   line-height: 1.43;
   letter-spacing: 0.25px;
   color: ${props => (props.color ? props.color : 'rgba(0, 0, 0, 0.6)')};
+`;
+
+const ItemTxtComplete = styled.div`
+  font-size: 10px;
+  font-weight: normal;
+  line-height: 1.43;
+  letter-spacing: 0.25px;
+  color: #4a5568;
 `;
 
 interface IProps {
@@ -91,9 +115,16 @@ const ProfileComp: React.FC<IProps> = ({
   expandClicked
 }) => {
   const icons = {
-    'Add About me': PersonIcon,
-    'Add Experience': BagIcon,
-    'Add Education': EducationIcon
+    'Add About me Done': PersonIcon,
+    'Add Experience Done': BagIcon,
+    'Add Education Done': EducationIcon,
+    'Add About me': PersonBlueIcon,
+    'Add Experience': BagBlueIcon,
+    'Add Education': EducationBlueIcon,
+    'Tutorial Completed': BagBlueIcon,
+    'Social Media Authenticated': BagBlueIcon,
+    'Tutorial Completed Done': BagIcon,
+    'Social Media Authenticated Done': BagIcon
   };
 
   const percent =
@@ -105,17 +136,23 @@ const ProfileComp: React.FC<IProps> = ({
     const isDone = accomplishedList.includes(text);
     return (
       <ItemRow key={`todoItem_${text}`}>
-        <ItemImgColum size="auto">
+        <ItemImgColumRound
+          size="auto"
+          background={isDone ? '#b7fcff' : '#EBEFFF'}
+        >
           {(icons as any)[text] &&
             (isDone ? (
-              <img src={(icons as any)[text]} alt={text} />
+              <img src={(icons as any)[`${text} Done`]} alt={text} />
             ) : (
               <img src={(icons as any)[text]} alt={text} />
             ))}
-        </ItemImgColum>
-        <ItemTxtColum color={isDone ? '#00b715' : 'rgba(0, 0, 0, 0.6)'}>
-          {text}
-        </ItemTxtColum>
+        </ItemImgColumRound>
+        <IonCol style={{ display: 'flex', flexDirection: 'column' }}>
+          <ItemTxtColum color={isDone ? '#007E84' : '#4C6FFF'}>
+            {text}
+          </ItemTxtColum>
+          {isDone && <ItemTxtComplete>Completed</ItemTxtComplete>}
+        </IonCol>
         <ItemImgColum size="auto">
           {isDone ? (
             <img src={checkgreen} alt="check" />
