@@ -1,5 +1,6 @@
 import React from 'react';
 import { IonGrid, IonRow, IonCol } from '@ionic/react';
+import { useHistory } from 'react-router';
 import styled from 'styled-components';
 
 import ProgressBar from 'src/elements/ProgressBar';
@@ -132,10 +133,21 @@ const ProfileComp: React.FC<IProps> = ({
       ? 0
       : Math.round((accomplishedList.length / targetList.length) * 100);
 
+  const history = useHistory();
+  const handleAddExperience = (isDone: boolean) => {
+    if (!isDone) {
+      history.push(`/manager/${title}`);
+    }
+  };
+
   const renderTodoLitem = (text: string) => {
-    const isDone = accomplishedList.includes(text);
+    const isDone = accomplishedList.includes(text) as boolean;
     return (
-      <ItemRow key={`todoItem_${text}`}>
+      <ItemRow
+        key={`todoItem_${text}`}
+        style={{ cursor: 'pointer' }}
+        onClick={() => handleAddExperience(isDone)}
+      >
         <ItemImgColumRound
           size="auto"
           background={isDone ? '#b7fcff' : '#EBEFFF'}
