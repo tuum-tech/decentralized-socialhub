@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IonCol, IonGrid, IonRow } from '@ionic/react';
+import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
 import { useHistory } from 'react-router-dom';
@@ -25,6 +25,13 @@ import VerificationStatus from './Right/VerificationStatus';
 import ProfileBriefCard from 'src/components/cards/ProfileBriefCard';
 import { hasCredentials } from 'src/utils/socialprofile';
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import NewVerificationContent, {
+  NewVerificationModal
+} from 'src/pages/ActivityPage/components/MyRequests/NewVerification';
+import { VerificationService } from 'src/services/verification.service';
+import SentModalContent, {
+  SentModal
+} from 'src/pages/ActivityPage/components/MyRequests/SentModal';
 
 const LeftCardCol = styled(IonCol)`
   padding: 22px 16px;
@@ -68,6 +75,19 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
   const [completionPercent, setCompletionPercent] = useState(0);
   const [verifiedStats, setVerifiedStats] = useState<any[]>([]); //overall verified stats
   const [verifiedPercent, setVerifiedPercent] = useState(0); //overall verified percent
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [showSentModal, setShowSentModal] = useState(false);
+
+  const sendRequest = async (
+    dids: string[],
+    credentials: VerificationData[],
+    msg: string
+  ) => {
+    const vService = new VerificationService();
+    await vService.sendRequest(session, dids, credentials, msg);
+    setShowVerificationModal(false);
+    setShowSentModal(true);
+  };
 
   useEffect(() => {
     setTutorialVisible(session.tutorialStep !== 4);
@@ -352,77 +372,115 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
   /* Verification ends */
 
   return (
-    <IonGrid className="ion-no-padding">
-      <IonRow className="ion-no-padding">
-        <LeftCardCol size="8">
-          {tutorialVisible && (
-            <BeginnersTutorial
-              onTutorialStart={onTutorialStart}
-              tutorialStep={session.tutorialStep}
+    <>
+      <IonGrid className="ion-no-padding">
+        <IonRow className="ion-no-padding">
+          <LeftCardCol size="8">
+            {tutorialVisible && (
+              <BeginnersTutorial
+                onTutorialStart={onTutorialStart}
+                tutorialStep={session.tutorialStep}
+              />
+            )}
+            <ManageProfile profile={profile} userSession={session} />
+            {!hasFollowUsers && session.did && session.did !== '' && (
+              <ExploreConnnections session={session} did={session.did} />
+            )}
+            {!hasSocialProfiles && <ManageLinks />}
+          </LeftCardCol>
+          <RightCardCol size="4">
+            <VerificationStatus progress={verifiedPercent} />
+            <ProfileCompletion
+              progress={completionPercent}
+              completionStats={completionStatsDisplay}
             />
-          )}
-          <ManageProfile profile={profile} userSession={session} />
-          {!hasFollowUsers && session.did && session.did !== '' && (
-            <ExploreConnnections session={session} did={session.did} />
-          )}
-          {!hasSocialProfiles && <ManageLinks />}
-        </LeftCardCol>
-        <RightCardCol size="4">
-          <VerificationStatus progress={verifiedPercent} />
-          <ProfileCompletion
-            progress={completionPercent}
-            completionStats={completionStatsDisplay}
-          />
-          <ConnectWithCommunity />
-          {hasSocialProfiles && (
+            <ConnectWithCommunity />
+            {hasSocialProfiles && (
+              <ProfileBriefCard
+                category={'social'}
+                title={'Profiles Linked'}
+                data={didDocument}
+                exploreAll={() => {}}
+              />
+            )}
+            {followerDids.length > 0 && (
+              <ProfileBriefCard
+                category={'follower'}
+                title={'Followers'}
+                data={followerDids}
+                exploreAll={() => {
+                  history.push('/connections/followers');
+                }}
+              />
+            )}
+            {followingDids.length > 0 && (
+              <ProfileBriefCard
+                category={'following'}
+                title={'Following'}
+                data={followingDids}
+                exploreAll={() => {
+                  history.push('/connections/followings');
+                }}
+              />
+            )}
+            {mutualDids.length > 0 && (
+              <ProfileBriefCard
+                category={'mutual'}
+                title={'Mutual Follower'}
+                data={mutualDids}
+                exploreAll={() => {
+                  history.push('/connections/mutual-followers');
+                }}
+              />
+            )}
             <ProfileBriefCard
-              category={'social'}
-              title={'Profiles Linked'}
-              data={didDocument}
-              exploreAll={() => {}}
-            />
-          )}
-          {followerDids.length > 0 && (
-            <ProfileBriefCard
-              category={'follower'}
-              title={'Followers'}
-              data={followerDids}
+              category={'badge'}
+              title={'Badges'}
+              data={session.badges!}
               exploreAll={() => {
-                history.push('/connections/followers');
+                activeTab('badges');
               }}
             />
-          )}
-          {followingDids.length > 0 && (
+
             <ProfileBriefCard
-              category={'following'}
-              title={'Following'}
-              data={followingDids}
+              category={'request'}
+              title={'Request Verification'}
+              data={session.badges!}
               exploreAll={() => {
-                history.push('/connections/followings');
+                setShowVerificationModal(true);
               }}
             />
-          )}
-          {mutualDids.length > 0 && (
-            <ProfileBriefCard
-              category={'mutual'}
-              title={'Mutual Follower'}
-              data={mutualDids}
-              exploreAll={() => {
-                history.push('/connections/mutual-followers');
-              }}
-            />
-          )}
-          <ProfileBriefCard
-            category={'badge'}
-            title={'Badges'}
-            data={session.badges!}
-            exploreAll={() => {
-              activeTab('badges');
-            }}
-          />
-        </RightCardCol>
-      </IonRow>
-    </IonGrid>
+          </RightCardCol>
+        </IonRow>
+      </IonGrid>
+
+      <NewVerificationModal
+        isOpen={showVerificationModal}
+        cssClass="my-custom-class"
+        backdropDismiss={false}
+      >
+        <NewVerificationContent
+          session={session}
+          onClose={() => {
+            setShowVerificationModal(false);
+          }}
+          targetUser={session}
+          sendRequest={sendRequest}
+        />
+      </NewVerificationModal>
+
+      <SentModal
+        isOpen={showSentModal}
+        cssClass="my-custom-class"
+        backdropDismiss={false}
+      >
+        <SentModalContent
+          onClose={() => {
+            setShowSentModal(false);
+          }}
+        />
+      </SentModal>
+    </>
   );
 };
 
