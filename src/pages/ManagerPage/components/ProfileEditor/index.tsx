@@ -45,6 +45,7 @@ const ProfileEditor: React.FC<Props> = ({
   const [error, setError] = useState(false);
   const [userInfo, setUserInfo] = useState<ISessionItem>(session);
   const [loaded, setloaded] = useState(false);
+  const [timer, setTimer] = useState<any>(null);
   const [didDocument, setDidDocument] = useState<DIDDocument | undefined>(
     undefined
   );
@@ -114,7 +115,7 @@ const ProfileEditor: React.FC<Props> = ({
     }
   };
 
-  const setTimer = () => {
+  const startTimer = () => {
     const timer = setTimeout(async () => {
       // refresh DID document
       let document = await DidDocumentService.getUserDocument(session);
@@ -123,8 +124,9 @@ const ProfileEditor: React.FC<Props> = ({
       if (JSON.stringify(session) === JSON.stringify(userInfo)) return;
 
       if (session.userToken) setUserInfo(session);
-      setTimer();
+      startTimer();
     }, 1000);
+    setTimer(timer);
     return () => clearTimeout(timer);
   };
 
@@ -141,7 +143,10 @@ const ProfileEditor: React.FC<Props> = ({
       setDidDocument(doc);
       setloaded(true);
     })();
-    setTimer();
+    if (timer) {
+      clearTimeout(timer);
+    }
+    startTimer();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 

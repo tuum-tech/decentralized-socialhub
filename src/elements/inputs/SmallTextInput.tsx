@@ -23,7 +23,7 @@ interface Props {
     | 'tel'
     | 'url'
     | undefined;
-  inputRef?: any;
+  inputRef?: React.Ref<HTMLIonInputElement>;
 }
 
 const SmallTextInput: React.FC<Props> = ({
