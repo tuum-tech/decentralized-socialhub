@@ -67,61 +67,6 @@ const ManagerPage: React.FC<InferMappedProps & RouteComponentProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const onConnectMetaMask = async (account: any) => {
-    let credentialType = CredentialType.ETHAddress;
-    let didService = await DidService.getInstance();
-    let didDocument: DIDDocument = await didService.getStoredDocument(
-      new DID(user.did)
-    );
-    let newVC = await DidcredsService.generateVerifiableCredential(
-      user.did,
-      credentialType,
-      account
-    );
-    const didUrl = newVC.getId();
-    const oldVC = didDocument.getCredential(didUrl);
-    if (oldVC) {
-      const compVal = Object.values(oldVC.getSubject().getProperties())[0];
-      if (account === compVal) {
-        return;
-      }
-      if (user.isEssentialUser) {
-        const cn = connectivity.getActiveConnector();
-        await cn?.deleteCredentials(
-          [
-            didDocument.getSubject().toString() +
-              '#' +
-              credentialType.toLowerCase()
-          ],
-          {
-            forceToPublishCredentials: true
-          }
-        );
-      } else {
-        const builder = DIDDocument.Builder.newFromDocument(didDocument);
-        didDocument = await builder
-          .removeCredential(didUrl)
-          .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
-      }
-    }
-    let didDocumentWithETHAddress: DIDDocument;
-    if (user.isEssentialUser) {
-      let essentialsService = new EssentialsService(didService);
-      await essentialsService.addVerifiableCredentialEssentials(newVC);
-
-      didDocumentWithETHAddress = await didService.getPublishedDocument(
-        new DID(props.session.did)
-      );
-    } else {
-      didDocumentWithETHAddress = await didService.addVerifiableCredentialToDIDDocument(
-        didDocument,
-        newVC
-      );
-    }
-    await didService.storeDocument(didDocumentWithETHAddress);
-  };
-
   return (
     <>
       <IonPage className={style['managerpage']}>
