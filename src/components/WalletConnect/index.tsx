@@ -6,7 +6,7 @@ import { StyledButton } from 'src/elements/buttons';
 import MetaMaskIcon from 'src/assets/meta-mask.svg';
 
 const WalletConnectBtn = (props: any) => {
-  const { onConnectMetamask } = props;
+  const { onConnectMetamask, onDisconnectMetamask } = props;
   const {
     active,
     account,
@@ -15,7 +15,6 @@ const WalletConnectBtn = (props: any) => {
     activate,
     deactivate
   } = useWeb3React();
-
   async function connect() {
     try {
       await activate(injected);
@@ -42,7 +41,8 @@ const WalletConnectBtn = (props: any) => {
 
   useEffect(() => {
     disconnect();
-  }, [disconnect]);
+    onDisconnectMetamask();
+  }, [disconnect, onDisconnectMetamask]);
   return (
     <StyledButton
       width={'182px'}

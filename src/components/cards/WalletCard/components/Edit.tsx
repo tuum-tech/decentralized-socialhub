@@ -28,6 +28,9 @@ const WalletCardEdit: React.FC<WalletItemProps> = ({
     setAddress(account);
     handleChange({ target: { name: 'address', value: account } });
   };
+  const onDisconnectMetamask = () => {
+    setAddress('');
+  };
   return (
     <MyGrid>
       <IonRow>
@@ -66,7 +69,10 @@ const WalletCardEdit: React.FC<WalletItemProps> = ({
           </>
         ) : (
           <IonRowWrapper class="ion-justify-content-center ion-margin-top">
-            <WalletConnectBtn onConnectMetamask={onConnectMetamask} />
+            <WalletConnectBtn
+              onConnectMetamask={onConnectMetamask}
+              onDisconnectMetamask={onDisconnectMetamask}
+            />
           </IonRowWrapper>
         )}
       </div>
