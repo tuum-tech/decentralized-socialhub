@@ -5,12 +5,12 @@ http://ionicframework.com/docs/theming/ */
 
 /** Ionic CSS Variables **/
 :root {
-  --ion-color-primary: #363291;
-  --ion-color-primary-rgb: 54, 50, 145;
-  --ion-color-primary-contrast: #ffffff;
-  --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #302c80;
-  --ion-color-primary-tint: #4a479c;
+  --ion-color-primary: #4c6fff;
+	--ion-color-primary-rgb: 76,111,255;
+	--ion-color-primary-contrast: #ffffff;
+	--ion-color-primary-contrast-rgb: 255,255,255;
+	--ion-color-primary-shade: #4362e0;
+	--ion-color-primary-tint: #5e7dff;
 
   --ion-color-secondary: #c948bc;
   --ion-color-secondary-rgb: 201, 72, 188;

@@ -2,13 +2,14 @@
 .explorenav {
   background: #f7fafc;
   height: calc(100vh - 80px);
-
   .tab-grid {
     background: #f7fafc;
     min-height: 100%;
+    padding: 5px 30px;
   }
   .tab-list {
     background: #f7fafc;
+    padding: 5px 30px;
   }
   .tab-item {
     cursor: pointer;
