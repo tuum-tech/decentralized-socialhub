@@ -6,7 +6,7 @@ import { StyledButton } from 'src/elements/buttons';
 import MetaMaskIcon from 'src/assets/meta-mask.svg';
 
 const WalletConnectBtn = (props: any) => {
-  const { onConnectMetamask, onDisconnectMetamask } = props;
+  const { onConnectMetamask } = props;
   const {
     active,
     account,
@@ -15,85 +15,49 @@ const WalletConnectBtn = (props: any) => {
     activate,
     deactivate
   } = useWeb3React();
+  const [connection, setConnection] = useState(false);
   async function connect() {
     try {
       await activate(injected);
-    } catch (ex) {
-      console.log(ex);
-    }
-  }
-
-  async function disconnect() {
-    try {
-      deactivate();
+      setConnection(true);
     } catch (ex) {
       console.log(ex);
     }
   }
 
   useEffect(() => {
-    if (account) {
+    if (account && connection) {
       (async () => {
         onConnectMetamask(account);
       })();
     }
-  }, [account, library, onConnectMetamask]);
+  }, [account, connection, onConnectMetamask]);
 
-  useEffect(() => {
-    disconnect();
-    onDisconnectMetamask();
-  }, [disconnect, onDisconnectMetamask]);
   return (
     <StyledButton
       width={'182px'}
       height={'40px'}
       onClick={() => {
-        if (account) {
-          disconnect();
-        } else {
-          connect();
-        }
+        connect();
       }}
     >
-      {account ? (
-        <div
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        <img
+          src={MetaMaskIcon}
+          alt="meta-mask"
+          width="25"
           style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
+            marginRight: '10px'
           }}
-        >
-          <img
-            src={MetaMaskIcon}
-            alt="meta-mask"
-            width="25"
-            style={{
-              marginRight: '10px'
-            }}
-          />
-          {`${account.substring(0, 8)} ... ${account.substring(
-            account.length - 4
-          )}`}
-        </div>
-      ) : (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
-        >
-          <img
-            src={MetaMaskIcon}
-            alt="meta-mask"
-            width="25"
-            style={{
-              marginRight: '10px'
-            }}
-          />
-          {`Connect Wallet`}
-        </div>
-      )}
+        />
+        {`Connect Wallet`}
+      </div>
     </StyledButton>
   );
 };
