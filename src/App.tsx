@@ -53,6 +53,7 @@ import {
   CreateProfileWithDidPage
 } from './pages/Auth';
 
+import LandingPage from './pages/LandingPage';
 import DefaultPage from './pages/404Page';
 import ExplorePage from './pages/ExplorePage';
 import SettingsPage from './pages/SettingsPage/Loadable';
@@ -261,7 +262,7 @@ const App: React.FC = () => {
               <Route path="/terms-of-use" component={TermsPage} exact={true} />
 
               {/* ====== Public URLs ==== */}
-              <Route path="/" component={CreateProfilePage} exact={true} />
+              <Route path="/" component={LandingPage} exact={true} />
               <Route path="/did/:did" component={PublicPage} exact={true} />
               <Route path="/load" component={LoadDid} />
               <Route component={DefaultPage} />
