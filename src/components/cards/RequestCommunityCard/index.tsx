@@ -63,12 +63,12 @@ const RequestCommunityCard: React.FC<InferMappedProps> = ({ session }) => {
           <IonRow>
             <div>
               <IonText>
-                <h3>Request for a community space?</h3>
+                <h3>Want to request a community space?</h3>
               </IonText>
               <IonText>
                 <h4>
-                  Suggest us content like NFT Collections, univerisites, companies,
-                  etc..
+                  Give us some suggestions for innovative content, such as NFT
+                  collections, Defi,<br></br>gaming, and more
                 </h4>
               </IonText>
             </div>
