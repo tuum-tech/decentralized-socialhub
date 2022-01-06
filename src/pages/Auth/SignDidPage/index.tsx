@@ -58,6 +58,7 @@ const SignDidPage: React.FC<RouteComponentProps<
           setError={setError}
           onSuccess={async (uDid: string, mnemonic: string) => {
             let didService = await DidService.getInstance();
+            await didService.Store.synchronize();
             const isDidPublished = await didService.isDIDPublished(uDid);
             if (!isDidPublished) {
               alertError(
