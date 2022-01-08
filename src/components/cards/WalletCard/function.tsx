@@ -23,20 +23,17 @@ export const verifyWalletOwner = async (web3: Web3, address: string) => {
 
 export const addWalletToDIDDocument = async (
   address: string,
+  key: string,
   user: ISessionItem
 ) => {
-  let credentialType = (
-    CredentialType.ETHAddress +
-    '_' +
-    address
-  ).toLowerCase();
+  console.log(address, key, user);
   let didService = await DidService.getInstance();
   let newVC = await DidcredsService.generateVerifiableCredential(
     user.did,
-    credentialType,
+    key,
     address
   );
-  let didDocument = await removeWalletFromDIDDocument(address, user);
+  let didDocument = await removeWalletFromDIDDocument(key, user);
   if (user.isEssentialUser) {
     let essentialsService = new EssentialsService(didService);
     await essentialsService.addVerifiableCredentialEssentials(newVC);
@@ -49,25 +46,21 @@ export const addWalletToDIDDocument = async (
     );
   }
   await didService.storeDocument(didDocument);
+  return didDocument;
 };
 export const removeWalletFromDIDDocument = async (
-  address: string,
+  key: string,
   user: ISessionItem
 ) => {
-  let credentialType = (
-    CredentialType.ETHAddress +
-    '_' +
-    address
-  ).toLowerCase();
   let didService = await DidService.getInstance();
   let didDocument: DIDDocument = await didService.getStoredDocument(
     new DID(user.did)
   );
-  const oldVC = didDocument.getCredential(credentialType);
+  const oldVC = didDocument.getCredential(key);
   if (oldVC) {
     if (user.isEssentialUser) {
       let cn = connectivity.getActiveConnector();
-      let vcKey = didDocument.getSubject().toString() + '#' + credentialType;
+      let vcKey = didDocument.getSubject().toString() + '#' + key;
 
       await cn?.deleteCredentials([vcKey], {
         forceToPublishCredentials: true
@@ -78,7 +71,7 @@ export const removeWalletFromDIDDocument = async (
       );
     } else {
       let builder = DIDDocument.Builder.newFromDocument(didDocument);
-      builder = builder.removeCredential(credentialType);
+      builder = builder.removeCredential(key);
       didDocument = await builder.seal(
         process.env.REACT_APP_DID_STORE_PASSWORD as string
       );

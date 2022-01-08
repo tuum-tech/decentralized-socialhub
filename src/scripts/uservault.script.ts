@@ -161,62 +161,6 @@ export class UserVaultScripts {
     });
 
     await hiveClient.Scripting.SetScript({
-      name: 'get_wallets',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_wallets',
-        output: true,
-        body: {
-          collection: 'wallets'
-        }
-      }
-    });
-
-    await hiveClient.Scripting.SetScript({
-      name: 'update_wallet',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'update_wallet',
-        body: {
-          collection: 'wallets',
-          filter: {
-            guid: '$params.guid'
-          },
-          update: {
-            $set: {
-              guid: '$params.guid',
-              name: '$params.name',
-              address: '$params.address'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
-        }
-      }
-    });
-
-    await hiveClient.Scripting.SetScript({
-      name: 'remove_wallet',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'delete',
-        name: 'remove_wallet',
-        body: {
-          collection: 'wallets',
-          filter: {
-            guid: '$params.guid'
-          }
-        }
-      }
-    });
-    await hiveClient.Scripting.SetScript({
       name: 'get_team_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,

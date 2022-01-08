@@ -122,7 +122,6 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
           profile.basicDTO.isEnabled = true;
           profile.experienceDTO.isEnabled = true;
           profile.educationDTO.isEnabled = true;
-          profile.walletDTO.isEnabled = true;
           profile.teamDTO.isEnabled = true;
           profile.thesisDTO.isEnabled = true;
           profile.paperDTO.isEnabled = true;

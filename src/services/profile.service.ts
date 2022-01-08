@@ -109,10 +109,6 @@ export class ProfileService {
       items: [],
       isEnabled: true
     };
-    let walletDTO: WalletDTO = {
-      items: [],
-      isEnabled: true
-    };
     let teamDTO: TeamDTO = {
       items: [],
       isEnabled: true
@@ -168,17 +164,6 @@ export class ProfileService {
         if (gbPData.length > 0) {
           basicDTO = gbPData[0];
         }
-
-        const wpRes: IRunScriptResponse<WalletProfileResponse> = await hiveInstance.Scripting.RunScript(
-          {
-            name: 'get_wallets',
-            context: {
-              target_did: did,
-              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-            }
-          }
-        );
-        walletDTO.items = getItemsFromData(wpRes, 'get_wallets');
 
         const tpRes: IRunScriptResponse<TeamProfileResponse> = await hiveInstance.Scripting.RunScript(
           {
@@ -303,7 +288,6 @@ export class ProfileService {
       basicDTO,
       educationDTO,
       experienceDTO,
-      walletDTO,
       teamDTO,
       thesisDTO,
       paperDTO,
@@ -413,34 +397,6 @@ export class ProfileService {
             guid: '',
             did: session!.did,
             message: 'You updated education profile',
-            read: false,
-            createdAt: 0,
-            updatedAt: 0
-          },
-          session
-        );
-      }
-    }
-  }
-
-  static async updateWallet(wallet: WalletItem, session: ISessionItem) {
-    const hiveInstance = await HiveService.getSessionInstance(session);
-    if (session && hiveInstance) {
-      const res: any = await hiveInstance.Scripting.RunScript({
-        name: 'update_wallet',
-        context: {
-          target_did: session.did,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-        },
-        params: wallet
-      });
-      if (res.isSuccess && res.response._status === 'OK') {
-        showNotify('Wallet is successfuly saved', 'success');
-        await this.addActivity(
-          {
-            guid: '',
-            did: session!.did,
-            message: 'You updated wallet',
             read: false,
             createdAt: 0,
             updatedAt: 0
@@ -647,23 +603,6 @@ export class ProfileService {
       });
       if (res.isSuccess && res.response._status === 'OK') {
         showNotify('Education info is successfuly removed', 'success');
-      }
-    }
-  }
-
-  static async removeWallet(wallet: WalletItem, session: ISessionItem) {
-    const hiveInstance = await HiveService.getSessionInstance(session);
-    if (session && hiveInstance) {
-      const res: any = await hiveInstance.Scripting.RunScript({
-        name: 'remove_wallet',
-        context: {
-          target_did: session.did,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-        },
-        params: wallet
-      });
-      if (res.isSuccess && res.response._status === 'OK') {
-        showNotify('Wallet is successfuly removed', 'success');
       }
     }
   }
@@ -1126,10 +1065,6 @@ export const defaultFullProfile = {
   experienceDTO: {
     isEnabled: false,
     items: [] as ExperienceItem[]
-  },
-  walletDTO: {
-    isEnabled: false,
-    items: [] as WalletItem[]
   },
   teamDTO: {
     isEnabled: false,

@@ -142,17 +142,6 @@ interface ExperienceItem {
   logo?: string;
 }
 
-interface WalletItem {
-  guid: Guid;
-  logo?: string;
-  name: string;
-  address: string;
-}
-
-interface WalletDTO {
-  isEnabled: boolean;
-  items: WalletItem[];
-}
 interface Template {
   value: string;
   title: string;
@@ -251,7 +240,6 @@ interface ProfileDTO {
   basicDTO: BasicDTO;
   experienceDTO: ExperienceDTO;
   educationDTO: EducationDTO;
-  walletDTO: WalletDTO;
   teamDTO: TeamDTO;
   thesisDTO: ThesisDTO;
   paperDTO: PaperDTO;
@@ -416,10 +404,6 @@ interface ProfileResponse {
 interface BasicProfileResponse {
   _status: string;
   get_basic_profile: GetBasic;
-}
-interface WalletProfileResponse {
-  _status: string;
-  get_wallets: WalletDTO;
 }
 interface TeamProfileResponse {
   _status: string;

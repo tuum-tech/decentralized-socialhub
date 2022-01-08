@@ -164,9 +164,8 @@ const ProfileComponent: React.FC<Props> = ({
                           {publicFields.includes('wallet') &&
                             template === 'crypto' && (
                               <WalletCard
-                                walletDTO={publicUserProfile.walletDTO}
+                                didDocument={didDocument!}
                                 isEditable={false}
-                                isPublicPage={true}
                                 template={template}
                                 userSession={publicUser}
                               />

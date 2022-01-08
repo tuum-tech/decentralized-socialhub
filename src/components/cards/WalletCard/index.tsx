@@ -1,266 +1,265 @@
 import React, { useState, useEffect } from 'react';
-import {
-  IonButton,
-  IonCardTitle,
-  IonCol,
-  IonGrid,
-  IonRow,
-  IonModal
-} from '@ionic/react';
+import { IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import { Guid } from 'guid-typescript';
-import styled from 'styled-components';
 import { useWeb3React } from '@web3-react/core';
 import Web3 from 'web3';
+import Blockies from 'react-blockies';
 
 import { showNotify } from 'src/utils/notify';
-import WalletItem from './components/Item';
 
 import {
+  CloseButton,
+  ManagerButton,
+  ManagerModal,
+  ManagerModalTitle,
+  ManagerModalFooter,
+  MyGrid,
   CardOverview,
-  Divider,
   LinkStyleSpan,
-  ModalFooter,
-  MODE,
   CardHeaderContent,
-  CardContentContainer
+  CardContentContainer,
+  ProfileItem
 } from '../common';
-import WalletCardEdit, { pattern } from './components/Edit';
-import ProgressBar from 'src/elements/ProgressBar';
 import {
   verifyWalletOwner,
   addWalletToDIDDocument,
   removeWalletFromDIDDocument
 } from './function';
+import {
+  DIDDocument,
+  VerifiableCredential
+} from '@elastosfoundation/did-js-sdk/typings';
+import { CredentialType } from 'src/services/didcreds.service';
+import { shortenAddress } from 'src/utils/web3';
+import { injected } from 'src/constant';
+import style from './WalletCard.module.scss';
+import shieldIcon from '../../../assets/icon/shield.svg';
 
 interface IWalletProps {
-  walletDTO: WalletDTO;
-  updateFunc?: any;
-  removeFunc?: any;
+  didDocument: DIDDocument;
   isEditable?: boolean;
-  isPublicPage?: boolean;
   template?: string;
   userSession: ISessionItem;
-  openModal?: boolean;
 }
 
-export const defaultWalletItem: WalletItem = {
-  guid: Guid.create(),
-  name: '',
-  address: ''
-};
-
-const EditBox = styled(IonModal)`
-  --border-radius: 16px;
-  --min-height: 200px;
-  --height: 320px;
-  --width: 400px;
-`;
-
 const WalletCard: React.FC<IWalletProps> = ({
-  walletDTO,
-  updateFunc,
-  removeFunc,
+  didDocument,
   isEditable = false,
-  isPublicPage = false,
   template = 'default',
-  userSession,
-  openModal = false
+  userSession
 }: IWalletProps) => {
-  const { account, library } = useWeb3React();
-  const [currentWalletDTO, setCurrentWalletDTO] = useState(walletDTO);
+  const { account, library, activate, deactivate } = useWeb3React();
 
+  ////////////////////////////// ***** ////////////////////////////////////
+  const [connection, setConnection] = useState(false);
+  const [selectedWalletType, setSelectedWalletType] = useState<CredentialType>(
+    CredentialType.ETHAddress
+  );
+  const [isManagerOpen, setIsManagerOpen] = useState(false);
+  const [isRemovingVc, setIsRemovingVc] = useState(false);
+  const [didDoc, setDidDoc] = useState<DIDDocument>(didDocument);
+
+  ////////////////////////////// ***** ////////////////////////////////////
   useEffect(() => {
-    setCurrentWalletDTO(walletDTO);
-  }, [walletDTO]);
-
-  const [editedItem, setEditedItem] = useState(defaultWalletItem);
-  const [isEditing, setIsEditing] = useState(openModal);
-  const [mode, setMode] = useState<MODE>(MODE.NONE);
-
-  useEffect(() => {
-    if (mode !== MODE.NONE) {
-      setIsEditing(true);
-    }
-  }, [mode]);
-
-  const handleChange = (evt: any) => {
-    let v: any;
-    console.log(`${evt.target.name}: ${evt.target.value}`);
-    v = evt.target.value;
-
-    let item = {
-      ...editedItem,
-      [evt.target.name]: v
-    };
-
-    setEditedItem(item);
-  };
-
-  const validate = (item: WalletItem) => {
-    if (!item.name || !item.address) return false;
-
-    if (!pattern.test(item.name)) return false;
-    if (!pattern.test(item.address)) return false;
-    return true;
-  };
-
-  const saveChanges = async (item: WalletItem) => {
-    let items = [...currentWalletDTO.items];
-
-    if (mode === MODE.ADD) {
-      const existence = items.find(x => x.address === item.address);
-      if (existence) {
-        // same address already exist
-        // should switch over to another account on metamask.
-        showNotify(
-          'Same wallet address already existed. please try again with another account',
-          'error'
+    if (account && connection) {
+      (async () => {
+        const web3 = new Web3(library);
+        const verifyStatus = await verifyWalletOwner(web3, account);
+        if (!verifyStatus) {
+          showNotify('Wallet owner verification failed', 'error');
+          return;
+        }
+        const doc = await addWalletToDIDDocument(
+          account,
+          selectedWalletType.toLowerCase(),
+          userSession
         );
-        return;
-      }
-      const web3 = new Web3(library);
-      const verifyStatus = await verifyWalletOwner(web3, item.address);
-      if (!verifyStatus) {
-        showNotify('Wallet owenr verification failed', 'error');
-        return;
-      }
-      // add wallet address to did document
-      await addWalletToDIDDocument(item.address, userSession);
+        console.log(doc);
+        setDidDoc(doc);
+        setConnection(false);
+      })();
     }
+  }, [account, library, selectedWalletType, connection, userSession]);
 
-    let itemToUpdate = items.find(x => x.guid === item.guid);
-
-    if (itemToUpdate === undefined) {
-      items.push(item);
-    } else {
-      let index = items.indexOf(itemToUpdate);
-      items[index] = item;
+  const connectWallet = async () => {
+    try {
+      await activate(injected);
+      setConnection(true);
+    } catch (ex) {
+      console.log(ex);
     }
-    setCurrentWalletDTO({ isEnabled: true, items: items });
-    updateFunc(item);
-    setIsEditing(false);
   };
 
-  const cancel = () => {
-    setMode(MODE.NONE);
-    setIsEditing(false);
+  const addVc = async (type: CredentialType) => {
+    setSelectedWalletType(type);
+    connectWallet();
   };
 
-  const addItem = () => {
-    setMode(MODE.ADD);
-    // workaround: defaultWalletItem will always have the guid generated when the component is created.
-    // We must be generated another guid here or else we will edit the last education item created.
-    defaultWalletItem.guid = Guid.create();
-    setEditedItem(defaultWalletItem);
+  const removeVc = async (type: CredentialType) => {
+    setIsRemovingVc(true);
+    const doc = await removeWalletFromDIDDocument(
+      type.toLowerCase(),
+      userSession
+    );
+    setDidDoc(doc);
+    setIsRemovingVc(false);
   };
 
-  const editItem = (item: WalletItem) => {
-    setEditedItem(item);
-    setMode(MODE.EDIT);
+  const parseValueFromKey = (
+    key: string,
+    credential: VerifiableCredential
+  ): string => {
+    let value = credential.subject.getProperty(key);
+    return value;
   };
 
-  const removeItem = async (index: number) => {
-    let items = [...currentWalletDTO.items];
-    let item = items[index];
-    await removeWalletFromDIDDocument(item.address, userSession);
-    await removeFunc(item);
-    items = items.splice(index, 1);
-    setCurrentWalletDTO({ isEnabled: true, items: items });
+  const walletEditItem = (type: CredentialType) => {
+    let vc = didDoc?.getCredential(type.toLowerCase());
+    if (!vc) {
+      return (
+        <div className={style['manage-links-item']}>
+          <Blockies seed={type} size={50} scale={1} />
+          <div className={style['manage-links-header']}>{type}</div>
+          <ManagerButton onClick={() => addVc(type)}>Add</ManagerButton>
+        </div>
+      );
+    }
+    return (
+      <div className={style['manage-links-item']}>
+        <Blockies seed={type} size={50} scale={1} />
+        <div className={style['manage-links-header']}>
+          {type}
+          <p className={style['manage-links-detail']}>
+            {shortenAddress(parseValueFromKey(type.toLowerCase(), vc))}
+          </p>
+        </div>
+        <ManagerButton disabled={isRemovingVc} onClick={() => removeVc(type)}>
+          Remove
+        </ManagerButton>
+      </div>
+    );
   };
 
-  if (
-    !currentWalletDTO.isEnabled ||
-    (!isEditable && currentWalletDTO.items.length === 0)
-  ) {
-    return <></>;
-  }
+  const containsVerifiedCredential = (key: string): boolean => {
+    const vc = didDoc?.getCredential(key);
+    return !!vc;
+  };
+
+  const walletViewItem = (type: CredentialType) => {
+    let vc = didDoc?.getCredential(type.toLowerCase());
+    if (!vc) return <></>;
+    return (
+      <ProfileItem template={template}>
+        <div className="left">
+          <Blockies seed={type} size={50} scale={1} />
+          {vc.isValid() && (
+            <img
+              alt="shield icon"
+              src={shieldIcon}
+              className="social-profile-badge"
+              height={15}
+            />
+          )}
+        </div>
+        <div className="right">
+          <p className="social-profile-network">{type}</p>
+          <span className="social-profile-id">
+            {shortenAddress(parseValueFromKey(type.toLowerCase(), vc))}
+          </span>
+        </div>
+      </ProfileItem>
+    );
+  };
 
   return (
     <>
-      {walletDTO.isEnabled === true ? (
-        <>
-          <CardOverview template={template}>
-            <CardHeaderContent>
-              <IonGrid className="ion-no-padding">
-                <IonRow className="ion-justify-content-between ion-no-padding">
-                  <IonCol className="ion-no-padding">
-                    <IonCardTitle>Wallets</IonCardTitle>
-                  </IonCol>
-                  {isEditable ? (
-                    <IonCol size="auto" className="ion-no-padding">
-                      <LinkStyleSpan onClick={e => addItem()}>
-                        + Add Wallet
-                      </LinkStyleSpan>
-                    </IonCol>
-                  ) : (
-                    ''
-                  )}
-                </IonRow>
-              </IonGrid>
-            </CardHeaderContent>
-            <CardContentContainer>
-              {currentWalletDTO.items.sort(
-                (a: any, b: any) =>
-                  new Date(b.start).getTime() - new Date(a.start).getTime()
-              ) &&
-                currentWalletDTO.items.map((x, i) => {
-                  return (
-                    <div key={i}>
-                      <WalletItem
-                        wallet={x}
-                        updateFunc={saveChanges}
-                        editFunc={editItem}
-                        index={i}
-                        removeFunc={removeItem}
-                        isEditable={isEditable}
-                        template={template}
-                        userSession={userSession}
-                      />
-                      {i < currentWalletDTO.items.length - 1 ? <Divider /> : ''}
-                    </div>
-                  );
-                })}
-            </CardContentContainer>
-          </CardOverview>
-          <EditBox
-            onDidDismiss={() => {
-              setMode(MODE.NONE);
-              setIsEditing(false);
-            }}
-            isOpen={isEditing}
-            cssClass="my-custom-class"
-          >
-            <WalletCardEdit
-              wallet={editedItem}
-              handleChange={handleChange}
-              mode={mode}
-            />
-            <ModalFooter className="ion-no-border">
-              <IonRow className="ion-justify-content-around">
-                <IonCol size="auto">
-                  <IonButton fill="outline" onClick={cancel}>
-                    Cancel
-                  </IonButton>
-                  <IonButton
-                    onClick={() => {
-                      if (validate(editedItem)) {
-                        saveChanges(editedItem);
-                        setMode(MODE.NONE);
-                      } else {
-                        setMode(MODE.ERROR);
-                      }
-                    }}
-                  >
-                    Save
-                  </IonButton>
+      <CardOverview template={template}>
+        <CardHeaderContent>
+          <IonGrid className="ion-no-padding">
+            <IonRow className="ion-justify-content-between ion-no-padding">
+              <IonCol className="ion-no-padding">
+                <IonCardTitle>Wallets</IonCardTitle>
+              </IonCol>
+              {isEditable ? (
+                <IonCol size="auto" className="ion-no-padding">
+                  <LinkStyleSpan onClick={e => setIsManagerOpen(true)}>
+                    Manage Wallets
+                  </LinkStyleSpan>
                 </IonCol>
-              </IonRow>
-            </ModalFooter>
-          </EditBox>
-        </>
-      ) : (
-        ''
-      )}
+              ) : (
+                ''
+              )}
+            </IonRow>
+          </IonGrid>
+        </CardHeaderContent>
+        <CardContentContainer>
+          <IonGrid className="social-profile-grid">
+            <IonRow>
+              {containsVerifiedCredential(
+                CredentialType.ETHAddress.toLowerCase()
+              ) && (
+                <IonCol size={'6'}>
+                  {walletViewItem(CredentialType.ETHAddress)}
+                </IonCol>
+              )}
+              {containsVerifiedCredential(
+                CredentialType.EIDAddress.toLowerCase()
+              ) && (
+                <IonCol size={'6'}>
+                  {walletViewItem(CredentialType.EIDAddress)}
+                </IonCol>
+              )}
+              {containsVerifiedCredential(
+                CredentialType.ESCAddress.toLowerCase()
+              ) && (
+                <IonCol size={'6'}>
+                  {walletViewItem(CredentialType.ESCAddress)}
+                </IonCol>
+              )}
+            </IonRow>
+          </IonGrid>
+        </CardContentContainer>
+      </CardOverview>
+      <ManagerModal
+        isOpen={isManagerOpen}
+        cssClass="my-custom-class"
+        backdropDismiss={false}
+      >
+        <MyGrid class="ion-no-padding">
+          <IonRow>
+            <ManagerModalTitle>Manage Wallets</ManagerModalTitle>
+          </IonRow>
+          <IonRow no-padding>
+            <IonCol class="ion-no-padding">
+              {walletEditItem(CredentialType.EIDAddress)}
+            </IonCol>
+          </IonRow>
+          <IonRow no-padding>
+            <IonCol class="ion-no-padding">
+              {walletEditItem(CredentialType.ESCAddress)}
+            </IonCol>
+          </IonRow>
+          <IonRow no-padding>
+            <IonCol class="ion-no-padding">
+              {walletEditItem(CredentialType.ETHAddress)}
+            </IonCol>
+          </IonRow>
+        </MyGrid>
+        <ManagerModalFooter className="ion-no-border">
+          <IonRow className="ion-justify-content-around">
+            <IonCol size="auto">
+              <CloseButton
+                disabled={isRemovingVc}
+                onClick={() => {
+                  setIsManagerOpen(false);
+                }}
+              >
+                Close
+              </CloseButton>
+            </IonCol>
+          </IonRow>
+        </ManagerModalFooter>
+      </ManagerModal>
     </>
   );
 };

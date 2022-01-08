@@ -100,7 +100,6 @@ const ProfileEditor: React.FC<Props> = ({
         res.basicDTO.isEnabled = true;
         res.experienceDTO.isEnabled = true;
         res.educationDTO.isEnabled = true;
-        res.walletDTO.isEnabled = true;
         res.teamDTO.isEnabled = true;
         res.thesisDTO.isEnabled = true;
         res.paperDTO.isEnabled = true;
@@ -355,22 +354,10 @@ const ProfileEditor: React.FC<Props> = ({
                 )}
                 {userInfo.pageTemplate === 'crypto' && (
                   <WalletCard
-                    walletDTO={profile.walletDTO}
-                    updateFunc={async (wallet: WalletItem) => {
-                      let userSession = JSON.parse(JSON.stringify(session));
-                      await ProfileService.updateWallet(wallet, userSession);
-                      await retriveProfile();
-                    }}
-                    removeFunc={async (wallet: WalletItem) => {
-                      let userSession = JSON.parse(JSON.stringify(session));
-                      if (!userSession) return;
-                      await ProfileService.removeWallet(wallet, userSession);
-                      await retriveProfile();
-                    }}
+                    didDocument={didDocument!}
                     isEditable={true}
                     template="default"
                     userSession={JSON.parse(JSON.stringify(session))}
-                    openModal={false}
                   />
                 )}
                 {userInfo.pageTemplate === 'gamer' && (
