@@ -436,7 +436,7 @@ export class UserVaultScriptService {
         await UserVaultScripts.Execute(hiveInstance!);
       } catch (error) {
         console.log('Could not register: ' + error);
-        alertError(null, 'Could not register');
+        // alertError(null, 'Could not register');
       }
     }
     return newUser;
