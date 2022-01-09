@@ -10,7 +10,8 @@ import {
 
 import PeopleCard from 'src/components/cards/PeopleCard';
 import PagesCard from 'src/components/cards/PagesCard';
-
+import BlankCard from 'src/components/cards/BlankCard';
+import RequestCommunityCard from 'src/components/cards/RequestCommunityCard';
 import style from './style.module.scss';
 import ComingSoon from 'src/components/ComingSoon';
 
@@ -59,6 +60,16 @@ const ExploreNav: React.FC<Props> = ({
         </IonItem>
         <IonItem
           className={
+            (active === 'spaces' ? style['tab-active'] : '') +
+            ' ' +
+            style['tab-item']
+          }
+          onClick={() => setActive('spaces')}
+        >
+          <IonLabel className={style['tab-label']}>Spaces</IonLabel>
+        </IonItem>
+        {/* <IonItem
+          className={
             (active === 'pages' ? style['tab-active'] : '') +
             ' ' +
             style['tab-item']
@@ -68,7 +79,7 @@ const ExploreNav: React.FC<Props> = ({
           <IonLabel className={style['tab-label']}>
             Pages <ComingSoon />
           </IonLabel>
-        </IonItem>
+        </IonItem> */}
       </IonList>
       {active === 'all' && (
         <IonGrid className={style['tab-grid']}>
@@ -101,13 +112,21 @@ const ExploreNav: React.FC<Props> = ({
           </IonRow>
         </IonGrid>
       )}
-      {active === 'pages' && (
+      {active === 'spaces' && (
+        <IonGrid className={style['tab-grid']}>
+          <IonRow>
+            <BlankCard />
+            <RequestCommunityCard />
+          </IonRow>
+        </IonGrid>
+      )}
+      {/* {active === 'pages' && (
         <IonGrid className={style['tab-grid']}>
           <IonRow>
             <PagesCard pages={pages} searchKeyword={searchKeyword} size="6" />
           </IonRow>
         </IonGrid>
-      )}
+      )} */}
     </IonContent>
   );
 };

@@ -1,11 +1,20 @@
 import React from 'react';
 import { IonGrid, IonRow, IonCol } from '@ionic/react';
+import { useHistory } from 'react-router';
 import styled from 'styled-components';
 
-import check from '../../../../../../../theme/images/checkmark-circle-outline.svg';
-import checkgreen from '../../../../../../../assets/icon/check-circle-fill.svg';
 import ProgressBar from 'src/elements/ProgressBar';
 import DropButton from './DropButton';
+import check from '../../../../../../../assets/icon/check-gray.svg';
+import checkgreen from '../../../../../../../assets/icon/check-dark-green.svg';
+
+import PersonIcon from 'src/assets/icon/profile-person-green.svg';
+import EducationIcon from 'src/assets/icon/profile-education-green.svg';
+import BagIcon from 'src/assets/icon/profile-bag-green.svg';
+
+import PersonBlueIcon from 'src/assets/icon/profile-person-blue.svg';
+import EducationBlueIcon from 'src/assets/icon/profile-education-blue.svg';
+import BagBlueIcon from 'src/assets/icon/profile-bag-blue.svg';
 
 const Container = styled(IonGrid)`
   margin-bottom: 10px;
@@ -64,12 +73,31 @@ const ItemImgColum = styled(IonCol)`
     display: block;
   }
 `;
-const ItemTxtColum = styled(IonCol)`
+const ItemImgColumRound = styled(IonCol)<{ background: string }>`
+  background-color: ${props => props.background};
+  width: 26px !important;
+  height: 26px;
+  border-radius: 100px;
+  padding: 2px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const ItemTxtColum = styled.div`
   font-size: 14px;
   font-weight: normal;
   line-height: 1.43;
   letter-spacing: 0.25px;
   color: ${props => (props.color ? props.color : 'rgba(0, 0, 0, 0.6)')};
+`;
+
+const ItemTxtComplete = styled.div`
+  font-size: 10px;
+  font-weight: normal;
+  line-height: 1.43;
+  letter-spacing: 0.25px;
+  color: #4a5568;
 `;
 
 interface IProps {
@@ -87,15 +115,56 @@ const ProfileComp: React.FC<IProps> = ({
   expanded,
   expandClicked
 }) => {
+  const icons = {
+    'Add About me Done': PersonIcon,
+    'Add Experience Done': BagIcon,
+    'Add Education Done': EducationIcon,
+    'Add About me': PersonBlueIcon,
+    'Add Experience': BagBlueIcon,
+    'Add Education': EducationBlueIcon,
+    'Tutorial Completed': BagBlueIcon,
+    'Social Media Authenticated': BagBlueIcon,
+    'Tutorial Completed Done': BagIcon,
+    'Social Media Authenticated Done': BagIcon
+  };
+
   const percent =
     accomplishedList.length === 0
       ? 0
       : Math.round((accomplishedList.length / targetList.length) * 100);
 
+  const history = useHistory();
+  const handleAddExperience = (isDone: boolean) => {
+    if (!isDone) {
+      history.push(`/manager/${title}`);
+    }
+  };
+
   const renderTodoLitem = (text: string) => {
-    const isDone = accomplishedList.includes(text);
+    const isDone = accomplishedList.includes(text) as boolean;
     return (
-      <ItemRow key={`todoItem_${text}`}>
+      <ItemRow
+        key={`todoItem_${text}`}
+        style={{ cursor: 'pointer' }}
+        onClick={() => handleAddExperience(isDone)}
+      >
+        <ItemImgColumRound
+          size="auto"
+          background={isDone ? '#b7fcff' : '#EBEFFF'}
+        >
+          {(icons as any)[text] &&
+            (isDone ? (
+              <img src={(icons as any)[`${text} Done`]} alt={text} />
+            ) : (
+              <img src={(icons as any)[text]} alt={text} />
+            ))}
+        </ItemImgColumRound>
+        <IonCol style={{ display: 'flex', flexDirection: 'column' }}>
+          <ItemTxtColum color={isDone ? '#007E84' : '#4C6FFF'}>
+            {text}
+          </ItemTxtColum>
+          {isDone && <ItemTxtComplete>Completed</ItemTxtComplete>}
+        </IonCol>
         <ItemImgColum size="auto">
           {isDone ? (
             <img src={checkgreen} alt="check" />
@@ -103,9 +172,6 @@ const ProfileComp: React.FC<IProps> = ({
             <img src={check} alt="task" />
           )}
         </ItemImgColum>
-        <ItemTxtColum color={isDone ? '#00b715' : 'rgba(0, 0, 0, 0.6)'}>
-          {text}
-        </ItemTxtColum>
       </ItemRow>
     );
   };

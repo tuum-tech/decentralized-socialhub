@@ -117,7 +117,7 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
   const profileCompletionStats = () => {
     const completionStatsDisplay = [
       {
-        title: 'Setup your account',
+        title: 'Setup Account',
         targetList: ['Tutorial Completed', 'Social Media Authenticated'],
         accomplishedList: [
           session.tutorialStep === 4 ? 'Tutorial Completed' : '',
@@ -133,8 +133,8 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
         ].filter(a => a !== '')
       },
       {
-        title: 'Add Content to Profile',
-        targetList: ['Added About me', 'Added Experience', 'Added Education'],
+        title: 'Profile Completion',
+        targetList: ['Add About me', 'Add Experience', 'Add Education'],
         accomplishedList: [
           profile.basicDTO && profile.basicDTO.about ? 'Added About me' : '',
           profile.experienceDTO.items.length ? 'Added Experience' : '',
