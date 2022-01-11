@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 
 import footerBG from 'src/assets/new/footer-bg.png';
 import logo from 'src/assets/new/logo.png';
@@ -13,11 +14,11 @@ import {
 } from 'src/components/Icons';
 
 const Container = styled.div<{ bgImg: string }>`
-  width: 100%;
   background-image: url(${props => props.bgImg});
   background-size: cover;
   background-repeat: no-repeat;
 
+  width: 100%;
   padding: 207px 9% 74px;
   position: relative;
 
@@ -63,8 +64,6 @@ const Container = styled.div<{ bgImg: string }>`
   }
 
   @media only screen and (max-width: 600px) {
-    padding: 82px 13px 30px;
-
     .icons {
       display: block;
 
@@ -102,6 +101,7 @@ const FooterMenu = styled.div`
     color: #ffffff;
     margin: 0 15.5px;
     display: block;
+    cursor: pointer;
   }
 
   @media only screen and (max-width: 600px) {
@@ -120,12 +120,13 @@ const FooterMenu = styled.div`
 `;
 
 const Footer = () => {
+  const history = useHistory();
   return (
     <Container bgImg={footerBG}>
       <img src={logo} alt="logo" />
       <p className="intro">
         We are on a mission to empower Web3 users and communities to become
-        self-sufficient online, returning  the power of managing, facilitating,
+        self-sufficient online, returning the power of managing, facilitating,
         and accessing decentralized internet features back to the individual.
       </p>
       <div className="icons">
@@ -142,13 +143,13 @@ const Footer = () => {
       </div>
       <FooterMenu>
         <div className="items">
-          <a href="/" className="item">
+          <div className="item" onClick={() => {}}>
             Privacy Policy
-          </a>
-          <a href="/" className="item">
+          </div>
+          <div className="item" onClick={() => history.push('/terms-of-use')}>
             Terms
-          </a>
-          <a href="/" className="item">
+          </div>
+          <a href="mailto:contact@tuum.tech" className="item">
             Contact
           </a>
         </div>

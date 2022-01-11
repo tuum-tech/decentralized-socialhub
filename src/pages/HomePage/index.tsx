@@ -1,195 +1,126 @@
-/**
- * Page
- */
-import { IonHeader, IonPage, IonImg } from '@ionic/react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { createStructuredSelector } from 'reselect';
-import injector from 'src/baseplate/injectorWrap';
-import { makeSelectCounter, makeSelectAjaxMsg } from './selectors';
-import { incrementAction, getSimpleAjax } from './actions';
-import React, { memo } from 'react';
-import style from './style.module.scss';
-import { NameSpace } from './constants';
-import reducer from './reducer';
-import saga from './saga';
-import { InferMappedProps, SubState } from './types';
-import {
-  requestLinkedinLogin,
-  requestGoogleLogin,
-  requestFacebookLogin
-} from './fetchapi';
-import SocialLoginLink from './components/SocialLoginLink';
-import Header from 'src/components/layouts/DashboardHeader';
-import ClearlyMeContent from 'src/components/layouts/ClearlyMeContent';
-import { PrimaryLinkButton, ButtonLight } from 'src/elements/buttons';
-import TwitterApi from 'src/shared-base/api/twitter-api';
-// import MnemonicContext from 'src/context/MnemonicContext';
+import React, { useRef, Ref } from 'react';
+import { IonPage } from '@ionic/react';
+import styled from 'styled-components';
 
-const HomePage: React.FC<InferMappedProps> = ({
-  eProps,
-  ...props
-}: InferMappedProps) => {
-  /**
-   * Direct method implementation without SAGA
-   * This was to show you dont need to put everything to global state
-   * incoming from Server API calls. Maintain a local state.
-   */
-  // const [msg, setMsg] = useState('');
-  // const simpleAjaxDirect = async ()=>{
-  //   const msg = await fetchSimpleApi() as string;
-  //   setMsg(msg);
-  // }
+import Footer from './components/Footer';
+import Hero from './components/Hero';
+import AboutSection from './components/AboutSection';
+import UtilitySection from './components/UtilitySection';
+import CommunitySection from './components/CommunitySection';
+import OwnershipSection from './components/OwnershipSection';
+import ConnectSection from './components/ConnectSection';
 
-  localStorage.setItem('mnemonic', '');
+const Page = styled(IonPage)`
+  overflow: auto;
+`;
 
-  const linkedinlogin = async () => {
-    type MyType = { meta: string; data: string };
+export const SectionTitle = styled.p`
+  font-family: SF Pro Display;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 60px;
+  line-height: 65px;
+  text-align: center;
 
-    // gets the linkedin auth endpoint
-    const url = (await requestLinkedinLogin()) as MyType;
+  background: -webkit-linear-gradient(#995aff, #dc59bf);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 
-    // redirects
-    window.location.href = url.data;
+  @media only screen and (max-width: 600px) {
+    font-size: 40px;
+    line-height: 48px;
+  }
+`;
+
+export const SectionSubTitle = styled.p`
+  font-family: SF Pro Display;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 45px;
+  line-height: 48px;
+  color: #000000;
+
+  @media only screen and (max-width: 600px) {
+    font-size: 40px;
+    line-height: 45px;
+  }
+`;
+
+export const SectionIntro = styled.p`
+  font-family: SF Pro Display;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 30px;
+  color: #000000;
+
+  margin-bottom: 20px;
+
+  @media only screen and (max-width: 600px) {
+    font-size: 20px;
+    line-height: 25px;
+    text-align: center;
+
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 53%;
+  }
+`;
+
+export const SectionText = styled.p`
+  font-family: SF Pro Display;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: 0.02em;
+  color: #4a5568;
+
+  @media only screen and (max-width: 600px) {
+    font-size: 15px;
+    line-height: 24px;
+    text-align: center;
+
+    max-width: 74%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+`;
+
+const HomePage = () => {
+  const aboutRef = useRef<typeof HTMLDivElement>(null);
+  const utilityRef = useRef(null);
+  const communityRef = useRef(null);
+  const ownershipRef = useRef(null);
+  const connectRef = useRef(null);
+
+  const scrollTo = (target: string) => {
+    if (target === 'About') {
+      (aboutRef.current as any).scrollIntoView({ behavior: 'smooth' });
+    } else if (target === 'Utility') {
+      (utilityRef.current as any).scrollIntoView({ behavior: 'smooth' });
+    } else if (target === 'Community') {
+      (communityRef.current as any).scrollIntoView({ behavior: 'smooth' });
+    } else if (target === 'Ownership') {
+      (ownershipRef.current as any).scrollIntoView({ behavior: 'smooth' });
+    } else if (target === 'Connect') {
+      (connectRef.current as any).scrollIntoView({ behavior: 'smooth' });
+    }
   };
-
-  const facebooklogin = async () => {
-    type MyType = { meta: string; data: string };
-
-    // gets the linkedin auth endpoint
-    const url = (await requestFacebookLogin()) as MyType;
-
-    // redirects
-    window.location.href = url.data;
-  };
-
-  const googlelogin = async () => {
-    type MyType = { meta: string; data: string };
-
-    // gets the linkedin auth endpoint
-    const url = (await requestGoogleLogin()) as MyType;
-
-    // redirects
-    window.location.href = url.data;
-  };
-
-  const twitterlogin = async () => {
-    type MyType = { meta: string; data: { request_token: string } };
-
-    // gets the linkedin auth endpoint
-    const response = (await TwitterApi.GetRequestToken()) as MyType;
-
-    // redirects
-    window.location.replace(
-      `https://api.twitter.com/oauth/authorize?oauth_token=${response.data.request_token}`
-    );
-  };
-
-  // const openMenu = async function () {
-  //   await menuController.open();
-  // };
 
   return (
-    <IonPage className={style['homepage']}>
-      <ClearlyMeContent>
-        <IonHeader style={{ height: '80px' }}>
-          <Header />
-        </IonHeader>
-        <div className={style['main-container']}>
-          <h2>
-            Digital Identity
-            <br /> Your Profile, Your Data
-          </h2>
-          <br />
-          <br />
-          <div style={{ textAlign: 'center' }}>
-            <PrimaryLinkButton href="/login/elastos/mnemonic">
-              Sign in with DID
-            </PrimaryLinkButton>
-          </div>
+    <Page>
+      <Hero navItemClicked={scrollTo} />
 
-          <div style={{ textAlign: 'center' }}>
-            <ButtonLight href="/create">Create New DID</ButtonLight>
-          </div>
+      <AboutSection refProp={aboutRef} />
+      <UtilitySection refProp={utilityRef} />
+      <CommunitySection refProp={communityRef} />
+      <OwnershipSection refProp={ownershipRef} />
+      <ConnectSection refProp={connectRef} />
 
-          {/* <ButtonGhost /> */}
-          <br />
-          <p>Continue with</p>
-          <div className="social-login">
-            <SocialLoginLink href="/login/elastos/qrcode">
-              <IonImg
-                src="../../assets/icon/logo_elastos.svg"
-                style={{ minWidth: '24px' }}
-              />
-            </SocialLoginLink>
-            <SocialLoginLink>
-              <IonImg
-                onClick={googlelogin}
-                src="../../assets/icon/logo_google.svg"
-                style={{ minWidth: '24px' }}
-              />
-            </SocialLoginLink>
-            <SocialLoginLink>
-              <IonImg
-                onClick={linkedinlogin}
-                src="../../assets/icon/logo_linkedin.svg"
-                style={{ minWidth: '24px' }}
-              />
-            </SocialLoginLink>
-            <SocialLoginLink>
-              <IonImg
-                onClick={twitterlogin}
-                src="../../assets/icon/logo_twitter.svg"
-                style={{ minWidth: '24px' }}
-              />
-            </SocialLoginLink>
-            <SocialLoginLink>
-              <IonImg
-                onClick={facebooklogin}
-                src="../../assets/icon/logo_facebook.svg"
-                style={{ minWidth: '24px' }}
-              />
-            </SocialLoginLink>
-          </div>
-        </div>
-      </ClearlyMeContent>
-    </IonPage>
+      <Footer />
+    </Page>
   );
 };
 
-/** @returns {object} Contains state props from selectors */
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  counter: makeSelectCounter(),
-  msg: makeSelectAjaxMsg()
-});
-
-/** @returns {object} Contains dispatchable props */
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      // eProps - Emitter proptypes thats binds to dispatch
-      /** dispatch for counter to increment */
-      onCount: (count: { counter: number }) => dispatch(incrementAction(count)),
-      onSimpleAjax: () => dispatch(getSimpleAjax())
-    }
-  };
-}
-
-/**
- * Injects prop and saga bindings done via
- * useInjectReducer & useInjectSaga
- */
-const withInjectedMode = injector(HomePage, {
-  key: NameSpace,
-  reducer,
-  saga
-});
-
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
-
-export default compose(
-  withConnect,
-  memo
-)(withInjectedMode) as React.ComponentType<InferMappedProps>;
-
-// export default Tab1;
+export default HomePage;

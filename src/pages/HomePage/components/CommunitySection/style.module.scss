@@ -1,0 +1,43 @@
+@import '../../../../styles/variables';
+
+.community {
+  padding-top: 128px;
+
+  @media only screen and (max-width: 600px) {
+    padding-top: 55px;
+  }
+}
+
+.community-title {
+  font-family: SF Pro Display;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 60px;
+  line-height: 65px;
+  text-align: center;
+
+  background: -webkit-linear-gradient(#995aff, #dc59bf);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.monetize {
+  background: $dark-pink-gradient;
+  margin-top: 153px;
+
+  padding-top: 156px;
+  padding-bottom: 156px;
+  padding-left: 9%;
+  padding-right: 9%;
+
+  width: 100%;
+
+  @media only screen and (max-width: 600px) {
+    margin-top: 55px;
+
+    padding-top: 55px;
+    padding-bottom: 55px;
+    padding-left: 13px;
+    padding-right: 13px;
+  }
+}
