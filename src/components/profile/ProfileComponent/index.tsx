@@ -160,17 +160,6 @@ const ProfileComponent: React.FC<Props> = ({
                             />
                           )}
                         </div>
-                        <div ref={walletRef}>
-                          {publicFields.includes('wallet') &&
-                            template === 'crypto' && (
-                              <WalletCard
-                                didDocument={didDocument!}
-                                isEditable={false}
-                                template={template}
-                                userSession={publicUser}
-                              />
-                            )}
-                        </div>
                         <div ref={gameExpRef}>
                           {publicFields.includes('played games') &&
                             template === 'gamer' && (
@@ -318,6 +307,15 @@ const ProfileComponent: React.FC<Props> = ({
                             <BadgeCard
                               badges={publicUser.badges}
                               template={template}
+                            />
+                          )}
+                        {publicFields.includes('wallet') &&
+                          template === 'crypto' && (
+                            <WalletCard
+                              didDocument={didDocument!}
+                              isEditable={false}
+                              template={template}
+                              userSession={publicUser}
                             />
                           )}
                       </RightContent>

@@ -4,7 +4,7 @@ import { Guid } from 'guid-typescript';
 import { useWeb3React } from '@web3-react/core';
 import Web3 from 'web3';
 import Blockies from 'react-blockies';
-
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { showNotify } from 'src/utils/notify';
 
 import {
@@ -34,7 +34,7 @@ import { shortenAddress } from 'src/utils/web3';
 import { injected } from 'src/constant';
 import style from './WalletCard.module.scss';
 import shieldIcon from '../../../assets/icon/shield.svg';
-
+import copyIcon from '../../../assets/icon/copy-to-clipboard.svg';
 interface IWalletProps {
   didDocument: DIDDocument;
   isEditable?: boolean;
@@ -124,13 +124,21 @@ const WalletCard: React.FC<IWalletProps> = ({
         </div>
       );
     }
+    const address = parseValueFromKey(type.toLowerCase(), vc);
     return (
       <div className={style['manage-links-item']}>
         <Blockies seed={type} size={50} scale={1} />
         <div className={style['manage-links-header']}>
           {type}
           <p className={style['manage-links-detail']}>
-            {shortenAddress(parseValueFromKey(type.toLowerCase(), vc))}
+            {shortenAddress(address)}
+            <CopyToClipboard text={address}>
+              <img
+                className={style['copy-to-clipboard']}
+                src={copyIcon}
+                width={15}
+              />
+            </CopyToClipboard>
           </p>
         </div>
         <ManagerButton disabled={isRemovingVc} onClick={() => removeVc(type)}>
@@ -148,6 +156,7 @@ const WalletCard: React.FC<IWalletProps> = ({
   const walletViewItem = (type: CredentialType) => {
     let vc = didDoc?.getCredential(type.toLowerCase());
     if (!vc) return <></>;
+    const address = parseValueFromKey(type.toLowerCase(), vc);
     return (
       <ProfileItem template={template}>
         <div className="left">
@@ -163,9 +172,10 @@ const WalletCard: React.FC<IWalletProps> = ({
         </div>
         <div className="right">
           <p className="social-profile-network">{type}</p>
-          <span className="social-profile-id">
-            {shortenAddress(parseValueFromKey(type.toLowerCase(), vc))}
-          </span>
+          <span className="social-profile-id">{shortenAddress(address)}</span>
+          <CopyToClipboard text={address}>
+            <img className="copy-to-clipboard" src={copyIcon} width={15} />
+          </CopyToClipboard>
         </div>
       </ProfileItem>
     );
@@ -198,21 +208,21 @@ const WalletCard: React.FC<IWalletProps> = ({
               {containsVerifiedCredential(
                 CredentialType.ETHAddress.toLowerCase()
               ) && (
-                <IonCol size={'6'}>
+                <IonCol size={isEditable ? '6' : '12'}>
                   {walletViewItem(CredentialType.ETHAddress)}
                 </IonCol>
               )}
               {containsVerifiedCredential(
                 CredentialType.EIDAddress.toLowerCase()
               ) && (
-                <IonCol size={'6'}>
+                <IonCol size={isEditable ? '6' : '12'}>
                   {walletViewItem(CredentialType.EIDAddress)}
                 </IonCol>
               )}
               {containsVerifiedCredential(
                 CredentialType.ESCAddress.toLowerCase()
               ) && (
-                <IonCol size={'6'}>
+                <IonCol size={isEditable ? '6' : '12'}>
                   {walletViewItem(CredentialType.ESCAddress)}
                 </IonCol>
               )}

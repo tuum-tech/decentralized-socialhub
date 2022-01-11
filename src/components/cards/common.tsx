@@ -314,6 +314,10 @@ export const ProfileItem = styled(IonItem)<ThemeProps>`
 
   .right {
     margin-left: 10px;
+    .copy-to-clipboard {
+      margin-left: 5px;
+      cursor: pointer;
+    }
   }
 
   .social-profile-network {

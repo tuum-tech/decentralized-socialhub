@@ -20,10 +20,14 @@
   }
 
   .manage-links-detail {
-    display: block;
+    display: flex;
     font-size: 14px;
     font-weight: 500;
     line-height: 1.79;
     color: #a0aec0;
+    .copy-to-clipboard {
+      margin-left: 3px;
+      cursor: pointer;
+    }
   }
 }

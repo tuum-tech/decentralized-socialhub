@@ -362,14 +362,14 @@ const ProfileEditor: React.FC<Props> = ({
                 )}
                 {userInfo.pageTemplate === 'gamer' && (
                   <>
-                    <GamerTagsCard
+                    {/* <GamerTagsCard
                       gamerTagDTO={profile.gamerTagDTO}
                       updateFunc={() => {}}
                       isEditable={true}
                       template="default"
                       userSession={JSON.parse(JSON.stringify(session))}
                       openModal={false}
-                    />
+                    /> */}
                     <GameExpCard
                       gameExpDTO={profile.gameExpDTO}
                       updateFunc={async (gameExpItem: GameExpItem) => {
