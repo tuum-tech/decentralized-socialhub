@@ -118,7 +118,7 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
               await sendVerification();
             }}
           >
-            {loading ? 'Sending Verificaiton' : 'Send Verificaiton'}
+            {loading ? 'Sending Verification' : 'Send Verification'}
           </SaveButton>
         </ActionBtnCol>
       </IonRow>

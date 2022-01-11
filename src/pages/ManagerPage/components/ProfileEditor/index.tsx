@@ -22,6 +22,12 @@ import PublicFields from '../PublicFields';
 import TemplateManagerCard from '../TemplateManagerCard';
 import style from './style.module.scss';
 import badgeDetails from 'src/data/badge_detail.json';
+import NewVerificationContent, {
+  NewVerificationModal
+} from 'src/pages/ActivityPage/components/MyRequests/NewVerification';
+import SentModalContent, {
+  SentModal
+} from 'src/pages/ActivityPage/components/MyRequests/SentModal';
 
 interface Props {
   session: ISessionItem;
@@ -41,6 +47,11 @@ const ProfileEditor: React.FC<Props> = ({
     undefined
   );
   const [profile, setProfile] = useState<ProfileDTO>(defaultFullProfile);
+  const [selectedCredential, setSelectedCredential] = useState<
+    string | undefined
+  >(undefined);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [showSentModal, setShowSentModal] = useState(false);
 
   const {
     account: { basicProfile, educationProfile, experienceProfile },
@@ -151,6 +162,10 @@ const ProfileEditor: React.FC<Props> = ({
             {!error && loaded ? (
               <BasicCard
                 sessionItem={userInfo}
+                requestVerification={(idKey: string) => {
+                  setSelectedCredential(idKey);
+                  setShowVerificationModal(true);
+                }}
                 updateFunc={async (newUserInfo: ISessionItem) => {
                   const newName = newUserInfo.name!;
                   const oldName = userInfo.name!;
@@ -332,6 +347,34 @@ const ProfileEditor: React.FC<Props> = ({
                     openModal={handleRouteParam(experienceProfile.title)}
                   />
                 )}
+
+                <NewVerificationModal
+                  isOpen={showVerificationModal}
+                  cssClass="my-custom-class"
+                  backdropDismiss={false}
+                >
+                  <NewVerificationContent
+                    session={session}
+                    onClose={() => {
+                      setShowVerificationModal(false);
+                    }}
+                    targetUser={session}
+                    sendRequest={() => {}}
+                    selectedCredential={selectedCredential}
+                  />
+                </NewVerificationModal>
+
+                <SentModal
+                  isOpen={showSentModal}
+                  cssClass="my-custom-class"
+                  backdropDismiss={false}
+                >
+                  <SentModalContent
+                    onClose={() => {
+                      setShowSentModal(false);
+                    }}
+                  />
+                </SentModal>
               </>
             ) : (
               ''
