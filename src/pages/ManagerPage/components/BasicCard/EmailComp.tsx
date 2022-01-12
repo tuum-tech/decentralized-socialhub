@@ -136,6 +136,7 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
         backdropDismiss={false}
       >
         <EmailVerificationDetailContent
+          did={sessionItem.did}
           close={() => setShowEmailVerifyModal(false)}
           email={email}
           resend={sendVerification}

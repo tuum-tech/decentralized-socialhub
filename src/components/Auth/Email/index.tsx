@@ -22,6 +22,7 @@ export const EmailVerificationDetailModal = styled(IonModal)`
 `;
 
 interface Props {
+  did: string;
   email: string;
   close: () => void;
   resend: () => void;
@@ -29,6 +30,7 @@ interface Props {
 }
 
 const EmailVerificationDetailContent: React.FC<Props> = ({
+  did,
   email,
   close,
   resend,
@@ -55,24 +57,22 @@ const EmailVerificationDetailContent: React.FC<Props> = ({
       ''
     )) as IVerifyCodeResponse;
 
-    if (response.data.return_code === 'CONFIRMED') {
+    console.log('=====>response', response);
+    let status = response.data.return_code;
+    if (status === 'CONFIRMED') {
       const { name, email, did } = response.data;
-      setCredentials({
+      let cred = {
         did,
         name,
         loginCred: {
           email
         },
         credential: code
-      });
-    }
-
-    console.log('=====>response', response);
-    let status = response.data.return_code;
-    if (status === 'CONFIRMED') {
+      };
+      setCredentials(cred);
       if (afterVerified) {
         afterVerified();
-      } else if (credentials.did && credentials.did.length > 0) {
+      } else if (cred.did && cred.did.length > 0) {
         setAfterSucess(1);
       } else {
         setAfterSucess(2);
