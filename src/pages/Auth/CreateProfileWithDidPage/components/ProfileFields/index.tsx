@@ -207,6 +207,7 @@ const UseDetailsForm: React.FC<Props> = ({ setUserInfo, userInfo }) => {
             backdropDismiss={false}
           >
             <EmailVerificationDetailContent
+              did={userInfo!.did}
               close={() => setShowEmailVerifyModal(false)}
               email={email}
               resend={onSubmit}
