@@ -21,17 +21,18 @@ import discordIcon from '../../../assets/icon/Discord.svg';
 import shieldIcon from '../../../assets/icon/shield.svg';
 import { DidService } from 'src/services/did.service.new';
 
+import { SocialProfileCard, MyGrid } from './elements';
+
 import {
   ManagerModal,
   ManagerModalTitle,
   ManagerModalFooter,
-  MyGrid,
   ManagerLogo,
   ProfileItem,
   ManagerButton,
-  CloseButton,
-  SocialProfileCard
-} from './elements';
+  CloseButton
+} from '../common';
+
 import {
   DID,
   DIDDocument,

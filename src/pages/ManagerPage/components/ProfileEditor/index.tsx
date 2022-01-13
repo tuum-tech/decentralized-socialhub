@@ -6,6 +6,14 @@ import AvatarChangeCard from 'src/components/cards/AvatarChangeCard';
 import CoverPhoto from 'src/components/cards/CoverPhoto';
 import EducationCard from 'src/components/cards/EducationCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
+import WalletCard from 'src/components/cards/WalletCard';
+import TeamCard from 'src/components/cards/TeamCard';
+import ThesisCard from 'src/components/cards/ThesisCard';
+import PaperCard from 'src/components/cards/PaperCard';
+import LicenseCard from 'src/components/cards/LicenseCard';
+import CertificationCard from 'src/components/cards/CertificationCard';
+import GameExpCard from 'src/components/cards/GameExpCard';
+import GamerTagsCard from 'src/components/cards/GamerTagsCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 import SyncBar from 'src/components/SyncBar';
 import { DidService } from 'src/services/did.service.new';
@@ -43,6 +51,7 @@ const ProfileEditor: React.FC<Props> = ({
   const [error, setError] = useState(false);
   const [userInfo, setUserInfo] = useState<ISessionItem>(session);
   const [loaded, setloaded] = useState(false);
+  const [timer, setTimer] = useState<any>(null);
   const [didDocument, setDidDocument] = useState<DIDDocument | undefined>(
     undefined
   );
@@ -99,9 +108,17 @@ const ProfileEditor: React.FC<Props> = ({
         session
       );
       if (res) {
+        console.log('full profile: => ', res);
         res.basicDTO.isEnabled = true;
         res.experienceDTO.isEnabled = true;
         res.educationDTO.isEnabled = true;
+        res.teamDTO.isEnabled = true;
+        res.thesisDTO.isEnabled = true;
+        res.paperDTO.isEnabled = true;
+        res.licenseDTO.isEnabled = true;
+        res.certificationDTO.isEnabled = true;
+        res.gameExpDTO.isEnabled = true;
+        res.gamerTagDTO.isEnabled = true;
         setProfile(res);
       }
     } catch (e) {
@@ -109,7 +126,7 @@ const ProfileEditor: React.FC<Props> = ({
     }
   };
 
-  const setTimer = () => {
+  const startTimer = () => {
     const timer = setTimeout(async () => {
       // refresh DID document
       let document = await DidDocumentService.getUserDocument(session);
@@ -118,8 +135,9 @@ const ProfileEditor: React.FC<Props> = ({
       if (JSON.stringify(session) === JSON.stringify(userInfo)) return;
 
       if (session.userToken) setUserInfo(session);
-      setTimer();
+      startTimer();
     }, 1000);
+    setTimer(timer);
     return () => clearTimeout(timer);
   };
 
@@ -136,7 +154,10 @@ const ProfileEditor: React.FC<Props> = ({
       setDidDocument(doc);
       setloaded(true);
     })();
-    setTimer();
+    if (timer) {
+      clearTimeout(timer);
+    }
+    startTimer();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
@@ -346,6 +367,180 @@ const ProfileEditor: React.FC<Props> = ({
                     userSession={JSON.parse(JSON.stringify(session))}
                     openModal={handleRouteParam(experienceProfile.title)}
                   />
+                )}
+                {userInfo.pageTemplate === 'crypto' && (
+                  <WalletCard
+                    didDocument={didDocument!}
+                    isEditable={true}
+                    template="default"
+                    userSession={JSON.parse(JSON.stringify(session))}
+                  />
+                )}
+                {userInfo.pageTemplate === 'gamer' && (
+                  <>
+                    {/* <GamerTagsCard
+                      gamerTagDTO={profile.gamerTagDTO}
+                      updateFunc={() => {}}
+                      isEditable={true}
+                      template="default"
+                      userSession={JSON.parse(JSON.stringify(session))}
+                      openModal={false}
+                    /> */}
+                    <GameExpCard
+                      gameExpDTO={profile.gameExpDTO}
+                      updateFunc={async (gameExpItem: GameExpItem) => {
+                        let userSession = JSON.parse(JSON.stringify(session));
+                        await ProfileService.updateGameExpProfile(
+                          gameExpItem,
+                          userSession
+                        );
+                        await retriveProfile();
+                      }}
+                      removeFunc={async (gameExpItem: GameExpItem) => {
+                        let userSession = JSON.parse(JSON.stringify(session));
+                        if (!userSession) return;
+                        await ProfileService.removeGameExpItem(
+                          gameExpItem,
+                          userSession
+                        );
+                        await retriveProfile();
+                      }}
+                      isEditable={true}
+                      template="default"
+                      userSession={JSON.parse(JSON.stringify(session))}
+                      openModal={false}
+                    />
+                  </>
+                )}
+                {userInfo.pageTemplate === 'soccer' && (
+                  <TeamCard
+                    teamDTO={profile.teamDTO}
+                    updateFunc={async (teamItem: TeamItem) => {
+                      let userSession = JSON.parse(JSON.stringify(session));
+                      await ProfileService.updateTeamProfile(
+                        teamItem,
+                        userSession
+                      );
+                      await retriveProfile();
+                    }}
+                    removeFunc={async (teamItem: TeamItem) => {
+                      let userSession = JSON.parse(JSON.stringify(session));
+                      if (!userSession) return;
+                      await ProfileService.removeTeamItem(
+                        teamItem,
+                        userSession
+                      );
+                      await retriveProfile();
+                    }}
+                    isEditable={true}
+                    template="default"
+                    userSession={JSON.parse(JSON.stringify(session))}
+                    openModal={false}
+                  />
+                )}
+                {userInfo.pageTemplate === 'education' && (
+                  <>
+                    <ThesisCard
+                      thesisDTO={profile.thesisDTO}
+                      updateFunc={async (thesisItem: ThesisItem) => {
+                        let userSession = JSON.parse(JSON.stringify(session));
+                        await ProfileService.updateThesisProfile(
+                          thesisItem,
+                          userSession
+                        );
+                        await retriveProfile();
+                      }}
+                      removeFunc={async (thesisItem: ThesisItem) => {
+                        let userSession = JSON.parse(JSON.stringify(session));
+                        if (!userSession) return;
+                        await ProfileService.removeThesisItem(
+                          thesisItem,
+                          userSession
+                        );
+                        await retriveProfile();
+                      }}
+                      isEditable={true}
+                      template="default"
+                      userSession={JSON.parse(JSON.stringify(session))}
+                      openModal={false}
+                    />
+                    <PaperCard
+                      paperDTO={profile.paperDTO}
+                      updateFunc={async (paperItem: PaperItem) => {
+                        let userSession = JSON.parse(JSON.stringify(session));
+                        await ProfileService.updatePaperProfile(
+                          paperItem,
+                          userSession
+                        );
+                        await retriveProfile();
+                      }}
+                      removeFunc={async (paperItem: PaperItem) => {
+                        let userSession = JSON.parse(JSON.stringify(session));
+                        if (!userSession) return;
+                        await ProfileService.removePaperItem(
+                          paperItem,
+                          userSession
+                        );
+                        await retriveProfile();
+                      }}
+                      isEditable={true}
+                      template="default"
+                      userSession={JSON.parse(JSON.stringify(session))}
+                      openModal={false}
+                    />
+                    <LicenseCard
+                      licenseDTO={profile.licenseDTO}
+                      updateFunc={async (licenseItem: LicenseItem) => {
+                        let userSession = JSON.parse(JSON.stringify(session));
+                        await ProfileService.updateLicenseProfile(
+                          licenseItem,
+                          userSession
+                        );
+                        await retriveProfile();
+                      }}
+                      removeFunc={async (licenseItem: LicenseItem) => {
+                        let userSession = JSON.parse(JSON.stringify(session));
+                        if (!userSession) return;
+                        await ProfileService.removeLicenseItem(
+                          licenseItem,
+                          userSession
+                        );
+                        await retriveProfile();
+                      }}
+                      isEditable={true}
+                      template="default"
+                      userSession={JSON.parse(JSON.stringify(session))}
+                      openModal={false}
+                    />
+                    <CertificationCard
+                      certificationDTO={profile.certificationDTO}
+                      updateFunc={async (
+                        certificationItem: CertificationItem
+                      ) => {
+                        let userSession = JSON.parse(JSON.stringify(session));
+                        await ProfileService.updateCertificationProfile(
+                          certificationItem,
+                          userSession
+                        );
+                        await retriveProfile();
+                      }}
+                      removeFunc={async (
+                        certificationItem: CertificationItem
+                      ) => {
+                        let userSession = JSON.parse(JSON.stringify(session));
+                        if (!userSession) return;
+                        await ProfileService.removeCertificationItem(
+                          certificationItem,
+                          userSession
+                        );
+                        await retriveProfile();
+                      }}
+                      isEditable={true}
+                      template="default"
+                      userSession={JSON.parse(JSON.stringify(session))}
+                      openModal={false}
+                    />
+                  </>
                 )}
 
                 <NewVerificationModal

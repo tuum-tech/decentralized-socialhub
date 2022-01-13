@@ -1,0 +1,33 @@
+.manage-links-item {
+  border-bottom: 1px solid #f3f9ff;
+  height: 72px;
+  padding: 15px;
+  font-family: 'SF Pro Display';
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  text-align: left;
+  display: flex;
+  .manage-links-header {
+    margin-left: 20px;
+    margin-top: 9px;
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.56;
+    color: #27272e;
+    flex-basis: 100%;
+  }
+
+  .manage-links-detail {
+    display: flex;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.79;
+    color: #a0aec0;
+    .copy-to-clipboard {
+      margin-left: 3px;
+      cursor: pointer;
+    }
+  }
+}

@@ -163,18 +163,22 @@ export class DidService implements IDidService {
       rootIdentity = identity as RootIdentity;
     }
 
-    let did = rootIdentity.getDid(0);
-
+    let did = rootIdentity.getDid(index);
     let didDocument = await this.Store.loadDid(did);
 
     if (didDocument === null) {
-      this.Store.storeDid(await did.resolve());
-      this.storePrivatekey(
-        DIDURL.from('#primary', did) as DIDURL,
-        mnemonic,
-        password,
-        0
-      );
+      let docOnBlockchain = await did.resolve();
+      if (docOnBlockchain === null) {
+        console.error('DID not published');
+      } else {
+        await this.Store.storeDid(docOnBlockchain);
+        await this.storePrivatekey(
+          DIDURL.from('#primary', did) as DIDURL,
+          mnemonic,
+          password,
+          0
+        );
+      }
     }
 
     return did;

@@ -26,7 +26,8 @@ interface IProps {
 const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
   const [fields, setFields] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
-  const allFields = [
+  const [template, setTemplate] = useState(sessionItem.pageTemplate);
+  const defaultFields = [
     'about',
     'education',
     'experience',
@@ -36,6 +37,13 @@ const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
     'social',
     'badge'
   ];
+  const extraFields = {
+    default: [],
+    crypto: ['wallet'],
+    gamer: ['played games', 'gamer tags', 'gamer profile'],
+    soccer: ['sports', 'teams'],
+    education: ['developer', 'thesis', 'paper', 'license', 'certification']
+  };
 
   useEffect(() => {
     (async () => {
@@ -86,17 +94,23 @@ const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
           You can toggle fields to be shown on your public profile page.
         </IonText>
         <Divider />
-        {allFields.map(field => (
-          <IonItem key={field}>
-            <IonLabel>{field}</IonLabel>
-            <IonToggle
-              checked={fields.includes(field)}
-              onClick={e => {
-                toggleClicked(field);
-              }}
-            />
-          </IonItem>
-        ))}
+        {defaultFields
+          .concat(
+            (extraFields as any)[
+              sessionItem.pageTemplate ? sessionItem.pageTemplate : 'default'
+            ]
+          )
+          .map(field => (
+            <IonItem key={field}>
+              <IonLabel>{field}</IonLabel>
+              <IonToggle
+                checked={fields.includes(field)}
+                onClick={e => {
+                  toggleClicked(field);
+                }}
+              />
+            </IonItem>
+          ))}
       </IonCardContent>
     </IonCard>
   );

@@ -13,13 +13,16 @@ export enum CredentialType {
   DID = 'Did',
   Education = 'Education',
   Experience = 'Experience',
-  PersonalInfo = 'PersonalInfo'
+  PersonalInfo = 'PersonalInfo',
+  ETHAddress = 'ETHAddress',
+  EIDAddress = 'EIDAddress',
+  ESCAddress = 'ESCAddress'
 }
 
 export class DidcredsService {
   static async generateVerifiableCredential(
     did: string,
-    credential_type: CredentialType,
+    credential_type: string,
     credential_value: string
   ): Promise<VerifiableCredential> {
     let url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/didcreds_router/validation/internet_account`;
@@ -37,7 +40,6 @@ export class DidcredsService {
       },
       body: JSON.stringify(data)
     };
-
     let response = await fetch(url, postData);
 
     let json = await response.json();
