@@ -311,6 +311,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
             backdropDismiss={false}
           >
             <EmailVerificationDetailContent
+              did={props.session.did}
               close={() => setShowEmailVerifyModal(false)}
               email={email}
               resend={resendVerificaitonCode}

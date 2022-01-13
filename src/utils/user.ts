@@ -34,7 +34,6 @@ export const retrieveDocInfo = async (
   let experiences: ExperienceItem[] = [];
   if (doc && doc !== undefined) {
     if (doc.credentials && doc.credentials.size > 0) {
-      debugger;
       let loginCred: any = {};
       doc.credentials.forEach(value => {
         let fragment = value.id.getFragment().toLowerCase();
