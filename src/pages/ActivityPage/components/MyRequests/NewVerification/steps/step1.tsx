@@ -65,6 +65,7 @@ const CredentialView = ({
       ? categories[0]
       : categories.find(x => x.idKey === selectedCredential)
   );
+
   const [showItems, setShowItems] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -78,11 +79,13 @@ const CredentialView = ({
         setShowItems(false);
       }
     }
+
+    setCredentials([selectedItem as VerificationData]);
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [wrapperRef]);
+  }, [selectedItem, setCredentials, wrapperRef]);
 
   return (
     <Container>

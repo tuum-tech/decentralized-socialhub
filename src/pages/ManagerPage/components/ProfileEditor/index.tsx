@@ -36,6 +36,7 @@ import NewVerificationContent, {
 import SentModalContent, {
   SentModal
 } from 'src/pages/ActivityPage/components/MyRequests/SentModal';
+import { VerificationService } from 'src/services/verification.service';
 
 interface Props {
   session: ISessionItem;
@@ -80,6 +81,17 @@ const ProfileEditor: React.FC<Props> = ({
       return true;
     }
     return false;
+  };
+
+  const sendRequest = async (
+    dids: string[],
+    credentials: VerificationData[],
+    msg: string
+  ) => {
+    const vService = new VerificationService();
+    await vService.sendRequest(session, dids, credentials, msg);
+    setShowVerificationModal(false);
+    setShowSentModal(true);
   };
 
   const handleSocialRouteParam = () => {
@@ -554,7 +566,7 @@ const ProfileEditor: React.FC<Props> = ({
                       setShowVerificationModal(false);
                     }}
                     targetUser={session}
-                    sendRequest={() => {}}
+                    sendRequest={sendRequest}
                     selectedCredential={selectedCredential}
                   />
                 </NewVerificationModal>
