@@ -79,7 +79,7 @@ const WalletCard: React.FC<IWalletProps> = ({
         setConnection(false);
       })();
     }
-  }, [account, library, selectedWalletType, connection, userSession]);
+  }, [account, selectedWalletType, connection, library, userSession]);
 
   const connectWallet = async () => {
     try {
