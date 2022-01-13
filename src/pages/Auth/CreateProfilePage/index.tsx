@@ -15,7 +15,6 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import WalletConnectBtn from 'src/components/WalletConnect';
 import {
   SocialButton,
   ButtonWithLogo,
@@ -215,7 +214,6 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
 
   return (
     <OnBoardLayout className={style['create-profile']}>
-      {/* <WalletConnectBtn /> */}
       {loading !== '' && <LoadingIndicator loadingText={loading} />}
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo src={whitelogo} />

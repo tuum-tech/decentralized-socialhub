@@ -1,55 +1,64 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
-import { injected } from './connector';
 
-const WalletConnectBtn = () => {
+import { injected } from './connector';
+import { StyledButton } from 'src/elements/buttons';
+import MetaMaskIcon from 'src/assets/meta-mask.svg';
+
+const WalletConnectBtn = (props: any) => {
+  const { onConnectMetamask } = props;
   const {
     active,
     account,
-    // library,
+    library,
     // connector,
     activate,
     deactivate
   } = useWeb3React();
-
+  const [connection, setConnection] = useState(false);
   async function connect() {
     try {
       await activate(injected);
+      setConnection(true);
     } catch (ex) {
       console.log(ex);
     }
   }
 
-  async function disconnect() {
-    try {
-      deactivate();
-    } catch (ex) {
-      console.log(ex);
+  useEffect(() => {
+    if (account && connection) {
+      (async () => {
+        onConnectMetamask(account);
+      })();
     }
-  }
+  }, [account, connection, onConnectMetamask]);
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <button
-        onClick={connect}
-        className="py-2 mt-20 mb-4 text-lg font-bold text-white rounded-lg w-56 bg-blue-600 hover:bg-blue-800"
+    <StyledButton
+      width={'182px'}
+      height={'40px'}
+      onClick={() => {
+        connect();
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
       >
-        Connect to MetaMask
-      </button>
-      {active ? (
-        <span>
-          Connected with <b>{account}</b>
-        </span>
-      ) : (
-        <span>Not connected</span>
-      )}
-      <button
-        onClick={disconnect}
-        className="py-2 mt-20 mb-4 text-lg font-bold text-white rounded-lg w-56 bg-blue-600 hover:bg-blue-800"
-      >
-        Disconnect
-      </button>
-    </div>
+        <img
+          src={MetaMaskIcon}
+          alt="meta-mask"
+          width="25"
+          style={{
+            marginRight: '10px'
+          }}
+        />
+        {`Connect Wallet`}
+      </div>
+    </StyledButton>
   );
 };
 

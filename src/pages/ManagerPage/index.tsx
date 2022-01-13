@@ -15,6 +15,10 @@ import { InferMappedProps, SubState } from './types';
 
 import { UserService } from 'src/services/user.service';
 import { DidService } from 'src/services/did.service.new';
+import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
+import { DID, DIDDocument, DIDURL } from '@elastosfoundation/did-js-sdk/';
+import { EssentialsService } from 'src/services/essentials.service';
+import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 
 import { ViewProfileButton } from 'src/elements/buttons';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
@@ -63,7 +67,6 @@ const ManagerPage: React.FC<InferMappedProps & RouteComponentProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   return (
     <>
       <IonPage className={style['managerpage']}>

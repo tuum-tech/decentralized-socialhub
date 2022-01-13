@@ -16,6 +16,13 @@ export class UserVaultScripts {
     await hiveClient.Database.createCollection('public_fields');
     await hiveClient.Database.createCollection('verifiable_credentials');
     await hiveClient.Database.createCollection('templates');
+    await hiveClient.Database.createCollection('wallets');
+    await hiveClient.Database.createCollection('team_profile');
+    await hiveClient.Database.createCollection('thesis_profile');
+    await hiveClient.Database.createCollection('paper_profile');
+    await hiveClient.Database.createCollection('license_profile');
+    await hiveClient.Database.createCollection('certification_profile');
+    await hiveClient.Database.createCollection('game_exp_profile');
   }
 
   static async SetScripts(hiveClient: HiveClient) {
@@ -148,6 +155,347 @@ export class UserVaultScripts {
           options: {
             upsert: true,
             bypass_document_validation: false
+          }
+        }
+      }
+    });
+
+    await hiveClient.Scripting.SetScript({
+      name: 'get_team_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_team_profile',
+        output: true,
+        body: {
+          collection: 'team_profile'
+        }
+      }
+    });
+    await hiveClient.Scripting.SetScript({
+      name: 'update_team_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_team_profile',
+        body: {
+          collection: 'team_profile',
+          filter: {
+            guid: '$params.guid'
+          },
+          update: {
+            $set: {
+              guid: '$params.guid',
+              name: '$params.name',
+              start: '$params.start',
+              end: '$params.end',
+              still: '$params.still',
+              description: '$params.description'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+    await hiveClient.Scripting.SetScript({
+      name: 'remove_team_item',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'delete',
+        name: 'remove_team_item',
+        body: {
+          collection: 'team_profile',
+          filter: {
+            guid: '$params.guid'
+          }
+        }
+      }
+    });
+    await hiveClient.Scripting.SetScript({
+      name: 'get_thesis_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_thesis_profile',
+        output: true,
+        body: {
+          collection: 'thesis_profile'
+        }
+      }
+    });
+    await hiveClient.Scripting.SetScript({
+      name: 'update_thesis_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_thesis_profile',
+        body: {
+          collection: 'thesis_profile',
+          filter: {
+            guid: '$params.guid'
+          },
+          update: {
+            $set: {
+              guid: '$params.guid',
+              title: '$params.title',
+              publish: '$params.publish',
+              still: '$params.still',
+              description: '$params.description'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+    await hiveClient.Scripting.SetScript({
+      name: 'remove_thesis_item',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'delete',
+        name: 'remove_thesis_item',
+        body: {
+          collection: 'thesis_profile',
+          filter: {
+            guid: '$params.guid'
+          }
+        }
+      }
+    });
+
+    await hiveClient.Scripting.SetScript({
+      name: 'get_paper_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_paper_profile',
+        output: true,
+        body: {
+          collection: 'paper_profile'
+        }
+      }
+    });
+    await hiveClient.Scripting.SetScript({
+      name: 'update_paper_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_paper_profile',
+        body: {
+          collection: 'paper_profile',
+          filter: {
+            guid: '$params.guid'
+          },
+          update: {
+            $set: {
+              guid: '$params.guid',
+              title: '$params.title',
+              publish: '$params.publish',
+              still: '$params.still',
+              description: '$params.description'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+    await hiveClient.Scripting.SetScript({
+      name: 'remove_paper_item',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'delete',
+        name: 'remove_paper_item',
+        body: {
+          collection: 'paper_profile',
+          filter: {
+            guid: '$params.guid'
+          }
+        }
+      }
+    });
+
+    await hiveClient.Scripting.SetScript({
+      name: 'get_license_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_license_profile',
+        output: true,
+        body: {
+          collection: 'license_profile'
+        }
+      }
+    });
+    await hiveClient.Scripting.SetScript({
+      name: 'update_license_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_license_profile',
+        body: {
+          collection: 'license_profile',
+          filter: {
+            guid: '$params.guid'
+          },
+          update: {
+            $set: {
+              guid: '$params.guid',
+              title: '$params.title',
+              acknowledger: '$params.acknowledger',
+              awardDate: '$params.awardDate',
+              description: '$params.description'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+    await hiveClient.Scripting.SetScript({
+      name: 'remove_license_item',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'delete',
+        name: 'remove_license_item',
+        body: {
+          collection: 'license_profile',
+          filter: {
+            guid: '$params.guid'
+          }
+        }
+      }
+    });
+
+    await hiveClient.Scripting.SetScript({
+      name: 'get_certification_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_certification_profile',
+        output: true,
+        body: {
+          collection: 'certification_profile'
+        }
+      }
+    });
+    await hiveClient.Scripting.SetScript({
+      name: 'update_certification_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_certification_profile',
+        body: {
+          collection: 'certification_profile',
+          filter: {
+            guid: '$params.guid'
+          },
+          update: {
+            $set: {
+              guid: '$params.guid',
+              title: '$params.title',
+              acknowledger: '$params.acknowledger',
+              awardDate: '$params.awardDate',
+              description: '$params.description'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+    await hiveClient.Scripting.SetScript({
+      name: 'remove_certification_item',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'delete',
+        name: 'remove_certification_item',
+        body: {
+          collection: 'certification_profile',
+          filter: {
+            guid: '$params.guid'
+          }
+        }
+      }
+    });
+
+    await hiveClient.Scripting.SetScript({
+      name: 'get_game_exp_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_game_exp_profile',
+        output: true,
+        body: {
+          collection: 'game_exp_profile'
+        }
+      }
+    });
+    await hiveClient.Scripting.SetScript({
+      name: 'update_game_exp_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_game_exp_profile',
+        body: {
+          collection: 'game_exp_profile',
+          filter: {
+            guid: '$params.guid'
+          },
+          update: {
+            $set: {
+              guid: '$params.guid',
+              name: '$params.name',
+              like: '$params.like',
+              description: '$params.description'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+    await hiveClient.Scripting.SetScript({
+      name: 'remove_game_exp_item',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'delete',
+        name: 'remove_game_exp_item',
+        body: {
+          collection: 'game_exp_profile',
+          filter: {
+            guid: '$params.guid'
           }
         }
       }

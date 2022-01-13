@@ -85,6 +85,13 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   const aboutRef = useRef<HTMLDivElement | null>(null);
   const experienceRef = useRef<HTMLDivElement | null>(null);
   const educationRef = useRef<HTMLDivElement | null>(null);
+  const walletRef = useRef<HTMLDivElement | null>(null);
+  const teamRef = useRef<HTMLDivElement | null>(null);
+  const thesisRef = useRef<HTMLDivElement | null>(null);
+  const paperRef = useRef<HTMLDivElement | null>(null);
+  const gameExpRef = useRef<HTMLDivElement | null>(null);
+  const licenseRef = useRef<HTMLDivElement | null>(null);
+  const certificationRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToElement = (cardName: string) => {
     let point: number = 0;
@@ -190,6 +197,13 @@ const ExplorePage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
                     aboutRef={aboutRef}
                     experienceRef={experienceRef}
                     educationRef={educationRef}
+                    walletRef={walletRef}
+                    teamRef={teamRef}
+                    thesisRef={thesisRef}
+                    paperRef={paperRef}
+                    gameExpRef={gameExpRef}
+                    licenseRef={licenseRef}
+                    certificationRef={certificationRef}
                     viewAllClicked={(ctype: FollowType) => {
                       setShowAllFollow(true);
                       setFollowType(ctype);
