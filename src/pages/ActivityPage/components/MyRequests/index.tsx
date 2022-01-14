@@ -39,6 +39,7 @@ const MyRequests: React.FC<Props> = ({
 }: Props) => {
   const [showSentModal, setShowSentModal] = useState(false);
   const [selectedVerification, setSelectVerification] = useState<any>(null);
+  const [selectedStatus, setSelectedStatus] = useState('');
 
   const sendReuqest = async (
     dids: string[],
@@ -53,12 +54,19 @@ const MyRequests: React.FC<Props> = ({
 
   return (
     <PageContainer>
-      <TopInfo verificationStatus={verifications.map((v: any) => v.status)} />
+      <TopInfo
+        verificationStatus={verifications.map((v: any) => v.status)}
+        selectStatus={setSelectedStatus}
+      />
 
       <PageContent>
         <UserRows
           session={session}
-          verifications={verifications}
+          verifications={
+            selectedStatus === ''
+              ? verifications
+              : verifications.filter(v => v.status === selectedStatus)
+          }
           setSelectVerification={setSelectVerification}
         />
       </PageContent>

@@ -12,6 +12,7 @@ import { timeSince } from 'src/utils/time';
 import { getCategoryTitle } from 'src/utils/credential';
 
 import { UserRow, getStatusColor } from '../MyRequests/UserRows';
+import { VerificationService } from 'src/services/verification.service';
 interface Props {
   session: ISessionItem;
   verifications: VerificationRequest[];
@@ -79,6 +80,16 @@ const UserRows: React.FC<Props> = ({
         >
           View Info
         </SmallLightButton>
+        {/* <SmallLightButton
+          style={{
+            margin: '0 0 0 auto'
+          }}
+          onClick={() => {
+              cancelRequest(v);
+          }}
+        >
+          Cancel Request
+        </SmallLightButton> */}
       </UserRow>
     );
   };

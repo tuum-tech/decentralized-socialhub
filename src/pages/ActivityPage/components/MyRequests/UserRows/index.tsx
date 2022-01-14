@@ -11,6 +11,7 @@ import { getItemsFromData } from 'src/utils/script';
 import { getDIDString } from 'src/utils/did';
 import { timeSince } from 'src/utils/time';
 import { getCategoryTitle } from 'src/utils/credential';
+import { VerificationService } from 'src/services/verification.service';
 
 export const UserRow = styled.div`
   background: #ffffff;
@@ -122,8 +123,28 @@ const UserRows: React.FC<Props> = ({
         >
           View Info
         </SmallLightButton>
+        {v.status === 'requested' ? (
+          <SmallLightButton
+            style={{
+              margin: '0 0 0 auto'
+            }}
+            onClick={() => {
+              cancelRequest(v);
+            }}
+          >
+            Cancel Request
+          </SmallLightButton>
+        ) : (
+          ''
+        )}
       </UserRow>
     );
+  };
+
+  const cancelRequest = async (v: VerificationRequest) => {
+    const vService = new VerificationService();
+    await vService.cancelRequest(session, v);
+    //await vService.ca(session, dids, credentials, msg);
   };
 
   return <>{verifications.map(v => rednerUserRow(v))}</>;
