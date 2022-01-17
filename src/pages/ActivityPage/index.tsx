@@ -94,6 +94,7 @@ const ActivityPage: React.FC<InferMappedProps> = ({
                       closeNewVerificationModal={() =>
                         setShowNewVerificationModal(false)
                       }
+                      refresh={fetchMyVerifications}
                     />
                   )}
                   {active === 'verificationrequests' && (

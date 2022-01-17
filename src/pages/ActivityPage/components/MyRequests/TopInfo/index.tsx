@@ -5,6 +5,7 @@ import rejectedIcon from 'src/assets/icon/rejected.png';
 import totalIcon from 'src/assets/icon/total.png';
 import approvedIcon from 'src/assets/icon/approved.png';
 import pendingIcon from 'src/assets/icon/pending.png';
+import shield from 'src/assets/icon/pending.png';
 import TopInfoCard from './TopInfoCard';
 import styled from 'styled-components';
 
@@ -57,6 +58,16 @@ const TopInfo: React.FC<Props> = ({
           img={rejectedIcon}
           title="Rejected"
           count={verificationStatus.filter(v => v === 'rejected').length}
+          bgColor="#FF5A5A"
+        />
+      </ClicableCol>
+      <ClicableCol onClick={() => selectStatus('saved to identity')}>
+        <TopInfoCard
+          img={shield}
+          title="Saved to identity"
+          count={
+            verificationStatus.filter(v => v === 'saved to identity').length
+          }
           bgColor="#FF5A5A"
         />
       </ClicableCol>

@@ -27,6 +27,7 @@ export const PageContent = styled.div`
 interface Props {
   session: ISessionItem;
   closeNewVerificationModal: () => void;
+  refresh: () => void;
   showNewVerificationModal: boolean;
   verifications: VerificationRequest[];
 }
@@ -34,6 +35,7 @@ interface Props {
 const MyRequests: React.FC<Props> = ({
   session,
   closeNewVerificationModal,
+  refresh,
   showNewVerificationModal,
   verifications
 }: Props) => {
@@ -102,7 +104,10 @@ const MyRequests: React.FC<Props> = ({
           <VerificationDetailContent
             verification={selectedVerification.verification}
             user={session}
-            onClose={() => setSelectVerification(null)}
+            onClose={() => {
+              setSelectVerification(null);
+              refresh();
+            }}
           />
         )}
       </VerificationDetailModal>

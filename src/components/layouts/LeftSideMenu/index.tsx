@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { IonItem, IonLabel, IonList } from '@ionic/react';
+import { IonBadge, IonItem, IonLabel, IonList } from '@ionic/react';
 
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -28,6 +28,7 @@ import ReportModalContent, { ReportModal } from './modals/Report';
 import ContactModalContent, { ContactModal } from './modals/Contact';
 
 import style from './style.module.scss';
+import { TuumTechScriptService } from 'src/services/script.service';
 
 const LeftSideMenu: React.FC<InferMappedProps> = ({
   eProps,
@@ -37,6 +38,7 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
   const [showSupportModal, setShowSupportModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
+  const [requestsCount, setRequestsCount] = useState(0);
 
   const toggleHelpSupport = () => {
     setShowSupportModal(!showSupportModal);
@@ -47,6 +49,22 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
   const toggleContactUs = () => {
     setShowContactModal(!showContactModal);
   };
+
+  const getVerificationRequestsCount = async (): Promise<number> => {
+    debugger;
+    let requests: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
+      props.session.did,
+      false
+    );
+    return requests.filter(x => x.status === 'requested').length;
+  };
+
+  useEffect(() => {
+    (async () => {
+      let requestCount = await getVerificationRequestsCount();
+      setRequestsCount(requestCount);
+    })();
+  }, [getVerificationRequestsCount]);
 
   return (
     <div className={style['navbar']}>
@@ -118,7 +136,9 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
         >
           <ActivitySvg />
           <IonLabel>
-            <h3>Activities</h3>
+            <h3>
+              Activities <IonBadge>{requestsCount}</IonBadge>
+            </h3>
           </IonLabel>
         </IonItem>
         {/* <IonItem
