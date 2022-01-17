@@ -50,21 +50,18 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
     setShowContactModal(!showContactModal);
   };
 
-  const getVerificationRequestsCount = async (): Promise<number> => {
-    debugger;
+  const fetchVerificationRequestsCount = async (): Promise<void> => {
     let requests: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
       props.session.did,
       false
     );
-    return requests.filter(x => x.status === 'requested').length;
+    setRequestsCount(requests.filter(x => x.status === 'requested').length);
   };
-
   useEffect(() => {
     (async () => {
-      let requestCount = await getVerificationRequestsCount();
-      setRequestsCount(requestCount);
+      await fetchVerificationRequestsCount();
     })();
-  }, [getVerificationRequestsCount]);
+  }, [fetchVerificationRequestsCount]);
 
   return (
     <div className={style['navbar']}>
@@ -137,7 +134,8 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
           <ActivitySvg />
           <IonLabel>
             <h3>
-              Activities <IonBadge>{requestsCount}</IonBadge>
+              Activities{' '}
+              {requestsCount > 0 ? <IonBadge>{requestsCount}</IonBadge> : ''}
             </h3>
           </IonLabel>
         </IonItem>
