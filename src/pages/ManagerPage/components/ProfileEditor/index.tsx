@@ -336,6 +336,12 @@ const ProfileEditor: React.FC<Props> = ({
                       );
                       await retriveProfile();
                     }}
+                    requestFunc={async (educationItem: EducationItem) => {
+                      setSelectedCredential(
+                        `Education: ${educationItem.program} at ${educationItem.institution}`
+                      );
+                      setShowVerificationModal(true);
+                    }}
                     isEditable={true}
                     template="default"
                     userSession={JSON.parse(JSON.stringify(session))}
@@ -365,6 +371,12 @@ const ProfileEditor: React.FC<Props> = ({
                         archivedBadge
                       );
                       await retriveProfile();
+                    }}
+                    requestFunc={async (experienceItem: ExperienceItem) => {
+                      setSelectedCredential(
+                        `Experience: ${experienceItem.title} at ${experienceItem.institution}`
+                      );
+                      setShowVerificationModal(true);
                     }}
                     removeFunc={async (experienceItem: ExperienceItem) => {
                       let userSession = JSON.parse(JSON.stringify(session));

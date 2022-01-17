@@ -29,6 +29,7 @@ interface EducationItemProps {
   index: number;
   initialStatus?: string;
   removeFunc: any;
+  requestVerification: any;
   isEditable: boolean;
   template?: string;
   userSession: ISessionItem;
@@ -39,6 +40,7 @@ const EducationItem: React.FC<EducationItemProps> = ({
   editFunc,
   index,
   removeFunc,
+  requestVerification,
   isEditable,
   template = 'default',
   userSession
@@ -140,6 +142,17 @@ const EducationItem: React.FC<EducationItemProps> = ({
                     }}
                   >
                     Remove
+                  </PopoverMenuItem>
+                  <PopoverMenuItem
+                    onClick={() => {
+                      setShowPopover({
+                        showPopover: false,
+                        event: undefined
+                      });
+                      requestVerification(educationItem);
+                    }}
+                  >
+                    Request Verification
                   </PopoverMenuItem>
                 </IonPopover>
                 <TreeDotsButton
