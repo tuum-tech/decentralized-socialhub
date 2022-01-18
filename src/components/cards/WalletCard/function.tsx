@@ -26,7 +26,6 @@ export const addWalletToDIDDocument = async (
   key: string,
   user: ISessionItem
 ) => {
-  console.log(address, key, user);
   let didService = await DidService.getInstance();
   let newVC = await DidcredsService.generateVerifiableCredential(
     user.did,
@@ -45,6 +44,7 @@ export const addWalletToDIDDocument = async (
       newVC
     );
   }
+  await DidcredsService.addOrUpdateCredentialToVault(user, newVC);
   await didService.storeDocument(didDocument);
   return didDocument;
 };
@@ -58,9 +58,9 @@ export const removeWalletFromDIDDocument = async (
   );
   const oldVC = didDocument.getCredential(key);
   if (oldVC) {
+    let vcKey = didDocument.getSubject().toString() + '#' + key;
     if (user.isEssentialUser) {
       let cn = connectivity.getActiveConnector();
-      let vcKey = didDocument.getSubject().toString() + '#' + key;
 
       await cn?.deleteCredentials([vcKey], {
         forceToPublishCredentials: true
@@ -76,6 +76,7 @@ export const removeWalletFromDIDDocument = async (
         process.env.REACT_APP_DID_STORE_PASSWORD as string
       );
     }
+    await DidcredsService.removeCredentialToVault(user, vcKey);
     await didService.storeDocument(didDocument);
   }
   return didDocument;

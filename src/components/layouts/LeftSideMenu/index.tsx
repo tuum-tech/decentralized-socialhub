@@ -18,6 +18,7 @@ import ConnectionMenu from './components/ConnectionMenu';
 import {
   HouseSvg,
   PeopleSvg,
+  SpaceSvg,
   SearchSvg,
   SettingsSvg,
   ActivitySvg,
@@ -80,7 +81,20 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
         </IonItem>
 
         <ConnectionMenu session={props.session} />
-
+        {/* in a progress */}
+        {/* <IonItem
+          className={
+            history.location.pathname === '/spaces'
+              ? style['item-active']
+              : style['item-link']
+          }
+          onClick={async () => history.push('/spaces')}
+        >
+          <SpaceSvg />
+          <IonLabel>
+            <h3>Spaces</h3>
+          </IonLabel>
+        </IonItem> */}
         <IonItem
           className={
             history.location.pathname === '/explore'

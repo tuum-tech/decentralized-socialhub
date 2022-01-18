@@ -10,8 +10,8 @@ import {
 
 import PeopleCard from 'src/components/cards/PeopleCard';
 import PagesCard from 'src/components/cards/PagesCard';
-import BlankCard from 'src/components/cards/BlankCard';
-import RequestCommunityCard from 'src/components/cards/RequestCommunityCard';
+import WelcomeSpace from '../WelcomeSpace';
+import RequestCommunity from '../RequestCommunity';
 import style from './style.module.scss';
 import ComingSoon from 'src/components/ComingSoon';
 
@@ -115,8 +115,8 @@ const ExploreNav: React.FC<Props> = ({
       {active === 'spaces' && (
         <IonGrid className={style['tab-grid']}>
           <IonRow>
-            <BlankCard />
-            <RequestCommunityCard />
+            <WelcomeSpace />
+            <RequestCommunity />
           </IonRow>
         </IonGrid>
       )}

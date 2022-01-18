@@ -13,7 +13,7 @@ import { createStructuredSelector } from 'reselect';
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
-import style from './RequestCommunityCard.module.scss';
+import style from './RequestCommunity.module.scss';
 import { StyledButton } from 'src/elements/buttons';
 import RequestCommunityForm from './RequestCommunityForm';
 import { showNotify } from 'src/utils/notify';
@@ -23,7 +23,7 @@ const CustomModal = styled(IonModal)`
   --min-height: 400px;
   --border-radius: 16px;
 `;
-const RequestCommunityCard: React.FC<InferMappedProps> = ({ session }) => {
+const RequestCommunity: React.FC<InferMappedProps> = ({ session }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const sendRequest = async (request: any) => {
     const userinfo = {
@@ -120,4 +120,4 @@ export function mapDispatchToProps(dispatch: any) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(RequestCommunityCard);
+)(RequestCommunity);
