@@ -238,25 +238,33 @@ const SocialProfilesCard: React.FC<Props> = ({
 
     // ===== temporary codes start =====
     let newLoginCred = currentSession!.loginCred;
+    let newLoginBadges = currentSession!.badges;
     if (!newLoginCred) {
       return;
     }
     if (key === 'google' && newLoginCred.google) {
       delete newLoginCred.google;
+      newLoginBadges.socialVerify.google.archived = false;
     } else if (key === 'facebook' && newLoginCred.facebook) {
       delete newLoginCred.facebook;
+      newLoginBadges.socialVerify.facebook.archived = false;
     } else if (key === 'linkedin' && newLoginCred.linkedin) {
+      newLoginBadges.socialVerify.linkedin.archived = false;
       delete newLoginCred.linkedin;
     } else if (key === 'twitter' && newLoginCred.twitter) {
       delete newLoginCred.twitter;
+      newLoginBadges.socialVerify.twitter.archived = false;
     } else if (key === 'github' && newLoginCred.github) {
       delete newLoginCred.github;
+      newLoginBadges.socialVerify.github.archived = false;
     } else if (key === 'discord' && newLoginCred.discord) {
+      newLoginBadges.socialVerify.discord.archived = false;
       delete newLoginCred.discord;
     }
     const newUserSession = {
       ...sessionItem,
-      loginCred: newLoginCred
+      loginCred: newLoginCred,
+      badges: newLoginBadges
     } as ISessionItem;
 
     setSession({
