@@ -60,12 +60,14 @@ export interface Props {
   session: ISessionItem;
   verifications: VerificationRequest[];
   setSelectVerification: (v: any) => void;
+  cancelVerification: (v: any) => void;
 }
 
 const UserRows: React.FC<Props> = ({
   session,
   verifications,
-  setSelectVerification
+  setSelectVerification,
+  cancelVerification
 }: Props) => {
   const [users, setUsers] = useState<any[]>([]);
   useEffect(() => {
@@ -129,7 +131,7 @@ const UserRows: React.FC<Props> = ({
               margin: '0 0 0 auto'
             }}
             onClick={() => {
-              cancelRequest(v);
+              cancelVerification(v);
             }}
           >
             Cancel Request
@@ -139,12 +141,6 @@ const UserRows: React.FC<Props> = ({
         )}
       </UserRow>
     );
-  };
-
-  const cancelRequest = async (v: VerificationRequest) => {
-    const vService = new VerificationService();
-    await vService.cancelRequest(session, v);
-    //await vService.ca(session, dids, credentials, msg);
   };
 
   return <>{verifications.map(v => rednerUserRow(v))}</>;

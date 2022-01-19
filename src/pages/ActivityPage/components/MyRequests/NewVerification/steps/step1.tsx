@@ -59,7 +59,6 @@ const CredentialView = ({
   setCredentials,
   onNext
 }: Props) => {
-  debugger;
   const selectedCategoreis = credentials.map(c => c.idKey);
   const [selectedItem, setSelectedItem] = useState(
     selectedCredential === '' || selectedCredential === undefined
