@@ -90,12 +90,12 @@ const CancelRequestModalContent: React.FC<Props> = ({
 
       <Grid>
         <IonRow class="ion-no-padding">
-          <IonCol size="6.5">
+          <IonCol size="6">
             <BlueButton onClick={() => onConfirm(verification)}>
-              Cancel Request
+              Confirm
             </BlueButton>
           </IonCol>
-          <IonCol size="5.5">
+          <IonCol size="6">
             <BlueButton onClick={() => onAbort()}>Do nothing</BlueButton>
           </IonCol>
         </IonRow>

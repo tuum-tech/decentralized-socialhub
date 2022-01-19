@@ -18,10 +18,12 @@ export const RequestVerificationButton = styled(SmallLightButton)<{
 type Props = {
   children?: React.ReactNode;
   onRequestVerification: any;
+  v: string;
 };
 const VerificationRequestDecorator: React.FC<Props> = ({
   children,
-  onRequestVerification
+  onRequestVerification,
+  v
 }) => (
   <IonGrid>
     <IonRow class="ion-align-items-end">
@@ -29,12 +31,16 @@ const VerificationRequestDecorator: React.FC<Props> = ({
         {children}
       </IonCol>
       <IonCol size="2" class="ion-no-padding">
-        <RequestVerificationButton
-          disabled={false}
-          onClick={onRequestVerification}
-        >
-          Request Verification
-        </RequestVerificationButton>{' '}
+        {v !== undefined && v !== '' ? (
+          <RequestVerificationButton
+            disabled={false}
+            onClick={onRequestVerification}
+          >
+            Request Verification
+          </RequestVerificationButton>
+        ) : (
+          ''
+        )}
       </IonCol>
     </IonRow>
   </IonGrid>

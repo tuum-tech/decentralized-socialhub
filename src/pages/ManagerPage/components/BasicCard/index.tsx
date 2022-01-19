@@ -76,6 +76,7 @@ const BasicCard: React.FC<IProps> = ({
           <IonRow class="ion-justify-content-start">
             <IonCol size="7">
               <VerificationRequestDecorator
+                v={currentBasicDTO.name}
                 onRequestVerification={() =>
                   requestVerification(`Name: ${currentBasicDTO.name}`)
                 }
@@ -128,6 +129,7 @@ const BasicCard: React.FC<IProps> = ({
           <Divider />
 
           <VerificationRequestDecorator
+            v={currentBasicDTO.loginCred?.email as string}
             onRequestVerification={() =>
               requestVerification(`Email: ${currentBasicDTO.loginCred?.email}`)
             }
