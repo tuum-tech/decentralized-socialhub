@@ -95,7 +95,10 @@ const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
           }
           onClick={() => setActive('verificationrequests')}
         >
-          <IonLabel className="tab-label">Verification Requests</IonLabel>
+          <IonLabel className="tab-label">
+            Verification Requests
+            {verificationRequests > 0 && `(${verificationRequests})`}
+          </IonLabel>
         </IonItem>
       </IonList>
       {active === 'myrequests' && (
