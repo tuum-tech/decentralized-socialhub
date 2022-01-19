@@ -119,6 +119,10 @@ export class DidcredsService {
     let hiveClient = await HiveService.getSessionInstance(sessionItem);
     let hiveResponse = await hiveClient?.Scripting.RunScript<any>({
       name: 'add_verifiablecredential',
+      context: {
+        target_did: sessionItem.did,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+      },
       params: {
         id: vc.getId().toString(),
         vc: vc.toJSON()
@@ -135,6 +139,10 @@ export class DidcredsService {
     let hiveClient = await HiveService.getSessionInstance(sessionItem);
     let hiveResponse = await hiveClient?.Scripting.RunScript<any>({
       name: 'remove_verifiablecredential',
+      context: {
+        target_did: sessionItem.did,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+      },
       params: {
         id: vcKey
       }

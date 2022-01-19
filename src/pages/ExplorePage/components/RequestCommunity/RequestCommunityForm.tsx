@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { IonCardTitle, IonCol, IonRow, IonButton } from '@ionic/react';
 import Web3 from 'web3';
-import SmallTextInput from '../../../elements/inputs/SmallTextInput';
-import { MyGrid } from '../common';
+import SmallTextInput from 'src/elements/inputs/SmallTextInput';
+import { MyGrid } from 'src/components/cards/common';
 import SmallSelectInput from 'src/elements/inputs/SmallSelectInput';
 import style from './RequestCommunityForm.module.scss';
 import { categories, networks } from './constants';
