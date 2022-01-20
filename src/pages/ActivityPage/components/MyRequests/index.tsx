@@ -11,6 +11,9 @@ import NewVerificationContent, {
 import SentModalContent, { SentModal } from './SentModal';
 import UserRows from './UserRows';
 import TopInfo from './TopInfo';
+import CancelRequestModalContent, {
+  CancelRequestModal
+} from './CancelRequestModal';
 
 export const PageContainer = styled.div`
   padding: 0 20px 20px 20px;
@@ -27,6 +30,7 @@ export const PageContent = styled.div`
 interface Props {
   session: ISessionItem;
   closeNewVerificationModal: () => void;
+  refresh: () => void;
   showNewVerificationModal: boolean;
   verifications: VerificationRequest[];
 }
@@ -34,11 +38,18 @@ interface Props {
 const MyRequests: React.FC<Props> = ({
   session,
   closeNewVerificationModal,
+  refresh,
   showNewVerificationModal,
   verifications
 }: Props) => {
   const [showSentModal, setShowSentModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [
+    showVerificationDetailModal,
+    setShowVerificationDetailModal
+  ] = useState(false);
   const [selectedVerification, setSelectVerification] = useState<any>(null);
+  const [selectedStatus, setSelectedStatus] = useState('');
 
   const sendReuqest = async (
     dids: string[],
@@ -51,15 +62,34 @@ const MyRequests: React.FC<Props> = ({
     setShowSentModal(true);
   };
 
+  const cancelVerification = async (v: VerificationRequest) => {
+    setSelectVerification({ verification: v, undefined });
+
+    setShowCancelModal(true);
+    //const vService = new VerificationService();
+    //await vService.cancelRequest(session, v);
+  };
+
   return (
     <PageContainer>
-      <TopInfo verificationStatus={verifications.map((v: any) => v.status)} />
+      <TopInfo
+        verificationStatus={verifications.map((v: any) => v.status)}
+        selectStatus={setSelectedStatus}
+      />
 
       <PageContent>
         <UserRows
           session={session}
-          verifications={verifications}
-          setSelectVerification={setSelectVerification}
+          verifications={
+            selectedStatus === ''
+              ? verifications
+              : verifications.filter(v => v.status === selectedStatus)
+          }
+          setSelectVerification={(v: any) => {
+            setSelectVerification(v);
+            setShowVerificationDetailModal(true);
+          }}
+          cancelVerification={cancelVerification}
         />
       </PageContent>
       <NewVerificationModal
@@ -83,21 +113,49 @@ const MyRequests: React.FC<Props> = ({
         <SentModalContent
           onClose={() => {
             setShowSentModal(false);
+            refresh();
           }}
         />
       </SentModal>
       <VerificationDetailModal
-        isOpen={selectedVerification !== null}
-        onDidDismiss={() => setSelectVerification(null)}
+        isOpen={showVerificationDetailModal}
+        onDidDismiss={() => {
+          setSelectVerification(null);
+          setShowVerificationDetailModal(false);
+        }}
       >
         {selectedVerification !== null && (
           <VerificationDetailContent
             verification={selectedVerification.verification}
             user={session}
-            onClose={() => setSelectVerification(null)}
+            onClose={() => {
+              setSelectVerification(null);
+              setShowVerificationDetailModal(false);
+              refresh();
+            }}
           />
         )}
       </VerificationDetailModal>
+
+      <CancelRequestModal
+        isOpen={showCancelModal}
+        onDidDismiss={() => setSelectVerification(null)}
+      >
+        {selectedVerification !== null && (
+          <CancelRequestModalContent
+            verification={selectedVerification.verification}
+            onConfirm={async (v: any) => {
+              const vService = new VerificationService();
+              await vService.cancelRequest(session, v);
+              setShowCancelModal(false);
+              refresh();
+            }}
+            onAbort={() => {
+              setShowCancelModal(false);
+            }}
+          />
+        )}
+      </CancelRequestModal>
     </PageContainer>
   );
 };

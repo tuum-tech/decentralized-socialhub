@@ -30,6 +30,13 @@ import PublicFields from '../PublicFields';
 import TemplateManagerCard from '../TemplateManagerCard';
 import style from './style.module.scss';
 import badgeDetails from 'src/data/badge_detail.json';
+import NewVerificationContent, {
+  NewVerificationModal
+} from 'src/pages/ActivityPage/components/MyRequests/NewVerification';
+import SentModalContent, {
+  SentModal
+} from 'src/pages/ActivityPage/components/MyRequests/SentModal';
+import { VerificationService } from 'src/services/verification.service';
 
 interface Props {
   session: ISessionItem;
@@ -50,6 +57,12 @@ const ProfileEditor: React.FC<Props> = ({
     undefined
   );
   const [profile, setProfile] = useState<ProfileDTO>(defaultFullProfile);
+  const [selectedCredential, setSelectedCredential] = useState<
+    string | undefined
+  >(undefined);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [showSentModal, setShowSentModal] = useState(false);
+
   const {
     account: { basicProfile, educationProfile, experienceProfile },
     socialVerify: {
@@ -68,6 +81,17 @@ const ProfileEditor: React.FC<Props> = ({
       return true;
     }
     return false;
+  };
+
+  const sendRequest = async (
+    dids: string[],
+    credentials: VerificationData[],
+    msg: string
+  ) => {
+    const vService = new VerificationService();
+    await vService.sendRequest(session, dids, credentials, msg);
+    setShowVerificationModal(false);
+    setShowSentModal(true);
   };
 
   const handleSocialRouteParam = () => {
@@ -171,6 +195,10 @@ const ProfileEditor: React.FC<Props> = ({
             {!error && loaded ? (
               <BasicCard
                 sessionItem={userInfo}
+                requestVerification={(idKey: string) => {
+                  setSelectedCredential(idKey);
+                  setShowVerificationModal(true);
+                }}
                 updateFunc={async (newUserInfo: ISessionItem) => {
                   const newName = newUserInfo.name!;
                   const oldName = userInfo.name!;
@@ -308,6 +336,12 @@ const ProfileEditor: React.FC<Props> = ({
                       );
                       await retriveProfile();
                     }}
+                    requestFunc={async (educationItem: EducationItem) => {
+                      setSelectedCredential(
+                        `Education: ${educationItem.program} at ${educationItem.institution}`
+                      );
+                      setShowVerificationModal(true);
+                    }}
                     isEditable={true}
                     template="default"
                     userSession={JSON.parse(JSON.stringify(session))}
@@ -337,6 +371,12 @@ const ProfileEditor: React.FC<Props> = ({
                         archivedBadge
                       );
                       await retriveProfile();
+                    }}
+                    requestFunc={async (experienceItem: ExperienceItem) => {
+                      setSelectedCredential(
+                        `Experience: ${experienceItem.title} at ${experienceItem.institution}`
+                      );
+                      setShowVerificationModal(true);
                     }}
                     removeFunc={async (experienceItem: ExperienceItem) => {
                       let userSession = JSON.parse(JSON.stringify(session));
@@ -526,6 +566,34 @@ const ProfileEditor: React.FC<Props> = ({
                     />
                   </>
                 )}
+
+                <NewVerificationModal
+                  isOpen={showVerificationModal}
+                  cssClass="my-custom-class"
+                  backdropDismiss={false}
+                >
+                  <NewVerificationContent
+                    session={session}
+                    onClose={() => {
+                      setShowVerificationModal(false);
+                    }}
+                    targetUser={session}
+                    sendRequest={sendRequest}
+                    selectedCredential={selectedCredential}
+                  />
+                </NewVerificationModal>
+
+                <SentModal
+                  isOpen={showSentModal}
+                  cssClass="my-custom-class"
+                  backdropDismiss={false}
+                >
+                  <SentModalContent
+                    onClose={() => {
+                      setShowSentModal(false);
+                    }}
+                  />
+                </SentModal>
               </>
             ) : (
               ''

@@ -15,6 +15,7 @@ import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import SmallTextInput from 'src/elements/inputs/SmallTextInput';
 import EmailComp, { SaveButton } from './EmailComp';
 import PhoneComp from './PhoneComp';
+import VerificationRequestDecorator from 'src/pages/ActivityPage/components/VerificationRequests/VerificationRequestDecorator';
 
 const Divider = styled.hr`
   width: 100%;
@@ -29,9 +30,14 @@ const Divider = styled.hr`
 interface IProps {
   sessionItem: ISessionItem;
   updateFunc: any;
+  requestVerification: any;
 }
 
-const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
+const BasicCard: React.FC<IProps> = ({
+  sessionItem,
+  updateFunc,
+  requestVerification
+}: IProps) => {
   const [currentBasicDTO, setCurrentBasicDTO] = useState(sessionItem);
   const handleChange = (evt: any) => {
     const value =
@@ -68,6 +74,25 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
       <IonCardContent>
         <IonGrid>
           <IonRow class="ion-justify-content-start">
+            <IonCol size="7">
+              <VerificationRequestDecorator
+                v={currentBasicDTO.name}
+                onRequestVerification={() =>
+                  requestVerification(`Name: ${currentBasicDTO.name}`)
+                }
+              >
+                <SmallTextInput
+                  disabled={sessionItem.tutorialStep !== 4}
+                  label="Name"
+                  name="name"
+                  value={currentBasicDTO.name}
+                  onChange={handleChange}
+                />
+              </VerificationRequestDecorator>
+            </IonCol>
+          </IonRow>
+
+          <IonRow class="ion-justify-content-start">
             <IonCol size="5">
               <SmallTextInput
                 disabled={sessionItem.tutorialStep !== 4}
@@ -103,15 +128,22 @@ const BasicCard: React.FC<IProps> = ({ sessionItem, updateFunc }: IProps) => {
 
           <Divider />
 
-          <EmailComp
-            sessionItem={sessionItem}
-            emailUpdated={(newEmail: string) => {
-              updateFunc({
-                ...currentBasicDTO,
-                loginCred: { ...currentBasicDTO.loginCred, email: newEmail }
-              });
-            }}
-          />
+          <VerificationRequestDecorator
+            v={currentBasicDTO.loginCred?.email as string}
+            onRequestVerification={() =>
+              requestVerification(`Email: ${currentBasicDTO.loginCred?.email}`)
+            }
+          >
+            <EmailComp
+              sessionItem={sessionItem}
+              emailUpdated={(newEmail: string) => {
+                updateFunc({
+                  ...currentBasicDTO,
+                  loginCred: { ...currentBasicDTO.loginCred, email: newEmail }
+                });
+              }}
+            />
+          </VerificationRequestDecorator>
           <PhoneComp
             sessionItem={sessionItem}
             phoneUpdated={(newPhon: string) => {

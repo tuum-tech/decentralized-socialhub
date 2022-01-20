@@ -64,7 +64,7 @@ const VerificationDetailContent = ({ verification, user, onClose }: Props) => {
     >
       <div>
         <p>
-          Verificaiton Request Sent To <InfoTxt>{user.name}</InfoTxt>
+          Verification Request Sent To <InfoTxt>{user.name}</InfoTxt>
         </p>
 
         <p className="bottom mt-4" style={{ display: 'flex' }}>

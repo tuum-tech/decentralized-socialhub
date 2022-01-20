@@ -300,6 +300,38 @@ export class VerificationService {
     };
   }
 
+  public async cancelRequest(
+    session: ISessionItem,
+    v: VerificationRequest
+  ): Promise<void> {
+    await TuumTechScriptService.updateVerificationRequest(
+      'cancelled',
+      '',
+      '',
+      v.guid
+    );
+    // let userService = new UserService(await DidService.getInstance());
+    // let fromUser = await userService.SearchUserWithDID(v.from_did);
+    // await ProfileService.addActivity(
+    //   {
+    //     guid: '',
+    //     did: session.did,
+    //     message:
+    //       `You've ${
+    //         approve ? 'approved' : 'rejected'
+    //       } verification request from <a href="/did/` +
+    //       v.from_did.replaceAll('did:elastos:', '') +
+    //       `" target="_blank">` +
+    //       fromUser.name +
+    //       `</a>`,
+    //     read: false,
+    //     createdAt: 0,
+    //     updatedAt: 0
+    //   },
+    //   session
+    // );
+  }
+
   public async approveCredential(
     session: ISessionItem,
     v: VerificationRequest,

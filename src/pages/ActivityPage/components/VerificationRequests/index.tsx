@@ -22,7 +22,10 @@ const VerificationRequests: React.FC<Props> = ({
 
   return (
     <PageContainer>
-      <TopInfo verificationStatus={verifications.map((v: any) => v.status)} />
+      <TopInfo
+        verificationStatus={verifications.map((v: any) => v.status)}
+        selectStatus={() => {}}
+      />
       <PageContent>
         <UserRows
           setSelectVerification={setSelectVerification}

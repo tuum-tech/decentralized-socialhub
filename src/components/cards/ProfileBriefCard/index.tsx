@@ -95,6 +95,8 @@ const ProfileBriefCard: React.FC<Props> = ({
           }}
         />
       );
+    } else if (category === 'requests') {
+      content = <>0</>;
     } else {
     }
     return content;
