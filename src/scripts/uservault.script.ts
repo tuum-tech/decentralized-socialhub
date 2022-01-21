@@ -16,13 +16,13 @@ export class UserVaultScripts {
     await hiveClient.Database.createCollection('public_fields');
     await hiveClient.Database.createCollection('verifiable_credentials');
     await hiveClient.Database.createCollection('templates');
-    await hiveClient.Database.createCollection('wallets');
     await hiveClient.Database.createCollection('team_profile');
     await hiveClient.Database.createCollection('thesis_profile');
     await hiveClient.Database.createCollection('paper_profile');
     await hiveClient.Database.createCollection('license_profile');
     await hiveClient.Database.createCollection('certification_profile');
     await hiveClient.Database.createCollection('game_exp_profile');
+    await hiveClient.Database.createCollection('private_spaces');
   }
 
   static async SetScripts(hiveClient: HiveClient) {
@@ -754,6 +754,66 @@ export class UserVaultScripts {
         }
       }
     });
+
+    await hiveClient.Scripting.SetScript({
+      name: 'get_all_spaces',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_all_spaces',
+        output: true,
+        body: {
+          collection: 'private_spaces'
+        }
+      }
+    });
+
+    await hiveClient.Scripting.SetScript({
+      name: 'add_space',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'add_space',
+        body: {
+          collection: 'private_spaces',
+          filter: {
+            guid: '$params.guid'
+          },
+          update: {
+            $set: {
+              guid: '$params.guid',
+              name: '$params.name',
+              description: '$params.description',
+              category: '$params.category',
+              avatar: '$params.avatar',
+              coverPhoto: '$params.coverPhoto'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+
+    await hiveClient.Scripting.SetScript({
+      name: 'remove_space',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'delete',
+        name: 'remove_space',
+        body: {
+          collection: 'private_spaces',
+          filter: {
+            guid: '$params.guid'
+          }
+        }
+      }
+    });
   }
 
   static async Delete(hiveClient: HiveClient) {
@@ -765,5 +825,12 @@ export class UserVaultScripts {
     await hiveClient.Database.deleteCollection('public_fields');
     await hiveClient.Database.deleteCollection('verifiable_credentials');
     await hiveClient.Database.deleteCollection('templates');
+    await hiveClient.Database.deleteCollection('team_profile');
+    await hiveClient.Database.deleteCollection('thesis_profile');
+    await hiveClient.Database.deleteCollection('paper_profile');
+    await hiveClient.Database.deleteCollection('license_profile');
+    await hiveClient.Database.deleteCollection('certification_profile');
+    await hiveClient.Database.deleteCollection('game_exp_profile');
+    await hiveClient.Database.deleteCollection('private_spaces');
   }
 }

@@ -541,3 +541,18 @@ interface IGithubCommentItem {
   comment: string;
   createdAt: number;
 }
+
+interface SpacesResponse {
+  _status: string;
+  get_all_spaces: SpaceDTO;
+}
+interface SpaceDTO {
+  items: Space[];
+}
+interface Space {
+  name: string;
+  description?: string;
+  category: string;
+  avatar?: string;
+  coverPhoto?: string;
+}
