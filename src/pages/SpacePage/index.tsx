@@ -42,12 +42,12 @@ const SpacePage: React.FC<InferMappedProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     refreshSpaces();
-  }, [refreshSpaces]);
+  }, []);
 
-  const refreshSpaces = useCallback(async () => {
+  const refreshSpaces = async () => {
     const _spaces = await SpaceService.getAllSpaces(session);
     setSpaces(_spaces);
-  });
+  };
   const handleCreateSpace = async (space: Space) => {
     await SpaceService.addSpace(session, space);
     refreshSpaces();
