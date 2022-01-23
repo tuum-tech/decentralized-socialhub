@@ -27,6 +27,7 @@ interface ExperienceItemProps {
   updateFunc: any;
   editFunc: any;
   index: number;
+  requestVerification: any;
   initialStatus?: string;
   removeFunc: any;
   isEditable: boolean;
@@ -39,6 +40,7 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
   editFunc,
   index,
   removeFunc,
+  requestVerification,
   isEditable,
   template,
   userSession
@@ -130,6 +132,17 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
                     }}
                   >
                     Remove
+                  </PopoverMenuItem>
+                  <PopoverMenuItem
+                    onClick={() => {
+                      setShowPopover({
+                        showPopover: false,
+                        event: undefined
+                      });
+                      requestVerification(experienceItem);
+                    }}
+                  >
+                    Request Verification
                   </PopoverMenuItem>
                 </IonPopover>
                 <TreeDotsButton

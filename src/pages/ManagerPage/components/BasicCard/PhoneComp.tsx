@@ -88,7 +88,7 @@ const UpdatePhoneComp: React.FC<Props> = ({ phoneUpdated, sessionItem }) => {
               await sendVerification();
             }}
           >
-            {loading ? 'Sending Verificaiton' : 'Send Verificaiton'}
+            {loading ? 'Sending Verification' : 'Send Verification'}
           </SaveButton>
           <SaveButton
             disabled={phone === ''}

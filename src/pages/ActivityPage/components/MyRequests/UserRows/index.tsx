@@ -11,6 +11,7 @@ import { getItemsFromData } from 'src/utils/script';
 import { getDIDString } from 'src/utils/did';
 import { timeSince } from 'src/utils/time';
 import { getCategoryTitle } from 'src/utils/credential';
+import { VerificationService } from 'src/services/verification.service';
 
 export const UserRow = styled.div`
   background: #ffffff;
@@ -59,12 +60,14 @@ export interface Props {
   session: ISessionItem;
   verifications: VerificationRequest[];
   setSelectVerification: (v: any) => void;
+  cancelVerification: (v: any) => void;
 }
 
 const UserRows: React.FC<Props> = ({
   session,
   verifications,
-  setSelectVerification
+  setSelectVerification,
+  cancelVerification
 }: Props) => {
   const [users, setUsers] = useState<any[]>([]);
   useEffect(() => {
@@ -122,6 +125,20 @@ const UserRows: React.FC<Props> = ({
         >
           View Info
         </SmallLightButton>
+        {v.status === 'requested' ? (
+          <SmallLightButton
+            style={{
+              margin: '0 0 0 auto'
+            }}
+            onClick={() => {
+              cancelVerification(v);
+            }}
+          >
+            Cancel Request
+          </SmallLightButton>
+        ) : (
+          ''
+        )}
       </UserRow>
     );
   };

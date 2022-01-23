@@ -21,6 +21,7 @@ interface IEducationProps {
   educationDTO: EducationDTO;
   updateFunc?: any;
   removeFunc?: any;
+  requestFunc?: any;
   isEditable?: boolean;
   isPublicPage?: boolean;
   template?: string;
@@ -46,6 +47,7 @@ const EducationCard: React.FC<IEducationProps> = ({
   educationDTO,
   updateFunc,
   removeFunc,
+  requestFunc,
   isEditable = false,
   isPublicPage = false,
   template = 'default',
@@ -221,6 +223,7 @@ const EducationCard: React.FC<IEducationProps> = ({
                         editFunc={editItem}
                         index={i}
                         removeFunc={removeItem}
+                        requestVerification={requestFunc}
                         isEditable={isEditable}
                         template={template}
                         userSession={userSession}

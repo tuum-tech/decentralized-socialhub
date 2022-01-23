@@ -60,6 +60,7 @@ import DashboardPage from './pages/DashboardPage/Loadable';
 import PublicPage from './pages/PublicPage/Loadable';
 import ManagerPage from './pages/ManagerPage';
 import ActivityPage from './pages/ActivityPage';
+import SpacePage from './pages/SpacePage';
 import SyncPage from './pages/SyncPage';
 import FollowersPage from './pages/FollowersPage';
 import FollowingsPage from './pages/FollowingsPage';
@@ -149,6 +150,12 @@ const App: React.FC = () => {
                 component={ExplorePage}
                 exact={false}
               />
+              {/* in a progress */}
+              {/* <ProtectedRoute
+                path="/spaces"
+                component={SpacePage}
+                exact={true}
+              /> */}
               <ProtectedRoute
                 path="/settings"
                 component={SettingsPage}

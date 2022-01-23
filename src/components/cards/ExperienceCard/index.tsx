@@ -22,6 +22,7 @@ interface IExperienceProps {
   updateFunc?: any;
   isEditable?: boolean;
   removeFunc?: any;
+  requestFunc?: any;
   isPublicPage?: boolean;
   template?: string;
   userSession: ISessionItem;
@@ -48,6 +49,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   updateFunc,
   isEditable = false,
   removeFunc,
+  requestFunc,
   isPublicPage = false,
   template = 'default',
   userSession,
@@ -222,6 +224,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
                     editFunc={editItem}
                     index={i}
                     removeFunc={removeItem}
+                    requestVerification={requestFunc}
                     isEditable={isEditable}
                     template={template}
                     userSession={userSession}

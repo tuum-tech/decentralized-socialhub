@@ -236,3 +236,20 @@ export const ConnectionSvg = ({ fill = 'black' }) => (
     </svg>
   </LeftSvgContainer>
 );
+
+export const SpaceSvg = ({ fill = 'black' }) => (
+  <LeftSvgContainer>
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1.7 15H14.3C14.4857 15 14.6637 14.9263 14.795 14.795C14.9263 14.6637 15 14.4857 15 14.3V1.7C15 1.51435 14.9263 1.3363 14.795 1.20503C14.6637 1.07375 14.4857 1 14.3 1H1.7C1.51435 1 1.3363 1.07375 1.20503 1.20503C1.07375 1.3363 1 1.51435 1 1.7V14.3C1 14.4857 1.07375 14.6637 1.20503 14.795C1.3363 14.9263 1.51435 15 1.7 15ZM2.4 6.6H3.8V13.6H2.4V6.6ZM13.6 13.6H5.2V6.6H13.6V13.6ZM2.4 2.4H13.6V5.2H2.4V2.4Z"
+        fill={fill}
+      />
+    </svg>
+  </LeftSvgContainer>
+);

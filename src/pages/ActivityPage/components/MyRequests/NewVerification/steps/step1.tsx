@@ -46,6 +46,7 @@ export const NextButton = styled.button`
 `;
 interface Props {
   credentials: VerificationData[];
+  selectedCredential?: string;
   categories: VerificationData[];
   setCredentials: (newCredentials: VerificationData[]) => void;
   onNext: () => void;
@@ -53,12 +54,18 @@ interface Props {
 
 const CredentialView = ({
   credentials,
+  selectedCredential,
   categories,
   setCredentials,
   onNext
 }: Props) => {
   const selectedCategoreis = credentials.map(c => c.idKey);
-  const [selectedItem, setSelectedItem] = useState(categories[0]);
+  const [selectedItem, setSelectedItem] = useState(
+    selectedCredential === '' || selectedCredential === undefined
+      ? categories[0]
+      : categories.find(x => x.idKey === selectedCredential)
+  );
+
   const [showItems, setShowItems] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -72,11 +79,13 @@ const CredentialView = ({
         setShowItems(false);
       }
     }
+
+    setCredentials([selectedItem as VerificationData]);
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [wrapperRef]);
+  }, [selectedItem, setCredentials, wrapperRef]);
 
   return (
     <Container>
@@ -96,7 +105,7 @@ const CredentialView = ({
               className={style['selectBox-selected-item']}
               onClick={() => setShowItems(!showItems)}
             >
-              <div>{selectedItem.idKey}</div>
+              <div>{selectedItem?.idKey}</div>
               <div className={style['selectBox-arrow']}>
                 {showItems ? <DropUp /> : <DropDown />}
               </div>

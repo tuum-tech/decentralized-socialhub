@@ -1,10 +1,10 @@
 import React from 'react';
 import { IonCard, IonCardContent, IonRow, IonImg, IonText } from '@ionic/react';
-import style from './BlankCard.module.scss';
+import style from './WelcomeSpace.module.scss';
 import WhoKnows from 'src/assets/icon/who-knows.svg';
-const BlankCard = () => {
+const WelcomeSpace = () => {
   return (
-    <IonCard className={style['blank-card']}>
+    <IonCard className={style['welcome-space-card']}>
       <IonCardContent className={style['card-content']}>
         <IonRow>
           <IonImg src={WhoKnows}></IonImg>
@@ -27,4 +27,4 @@ const BlankCard = () => {
   );
 };
 
-export default BlankCard;
+export default WelcomeSpace;

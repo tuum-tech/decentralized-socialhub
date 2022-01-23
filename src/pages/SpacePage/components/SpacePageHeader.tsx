@@ -23,7 +23,7 @@ export const PageTitle = styled.h2`
   color: #27272e;
 `;
 
-export const ActivityTabsContainer = styled(TabsContainer)`
+export const SpaceTabsContainer = styled(TabsContainer)`
   ion-list,
   .tab-item {
     background-color: transparent;
@@ -51,63 +51,43 @@ export const BlueButton = styled.button`
   margin: 0 20px 0 auto;
 `;
 
-interface ActivityPageHeaderProps {
+interface SpacePageHeaderProps {
   active: string;
   setActive: (avtive: string) => void;
-  newVerificationClicked: () => void;
-  myverifications: number;
-  verificationRequests: number;
 }
 
-const ActivityPageHeaderContainer = styled.div`
+const SpacePageHeaderContainer = styled.div`
   display: flex;
   align-items: center;
+  padding: 5px 30px;
 `;
 
-const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
+const SpacePageHeader: React.FC<SpacePageHeaderProps> = ({
   active,
   setActive,
-  newVerificationClicked,
-  myverifications,
-  verificationRequests
 }) => {
   return (
-    <ActivityPageHeaderContainer>
+    <SpacePageHeaderContainer>
       <IonList>
         <IonItem
-          className={(active === 'timeline' ? 'tab-active' : '') + ' tab-item'}
-          onClick={() => setActive('timeline')}
+          className={(active === 'my spaces' ? 'tab-active' : '') + ' tab-item'}
+          onClick={() => setActive('my spaces')}
         >
-          <IonLabel className="tab-label">Timeline</IonLabel>
+          <IonLabel className="tab-label">My Spaces</IonLabel>
         </IonItem>
         <IonItem
           className={
-            (active === 'myrequests' ? 'tab-active' : '') + ' tab-item'
+            (active === 'following' ? 'tab-active' : '') + ' tab-item'
           }
-          onClick={() => setActive('myrequests')}
-        >
-          <IonLabel className="tab-label">My Requests</IonLabel>
-        </IonItem>
-        <IonItem
-          className={
-            (active === 'verificationrequests' ? 'tab-active' : '') +
-            ' tab-item'
-          }
-          onClick={() => setActive('verificationrequests')}
+          onClick={() => setActive('following')}
         >
           <IonLabel className="tab-label">
-            Verification Requests
-            {verificationRequests > 0 && `(${verificationRequests})`}
+            Following
           </IonLabel>
         </IonItem>
       </IonList>
-      {active === 'myrequests' && (
-        <BlueButton onClick={newVerificationClicked}>
-          New Verification Request
-        </BlueButton>
-      )}
-    </ActivityPageHeaderContainer>
+    </SpacePageHeaderContainer>
   );
 };
 
-export default ActivityPageHeader;
+export default SpacePageHeader;

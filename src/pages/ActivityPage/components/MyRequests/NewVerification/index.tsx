@@ -15,6 +15,7 @@ interface Props {
   session: ISessionItem;
   targetUser: ISessionItem;
   onClose: () => void;
+  selectedCredential?: string;
   sendRequest: (
     dids: string[],
     credentials: VerificationData[],
@@ -35,7 +36,8 @@ const NewVerificationContent: React.FC<Props> = ({
   session,
   onClose,
   targetUser,
-  sendRequest
+  sendRequest,
+  selectedCredential
 }: Props) => {
   const [step, setStep] = useState(1);
   const [categories, setCateogries] = useState<VerificationData[]>([]);
@@ -70,6 +72,7 @@ const NewVerificationContent: React.FC<Props> = ({
         <CredentialView
           categories={categories}
           credentials={credentials}
+          selectedCredential={selectedCredential}
           setCredentials={setCredentials}
           onNext={() => setStep(2)}
         />
