@@ -14,7 +14,7 @@ import ButtonWithLogo from 'src/elements/buttons/ButtonWithLogo';
 import TextInput from 'src/elements/inputs/TextInput';
 import MnemonicInput from 'src/elements/inputs/MnemonicInput';
 import { Text16, Text12 } from 'src/elements/texts';
-import { SocialButton, ThemeButton, SignInButton } from 'src/elements/buttons';
+import { SocialButton, ThemeButton } from 'src/elements/buttons';
 
 import helpSvg from '../../../../assets/icon/help.svg';
 import style from './DidSignForm.module.scss';
@@ -229,9 +229,7 @@ const DidForm: React.FC<Props> = ({
             />
           </IonCol>
         </DidInputRow>
-        <ThemeButton style={{ marginTop: '40px' }} onClick={signin}>
-          Recover Account
-        </ThemeButton>
+        <ThemeButton onClick={signin}>Recover Account</ThemeButton>
       </DidSignFormContainer>
     </OnBoardLayoutRightContent>
   );

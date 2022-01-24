@@ -1,7 +1,7 @@
 import React from 'react';
 
 import style from './style.module.scss';
-import community from 'src/assets/new/community.png';
+import grow from 'src/assets/new/grow.png';
 import { SectionSubTitle, SectionText } from '../../index';
 import { MainLayout } from '../../components/AboutSection';
 import { ContentContainer } from './MonetizeContent';
@@ -12,7 +12,7 @@ const GrowContent = () => {
       <div className={style['community']}>
         <ContentContainer>
           <div className="item">
-            <img src={community} alt="community" />
+            <img src={grow} alt="community" />
           </div>
           <div className="item">
             <SectionSubTitle className="subtitle">

@@ -15,7 +15,7 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import ButtonWithLogo from 'src/elements/buttons/ButtonWithLogo';
+import ThemeButton from 'src/elements/buttons/ThemeButton';
 import TextInput from 'src/elements/inputs/TextInput';
 import { Text16, Title40, Text18 } from 'src/elements/texts';
 import Check from '../components/Check';
@@ -190,9 +190,7 @@ const CreatePasswordPage: React.FC<PageProps> = ({
             placeholder="Enter your password"
           />
           {error !== '' && <ErrorText>{error}</ErrorText>}
-          <ButtonWithLogo
-            mt={34}
-            hasLogo={false}
+          <ThemeButton
             text="Continue"
             onClick={async () => {
               await onButtonClick();

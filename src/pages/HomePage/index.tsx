@@ -8,7 +8,7 @@ import AboutSection from './components/AboutSection';
 import UtilitySection from './components/UtilitySection';
 import CommunitySection from './components/CommunitySection';
 import OwnershipSection from './components/OwnershipSection';
-import ConnectSection from './components/ConnectSection';
+// import ConnectSection from './components/ConnectSection';
 
 const Page = styled(IonPage)`
   overflow: auto;
@@ -116,9 +116,9 @@ const HomePage = () => {
       <UtilitySection refProp={utilityRef} />
       <CommunitySection refProp={communityRef} />
       <OwnershipSection refProp={ownershipRef} />
-      <ConnectSection refProp={connectRef} />
+      {/* <ConnectSection refProp={connectRef} /> */}
 
-      <Footer />
+      <Footer refProp={connectRef} />
     </Page>
   );
 };

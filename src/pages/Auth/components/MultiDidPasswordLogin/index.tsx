@@ -13,7 +13,7 @@ import {
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { SearchService } from 'src/services/search.service';
 import { getItemsFromData } from 'src/utils/script';
-import { ButtonWithLogo } from 'src/elements/buttons';
+import { ThemeButton } from 'src/elements/buttons';
 import { Text16, ErrorTxt, Title40, Text18 } from 'src/elements/texts';
 
 import eye from 'src/assets/icon/eye.png';
@@ -181,9 +181,7 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
             hasError={error !== '' && password === ''}
           />
           {error !== '' && <ErrorTxt className="mt-3">{error}</ErrorTxt>}
-          <ButtonWithLogo
-            mode="dark"
-            mt={20}
+          <ThemeButton
             text="Sign in to profile"
             onClick={async () => {
               await onLoginButtonClick();
@@ -191,11 +189,7 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
           />
 
           <FieldDivider mt={80} />
-          <ButtonWithLogo
-            text="Create new profile"
-            onClick={changeMode}
-            mt={42}
-          />
+          <ThemeButton text="Create new profile" onClick={changeMode} />
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
 

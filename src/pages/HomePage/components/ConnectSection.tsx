@@ -7,7 +7,7 @@ import { MainLayout } from '../components/AboutSection';
 
 const Content = styled.div`
   margin-top: 257px;
-  margin-bottom: 170px;
+  margin-bottom: 370px;
 
   background: #6937bc;
   box-shadow: 0px 20px 50px 10px rgba(193, 203, 244, 0.2);

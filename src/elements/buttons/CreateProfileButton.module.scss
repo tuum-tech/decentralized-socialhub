@@ -20,9 +20,13 @@
 
   border-radius: 8px;
   background: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.button-text {
+.button-gradient-text {
   font-size: 72px;
   background: $light-pink-gradient;
   -webkit-background-clip: text;
@@ -32,4 +36,12 @@
   font-weight: 600;
   font-size: 14px;
   line-height: 14px;
+}
+
+.button-black-text {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 14px;
+  color: black;
 }

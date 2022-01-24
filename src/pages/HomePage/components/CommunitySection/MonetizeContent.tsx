@@ -3,7 +3,9 @@ import styled from 'styled-components';
 
 import style from './style.module.scss';
 import community from 'src/assets/new/community.png';
+
 import { SectionSubTitle, SectionText } from '../../index';
+import monetizeBg from 'src/assets/new/monetize-bg.jpg';
 
 export const ContentContainer = styled.div`
   width: 100%;
@@ -23,7 +25,7 @@ export const ContentContainer = styled.div`
     .subtitle {
       color: #000000;
       margin-bottom: 10px;
-      max-width: 380px;
+      max-width: 430px;
     }
 
     img {
@@ -65,19 +67,20 @@ const MonetizeContent = styled(ContentContainer)`
 
 const CommunitySection = () => {
   return (
-    <div className={style['monetize']}>
+    <div
+      className={style['monetize']}
+      style={{ backgroundImage: `url(${monetizeBg})` }}
+    >
       <MonetizeContent>
-        <div className="item">
-          <img src={community} alt="community" />
-        </div>
+        <div className="item"></div>
         <div className="item">
           <SectionSubTitle className="subtitle">
             Monetize via rewards- based incentives
           </SectionSubTitle>
           <SectionText className="text">
             Earn rewards simply by participating and engaging with communities
-            while helping contribute to the ecosystem. Become your  own
-            financial vehicle with Profile.
+            while helping contribute to the ecosystem. Become your own financial
+            vehicle with Profile.
           </SectionText>
         </div>
       </MonetizeContent>

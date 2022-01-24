@@ -1,5 +1,6 @@
 import React from 'react';
 import { StaticContext, RouteComponentProps } from 'react-router';
+import { useHistory } from 'react-router-dom';
 
 import {
   OnBoardLayout,
@@ -14,10 +15,9 @@ import FooterLinks, {
   Footer
 } from 'src/components/layouts/OnBoardLayout/FooterLinks';
 import { Text16 } from 'src/elements/texts';
-import SignInButton from 'src/elements/buttons/SignInButton';
-import CreateProfileButton from 'src/elements/buttons/CreateProfileButton';
-import leftBg from 'src/assets/new/auth/signin_left_bg.png';
+import { ThemeButton, CreateProfileButton } from 'src/elements/buttons';
 
+import leftBg from 'src/assets/new/auth/signin_left_bg.png';
 import style from './style.module.scss';
 import { LocationState } from './types';
 
@@ -26,6 +26,7 @@ const SignDidPage: React.FC<RouteComponentProps<
   StaticContext,
   LocationState
 >> = props => {
+  const history = useHistory();
   return (
     <OnBoardLayout className={style['did-signin']}>
       <OnBoardLayoutLeft
@@ -51,13 +52,17 @@ const SignDidPage: React.FC<RouteComponentProps<
             will earn badges and be set up for the future — where you can earn
             off your data, under your control!
           </Text16>
-          <SignInButton to="/sign-did" width="100%" />
+          <ThemeButton
+            img="white"
+            onClick={() => history.push('/sign-did')}
+            style={{ width: '100%' }}
+          />
 
           <OnBoardLayoutRightContentTitle style={{ marginTop: '100px' }}>
             New to Profile?
           </OnBoardLayoutRightContentTitle>
 
-          <CreateProfileButton />
+          <CreateProfileButton to="/create-profile" />
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import LoadingIndicator from 'src/elements/LoadingIndicator';
-import { ButtonWithLogo } from 'src/elements/buttons';
+import { ThemeButton } from 'src/elements/buttons';
 import TextInput from 'src/elements/inputs/TextInput';
 import { Text16 } from 'src/elements/texts';
 import Avatar from 'src/components/Avatar';
@@ -179,7 +179,7 @@ const UseDetailsForm: React.FC<Props> = ({ setUserInfo, userInfo }) => {
           {error !== '' && <ErrorText>{error}</ErrorText>}
           {displayText !== '' && <DisplayText>{displayText}</DisplayText>}
 
-          <ButtonWithLogo
+          <ThemeButton
             text={
               displayText ===
               'Verification email is sent to you. Please confirm to complete your registration.'

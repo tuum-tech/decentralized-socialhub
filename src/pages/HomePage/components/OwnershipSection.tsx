@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import community from 'src/assets/new/community.png';
+import ownership from 'src/assets/new/ownership.png';
 import { SectionTitle, SectionIntro, SectionText } from '../index';
 
 const Container = styled.div`
   width: 100%;
   padding-left: 9%;
   padding-right: 9%;
-  margin-top: 153px;
+  margin-top: 130px;
 
   @media only screen and (max-width: 600px) {
     padding-left: 13px;
@@ -64,7 +64,7 @@ const OwnershipSection: React.FC<Props> = ({ refProp }) => {
       <SectionTitle>Ownership</SectionTitle>
       <OwnershipContent>
         <div className="item">
-          <img src={community} width="100%" alt="community" />
+          <img src={ownership} width="100%" alt="ownership" />
         </div>
 
         <div className="item">

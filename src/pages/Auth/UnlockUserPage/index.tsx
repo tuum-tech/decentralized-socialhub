@@ -11,7 +11,7 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { ButtonLink, ArrowButton, ButtonWithLogo } from 'src/elements/buttons';
+import { ButtonLink, ArrowButton, ThemeButton } from 'src/elements/buttons';
 import { ErrorTxt, Title40, Text12 } from 'src/elements/texts';
 import TextInput from 'src/elements/inputs/TextInput';
 import { UserService } from 'src/services/user.service';
@@ -105,10 +105,9 @@ const UnlockUserPage: React.FC<PageProps> = ({
             placeholder="Enter your password"
           />
           {error !== '' && <ErrorTxt>{error}</ErrorTxt>}
-          <ButtonWithLogo
-            mt={34}
-            hasLogo={false}
+          <ThemeButton
             text="Continue"
+            style={{ marginTop: '25px' }}
             onClick={async () => {
               await onDefaultButtonClick();
             }}

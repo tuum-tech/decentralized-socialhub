@@ -22,7 +22,7 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { ButtonLink, ArrowButton, ButtonWithLogo } from 'src/elements/buttons';
+import { ButtonLink, ArrowButton, ThemeButton } from 'src/elements/buttons';
 import { Title40, Text18, Text12, Text28 } from 'src/elements/texts';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
@@ -65,9 +65,7 @@ const ForgotPasswordPage: React.FC<InferMappedProps> = ({
           <OnBoardLayoutRightContentTitle>
             Sign in
           </OnBoardLayoutRightContentTitle>
-          <ButtonWithLogo
-            mode="dark"
-            mt={32}
+          <ThemeButton
             text="Sign in to profile"
             onClick={() => {
               window.localStorage.clear();
@@ -80,14 +78,13 @@ const ForgotPasswordPage: React.FC<InferMappedProps> = ({
           <OnBoardLayoutRightContentTitle style={{ marginTop: '96px' }}>
             Create new profile
           </OnBoardLayoutRightContentTitle>
-          <ButtonWithLogo
+          <ThemeButton
             text="Create new profile"
             onClick={() => {
               history.push({
                 pathname: '/create-profile'
               });
             }}
-            mt={48}
           />
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>

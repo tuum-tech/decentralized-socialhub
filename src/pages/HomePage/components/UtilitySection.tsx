@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import authentically from 'src/assets/new/utility/utility_authentically.png';
-import password from 'src/assets/new/utility/utility_password.png';
-import nft from 'src/assets/new/utility/utility_nft.png';
+import authentically from 'src/assets/new/utility/1.png';
+import password from 'src/assets/new/utility/2.png';
+import nft from 'src/assets/new/utility/3.png';
 import { SectionTitle, SectionIntro, SectionText } from '../index';
 import { MainLayout } from '../components/AboutSection';
 
@@ -33,17 +33,9 @@ const Container = styled.div`
     width: 68px;
   }
 
-  .width-78 {
-    width: 78px;
-  }
-
   @media only screen and (max-width: 600px) {
     .width-68 {
       width: 58px;
-    }
-
-    .width-78 {
-      width: 68px;
     }
 
     .content {
@@ -82,9 +74,9 @@ const UtilitySection: React.FC<Props> = ({ refProp }) => {
             </SectionText>
           </div>
           <div className="item">
-            <img src={password} className="width-78" alt="authentically" />
+            <img src={password} className="width-68" alt="authentically" />
             <SectionIntro>
-              Eliminate endless  usernames and passwords
+              Eliminate endless usernames and passwords
             </SectionIntro>
             <SectionText>
               Replace passwords with one self-created Decentralized ID (DID),
@@ -92,11 +84,11 @@ const UtilitySection: React.FC<Props> = ({ refProp }) => {
             </SectionText>
           </div>
           <div className="item">
-            <img src={nft} className="width-78" alt="authentically" />
+            <img src={nft} className="width-68" alt="authentically" />
             <SectionIntro>Do more with Your NFTs</SectionIntro>
             <SectionText>
               Enter upcoming exclusive NFT community spaces on Profile, so
-              you’ll  be able to become a part of your favorite digital
+              you'll be able to become a part of your favorite digital
               communities and share ownership of NFTs.
             </SectionText>
           </div>

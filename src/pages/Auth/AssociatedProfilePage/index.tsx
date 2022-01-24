@@ -20,7 +20,7 @@ import {
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { ButtonWithLogo } from 'src/elements/buttons';
+import { ThemeButton } from 'src/elements/buttons';
 import { Text16, Title40, Text18 } from 'src/elements/texts';
 import PageLoading from 'src/components/layouts/PageLoading';
 
@@ -155,9 +155,7 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
             Has been already linked to profile registered, sign into this
             profile below.
           </Text16>
-          <ButtonWithLogo
-            mode="dark"
-            mt={32}
+          <ThemeButton
             text="Sign in to profile"
             onClick={async () => {
               const signedUserDids = await UserService.getSignedUsers();
@@ -191,8 +189,8 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
           </OnBoardLayoutRightContentTitle>
           <Text16>Use your email to create a new profile.</Text16>
 
-          <ButtonWithLogo
-            text={'Create new profile'}
+          <ThemeButton
+            text="Create new profile"
             onClick={async () => {
               const { name, loginCred, service } = associatedInfo;
               if (service === AccountType.Email) {
@@ -216,7 +214,6 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
                 setScreen('/generate-did');
               }
             }}
-            mt={42}
           />
           {displayText !== '' && <DisplayText>{displayText}</DisplayText>}
         </OnBoardLayoutRightContent>

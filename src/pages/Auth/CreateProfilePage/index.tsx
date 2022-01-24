@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Redirect } from 'react-router';
+import { useHistory } from 'react-router-dom';
 
 import {
   OnBoardLayout,
@@ -11,7 +12,11 @@ import {
   OnBoardLayoutRightContent,
   OnBoardLayoutRightContentTitle
 } from 'src/components/layouts/OnBoardLayout';
-import { SocialButton, ThemeButton, SignInButton } from 'src/elements/buttons';
+import {
+  SocialButton,
+  ThemeButton,
+  CreateProfileWithImgButton
+} from 'src/elements/buttons';
 import TextInput from 'src/elements/inputs/TextInput';
 import { Text16, Title40, Text18, Text12 } from 'src/elements/texts';
 import { UserService } from 'src/services/user.service';
@@ -24,6 +29,7 @@ import MultiDidPasswordLogin from '../components/MultiDidPasswordLogin';
 import FieldDivider from '../components/FieldDivider';
 import style from './style.module.scss';
 import createLeftBg from 'src/assets/new/auth/create_left_bg.png';
+
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { makeSelectSession } from 'src/store/users/selectors';
@@ -46,6 +52,24 @@ import {
   requestUpdateEmailOrPhone
 } from 'src/components/Auth/fetchapi';
 
+const MobileContent = styled.div`
+  display: none;
+  padding-top: 50px;
+
+  @media only screen and (max-width: 980px) {
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+
+    a {
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      max-width: 300px !important;
+    }
+  }
+`;
+
 const ErrorText = styled(Text16)`
   text-align: center;
   color: red;
@@ -62,6 +86,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
+  const history = useHistory();
   const [showEmailVerifyModal, setShowEmailVerifyModal] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -218,8 +243,12 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
             Communicate your personal story and build communities how you want
             with crypto, NFT, and blockchain enthusiasts you can trust.
           </Text18>
-          <Text12 className="mt-25px mb-0">Already have a profile?</Text12>
-          <SignInButton to="/sign-did" style="black" width="250px" />
+          <Text12 className="mt-25px ">Already have a profile?</Text12>
+          <ThemeButton
+            onClick={() => history.push('/sign-did')}
+            img="white"
+            style={{ marginTop: '25px', width: '250px', background: '#313049' }}
+          />
           <Footer>
             <FooterLinks></FooterLinks>
           </Footer>
@@ -254,7 +283,15 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
           {displayText !== '' && <DisplayText>{displayText}</DisplayText>}
 
           <ThemeButton
-            style={{ marginTop: '40px' }}
+            style={{
+              marginTop: '35px'
+            }}
+            text={
+              displayText ===
+              'Verification email is sent to you. Please confirm to complete your registration.'
+                ? 'Verify'
+                : 'Create new profile'
+            }
             onClick={async () => {
               if (
                 displayText ===
@@ -265,12 +302,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
                 await createUser();
               }
             }}
-          >
-            {displayText ===
-            'Verification email is sent to you. Please confirm to complete your registration.'
-              ? 'Verify'
-              : 'Create new profile'}
-          </ThemeButton>
+          />
 
           <FieldDivider text="or connect with" />
           <div className={style['social-btn-group']}>
@@ -303,6 +335,11 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
               resend={resendVerificaitonCode}
             />
           </EmailVerificationDetailModal>
+
+          <MobileContent>
+            <Text12>Already have a profile?</Text12>
+            <CreateProfileWithImgButton to="/sign-did" />
+          </MobileContent>
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>
