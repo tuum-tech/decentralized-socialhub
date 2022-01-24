@@ -5,8 +5,6 @@ import {
   OnBoardLayout,
   OnBoardLayoutLeft,
   OnBoardLayoutLeftContent,
-  OnBoardLayoutLeftContentTitle,
-  OnBoardLayoutLeftContentIntro,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
@@ -14,7 +12,7 @@ import {
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
 import { ButtonLink, ArrowButton, ButtonWithLogo } from 'src/elements/buttons';
-import { ErrorTxt } from 'src/elements/texts';
+import { ErrorTxt, Title40, Text12 } from 'src/elements/texts';
 import TextInput from 'src/elements/inputs/TextInput';
 import { UserService } from 'src/services/user.service';
 import wavinghand from 'src/assets/icon/wavinghand.png';
@@ -82,15 +80,11 @@ const UnlockUserPage: React.FC<PageProps> = ({
   return (
     <OnBoardLayout>
       <OnBoardLayoutLeft>
-        <OnBoardLayoutLogo src={whitelogo} />
+        <OnBoardLayoutLogo />
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={wavinghand} />
-          <OnBoardLayoutLeftContentTitle className="mt-18px">
-            Continue with your password
-          </OnBoardLayoutLeftContentTitle>
-          <OnBoardLayoutLeftContentIntro className="my-25px">
-            Forgot your password? Help
-          </OnBoardLayoutLeftContentIntro>
+          <Title40 className="mt-18px">Continue with your password</Title40>
+          <Text12 className="my-25px">Forgot your password? Help</Text12>
           <ButtonLink width={26} to="/forgot-password">
             <ArrowButton />
           </ButtonLink>

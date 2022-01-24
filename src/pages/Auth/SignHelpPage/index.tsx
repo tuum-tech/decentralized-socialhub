@@ -18,16 +18,13 @@ import {
   OnBoardLayout,
   OnBoardLayoutLeft,
   OnBoardLayoutLeftContent,
-  OnBoardLayoutLeftContentTitle,
-  OnBoardLayoutLeftContentDescription,
-  OnBoardLayoutLeftContentIntro,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
 import { ButtonLink, ArrowButton } from 'src/elements/buttons';
+import { Title40, Text18, Text12 } from 'src/elements/texts';
 
-import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import wavinghand from 'src/assets/icon/wavinghand.png';
 import FooterLinks, {
   Footer
@@ -46,20 +43,18 @@ const SignHelpPage: React.FC<InferMappedProps> = ({
   return (
     <OnBoardLayout className={style['did-signin']}>
       <OnBoardLayoutLeft>
-        <OnBoardLayoutLogo src={whitelogo} />
+        <OnBoardLayoutLogo />
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={wavinghand} />
-          <OnBoardLayoutLeftContentTitle className="mt-18px">
-            What is elastOS?
-          </OnBoardLayoutLeftContentTitle>
-          <OnBoardLayoutLeftContentDescription className="mt-25px">
+          <Title40 className="mt-18px">What is elastOS?</Title40>
+          <Text18 className="mt-25px">
             Don’t forget to fill out as much of your profile as you can. You
             will earn badges and be set up for the future - where you can earn
             off your data, under your control!
-          </OnBoardLayoutLeftContentDescription>
-          <OnBoardLayoutLeftContentIntro className="my-25px">
+          </Text18>
+          <Text12 className="my-25px">
             Download for iOS here or Android here
-          </OnBoardLayoutLeftContentIntro>
+          </Text12>
           <ButtonLink width={26} to="/sign-qr">
             <ArrowButton />
           </ButtonLink>

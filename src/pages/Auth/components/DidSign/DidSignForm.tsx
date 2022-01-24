@@ -14,6 +14,7 @@ import ButtonWithLogo from 'src/elements/buttons/ButtonWithLogo';
 import TextInput from 'src/elements/inputs/TextInput';
 import MnemonicInput from 'src/elements/inputs/MnemonicInput';
 import { Text16, Text12 } from 'src/elements/texts';
+import { SocialButton, ThemeButton, SignInButton } from 'src/elements/buttons';
 
 import helpSvg from '../../../../assets/icon/help.svg';
 import style from './DidSignForm.module.scss';
@@ -166,9 +167,8 @@ const DidForm: React.FC<Props> = ({
       </OnBoardLayoutRightContentTitle>
       <Text16>Enter your 12 security passwords in the correct order.</Text16>
       <IonRow style={{ marginTop: '12px' }}>
-        <IonCol>
-          <Text12>What are these?</Text12>
-          <Text12>&nbsp;Help</Text12>
+        <IonCol style={{ paddingLeft: '0px' }}>
+          <Text12>What are these?&nbsp;Help</Text12>
         </IonCol>
         {error && (
           <IonCol>
@@ -229,21 +229,9 @@ const DidForm: React.FC<Props> = ({
             />
           </IonCol>
         </DidInputRow>
-        {error ? (
-          <ButtonWithLogo
-            mode="dark"
-            mt={27}
-            text="Sign in to profile"
-            disabled
-          />
-        ) : (
-          <ButtonWithLogo
-            mode="dark"
-            mt={27}
-            text="Sign in to profile"
-            onClick={signin}
-          />
-        )}
+        <ThemeButton style={{ marginTop: '40px' }} onClick={signin}>
+          Recover Account
+        </ThemeButton>
       </DidSignFormContainer>
     </OnBoardLayoutRightContent>
   );

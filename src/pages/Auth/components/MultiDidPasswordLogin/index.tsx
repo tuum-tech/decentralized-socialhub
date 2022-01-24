@@ -4,8 +4,6 @@ import {
   OnBoardLayout,
   OnBoardLayoutLeft,
   OnBoardLayoutLeftContent,
-  OnBoardLayoutLeftContentTitle,
-  OnBoardLayoutLeftContentDescription,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
@@ -16,8 +14,8 @@ import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { SearchService } from 'src/services/search.service';
 import { getItemsFromData } from 'src/utils/script';
 import { ButtonWithLogo } from 'src/elements/buttons';
-import { Text16, ErrorTxt } from 'src/elements/texts';
-import whitelogo from 'src/assets/logo/whitetextlogo.png';
+import { Text16, ErrorTxt, Title40, Text18 } from 'src/elements/texts';
+
 import eye from 'src/assets/icon/eye.png';
 import TextInput from 'src/elements/inputs/TextInput';
 import { UserService } from 'src/services/user.service';
@@ -138,15 +136,15 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
     <OnBoardLayout>
       {loading !== '' && <LoadingIndicator loadingText={loading} />}
       <OnBoardLayoutLeft>
-        <OnBoardLayoutLogo src={whitelogo} />
+        <OnBoardLayoutLogo />
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={eye} />
-          <OnBoardLayoutLeftContentTitle className="mt-18px">
+          <Title40 className="mt-18px">
             We have seen your accounts before.
-          </OnBoardLayoutLeftContentTitle>
-          <OnBoardLayoutLeftContentDescription className="mt-25px">
+          </Title40>
+          <Text18 className="mt-25px">
             You can select and login using the password you set
-          </OnBoardLayoutLeftContentDescription>
+          </Text18>
           <Footer>
             <FooterLinks></FooterLinks>
           </Footer>

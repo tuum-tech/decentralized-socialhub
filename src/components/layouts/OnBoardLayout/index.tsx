@@ -1,16 +1,20 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { IonPage, IonImg } from '@ionic/react';
 
-import { Title40, Text18, Text12, Text28 } from 'src/elements/texts';
+import { Text28 } from 'src/elements/texts';
+import leftBg from 'src/assets/new/auth/left_bg.png';
+import rightBg from 'src/assets/new/auth/right_bg.png';
+import logo from 'src/assets/new/logo.png';
 
-export const OnBoardLayoutLogo = styled(IonImg)`
-  margin: 35.23px 39.95px;
-  width: 126.6px;
-`;
+export const OnBoardLayoutLogo = () => (
+  <Link to="/">
+    <IonImg style={{ width: '94px', margin: '35px 39px' }} src={logo} />
+  </Link>
+);
 
-export const WavingHandImg = styled(IonImg)`
-  width: 38px;
-`;
+//////// Left
 
 export const OnBoardLayout = styled(IonPage)`
   font-style: normal;
@@ -21,10 +25,13 @@ export const OnBoardLayout = styled(IonPage)`
 `;
 
 export const OnBoardLayoutLeft = styled.div`
-  background-color: var(--theme-primary-blue);
   border-radius: 0px;
   color: #ffffff;
   position: relative;
+
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-image: url(${leftBg});
 `;
 
 export const OnBoardLayoutLeftContent = styled.div`
@@ -34,25 +41,17 @@ export const OnBoardLayoutLeftContent = styled.div`
   margin: 132px auto;
 `;
 
-export const OnBoardLayoutLeftContentTitle = styled(Title40)`
-  margin-top: 18px;
-`;
-
-export const OnBoardLayoutLeftContentDescription = styled(Text18)`
-  margin-top: 25px;
-  margin-bottom: 25px;
-`;
-
-export const OnBoardLayoutLeftContentIntro = styled(Text12)`
-  margin-bottom: 25px;
-`;
-
+/////// Right
 export const OnBoardLayoutRight = styled.div`
   background: #fbfbfd;
   border-radius: 0px;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-image: url(${rightBg});
 `;
 
 export const OnBoardLayoutRightContent = styled.div`
@@ -64,4 +63,8 @@ export const OnBoardLayoutRightContent = styled.div`
 
 export const OnBoardLayoutRightContentTitle = styled(Text28)`
   margin-bottom: 12px;
+`;
+
+export const WavingHandImg = styled(IonImg)`
+  width: 38px;
 `;

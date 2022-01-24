@@ -50,7 +50,8 @@ import {
   SignQRPage,
   ForgotPasswordPage,
   UnlockUserPage,
-  CreateProfileWithDidPage
+  CreateProfileWithDidPage,
+  RecoverAccountPage
 } from './pages/Auth';
 
 import HomePage from './pages/HomePage';
@@ -210,6 +211,11 @@ const App: React.FC = () => {
               <ProtectedRoute
                 path="/sign-did"
                 component={SignDidPage}
+                exact={true}
+              />
+              <ProtectedRoute
+                path="/recover-account"
+                component={RecoverAccountPage}
                 exact={true}
               />
 

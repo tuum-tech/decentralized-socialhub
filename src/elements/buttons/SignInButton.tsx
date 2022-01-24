@@ -1,48 +1,72 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-interface SignInButtonProps {
-  width?: number;
-  color?: string;
+import essentials from 'src/assets/new/auth/essentials.png';
+
+interface Props {
+  to: string;
+  width?: string;
+  text?: string;
   disabled?: boolean;
+  style?: string;
 }
-const SignInButton = styled(Link)<SignInButtonProps>`
-  width: 100%;
-  background: #3c5cde;
+
+const Container = styled.div`
   border-radius: 10px;
+  padding: 13px 28px;
+
+  height: 43px;
   margin-top: 14px;
-  padding: 10px;
 
-  ${props => {
-    if (props.width) {
-      return `max-width: ${props.width}px;`;
-    }
-  }}
-
-  ${props => {
-    return `color: ${props.color ? props.color : 'white'};`;
-  }}
-
-  ${props => {
-    return `disabled: ${props.disabled ? props.disabled : false};`;
-  }}
-
-  font-family: 'SF Pro Display';
+  color: white;
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
-  line-height: 23px;
+  line-height: 17px;
 
-  display: block;
-  align-items: center;
+  text-align: cneter;
+
+  display: flex;
   text-align: center;
+  align-items: center;
+  justify-content: center;
 
-  &:hover {
-    ${props => {
-      return `color: ${props.color ? props.color : 'white'};`;
-    }}
-    text-decoration: none;
+  img {
+    width: 19px;
+    height: 17px;
+    margin-right: 10px;
   }
 `;
+
+const SignInButton: React.FC<Props> = ({
+  to,
+  text = 'Sign in with Essentials',
+  disabled = false,
+  style = 'theme',
+  width = '100%'
+}) => (
+  <Link
+    to={to}
+    style={{
+      maxWidth: width,
+      width: '100%',
+      display: 'block',
+      textDecoration: 'none'
+    }}
+  >
+    <Container
+      style={{
+        background:
+          style === 'theme'
+            ? 'linear-gradient(204.71deg, #9a5bff 15.76%, #dd5ac0 136.38%)'
+            : '#313049'
+      }}
+    >
+      <img src={essentials} alt="eseentials" />
+      {text}
+    </Container>
+  </Link>
+);
 
 export default SignInButton;

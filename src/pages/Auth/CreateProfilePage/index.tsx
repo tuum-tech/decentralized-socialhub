@@ -6,35 +6,24 @@ import {
   OnBoardLayout,
   OnBoardLayoutLeft,
   OnBoardLayoutLeftContent,
-  OnBoardLayoutLeftContentTitle,
-  OnBoardLayoutLeftContentDescription,
-  OnBoardLayoutLeftContentIntro,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
-  OnBoardLayoutRightContentTitle,
-  WavingHandImg
+  OnBoardLayoutRightContentTitle
 } from 'src/components/layouts/OnBoardLayout';
-import {
-  SocialButton,
-  ButtonWithLogo,
-  SignInButton
-} from 'src/elements/buttons';
+import { SocialButton, ThemeButton, SignInButton } from 'src/elements/buttons';
 import TextInput from 'src/elements/inputs/TextInput';
-import { Text16 } from 'src/elements/texts';
+import { Text16, Title40, Text18, Text12 } from 'src/elements/texts';
 import { UserService } from 'src/services/user.service';
 import { validateEmail } from 'src/utils/validation';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 
 import TwitterApi from 'src/shared-base/api/twitter-api';
 
-import whitelogo from 'src/assets/logo/whitetextlogo.png';
-import wavinghand from 'src/assets/icon/wavinghand.png';
-
 import MultiDidPasswordLogin from '../components/MultiDidPasswordLogin';
 import FieldDivider from '../components/FieldDivider';
 import style from './style.module.scss';
-
+import createLeftBg from 'src/assets/new/auth/create_left_bg.png';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { makeSelectSession } from 'src/store/users/selectors';
@@ -215,25 +204,22 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   return (
     <OnBoardLayout className={style['create-profile']}>
       {loading !== '' && <LoadingIndicator loadingText={loading} />}
-      <OnBoardLayoutLeft>
-        <OnBoardLayoutLogo src={whitelogo} />
+      <OnBoardLayoutLeft
+        style={{
+          backgroundImage: `url(${createLeftBg})`
+        }}
+      >
+        <OnBoardLayoutLogo />
         <OnBoardLayoutLeftContent>
-          <WavingHandImg src={wavinghand} />
-          <OnBoardLayoutLeftContentTitle className="mt-18px">
-            A better way to be online.
-          </OnBoardLayoutLeftContentTitle>
-          <OnBoardLayoutLeftContentDescription className="mt-25px">
-            Having multiple profiles is messy. Your personal information is
-            copied and stored on every app. Profile gives you total control of
-            your digital world, in one place. Finally unlock the power of your
-            content online.
-          </OnBoardLayoutLeftContentDescription>
-          <OnBoardLayoutLeftContentIntro className="mt-25px mb-0">
-            Already have a profile?
-          </OnBoardLayoutLeftContentIntro>
-          <SignInButton width={120} to="/sign-did">
-            Sign in Here
-          </SignInButton>
+          <Title40 className="mt-18px" style={{ maxWidth: '410px' }}>
+            Own Yourself in the Web3 Universe
+          </Title40>
+          <Text18 className="mt-25px" style={{ maxWidth: '420px' }}>
+            Communicate your personal story and build communities how you want
+            with crypto, NFT, and blockchain enthusiasts you can trust.
+          </Text18>
+          <Text12 className="mt-25px mb-0">Already have a profile?</Text12>
+          <SignInButton to="/sign-did" style="black" width="250px" />
           <Footer>
             <FooterLinks></FooterLinks>
           </Footer>
@@ -245,7 +231,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
             Create your profile
           </OnBoardLayoutRightContentTitle>
           <Text16 style={{ marginBottom: '54px' }}>
-            It’s free and easy to get set up.
+            It's free and easy to get set up.
           </Text16>
           <TextInput
             value={name}
@@ -267,13 +253,8 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
           {error !== '' && <ErrorText>{error}</ErrorText>}
           {displayText !== '' && <DisplayText>{displayText}</DisplayText>}
 
-          <ButtonWithLogo
-            text={
-              displayText ===
-              'Verification email is sent to you. Please confirm to complete your registration.'
-                ? 'Verify'
-                : 'Create new profile'
-            }
+          <ThemeButton
+            style={{ marginTop: '40px' }}
             onClick={async () => {
               if (
                 displayText ===
@@ -284,7 +265,12 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
                 await createUser();
               }
             }}
-          />
+          >
+            {displayText ===
+            'Verification email is sent to you. Please confirm to complete your registration.'
+              ? 'Verify'
+              : 'Create new profile'}
+          </ThemeButton>
 
           <FieldDivider text="or connect with" />
           <div className={style['social-btn-group']}>

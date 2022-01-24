@@ -133,6 +133,19 @@ const ViewProfileButton = styled.button`
   width: 100%;
 `;
 
+const ThemeButton = styled.button`
+  background: linear-gradient(204.71deg, #9a5bff 15.76%, #dd5ac0 136.38%);
+  border-radius: 8px;
+  width: 100%;
+  height: 46px;
+
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 14px;
+  color: #ffffff;
+`;
+
 export {
   ButtonLink,
   ArrowButton,
@@ -148,5 +161,6 @@ export {
   Button,
   SmallLightButton,
   StyledButton,
-  ViewProfileButton
+  ViewProfileButton,
+  ThemeButton
 };

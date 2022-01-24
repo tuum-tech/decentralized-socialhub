@@ -11,14 +11,14 @@ import {
   OnBoardLayout,
   OnBoardLayoutLeft,
   OnBoardLayoutLeftContent,
-  OnBoardLayoutLeftContentTitle,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
 import { ButtonLink, ArrowButton } from 'src/elements/buttons';
 
-import whitelogo from 'src/assets/logo/whitetextlogo.png';
+import { Text16, Title40, Text18 } from 'src/elements/texts';
+
 import weird from 'src/assets/icon/weird.png';
 
 import injector from 'src/baseplate/injectorWrap';
@@ -47,14 +47,12 @@ const CreateWhyPage: React.FC<InferMappedProps> = ({
   return (
     <OnBoardLayout className={style['associated-profile']}>
       <OnBoardLayoutLeft>
-        <OnBoardLayoutLogo src={whitelogo} />
+        <OnBoardLayoutLogo />
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={weird} />
-          <OnBoardLayoutLeftContentTitle
-            style={{ marginTop: '18px', marginBottom: '25px' }}
-          >
+          <Title40 style={{ marginTop: '18px', marginBottom: '25px' }}>
             Why has this happened?
-          </OnBoardLayoutLeftContentTitle>
+          </Title40>
           <ButtonLink width={26} to="/associateds-profile">
             <ArrowButton />
           </ButtonLink>
