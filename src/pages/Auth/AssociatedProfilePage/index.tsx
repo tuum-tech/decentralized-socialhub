@@ -14,18 +14,16 @@ import {
   OnBoardLayout,
   OnBoardLayoutLeft,
   OnBoardLayoutLeftContent,
-  OnBoardLayoutLeftContentTitle,
-  OnBoardLayoutLeftContentDescription,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { ButtonWithLogo } from 'src/elements/buttons';
-import { Text16 } from 'src/elements/texts';
+import { ThemeButton } from 'src/elements/buttons';
+import { Text16, Title40, Text18 } from 'src/elements/texts';
 import PageLoading from 'src/components/layouts/PageLoading';
-import whitelogo from 'src/assets/logo/whitetextlogo.png';
+
 import eye from 'src/assets/icon/eye.png';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 
@@ -110,17 +108,17 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
     <OnBoardLayout>
       {loading && <LoadingIndicator loadingText="Creating new profie now..." />}
       <OnBoardLayoutLeft>
-        <OnBoardLayoutLogo src={whitelogo} />
+        <OnBoardLayoutLogo />
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={eye} />
-          <OnBoardLayoutLeftContentTitle className="mt-18px">
+          <Title40 className="mt-18px">
             We have seen your social account before.
-          </OnBoardLayoutLeftContentTitle>
-          <OnBoardLayoutLeftContentDescription className="mt-25px">
+          </Title40>
+          <Text18 className="mt-25px">
             Sorry, your sign in information has already been linked with another
             profile. You have two options, sign in to the associated profile or
             create a new one.
-          </OnBoardLayoutLeftContentDescription>
+          </Text18>
           <Footer>
             <FooterLinks></FooterLinks>
           </Footer>
@@ -157,9 +155,7 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
             Has been already linked to profile registered, sign into this
             profile below.
           </Text16>
-          <ButtonWithLogo
-            mode="dark"
-            mt={32}
+          <ThemeButton
             text="Sign in to profile"
             onClick={async () => {
               const signedUserDids = await UserService.getSignedUsers();
@@ -193,8 +189,8 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
           </OnBoardLayoutRightContentTitle>
           <Text16>Use your email to create a new profile.</Text16>
 
-          <ButtonWithLogo
-            text={'Create new profile'}
+          <ThemeButton
+            text="Create new profile"
             onClick={async () => {
               const { name, loginCred, service } = associatedInfo;
               if (service === AccountType.Email) {
@@ -218,7 +214,6 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
                 setScreen('/generate-did');
               }
             }}
-            mt={42}
           />
           {displayText !== '' && <DisplayText>{displayText}</DisplayText>}
         </OnBoardLayoutRightContent>

@@ -1,0 +1,47 @@
+@import '../../styles/variables';
+
+.button-container {
+  background: $light-pink-gradient;
+  height: 46px;
+  display: block;
+  width: 100%;
+  position: relative;
+
+  border-radius: 8px;
+  margin-top: 29px;
+}
+
+.button-content {
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  position: absolute;
+  left: 1px;
+  top: 1px;
+
+  border-radius: 8px;
+  background: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-gradient-text {
+  font-size: 72px;
+  background: $light-pink-gradient;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 14px;
+}
+
+.button-black-text {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 14px;
+  color: black;
+}

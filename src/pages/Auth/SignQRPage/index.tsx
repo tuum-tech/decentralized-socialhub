@@ -9,18 +9,15 @@ import {
   OnBoardLayout,
   OnBoardLayoutLeft,
   OnBoardLayoutLeftContent,
-  OnBoardLayoutLeftContentTitle,
-  OnBoardLayoutLeftContentIntro,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { Text16 } from 'src/elements/texts';
-import { SignInButton, Button } from 'src/elements/buttons';
+import { Text16, Title40, Text12 } from 'src/elements/texts';
+import { ThemeButton, Button } from 'src/elements/buttons';
 
-import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import phone from 'src/assets/icon/phone.png';
 import { alertError, showNotify } from 'src/utils/notify';
 import style from './style.module.scss';
@@ -131,28 +128,26 @@ const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
   return (
     <OnBoardLayout className={style['qr-sign']}>
       <OnBoardLayoutLeft>
-        <OnBoardLayoutLogo src={whitelogo} />
+        <OnBoardLayoutLogo />
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={phone} />
-          <OnBoardLayoutLeftContentTitle className="mt-18px">
-            elastOS Sign in
-          </OnBoardLayoutLeftContentTitle>
-          <OnBoardLayoutLeftContentIntro
-            style={{ marginTop: '38px', marginBottom: '5px' }}
-          >
+          <Title40 className="mt-18px">elastOS Sign in</Title40>
+          <Text12 style={{ marginTop: '38px', marginBottom: '5px' }}>
             New to Profile?
-          </OnBoardLayoutLeftContentIntro>
-          <SignInButton width={160} to="/create-profile">
-            Create a new Profile
-          </SignInButton>
-          <OnBoardLayoutLeftContentIntro
-            style={{ marginTop: '44px', marginBottom: '5px' }}
-          >
+          </Text12>
+          <ThemeButton
+            style={{ width: '160px' }}
+            onClick={() => history.push('/create-profile')}
+            text="Create a new Profile"
+          />
+          <Text12 style={{ marginTop: '44px', marginBottom: '5px' }}>
             Have secrete Mnemonic words?
-          </OnBoardLayoutLeftContentIntro>
-          <SignInButton width={120} to="/sign-did">
-            Sign In
-          </SignInButton>
+          </Text12>
+          <ThemeButton
+            style={{ width: '120px' }}
+            onClick={() => history.push('/sign-did')}
+            text="Sign In"
+          />
           <Footer>
             <FooterLinks></FooterLinks>
           </Footer>

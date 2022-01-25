@@ -1,0 +1,24 @@
+// Variables
+//
+// Variables should follow the `$component-state-property-size` formula for
+// consistent naming. Ex: $nav-link-disabled-color and $modal-content-box-shadow-xs.
+
+// Color system
+
+
+$orange: #FF9840 !default;
+$purple: #995AFF !default;
+$key-blue: #4C6FFF !default;
+$red-orange: #FF5A5A !default;
+$grey: #616A7B !default;
+$light-grey: #EDF2F7 !default;
+$dark-purple: #6937BC !default;
+$pink: #DC59BF !default;
+$dark-dark-purple: #04032B !default;
+$darker-mid-purple: #824DD9 !default;
+$dark-pink: #6937BC !default;
+$darker-pink: #824DD9 !default;
+
+$dark-pink-gradient: linear-gradient(145.76deg, #995AFF 14.97%, #DC59BF 87.23%) !default;
+$light-pink-gradient: linear-gradient(90deg, #B990FC 0%, #EA6BFF 100%) !default;
+$blue-gradient: linear-gradient(38.75deg, #4C6FFF 14.73%, #FBFBFD 85.28%) !default;

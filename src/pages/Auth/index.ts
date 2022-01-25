@@ -14,6 +14,7 @@ import SignQRPage from './SignQRPage/Loadable';
 import ForgotPasswordPage from './ForgotPasswordPage/Loadable';
 import UnlockUserPage from './UnlockUserPage/Loadable';
 import CreateProfileWithDidPage from './CreateProfileWithDidPage/Loadable';
+import RecoverAccountPage from './RecoverAccountPage/Loadable';
 
 export {
   GoogleCallback,
@@ -31,5 +32,6 @@ export {
   SignQRPage,
   ForgotPasswordPage,
   UnlockUserPage,
-  CreateProfileWithDidPage
+  CreateProfileWithDidPage,
+  RecoverAccountPage
 };

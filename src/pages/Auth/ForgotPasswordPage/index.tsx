@@ -16,16 +16,14 @@ import {
   OnBoardLayout,
   OnBoardLayoutLeft,
   OnBoardLayoutLeftContent,
-  OnBoardLayoutLeftContentTitle,
-  OnBoardLayoutLeftContentDescription,
-  OnBoardLayoutLeftContentIntro,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { ButtonLink, ArrowButton, ButtonWithLogo } from 'src/elements/buttons';
+import { ButtonLink, ArrowButton, ThemeButton } from 'src/elements/buttons';
+import { Title40, Text18, Text12, Text28 } from 'src/elements/texts';
 
 import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import weird from 'src/assets/icon/weird.png';
@@ -43,24 +41,20 @@ const ForgotPasswordPage: React.FC<InferMappedProps> = ({
   return (
     <OnBoardLayout className={style['associated-profile']}>
       <OnBoardLayoutLeft>
-        <OnBoardLayoutLogo src={whitelogo} />
+        <OnBoardLayoutLogo />
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={weird} />
-          <OnBoardLayoutLeftContentTitle className="mt-18px">
-            Forgot password?
-          </OnBoardLayoutLeftContentTitle>
-          <OnBoardLayoutLeftContentDescription className="mt-25px">
+          <Title40 className="mt-18px">Forgot password?</Title40>
+          <Text18 className="mt-25px">
             There is no way we can help. This is a decentralized platform and
             you need to be responsible for your password and security words.
-          </OnBoardLayoutLeftContentDescription>
-          <OnBoardLayoutLeftContentDescription className="mt-25px">
+          </Text18>
+          <Text18 className="mt-25px">
             You have three options, go see if you can find your profile password
             and go back and enter the password, or sign in to profile as normal
             (if you know your main security passwords, or create a new profile.
-          </OnBoardLayoutLeftContentDescription>
-          <OnBoardLayoutLeftContentIntro className="my-25px">
-            Why has this happened? Help
-          </OnBoardLayoutLeftContentIntro>
+          </Text18>
+          <Text12 className="my-25px">Why has this happened? Help</Text12>
           <ButtonLink width={26} to="/unlock-user">
             <ArrowButton />
           </ButtonLink>
@@ -71,9 +65,7 @@ const ForgotPasswordPage: React.FC<InferMappedProps> = ({
           <OnBoardLayoutRightContentTitle>
             Sign in
           </OnBoardLayoutRightContentTitle>
-          <ButtonWithLogo
-            mode="dark"
-            mt={32}
+          <ThemeButton
             text="Sign in to profile"
             onClick={() => {
               window.localStorage.clear();
@@ -86,14 +78,13 @@ const ForgotPasswordPage: React.FC<InferMappedProps> = ({
           <OnBoardLayoutRightContentTitle style={{ marginTop: '96px' }}>
             Create new profile
           </OnBoardLayoutRightContentTitle>
-          <ButtonWithLogo
+          <ThemeButton
             text="Create new profile"
             onClick={() => {
               history.push({
                 pathname: '/create-profile'
               });
             }}
-            mt={48}
           />
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>

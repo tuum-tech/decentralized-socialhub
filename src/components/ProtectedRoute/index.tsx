@@ -26,7 +26,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     '/create-profile',
     '/create-profile-with-did',
     '/forgot-password',
-    '/verify/email'
+    '/verify/email',
+    'recover-account'
   ];
 
   let isLoggedIn = window.localStorage.getItem('isLoggedIn');
