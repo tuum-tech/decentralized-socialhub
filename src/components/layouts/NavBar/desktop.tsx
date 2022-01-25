@@ -97,7 +97,7 @@ const DesktopNavContent: React.FC<DesktopProps> = ({ navItemClicked }) => {
         </div>
       </div>
       <div className="right-content">
-        <div className="natItem" onClick={() => history.push('/sign-did')}>
+        <div className="natItem" onClick={() => history.push('/sign-in')}>
           Log In
         </div>
         <SignUpButton onClick={() => history.push('/create-profile')}>

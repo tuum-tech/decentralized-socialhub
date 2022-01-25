@@ -71,7 +71,7 @@ const MobileNavContent: React.FC<MobileProps> = ({ navItemClicked }) => {
       >
         Connect
       </div>
-      <div className="navItem white" onClick={() => history.push('/sign-did')}>
+      <div className="navItem white" onClick={() => history.push('/sign-in')}>
         Login
       </div>
       <div

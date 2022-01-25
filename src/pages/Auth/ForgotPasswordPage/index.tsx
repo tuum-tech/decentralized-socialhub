@@ -70,7 +70,7 @@ const ForgotPasswordPage: React.FC<InferMappedProps> = ({
             onClick={() => {
               window.localStorage.clear();
               history.push({
-                pathname: '/sign-did'
+                pathname: '/sign-in'
               });
             }}
           />

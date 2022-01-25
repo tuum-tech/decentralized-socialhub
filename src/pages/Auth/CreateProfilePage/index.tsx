@@ -15,7 +15,7 @@ import {
 import {
   SocialButton,
   ThemeButton,
-  CreateProfileWithImgButton
+  ThemeTransparentButton
 } from 'src/elements/buttons';
 import TextInput from 'src/elements/inputs/TextInput';
 import { Text16, Title40, Text18, Text12 } from 'src/elements/texts';
@@ -245,8 +245,9 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
           </Text18>
           <Text12 className="mt-25px ">Already have a profile?</Text12>
           <ThemeButton
-            onClick={() => history.push('/sign-did')}
+            onClick={() => history.push('/sign-in')}
             img="white"
+            text="Sign In"
             style={{ marginTop: '25px', width: '250px', background: '#313049' }}
           />
           <Footer>
@@ -338,7 +339,11 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
 
           <MobileContent>
             <Text12>Already have a profile?</Text12>
-            <CreateProfileWithImgButton to="/sign-did" />
+            <ThemeTransparentButton
+              to="/sign-in"
+              text="Sign in"
+              hasImg={true}
+            />
           </MobileContent>
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>

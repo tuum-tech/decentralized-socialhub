@@ -11,10 +11,7 @@ import {
   DefaultLinkButton,
   StyledButton
 } from './DefaultButton';
-import {
-  CreateProfileWithImgButton,
-  CreateProfileButton
-} from './CreateProfileButton';
+import ThemeTransparentButton from './ThemeTransparentButton';
 import ThemeButton from './ThemeButton';
 import Button from './Button';
 
@@ -144,6 +141,5 @@ export {
   StyledButton,
   ViewProfileButton,
   ThemeButton,
-  CreateProfileWithImgButton,
-  CreateProfileButton
+  ThemeTransparentButton
 };

@@ -50,7 +50,7 @@ const PublicNavbar: React.FC<Props> = ({ signedIn }) => {
               </RegisterButton>
             </IonCol>
             <IonCol>
-              <SignButton href="/sign-did">Sign In</SignButton>
+              <SignButton href="/sign-in">Sign In</SignButton>
             </IonCol>
           </IonRow>
         )}

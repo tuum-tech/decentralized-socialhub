@@ -14,6 +14,7 @@ interface Props {
 const ButtonContainer = styled.div`
   border-radius: 10px;
   padding: 13px 28px;
+  cursor: pointer;
 
   color: white;
   font-style: normal;

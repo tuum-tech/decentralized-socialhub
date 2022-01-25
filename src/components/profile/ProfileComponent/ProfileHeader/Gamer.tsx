@@ -42,7 +42,7 @@ const Gamer: React.FC<IProps> = ({
           <DidSnippet did={publicUser.did} color="white" />
           <Buttons>
             {signedUser.did === '' ? (
-              <Link to="/sign-did">
+              <Link to="/sign-in">
                 <FollowButton width={140}>Sign in to Follow</FollowButton>
               </Link>
             ) : (

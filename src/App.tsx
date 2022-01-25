@@ -46,7 +46,7 @@ import {
   CreateWhyPage,
   CreatePasswordPage,
   GenerateDidPage,
-  SignDidPage,
+  SignInPage,
   SignQRPage,
   ForgotPasswordPage,
   UnlockUserPage,
@@ -209,8 +209,8 @@ const App: React.FC = () => {
               />
               {/* to test */}
               <ProtectedRoute
-                path="/sign-did"
-                component={SignDidPage}
+                path="/sign-in"
+                component={SignInPage}
                 exact={true}
               />
               <ProtectedRoute
