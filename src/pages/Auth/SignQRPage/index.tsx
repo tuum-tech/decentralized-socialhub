@@ -28,7 +28,7 @@ import FooterLinks, {
   Footer
 } from 'src/components/layouts/OnBoardLayout/FooterLinks';
 import { HiveService } from 'src/services/hive.service';
-import { DIDURL } from '@elastosfoundation/did-js-sdk/';
+import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
 
 const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
   /**
@@ -38,20 +38,37 @@ const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
    */
   const history = useHistory();
 
-  const connect = async () => {
-    const didService = await DidService.getInstance();
+  const getPresentation = async (): Promise<
+    VerifiablePresentation | undefined
+  > => {
+    console.log('Entering on connect');
     let didAccess = new DID.DIDAccess();
-    let presentation = await didAccess.getCredentials({
-      claims: {
-        name: true
-      }
-    });
-    if (presentation) {
-      let nameCredential = presentation.getCredentials().find((c: any) => {
+    try {
+      return await didAccess.getCredentials({
+        claims: {
+          name: true
+        }
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      console.log('end of popup?');
+    }
+
+    return;
+  };
+
+  const connect = async () => {
+    let presentation = await getPresentation();
+
+    const didService = await DidService.getInstance();
+    console.log('Did service instance');
+    if (presentation !== null && presentation !== undefined) {
+      let nameCredential = presentation!.getCredentials().find((c: any) => {
         return c.getId().getFragment() === 'name';
       });
-      let name = nameCredential.getSubject().getProperty('name');
-      let issuer = nameCredential.getIssuer();
+      let name = nameCredential!.getSubject().getProperty('name');
+      let issuer = nameCredential!.getIssuer();
       let did = 'did:elastos:' + issuer.getMethodSpecificId();
       let mnemonic = '';
       await didService.storeDocument(await issuer.resolve());

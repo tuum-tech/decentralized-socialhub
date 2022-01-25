@@ -402,6 +402,24 @@ export class DidService implements IDidService {
     this.Store.storeCredential(newSelfVerifiableCred);
     return newSelfVerifiableCred;
   }
+
+  async newSelfVerifiableCredentialFromEssentials(
+    did: string,
+    subjectName: string,
+    subjectValue: any
+  ): Promise<VerifiableCredential> {
+    let didAccess = new CNDID.DIDAccess();
+    let property: any = {};
+    property[subjectName] = subjectValue;
+
+    return await didAccess.issueCredential(
+      did,
+      [subjectName],
+      property,
+      subjectName
+    );
+  }
+
   async newSelfVerifiableCredential(
     didDocument: DIDDocument,
     subjectName: string,

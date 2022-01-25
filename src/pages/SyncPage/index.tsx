@@ -70,8 +70,14 @@ const SyncPage: React.FC<InferMappedProps> = ({
 
   useEffect(() => {
     (async () => {
-      let items = await SyncService.GetSyncDifferences(props.session);
-      setSyncItems(items);
+      try {
+        let items = await SyncService.GetSyncDifferences(props.session);
+        if (!items) items = [];
+        setSyncItems(items);
+      } catch (error) {
+        console.log(error);
+        setSyncItems([]);
+      }
     })();
   }, [props.session]);
   return (
