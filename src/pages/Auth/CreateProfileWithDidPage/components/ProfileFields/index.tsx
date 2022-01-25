@@ -180,6 +180,7 @@ const UseDetailsForm: React.FC<Props> = ({ setUserInfo, userInfo }) => {
           {displayText !== '' && <DisplayText>{displayText}</DisplayText>}
 
           <ThemeButton
+            style={{ marginTop: '20px' }}
             text={
               displayText ===
               'Verification email is sent to you. Please confirm to complete your registration.'

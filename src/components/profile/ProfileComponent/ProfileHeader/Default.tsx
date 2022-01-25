@@ -110,7 +110,7 @@ const Default: React.FC<IProps> = ({
         </Info>
         <Buttons>
           {signedUser.did === '' ? (
-            <Link to="/sign-did">
+            <Link to="/sign-in">
               <FollowButton width={140}>Sign in to Follow</FollowButton>
             </Link>
           ) : (

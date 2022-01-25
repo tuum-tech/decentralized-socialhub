@@ -2,8 +2,6 @@ import React from 'react';
 import { StaticContext, RouteComponentProps } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import { DID } from '@elastosfoundation/elastos-connectivity-sdk-js';
-import { UserService } from 'src/services/user.service';
-import { DidService } from 'src/services/did.service.new';
 
 import {
   OnBoardLayout,
@@ -12,27 +10,29 @@ import {
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
-  OnBoardLayoutRightContentTitle,
-  WavingHandImg
+  OnBoardLayoutRightContentTitle
 } from 'src/components/layouts/OnBoardLayout';
-import { Text16, Title40, Text12 } from 'src/elements/texts';
-import { ThemeButton, Button } from 'src/elements/buttons';
-
-import phone from 'src/assets/icon/phone.png';
-import { alertError, showNotify } from 'src/utils/notify';
-import style from './style.module.scss';
 import FooterLinks, {
   Footer
 } from 'src/components/layouts/OnBoardLayout/FooterLinks';
+import { Text16 } from 'src/elements/texts';
+import { ThemeButton, ThemeTransparentButton } from 'src/elements/buttons';
+import Navbar from '../components/Navbar';
+import { alertError, showNotify } from 'src/utils/notify';
+import { DidService } from 'src/services/did.service.new';
+import { UserService } from 'src/services/user.service';
+
+import leftBg from 'src/assets/new/auth/signin_left_bg.png';
+import style from './style.module.scss';
+import { LocationState } from './types';
 import { HiveService } from 'src/services/hive.service';
 import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
 
-const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
-  /**
-   * Direct method implementation without SAGA
-   * This was to show you dont need to put everything to global state
-   * incoming from Server API calls. Maintain a local state.
-   */
+const SignInPage: React.FC<RouteComponentProps<
+  {},
+  StaticContext,
+  LocationState
+>> = props => {
   const history = useHistory();
 
   const getPresentation = async (): Promise<
@@ -125,52 +125,62 @@ const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
       showNotify('Unable to get credential from essential', 'error');
     }
   };
+
   return (
-    <OnBoardLayout className={style['qr-sign']}>
-      <OnBoardLayoutLeft>
+    <OnBoardLayout className={style['did-signin']}>
+      <Navbar navItemClicked={(item: string) => {}} />
+      <OnBoardLayoutLeft
+        style={{
+          backgroundImage: `url(${leftBg})`
+        }}
+      >
         <OnBoardLayoutLogo />
         <OnBoardLayoutLeftContent>
-          <WavingHandImg src={phone} />
-          <Title40 className="mt-18px">elastOS Sign in</Title40>
-          <Text12 style={{ marginTop: '38px', marginBottom: '5px' }}>
-            New to Profile?
-          </Text12>
-          <ThemeButton
-            style={{ width: '160px' }}
-            onClick={() => history.push('/create-profile')}
-            text="Create a new Profile"
-          />
-          <Text12 style={{ marginTop: '44px', marginBottom: '5px' }}>
-            Have secrete Mnemonic words?
-          </Text12>
-          <ThemeButton
-            style={{ width: '120px' }}
-            onClick={() => history.push('/sign-in')}
-            text="Sign In"
-          />
           <Footer>
             <FooterLinks></FooterLinks>
           </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
+
       <OnBoardLayoutRight>
         <OnBoardLayoutRightContent>
           <OnBoardLayoutRightContentTitle>
-            Connect essential with WalletConnect
+            Welcome back
           </OnBoardLayoutRightContentTitle>
-          <Text16>Scan the QR code with your elastOS application</Text16>
-          <div className={style['btn-wallet-connect']}>
-            <Button
-              type="primary"
-              text="WalletConnect"
-              mt={20}
-              onClick={connect}
-            />
-          </div>
+          <Text16 style={{ marginBottom: '35px', maxWidth: '420px' }}>
+            Don't forget to fill out as much of your profile as you can. You
+            will earn badges and be set up for the future — where you can earn
+            off your data, under your control!
+          </Text16>
+          <ThemeButton
+            img="white"
+            onClick={connect}
+            style={{ width: '100%' }}
+          />
+
+          <OnBoardLayoutRightContentTitle style={{ marginTop: '100px' }}>
+            Recover Account
+          </OnBoardLayoutRightContentTitle>
+          <Text16 style={{ marginBottom: '35px', maxWidth: '420px' }}>
+            You can sign in with DID mnemonics.
+          </Text16>
+          <ThemeButton
+            onClick={() => history.push('/recover-account')}
+            style={{ width: '100%' }}
+            text="Recover Account"
+          />
+
+          <OnBoardLayoutRightContentTitle style={{ marginTop: '100px' }}>
+            New to Profile?
+          </OnBoardLayoutRightContentTitle>
+          <ThemeTransparentButton
+            to="/create-profile"
+            text="Create a new Profile"
+          />
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>
   );
 };
 
-export default SignQRPage;
+export default SignInPage;

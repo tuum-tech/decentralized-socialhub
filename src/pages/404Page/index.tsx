@@ -27,7 +27,7 @@ const DefaultPage = () => {
           </Text18>
           <Text12 className="mt-86px mb-0">Already have a profile?</Text12>
           <ThemeButton
-            onClick={() => history.push('/sign-did')}
+            onClick={() => history.push('/sign-in')}
             text="Sign in Here"
             style={{ width: '200px' }}
           />

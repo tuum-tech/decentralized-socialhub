@@ -85,6 +85,9 @@ const Container = styled.div<{ bgImg: string }>`
   .icons {
     display: flex;
     justify-content: center;
+    svg {
+      cursor: pointer;
+    }
 
     .three-icons {
       display: flex;
@@ -218,14 +221,22 @@ const Footer: React.FC<Props> = ({ refProp }) => {
 
           <div className="icons">
             <div className="three-icons">
-              <Github />
-              <Reddit />
-              <Twitter />
+              <Github
+                onClick={() => window.open('https://github.com/tuum-tech')}
+              />
+              <Reddit onClick={() => {}} />
+              <Twitter
+                onClick={() => window.open('https://twitter.com/tryProfile')}
+              />
             </div>
             <div className="three-icons">
-              <Medium />
-              <Telegram />
-              <Discord />
+              <Medium
+                onClick={() => window.open('https://medium.com/web3profile')}
+              />
+              <Telegram onClick={() => {}} />
+              <Discord
+                onClick={() => window.open('https://discord.gg/PgtTKBBQ')}
+              />
             </div>
           </div>
 

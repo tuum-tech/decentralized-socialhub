@@ -174,7 +174,7 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
                 });
               } else {
                 history.push({
-                  pathname: '/sign-did',
+                  pathname: '/sign-in',
                   state: {
                     name: associatedInfo.name,
                     loginCred: associatedInfo.loginCred,
