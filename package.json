@@ -1,6 +1,6 @@
 {
   "name": "profile",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Profile",
   "dependencies": {
     "@elastosfoundation/did-js-sdk": "^2.2.3",
