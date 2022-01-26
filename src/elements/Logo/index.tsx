@@ -2,6 +2,8 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
+import logo from 'src/assets/new/logo.png';
+
 const Container = styled.div`
   height: 5em;
   padding: 16px;
@@ -23,7 +25,7 @@ const Logo: React.FC = () => {
         history.push('/profile');
       }}
     >
-      <img alt="profile logo" src="../../../assets/new/logo.png" />
+      <img alt="profile logo" src={logo} />
     </Container>
   );
 };
