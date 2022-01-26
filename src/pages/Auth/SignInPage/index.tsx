@@ -135,11 +135,7 @@ const SignInPage: React.FC<RouteComponentProps<
         }}
       >
         <OnBoardLayoutLogo />
-        <OnBoardLayoutLeftContent>
-          <Footer>
-            <FooterLinks></FooterLinks>
-          </Footer>
-        </OnBoardLayoutLeftContent>
+        <OnBoardLayoutLeftContent></OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
 
       <OnBoardLayoutRight>
@@ -159,24 +155,15 @@ const SignInPage: React.FC<RouteComponentProps<
           />
 
           <OnBoardLayoutRightContentTitle style={{ marginTop: '100px' }}>
-            Recover Account
-          </OnBoardLayoutRightContentTitle>
-          <Text16 style={{ marginBottom: '35px', maxWidth: '420px' }}>
-            You can sign in with DID mnemonics.
-          </Text16>
-          <ThemeButton
-            onClick={() => history.push('/recover-account')}
-            style={{ width: '100%' }}
-            text="Recover Account"
-          />
-
-          <OnBoardLayoutRightContentTitle style={{ marginTop: '100px' }}>
             New to Profile?
           </OnBoardLayoutRightContentTitle>
           <ThemeTransparentButton
             to="/create-profile"
             text="Create a new Profile"
           />
+          <Footer>
+            <FooterLinks />
+          </Footer>
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>

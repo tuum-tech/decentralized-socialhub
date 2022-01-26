@@ -116,9 +116,6 @@ const SetPassword: React.FC<Props> = ({
             This is a locally stored password that protects your main profile
             account (decentralized identity).
           </Text18>
-          <Footer>
-            <FooterLinks></FooterLinks>
-          </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -175,6 +172,10 @@ const SetPassword: React.FC<Props> = ({
             }}
           />
           {error !== '' && <ErrorText>{error}</ErrorText>}
+
+          <Footer>
+            <FooterLinks />
+          </Footer>
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>

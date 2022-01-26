@@ -58,12 +58,13 @@ const SignHelpPage: React.FC<InferMappedProps> = ({
           <ButtonLink width={26} to="/sign-qr">
             <ArrowButton />
           </ButtonLink>
-          <Footer>
-            <FooterLinks></FooterLinks>
-          </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
-      <OnBoardLayoutRight></OnBoardLayoutRight>
+      <OnBoardLayoutRight>
+        <Footer>
+          <FooterLinks />
+        </Footer>
+      </OnBoardLayoutRight>
     </OnBoardLayout>
   );
 };

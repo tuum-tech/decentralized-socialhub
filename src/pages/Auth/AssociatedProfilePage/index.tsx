@@ -119,9 +119,6 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
             profile. You have two options, sign in to the associated profile or
             create a new one.
           </Text18>
-          <Footer>
-            <FooterLinks></FooterLinks>
-          </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -216,6 +213,10 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
             }}
           />
           {displayText !== '' && <DisplayText>{displayText}</DisplayText>}
+
+          <Footer>
+            <FooterLinks />
+          </Footer>
         </OnBoardLayoutRightContent>
 
         <Modal show={showModal} centered>

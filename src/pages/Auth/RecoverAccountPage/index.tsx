@@ -91,10 +91,6 @@ const RecoverAccountPage: React.FC<RouteComponentProps<
 
           <Text12 style={{ marginTop: '50px' }}>Start Over</Text12>
           <CreateButton to="/create-profile">Create a new Profile</CreateButton>
-
-          <Footer>
-            <FooterLinks></FooterLinks>
-          </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -165,6 +161,10 @@ const RecoverAccountPage: React.FC<RouteComponentProps<
             }
           }}
         />
+
+        <Footer>
+          <FooterLinks />
+        </Footer>
       </OnBoardLayoutRight>
     </OnBoardLayout>
   );

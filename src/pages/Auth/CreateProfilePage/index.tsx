@@ -250,9 +250,6 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
             text="Sign In"
             style={{ marginTop: '25px', width: '250px', background: '#313049' }}
           />
-          <Footer>
-            <FooterLinks></FooterLinks>
-          </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -345,6 +342,10 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
               hasImg={true}
             />
           </MobileContent>
+
+          <Footer>
+            <FooterLinks />
+          </Footer>
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>

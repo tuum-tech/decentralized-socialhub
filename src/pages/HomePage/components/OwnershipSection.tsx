@@ -87,11 +87,11 @@ const OwnershipSection: React.FC<Props> = ({ refProp }) => {
               </SectionText>
             </div>
             <div>
-              <SectionIntro>Enable ownership of your communities</SectionIntro>
+              <SectionIntro>So you can rest assured</SectionIntro>
               <SectionText className="text">
                 Empower yourself by becoming the owner of the decentralized
                 communities you build and grow from the ground up, absent of any
-                censorship so you can be rest assured.
+                censorship so you can rest assured.
               </SectionText>
             </div>
           </div>

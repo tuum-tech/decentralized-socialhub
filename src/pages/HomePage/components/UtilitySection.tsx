@@ -70,7 +70,7 @@ const UtilitySection: React.FC<Props> = ({ refProp }) => {
             <SectionText>
               You are more than just a collection of social profiles siloed on
               the web… Reflect who you are through your assets, identity, and
-              professional CV into one Profile
+              professional CV into one Profile.
             </SectionText>
           </div>
           <div className="item">

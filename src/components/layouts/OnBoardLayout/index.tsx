@@ -78,6 +78,9 @@ export const OnBoardLayoutRightContent = styled.div`
   padding-bottom: 50px;
   margin-top: 0;
 
+  position: relative;
+  min-height: 80vh;
+
   @media only screen and (max-width: 980px) {
     width: 90%;
   }

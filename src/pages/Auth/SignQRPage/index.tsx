@@ -148,9 +148,6 @@ const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
             onClick={() => history.push('/sign-in')}
             text="Sign In"
           />
-          <Footer>
-            <FooterLinks></FooterLinks>
-          </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -167,6 +164,10 @@ const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
               onClick={connect}
             />
           </div>
+
+          <Footer>
+            <FooterLinks />
+          </Footer>
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>

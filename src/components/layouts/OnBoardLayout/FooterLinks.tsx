@@ -10,13 +10,17 @@ export const FooterLink = styled.span`
   font-family: 'SF Pro Display';
   font-size: 11px;
   padding: 5px;
-  color: #e2e8f0;
+  color: #7a7a9d;
 `;
 
 export const Footer = styled.div`
   position: absolute;
-  bottom: 35px;
-  left: 39px;
+
+  display: flex;
+  justify-content: center;
+
+  bottom: 0px;
+  width: 100%;
 `;
 
 const FooterLinks: React.FC<any> = () => {
@@ -30,9 +34,13 @@ const FooterLinks: React.FC<any> = () => {
         <FooterLink>Help Support</FooterLink>
       </Link>
       <span>&#183;</span>
-      <a href="https://www.tuum.tech/products/profile">
+      <Link to="/">
         <FooterLink>About Profile</FooterLink>
-      </a>
+      </Link>
+      <span>&#183;</span>
+      <Link to="/recover-account">
+        <FooterLink>Recover Account</FooterLink>
+      </Link>
       <span>&#183;</span>
       <a href="https://www.tuum.tech">
         <FooterLink>Tuum.tech</FooterLink>

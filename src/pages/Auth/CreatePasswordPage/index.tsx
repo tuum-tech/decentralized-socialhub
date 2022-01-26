@@ -141,7 +141,7 @@ const CreatePasswordPage: React.FC<PageProps> = ({
             account (decentralized identity).
           </Text18>
           <Footer>
-            <FooterLinks></FooterLinks>
+            <FooterLinks />
           </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
