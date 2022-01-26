@@ -39,7 +39,7 @@ const PublicNavbar: React.FC<Props> = ({ signedIn }) => {
           cursor: 'pointer'
         }}
       >
-        <img alt="profile logo" src="../../../assets/logo_profile_black.svg" />
+        <img alt="profile logo" src="../../../assets/new/logo.png" />
       </IonCol>
       <IonCol size="auto">
         {!signedIn && (

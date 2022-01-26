@@ -191,6 +191,7 @@ const CreatePasswordPage: React.FC<PageProps> = ({
           />
           {error !== '' && <ErrorText>{error}</ErrorText>}
           <ThemeButton
+            style={{ marginTop: '20px' }}
             text="Continue"
             onClick={async () => {
               await onButtonClick();
