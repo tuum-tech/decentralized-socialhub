@@ -166,6 +166,7 @@ const SetPassword: React.FC<Props> = ({
           />
 
           <ThemeButton
+            style={{ marginTop: '20px' }}
             text={displayText !== '' ? displayText : 'Continue'}
             onClick={() => {
               onDefaultButtonClick();
