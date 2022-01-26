@@ -86,7 +86,7 @@ const AboutSection: React.FC<Props> = ({ refProp }) => {
         </p>
         <p className="text">
           Web3 is the next digital revolution of a decentralized
-          blockchain-based internet  empowering you to take back what’s yours.
+          blockchain-based internet empowering you to take back what's yours.
           Your Identity, and your community.
           <br />
           <br />

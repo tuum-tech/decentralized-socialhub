@@ -208,11 +208,8 @@ const Footer: React.FC<Props> = ({ refProp }) => {
       <FooterMenu>
         <div className="footerMenucontent">
           <div className="items">
-            <div className="item" onClick={() => {}}>
-              Privacy Policy
-            </div>
             <div className="item" onClick={() => history.push('/terms-of-use')}>
-              Terms
+              Privacy Policy & Terms
             </div>
             <a href="mailto:contact@tuum.tech" className="item">
               Contact
@@ -221,26 +218,26 @@ const Footer: React.FC<Props> = ({ refProp }) => {
 
           <div className="icons">
             <div className="three-icons">
-              <Github
-                onClick={() => window.open('https://github.com/tuum-tech')}
-              />
-              <Reddit onClick={() => {}} />
               <Twitter
                 onClick={() => window.open('https://twitter.com/tryProfile')}
               />
-            </div>
-            <div className="three-icons">
               <Medium
                 onClick={() => window.open('https://medium.com/web3profile')}
               />
-              <Telegram onClick={() => {}} />
               <Discord
                 onClick={() => window.open('https://discord.gg/PgtTKBBQ')}
               />
             </div>
+            {/* <div className="three-icons">
+              <Telegram onClick={() => {}} />
+              <Github
+                onClick={() => window.open('https://github.com/tuum-tech')}
+              />
+              <Reddit onClick={() => {}} />
+            </div> */}
           </div>
 
-          <div className="item">Copyright Profile © 2022</div>
+          <div className="item">Tuum Technologies © 2022</div>
         </div>
       </FooterMenu>
     </Container>

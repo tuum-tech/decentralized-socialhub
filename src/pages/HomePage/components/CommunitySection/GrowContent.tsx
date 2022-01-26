@@ -16,11 +16,11 @@ const GrowContent = () => {
           </div>
           <div className="item">
             <SectionSubTitle className="subtitle">
-              Substantially grow your communitye
+              Substantially grow your community
             </SectionSubTitle>
             <SectionText className="text">
-              Enable peer-to-peer chats​​ as another means to authentically
-              connect with your community.
+              Enable peer-to-peer chat as another means to authentically connect
+              with your community.
             </SectionText>
           </div>
         </ContentContainer>
