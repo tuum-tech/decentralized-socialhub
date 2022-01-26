@@ -4,6 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { DashboardSignInButton } from 'src/elements/buttons';
+import logo from 'src/assets/new/logo.png';
 
 const PublicNavbarContainer = styled(IonRow)`
   width: 100%;
@@ -12,6 +13,11 @@ const PublicNavbarContainer = styled(IonRow)`
   background-color: #ffffff;
   z-index: 1001;
   align-items: center;
+
+  img {
+    width: 77px;
+    margin-left: 15px;
+  }
 `;
 
 const RegisterButton = styled(DashboardSignInButton)`
@@ -39,7 +45,7 @@ const PublicNavbar: React.FC<Props> = ({ signedIn }) => {
           cursor: 'pointer'
         }}
       >
-        <img alt="profile logo" src="../../../assets/new/logo.png" />
+        <img alt="profile logo" src={logo} />
       </IonCol>
       <IonCol size="auto">
         {!signedIn && (
