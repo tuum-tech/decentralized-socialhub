@@ -44,38 +44,32 @@ const MobileNavContent: React.FC<MobileProps> = ({ navItemClicked }) => {
   const history = useHistory();
   return (
     <MobileContainer>
-      <div className="navItem gradient" onClick={() => navItemClicked('About')}>
+      <div className="navItem white" onClick={() => navItemClicked('About')}>
         About
       </div>
       <div
-        className="navItem gradient"
+        className="navItem white"
         onClick={() => navItemClicked('Community')}
       >
         Community
       </div>
-      <div
-        className="navItem gradient"
-        onClick={() => navItemClicked('Utility')}
-      >
+      <div className="navItem white" onClick={() => navItemClicked('Utility')}>
         Utility
       </div>
       <div
-        className="navItem gradient"
+        className="navItem white"
         onClick={() => navItemClicked('Ownership')}
       >
         Ownership
       </div>
-      <div
-        className="navItem gradient"
-        onClick={() => navItemClicked('Connect')}
-      >
+      <div className="navItem white" onClick={() => navItemClicked('Connect')}>
         Connect
       </div>
       <div className="navItem white" onClick={() => history.push('/sign-in')}>
         Login
       </div>
       <div
-        className="navItem white"
+        className="navItem gradient"
         onClick={() => history.push('/create-profile')}
       >
         Sign Up
