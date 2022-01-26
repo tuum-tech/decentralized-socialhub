@@ -61,25 +61,10 @@ const Container = styled.div<{ bgImg: string }>`
     margin: 270px auto 0;
     width: 100%;
     max-width: 905px;
-  }
 
-  .footerImg {
-    position: absolute;
-    bottom: 0;
-  }
-
-  .intro {
-    margin-top: 30px;
-    width: 100%;
-    text-align: center;
-
-    font-family: SF Pro Display;
-    font-style: normal;
-    font-weight: 300;
-    font-size: 20px;
-    line-height: 33px;
-    letter-spacing: 0.05em;
-    color: #ffffff;
+    p {
+      text-align: center;
+    }
   }
 
   .icons {
@@ -102,12 +87,15 @@ const Container = styled.div<{ bgImg: string }>`
   }
 
   @media only screen and (max-width: 1200px) {
+    .logo {
+      display: none;
+    }
     .icons {
       display: block;
 
       .three-icons {
-        margin-top: 5px;
-        margin-bottom: 5px;
+        margin-top: 15px;
+        margin-bottom: 15px;
 
         margin-left: auto;
         margin-right: auto;
@@ -120,17 +108,33 @@ const Container = styled.div<{ bgImg: string }>`
       }
     }
   }
+  @media only screen and (max-width: 600px) {
+    margin-top: 150px;
+
+    .people {
+      width: 320px;
+      left: calc(50% - 160px);
+    }
+
+    .content {
+      margin-top: 100px;
+
+      p {
+        max-width: 400px;
+      }
+    }
+  }
 `;
 
 const FooterMenu = styled.div`
-  margin-top: 137px;
+  margin-top: 67px;
   width: 100%;
 
   background-image: url(${footerImg});
   min-height: 191px;
   background-repeat: no-repeat;
-  background-position: center bottom;
-  background-size: 100% auto;
+  background-position: center;
+  background-size: cover;
 
   .footerMenucontent {
     padding: 20px;
@@ -165,7 +169,7 @@ const FooterMenu = styled.div`
   }
 
   @media only screen and (max-width: 790px) {
-    margin-top: 62px;
+    margin-top: 30px;
     display: block;
 
     .footerMenucontent {
@@ -195,13 +199,13 @@ const Footer: React.FC<Props> = ({ refProp }) => {
       <img src={footerPeople} alt="footerPeople" className="people" />
 
       <div className="content">
-        <HomeTitle>Own Yourself with Profile</HomeTitle>
-        <HomeIntro>
-          Explore the universe of countless community and ownership
-          opportunities
+        <HomeTitle>Own Yourself with a Web3 Profile</HomeTitle>
+        <HomeIntro style={{ marginBottom: 0 }}>
+          Once your digital footprint is created, the doors are opened to
+          countless communities and ownership opportunities.
         </HomeIntro>
         <CreateButton onClick={() => history.push('/create-profile')}>
-          Create Profile
+          Create Your Profile
         </CreateButton>
       </div>
 
@@ -236,7 +240,6 @@ const Footer: React.FC<Props> = ({ refProp }) => {
               <Reddit onClick={() => {}} />
             </div> */}
           </div>
-
           <div className="item">Tuum Technologies © 2022</div>
         </div>
       </FooterMenu>

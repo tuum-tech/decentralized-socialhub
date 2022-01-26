@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useHistory } from 'react-router-dom';
 
 import NavBar from 'src/components/layouts/NavBar';
 import headerBg from 'src/assets/new/header-bg.png';
@@ -48,11 +47,19 @@ const HeroContainer = styled.div`
   position: relative;
 
   .header-Image {
+    min-width: 1400px;
     width: 100%;
+
     height: auto;
-    max-width: 1400px;
     margin: 0 auto;
     display: block;
+  }
+
+  @media only screen and (max-width: 1400px) {
+    .header-Image {
+      min-width: 1200px;
+      margin-left: calc(50% - 600px);
+    }
   }
 `;
 
@@ -75,8 +82,6 @@ interface IProps {
   navItemClicked: (item: string) => void;
 }
 const Hero: React.FC<IProps> = ({ navItemClicked }) => {
-  const history = useHistory();
-
   return (
     <HeroContainer>
       <NavBar navItemClicked={navItemClicked} />
@@ -88,9 +93,6 @@ const Hero: React.FC<IProps> = ({ navItemClicked }) => {
           personal story and build communities how you want with crypto, NFT,
           and blockchain enthusiasts you can trust.
         </HomeIntro>
-        {/* <CreateButton onClick={() => history.push('/create-profile')}>
-            Create Your Profile
-          </CreateButton> */}
       </Content>
       <img src={headerImg} alt="headerImg" className="header-Image" />
     </HeroContainer>

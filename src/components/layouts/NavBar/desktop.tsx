@@ -41,6 +41,10 @@ const DesktopContainer = styled.nav`
     cursor: pointer;
   }
 
+  img {
+    height: 37px;
+  }
+
   @media screen and (max-width: 1200px) {
     padding: 51px 23px;
     justify-content: flex-start;
@@ -48,6 +52,10 @@ const DesktopContainer = styled.nav`
     .center-content,
     .right-content {
       display: none;
+    }
+
+    img {
+      height: 26px;
     }
   }
 `;
