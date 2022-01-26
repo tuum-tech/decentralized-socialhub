@@ -56,12 +56,13 @@ const CreateWhyPage: React.FC<InferMappedProps> = ({
           <ButtonLink width={26} to="/associateds-profile">
             <ArrowButton />
           </ButtonLink>
-          <Footer>
-            <FooterLinks></FooterLinks>
-          </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
-      <OnBoardLayoutRight></OnBoardLayoutRight>
+      <OnBoardLayoutRight>
+        <Footer>
+          <FooterLinks />
+        </Footer>
+      </OnBoardLayoutRight>
     </OnBoardLayout>
   );
 };

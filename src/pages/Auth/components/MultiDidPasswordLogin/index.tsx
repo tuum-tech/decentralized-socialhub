@@ -145,9 +145,6 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
           <Text18 className="mt-25px">
             You can select and login using the password you set
           </Text18>
-          <Footer>
-            <FooterLinks></FooterLinks>
-          </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -190,6 +187,10 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
 
           <FieldDivider mt={80} />
           <ThemeButton text="Create new profile" onClick={changeMode} />
+
+          <Footer>
+            <FooterLinks />
+          </Footer>
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
 
