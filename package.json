@@ -102,7 +102,7 @@
     ]
   },
   "engines": {
-    "node": "^12"
+    "node": "^14"
   },
   "devDependencies": {
     "@ionic/react": "^5.8.1",
