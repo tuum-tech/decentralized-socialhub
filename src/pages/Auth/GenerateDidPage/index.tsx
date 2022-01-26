@@ -79,15 +79,21 @@ const GenerateDidPage: React.FC<PageProps> = ({
           setStatus(1);
           let userService = new UserService(await DidService.getInstance());
 
-          let did = session.did;
-          let mnemonic = userService.getTemporaryMnemonicFromDid(did);
+          let mnemonic = '';
+          if (session.did && !session.did.startsWith('did:elastos:')) {
+            session.did = '';
+            session.service = AccountType.DID;
+          } else {
+            mnemonic = userService.getTemporaryMnemonicFromDid(session.did);
+          }
+
           let sessionItem = await userService.CreateNewUser(
             session.name,
             session.service,
             session.loginCred,
             session.credential,
             pwd,
-            did,
+            session.did,
             mnemonic,
             ''
           );
