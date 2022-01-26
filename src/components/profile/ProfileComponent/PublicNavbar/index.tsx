@@ -13,6 +13,11 @@ const PublicNavbarContainer = styled(IonRow)`
   background-color: #ffffff;
   z-index: 1001;
   align-items: center;
+
+  img {
+    width: 77px;
+    margin-left: 15px;
+  }
 `;
 
 const RegisterButton = styled(DashboardSignInButton)`

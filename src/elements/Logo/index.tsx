@@ -12,8 +12,8 @@ const Container = styled.div`
   align-items: center;
 
   img {
-    width: 100%;
-    max-width: 9em;
+    width: 77px;
+    margin-left: 15px;
   }
 `;
 
