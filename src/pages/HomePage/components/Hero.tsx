@@ -45,6 +45,7 @@ const HeroContainer = styled.div`
   background-size: cover;
   background-repeat: no-repeat;
   position: relative;
+  overflow-x: clip;
 
   .header-Image {
     min-width: 1400px;
