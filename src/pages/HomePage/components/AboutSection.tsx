@@ -98,6 +98,9 @@ const AboutSection: React.FC<Props> = ({ refProp }) => {
           world of possibilities.
         </p>
 
+        <p className="title" style={{ marginTop: '100px' }}>
+          What <span style={{ color: '#995AFF' }}>You</span> can do with Profile
+        </p>
         <img src={aboutImg} alt="about" />
       </Container>
     </MainLayout>

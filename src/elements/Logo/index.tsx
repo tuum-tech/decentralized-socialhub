@@ -23,7 +23,7 @@ const Logo: React.FC = () => {
         history.push('/profile');
       }}
     >
-      <img alt="profile logo" src="../../assets/logo_profile_black.svg" />
+      <img alt="profile logo" src="../../../assets/new/logo.png" />
     </Container>
   );
 };
