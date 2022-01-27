@@ -102,7 +102,10 @@ const ProfilePage: React.FC<InferMappedProps> = ({
         props.session.did
       );
 
-      if (!publishWaiting) return;
+      if (!publishWaiting) {
+        clearInterval(timer);
+        return;
+      }
 
       let actual = await AssistService.refreshRequestStatus(
         publishWaiting.confirmationId,

@@ -9,11 +9,12 @@ import CreateProfilePage from './CreateProfilePage/Loadable';
 import CreateWhyPage from './CreateWhyPage/Loadable';
 import CreatePasswordPage from './CreatePasswordPage/Loadable';
 import GenerateDidPage from './GenerateDidPage/Loadable';
-import SignDidPage from './SignDidPage/Loadable';
+import SignInPage from './SignInPage/Loadable';
 import SignQRPage from './SignQRPage/Loadable';
 import ForgotPasswordPage from './ForgotPasswordPage/Loadable';
 import UnlockUserPage from './UnlockUserPage/Loadable';
 import CreateProfileWithDidPage from './CreateProfileWithDidPage/Loadable';
+import RecoverAccountPage from './RecoverAccountPage/Loadable';
 
 export {
   GoogleCallback,
@@ -27,9 +28,10 @@ export {
   CreateWhyPage,
   CreatePasswordPage,
   GenerateDidPage,
-  SignDidPage,
+  SignInPage,
   SignQRPage,
   ForgotPasswordPage,
   UnlockUserPage,
-  CreateProfileWithDidPage
+  CreateProfileWithDidPage,
+  RecoverAccountPage
 };

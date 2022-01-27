@@ -9,20 +9,17 @@ import {
   OnBoardLayout,
   OnBoardLayoutLeft,
   OnBoardLayoutLeftContent,
-  OnBoardLayoutLeftContentTitle,
-  OnBoardLayoutLeftContentDescription,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import ButtonWithLogo from 'src/elements/buttons/ButtonWithLogo';
+import ThemeButton from 'src/elements/buttons/ThemeButton';
 import TextInput from 'src/elements/inputs/TextInput';
-import { Text16 } from 'src/elements/texts';
+import { Text16, Title40, Text18 } from 'src/elements/texts';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 
-import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import keyimg from 'src/assets/icon/key.png';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import Check from '../Check';
@@ -109,19 +106,16 @@ const SetPassword: React.FC<Props> = ({
     <OnBoardLayout>
       {loading && <LoadingIndicator loadingText="Encrypting Now..." />}
       <OnBoardLayoutLeft>
-        <OnBoardLayoutLogo src={whitelogo} />
+        <OnBoardLayoutLogo />
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={keyimg} />
-          <OnBoardLayoutLeftContentTitle className="mt-18px">
+          <Title40 className="mt-18px">
             Your password is not stored by us
-          </OnBoardLayoutLeftContentTitle>
-          <OnBoardLayoutLeftContentDescription className="mt-25px">
+          </Title40>
+          <Text18 className="mt-25px">
             This is a locally stored password that protects your main profile
             account (decentralized identity).
-          </OnBoardLayoutLeftContentDescription>
-          <Footer>
-            <FooterLinks></FooterLinks>
-          </Footer>
+          </Text18>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -171,15 +165,18 @@ const SetPassword: React.FC<Props> = ({
             placeholder="Enter your password"
           />
 
-          <ButtonWithLogo
-            mt={34}
-            hasLogo={false}
+          <ThemeButton
+            style={{ marginTop: '20px' }}
             text={displayText !== '' ? displayText : 'Continue'}
             onClick={() => {
               onDefaultButtonClick();
             }}
           />
           {error !== '' && <ErrorText>{error}</ErrorText>}
+
+          <Footer>
+            <FooterLinks />
+          </Footer>
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>

@@ -1,13 +1,13 @@
 {
   "name": "profile",
-  "version": "1.6.0",
+  "version": "1.10.0",
   "description": "Profile",
   "dependencies": {
     "@elastosfoundation/did-js-sdk": "^2.2.3",
-    "@elastosfoundation/elastos-connectivity-sdk-js": "^1.0.10",
-    "@elastosfoundation/elastos-hive-js-sdk": "0.3.0",
+    "@elastosfoundation/elastos-connectivity-sdk-js": "^1.0.15",
+    "@elastosfoundation/elastos-hive-js-sdk": "https://rg.cnpmjs.org/@elastosfoundation/elastos-hive-js-sdk/download/@elastosfoundation/elastos-hive-js-sdk-0.3.0.tgz",
     "@elastosfoundation/elastos-js-sdk": "^1.2.12",
-    "@elastosfoundation/essentials-connector-client-browser": "^1.0.25",
+    "@elastosfoundation/essentials-connector-client-browser": "^1.0.32",
     "@sentry/react": "^6.12.0",
     "@sentry/tracing": "^6.12.0",
     "@svgr/webpack": "4.3.3",
@@ -102,7 +102,7 @@
     ]
   },
   "engines": {
-    "node": "^12"
+    "node": "^14"
   },
   "devDependencies": {
     "@ionic/react": "^5.8.1",

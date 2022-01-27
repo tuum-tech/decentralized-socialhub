@@ -1,7 +1,6 @@
 import { IonRouterLink, IonButton } from '@ionic/react';
 import styled from 'styled-components';
 
-import SignInButton from './SignInButton';
 import ArrowButton from './ArrowButton';
 import ButtonWithLogo from './ButtonWithLogo';
 import SocialButton from './SocialButton';
@@ -12,6 +11,8 @@ import {
   DefaultLinkButton,
   StyledButton
 } from './DefaultButton';
+import ThemeTransparentButton from './ThemeTransparentButton';
+import ThemeButton from './ThemeButton';
 import Button from './Button';
 
 const DashboardSignInButton = styled(IonRouterLink)`
@@ -94,28 +95,6 @@ const SmallLightButton = styled.button`
   color: #4c6fff;
 `;
 
-// const ViewProfileButton = styled(IonButton)`
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: flex-start;
-//   align-items: center;
-//   gap: 10px;
-//   --background: #4c6fff;
-//   --border-radius: 9px;
-//   height: 40px;
-//   opacity: 1;
-//   text-align: center;
-//   text-transform: none;
-//   letter-spacing: 0px;
-//   color: #ffffff;
-//   font-family: 'SF Pro Display';
-//   font-size: 12px;
-//   font-weight: 600;
-//   font-stretch: normal;
-//   font-style: normal;
-//   width: 100%;
-// `;
-
 const ViewProfileButton = styled.button`
   background-color: #4c6fff;
   border-radius: 9px;
@@ -133,12 +112,24 @@ const ViewProfileButton = styled.button`
   width: 100%;
 `;
 
+// const ThemeButton = styled.button`
+//   background: linear-gradient(204.71deg, #9a5bff 15.76%, #dd5ac0 136.38%);
+//   border-radius: 8px;
+//   width: 100%;
+//   height: 46px;
+
+//   font-style: normal;
+//   font-weight: 600;
+//   font-size: 14px;
+//   line-height: 14px;
+//   color: #ffffff;
+// `;
+
 export {
   ButtonLink,
   ArrowButton,
   SocialButton,
   ButtonWithLogo,
-  SignInButton,
   DashboardSignInButton,
   FollowButton,
   DefaultButton,
@@ -148,5 +139,7 @@ export {
   Button,
   SmallLightButton,
   StyledButton,
-  ViewProfileButton
+  ViewProfileButton,
+  ThemeButton,
+  ThemeTransparentButton
 };

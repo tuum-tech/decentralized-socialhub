@@ -1,46 +1,43 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 
 import {
   OnBoardLayout,
   OnBoardLayoutLeft,
   OnBoardLayoutLeftContent,
-  OnBoardLayoutLeftContentTitle,
-  OnBoardLayoutLeftContentDescription,
-  OnBoardLayoutLeftContentIntro,
   OnBoardLayoutRight,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { SignInButton } from 'src/elements/buttons';
-
+import { ThemeButton } from 'src/elements/buttons';
+import { Title40, Text12, Text18 } from 'src/elements/texts';
 import weird from 'src/assets/icon/weird.png';
 
 import style from './style.module.scss';
 
 const DefaultPage = () => {
+  const history = useHistory();
   return (
     <OnBoardLayout className={style['create-profile']}>
       <OnBoardLayoutLeft>
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={weird} />
-          <OnBoardLayoutLeftContentTitle className="mt-18px">
-            404 Not found
-          </OnBoardLayoutLeftContentTitle>
-          <OnBoardLayoutLeftContentDescription className="mt-25px">
+          <Title40 className="mt-18px">404 Not found</Title40>
+          <Text18 className="mt-25px">
             We can't find the right page for you
-          </OnBoardLayoutLeftContentDescription>
-          <OnBoardLayoutLeftContentIntro className="mt-86px mb-0">
-            Already have a profile?
-          </OnBoardLayoutLeftContentIntro>
-          <SignInButton width={120} to="/sign-did">
-            Sign in Here
-          </SignInButton>
-          <OnBoardLayoutLeftContentIntro className="mt-25px mb-0">
-            Or create new profile here
-          </OnBoardLayoutLeftContentIntro>
+          </Text18>
+          <Text12 className="mt-86px mb-0">Already have a profile?</Text12>
+          <ThemeButton
+            onClick={() => history.push('/sign-in')}
+            text="Sign in Here"
+            style={{ width: '200px' }}
+          />
+          <Text12 className="mt-25px mb-0">Or create new profile here</Text12>
 
-          <SignInButton width={160} to="/create-profile">
-            Create new Profile
-          </SignInButton>
+          <ThemeButton
+            style={{ width: '200px' }}
+            onClick={() => history.push('/create-profile')}
+            text="Create new Profile"
+          />
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight />

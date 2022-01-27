@@ -1,4 +1,8 @@
-import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import {
+  DID,
+  DIDDocument,
+  VerifiableCredential
+} from '@elastosfoundation/did-js-sdk/';
 import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import AboutCard from 'src/components/cards/AboutCard';
@@ -212,28 +216,47 @@ const ProfileEditor: React.FC<Props> = ({
                   );
 
                   if (newName !== oldName) {
-                    let vc = await didService.newSelfVerifiableCredential(
-                      doc,
-                      'name',
-                      newName
-                    );
+                    let vcName: VerifiableCredential;
+
+                    if (userInfo.isEssentialUser) {
+                      vcName = await didService.newSelfVerifiableCredentialFromEssentials(
+                        userInfo.did,
+                        'name',
+                        newName
+                      );
+                    } else {
+                      vcName = await didService.newSelfVerifiableCredential(
+                        doc,
+                        'name',
+                        newName
+                      );
+                    }
 
                     await DidcredsService.addOrUpdateCredentialToVault(
                       session,
-                      vc
+                      vcName
                     );
                   }
 
                   if (newPhone !== oldPhone) {
-                    let vc = await didService.newSelfVerifiableCredential(
-                      doc,
-                      'phone',
-                      newPhone
-                    );
+                    let vcPhone: VerifiableCredential;
+                    if (userInfo.isEssentialUser) {
+                      vcPhone = await didService.newSelfVerifiableCredentialFromEssentials(
+                        userInfo.did,
+                        'phone',
+                        newPhone
+                      );
+                    } else {
+                      vcPhone = await didService.newSelfVerifiableCredential(
+                        doc,
+                        'phone',
+                        newPhone
+                      );
+                    }
 
                     await DidcredsService.addOrUpdateCredentialToVault(
                       session,
-                      vc
+                      vcPhone
                     );
                   }
 

@@ -50,7 +50,6 @@ const FooterLinks: React.FC<Props> = ({ session, toggleHelpSupport }) => {
       >
         About Profile
       </div>
-
       <div
         className="item"
         onClick={() => window.open('https://www.tuum.tech')}

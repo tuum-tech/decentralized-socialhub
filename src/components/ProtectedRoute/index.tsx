@@ -19,14 +19,16 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     '/set-password',
     '/unlock-user',
     '/generate-did',
-    '/sign-did',
+    '/sign-in',
+    '/sign-essentials',
     '/sign-qr',
     '/associated-profile',
     '/create-why',
     '/create-profile',
     '/create-profile-with-did',
     '/forgot-password',
-    '/verify/email'
+    '/verify/email',
+    'recover-account'
   ];
 
   let isLoggedIn = window.localStorage.getItem('isLoggedIn');

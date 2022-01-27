@@ -9,18 +9,15 @@ import {
   OnBoardLayout,
   OnBoardLayoutLeft,
   OnBoardLayoutLeftContent,
-  OnBoardLayoutLeftContentTitle,
-  OnBoardLayoutLeftContentIntro,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { Text16 } from 'src/elements/texts';
-import { SignInButton, Button } from 'src/elements/buttons';
+import { Text16, Title40, Text12 } from 'src/elements/texts';
+import { ThemeButton, Button } from 'src/elements/buttons';
 
-import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import phone from 'src/assets/icon/phone.png';
 import { alertError, showNotify } from 'src/utils/notify';
 import style from './style.module.scss';
@@ -28,7 +25,7 @@ import FooterLinks, {
   Footer
 } from 'src/components/layouts/OnBoardLayout/FooterLinks';
 import { HiveService } from 'src/services/hive.service';
-import { DIDURL } from '@elastosfoundation/did-js-sdk/';
+import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
 
 const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
   /**
@@ -38,20 +35,37 @@ const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
    */
   const history = useHistory();
 
-  const connect = async () => {
-    const didService = await DidService.getInstance();
+  const getPresentation = async (): Promise<
+    VerifiablePresentation | undefined
+  > => {
+    console.log('Entering on connect');
     let didAccess = new DID.DIDAccess();
-    let presentation = await didAccess.getCredentials({
-      claims: {
-        name: true
-      }
-    });
-    if (presentation) {
-      let nameCredential = presentation.getCredentials().find((c: any) => {
+    try {
+      return await didAccess.getCredentials({
+        claims: {
+          name: true
+        }
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      console.log('end of popup?');
+    }
+
+    return;
+  };
+
+  const connect = async () => {
+    let presentation = await getPresentation();
+
+    const didService = await DidService.getInstance();
+    console.log('Did service instance');
+    if (presentation !== null && presentation !== undefined) {
+      let nameCredential = presentation!.getCredentials().find((c: any) => {
         return c.getId().getFragment() === 'name';
       });
-      let name = nameCredential.getSubject().getProperty('name');
-      let issuer = nameCredential.getIssuer();
+      let name = nameCredential!.getSubject().getProperty('name');
+      let issuer = nameCredential!.getIssuer();
       let did = 'did:elastos:' + issuer.getMethodSpecificId();
       let mnemonic = '';
       await didService.storeDocument(await issuer.resolve());
@@ -114,31 +128,26 @@ const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
   return (
     <OnBoardLayout className={style['qr-sign']}>
       <OnBoardLayoutLeft>
-        <OnBoardLayoutLogo src={whitelogo} />
+        <OnBoardLayoutLogo />
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={phone} />
-          <OnBoardLayoutLeftContentTitle className="mt-18px">
-            elastOS Sign in
-          </OnBoardLayoutLeftContentTitle>
-          <OnBoardLayoutLeftContentIntro
-            style={{ marginTop: '38px', marginBottom: '5px' }}
-          >
+          <Title40 className="mt-18px">elastOS Sign in</Title40>
+          <Text12 style={{ marginTop: '38px', marginBottom: '5px' }}>
             New to Profile?
-          </OnBoardLayoutLeftContentIntro>
-          <SignInButton width={160} to="/create-profile">
-            Create a new Profile
-          </SignInButton>
-          <OnBoardLayoutLeftContentIntro
-            style={{ marginTop: '44px', marginBottom: '5px' }}
-          >
+          </Text12>
+          <ThemeButton
+            style={{ width: '160px' }}
+            onClick={() => history.push('/create-profile')}
+            text="Create a new Profile"
+          />
+          <Text12 style={{ marginTop: '44px', marginBottom: '5px' }}>
             Have secrete Mnemonic words?
-          </OnBoardLayoutLeftContentIntro>
-          <SignInButton width={120} to="/sign-did">
-            Sign In
-          </SignInButton>
-          <Footer>
-            <FooterLinks></FooterLinks>
-          </Footer>
+          </Text12>
+          <ThemeButton
+            style={{ width: '120px' }}
+            onClick={() => history.push('/sign-in')}
+            text="Sign In"
+          />
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -155,6 +164,10 @@ const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
               onClick={connect}
             />
           </div>
+
+          <Footer>
+            <FooterLinks />
+          </Footer>
         </OnBoardLayoutRightContent>
       </OnBoardLayoutRight>
     </OnBoardLayout>

@@ -41,7 +41,7 @@ export const MainCard = styled.div`
 export const BadgeImg = styled.img`
   position: absolute;
   right: 80px;
-  top: 50%;
+  top: 38%;
   transform: translateY(-50%);
   height: 102px !important;
   width: 102px !important;

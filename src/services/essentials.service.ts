@@ -23,6 +23,8 @@ export class EssentialsService {
       forceToPublishCredentials: true
     });
 
+    if (response === null) return false;
+
     return response.length > 0;
   };
 

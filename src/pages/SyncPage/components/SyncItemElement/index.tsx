@@ -95,26 +95,43 @@ const SyncItemElement: React.FC<IProps> = ({
     )
       return false;
 
+    console.log('verifiers', verifiers);
+
     if (verifiers === undefined || !verifiers.has(vc.issuer.toString())) {
       let verifiersCollection = verifiers ?? new Map<string, verifier>();
-      verifiersCollection.set(vc.issuer.toString(), {
-        name: 'Loading',
-        did: vc.issuer.toString()
-      });
-      setVerifiers(verifiersCollection);
 
-      DidService.getInstance().then(s => {
-        let userService = new UserService(s);
-        userService.SearchUserWithDID(vc.issuer.toString()).then(response => {
-          if (response === undefined) return;
-          let newCollection = verifiers ?? new Map<string, verifier>();
-          newCollection?.set(response.did, {
-            name: response.name,
-            did: response.did
-          });
-          setVerifiers(newCollection);
+      if (vc.issuer.toString() === process.env.REACT_APP_APPLICATION_DID) {
+        verifiersCollection.set(vc.issuer.toString(), {
+          name: 'Tuum Tech',
+          did: vc.issuer.toString()
         });
-      });
+        setVerifiers(verifiersCollection);
+      } else {
+        verifiersCollection.set(vc.issuer.toString(), {
+          name: 'Loading',
+          did: vc.issuer.toString()
+        });
+        setVerifiers(verifiersCollection);
+        DidService.getInstance().then(s => {
+          let userService = new UserService(s);
+          userService.SearchUserWithDID(vc.issuer.toString()).then(response => {
+            let newItem = {
+              name: 'Username not found',
+              did: vc.issuer.toString()
+            };
+
+            if (response !== undefined) {
+              newItem = {
+                name: response.name,
+                did: response.did
+              };
+            }
+            let newCollection = verifiers ?? new Map<string, verifier>();
+            newCollection?.set(newItem.did, newItem);
+            setVerifiers(newCollection);
+          });
+        });
+      }
     }
 
     return true;

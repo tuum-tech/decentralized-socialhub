@@ -9,20 +9,17 @@ import {
   OnBoardLayout,
   OnBoardLayoutLeft,
   OnBoardLayoutLeftContent,
-  OnBoardLayoutLeftContentTitle,
-  OnBoardLayoutLeftContentDescription,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
   OnBoardLayoutRightContentTitle,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import ButtonWithLogo from 'src/elements/buttons/ButtonWithLogo';
+import ThemeButton from 'src/elements/buttons/ThemeButton';
 import TextInput from 'src/elements/inputs/TextInput';
-import { Text16 } from 'src/elements/texts';
+import { Text16, Title40, Text18 } from 'src/elements/texts';
 import Check from '../components/Check';
 
-import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import keyimg from 'src/assets/icon/key.png';
 
 import { createStructuredSelector } from 'reselect';
@@ -133,18 +130,18 @@ const CreatePasswordPage: React.FC<PageProps> = ({
     <OnBoardLayout>
       {status === 1 && <LoadingIndicator loadingText="Encrypting now..." />}
       <OnBoardLayoutLeft>
-        <OnBoardLayoutLogo src={whitelogo} />
+        <OnBoardLayoutLogo />
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={keyimg} />
-          <OnBoardLayoutLeftContentTitle className="mt-18px">
+          <Title40 className="mt-18px">
             Your password is not stored by us
-          </OnBoardLayoutLeftContentTitle>
-          <OnBoardLayoutLeftContentDescription className="mt-25px">
+          </Title40>
+          <Text18 className="mt-25px">
             This is a locally stored password that protects your main profile
             account (decentralized identity).
-          </OnBoardLayoutLeftContentDescription>
+          </Text18>
           <Footer>
-            <FooterLinks></FooterLinks>
+            <FooterLinks />
           </Footer>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
@@ -193,9 +190,8 @@ const CreatePasswordPage: React.FC<PageProps> = ({
             placeholder="Enter your password"
           />
           {error !== '' && <ErrorText>{error}</ErrorText>}
-          <ButtonWithLogo
-            mt={34}
-            hasLogo={false}
+          <ThemeButton
+            style={{ marginTop: '20px' }}
             text="Continue"
             onClick={async () => {
               await onButtonClick();

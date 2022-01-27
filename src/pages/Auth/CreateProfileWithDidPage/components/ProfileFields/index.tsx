@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import LoadingIndicator from 'src/elements/LoadingIndicator';
-import { ButtonWithLogo } from 'src/elements/buttons';
+import { ThemeButton } from 'src/elements/buttons';
 import TextInput from 'src/elements/inputs/TextInput';
 import { Text16 } from 'src/elements/texts';
 import Avatar from 'src/components/Avatar';
@@ -10,15 +10,13 @@ import {
   OnBoardLayout,
   OnBoardLayoutLeft,
   OnBoardLayoutLeftContent,
-  OnBoardLayoutLeftContentTitle,
-  OnBoardLayoutLeftContentDescription,
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
+import { Title40, Text12, Text18 } from 'src/elements/texts';
 
-import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import wavinghand from 'src/assets/icon/wavinghand.png';
 
 import style from './style.module.scss';
@@ -135,18 +133,16 @@ const UseDetailsForm: React.FC<Props> = ({ setUserInfo, userInfo }) => {
     <OnBoardLayout className={style['create-profile']}>
       {loading !== '' && <LoadingIndicator loadingText={loading} />}
       <OnBoardLayoutLeft>
-        <OnBoardLayoutLogo src={whitelogo} />
+        <OnBoardLayoutLogo />
         <OnBoardLayoutLeftContent>
           <WavingHandImg src={wavinghand} />
-          <OnBoardLayoutLeftContentTitle className="mt-18px">
-            Complete your profile
-          </OnBoardLayoutLeftContentTitle>
-          <OnBoardLayoutLeftContentDescription className="mt-25px">
+          <Title40 className="mt-18px">Complete your profile</Title40>
+          <Text18 className="mt-25px">
             Having multiple profiles is messy. Your personal information is
             copied and stored on every app. Profile gives you total control of
             your digital world, in one place. Finally unlock the power of your
             content online.
-          </OnBoardLayoutLeftContentDescription>
+          </Text18>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -183,7 +179,8 @@ const UseDetailsForm: React.FC<Props> = ({ setUserInfo, userInfo }) => {
           {error !== '' && <ErrorText>{error}</ErrorText>}
           {displayText !== '' && <DisplayText>{displayText}</DisplayText>}
 
-          <ButtonWithLogo
+          <ThemeButton
+            style={{ marginTop: '20px' }}
             text={
               displayText ===
               'Verification email is sent to you. Please confirm to complete your registration.'
