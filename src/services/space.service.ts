@@ -25,6 +25,25 @@ export class SpaceService {
     }
     return [];
   }
+  static async getSpaceByName(session: ISessionItem, name: string) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+
+    if (session && hiveInstance) {
+      const result: IRunScriptResponse<SpacesResponse> = await hiveInstance.Scripting.RunScript(
+        {
+          name: 'get_space_by_name',
+          params: { name },
+          context: {
+            target_did: session.did,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+          }
+        }
+      );
+      const data = getItemsFromData(result, 'get_space_by_name');
+      return data.length > 0 ? data[0] : null;
+    }
+    return null;
+  }
   static async addSpace(session: ISessionItem, space: Space) {
     const hiveInstance = await HiveService.getSessionInstance(session);
     if (session && hiveInstance) {

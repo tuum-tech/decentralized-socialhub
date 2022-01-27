@@ -26,6 +26,8 @@ import style from './style.module.scss';
 import { Button } from 'src/elements/buttons';
 import CreateSpace from './components/CreateSpace';
 import CreateSpaceForm from './components/CreateSpaceForm';
+import { TuumTechScriptService } from 'src/services/script.service';
+import { showNotify } from 'src/utils/notify';
 
 const CustomModal = styled(IonModal)`
   --height: 710px;
@@ -42,14 +44,22 @@ const SpacePage: React.FC<InferMappedProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     refreshSpaces();
-  }, []);
+  }, [refreshSpaces]);
 
-  const refreshSpaces = async () => {
+  const refreshSpaces = useCallback(async () => {
     const _spaces = await SpaceService.getAllSpaces(session);
     setSpaces(_spaces);
-  };
+  });
   const handleCreateSpace = async (space: Space) => {
+    if (spaces.findIndex(_space => _space.name === space.name) > -1) {
+      showNotify(
+        'Space with same name already exist. Try with another name',
+        'warning'
+      );
+      return;
+    }
     await SpaceService.addSpace(session, space);
+    await TuumTechScriptService.addSpace(session.did, space.name);
     refreshSpaces();
     setIsModalOpen(false);
   };
