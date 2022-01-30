@@ -24,7 +24,7 @@ const CreateSpace: React.FC<Props> = ({ session, openForm }: Props) => {
           </IonRow>
           <IonRow>
             <IonText>
-              <h4>You don't have any pages yet</h4>
+              <h4>You haven't created any spaces yet</h4>
             </IonText>
           </IonRow>
           <IonRow>
