@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IonCard, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import { setTimeout } from 'timers';
 
@@ -25,7 +25,11 @@ interface Props {
 }
 const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
   const [imagePreview, setImagePreview] = useState<any>('');
-  const [defaultImage, setDefaultImage] = useState(defaultAvatar);
+  const [defaultImage, setDefaultImage] = useState<any>('');
+
+  useEffect(() => {
+    setDefaultImage(space?.avatar || defaultAvatar);
+  }, [space]);
 
   const onChange = (e: any) => {
     let file = e.target.files[0];

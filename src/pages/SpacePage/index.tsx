@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   IonContent,
   IonPage,
@@ -30,7 +30,7 @@ import { TuumTechScriptService } from 'src/services/script.service';
 import { showNotify } from 'src/utils/notify';
 
 const CustomModal = styled(IonModal)`
-  --height: 710px;
+  --height: 740px;
   --border-radius: 16px;
 `;
 
@@ -42,14 +42,25 @@ const SpacePage: React.FC<InferMappedProps> = ({
   const [spaces, setSpaces] = useState<any[]>([]);
   const [active, setActive] = useState('my spaces');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  useEffect(() => {
-    refreshSpaces();
-  }, [refreshSpaces]);
+
+  const setTimerForSpaces = () => {
+    const timer = setTimeout(async () => {
+      await refreshSpaces();
+      setTimerForSpaces();
+    }, 1000);
+    return () => clearTimeout(timer);
+  };
 
   const refreshSpaces = useCallback(async () => {
-    const _spaces = await SpaceService.getAllSpaces(session);
+    let _spaces = await SpaceService.getAllSpaces(session);
+    _spaces = _spaces.map((x: any) => ({ ...x, owner: session.did }));
     setSpaces(_spaces);
-  });
+  }, [session]);
+
+  useEffect(() => {
+    setTimerForSpaces();
+  }, []);
+
   const handleCreateSpace = async (space: Space) => {
     if (spaces.findIndex(_space => _space.name === space.name) > -1) {
       showNotify(
@@ -86,7 +97,7 @@ const SpacePage: React.FC<InferMappedProps> = ({
                   <SpacePageHeader active={active} setActive={setActive} />
                   {active === 'my spaces' &&
                     (spaces.length > 0 ? (
-                      <MySpaces session={session} spaces={spaces} />
+                      <MySpaces spaces={spaces} />
                     ) : (
                       <CreateSpace
                         session={session}

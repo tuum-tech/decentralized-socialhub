@@ -16,7 +16,7 @@ export const TextHeader = styled.p`
   width: 300px;
   margin-right: 35px;
   margin-bottom: 5px;
-  margin-top: 35px;
+  margin-top: 15px !important;
 `;
 
 export const ImgUploadContainer = styled.div`
@@ -39,12 +39,12 @@ export const ImgUploadContainer = styled.div`
   .back {
     position: absolute;
     width: 100%;
-    height: 75px;
+    height: 100px;
   }
 
   form {
     width: 100%;
-    height: 75px;
+    height: 100px;
   }
 `;
 
@@ -57,7 +57,7 @@ export const ImgUploadArea = styled.div<{
   position: relative;
 
   width: 100%;
-  height: 75px;
+  height: 100px;
 
   border-radius: 20px;
 
@@ -149,7 +149,7 @@ export const ImgUploadArea = styled.div<{
 
 export const Perfil = styled.div`
   width: 100%;
-  height: 75px;
+  height: 100px;
   background: transparent;
   border-radius: 20px;
   display: flex;
@@ -159,13 +159,13 @@ export const Perfil = styled.div`
 
   svg {
     width: 100%; // 80px
-    height: 75px;
+    height: 100px;
     transition: all 1s;
   }
 
   img {
     width: 100%;
-    height: 75px;
+    height: 100px;
     border-radius: 20px;
     transition: all 1s;
   }
@@ -177,7 +177,7 @@ export const Perfil = styled.div`
     cursor: pointer;
     z-index: 99999;
     width: 100%;
-    height: 75px;
+    height: 100px;
   }
 
   &:hover {

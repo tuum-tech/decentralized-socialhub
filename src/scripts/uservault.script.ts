@@ -770,17 +770,17 @@ export class UserVaultScripts {
     });
 
     await hiveClient.Scripting.SetScript({
-      name: 'get_space_by_name',
+      name: 'get_space_by_names',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
       executable: {
         type: 'find',
-        name: 'get_space_by_name',
+        name: 'get_space_by_names',
         output: true,
         body: {
           collection: 'private_spaces',
           filter: {
-            name: '$params.name'
+            name: { $in: '$params.names' }
           }
         }
       }

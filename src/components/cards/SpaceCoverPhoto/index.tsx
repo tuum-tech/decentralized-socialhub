@@ -25,7 +25,11 @@ interface Props {
 
 const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
   const [imagePreview, setImagePreview] = useState<any>('');
-  const [defaultImage, setDefaultImage] = useState(defaultCoverPhoto);
+  const [defaultImage, setDefaultImage] = useState('');
+
+  useEffect(() => {
+    setDefaultImage(space?.coverPhoto || defaultCoverPhoto);
+  }, [space]);
 
   const onChange = (e: any) => {
     let file = e.target.files[0];

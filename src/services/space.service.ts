@@ -6,6 +6,13 @@ import { DidService } from './did.service.new';
 import { SearchService } from './search.service';
 import { showNotify } from 'src/utils/notify';
 
+export const defaultSpace: Space = {
+  name: '',
+  description: '',
+  category: 'personal',
+  avatar: '',
+  coverPhoto: ''
+};
 export class SpaceService {
   static async getAllSpaces(session: ISessionItem) {
     const hiveInstance = await HiveService.getSessionInstance(session);
@@ -25,24 +32,23 @@ export class SpaceService {
     }
     return [];
   }
-  static async getSpaceByName(session: ISessionItem, name: string) {
+  static async getSpaceByNames(session: ISessionItem, names: string[]) {
     const hiveInstance = await HiveService.getSessionInstance(session);
-
     if (session && hiveInstance) {
       const result: IRunScriptResponse<SpacesResponse> = await hiveInstance.Scripting.RunScript(
         {
-          name: 'get_space_by_name',
-          params: { name },
+          name: 'get_space_by_names',
+          params: { names },
           context: {
             target_did: session.did,
             target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
           }
         }
       );
-      const data = getItemsFromData(result, 'get_space_by_name');
-      return data.length > 0 ? data[0] : null;
+      const data = getItemsFromData(result, 'get_space_by_names');
+      return data;
     }
-    return null;
+    return [];
   }
   static async addSpace(session: ISessionItem, space: Space) {
     const hiveInstance = await HiveService.getSessionInstance(session);

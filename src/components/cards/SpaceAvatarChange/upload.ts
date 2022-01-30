@@ -16,7 +16,7 @@ export const TextHeader = styled.p`
   align-items: center;
   color: #425466;
   margin-bottom: 5px;
-  margin-top: 35px;
+  margin-top: 15px !important;
 `;
 
 export const ImgUploadContainer = styled.div`

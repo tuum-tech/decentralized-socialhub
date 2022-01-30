@@ -555,4 +555,5 @@ interface Space {
   category: string;
   avatar?: string;
   coverPhoto?: string;
+  owner?: string;
 }

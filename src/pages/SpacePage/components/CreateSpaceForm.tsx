@@ -8,19 +8,11 @@ import SmallSelectInput from 'src/elements/inputs/SmallSelectInput';
 import style from './CreateSpaceForm.module.scss';
 import SpaceCoverPhoto from 'src/components/cards/SpaceCoverPhoto';
 import SpaceAvatarChange from 'src/components/cards/SpaceAvatarChange';
-
+import { defaultSpace } from 'src/services/space.service';
 interface Props {
   submitForm: (form: any) => void;
   onClose: () => void;
 }
-
-const defaultSpace: Space = {
-  name: '',
-  description: '',
-  category: 'personal',
-  avatar: '',
-  coverPhoto: ''
-};
 
 const CreateSpaceForm: React.FC<Props> = ({ submitForm, onClose }: Props) => {
   const spaceCategories = [{ value: 'personal', text: 'Personal Group' }];

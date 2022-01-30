@@ -63,6 +63,8 @@ import PublicPage from './pages/PublicPage/Loadable';
 import ManagerPage from './pages/ManagerPage';
 import ActivityPage from './pages/ActivityPage';
 import SpacePage from './pages/SpacePage';
+import SpaceDashboardPage from './pages/SpaceDashboardPage';
+import SpacePublicPage from './pages/SpacePublicPage';
 import SyncPage from './pages/SyncPage';
 import FollowersPage from './pages/FollowersPage';
 import FollowingsPage from './pages/FollowingsPage';
@@ -156,6 +158,11 @@ const App: React.FC = () => {
               <ProtectedRoute
                 path="/spaces"
                 component={SpacePage}
+                exact={true}
+              />
+              <ProtectedRoute
+                path="/spaces/:name"
+                component={SpaceDashboardPage}
                 exact={true}
               />
               <ProtectedRoute
@@ -270,6 +277,7 @@ const App: React.FC = () => {
               {/* ====== Public URLs ==== */}
               <Route path="/" component={HomePage} exact={true} />
               <Route path="/did/:did" component={PublicPage} exact={true} />
+              <Route path="/did/:did/spaces/:name" component={SpacePublicPage} exact={true} />
               <Route path="/load" component={LoadDid} />
               <Route component={DefaultPage} />
             </IonRouterOutlet>

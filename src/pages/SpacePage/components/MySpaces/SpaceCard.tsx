@@ -1,17 +1,21 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
 import defaultCoverPhoto from 'src/assets/default/default-cover.png';
 import defaultAvatar from 'src/assets/icon/dp.png';
 
-const Container = styled.div`
+export const Container = styled.div`
   background: white;
   border-radius: 16px;
   box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24),
     0px 3px 8px -1px rgba(50, 50, 71, 0.05);
+  :hover {
+    cursor: pointer;
+  }
 `;
-const SpaceName = styled.p`
+export const SpaceName = styled.p`
   font-family: SF Pro Display;
   font-style: normal;
   font-weight: 600;
@@ -23,11 +27,11 @@ const SpaceName = styled.p`
 
   color: #27272e;
 `;
-const SpaceCategory = styled.p`
+export const SpaceCategory = styled.p`
   font-family: SF Pro Display;
   font-style: normal;
   font-weight: normal;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 162.02%;
 
   display: flex;
@@ -55,7 +59,7 @@ const CoverImage = styled.div<{ bgImg: string }>`
   background-position: 0 0;
   background-size: 100% 100%;
 `;
-const Header = styled(IonRow)`
+export const Header = styled(IonRow)`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -65,11 +69,11 @@ const Header = styled(IonRow)`
     display: block;
   }
 `;
-const SpaceInfo = styled.div`
+export const SpaceInfo = styled.div`
   flex-grow: 1;
   padding: 0 10px;
 `;
-const SpaceAvatar = styled.div`
+export const SpaceAvatar = styled.div`
   width: 60px;
   height: 60px;
   img {
@@ -84,27 +88,34 @@ const SpaceAvatar = styled.div`
 `;
 interface Props {
   space: Space;
+  link: string;
 }
-const SpaceCard: React.FC<Props> = ({ space }: Props) => {
+const SpaceCard: React.FC<Props> = ({ space, link }: Props) => {
   return (
-    <Container>
-      <CoverImage bgImg={space.coverPhoto || defaultCoverPhoto}></CoverImage>
-      <Header class="ion-justify-content-center ion-align-items-center">
-        <SpaceAvatar>
-          <img src={space.avatar || defaultAvatar} height="auto" alt="avatar" />
-        </SpaceAvatar>
-        <SpaceInfo>
-          <IonGrid>
-            <IonRow>
-              <SpaceName>{space.name}</SpaceName>
-            </IonRow>
-            <IonRow className="ion-justify-content-start">
-              <SpaceCategory>{space.category}</SpaceCategory>
-            </IonRow>
-          </IonGrid>
-        </SpaceInfo>
-      </Header>
-    </Container>
+    <Link to={link}>
+      <Container>
+        <CoverImage bgImg={space.coverPhoto || defaultCoverPhoto}></CoverImage>
+        <Header class="ion-justify-content-center ion-align-items-center">
+          <SpaceAvatar>
+            <img
+              src={space.avatar || defaultAvatar}
+              height="auto"
+              alt="avatar"
+            />
+          </SpaceAvatar>
+          <SpaceInfo>
+            <IonGrid>
+              <IonRow>
+                <SpaceName>{space.name}</SpaceName>
+              </IonRow>
+              <IonRow className="ion-justify-content-start">
+                <SpaceCategory>{space.category}</SpaceCategory>
+              </IonRow>
+            </IonGrid>
+          </SpaceInfo>
+        </Header>
+      </Container>
+    </Link>
   );
 };
 
