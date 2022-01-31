@@ -17,6 +17,7 @@ import styled from 'styled-components';
 import { ProfileService } from 'src/services/profile.service';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import { SmallLightButton } from 'src/elements/buttons';
+import { SpaceService } from 'src/services/space.service';
 
 export const Divider = styled.hr`
   width: 100%;
@@ -30,44 +31,18 @@ export const Divider = styled.hr`
 
 interface IProps {
   sessionItem: ISessionItem;
+  profile: any;
 }
 
-const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
+const PublicFields: React.FC<IProps> = ({ sessionItem, profile }: IProps) => {
   const [fields, setFields] = useState<string[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [template, setTemplate] = useState(sessionItem.pageTemplate);
-  const defaultFields = [
-    'about',
-    'education',
-    'experience',
-    'follower',
-    'following',
-    'mutual',
-    'social',
-    'badge'
-  ];
-  const extraFields = {
-    default: [],
-    crypto: ['wallet'],
-    gamer: ['played games', 'gamer tags', 'gamer profile'],
-    soccer: ['sports', 'teams'],
-    education: ['developer', 'thesis', 'paper', 'license', 'certification']
-  };
-
+  const defaultFields = ['about'];
   useEffect(() => {
     (async () => {
-      if (
-        !sessionItem ||
-        sessionItem.did === '' ||
-        loaded ||
-        sessionItem.tutorialStep !== 4
-      )
-        return;
-      const orgFields = await ProfileService.getPublicFields(sessionItem.did);
+      const orgFields = profile.publicFields || [];
       setFields(orgFields);
-      setLoaded(true);
     })();
-  }, [sessionItem, sessionItem.did, loaded]);
+  }, [profile]);
 
   const toggleClicked = (field: string) => {
     if (fields.includes(field)) {
@@ -89,7 +64,10 @@ const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
               <SmallLightButton
                 disabled={sessionItem.tutorialStep !== 4}
                 onClick={async () => {
-                  await ProfileService.updatePublicFields(fields, sessionItem);
+                  await SpaceService.addSpace(sessionItem, {
+                    ...profile,
+                    publicFields: fields
+                  });
                 }}
               >
                 Save
@@ -99,27 +77,19 @@ const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
         </IonGrid>
       </IonCardHeader>
       <IonCardContent>
-        <IonText>
-          Set visibility of sections
-        </IonText>
+        <IonText>Set visibility of sections</IonText>
         <Divider />
-        {defaultFields
-          .concat(
-            (extraFields as any)[
-              sessionItem.pageTemplate ? sessionItem.pageTemplate : 'default'
-            ]
-          )
-          .map(field => (
-            <IonItem key={field}>
-              <IonLabel>{field}</IonLabel>
-              <IonToggle
-                checked={fields.includes(field)}
-                onClick={e => {
-                  toggleClicked(field);
-                }}
-              />
-            </IonItem>
-          ))}
+        {defaultFields.map(field => (
+          <IonItem key={field}>
+            <IonLabel>{field}</IonLabel>
+            <IonToggle
+              checked={fields.includes(field)}
+              onClick={e => {
+                toggleClicked(field);
+              }}
+            />
+          </IonItem>
+        ))}
       </IonCardContent>
     </IonCard>
   );

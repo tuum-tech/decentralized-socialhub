@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { IonCard, IonGrid, IonRow, IonIcon } from '@ionic/react';
 import styled from 'styled-components';
 import { openOutline } from 'ionicons/icons';
@@ -10,7 +11,8 @@ import {
   SpaceCategory
 } from 'src/pages/SpacePage/components/MySpaces/SpaceCard';
 import defaultAvatar from 'src/assets/icon/dp.png';
-import { Link } from 'react-router-dom';
+
+import { getDIDString } from 'src/utils/did';
 
 const Container = styled.div`
   display: flex;
@@ -45,7 +47,11 @@ const OverView: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
               <SpaceCategory>{profile.category}</SpaceCategory>
             </IonRow>
             <IonRow className="ion-justify-content-start">
-              <Link to={`/did/${sessionItem.did}/spaces/${profile.name}`}>
+              <Link
+                to={`/did/${getDIDString(sessionItem.did, true)}/spaces/${
+                  profile.name
+                }`}
+              >
                 <IonRow className="ion-align-items-center ion-justify-content-between">
                   <p style={{ marginRight: '5px' }}>View Profile</p>
                   <IonIcon icon={openOutline} />

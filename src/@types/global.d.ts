@@ -556,4 +556,5 @@ interface Space {
   avatar?: string;
   coverPhoto?: string;
   owner?: string;
+  publicFields?: string[];
 }

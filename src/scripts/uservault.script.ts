@@ -805,7 +805,8 @@ export class UserVaultScripts {
               description: '$params.description',
               category: '$params.category',
               avatar: '$params.avatar',
-              coverPhoto: '$params.coverPhoto'
+              coverPhoto: '$params.coverPhoto',
+              publicFields: '$params.publicFields'
             }
           },
           options: {

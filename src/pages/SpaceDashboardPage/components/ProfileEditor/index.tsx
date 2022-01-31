@@ -63,7 +63,7 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
         <IonRow>
           <IonCol size="4">
             <OverView sessionItem={userInfo} profile={spaceProfile} />
-            <PublicFields sessionItem={userInfo} />
+            <PublicFields sessionItem={userInfo} profile={spaceProfile} />
           </IonCol>
           <IonCol size="8">
             <SpaceAvatarChange space={spaceProfile} onUpload={onUploadAvatar} />

@@ -56,10 +56,12 @@ const ProfileComponent: React.FC<Props> = ({
                   <IonRow>
                     <LeftContent>
                       <div ref={aboutRef}>
-                        <AboutCard
-                          aboutText={profile.description}
-                          mode="read"
-                        />
+                        {(profile.publicFields || []).includes('about') && (
+                          <AboutCard
+                            aboutText={profile.description}
+                            mode="read"
+                          />
+                        )}
                       </div>
                     </LeftContent>
                     <RightContent></RightContent>

@@ -11,7 +11,8 @@ export const defaultSpace: Space = {
   description: '',
   category: 'personal',
   avatar: '',
-  coverPhoto: ''
+  coverPhoto: '',
+  publicFields: []
 };
 export class SpaceService {
   static async getAllSpaces(session: ISessionItem) {
