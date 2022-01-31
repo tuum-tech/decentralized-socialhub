@@ -12,6 +12,54 @@ let run = async () => {
     client.Payment.CreateFreeVault();
 
     const fs = require('fs');
+    // ===== spaces section start =====
+    await client.Database.createCollection('spaces');
+    await client.Scripting.SetScript({
+      name: 'add_space',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'insert',
+        name: 'add_space',
+        output: true,
+        body: {
+          collection: 'spaces',
+          document: {
+            owner: '$params.did',
+            name: '$params.name'
+          }
+        }
+      }
+    });
+    await client.Scripting.SetScript({
+      name: 'get_all_spaces',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_all_spaces',
+        output: true,
+        body: {
+          collection: 'spaces'
+        }
+      }
+    });
+    await client.Scripting.SetScript({
+      name: 'remove_space',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'delete',
+        name: 'remove_space',
+        body: {
+          collection: 'spaces',
+          filter: {
+            name: '$params.name',
+            owner: '$params.did'
+          }
+        }
+      }
+    });
     // ===== comments section start =====
     await client.Database.createCollection('comments');
     await client.Scripting.SetScript({
