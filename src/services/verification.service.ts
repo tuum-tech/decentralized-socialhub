@@ -134,6 +134,31 @@ export class VerificationService {
     };
   }
 
+  public async generateVeriableCredentialFromEducationItem(
+    item: EducationItem,
+    session: ISessionItem
+  ): Promise<void> {
+    let data: any = this.generateEducationVerificationData([item])[0];
+
+    let v = {
+      feedbacks: '',
+      msg: '',
+      from_did: session.did,
+      to_did: session.did,
+      category: data.category,
+      status: '',
+      idKey: data.idKey,
+      records: data.records,
+      modified: {},
+      credential: {},
+      guid: ''
+    } as VerificationRequest;
+    let signedCredential = await this.approveCredential(session, v, true, '');
+
+    v.credential = signedCredential.toString(true);
+    await this.storeNewCredential(v, session);
+  }
+
   public generateEducationVerificationData(items: EducationItem[]) {
     if (items.length > 0) {
       const data = [];
@@ -337,12 +362,11 @@ export class VerificationService {
     v: VerificationRequest,
     approve = true,
     feedbacks = ''
-  ): Promise<any> {
+  ): Promise<VerifiableCredential> {
     let vc: any = null;
     const essentialUser = !session.mnemonics;
     const requester_didUrl = DID.from(v.from_did);
     if (!requester_didUrl) return vc;
-
     if (approve) {
       let content = this.get_content_from_verification_data(v.records);
       const { vcType, DIDstring } = this.generate_DID_id_from_verification(
@@ -419,7 +443,6 @@ export class VerificationService {
     const didService = await DidService.getInstance();
     const userService = new UserService(didService);
     const holder = await userService.SearchUserWithDID(v.from_did);
-
     let didDocument: DIDDocument = await didService.getStoredDocument(
       new DID(v.from_did)
     );

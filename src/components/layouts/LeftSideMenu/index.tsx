@@ -51,18 +51,18 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
     setShowContactModal(!showContactModal);
   };
 
-  const fetchVerificationRequestsCount = async (): Promise<void> => {
-    let requests: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
-      props.session.did,
-      false
-    );
-    setRequestsCount(requests.filter(x => x.status === 'requested').length);
-  };
   useEffect(() => {
     (async () => {
+      const fetchVerificationRequestsCount = async (): Promise<void> => {
+        let requests: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
+          props.session.did,
+          false
+        );
+        setRequestsCount(requests.filter(x => x.status === 'requested').length);
+      };
       await fetchVerificationRequestsCount();
     })();
-  }, [fetchVerificationRequestsCount]);
+  }, [props.session.did]);
 
   return (
     <div className={style['navbar']}>
