@@ -352,7 +352,7 @@ const ProfileEditor: React.FC<Props> = ({
                       );
 
                       let verificationService: VerificationService = new VerificationService();
-                      await verificationService.generateVeriableCredentialFromEducationItem(
+                      await verificationService.generateVerifiableCredentialFromEducationItem(
                         educationItem,
                         session
                       );
@@ -401,6 +401,13 @@ const ProfileEditor: React.FC<Props> = ({
                         userSession,
                         archivedBadge
                       );
+
+                      let verificationService: VerificationService = new VerificationService();
+                      await verificationService.generateVerifiableCredentialFromExperienceItem(
+                        experienceItem,
+                        session
+                      );
+
                       await retriveProfile();
                     }}
                     requestFunc={async (experienceItem: ExperienceItem) => {

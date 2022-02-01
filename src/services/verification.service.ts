@@ -134,7 +134,32 @@ export class VerificationService {
     };
   }
 
-  public async generateVeriableCredentialFromEducationItem(
+  public async generateVerifiableCredentialFromExperienceItem(
+    item: ExperienceItem,
+    session: ISessionItem
+  ): Promise<void> {
+    let data: any = this.generateExperienceVerificationData([item])[0];
+
+    let v = {
+      feedbacks: '',
+      msg: '',
+      from_did: session.did,
+      to_did: session.did,
+      category: data.category,
+      status: '',
+      idKey: data.idKey,
+      records: data.records,
+      modified: {},
+      credential: {},
+      guid: ''
+    } as VerificationRequest;
+    let signedCredential = await this.approveCredential(session, v, true, '');
+
+    v.credential = signedCredential.toString(true);
+    await this.storeNewCredential(v, session);
+  }
+
+  public async generateVerifiableCredentialFromEducationItem(
     item: EducationItem,
     session: ISessionItem
   ): Promise<void> {
