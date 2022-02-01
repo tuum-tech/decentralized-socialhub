@@ -9,6 +9,9 @@ export const Header = styled.div`
   height: 83px;
   background: #fff;
   padding: 27px 25px 20px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 export const PageTitle = styled.h2`
@@ -64,7 +67,7 @@ const SpacePageHeaderContainer = styled.div`
 
 const SpacePageHeader: React.FC<SpacePageHeaderProps> = ({
   active,
-  setActive,
+  setActive
 }) => {
   return (
     <SpacePageHeaderContainer>
@@ -76,14 +79,10 @@ const SpacePageHeader: React.FC<SpacePageHeaderProps> = ({
           <IonLabel className="tab-label">My Spaces</IonLabel>
         </IonItem>
         <IonItem
-          className={
-            (active === 'following' ? 'tab-active' : '') + ' tab-item'
-          }
+          className={(active === 'following' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => setActive('following')}
         >
-          <IonLabel className="tab-label">
-            Following
-          </IonLabel>
+          <IonLabel className="tab-label">Following</IonLabel>
         </IonItem>
       </IonList>
     </SpacePageHeaderContainer>

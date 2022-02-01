@@ -38,7 +38,6 @@ interface PageProps
 
 const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   let did: string = getDIDString(props.match.params.did, false);
-
   const [publicUser, setPublicUser] = useState(defaultUserInfo);
   const [publicUserProfile, setPublicUserProfile] = useState<ProfileDTO>(
     defaultFullProfile
