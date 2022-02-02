@@ -795,20 +795,6 @@ let run = async () => {
         }
       }
     });
-    // This can be used to get all the new spaces created on a specific date
-    await client.Scripting.SetScript({
-      name: 'get_all_spaces',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_all_spaces',
-        output: true,
-        body: {
-          collection: 'spaces'
-        }
-      }
-    });
 
     console.log('All scripts OK');
   } catch (error) {
