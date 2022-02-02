@@ -7,7 +7,7 @@
       flex-direction: column;
       justify-content: center;
       text-align: center;
-      margin: 60px 0px 100px 0px;
+      margin: 100px 0px 120px 0px;
   
       ion-row {
         margin: 3px 0px;
@@ -24,6 +24,9 @@
         font-size: 14px;
         font-weight: normal;
         line-height: 162.502%;
+      }
+      button {
+        margin-top: 15px;
       }
     }
   }

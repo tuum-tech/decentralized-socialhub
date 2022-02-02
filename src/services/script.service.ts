@@ -359,6 +359,44 @@ export class TuumTechScriptService {
     items = items.sort((a: any, b: any) => b.modified.$date - a.modified.$date);
     return items;
   }
+
+  // space scripts
+  public static async getAllSpaces() {
+    const get_spaces_script = {
+      name: 'get_all_spaces',
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+    let response: any = await this.runTuumTechScript(get_spaces_script);
+    let items = getItemsFromData(response, 'get_all_spaces');
+    return items;
+  }
+  public static async addSpace(did: string, name: string) {
+    const add_space_request_script = {
+      name: 'add_space',
+      params: { name, did },
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+
+    await this.runTuumTechScript(add_space_request_script);
+  }
+  public static async removeSpace(did: string, name: string) {
+    const add_space_request_script = {
+      name: 'remove_space',
+      params: { name, did },
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+
+    await this.runTuumTechScript(add_space_request_script);
+  }
 }
 
 export class UserVaultScriptService {
