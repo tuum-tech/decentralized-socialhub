@@ -745,6 +745,71 @@ let run = async () => {
       }
     });
 
+    // ===== For getting Profile related stats(for daily summary stats) =====
+    // Get all the new users on a specific date
+    await client.Scripting.SetScript({
+      name: 'get_all_users',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_all_users',
+        output: true,
+        body: {
+          collection: 'users'
+        }
+      }
+    });
+    // Get all the users according to their accountType. This can be used to get all
+    // users who registered via Google, or DID or whatever.
+    await client.Scripting.SetScript({
+      name: 'get_users_by_account_type',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_users_by_account_type',
+        output: true,
+        body: {
+          collection: 'users',
+          filter: {
+            accountType: '$params.accountType'
+          }
+        }
+      }
+    });
+    // This can be used to get all the users who are not using Tuum tech vault
+    await client.Scripting.SetScript({
+      name: 'get_users_with_othervaultsthanyourown',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_users_with_othervaultsthanyourown',
+        output: true,
+        body: {
+          collection: 'users',
+          filter: {
+            hiveHost: { $nin: '$params.hiveHost' }
+          }
+        }
+      }
+    });
+    // This can be used to get all the new spaces created on a specific date
+    await client.Scripting.SetScript({
+      name: 'get_all_spaces',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_all_spaces',
+        output: true,
+        body: {
+          collection: 'spaces'
+        }
+      }
+    });
+
     console.log('All scripts OK');
   } catch (error) {
     console.log(error);
