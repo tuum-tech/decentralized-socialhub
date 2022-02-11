@@ -17,6 +17,8 @@ import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
 import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { DidcredsService } from 'src/services/didcreds.service';
+import { useSetRecoilState } from 'recoil';
+import { DIDDocumentAtom } from 'src/Atoms/Atoms';
 
 const VersionTag = styled.div`
   display: flex;
@@ -54,6 +56,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   const [selected, setSelected] = useState(
     hiveDocument === '' ? 'tuum' : 'document'
   );
+  const setDidDocument = useSetRecoilState(DIDDocumentAtom);
 
   const getEndpoint = () => {
     if (selected === 'document') return hiveDocument;
@@ -157,6 +160,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         );
 
         await didService.storeDocument(signedDocument);
+        setDidDocument(signedDocument.toString(true));
         await didService.publishDocument(signedDocument);
       }
 

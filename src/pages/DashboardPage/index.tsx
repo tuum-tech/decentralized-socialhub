@@ -7,7 +7,8 @@ import {
   IonGrid,
   IonRow,
   IonCol,
-  IonModal
+  IonModal,
+  IonButton
 } from '@ionic/react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
@@ -40,6 +41,8 @@ import DashboardHeader from './components/DashboardHeader';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service.new';
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { useRecoilState } from 'recoil';
+import { DIDDocumentAtom } from 'src/Atoms/Atoms';
 
 const TutorialModal = styled(IonModal)`
   --border-radius: 16px;
@@ -64,7 +67,8 @@ const ProfilePage: React.FC<InferMappedProps> = ({
   const [full_profile, setfull_profile] = useState<ProfileDTO>(
     defaultFullProfile
   );
-  const [didDocument, setDidDocument] = useState<DIDDocument | null>(null);
+  const [didDocument, setDidDocument] = useRecoilState(DIDDocumentAtom);
+
   const [publishStatus, setPublishStatus] = useState(RequestStatus.NotFound);
   const [onBoardVisible, setOnBoardVisible] = useState(false);
 
@@ -74,13 +78,13 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
   const history = useHistory();
 
-  const setTimerForDid = () => {
-    const timer = setTimeout(async () => {
-      await refreshDidDocument();
-      setTimerForDid();
-    }, 1000);
-    return () => clearTimeout(timer);
-  };
+  // const setTimerForDid = () => {
+  //   const timer = setTimeout(async () => {
+  //     await refreshDidDocument();
+  //     setTimerForDid();
+  //   }, 1000);
+  //   return () => clearTimeout(timer);
+  // };
 
   let timer: NodeJS.Timeout;
   const setTimerForStatus = () => {
@@ -92,7 +96,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
   const refreshDidDocument = async () => {
     if (props.session && props.session.did !== '') {
       let document = await DidDocumentService.getUserDocument(props.session);
-      setDidDocument(document);
+      setDidDocument(document.toString(true));
     }
   };
 
@@ -199,7 +203,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
     refreshStatus(); //making initial request for fast retrieval and avoid delay of 5 sec
     setTimerForStatus();
-    setTimerForDid();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -234,7 +237,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
   useEffect(() => {
     (async () => {
-      if (didDocument !== null) {
+      if (didDocument !== '') {
         if (props.session && props.session.did !== '') {
           let newSession = JSON.parse(JSON.stringify(props.session));
 
@@ -340,18 +343,22 @@ const ProfilePage: React.FC<InferMappedProps> = ({
                   publishStatus={publishStatus}
                   profile={full_profile}
                 />
-
-                <DashboardContent
-                  onTutorialStart={() => {
-                    setShowTutorial(true);
-                  }}
-                  profile={full_profile}
-                  sessionItem={session}
-                  didDocument={didDocument as DIDDocument}
-                  followerDids={followerDids}
-                  followingDids={followingDids}
-                  mutualDids={mutualDids}
-                />
+                {didDocument !== '' ? (
+                  <DashboardContent
+                    onTutorialStart={() => {
+                      setShowTutorial(true);
+                    }}
+                    profile={full_profile}
+                    sessionItem={session}
+                    followerDids={followerDids}
+                    followingDids={followingDids}
+                    mutualDids={mutualDids}
+                  />
+                ) : (
+                  <IonButton onClick={async () => await refreshDidDocument()}>
+                    Click to refresh
+                  </IonButton>
+                )}
               </IonCol>
             </IonRow>
           </IonGrid>

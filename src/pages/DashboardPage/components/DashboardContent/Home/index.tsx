@@ -25,6 +25,7 @@ import VerificationStatus from './Right/VerificationStatus';
 import ProfileBriefCard from 'src/components/cards/ProfileBriefCard';
 import { hasCredentials } from 'src/utils/socialprofile';
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+
 import NewVerificationContent, {
   NewVerificationModal
 } from 'src/pages/ActivityPage/components/MyRequests/NewVerification';
@@ -32,6 +33,9 @@ import { VerificationService } from 'src/services/verification.service';
 import SentModalContent, {
   SentModal
 } from 'src/pages/ActivityPage/components/MyRequests/SentModal';
+
+import { useRecoilValue } from 'recoil';
+import { DIDDocumentAtom } from 'src/Atoms/Atoms';
 
 const LeftCardCol = styled(IonCol)`
   padding: 22px 16px;
@@ -44,7 +48,6 @@ const RightCardCol = styled(IonCol)`
 interface Props extends InferMappedProps {
   onTutorialStart: () => void;
   profile: ProfileDTO;
-  didDocument: DIDDocument;
   activeTab: (tab: string) => void;
   followerDids: string[];
   followingDids: string[];
@@ -54,7 +57,6 @@ interface Props extends InferMappedProps {
 const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
   const {
     profile,
-    didDocument,
     followerDids,
     followingDids,
     mutualDids,
@@ -77,6 +79,9 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
   const [verifiedPercent, setVerifiedPercent] = useState(0); //overall verified percent
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [showSentModal, setShowSentModal] = useState(false);
+
+  let didDocument = DIDDocument._parseOnly(useRecoilValue(DIDDocumentAtom));
+  //const didDocument: any = recoilValue === "" ? "" : DIDDocument._parseOnly(recoilValue);
 
   const sendRequest = async (
     dids: string[],

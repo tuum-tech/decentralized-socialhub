@@ -13,7 +13,6 @@ interface Props {
   onTutorialStart: () => void;
   profile: ProfileDTO;
   sessionItem: ISessionItem;
-  didDocument: DIDDocument;
   followerDids: string[];
   followingDids: string[];
   mutualDids: string[];
@@ -29,7 +28,6 @@ const DashboardContent: React.FC<Props> = ({
   onTutorialStart,
   profile,
   sessionItem,
-  didDocument,
   followerDids,
   followingDids,
   mutualDids
@@ -66,7 +64,6 @@ const DashboardContent: React.FC<Props> = ({
           <DashboardHome
             profile={profile}
             onTutorialStart={onTutorialStart}
-            didDocument={didDocument}
             activeTab={tab => {
               setActive(tab);
             }}
