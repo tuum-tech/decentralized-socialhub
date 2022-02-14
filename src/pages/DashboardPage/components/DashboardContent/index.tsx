@@ -11,7 +11,6 @@ import styled from 'styled-components';
 
 interface Props {
   onTutorialStart: () => void;
-  profile: ProfileDTO;
   sessionItem: ISessionItem;
   followerDids: string[];
   followingDids: string[];
@@ -26,7 +25,6 @@ const SyncDiv = styled.div`
 
 const DashboardContent: React.FC<Props> = ({
   onTutorialStart,
-  profile,
   sessionItem,
   followerDids,
   followingDids,
@@ -62,7 +60,6 @@ const DashboardContent: React.FC<Props> = ({
             <SyncBar session={sessionItem}></SyncBar>
           </SyncDiv>
           <DashboardHome
-            profile={profile}
             onTutorialStart={onTutorialStart}
             activeTab={tab => {
               setActive(tab);

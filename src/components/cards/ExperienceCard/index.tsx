@@ -16,9 +16,10 @@ import {
   CardContentContainer
 } from '../common';
 import ProgressBar from 'src/elements/ProgressBar';
+import { useRecoilState } from 'recoil';
+import { ExperienceSelector } from 'src/Atoms/Selectors';
 
 interface IExperienceProps {
-  experienceDTO: ExperienceDTO;
   updateFunc?: any;
   isEditable?: boolean;
   removeFunc?: any;
@@ -45,7 +46,6 @@ export const defaultExperienceItem: ExperienceItem = {
 };
 
 const ExperienceCard: React.FC<IExperienceProps> = ({
-  experienceDTO,
   updateFunc,
   isEditable = false,
   removeFunc,
@@ -55,14 +55,8 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   userSession,
   openModal = false
 }: IExperienceProps) => {
-  const [currentExperienceDTO, setCurrentExperienceDTO] = useState(
-    experienceDTO
-  );
+  const [experienceDTO, setExperienceDTO] = useRecoilState(ExperienceSelector);
   const [expVerifiedPercent, setExpVerifiedPercent] = useState(0);
-
-  useEffect(() => {
-    setCurrentExperienceDTO(experienceDTO);
-  }, [experienceDTO]);
 
   let noOfVerifiedExpCred = 0;
 
@@ -75,7 +69,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
       (noOfVerifiedExpCred * 100) / experienceDTO.items.length
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentExperienceDTO, noOfVerifiedExpCred]);
+  }, [experienceDTO, noOfVerifiedExpCred]);
 
   const [editedItem, setEditedItem] = useState(defaultExperienceItem);
   const [isEditing, setIsEditing] = useState(openModal);
@@ -118,7 +112,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   };
 
   const saveChanges = (item: ExperienceItem) => {
-    let items = [...currentExperienceDTO.items];
+    let items = [...experienceDTO.items];
 
     let itemToUpdate = items.find(x => x.guid === item.guid);
 
@@ -132,7 +126,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
 
     // 5. Set the state to our new copy
-    setCurrentExperienceDTO({ isEnabled: true, items: items });
+    setExperienceDTO({ isEnabled: true, items: items });
     updateFunc(item);
     setIsEditing(false);
   };
@@ -156,16 +150,13 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   };
 
   const removeItem = async (index: number) => {
-    let items = [...currentExperienceDTO.items];
+    let items = [...experienceDTO.items];
     await removeFunc(items[index]);
     items = items.splice(index, 1);
-    setCurrentExperienceDTO({ isEnabled: true, items: items });
+    setExperienceDTO({ isEnabled: true, items: items });
   };
 
-  if (
-    !experienceDTO.isEnabled ||
-    (!isEditable && currentExperienceDTO.items.length === 0)
-  ) {
+  if (!isEditable && experienceDTO.items.length === 0) {
     return <></>;
   }
 
@@ -210,11 +201,11 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
           </IonGrid>
         </CardHeaderContent>
         <CardContentContainer>
-          {currentExperienceDTO.items.sort(
+          {experienceDTO.items.sort(
             (a: any, b: any) =>
               new Date(b.start).getTime() - new Date(a.start).getTime()
           ) &&
-            currentExperienceDTO.items.map((x, i) => {
+            experienceDTO.items.map((x, i) => {
               return (
                 <div key={i}>
                   <ExperienceItem
@@ -229,7 +220,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
                     template={template}
                     userSession={userSession}
                   />
-                  {i < currentExperienceDTO.items.length - 1 ? <Divider /> : ''}
+                  {i < experienceDTO.items.length - 1 ? <Divider /> : ''}
                 </div>
               );
             })}

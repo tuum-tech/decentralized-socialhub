@@ -381,7 +381,6 @@ const ProfileEditor: React.FC<Props> = ({
                 )}
                 {profile && profile.experienceDTO && (
                   <ExperienceCard
-                    experienceDTO={profile.experienceDTO}
                     updateFunc={async (experienceItem: ExperienceItem) => {
                       let userSession = JSON.parse(JSON.stringify(session));
                       let archivedBadge = true;

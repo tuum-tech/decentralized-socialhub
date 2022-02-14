@@ -256,23 +256,24 @@ export class ProfileService {
         );
         experienceDTO.items = getItemsFromData(epRes, 'get_experience_profile');
         /* Calculate verified education credentials starts */
-        educationDTO.items.map(async (x, i) => {
-          educationDTO.items[i].verifiers = await ProfileService.getVerifiers(
-            x,
-            'education',
-            userSession
-          );
-        });
+
+        // educationDTO.items.map(async (x, i) => {
+        //   educationDTO.items[i].verifiers = await ProfileService.getVerifiers(
+        //     x,
+        //     'education',
+        //     userSession
+        //   );
+        // });
         /* Calculate verified education credentials ends */
 
         /* Calculate verified experience credentials starts */
-        experienceDTO.items.map(async (x, i) => {
-          experienceDTO.items[i].verifiers = await ProfileService.getVerifiers(
-            x,
-            'experience',
-            userSession
-          );
-        });
+        // experienceDTO.items.map(async (x, i) => {
+        //   experienceDTO.items[i].verifiers = await ProfileService.getVerifiers(
+        //     x,
+        //     'experience',
+        //     userSession
+        //   );
+        // });
         /* Calculate verified experience credentials ends */
       }
     }
