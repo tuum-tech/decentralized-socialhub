@@ -8,7 +8,7 @@ import { setSession } from 'src/store/users/actions';
 import { makeSelectSession } from 'src/store/users/selectors';
 
 import { DidService } from 'src/services/did.service.new';
-import PageLoading from 'src/components/layouts/PageLoading';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { retrieveDocInfo, UserType } from 'src/utils/user';
 import SetPassword from '../components/SetPassword';
 import { InferMappedProps, LocationState, SubState } from './types';
@@ -66,7 +66,7 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
   }, []);
 
   if (userInfo.did === '') {
-    return <PageLoading />;
+    return <LoadingIndicator />;
   } else {
     if (
       status === 0 &&

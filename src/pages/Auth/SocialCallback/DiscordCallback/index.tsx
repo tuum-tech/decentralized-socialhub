@@ -17,7 +17,7 @@ import { setSession } from 'src/store/users/actions';
 import { TokenResponse, LocationState, InferMappedProps } from './types';
 import { SubState } from 'src/store/users/types';
 
-import PageLoading from 'src/components/layouts/PageLoading';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { AccountType, UserService } from 'src/services/user.service';
 
 import { requestDiscordToken, getUsersWithRegisteredDiscord } from './fetchapi';
@@ -167,7 +167,7 @@ const DiscordCallback: React.FC<PageProps> = ({
         />
       );
     }
-    return <PageLoading />;
+    return <LoadingIndicator />;
   };
   return getRedirect();
 };
