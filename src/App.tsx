@@ -79,6 +79,7 @@ import { DidService } from './services/did.service.new';
 import LoadDid from './pages/LoadDid';
 import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
+import SimplePage from './pages/SimplePage';
 
 const StyledToastContainer = styled(ToastContainer)`
   & .Toastify__toast-body {
@@ -277,8 +278,13 @@ const App: React.FC = () => {
               {/* ====== Public URLs ==== */}
               <Route path="/" component={HomePage} exact={true} />
               <Route path="/did/:did" component={PublicPage} exact={true} />
-              <Route path="/did/:did/spaces/:name" component={SpacePublicPage} exact={true} />
+              <Route
+                path="/did/:did/spaces/:name"
+                component={SpacePublicPage}
+                exact={true}
+              />
               <Route path="/load" component={LoadDid} />
+              <Route path="/test" component={SimplePage} />
               <Route component={DefaultPage} />
             </IonRouterOutlet>
           </Switch>

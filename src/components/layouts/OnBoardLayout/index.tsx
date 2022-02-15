@@ -6,7 +6,7 @@ import { IonPage, IonImg } from '@ionic/react';
 import { Text28 } from 'src/elements/texts';
 import leftBg from 'src/assets/new/auth/left_bg.png';
 import rightBg from 'src/assets/new/auth/right_bg.png';
-import logo from 'src/assets/new/logo.png';
+import logo from 'src/assets/new/logo.svg';
 
 export const OnBoardLayoutLogo = () => (
   <Link to="/">

@@ -24,6 +24,7 @@ import reducer from './reducer';
 import saga from './saga';
 import { InferMappedProps, SubState } from './types';
 import { fetchSimpleApi } from './fetchapi';
+import PageLoading from 'src/components/layouts/PageLoading';
 
 const SimplePage: React.FC<InferMappedProps> = ({
   eProps,
@@ -42,7 +43,8 @@ const SimplePage: React.FC<InferMappedProps> = ({
 
   return (
     <IonPage className={style['simple-page-module']}>
-      <IonHeader>
+      <PageLoading />
+      {/* <IonHeader>
         <IonToolbar>
           <IonTitle>BasePlate Capability</IonTitle>
         </IonToolbar>
@@ -99,7 +101,7 @@ const SimplePage: React.FC<InferMappedProps> = ({
             </IonButton>
           </IonCardContent>
         </IonCard>
-      </IonContent>
+      </IonContent> */}
     </IonPage>
   );
 };
