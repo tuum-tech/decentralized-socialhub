@@ -324,21 +324,15 @@ const DashboardPage: React.FC<InferMappedProps> = ({
                   sessionItem={session}
                   publishStatus={publishStatus}
                 />
-                {didDocument !== '' ? (
-                  <DashboardContent
-                    onTutorialStart={() => {
-                      setShowTutorial(true);
-                    }}
-                    sessionItem={session}
-                    followerDids={followerDids}
-                    followingDids={followingDids}
-                    mutualDids={mutualDids}
-                  />
-                ) : (
-                  <IonButton onClick={async () => await refreshDidDocument()}>
-                    Click to refresh
-                  </IonButton>
-                )}
+                <DashboardContent
+                  onTutorialStart={() => {
+                    setShowTutorial(true);
+                  }}
+                  sessionItem={session}
+                  followerDids={followerDids}
+                  followingDids={followingDids}
+                  mutualDids={mutualDids}
+                />
               </IonCol>
             </IonRow>
           </IonGrid>
