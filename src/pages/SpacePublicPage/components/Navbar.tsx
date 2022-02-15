@@ -4,7 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { DashboardSignInButton } from 'src/elements/buttons';
-import logo from 'src/assets/new/logo.png';
+import logo from 'src/assets/new/logo.svg';
 
 const PublicNavbarContainer = styled(IonRow)`
   width: 100%;
