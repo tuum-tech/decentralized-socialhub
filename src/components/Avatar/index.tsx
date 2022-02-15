@@ -77,6 +77,11 @@ const Avatar: React.FC<{
         name = tuumUser.name;
       }
 
+      //TODO: Remove when we can get avatar image from hive
+      if (tuumUser.isEssentialUser === true) {
+        type = 'default';
+      }
+
       setAvatarInfo({
         name: shortName(name),
         avatar,

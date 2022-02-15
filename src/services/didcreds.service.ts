@@ -43,6 +43,7 @@ export class DidcredsService {
     let response = await fetch(url, postData);
 
     let json = await response.json();
+
     return await VerifiableCredential.parse(json.data.verifiable_credential);
   }
 
@@ -115,7 +116,6 @@ export class DidcredsService {
     sessionItem: ISessionItem,
     vc: VerifiableCredential
   ): Promise<void> {
-    console.log('add vc credential', vc);
     let hiveClient = await HiveService.getSessionInstance(sessionItem);
     let hiveResponse = await hiveClient?.Scripting.RunScript<any>({
       name: 'add_verifiablecredential',
@@ -128,8 +128,6 @@ export class DidcredsService {
         vc: vc.toJSON()
       }
     });
-
-    console.log(hiveResponse);
   }
 
   static async removeCredentialToVault(
@@ -147,7 +145,5 @@ export class DidcredsService {
         id: vcKey
       }
     });
-
-    console.log(hiveResponse);
   }
 }

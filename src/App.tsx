@@ -80,6 +80,8 @@ import LoadDid from './pages/LoadDid';
 import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
 import { RecoilRoot } from 'recoil';
+import SimplePage from './pages/SimplePage';
+
 
 const StyledToastContainer = styled(ToastContainer)`
   & .Toastify__toast-body {
@@ -284,20 +286,22 @@ const App: React.FC = () => {
                   exact={true}
                 />
 
-                {/* ====== Public URLs ==== */}
-                <Route path="/" component={HomePage} exact={true} />
-                <Route path="/did/:did" component={PublicPage} exact={true} />
-                <Route
-                  path="/did/:did/spaces/:name"
-                  component={SpacePublicPage}
-                  exact={true}
-                />
-                <Route path="/load" component={LoadDid} />
-                <Route component={DefaultPage} />
-              </IonRouterOutlet>
-            </Switch>
-          </IonReactRouter>
-        </IonApp>
+
+              {/* ====== Public URLs ==== */}
+              <Route path="/" component={HomePage} exact={true} />
+              <Route path="/did/:did" component={PublicPage} exact={true} />
+              <Route
+                path="/did/:did/spaces/:name"
+                component={SpacePublicPage}
+                exact={true}
+              />
+              <Route path="/load" component={LoadDid} />
+              <Route path="/test" component={SimplePage} />
+              <Route component={DefaultPage} />
+            </IonRouterOutlet>
+          </Switch>
+        </IonReactRouter>
+      </IonApp>
       </RecoilRoot>
     </Web3ReactProvider>
   );
