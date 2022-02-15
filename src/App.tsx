@@ -51,7 +51,8 @@ import {
   ForgotPasswordPage,
   UnlockUserPage,
   CreateProfileWithDidPage,
-  RecoverAccountPage
+  RecoverAccountPage,
+  EmailVerificationPage
 } from './pages/Auth';
 
 import HomePage from './pages/HomePage';
@@ -202,6 +203,12 @@ const App: React.FC = () => {
                 component={CreatePasswordPage}
                 exact={true}
               />
+              <ProtectedRoute
+                path="/email-verificaiton"
+                component={EmailVerificationPage}
+                exact={true}
+              />
+
               {/* ok */}
               <ProtectedRoute
                 path="/unlock-user"
@@ -277,7 +284,11 @@ const App: React.FC = () => {
               {/* ====== Public URLs ==== */}
               <Route path="/" component={HomePage} exact={true} />
               <Route path="/did/:did" component={PublicPage} exact={true} />
-              <Route path="/did/:did/spaces/:name" component={SpacePublicPage} exact={true} />
+              <Route
+                path="/did/:did/spaces/:name"
+                component={SpacePublicPage}
+                exact={true}
+              />
               <Route path="/load" component={LoadDid} />
               <Route component={DefaultPage} />
             </IonRouterOutlet>
