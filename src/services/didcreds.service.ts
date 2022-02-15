@@ -25,7 +25,7 @@ export class DidcredsService {
     credential_type: string,
     credential_value: string
   ): Promise<VerifiableCredential> {
-    let url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/didcreds_router/validation/internet_account`;
+    let url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/didcreds_router/generateVerifiedCredFromTuum`;
     let data = {
       did: did,
       credential_type: credential_type.toLowerCase(),
@@ -43,6 +43,7 @@ export class DidcredsService {
     let response = await fetch(url, postData);
 
     let json = await response.json();
+
     return await VerifiableCredential.parse(json.data.verifiable_credential);
   }
 
