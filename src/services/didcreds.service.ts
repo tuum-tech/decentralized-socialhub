@@ -25,7 +25,7 @@ export class DidcredsService {
     credential_type: string,
     credential_value: string
   ): Promise<VerifiableCredential> {
-    let url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/didcreds_router/generateVerifiedCredFromTuum`;
+    let url = `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/didcreds_router/validation/internet_account`;
     let data = {
       did: did,
       credential_type: credential_type.toLowerCase(),
@@ -115,7 +115,6 @@ export class DidcredsService {
     sessionItem: ISessionItem,
     vc: VerifiableCredential
   ): Promise<void> {
-    console.log('add vc credential', vc);
     let hiveClient = await HiveService.getSessionInstance(sessionItem);
     let hiveResponse = await hiveClient?.Scripting.RunScript<any>({
       name: 'add_verifiablecredential',
@@ -128,8 +127,6 @@ export class DidcredsService {
         vc: vc.toJSON()
       }
     });
-
-    console.log(hiveResponse);
   }
 
   static async removeCredentialToVault(
@@ -147,7 +144,5 @@ export class DidcredsService {
         id: vcKey
       }
     });
-
-    console.log(hiveResponse);
   }
 }
