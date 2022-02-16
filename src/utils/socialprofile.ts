@@ -90,6 +90,8 @@ const hasCredential = (document: DIDDocument, key: string): boolean => {
 };
 
 export const hasCredentials = (didDocument: DIDDocument) => {
+  if (didDocument === null) return false;
+
   if (hasCredential(didDocument, 'google')) return true;
   if (hasCredential(didDocument, 'linkedin')) return true;
   if (hasCredential(didDocument, 'twitter')) return true;
