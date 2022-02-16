@@ -160,8 +160,8 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         );
 
         await didService.storeDocument(signedDocument);
-        setDidDocument(signedDocument.toString(true));
         await didService.publishDocument(signedDocument);
+        setDidDocument(signedDocument.toString(true));
       }
 
       let userService = new UserService(didService);

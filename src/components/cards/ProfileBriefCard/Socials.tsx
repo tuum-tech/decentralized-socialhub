@@ -85,7 +85,7 @@ const Socials: React.FC<Props> = ({ cb }) => {
     })();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [didDocument]);
+  }, []);
 
   const createIonItem = (key: string, vc: VCType) => {
     if (!vc) return;
