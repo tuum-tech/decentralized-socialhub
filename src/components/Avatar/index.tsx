@@ -78,7 +78,7 @@ const Avatar: React.FC<{
       }
 
       //TODO: Remove when we can get avatar image from hive
-      if (tuumUser.isEssentialUser === true) {
+      if (tuumUser && tuumUser.isEssentialUser === true) {
         type = 'default';
       }
 
