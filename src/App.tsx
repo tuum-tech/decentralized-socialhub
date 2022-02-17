@@ -204,7 +204,7 @@ const App: React.FC = () => {
                 exact={true}
               />
               <ProtectedRoute
-                path="/email-verificaiton"
+                path="/email-verification"
                 component={EmailVerificationPage}
                 exact={true}
               />

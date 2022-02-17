@@ -17,7 +17,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     '/google_callback',
     '/facebook_callback',
     '/set-password',
-    '/email-verificaiton',
+    '/email-verification',
     '/unlock-user',
     '/generate-did',
     '/sign-in',
