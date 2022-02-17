@@ -12,6 +12,7 @@ import {
   OnBoardLayoutLogo,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
+
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 import DidSignForm from '../components/DidSign/DidSignForm';
 import { Title40, Text18, Text12 } from 'src/elements/texts';
@@ -69,6 +70,7 @@ const RecoverAccountPage: React.FC<RouteComponentProps<
   return (
     <OnBoardLayout className={style['did-signin']}>
       {loading && <LoadingIndicator loadingText="Signing Now..." />}
+
       {showHelp && <PassPhraseHelp close={() => setShowHelp(false)} />}
       <OnBoardLayoutLeft>
         <OnBoardLayoutLogo />
