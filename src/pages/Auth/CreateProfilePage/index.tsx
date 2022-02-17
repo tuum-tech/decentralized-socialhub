@@ -147,7 +147,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
             onSuccess={(name: string, email: string, password: string) => {
               setUser({ name, email, password });
               history.push({
-                pathname: '/email-verificaiton',
+                pathname: '/email-verification',
                 state: { name, email, password }
               });
             }}

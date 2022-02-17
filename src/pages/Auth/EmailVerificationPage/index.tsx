@@ -219,7 +219,7 @@ const EmailVerificationPage: React.FC<PageProps> = ({
           />
 
           <p className="below">
-            Didn't recieve the code?
+            Didn't receive the code?
             <button className="resend" onClick={resendVerificationCode}>
               Send Again
             </button>
