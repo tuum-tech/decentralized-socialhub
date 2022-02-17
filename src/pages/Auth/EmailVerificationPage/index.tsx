@@ -126,7 +126,7 @@ const EmailVerificationPage: React.FC<PageProps> = ({
           email
         },
         credential: code,
-        service: AccountType.DID
+        service: AccountType.Email
       };
 
       let userService = new UserService(await DidService.getInstance());
