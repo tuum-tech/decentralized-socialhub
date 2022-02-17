@@ -80,7 +80,7 @@ const PhoneVerificationDetailContent: React.FC<Props> = ({
       </div>
 
       <p className="below">
-        Didn’t recieve the code?
+        Didn’t receive the code?
         <button className="button" onClick={resend}>
           Resend code
         </button>
