@@ -51,7 +51,8 @@ import {
   ForgotPasswordPage,
   UnlockUserPage,
   CreateProfileWithDidPage,
-  RecoverAccountPage
+  RecoverAccountPage,
+  EmailVerificationPage
 } from './pages/Auth';
 
 import HomePage from './pages/HomePage';
@@ -203,6 +204,12 @@ const App: React.FC = () => {
                 component={CreatePasswordPage}
                 exact={true}
               />
+              <ProtectedRoute
+                path="/email-verification"
+                component={EmailVerificationPage}
+                exact={true}
+              />
+
               {/* ok */}
               <ProtectedRoute
                 path="/unlock-user"
