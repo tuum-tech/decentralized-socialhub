@@ -12,6 +12,7 @@ let run = async () => {
     client.Payment.CreateFreeVault();
 
     const fs = require('fs');
+    await client.Database.createCollection('community_spaces');
     // ===== spaces section start =====
     await client.Database.createCollection('spaces');
     await client.Scripting.SetScript({

@@ -1,0 +1,26 @@
+[
+    {
+        "network": "Ethereum",
+        "name": "BoredApeYatchClub",
+        "address": "0x095371DeE504C7e176f1447387F5dc5C616a42ea",
+        "ref": "https://opensea.io/BoredApeYatchClub",
+        "coverPhoto": "",
+        "avatar": ""
+    },
+    {
+        "network": "Ethereum",
+        "name": "CryptoPunks",
+        "address": "0x095371DeE504C7e176f1447387F5dc5C616a42ea",
+        "ref": "https://opensea.io/CryptoPunks",
+        "coverPhoto": "",
+        "avatar": ""
+    },
+    {
+        "network": "Ethereum",
+        "name": "PUNKS Comic",
+        "address": "0x095371DeE504C7e176f1447387F5dc5C616a42ea",
+        "ref": "https://opensea.io/PUNKS",
+        "coverPhoto": "",
+        "avatar": ""
+    }
+]
