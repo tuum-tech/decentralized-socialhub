@@ -7,6 +7,8 @@ import ExperienceCard from 'src/components/cards/ExperienceCard';
 import EducationCard from 'src/components/cards/EducationCard';
 
 import profileCardImg from '../../../../../../assets/dashboard/profile.png';
+import { useRecoilValue } from 'recoil';
+import { FullProfileAtom } from 'src/Atoms/Atoms';
 
 export const CardTitle = styled.p`
   color: black;
@@ -60,11 +62,12 @@ export const LinkButton = styled(DefaultLinkButton)`
 `;
 
 interface Props {
-  profile: ProfileDTO;
   userSession: ISessionItem;
 }
 
-const ManageProfile: React.FC<Props> = ({ profile, userSession }) => {
+const ManageProfile: React.FC<Props> = ({ userSession }) => {
+  const profile = useRecoilValue(FullProfileAtom);
+
   let filledContent = false;
   let hasAbout =
     profile.basicDTO && profile.basicDTO.about && profile.basicDTO.about !== '';
@@ -98,11 +101,7 @@ const ManageProfile: React.FC<Props> = ({ profile, userSession }) => {
     <>
       {hasAbout && <AboutCard aboutText={profile.basicDTO.about} />}
       {hasExperience && (
-        <ExperienceCard
-          experienceDTO={profile.experienceDTO}
-          template="default"
-          userSession={userSession}
-        />
+        <ExperienceCard template="default" userSession={userSession} />
       )}
       {hasEducation && (
         <EducationCard

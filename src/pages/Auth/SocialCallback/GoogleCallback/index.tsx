@@ -25,7 +25,7 @@ import {
   getUsersWithRegisteredGoogle
 } from './fetchapi';
 
-import PageLoading from 'src/components/layouts/PageLoading';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { AccountType, UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
@@ -180,7 +180,7 @@ const GoogleCallback: React.FC<PageProps> = ({
         />
       );
     }
-    return <PageLoading />;
+    return <LoadingIndicator />;
   };
   return getRedirect();
 };

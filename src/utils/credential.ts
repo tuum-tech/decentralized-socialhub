@@ -19,7 +19,7 @@ export const getDidDocument = async (
 
 export const containingVerifiableCredentialDetails = async (
   id: string,
-  diddocument: any
+  diddocument: DIDDocument
 ): Promise<VCType> => {
   if (!diddocument || diddocument.getCredentialCount() === 0) {
     return {

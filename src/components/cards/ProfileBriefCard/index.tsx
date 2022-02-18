@@ -67,7 +67,6 @@ const ProfileBriefCard: React.FC<Props> = ({
     if (category === 'social') {
       content = (
         <Socials
-          diddocument={data}
           cb={count => {
             setItemCount(count);
           }}

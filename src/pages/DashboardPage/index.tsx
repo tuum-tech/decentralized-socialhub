@@ -7,7 +7,8 @@ import {
   IonGrid,
   IonRow,
   IonCol,
-  IonModal
+  IonModal,
+  IonButton
 } from '@ionic/react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
@@ -28,10 +29,7 @@ import { FollowService } from 'src/services/follow.service';
 import { UserService } from 'src/services/user.service';
 import { AssistService, RequestStatus } from 'src/services/assist.service';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
-import {
-  ProfileService,
-  defaultFullProfile
-} from 'src/services/profile.service';
+import { ProfileService } from 'src/services/profile.service';
 
 import TutorialComponent from './components/Tutorial';
 import DashboardContent from './components/DashboardContent';
@@ -40,6 +38,8 @@ import DashboardHeader from './components/DashboardHeader';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service.new';
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { DIDDocumentAtom, FullProfileAtom, SessionAtom } from 'src/Atoms/Atoms';
 
 const TutorialModal = styled(IonModal)`
   --border-radius: 16px;
@@ -53,7 +53,7 @@ const TutorialModal = styled(IonModal)`
   --box-shadow: none !important;
 `;
 
-const ProfilePage: React.FC<InferMappedProps> = ({
+const DashboardPage: React.FC<InferMappedProps> = ({
   eProps,
   ...props
 }: InferMappedProps) => {
@@ -61,10 +61,12 @@ const ProfilePage: React.FC<InferMappedProps> = ({
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');
-  const [full_profile, setfull_profile] = useState<ProfileDTO>(
-    defaultFullProfile
-  );
-  const [didDocument, setDidDocument] = useState<DIDDocument | null>(null);
+
+  const [didDocument, setDidDocument] = useRecoilState(DIDDocumentAtom);
+  const setFullProfile = useSetRecoilState<ProfileDTO>(FullProfileAtom);
+
+  //const [session, setSession] = useRecoilState(SessionAtom);
+
   const [publishStatus, setPublishStatus] = useState(RequestStatus.NotFound);
   const [onBoardVisible, setOnBoardVisible] = useState(false);
 
@@ -74,14 +76,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
   const history = useHistory();
 
-  const setTimerForDid = () => {
-    const timer = setTimeout(async () => {
-      await refreshDidDocument();
-      setTimerForDid();
-    }, 1000);
-    return () => clearTimeout(timer);
-  };
-
   let timer: NodeJS.Timeout;
   const setTimerForStatus = () => {
     timer = setInterval(async () => {
@@ -90,17 +84,15 @@ const ProfilePage: React.FC<InferMappedProps> = ({
   };
 
   const refreshDidDocument = async () => {
-    if (props.session && props.session.did !== '') {
+    if (session && session.did !== '') {
       let document = await DidDocumentService.getUserDocument(props.session);
-      setDidDocument(document);
+      setDidDocument(document.toString(true));
     }
   };
 
   const refreshStatus = async () => {
-    if (props.session && props.session.did !== '') {
-      let publishWaiting = AssistService.getPublishStatusTask(
-        props.session.did
-      );
+    if (session && session.did !== '') {
+      let publishWaiting = AssistService.getPublishStatusTask(session.did);
 
       if (!publishWaiting) {
         clearInterval(timer);
@@ -109,16 +101,16 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
       let actual = await AssistService.refreshRequestStatus(
         publishWaiting.confirmationId,
-        props.session.did
+        session.did
       );
 
       setPublishStatus(actual.requestStatus);
 
       if (actual.requestStatus === RequestStatus.Completed) {
         clearInterval(timer);
-        AssistService.removePublishTask(props.session.did);
+        AssistService.removePublishTask(session.did);
 
-        let newSession = JSON.parse(JSON.stringify(props.session));
+        let newSession = JSON.parse(JSON.stringify(session));
 
         if (!newSession.badges!.didPublishTimes!._1times.archived)
           newSession.badges!.didPublishTimes!._1times.archived = new Date().getTime();
@@ -129,7 +121,7 @@ const ProfilePage: React.FC<InferMappedProps> = ({
     }
   };
 
-  const updateUserToComplete = async (newSession = props.session) => {
+  const updateUserToComplete = async (newSession = session) => {
     if (newSession && newSession.did !== '') {
       let session = {
         ...newSession,
@@ -149,21 +141,19 @@ const ProfilePage: React.FC<InferMappedProps> = ({
   const retriveProfile = async () => {
     setLoadingText('Please wait a moment...');
     let profile: ProfileDTO = await ProfileService.getFullProfile(
-      props.session.did,
-      props.session
+      session.did,
+      session
     );
     if (profile) {
       profile.experienceDTO.isEnabled = true;
       profile.educationDTO.isEnabled = true;
-      setfull_profile(profile);
+      setFullProfile(profile);
     }
 
-    const followingDids = await FollowService.getFollowingDids(
-      props.session.did
-    );
+    const followingDids = await FollowService.getFollowingDids(session.did);
     setFollowingDids(followingDids);
 
-    const followerDids = await FollowService.getFollowerDids(props.session.did);
+    const followerDids = await FollowService.getFollowerDids(session.did);
     setFollowerDids(followerDids);
 
     setLoadingText('');
@@ -171,22 +161,18 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
   useEffect(() => {
     (async () => {
-      if (
-        props.session &&
-        props.session.did !== '' &&
-        props.session.tutorialStep === 4
-      ) {
+      if (session && session.did !== '' && session.tutorialStep === 4) {
         await refreshDidDocument();
 
         setPublishStatus(
-          props.session.isDIDPublished
+          session.isDIDPublished
             ? RequestStatus.Completed
             : RequestStatus.Pending
         );
         setOnBoardVisible(true);
         if (
-          props.session.onBoardingCompleted &&
-          props.session.tutorialStep === 4 &&
+          session.onBoardingCompleted &&
+          session.tutorialStep === 4 &&
           !willExpire
         ) {
           setWillExpire(true);
@@ -199,7 +185,6 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
     refreshStatus(); //making initial request for fast retrieval and avoid delay of 5 sec
     setTimerForStatus();
-    setTimerForDid();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -213,14 +198,14 @@ const ProfilePage: React.FC<InferMappedProps> = ({
   useEffect(() => {
     (async () => {
       console.log('====>history', history.location.pathname);
-      if (props.session && props.session.did !== '') {
+      if (session && session.did !== '') {
         if (history.location.pathname === '/profile') {
-          if (!props.session.onBoardingCompleted) setOnBoardVisible(true);
+          if (!session.onBoardingCompleted) setOnBoardVisible(true);
 
           if (
-            props.session.tutorialStep &&
-            props.session.tutorialStep === 4 &&
-            props.session.onBoardingCompleted
+            session.tutorialStep &&
+            session.tutorialStep === 4 &&
+            session.onBoardingCompleted
           ) {
             setLoadingText('loading Profile Data');
             await retriveProfile();
@@ -234,8 +219,8 @@ const ProfilePage: React.FC<InferMappedProps> = ({
 
   useEffect(() => {
     (async () => {
-      if (didDocument !== null) {
-        if (props.session && props.session.did !== '') {
+      if (didDocument !== '') {
+        if (session && session.did !== '') {
           let newSession = JSON.parse(JSON.stringify(props.session));
 
           const timestamp = new Date().getTime();
@@ -338,20 +323,20 @@ const ProfilePage: React.FC<InferMappedProps> = ({
                 <DashboardHeader
                   sessionItem={session}
                   publishStatus={publishStatus}
-                  profile={full_profile}
                 />
-
-                <DashboardContent
-                  onTutorialStart={() => {
-                    setShowTutorial(true);
-                  }}
-                  profile={full_profile}
-                  sessionItem={session}
-                  didDocument={didDocument as DIDDocument}
-                  followerDids={followerDids}
-                  followingDids={followingDids}
-                  mutualDids={mutualDids}
-                />
+                {didDocument !== '' ? (
+                  <DashboardContent
+                    onTutorialStart={() => {
+                      setShowTutorial(true);
+                    }}
+                    sessionItem={session}
+                    followerDids={followerDids}
+                    followingDids={followingDids}
+                    mutualDids={mutualDids}
+                  />
+                ) : (
+                  ''
+                )}
               </IonCol>
             </IonRow>
           </IonGrid>
@@ -387,4 +372,4 @@ export function mapDispatchToProps(dispatch: any) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfilePage);
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardPage);

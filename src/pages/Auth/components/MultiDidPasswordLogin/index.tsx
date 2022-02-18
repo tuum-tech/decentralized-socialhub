@@ -178,15 +178,21 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
             hasError={error !== '' && password === ''}
           />
           {error !== '' && <ErrorTxt className="mt-3">{error}</ErrorTxt>}
+
           <ThemeButton
             text="Sign in to profile"
+            style={{ marginTop: '20px' }}
             onClick={async () => {
               await onLoginButtonClick();
             }}
           />
 
           <FieldDivider mt={80} />
-          <ThemeButton text="Create new profile" onClick={changeMode} />
+          <ThemeButton
+            style={{ marginTop: '20px' }}
+            text="Create new profile"
+            onClick={changeMode}
+          />
 
           <Footer>
             <FooterLinks />

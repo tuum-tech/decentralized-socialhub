@@ -243,7 +243,6 @@ export class ProfileService {
             }
           }
         );
-        educationDTO.items = getItemsFromData(edRes, 'get_education_profile');
 
         const epRes: IRunScriptResponse<ExperienceProfileResponse> = await hiveInstance.Scripting.RunScript(
           {
@@ -254,25 +253,39 @@ export class ProfileService {
             }
           }
         );
-        experienceDTO.items = getItemsFromData(epRes, 'get_experience_profile');
+        let educationItems: EducationItem[] = getItemsFromData(
+          edRes,
+          'get_education_profile'
+        );
+        let experienceItems: ExperienceItem[] = getItemsFromData(
+          epRes,
+          'get_experience_profile'
+        );
+
         /* Calculate verified education credentials starts */
-        educationDTO.items.map(async (x, i) => {
-          educationDTO.items[i].verifiers = await ProfileService.getVerifiers(
-            x,
+        for (let educationItem of educationItems) {
+          let edItem: EducationItem = JSON.parse(JSON.stringify(educationItem));
+          edItem.verifiers = await ProfileService.getVerifiers(
+            educationItem,
             'education',
             userSession
           );
-        });
+          educationDTO.items.push(educationItem);
+        }
         /* Calculate verified education credentials ends */
 
         /* Calculate verified experience credentials starts */
-        experienceDTO.items.map(async (x, i) => {
-          experienceDTO.items[i].verifiers = await ProfileService.getVerifiers(
-            x,
-            'experience',
+        for (let experienceItem of experienceItems) {
+          let exItem: EducationItem = JSON.parse(
+            JSON.stringify(experienceItem)
+          );
+          exItem.verifiers = await ProfileService.getVerifiers(
+            experienceItem,
+            'education',
             userSession
           );
-        });
+          experienceDTO.items.push(experienceItem);
+        }
         /* Calculate verified experience credentials ends */
       }
     }

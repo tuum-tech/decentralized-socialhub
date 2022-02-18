@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
 import { useHistory } from 'react-router-dom';
@@ -25,6 +25,7 @@ import VerificationStatus from './Right/VerificationStatus';
 import ProfileBriefCard from 'src/components/cards/ProfileBriefCard';
 import { hasCredentials } from 'src/utils/socialprofile';
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+
 import NewVerificationContent, {
   NewVerificationModal
 } from 'src/pages/ActivityPage/components/MyRequests/NewVerification';
@@ -32,6 +33,9 @@ import { VerificationService } from 'src/services/verification.service';
 import SentModalContent, {
   SentModal
 } from 'src/pages/ActivityPage/components/MyRequests/SentModal';
+
+import { useRecoilValue } from 'recoil';
+import { DIDDocumentAtom, FullProfileAtom } from 'src/Atoms/Atoms';
 
 const LeftCardCol = styled(IonCol)`
   padding: 22px 16px;
@@ -43,8 +47,6 @@ const RightCardCol = styled(IonCol)`
 
 interface Props extends InferMappedProps {
   onTutorialStart: () => void;
-  profile: ProfileDTO;
-  didDocument: DIDDocument;
   activeTab: (tab: string) => void;
   followerDids: string[];
   followingDids: string[];
@@ -53,8 +55,6 @@ interface Props extends InferMappedProps {
 
 const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
   const {
-    profile,
-    didDocument,
     followerDids,
     followingDids,
     mutualDids,
@@ -77,6 +77,9 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
   const [verifiedPercent, setVerifiedPercent] = useState(0); //overall verified percent
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [showSentModal, setShowSentModal] = useState(false);
+  const profile = useRecoilValue(FullProfileAtom);
+
+  let didDocument = DIDDocument._parseOnly(useRecoilValue(DIDDocumentAtom));
 
   const sendRequest = async (
     dids: string[],
@@ -90,10 +93,123 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
   };
 
   useEffect(() => {
-    setTutorialVisible(session.tutorialStep !== 4);
+    const profileCompletionStats = () => {
+      const completionStatsDisplay = [
+        {
+          title: 'Setup Account',
+          targetList: ['Tutorial Completed', 'Social Media Authenticated'],
+          accomplishedList: [
+            session.tutorialStep === 4 ? 'Tutorial Completed' : '',
+            session.loginCred &&
+            (session.loginCred.linkedin ||
+              session.loginCred.twitter ||
+              session.loginCred.google ||
+              session.loginCred.facebook ||
+              session.loginCred.github ||
+              session.loginCred.discord)
+              ? 'Social Media Authenticated'
+              : ''
+          ].filter(a => a !== '')
+        },
+        {
+          title: 'Profile Completion',
+          targetList: ['Add About me', 'Add Experience', 'Add Education'],
+          accomplishedList: [
+            profile.basicDTO && profile.basicDTO.about ? 'Added About me' : '',
+            profile.experienceDTO.items.length ? 'Added Experience' : '',
+            profile.educationDTO.items.length ? 'Added Education' : ''
+          ].filter(a => a !== '')
+        }
+      ];
+
+      setCompletionStatsDisplay(completionStatsDisplay);
+
+      const profileCompletion = [
+        {
+          name: 'Setup your account',
+          code: 'accountSetup',
+          items: [
+            {
+              name: 'Tutorial Completed',
+              code: 'tutorialCompleted',
+              value: session.tutorialStep === 4 ? true : false
+            },
+            {
+              name: 'Social Media Authenticated',
+              code: 'socialMediaAuthenticated',
+              value:
+                session.loginCred &&
+                (session.loginCred.linkedin ||
+                  session.loginCred.twitter ||
+                  session.loginCred.google ||
+                  session.loginCred.facebook ||
+                  session.loginCred.github ||
+                  session.loginCred.discord)
+                  ? true
+                  : false
+            }
+          ],
+          stats: {}
+        },
+        {
+          name: 'Add Content to Profile',
+          code: 'profileContent',
+          items: [
+            {
+              name: 'Added About Me',
+              code: 'about',
+              value: profile.basicDTO && profile.basicDTO.about ? true : false
+            },
+            {
+              name: 'Added Education',
+              code: 'education',
+              value: profile.educationDTO.items.length ? true : false
+            },
+            {
+              name: 'Added Experience',
+              code: 'experience',
+              value: profile.experienceDTO.items.length ? true : false
+            }
+          ],
+          stats: {}
+        }
+      ];
+
+      let itemsCount: any = [];
+
+      profileCompletion.map((catTree, index) => {
+        let totalItems = 0;
+        let completedItems = 0;
+
+        catTree.items.map(item => {
+          totalItems++;
+          if (item.value) {
+            completedItems++;
+          }
+          return null;
+        });
+
+        itemsCount.push({
+          completedItems: completedItems,
+          totalItems: totalItems
+        });
+        return null;
+      });
+
+      for (let i = 0; i < itemsCount.length; i++) {
+        profileCompletion[i].stats = {
+          completedItems: itemsCount[i].completedItems,
+          totalItems: itemsCount[i].totalItems,
+          percentCompleted:
+            (itemsCount[i].completedItems * 100) / itemsCount[i].totalItems
+        };
+      }
+
+      return profileCompletion;
+    };
     setCompletionStats(profileCompletionStats());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, profile]);
+    setTutorialVisible(session.tutorialStep !== 4);
+  }, [profile, session]);
 
   useEffect(() => {
     let percentAggregated = '0';
@@ -113,121 +229,6 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
   }, [followingDids, followerDids]);
 
   const hasSocialProfiles = hasCredentials(didDocument);
-
-  const profileCompletionStats = () => {
-    const completionStatsDisplay = [
-      {
-        title: 'Setup Account',
-        targetList: ['Tutorial Completed', 'Social Media Authenticated'],
-        accomplishedList: [
-          session.tutorialStep === 4 ? 'Tutorial Completed' : '',
-          session.loginCred &&
-          (session.loginCred.linkedin ||
-            session.loginCred.twitter ||
-            session.loginCred.google ||
-            session.loginCred.facebook ||
-            session.loginCred.github ||
-            session.loginCred.discord)
-            ? 'Social Media Authenticated'
-            : ''
-        ].filter(a => a !== '')
-      },
-      {
-        title: 'Profile Completion',
-        targetList: ['Add About me', 'Add Experience', 'Add Education'],
-        accomplishedList: [
-          profile.basicDTO && profile.basicDTO.about ? 'Added About me' : '',
-          profile.experienceDTO.items.length ? 'Added Experience' : '',
-          profile.educationDTO.items.length ? 'Added Education' : ''
-        ].filter(a => a !== '')
-      }
-    ];
-
-    setCompletionStatsDisplay(completionStatsDisplay);
-
-    const profileCompletion = [
-      {
-        name: 'Setup your account',
-        code: 'accountSetup',
-        items: [
-          {
-            name: 'Tutorial Completed',
-            code: 'tutorialCompleted',
-            value: session.tutorialStep === 4 ? true : false
-          },
-          {
-            name: 'Social Media Authenticated',
-            code: 'socialMediaAuthenticated',
-            value:
-              session.loginCred &&
-              (session.loginCred.linkedin ||
-                session.loginCred.twitter ||
-                session.loginCred.google ||
-                session.loginCred.facebook ||
-                session.loginCred.github ||
-                session.loginCred.discord)
-                ? true
-                : false
-          }
-        ],
-        stats: {}
-      },
-      {
-        name: 'Add Content to Profile',
-        code: 'profileContent',
-        items: [
-          {
-            name: 'Added About Me',
-            code: 'about',
-            value: profile.basicDTO && profile.basicDTO.about ? true : false
-          },
-          {
-            name: 'Added Education',
-            code: 'education',
-            value: profile.educationDTO.items.length ? true : false
-          },
-          {
-            name: 'Added Experience',
-            code: 'experience',
-            value: profile.experienceDTO.items.length ? true : false
-          }
-        ],
-        stats: {}
-      }
-    ];
-
-    let itemsCount: any = [];
-
-    profileCompletion.map((catTree, index) => {
-      let totalItems = 0;
-      let completedItems = 0;
-
-      catTree.items.map(item => {
-        totalItems++;
-        if (item.value) {
-          completedItems++;
-        }
-        return null;
-      });
-
-      itemsCount.push({
-        completedItems: completedItems,
-        totalItems: totalItems
-      });
-      return null;
-    });
-
-    for (let i = 0; i < itemsCount.length; i++) {
-      profileCompletion[i].stats = {
-        completedItems: itemsCount[i].completedItems,
-        totalItems: itemsCount[i].totalItems,
-        percentCompleted:
-          (itemsCount[i].completedItems * 100) / itemsCount[i].totalItems
-      };
-    }
-
-    return profileCompletion;
-  };
 
   /* Verification starts */
   const isCredVerified = async (key: string, profileValue: string) => {
@@ -382,7 +383,7 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
                 tutorialStep={session.tutorialStep}
               />
             )}
-            <ManageProfile profile={profile} userSession={session} />
+            <ManageProfile userSession={session} />
             {!hasFollowUsers && session.did && session.did !== '' && (
               <ExploreConnnections session={session} did={session.did} />
             )}

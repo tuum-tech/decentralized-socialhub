@@ -22,7 +22,7 @@ import {
   SubState
 } from './types';
 
-import PageLoading from 'src/components/layouts/PageLoading';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 
 import {
   requestFacebookId,
@@ -174,7 +174,7 @@ const FacebookCallback: React.FC<PageProps> = ({
         />
       );
     }
-    return <PageLoading />;
+    return <LoadingIndicator />;
   };
   return getRedirect();
 };

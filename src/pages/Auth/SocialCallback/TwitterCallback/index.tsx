@@ -21,7 +21,7 @@ import {
   SubState
 } from './types';
 
-import PageLoading from 'src/components/layouts/PageLoading';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { DidService } from 'src/services/did.service.new';
 import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
@@ -185,7 +185,7 @@ const TwitterCallback: React.FC<PageProps> = ({
         />
       );
     }
-    return <PageLoading />;
+    return <LoadingIndicator />;
   };
   return getRedirect();
 };
