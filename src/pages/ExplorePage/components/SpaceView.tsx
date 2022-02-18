@@ -21,15 +21,15 @@ const SpaceView = () => {
       setLoadingText('');
     })();
     setTimerForSpaces();
-  }, [setTimerForSpaces]);
+  }, []);
 
-  const setTimerForSpaces = useCallback(() => {
+  const setTimerForSpaces = () => {
     const timer = setTimeout(async () => {
       await refreshSpaces();
       setTimerForSpaces();
     }, 4000);
     return () => clearTimeout(timer);
-  });
+  };
 
   const refreshSpaces = async () => {
     const spaces = await SpaceService.getAllSpaces();
