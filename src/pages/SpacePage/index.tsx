@@ -43,13 +43,13 @@ const SpacePage: React.FC<InferMappedProps> = ({
   const [active, setActive] = useState('my spaces');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const setTimerForSpaces = () => {
+  const setTimerForSpaces = useCallback(() => {
     const timer = setTimeout(async () => {
       await refreshSpaces();
       setTimerForSpaces();
     }, 1000);
     return () => clearTimeout(timer);
-  };
+  });
 
   const refreshSpaces = useCallback(async () => {
     let _spaces = await SpaceService.getAllSpaces(session);
@@ -59,7 +59,7 @@ const SpacePage: React.FC<InferMappedProps> = ({
 
   useEffect(() => {
     setTimerForSpaces();
-  }, []);
+  }, [setTimerForSpaces]);
 
   const handleCreateSpace = async (space: Space) => {
     if (spaces.findIndex(_space => _space.name === space.name) > -1) {
@@ -70,7 +70,6 @@ const SpacePage: React.FC<InferMappedProps> = ({
       return;
     }
     await SpaceService.addSpace(session, space);
-    await TuumTechScriptService.addSpace(session.did, space.name);
     refreshSpaces();
     setIsModalOpen(false);
   };

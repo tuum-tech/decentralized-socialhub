@@ -100,7 +100,6 @@ const ManagerPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
     if (result) {
       console.log(session, spaceProfile);
       await SpaceService.removeSpace(session, spaceProfile);
-      await TuumTechScriptService.removeSpace(session.did, spaceProfile.name);
       history.push('/spaces');
     }
   };

@@ -13,6 +13,19 @@ let run = async () => {
 
     const fs = require('fs');
     await client.Database.createCollection('community_spaces');
+    await client.Scripting.SetScript({
+      name: 'get_community_spaces',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_community_spaces',
+        output: true,
+        body: {
+          collection: 'community_spaces'
+        }
+      }
+    });
     // ===== spaces section start =====
     await client.Database.createCollection('spaces');
     await client.Scripting.SetScript({

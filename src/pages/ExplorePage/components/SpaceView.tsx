@@ -21,32 +21,20 @@ const SpaceView = () => {
       setLoadingText('');
     })();
     setTimerForSpaces();
-  }, []);
+  }, [setTimerForSpaces]);
 
-  const setTimerForSpaces = () => {
+  const setTimerForSpaces = useCallback(() => {
     const timer = setTimeout(async () => {
       await refreshSpaces();
       setTimerForSpaces();
     }, 4000);
     return () => clearTimeout(timer);
-  };
+  });
 
   const refreshSpaces = async () => {
-    const all = await TuumTechScriptService.getAllSpaces();
-    const groups = _.groupBy(all, 'owner');
-    let didService = await DidService.getInstance();
-    let userService = new UserService(didService);
-
-    let _spaces = await Promise.all(
-      Object.keys(groups).map(async (did: any) => {
-        const tuumUser = await userService.SearchUserWithDID(did);
-        const spaceNames = groups[did].map((x: any) => x.name);
-        const spaces = await SpaceService.getSpaceByNames(tuumUser, spaceNames);
-        return spaces.map((x: any) => ({ ...x, owner: did }));
-      })
-    );
-    _spaces = _spaces.reduce((total, x) => total.concat(x), []);
-    setSpaces(_spaces);
+    const spaces = await SpaceService.getAllSpaces();
+    const community_spaces = await SpaceService.getCommunitySpaces();
+    setSpaces(spaces.concat(community_spaces));
   };
   return (
     <>
