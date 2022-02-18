@@ -79,7 +79,8 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
   const [showSentModal, setShowSentModal] = useState(false);
   const profile = useRecoilValue(FullProfileAtom);
 
-  let didDocument = DIDDocument._parseOnly(useRecoilValue(DIDDocumentAtom));
+  let didDocumentString = useRecoilValue(DIDDocumentAtom);
+  const [didDocument, setDidDocument] = useState<DIDDocument | null>(null);
 
   const sendRequest = async (
     dids: string[],
@@ -91,6 +92,11 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
     setShowVerificationModal(false);
     setShowSentModal(true);
   };
+
+  useEffect(() => {
+    if (didDocumentString !== '')
+      setDidDocument(DIDDocument._parseOnly(didDocumentString));
+  }, [didDocumentString]);
 
   useEffect(() => {
     const profileCompletionStats = () => {
@@ -228,14 +234,17 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
     setFollowUsers(followingDids.length + followerDids.length > 0);
   }, [followingDids, followerDids]);
 
-  const hasSocialProfiles = hasCredentials(didDocument);
+  const hasSocialProfiles = hasCredentials(didDocument as DIDDocument);
 
   /* Verification starts */
   const isCredVerified = async (key: string, profileValue: string) => {
     let {
       isVerified,
       isValid
-    }: VCType = await containingVerifiableCredentialDetails(key, didDocument);
+    }: VCType = await containingVerifiableCredentialDetails(
+      key,
+      didDocument as DIDDocument
+    );
 
     return isVerified && isValid;
   };

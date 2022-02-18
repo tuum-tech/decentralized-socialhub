@@ -39,7 +39,7 @@ const EmailVerificationDetailContent: React.FC<Props> = ({
   const [loading, setLoading] = useState(false);
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
-  const [afterSuccess, setAfterSucess] = useState(0);
+  const [afterSuccess, setAfterSucess] = useState(false);
   const [credentials, setCredentials] = useState({
     did: '',
     loginCred: {
@@ -73,9 +73,7 @@ const EmailVerificationDetailContent: React.FC<Props> = ({
       if (afterVerified) {
         afterVerified();
       } else if (cred.did && cred.did.length > 0) {
-        setAfterSucess(1);
-      } else {
-        setAfterSucess(2);
+        setAfterSucess(true);
       }
     } else {
       setError('Invalid Code !');
@@ -83,24 +81,7 @@ const EmailVerificationDetailContent: React.FC<Props> = ({
     setLoading(false);
   };
 
-  if (afterSuccess === 1) {
-    return (
-      <Redirect
-        to={{
-          pathname: '/generate-did',
-          state: {
-            did: credentials.did,
-            name: credentials.name,
-            loginCred: {
-              email: credentials.loginCred.email
-            },
-            service: AccountType.DID,
-            credential: credentials.credential
-          }
-        }}
-      />
-    );
-  } else if (afterSuccess === 2) {
+  if (afterSuccess) {
     return (
       <Redirect
         to={{
@@ -112,6 +93,7 @@ const EmailVerificationDetailContent: React.FC<Props> = ({
               email: credentials.loginCred.email
             },
             service: AccountType.Email,
+            AccountType: AccountType.Email,
             credential: credentials.credential
           }
         }}
