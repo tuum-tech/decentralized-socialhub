@@ -93,18 +93,6 @@ const BasicCard: React.FC<IProps> = ({
           </IonRow>
 
           <IonRow class="ion-justify-content-start">
-            <IonCol size="5">
-              <SmallTextInput
-                disabled={sessionItem.tutorialStep !== 4}
-                label="Name"
-                name="name"
-                value={currentBasicDTO.name}
-                onChange={handleChange}
-              />
-            </IonCol>
-          </IonRow>
-
-          <IonRow class="ion-justify-content-start">
             <IonCol size="7">
               <SmallTextInput
                 disabled={true}

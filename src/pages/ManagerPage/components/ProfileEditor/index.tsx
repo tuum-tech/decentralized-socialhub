@@ -80,6 +80,7 @@ const ProfileEditor: React.FC<Props> = ({
       phone
     }
   } = badgeDetails;
+
   const handleRouteParam = (title: string) => {
     if (badgeUrl?.badge && badgeUrl.badge === title) {
       return true;
@@ -329,6 +330,7 @@ const ProfileEditor: React.FC<Props> = ({
                 />
                 {profile && profile.educationDTO && (
                   <EducationCard
+                    userSession={JSON.parse(JSON.stringify(session))}
                     educationDTO={profile.educationDTO}
                     updateFunc={async (educationItem: EducationItem) => {
                       let userSession = JSON.parse(JSON.stringify(session));
@@ -348,6 +350,13 @@ const ProfileEditor: React.FC<Props> = ({
                         userSession,
                         archivedBadge
                       );
+
+                      let verificationService: VerificationService = new VerificationService();
+                      await verificationService.generateVerifiableCredentialFromEducationItem(
+                        educationItem,
+                        session
+                      );
+
                       await retriveProfile();
                     }}
                     removeFunc={async (educationItem: EducationItem) => {
@@ -367,13 +376,11 @@ const ProfileEditor: React.FC<Props> = ({
                     }}
                     isEditable={true}
                     template="default"
-                    userSession={JSON.parse(JSON.stringify(session))}
                     openModal={handleRouteParam(educationProfile.title)}
                   />
                 )}
                 {profile && profile.experienceDTO && (
                   <ExperienceCard
-                    experienceDTO={profile.experienceDTO}
                     updateFunc={async (experienceItem: ExperienceItem) => {
                       let userSession = JSON.parse(JSON.stringify(session));
                       let archivedBadge = true;
@@ -393,6 +400,13 @@ const ProfileEditor: React.FC<Props> = ({
                         userSession,
                         archivedBadge
                       );
+
+                      let verificationService: VerificationService = new VerificationService();
+                      await verificationService.generateVerifiableCredentialFromExperienceItem(
+                        experienceItem,
+                        session
+                      );
+
                       await retriveProfile();
                     }}
                     requestFunc={async (experienceItem: ExperienceItem) => {

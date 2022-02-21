@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import logo from 'src/assets/new/logo.png';
+import logo from 'src/assets/new/logo.svg';
 
 const Container = styled.div`
   height: 5em;

@@ -18,7 +18,7 @@ import { TokenResponse, LocationState, InferMappedProps } from './types';
 import { SubState } from 'src/store/users/types';
 
 import { AccountType, UserService } from 'src/services/user.service';
-import PageLoading from 'src/components/layouts/PageLoading';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 
 import { requestGithubToken, getUsersWithRegisteredGithub } from './fetchapi';
 import { DidService } from 'src/services/did.service.new';
@@ -160,7 +160,7 @@ const GithubCallback: React.FC<PageProps> = ({
         />
       );
     }
-    return <PageLoading />;
+    return <LoadingIndicator />;
   };
   return getRedirect();
 };

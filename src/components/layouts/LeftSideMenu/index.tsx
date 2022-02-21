@@ -51,18 +51,18 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
     setShowContactModal(!showContactModal);
   };
 
-  const fetchVerificationRequestsCount = async (): Promise<void> => {
-    let requests: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
-      props.session.did,
-      false
-    );
-    setRequestsCount(requests.filter(x => x.status === 'requested').length);
-  };
   useEffect(() => {
     (async () => {
+      const fetchVerificationRequestsCount = async (): Promise<void> => {
+        let requests: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
+          props.session.did,
+          false
+        );
+        setRequestsCount(requests.filter(x => x.status === 'requested').length);
+      };
       await fetchVerificationRequestsCount();
     })();
-  }, [fetchVerificationRequestsCount]);
+  }, [props.session.did]);
 
   return (
     <div className={style['navbar']}>
@@ -97,7 +97,7 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
 
         <ConnectionMenu session={props.session} />
         {/* in a progress */}
-        {/* <IonItem
+        <IonItem
           className={
             history.location.pathname === '/spaces'
               ? style['item-active']
@@ -109,7 +109,7 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
           <IonLabel>
             <h3>Spaces</h3>
           </IonLabel>
-        </IonItem> */}
+        </IonItem>
         <IonItem
           className={
             history.location.pathname === '/explore'
