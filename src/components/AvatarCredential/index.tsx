@@ -25,24 +25,36 @@ const AvatarCredential: React.FC<AvatarCredentialProps> = ({
   credential = undefined,
   width = '86px'
 }: AvatarCredentialProps) => {
-  const getAvatarSrc = () => {
-    if (credential === undefined) return '';
+  const [avatarImg, setAvatarImg] = useState<string>(
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
+  );
 
-    let value = credential.getSubject().getProperties()['avatar'];
+  useEffect(() => {
+    (async () => {
+      if (credential === undefined) return;
 
-    let jsonValue = JSON.stringify(value);
-    let avatarObject = JSON.parse(jsonValue);
-    let baseStr = avatarObject['data'];
-    if (!baseStr.startsWith('data:image/'))
-      return `data:${avatarObject['content-type']};base64,${baseStr}`;
+      let value = credential.getSubject().getProperties()['avatar'];
 
-    return '';
-  };
+      let jsonValue = JSON.stringify(value);
+      let avatarObject = JSON.parse(jsonValue);
+
+      if (avatarObject['type'] === 'elastoshive') {
+        //TODO: Use new hive sdk to get the avatar from node url like hive://did:elastos:idSDmjYLHdmvU4LM8fQZfobUgUkjnJF2kH@did:elastos:ig1nqyyJhwTctdLyDFbZomSbZSjyMN1uor/getMainIdentityAvatar1644321628379?params={\"empty\":0}
+      } else {
+        let baseStr = avatarObject['data'];
+        if (!baseStr.startsWith('data:image/'))
+          setAvatarImg(
+            `data:${avatarObject['content-type']};base64,${baseStr}`
+          );
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [credential]);
 
   return (
     <div className={style['avatar']} style={{ height: width, width }}>
       <img
-        src={getAvatarSrc()}
+        src={avatarImg}
         className={style['border-primary']}
         height="auto"
         alt="avatar"
