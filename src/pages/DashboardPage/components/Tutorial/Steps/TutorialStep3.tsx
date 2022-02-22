@@ -19,6 +19,7 @@ import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { DidcredsService } from 'src/services/didcreds.service';
 import { useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom } from 'src/Atoms/Atoms';
+import { Stopwatch } from 'ts-stopwatch';
 
 const VersionTag = styled.div`
   display: flex;
@@ -46,6 +47,8 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   eProps,
   ...props
 }) => {
+  const stopwatch = new Stopwatch();
+
   const { session } = props;
   const [hiveUrl, sethiveUrl] = useState('');
   const [hiveDocument, setHiveDocument] = useState('');
@@ -127,6 +130,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         return;
       }
     }
+
     try {
       let userToken = await generateUserToken(
         props.session.mnemonics,
@@ -163,17 +167,14 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         await didService.publishDocument(signedDocument);
         setDidDocument(signedDocument.toString(true));
       }
-
       let userService = new UserService(didService);
       const updatedSession = await userService.updateSession(newSession);
       eProps.setSession({ session: updatedSession });
-
       let hiveInstance = await HiveService.getSessionInstance(newSession);
       if (hiveInstance && hiveInstance.isConnected) {
         await hiveInstance.Payment.CreateFreeVault();
       }
       await UserVaultScripts.Execute(hiveInstance!);
-
       let blockchainDocument = await didService.getPublishedDocument(
         new DID(props.session.did)
       );
