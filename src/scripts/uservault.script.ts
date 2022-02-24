@@ -2,71 +2,34 @@ import { HiveClient } from '@elastosfoundation/elastos-hive-js-sdk';
 
 export class UserVaultScripts {
   static async Execute(hiveClient: HiveClient) {
-    await this.CreateCollections(hiveClient);
-    await this.SetScripts(hiveClient);
+    await Promise.all([
+      this.CreateCollections(hiveClient),
+      this.SetScripts(hiveClient)
+    ]);
     console.log('uservaultscripts registered');
   }
 
   static async CreateCollections(hiveClient: HiveClient) {
-    await hiveClient.Database.createCollection('following');
-    await hiveClient.Database.createCollection('basic_profile');
-    await hiveClient.Database.createCollection('education_profile');
-    await hiveClient.Database.createCollection('experience_profile');
-    await hiveClient.Database.createCollection('activities');
-    await hiveClient.Database.createCollection('public_fields');
-    await hiveClient.Database.createCollection('verifiable_credentials');
-    await hiveClient.Database.createCollection('templates');
-    await hiveClient.Database.createCollection('team_profile');
-    await hiveClient.Database.createCollection('thesis_profile');
-    await hiveClient.Database.createCollection('paper_profile');
-    await hiveClient.Database.createCollection('license_profile');
-    await hiveClient.Database.createCollection('certification_profile');
-    await hiveClient.Database.createCollection('game_exp_profile');
-    await hiveClient.Database.createCollection('private_spaces');
+    await Promise.all([
+      hiveClient.Database.createCollection('following'),
+      hiveClient.Database.createCollection('basic_profile'),
+      hiveClient.Database.createCollection('education_profile'),
+      hiveClient.Database.createCollection('experience_profile'),
+      hiveClient.Database.createCollection('activities'),
+      hiveClient.Database.createCollection('public_fields'),
+      hiveClient.Database.createCollection('verifiable_credentials'),
+      hiveClient.Database.createCollection('templates'),
+      hiveClient.Database.createCollection('team_profile'),
+      hiveClient.Database.createCollection('thesis_profile'),
+      hiveClient.Database.createCollection('paper_profile'),
+      hiveClient.Database.createCollection('license_profile'),
+      hiveClient.Database.createCollection('certification_profile'),
+      hiveClient.Database.createCollection('game_exp_profile'),
+      hiveClient.Database.createCollection('private_spaces')
+    ]);
   }
 
-  static async SetScripts(hiveClient: HiveClient) {
-    // templates
-    await hiveClient.Scripting.SetScript({
-      name: 'get_my_templates',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_my_templates',
-        output: true,
-        body: {
-          collection: 'templates'
-        }
-      }
-    });
-
-    await hiveClient.Scripting.SetScript({
-      name: 'set_my_templates',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'set_my_templates',
-        output: true,
-        body: {
-          collection: 'templates',
-          filter: {
-            did: '$params.did'
-          },
-          update: {
-            $set: {
-              templates: '$params.templates'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
-        }
-      }
-    });
-
+  static async setPublicTemplateScriptSetter(hiveClient: HiveClient) {
     // scripts for public fields of profile
     await hiveClient.Scripting.SetScript({
       name: 'set_public_fields',
@@ -92,6 +55,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async getPublicFieldsScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'get_public_fields',
       allowAnonymousUser: true,
@@ -105,8 +71,53 @@ export class UserVaultScripts {
         }
       }
     });
+  }
 
-    // scripts for following users managmeent
+  static async setMyTemplatesScriptSet(hiveClient: HiveClient) {
+    await hiveClient.Scripting.SetScript({
+      name: 'set_my_templates',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'set_my_templates',
+        output: true,
+        body: {
+          collection: 'templates',
+          filter: {
+            did: '$params.did'
+          },
+          update: {
+            $set: {
+              templates: '$params.templates'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+  }
+
+  static async getMyTemplatesScriptSet(hiveClient: HiveClient) {
+    await hiveClient.Scripting.SetScript({
+      name: 'get_my_templates',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_my_templates',
+        output: true,
+        body: {
+          collection: 'templates'
+        }
+      }
+    });
+  }
+
+  static async getFollowingScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'get_following',
       allowAnonymousUser: true,
@@ -120,8 +131,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
 
-    // scripts for profile management
+  static async getBasicProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'get_basic_profile',
       allowAnonymousUser: true,
@@ -135,6 +147,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async updateBasicProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'update_basic_profile',
       allowAnonymousUser: true,
@@ -159,7 +174,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
 
+  static async getTeamProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'get_team_profile',
       allowAnonymousUser: true,
@@ -173,6 +190,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async updateTeamProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'update_team_profile',
       allowAnonymousUser: true,
@@ -202,6 +222,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async removeTeamItemScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'remove_team_item',
       allowAnonymousUser: true,
@@ -217,6 +240,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async getThesisProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'get_thesis_profile',
       allowAnonymousUser: true,
@@ -230,6 +256,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async updateThesisProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'update_thesis_profile',
       allowAnonymousUser: true,
@@ -258,6 +287,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async removeThesisProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'remove_thesis_item',
       allowAnonymousUser: true,
@@ -273,7 +305,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
 
+  static async getPaperProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'get_paper_profile',
       allowAnonymousUser: true,
@@ -287,6 +321,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async updatePaperProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'update_paper_profile',
       allowAnonymousUser: true,
@@ -315,6 +352,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async removePaperItemScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'remove_paper_item',
       allowAnonymousUser: true,
@@ -330,7 +370,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
 
+  static async getLicenseProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'get_license_profile',
       allowAnonymousUser: true,
@@ -344,6 +386,8 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+  static async updateLicenseProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'update_license_profile',
       allowAnonymousUser: true,
@@ -372,6 +416,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async removeLicenseItemScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'remove_license_item',
       allowAnonymousUser: true,
@@ -387,7 +434,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
 
+  static async getCertificationProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'get_certification_profile',
       allowAnonymousUser: true,
@@ -401,6 +450,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async updateCertificationProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'update_certification_profile',
       allowAnonymousUser: true,
@@ -429,6 +481,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async removeCertificationItemScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'remove_certification_item',
       allowAnonymousUser: true,
@@ -444,7 +499,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
 
+  static async getGameExpProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'get_game_exp_profile',
       allowAnonymousUser: true,
@@ -458,6 +515,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async updateGameExpProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'update_game_exp_profile',
       allowAnonymousUser: true,
@@ -485,6 +545,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async removeGameExpItemScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'remove_game_exp_item',
       allowAnonymousUser: true,
@@ -500,7 +563,8 @@ export class UserVaultScripts {
         }
       }
     });
-
+  }
+  static async getEducationProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'get_education_profile',
       allowAnonymousUser: true,
@@ -514,6 +578,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async updateEducationProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'update_education_profile',
       allowAnonymousUser: true,
@@ -544,6 +611,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async removeEducationItemScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'remove_education_item',
       allowAnonymousUser: true,
@@ -559,7 +629,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
 
+  static async getExperienceProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'get_experience_profile',
       allowAnonymousUser: true,
@@ -573,6 +645,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async updateExperienceProfileScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'update_experience_profile',
       allowAnonymousUser: true,
@@ -603,6 +678,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async removeExperienceItemScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'remove_experience_item',
       allowAnonymousUser: true,
@@ -618,7 +696,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
 
+  static async getActivityScriptSetter(hiveClient: HiveClient) {
     // activies
     await hiveClient.Scripting.SetScript({
       name: 'get_activity',
@@ -633,6 +713,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async addActivityScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'add_activity',
       allowAnonymousUser: true,
@@ -654,6 +737,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async updateActivityScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'update_activity',
       allowAnonymousUser: true,
@@ -679,26 +765,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
 
-    // await hiveClient.Scripting.SetScript({
-    //   name: 'add_verifiablecredential',
-    //   allowAnonymousUser: true,
-    //   allowAnonymousApp: true,
-    //   executable: {
-    //     type: 'insert',
-    //     name: 'add_verifiablecredential',
-    //     output: true,
-    //     body: {
-    //       collection: 'verifiable_credentials',
-    //       document: {
-    //         id: '$params.id',
-    //         vc: '$params.vc',
-
-    //       }
-    //     }
-    //   }
-    // });
-
+  static async addVerifiableCredentialScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'add_verifiablecredential',
       allowAnonymousUser: true,
@@ -724,7 +793,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
 
+  static async removeVerifiableCredentialScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'remove_verifiablecredential',
       allowAnonymousUser: true,
@@ -740,7 +811,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
 
+  static async getVerifiableCredentialScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'get_verifiable_credentials',
       allowAnonymousUser: true,
@@ -754,7 +827,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
 
+  static async getAllSpacesScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'get_all_spaces',
       allowAnonymousUser: true,
@@ -768,7 +843,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
 
+  static async getSpacesByNamesScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'get_space_by_names',
       allowAnonymousUser: true,
@@ -785,7 +862,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
 
+  static async addSpacesScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'add_space',
       allowAnonymousUser: true,
@@ -816,7 +895,9 @@ export class UserVaultScripts {
         }
       }
     });
+  }
 
+  static async removeSpaceScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'remove_space',
       allowAnonymousUser: true,
@@ -832,6 +913,54 @@ export class UserVaultScripts {
         }
       }
     });
+  }
+
+  static async SetScripts(hiveClient: HiveClient) {
+    // templates
+
+    await Promise.all([
+      this.getMyTemplatesScriptSet(hiveClient),
+      this.setMyTemplatesScriptSet(hiveClient),
+      this.setPublicTemplateScriptSetter(hiveClient),
+      this.getPublicFieldsScriptSetter(hiveClient),
+      this.getFollowingScriptSetter(hiveClient),
+      this.getBasicProfileScriptSetter(hiveClient),
+      this.updateBasicProfileScriptSetter(hiveClient),
+      this.getTeamProfileScriptSetter(hiveClient),
+      this.updateTeamProfileScriptSetter(hiveClient),
+      this.removeTeamItemScriptSetter(hiveClient),
+      this.getThesisProfileScriptSetter(hiveClient),
+      this.updateThesisProfileScriptSetter(hiveClient),
+      this.removeThesisProfileScriptSetter(hiveClient),
+      this.getPaperProfileScriptSetter(hiveClient),
+      this.updatePaperProfileScriptSetter(hiveClient),
+      this.removePaperItemScriptSetter(hiveClient),
+      this.getLicenseProfileScriptSetter(hiveClient),
+      this.updateLicenseProfileScriptSetter(hiveClient),
+      this.removeLicenseItemScriptSetter(hiveClient),
+      this.getCertificationProfileScriptSetter(hiveClient),
+      this.updateCertificationProfileScriptSetter(hiveClient),
+      this.removeCertificationItemScriptSetter(hiveClient),
+      this.getGameExpProfileScriptSetter(hiveClient),
+      this.updateGameExpProfileScriptSetter(hiveClient),
+      this.removeGameExpItemScriptSetter(hiveClient),
+      this.getEducationProfileScriptSetter(hiveClient),
+      this.updateEducationProfileScriptSetter(hiveClient),
+      this.removeEducationItemScriptSetter(hiveClient),
+      this.getExperienceProfileScriptSetter(hiveClient),
+      this.updateExperienceProfileScriptSetter(hiveClient),
+      this.removeExperienceItemScriptSetter(hiveClient),
+      this.getActivityScriptSetter(hiveClient),
+      this.addActivityScriptSetter(hiveClient),
+      this.updateActivityScriptSetter(hiveClient),
+      this.addVerifiableCredentialScriptSetter(hiveClient),
+      this.removeVerifiableCredentialScriptSetter(hiveClient),
+      this.getVerifiableCredentialScriptSetter(hiveClient),
+      this.getAllSpacesScriptSetter(hiveClient),
+      this.getSpacesByNamesScriptSetter(hiveClient),
+      this.addSpacesScriptSetter(hiveClient),
+      this.removeSpaceScriptSetter(hiveClient)
+    ]);
   }
 
   static async Delete(hiveClient: HiveClient) {
