@@ -1,7 +1,7 @@
 import React from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 
-import SpaceCard from './SpaceCard';
+import SpaceCard from '../SpaceCard';
 import styled from 'styled-components';
 
 import { getDIDString } from 'src/utils/did';
@@ -13,7 +13,7 @@ interface Props {
   spaces: Space[];
   explore?: boolean;
 }
-const MySpaces: React.FC<Props> = ({ spaces, explore = false }: Props) => {
+const SpaceListView: React.FC<Props> = ({ spaces, explore = false }: Props) => {
   const renderSpaceCol = (space: Space, index: number) => {
     return (
       <IonCol size="4" key={index}>
@@ -39,4 +39,4 @@ const MySpaces: React.FC<Props> = ({ spaces, explore = false }: Props) => {
   );
 };
 
-export default MySpaces;
+export default SpaceListView;

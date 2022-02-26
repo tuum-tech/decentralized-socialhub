@@ -38,6 +38,7 @@ export class SpaceService {
         let didService = await DidService.getInstance();
         let userService = new UserService(didService);
         const groups = _.groupBy(items, 'owner');
+        console.log('step 1 :=> ', groups);
         let spaces = await Promise.all(
           Object.keys(groups).map(async (did: any) => {
             const tuumUser = await userService.SearchUserWithDID(did);
@@ -47,6 +48,7 @@ export class SpaceService {
           })
         );
         spaces = spaces.reduce((total, x) => total.concat(x), []);
+        console.log('step 2 :=> ', spaces);
         return spaces;
       }
     } else {

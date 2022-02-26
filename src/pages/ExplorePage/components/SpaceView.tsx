@@ -9,7 +9,7 @@ import { TuumTechScriptService } from 'src/services/script.service';
 import { SpaceService } from 'src/services/space.service';
 
 import LoadingIndicator from 'src/elements/LoadingIndicator';
-import MySpaces from 'src/pages/SpacePage/components/MySpaces';
+import SpaceListView from 'src/pages/SpacePage/components/SpaceListView';
 
 const SpaceView = () => {
   const [spaces, setSpaces] = useState<any[]>([]);
@@ -21,20 +21,21 @@ const SpaceView = () => {
       setLoadingText('');
     })();
     setTimerForSpaces();
-  }, []);
+  }, [setTimerForSpaces]);
 
-  const setTimerForSpaces = () => {
+  const setTimerForSpaces = useCallback(() => {
     const timer = setTimeout(async () => {
       await refreshSpaces();
       setTimerForSpaces();
     }, 4000);
     return () => clearTimeout(timer);
-  };
+  });
 
   const refreshSpaces = async () => {
     const spaces = await SpaceService.getAllSpaces();
     const community_spaces = await SpaceService.getCommunitySpaces();
     setSpaces(spaces.concat(community_spaces));
+    // setSpaces(spaces);
   };
   return (
     <>
@@ -45,7 +46,7 @@ const SpaceView = () => {
           {spaces.length > 0 ? (
             <>
               <RequestCommunity />
-              <MySpaces spaces={spaces} explore={true} />
+              <SpaceListView spaces={spaces} explore={true} />
             </>
           ) : (
             <>
