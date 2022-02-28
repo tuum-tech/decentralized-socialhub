@@ -57,6 +57,7 @@ const DiscordCallback: React.FC<PageProps> = ({
 
   useEffect(() => {
     (async () => {
+      debugger;
       let didService = await DidService.getInstance();
       if (code !== '' && credentials.loginCred.discord === '') {
         let t = await getToken(code);

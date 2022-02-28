@@ -41,6 +41,9 @@ import SentModalContent, {
   SentModal
 } from 'src/pages/ActivityPage/components/MyRequests/SentModal';
 import { VerificationService } from 'src/services/verification.service';
+import EssentialsModalContent, {
+  EssentialsRequestModal
+} from 'src/pages/ActivityPage/components/MyRequests/EssentialsRequestModal';
 
 interface Props {
   session: ISessionItem;
@@ -66,6 +69,7 @@ const ProfileEditor: React.FC<Props> = ({
   >(undefined);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [showSentModal, setShowSentModal] = useState(false);
+  const [showRequestEssentials, setShowRequestEssentials] = useState(false);
 
   const {
     account: { basicProfile, educationProfile, experienceProfile },
@@ -161,7 +165,6 @@ const ProfileEditor: React.FC<Props> = ({
   useEffect(() => {
     (async () => {
       if (!session.userToken) return;
-      setUserInfo(session);
       if (session.tutorialStep === 4) {
         await retriveProfile();
       }
@@ -177,6 +180,11 @@ const ProfileEditor: React.FC<Props> = ({
     startTimer();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
+
+  useEffect(() => {
+    let newSession = { ...session };
+    if (showRequestEssentials === false) setUserInfo(newSession);
+  }, [showRequestEssentials, session]);
 
   return (
     <IonContent className={style['profileeditor']}>
@@ -197,78 +205,81 @@ const ProfileEditor: React.FC<Props> = ({
           <IonCol size="8">
             <AvatarChangeCard />
             <CoverPhoto />
-            {!error && loaded ? (
-              <BasicCard
-                sessionItem={userInfo}
-                requestVerification={(idKey: string) => {
-                  setSelectedCredential(idKey);
-                  setShowVerificationModal(true);
-                }}
-                updateFunc={async (newUserInfo: ISessionItem) => {
-                  const newName = newUserInfo.name!;
-                  const oldName = userInfo.name!;
 
-                  const newPhone = newUserInfo.loginCred?.phone;
-                  const oldPhone = userInfo.loginCred?.phone;
+            {/* <h1>{userInfo.name}</h1> */}
+            <BasicCard
+              sessionItem={userInfo}
+              requestVerification={(idKey: string) => {
+                setSelectedCredential(idKey);
+                setShowVerificationModal(true);
+              }}
+              updateFunc={async (newUserInfo: ISessionItem) => {
+                const newName = newUserInfo.name!;
+                const oldName = userInfo.name!;
 
-                  let didService = await DidService.getInstance();
-                  let doc = await didService.getStoredDocument(
-                    new DID(session.did)
+                const newPhone = newUserInfo.loginCred?.phone;
+                const oldPhone = userInfo.loginCred?.phone;
+
+                let didService = await DidService.getInstance();
+                let doc = await didService.getStoredDocument(
+                  new DID(session.did)
+                );
+
+                if (newName !== oldName) {
+                  let vcName: VerifiableCredential;
+
+                  if (userInfo.isEssentialUser) {
+                    setShowRequestEssentials(true);
+                    vcName = await didService.newSelfVerifiableCredentialFromEssentials(
+                      userInfo.did,
+                      'name',
+                      newName
+                    );
+                    setShowRequestEssentials(false);
+                  } else {
+                    vcName = await didService.newSelfVerifiableCredential(
+                      doc,
+                      'name',
+                      newName
+                    );
+                  }
+
+                  await DidcredsService.addOrUpdateCredentialToVault(
+                    session,
+                    vcName
                   );
+                }
 
-                  if (newName !== oldName) {
-                    let vcName: VerifiableCredential;
-
-                    if (userInfo.isEssentialUser) {
-                      vcName = await didService.newSelfVerifiableCredentialFromEssentials(
-                        userInfo.did,
-                        'name',
-                        newName
-                      );
-                    } else {
-                      vcName = await didService.newSelfVerifiableCredential(
-                        doc,
-                        'name',
-                        newName
-                      );
-                    }
-
-                    await DidcredsService.addOrUpdateCredentialToVault(
-                      session,
-                      vcName
+                if (newPhone !== oldPhone) {
+                  let vcPhone: VerifiableCredential;
+                  if (userInfo.isEssentialUser) {
+                    setShowRequestEssentials(true);
+                    vcPhone = await didService.newSelfVerifiableCredentialFromEssentials(
+                      userInfo.did,
+                      'phone',
+                      newPhone
+                    );
+                    setShowRequestEssentials(false);
+                  } else {
+                    vcPhone = await didService.newSelfVerifiableCredential(
+                      doc,
+                      'phone',
+                      newPhone
                     );
                   }
 
-                  if (newPhone !== oldPhone) {
-                    let vcPhone: VerifiableCredential;
-                    if (userInfo.isEssentialUser) {
-                      vcPhone = await didService.newSelfVerifiableCredentialFromEssentials(
-                        userInfo.did,
-                        'phone',
-                        newPhone
-                      );
-                    } else {
-                      vcPhone = await didService.newSelfVerifiableCredential(
-                        doc,
-                        'phone',
-                        newPhone
-                      );
-                    }
+                  await DidcredsService.addOrUpdateCredentialToVault(
+                    session,
+                    vcPhone
+                  );
+                }
 
-                    await DidcredsService.addOrUpdateCredentialToVault(
-                      session,
-                      vcPhone
-                    );
-                  }
+                await TuumTechScriptService.updateTuumUser(newUserInfo);
+                await updateSession({ session: newUserInfo });
+                showNotify('Basic info is successfuly saved', 'success');
+              }}
+            ></BasicCard>
 
-                  await TuumTechScriptService.updateTuumUser(newUserInfo);
-                  await updateSession({ session: newUserInfo });
-                  showNotify('Basic info is successfuly saved', 'success');
-                }}
-              ></BasicCard>
-            ) : (
-              ''
-            )}
             {!error && loaded && userInfo.tutorialStep === 4 ? (
               <>
                 {profile && profile.basicDTO && (
@@ -631,6 +642,18 @@ const ProfileEditor: React.FC<Props> = ({
                     }}
                   />
                 </SentModal>
+
+                <EssentialsRequestModal
+                  isOpen={showRequestEssentials}
+                  cssClass="my-custom-class"
+                  backdropDismiss={false}
+                >
+                  <EssentialsModalContent
+                    onClose={() => {
+                      setShowRequestEssentials(false);
+                    }}
+                  />
+                </EssentialsRequestModal>
               </>
             ) : (
               ''
