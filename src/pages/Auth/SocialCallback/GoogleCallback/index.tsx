@@ -30,8 +30,6 @@ import { AccountType, UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidService } from 'src/services/did.service.new';
-import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
-import { EssentialsService } from 'src/services/essentials.service';
 
 interface PageProps
   extends InferMappedProps,
@@ -82,34 +80,6 @@ const GoogleCallback: React.FC<PageProps> = ({
             googleId.email
           );
 
-          let didDocument: DIDDocument = await didService.getStoredDocument(
-            new DID(props.session.did)
-          );
-
-          let documentWithGoogleCredential: DIDDocument;
-
-          if (props.session.mnemonics === '') {
-            let essentialsService = new EssentialsService(didService);
-            let isAdded = await essentialsService.addVerifiableCredentialEssentials(
-              verifiableCredential
-            );
-
-            if (!isAdded) {
-              window.close();
-              return;
-            }
-
-            documentWithGoogleCredential = await didService.getPublishedDocument(
-              new DID(props.session.did)
-            );
-          } else {
-            documentWithGoogleCredential = await didService.addVerifiableCredentialToDIDDocument(
-              didDocument,
-              verifiableCredential
-            );
-          }
-
-          await didService.storeDocument(documentWithGoogleCredential);
           await DidcredsService.addOrUpdateCredentialToVault(
             props.session,
             verifiableCredential
