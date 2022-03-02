@@ -26,6 +26,22 @@ let run = async () => {
         }
       }
     });
+    await client.Scripting.SetScript({
+      name: 'get_community_space_by_names',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_community_space_by_names',
+        output: true,
+        body: {
+          collection: 'community_spaces',
+          filter: {
+            name: { $in: '$params.names' }
+          }
+        }
+      }
+    });
     // ===== spaces section start =====
     await client.Database.createCollection('spaces');
     await client.Scripting.SetScript({

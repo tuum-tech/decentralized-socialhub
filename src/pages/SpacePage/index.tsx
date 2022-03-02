@@ -20,7 +20,7 @@ import SpacePageHeader, {
   PageTitle,
   SpaceTabsContainer
 } from './components/SpacePageHeader';
-import SpaceListView from './components/SpaceListView';
+import SpaceListView from 'src/components/Space/SpaceListView';
 import { InferMappedProps, SubState } from './types';
 import style from './style.module.scss';
 import { Button } from 'src/elements/buttons';
@@ -43,23 +43,23 @@ const SpacePage: React.FC<InferMappedProps> = ({
   const [active, setActive] = useState('my spaces');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const setTimerForSpaces = useCallback(() => {
+  const setTimerForSpaces = () => {
     const timer = setTimeout(async () => {
       await refreshSpaces();
       setTimerForSpaces();
     }, 1000);
     return () => clearTimeout(timer);
-  });
+  };
 
-  const refreshSpaces = useCallback(async () => {
+  const refreshSpaces = async () => {
     let _spaces = await SpaceService.getAllSpaces(session);
     _spaces = _spaces.map((x: any) => ({ ...x, owner: session.did }));
     setSpaces(_spaces);
-  }, [session]);
+  };
 
   useEffect(() => {
     setTimerForSpaces();
-  }, [setTimerForSpaces]);
+  }, []);
 
   const handleCreateSpace = async (space: Space) => {
     if (spaces.findIndex(_space => _space.name === space.name) > -1) {
