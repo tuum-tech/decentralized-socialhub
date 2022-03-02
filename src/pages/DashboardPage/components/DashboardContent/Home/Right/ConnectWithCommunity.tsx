@@ -48,10 +48,7 @@ const ConnectWithCommunity: React.FC = () => {
     <CommunityCard>
       <div className="left">
         <CardTitle>Connect with our community</CardTitle>
-        <LinkButton
-          href="https://discord.com/invite/9gA3EAQjHt"
-          target="_blank"
-        >
+        <LinkButton href="https://discord.gg/profile-mtrl" target="_blank">
           Join us on Discord
         </LinkButton>
       </div>
