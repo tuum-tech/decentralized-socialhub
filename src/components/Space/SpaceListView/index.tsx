@@ -4,6 +4,7 @@ import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import SpaceCard from '../SpaceCard';
 import styled from 'styled-components';
 
+import { SpaceCategory } from 'src/services/space.service';
 import { getDIDString } from 'src/utils/did';
 
 const Container = styled.div`
@@ -21,7 +22,11 @@ const SpaceListView: React.FC<Props> = ({ spaces, explore = false }: Props) => {
           space={space}
           link={
             explore
-              ? `/did/${getDIDString(space.owner!, true)}/spaces/${space.name}`
+              ? space.category === SpaceCategory.NFT
+                ? `NFTSpaces/${space.name}`
+                : `/did/${getDIDString(space.owner!, true)}/spaces/${
+                    space.name
+                  }`
               : `/spaces/${space.name}`
           }
         />
