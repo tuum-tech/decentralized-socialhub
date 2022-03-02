@@ -16,8 +16,11 @@ import {
   CardContentContainer
 } from '../common';
 import ProgressBar from 'src/elements/ProgressBar';
-import { useRecoilState } from 'recoil';
-import { ExperienceSelector } from 'src/Atoms/Selectors';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import {
+  ExperienceSelector,
+  ExperienceSortedSelector
+} from 'src/Atoms/Selectors';
 
 interface IExperienceProps {
   updateFunc?: any;
@@ -56,6 +59,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   openModal = false
 }: IExperienceProps) => {
   const [experienceDTO, setExperienceDTO] = useRecoilState(ExperienceSelector);
+  const experienceSortedDTO = useRecoilValue(ExperienceSortedSelector);
   const [expVerifiedPercent, setExpVerifiedPercent] = useState(0);
 
   let noOfVerifiedExpCred = 0;
@@ -201,29 +205,25 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
           </IonGrid>
         </CardHeaderContent>
         <CardContentContainer>
-          {experienceDTO.items.sort(
-            (a: any, b: any) =>
-              new Date(b.start).getTime() - new Date(a.start).getTime()
-          ) &&
-            experienceDTO.items.map((x, i) => {
-              return (
-                <div key={i}>
-                  <ExperienceItem
-                    experienceItem={x}
-                    handleChange={handleChange}
-                    updateFunc={saveChanges}
-                    editFunc={editItem}
-                    index={i}
-                    removeFunc={removeItem}
-                    requestVerification={requestFunc}
-                    isEditable={isEditable}
-                    template={template}
-                    userSession={userSession}
-                  />
-                  {i < experienceDTO.items.length - 1 ? <Divider /> : ''}
-                </div>
-              );
-            })}
+          {experienceSortedDTO.items.map((x, i) => {
+            return (
+              <div key={i}>
+                <ExperienceItem
+                  experienceItem={x}
+                  handleChange={handleChange}
+                  updateFunc={saveChanges}
+                  editFunc={editItem}
+                  index={i}
+                  removeFunc={removeItem}
+                  requestVerification={requestFunc}
+                  isEditable={isEditable}
+                  template={template}
+                  userSession={userSession}
+                />
+                {i < experienceSortedDTO.items.length - 1 ? <Divider /> : ''}
+              </div>
+            );
+          })}
         </CardContentContainer>
       </CardOverview>
       <MyModal

@@ -41,6 +41,8 @@ import SentModalContent, {
   SentModal
 } from 'src/pages/ActivityPage/components/MyRequests/SentModal';
 import { VerificationService } from 'src/services/verification.service';
+import { useRecoilState } from 'recoil';
+import { FullProfileAtom } from 'src/Atoms/Atoms';
 
 interface Props {
   session: ISessionItem;
@@ -60,7 +62,8 @@ const ProfileEditor: React.FC<Props> = ({
   const [didDocument, setDidDocument] = useState<DIDDocument | undefined>(
     undefined
   );
-  const [profile, setProfile] = useState<ProfileDTO>(defaultFullProfile);
+
+  const [profile, setProfile] = useRecoilState<ProfileDTO>(FullProfileAtom);
   const [selectedCredential, setSelectedCredential] = useState<
     string | undefined
   >(undefined);
@@ -378,7 +381,7 @@ const ProfileEditor: React.FC<Props> = ({
                     openModal={handleRouteParam(educationProfile.title)}
                   />
                 )}
-                {profile && profile.experienceDTO && (
+                {profile && profile.experienceDTO.isEnabled && (
                   <ExperienceCard
                     updateFunc={async (experienceItem: ExperienceItem) => {
                       let userSession = JSON.parse(JSON.stringify(session));
