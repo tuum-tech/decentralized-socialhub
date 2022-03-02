@@ -40,11 +40,11 @@ const SignInPage: React.FC<RouteComponentProps<
   > => {
     console.log('Entering on connect');
     let didAccess = new DID.DIDAccess();
+
     try {
-      return await didAccess.getCredentials({
-        claims: {
-          name: true
-        }
+      return await didAccess.requestCredentials({
+        claims: [DID.simpleIdClaim('Your name', 'name', true)],
+        didMustBePublished: true
       });
     } catch (error) {
       console.error(error);

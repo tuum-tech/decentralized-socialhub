@@ -322,7 +322,6 @@ const ProfileEditor: React.FC<Props> = ({
                 )}
 
                 <SocialProfilesCard
-                  didDocument={didDocument as DIDDocument}
                   targetUser={session}
                   setSession={updateSession}
                   mode="edit"

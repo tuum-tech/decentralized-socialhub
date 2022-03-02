@@ -24,8 +24,6 @@ import { requestGithubToken, getUsersWithRegisteredGithub } from './fetchapi';
 import { DidService } from 'src/services/did.service.new';
 import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
-import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
-import { EssentialsService } from 'src/services/essentials.service';
 
 interface PageProps
   extends InferMappedProps,
@@ -63,34 +61,6 @@ const GithubCallback: React.FC<PageProps> = ({
             github
           );
 
-          let didDocument: DIDDocument = await didService.getStoredDocument(
-            new DID(props.session.did)
-          );
-
-          let documentWithGithubCredential: DIDDocument;
-
-          if (props.session.mnemonics === '') {
-            let essentialsService = new EssentialsService(didService);
-            let isAdded = await essentialsService.addVerifiableCredentialEssentials(
-              verifiableCredential
-            );
-
-            if (!isAdded) {
-              window.close();
-              return;
-            }
-
-            documentWithGithubCredential = await didService.getPublishedDocument(
-              new DID(props.session.did)
-            );
-          } else {
-            documentWithGithubCredential = await didService.addVerifiableCredentialToDIDDocument(
-              didDocument,
-              verifiableCredential
-            );
-          }
-
-          await didService.storeDocument(documentWithGithubCredential);
           await DidcredsService.addOrUpdateCredentialToVault(
             props.session,
             verifiableCredential

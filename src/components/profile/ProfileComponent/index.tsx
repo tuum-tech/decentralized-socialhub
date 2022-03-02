@@ -282,7 +282,6 @@ const ProfileComponent: React.FC<Props> = ({
                         {publicFields.includes('social') && didDocument && (
                           <SocialProfilesCard
                             setSession={() => {}}
-                            didDocument={didDocument}
                             targetUser={publicUser}
                           />
                         )}

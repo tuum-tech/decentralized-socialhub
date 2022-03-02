@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   IonCardContent,
   IonCardHeader,
@@ -23,6 +23,8 @@ import { DidService } from 'src/services/did.service.new';
 
 import { SocialProfileCard, MyGrid } from './elements';
 
+import { alertError } from 'src/utils/notify';
+
 import {
   ManagerModal,
   ManagerModalTitle,
@@ -33,15 +35,9 @@ import {
   CloseButton
 } from '../common';
 
-import {
-  DID,
-  DIDDocument,
-  VerifiableCredential
-} from '@elastosfoundation/did-js-sdk/';
-import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/';
 
 interface Props {
-  diddocument: DIDDocument;
   sessionItem: ISessionItem;
   setSession: (props: { session: ISessionItem }) => void;
   mode?: string;
@@ -49,15 +45,35 @@ interface Props {
 }
 
 const SocialProfilesCard: React.FC<Props> = ({
-  diddocument,
   sessionItem,
   setSession,
   mode = 'view',
   openModal = false
 }) => {
   const [isManagerOpen, setIsManagerOpen] = useState(openModal);
-  const [didDocument, setDidDocument] = useState<DIDDocument>(diddocument);
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
+  const [credentials, setCredentials] = useState<
+    Map<string, VerifiableCredential>
+  >();
+
+  useEffect(() => {
+    (async () => {
+      await getCredentials(sessionItem);
+    })();
+  }, [sessionItem]);
+
+  const getCredentials = async (sessionItem: ISessionItem) => {
+    try {
+      let cred = await DidcredsService.getAllCredentialsToVault(sessionItem);
+      setCredentials(cred);
+    } catch (error) {
+      console.error('Error getting credentials on vault', error);
+      alertError(
+        null,
+        `Error loading credentials from your personal vault, please verify the connection and try again later`
+      );
+    }
+  };
 
   let template = 'default';
   if (mode !== 'edit' && sessionItem.pageTemplate) {
@@ -99,14 +115,7 @@ const SocialProfilesCard: React.FC<Props> = ({
 
     var timer = setInterval(async function() {
       if (popupwindow!.closed) {
-        clearInterval(timer);
-        let didService = await DidService.getInstance();
-        let updatedDoc = await didService.getStoredDocument(
-          new DID(sessionItem.did)
-        );
-        console.log(updatedDoc);
-
-        setDidDocument(updatedDoc);
+        await getCredentials(sessionItem);
       }
     }, 1000);
   };
@@ -128,10 +137,10 @@ const SocialProfilesCard: React.FC<Props> = ({
     let url: MyType = {} as MyType;
 
     if (socialType === 'google') {
-      // gets the linkedin auth endpoint
+      // gets the google auth endpoint
       url = (await DidcredsService.requestGoogleLogin()) as MyType;
     } else if (socialType === 'facebook') {
-      // gets the linkedin auth endpoint
+      // gets the facebook auth endpoint
       url = (await DidcredsService.requestFacebookLogin()) as MyType;
     } else if (socialType === 'linkedin') {
       // gets the linkedin auth endpoint
@@ -151,9 +160,8 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const containsVerifiedCredential = (id: string): boolean => {
-    return (
-      didDocument!.selectCredentials(id, 'BasicProfileCredential').length > 0
-    );
+    if (!credentials) return false;
+    return credentials.has(`${sessionItem.did}#${id}`);
   };
 
   const getUrlFromService = (
@@ -185,53 +193,14 @@ const SocialProfilesCard: React.FC<Props> = ({
     return '';
   };
 
-  const removeVcEssentials = async (key: string, didService: DidService) => {
-    // eslint-disable-next-line
-    let cn = connectivity.getActiveConnector();
-    let vcKey = diddocument.getSubject().toString() + '#' + key;
-
-    await DidcredsService.removeCredentialToVault(sessionItem, vcKey);
-
-    await cn?.deleteCredentials([vcKey], {
-      forceToPublishCredentials: true
-    });
-
-    let newDoc = await didService.getPublishedDocument(
-      diddocument.getSubject()
-    );
-
-    didService.storeDocument(newDoc);
-    setDidDocument(newDoc);
-  };
-
-  const removeVcDefault = async (key: string, didService: DidService) => {
-    let didFromStore = await didService.getStoredDocument(
-      diddocument.getSubject()
-    );
-
-    let vcKey = diddocument.getSubject().toString() + '#' + key;
-
-    await DidcredsService.removeCredentialToVault(sessionItem, vcKey);
-
-    let builder = DIDDocument.Builder.newFromDocument(didFromStore);
-    builder = builder.removeCredential(key);
-    let newDoc = await builder.seal(
-      process.env.REACT_APP_DID_STORE_PASSWORD as string
-    );
-
-    didService.storeDocument(newDoc);
-    setDidDocument(newDoc);
-  };
-
   const removeVc = async (key: string) => {
     setIsRemoving(true);
-    let didService = await DidService.getInstance();
 
-    if (sessionItem.mnemonics === '') {
-      removeVcEssentials(key, didService);
-    } else {
-      removeVcDefault(key, didService);
-    }
+    let vcKey = sessionItem.did + '#' + key;
+
+    await DidcredsService.removeCredentialToVault(sessionItem, vcKey);
+
+    let didService = await DidService.getInstance();
 
     let userService = new UserService(didService);
     let currentSession = await userService.SearchUserWithDID(sessionItem.did);
@@ -276,13 +245,17 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const createIonItem = (key: string, icon: any) => {
-    let vc = didDocument!.selectCredentials(key, 'BasicProfileCredential')[0];
-    if (!vc) return <></>;
+    let id = `${sessionItem.did}#${key}`;
+    if (!credentials || !credentials.has(id)) return <></>;
+
+    let vc = credentials.get(id)!;
+    let isVcValid = true;
+
     return (
       <ProfileItem template={template}>
         <div className="left">
           <img alt="icon" src={icon} height={50} />
-          {vc.isValid() && (
+          {isVcValid && (
             <img
               alt="shield icon"
               src={shieldIcon}
@@ -320,7 +293,11 @@ const SocialProfilesCard: React.FC<Props> = ({
 
   const createModalIonItem = (key: string, icon: any) => {
     //let parsedDoc = await getParsedDoc();
-    let vc = didDocument.selectCredentials(key, 'BasicProfileCredential')[0];
+
+    if (!credentials) return;
+
+    let vc = credentials.get(`${sessionItem.did}#${key}`);
+
     let header = 'Google Account';
     if (key === 'twitter') header = 'Twitter Account';
     if (key === 'facebook') header = 'Facebook Account';
@@ -330,7 +307,7 @@ const SocialProfilesCard: React.FC<Props> = ({
 
     // let isEssentials = sessionItem.mnemonics === '';
 
-    if (!vc)
+    if (vc === undefined)
       return (
         <div className={style['manage-links-item']}>
           <ManagerLogo src={icon} />

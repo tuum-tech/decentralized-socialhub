@@ -91,7 +91,9 @@ const SyncPage: React.FC<InferMappedProps> = ({
               </IonCol>
               <IonCol size="10" className={style['right-panel']}>
                 <Header>
-                  <ArrowImage onClick={() => (window.location.href = '/')}>
+                  <ArrowImage
+                    onClick={() => (window.location.href = '/profile')}
+                  >
                     <IonImg src={arrowLeft}></IonImg>
                   </ArrowImage>
                   <HeaderInfo>

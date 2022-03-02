@@ -9,7 +9,7 @@ let run = async () => {
       config.hive_host,
       config.appId
     );
-    client.Payment.CreateFreeVault();
+    await client.Payment.CreateFreeVault();
 
     const fs = require('fs');
     await client.Database.createCollection('community_spaces');
