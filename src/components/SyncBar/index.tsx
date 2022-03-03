@@ -37,6 +37,11 @@ const SyncBar: React.FC<SyncBarProps> = ({ session }: SyncBarProps) => {
 
   //NO CALLBACK
   useEffect(() => {
+    if (session && session.isEssentialUser) {
+      console.log('Sync disabled');
+      return;
+    }
+
     const timer = setInterval(async () => {
       console.log('Verify differences', new Date().toISOString(), id);
       if (session && session.did !== '' && session.tutorialStep === 4) {
@@ -46,32 +51,6 @@ const SyncBar: React.FC<SyncBarProps> = ({ session }: SyncBarProps) => {
     }, 1000 * 60);
     return () => clearInterval(timer);
   }, [session, id]);
-
-  // const verifyDifferences = async () => {
-
-  //   if (session && session.did !== '' && session.tutorialStep === 4) {
-  //     let hasDiff = await SyncService.HasDifferences(session);
-  //     setHasDifferences(hasDiff);
-  //   }
-  //   setTimerForVerifyDifferences();
-  // };
-
-  // const setTimerForVerifyDifferences = () => {
-
-  //   n = setTimeout(() =>{
-  //     (async () => {
-  //       await verifyDifferences();
-  //     })();
-  //     clearTimeout(n)
-  //   }, 1000 * 10)
-
-  // };
-
-  // useEffect(() => {
-  //   (async () => {
-  //     await verifyDifferences();
-  //   })();
-  // }, []);
 
   const divBar = () => {
     return (
