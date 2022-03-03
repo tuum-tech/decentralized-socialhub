@@ -16,8 +16,11 @@ import {
   CardContentContainer
 } from '../common';
 import ProgressBar from 'src/elements/ProgressBar';
-import { useRecoilState } from 'recoil';
-import { ExperienceSelector } from 'src/Atoms/Selectors';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import {
+  ExperienceSelector,
+  ExperienceSortedSelector
+} from 'src/Atoms/Selectors';
 
 interface IExperienceProps {
   updateFunc?: any;
@@ -28,6 +31,7 @@ interface IExperienceProps {
   template?: string;
   userSession: ISessionItem;
   openModal?: boolean;
+  experience?: ExperienceDTO;
 }
 
 export const defaultExperienceItem: ExperienceItem = {
@@ -53,9 +57,11 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   isPublicPage = false,
   template = 'default',
   userSession,
-  openModal = false
+  openModal = false,
+  experience
 }: IExperienceProps) => {
   const [experienceDTO, setExperienceDTO] = useRecoilState(ExperienceSelector);
+  const experienceSortedDTO = useRecoilValue(ExperienceSortedSelector);
   const [expVerifiedPercent, setExpVerifiedPercent] = useState(0);
 
   let noOfVerifiedExpCred = 0;
@@ -156,9 +162,61 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     setExperienceDTO({ isEnabled: true, items: items });
   };
 
-  if (!isEditable && experienceDTO.items.length === 0) {
+  if (
+    !isEditable &&
+    experienceDTO.items.length === 0 &&
+    experience?.items.length === 0
+  ) {
     return <></>;
   }
+
+  const getExperienceFromParameter = (): any => {
+    experience?.items.sort(
+      (a: any, b: any) =>
+        new Date(b.start).getTime() - new Date(a.start).getTime()
+    );
+    return experience?.items.map((x, i) => {
+      return (
+        <div key={i}>
+          <ExperienceItem
+            experienceItem={x}
+            handleChange={handleChange}
+            updateFunc={saveChanges}
+            editFunc={editItem}
+            index={i}
+            removeFunc={removeItem}
+            requestVerification={requestFunc}
+            isEditable={isEditable}
+            template={template}
+            userSession={userSession}
+          />
+          {i < experience.items.length - 1 ? <Divider /> : ''}
+        </div>
+      );
+    });
+  };
+
+  const getExperienceFromState = (): any => {
+    return experienceSortedDTO.items.map((x, i) => {
+      return (
+        <div key={i}>
+          <ExperienceItem
+            experienceItem={x}
+            handleChange={handleChange}
+            updateFunc={saveChanges}
+            editFunc={editItem}
+            index={i}
+            removeFunc={removeItem}
+            requestVerification={requestFunc}
+            isEditable={isEditable}
+            template={template}
+            userSession={userSession}
+          />
+          {i < experienceSortedDTO.items.length - 1 ? <Divider /> : ''}
+        </div>
+      );
+    });
+  };
 
   return (
     <>
@@ -201,29 +259,9 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
           </IonGrid>
         </CardHeaderContent>
         <CardContentContainer>
-          {experienceDTO.items.sort(
-            (a: any, b: any) =>
-              new Date(b.start).getTime() - new Date(a.start).getTime()
-          ) &&
-            experienceDTO.items.map((x, i) => {
-              return (
-                <div key={i}>
-                  <ExperienceItem
-                    experienceItem={x}
-                    handleChange={handleChange}
-                    updateFunc={saveChanges}
-                    editFunc={editItem}
-                    index={i}
-                    removeFunc={removeItem}
-                    requestVerification={requestFunc}
-                    isEditable={isEditable}
-                    template={template}
-                    userSession={userSession}
-                  />
-                  {i < experienceDTO.items.length - 1 ? <Divider /> : ''}
-                </div>
-              );
-            })}
+          {experience !== undefined
+            ? getExperienceFromParameter()
+            : getExperienceFromState()}
         </CardContentContainer>
       </CardOverview>
       <MyModal

@@ -140,12 +140,15 @@ const ProfileComponent: React.FC<Props> = ({
                         </div>
                         <div ref={experienceRef}>
                           {publicFields.includes('experience') && (
-                            <ExperienceCard
-                              isEditable={false}
-                              isPublicPage={true}
-                              template={template}
-                              userSession={publicUser}
-                            />
+                            <>
+                              <ExperienceCard
+                                experience={publicUserProfile.experienceDTO}
+                                isEditable={false}
+                                isPublicPage={true}
+                                template={template}
+                                userSession={publicUser}
+                              />
+                            </>
                           )}
                         </div>
                         <div ref={educationRef}>
