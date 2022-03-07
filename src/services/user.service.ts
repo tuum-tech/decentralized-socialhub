@@ -415,6 +415,12 @@ export class UserService {
           }
         }
       },
+      spaces: [
+        {
+          owner: process.env.REACT_APP_APPLICATION_DID as string,
+          name: 'Welcome to Profile'
+        }
+      ],
       tutorialStep: 1,
       hiveHost: !hiveHostStr
         ? `${process.env.REACT_APP_TUUM_TECH_HIVE}`

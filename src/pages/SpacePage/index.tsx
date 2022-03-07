@@ -13,6 +13,8 @@ import styled from 'styled-components';
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
+import { UserService } from 'src/services/user.service';
+import { DidService } from 'src/services/did.service.new';
 import { SpaceService } from 'src/services/space.service';
 
 import SpacePageHeader, {
@@ -43,13 +45,13 @@ const SpacePage: React.FC<InferMappedProps> = ({
   const [active, setActive] = useState('my spaces');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const setTimerForSpaces = useCallback(() => {
+  const setTimerForSpaces = () => {
     const timer = setTimeout(async () => {
       await refreshSpaces();
       setTimerForSpaces();
     }, 1000);
     return () => clearTimeout(timer);
-  });
+  };
 
   const refreshSpaces = useCallback(async () => {
     let _spaces = await SpaceService.getAllSpaces(session);
@@ -59,7 +61,7 @@ const SpacePage: React.FC<InferMappedProps> = ({
 
   useEffect(() => {
     setTimerForSpaces();
-  }, [setTimerForSpaces]);
+  }, []);
 
   const handleCreateSpace = async (space: Space) => {
     if (spaces.findIndex(_space => _space.name === space.name) > -1) {
@@ -70,6 +72,18 @@ const SpacePage: React.FC<InferMappedProps> = ({
       return;
     }
     await SpaceService.addSpace(session, space);
+    let userService = new UserService(await DidService.getInstance());
+    let newSession = { ...session };
+    newSession.spaces = [
+      ...(newSession.spaces as SpaceRef[]),
+      {
+        owner: process.env.REACT_APP_APPLICATION_DID as string,
+        name: space.name
+      }
+    ];
+    await eProps.setSession({
+      session: await userService.updateSession(newSession)
+    });
     refreshSpaces();
     setIsModalOpen(false);
   };

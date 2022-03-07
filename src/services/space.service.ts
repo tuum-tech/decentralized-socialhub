@@ -10,7 +10,8 @@ export enum SpaceCategory {
   Personal = 'Personal Group',
   NFT = 'NFT Collection',
   Org = 'Organization',
-  Univ = 'University'
+  Univ = 'University',
+  WTP = 'Welcome to Profile'
 }
 
 export const defaultSpace: Space = {
@@ -38,17 +39,20 @@ export class SpaceService {
         let didService = await DidService.getInstance();
         let userService = new UserService(didService);
         const groups = _.groupBy(items, 'owner');
-        console.log('step 1 :=> ', groups);
-        let spaces = await Promise.all(
+        let spaces: any[] = await Promise.all(
           Object.keys(groups).map(async (did: any) => {
-            const tuumUser = await userService.SearchUserWithDID(did);
             const spaceNames = groups[did].map((x: any) => x.name);
-            const spaces = await this.getSpaceByNames(tuumUser, spaceNames);
-            return spaces.map((x: any) => ({ ...x, owner: did }));
+            let _spaces = [];
+            if (did === process.env.REACT_APP_APPLICATION_DID) {
+              _spaces = await this.getCommunitySpaceByNames(spaceNames);
+            } else {
+              const tuumUser = await userService.SearchUserWithDID(did);
+              _spaces = await this.getSpaceByNames(tuumUser, spaceNames);
+            }
+            return _spaces.map((x: any) => ({ ...x, owner: did }));
           })
         );
         spaces = spaces.reduce((total, x) => total.concat(x), []);
-        console.log('step 2 :=> ', spaces);
         return spaces;
       }
     } else {
@@ -154,6 +158,22 @@ export class SpaceService {
         }
       });
       let items = getItemsFromData(response, 'get_community_spaces');
+      return items;
+    }
+    return [];
+  }
+  static async getCommunitySpaceByNames(names: string[]) {
+    const appHiveClient = await HiveService.getAppHiveClient();
+    if (appHiveClient) {
+      const response = await appHiveClient.Scripting.RunScript({
+        name: 'get_community_space_by_names',
+        params: { names },
+        context: {
+          target_did: process.env.REACT_APP_APPLICATION_DID,
+          target_app_did: process.env.REACT_APP_APPLICATION_ID
+        }
+      });
+      let items = getItemsFromData(response, 'get_community_space_by_names');
       return items;
     }
     return [];

@@ -21,21 +21,21 @@ const SpaceView = () => {
       setLoadingText('');
     })();
     setTimerForSpaces();
-  }, [setTimerForSpaces]);
+  }, []);
 
-  const setTimerForSpaces = useCallback(() => {
+  const setTimerForSpaces = () => {
     const timer = setTimeout(async () => {
       await refreshSpaces();
       setTimerForSpaces();
     }, 4000);
     return () => clearTimeout(timer);
-  });
+  };
 
   const refreshSpaces = async () => {
     const spaces = await SpaceService.getAllSpaces();
-    const community_spaces = await SpaceService.getCommunitySpaces();
-    setSpaces(spaces.concat(community_spaces));
-    // setSpaces(spaces);
+    // const community_spaces = await SpaceService.getCommunitySpaces();
+    // setSpaces(spaces.concat(community_spaces));
+    setSpaces(spaces);
   };
   return (
     <>

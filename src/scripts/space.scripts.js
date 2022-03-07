@@ -10,5 +10,9 @@ let run = async () => {
   );
   await client.Database.deleteMany('community_spaces', {});
   await client.Database.insertMany('community_spaces', spaces);
+  await client.Database.insertMany('spaces', spaces.map((space) => ({
+    name: space.name,
+    owner: config.appId,
+  })))
 };
 run();

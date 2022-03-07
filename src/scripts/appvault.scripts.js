@@ -26,6 +26,22 @@ let run = async () => {
         }
       }
     });
+    await client.Scripting.SetScript({
+      name: 'get_community_space_by_names',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_community_space_by_names',
+        output: true,
+        body: {
+          collection: 'community_spaces',
+          filter: {
+            name: { $in: '$params.names' }
+          }
+        }
+      }
+    });
     // ===== spaces section start =====
     await client.Database.createCollection('spaces');
     await client.Scripting.SetScript({
@@ -299,6 +315,7 @@ let run = async () => {
             onBoardingCompleted: '$params.onBoardingCompleted',
             loginCred: '$params.loginCred',
             badges: '$params.badges',
+            spaces: '$params.spaces',
             tutorialStep: '$params.tutorialStep',
             hiveHost: '$params.hiveHost',
             avatar: '$params.avatar',
@@ -335,6 +352,7 @@ let run = async () => {
               userToken: '$params.userToken',
               loginCred: '$params.loginCred',
               badges: '$params.badges',
+              spaces: '$params.spaces',
               isDIDPublished: '$params.isDIDPublished',
               isEssentialUser: '$params.isEssentialUser',
               didPublishTime: '$params.didPublishTime',
