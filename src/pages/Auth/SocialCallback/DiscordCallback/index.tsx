@@ -24,8 +24,6 @@ import { requestDiscordToken, getUsersWithRegisteredDiscord } from './fetchapi';
 import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidService } from 'src/services/did.service.new';
-import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
-import { EssentialsService } from 'src/services/essentials.service';
 
 interface PageProps
   extends InferMappedProps,
@@ -69,34 +67,6 @@ const DiscordCallback: React.FC<PageProps> = ({
             discord
           );
 
-          let didDocument: DIDDocument = await didService.getStoredDocument(
-            new DID(props.session.did)
-          );
-
-          let documentWithDiscordCredential: DIDDocument;
-
-          if (props.session.mnemonics === '') {
-            let essentialsService = new EssentialsService(didService);
-            let isAdded = await essentialsService.addVerifiableCredentialEssentials(
-              verifiableCredential
-            );
-
-            if (!isAdded) {
-              window.close();
-              return;
-            }
-
-            documentWithDiscordCredential = await didService.getPublishedDocument(
-              new DID(props.session.did)
-            );
-          } else {
-            documentWithDiscordCredential = await didService.addVerifiableCredentialToDIDDocument(
-              didDocument,
-              verifiableCredential
-            );
-          }
-
-          await didService.storeDocument(documentWithDiscordCredential);
           await DidcredsService.addOrUpdateCredentialToVault(
             props.session,
             verifiableCredential
