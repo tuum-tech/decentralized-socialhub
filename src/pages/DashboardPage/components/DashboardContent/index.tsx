@@ -5,7 +5,6 @@ import { TabsContainer } from 'src/components/profile/ProfileComponent/PublicPro
 import DashboardHome from './Home';
 // import DashboardStatus from './Status';
 import DashboardBadges from './Badges';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import SyncBar from 'src/components/SyncBar';
 import styled from 'styled-components';
 

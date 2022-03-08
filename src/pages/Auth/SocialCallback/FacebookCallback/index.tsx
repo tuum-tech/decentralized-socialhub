@@ -32,8 +32,6 @@ import {
 import { DidService } from 'src/services/did.service.new';
 import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
-import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
-import { EssentialsService } from 'src/services/essentials.service';
 
 interface PageProps
   extends InferMappedProps,
@@ -77,32 +75,6 @@ const FacebookCallback: React.FC<PageProps> = ({
             facebookId.name
           );
 
-          let didDocument: DIDDocument = await didService.getStoredDocument(
-            new DID(props.session.did)
-          );
-          let documentWithFacebookCredential: DIDDocument;
-          if (props.session.mnemonics === '') {
-            let essentialsService = new EssentialsService(didService);
-            let isAdded = await essentialsService.addVerifiableCredentialEssentials(
-              verifiableCredential
-            );
-
-            if (!isAdded) {
-              window.close();
-              return;
-            }
-
-            documentWithFacebookCredential = await didService.getPublishedDocument(
-              new DID(props.session.did)
-            );
-          } else {
-            documentWithFacebookCredential = await didService.addVerifiableCredentialToDIDDocument(
-              didDocument,
-              verifiableCredential
-            );
-          }
-
-          await didService.storeDocument(documentWithFacebookCredential);
           await DidcredsService.addOrUpdateCredentialToVault(
             props.session,
             verifiableCredential
