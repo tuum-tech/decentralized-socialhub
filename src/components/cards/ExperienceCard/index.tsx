@@ -23,7 +23,7 @@ import {
 } from 'src/Atoms/Selectors';
 
 interface IExperienceProps {
-  updateFunc?: any;
+  updateFunc?: (item: any) => Promise<boolean>;
   isEditable?: boolean;
   removeFunc?: any;
   requestFunc?: any;
@@ -117,11 +117,10 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     return true;
   };
 
-  const saveChanges = (item: ExperienceItem) => {
+  const saveChanges = async (item: ExperienceItem) => {
     let items = [...experienceDTO.items];
 
     let itemToUpdate = items.find(x => x.guid === item.guid);
-
     if (itemToUpdate === undefined) {
       items.push(item);
     } else {
@@ -132,8 +131,12 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
 
     // 5. Set the state to our new copy
-    setExperienceDTO({ isEnabled: true, items: items });
-    updateFunc(item);
+
+    if (updateFunc) {
+      if ((await updateFunc(item)) === true) {
+        setExperienceDTO({ isEnabled: true, items: items });
+      }
+    }
     setIsEditing(false);
   };
 

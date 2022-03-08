@@ -150,6 +150,40 @@ const ProfileEditor: React.FC<Props> = ({
     }
   };
 
+  const updateExperienceProfile = async (
+    experienceItem: ExperienceItem
+  ): Promise<boolean> => {
+    let userSession = JSON.parse(JSON.stringify(session));
+    let archivedBadge = true;
+    if (!userSession) return false;
+    if (
+      userSession &&
+      userSession.badges &&
+      userSession.badges.account &&
+      !userSession.badges.account.experienceProfile.archived
+    ) {
+      userSession.badges.account.experienceProfile.archived = new Date().getTime();
+      await updateSession({ session: userSession });
+      archivedBadge = false;
+    }
+    let updateReturn = await ProfileService.updateExperienceProfile(
+      experienceItem,
+      userSession,
+      archivedBadge
+    );
+
+    if (updateReturn) {
+      let verificationService: VerificationService = new VerificationService();
+      await verificationService.generateVerifiableCredentialFromExperienceItem(
+        experienceItem,
+        session
+      );
+      return true;
+    }
+    //await retriveProfile();
+    return false;
+  };
+
   const startTimer = () => {
     const timer = setTimeout(async () => {
       // refresh DID document
@@ -394,34 +428,7 @@ const ProfileEditor: React.FC<Props> = ({
                 )}
                 {profile && profile.experienceDTO.isEnabled && (
                   <ExperienceCard
-                    updateFunc={async (experienceItem: ExperienceItem) => {
-                      let userSession = JSON.parse(JSON.stringify(session));
-                      let archivedBadge = true;
-                      if (!userSession) return;
-                      if (
-                        userSession &&
-                        userSession.badges &&
-                        userSession.badges.account &&
-                        !userSession.badges.account.experienceProfile.archived
-                      ) {
-                        userSession.badges.account.experienceProfile.archived = new Date().getTime();
-                        await updateSession({ session: userSession });
-                        archivedBadge = false;
-                      }
-                      await ProfileService.updateExperienceProfile(
-                        experienceItem,
-                        userSession,
-                        archivedBadge
-                      );
-
-                      let verificationService: VerificationService = new VerificationService();
-                      await verificationService.generateVerifiableCredentialFromExperienceItem(
-                        experienceItem,
-                        session
-                      );
-
-                      await retriveProfile();
-                    }}
+                    updateFunc={updateExperienceProfile}
                     requestFunc={async (experienceItem: ExperienceItem) => {
                       setSelectedCredential(
                         `Experience: ${experienceItem.title} at ${experienceItem.institution}`
