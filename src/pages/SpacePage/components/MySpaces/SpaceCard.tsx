@@ -89,10 +89,11 @@ export const SpaceAvatar = styled.div`
 interface Props {
   space: Space;
   link: string;
+  newTab: boolean;
 }
-const SpaceCard: React.FC<Props> = ({ space, link }: Props) => {
+const SpaceCard: React.FC<Props> = ({ space, link, newTab }: Props) => {
   return (
-    <Link to={link}>
+    <Link to={link} target={newTab ? '_blank' : '_self'}>
       <Container>
         <CoverImage bgImg={space.coverPhoto || defaultCoverPhoto}></CoverImage>
         <Header class="ion-justify-content-center ion-align-items-center">

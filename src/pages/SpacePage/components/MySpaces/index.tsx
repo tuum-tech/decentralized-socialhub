@@ -24,6 +24,7 @@ const MySpaces: React.FC<Props> = ({ spaces, explore = false }: Props) => {
               ? `/did/${getDIDString(space.owner!, true)}/spaces/${space.name}`
               : `/spaces/${space.name}`
           }
+          newTab={explore}
         />
       </IonCol>
     );
