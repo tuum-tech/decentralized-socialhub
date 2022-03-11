@@ -11,7 +11,8 @@ import {
 } from 'react-router';
 
 import { AccountType, UserService } from 'src/services/user.service';
-import PageLoading from 'src/components/layouts/PageLoading';
+
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -187,7 +188,7 @@ const LinkedinCallback: React.FC<PageProps> = ({
         />
       );
     }
-    return <PageLoading />;
+    return <LoadingIndicator />;
   };
   return getRedirect();
 };

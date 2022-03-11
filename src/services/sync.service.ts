@@ -164,6 +164,10 @@ export class SyncService {
         return;
 
       if (field.toLowerCase() === 'avatar') {
+        //TODO: To remove when new hive sdk can get avatar element
+        if (sessionItem.isEssentialUser === true) return;
+        //-----------------------------------
+
         let imgVault = '';
         let imgBlockchain = '';
 

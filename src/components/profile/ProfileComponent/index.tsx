@@ -141,7 +141,6 @@ const ProfileComponent: React.FC<Props> = ({
                         <div ref={experienceRef}>
                           {publicFields.includes('experience') && (
                             <ExperienceCard
-                              experienceDTO={publicUserProfile.experienceDTO}
                               isEditable={false}
                               isPublicPage={true}
                               template={template}

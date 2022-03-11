@@ -18,7 +18,6 @@ import style from './style.module.scss';
 interface IProps {
   sessionItem: ISessionItem;
   publishStatus: RequestStatus;
-  profile: ProfileDTO;
 }
 
 const DashboardHeader: React.FC<IProps> = ({

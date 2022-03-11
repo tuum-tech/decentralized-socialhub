@@ -15,6 +15,9 @@ import {
   containingVerifiableCredentialDetails
 } from 'src/utils/credential';
 
+import { useRecoilValue } from 'recoil';
+import { DIDDocumentAtom } from 'src/Atoms/Atoms';
+
 const SocialContainer = styled.div`
   display: flex;
   align-items: center;
@@ -26,7 +29,6 @@ const ProfileItem = styled.div`
   margin-right: 10px;
 `;
 interface Props {
-  diddocument: DIDDocument;
   cb: (count: number) => void;
 }
 
@@ -50,9 +52,12 @@ const getIcon = (type: string) => {
     return discordIcon;
   }
 };
-const Socials: React.FC<Props> = ({ diddocument, cb }) => {
+const Socials: React.FC<Props> = ({ cb }) => {
   const [socials, setSocials] = useState<any[]>([]);
   const wSize = [1780, 1600, 1350, 1120];
+  let didDocValue = useRecoilValue(DIDDocumentAtom);
+  const didDocument =
+    didDocValue === undefined ? undefined : DIDDocument._parseOnly(didDocValue);
 
   useEffect(() => {
     (async () => {
@@ -69,7 +74,7 @@ const Socials: React.FC<Props> = ({ diddocument, cb }) => {
       for (let i = 0; i < _socials.length; i++) {
         const sc = await containingVerifiableCredentialDetails(
           _socials[i],
-          diddocument
+          didDocument as DIDDocument
         );
         if (sc.isVerified) {
           socialDetails.push(sc);
@@ -80,7 +85,7 @@ const Socials: React.FC<Props> = ({ diddocument, cb }) => {
     })();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [diddocument]);
+  }, []);
 
   const createIonItem = (key: string, vc: VCType) => {
     if (!vc) return;

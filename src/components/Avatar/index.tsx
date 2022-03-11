@@ -77,6 +77,11 @@ const Avatar: React.FC<{
         name = tuumUser.name;
       }
 
+      //TODO: Remove when we can get avatar image from hive
+      if (tuumUser && avatar.indexOf('hive://') > -1) {
+        type = 'default';
+      }
+
       setAvatarInfo({
         name: shortName(name),
         avatar,

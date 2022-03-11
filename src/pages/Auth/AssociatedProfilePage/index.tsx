@@ -22,10 +22,9 @@ import {
 } from 'src/components/layouts/OnBoardLayout';
 import { ThemeButton } from 'src/elements/buttons';
 import { Text16, Title40, Text18 } from 'src/elements/texts';
-import PageLoading from 'src/components/layouts/PageLoading';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 
 import eye from 'src/assets/icon/eye.png';
-import LoadingIndicator from 'src/elements/LoadingIndicator';
 
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
@@ -84,7 +83,7 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
   }, [associatedInfo]);
 
   if (!associatedInfo || !user) {
-    return <PageLoading />;
+    return <LoadingIndicator />;
   } else if (screen === '/generate-did') {
     return (
       <GenerateDid

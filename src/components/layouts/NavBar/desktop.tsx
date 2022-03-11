@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 
-import logo from 'src/assets/new/logo.png';
+import logo from 'src/assets/new/logo.svg';
 
 const DesktopContainer = styled.nav`
   width: 100%;

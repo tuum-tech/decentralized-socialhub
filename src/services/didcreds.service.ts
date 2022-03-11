@@ -43,6 +43,7 @@ export class DidcredsService {
     let response = await fetch(url, postData);
 
     let json = await response.json();
+
     return await VerifiableCredential.parse(json.data.verifiable_credential);
   }
 

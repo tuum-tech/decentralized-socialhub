@@ -15,7 +15,7 @@ import { InferMappedProps, LocationState, UserSessionProp } from './types';
 import { SubState } from 'src/store/users/types';
 
 import { UserService } from 'src/services/user.service';
-import PageLoading from 'src/components/layouts/PageLoading';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { AccountType } from 'src/services/user.service';
 
 import SetPassword from '../components/SetPassword';
@@ -104,7 +104,7 @@ const GenerateDidPage: React.FC<PageProps> = ({
     );
   }
 
-  return <PageLoading />;
+  return <LoadingIndicator />;
 };
 
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
