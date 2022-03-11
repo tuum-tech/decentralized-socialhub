@@ -154,7 +154,7 @@ const App: React.FC = () => {
                   exact={true}
                 />
                 <ProtectedRoute
-                  path="/explore/:did?"
+                  path="/explore"
                   component={ExplorePage}
                   exact={false}
                 />

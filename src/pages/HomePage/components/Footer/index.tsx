@@ -229,7 +229,7 @@ const Footer: React.FC<Props> = ({ refProp }) => {
                 onClick={() => window.open('https://medium.com/web3profile')}
               />
               <Discord
-                onClick={() => window.open('https://discord.gg/PgtTKBBQ')}
+                onClick={() => window.open('https://discord.gg/profile-mtrl')}
               />
             </div>
             {/* <div className="three-icons">

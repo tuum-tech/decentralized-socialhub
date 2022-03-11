@@ -48,27 +48,7 @@ export class SyncService {
   private static async GetVerifiableCredentialsFromVault(
     sessionItem: ISessionItem
   ): Promise<Map<string, VerifiableCredential>> {
-    let hiveClient = await HiveService.getSessionInstance(sessionItem);
-    let hiveResponse = await hiveClient?.Scripting.RunScript<any>({
-      name: 'get_verifiable_credentials',
-      context: {
-        target_did: sessionItem.did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-      }
-    });
-
-    let response = new Map<string, VerifiableCredential>();
-
-    if (!hiveResponse?.isSuccess) return response;
-
-    var collection = hiveResponse.response.get_verifiable_credentials.items;
-
-    collection.forEach((item: { vc: string | JSONObject }) => {
-      var vc = VerifiableCredential.parse(item.vc);
-      response.set(vc.getId().toString(), vc);
-    });
-
-    return response;
+    return DidcredsService.getAllCredentialsToVault(sessionItem);
   }
 
   private static async GetVerifiableCredentialsFromRecentDocument(

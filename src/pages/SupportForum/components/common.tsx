@@ -15,14 +15,14 @@ export const Category = styled.div<Props>`
     const label = props.label;
     if (!label) return `color: #4c6fff;`;
     return `color: ${
-      (GithubIssueLabel as any)[label.replace(' ', '_')].style.color
+      (GithubIssueLabel as any)[label.replace(' ', '_')]?.style.color
     };`;
   }}
   ${(props: any) => {
     const label = props.label;
     if (!label) return `background: rgba(76, 111, 255, 0.1);`;
     return `background: ${
-      (GithubIssueLabel as any)[label.replace(' ', '_')].style.backgroundColor
+      (GithubIssueLabel as any)[label.replace(' ', '_')]?.style.backgroundColor
     };`;
   }}
 `;

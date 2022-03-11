@@ -13,3 +13,16 @@ export const ExperienceSelector = selector<ExperienceDTO>({
     set(FullProfileAtom, fullProfile);
   }
 });
+
+export const ExperienceSortedSelector = selector<ExperienceDTO>({
+  key: 'ExperienceSorted',
+  get: ({ get }) => {
+    let experience = get(ExperienceSelector);
+    let sorted = JSON.parse(JSON.stringify(experience));
+    sorted.items.sort(
+      (a: any, b: any) =>
+        new Date(b.start).getTime() - new Date(a.start).getTime()
+    );
+    return sorted;
+  }
+});
