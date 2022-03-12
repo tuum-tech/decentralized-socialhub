@@ -32,6 +32,7 @@ const SpaceListView: React.FC<Props> = ({ spaces, explore = false }: Props) => {
                   isCommunitySpace ? `community` : `private`
                 }`
           }
+          newTab={explore}
         />
       </IonCol>
     );

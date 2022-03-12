@@ -98,11 +98,13 @@ interface Props extends InferMappedProps {
   space: Space;
   link: string;
   explore: boolean;
+  newTab: boolean;
 }
 const SpaceCard: React.FC<Props> = ({
   space,
   link,
   explore,
+  newTab,
   session
 }: Props) => {
   const owners = typeof space.owner === 'string' ? [space.owner] : space.owner;
@@ -126,7 +128,7 @@ const SpaceCard: React.FC<Props> = ({
     <Container>
       <CoverImage bgImg={space.coverPhoto || defaultCoverPhoto}></CoverImage>
       <IonRow className="ion-justify-content-between ion-align-items-center">
-        <Link to={link}>
+        <Link to={link} target={newTab ? '_blank' : '_self'}>
           <Header class="ion-justify-content-center ion-align-items-center">
             <SpaceAvatar>
               <img

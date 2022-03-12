@@ -62,7 +62,7 @@ const DidCard: React.FC<Props> = ({
   };
 
   const getLink = (did: string) => {
-    return '/explore/' + getDIDString(did, true);
+    return getDIDString('/did/' + did, true);
   };
 
   useEffect(() => {
@@ -89,7 +89,11 @@ const DidCard: React.FC<Props> = ({
         )}
         <div className={style['did-card-wrapper']}>
           <div className={style['card-data']}>
-            <Link className={style['name-value']} to={getLink(did)}>
+            <Link
+              className={style['name-value']}
+              to={getLink(did)}
+              target="_blank"
+            >
               {name}
             </Link>
             <span className={style['did-value']}>
