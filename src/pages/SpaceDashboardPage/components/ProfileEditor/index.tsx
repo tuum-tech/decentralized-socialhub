@@ -11,8 +11,8 @@ import OverView from '../OverView';
 import PublicFields from '../PublicFields';
 import Admins from '../Admins';
 import DeleteSpace from '../DeleteSpace';
+import { SpaceCategory } from 'src/services/space.service';
 import style from './style.module.scss';
-import { SpaceCategory } from 'src/pages/SpacePage/components/SpaceCard';
 
 interface Props {
   session: ISessionItem;
