@@ -165,7 +165,7 @@ const App: React.FC = () => {
                   exact={true}
                 />
                 <ProtectedRoute
-                  path="/spaces/:name"
+                  path="/spaces/edit/:name"
                   component={SpaceDashboardPage}
                   exact={true}
                 />
@@ -297,6 +297,11 @@ const App: React.FC = () => {
                 <Route path="/did/:did" component={PublicPage} exact={true} />
                 <Route
                   path="/did/:did/spaces/:name"
+                  component={SpacePublicPage}
+                  exact={true}
+                />
+                <Route
+                  path="/community-spaces/:name"
                   component={SpacePublicPage}
                   exact={true}
                 />

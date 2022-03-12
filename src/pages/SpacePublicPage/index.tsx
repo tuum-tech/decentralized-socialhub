@@ -67,12 +67,19 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
 
       setLoading(true);
 
-      let pUser = await userService.SearchUserWithDID(did);
-      if (pUser && pUser.did) {
-        setPublicUser(pUser as any);
-        const spaces = await SpaceService.getSpaceByNames(pUser, [spaceName]);
+      if (!did) {
+        const spaces = await SpaceService.getCommunitySpaceByNames([spaceName]);
         if (spaces.length > 0) {
           setSpaceProfile(spaces[0]);
+        }
+      } else {
+        let pUser = await userService.SearchUserWithDID(did);
+        if (pUser && pUser.did) {
+          setPublicUser(pUser as any);
+          const spaces = await SpaceService.getSpaceByNames(pUser, [spaceName]);
+          if (spaces.length > 0) {
+            setSpaceProfile(spaces[0]);
+          }
         }
       }
 

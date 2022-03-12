@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import { InferMappedProps, SubState } from '../types';
+
 import defaultCoverPhoto from 'src/assets/default/default-cover.png';
 import defaultAvatar from 'src/assets/icon/dp.png';
+import { StyledButton } from 'src/elements/buttons';
+import { SpaceService } from 'src/services/space.service';
 
 export const Container = styled.div`
   background: white;
@@ -86,37 +94,84 @@ export const SpaceAvatar = styled.div`
     padding: 3px;
   }
 `;
-interface Props {
+interface Props extends InferMappedProps {
   space: Space;
   link: string;
+  explore: boolean;
 }
-const SpaceCard: React.FC<Props> = ({ space, link }: Props) => {
+const SpaceCard: React.FC<Props> = ({
+  space,
+  link,
+  explore,
+  session
+}: Props) => {
+  const owners = typeof space.owner === 'string' ? [space.owner] : space.owner;
+  const [followers, setFollowers] = useState<string[]>(space.followers || []);
+  const followable = !owners?.includes(session.did);
+  const following = followers.includes(session.did);
+
+  const onFollow = async () => {
+    await SpaceService.follow(session, space);
+    setFollowers([...new Set([...followers, session.did])]);
+  };
+  const onUnfollow = async () => {
+    await SpaceService.unfollow(session, space);
+    setFollowers([
+      ...new Set(
+        followers.filter((follower: string) => follower !== session.did)
+      )
+    ]);
+  };
   return (
-    <Link to={link}>
-      <Container>
-        <CoverImage bgImg={space.coverPhoto || defaultCoverPhoto}></CoverImage>
-        <Header class="ion-justify-content-center ion-align-items-center">
-          <SpaceAvatar>
-            <img
-              src={space.avatar || defaultAvatar}
-              height="auto"
-              alt="avatar"
-            />
-          </SpaceAvatar>
-          <SpaceInfo>
-            <IonGrid>
-              <IonRow>
-                <SpaceName>{space.name}</SpaceName>
-              </IonRow>
-              <IonRow className="ion-justify-content-start">
-                <SpaceCategory>{space.category}</SpaceCategory>
-              </IonRow>
-            </IonGrid>
-          </SpaceInfo>
-        </Header>
-      </Container>
-    </Link>
+    <Container>
+      <CoverImage bgImg={space.coverPhoto || defaultCoverPhoto}></CoverImage>
+      <IonRow className="ion-justify-content-between ion-align-items-center">
+        <Link to={link}>
+          <Header class="ion-justify-content-center ion-align-items-center">
+            <SpaceAvatar>
+              <img
+                src={space.avatar || defaultAvatar}
+                height="auto"
+                alt="avatar"
+              />
+            </SpaceAvatar>
+            <SpaceInfo>
+              <IonGrid>
+                <IonRow>
+                  <SpaceName>{space.name}</SpaceName>
+                </IonRow>
+                <IonRow className="ion-justify-content-start">
+                  <SpaceCategory>{space.category}</SpaceCategory>
+                </IonRow>
+              </IonGrid>
+            </SpaceInfo>
+          </Header>
+        </Link>
+        {explore && followable && (
+          <StyledButton
+            width="110px"
+            margin="10px 10px 10px 10px"
+            onClick={following ? onUnfollow : onFollow}
+          >
+            {following ? `-Unfollow` : `+Follow`}
+          </StyledButton>
+        )}
+      </IonRow>
+    </Container>
   );
 };
 
-export default SpaceCard;
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SpaceCard);

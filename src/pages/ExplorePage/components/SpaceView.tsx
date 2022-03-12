@@ -3,9 +3,6 @@ import _ from 'lodash';
 import WelcomeSpace from './WelcomeSpace';
 import RequestCommunity from './RequestCommunity';
 
-import { UserService } from 'src/services/user.service';
-import { DidService } from 'src/services/did.service.new';
-import { TuumTechScriptService } from 'src/services/script.service';
 import { SpaceService } from 'src/services/space.service';
 
 import LoadingIndicator from 'src/elements/LoadingIndicator';
@@ -33,8 +30,6 @@ const SpaceView = () => {
 
   const refreshSpaces = async () => {
     const spaces = await SpaceService.getAllSpaces();
-    // const community_spaces = await SpaceService.getCommunitySpaces();
-    // setSpaces(spaces.concat(community_spaces));
     setSpaces(spaces);
   };
   return (

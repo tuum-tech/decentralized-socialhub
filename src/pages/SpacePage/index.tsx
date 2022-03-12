@@ -28,7 +28,7 @@ import style from './style.module.scss';
 import { Button } from 'src/elements/buttons';
 import CreateSpace from './components/CreateSpace';
 import CreateSpaceForm from './components/CreateSpaceForm';
-import { TuumTechScriptService } from 'src/services/script.service';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { showNotify } from 'src/utils/notify';
 
 const CustomModal = styled(IonModal)`
@@ -41,7 +41,9 @@ const SpacePage: React.FC<InferMappedProps> = ({
   ...props
 }: InferMappedProps) => {
   const { session } = props;
-  const [spaces, setSpaces] = useState<any[]>([]);
+  const [loadingText, setLoadingText] = useState('');
+  const [mySpaces, setMySpaces] = useState<any[]>([]);
+  const [followingSpaces, setFollowingSpaces] = useState<any[]>([]);
   const [active, setActive] = useState('my spaces');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -54,17 +56,29 @@ const SpacePage: React.FC<InferMappedProps> = ({
   };
 
   const refreshSpaces = useCallback(async () => {
-    let _spaces = await SpaceService.getAllSpaces(session);
-    _spaces = _spaces.map((x: any) => ({ ...x, owner: session.did }));
-    setSpaces(_spaces);
+    const spaces: any[] = await SpaceService.getAllSpaces();
+    const mySpaces = spaces.filter((x: any) => {
+      const owners = typeof(x.owner) === 'string' ? [x.owner] : x.owner;
+      return owners.includes(session.did);
+    });
+    const followingSpaces = spaces.filter((x: any) => {
+      return (x.followers || []).includes(session.did)
+    })
+    setMySpaces(mySpaces);
+    setFollowingSpaces(followingSpaces);
   }, [session]);
 
   useEffect(() => {
+    (async () => {
+      setLoadingText('loading spaces...');
+      await refreshSpaces();
+      setLoadingText('');
+    })();
     setTimerForSpaces();
   }, []);
 
   const handleCreateSpace = async (space: Space) => {
-    if (spaces.findIndex(_space => _space.name === space.name) > -1) {
+    if (mySpaces.findIndex(_space => _space.name === space.name) > -1) {
       showNotify(
         'Space with same name already exist. Try with another name',
         'warning'
@@ -72,18 +86,6 @@ const SpacePage: React.FC<InferMappedProps> = ({
       return;
     }
     await SpaceService.addSpace(session, space);
-    let userService = new UserService(await DidService.getInstance());
-    let newSession = { ...session };
-    newSession.spaces = [
-      ...(newSession.spaces as SpaceRef[]),
-      {
-        owner: process.env.REACT_APP_APPLICATION_DID as string,
-        name: space.name
-      }
-    ];
-    await eProps.setSession({
-      session: await userService.updateSession(newSession)
-    });
     refreshSpaces();
     setIsModalOpen(false);
   };
@@ -99,7 +101,7 @@ const SpacePage: React.FC<InferMappedProps> = ({
               <IonCol size="10" className={style['right-panel']}>
                 <Header>
                   <PageTitle>Spaces</PageTitle>
-                  {spaces.length > 0 && (
+                  {mySpaces.length > 0 && (
                     <Button
                       text={'Create New Space'}
                       onClick={() => setIsModalOpen(true)}
@@ -108,16 +110,29 @@ const SpacePage: React.FC<InferMappedProps> = ({
                 </Header>
                 <SpaceTabsContainer template="default">
                   <SpacePageHeader active={active} setActive={setActive} />
-                  {active === 'my spaces' &&
-                    (spaces.length > 0 ? (
-                      <SpaceListView spaces={spaces} />
-                    ) : (
-                      <CreateSpace
-                        session={session}
-                        openForm={() => setIsModalOpen(true)}
-                      />
-                    ))}
-                  {active === 'following' && <></>}
+                  {loadingText && loadingText !== '' ? (
+                    <LoadingIndicator loadingText={loadingText} />
+                  ) : (
+                    <>
+                      {active === 'my spaces' &&
+                        (mySpaces.length > 0 ? (
+                          <SpaceListView spaces={mySpaces} />
+                        ) : (
+                          <CreateSpace
+                            session={session}
+                            openForm={() => setIsModalOpen(true)}
+                          />
+                        ))}
+                      {active === 'following' && (
+                        <SpaceListView
+                          spaces={followingSpaces.filter((x: any) =>
+                            (x.followers || []).includes(session.did)
+                          )}
+                          explore
+                        />
+                      )}
+                    </>
+                  )}
                 </SpaceTabsContainer>
               </IonCol>
             </IonRow>

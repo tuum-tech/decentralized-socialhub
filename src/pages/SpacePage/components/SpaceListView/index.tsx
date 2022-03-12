@@ -14,15 +14,23 @@ interface Props {
   explore?: boolean;
 }
 const SpaceListView: React.FC<Props> = ({ spaces, explore = false }: Props) => {
-  const renderSpaceCol = (space: Space, index: number) => {
+  const renderSpaceCol = (space: any, index: number) => {
+    const { isCommunitySpace } = space;
     return (
       <IonCol size="4" key={index}>
         <SpaceCard
           space={space}
+          explore={explore}
           link={
             explore
-              ? `/did/${getDIDString(space.owner!, true)}/spaces/${space.name}`
-              : `/spaces/${space.name}`
+              ? isCommunitySpace
+                ? `/community-spaces/${space.name}`
+                : `/did/${getDIDString(space.owner!, true)}/spaces/${
+                    space.name
+                  }`
+              : `/spaces/edit/${space.name}?type=${
+                  isCommunitySpace ? `community` : `private`
+                }`
           }
         />
       </IonCol>

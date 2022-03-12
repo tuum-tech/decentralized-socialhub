@@ -13,6 +13,7 @@ import { ProfileService } from './profile.service';
 import { DIDDocument, RootIdentity } from '@elastosfoundation/did-js-sdk/';
 import { IDidService } from './did.service.new';
 import { CredentialType, DidcredsService } from './didcreds.service';
+import { SpaceService } from './space.service';
 
 const CryptoJS = require('crypto-js');
 
@@ -415,12 +416,6 @@ export class UserService {
           }
         }
       },
-      spaces: [
-        {
-          owner: process.env.REACT_APP_APPLICATION_DID as string,
-          name: 'Welcome to Profile'
-        }
-      ],
       tutorialStep: 1,
       hiveHost: !hiveHostStr
         ? `${process.env.REACT_APP_TUUM_TECH_HIVE}`
@@ -537,6 +532,14 @@ export class UserService {
         sessionItem
       );
     });
+
+    const wtp = await SpaceService.getCommunitySpaceByNames([
+      'Welcome to Profile'
+    ]);
+    if (wtp.length > 0) {
+      await SpaceService.follow(sessionItem, wtp[0]);
+    }
+
     this.lockUser(UserService.key(did), sessionItem);
 
     window.localStorage.setItem('isLoggedIn', 'true');

@@ -267,7 +267,6 @@ interface ISessionItem {
   badges?: IBadges;
   avatar?: string;
   coverPhoto?: string;
-  spaces?: SpaceRef[];
   code?: string;
   status?: string;
   pageTemplate?: string;
@@ -566,8 +565,6 @@ interface Space {
   owner?: string;
   meta?: NFTSpaceDetail | OrgSpaceDetail | UnivSpaceDetail;
   publicFields?: string[];
-}
-interface SpaceRef {
-  name: string;
-  owner: string;
+  followers?: string[];
+  isCommunitySpace?: boolean;
 }

@@ -28,29 +28,31 @@ interface IProps {
 }
 
 const OverView: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
+  const { avatar, name, category, isCommunitySpace } = profile;
   return (
     <IonCard className={styleWidget['overview']}>
       <Container>
         <SpaceAvatar>
-          <img
-            src={profile.avatar || defaultAvatar}
-            height="auto"
-            alt="avatar"
-          />
+          <img src={avatar || defaultAvatar} height="auto" alt="avatar" />
         </SpaceAvatar>
         <SpaceInfo>
           <IonGrid>
             <IonRow>
-              <SpaceName>{profile.name}</SpaceName>
+              <SpaceName>{name}</SpaceName>
             </IonRow>
             <IonRow className="ion-justify-content-start">
-              <SpaceCategory>{profile.category}</SpaceCategory>
+              <SpaceCategory>{category}</SpaceCategory>
             </IonRow>
             <IonRow className="ion-justify-content-start">
               <Link
-                to={`/did/${getDIDString(sessionItem.did, true)}/spaces/${
-                  profile.name
-                }`}
+                to={
+                  isCommunitySpace
+                    ? `/community-spaces/${name}`
+                    : `/did/${getDIDString(
+                        sessionItem.did,
+                        true
+                      )}/spaces/${name}`
+                }
               >
                 <IonRow className="ion-align-items-center ion-justify-content-between">
                   <p style={{ marginRight: '5px' }}>View Profile</p>

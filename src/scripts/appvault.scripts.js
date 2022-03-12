@@ -42,25 +42,81 @@ let run = async () => {
         }
       }
     });
-    // ===== spaces section start =====
-    await client.Database.createCollection('spaces');
     await client.Scripting.SetScript({
-      name: 'add_space',
+      name: 'get_community_space_by_ids',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
       executable: {
-        type: 'insert',
-        name: 'add_space',
+        type: 'find',
+        name: 'get_community_space_by_ids',
         output: true,
         body: {
-          collection: 'spaces',
-          document: {
-            owner: '$params.did',
-            name: '$params.name'
+          collection: 'community_spaces',
+          filter: {
+            guid: { $in: '$params.guids' }
           }
         }
       }
     });
+    await client.Scripting.SetScript({
+      name: 'add_community_space',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'add_community_space',
+        body: {
+          collection: 'community_spaces',
+          filter: {
+            guid: '$params.guid'
+          },
+          update: {
+            $set: {
+              guid: '$params.guid',
+              name: '$params.name',
+              owner: '$params.owner',
+              description: '$params.description',
+              category: '$params.category',
+              avatar: '$params.avatar',
+              coverPhoto: '$params.coverPhoto',
+              publicFields: '$params.publicFields',
+              followers: '$params.followers',
+              meta: '$params.owner',
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+    await client.Scripting.SetScript({
+      name: 'follow_community_space',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'follow_community_space',
+        body: {
+          collection: 'community_spaces',
+          filter: {
+            guid: '$params.guid'
+          },
+          update: {
+            $set: {
+              followers: '$params.followers'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+    // ===== spaces section start =====
+    await client.Database.createCollection('spaces');
     await client.Scripting.SetScript({
       name: 'get_all_spaces',
       allowAnonymousUser: true,
@@ -75,6 +131,63 @@ let run = async () => {
       }
     });
     await client.Scripting.SetScript({
+      name: 'get_space_by_ids',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_space_by_ids',
+        output: true,
+        body: {
+          collection: 'spaces',
+          filter: {
+            guid: { $in: '$params.guids' }
+          }
+        }
+      }
+    });
+    await client.Scripting.SetScript({
+      name: 'get_space_by_owner',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_space_by_owner',
+        output: true,
+        body: {
+          collection: 'spaces',
+          filter: {
+            owner: '$params.owner'
+          }
+        }
+      }
+    })
+    await client.Scripting.SetScript({
+      name: 'add_space',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'add_space',
+        body: {
+          collection: 'spaces',
+          filter: {
+            guid: '$params.guid'
+          },
+          update: {
+            $set: {
+              owner: '$params.owner',
+              guid: '$params.guid',
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+    await client.Scripting.SetScript({
       name: 'remove_space',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -84,8 +197,31 @@ let run = async () => {
         body: {
           collection: 'spaces',
           filter: {
-            name: '$params.name',
-            owner: '$params.did'
+            guid: '$params.guid'
+          }
+        }
+      }
+    });
+    await client.Scripting.SetScript({
+      name: 'follow_space',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'follow_space',
+        body: {
+          collection: 'spaces',
+          filter: {
+            guid: '$params.guid'
+          },
+          update: {
+            $set: {
+              followers: '$params.followers'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
           }
         }
       }
@@ -315,7 +451,6 @@ let run = async () => {
             onBoardingCompleted: '$params.onBoardingCompleted',
             loginCred: '$params.loginCred',
             badges: '$params.badges',
-            spaces: '$params.spaces',
             tutorialStep: '$params.tutorialStep',
             hiveHost: '$params.hiveHost',
             avatar: '$params.avatar',
@@ -352,7 +487,6 @@ let run = async () => {
               userToken: '$params.userToken',
               loginCred: '$params.loginCred',
               badges: '$params.badges',
-              spaces: '$params.spaces',
               isDIDPublished: '$params.isDIDPublished',
               isEssentialUser: '$params.isEssentialUser',
               didPublishTime: '$params.didPublishTime',
