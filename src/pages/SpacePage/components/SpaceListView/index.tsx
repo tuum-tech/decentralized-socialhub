@@ -14,10 +14,10 @@ interface Props {
   explore?: boolean;
 }
 const SpaceListView: React.FC<Props> = ({ spaces, explore = false }: Props) => {
-  const renderSpaceCol = (space: any, index: number) => {
+  const renderSpaceCol = (space: any) => {
     const { isCommunitySpace } = space;
     return (
-      <IonCol size="4" key={index}>
+      <IonCol size="4" key={JSON.stringify(space)}>
         <SpaceCard
           space={space}
           explore={explore}
@@ -41,7 +41,7 @@ const SpaceListView: React.FC<Props> = ({ spaces, explore = false }: Props) => {
     <Container>
       <IonGrid>
         <IonRow>
-          {spaces.map((space, index) => renderSpaceCol(space, index))}
+          {spaces.map((space) => renderSpaceCol(space))}
         </IonRow>
       </IonGrid>
     </Container>

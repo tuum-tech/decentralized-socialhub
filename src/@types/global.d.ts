@@ -562,7 +562,7 @@ interface Space {
   category: SpaceCategory;
   avatar?: string;
   coverPhoto?: string;
-  owner?: string;
+  owner?: string | string[];
   meta?: NFTSpaceDetail | OrgSpaceDetail | UnivSpaceDetail;
   publicFields?: string[];
   followers?: string[];

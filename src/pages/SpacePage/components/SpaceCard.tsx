@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
@@ -110,7 +110,7 @@ const SpaceCard: React.FC<Props> = ({
   const owners = typeof space.owner === 'string' ? [space.owner] : space.owner;
   const [followers, setFollowers] = useState<string[]>(space.followers || []);
   const followable = !owners?.includes(session.did);
-  const following = followers.includes(session.did);
+  const following = useMemo(() => followers.includes(session.did), [followers]);
 
   const onFollow = async () => {
     await SpaceService.follow(session, space);
