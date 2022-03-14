@@ -5,10 +5,7 @@
     "category": "Welcome to Profile",
     "avatar": "",
     "coverPhoto": "",
-    "owner": [
-      "did:elastos:ikW12dN6rqYYQgihtscrngumcowi149EtD",
-      "did:elastos:ijQ2fbsjy3thAi2utvbYmTXFPBg4zAD85W"
-    ],
+    "owner": ["did:elastos:iWVvoZDN7zDoEGLNafwf5WTHkJmQWfE8QY"],
     "publicFields": [],
     "meta": {}
   },
@@ -18,7 +15,7 @@
     "category": "NFT Collection",
     "avatar": "",
     "coverPhoto": "",
-    "owner": ["did:elastos:ikW12dN6rqYYQgihtscrngumcowi149EtD"],
+    "owner": ["did:elastos:iWVvoZDN7zDoEGLNafwf5WTHkJmQWfE8QY"],
     "publicFields": [],
     "meta": {
       "network": "Ethereum",
@@ -32,7 +29,7 @@
     "category": "NFT Collection",
     "avatar": "",
     "coverPhoto": "",
-    "owner": ["did:elastos:ikW12dN6rqYYQgihtscrngumcowi149EtD"],
+    "owner": ["did:elastos:iWVvoZDN7zDoEGLNafwf5WTHkJmQWfE8QY"],
     "publicFields": [],
     "meta": {
       "network": "Ethereum",
@@ -46,7 +43,7 @@
     "category": "NFT Collection",
     "avatar": "",
     "coverPhoto": "",
-    "owner": ["did:elastos:ikW12dN6rqYYQgihtscrngumcowi149EtD"],
+    "owner": ["did:elastos:iWVvoZDN7zDoEGLNafwf5WTHkJmQWfE8QY"],
     "publicFields": [],
     "meta": {
       "network": "Ethereum",
