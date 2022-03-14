@@ -153,7 +153,11 @@ const VerificationDetailContent = ({
         <ProfileContent>
           <Avatar did={verification.from_did} />
           <p className="mb-2 name">{user.name}</p>
-          <DidSnippet did={user.did} width={'200px'} />
+          <DidSnippet
+            did={user.did}
+            dateJoined={user.timestamp}
+            width={'200px'}
+          />
 
           <Link
             className="mt-2"

@@ -60,8 +60,12 @@ const DashboardHeader: React.FC<IProps> = ({
             </IonRow>
             <IonRow className={style['d-flex']}>
               <IonCol>
-                <DidSnippet did={sessionItem.did} />
+                <DidSnippet
+                  did={sessionItem.did}
+                  dateJoined={sessionItem.timestamp}
+                />
               </IonCol>
+              <IonCol></IonCol>
             </IonRow>
           </IonGrid>
         </IonCol>
