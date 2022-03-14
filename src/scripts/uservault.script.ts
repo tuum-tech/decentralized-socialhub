@@ -864,6 +864,25 @@ export class UserVaultScripts {
     });
   }
 
+  static async getSpacesByIdsScriptSetter(hiveClient: HiveClient) {
+    await hiveClient.Scripting.SetScript({
+      name: 'get_space_by_ids',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_space_by_ids',
+        output: true,
+        body: {
+          collection: 'private_spaces',
+          filter: {
+            guid: { $in: '$params.guids' }
+          }
+        }
+      }
+    });
+  }
+
   static async addSpacesScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'add_space',
@@ -958,6 +977,7 @@ export class UserVaultScripts {
       this.getVerifiableCredentialScriptSetter(hiveClient),
       this.getAllSpacesScriptSetter(hiveClient),
       this.getSpacesByNamesScriptSetter(hiveClient),
+      this.getSpacesByIdsScriptSetter(hiveClient),
       this.addSpacesScriptSetter(hiveClient),
       this.removeSpaceScriptSetter(hiveClient)
     ]);

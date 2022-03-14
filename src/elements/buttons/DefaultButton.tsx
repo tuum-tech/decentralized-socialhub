@@ -54,6 +54,7 @@ const StyledButton = styled.button<ButtonProps>`
   line-height: 12px;
 
   padding: ${props => (props.padding ? `${props.padding}` : '15px 25px')};
+  margin: ${props => (props.margin ? `${props.margin}` : '0px 0px')};
   width: ${props => (props.width ? `${props.width}` : '100%')};
   height: ${props => (props.height ? `${props.height}` : '100%')};
   background: ${props => (props.bgColor ? `${props.bgColor}` : '#4c6fff')};
