@@ -630,6 +630,7 @@ export class UserService {
   public static logout() {
     window.localStorage.removeItem('isLoggedIn');
     window.localStorage.removeItem('persist:root');
+    window.localStorage.removeItem('walletconnect');
     window.location.href = '/';
   }
 
