@@ -56,6 +56,7 @@ const SignInPage: React.FC<RouteComponentProps<
   };
 
   const connect = async () => {
+    debugger;
     let presentation = await getPresentation();
 
     const didService = await DidService.getInstance();

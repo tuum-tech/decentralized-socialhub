@@ -46,6 +46,7 @@ import EssentialsModalContent, {
 } from 'src/pages/ActivityPage/components/MyRequests/EssentialsRequestModal';
 import { useRecoilState } from 'recoil';
 import { FullProfileAtom } from 'src/Atoms/Atoms';
+import EducationItem from 'src/components/cards/EducationCard/Item';
 
 interface Props {
   session: ISessionItem;
@@ -174,10 +175,50 @@ const ProfileEditor: React.FC<Props> = ({
 
     if (updateReturn) {
       let verificationService: VerificationService = new VerificationService();
+
+      if (userInfo.isEssentialUser) setShowRequestEssentials(true);
       await verificationService.generateVerifiableCredentialFromExperienceItem(
         experienceItem,
         session
       );
+      if (userInfo.isEssentialUser) setShowRequestEssentials(false);
+      return true;
+    }
+
+    return false;
+  };
+
+  const updateEducationProfile = async (
+    educationItem: EducationItem
+  ): Promise<boolean> => {
+    let userSession = JSON.parse(JSON.stringify(session));
+    let archivedBadge = true;
+    if (!userSession) return false;
+    if (
+      userSession &&
+      userSession.badges &&
+      userSession.badges.account &&
+      !userSession.badges.account.educationProfile.archived
+    ) {
+      userSession.badges.account.educationProfile.archived = new Date().getTime();
+      await updateSession({ session: userSession });
+      archivedBadge = false;
+    }
+    let updateReturn = await ProfileService.updateEducationProfile(
+      educationItem,
+      userSession,
+      archivedBadge
+    );
+
+    if (updateReturn) {
+      let verificationService: VerificationService = new VerificationService();
+
+      if (userInfo.isEssentialUser) setShowRequestEssentials(true);
+      await verificationService.generateVerifiableCredentialFromEducationItem(
+        educationItem,
+        session
+      );
+      if (userInfo.isEssentialUser) setShowRequestEssentials(false);
       return true;
     }
     //await retriveProfile();
@@ -379,33 +420,7 @@ const ProfileEditor: React.FC<Props> = ({
                   <EducationCard
                     userSession={JSON.parse(JSON.stringify(session))}
                     educationDTO={profile.educationDTO}
-                    updateFunc={async (educationItem: EducationItem) => {
-                      let userSession = JSON.parse(JSON.stringify(session));
-                      let archivedBadge = true;
-                      if (
-                        userSession &&
-                        userSession.badges &&
-                        userSession.badges.account &&
-                        !userSession.badges.account.educationProfile.archived
-                      ) {
-                        userSession.badges.account.educationProfile.archived = new Date().getTime();
-                        await updateSession({ session: userSession });
-                        archivedBadge = false;
-                      }
-                      await ProfileService.updateEducationProfile(
-                        educationItem,
-                        userSession,
-                        archivedBadge
-                      );
-
-                      let verificationService: VerificationService = new VerificationService();
-                      await verificationService.generateVerifiableCredentialFromEducationItem(
-                        educationItem,
-                        session
-                      );
-
-                      await retriveProfile();
-                    }}
+                    updateFunc={updateEducationProfile}
                     removeFunc={async (educationItem: EducationItem) => {
                       let userSession = JSON.parse(JSON.stringify(session));
                       if (!userSession) return;

@@ -383,7 +383,7 @@ export class ProfileService {
     educationItem: EducationItem,
     session: ISessionItem,
     archivedBadge: boolean
-  ) {
+  ): Promise<boolean> {
     const hiveInstance = await HiveService.getSessionInstance(session);
     if (session && hiveInstance) {
       const res: any = await hiveInstance.Scripting.RunScript({
@@ -420,8 +420,12 @@ export class ProfileService {
           },
           session
         );
+      } else {
+        showNotify('Error executing script', 'error');
+        return false;
       }
     }
+    return true;
   }
 
   static async updateTeamProfile(teamItem: TeamItem, session: ISessionItem) {

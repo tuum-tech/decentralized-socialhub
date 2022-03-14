@@ -132,12 +132,12 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
 
     // 5. Set the state to our new copy
 
+    setIsEditing(false);
     if (updateFunc) {
       if ((await updateFunc(item)) === true) {
         setExperienceDTO({ isEnabled: true, items: items });
       }
     }
-    setIsEditing(false);
   };
 
   const cancel = () => {
