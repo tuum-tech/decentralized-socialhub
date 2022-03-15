@@ -160,10 +160,12 @@ const EducationCard: React.FC<IEducationProps> = ({
     setMode(MODE.EDIT);
   };
 
-  const removeItem = async (index: number) => {
+  const removeItem = async (guid: any) => {
     let items = [...educationDTO.items];
-    await removeFunc(items[index]);
-    items = items.splice(index, 1);
+    let toRemove = items.find(x => x.guid.value === guid.value);
+    let toRemoveIndex = items.indexOf(toRemove as EducationItem);
+    await removeFunc(toRemove);
+    items.splice(toRemoveIndex, 1);
     setEducationDTO({ isEnabled: true, items: items });
   };
 

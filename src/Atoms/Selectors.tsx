@@ -9,7 +9,7 @@ export const EducationSelector = selector<EducationDTO>({
   },
   set: ({ get, set }, newEducationValue) => {
     let fullProfile = JSON.parse(JSON.stringify(get(FullProfileAtom)));
-    fullProfile.experienceDTO = newEducationValue as ExperienceDTO;
+    fullProfile.educationDTO = newEducationValue as ExperienceDTO;
     set(FullProfileAtom, fullProfile);
   }
 });

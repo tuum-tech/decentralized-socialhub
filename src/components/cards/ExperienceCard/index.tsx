@@ -158,10 +158,12 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     setMode(MODE.EDIT);
   };
 
-  const removeItem = async (index: number) => {
+  const removeItem = async (guid: any) => {
     let items = [...experienceDTO.items];
-    await removeFunc(items[index]);
-    items = items.splice(index, 1);
+    let toRemove = items.find(x => x.guid.value === guid.value);
+    let toRemoveIndex = items.indexOf(toRemove as ExperienceItem);
+    await removeFunc(toRemove);
+    items.splice(toRemoveIndex, 1);
     setExperienceDTO({ isEnabled: true, items: items });
   };
 

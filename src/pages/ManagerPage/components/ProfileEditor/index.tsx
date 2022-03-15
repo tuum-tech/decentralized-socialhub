@@ -428,7 +428,6 @@ const ProfileEditor: React.FC<Props> = ({
                         educationItem,
                         userSession
                       );
-                      await retriveProfile();
                     }}
                     requestFunc={async (educationItem: EducationItem) => {
                       setSelectedCredential(
