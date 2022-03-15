@@ -1,0 +1,26 @@
+.name {
+  > h1 {
+    display: flex;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 27px;
+    color: #313049;
+    img {
+      margin-left: 6px;
+    }
+  }
+  h2 {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 27px;
+    span {
+      color: #995aff;
+    }
+  }
+}
+.btn-expand {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 23px;
+  color: #995aff;
+}

@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState } from '../types';
+import { InferMappedProps, SubState } from './types';
 
 import defaultCoverPhoto from 'src/assets/default/default-cover.png';
 import defaultAvatar from 'src/assets/icon/dp.png';

@@ -1,0 +1,28 @@
+import React from 'react';
+import { IonRow, IonCol } from '@ionic/react';
+import Follower from '../common/Follower';
+import Members from '../common/Members';
+import Boards from '../common/Boards';
+import { Wrapper } from '../common';
+import Discussion from './Discussion';
+
+interface IProps {}
+
+const Community: React.FC<IProps> = ({}: IProps) => {
+  return (
+    <Wrapper>
+      <IonRow>
+        <IonCol size="8">
+          <Discussion />
+        </IonCol>
+        <IonCol size="4">
+          <Boards />
+          <Members />
+          <Follower />
+        </IonCol>
+      </IonRow>
+    </Wrapper>
+  );
+};
+
+export default Community;

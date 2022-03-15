@@ -1,0 +1,64 @@
+.creator {
+  display: flex;
+  align-items: center;
+  img {
+    object-fit: cover;
+    max-width: 40px;
+    border-radius: 46%;
+  }
+  div {
+    margin-left: 15px;
+    h1 {
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 25px;
+      color: #1a202c;
+      margin-bottom: 0px;
+      span {
+        background: linear-gradient(
+          252.79deg,
+          rgba(144, 75, 255, 0.0504) -20.69%,
+          rgba(190, 52, 160, 0.0552) 151.16%
+        );
+        border-radius: 5px;
+        color: #dc59bf;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 21px;
+        padding: 5px;
+      }
+    }
+    h2 {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 21px;
+      color: #a0aec0;
+      margin-bottom: 0px;
+    }
+  }
+}
+.post-image {
+  width: 100%;
+}
+.post-analytic {
+  span {
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 21px;
+    margin-right: 10px;
+    color: #1a202c;
+  }
+}
+.action {
+  span {
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 21px;
+    margin-right: 10px;
+    color: #718096;
+    cursor: pointer;
+    img {
+        margin-right: 2px;
+    }
+  }
+}
