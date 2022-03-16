@@ -7,7 +7,7 @@ import airplane from 'src/assets/icon/airplane.png';
 export const EssentialsRequestModal = styled(IonModal)`
   --border-radius: 16px;
   --width: 427px;
-  --height: 348px;
+  --height: 280px;
   :host(.modal-card) ion-header ion-toolbar:first-of-type {
     padding: 0px;
   }
@@ -72,7 +72,7 @@ const EssentialsModalContent: React.FC<Props> = ({ onClose }) => {
     <Container>
       <img src={airplane} alt="sent" />
       <p className="title">Request Sent</p>
-      <p className="text">Make to confirm the operation on Essentials App.</p>
+      <p className="text">Please confirm the operation on Essentials App.</p>
       <BlueButton onClick={onClose}>Cancel</BlueButton>
     </Container>
   );

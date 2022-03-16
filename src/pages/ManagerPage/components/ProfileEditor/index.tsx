@@ -167,25 +167,26 @@ const ProfileEditor: React.FC<Props> = ({
       await updateSession({ session: userSession });
       archivedBadge = false;
     }
-    let updateReturn = await ProfileService.updateExperienceProfile(
+
+    let isCredentialGenerated: boolean = true;
+    let verificationService: VerificationService = new VerificationService();
+
+    if (userInfo.isEssentialUser) setShowRequestEssentials(true);
+    isCredentialGenerated = await verificationService.generateVerifiableCredentialFromExperienceItem(
       experienceItem,
-      userSession,
-      archivedBadge
+      session
     );
 
-    if (updateReturn) {
-      let verificationService: VerificationService = new VerificationService();
-
-      if (userInfo.isEssentialUser) setShowRequestEssentials(true);
-      await verificationService.generateVerifiableCredentialFromExperienceItem(
+    if (isCredentialGenerated) {
+      await ProfileService.updateExperienceProfile(
         experienceItem,
-        session
+        userSession,
+        archivedBadge
       );
-      if (userInfo.isEssentialUser) setShowRequestEssentials(false);
-      return true;
     }
+    if (userInfo.isEssentialUser) setShowRequestEssentials(false);
 
-    return false;
+    return isCredentialGenerated;
   };
 
   const updateEducationProfile = async (
@@ -204,25 +205,27 @@ const ProfileEditor: React.FC<Props> = ({
       await updateSession({ session: userSession });
       archivedBadge = false;
     }
-    let updateReturn = await ProfileService.updateEducationProfile(
+
+    let isCredentialGenerated: boolean = true;
+    let verificationService: VerificationService = new VerificationService();
+
+    if (userInfo.isEssentialUser) setShowRequestEssentials(true);
+    isCredentialGenerated = await verificationService.generateVerifiableCredentialFromEducationItem(
       educationItem,
-      userSession,
-      archivedBadge
+      session
     );
 
-    if (updateReturn) {
-      let verificationService: VerificationService = new VerificationService();
-
-      if (userInfo.isEssentialUser) setShowRequestEssentials(true);
-      await verificationService.generateVerifiableCredentialFromEducationItem(
+    if (isCredentialGenerated) {
+      await ProfileService.updateEducationProfile(
         educationItem,
-        session
+        userSession,
+        archivedBadge
       );
-      if (userInfo.isEssentialUser) setShowRequestEssentials(false);
-      return true;
     }
+
+    if (userInfo.isEssentialUser) setShowRequestEssentials(false);
     //await retriveProfile();
-    return false;
+    return isCredentialGenerated;
   };
 
   const startTimer = () => {
