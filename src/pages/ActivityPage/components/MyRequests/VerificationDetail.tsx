@@ -110,7 +110,9 @@ const VerificationDetailContent = ({ verification, user, onClose }: Props) => {
             onClose();
           }}
         >
-          {loading ? 'Saving Now' : 'Save signed Credential'}
+          {loading
+            ? 'Approve Credential Import on Essentials App'
+            : 'Save signed Credential'}
         </BlueButton>
       )}
     </Container>

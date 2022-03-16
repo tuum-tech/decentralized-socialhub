@@ -134,12 +134,12 @@ const EducationCard: React.FC<IEducationProps> = ({
     // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
 
     // 5. Set the state to our new copy
+    setIsEditing(false);
     if (updateFunc) {
       if ((await updateFunc(item)) === true) {
         setEducationDTO({ isEnabled: true, items: items });
       }
     }
-    setIsEditing(false);
   };
 
   const cancel = () => {
