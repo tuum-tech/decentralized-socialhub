@@ -455,7 +455,6 @@ const ProfileEditor: React.FC<Props> = ({
                         experienceItem,
                         userSession
                       );
-                      await retriveProfile();
                     }}
                     isEditable={true}
                     template="default"
