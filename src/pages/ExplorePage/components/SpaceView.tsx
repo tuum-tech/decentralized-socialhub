@@ -3,13 +3,10 @@ import _ from 'lodash';
 import WelcomeSpace from './WelcomeSpace';
 import RequestCommunity from './RequestCommunity';
 
-import { UserService } from 'src/services/user.service';
-import { DidService } from 'src/services/did.service.new';
-import { TuumTechScriptService } from 'src/services/script.service';
 import { SpaceService } from 'src/services/space.service';
 
 import LoadingIndicator from 'src/elements/LoadingIndicator';
-import MySpaces from 'src/pages/SpacePage/components/MySpaces';
+import SpaceListView from 'src/pages/SpacePage/components/SpaceListView';
 
 const SpaceView = () => {
   const [spaces, setSpaces] = useState<any[]>([]);
@@ -32,21 +29,8 @@ const SpaceView = () => {
   };
 
   const refreshSpaces = async () => {
-    const all = await TuumTechScriptService.getAllSpaces();
-    const groups = _.groupBy(all, 'owner');
-    let didService = await DidService.getInstance();
-    let userService = new UserService(didService);
-
-    let _spaces = await Promise.all(
-      Object.keys(groups).map(async (did: any) => {
-        const tuumUser = await userService.SearchUserWithDID(did);
-        const spaceNames = groups[did].map((x: any) => x.name);
-        const spaces = await SpaceService.getSpaceByNames(tuumUser, spaceNames);
-        return spaces.map((x: any) => ({ ...x, owner: did }));
-      })
-    );
-    _spaces = _spaces.reduce((total, x) => total.concat(x), []);
-    setSpaces(_spaces);
+    const spaces = await SpaceService.getAllSpaces();
+    setSpaces(spaces);
   };
   return (
     <>
@@ -57,7 +41,7 @@ const SpaceView = () => {
           {spaces.length > 0 ? (
             <>
               <RequestCommunity />
-              <MySpaces spaces={spaces} explore={true} />
+              <SpaceListView spaces={spaces} explore={true} />
             </>
           ) : (
             <>

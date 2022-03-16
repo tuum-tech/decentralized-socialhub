@@ -38,6 +38,7 @@ package-lock.json
 
 # Custom
 src/scripts/config.json.prod
+src/scripts/community_spaces.json.prod
 
 # IDE
 todo.md

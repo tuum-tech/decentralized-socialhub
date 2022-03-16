@@ -1,12 +1,17 @@
 import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { SpaceService } from 'src/services/space.service';
 import AboutCard from 'src/components/cards/AboutCard';
 import SyncBar from 'src/components/SyncBar';
 import SpaceCoverPhoto from 'src/components/cards/SpaceCoverPhoto';
 import SpaceAvatarChange from 'src/components/cards/SpaceAvatarChange';
+import ProfileBriefCard from 'src/components/cards/ProfileBriefCard';
 import OverView from '../OverView';
 import PublicFields from '../PublicFields';
+import Admins from '../Admins';
+import DeleteSpace from '../DeleteSpace';
+import { SpaceCategory } from 'src/services/space.service';
 import style from './style.module.scss';
 
 interface Props {
@@ -15,6 +20,7 @@ interface Props {
 }
 
 const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
+  const history = useHistory();
   const [error, setError] = useState(false);
   const [userInfo, setUserInfo] = useState<ISessionItem>(session);
   const [loaded, setloaded] = useState(false);
@@ -52,6 +58,15 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
     await SpaceService.addSpace(session, _spaceProfile);
     setSpaceProfile(_spaceProfile);
   };
+  const onRemoveSpace = async () => {
+    const result = window.confirm(
+      'This will remove all the contents about this space from your user vault. Are you sure?'
+    );
+    if (result) {
+      await SpaceService.removeSpace(session, spaceProfile);
+      history.push('/spaces');
+    }
+  };
   return (
     <IonContent className={style['profileeditor']}>
       <IonGrid className={style['profileeditorgrid']}>
@@ -63,6 +78,14 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
         <IonRow>
           <IonCol size="4">
             <OverView sessionItem={userInfo} profile={spaceProfile} />
+            {spaceProfile.followers && spaceProfile.followers.length > 0 && (
+              <ProfileBriefCard
+                category={'follower'}
+                title={'Followers'}
+                data={spaceProfile.followers}
+                exploreAll={() => {}}
+              />
+            )}
             <PublicFields sessionItem={userInfo} profile={spaceProfile} />
           </IonCol>
           <IonCol size="8">
@@ -73,7 +96,7 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
             />
             {!error && loaded && userInfo.tutorialStep === 4 ? (
               <>
-                {profile && (
+                {spaceProfile && (
                   <AboutCard
                     aboutText={spaceProfile.description || ''}
                     mode="edit"
@@ -83,6 +106,10 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
               </>
             ) : (
               ''
+            )}
+            <Admins profile={spaceProfile} />
+            {spaceProfile.category === SpaceCategory.Personal && (
+              <DeleteSpace profile={spaceProfile} removeSpace={onRemoveSpace} />
             )}
           </IonCol>
         </IonRow>
