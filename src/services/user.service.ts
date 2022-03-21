@@ -634,7 +634,7 @@ export class UserService {
     window.localStorage.removeItem('persist:root');
 
     let connector: EssentialsConnector = connectivity.getActiveConnector() as EssentialsConnector;
-    if (connector.hasWalletConnectSession()) {
+    if (connector && connector.hasWalletConnectSession()) {
       connector.disconnectWalletConnect();
     }
     window.location.href = '/';
