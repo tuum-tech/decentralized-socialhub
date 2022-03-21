@@ -220,7 +220,9 @@ const VerificationDetailContent = ({
               height={'36px'}
               onClick={async () => await handleAction(true)}
             >
-              {loading === 1 ? 'Approving' : 'Approve Verification'}
+              {loading === 1
+                ? 'Please approve request on Essentials App'
+                : 'Approve Verification'}
             </StyledButton>
           </div>
         )}

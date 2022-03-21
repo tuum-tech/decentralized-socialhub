@@ -51,7 +51,7 @@ const EducationItem: React.FC<EducationItemProps> = ({
   });
 
   const remove = () => {
-    removeFunc(index);
+    removeFunc(educationItem.guid);
   };
 
   const experienceItemLogo = () => {
