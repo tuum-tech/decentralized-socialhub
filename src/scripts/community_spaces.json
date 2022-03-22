@@ -5,7 +5,7 @@
     "category": "Welcome to Profile",
     "avatar": "",
     "coverPhoto": "",
-    "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
+    "owner": ["did:elastos:ioyyUoLALB18uWnAtMf1dW7QFCsKBcwSCE"],
     "publicFields": [],
     "meta": {}
   },
@@ -38,8 +38,32 @@
       "Governance",
       "Social Token",
       "Membership",
-      "Collectables",
+      "Collectibles",
       "Art"
+    ],
+    "meta": {
+      "network": "Elastos Smart Contract Chain",
+      "address": "0xef5f768618139d0f5fa3bcbbbcaaf09fe9d7a07d",
+      "ref": "https://ela.city/marketplace/collections/0xef5f768618139d0f5fa3bcbbbcaaf09fe9d7a07d "
+    }
+  },
+  {
+    "name": "Phantz Club",
+    "description": "A collection of only 2822 Phantz, ever. Your NFT is more than a digital rarity, it’s your membership card. With the help of a technicolor portal, and metaverse magic, Phantz vibe in Phantazy Land. In Phantazy Land, the community makes the rules. The Phantz Club is exclusive, available only to holders.",
+    "category": "NFT Collection",
+    "avatar": "",
+    "coverPhoto": "",
+    "owner": [
+      "did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX",
+      "did:elastos:iUDaseyHnQUmwp6RSABCy4ZPCQCaBTDDMS "
+    ],
+    "publicFields": [
+      "ERC-721",
+      "Membership",
+      "Collectibles",
+      "Avatar",
+      "DAO",
+      "Social Token"
     ],
     "meta": {
       "network": "Elastos Smart Contract Chain",
