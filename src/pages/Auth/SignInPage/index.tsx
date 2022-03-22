@@ -43,7 +43,7 @@ const SignInPage: React.FC<RouteComponentProps<
     VerifiablePresentation | undefined
   > => {
     let connector: EssentialsConnector = connectivity.getActiveConnector() as EssentialsConnector;
-    if (connector.hasWalletConnectSession()) {
+    if (connector && connector.hasWalletConnectSession()) {
       connector.disconnectWalletConnect();
     }
 
