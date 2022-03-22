@@ -40,6 +40,7 @@ const VersionTag = styled.div`
 interface ITutorialStepProp extends InferMappedProps {
   onContinue: (session?: ISessionItem) => void;
   setLoading?: (status: boolean) => void;
+  setLoadingText: (text: string) => void;
   session: ISessionItem;
 }
 
@@ -174,6 +175,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       if (hiveInstance && hiveInstance.isConnected) {
         await hiveInstance.Payment.CreateFreeVault();
       }
+      props.setLoadingText('Installing scripts on User Vault.');
       await UserVaultScripts.Execute(hiveInstance!);
       let blockchainDocument = await didService.getPublishedDocument(
         new DID(props.session.did)
@@ -285,12 +287,16 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         challenge.nonce
       );
     } else {
+      props.setLoadingText(
+        "Please approve Profile's request on Esssentials App."
+      );
       presentation = await didService.generateVerifiablePresentationFromEssentialCred(
         challenge.issuer,
         challenge.nonce
       );
     }
 
+    props.setLoadingText('Connecting to user Vault.');
     const userToken = await HiveService.getUserHiveToken(
       address,
       presentation,

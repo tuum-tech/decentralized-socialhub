@@ -51,7 +51,7 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
   });
 
   const remove = () => {
-    removeFunc(index);
+    removeFunc(experienceItem.guid);
   };
 
   const experienceItemLogo = () => {

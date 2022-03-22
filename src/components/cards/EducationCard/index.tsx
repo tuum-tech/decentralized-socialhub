@@ -15,7 +15,14 @@ import {
   CardContentContainer
 } from '../common';
 import EducationCardEdit, { pattern } from './Edit';
+
+import { useRecoilState, useRecoilValue } from 'recoil';
+
 import ProgressBar from 'src/elements/ProgressBar';
+import {
+  EducationSelector,
+  EducationSortedSelector
+} from 'src/Atoms/Selectors';
 
 interface IEducationProps {
   educationDTO: EducationDTO;
@@ -27,6 +34,7 @@ interface IEducationProps {
   template?: string;
   userSession: ISessionItem;
   openModal?: boolean;
+  education?: EducationDTO;
 }
 
 export const defaultEducationItem: EducationItem = {
@@ -44,7 +52,6 @@ export const defaultEducationItem: EducationItem = {
 };
 
 const EducationCard: React.FC<IEducationProps> = ({
-  educationDTO,
   updateFunc,
   removeFunc,
   requestFunc,
@@ -52,14 +59,12 @@ const EducationCard: React.FC<IEducationProps> = ({
   isPublicPage = false,
   template = 'default',
   userSession,
-  openModal = false
+  openModal = false,
+  education
 }: IEducationProps) => {
-  const [currentEducationDTO, setCurrentEducationDTO] = useState(educationDTO);
+  const [educationDTO, setEducationDTO] = useRecoilState(EducationSelector);
+  const educationSortedDTO = useRecoilValue(EducationSortedSelector);
   const [eduVerifiedPercent, setEduVerifiedPercent] = useState(0);
-
-  useEffect(() => {
-    setCurrentEducationDTO(educationDTO);
-  }, [educationDTO]);
 
   let noOfVerifiedEduCred = 0;
 
@@ -72,7 +77,7 @@ const EducationCard: React.FC<IEducationProps> = ({
       (noOfVerifiedEduCred * 100) / educationDTO.items.length
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentEducationDTO, noOfVerifiedEduCred]);
+  }, [educationDTO, noOfVerifiedEduCred]);
 
   const [editedItem, setEditedItem] = useState(defaultEducationItem);
   const [isEditing, setIsEditing] = useState(openModal);
@@ -114,8 +119,8 @@ const EducationCard: React.FC<IEducationProps> = ({
     return true;
   };
 
-  const saveChanges = (item: EducationItem) => {
-    let items = [...currentEducationDTO.items];
+  const saveChanges = async (item: EducationItem) => {
+    let items = [...educationDTO.items];
 
     let itemToUpdate = items.find(x => x.guid === item.guid);
 
@@ -129,9 +134,12 @@ const EducationCard: React.FC<IEducationProps> = ({
     // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
 
     // 5. Set the state to our new copy
-    setCurrentEducationDTO({ isEnabled: true, items: items });
-    updateFunc(item);
     setIsEditing(false);
+    if (updateFunc) {
+      if ((await updateFunc(item)) === true) {
+        setEducationDTO({ isEnabled: true, items: items });
+      }
+    }
   };
 
   const cancel = () => {
@@ -152,19 +160,70 @@ const EducationCard: React.FC<IEducationProps> = ({
     setMode(MODE.EDIT);
   };
 
-  const removeItem = async (index: number) => {
-    let items = [...currentEducationDTO.items];
-    await removeFunc(items[index]);
-    items = items.splice(index, 1);
-    setCurrentEducationDTO({ isEnabled: true, items: items });
+  const removeItem = async (guid: any) => {
+    let items = [...educationDTO.items];
+    let toRemove = items.find(x => x.guid.value === guid.value);
+    let toRemoveIndex = items.indexOf(toRemove as EducationItem);
+    await removeFunc(toRemove);
+    items.splice(toRemoveIndex, 1);
+    setEducationDTO({ isEnabled: true, items: items });
   };
 
   if (
-    !currentEducationDTO.isEnabled ||
-    (!isEditable && currentEducationDTO.items.length === 0)
+    !isEditable &&
+    educationDTO.items.length === 0 &&
+    education?.items.length === 0
   ) {
     return <></>;
   }
+
+  const getEducationFromParameter = (): any => {
+    education?.items.sort(
+      (a: any, b: any) =>
+        new Date(b.start).getTime() - new Date(a.start).getTime()
+    );
+    return education?.items.map((x, i) => {
+      return (
+        <div key={i}>
+          <EducationItem
+            educationItem={x}
+            handleChange={handleChange}
+            updateFunc={saveChanges}
+            editFunc={editItem}
+            index={i}
+            removeFunc={removeItem}
+            requestVerification={requestFunc}
+            isEditable={isEditable}
+            template={template}
+            userSession={userSession}
+          />
+          {i < education.items.length - 1 ? <Divider /> : ''}
+        </div>
+      );
+    });
+  };
+
+  const getEducationFromState = (): any => {
+    return educationSortedDTO.items.map((x, i) => {
+      return (
+        <div key={i}>
+          <EducationItem
+            educationItem={x}
+            handleChange={handleChange}
+            updateFunc={saveChanges}
+            editFunc={editItem}
+            index={i}
+            removeFunc={removeItem}
+            requestVerification={requestFunc}
+            isEditable={isEditable}
+            template={template}
+            userSession={userSession}
+          />
+          {i < educationSortedDTO.items.length - 1 ? <Divider /> : ''}
+        </div>
+      );
+    });
+  };
 
   return (
     <>
@@ -209,7 +268,10 @@ const EducationCard: React.FC<IEducationProps> = ({
               </IonGrid>
             </CardHeaderContent>
             <CardContentContainer>
-              {currentEducationDTO.items.sort(
+              {education !== undefined
+                ? getEducationFromParameter()
+                : getEducationFromState()}
+              {/* {currentEducationDTO.items.sort(
                 (a: any, b: any) =>
                   new Date(b.start).getTime() - new Date(a.start).getTime()
               ) &&
@@ -235,7 +297,7 @@ const EducationCard: React.FC<IEducationProps> = ({
                       )}
                     </div>
                   );
-                })}
+                })} */}
             </CardContentContainer>
           </CardOverview>
           <MyModal

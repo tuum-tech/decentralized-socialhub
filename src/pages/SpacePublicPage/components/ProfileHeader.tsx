@@ -2,7 +2,11 @@ import React from 'react';
 import { IonGrid, IonRow, IonCol } from '@ionic/react';
 import styled from 'styled-components';
 
-import { SpaceAvatar, SpaceName, SpaceCategory } from '../../SpacePage/components/MySpaces/SpaceCard';
+import {
+  SpaceAvatar,
+  SpaceName,
+  SpaceCategory
+} from '../../SpacePage/components/SpaceCard';
 import defaultCoverPhoto from 'src/assets/default/default-cover.png';
 import defaultAvatar from 'src/assets/icon/dp.png';
 

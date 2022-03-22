@@ -1,8 +1,9 @@
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import React from 'react';
 import styled from 'styled-components';
-
+import { FollowType } from 'src/services/user.service';
 import AboutCard from 'src/components/cards/AboutCard';
+import FollowCards from 'src/components/cards/FollowCards';
 import { getThemeData } from 'src/utils/template';
 
 import ProfileTabs from './ProfileTabs';
@@ -41,12 +42,11 @@ const ProfileComponent: React.FC<Props> = ({
   loading
 }: Props) => {
   const template = publicUser.pageTemplate || 'default';
-
   return (
     <>
       <ProfileHeader profile={profile} />
 
-      {!loading && publicUser.did !== '' && (
+      {!loading && (
         <>
           <ProfileTabs template={template} scrollToPosition={scrollToElement} />
           <GridContent template={template}>
@@ -56,7 +56,7 @@ const ProfileComponent: React.FC<Props> = ({
                   <IonRow>
                     <LeftContent>
                       <div ref={aboutRef}>
-                        {(profile.publicFields || []).includes('about') && (
+                        {profile.publicFields.includes('about') && (
                           <AboutCard
                             aboutText={profile.description}
                             mode="read"
@@ -64,7 +64,19 @@ const ProfileComponent: React.FC<Props> = ({
                         )}
                       </div>
                     </LeftContent>
-                    <RightContent></RightContent>
+                    <RightContent>
+                      <FollowCards
+                        showFollowerCard={profile.publicFields.includes(
+                          'follower'
+                        )}
+                        followerDids={profile.followers || []}
+                        followingDids={[]}
+                        mutualDids={[]}
+                        signed={true}
+                        template={template}
+                        viewAll={(ctype: FollowType) => {}}
+                      />
+                    </RightContent>
                   </IonRow>
                 </IonGrid>
               </IonCol>

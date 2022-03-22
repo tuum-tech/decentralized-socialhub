@@ -34,6 +34,7 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({
 }: TutorialComponentProps) => {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState('In progress...');
   const [mnemonics] = useState<string[]>(props.session.mnemonics.split(' '));
 
   useEffect(() => {
@@ -96,6 +97,7 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({
           session={props.session}
           onContinue={nextStep}
           setLoading={setLoading}
+          setLoadingText={setLoadingText}
         />
       );
     return (
@@ -105,7 +107,7 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({
 
   return (
     <div className={style['tutorial-component']}>
-      {loading && <LoadingIndicator loadingText="In progress..." />}
+      {loading && <LoadingIndicator loadingText={loadingText} />}
       <NoPaddingGrid>
         <IonRow>
           <IonCol className={colLeftStyle()} size="5">
