@@ -19,17 +19,14 @@ interface Props extends InferMappedProps {
 const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
   const user = props.targetUser ? props.targetUser : props.session;
 
-  if (props.mode === 'edit') {
-    return (
-      <SocialCard
-        sessionItem={user}
-        setSession={props.setSession}
-        mode={props.mode}
-        openModal={props.openModal}
-      />
-    );
-  }
-  return <></>;
+  return (
+    <SocialCard
+      sessionItem={user}
+      setSession={props.setSession}
+      mode={props.mode}
+      openModal={props.openModal}
+    />
+  );
 };
 
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({
