@@ -103,7 +103,10 @@ const Default: React.FC<IProps> = ({
             </IonRow>
             <IonRow className="ion-justify-content-start">
               <IonCol>
-                <DidSnippet did={publicUser.did} />
+                <DidSnippet
+                  did={publicUser.did}
+                  dateJoined={publicUser.timestamp}
+                />
               </IonCol>
             </IonRow>
           </IonGrid>

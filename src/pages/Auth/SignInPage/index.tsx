@@ -1,7 +1,11 @@
 import React from 'react';
 import { StaticContext, RouteComponentProps } from 'react-router';
 import { useHistory } from 'react-router-dom';
-import { DID } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import {
+  DID,
+  connectivity
+} from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
 
 import {
   OnBoardLayout,
@@ -38,6 +42,11 @@ const SignInPage: React.FC<RouteComponentProps<
   const getPresentation = async (): Promise<
     VerifiablePresentation | undefined
   > => {
+    let connector: EssentialsConnector = connectivity.getActiveConnector() as EssentialsConnector;
+    if (connector && connector.hasWalletConnectSession()) {
+      connector.disconnectWalletConnect();
+    }
+
     console.log('Entering on connect');
     let didAccess = new DID.DIDAccess();
 

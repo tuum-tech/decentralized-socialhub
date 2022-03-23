@@ -36,6 +36,8 @@ import {
 } from '../common';
 
 import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/';
+import { useSetRecoilState } from 'recoil';
+import { BadgesAtom } from 'src/Atoms/Atoms';
 
 interface Props {
   sessionItem: ISessionItem;
@@ -50,6 +52,7 @@ const SocialProfilesCard: React.FC<Props> = ({
   mode = 'view',
   openModal = false
 }) => {
+  const setBadges = useSetRecoilState(BadgesAtom);
   const [isManagerOpen, setIsManagerOpen] = useState(openModal);
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
   const [credentials, setCredentials] = useState<
@@ -116,6 +119,13 @@ const SocialProfilesCard: React.FC<Props> = ({
     var timer = setInterval(async function() {
       if (popupwindow!.closed) {
         await getCredentials(sessionItem);
+
+        let userService = new UserService(await DidService.getInstance());
+
+        let user: ISessionItem = await userService.SearchUserWithDID(
+          sessionItem.did
+        );
+        setBadges(user.badges as IBadges);
       }
     }, 1000);
   };

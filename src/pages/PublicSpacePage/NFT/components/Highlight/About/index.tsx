@@ -10,7 +10,7 @@ import { InferMappedProps, SubState } from './types';
 
 import { SpaceService } from 'src/services/space.service';
 import { StyledButton } from 'src/elements/buttons';
-import { SnippetSvg } from 'src/elements/DidSnippet';
+import { DidSnippetSvg } from 'src/elements/DidSnippet';
 import { SpaceAvatar } from 'src/components/Space/SpaceCard';
 import { CardOverview, CardContent } from 'src/components/cards/common';
 import defaultAvatar from 'src/assets/icon/dp.png';
@@ -36,7 +36,7 @@ const AboutSpace: React.FC<IProps> = ({
   template = 'default'
 }: IProps) => {
   const [followers, setFollowers] = useState<string[]>(space.followers || []);
-  const following = useMemo(() => followers.includes(session.did), [followers]);
+  const following = useMemo(() => followers.includes(session.did), [followers, session.did]);
   const isLoggedIn = window.localStorage.getItem('isLoggedIn');
   const auth = () => {
     if (!isLoggedIn) {
@@ -75,7 +75,7 @@ const AboutSpace: React.FC<IProps> = ({
               <img src={icon_shield} />
             </h1>
             <h2>
-              <SnippetSvg /> DID:iYio2....LzNf &nbsp;&nbsp;&nbsp;by{' '}
+              <DidSnippetSvg /> DID:iYio2....LzNf &nbsp;&nbsp;&nbsp;by{' '}
               <span>Phantz</span>
             </h2>
           </div>
