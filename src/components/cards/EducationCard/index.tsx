@@ -25,11 +25,10 @@ import {
 } from 'src/Atoms/Selectors';
 
 interface IEducationProps {
-  educationDTO: EducationDTO;
-  updateFunc?: any;
+  updateFunc?: (item: any) => Promise<boolean>;
+  isEditable?: boolean;
   removeFunc?: any;
   requestFunc?: any;
-  isEditable?: boolean;
   isPublicPage?: boolean;
   template?: string;
   userSession: ISessionItem;
@@ -227,118 +226,85 @@ const EducationCard: React.FC<IEducationProps> = ({
 
   return (
     <>
-      {educationDTO.isEnabled === true ? (
-        <>
-          <CardOverview template={template}>
-            <CardHeaderContent>
-              <IonGrid className="ion-no-padding">
-                <IonRow className="ion-justify-content-between ion-no-padding">
-                  <IonCol className="ion-no-padding">
-                    <IonCardTitle>
-                      Education
-                      {!isEditable && !isPublicPage && (
-                        <div
-                          style={{
-                            width: '10em',
-                            float: 'right',
-                            fontSize: '0.8em'
-                          }}
-                        >
-                          <ProgressBar
-                            value={eduVerifiedPercent}
-                            text={'verified'}
-                          />
-                          <div
-                            style={{ float: 'right', fontSize: '0.8em' }}
-                          >{`${eduVerifiedPercent}% ${'verified'}`}</div>
-                        </div>
-                      )}
-                    </IonCardTitle>
-                  </IonCol>
-                  {isEditable ? (
-                    <IonCol size="auto" className="ion-no-padding">
-                      <LinkStyleSpan onClick={e => addItem()}>
-                        + Add Education
-                      </LinkStyleSpan>
-                    </IonCol>
-                  ) : (
-                    ''
-                  )}
-                </IonRow>
-              </IonGrid>
-            </CardHeaderContent>
-            <CardContentContainer>
-              {education !== undefined
-                ? getEducationFromParameter()
-                : getEducationFromState()}
-              {/* {currentEducationDTO.items.sort(
-                (a: any, b: any) =>
-                  new Date(b.start).getTime() - new Date(a.start).getTime()
-              ) &&
-                currentEducationDTO.items.map((x, i) => {
-                  return (
-                    <div key={i}>
-                      <EducationItem
-                        educationItem={x}
-                        handleChange={handleChange}
-                        updateFunc={saveChanges}
-                        editFunc={editItem}
-                        index={i}
-                        removeFunc={removeItem}
-                        requestVerification={requestFunc}
-                        isEditable={isEditable}
-                        template={template}
-                        userSession={userSession}
+      <CardOverview template={template}>
+        <CardHeaderContent>
+          <IonGrid className="ion-no-padding">
+            <IonRow className="ion-justify-content-between ion-no-padding">
+              <IonCol className="ion-no-padding">
+                <IonCardTitle>
+                  Education
+                  {!isEditable && !isPublicPage && (
+                    <div
+                      style={{
+                        width: '10em',
+                        float: 'right',
+                        fontSize: '0.8em'
+                      }}
+                    >
+                      <ProgressBar
+                        value={eduVerifiedPercent}
+                        text={'verified'}
                       />
-                      {i < currentEducationDTO.items.length - 1 ? (
-                        <Divider />
-                      ) : (
-                        ''
-                      )}
+                      <div
+                        style={{ float: 'right', fontSize: '0.8em' }}
+                      >{`${eduVerifiedPercent}% ${'verified'}`}</div>
                     </div>
-                  );
-                })} */}
-            </CardContentContainer>
-          </CardOverview>
-          <MyModal
-            onDidDismiss={() => {
-              setMode(MODE.NONE);
-              setIsEditing(false);
-            }}
-            isOpen={isEditing}
-            cssClass="my-custom-class"
-          >
-            <EducationCardEdit
-              educationItem={editedItem}
-              handleChange={handleChange}
-              mode={mode}
-            />
-            <ModalFooter className="ion-no-border">
-              <IonRow className="ion-justify-content-around">
-                <IonCol size="auto">
-                  <IonButton fill="outline" onClick={cancel}>
-                    Cancel
-                  </IonButton>
-                  <IonButton
-                    onClick={() => {
-                      if (validate(editedItem)) {
-                        saveChanges(editedItem);
-                        setMode(MODE.NONE);
-                      } else {
-                        setMode(MODE.ERROR);
-                      }
-                    }}
-                  >
-                    Save
-                  </IonButton>
+                  )}
+                </IonCardTitle>
+              </IonCol>
+              {isEditable ? (
+                <IonCol size="auto" className="ion-no-padding">
+                  <LinkStyleSpan onClick={e => addItem()}>
+                    + Add Education
+                  </LinkStyleSpan>
                 </IonCol>
-              </IonRow>
-            </ModalFooter>
-          </MyModal>
-        </>
-      ) : (
-        ''
-      )}
+              ) : (
+                ''
+              )}
+            </IonRow>
+          </IonGrid>
+        </CardHeaderContent>
+        <CardContentContainer>
+          {education !== undefined
+            ? getEducationFromParameter()
+            : getEducationFromState()}
+        </CardContentContainer>
+      </CardOverview>
+      <MyModal
+        onDidDismiss={() => {
+          setMode(MODE.NONE);
+          setIsEditing(false);
+        }}
+        isOpen={isEditing}
+        cssClass="my-custom-class"
+      >
+        <EducationCardEdit
+          educationItem={editedItem}
+          handleChange={handleChange}
+          mode={mode}
+        />
+        <ModalFooter className="ion-no-border">
+          <IonRow className="ion-justify-content-around">
+            <IonCol size="auto">
+              <IonButton fill="outline" onClick={cancel}>
+                Cancel
+              </IonButton>
+              <IonButton
+                onClick={() => {
+                  if (validate(editedItem)) {
+                    saveChanges(editedItem);
+                    setMode(MODE.NONE);
+                  } else {
+                    setMode(MODE.ERROR);
+                  }
+                }}
+              >
+                Save
+              </IonButton>
+            </IonCol>
+          </IonRow>
+        </ModalFooter>
+      </MyModal>
     </>
   );
 };

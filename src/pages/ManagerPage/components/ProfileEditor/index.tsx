@@ -422,7 +422,6 @@ const ProfileEditor: React.FC<Props> = ({
                 {profile && profile.educationDTO && (
                   <EducationCard
                     userSession={JSON.parse(JSON.stringify(session))}
-                    educationDTO={profile.educationDTO}
                     updateFunc={updateEducationProfile}
                     removeFunc={async (educationItem: EducationItem) => {
                       let userSession = JSON.parse(JSON.stringify(session));
