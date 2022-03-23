@@ -23,7 +23,8 @@
     "meta": {
       "network": "Ethereum",
       "address": "0x095371DeE504C7e176f1447387F5dc5C616a42ea",
-      "ref": "https://opensea.io/BoredApeYatchClub"
+      "ref": "https://opensea.io/collection/boredapeyachtclub",
+      "slug": "boredapeyachtclub"
     }
   },
   {
@@ -37,11 +38,12 @@
     "meta": {
       "network": "Ethereum",
       "address": "0x095371DeE504C7e176f1447387F5dc5C616a42ea",
-      "ref": "https://opensea.io/CryptoPunks"
+      "ref": "https://opensea.io/collection/cryptopunks",
+      "slug": "cryptopunks"
     }
   },
   {
-    "name": "PUNKS Comic",
+    "name": "Elacity",
     "description": "",
     "category": "NFT Collection",
     "avatar": "",
@@ -49,9 +51,10 @@
     "owner": ["did:elastos:ikW12dN6rqYYQgihtscrngumcowi149EtD"],
     "publicFields": [],
     "meta": {
-      "network": "Ethereum",
-      "address": "0x095371DeE504C7e176f1447387F5dc5C616a42ea",
-      "ref": "https://opensea.io/PUNKS"
+      "network": "Elastos Smart Contract Chain",
+      "address": "0x23f6082a2b4c00d31c95c5b3056defaf79926015",
+      "ref": "https://ela.city/marketplace/collections/0x23f6082a2b4c00d31c95c5b3056defaf79926015",
+      "slug": "elacity"
     }
   }
 ]

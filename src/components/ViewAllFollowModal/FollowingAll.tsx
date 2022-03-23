@@ -92,8 +92,7 @@ const FollowingAllModal = ({
       dids,
       searchStr,
       pageSize,
-      pageNumber,
-      userSession
+      pageNumber
     );
 
     if (fUsers.length > 0) {
@@ -116,8 +115,7 @@ const FollowingAllModal = ({
               followingDids,
               searchStr,
               200,
-              1,
-              userSession
+              1
             );
             setFollowingUsers(res);
           }}

@@ -1,6 +1,14 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { IonRow } from '@ionic/react';
 import styled from 'styled-components';
+
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
+import { InferMappedProps, SubState } from './types';
+
+import { SpaceService } from 'src/services/space.service';
 import { StyledButton } from 'src/elements/buttons';
 import { SnippetSvg } from 'src/elements/DidSnippet';
 import { SpaceAvatar } from 'src/components/Space/SpaceCard';
@@ -8,6 +16,7 @@ import { CardOverview, CardContent } from 'src/components/cards/common';
 import defaultAvatar from 'src/assets/icon/dp.png';
 import icon_shield from 'src/assets/icon/shield.svg';
 import style from './About.module.scss';
+import { showNotify } from 'src/utils/notify';
 
 export const HorDOMSpace16 = styled(IonRow)`
   padding: 8px 0px;
@@ -16,15 +25,40 @@ export const HorDOMSpace20 = styled(IonRow)`
   padding: 10px 0px;
 `;
 
-interface IProps {
+interface IProps extends InferMappedProps {
   space: any;
   template?: string;
 }
 
 const AboutSpace: React.FC<IProps> = ({
   space,
+  session,
   template = 'default'
 }: IProps) => {
+  const [followers, setFollowers] = useState<string[]>(space.followers || []);
+  const following = useMemo(() => followers.includes(session.did), [followers]);
+  const isLoggedIn = window.localStorage.getItem('isLoggedIn');
+  const auth = () => {
+    if (!isLoggedIn) {
+      showNotify('You should login', 'warning');
+      return false;
+    }
+    return true;
+  };
+  const onFollow = async () => {
+    if (!auth()) return;
+    await SpaceService.follow(session, space);
+    setFollowers([...new Set([...followers, session.did])]);
+  };
+  const onUnfollow = async () => {
+    if (!auth()) return;
+    await SpaceService.unfollow(session, space);
+    setFollowers([
+      ...new Set(
+        followers.filter((follower: string) => follower !== session.did)
+      )
+    ]);
+  };
   return (
     <CardOverview template={template}>
       <CardContent>
@@ -66,9 +100,9 @@ const AboutSpace: React.FC<IProps> = ({
               'linear-gradient(145.76deg, #995AFF 14.97%, #DC59BF 87.23%)'
             }
             className={'mr-3'}
-            onClick={() => {}}
+            onClick={following ? onUnfollow : onFollow}
           >
-            Follow
+            {following ? `Unfollow` : `Follow`}
           </StyledButton>
           <StyledButton
             width={'94px'}
@@ -87,4 +121,17 @@ const AboutSpace: React.FC<IProps> = ({
   );
 };
 
-export default AboutSpace;
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AboutSpace);

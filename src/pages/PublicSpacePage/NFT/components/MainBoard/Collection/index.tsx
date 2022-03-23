@@ -1,49 +1,75 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   IonRow,
   IonCol,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent
 } from '@ionic/react';
 import { Wrapper } from '../common';
 import Item from './Item';
+import { getNFTCollectionAssets } from '../../../fetchapi';
+interface IProps {
+  space: any;
+}
 
-interface IProps {}
-
-const Collection: React.FC<IProps> = ({}: IProps) => {
+const Collection: React.FC<IProps> = ({ space }: IProps) => {
+  const [assets, setAssets] = useState<any[]>([]);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [offset, setOffset] = useState(0);
+  const limit = 9;
+  useEffect(() => {
+    (async () => {
+      if (space && space.guid) {
+        await fetchMoreData();
+      }
+    })();
+  }, [space]);
+  const fetchMoreData = async () => {
+    const { data }: any = await getNFTCollectionAssets(
+      space.guid,
+      offset,
+      limit
+    );
+    const { assets: _assets_ } = data;
+    if (_assets_.length > 0) {
+      setOffset(offset + limit);
+      setAssets(
+        assets.concat(
+          _assets_.map((asset: any) => ({
+            ...asset,
+            collection: space.meta.slug
+          }))
+        )
+      );
+    } else {
+      setHasMore(false);
+    }
+  };
+  const searchNext = async ($event: CustomEvent<void>) => {
+    await fetchMoreData();
+    ($event.target as HTMLIonInfiniteScrollElement).complete();
+  };
   return (
     <Wrapper>
       <IonRow>
-        <IonCol size="4">
-          <Item />
-        </IonCol>
-        <IonCol size="4">
-          <Item />
-        </IonCol>
-        <IonCol size="4">
-          <Item />
-        </IonCol>
+        {assets.map((asset, index) => {
+          return (
+            <IonCol size="4" key={index}>
+              <Item data={asset} />
+            </IonCol>
+          );
+        })}
       </IonRow>
-      <IonRow>
-        <IonCol size="4">
-          <Item />
-        </IonCol>
-        <IonCol size="4">
-          <Item />
-        </IonCol>
-        <IonCol size="4">
-          <Item />
-        </IonCol>
-      </IonRow>
-      <IonRow>
-        <IonCol size="4">
-          <Item />
-        </IonCol>
-        <IonCol size="4">
-          <Item />
-        </IonCol>
-        <IonCol size="4">
-          <Item />
-        </IonCol>
-      </IonRow>
+      <IonInfiniteScroll
+        threshold="100px"
+        disabled={!hasMore}
+        onIonInfinite={(e: CustomEvent<void>) => searchNext(e)}
+      >
+        <IonInfiniteScrollContent
+          loadingSpinner="bubbles"
+          loadingText="Loading more assets..."
+        ></IonInfiniteScrollContent>
+      </IonInfiniteScroll>
     </Wrapper>
   );
 };

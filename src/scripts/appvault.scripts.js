@@ -14,6 +14,22 @@ let run = async () => {
     const fs = require('fs');
     await client.Database.createCollection('community_spaces');
     await client.Scripting.SetScript({
+      name: 'get_nft_collection_spaces',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_nft_collection_spaces',
+        output: true,
+        body: {
+          collection: 'community_spaces',
+          filter: {
+            category: 'NFT Collection'
+          }
+        }
+      }
+    });
+    await client.Scripting.SetScript({
       name: 'get_community_spaces',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -81,7 +97,7 @@ let run = async () => {
               coverPhoto: '$params.coverPhoto',
               publicFields: '$params.publicFields',
               followers: '$params.followers',
-              meta: '$params.owner',
+              meta: '$params.meta'
             }
           },
           options: {
@@ -111,6 +127,48 @@ let run = async () => {
           options: {
             upsert: true,
             bypass_document_validation: false
+          }
+        }
+      }
+    });
+    await client.Database.createCollection('nft_collection_assets');
+    await client.Scripting.SetScript({
+      name: 'update_nft_collection_assets',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_nft_collection_assets',
+        body: {
+          collection: 'nft_collection_assets',
+          filter: {
+            guid: '$params.guid'
+          },
+          update: {
+            $set: {
+              guid: '$params.guid',
+              assets: '$params.assets'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+    await client.Scripting.SetScript({
+      name: 'get_nft_collection_assets',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_nft_collection_assets',
+        output: true,
+        body: {
+          collection: 'nft_collection_assets',
+          filter: {
+            guid: '$params.guid'
           }
         }
       }
@@ -161,7 +219,7 @@ let run = async () => {
           }
         }
       }
-    })
+    });
     await client.Scripting.SetScript({
       name: 'add_space',
       allowAnonymousUser: true,
@@ -177,7 +235,7 @@ let run = async () => {
           update: {
             $set: {
               owner: '$params.owner',
-              guid: '$params.guid',
+              guid: '$params.guid'
             }
           },
           options: {

@@ -6,9 +6,11 @@ import Boards from '../common/Boards';
 import { Wrapper } from '../common';
 import Discussion from './Discussion';
 
-interface IProps {}
+interface IProps {
+  space: any;
+}
 
-const Community: React.FC<IProps> = ({}: IProps) => {
+const Community: React.FC<IProps> = ({ space }: IProps) => {
   return (
     <Wrapper>
       <IonRow>
@@ -17,8 +19,10 @@ const Community: React.FC<IProps> = ({}: IProps) => {
         </IonCol>
         <IonCol size="4">
           <Boards />
-          <Members />
-          <Follower />
+          <Members space={space} />
+          {space.followers && space.followers.length > 0 && (
+            <Follower space={space} />
+          )}
         </IonCol>
       </IonRow>
     </Wrapper>

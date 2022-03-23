@@ -7,9 +7,11 @@ import Community from './Community';
 import Chat from './Chat';
 import Members from './Members';
 
-interface IProps {}
+interface IProps {
+  space: any;
+}
 
-const MainBoard: React.FC<IProps> = ({}: IProps) => {
+const MainBoard: React.FC<IProps> = ({ space }: IProps) => {
   const [active, setActive] = useState('home');
   return (
     <TabsContainer template="default">
@@ -27,7 +29,9 @@ const MainBoard: React.FC<IProps> = ({}: IProps) => {
           <IonLabel className="tab-label">Chat</IonLabel>
         </IonItem>
         <IonItem
-          className={(active === 'collection' ? 'tab-active' : '') + ' tab-item'}
+          className={
+            (active === 'collection' ? 'tab-active' : '') + ' tab-item'
+          }
           onClick={() => setActive('collection')}
         >
           <IonLabel className="tab-label">NFT Collection</IonLabel>
@@ -46,11 +50,11 @@ const MainBoard: React.FC<IProps> = ({}: IProps) => {
         </IonItem>
       </IonList>
 
-      {active === 'home' && <Home />}
+      {active === 'home' && <Home space={space} />}
       {active === 'chat' && <Chat />}
-      {active === 'collection' && <Collection />}
-      {active === 'community' && <Community />}
-      {active === 'members' && <Members />}
+      {active === 'collection' && <Collection space={space} />}
+      {active === 'community' && <Community space={space} />}
+      {active === 'members' && <Members space={space} />}
     </TabsContainer>
   );
 };

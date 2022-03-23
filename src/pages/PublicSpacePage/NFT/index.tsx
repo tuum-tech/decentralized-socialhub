@@ -22,7 +22,7 @@ const NFTSpace: React.FC<IProps> = ({ space }: IProps) => {
           <Highlight space={space} />
         </IonCol>
         <IonCol size="9">
-          <MainBoard />
+          <MainBoard space={space} />
         </IonCol>
       </Wrapper>
     </>
