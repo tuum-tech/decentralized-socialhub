@@ -31,7 +31,7 @@ const Highlight: React.FC<IProps> = ({
     <Container>
       <AboutSpace space={space} />
       <Collection assets={assets} viewAll={viewAllNFTCollectionAssets} />
-      <Category />
+      <Category space={space} />
     </Container>
   );
 };
