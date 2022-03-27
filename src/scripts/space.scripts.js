@@ -18,8 +18,8 @@ let run = async () => {
       guid: Guid.create(),
       followers:
         space.category === 'Welcome to Profile'
-          ? dids.filter(x => !space.owner.includes(x))
-          : []
+          ? dids.filter(did => did.startsWith('did:'))
+          : space.owner || []
     };
   });
   await client.Database.deleteMany('community_spaces', {});

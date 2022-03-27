@@ -5,7 +5,7 @@
     "category": "Welcome to Profile",
     "avatar": "",
     "coverPhoto": "",
-    "owner": ["did:elastos:ioyyUoLALB18uWnAtMf1dW7QFCsKBcwSCE"],
+    "owner": ["did:elastos:iX95VHMj4KhxfAzUHzUft6L2bEiWNWWjTS"],
     "publicFields": [],
     "meta": {}
   },
@@ -30,10 +30,7 @@
     "category": "NFT Collection",
     "avatar": "",
     "coverPhoto": "",
-    "owner": [
-      "did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX",
-      "did:elastos:inpCykPj1JMroJfjFvDAGnEGUCGGG3ptwQ"
-    ],
+    "owner": ["did:elastos:iX95VHMj4KhxfAzUHzUft6L2bEiWNWWjTS"],
     "publicFields": [
       "ERC-721",
       "Governance",
@@ -55,10 +52,7 @@
     "category": "NFT Collection",
     "avatar": "",
     "coverPhoto": "",
-    "owner": [
-      "did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX",
-      "did:elastos:iUDaseyHnQUmwp6RSABCy4ZPCQCaBTDDMS "
-    ],
+    "owner": ["did:elastos:iX95VHMj4KhxfAzUHzUft6L2bEiWNWWjTS"],
     "publicFields": [
       "ERC-721",
       "Membership",

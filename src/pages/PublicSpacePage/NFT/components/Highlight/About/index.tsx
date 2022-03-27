@@ -36,7 +36,11 @@ const AboutSpace: React.FC<IProps> = ({
   template = 'default'
 }: IProps) => {
   const [followers, setFollowers] = useState<string[]>(space.followers || []);
-  const following = useMemo(() => followers.includes(session.did), [followers, session.did]);
+  const following = useMemo(() => followers.includes(session.did), [
+    followers,
+    session.did
+  ]);
+  const isOwner = space.owner && space.owner.includes(session.did);
   const isLoggedIn = window.localStorage.getItem('isLoggedIn');
   const auth = () => {
     if (!isLoggedIn) {
@@ -93,18 +97,21 @@ const AboutSpace: React.FC<IProps> = ({
         </IonRow>
         <HorDOMSpace20 />
         <IonRow>
-          <StyledButton
-            width={'94px'}
-            height={'43px'}
-            bgColor={
-              'linear-gradient(145.76deg, #995AFF 14.97%, #DC59BF 87.23%)'
-            }
-            className={'mr-3'}
-            onClick={following ? onUnfollow : onFollow}
-          >
-            {following ? `Unfollow` : `Follow`}
-          </StyledButton>
-          <StyledButton
+          {!isOwner && (
+            <StyledButton
+              width={'94px'}
+              height={'43px'}
+              bgColor={
+                'linear-gradient(145.76deg, #995AFF 14.97%, #DC59BF 87.23%)'
+              }
+              className={'mr-3'}
+              disabled={isOwner}
+              onClick={following ? onUnfollow : onFollow}
+            >
+              {following ? `Unfollow` : `Follow`}
+            </StyledButton>
+          )}
+          {/* <StyledButton
             width={'94px'}
             height={'43px'}
             bgColor={
@@ -114,7 +121,7 @@ const AboutSpace: React.FC<IProps> = ({
             onClick={() => {}}
           >
             Share
-          </StyledButton>
+          </StyledButton> */}
         </IonRow>
       </CardContent>
     </CardOverview>

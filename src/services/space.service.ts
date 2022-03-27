@@ -208,7 +208,8 @@ export class SpaceService {
               name: 'add_space',
               params: {
                 guid: (space as any).guid,
-                owner: session.did
+                owner: session.did,
+                followers: [session.did]
               },
               context: {
                 target_did: `${process.env.REACT_APP_APPLICATION_ID}`,

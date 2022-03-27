@@ -235,7 +235,8 @@ let run = async () => {
           update: {
             $set: {
               owner: '$params.owner',
-              guid: '$params.guid'
+              guid: '$params.guid',
+              followers: '$params.followers'
             }
           },
           options: {
