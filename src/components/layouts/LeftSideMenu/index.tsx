@@ -110,6 +110,21 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
             <h3>Spaces</h3>
           </IonLabel>
         </IonItem>
+
+        <IonItem
+          className={
+            history.location.pathname === '/chat'
+              ? style['item-active']
+              : style['item-link']
+          }
+          onClick={async () => history.push('/chat')}
+        >
+          <SpaceSvg />
+          <IonLabel>
+            <h3>Messages</h3>
+          </IonLabel>
+        </IonItem>
+
         <IonItem
           className={
             history.location.pathname === '/explore'

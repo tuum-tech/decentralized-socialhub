@@ -796,6 +796,41 @@ let run = async () => {
       }
     });
 
+    await client.Scripting.SetScript({
+      name: 'add_message_room',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'insert',
+        name: 'add_chat_room',
+        output: true,
+        body: {
+          collection: 'MessageRooms',
+          document: {
+            roomid: '$params.roomid',
+            users: '$params.users'
+          }
+        }
+      }
+    });
+
+    await client.Scripting.SetScript({
+      name: 'get_user_message_rooms',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_user_message_rooms',
+        output: true,
+        body: {
+          collection: 'MessageRooms',
+          filter: {
+            users: { $in: '$params.did' }
+          }
+        }
+      }
+    });
+
     console.log('All scripts OK');
   } catch (error) {
     console.log(error);

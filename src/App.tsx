@@ -82,6 +82,7 @@ import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
 import { RecoilRoot } from 'recoil';
 import SimplePage from './pages/SimplePage';
+import ChatPage from './pages/Chat';
 
 const StyledToastContainer = styled(ToastContainer)`
   & .Toastify__toast-body {
@@ -213,6 +214,12 @@ const App: React.FC = () => {
                 <ProtectedRoute
                   path="/email-verification"
                   component={EmailVerificationPage}
+                  exact={true}
+                />
+
+                <ProtectedRoute
+                  path="/chat"
+                  component={ChatPage}
                   exact={true}
                 />
 
