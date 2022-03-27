@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
@@ -8,6 +9,7 @@ import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
+import { TuumTechScriptService } from 'src/services/script.service';
 import { SpaceService } from 'src/services/space.service';
 import { StyledButton } from 'src/elements/buttons';
 import { DidSnippetSvg } from 'src/elements/DidSnippet';
@@ -17,6 +19,7 @@ import defaultAvatar from 'src/assets/icon/dp.png';
 import icon_shield from 'src/assets/icon/shield.svg';
 import style from './About.module.scss';
 import { showNotify } from 'src/utils/notify';
+import { getDIDString } from 'src/utils/did';
 
 export const HorDOMSpace16 = styled(IonRow)`
   padding: 8px 0px;
@@ -36,6 +39,7 @@ const AboutSpace: React.FC<IProps> = ({
   template = 'default'
 }: IProps) => {
   const [followers, setFollowers] = useState<string[]>(space.followers || []);
+  const [owners, setOwners] = useState<any[]>([]);
   const following = useMemo(() => followers.includes(session.did), [
     followers,
     session.did
@@ -49,6 +53,17 @@ const AboutSpace: React.FC<IProps> = ({
     }
     return true;
   };
+
+  useEffect(() => {
+    (async () => {
+      const dids = space.owner || [];
+      const owners: any[] = await TuumTechScriptService.searchUserWithDIDs(
+        dids
+      );
+      setOwners(owners.filter(owner => owner && owner.name));
+    })();
+  }, [space]);
+
   const onFollow = async () => {
     if (!auth()) return;
     await SpaceService.follow(session, space);
@@ -79,8 +94,27 @@ const AboutSpace: React.FC<IProps> = ({
               <img src={icon_shield} />
             </h1>
             <h2>
-              <DidSnippetSvg /> DID:iYio2....LzNf &nbsp;&nbsp;&nbsp;by{' '}
-              <span>Phantz</span>
+              {/* <DidSnippetSvg /> DID:iYio2....LzNf &nbsp;&nbsp;&nbsp;by{' '} */}
+              by&nbsp;
+              {owners.map((owner, index) => {
+                return (
+                  <>
+                    <Link
+                      to={getDIDString('/did/' + owner.did)}
+                      target={'blank'}
+                    >
+                      <span>{owner.name}</span>
+                    </Link>
+                    {`${
+                      index >= owners.length - 2
+                        ? index === owners.length - 2
+                          ? ' and '
+                          : ''
+                        : ', '
+                    }`}
+                  </>
+                );
+              })}
             </h2>
           </div>
         </IonRow>
