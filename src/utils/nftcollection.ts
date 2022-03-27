@@ -3,7 +3,7 @@ import { TuumTechScriptService } from 'src/services/script.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { CredentialType } from 'src/services/didcreds.service';
 
-export const getOwners = async (assets: any[]) => {
+export const getOwners = async (assets: any[], network: string) => {
   const users = await TuumTechScriptService.getAllUsers();
   const didDocuments: DIDDocument[] = await Promise.all(
     users
@@ -22,10 +22,10 @@ export const getOwners = async (assets: any[]) => {
           const address = vc.subject.getProperty(key.toLowerCase());
           return address === owner;
         };
-        return (
-          verifyAddress(CredentialType.ETHAddress) ||
-          verifyAddress(CredentialType.EIDAddress) ||
-          verifyAddress(CredentialType.ESCAddress)
+        return verifyAddress(
+          network.toLowerCase() === 'ethereum'
+            ? CredentialType.ETHAddress
+            : CredentialType.ESCAddress
         );
       }
     );
