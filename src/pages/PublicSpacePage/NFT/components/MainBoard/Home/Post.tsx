@@ -15,7 +15,8 @@ interface IProps {}
 const Post: React.FC<IProps> = ({}: IProps) => {
   return (
     <CardOverview template={'default'}>
-      <CardHeader>
+      <CardHeader><h6>Coming soon</h6></CardHeader>
+      {/* <CardHeader>
         <IonRow className={style['creator']}>
           <img src={img_nft_item} />
           <div>
@@ -25,8 +26,8 @@ const Post: React.FC<IProps> = ({}: IProps) => {
             <h2>2 days ago</h2>
           </div>
         </IonRow>
-      </CardHeader>
-      <CardContent>
+      </CardHeader> */}
+      {/* <CardContent>
         <IonRow>
           <p>
             Hey apes, meant to get this out last night but it's been kind of a
@@ -54,7 +55,7 @@ const Post: React.FC<IProps> = ({}: IProps) => {
           </div>
         </IonRow>
         <IonRow></IonRow>
-      </CardContent>
+      </CardContent> */}
     </CardOverview>
   );
 };

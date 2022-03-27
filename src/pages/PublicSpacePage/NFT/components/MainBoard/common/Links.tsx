@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  IonRow,
-  IonCol,
-  IonCardTitle
-} from '@ionic/react';
+import { IonRow, IonCol, IonCardTitle } from '@ionic/react';
 import {
   CardOverview,
   CardHeader,
@@ -28,15 +24,15 @@ const Follower: React.FC<IProps> = ({ template = 'default' }: IProps) => {
       <CardHeader>
         <IonRow className="ion-justify-content-between ion-no-padding">
           <IonCol className="ion-no-padding">
-            <IonCardTitle>Links</IonCardTitle>
+            <IonCardTitle>Links (Coming soon)</IonCardTitle>
           </IonCol>
           <IonCol size="auto" className="ion-no-padding">
-            <LinkStyleSpan>View all</LinkStyleSpan>
+            <LinkStyleSpan style={{ opacity: 0.5 }}>View all</LinkStyleSpan>
           </IonCol>
         </IonRow>
       </CardHeader>
       <CardContent>
-        <IonRow>
+        {/* <IonRow>
           <IonCol className={style.link} size="6">
             <div className={style.logo}>
               <img src={icon_linkedin} />
@@ -79,7 +75,7 @@ const Follower: React.FC<IProps> = ({ template = 'default' }: IProps) => {
               <h2>@kpwood</h2>
             </div>
           </IonCol>
-        </IonRow>
+        </IonRow> */}
       </CardContent>
     </CardOverview>
   );

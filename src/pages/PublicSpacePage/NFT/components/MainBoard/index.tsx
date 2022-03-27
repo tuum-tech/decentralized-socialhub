@@ -30,7 +30,7 @@ const MainBoard: React.FC<IProps> = ({ space, renderSignal }: IProps) => {
           className={(active === 'chat' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => setActive('chat')}
         >
-          <IonLabel className="tab-label">Chat</IonLabel>
+          <IonLabel className="tab-label">Chat(Coming soon)</IonLabel>
         </IonItem>
         <IonItem
           className={
@@ -44,21 +44,21 @@ const MainBoard: React.FC<IProps> = ({ space, renderSignal }: IProps) => {
           className={(active === 'community' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => setActive('community')}
         >
-          <IonLabel className="tab-label">Community</IonLabel>
+          <IonLabel className="tab-label">Community(Coming soon)</IonLabel>
         </IonItem>
         <IonItem
           className={(active === 'members' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => setActive('members')}
         >
-          <IonLabel className="tab-label">Members Access</IonLabel>
+          <IonLabel className="tab-label">Members Access(Coming soon)</IonLabel>
         </IonItem>
       </IonList>
 
       {active === 'home' && <Home space={space} />}
-      {active === 'chat' && <Chat />}
+      {/* {active === 'chat' && <Chat />} */}
       {active === 'collection' && <Collection space={space} />}
-      {active === 'community' && <Community space={space} />}
-      {active === 'members' && <Members space={space} />}
+      {/* {active === 'community' && <Community space={space} />} */}
+      {/* {active === 'members' && <Members space={space} />} */}
     </TabsContainer>
   );
 };
