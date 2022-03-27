@@ -19,11 +19,13 @@ const Grid = styled(IonGrid)`
 interface IProps {
   template?: string;
   assets: any[];
+  viewAll: () => void;
 }
 
 const Collection: React.FC<IProps> = ({
   template = 'default',
-  assets
+  assets,
+  viewAll
 }: IProps) => {
   return (
     <CardOverview template={template}>
@@ -33,7 +35,7 @@ const Collection: React.FC<IProps> = ({
             <IonCardTitle>NFT Collection</IonCardTitle>
           </IonCol>
           <IonCol size="auto" className="ion-no-padding">
-            <LinkStyleSpan>View all</LinkStyleSpan>
+            <LinkStyleSpan onClick={viewAll}>View all</LinkStyleSpan>
           </IonCol>
         </IonRow>
       </CardHeader>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonList, IonLabel, IonItem } from '@ionic/react';
 import { TabsContainer } from 'src/components/profile/ProfileComponent/PublicProfileTabs';
 import Home from './Home';
@@ -9,10 +9,14 @@ import Members from './Members';
 
 interface IProps {
   space: any;
+  renderSignal: any;
 }
 
-const MainBoard: React.FC<IProps> = ({ space }: IProps) => {
+const MainBoard: React.FC<IProps> = ({ space, renderSignal }: IProps) => {
   const [active, setActive] = useState('home');
+  useEffect(() => {
+    setActive(renderSignal.tab);
+  }, [renderSignal]);
   return (
     <TabsContainer template="default">
       <IonList>

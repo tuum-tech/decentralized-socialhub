@@ -11,18 +11,18 @@ const Container = styled.div`
 `;
 interface IProps {
   space: any;
+  viewAllNFTCollectionAssets: () => void;
 }
 
-const Highlight: React.FC<IProps> = ({ space }: IProps) => {
+const Highlight: React.FC<IProps> = ({
+  space,
+  viewAllNFTCollectionAssets
+}: IProps) => {
   const [assets, setAssets] = useState([]);
   useEffect(() => {
     (async () => {
       if (space && space.guid) {
-        const { data }: any = await getNFTCollectionAssets(
-          space.guid,
-          0,
-          9
-        );
+        const { data }: any = await getNFTCollectionAssets(space.guid, 0, 9);
         setAssets(data.assets);
       }
     })();
@@ -30,7 +30,7 @@ const Highlight: React.FC<IProps> = ({ space }: IProps) => {
   return (
     <Container>
       <AboutSpace space={space} />
-      <Collection assets={assets} />
+      <Collection assets={assets} viewAll={viewAllNFTCollectionAssets} />
       <Category />
     </Container>
   );
