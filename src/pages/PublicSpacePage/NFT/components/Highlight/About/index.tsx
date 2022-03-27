@@ -44,6 +44,8 @@ const AboutSpace: React.FC<IProps> = ({
     followers,
     session.did
   ]);
+  const isExpandable = space.description.length > 250;
+  const [isExpanded, setIsExpanded] = useState(!isExpandable);
   const isOwner = space.owner && space.owner.includes(session.did);
   const isLoggedIn = window.localStorage.getItem('isLoggedIn');
   const auth = () => {
@@ -120,15 +122,25 @@ const AboutSpace: React.FC<IProps> = ({
         </IonRow>
         <HorDOMSpace16 />
         <IonRow>
-          <span>
-            {space.description ||
-              'From the jungle to your hood, Phantz are taking over. One dusty desert day, an elephant noticed something shiny sticking out of the sand-Wayfarer sunglasses. The second the elephant placed them'}
+          <span className={isExpanded ? style['expanded'] : style['collapsed']}>
+            {space.description}
           </span>
         </IonRow>
-        <HorDOMSpace16 />
-        <IonRow>
-          <span className={style['btn-expand']}> + Expand</span>
-        </IonRow>
+        {isExpandable && (
+          <>
+            <HorDOMSpace16 />
+            <IonRow>
+              <span
+                className={style['btn-expand']}
+                onClick={() => {
+                  setIsExpanded(!isExpanded);
+                }}
+              >
+                {isExpanded ? '- Collapse' : '+ Expand'}
+              </span>
+            </IonRow>
+          </>
+        )}
         <HorDOMSpace20 />
         <IonRow>
           {!isOwner && (
