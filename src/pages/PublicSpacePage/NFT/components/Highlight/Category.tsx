@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonRow, IonCardTitle, IonCol } from '@ionic/react';
+import { IonGrid, IonRow, IonCardTitle, IonCol } from '@ionic/react';
 import styled from 'styled-components';
 import {
   CardOverview,
@@ -52,8 +52,9 @@ const Category: React.FC<IProps> = ({
         </IonRow>
       </CardHeader>
       <CardContent>
-        <IonRow>
-          {/* <ItemWrapper>
+        <IonGrid>
+          <IonRow>
+            {/* <ItemWrapper>
             <img src={space_cat1} />
             <span>Music</span>
           </ItemWrapper>
@@ -77,13 +78,14 @@ const Category: React.FC<IProps> = ({
             <img src={space_cat6} />
             <span>Tourism</span>
           </ItemWrapper> */}
-          {space.publicFields &&
-            space.publicFields.map((field: string) => (
-              <ItemWrapper key={field}>
-                <span>{field}</span>
-              </ItemWrapper>
-            ))}
-        </IonRow>
+            {space.tags &&
+              space.tags.map((tag: string) => (
+                <ItemWrapper key={tag}>
+                  <span>{tag}</span>
+                </ItemWrapper>
+              ))}
+          </IonRow>
+        </IonGrid>
       </CardContent>
     </CardOverview>
   );

@@ -96,6 +96,7 @@ let run = async () => {
               avatar: '$params.avatar',
               coverPhoto: '$params.coverPhoto',
               publicFields: '$params.publicFields',
+              tags: '$params.tags',
               followers: '$params.followers',
               meta: '$params.meta'
             }

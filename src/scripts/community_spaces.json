@@ -7,6 +7,7 @@
     "coverPhoto": "",
     "owner": ["did:elastos:iX95VHMj4KhxfAzUHzUft6L2bEiWNWWjTS"],
     "publicFields": [],
+    "tags": [],
     "meta": {}
   },
   {
@@ -17,6 +18,7 @@
     "coverPhoto": "",
     "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
     "publicFields": [],
+    "tags": [],
     "meta": {
       "network": "Ethereum",
       "address": "0x095371DeE504C7e176f1447387F5dc5C616a42ea",
@@ -31,7 +33,8 @@
     "avatar": "",
     "coverPhoto": "",
     "owner": ["did:elastos:iX95VHMj4KhxfAzUHzUft6L2bEiWNWWjTS"],
-    "publicFields": [
+    "publicFields": [],
+    "tags": [
       "ERC-721",
       "Governance",
       "Social Token",
@@ -53,7 +56,8 @@
     "avatar": "",
     "coverPhoto": "",
     "owner": ["did:elastos:iX95VHMj4KhxfAzUHzUft6L2bEiWNWWjTS"],
-    "publicFields": [
+    "publicFields": [],
+    "tags": [
       "ERC-721",
       "Membership",
       "Collectibles",
