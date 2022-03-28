@@ -270,21 +270,21 @@ export class ProfileService {
             'education',
             userSession
           );
-          educationDTO.items.push(educationItem);
+          educationDTO.items.push(edItem);
         }
         /* Calculate verified education credentials ends */
 
         /* Calculate verified experience credentials starts */
         for (let experienceItem of experienceItems) {
-          let exItem: EducationItem = JSON.parse(
+          let exItem: ExperienceItem = JSON.parse(
             JSON.stringify(experienceItem)
           );
           exItem.verifiers = await ProfileService.getVerifiers(
             experienceItem,
-            'education',
+            'experience',
             userSession
           );
-          experienceDTO.items.push(experienceItem);
+          experienceDTO.items.push(exItem);
         }
         /* Calculate verified experience credentials ends */
       }
@@ -292,12 +292,26 @@ export class ProfileService {
 
     // add name credentials
     const nameCredential = {
-      name: basicDTO.name,
+      name: userSession.name,
       verifiers: await ProfileService.getVerifiers({}, 'name', userSession)
     };
 
+    let emailCredential = {
+      email: '',
+      verifiers: []
+    };
+    if (userSession.loginCred?.email) {
+      emailCredential.email = userSession.loginCred.email;
+      emailCredential.verifiers = await ProfileService.getVerifiers(
+        {},
+        'email',
+        userSession
+      );
+    }
+
     return {
       name: nameCredential,
+      email: emailCredential,
       basicDTO,
       educationDTO,
       experienceDTO,
@@ -1061,6 +1075,10 @@ export const defaultUserInfo: ISessionItem = {
 export const defaultFullProfile = {
   name: {
     name: '',
+    verifiers: []
+  },
+  email: {
+    email: '',
     verifiers: []
   },
   basicDTO: {

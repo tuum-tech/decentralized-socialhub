@@ -541,11 +541,12 @@ export class VerificationService {
       const key = Object.keys(subjectProperties)[0];
 
       let issuerDid = '';
-      if (
-        key.toLowerCase() !== type.toLowerCase() &&
-        key.toLowerCase().startsWith(type.toLowerCase())
-      ) {
+      if (type.toLowerCase() === key.toLowerCase()) {
+        issuerDid = JSON.parse(JSON.stringify(vcs[i].issuer));
+      } else {
+        // This is to handle education & experience as they begin with 'education_' and 'experience_'
         const credential = Object.values(subjectProperties)[0] as any;
+
         if (
           x.institution === credential.institution &&
           x.program === credential.program &&
