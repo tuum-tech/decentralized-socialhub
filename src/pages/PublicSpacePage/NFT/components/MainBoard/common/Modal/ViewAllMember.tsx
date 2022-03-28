@@ -35,7 +35,7 @@ const ViewAllMember = ({ space, onClose }: Props) => {
       await fetchMoreData();
     })();
   }, []);
-  
+
   const fetchMoreData = async () => {
     const { data }: any = await getNFTCollectionAssets(
       space.guid,
@@ -47,7 +47,10 @@ const ViewAllMember = ({ space, onClose }: Props) => {
     setTotalCount(totalCount);
 
     if (assets.length > 0) {
-      const _members_ = await getOwners(assets, space.meta.network);
+      const _members_ = await getOwners(
+        assets,
+        space.meta.network || 'Ethereum'
+      );
       setOffset(offset + limit);
       setMembers(members.concat(_members_));
     } else {

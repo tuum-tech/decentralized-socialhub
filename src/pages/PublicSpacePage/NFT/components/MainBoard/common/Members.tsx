@@ -36,7 +36,10 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
         // let assets = data.assets;
         // assets[0].owner = '0x667ae4c525C9a69e379D9449654591095d5dA025';
         /**************/
-        const members = await getOwners(assets, space.meta.network);
+        const members = await getOwners(
+          assets,
+          space.meta.network || 'Ethereum'
+        );
         console.log(members);
         setFirstIV(members);
       }

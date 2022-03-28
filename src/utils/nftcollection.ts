@@ -16,6 +16,7 @@ export const getOwners = async (assets: any[], network: string) => {
     const { owner } = asset;
     const document: DIDDocument | undefined = didDocuments.find(
       (document: DIDDocument) => {
+        if (!document) return false;
         const verifyAddress = (key: string) => {
           const vc = document.getCredential(key.toLowerCase());
           if (!vc) return false;

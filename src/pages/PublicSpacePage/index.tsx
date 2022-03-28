@@ -22,7 +22,11 @@ import Navbar from 'src/components/profile/ProfileComponent/PublicNavbar';
 import { getDIDString } from 'src/utils/did';
 
 import { ContentRow, Container, ProfileComponentContainer } from './layouts';
-import { defaultSpace, SpaceService } from 'src/services/space.service';
+import {
+  defaultSpace,
+  SpaceCategory,
+  SpaceService
+} from 'src/services/space.service';
 import { SpaceSvg } from 'src/components/layouts/LeftSideMenu/components/icons';
 import NFTSpace from './NFT';
 interface MatchParams {
@@ -108,7 +112,7 @@ const PublicSpacePage: React.FC<PageProps> = ({
           >
             <IonCol size="10" className="ion-no-padding">
               <ProfileComponentContainer>
-                {did ? (
+                {spaceProfile.category === SpaceCategory.Personal && (
                   <ProfileComponent
                     scrollToElement={scrollToElement}
                     aboutRef={aboutRef}
@@ -116,8 +120,17 @@ const PublicSpacePage: React.FC<PageProps> = ({
                     profile={spaceProfile}
                     loading={loading}
                   />
-                ) : (
+                )}
+                {spaceProfile.category === SpaceCategory.NFT && (
                   <NFTSpace space={spaceProfile} />
+                )}
+                {spaceProfile.category === SpaceCategory.WTP && (
+                  <ProfileComponent
+                    scrollToElement={scrollToElement}
+                    aboutRef={aboutRef}
+                    profile={spaceProfile}
+                    loading={loading}
+                  />
                 )}
               </ProfileComponentContainer>
             </IonCol>
