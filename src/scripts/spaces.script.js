@@ -26,16 +26,22 @@ let run = async () => {
       const saved = await client.Database.findOne('community_spaces', {
         sid: space.sid
       });
-      console.log(saved);
       if (saved) {
+        const update = { ...saved, ...space };
+        delete update._id;
+        delete update.created;
+        delete update.modified;
         await client.Database.updateOne(
           'community_spaces',
           { sid: space.sid },
-          { $set: space }
+          { $set: update }
         );
       } else {
         await client.Database.insertOne('community_spaces', {
           ...space,
+          avatar: '',
+          coverPhoto: '',
+          description: '',
           guid: Guid.create()
         });
       }

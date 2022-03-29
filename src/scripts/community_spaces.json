@@ -2,10 +2,7 @@
   {
     "sid": 0,
     "name": "Welcome to Profile",
-    "description": "",
     "category": "Welcome to Profile",
-    "avatar": "",
-    "coverPhoto": "",
     "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
     "publicFields": ["about", "follower"],
     "tags": ["Welcome to Profile"],
@@ -14,10 +11,7 @@
   {
     "sid": 1,
     "name": "BoredApeYatchClub",
-    "description": "",
     "category": "NFT Collection",
-    "avatar": "",
-    "coverPhoto": "",
     "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
     "publicFields": ["about", "follower"],
     "tags": [],
@@ -31,10 +25,7 @@
   {
     "sid": 2,
     "name": "The Bella Series",
-    "description": "The Bella Series. Bella represents the spirit of Web3. Dubbed “The Pearls of Elastos”, there are only 500 Bellas total. The Bella Series was the first-ever full collection to be launched on Elastos Web3 and is directly tied to Elacity, the Web3 Marketplace and Multiverse. The Bella Club represents a home for long time Elastos supporters and art collectors to socialise, support and help build the Web3 vision through Elacity. All Bellas sold out and are in the hands of the community today. As gatekeepers, owners can choose who gets to own an exclusive Bella membership card.",
     "category": "NFT Collection",
-    "avatar": "",
-    "coverPhoto": "",
     "owner": ["did:elastos:inpCykPj1JMroJfjFvDAGnEGUCGGG3ptwQ"],
     "publicFields": ["about", "follower"],
     "tags": [
@@ -55,10 +46,7 @@
   {
     "sid": 3,
     "name": "Phantz Club",
-    "description": "A collection of only 2822 Phantz, ever. Your NFT is more than a digital rarity, it’s your membership card. With the help of a technicolor portal, and metaverse magic, Phantz vibe in Phantazy Land. In Phantazy Land, the community makes the rules. The Phantz Club is exclusive, available only to holders.",
     "category": "NFT Collection",
-    "avatar": "",
-    "coverPhoto": "",
     "owner": ["did:elastos:iUDaseyHnQUmwp6RSABCy4ZPCQCaBTDDMS"],
     "publicFields": ["about", "follower"],
     "tags": [

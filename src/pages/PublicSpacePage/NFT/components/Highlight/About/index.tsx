@@ -44,7 +44,7 @@ const AboutSpace: React.FC<IProps> = ({
     followers,
     session.did
   ]);
-  const isExpandable = space.description.length > 250;
+  const isExpandable = (space.description || '').length > 250;
   const [isExpanded, setIsExpanded] = useState(!isExpandable);
   const isOwner = space.owner && space.owner.includes(session.did);
   const isLoggedIn = window.localStorage.getItem('isLoggedIn');

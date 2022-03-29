@@ -2,7 +2,7 @@
  * Page
  */
 import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -18,6 +18,7 @@ import { InferMappedProps, SubState } from './types';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import style from './style.module.scss';
 import ProfileEditor from './components/ProfileEditor';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { defaultSpace, SpaceService } from 'src/services/space.service';
 
 import arrowLeft from 'src/assets/icon/arrow-left-square.svg';
@@ -77,6 +78,14 @@ const ManagerPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   const type = query.get('type');
   const { session } = props;
   const [spaceProfile, setSpaceProfile] = useState<any>(defaultSpace);
+  const isOwner = useMemo(() => {
+    const owners = spaceProfile.owner
+      ? typeof spaceProfile.owner === 'string'
+        ? [spaceProfile.owner]
+        : spaceProfile.owner
+      : [];
+    return owners.includes(session.did);
+  }, [spaceProfile, session]);
   const capitalize = (s: string) => {
     return s.charAt(0).toUpperCase() + s.slice(1);
   };
@@ -120,9 +129,10 @@ const ManagerPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
                     </div>
                   </Flex>
                 </Header>
-
-                {session && session.did && session.did !== '' && (
+                {isOwner ? (
                   <ProfileEditor session={session} profile={spaceProfile} />
+                ) : (
+                  <LoadingIndicator loadingText="Loading..." />
                 )}
               </IonCol>
             </IonRow>
