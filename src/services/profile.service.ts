@@ -1,6 +1,9 @@
 import { Guid } from 'guid-typescript';
 import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/Services/Scripting.Service';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import {
+  DIDDocument,
+  VerifiableCredential
+} from '@elastosfoundation/did-js-sdk/';
 import { ActivityResponse } from 'src/pages/ActivityPage/types';
 import { VerificationService } from 'src/services/verification.service';
 
@@ -36,6 +39,35 @@ export class ProfileService {
       type,
       ProfileService.didDocument
     );
+  };
+
+  static getVerifierFromVc = async (vc: any) => {
+    let verifier = {
+      name: '',
+      did: ''
+    };
+    if (!vc) return verifier;
+
+    if (vc.issuer !== '') {
+      const searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
+      let verifiersRes: any = await searchServiceLocal.getUsersByDIDs(
+        [vc.issuer],
+        100,
+        0
+      );
+      let verifiers = getItemsFromData(verifiersRes, 'get_users_by_dids');
+      verifiers = verifiers.map((v: any) => {
+        return {
+          name: v.name,
+          did: v.did
+        };
+      });
+      if (verifiers.length > 0) {
+        verifier = verifiers[0];
+      }
+    }
+
+    return verifier;
   };
 
   static getDidDocument = async (
@@ -100,6 +132,14 @@ export class ProfileService {
     did: string,
     userSession: ISessionItem
   ): Promise<ProfileDTO> {
+    let nameCredential = {
+      name: userSession.name,
+      verifiers: [] as any[]
+    };
+    let emailCredential = {
+      email: '',
+      verifiers: [] as any[]
+    };
     let basicDTO: any = {};
     let educationDTO: EducationDTO = {
       items: [],
@@ -270,7 +310,15 @@ export class ProfileService {
             'education',
             userSession
           );
-          educationDTO.items.push(edItem);
+          if (
+            edItem.verifiers &&
+            edItem.verifiers.length > 0 &&
+            edItem.verifiers[0].did !== userSession.did
+          ) {
+            educationDTO.items.push(edItem);
+          } else {
+            educationDTO.items.push(educationItem);
+          }
         }
         /* Calculate verified education credentials ends */
 
@@ -284,29 +332,50 @@ export class ProfileService {
             'experience',
             userSession
           );
-          experienceDTO.items.push(exItem);
+          if (
+            exItem.verifiers &&
+            exItem.verifiers.length > 0 &&
+            exItem.verifiers[0].did !== userSession.did
+          ) {
+            experienceDTO.items.push(exItem);
+          } else {
+            experienceDTO.items.push(experienceItem);
+          }
         }
         /* Calculate verified experience credentials ends */
+
+        const allVcsRes: IRunScriptResponse<BasicProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_verifiable_credentials',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+            }
+          }
+        );
+        let allVcsItems: [] = getItemsFromData(
+          allVcsRes,
+          'get_verifiable_credentials'
+        );
+        for (let vcItem of allVcsItems) {
+          const item: any = JSON.parse(JSON.stringify(vcItem));
+
+          const vc = item.vc;
+          for (let s in vc.credentialSubject) {
+            const verifier = await ProfileService.getVerifierFromVc(vc);
+            if (s === 'name' && verifier.did !== userSession.did) {
+              nameCredential.verifiers = [verifier];
+            } else if (
+              s === 'email' &&
+              userSession.loginCred?.email &&
+              verifier.did !== userSession.did
+            ) {
+              emailCredential.email = userSession.loginCred.email;
+              emailCredential.verifiers = [verifier];
+            }
+          }
+        }
       }
-    }
-
-    // add name credentials
-    const nameCredential = {
-      name: userSession.name,
-      verifiers: await ProfileService.getVerifiers({}, 'name', userSession)
-    };
-
-    let emailCredential = {
-      email: '',
-      verifiers: []
-    };
-    if (userSession.loginCred?.email) {
-      emailCredential.email = userSession.loginCred.email;
-      emailCredential.verifiers = await ProfileService.getVerifiers(
-        {},
-        'email',
-        userSession
-      );
     }
 
     return {
