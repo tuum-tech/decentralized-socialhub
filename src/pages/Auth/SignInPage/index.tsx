@@ -74,7 +74,7 @@ const SignInPage: React.FC<RouteComponentProps<
         return c.getId().getFragment() === 'name';
       });
       let name = nameCredential!.getSubject().getProperty('name');
-      let issuer = nameCredential!.getIssuer();
+      let issuer = nameCredential!.getId().getDid();
       let did = 'did:elastos:' + issuer.getMethodSpecificId();
       let mnemonic = '';
       await didService.storeDocument(await issuer.resolve());
