@@ -7,8 +7,8 @@
     "avatar": "",
     "coverPhoto": "",
     "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
-    "publicFields": [],
-    "tags": [],
+    "publicFields": ["about", "follower"],
+    "tags": ["Welcome to Profile"],
     "meta": {}
   },
   {
@@ -19,7 +19,7 @@
     "avatar": "",
     "coverPhoto": "",
     "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
-    "publicFields": [],
+    "publicFields": ["about", "follower"],
     "tags": [],
     "meta": {
       "network": "Ethereum",
@@ -36,7 +36,7 @@
     "avatar": "",
     "coverPhoto": "",
     "owner": ["did:elastos:inpCykPj1JMroJfjFvDAGnEGUCGGG3ptwQ"],
-    "publicFields": [],
+    "publicFields": ["about", "follower"],
     "tags": [
       "ERC-721",
       "Governance",
@@ -60,7 +60,7 @@
     "avatar": "",
     "coverPhoto": "",
     "owner": ["did:elastos:iUDaseyHnQUmwp6RSABCy4ZPCQCaBTDDMS"],
-    "publicFields": [],
+    "publicFields": ["about", "follower"],
     "tags": [
       "ERC-721",
       "Membership",
