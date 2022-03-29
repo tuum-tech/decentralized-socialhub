@@ -6,7 +6,7 @@
     "category": "Welcome to Profile",
     "avatar": "",
     "coverPhoto": "",
-    "owner": ["did:elastos:iX95VHMj4KhxfAzUHzUft6L2bEiWNWWjTS"],
+    "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
     "publicFields": [],
     "tags": [],
     "meta": {}
@@ -35,7 +35,7 @@
     "category": "NFT Collection",
     "avatar": "",
     "coverPhoto": "",
-    "owner": ["did:elastos:iX95VHMj4KhxfAzUHzUft6L2bEiWNWWjTS"],
+    "owner": ["did:elastos:inpCykPj1JMroJfjFvDAGnEGUCGGG3ptwQ"],
     "publicFields": [],
     "tags": [
       "ERC-721",
@@ -59,7 +59,7 @@
     "category": "NFT Collection",
     "avatar": "",
     "coverPhoto": "",
-    "owner": ["did:elastos:iX95VHMj4KhxfAzUHzUft6L2bEiWNWWjTS"],
+    "owner": ["did:elastos:iUDaseyHnQUmwp6RSABCy4ZPCQCaBTDDMS"],
     "publicFields": [],
     "tags": [
       "ERC-721",
@@ -71,8 +71,8 @@
     ],
     "meta": {
       "network": "Elastos Smart Contract Chain",
-      "address": "0x23f6082a2b4c00d31c95c5b3056defaf79926015",
-      "ref": "https://ela.city/marketplace/collections/0x23f6082a2b4c00d31c95c5b3056defaf79926015",
+      "address": "0xfDdE60866508263e30C769e8592BB0f8C3274ba7",
+      "ref": "https://ela.city/marketplace/collections/0xfDdE60866508263e30C769e8592BB0f8C3274ba7",
       "slug": "Phantz Club"
     }
   }
