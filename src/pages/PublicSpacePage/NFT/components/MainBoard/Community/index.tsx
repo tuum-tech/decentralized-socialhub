@@ -20,9 +20,11 @@ const Community: React.FC<IProps> = ({ space }: IProps) => {
         <IonCol size="4">
           <Boards />
           <Members space={space} />
-          {space.followers && space.followers.length > 0 && (
-            <Follower space={space} />
-          )}
+          {space.followers &&
+            space.followers.length > 0 &&
+            space.publicFields.includes('follower') && (
+              <Follower space={space} />
+            )}
         </IonCol>
       </IonRow>
     </Wrapper>

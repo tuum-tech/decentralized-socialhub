@@ -20,9 +20,11 @@ const Home: React.FC<IProps> = ({ space }: IProps) => {
         <IonCol size="4">
           <Links />
           <Members space={space} />
-          {space.followers && space.followers.length > 0 && (
-            <Follower space={space} />
-          )}
+          {space.followers &&
+            space.followers.length > 0 &&
+            space.publicFields.includes('follower') && (
+              <Follower space={space} />
+            )}
         </IonCol>
       </IonRow>
     </Wrapper>

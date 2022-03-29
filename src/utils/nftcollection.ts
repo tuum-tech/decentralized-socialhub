@@ -20,6 +20,11 @@ export const getOwners = async (assets: any[], network: string) => {
         const verifyAddress = (key: string) => {
           const vc = document.getCredential(key.toLowerCase());
           if (!vc) return false;
+
+          /// confirm if wallet address credential is verified by Tuum Tech
+          const issuer = vc.getIssuer().toString();
+          if (issuer !== process.env.REACT_APP_APPLICATION_DID) return false;
+
           const address = vc.subject.getProperty(key.toLowerCase());
           return address === owner;
         };

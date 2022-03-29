@@ -15,14 +15,33 @@ let run = async () => {
   const indexed_spaces = initial_spaces.map(space => {
     return {
       ...space,
-      guid: Guid.create(),
       followers:
         space.category === 'Welcome to Profile'
           ? dids.filter(did => did.startsWith('did:'))
           : space.owner || []
     };
   });
-  await client.Database.deleteMany('community_spaces', {});
-  await client.Database.insertMany('community_spaces', indexed_spaces);
+  Promise.all(
+    indexed_spaces.map(async space => {
+      const saved = await client.Database.findOne('community_spaces', {
+        sid: space.sid
+      });
+      console.log(saved);
+      if (saved) {
+        await client.Database.updateOne(
+          'community_spaces',
+          { sid: space.sid },
+          { $set: space }
+        );
+      } else {
+        await client.Database.insertOne('community_spaces', {
+          ...space,
+          guid: Guid.create()
+        });
+      }
+    })
+  );
+  // await client.Database.deleteMany('community_spaces', {});
+  // await client.Database.insertMany('community_spaces', indexed_spaces);
 };
 run();

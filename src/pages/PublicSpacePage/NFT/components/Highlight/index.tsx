@@ -29,7 +29,7 @@ const Highlight: React.FC<IProps> = ({
   }, [space]);
   return (
     <Container>
-      <AboutSpace space={space} />
+      {space.publicFields.includes('about') && <AboutSpace space={space} />}
       <Collection assets={assets} viewAll={viewAllNFTCollectionAssets} />
       <Category space={space} />
     </Container>
