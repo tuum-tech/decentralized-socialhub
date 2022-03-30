@@ -88,7 +88,7 @@ const EmailVerificationDetailContent: React.FC<Props> = ({
           pathname: '/generate-did',
           state: {
             name: credentials.name,
-            did: '',
+            did: credentials.did,
             loginCred: {
               email: credentials.loginCred.email
             },
