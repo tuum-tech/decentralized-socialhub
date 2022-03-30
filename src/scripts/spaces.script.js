@@ -27,10 +27,15 @@ let run = async () => {
         sid: space.sid
       });
       if (saved) {
-        const update = { ...saved, ...space };
-        delete update._id;
-        delete update.created;
-        delete update.modified;
+        const update = {
+          name: space.name,
+          category: space.category,
+          owner: space.owner,
+          publicFields: space.publicFields,
+          tags: space.tags,
+          meta: space.meta,
+          followers: [...new Set(saved.followers.concat(space.followers))]
+        };
         await client.Database.updateOne(
           'community_spaces',
           { sid: space.sid },
