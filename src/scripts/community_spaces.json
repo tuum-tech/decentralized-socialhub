@@ -4,7 +4,6 @@
     "name": "Welcome to Profile",
     "category": "Welcome to Profile",
     "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
-    "publicFields": ["about", "follower"],
     "tags": ["Welcome to Profile"],
     "meta": {}
   },
@@ -13,7 +12,6 @@
     "name": "BoredApeYatchClub",
     "category": "NFT Collection",
     "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
-    "publicFields": ["about", "follower"],
     "tags": [],
     "meta": {
       "network": "Ethereum",
@@ -27,7 +25,6 @@
     "name": "The Bella Series",
     "category": "NFT Collection",
     "owner": ["did:elastos:inpCykPj1JMroJfjFvDAGnEGUCGGG3ptwQ"],
-    "publicFields": ["about", "follower"],
     "tags": [
       "ERC-721",
       "Governance",
@@ -48,7 +45,6 @@
     "name": "Phantz Club",
     "category": "NFT Collection",
     "owner": ["did:elastos:iUDaseyHnQUmwp6RSABCy4ZPCQCaBTDDMS"],
-    "publicFields": ["about", "follower"],
     "tags": [
       "ERC-721",
       "Membership",

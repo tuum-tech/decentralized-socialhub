@@ -15,6 +15,7 @@ import common_style from '../style.module.scss';
 import { getNFTCollectionAssets } from '../../../../fetchapi';
 import { getDIDString } from 'src/utils/did';
 import { getOwners } from 'src/utils/nftcollection';
+import { shortenAddress } from 'src/utils/web3';
 
 interface Props {
   space: any;
@@ -34,9 +35,9 @@ const ViewAllMember = ({ space, onClose }: Props) => {
     (async () => {
       await fetchMoreData();
     })();
-  }, []);
+  }, [fetchMoreData]);
 
-  const fetchMoreData = async () => {
+  const fetchMoreData = useCallback(async () => {
     const { data }: any = await getNFTCollectionAssets(
       space.guid,
       offset,
@@ -56,7 +57,7 @@ const ViewAllMember = ({ space, onClose }: Props) => {
     } else {
       setHasMore(false);
     }
-  };
+  });
   return (
     <div className={style['modal']}>
       <div className={style['modal_container']}>
@@ -93,7 +94,9 @@ const ViewAllMember = ({ space, onClose }: Props) => {
                         <span className={style['name']}>{member.name}</span>
                       </Link>
                     ) : (
-                      <span className={style['name']}>{member}</span>
+                      <span className={style['name']}>
+                        {shortenAddress(member)}
+                      </span>
                     )}
                   </IonRow>
                 );

@@ -31,7 +31,6 @@ let run = async () => {
           name: space.name,
           category: space.category,
           owner: space.owner,
-          publicFields: space.publicFields,
           tags: space.tags,
           meta: space.meta,
           followers: [...new Set(saved.followers.concat(space.followers))]
@@ -47,6 +46,7 @@ let run = async () => {
           avatar: '',
           coverPhoto: '',
           description: '',
+          publicFields: ['about', 'follower'],
           guid: Guid.create()
         });
       }
