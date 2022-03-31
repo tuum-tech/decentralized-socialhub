@@ -1,0 +1,70 @@
+[
+  {
+    "sid": 0,
+    "name": "Welcome to Profile",
+    "category": "Welcome to Profile",
+    "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
+    "tags": ["Welcome to Profile"],
+    "meta": {}
+  },
+  {
+    "sid": 1,
+    "name": "The Bella Series",
+    "category": "NFT Collection",
+    "owner": ["did:elastos:inpCykPj1JMroJfjFvDAGnEGUCGGG3ptwQ"],
+    "tags": [
+      "ERC-721",
+      "Governance",
+      "Social Token",
+      "Membership",
+      "Collectibles",
+      "Art"
+    ],
+    "meta": {
+      "network": "Elastos Smart Contract Chain",
+      "address": "0xef5f768618139d0f5fa3bcbbbcaaf09fe9d7a07d",
+      "ref": "https://ela.city/marketplace/collections/0xef5f768618139d0f5fa3bcbbbcaaf09fe9d7a07d",
+      "slug": "The Bella Series"
+    }
+  },
+  {
+    "sid": 2,
+    "name": "Phantz Club",
+    "category": "NFT Collection",
+    "owner": ["did:elastos:iUDaseyHnQUmwp6RSABCy4ZPCQCaBTDDMS"],
+    "tags": [
+      "ERC-721",
+      "Membership",
+      "Collectibles",
+      "Avatar",
+      "DAO",
+      "Social Token"
+    ],
+    "meta": {
+      "network": "Elastos Smart Contract Chain",
+      "address": "0xfDdE60866508263e30C769e8592BB0f8C3274ba7",
+      "ref": "https://ela.city/marketplace/collections/0xfDdE60866508263e30C769e8592BB0f8C3274ba7",
+      "slug": "Phantz Club"
+    }
+  },
+  {
+    "sid": 3,
+    "name": "Bunny Punk",
+    "category": "NFT Collection",
+    "owner": ["did:elastos:iWtZBcqZa981z3YEoUxanCqvN7rFVDu52D"],
+    "tags": [
+      "ERC-721",
+      "Governance",
+      "Social Token",
+      "Membership",
+      "Collectibles",
+      "Art"
+    ],
+    "meta": {
+      "network": "Elastos Smart Contract Chain",
+      "address": "0xE27934fB3683872e35b8d9E57c30978e1260c614",
+      "ref": "https://ela.city/marketplace/collections/0xE27934fB3683872e35b8d9E57c30978e1260c614",
+      "slug": "Bunny Punk"
+    }
+  }
+]

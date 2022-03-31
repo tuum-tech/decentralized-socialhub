@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   IonCardTitle,
   IonCardHeader,
@@ -48,6 +48,10 @@ const BasicCard: React.FC<IProps> = ({
       [evt.target.name]: value
     });
   };
+
+  useEffect(() => {
+    setCurrentBasicDTO(sessionItem);
+  }, [sessionItem]);
 
   return (
     <IonCard className={styleWidget['overview']}>

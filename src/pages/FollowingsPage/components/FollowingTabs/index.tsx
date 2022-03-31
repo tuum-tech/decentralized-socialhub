@@ -31,61 +31,22 @@ const FollowingTabs: React.FC<Props> = ({
   searchKeyword = '',
   isSearchKeywordDID = false
 }) => {
-  const [active, setActive] = useState(tab);
-  console.log('===>people', people, following);
-
   return (
     <IonContent className={style['followingtabs']}>
-      <IonList className={style['tab-list']}>
-        <IonItem
-          className={
-            (active === 'people' ? style['tab-active'] : '') +
-            ' ' +
-            style['tab-item']
-          }
-          onClick={() => setActive('people')}
-        >
-          <IonLabel className={style['tab-label']}>People</IonLabel>
-        </IonItem>
-        <IonItem
-          className={
-            (active === 'pages' ? style['tab-active'] : '') +
-            ' ' +
-            style['tab-item']
-          }
-          onClick={() => setActive('pages')}
-        >
-          <IonLabel className={style['tab-label']}>Pages</IonLabel>
-        </IonItem>
-      </IonList>
-
-      {active === 'people' && (
-        <IonGrid className={style['tab-grid']}>
-          <IonRow>
-            {people?.items.length === 0 ? (
-              <NoConnectionComp pageType="followingPeople" />
-            ) : (
-              <PeopleCard
-                people={people}
-                following={following}
-                searchKeyword={searchKeyword}
-                size="6"
-              />
-            )}
-          </IonRow>
-        </IonGrid>
-      )}
-      {active === 'pages' && (
-        <IonGrid className={style['tab-grid']}>
-          <IonRow>
-            {pages?.items.length === 0 ? (
-              <NoConnectionComp pageType="followingPages" />
-            ) : (
-              <PagesCard pages={pages} searchKeyword={searchKeyword} size="6" />
-            )}
-          </IonRow>
-        </IonGrid>
-      )}
+      <IonGrid className={style['tab-grid']}>
+        <IonRow>
+          {people?.items.length === 0 ? (
+            <NoConnectionComp pageType="followingPeople" />
+          ) : (
+            <PeopleCard
+              people={people}
+              following={following}
+              searchKeyword={searchKeyword}
+              size="6"
+            />
+          )}
+        </IonRow>
+      </IonGrid>
     </IonContent>
   );
 };

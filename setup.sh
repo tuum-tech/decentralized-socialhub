@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-declare -a Images=("hive-node:v2.3.14" "assist-restapi-node:latest")
+declare -a Images=("hive-node:v2.5.1" "assist-restapi-node:latest")
 declare -a Containers=("hive-node" "assist-restapi-node" "restapi-mongo")
 
 function stop () {

@@ -196,6 +196,14 @@ export const CardContentContainer = styled(IonCardContent)`
   padding-left: 26px;
 `;
 
+export const CardHeader = styled(IonCardHeader)`
+  padding: 18px;
+  margin-bottom: 12px;
+`;
+export const CardContent = styled(IonCardContent)`
+  padding: 18px;
+`;
+
 export const ManagerModal = styled(IonModal)`
   --border-radius: 16px;
   --min-height: 200px;

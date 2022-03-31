@@ -8,10 +8,8 @@ import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
 import SocialCard from './SocialCard';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 
 interface Props extends InferMappedProps {
-  didDocument: DIDDocument;
   targetUser?: ISessionItem;
   setSession: (props: { session: ISessionItem }) => void;
   mode?: string;
@@ -21,18 +19,14 @@ interface Props extends InferMappedProps {
 const SocialProfiles: React.FC<Props> = ({ eProps, ...props }: Props) => {
   const user = props.targetUser ? props.targetUser : props.session;
 
-  if (props.mode === 'edit' || props.didDocument.getCredentialCount() > 0) {
-    return (
-      <SocialCard
-        sessionItem={user}
-        setSession={props.setSession}
-        diddocument={props.didDocument}
-        mode={props.mode}
-        openModal={props.openModal}
-      />
-    );
-  }
-  return <></>;
+  return (
+    <SocialCard
+      sessionItem={user}
+      setSession={props.setSession}
+      mode={props.mode}
+      openModal={props.openModal}
+    />
+  );
 };
 
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({

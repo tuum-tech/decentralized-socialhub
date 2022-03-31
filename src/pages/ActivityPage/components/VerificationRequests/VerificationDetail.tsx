@@ -153,7 +153,11 @@ const VerificationDetailContent = ({
         <ProfileContent>
           <Avatar did={verification.from_did} />
           <p className="mb-2 name">{user.name}</p>
-          <DidSnippet did={user.did} width={'200px'} />
+          <DidSnippet
+            did={user.did}
+            dateJoined={user.timestamp}
+            width={'200px'}
+          />
 
           <Link
             className="mt-2"
@@ -216,7 +220,9 @@ const VerificationDetailContent = ({
               height={'36px'}
               onClick={async () => await handleAction(true)}
             >
-              {loading === 1 ? 'Approving' : 'Approve Verification'}
+              {loading === 1
+                ? 'Please approve request on Essentials App'
+                : 'Approve Verification'}
             </StyledButton>
           </div>
         )}

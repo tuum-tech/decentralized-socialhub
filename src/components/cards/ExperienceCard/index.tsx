@@ -16,11 +16,14 @@ import {
   CardContentContainer
 } from '../common';
 import ProgressBar from 'src/elements/ProgressBar';
-import { useRecoilState } from 'recoil';
-import { ExperienceSelector } from 'src/Atoms/Selectors';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import {
+  ExperienceSelector,
+  ExperienceSortedSelector
+} from 'src/Atoms/Selectors';
 
 interface IExperienceProps {
-  updateFunc?: any;
+  updateFunc?: (item: any) => Promise<boolean>;
   isEditable?: boolean;
   removeFunc?: any;
   requestFunc?: any;
@@ -28,6 +31,7 @@ interface IExperienceProps {
   template?: string;
   userSession: ISessionItem;
   openModal?: boolean;
+  experience?: ExperienceDTO;
 }
 
 export const defaultExperienceItem: ExperienceItem = {
@@ -53,9 +57,11 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   isPublicPage = false,
   template = 'default',
   userSession,
-  openModal = false
+  openModal = false,
+  experience
 }: IExperienceProps) => {
   const [experienceDTO, setExperienceDTO] = useRecoilState(ExperienceSelector);
+  const experienceSortedDTO = useRecoilValue(ExperienceSortedSelector);
   const [expVerifiedPercent, setExpVerifiedPercent] = useState(0);
 
   let noOfVerifiedExpCred = 0;
@@ -111,11 +117,10 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     return true;
   };
 
-  const saveChanges = (item: ExperienceItem) => {
+  const saveChanges = async (item: ExperienceItem) => {
     let items = [...experienceDTO.items];
 
     let itemToUpdate = items.find(x => x.guid === item.guid);
-
     if (itemToUpdate === undefined) {
       items.push(item);
     } else {
@@ -126,9 +131,13 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
 
     // 5. Set the state to our new copy
-    setExperienceDTO({ isEnabled: true, items: items });
-    updateFunc(item);
+
     setIsEditing(false);
+    if (updateFunc) {
+      if ((await updateFunc(item)) === true) {
+        setExperienceDTO({ isEnabled: true, items: items });
+      }
+    }
   };
 
   const cancel = () => {
@@ -149,16 +158,70 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     setMode(MODE.EDIT);
   };
 
-  const removeItem = async (index: number) => {
+  const removeItem = async (guid: any) => {
     let items = [...experienceDTO.items];
-    await removeFunc(items[index]);
-    items = items.splice(index, 1);
+    let toRemove = items.find(x => x.guid.value === guid.value);
+    let toRemoveIndex = items.indexOf(toRemove as ExperienceItem);
+    await removeFunc(toRemove);
+    items.splice(toRemoveIndex, 1);
     setExperienceDTO({ isEnabled: true, items: items });
   };
 
-  if (!isEditable && experienceDTO.items.length === 0) {
+  if (
+    !isEditable &&
+    experienceDTO.items.length === 0 &&
+    experience?.items.length === 0
+  ) {
     return <></>;
   }
+
+  const getExperienceFromParameter = (): any => {
+    experience?.items.sort(
+      (a: any, b: any) =>
+        new Date(b.start).getTime() - new Date(a.start).getTime()
+    );
+    return experience?.items.map((x, i) => {
+      return (
+        <div key={i}>
+          <ExperienceItem
+            experienceItem={x}
+            handleChange={handleChange}
+            updateFunc={saveChanges}
+            editFunc={editItem}
+            index={i}
+            removeFunc={removeItem}
+            requestVerification={requestFunc}
+            isEditable={isEditable}
+            template={template}
+            userSession={userSession}
+          />
+          {i < experience.items.length - 1 ? <Divider /> : ''}
+        </div>
+      );
+    });
+  };
+
+  const getExperienceFromState = (): any => {
+    return experienceSortedDTO.items.map((x, i) => {
+      return (
+        <div key={i}>
+          <ExperienceItem
+            experienceItem={x}
+            handleChange={handleChange}
+            updateFunc={saveChanges}
+            editFunc={editItem}
+            index={i}
+            removeFunc={removeItem}
+            requestVerification={requestFunc}
+            isEditable={isEditable}
+            template={template}
+            userSession={userSession}
+          />
+          {i < experienceSortedDTO.items.length - 1 ? <Divider /> : ''}
+        </div>
+      );
+    });
+  };
 
   return (
     <>
@@ -201,29 +264,9 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
           </IonGrid>
         </CardHeaderContent>
         <CardContentContainer>
-          {experienceDTO.items.sort(
-            (a: any, b: any) =>
-              new Date(b.start).getTime() - new Date(a.start).getTime()
-          ) &&
-            experienceDTO.items.map((x, i) => {
-              return (
-                <div key={i}>
-                  <ExperienceItem
-                    experienceItem={x}
-                    handleChange={handleChange}
-                    updateFunc={saveChanges}
-                    editFunc={editItem}
-                    index={i}
-                    removeFunc={removeItem}
-                    requestVerification={requestFunc}
-                    isEditable={isEditable}
-                    template={template}
-                    userSession={userSession}
-                  />
-                  {i < experienceDTO.items.length - 1 ? <Divider /> : ''}
-                </div>
-              );
-            })}
+          {experience !== undefined
+            ? getExperienceFromParameter()
+            : getExperienceFromState()}
         </CardContentContainer>
       </CardOverview>
       <MyModal

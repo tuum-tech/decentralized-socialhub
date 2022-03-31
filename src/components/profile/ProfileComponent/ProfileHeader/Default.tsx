@@ -16,7 +16,7 @@ const HeaderContainer = styled(IonGrid)`
   background-color: white;
 `;
 
-const Banner = styled.div<{ bgImg: string }>`
+export const Banner = styled.div<{ bgImg: string }>`
   display: flex;
   top: 0px;
   height: 176px;
@@ -103,7 +103,10 @@ const Default: React.FC<IProps> = ({
             </IonRow>
             <IonRow className="ion-justify-content-start">
               <IonCol>
-                <DidSnippet did={publicUser.did} />
+                <DidSnippet
+                  did={publicUser.did}
+                  dateJoined={publicUser.timestamp}
+                />
               </IonCol>
             </IonRow>
           </IonGrid>

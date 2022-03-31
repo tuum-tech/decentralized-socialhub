@@ -4,7 +4,6 @@ import { UserVaultScripts } from 'src/scripts/uservault.script';
 import { UserService } from './user.service';
 import { HiveService } from './hive.service';
 import { DidService } from './did.service.new';
-import { alertError } from 'src/utils/notify';
 import { getItemsFromData } from 'src/utils/script';
 import { Guid } from 'guid-typescript';
 
@@ -23,6 +22,20 @@ export class TuumTechScriptService {
         body: JSON.stringify(script)
       }
     );
+  }
+
+  public static async getAllUsers() {
+    const script = {
+      name: 'get_all_users',
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+    const { data }: any = await this.runTuumTechScript(script);
+    if (data._status !== 'OK') return [];
+    const users = data.get_all_users.items;
+    return users;
   }
 
   private static async getUsersWithRegisteredCredential(
@@ -358,44 +371,6 @@ export class TuumTechScriptService {
     let items = getItemsFromData(response, 'get_my_verified_credentials');
     items = items.sort((a: any, b: any) => b.modified.$date - a.modified.$date);
     return items;
-  }
-
-  // space scripts
-  public static async getAllSpaces() {
-    const get_spaces_script = {
-      name: 'get_all_spaces',
-      context: {
-        target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
-      }
-    };
-    let response: any = await this.runTuumTechScript(get_spaces_script);
-    let items = getItemsFromData(response, 'get_all_spaces');
-    return items;
-  }
-  public static async addSpace(did: string, name: string) {
-    const add_space_request_script = {
-      name: 'add_space',
-      params: { name, did },
-      context: {
-        target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
-      }
-    };
-
-    await this.runTuumTechScript(add_space_request_script);
-  }
-  public static async removeSpace(did: string, name: string) {
-    const add_space_request_script = {
-      name: 'remove_space',
-      params: { name, did },
-      context: {
-        target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
-      }
-    };
-
-    await this.runTuumTechScript(add_space_request_script);
   }
 }
 

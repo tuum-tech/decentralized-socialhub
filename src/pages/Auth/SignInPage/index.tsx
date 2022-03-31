@@ -1,7 +1,11 @@
 import React from 'react';
 import { StaticContext, RouteComponentProps } from 'react-router';
 import { useHistory } from 'react-router-dom';
-import { DID } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import {
+  DID,
+  connectivity
+} from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
 
 import {
   OnBoardLayout,
@@ -38,13 +42,18 @@ const SignInPage: React.FC<RouteComponentProps<
   const getPresentation = async (): Promise<
     VerifiablePresentation | undefined
   > => {
+    let connector: EssentialsConnector = connectivity.getActiveConnector() as EssentialsConnector;
+    if (connector && connector.hasWalletConnectSession()) {
+      connector.disconnectWalletConnect();
+    }
+
     console.log('Entering on connect');
     let didAccess = new DID.DIDAccess();
+
     try {
-      return await didAccess.getCredentials({
-        claims: {
-          name: true
-        }
+      return await didAccess.requestCredentials({
+        claims: [DID.simpleIdClaim('Your name', 'name', true)],
+        didMustBePublished: true
       });
     } catch (error) {
       console.error(error);
@@ -65,7 +74,7 @@ const SignInPage: React.FC<RouteComponentProps<
         return c.getId().getFragment() === 'name';
       });
       let name = nameCredential!.getSubject().getProperty('name');
-      let issuer = nameCredential!.getIssuer();
+      let issuer = nameCredential!.getId().getDid();
       let did = 'did:elastos:' + issuer.getMethodSpecificId();
       let mnemonic = '';
       await didService.storeDocument(await issuer.resolve());

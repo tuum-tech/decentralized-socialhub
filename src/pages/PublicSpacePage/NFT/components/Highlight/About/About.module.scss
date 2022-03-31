@@ -1,0 +1,48 @@
+.name {
+  > h1 {
+    display: flex;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 27px;
+    color: #313049;
+    img {
+      margin-left: 6px;
+    }
+  }
+  h2 {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 27px;
+    span {
+      color: #995aff;
+    }
+  }
+}
+.btn-expand {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 23px;
+  color: #995aff;
+  cursor: pointer;
+}
+span.collapsed {
+  position: relative;
+  max-height: 130px;
+  overflow: hidden;
+  transition: max-height is ease;
+}
+span.collapsed::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+}
+span.expanded {
+  position: relative;
+  max-height: 100vh;
+  overflow: hidden;
+  transition: max-height is ease;
+}

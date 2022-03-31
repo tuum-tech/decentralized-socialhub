@@ -2,23 +2,23 @@ import { HiveClient } from '@elastosfoundation/elastos-hive-js-sdk';
 
 export class UserVaultScripts {
   static async Execute(hiveClient: HiveClient) {
-    await Promise.all([
-      this.CreateCollections(hiveClient),
-      this.SetScripts(hiveClient)
-    ]);
+    await this.CreateCollections(hiveClient);
+    await new Promise(f => setTimeout(f, 200));
+    await this.SetScripts(hiveClient);
+
     console.log('uservaultscripts registered');
   }
 
   static async CreateCollections(hiveClient: HiveClient) {
     await Promise.all([
+      hiveClient.Database.createCollection('templates'),
+      hiveClient.Database.createCollection('public_fields'),
       hiveClient.Database.createCollection('following'),
       hiveClient.Database.createCollection('basic_profile'),
       hiveClient.Database.createCollection('education_profile'),
       hiveClient.Database.createCollection('experience_profile'),
       hiveClient.Database.createCollection('activities'),
-      hiveClient.Database.createCollection('public_fields'),
       hiveClient.Database.createCollection('verifiable_credentials'),
-      hiveClient.Database.createCollection('templates'),
       hiveClient.Database.createCollection('team_profile'),
       hiveClient.Database.createCollection('thesis_profile'),
       hiveClient.Database.createCollection('paper_profile'),
@@ -73,35 +73,7 @@ export class UserVaultScripts {
     });
   }
 
-  static async setMyTemplatesScriptSet(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'set_my_templates',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'set_my_templates',
-        output: true,
-        body: {
-          collection: 'templates',
-          filter: {
-            did: '$params.did'
-          },
-          update: {
-            $set: {
-              templates: '$params.templates'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
-        }
-      }
-    });
-  }
-
-  static async getMyTemplatesScriptSet(hiveClient: HiveClient) {
+  static async getMyTemplatesScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'get_my_templates',
       allowAnonymousUser: true,
@@ -112,6 +84,33 @@ export class UserVaultScripts {
         output: true,
         body: {
           collection: 'templates'
+        }
+      }
+    });
+  }
+
+  static async updateMyTemplatesScriptSetter(hiveClient: HiveClient) {
+    await hiveClient.Scripting.SetScript({
+      name: 'update_my_templates',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_my_templates',
+        body: {
+          collection: 'templates',
+          filter: {
+            guid: '$params.guid'
+          },
+          update: {
+            $set: {
+              templates: '$params.templates'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
         }
       }
     });
@@ -864,6 +863,25 @@ export class UserVaultScripts {
     });
   }
 
+  static async getSpacesByIdsScriptSetter(hiveClient: HiveClient) {
+    await hiveClient.Scripting.SetScript({
+      name: 'get_space_by_ids',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_space_by_ids',
+        output: true,
+        body: {
+          collection: 'private_spaces',
+          filter: {
+            guid: { $in: '$params.guids' }
+          }
+        }
+      }
+    });
+  }
+
   static async addSpacesScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'add_space',
@@ -918,9 +936,12 @@ export class UserVaultScripts {
   static async SetScripts(hiveClient: HiveClient) {
     // templates
 
+    await this.addSpacesScriptSetter(hiveClient);
+
     await Promise.all([
-      this.getMyTemplatesScriptSet(hiveClient),
-      this.setMyTemplatesScriptSet(hiveClient),
+      this.removeSpaceScriptSetter(hiveClient),
+      this.updateMyTemplatesScriptSetter(hiveClient),
+      this.getMyTemplatesScriptSetter(hiveClient),
       this.setPublicTemplateScriptSetter(hiveClient),
       this.getPublicFieldsScriptSetter(hiveClient),
       this.getFollowingScriptSetter(hiveClient),
@@ -958,6 +979,7 @@ export class UserVaultScripts {
       this.getVerifiableCredentialScriptSetter(hiveClient),
       this.getAllSpacesScriptSetter(hiveClient),
       this.getSpacesByNamesScriptSetter(hiveClient),
+      this.getSpacesByIdsScriptSetter(hiveClient),
       this.addSpacesScriptSetter(hiveClient),
       this.removeSpaceScriptSetter(hiveClient)
     ]);

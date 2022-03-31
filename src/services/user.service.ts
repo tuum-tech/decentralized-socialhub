@@ -13,6 +13,9 @@ import { ProfileService } from './profile.service';
 import { DIDDocument, RootIdentity } from '@elastosfoundation/did-js-sdk/';
 import { IDidService } from './did.service.new';
 import { CredentialType, DidcredsService } from './didcreds.service';
+import { SpaceService } from './space.service';
+import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
+import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 
 const CryptoJS = require('crypto-js');
 
@@ -531,6 +534,14 @@ export class UserService {
         sessionItem
       );
     });
+
+    const wtp = await SpaceService.getCommunitySpaceByNames([
+      'Welcome to Profile'
+    ]);
+    if (wtp.length > 0) {
+      await SpaceService.follow(sessionItem, wtp[0]);
+    }
+
     this.lockUser(UserService.key(did), sessionItem);
 
     window.localStorage.setItem('isLoggedIn', 'true');
@@ -621,6 +632,11 @@ export class UserService {
   public static logout() {
     window.localStorage.removeItem('isLoggedIn');
     window.localStorage.removeItem('persist:root');
+
+    let connector: EssentialsConnector = connectivity.getActiveConnector() as EssentialsConnector;
+    if (connector && connector.hasWalletConnectSession()) {
+      connector.disconnectWalletConnect();
+    }
     window.location.href = '/';
   }
 

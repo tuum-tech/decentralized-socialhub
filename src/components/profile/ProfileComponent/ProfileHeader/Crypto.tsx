@@ -94,7 +94,11 @@ const Crypto: React.FC<IProps> = ({
               )}
           </div>
 
-          <DidSnippet did={publicUser.did} color="white" />
+          <DidSnippet
+            did={publicUser.did}
+            dateJoined={publicUser.timestamp}
+            color="white"
+          />
           <Buttons>
             {signedUser.did === '' ? (
               <Link to="/sign-in">

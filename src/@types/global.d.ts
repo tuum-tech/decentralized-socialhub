@@ -237,6 +237,13 @@ interface ProfileDTO {
       did: string;
     }[];
   };
+  email: {
+    email: string;
+    verifiers: {
+      name: string;
+      did: string;
+    }[];
+  };
   basicDTO: BasicDTO;
   experienceDTO: ExperienceDTO;
   educationDTO: EducationDTO;
@@ -542,6 +549,13 @@ interface IGithubCommentItem {
   createdAt: number;
 }
 
+interface NFTSpaceDetail {
+  network: string;
+  address: string;
+  ref: string;
+}
+interface OrgSpaceDetail {}
+interface UnivSpaceDetail {}
 interface SpacesResponse {
   _status: string;
   get_all_spaces: SpaceDTO;
@@ -552,9 +566,12 @@ interface SpaceDTO {
 interface Space {
   name: string;
   description?: string;
-  category: string;
+  category: SpaceCategory;
   avatar?: string;
   coverPhoto?: string;
-  owner?: string;
+  owner?: string | string[];
+  meta?: NFTSpaceDetail | OrgSpaceDetail | UnivSpaceDetail;
   publicFields?: string[];
+  followers?: string[];
+  isCommunitySpace?: boolean;
 }

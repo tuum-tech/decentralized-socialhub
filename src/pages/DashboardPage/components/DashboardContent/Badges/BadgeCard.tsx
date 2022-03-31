@@ -13,6 +13,8 @@ import style from './BadgeCard.module.scss';
 import ProgressBar from 'src/elements/ProgressBar';
 import BadgeItem from './BadgeItem';
 import badgeDetails from 'src/data/badge_detail.json';
+import { useRecoilValue } from 'recoil';
+import { BadgesAtom } from 'src/Atoms/Atoms';
 
 const ProgressBarChart = styled.div`
   width: 42px;
@@ -35,12 +37,14 @@ interface Props {
   badgeCategory: string;
 }
 
-const BadgeCard: React.FC<Props> = ({ badges, badgeCategory }) => {
+const BadgeCard: React.FC<Props> = ({ badgeCategory }) => {
   const [totalBadgeCount, setTotalBadgeCount] = useState<number>(0);
   const [completedBadgeCount, setCompletedBadgeCount] = useState<number>(0);
   const [progressPercent, setProgressPercent] = useState<number>(0);
   const [badgeItems, setBadgeItems] = useState<any>({});
   const [badgeCategoryTitle, setBadgeCategoryTitle] = useState<string>('');
+
+  const badges = useRecoilValue(BadgesAtom);
 
   useEffect(() => {
     if (!badges) return;
