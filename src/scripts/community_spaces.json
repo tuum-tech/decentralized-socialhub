@@ -9,19 +9,6 @@
   },
   {
     "sid": 1,
-    "name": "BoredApeYatchClub",
-    "category": "NFT Collection",
-    "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
-    "tags": [],
-    "meta": {
-      "network": "Ethereum",
-      "address": "0x095371DeE504C7e176f1447387F5dc5C616a42ea",
-      "ref": "https://opensea.io/collection/boredapeyachtclub",
-      "slug": "boredapeyachtclub"
-    }
-  },
-  {
-    "sid": 2,
     "name": "The Bella Series",
     "category": "NFT Collection",
     "owner": ["did:elastos:inpCykPj1JMroJfjFvDAGnEGUCGGG3ptwQ"],
@@ -41,7 +28,7 @@
     }
   },
   {
-    "sid": 3,
+    "sid": 2,
     "name": "Phantz Club",
     "category": "NFT Collection",
     "owner": ["did:elastos:iUDaseyHnQUmwp6RSABCy4ZPCQCaBTDDMS"],
