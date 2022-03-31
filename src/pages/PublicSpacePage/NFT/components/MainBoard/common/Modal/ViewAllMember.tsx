@@ -35,9 +35,9 @@ const ViewAllMember = ({ space, onClose }: Props) => {
     (async () => {
       await fetchMoreData();
     })();
-  }, [fetchMoreData]);
+  }, []);
 
-  const fetchMoreData = useCallback(async () => {
+  const fetchMoreData = async () => {
     const { data }: any = await getNFTCollectionAssets(
       space.guid,
       offset,
@@ -57,7 +57,7 @@ const ViewAllMember = ({ space, onClose }: Props) => {
     } else {
       setHasMore(false);
     }
-  });
+  };
   return (
     <div className={style['modal']}>
       <div className={style['modal_container']}>
