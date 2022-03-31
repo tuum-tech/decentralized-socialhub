@@ -51,7 +51,7 @@ const WalletCard: React.FC<IWalletProps> = ({
   const { account, library, activate, deactivate } = useWeb3React();
 
   ////////////////////////////// ***** ////////////////////////////////////
-  const [connection, setConnection] = useState(false);
+  const [adding, setAdding] = useState(false);
   const [selectedWalletType, setSelectedWalletType] = useState<CredentialType>(
     CredentialType.ETHAddress
   );
@@ -61,7 +61,7 @@ const WalletCard: React.FC<IWalletProps> = ({
 
   ////////////////////////////// ***** ////////////////////////////////////
   useEffect(() => {
-    if (account && connection) {
+    if (account && adding) {
       (async () => {
         const web3 = new Web3(library);
         const verifyStatus = await verifyWalletOwner(web3, account);
@@ -74,17 +74,15 @@ const WalletCard: React.FC<IWalletProps> = ({
           selectedWalletType.toLowerCase(),
           userSession
         );
-        console.log(doc);
         setDidDoc(doc);
-        setConnection(false);
+        setAdding(false);
       })();
     }
-  }, [account, selectedWalletType, connection, library, userSession]);
+  }, [adding, account])
 
   const connectWallet = async () => {
     try {
       await activate(injected);
-      setConnection(true);
     } catch (ex) {
       console.log(ex);
     }
@@ -92,7 +90,10 @@ const WalletCard: React.FC<IWalletProps> = ({
 
   const addVc = async (type: CredentialType) => {
     setSelectedWalletType(type);
-    connectWallet();
+    setAdding(true);
+    if (!account) {
+      connectWallet();
+    }
   };
 
   const removeVc = async (type: CredentialType) => {
