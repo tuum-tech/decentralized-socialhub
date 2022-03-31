@@ -62,6 +62,24 @@ const AboutSpace: React.FC<IProps> = ({
       const owners: any[] = await TuumTechScriptService.searchUserWithDIDs(
         dids
       );
+      let ownersDids: string[] = [];
+      owners.forEach(owner => {
+        ownersDids.push(owner.did);
+      });
+      dids.forEach((did: string) => {
+        let shortenedDid = did.replace('did:elastos:', '');
+        shortenedDid = `${shortenedDid.substring(
+          0,
+          4
+        )}...${shortenedDid.substring(shortenedDid.length - 4)}`;
+        if (!ownersDids.includes(did)) {
+          owners.push({
+            link: false,
+            name: shortenedDid,
+            did: shortenedDid
+          });
+        }
+      });
       setOwners(owners.filter(owner => owner && owner.name));
     })();
   }, [space]);
@@ -101,12 +119,16 @@ const AboutSpace: React.FC<IProps> = ({
               {owners.map((owner, index) => {
                 return (
                   <>
-                    <Link
-                      to={getDIDString('/did/' + owner.did)}
-                      target={'blank'}
-                    >
+                    {owner.link !== false ? (
+                      <Link
+                        to={getDIDString('/did/' + owner.did)}
+                        target={'blank'}
+                      >
+                        <span>{owner.name}</span>
+                      </Link>
+                    ) : (
                       <span>{owner.name}</span>
-                    </Link>
+                    )}
                     {`${
                       index >= owners.length - 2
                         ? index === owners.length - 2
