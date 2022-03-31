@@ -1,0 +1,89 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  min-height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 10;
+
+  &_container {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &_content {
+    background: #ffffff;
+    border-radius: 16px;
+
+    padding: 20px 20px 30px;
+    display: block;
+
+    max-width: 500px;
+    width: 90%;
+    min-height: 200px;
+  }
+
+  &_title {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 136.02%;
+    color: #27272e;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+}
+
+.searchcomponent {
+  position: relative;
+  height: 50px;
+  margin-top: 15px;
+
+  .search-input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    --box-shadow: none;
+    padding: 0;
+    border-radius: 9px;
+    --placeholder-font-style: 'SF Pro Display';
+    font-family: 'SF Pro Display';
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: normal;
+    text-align: left;
+    color: #16192c;
+    --placeholder-color: #b5b5bd;
+
+    input {
+      box-shadow: none;
+      background: #edf2f7;
+      border: 1px solid #edf2f7;
+      border-radius: 9px;
+
+      &:focus {
+        background: #fff;
+        border: 1px solid #ececec;
+      }
+    }
+
+    .active {
+      color: #16192c;
+    }
+  }
+}
+
+.scrollableContent {
+  margin-top: 20px;
+  height: 220px;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: block;
+}

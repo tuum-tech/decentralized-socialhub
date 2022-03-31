@@ -6,7 +6,7 @@ import {
   SpaceAvatar,
   SpaceName,
   SpaceCategory
-} from '../../SpacePage/components/SpaceCard';
+} from 'src/components/Space/SpaceCard';
 import defaultCoverPhoto from 'src/assets/default/default-cover.png';
 import defaultAvatar from 'src/assets/icon/dp.png';
 

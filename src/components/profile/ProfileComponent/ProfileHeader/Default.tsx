@@ -16,7 +16,7 @@ const HeaderContainer = styled(IonGrid)`
   background-color: white;
 `;
 
-const Banner = styled.div<{ bgImg: string }>`
+export const Banner = styled.div<{ bgImg: string }>`
   display: flex;
   top: 0px;
   height: 176px;

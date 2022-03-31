@@ -60,8 +60,7 @@ const ViewAllModal = ({
       followerDids,
       searchStr,
       pageSize,
-      pageNumber,
-      userSession
+      pageNumber
     );
 
     if (fUsers.length > 0) {

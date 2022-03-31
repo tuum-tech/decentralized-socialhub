@@ -55,8 +55,7 @@ export class FollowService {
     dids: string[],
     searchQuery: string,
     pageSize = 200,
-    pageNumber = 1,
-    userSession: ISessionItem
+    pageNumber = 1
   ) {
     const searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
     if (searchQuery === '') {
@@ -73,8 +72,7 @@ export class FollowService {
       searchQuery,
       dids,
       pageSize,
-      (pageNumber - 1) * pageSize,
-      userSession
+      (pageNumber - 1) * pageSize
     );
     return res;
   }

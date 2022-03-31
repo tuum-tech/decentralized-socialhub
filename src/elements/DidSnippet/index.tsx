@@ -2,7 +2,7 @@ import React from 'react';
 import { IonText } from '@ionic/react';
 import styled from 'styled-components';
 
-const DidSnippetSvg = ({ color = '#979797' }) => (
+export const DidSnippetSvg = ({ color = '#979797' }) => (
   <svg
     width="10"
     height="11"

@@ -22,7 +22,7 @@ import SpacePageHeader, {
   PageTitle,
   SpaceTabsContainer
 } from './components/SpacePageHeader';
-import SpaceListView from './components/SpaceListView';
+import SpaceListView from 'src/components/Space/SpaceListView';
 import { InferMappedProps, SubState } from './types';
 import style from './style.module.scss';
 import { Button } from 'src/elements/buttons';

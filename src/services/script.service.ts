@@ -24,6 +24,20 @@ export class TuumTechScriptService {
     );
   }
 
+  public static async getAllUsers() {
+    const script = {
+      name: 'get_all_users',
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+    const { data }: any = await this.runTuumTechScript(script);
+    if (data._status !== 'OK') return [];
+    const users = data.get_all_users.items;
+    return users;
+  }
+
   private static async getUsersWithRegisteredCredential(
     credential: string,
     credentialType: string

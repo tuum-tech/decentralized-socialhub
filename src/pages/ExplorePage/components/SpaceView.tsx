@@ -6,7 +6,7 @@ import RequestCommunity from './RequestCommunity';
 import { SpaceService } from 'src/services/space.service';
 
 import LoadingIndicator from 'src/elements/LoadingIndicator';
-import SpaceListView from 'src/pages/SpacePage/components/SpaceListView';
+import SpaceListView from 'src/components/Space/SpaceListView';
 
 const SpaceView = () => {
   const [spaces, setSpaces] = useState<any[]>([]);

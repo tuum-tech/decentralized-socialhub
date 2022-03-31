@@ -10,34 +10,38 @@ import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
-import {
-  ProfileService,
-  defaultUserInfo,
-} from 'src/services/profile.service';
+import { ProfileService, defaultUserInfo } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service.new';
 
 import LoadingIndicator from 'src/elements/LoadingIndicator';
-import ProfileComponent from './components/ProfileComponent';
-import Navbar from './components/Navbar';
+import ProfileComponent from './Personal/components/ProfileComponent';
+import Navbar from 'src/components/profile/ProfileComponent/PublicNavbar';
 
 import { getDIDString } from 'src/utils/did';
 
 import { ContentRow, Container, ProfileComponentContainer } from './layouts';
-import { defaultSpace, SpaceService } from 'src/services/space.service';
+import {
+  defaultSpace,
+  SpaceCategory,
+  SpaceService
+} from 'src/services/space.service';
 import { SpaceSvg } from 'src/components/layouts/LeftSideMenu/components/icons';
-
+import NFTSpace from './NFT';
 interface MatchParams {
-  did: string;
+  did?: string;
   name: string;
 }
 interface PageProps
   extends InferMappedProps,
     RouteComponentProps<MatchParams> {}
 
-const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
-  let did: string = getDIDString(props.match.params.did, false);
+const PublicSpacePage: React.FC<PageProps> = ({
+  eProps,
+  ...props
+}: PageProps) => {
+  let did: string = getDIDString(props.match.params.did || '', false);
   let spaceName: string = props.match.params.name;
   const [publicUser, setPublicUser] = useState(defaultUserInfo);
   const [spaceProfile, setSpaceProfile] = useState(defaultSpace);
@@ -106,15 +110,28 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
             className="ion-justify-content-around"
             template={publicUser.pageTemplate || 'default'}
           >
-            <IonCol size="9" className="ion-no-padding">
+            <IonCol size="10" className="ion-no-padding">
               <ProfileComponentContainer>
-                <ProfileComponent
-                  scrollToElement={scrollToElement}
-                  aboutRef={aboutRef}
-                  publicUser={publicUser}
-                  profile={spaceProfile}
-                  loading={loading}
-                />
+                {spaceProfile.category === SpaceCategory.Personal && (
+                  <ProfileComponent
+                    scrollToElement={scrollToElement}
+                    aboutRef={aboutRef}
+                    publicUser={publicUser}
+                    profile={spaceProfile}
+                    loading={loading}
+                  />
+                )}
+                {spaceProfile.category === SpaceCategory.NFT && (
+                  <NFTSpace space={spaceProfile} />
+                )}
+                {spaceProfile.category === SpaceCategory.WTP && (
+                  <ProfileComponent
+                    scrollToElement={scrollToElement}
+                    aboutRef={aboutRef}
+                    profile={spaceProfile}
+                    loading={loading}
+                  />
+                )}
               </ProfileComponentContainer>
             </IonCol>
           </ContentRow>
@@ -137,4 +154,4 @@ export function mapDispatchToProps(dispatch: any) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublicPage);
+export default connect(mapStateToProps, mapDispatchToProps)(PublicSpacePage);

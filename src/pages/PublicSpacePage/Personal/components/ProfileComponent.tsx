@@ -29,7 +29,7 @@ const RightContent = styled.div`
 interface Props {
   aboutRef: any;
   scrollToElement: (cardName: string) => void;
-  publicUser: ISessionItem;
+  publicUser?: ISessionItem;
   profile: any;
   loading: boolean;
 }
@@ -41,7 +41,7 @@ const ProfileComponent: React.FC<Props> = ({
   profile,
   loading
 }: Props) => {
-  const template = publicUser.pageTemplate || 'default';
+  const template = publicUser?.pageTemplate || 'default';
   return (
     <>
       <ProfileHeader profile={profile} />

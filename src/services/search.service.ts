@@ -273,8 +273,7 @@ export class SearchService {
     searchString: string,
     dids: string[],
     limit: number,
-    offset: number,
-    userSession: ISessionItem
+    offset: number
   ) {
     let items: any[] = [];
 
@@ -297,7 +296,6 @@ export class SearchService {
       items = getItemsFromData(usersResponse, 'get_users_by_dids');
     } else {
       params['name'] = '.*' + searchString + '.*';
-      params['self_did'] = [userSession.did];
       params['dids'] = dids;
 
       const usersResponse: any = await this.appHiveClient.Scripting.RunScript({
