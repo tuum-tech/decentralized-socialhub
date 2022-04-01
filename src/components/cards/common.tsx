@@ -29,6 +29,7 @@ export const CardOverview = styled(IonCard)<ThemeProps>`
     getThemeData(template, 'card', 'cardShawdow')};
 
   border-radius: 16px;
+  padding: 26px 20px 30px 20px;
   margin: 0px 0px 22px;
 
   ion-card-title {
@@ -189,11 +190,13 @@ export const ModalFooter = styled(IonFooter)`
 `;
 
 export const CardHeaderContent = styled(IonCardHeader)`
-  padding: 26px;
+  padding: 0px;
+  padding-bottom: 24px;
 `;
 
 export const CardContentContainer = styled(IonCardContent)`
-  padding-left: 26px;
+  padding-left: 0px;
+  padding-right: 10px;
 `;
 
 export const CardHeader = styled(IonCardHeader)`

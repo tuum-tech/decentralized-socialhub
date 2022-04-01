@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from 'react';
-import { IonCard, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import React, { useState } from 'react';
+import { IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import { setTimeout } from 'timers';
 
 import { connect } from 'react-redux';
@@ -12,7 +12,11 @@ import { UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
 import { SmallLightButton } from 'src/elements/buttons';
 
-import { CardHeaderContent, CardContentContainer } from '../common';
+import {
+  CardOverview,
+  CardHeaderContent,
+  CardContentContainer
+} from '../common';
 
 import defaultCoverPhoto from '../../../assets/default/default-cover.png';
 import soccerCoverPhoto from '../../../assets/cover/soccer.png';
@@ -153,7 +157,7 @@ const Upload: React.FC<InferMappedProps> = ({
   };
 
   return (
-    <IonCard className={styleWidget['overview']}>
+    <CardOverview template="default">
       <CardHeaderContent>
         <IonGrid className="ion-no-padding">
           <IonRow className="ion-justify-content-between ion-no-padding">
@@ -204,7 +208,7 @@ const Upload: React.FC<InferMappedProps> = ({
           </ImgUploadContainer>
         </Container>
       </CardContentContainer>
-    </IonCard>
+    </CardOverview>
   );
 };
 

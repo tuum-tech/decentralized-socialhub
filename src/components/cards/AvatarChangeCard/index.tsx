@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
-import { IonCard, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import { IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import { setTimeout } from 'timers';
 
 import { connect } from 'react-redux';
@@ -12,7 +12,11 @@ import { UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
 import { SmallLightButton } from 'src/elements/buttons';
 
-import { CardHeaderContent, CardContentContainer } from '../common';
+import {
+  CardOverview,
+  CardHeaderContent,
+  CardContentContainer
+} from '../common';
 import defaultAvatar from '../../../assets/icon/dp.png';
 import {
   Container,
@@ -22,7 +26,6 @@ import {
   ImgUploadContainer,
   Perfil
 } from './upload';
-import styleWidget from '../WidgetCards.module.scss';
 import { DidService, IDidService } from 'src/services/did.service.new';
 import { showNotify } from 'src/utils/notify';
 import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
@@ -160,7 +163,7 @@ const Upload: React.FC<InferMappedProps> = ({
   };
 
   return (
-    <IonCard className={styleWidget['overview']}>
+    <CardOverview template="default">
       <CardHeaderContent>
         <IonGrid className="ion-no-padding">
           <IonRow className="ion-justify-content-between ion-no-padding">
@@ -213,7 +216,7 @@ const Upload: React.FC<InferMappedProps> = ({
           </ImgUploadContainer>
         </Container>
       </CardContentContainer>
-    </IonCard>
+    </CardOverview>
   );
 };
 
