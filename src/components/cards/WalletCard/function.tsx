@@ -46,6 +46,7 @@ export const addWalletToDIDDocument = async (
   }
   await DidcredsService.addOrUpdateCredentialToVault(user, newVC);
   await didService.storeDocument(didDocument);
+  await didService.publishDocument(didDocument);
   return didDocument;
 };
 export const removeWalletFromDIDDocument = async (
@@ -78,6 +79,7 @@ export const removeWalletFromDIDDocument = async (
     }
     await DidcredsService.removeCredentialToVault(user, vcKey);
     await didService.storeDocument(didDocument);
+    await didService.publishDocument(didDocument);
   }
   return didDocument;
 };
