@@ -1,9 +1,10 @@
-import { IonCol, IonGrid, IonRow } from '@ionic/react';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import { FollowType } from 'src/services/user.service';
 import AboutCard from 'src/components/cards/AboutCard';
 import FollowCards from 'src/components/cards/FollowCards';
+import ViewAllFollower from '../../NFT/components/MainBoard/common/Modal/ViewAllFollower';
 import { getThemeData } from 'src/utils/template';
 
 import ProfileTabs from './ProfileTabs';
@@ -42,6 +43,7 @@ const ProfileComponent: React.FC<Props> = ({
   loading
 }: Props) => {
   const template = publicUser?.pageTemplate || 'default';
+  const [showViewAllModal, setShowViewAllModal] = useState(false);
   return (
     <>
       <ProfileHeader profile={profile} />
@@ -74,7 +76,9 @@ const ProfileComponent: React.FC<Props> = ({
                         mutualDids={[]}
                         signed={true}
                         template={template}
-                        viewAll={(ctype: FollowType) => {}}
+                        viewAll={(ctype: FollowType) => {
+                          setShowViewAllModal(true);
+                        }}
                       />
                     </RightContent>
                   </IonRow>
@@ -82,6 +86,14 @@ const ProfileComponent: React.FC<Props> = ({
               </IonCol>
             </IonRow>
           </GridContent>
+          {showViewAllModal && (
+            <ViewAllFollower
+              space={profile}
+              onClose={() => {
+                setShowViewAllModal(false);
+              }}
+            />
+          )}
         </>
       )}
     </>
