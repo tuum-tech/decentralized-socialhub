@@ -25,8 +25,8 @@ const VerificationRequestDecorator: React.FC<Props> = ({
   onRequestVerification,
   v
 }) => (
-  <IonGrid>
-    <IonRow class="ion-align-items-end">
+  <IonGrid class="ion-no-padding">
+    <IonRow class="ion-align-items-end ion-no-padding">
       <IonCol size="10" class="ion-no-padding">
         {children}
       </IonCol>
