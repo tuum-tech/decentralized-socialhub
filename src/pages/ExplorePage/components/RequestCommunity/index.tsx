@@ -36,7 +36,6 @@ const RequestCommunity: React.FC<InferMappedProps> = ({ session }) => {
       userinfo: userinfo,
       description: JSON.stringify(request)
     };
-    console.log(bodyContact);
     const emailresponse: Response = await fetch(
       `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/send_email`,
       {
@@ -117,7 +116,4 @@ export function mapDispatchToProps(dispatch: any) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RequestCommunity);
+export default connect(mapStateToProps, mapDispatchToProps)(RequestCommunity);

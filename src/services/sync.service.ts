@@ -323,13 +323,11 @@ export class SyncService {
       );
       await didService.storeDocument(updatedDidDocument);
     } else {
-      console.log('Updating document');
       updatedDidDocument = await didService.updateMultipleVerifiableCredentialsToDIDDocument(
         didDocument,
         vcs,
         toRemoveFromBlockchain
       );
-      console.log('Updated');
       await didService.storeDocument(updatedDidDocument);
       await didService.publishDocument(updatedDidDocument);
     }
@@ -561,7 +559,6 @@ export class SyncService {
               verifiers: [],
               isEnabled: true
             };
-            console.log('experience', experienceItem);
             await ProfileService.updateExperienceProfile(
               experienceItem,
               sessionItem,

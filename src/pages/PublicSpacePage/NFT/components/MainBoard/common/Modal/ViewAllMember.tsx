@@ -44,7 +44,6 @@ const ViewAllMember = ({ space, onClose }: Props) => {
       limit
     );
     const { totalCount, assets } = data;
-    console.log(assets);
     setTotalCount(totalCount);
 
     if (assets.length > 0) {

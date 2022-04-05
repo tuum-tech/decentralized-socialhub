@@ -6,7 +6,7 @@ export class UserVaultScripts {
     await new Promise(f => setTimeout(f, 200));
     await this.SetScripts(hiveClient);
 
-    console.log('uservaultscripts registered');
+    // console.log('uservaultscripts registered');
   }
 
   static async CreateCollections(hiveClient: HiveClient) {

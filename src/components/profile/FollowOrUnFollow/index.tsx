@@ -47,7 +47,7 @@ const FollowOrUnFollowButton: React.FC<IProps> = ({
       setLoading(false);
       return;
     } catch (e) {
-      console.log('====>error', e);
+      console.log(e);
     }
     setLoading(false);
   };

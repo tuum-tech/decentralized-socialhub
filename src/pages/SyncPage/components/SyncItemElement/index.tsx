@@ -95,8 +95,6 @@ const SyncItemElement: React.FC<IProps> = ({
     )
       return false;
 
-    console.log('verifiers', verifiers);
-
     if (verifiers === undefined || !verifiers.has(vc.issuer.toString())) {
       let verifiersCollection = verifiers ?? new Map<string, verifier>();
 
