@@ -113,6 +113,7 @@ const SocialProfilesCard: React.FC<Props> = ({
 
     var timer = setInterval(async function() {
       if (popupwindow!.closed) {
+        clearInterval(timer);
         await getCredentials(sessionItem);
 
         let userService = new UserService(await DidService.getInstance());
