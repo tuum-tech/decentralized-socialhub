@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonText } from '@ionic/react';
+import { IonText, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
 export const DidSnippetSvg = ({ color = '#979797' }) => (
@@ -138,7 +138,7 @@ const ProfileDesignation = styled(IonText)`
   text-align: left;
   color: #979797;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   white-space: pre-wrap;
 `;
 
@@ -170,18 +170,22 @@ const DidSnippet: React.FC<IProp> = ({
   const br = '\n';
   return (
     <ProfileDesignation>
-      <DidSnippetSvg color={color} />
-      &nbsp;
-      <TruncatedSpan style={{ color: color, width: width }}>
-        {did}
-      </TruncatedSpan>
-      &nbsp;&nbsp;&nbsp;&nbsp;
+      <IonRow className="ion-align-items-center">
+        <DidSnippetSvg color={color} />
+        &nbsp;
+        <TruncatedSpan style={{ color: color, width: width }}>
+          {did}
+        </TruncatedSpan>
+      </IonRow>
+      {/* &nbsp;&nbsp;&nbsp;&nbsp;
       <SeparatorSvg />
-      &nbsp;&nbsp;&nbsp;&nbsp;
-      <CalendarSvg />
-      <TruncatedSpan style={{ color: color, width: width }}>
-        Joined {dateWeekday}, {dateDay} {dateMonth} {dateYear}
-      </TruncatedSpan>
+      &nbsp;&nbsp;&nbsp;&nbsp; */}
+      <IonRow className="ion-align-items-center">
+        <CalendarSvg />
+        <TruncatedSpan style={{ color: color, width: width }}>
+          Joined {dateWeekday}, {dateDay} {dateMonth} {dateYear}
+        </TruncatedSpan>
+      </IonRow>
     </ProfileDesignation>
   );
 };
