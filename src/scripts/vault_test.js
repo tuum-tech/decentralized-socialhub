@@ -62,14 +62,10 @@ let run = async () => {
       appId
     );
 
-    // console.log("options:" + JSON.stringify(options));
-    // console.log(`VP : ${JSON.stringify(vp)}`);
-
     vp = JSON.stringify(vp);
     vp = JSON.parse(vp);
 
     let token = await HiveClient.getAuthenticationToken(options, vp);
-    console.log(token);
     return await HiveClient.createInstance(token, url);
   }
 

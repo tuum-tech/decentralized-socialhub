@@ -40,7 +40,6 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
           assets,
           space.meta.network || 'Ethereum'
         );
-        console.log(members);
         setFirstIV(members);
       }
     })();

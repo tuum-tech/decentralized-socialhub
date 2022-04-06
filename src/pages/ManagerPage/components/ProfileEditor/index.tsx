@@ -133,7 +133,6 @@ const ProfileEditor: React.FC<Props> = ({
         session
       );
       if (res) {
-        console.log('full profile: => ', res);
         res.basicDTO.isEnabled = true;
         res.experienceDTO.isEnabled = true;
         res.educationDTO.isEnabled = true;
