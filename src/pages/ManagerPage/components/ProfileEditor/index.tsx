@@ -465,6 +465,9 @@ const ProfileEditor: React.FC<Props> = ({
                 )}
                 {userInfo.pageTemplate === 'crypto' && (
                   <WalletCard
+                    setRequestEssentials={(value: boolean) =>
+                      setShowRequestEssentials(value)
+                    }
                     didDocument={didDocument!}
                     isEditable={true}
                     template="default"

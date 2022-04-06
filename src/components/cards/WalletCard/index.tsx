@@ -36,6 +36,7 @@ import style from './WalletCard.module.scss';
 import shieldIcon from '../../../assets/icon/shield.svg';
 import copyIcon from '../../../assets/icon/copy-to-clipboard.svg';
 interface IWalletProps {
+  setRequestEssentials: (item: boolean) => void;
   didDocument: DIDDocument;
   isEditable?: boolean;
   template?: string;
@@ -43,6 +44,7 @@ interface IWalletProps {
 }
 
 const WalletCard: React.FC<IWalletProps> = ({
+  setRequestEssentials,
   didDocument,
   isEditable = false,
   template = 'default',
@@ -69,16 +71,25 @@ const WalletCard: React.FC<IWalletProps> = ({
           showNotify('Wallet owner verification failed', 'error');
           return;
         }
+        if (userSession.isEssentialUser) setRequestEssentials(true);
         const doc = await addWalletToDIDDocument(
           account,
           selectedWalletType.toLowerCase(),
           userSession
         );
+        if (userSession.isEssentialUser) setRequestEssentials(false);
         setDidDoc(doc);
         setAdding(false);
       })();
     }
-  }, [adding, account])
+  }, [
+    account,
+    adding,
+    selectedWalletType,
+    library,
+    userSession,
+    setRequestEssentials
+  ]);
 
   const connectWallet = async () => {
     try {
@@ -98,10 +109,13 @@ const WalletCard: React.FC<IWalletProps> = ({
 
   const removeVc = async (type: CredentialType) => {
     setIsRemovingVc(true);
+
+    if (userSession.isEssentialUser) setRequestEssentials(true);
     const doc = await removeWalletFromDIDDocument(
       type.toLowerCase(),
       userSession
     );
+    if (userSession.isEssentialUser) setRequestEssentials(false);
     setDidDoc(doc);
     setIsRemovingVc(false);
   };
@@ -135,6 +149,7 @@ const WalletCard: React.FC<IWalletProps> = ({
             {shortenAddress(address)}
             <CopyToClipboard text={address}>
               <img
+                alt=""
                 className={style['copy-to-clipboard']}
                 src={copyIcon}
                 width={15}
