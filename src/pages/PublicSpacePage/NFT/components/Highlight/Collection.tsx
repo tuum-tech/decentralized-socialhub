@@ -27,6 +27,11 @@ const Collection: React.FC<IProps> = ({
   assets,
   viewAll
 }: IProps) => {
+  const flattenUrl = (url: string) => {
+    if (url.startsWith('ipfs://'))
+      return url.replace('ipfs://', 'https://ipfs.io/ipfs/');
+    return url;
+  };
   return (
     <CardOverview template={template}>
       <CardHeader>
@@ -45,7 +50,7 @@ const Collection: React.FC<IProps> = ({
             {assets.slice(0, 3).map((asset, index) => {
               return (
                 <IonCol size="4" key={index}>
-                  <img src={asset.image_url} />
+                  <img src={flattenUrl(asset.image_url)} />
                 </IonCol>
               );
             })}
@@ -54,7 +59,7 @@ const Collection: React.FC<IProps> = ({
             {assets.slice(3, 6).map((asset, index) => {
               return (
                 <IonCol size="4" key={index + 3}>
-                  <img src={asset.image_url} />
+                  <img src={flattenUrl(asset.image_url)} />
                 </IonCol>
               );
             })}
@@ -63,7 +68,7 @@ const Collection: React.FC<IProps> = ({
             {assets.slice(6, 9).map((asset, index) => {
               return (
                 <IonCol size="4" key={index + 6}>
-                  <img src={asset.image_url} />
+                  <img src={flattenUrl(asset.image_url)} />
                 </IonCol>
               );
             })}

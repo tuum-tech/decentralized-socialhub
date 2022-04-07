@@ -12,7 +12,7 @@ import nft_item_icon from 'src/assets/space/nft_item.jpg';
 import welcome_badge from 'src/assets/space/welcome_badge.svg';
 import modal_style from './style.module.scss';
 import common_style from '../style.module.scss';
-import { getNFTCollectionAssets } from '../../../../fetchapi';
+import { getNFTCollectionOwners } from '../../../../fetchapi';
 import { getDIDString } from 'src/utils/did';
 import { getOwners } from 'src/utils/nftcollection';
 import { shortenAddress } from 'src/utils/web3';
@@ -35,20 +35,20 @@ const ViewAllMember = ({ space, onClose }: Props) => {
     (async () => {
       await fetchMoreData();
     })();
-  }, []);
+  }, [fetchMoreData]);
 
-  const fetchMoreData = async () => {
-    const { data }: any = await getNFTCollectionAssets(
+  const fetchMoreData = useCallback(async () => {
+    const { data }: any = await getNFTCollectionOwners(
       space.guid,
       offset,
       limit
     );
-    const { totalCount, assets } = data;
+    const { totalCount, owners } = data;
     setTotalCount(totalCount);
 
-    if (assets.length > 0) {
+    if (owners.length > 0) {
       const _members_ = await getOwners(
-        assets,
+        owners.map((owner: string) => ({ owner })),
         space.meta.network || 'Ethereum'
       );
       setOffset(offset + limit);
@@ -56,7 +56,7 @@ const ViewAllMember = ({ space, onClose }: Props) => {
     } else {
       setHasMore(false);
     }
-  };
+  });
   return (
     <div className={style['modal']}>
       <div className={style['modal_container']}>
@@ -74,7 +74,7 @@ const ViewAllMember = ({ space, onClose }: Props) => {
               scrollableTarget="scrollableDiv"
             >
               {members.map((member: any, index: number) => {
-                const isProfileUser = typeof member === 'object';
+                const isProfileUser = member && typeof member === 'object';
                 return (
                   <IonRow className={style['row']} key={index}>
                     <div className={style['avatar']}>
