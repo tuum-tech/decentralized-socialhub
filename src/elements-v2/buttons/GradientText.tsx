@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { IonText } from '@ionic/react';
 import style from './Button.module.scss';
 
-const StyledText = styled(IonText)<GradientTextProps>`
+const StyledText = styled(IonText)<Omit<GradientTextProps, 'text'>>`
   font-family: 'SF Pro Display';
   font-style: normal;
   font-weight: ${props => (props.fontWeight ? `${props.fontWeight}` : '500')};
@@ -15,15 +15,15 @@ const StyledText = styled(IonText)<GradientTextProps>`
 `;
 
 interface GradientTextProps {
+  text: string;
   fontSize?: number;
   fontWeight?: string;
-  children?: React.ReactNode;
 }
 
-const GradientText = ({ children, ...props }: GradientTextProps) => {
+const GradientText = ({ text, ...props }: GradientTextProps) => {
   return (
     <StyledText {...props} className={style['dark-pink-gradient']}>
-      {children}
+      {text}
     </StyledText>
   );
 };
