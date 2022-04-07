@@ -113,6 +113,7 @@ const SocialProfilesCard: React.FC<Props> = ({
 
     var timer = setInterval(async function() {
       if (popupwindow!.closed) {
+        clearInterval(timer);
         await getCredentials(sessionItem);
 
         let userService = new UserService(await DidService.getInstance());
@@ -158,7 +159,6 @@ const SocialProfilesCard: React.FC<Props> = ({
       url = (await DidcredsService.requestDiscordLogin()) as MyType;
     }
 
-    console.log(url, 'login url');
     if (url) {
       popupCenter(url.data, 'Login', 548, 725);
     }

@@ -44,17 +44,12 @@ const LoadDid: React.FC<InferMappedProps> = ({
         'deliver crane orphan dismiss proud circle lawn cabbage fancy color clever tree'
       );
 
-      console.log('did app' + did_app);
-      console.log('did user' + did_user);
-
       // let appDocument = await service.getStoredDocument(did_app);
       let userDocument = await service.getStoredDocument(did_user);
 
       // //let did = await service.loadDid(
       // //  'curious push water point border mutual install govern message ordinary fish small'
       // //);
-      // console.log('did app' + did_app.did);
-      // console.log('did user' + did_user.did);
 
       // let store = await DidService.getStore();
       // let appDocument = await store.loadDid(did_app.did);
@@ -75,11 +70,6 @@ const LoadDid: React.FC<InferMappedProps> = ({
           DIDURL.from('#app-id-credential', DID.from(did_app) as DID) as DIDURL
         )
         .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
-      console.log(await vc.isValid());
-      console.log(vc.toString(true));
-
-      // console.log('app doc ' + appDocument.toString(true));
-      // console.log('user doc ' + userDocument.toString(true));
 
       // let id: DIDURL = DIDURL.from(
       //   '#primary',
@@ -102,23 +92,17 @@ const LoadDid: React.FC<InferMappedProps> = ({
       //     ) as DIDURL
       //   )
       //   .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
-      // console.log(await vc.isValid());
-      // console.log(vc.toString(true));
 
       // let a = JSON.parse(vc.toString(true));
       // delete a.proof.created;
 
       // let verif = await VerifiableCredential.parseContent(JSON.stringify(a));
-      // console.log(verif.toString(true));
-
-      // console.log(await verif.isValid());
 
       // setDocument(vc.toString(true));
 
       // let isValidHiveAddress = await HiveService.isHiveAddressValid(
       //   'https://vault.tuum.tech'
       // );
-      // console.log('isHiveValid ' + isValidHiveAddress);
     })();
   }, []);
 

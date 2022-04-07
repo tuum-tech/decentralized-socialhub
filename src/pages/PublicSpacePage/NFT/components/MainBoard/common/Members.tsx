@@ -35,7 +35,6 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
           owners.map((owner: string) => ({ owner })),
           space.meta.network || 'Ethereum'
         );
-        console.log(members);
         setFirstIV(members);
       }
     })();

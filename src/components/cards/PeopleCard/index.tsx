@@ -92,7 +92,6 @@ const PeopleCard: React.FC<Props> = ({
       session.did
     )) as IFollowingResponse;
     setListFollowing(response.get_following);
-    console.log('====>card', response.get_following);
   };
 
   useEffect(() => {

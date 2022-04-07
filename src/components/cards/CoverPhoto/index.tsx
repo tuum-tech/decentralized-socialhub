@@ -95,7 +95,6 @@ const Upload: React.FC<InferMappedProps> = ({
   };
 
   const onChange = (e: any) => {
-    console.log('file', e.target.files[0]);
     let file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -112,9 +111,7 @@ const Upload: React.FC<InferMappedProps> = ({
   const onFileSubmit = (e: any) => {
     setIsLoading(true);
     e.preventDefault();
-    console.log('bine', base64);
     let payload = { image: base64 };
-    console.log('payload', payload);
 
     setTimeout(() => {
       setIsLoading(false);

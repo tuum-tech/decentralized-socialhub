@@ -44,11 +44,6 @@ export class AssistService {
 
     window.localStorage.setItem(`publish_${didKey}`, JSON.stringify(response));
 
-    console.log(
-      `publish_${didKey}`,
-      window.localStorage.getItem(`publish_${didKey}`)
-    );
-
     return response;
   }
 
@@ -85,11 +80,6 @@ export class AssistService {
     };
     window.localStorage.setItem(`publish_${didKey}`, JSON.stringify(response));
 
-    console.log(
-      `refreshRequestStatus publish_${didKey}`,
-      window.localStorage.getItem(`publish_${didKey}`)
-    );
-
     return response;
   }
 
@@ -99,12 +89,10 @@ export class AssistService {
     let didKey = did.replace('did:elastos:', '');
     let item = window.localStorage.getItem(`publish_${didKey}`);
     if (!item) return;
-    console.log(`getPublishStatusTask publish_${didKey}`, item);
     return JSON.parse(item);
   };
 
   static removePublishTask = (did: string) => {
-    console.log('Removing publish status', did);
     let didKey = did.replace('did:elastos:', '');
     window.localStorage.removeItem(`publish_${didKey}`);
   };

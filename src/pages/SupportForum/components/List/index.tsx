@@ -172,11 +172,12 @@ const List: React.FC<ListProp> = ({ githubIssues }) => {
           <div className="table-head">
             <div className="topic">Topic</div>
             <div className="category">Category</div>
-            <div className="votes">Votes</div>
-            <div className="date">DATE</div>
+            <div className="status">Status</div>
+            <div className="date">Date</div>
           </div>
 
           {filteredIssues.map((issue, index) => {
+            if (issue.hasOwnProperty('pull_request')) return;
             const linkUrl = '/support-forum/' + issue.number;
             return (
               <div className="table-row" key={index}>
@@ -188,7 +189,7 @@ const List: React.FC<ListProp> = ({ githubIssues }) => {
                     return <Category label={label.name}>{label.name}</Category>;
                   })}
                 </div>
-                <div className="votes">589 Votes</div>
+                <div className="status">{issue.state}</div>
                 <div className="date">
                   {timeSince(new Date(issue.updated_at).getTime())}
                 </div>

@@ -57,7 +57,6 @@ const EmailVerificationDetailContent: React.FC<Props> = ({
       ''
     )) as IVerifyCodeResponse;
 
-    console.log('=====>response', response);
     let status = response.data.return_code;
     if (status === 'CONFIRMED') {
       const { name, email, did } = response.data;
