@@ -16,6 +16,7 @@ import { UserService } from 'src/services/user.service';
 import { AssistService, RequestStatus } from 'src/services/assist.service';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { ProfileService } from 'src/services/profile.service';
+import { TuumTechScriptService } from 'src/services/script.service';
 
 import TutorialComponent from './components/Tutorial';
 import DashboardContent from './components/DashboardContent';
@@ -303,6 +304,17 @@ const DashboardPage: React.FC = () => {
               publishStatus={publishStatus}
             />
           )}
+
+          <button
+            onClick={async () => {
+              await TuumTechScriptService.addUserToTuumTech(
+                session,
+                'did:elastos:ii2JPv8cEijDvih6xa6nzhYCJssM4diqDv'
+              );
+            }}
+          >
+            test
+          </button>
 
           <DashboardContent
             onTutorialStart={() => {

@@ -98,8 +98,12 @@ let run = async () => {
               publicFields: '$params.publicFields',
               tags: '$params.tags',
               followers: '$params.followers',
+<<<<<<< HEAD
               socialLinks: '$params.socialLinks',
               meta: '$params.meta'
+=======
+              meta: '$params.owner'
+>>>>>>> eaf1b4c4... commit for referal
             }
           },
           options: {
@@ -488,6 +492,29 @@ let run = async () => {
       }
     });
 
+    // ===== referals ===
+    await client.Scripting.SetScript({
+      name: 'update_referals',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_referals',
+        output: false,
+        body: {
+          collection: 'users',
+          filter: {
+            did: '$params.did'
+          },
+          update: {
+            $set: {
+              referals: '$params.referals'
+            }
+          }
+        }
+      }
+    });
+
     // ===== users section start =====
     await client.Database.createCollection('users');
     await client.Scripting.SetScript({
@@ -518,7 +545,8 @@ let run = async () => {
             code: '$params.code',
             status: '$params.status',
             pageTemplate: '$params.pageTemplate',
-            timestamp: '$params.timestamp'
+            timestamp: '$params.timestamp',
+            referals: '$params.referals'
           }
         }
       }
@@ -555,7 +583,8 @@ let run = async () => {
               tutorialStep: '$params.tutorialStep',
               hiveHost: '$params.hiveHost',
               avatar: '$params.avatar',
-              pageTemplate: '$params.pageTemplate'
+              pageTemplate: '$params.pageTemplate',
+              referals: '$params.referals'
             }
           }
         }

@@ -345,7 +345,8 @@ export class UserService {
     newDidStr: string,
     newMnemonicStr: string,
     hiveHostStr: string,
-    avatar = ''
+    avatar = '',
+    referal = ''
   ) {
     let did = newDidStr;
     let mnemonics = newMnemonicStr;
@@ -453,7 +454,8 @@ export class UserService {
       mnemonics,
       coverPhoto: '',
       pageTemplate: 'default',
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      referals: []
     };
     let curTime = new Date().getTime();
     let messages = [];
@@ -525,24 +527,25 @@ export class UserService {
       let didAlreadyAdded = await TuumTechScriptService.searchUserWithDIDs([
         did
       ]);
+      console.log('===>didAlreadyAdded', didAlreadyAdded);
       if (didAlreadyAdded.length === 0) {
-        await TuumTechScriptService.addUserToTuumTech(sessionItem);
+        await TuumTechScriptService.addUserToTuumTech(sessionItem, referal);
       } else {
         await TuumTechScriptService.updateTuumUser(sessionItem);
       }
 
-      await ProfileService.addActivity(
-        {
-          guid: '',
-          did: sessionItem!.did,
-          message: 'Welcome to Profile 👏, Your service to the private web 🔐️',
-          read: false,
-          createdAt: 0,
-          updatedAt: 0
-        },
+      // await ProfileService.addActivity(
+      //   {
+      //     guid: '',
+      //     did: sessionItem!.did,
+      //     message: 'Welcome to Profile 👏, Your service to the private web 🔐️',
+      //     read: false,
+      //     createdAt: 0,
+      //     updatedAt: 0
+      //   },
 
-        sessionItem
-      );
+      //   sessionItem
+      // );
     }
 
     Array.from(new Set(messages)).forEach(async message => {
@@ -567,9 +570,9 @@ export class UserService {
       await SpaceService.follow(sessionItem, wtp[0]);
     }
 
-    this.lockUser(UserService.key(did), sessionItem);
+    // this.lockUser(UserService.key(did), sessionItem);
 
-    window.localStorage.setItem('isLoggedIn', 'true');
+    // window.localStorage.setItem('isLoggedIn', 'true');
 
     return sessionItem;
   }

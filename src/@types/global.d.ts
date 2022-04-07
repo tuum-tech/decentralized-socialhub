@@ -279,6 +279,7 @@ interface ISessionItem {
   pageTemplate?: string;
   phone?: string;
   timestamp: number;
+  referals?: string[];
 }
 
 interface LoginCred {
