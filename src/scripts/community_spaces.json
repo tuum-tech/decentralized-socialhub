@@ -23,7 +23,6 @@
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0xef5f768618139d0f5fa3bcbbbcaaf09fe9d7a07d",
-      "ref": "https://ela.city/marketplace/collections/0xef5f768618139d0f5fa3bcbbbcaaf09fe9d7a07d",
       "slug": "The Bella Series"
     }
   },
@@ -43,7 +42,6 @@
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0xfDdE60866508263e30C769e8592BB0f8C3274ba7",
-      "ref": "https://ela.city/marketplace/collections/0xfDdE60866508263e30C769e8592BB0f8C3274ba7",
       "slug": "Phantz Club"
     }
   },
@@ -63,7 +61,6 @@
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0xE27934fB3683872e35b8d9E57c30978e1260c614",
-      "ref": "https://ela.city/marketplace/collections/0xE27934fB3683872e35b8d9E57c30978e1260c614",
       "slug": "Bunny Punk"
     }
   },
@@ -71,7 +68,7 @@
     "sid": 4,
     "name": "CyberKong",
     "category": "NFT Collection",
-    "owner": ["did:elastos:iWtZBcqZa981z3YEoUxanCqvN7rFVDu52D"],
+    "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
     "tags": [
       "ERC-721",
       "Governance",
@@ -81,10 +78,28 @@
       "Art"
     ],
     "meta": {
-      "network": "ethereum",
+      "network": "Ethereum",
       "address": "0x57a204aa1042f6e66dd7730813f4024114d74f37",
-      "ref": "https://opensea.io/collection/information-token",
       "slug": "CyberKong"
+    }
+  },
+  {
+    "sid": 5,
+    "name": "LFC Heroes Club",
+    "category": "NFT Collection",
+    "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
+    "tags": [
+      "ERC-721",
+      "Governance",
+      "Social Token",
+      "Membership",
+      "Collectibles",
+      "Art"
+    ],
+    "meta": {
+      "network": "Polygon",
+      "address": "0x4ffa698ca3374ff154e58c8388a3aafe430dc2d3",
+      "slug": "LFC Heroes Club"
     }
   }
 ]
