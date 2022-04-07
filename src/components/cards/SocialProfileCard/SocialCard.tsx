@@ -33,6 +33,7 @@ import {
 import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/';
 import { useSetRecoilState } from 'recoil';
 import { BadgesAtom } from 'src/Atoms/Atoms';
+import { VerificationService } from 'src/services/verification.service';
 
 interface Props {
   sessionItem: ISessionItem;
@@ -203,51 +204,54 @@ const SocialProfilesCard: React.FC<Props> = ({
   const removeVc = async (key: string) => {
     setIsRemoving(true);
 
-    let vcKey = sessionItem.did + '#' + key;
+    let vcId = sessionItem.did + '#' + key;
+    let vService = new VerificationService();
+    let deletedCreds = await vService.deleteCredentials(vcId);
 
-    await DidcredsService.removeCredentialToVault(sessionItem, vcKey);
+    if (deletedCreds[0] === vcId) {
+      await DidcredsService.removeCredentialToVault(sessionItem, vcId);
 
-    let didService = await DidService.getInstance();
+      let didService = await DidService.getInstance();
 
-    let userService = new UserService(didService);
-    let currentSession = await userService.SearchUserWithDID(sessionItem.did);
+      let userService = new UserService(didService);
+      let currentSession = await userService.SearchUserWithDID(sessionItem.did);
 
-    // ===== temporary codes start =====
-    let newLoginCred = currentSession!.loginCred;
-    let newLoginBadges = currentSession!.badges;
-    if (!newLoginCred) {
-      return;
+      // ===== temporary codes start =====
+      let newLoginCred = currentSession!.loginCred;
+      let newLoginBadges = currentSession!.badges;
+      if (!newLoginCred) {
+        return;
+      }
+      if (key === 'google' && newLoginCred.google) {
+        delete newLoginCred.google;
+        newLoginBadges.socialVerify.google.archived = false;
+      } else if (key === 'facebook' && newLoginCred.facebook) {
+        delete newLoginCred.facebook;
+        newLoginBadges.socialVerify.facebook.archived = false;
+      } else if (key === 'linkedin' && newLoginCred.linkedin) {
+        newLoginBadges.socialVerify.linkedin.archived = false;
+        delete newLoginCred.linkedin;
+      } else if (key === 'twitter' && newLoginCred.twitter) {
+        delete newLoginCred.twitter;
+        newLoginBadges.socialVerify.twitter.archived = false;
+      } else if (key === 'github' && newLoginCred.github) {
+        delete newLoginCred.github;
+        newLoginBadges.socialVerify.github.archived = false;
+      } else if (key === 'discord' && newLoginCred.discord) {
+        newLoginBadges.socialVerify.discord.archived = false;
+        delete newLoginCred.discord;
+      }
+      const newUserSession = {
+        ...sessionItem,
+        loginCred: newLoginCred,
+        badges: newLoginBadges
+      } as ISessionItem;
+
+      setSession({
+        session: await userService.updateSession(newUserSession)
+      });
+      // ===== temporary codes end =====
     }
-    if (key === 'google' && newLoginCred.google) {
-      delete newLoginCred.google;
-      newLoginBadges.socialVerify.google.archived = false;
-    } else if (key === 'facebook' && newLoginCred.facebook) {
-      delete newLoginCred.facebook;
-      newLoginBadges.socialVerify.facebook.archived = false;
-    } else if (key === 'linkedin' && newLoginCred.linkedin) {
-      newLoginBadges.socialVerify.linkedin.archived = false;
-      delete newLoginCred.linkedin;
-    } else if (key === 'twitter' && newLoginCred.twitter) {
-      delete newLoginCred.twitter;
-      newLoginBadges.socialVerify.twitter.archived = false;
-    } else if (key === 'github' && newLoginCred.github) {
-      delete newLoginCred.github;
-      newLoginBadges.socialVerify.github.archived = false;
-    } else if (key === 'discord' && newLoginCred.discord) {
-      newLoginBadges.socialVerify.discord.archived = false;
-      delete newLoginCred.discord;
-    }
-    const newUserSession = {
-      ...sessionItem,
-      loginCred: newLoginCred,
-      badges: newLoginBadges
-    } as ISessionItem;
-
-    setSession({
-      session: await userService.updateSession(newUserSession)
-    });
-    // ===== temporary codes end =====
-
     setIsRemoving(false);
   };
 

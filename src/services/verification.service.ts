@@ -393,6 +393,11 @@ export class VerificationService {
     await didAccess.importCredentials([v]);
   }
 
+  public async deleteCredentials(vId: string): Promise<string[]> {
+    let didAccess = new ConnDID.DIDAccess();
+    return await didAccess.deleteCredentials([vId.toString()]);
+  }
+
   public async approveCredential(
     session: ISessionItem,
     v: VerificationRequest,
