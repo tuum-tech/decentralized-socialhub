@@ -161,7 +161,6 @@ const SocialProfilesCard: React.FC<Props> = ({
       url = (await DidcredsService.requestDiscordLogin()) as MyType;
     }
 
-    console.log(url, 'login url');
     if (url) {
       popupCenter(url.data, 'Login', 548, 725);
     }

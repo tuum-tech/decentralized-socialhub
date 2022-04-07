@@ -1022,10 +1022,10 @@ let run = async () => {
       }
     });
 
-    console.log('All scripts OK');
+    // console.log('All scripts OK');
   } catch (error) {
     console.log(error);
-    console.log('Failed to run appVault scripts');
+    // console.log('Failed to run appVault scripts');
   }
 };
 

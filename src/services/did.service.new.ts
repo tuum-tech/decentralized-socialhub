@@ -486,7 +486,6 @@ export class DidService implements IDidService {
       .id(DIDURL.from('#app-id-credential', appDid) as DIDURL)
       .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string); // and we sign so it creates a Proof with method and signature
 
-    console.log('isValid: ' + (await vc.isValid()));
     this.Store.storeCredential(vc);
 
     let vpb = await VerifiablePresentation.createFor(appDid, null, this.Store);
@@ -496,7 +495,6 @@ export class DidService implements IDidService {
       .credentials(vc)
       .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
 
-    console.log('vp: ' + vp.toString(true));
     return vp;
   }
 

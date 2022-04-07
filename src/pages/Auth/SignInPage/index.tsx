@@ -68,7 +68,6 @@ const SignInPage: React.FC<RouteComponentProps<
     let presentation = await getPresentation();
 
     const didService = await DidService.getInstance();
-    console.log('Did service instance');
     if (presentation !== null && presentation !== undefined) {
       let nameCredential = presentation!.getCredentials().find((c: any) => {
         return c.getId().getFragment() === 'name';
