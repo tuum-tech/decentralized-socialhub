@@ -1,7 +1,11 @@
 import React from 'react';
 import { StaticContext, RouteComponentProps } from 'react-router';
 import { useHistory } from 'react-router-dom';
-import { DID } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import {
+  DID,
+  connectivity
+} from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
 
 import {
   OnBoardLayout,
@@ -38,6 +42,11 @@ const SignInPage: React.FC<RouteComponentProps<
   const getPresentation = async (): Promise<
     VerifiablePresentation | undefined
   > => {
+    let connector: EssentialsConnector = connectivity.getActiveConnector() as EssentialsConnector;
+    if (connector && connector.hasWalletConnectSession()) {
+      connector.disconnectWalletConnect();
+    }
+
     console.log('Entering on connect');
     let didAccess = new DID.DIDAccess();
 
@@ -59,13 +68,12 @@ const SignInPage: React.FC<RouteComponentProps<
     let presentation = await getPresentation();
 
     const didService = await DidService.getInstance();
-    console.log('Did service instance');
     if (presentation !== null && presentation !== undefined) {
       let nameCredential = presentation!.getCredentials().find((c: any) => {
         return c.getId().getFragment() === 'name';
       });
       let name = nameCredential!.getSubject().getProperty('name');
-      let issuer = nameCredential!.getIssuer();
+      let issuer = nameCredential!.getId().getDid();
       let did = 'did:elastos:' + issuer.getMethodSpecificId();
       let mnemonic = '';
       await didService.storeDocument(await issuer.resolve());

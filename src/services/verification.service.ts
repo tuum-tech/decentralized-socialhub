@@ -137,7 +137,7 @@ export class VerificationService {
   public async generateVerifiableCredentialFromExperienceItem(
     item: ExperienceItem,
     session: ISessionItem
-  ): Promise<void> {
+  ): Promise<boolean> {
     let data: any = this.generateExperienceVerificationData([item])[0];
 
     let v = {
@@ -154,15 +154,17 @@ export class VerificationService {
       guid: ''
     } as VerificationRequest;
     let signedCredential = await this.approveCredential(session, v, true, '');
+    if (signedCredential === null) return false;
 
     v.credential = signedCredential.toString(true);
     await this.storeNewCredential(v, session);
+    return true;
   }
 
   public async generateVerifiableCredentialFromEducationItem(
     item: EducationItem,
     session: ISessionItem
-  ): Promise<void> {
+  ): Promise<boolean> {
     let data: any = this.generateEducationVerificationData([item])[0];
 
     let v = {
@@ -179,9 +181,11 @@ export class VerificationService {
       guid: ''
     } as VerificationRequest;
     let signedCredential = await this.approveCredential(session, v, true, '');
+    if (signedCredential === null) return false;
 
     v.credential = signedCredential.toString(true);
     await this.storeNewCredential(v, session);
+    return true;
   }
 
   public generateEducationVerificationData(items: EducationItem[]) {
@@ -424,6 +428,7 @@ export class VerificationService {
           .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
       } else {
         let didAccess = new ConnDID.DIDAccess();
+
         let property: any = {};
         property[vcType] = content;
         vc = await didAccess.issueCredential(
@@ -536,11 +541,12 @@ export class VerificationService {
       const key = Object.keys(subjectProperties)[0];
 
       let issuerDid = '';
-      if (
-        key.toLowerCase() !== type.toLowerCase() &&
-        key.toLowerCase().startsWith(type.toLowerCase())
-      ) {
+      if (type.toLowerCase() === key.toLowerCase()) {
+        issuerDid = JSON.parse(JSON.stringify(vcs[i].issuer));
+      } else {
+        // This is to handle education & experience as they begin with 'education_' and 'experience_'
         const credential = Object.values(subjectProperties)[0] as any;
+
         if (
           x.institution === credential.institution &&
           x.program === credential.program &&

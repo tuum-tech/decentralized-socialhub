@@ -43,6 +43,7 @@ export const addWalletToDIDDocument = async (
       didDocument,
       newVC
     );
+    await didService.publishDocument(didDocument);
   }
   await DidcredsService.addOrUpdateCredentialToVault(user, newVC);
   await didService.storeDocument(didDocument);
@@ -75,6 +76,7 @@ export const removeWalletFromDIDDocument = async (
       didDocument = await builder.seal(
         process.env.REACT_APP_DID_STORE_PASSWORD as string
       );
+      await didService.publishDocument(didDocument);
     }
     await DidcredsService.removeCredentialToVault(user, vcKey);
     await didService.storeDocument(didDocument);

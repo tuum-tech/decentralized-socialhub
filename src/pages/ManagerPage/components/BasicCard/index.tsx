@@ -1,20 +1,16 @@
-import React, { useState } from 'react';
-import {
-  IonCardTitle,
-  IonCardHeader,
-  IonCard,
-  IonCardContent,
-  IonGrid,
-  IonRow,
-  IonCol
-} from '@ionic/react';
+import React, { useEffect, useState } from 'react';
+import { IonCardTitle, IonGrid, IonRow, IonCol } from '@ionic/react';
 import { isEqual } from 'lodash';
 import styled from 'styled-components';
 
-import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import SmallTextInput from 'src/elements/inputs/SmallTextInput';
 import EmailComp, { SaveButton } from './EmailComp';
 import PhoneComp from './PhoneComp';
+import {
+  CardOverview,
+  CardHeaderContent,
+  CardContentContainer
+} from 'src/components/cards/common';
 import VerificationRequestDecorator from 'src/pages/ActivityPage/components/VerificationRequests/VerificationRequestDecorator';
 
 const Divider = styled.hr`
@@ -49,15 +45,19 @@ const BasicCard: React.FC<IProps> = ({
     });
   };
 
+  useEffect(() => {
+    setCurrentBasicDTO(sessionItem);
+  }, [sessionItem]);
+
   return (
-    <IonCard className={styleWidget['overview']}>
-      <IonCardHeader>
-        <IonGrid>
-          <IonRow class="ion-justify-content-between">
-            <IonCol>
+    <CardOverview template="default">
+      <CardHeaderContent>
+        <IonGrid className="ion-no-padding">
+          <IonRow class="ion-justify-content-between ion-no-padding">
+            <IonCol className="ion-no-padding">
               <IonCardTitle>Basic Information</IonCardTitle>
             </IonCol>
-            <IonCol size="auto">
+            <IonCol size="auto" className="ion-no-padding">
               <SaveButton
                 disabled={
                   sessionItem.tutorialStep !== 4 ||
@@ -70,17 +70,17 @@ const BasicCard: React.FC<IProps> = ({
             </IonCol>
           </IonRow>
         </IonGrid>
-      </IonCardHeader>
-      <IonCardContent>
-        <IonGrid>
-          <IonRow class="ion-justify-content-start">
-            <IonCol size="7">
-              <VerificationRequestDecorator
-                v={currentBasicDTO.name}
-                onRequestVerification={() =>
-                  requestVerification(`Name: ${currentBasicDTO.name}`)
-                }
-              >
+      </CardHeaderContent>
+      <CardContentContainer>
+        <IonGrid className="ion-no-padding">
+          <VerificationRequestDecorator
+            v={currentBasicDTO.name}
+            onRequestVerification={() =>
+              requestVerification(`Name: ${currentBasicDTO.name}`)
+            }
+          >
+            <IonRow class="ion-justify-content-start ion-no-padding">
+              <IonCol size="5" className="ion-no-padding">
                 <SmallTextInput
                   disabled={sessionItem.tutorialStep !== 4}
                   label="Name"
@@ -88,12 +88,12 @@ const BasicCard: React.FC<IProps> = ({
                   value={currentBasicDTO.name}
                   onChange={handleChange}
                 />
-              </VerificationRequestDecorator>
-            </IonCol>
-          </IonRow>
+              </IonCol>
+            </IonRow>
+          </VerificationRequestDecorator>
 
-          <IonRow class="ion-justify-content-start">
-            <IonCol size="7">
+          <IonRow class="ion-justify-content-start ion-no-padding">
+            <IonCol size="7" className="ion-no-padding">
               <SmallTextInput
                 disabled={true}
                 label="DID"
@@ -102,8 +102,8 @@ const BasicCard: React.FC<IProps> = ({
               />
             </IonCol>
           </IonRow>
-          <IonRow class="ion-justify-content-start">
-            <IonCol size="7">
+          <IonRow class="ion-justify-content-start ion-no-padding">
+            <IonCol size="7" className="ion-no-padding">
               <SmallTextInput
                 disabled={true}
                 label="Vault URL"
@@ -142,8 +142,8 @@ const BasicCard: React.FC<IProps> = ({
             }}
           />
         </IonGrid>
-      </IonCardContent>
-    </IonCard>
+      </CardContentContainer>
+    </CardOverview>
   );
 };
 

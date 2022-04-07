@@ -104,11 +104,7 @@ const ManageProfile: React.FC<Props> = ({ userSession }) => {
         <ExperienceCard template="default" userSession={userSession} />
       )}
       {hasEducation && (
-        <EducationCard
-          educationDTO={profile.educationDTO}
-          template="default"
-          userSession={userSession}
-        />
+        <EducationCard template="default" userSession={userSession} />
       )}
     </>
   );

@@ -37,7 +37,8 @@ package-lock.json
 .ebextensions_prod
 
 # Custom
-src/scripts/config.json.prod
+src/scripts/config.prod.json
+src/scripts/community_spaces.prod.json
 
 # IDE
 todo.md

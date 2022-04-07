@@ -34,7 +34,7 @@ const SettingsPage: React.FC<InferMappedProps> = ({
             <IonCol size="10" className={style['right-panel']}>
               {/* <SettingsBody useSession={props.session} /> */}
               <SettingsHeader />
-              <SettingsAccount useSession={props.session} />
+              <SettingsAccount userSession={props.session} />
               <SettingsSubscription />
             </IonCol>
           </IonRow>

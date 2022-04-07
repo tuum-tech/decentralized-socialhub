@@ -24,7 +24,7 @@ The following dependent services are now started:
 
 - [Hive Vault](https://github.com/elastos/Elastos.NET.Hive.Node)
 - [Assist RestAPI Backend](https://github.com/tuum-tech/assist-restapi-backend)
-- [DIDcreds Validator Service](https://github.com/tuum-tech/didcreds-validator)
+- Mongodb container on localhost:37018
 
 ## Profile API Service
 

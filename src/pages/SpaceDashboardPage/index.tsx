@@ -2,7 +2,7 @@
  * Page
  */
 import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -10,18 +10,18 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
+import useQuery from 'src/hooks/useQuery';
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
-import { Button } from 'src/elements/buttons';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import style from './style.module.scss';
 import ProfileEditor from './components/ProfileEditor';
+import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { defaultSpace, SpaceService } from 'src/services/space.service';
 
 import arrowLeft from 'src/assets/icon/arrow-left-square.svg';
-import { TuumTechScriptService } from 'src/services/script.service';
 
 const Header = styled.div`
   width: 100%;
@@ -74,8 +74,18 @@ interface PageProps
 const ManagerPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   const spaceName = props.match.params.name;
   const history = useHistory();
+  const query = useQuery();
+  const type = query.get('type');
   const { session } = props;
   const [spaceProfile, setSpaceProfile] = useState<any>(defaultSpace);
+  const isOwner = useMemo(() => {
+    const owners = spaceProfile.owner
+      ? typeof spaceProfile.owner === 'string'
+        ? [spaceProfile.owner]
+        : spaceProfile.owner
+      : [];
+    return owners.includes(session.did);
+  }, [spaceProfile, session]);
   const capitalize = (s: string) => {
     return s.charAt(0).toUpperCase() + s.slice(1);
   };
@@ -83,27 +93,19 @@ const ManagerPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   useEffect(() => {
     if (session && spaceName) {
       (async () => {
-        let spaces = await SpaceService.getSpaceByNames(session, [
-          ...new Set([spaceName, capitalize(spaceName)])
-        ]);
+        let names = [...new Set([spaceName, capitalize(spaceName)])];
+        let spaces = [];
+        if (type === 'community') {
+          spaces = await SpaceService.getCommunitySpaceByNames(names);
+        } else {
+          spaces = await SpaceService.getSpaceByNames(session, names);
+        }
         if (spaces.length > 0) {
           setSpaceProfile(spaces[0]);
         }
       })();
     }
-  }, [session, spaceName]);
-
-  const removeSpace = async () => {
-    const result = window.confirm(
-      'This will remove all the contents about this space from your user vault. Are you sure?'
-    );
-    if (result) {
-      console.log(session, spaceProfile);
-      await SpaceService.removeSpace(session, spaceProfile);
-      await TuumTechScriptService.removeSpace(session.did, spaceProfile.name);
-      history.push('/spaces');
-    }
-  };
+  }, [session, spaceName, type]);
   return (
     <>
       <IonPage className={style['managerpage']}>
@@ -126,11 +128,11 @@ const ManagerPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
                       <SpaceTitle>{spaceProfile.name}</SpaceTitle>
                     </div>
                   </Flex>
-                  <Button text={'Delete Space'} onClick={removeSpace} />
                 </Header>
-
-                {session && session.did && session.did !== '' && (
+                {isOwner ? (
                   <ProfileEditor session={session} profile={spaceProfile} />
+                ) : (
+                  <LoadingIndicator loadingText="Loading..." />
                 )}
               </IonCol>
             </IonRow>

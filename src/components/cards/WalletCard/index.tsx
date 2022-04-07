@@ -36,6 +36,7 @@ import style from './WalletCard.module.scss';
 import shieldIcon from '../../../assets/icon/shield.svg';
 import copyIcon from '../../../assets/icon/copy-to-clipboard.svg';
 interface IWalletProps {
+  setRequestEssentials: (item: boolean) => void;
   didDocument: DIDDocument;
   isEditable?: boolean;
   template?: string;
@@ -43,6 +44,7 @@ interface IWalletProps {
 }
 
 const WalletCard: React.FC<IWalletProps> = ({
+  setRequestEssentials,
   didDocument,
   isEditable = false,
   template = 'default',
@@ -51,7 +53,7 @@ const WalletCard: React.FC<IWalletProps> = ({
   const { account, library, activate, deactivate } = useWeb3React();
 
   ////////////////////////////// ***** ////////////////////////////////////
-  const [connection, setConnection] = useState(false);
+  const [adding, setAdding] = useState(false);
   const [selectedWalletType, setSelectedWalletType] = useState<CredentialType>(
     CredentialType.ETHAddress
   );
@@ -61,7 +63,7 @@ const WalletCard: React.FC<IWalletProps> = ({
 
   ////////////////////////////// ***** ////////////////////////////////////
   useEffect(() => {
-    if (account && connection) {
+    if (account && adding) {
       (async () => {
         const web3 = new Web3(library);
         const verifyStatus = await verifyWalletOwner(web3, account);
@@ -69,22 +71,29 @@ const WalletCard: React.FC<IWalletProps> = ({
           showNotify('Wallet owner verification failed', 'error');
           return;
         }
+        if (userSession.isEssentialUser) setRequestEssentials(true);
         const doc = await addWalletToDIDDocument(
           account,
           selectedWalletType.toLowerCase(),
           userSession
         );
-        console.log(doc);
+        if (userSession.isEssentialUser) setRequestEssentials(false);
         setDidDoc(doc);
-        setConnection(false);
+        setAdding(false);
       })();
     }
-  }, [account, selectedWalletType, connection, library, userSession]);
+  }, [
+    account,
+    adding,
+    selectedWalletType,
+    library,
+    userSession,
+    setRequestEssentials
+  ]);
 
   const connectWallet = async () => {
     try {
       await activate(injected);
-      setConnection(true);
     } catch (ex) {
       console.log(ex);
     }
@@ -92,15 +101,21 @@ const WalletCard: React.FC<IWalletProps> = ({
 
   const addVc = async (type: CredentialType) => {
     setSelectedWalletType(type);
-    connectWallet();
+    setAdding(true);
+    if (!account) {
+      connectWallet();
+    }
   };
 
   const removeVc = async (type: CredentialType) => {
     setIsRemovingVc(true);
+
+    if (userSession.isEssentialUser) setRequestEssentials(true);
     const doc = await removeWalletFromDIDDocument(
       type.toLowerCase(),
       userSession
     );
+    if (userSession.isEssentialUser) setRequestEssentials(false);
     setDidDoc(doc);
     setIsRemovingVc(false);
   };
@@ -134,6 +149,7 @@ const WalletCard: React.FC<IWalletProps> = ({
             {shortenAddress(address)}
             <CopyToClipboard text={address}>
               <img
+                alt=""
                 className={style['copy-to-clipboard']}
                 src={copyIcon}
                 width={15}

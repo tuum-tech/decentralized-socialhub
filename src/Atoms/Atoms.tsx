@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 import { defaultFullProfile } from 'src/services/profile.service';
-import { defaultUserInfo } from 'src/store/users/types';
+import { defaultBadges, defaultUserInfo } from 'src/store/users/types';
 
 export const DIDDocumentAtom = atom({
   key: 'DIDDocument',
@@ -10,6 +10,11 @@ export const DIDDocumentAtom = atom({
 export const SessionAtom = atom({
   key: 'Session',
   default: defaultUserInfo
+});
+
+export const BadgesAtom = atom({
+  key: 'Badges',
+  default: defaultBadges
 });
 
 export const FullProfileAtom = atom({

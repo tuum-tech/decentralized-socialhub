@@ -13,6 +13,9 @@ import { getDIDString } from 'src/utils/did';
 
 import PublishingLabel from '../PublishingLabel';
 
+import { useRecoilValue } from 'recoil';
+import { FullProfileAtom } from 'src/Atoms/Atoms';
+
 import style from './style.module.scss';
 
 interface IProps {
@@ -24,16 +27,17 @@ const DashboardHeader: React.FC<IProps> = ({
   sessionItem,
   publishStatus
 }: IProps) => {
-  const [verifiers, setVerifiers] = useState([]);
+  const [verifiers, setVerifiers] = useState([{ name: '', did: '' }]);
+
+  const profile = useRecoilValue(FullProfileAtom);
 
   useEffect(() => {
     (async () => {
       if (sessionItem.name !== '') {
-        const vfs = await ProfileService.getVerifiers({}, 'name', sessionItem);
-        setVerifiers(vfs);
+        setVerifiers(profile.name.verifiers);
       }
     })();
-  }, [sessionItem, sessionItem.name]);
+  }, [profile, sessionItem.name]);
 
   return (
     <IonGrid className={style['profileheader']}>
@@ -60,8 +64,12 @@ const DashboardHeader: React.FC<IProps> = ({
             </IonRow>
             <IonRow className={style['d-flex']}>
               <IonCol>
-                <DidSnippet did={sessionItem.did} />
+                <DidSnippet
+                  did={sessionItem.did}
+                  dateJoined={sessionItem.timestamp}
+                />
               </IonCol>
+              <IonCol></IonCol>
             </IonRow>
           </IonGrid>
         </IonCol>

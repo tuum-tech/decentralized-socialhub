@@ -153,13 +153,15 @@ const ProfileComponent: React.FC<Props> = ({
                         </div>
                         <div ref={educationRef}>
                           {publicFields.includes('education') && (
-                            <EducationCard
-                              educationDTO={publicUserProfile.educationDTO}
-                              isEditable={false}
-                              isPublicPage={true}
-                              template={template}
-                              userSession={publicUser}
-                            />
+                            <>
+                              <EducationCard
+                                education={publicUserProfile.educationDTO}
+                                isEditable={false}
+                                isPublicPage={true}
+                                template={template}
+                                userSession={publicUser}
+                              />
+                            </>
                           )}
                         </div>
                         <div ref={gameExpRef}>
@@ -174,39 +176,6 @@ const ProfileComponent: React.FC<Props> = ({
                               />
                             )}
                         </div>
-                        {/* <div ref={educationRef}>
-                          {publicFields.includes('gamer tags') && (
-                            <EducationCard
-                              educationDTO={publicUserProfile.educationDTO}
-                              isEditable={false}
-                              isPublicPage={true}
-                              template={template}
-                              userSession={publicUser}
-                            />
-                          )}
-                        </div>
-                        <div ref={educationRef}>
-                          {publicFields.includes('gamer profile') && (
-                            <EducationCard
-                              educationDTO={publicUserProfile.educationDTO}
-                              isEditable={false}
-                              isPublicPage={true}
-                              template={template}
-                              userSession={publicUser}
-                            />
-                          )}
-                        </div> */}
-                        {/* <div ref={educationRef}>
-                          {publicFields.includes('sports') && (
-                            <EducationCard
-                              educationDTO={publicUserProfile.educationDTO}
-                              isEditable={false}
-                              isPublicPage={true}
-                              template={template}
-                              userSession={publicUser}
-                            />
-                          )}
-                        </div> */}
                         <div ref={teamRef}>
                           {publicFields.includes('teams') &&
                             template === 'soccer' && (
@@ -219,17 +188,6 @@ const ProfileComponent: React.FC<Props> = ({
                               />
                             )}
                         </div>
-                        {/* <div ref={educationRef}>
-                          {publicFields.includes('developer') && (
-                            <EducationCard
-                              educationDTO={publicUserProfile.educationDTO}
-                              isEditable={false}
-                              isPublicPage={true}
-                              template={template}
-                              userSession={publicUser}
-                            />
-                          )}
-                        </div> */}
                         <div ref={thesisRef}>
                           {publicFields.includes('thesis') &&
                             template === 'education' && (
@@ -313,6 +271,7 @@ const ProfileComponent: React.FC<Props> = ({
                         {publicFields.includes('wallet') &&
                           template === 'crypto' && (
                             <WalletCard
+                              setRequestEssentials={() => {}}
                               didDocument={didDocument!}
                               isEditable={false}
                               template={template}

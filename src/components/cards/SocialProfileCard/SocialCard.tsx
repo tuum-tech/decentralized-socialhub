@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonCol,
-  IonGrid,
-  IonRow
-} from '@ionic/react';
+import { IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 import { DidcredsService } from 'src/services/didcreds.service';
 import { UserService } from 'src/services/user.service';
@@ -32,10 +25,14 @@ import {
   ManagerLogo,
   ProfileItem,
   ManagerButton,
-  CloseButton
+  CloseButton,
+  CardHeaderContent,
+  CardContentContainer
 } from '../common';
 
 import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/';
+import { useSetRecoilState } from 'recoil';
+import { BadgesAtom } from 'src/Atoms/Atoms';
 
 interface Props {
   sessionItem: ISessionItem;
@@ -50,6 +47,7 @@ const SocialProfilesCard: React.FC<Props> = ({
   mode = 'view',
   openModal = false
 }) => {
+  const setBadges = useSetRecoilState(BadgesAtom);
   const [isManagerOpen, setIsManagerOpen] = useState(openModal);
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
   const [credentials, setCredentials] = useState<
@@ -115,7 +113,15 @@ const SocialProfilesCard: React.FC<Props> = ({
 
     var timer = setInterval(async function() {
       if (popupwindow!.closed) {
+        clearInterval(timer);
         await getCredentials(sessionItem);
+
+        let userService = new UserService(await DidService.getInstance());
+
+        let user: ISessionItem = await userService.SearchUserWithDID(
+          sessionItem.did
+        );
+        setBadges(user.badges as IBadges);
       }
     }, 1000);
   };
@@ -153,7 +159,6 @@ const SocialProfilesCard: React.FC<Props> = ({
       url = (await DidcredsService.requestDiscordLogin()) as MyType;
     }
 
-    console.log(url, 'login url');
     if (url) {
       popupCenter(url.data, 'Login', 548, 725);
     }
@@ -392,8 +397,8 @@ const SocialProfilesCard: React.FC<Props> = ({
   return (
     <>
       <SocialProfileCard template={template}>
-        <IonCardHeader>
-          <IonCardTitle className="card-title">
+        <CardHeaderContent>
+          <IonCardTitle>
             Social Profiles
             {mode === 'edit' && (
               <span
@@ -406,9 +411,9 @@ const SocialProfilesCard: React.FC<Props> = ({
               </span>
             )}
           </IonCardTitle>
-        </IonCardHeader>
-        <IonCardContent className="card-content">
-          <IonGrid className="social-profile-grid">
+        </CardHeaderContent>
+        <CardContentContainer>
+          <IonGrid className={style['social-profile-grid']}>
             <IonRow>
               {containsVerifiedCredential('linkedin') && (
                 <IonCol size={mode === 'edit' ? '6' : '12'}>
@@ -442,7 +447,7 @@ const SocialProfilesCard: React.FC<Props> = ({
               )}
             </IonRow>
           </IonGrid>
-        </IonCardContent>
+        </CardContentContainer>
       </SocialProfileCard>
 
       <ManagerModal
