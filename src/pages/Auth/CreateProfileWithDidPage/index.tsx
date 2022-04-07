@@ -65,62 +65,62 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (userInfo.did === '') {
-    return <LoadingIndicator />;
-  } else {
-    if (
-      status === 0 &&
-      userInfo.name !== '' &&
-      (!userInfo.loginCred.email || userInfo.loginCred.email === '')
-    ) {
-      setStatus(1);
-    }
+  // if (userInfo.did === '') {
+  //   return <LoadingIndicator />;
+  // }
 
-    if (status === 1) {
-      return (
-        <SetPassword
-          loading={false}
-          next={async pwd => {
-            let userService = new UserService(await DidService.getInstance());
-            let sessionItem = await userService.CreateNewUser(
-              userInfo.name,
-              AccountType.DID,
-              userInfo.loginCred,
-              '',
-              pwd,
-              userInfo.did,
-              userInfo.mnemonic,
-              userInfo.hiveHost,
-              userInfo.avatar
-            );
-            eProps.setSession({ session: sessionItem });
-            setStatus(3);
-          }}
-        />
-      );
-    }
+  if (
+    status === 0 &&
+    userInfo.name !== '' &&
+    (!userInfo.loginCred.email || userInfo.loginCred.email === '')
+  ) {
+    setStatus(1);
+  }
 
-    if (status === 3) {
-      return <Redirect to="/profile" />;
-    }
-
+  if (status === 1) {
     return (
-      <ProfileFields
-        userInfo={userInfo}
-        setUserInfo={(name, email) => {
-          setUserInfo({
-            ...userInfo,
-            name,
-            loginCred: {
-              ...userInfo.loginCred,
-              email
-            }
-          });
-          setStatus(1);
+      <SetPassword
+        loading={false}
+        next={async pwd => {
+          let userService = new UserService(await DidService.getInstance());
+          let sessionItem = await userService.CreateNewUser(
+            userInfo.name,
+            AccountType.DID,
+            userInfo.loginCred,
+            '',
+            pwd,
+            userInfo.did,
+            userInfo.mnemonic,
+            userInfo.hiveHost,
+            userInfo.avatar
+          );
+          eProps.setSession({ session: sessionItem });
+          setStatus(3);
         }}
       />
     );
   }
+
+  if (status === 3) {
+    return <Redirect to="/profile" />;
+  }
+
+  return (
+    <ProfileFields
+      userInfo={userInfo}
+      setUserInfo={(name, email) => {
+        setUserInfo({
+          ...userInfo,
+          name,
+          loginCred: {
+            ...userInfo.loginCred,
+            email
+          }
+        });
+        setStatus(1);
+      }}
+    />
+  );
 };
 
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({

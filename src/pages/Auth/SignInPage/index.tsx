@@ -136,10 +136,23 @@ const SignInPage: React.FC<RouteComponentProps<
         );
         console.log('hello - signinpage: ', res, name);
         if (res) {
-          history.push({
-            pathname: '/set-password',
-            state: { ...res, isEssentialUser: true }
-          });
+          const user = {
+            mnemonics: '',
+            passhash: '',
+            onBoardingCompleted: false,
+            tutorialStep: 1,
+            timestamp: Date.now(),
+            isEssentialUser: false,
+            ...res
+          };
+          const lockRes = await userService.LockWithDIDAndPwd(user, '');
+          if (lockRes && lockRes.did !== '') {
+            await userService.updateSession(lockRes);
+            window.localStorage.setItem('isLoggedIn', 'true');
+            history.push('/profile');
+          } else {
+            alertError(null, 'Failed to lock user info');
+          }
         } else {
           history.push({
             pathname: '/create-profile-with-did',

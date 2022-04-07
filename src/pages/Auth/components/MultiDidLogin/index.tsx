@@ -14,10 +14,9 @@ import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { SearchService } from 'src/services/search.service';
 import { getItemsFromData } from 'src/utils/script';
 import { ThemeButton } from 'src/elements/buttons';
-import { Text16, ErrorTxt, Title40, Text18 } from 'src/elements/texts';
+import { Text16, Title40, Text18 } from 'src/elements/texts';
 
 import eye from 'src/assets/icon/eye.png';
-import TextInput from 'src/elements/inputs/TextInput';
 import { UserService } from 'src/services/user.service';
 
 import FieldDivider from '../FieldDivider';
@@ -83,7 +82,7 @@ const SecondaryButton = styled(DefaultButton)`
   }
 `;
 
-const MultiDidPasswordLogin: React.FC<Props> = ({
+const MultiDidLogin: React.FC<Props> = ({
   dids,
   changeMode,
   removeUser,
@@ -91,8 +90,6 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
 }) => {
   const [did, setDid] = useState(dids[0]);
   const [localUsers, setLocalUsers] = useState([]);
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState('');
   const [showTutorial, setShowTutorial] = useState(false);
 
@@ -113,15 +110,11 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
   }, [dids]);
 
   const onLoginButtonClick = async () => {
-    if (!password || password === '') {
-      setError('Enter your password');
-      return;
-    }
     setLoading('Signing now...');
 
     let userService = new UserService(await DidService.getInstance());
 
-    const res = await userService.UnLockWithDIDAndPwd(did, password);
+    const res = await userService.UnLockWithDIDAndPwd(did, '');
     if (res) {
       await SyncService.TempInitializeSignedUsers(res);
 
@@ -142,9 +135,7 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
           <Title40 className="mt-18px">
             We have seen your accounts before.
           </Title40>
-          <Text18 className="mt-25px">
-            You can select and login using the password you set
-          </Text18>
+          <Text18 className="mt-25px">You can select and login</Text18>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -163,21 +154,6 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
               }}
             />
           )}
-          <TextInput
-            value={password}
-            type="password"
-            label="Password"
-            onChange={n => {
-              setError('');
-              setPassword(n);
-            }}
-            onHitEnter={async () => {
-              await onLoginButtonClick();
-            }}
-            placeholder="Enter your password"
-            hasError={error !== '' && password === ''}
-          />
-          {error !== '' && <ErrorTxt className="mt-3">{error}</ErrorTxt>}
 
           <ThemeButton
             text="Sign in to profile"
@@ -243,4 +219,4 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
   );
 };
 
-export default MultiDidPasswordLogin;
+export default MultiDidLogin;

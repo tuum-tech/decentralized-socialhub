@@ -7,7 +7,6 @@ import DiscordCallback from './SocialCallback/DiscordCallback';
 import AssociatedProfilePage from './AssociatedProfilePage/Loadable';
 import CreateProfilePage from './CreateProfilePage/Loadable';
 import CreateWhyPage from './CreateWhyPage/Loadable';
-import CreatePasswordPage from './CreatePasswordPage/Loadable';
 import GenerateDidPage from './GenerateDidPage/Loadable';
 import SignInPage from './SignInPage/Loadable';
 import SignQRPage from './SignQRPage/Loadable';
@@ -27,7 +26,6 @@ export {
   AssociatedProfilePage,
   CreateProfilePage,
   CreateWhyPage,
-  CreatePasswordPage,
   GenerateDidPage,
   SignInPage,
   SignQRPage,

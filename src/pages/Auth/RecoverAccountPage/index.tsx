@@ -167,13 +167,26 @@ const RecoverAccountPage: React.FC<RouteComponentProps<
                   mnemonic: mnemonic
                 })
               );
-              setLoading(false);
 
               if (res) {
-                history.push({
-                  pathname: '/set-password',
-                  state: { ...res, isEssentialUser: false }
-                });
+                const user = {
+                  mnemonics: '',
+                  passhash: '',
+                  onBoardingCompleted: false,
+                  tutorialStep: 1,
+                  timestamp: Date.now(),
+                  isEssentialUser: false,
+                  ...res
+                };
+
+                const lockRes = await userService.LockWithDIDAndPwd(user, '');
+                if (lockRes && lockRes.did !== '') {
+                  await userService.updateSession(lockRes);
+                  window.localStorage.setItem('isLoggedIn', 'true');
+                  history.push('/profile');
+                } else {
+                  alertError(null, 'Failed to lock user info');
+                }
               } else {
                 history.push({
                   pathname: '/create-profile-with-did',
@@ -184,6 +197,8 @@ const RecoverAccountPage: React.FC<RouteComponentProps<
                   }
                 });
               }
+
+              setLoading(false);
             }
           }}
         />

@@ -82,6 +82,8 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [associatedInfo]);
 
+  console.log(status, user, associatedInfo);
+
   if (!associatedInfo || !user) {
     return <LoadingIndicator />;
   } else if (screen === '/generate-did') {

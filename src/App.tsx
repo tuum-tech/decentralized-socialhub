@@ -44,7 +44,6 @@ import {
   AssociatedProfilePage,
   CreateProfilePage,
   CreateWhyPage,
-  CreatePasswordPage,
   GenerateDidPage,
   SignInPage,
   SignQRPage,
@@ -190,12 +189,6 @@ const App: React.FC = () => {
                   <Route path="/github_callback" component={GithubCallback} />
                   <Route path="/discord_callback" component={DiscordCallback} />
 
-                  {/* ok */}
-                  <ProtectedRoute
-                    path="/set-password"
-                    component={CreatePasswordPage}
-                    exact={true}
-                  />
                   <ProtectedRoute
                     path="/email-verification"
                     component={EmailVerificationPage}
