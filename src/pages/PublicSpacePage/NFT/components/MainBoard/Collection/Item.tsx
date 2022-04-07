@@ -6,6 +6,7 @@ import img_nft_item from 'src/assets/space/nft_item.jpg';
 import icon_eth from 'src/assets/space/eth.svg';
 import icon_ela from 'src/assets/space/ela.svg';
 import style from './Item.module.scss';
+import { shortenAddress } from 'src/utils/web3';
 
 export const CardWrapper = styled(IonCard)<ThemeProps>`
   background-color: ${({ template }: ThemeProps) =>
@@ -50,6 +51,11 @@ const Item: React.FC<IProps> = ({ data }: IProps) => {
             <h2>{data.last_sale.price}</h2>
           </div>
         )}
+        <div className={style['name']}>
+          <h2>
+            <b>Owned by</b> {shortenAddress(data.owner)}
+          </h2>
+        </div>
       </IonRow>
     </CardWrapper>
   );

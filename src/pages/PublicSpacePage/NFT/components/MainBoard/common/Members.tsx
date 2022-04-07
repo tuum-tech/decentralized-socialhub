@@ -33,7 +33,7 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
         setTotalCount(totalCount);
         const members = await getOwners(
           owners.map((owner: string) => ({ owner })),
-          space.meta.network || 'Ethereum'
+          space.meta.network || 'Elastos Smart Contract Chain'
         );
         setFirstIV(members);
       }

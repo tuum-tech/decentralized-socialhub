@@ -29,9 +29,9 @@ export const getOwners = async (assets: any[], network: string) => {
           return address === owner;
         };
         return verifyAddress(
-          network.toLowerCase() === 'ethereum'
-            ? CredentialType.ETHAddress
-            : CredentialType.ESCAddress
+          network.toLowerCase() === 'elastos smart contract chain'
+            ? CredentialType.ESCAddress
+            : CredentialType.ETHAddress
         );
       }
     );
