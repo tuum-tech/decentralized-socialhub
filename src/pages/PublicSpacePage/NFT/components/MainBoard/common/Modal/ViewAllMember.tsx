@@ -12,7 +12,7 @@ import nft_item_icon from 'src/assets/space/nft_item.jpg';
 import welcome_badge from 'src/assets/space/welcome_badge.svg';
 import modal_style from './style.module.scss';
 import common_style from '../style.module.scss';
-import { getNFTCollectionAssets } from '../../../../fetchapi';
+import { getNFTCollectionOwners } from '../../../../fetchapi';
 import { getDIDString } from 'src/utils/did';
 import { getOwners } from 'src/utils/nftcollection';
 import { shortenAddress } from 'src/utils/web3';
@@ -38,18 +38,17 @@ const ViewAllMember = ({ space, onClose }: Props) => {
   }, []);
 
   const fetchMoreData = async () => {
-    const { data }: any = await getNFTCollectionAssets(
+    const { data }: any = await getNFTCollectionOwners(
       space.guid,
       offset,
       limit
     );
-    const { totalCount, assets } = data;
-    console.log(assets);
+    const { totalCount, owners } = data;
     setTotalCount(totalCount);
 
-    if (assets.length > 0) {
+    if (owners.length > 0) {
       const _members_ = await getOwners(
-        assets,
+        owners.map((owner: string) => ({ owner })),
         space.meta.network || 'Ethereum'
       );
       setOffset(offset + limit);

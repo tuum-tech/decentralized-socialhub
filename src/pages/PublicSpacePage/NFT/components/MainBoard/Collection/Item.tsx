@@ -23,10 +23,15 @@ interface IProps {
 }
 
 const Item: React.FC<IProps> = ({ data }: IProps) => {
+  const flattenUrl = (url: string) => {
+    if (url.startsWith('ipfs://'))
+      return url.replace('ipfs://', 'https://ipfs.io/ipfs/');
+    return url;
+  };
   return (
     <CardWrapper template={'default'}>
       <IonRow>
-        <img src={data.image_url} />
+        <img src={flattenUrl(data.image_url)} alt={data.image_url} />
       </IonRow>
       <IonRow className="ion-justify-content-between ion-no-padding">
         <div className={style['name']}>
@@ -36,7 +41,10 @@ const Item: React.FC<IProps> = ({ data }: IProps) => {
         {data.last_sale && (
           <div className={style['price']}>
             <h1>
-              <img src={data.last_sale.token === 'ETH' ? icon_eth : icon_ela} width="20px"/>
+              <img
+                src={data.last_sale.token === 'ETH' ? icon_eth : icon_ela}
+                width="20px"
+              />
               {data.last_sale.token}
             </h1>
             <h2>{data.last_sale.price}</h2>

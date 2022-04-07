@@ -12,7 +12,7 @@ import ViewAllMember from './Modal/ViewAllMember';
 import nft_item_icon from 'src/assets/space/nft_item.jpg';
 import welcome_badge from 'src/assets/space/welcome_badge.svg';
 import style from './style.module.scss';
-import { getNFTCollectionAssets } from '../../../fetchapi';
+import { getNFTCollectionOwners } from '../../../fetchapi';
 import { shortenAddress } from 'src/utils/web3';
 import { getDIDString } from 'src/utils/did';
 import { getOwners } from 'src/utils/nftcollection';
@@ -28,16 +28,11 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
   useEffect(() => {
     (async () => {
       if (space && space.guid) {
-        const { data }: any = await getNFTCollectionAssets(space.guid, 0, 4);
-        const { totalCount, assets } = data;
-        // const { totalCount } = data;
+        const { data }: any = await getNFTCollectionOwners(space.guid, 0, 4);
+        const { totalCount, owners } = data;
         setTotalCount(totalCount);
-        /**************/
-        // let assets = data.assets;
-        // assets[0].owner = '0x667ae4c525C9a69e379D9449654591095d5dA025';
-        /**************/
         const members = await getOwners(
-          assets,
+          owners.map((owner: string) => ({ owner })),
           space.meta.network || 'Ethereum'
         );
         console.log(members);

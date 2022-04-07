@@ -66,5 +66,25 @@
       "ref": "https://ela.city/marketplace/collections/0xE27934fB3683872e35b8d9E57c30978e1260c614",
       "slug": "Bunny Punk"
     }
+  },
+  {
+    "sid": 4,
+    "name": "CyberKong",
+    "category": "NFT Collection",
+    "owner": ["did:elastos:iWtZBcqZa981z3YEoUxanCqvN7rFVDu52D"],
+    "tags": [
+      "ERC-721",
+      "Governance",
+      "Social Token",
+      "Membership",
+      "Collectibles",
+      "Art"
+    ],
+    "meta": {
+      "network": "ethereum",
+      "address": "0x57a204aa1042f6e66dd7730813f4024114d74f37",
+      "ref": "https://opensea.io/collection/information-token",
+      "slug": "CyberKong"
+    }
   }
 ]
