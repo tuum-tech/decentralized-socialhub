@@ -35,9 +35,9 @@ const ViewAllMember = ({ space, onClose }: Props) => {
     (async () => {
       await fetchMoreData();
     })();
-  }, []);
+  }, [fetchMoreData]);
 
-  const fetchMoreData = async () => {
+  const fetchMoreData = useCallback(async () => {
     const { data }: any = await getNFTCollectionOwners(
       space.guid,
       offset,
@@ -56,7 +56,7 @@ const ViewAllMember = ({ space, onClose }: Props) => {
     } else {
       setHasMore(false);
     }
-  };
+  });
   return (
     <div className={style['modal']}>
       <div className={style['modal_container']}>
@@ -74,7 +74,7 @@ const ViewAllMember = ({ space, onClose }: Props) => {
               scrollableTarget="scrollableDiv"
             >
               {members.map((member: any, index: number) => {
-                const isProfileUser = typeof member === 'object';
+                const isProfileUser = member && typeof member === 'object';
                 return (
                   <IonRow className={style['row']} key={index}>
                     <div className={style['avatar']}>
