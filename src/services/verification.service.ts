@@ -12,9 +12,11 @@ import { UserService } from './user.service';
 import { ProfileService } from './profile.service';
 import { EssentialsService } from 'src/services/essentials.service';
 import { getItemsFromData } from 'src/utils/script';
-import { DID as ConnDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import {
+  DID as ConnDID,
+  connectivity
+} from '@elastosfoundation/elastos-connectivity-sdk-js/';
 
-import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { DidcredsService } from './didcreds.service';
 
 export enum VerificationStatus {
@@ -384,6 +386,11 @@ export class VerificationService {
     //   },
     //   session
     // );
+  }
+
+  public async importCredential(v: VerifiableCredential): Promise<void> {
+    let didAccess = new ConnDID.DIDAccess();
+    await didAccess.importCredentials([v]);
   }
 
   public async approveCredential(

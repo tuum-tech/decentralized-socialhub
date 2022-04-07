@@ -63,6 +63,7 @@ const SocialProfilesCard: React.FC<Props> = ({
   const getCredentials = async (sessionItem: ISessionItem) => {
     try {
       let cred = await DidcredsService.getAllCredentialsToVault(sessionItem);
+
       setCredentials(cred);
     } catch (error) {
       console.error('Error getting credentials on vault', error);
