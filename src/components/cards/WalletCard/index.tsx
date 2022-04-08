@@ -82,14 +82,8 @@ const WalletCard: React.FC<IWalletProps> = ({
         setAdding(false);
       })();
     }
-  }, [
-    account,
-    adding,
-    selectedWalletType,
-    library,
-    userSession,
-    setRequestEssentials
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, adding]);
 
   const connectWallet = async () => {
     try {

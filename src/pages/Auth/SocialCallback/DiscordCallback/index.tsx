@@ -24,6 +24,7 @@ import { requestDiscordToken, getUsersWithRegisteredDiscord } from './fetchapi';
 import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidService } from 'src/services/did.service.new';
+import { VerificationService } from 'src/services/verification.service';
 
 interface PageProps
   extends InferMappedProps,
@@ -71,6 +72,9 @@ const DiscordCallback: React.FC<PageProps> = ({
             props.session,
             verifiableCredential
           );
+
+          const vService = new VerificationService();
+          await vService.importCredential(verifiableCredential);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.discord! = discord;
@@ -137,7 +141,9 @@ const DiscordCallback: React.FC<PageProps> = ({
         />
       );
     }
-    return <LoadingIndicator />;
+    return (
+      <LoadingIndicator loadingText="Please accept Credential Import on Essentials App" />
+    );
   };
   return getRedirect();
 };

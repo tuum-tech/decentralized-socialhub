@@ -28,6 +28,7 @@ import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { AccountType, UserService } from 'src/services/user.service';
 
 import { requestTwitterToken, getUsersWithRegisteredTwitter } from './fetchapi';
+import { VerificationService } from 'src/services/verification.service';
 
 interface PageProps
   extends InferMappedProps,
@@ -87,6 +88,9 @@ const TwitterCallback: React.FC<PageProps> = ({
             props.session,
             verifiableCredential
           );
+
+          const vService = new VerificationService();
+          await vService.importCredential(verifiableCredential);
 
           let newSession = JSON.parse(JSON.stringify(props.session));
           newSession.loginCred!.twitter! = items[1].toString();
@@ -155,7 +159,9 @@ const TwitterCallback: React.FC<PageProps> = ({
         />
       );
     }
-    return <LoadingIndicator />;
+    return (
+      <LoadingIndicator loadingText="Please accept Credential Import on Essentials App" />
+    );
   };
   return getRedirect();
 };
