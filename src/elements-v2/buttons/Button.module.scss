@@ -3,3 +3,15 @@
 .dark-pink-gradient {
   background: $dark-pink-gradient;
 }
+
+.dark-purple-gradient {
+  background: $dark-purple-gradient;
+}
+
+.border-dark-pink-gradient {
+  background: linear-gradient(#fff 0 0) padding-box,
+    /*this is your grey background*/ $dark-pink-gradient border-box;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+}

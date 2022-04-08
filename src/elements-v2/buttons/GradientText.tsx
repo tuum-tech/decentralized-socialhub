@@ -1,13 +1,9 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
-import { IonText } from '@ionic/react';
 import style from './Button.module.scss';
+import ButtonText from './ButtonText';
 
-const StyledText = styled(IonText)<Omit<GradientTextProps, 'text'>>`
-  font-family: 'SF Pro Display';
-  font-style: normal;
-  font-weight: ${props => (props.fontWeight ? `${props.fontWeight}` : '500')};
-  font-size: ${props => (props.fontSize ? `${props.fontSize}px` : '13px')};
+const StyledButtonText = styled(ButtonText)`
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -15,16 +11,19 @@ const StyledText = styled(IonText)<Omit<GradientTextProps, 'text'>>`
 `;
 
 interface GradientTextProps {
-  text: string;
   fontSize?: number;
   fontWeight?: string;
+  children?: React.ReactNode;
 }
 
-const GradientText = ({ text, ...props }: GradientTextProps) => {
+const GradientText: FC<GradientTextProps> = ({
+  children,
+  ...props
+}: GradientTextProps) => {
   return (
-    <StyledText {...props} className={style['dark-pink-gradient']}>
-      {text}
-    </StyledText>
+    <StyledButtonText {...props} className={style['dark-pink-gradient']}>
+      {children}
+    </StyledButtonText>
   );
 };
 
