@@ -12,7 +12,7 @@ const StyledLinkButton = styled(IonRouterLink)<ButtonProps>`
   justify-content: center;
   align-items: center;
   padding: 6px 11px;
-  width: 100px;
+  width: 160px;
   height: 33.01px;
   border-radius: 7px;
 `;

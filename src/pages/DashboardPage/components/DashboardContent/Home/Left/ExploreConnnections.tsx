@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 import { ProfileService } from 'src/services/profile.service';
-import {
-  MainCard,
-  CardText,
-  CardTitle,
-  CardImg,
-  LinkButton
-} from './ManageProfile';
+import { MainCard, CardText, CardTitle, CardImg } from './ManageProfile';
+import LinkButton from 'src/elements-v2/buttons/LinkButton';
 import exploreCardImg from '../../../../../../assets/dashboard/explore.png';
 
 interface Props {
@@ -57,7 +52,14 @@ const ExploreConnnections: React.FC<Props> = ({ did, session }) => {
             Search for like minded people and make valuable connections. Explore
             your influence circle
           </CardText>
-          <LinkButton href="/explore">Explore connections &gt;</LinkButton>
+          <LinkButton
+            variant="contained"
+            color="gradient"
+            textType="gradient"
+            href="/explore"
+          >
+            Explore Connections
+          </LinkButton>
           <CardImg src={exploreCardImg} />
         </MainCard>
       )}

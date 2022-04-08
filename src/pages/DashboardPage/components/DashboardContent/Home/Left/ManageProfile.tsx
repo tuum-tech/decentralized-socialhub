@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { DefaultLinkButton } from 'src/elements/buttons';
 import AboutCard from 'src/components/cards/AboutCard';
 import ExperienceCard from 'src/components/cards/ExperienceCard';
 import EducationCard from 'src/components/cards/EducationCard';
@@ -9,6 +8,7 @@ import EducationCard from 'src/components/cards/EducationCard';
 import profileCardImg from '../../../../../../assets/dashboard/profile.png';
 import { useRecoilValue } from 'recoil';
 import { FullProfileAtom } from 'src/Atoms/Atoms';
+import LinkButton from 'src/elements-v2/buttons/LinkButton';
 
 export const CardTitle = styled.p`
   color: black;
@@ -26,7 +26,7 @@ export const CardText = styled.p`
   line-height: 23px;
   color: #425466;
   max-width: 315px;
-  maring-bottom: 15px;
+  margin-bottom: 15px;
 `;
 
 export const MainCard = styled.div`
@@ -50,15 +50,6 @@ export const CardImg = styled.img`
   position: absolute;
   right: 0;
   bottom: 0;
-`;
-
-export const LinkButton = styled(DefaultLinkButton)`
-  margin-top: 15px;
-  width: 158px;
-  color: #4c6fff;
-  background-color: #f3f9ff;
-  text-align: left !important;
-  padding: 11px 15px;
 `;
 
 interface Props {
@@ -91,7 +82,14 @@ const ManageProfile: React.FC<Props> = ({ userSession }) => {
         <CardText>
           Add, edit and manage your profile information from profile manager.
         </CardText>
-        <LinkButton href="/manager">Manage your profile &gt;</LinkButton>
+        <LinkButton
+          variant="contained"
+          color="gradient"
+          textType="gradient"
+          href="/manager"
+        >
+          Manage Profile
+        </LinkButton>
         <CardImg src={profileCardImg} />
       </MainCard>
     );
