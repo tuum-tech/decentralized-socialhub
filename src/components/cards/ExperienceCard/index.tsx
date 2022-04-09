@@ -23,7 +23,7 @@ import {
 } from 'src/Atoms/Selectors';
 
 interface IExperienceProps {
-  updateFunc?: (item: any) => Promise<boolean>;
+  updateFunc?: (prevItem: any, item: any) => Promise<boolean>;
   isEditable?: boolean;
   removeFunc?: any;
   requestFunc?: any;
@@ -77,6 +77,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [experienceDTO, noOfVerifiedExpCred]);
 
+  const [prevItem, setPrevItem] = useState(defaultExperienceItem);
   const [editedItem, setEditedItem] = useState(defaultExperienceItem);
   const [isEditing, setIsEditing] = useState(openModal);
   const [mode, setMode] = useState(MODE.NONE);
@@ -117,10 +118,10 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     return true;
   };
 
-  const saveChanges = async (item: ExperienceItem) => {
+  const saveChanges = async (prevItem: EducationItem, item: ExperienceItem) => {
     let items = [...experienceDTO.items];
 
-    let itemToUpdate = items.find(x => x.guid === item.guid);
+    let itemToUpdate = items.find(x => x.guid.value === item.guid.value);
     if (itemToUpdate === undefined) {
       items.push(item);
     } else {
@@ -134,7 +135,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
 
     setIsEditing(false);
     if (updateFunc) {
-      if ((await updateFunc(item)) === true) {
+      if ((await updateFunc(prevItem, item)) === true) {
         setExperienceDTO({ isEnabled: true, items: items });
       }
     }
@@ -154,6 +155,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   };
 
   const editItem = (item: ExperienceItem) => {
+    setPrevItem(item);
     setEditedItem(item);
     setMode(MODE.EDIT);
   };
@@ -291,7 +293,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
               <IonButton
                 onClick={() => {
                   if (validate(editedItem)) {
-                    saveChanges(editedItem);
+                    saveChanges(prevItem, editedItem);
                     setMode(MODE.NONE);
                   } else {
                     setMode(MODE.ERROR);

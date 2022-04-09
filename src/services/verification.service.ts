@@ -345,7 +345,7 @@ export class VerificationService {
 
     if (category.includes(':')) {
       let vcTypeStrings = category.split(':');
-      vcType = vcTypeStrings[0] + 'Credential' + vcTypeStrings[1];
+      vcType = vcTypeStrings[0] + 'credential' + vcTypeStrings[1];
     } else {
       vcType = category;
     }
