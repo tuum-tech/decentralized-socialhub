@@ -31,7 +31,6 @@ let run = async () => {
           name: space.name,
           category: space.category,
           owner: space.owner,
-          tags: space.tags,
           meta: space.meta,
           followers: [...new Set(saved.followers.concat(space.followers))]
         };
