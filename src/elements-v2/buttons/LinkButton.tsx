@@ -5,6 +5,7 @@ import { ButtonProps } from './types';
 import style from './Button.module.scss';
 import GradientText from './GradientText';
 import ButtonText from './ButtonText';
+import Icon from '../icons/Icon';
 
 const StyledLinkButton = styled(IonRouterLink)<ButtonProps>`
   display: flex;
@@ -15,6 +16,11 @@ const StyledLinkButton = styled(IonRouterLink)<ButtonProps>`
   width: 160px;
   height: 33.01px;
   border-radius: 7px;
+`;
+
+const StyledDivCenter = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 interface LinkButtonProps extends ButtonProps {
@@ -30,6 +36,7 @@ const LinkButton: FC<LinkButtonProps> = ({
   bgColor,
   children,
   size = 'default',
+  icon,
   color,
   ...props
 }: LinkButtonProps) => {
@@ -70,13 +77,18 @@ const LinkButton: FC<LinkButtonProps> = ({
 
   return (
     <StyledLinkButton {...props} className={backStyle} style={styles}>
-      {textType === 'gradient' ? (
-        <GradientText fontSize={fontSize}>{children}</GradientText>
-      ) : (
-        <ButtonText fontSize={fontSize} color={fontColor}>
-          {children}
-        </ButtonText>
-      )}
+      <StyledDivCenter>
+        {textType === 'gradient' ? (
+          <GradientText fontSize={fontSize}>{children}</GradientText>
+        ) : (
+          <ButtonText fontSize={fontSize} color={fontColor}>
+            {children}
+          </ButtonText>
+        )}
+        {icon && (
+          <Icon name={icon} style={{ paddingLeft: 6 }} color="medium"></Icon>
+        )}
+      </StyledDivCenter>
     </StyledLinkButton>
   );
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import { IonIconType } from '../icons/types';
 
 export interface ButtonProps {
   size?: 'default' | 'large' | 'small' | undefined;
@@ -10,5 +11,6 @@ export interface ButtonProps {
   bgColor?: string;
   borderRadius?: string;
   borderColor?: string;
+  icon?: IonIconType;
   children: React.ReactNode;
 }
