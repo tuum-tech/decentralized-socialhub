@@ -31,16 +31,16 @@ interface LinkButtonProps extends ButtonProps {
   rel?: string;
 }
 
-const LinkButton: FC<LinkButtonProps> = ({
-  variant,
-  textType,
-  bgColor,
-  children,
-  size = 'default',
-  icon,
-  color,
-  ...props
-}: LinkButtonProps) => {
+const LinkButton: FC<LinkButtonProps> = (props: LinkButtonProps) => {
+  const {
+    variant,
+    textType,
+    bgColor,
+    children,
+    size = 'default',
+    icon,
+    color
+  } = props;
   let backStyle = '';
   let fontColor = '';
   let styles = {};
