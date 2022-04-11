@@ -20,13 +20,6 @@ export const GithubIssueLabel = {
     },
     name: 'bug'
   },
-  dependencies: {
-    style: {
-      backgroundColor: 'rgba(3, 102, 214, 0.1)',
-      color: '#0366d6'
-    },
-    name: 'dependencies'
-  },
   design: {
     style: {
       backgroundColor: 'rgba(112, 87, 255, 0.1)',
@@ -54,13 +47,6 @@ export const GithubIssueLabel = {
       color: '#000000'
     },
     name: 'new feature'
-  },
-  pull_request_ready: {
-    style: {
-      backgroundColor: 'rgba(216, 118, 227, 0.1)',
-      color: '#d876e3'
-    },
-    name: 'pull request ready'
   },
   testing: {
     style: {

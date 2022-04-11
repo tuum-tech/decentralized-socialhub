@@ -133,7 +133,6 @@ const ProfileEditor: React.FC<Props> = ({
         session
       );
       if (res) {
-        console.log('full profile: => ', res);
         res.basicDTO.isEnabled = true;
         res.experienceDTO.isEnabled = true;
         res.educationDTO.isEnabled = true;
@@ -152,6 +151,7 @@ const ProfileEditor: React.FC<Props> = ({
   };
 
   const updateExperienceProfile = async (
+    prevExperienceItem: ExperienceItem,
     experienceItem: ExperienceItem
   ): Promise<boolean> => {
     let userSession = JSON.parse(JSON.stringify(session));
@@ -183,6 +183,12 @@ const ProfileEditor: React.FC<Props> = ({
         userSession,
         archivedBadge
       );
+      if (prevExperienceItem !== experienceItem) {
+        await DidcredsService.removeCredentialToVault(
+          userSession,
+          `${userSession.did}#experiencecredential_${prevExperienceItem.title}_at_${prevExperienceItem.institution}`
+        );
+      }
     }
     if (userInfo.isEssentialUser) setShowRequestEssentials(false);
 
@@ -190,6 +196,7 @@ const ProfileEditor: React.FC<Props> = ({
   };
 
   const updateEducationProfile = async (
+    prevEducationItem: EducationItem,
     educationItem: EducationItem
   ): Promise<boolean> => {
     let userSession = JSON.parse(JSON.stringify(session));
@@ -221,6 +228,12 @@ const ProfileEditor: React.FC<Props> = ({
         userSession,
         archivedBadge
       );
+      if (prevEducationItem !== educationItem) {
+        await DidcredsService.removeCredentialToVault(
+          userSession,
+          `${userSession.did}#educationcredential_${prevEducationItem.program}_at_${prevEducationItem.institution}`
+        );
+      }
     }
 
     if (userInfo.isEssentialUser) setShowRequestEssentials(false);
@@ -430,6 +443,10 @@ const ProfileEditor: React.FC<Props> = ({
                         educationItem,
                         userSession
                       );
+                      await DidcredsService.removeCredentialToVault(
+                        userSession,
+                        `${userSession.did}#educationcredential_${educationItem.program}_at_${educationItem.institution}`
+                      );
                     }}
                     requestFunc={async (educationItem: EducationItem) => {
                       setSelectedCredential(
@@ -445,18 +462,22 @@ const ProfileEditor: React.FC<Props> = ({
                 {profile && profile.experienceDTO.isEnabled && (
                   <ExperienceCard
                     updateFunc={updateExperienceProfile}
-                    requestFunc={async (experienceItem: ExperienceItem) => {
-                      setSelectedCredential(
-                        `Experience: ${experienceItem.title} at ${experienceItem.institution}`
-                      );
-                      setShowVerificationModal(true);
-                    }}
                     removeFunc={async (experienceItem: ExperienceItem) => {
                       let userSession = JSON.parse(JSON.stringify(session));
                       await ProfileService.removeExperienceItem(
                         experienceItem,
                         userSession
                       );
+                      await DidcredsService.removeCredentialToVault(
+                        userSession,
+                        `${userSession.did}#experiencecredential_${experienceItem.title}_at_${experienceItem.institution}`
+                      );
+                    }}
+                    requestFunc={async (experienceItem: ExperienceItem) => {
+                      setSelectedCredential(
+                        `Experience: ${experienceItem.title} at ${experienceItem.institution}`
+                      );
+                      setShowVerificationModal(true);
                     }}
                     isEditable={true}
                     template="default"
@@ -466,6 +487,9 @@ const ProfileEditor: React.FC<Props> = ({
                 )}
                 {userInfo.pageTemplate === 'crypto' && (
                   <WalletCard
+                    setRequestEssentials={(value: boolean) =>
+                      setShowRequestEssentials(value)
+                    }
                     didDocument={didDocument!}
                     isEditable={true}
                     template="default"

@@ -55,8 +55,6 @@ export class DidDocumentService {
         let did = request.proof.verificationMethod;
         did = did.substring(0, did.indexOf('#'));
         response = await AssistService.publishDocument(did, request);
-
-        console.log(response);
       }
     };
     diddocument.publish(

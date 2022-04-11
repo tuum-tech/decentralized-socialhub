@@ -68,13 +68,12 @@ const SignInPage: React.FC<RouteComponentProps<
     let presentation = await getPresentation();
 
     const didService = await DidService.getInstance();
-    console.log('Did service instance');
     if (presentation !== null && presentation !== undefined) {
       let nameCredential = presentation!.getCredentials().find((c: any) => {
         return c.getId().getFragment() === 'name';
       });
       let name = nameCredential!.getSubject().getProperty('name');
-      let issuer = nameCredential!.getIssuer();
+      let issuer = nameCredential!.getId().getDid();
       let did = 'did:elastos:' + issuer.getMethodSpecificId();
       let mnemonic = '';
       await didService.storeDocument(await issuer.resolve());

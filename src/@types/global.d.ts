@@ -237,6 +237,13 @@ interface ProfileDTO {
       did: string;
     }[];
   };
+  email: {
+    email: string;
+    verifiers: {
+      name: string;
+      did: string;
+    }[];
+  };
   basicDTO: BasicDTO;
   experienceDTO: ExperienceDTO;
   educationDTO: EducationDTO;

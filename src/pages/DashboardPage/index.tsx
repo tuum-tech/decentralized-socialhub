@@ -197,7 +197,6 @@ const DashboardPage: React.FC<InferMappedProps> = ({
 
   useEffect(() => {
     (async () => {
-      console.log('====>history', history.location.pathname);
       if (session && session.did !== '') {
         if (history.location.pathname === '/profile') {
           if (!session.onBoardingCompleted) setOnBoardVisible(true);

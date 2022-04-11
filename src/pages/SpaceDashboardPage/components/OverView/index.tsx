@@ -9,7 +9,7 @@ import {
   SpaceInfo,
   SpaceName,
   SpaceCategory
-} from 'src/pages/SpacePage/components/SpaceCard';
+} from 'src/components/Space/SpaceCard';
 import defaultAvatar from 'src/assets/icon/dp.png';
 
 import { getDIDString } from 'src/utils/did';

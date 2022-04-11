@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonCol,
-  IonGrid,
-  IonRow
-} from '@ionic/react';
+import { IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 import { DidcredsService } from 'src/services/didcreds.service';
 import { UserService } from 'src/services/user.service';
@@ -32,12 +25,15 @@ import {
   ManagerLogo,
   ProfileItem,
   ManagerButton,
-  CloseButton
+  CloseButton,
+  CardHeaderContent,
+  CardContentContainer
 } from '../common';
 
 import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/';
 import { useSetRecoilState } from 'recoil';
 import { BadgesAtom } from 'src/Atoms/Atoms';
+import { VerificationService } from 'src/services/verification.service';
 
 interface Props {
   sessionItem: ISessionItem;
@@ -68,6 +64,7 @@ const SocialProfilesCard: React.FC<Props> = ({
   const getCredentials = async (sessionItem: ISessionItem) => {
     try {
       let cred = await DidcredsService.getAllCredentialsToVault(sessionItem);
+
       setCredentials(cred);
     } catch (error) {
       console.error('Error getting credentials on vault', error);
@@ -118,6 +115,7 @@ const SocialProfilesCard: React.FC<Props> = ({
 
     var timer = setInterval(async function() {
       if (popupwindow!.closed) {
+        clearInterval(timer);
         await getCredentials(sessionItem);
 
         let userService = new UserService(await DidService.getInstance());
@@ -163,7 +161,6 @@ const SocialProfilesCard: React.FC<Props> = ({
       url = (await DidcredsService.requestDiscordLogin()) as MyType;
     }
 
-    console.log(url, 'login url');
     if (url) {
       popupCenter(url.data, 'Login', 548, 725);
     }
@@ -206,51 +203,54 @@ const SocialProfilesCard: React.FC<Props> = ({
   const removeVc = async (key: string) => {
     setIsRemoving(true);
 
-    let vcKey = sessionItem.did + '#' + key;
+    let vcId = sessionItem.did + '#' + key;
+    let vService = new VerificationService();
+    let deletedCreds = await vService.deleteCredentials(vcId);
 
-    await DidcredsService.removeCredentialToVault(sessionItem, vcKey);
+    if (deletedCreds[0] === vcId) {
+      await DidcredsService.removeCredentialToVault(sessionItem, vcId);
 
-    let didService = await DidService.getInstance();
+      let didService = await DidService.getInstance();
 
-    let userService = new UserService(didService);
-    let currentSession = await userService.SearchUserWithDID(sessionItem.did);
+      let userService = new UserService(didService);
+      let currentSession = await userService.SearchUserWithDID(sessionItem.did);
 
-    // ===== temporary codes start =====
-    let newLoginCred = currentSession!.loginCred;
-    let newLoginBadges = currentSession!.badges;
-    if (!newLoginCred) {
-      return;
+      // ===== temporary codes start =====
+      let newLoginCred = currentSession!.loginCred;
+      let newLoginBadges = currentSession!.badges;
+      if (!newLoginCred) {
+        return;
+      }
+      if (key === 'google' && newLoginCred.google) {
+        delete newLoginCred.google;
+        newLoginBadges.socialVerify.google.archived = false;
+      } else if (key === 'facebook' && newLoginCred.facebook) {
+        delete newLoginCred.facebook;
+        newLoginBadges.socialVerify.facebook.archived = false;
+      } else if (key === 'linkedin' && newLoginCred.linkedin) {
+        newLoginBadges.socialVerify.linkedin.archived = false;
+        delete newLoginCred.linkedin;
+      } else if (key === 'twitter' && newLoginCred.twitter) {
+        delete newLoginCred.twitter;
+        newLoginBadges.socialVerify.twitter.archived = false;
+      } else if (key === 'github' && newLoginCred.github) {
+        delete newLoginCred.github;
+        newLoginBadges.socialVerify.github.archived = false;
+      } else if (key === 'discord' && newLoginCred.discord) {
+        newLoginBadges.socialVerify.discord.archived = false;
+        delete newLoginCred.discord;
+      }
+      const newUserSession = {
+        ...sessionItem,
+        loginCred: newLoginCred,
+        badges: newLoginBadges
+      } as ISessionItem;
+
+      setSession({
+        session: await userService.updateSession(newUserSession)
+      });
+      // ===== temporary codes end =====
     }
-    if (key === 'google' && newLoginCred.google) {
-      delete newLoginCred.google;
-      newLoginBadges.socialVerify.google.archived = false;
-    } else if (key === 'facebook' && newLoginCred.facebook) {
-      delete newLoginCred.facebook;
-      newLoginBadges.socialVerify.facebook.archived = false;
-    } else if (key === 'linkedin' && newLoginCred.linkedin) {
-      newLoginBadges.socialVerify.linkedin.archived = false;
-      delete newLoginCred.linkedin;
-    } else if (key === 'twitter' && newLoginCred.twitter) {
-      delete newLoginCred.twitter;
-      newLoginBadges.socialVerify.twitter.archived = false;
-    } else if (key === 'github' && newLoginCred.github) {
-      delete newLoginCred.github;
-      newLoginBadges.socialVerify.github.archived = false;
-    } else if (key === 'discord' && newLoginCred.discord) {
-      newLoginBadges.socialVerify.discord.archived = false;
-      delete newLoginCred.discord;
-    }
-    const newUserSession = {
-      ...sessionItem,
-      loginCred: newLoginCred,
-      badges: newLoginBadges
-    } as ISessionItem;
-
-    setSession({
-      session: await userService.updateSession(newUserSession)
-    });
-    // ===== temporary codes end =====
-
     setIsRemoving(false);
   };
 
@@ -402,8 +402,8 @@ const SocialProfilesCard: React.FC<Props> = ({
   return (
     <>
       <SocialProfileCard template={template}>
-        <IonCardHeader>
-          <IonCardTitle className="card-title">
+        <CardHeaderContent>
+          <IonCardTitle>
             Social Profiles
             {mode === 'edit' && (
               <span
@@ -416,9 +416,9 @@ const SocialProfilesCard: React.FC<Props> = ({
               </span>
             )}
           </IonCardTitle>
-        </IonCardHeader>
-        <IonCardContent className="card-content">
-          <IonGrid className="social-profile-grid">
+        </CardHeaderContent>
+        <CardContentContainer>
+          <IonGrid className={style['social-profile-grid']}>
             <IonRow>
               {containsVerifiedCredential('linkedin') && (
                 <IonCol size={mode === 'edit' ? '6' : '12'}>
@@ -452,7 +452,7 @@ const SocialProfilesCard: React.FC<Props> = ({
               )}
             </IonRow>
           </IonGrid>
-        </IonCardContent>
+        </CardContentContainer>
       </SocialProfileCard>
 
       <ManagerModal

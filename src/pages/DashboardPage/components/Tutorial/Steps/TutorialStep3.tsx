@@ -82,7 +82,6 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
 
     let endpointValid = isEndpointValid(endpoint);
     if (!endpointValid || !props.setLoading) {
-      console.log('Endpoint not valid: ', endpoint);
       setErrorMessage('Invalid hive address');
       return;
     }
@@ -94,7 +93,6 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     );
     if (!isValidHiveAddress) {
       props.setLoading(false);
-      console.log('Not valid address: ', endpoint);
       setErrorMessage('Invalid hive address');
       return;
     }

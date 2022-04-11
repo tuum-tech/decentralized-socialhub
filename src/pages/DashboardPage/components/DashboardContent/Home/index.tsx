@@ -252,13 +252,12 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
   useEffect(() => {
     (async () => {
       const verified: any = {};
-      verified['name'] = await isCredVerified('name', session.name);
+      verified['name'] =
+        profile.name.verifiers && profile.name.verifiers.length > 0;
 
       if (session.loginCred?.email) {
-        verified['email'] = await isCredVerified(
-          'email',
-          session.loginCred.email
-        );
+        verified['email'] =
+          profile.email.verifiers && profile.email.verifiers.length > 0;
       } else {
         verified['email'] = false;
       }
@@ -372,7 +371,7 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
     }
 
     setVerifiedPercent(
-      nameScore + emailScore + experienceScore + educationScore / 4
+      nameScore + emailScore + experienceScore + educationScore
     );
   }, [
     profile.educationDTO.items.length,

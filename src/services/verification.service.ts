@@ -12,9 +12,11 @@ import { UserService } from './user.service';
 import { ProfileService } from './profile.service';
 import { EssentialsService } from 'src/services/essentials.service';
 import { getItemsFromData } from 'src/utils/script';
-import { DID as ConnDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import {
+  DID as ConnDID,
+  connectivity
+} from '@elastosfoundation/elastos-connectivity-sdk-js/';
 
-import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { DidcredsService } from './didcreds.service';
 
 export enum VerificationStatus {
@@ -343,7 +345,7 @@ export class VerificationService {
 
     if (category.includes(':')) {
       let vcTypeStrings = category.split(':');
-      vcType = vcTypeStrings[0] + 'Credential' + vcTypeStrings[1];
+      vcType = vcTypeStrings[0] + 'credential' + vcTypeStrings[1];
     } else {
       vcType = category;
     }
@@ -384,6 +386,16 @@ export class VerificationService {
     //   },
     //   session
     // );
+  }
+
+  public async importCredential(v: VerifiableCredential): Promise<void> {
+    let didAccess = new ConnDID.DIDAccess();
+    await didAccess.importCredentials([v]);
+  }
+
+  public async deleteCredentials(vId: string): Promise<string[]> {
+    let didAccess = new ConnDID.DIDAccess();
+    return await didAccess.deleteCredentials([vId.toString()]);
   }
 
   public async approveCredential(
@@ -541,11 +553,12 @@ export class VerificationService {
       const key = Object.keys(subjectProperties)[0];
 
       let issuerDid = '';
-      if (
-        key.toLowerCase() !== type.toLowerCase() &&
-        key.toLowerCase().startsWith(type.toLowerCase())
-      ) {
+      if (type.toLowerCase() === key.toLowerCase()) {
+        issuerDid = JSON.parse(JSON.stringify(vcs[i].issuer));
+      } else {
+        // This is to handle education & experience as they begin with 'education_' and 'experience_'
         const credential = Object.values(subjectProperties)[0] as any;
+
         if (
           x.institution === credential.institution &&
           x.program === credential.program &&

@@ -24,7 +24,7 @@ The following dependent services are now started:
 
 - [Hive Vault](https://github.com/elastos/Elastos.NET.Hive.Node)
 - [Assist RestAPI Backend](https://github.com/tuum-tech/assist-restapi-backend)
-- [DIDcreds Validator Service](https://github.com/tuum-tech/didcreds-validator)
+- Mongodb container on localhost:37018
 
 ## Profile API Service
 
@@ -32,11 +32,14 @@ You need to run Profile API service before you can start Profile app
 
 - [Profile API Service](https://github.com/tuum-tech/profile-api-service)
 
-## Run the app
-
+## Prep the backend
 - `npm i`
 - `cp .env.example .env`
-- Update .env file with your own IP
+- `node src/scripts/appvault.scripts.js`
+- `node src/scripts/spaces.script.js`
+- 
+## Run the app
 - `npm start`
+- Your app should be running at localhost:3000
 
 ## Deploy to production

@@ -57,7 +57,6 @@ const EmailVerificationDetailContent: React.FC<Props> = ({
       ''
     )) as IVerifyCodeResponse;
 
-    console.log('=====>response', response);
     let status = response.data.return_code;
     if (status === 'CONFIRMED') {
       const { name, email, did } = response.data;
@@ -88,7 +87,7 @@ const EmailVerificationDetailContent: React.FC<Props> = ({
           pathname: '/generate-did',
           state: {
             name: credentials.name,
-            did: '',
+            did: credentials.did,
             loginCred: {
               email: credentials.loginCred.email
             },

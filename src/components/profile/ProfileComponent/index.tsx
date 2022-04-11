@@ -271,6 +271,7 @@ const ProfileComponent: React.FC<Props> = ({
                         {publicFields.includes('wallet') &&
                           template === 'crypto' && (
                             <WalletCard
+                              setRequestEssentials={() => {}}
                               didDocument={didDocument!}
                               isEditable={false}
                               template={template}

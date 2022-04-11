@@ -19,18 +19,22 @@ const VerificationRequests: React.FC<Props> = ({
   forceReFetch
 }: Props) => {
   const [selectedVerification, setSelectVerification] = useState<any>(null);
-
+  const [selectedStatus, setSelectedStatus] = useState<string>('');
   return (
     <PageContainer>
       <TopInfo
         verificationStatus={verifications.map((v: any) => v.status)}
-        selectStatus={() => {}}
+        selectStatus={(status: string) => {
+          setSelectedStatus(status);
+        }}
       />
       <PageContent>
         <UserRows
           setSelectVerification={setSelectVerification}
           session={session}
-          verifications={verifications}
+          verifications={verifications.filter((v: any) =>
+            selectedStatus ? v.status === selectedStatus : true
+          )}
         />
         <VerificationDetailModal
           isOpen={selectedVerification !== null}

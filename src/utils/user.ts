@@ -35,6 +35,7 @@ export const retrieveDocInfo = async (
   if (doc && doc !== undefined) {
     if (doc.credentials && doc.credentials.size > 0) {
       let loginCred: any = {};
+
       doc.credentials.forEach(value => {
         let fragment = value.id.getFragment().toLowerCase();
         let subject = fragment.split('credential')[0];
@@ -100,10 +101,12 @@ export const retrieveDocInfo = async (
       uInfo.loginCred = loginCred;
     }
 
-    if (doc.services && doc.services.size > 0) {
-      let firstService = doc.services.entries().next().value;
-      uInfo.hiveHost = firstService.endpoint;
-    }
+    doc.services?.forEach(value => {
+      let serviceType = value.type;
+      if (serviceType === 'HiveVault') {
+        uInfo.hiveHost = value.serviceEndpoint;
+      }
+    });
   }
   educations = educations.filter((itr1, index) => {
     return (

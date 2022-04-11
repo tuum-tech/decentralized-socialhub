@@ -1,6 +1,6 @@
 {
   "name": "profile",
-  "version": "1.13.0",
+  "version": "1.17.0",
   "description": "Profile",
   "dependencies": {
     "@elastosfoundation/did-js-sdk": "^2.2.3",
@@ -40,7 +40,8 @@
     "ionicons": "^5.5.3",
     "jose": "^3.19.0",
     "jwt-decode": "^3.1.2",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
+    "multiselect-react-dropdown": "^2.0.21",
     "node-fetch": "^2.6.5",
     "node-sass": "^4.14.1",
     "react": "^16.14.0",

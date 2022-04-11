@@ -57,7 +57,6 @@ export class HiveService {
         address,
         isEssentialsUser
       );
-      console.log('challenge: ', challenge);
       let isValid: boolean =
         challenge.nonce !== undefined && challenge.nonce.length > 0;
       return isValid;

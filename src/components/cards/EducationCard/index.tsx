@@ -25,7 +25,7 @@ import {
 } from 'src/Atoms/Selectors';
 
 interface IEducationProps {
-  updateFunc?: (item: any) => Promise<boolean>;
+  updateFunc?: (prevItem: any, item: any) => Promise<boolean>;
   isEditable?: boolean;
   removeFunc?: any;
   requestFunc?: any;
@@ -78,6 +78,7 @@ const EducationCard: React.FC<IEducationProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [educationDTO, noOfVerifiedEduCred]);
 
+  const [prevItem, setPrevItem] = useState(defaultEducationItem);
   const [editedItem, setEditedItem] = useState(defaultEducationItem);
   const [isEditing, setIsEditing] = useState(openModal);
   const [mode, setMode] = useState<MODE>(MODE.NONE);
@@ -118,10 +119,10 @@ const EducationCard: React.FC<IEducationProps> = ({
     return true;
   };
 
-  const saveChanges = async (item: EducationItem) => {
+  const saveChanges = async (prevItem: EducationItem, item: EducationItem) => {
     let items = [...educationDTO.items];
 
-    let itemToUpdate = items.find(x => x.guid === item.guid);
+    let itemToUpdate = items.find(x => x.guid.value === item.guid.value);
 
     if (itemToUpdate === undefined) {
       items.push(item);
@@ -135,7 +136,7 @@ const EducationCard: React.FC<IEducationProps> = ({
     // 5. Set the state to our new copy
     setIsEditing(false);
     if (updateFunc) {
-      if ((await updateFunc(item)) === true) {
+      if ((await updateFunc(prevItem, item)) === true) {
         setEducationDTO({ isEnabled: true, items: items });
       }
     }
@@ -155,6 +156,7 @@ const EducationCard: React.FC<IEducationProps> = ({
   };
 
   const editItem = (item: EducationItem) => {
+    setPrevItem(item);
     setEditedItem(item);
     setMode(MODE.EDIT);
   };
@@ -292,7 +294,7 @@ const EducationCard: React.FC<IEducationProps> = ({
               <IonButton
                 onClick={() => {
                   if (validate(editedItem)) {
-                    saveChanges(editedItem);
+                    saveChanges(prevItem, editedItem);
                     setMode(MODE.NONE);
                   } else {
                     setMode(MODE.ERROR);
