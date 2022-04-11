@@ -3,7 +3,12 @@ import { IonIconType } from '../icons/types';
 
 export interface ButtonProps {
   size?: 'default' | 'large' | 'small' | undefined;
-  color?: 'primary' | 'secondary' | 'gradient';
+  color?:
+    | 'primary'
+    | 'secondary'
+    | 'white'
+    | 'primary-gradient'
+    | 'secondary-gradient';
   variant?: 'text' | 'outlined' | 'contained';
   textType?: 'normal' | 'gradient';
   width?: string;

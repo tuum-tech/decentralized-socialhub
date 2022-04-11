@@ -7,14 +7,15 @@ import GradientText from './GradientText';
 import ButtonText from './ButtonText';
 import Icon from '../icons/Icon';
 
-const StyledLinkButton = styled(IonRouterLink)<ButtonProps>`
+const StyledLinkButton = styled(IonRouterLink)<LinkButtonProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 6px 11px;
   width: 160px;
-  height: 33.01px;
+  height: ${props =>
+    props.size === 'large' ? '43px' : props.size === 'small' ? '28px' : '33px'};
   border-radius: 7px;
 `;
 
@@ -44,7 +45,10 @@ const LinkButton: FC<LinkButtonProps> = ({
   let fontColor = '';
   let styles = {};
   if (variant === 'contained') {
-    backStyle = color === 'gradient' ? style['dark-purple-gradient'] : '';
+    backStyle =
+      color === 'primary-gradient' || color === 'secondary-gradient'
+        ? style[color]
+        : '';
     let background = bgColor
       ? bgColor
       : color === 'primary'
@@ -57,12 +61,15 @@ const LinkButton: FC<LinkButtonProps> = ({
     }
     fontColor = 'white';
   } else if (variant === 'outlined') {
-    backStyle = color === 'gradient' ? style['border-dark-pink-gradient'] : '';
+    backStyle =
+      color === 'primary-gradient' ? style['border-primary-gradient'] : '';
     let borderColor =
       color === 'primary'
         ? 'var(--ion-color-primary)'
         : color === 'secondary'
         ? 'var(--ion-color-secondary)'
+        : color === 'white'
+        ? 'var(--ion-color-medium)'
         : '';
     if (borderColor) {
       Object.assign(styles, {

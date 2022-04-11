@@ -21,7 +21,7 @@ const GradientText: FC<GradientTextProps> = ({
   ...props
 }: GradientTextProps) => {
   return (
-    <StyledButtonText {...props} className={style['dark-pink-gradient']}>
+    <StyledButtonText {...props} className={style['primary-gradient']}>
       {children}
     </StyledButtonText>
   );

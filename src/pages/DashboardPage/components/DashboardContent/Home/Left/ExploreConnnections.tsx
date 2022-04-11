@@ -54,7 +54,7 @@ const ExploreConnnections: React.FC<Props> = ({ did, session }) => {
           </CardText>
           <LinkButton
             variant="contained"
-            color="gradient"
+            color="secondary-gradient"
             textType="gradient"
             href="/explore"
           >
