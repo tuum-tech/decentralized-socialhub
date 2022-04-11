@@ -66,9 +66,9 @@
   },
   {
     "sid": 4,
-    "name": "CyberKong",
+    "name": "Dropz",
     "category": "NFT Collection",
-    "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
+    "owner": ["did:elastos:iWtZBcqZa981z3YEoUxanCqvN7rFVDu52D"],
     "tags": [
       "ERC-721",
       "Governance",
@@ -78,28 +78,9 @@
       "Art"
     ],
     "meta": {
-      "network": "Ethereum",
-      "address": "0x57a204aa1042f6e66dd7730813f4024114d74f37",
-      "slug": "CyberKong"
-    }
-  },
-  {
-    "sid": 5,
-    "name": "LFC Heroes Club",
-    "category": "NFT Collection",
-    "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
-    ],
-    "meta": {
-      "network": "Polygon",
-      "address": "0x4ffa698ca3374ff154e58c8388a3aafe430dc2d3",
-      "slug": "LFC Heroes Club"
+      "network": "Elastos Smart Contract Chain",
+      "address": "0x22900606ae7077043cf140255a80e82d691b8fd5",
+      "slug": "Dropz"
     }
   }
 ]
