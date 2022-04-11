@@ -35,8 +35,8 @@ const ProgressBar: React.FC<IProps> = ({
   value,
   width = '100%',
   height = 6,
-  containerColor = '#EDF2F7',
-  progressColor = '#4C6FFF'
+  containerColor = 'var(--ion-color-gray200)',
+  progressColor = 'var(--ion-color-primary)'
 }) => {
   const percent = value ? value : 0;
   return (
