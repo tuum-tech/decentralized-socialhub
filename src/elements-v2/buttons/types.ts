@@ -1,8 +1,14 @@
 import React from 'react';
+import { IonIconType } from '../icons/types';
 
 export interface ButtonProps {
   size?: 'default' | 'large' | 'small' | undefined;
-  color?: 'primary' | 'secondary' | 'gradient';
+  color?:
+    | 'primary'
+    | 'secondary'
+    | 'white'
+    | 'primary-gradient'
+    | 'secondary-gradient';
   variant?: 'text' | 'outlined' | 'contained';
   textType?: 'normal' | 'gradient';
   width?: string;
@@ -10,5 +16,6 @@ export interface ButtonProps {
   bgColor?: string;
   borderRadius?: string;
   borderColor?: string;
+  icon?: IonIconType;
   children: React.ReactNode;
 }

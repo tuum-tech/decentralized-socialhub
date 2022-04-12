@@ -84,7 +84,7 @@ const ManageProfile: React.FC<Props> = ({ userSession }) => {
         </CardText>
         <LinkButton
           variant="contained"
-          color="gradient"
+          color="secondary-gradient"
           textType="gradient"
           href="/manager"
         >

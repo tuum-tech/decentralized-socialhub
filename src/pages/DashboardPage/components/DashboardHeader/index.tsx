@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { IonGrid, IonRow, IonCol } from '@ionic/react';
-import { Link } from 'react-router-dom';
 
 import { RequestStatus } from 'src/services/assist.service';
 import { ProfileService } from 'src/services/profile.service';
@@ -15,6 +14,7 @@ import PublishingLabel from '../PublishingLabel';
 
 import { useRecoilValue } from 'recoil';
 import { FullProfileAtom } from 'src/Atoms/Atoms';
+import LinkButton from 'src/elements-v2/buttons/LinkButton';
 
 import style from './style.module.scss';
 
@@ -74,9 +74,16 @@ const DashboardHeader: React.FC<IProps> = ({
           </IonGrid>
         </IonCol>
         <IonCol size="2">
-          <Link to={getDIDString('/did/' + sessionItem.did)} target="_blank">
-            <ViewProfileButton>View profile</ViewProfileButton>
-          </Link>
+          <LinkButton
+            variant="contained"
+            color="primary-gradient"
+            icon="open-outline"
+            size="large"
+            href={getDIDString('/did/' + sessionItem.did)}
+            target="_blank"
+          >
+            View profile
+          </LinkButton>
         </IonCol>
       </IonRow>
     </IonGrid>

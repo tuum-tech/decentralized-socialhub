@@ -27,7 +27,7 @@ const ConnectWithCommunity: React.FC = () => {
         <CardTitle>Connect with our community</CardTitle>
         <LinkButton
           variant="outlined"
-          color="gradient"
+          color="primary-gradient"
           textType="gradient"
           href="https://discord.gg/profile-mtrl"
           target="_blank"

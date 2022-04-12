@@ -5,16 +5,23 @@ import { ButtonProps } from './types';
 import style from './Button.module.scss';
 import GradientText from './GradientText';
 import ButtonText from './ButtonText';
+import Icon from '../icons/Icon';
 
-const StyledLinkButton = styled(IonRouterLink)<ButtonProps>`
+const StyledLinkButton = styled(IonRouterLink)<LinkButtonProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 6px 11px;
   width: 160px;
-  height: 33.01px;
+  height: ${props =>
+    props.size === 'large' ? '43px' : props.size === 'small' ? '28px' : '33px'};
   border-radius: 7px;
+`;
+
+const StyledDivCenter = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 interface LinkButtonProps extends ButtonProps {
@@ -24,20 +31,24 @@ interface LinkButtonProps extends ButtonProps {
   rel?: string;
 }
 
-const LinkButton: FC<LinkButtonProps> = ({
-  variant,
-  textType,
-  bgColor,
-  children,
-  size = 'default',
-  color,
-  ...props
-}: LinkButtonProps) => {
+const LinkButton: FC<LinkButtonProps> = (props: LinkButtonProps) => {
+  const {
+    variant,
+    textType,
+    bgColor,
+    children,
+    size = 'default',
+    icon,
+    color
+  } = props;
   let backStyle = '';
   let fontColor = '';
   let styles = {};
   if (variant === 'contained') {
-    backStyle = color === 'gradient' ? style['dark-purple-gradient'] : '';
+    backStyle =
+      color === 'primary-gradient' || color === 'secondary-gradient'
+        ? style[color]
+        : '';
     let background = bgColor
       ? bgColor
       : color === 'primary'
@@ -50,12 +61,15 @@ const LinkButton: FC<LinkButtonProps> = ({
     }
     fontColor = 'white';
   } else if (variant === 'outlined') {
-    backStyle = color === 'gradient' ? style['border-dark-pink-gradient'] : '';
+    backStyle =
+      color === 'primary-gradient' ? style['border-primary-gradient'] : '';
     let borderColor =
       color === 'primary'
         ? 'var(--ion-color-primary)'
         : color === 'secondary'
         ? 'var(--ion-color-secondary)'
+        : color === 'white'
+        ? 'var(--ion-color-medium)'
         : '';
     if (borderColor) {
       Object.assign(styles, {
@@ -70,13 +84,18 @@ const LinkButton: FC<LinkButtonProps> = ({
 
   return (
     <StyledLinkButton {...props} className={backStyle} style={styles}>
-      {textType === 'gradient' ? (
-        <GradientText fontSize={fontSize}>{children}</GradientText>
-      ) : (
-        <ButtonText fontSize={fontSize} color={fontColor}>
-          {children}
-        </ButtonText>
-      )}
+      <StyledDivCenter>
+        {textType === 'gradient' ? (
+          <GradientText fontSize={fontSize}>{children}</GradientText>
+        ) : (
+          <ButtonText fontSize={fontSize} color={fontColor}>
+            {children}
+          </ButtonText>
+        )}
+        {icon && (
+          <Icon name={icon} style={{ paddingLeft: 6 }} color="medium"></Icon>
+        )}
+      </StyledDivCenter>
     </StyledLinkButton>
   );
 };
