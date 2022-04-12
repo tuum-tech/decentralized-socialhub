@@ -32,7 +32,7 @@ import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { showNotify } from 'src/utils/notify';
 
 const CustomModal = styled(IonModal)`
-  --height: 740px;
+  --height: 780px;
   --border-radius: 16px;
 `;
 

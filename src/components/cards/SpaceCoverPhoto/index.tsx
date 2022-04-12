@@ -93,7 +93,7 @@ const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
               <TextHeader>
                 Your profile photo is your style representation <br />
                 (JPG or PNG, max). <br />
-                1056 &#x2715;  176 would be best choose for photo dimension.
+                1056 &#x2715;  176 would be best choose for photo dimension. (Do not upload more flat image)
               </TextHeader>
             </IonCol>
           </IonRow>
