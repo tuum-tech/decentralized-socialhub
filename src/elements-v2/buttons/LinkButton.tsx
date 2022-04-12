@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 import { AnimationBuilder, IonRouterLink } from '@ionic/react';
 import { ButtonProps } from './types';
-import style from './Button.module.scss';
+import styles from './Button.module.scss';
 import GradientText from './GradientText';
 import ButtonText from './ButtonText';
 import Icon from '../icons/Icon';
@@ -43,26 +43,25 @@ const LinkButton: FC<LinkButtonProps> = (props: LinkButtonProps) => {
   } = props;
   let backStyle = '';
   let fontColor = '';
-  let styles = {};
+  let style = {};
   if (variant === 'contained') {
-    backStyle =
+    let background =
       color === 'primary-gradient' || color === 'secondary-gradient'
-        ? style[color]
+        ? styles[color]
+        : bgColor
+        ? bgColor
+        : color === 'primary'
+        ? 'var(--ion-color-primary)'
+        : color === 'secondary'
+        ? 'var(--ion-color-secondary)'
         : '';
-    let background = bgColor
-      ? bgColor
-      : color === 'primary'
-      ? 'var(--ion-color-primary)'
-      : color === 'secondary'
-      ? 'var(--ion-color-secondary)'
-      : '';
     if (background) {
-      Object.assign(styles, { background });
+      Object.assign(style, { background });
     }
     fontColor = 'white';
   } else if (variant === 'outlined') {
     backStyle =
-      color === 'primary-gradient' ? style['border-primary-gradient'] : '';
+      color === 'primary-gradient' ? styles['border-primary-gradient'] : '';
     let borderColor =
       color === 'primary'
         ? 'var(--ion-color-primary)'
@@ -72,7 +71,7 @@ const LinkButton: FC<LinkButtonProps> = (props: LinkButtonProps) => {
         ? 'var(--ion-color-medium)'
         : '';
     if (borderColor) {
-      Object.assign(styles, {
+      Object.assign(style, {
         borderColor,
         borderStyle: 'solid',
         borderWidth: 1
@@ -83,7 +82,7 @@ const LinkButton: FC<LinkButtonProps> = (props: LinkButtonProps) => {
   const fontSize = size === 'default' ? 13 : size === 'large' ? 15 : 12;
 
   return (
-    <StyledLinkButton {...props} className={backStyle} style={styles}>
+    <StyledLinkButton {...props} className={backStyle} style={style}>
       <StyledDivCenter>
         {textType === 'gradient' ? (
           <GradientText fontSize={fontSize}>{children}</GradientText>

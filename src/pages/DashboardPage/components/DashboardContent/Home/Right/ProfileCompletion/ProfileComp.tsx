@@ -15,6 +15,7 @@ import BagIcon from 'src/assets/icon/profile-bag-green.svg';
 import PersonBlueIcon from 'src/assets/icon/profile-person-blue.svg';
 import EducationBlueIcon from 'src/assets/icon/profile-education-blue.svg';
 import BagBlueIcon from 'src/assets/icon/profile-bag-blue.svg';
+import styles from './ProfileComp.module.scss';
 
 const Container = styled(IonGrid)`
   margin-bottom: 10px;
@@ -74,7 +75,7 @@ const ItemImgColum = styled(IonCol)`
   }
 `;
 const ItemImgColumRound = styled(IonCol)<{ background: string }>`
-  background-color: ${props => props.background};
+  background: ${props => props.background};
   width: 26px !important;
   height: 26px;
   border-radius: 100px;
@@ -84,12 +85,19 @@ const ItemImgColumRound = styled(IonCol)<{ background: string }>`
   align-items: center;
   justify-content: center;
 `;
-const ItemTxtColum = styled.div`
+const ItemTxtColum = styled.div<{ gradient: string }>`
   font-size: 14px;
   font-weight: normal;
   line-height: 1.43;
   letter-spacing: 0.25px;
-  color: ${props => (props.color ? props.color : 'rgba(0, 0, 0, 0.6)')};
+  ${props =>
+    props.gradient
+      ? `
+    background: ${props.gradient};
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    `
+      : 'color : #4C6FFF;'}
 `;
 
 const ItemTxtComplete = styled.div`
@@ -97,7 +105,7 @@ const ItemTxtComplete = styled.div`
   font-weight: normal;
   line-height: 1.43;
   letter-spacing: 0.25px;
-  color: #4a5568;
+  color: #007e84;
 `;
 
 interface IProps {
@@ -141,7 +149,7 @@ const ProfileComp: React.FC<IProps> = ({
   };
 
   const renderTodoLitem = (text: string) => {
-    const isDone = accomplishedList.includes(text) as boolean;
+    const isDone = accomplishedList.includes(text);
     return (
       <ItemRow
         key={`todoItem_${text}`}
@@ -150,7 +158,9 @@ const ProfileComp: React.FC<IProps> = ({
       >
         <ItemImgColumRound
           size="auto"
-          background={isDone ? '#b7fcff' : '#EBEFFF'}
+          background={
+            isDone ? styles['linear-gradient'] : 'var(--ion-color-gray200)'
+          }
         >
           {(icons as any)[text] &&
             (isDone ? (
@@ -160,7 +170,7 @@ const ProfileComp: React.FC<IProps> = ({
             ))}
         </ItemImgColumRound>
         <IonCol style={{ display: 'flex', flexDirection: 'column' }}>
-          <ItemTxtColum color={isDone ? '#007E84' : '#4C6FFF'}>
+          <ItemTxtColum gradient={isDone ? styles['main-green-gradient'] : ''}>
             {text}
           </ItemTxtColum>
           {isDone && <ItemTxtComplete>Completed</ItemTxtComplete>}
