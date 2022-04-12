@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import styles from './ProgressBar.module.scss';
 
 const PBContainer = styled.div`
   position: relative;
@@ -43,14 +44,15 @@ const ProgressBar: React.FC<IProps> = ({
     <PBContainer
       style={{
         background: containerColor,
-        width: width,
+        width,
         height: `${height}px`
       }}
     >
       <PB
         style={{
           width: `${percent}%`,
-          background: progressColor,
+          background:
+            percent === 100 ? styles['main-green-gradient'] : progressColor,
           height: `${height}px`
         }}
       ></PB>
