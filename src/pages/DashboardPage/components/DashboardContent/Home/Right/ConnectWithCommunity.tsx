@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import LinkButton from 'src/elements-v2/buttons/LinkButton';
 import { MainCard, CardTitle } from './VerificationStatus';
 import discordImg from '../../../../../../assets/icon/discord.jpg';
-import LinkButton from 'src/elements-v2/buttons/LinkButton';
 
-const CommunityCard = styled(MainCard)`
+const StyledCard = styled(MainCard)`
   display: flex;
   justify-content: space-between;
 
@@ -22,7 +22,7 @@ const CommunityCard = styled(MainCard)`
 
 const ConnectWithCommunity: React.FC = () => {
   return (
-    <CommunityCard>
+    <StyledCard>
       <div className="left">
         <CardTitle>Connect with our community</CardTitle>
         <LinkButton
@@ -38,7 +38,7 @@ const ConnectWithCommunity: React.FC = () => {
       <div className="right">
         <img src={discordImg} alt="discord" />
       </div>
-    </CommunityCard>
+    </StyledCard>
   );
 };
 
