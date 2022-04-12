@@ -13,8 +13,6 @@ import styled from 'styled-components';
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
-import { UserService } from 'src/services/user.service';
-import { DidService } from 'src/services/did.service.new';
 import { SpaceService } from 'src/services/space.service';
 
 import SpacePageHeader, {
