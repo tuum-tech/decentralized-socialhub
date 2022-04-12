@@ -7,42 +7,12 @@ import {
   SpaceName,
   SpaceCategory
 } from 'src/components/Space/SpaceCard';
+import Banner from 'src/components/profile/ProfileComponent/Banner';
 import defaultCoverPhoto from 'src/assets/default/default-cover.png';
 import defaultAvatar from 'src/assets/icon/dp.png';
 
 const HeaderContainer = styled(IonGrid)`
   background-color: white;
-`;
-
-const Banner = styled.div<{ bgImg: string }>`
-  display: flex;
-  top: 0px;
-  height: 176px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-
-  font-family: 'SF Pro Display';
-  font-size: 56px;
-  font-weight: bold;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1;
-  letter-spacing: normal;
-  text-align: left;
-  color: #ffffff;
-  box-shadow: 0px 3px 3px #00000005;
-
-  margin-top: 0px;
-  width: 100%;
-  padding-bottom: 2px;
-
-  background: #fff;
-  background-image: url(${props => props.bgImg});
-  background-repeat: no-repeat, no-repeat;
-  background-position: 0 0;
-  background-size: 100% 100%;
 `;
 
 const Header = styled(IonRow)`

@@ -9,6 +9,7 @@ import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
+import Banner from 'src/components/profile/ProfileComponent/Banner';
 import defaultCoverPhoto from 'src/assets/default/default-cover.png';
 import defaultAvatar from 'src/assets/icon/dp.png';
 import { StyledButton } from 'src/elements/buttons';
@@ -49,24 +50,6 @@ export const SpaceCategory = styled.p`
   color: #718096;
 `;
 
-const CoverImage = styled.div<{ bgImg: string }>`
-  display: flex;
-  top: 0px;
-  height: 150px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-
-  margin-top: 0px;
-  width: 100%;
-
-  border-radius: 16px 16px 0px 0px;
-  background-image: url(${props => props.bgImg});
-  background-repeat: no-repeat, no-repeat;
-  background-position: 0 0;
-  background-size: 100% auto;
-`;
 export const Header = styled(IonRow)`
   display: flex;
   justify-content: center;
@@ -126,7 +109,7 @@ const SpaceCard: React.FC<Props> = ({
   };
   return (
     <Container>
-      <CoverImage bgImg={space.coverPhoto || defaultCoverPhoto}></CoverImage>
+      <Banner bgImg={space.coverPhoto || defaultCoverPhoto} />
       <IonRow className="ion-justify-content-between ion-align-items-center">
         <Link to={link} target={newTab ? '_blank' : '_self'}>
           <Header class="ion-justify-content-center ion-align-items-center">
