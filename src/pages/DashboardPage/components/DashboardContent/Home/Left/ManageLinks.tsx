@@ -13,7 +13,7 @@ const ManageLink: React.FC = () => {
       </CardText>
       <LinkButton
         variant="contained"
-        color="gradient"
+        color="secondary-gradient"
         textType="gradient"
         href="/manager"
       >

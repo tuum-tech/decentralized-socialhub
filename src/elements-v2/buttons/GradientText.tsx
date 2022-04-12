@@ -1,13 +1,14 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import style from './Button.module.scss';
+import styles from './Button.module.scss';
 import ButtonText from './ButtonText';
 
-const StyledButtonText = styled(ButtonText)`
+const StyledButtonText = styled(ButtonText)<{ background: string }>`
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-fill-color: transparent;
+  background: ${props => props.background};
 `;
 
 interface GradientTextProps {
@@ -21,7 +22,7 @@ const GradientText: FC<GradientTextProps> = ({
   ...props
 }: GradientTextProps) => {
   return (
-    <StyledButtonText {...props} className={style['dark-pink-gradient']}>
+    <StyledButtonText {...props} background={styles['primary-gradient']}>
       {children}
     </StyledButtonText>
   );

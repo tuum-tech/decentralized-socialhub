@@ -84,6 +84,25 @@
     }
   },
   {
+    "sid": 5,
+    "name": "The 2821 Club",
+    "category": "NFT Collection",
+    "owner": ["did:elastos:iWtZBcqZa981z3YEoUxanCqvN7rFVDu52D"],
+    "tags": [
+      "ERC-721",
+      "Governance",
+      "Social Token",
+      "Membership",
+      "Collectibles",
+      "Art"
+    ],
+    "meta": {
+      "network": "Elastos Smart Contract Chain",
+      "address": "0x26b2341d10dC4118110825719BF733a571AB6EC5",
+      "slug": "The 2821 Club"
+    }
+  },
+  {
     "sid": 101,
     "name": "CyberKong",
     "category": "NFT Collection",
