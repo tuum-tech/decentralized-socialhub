@@ -28,6 +28,8 @@ $linear-gradient: linear-gradient(266.48deg, rgba(47, 213, 221, 0.2) 0.64%, rgba
 
 
 :export {
+  primary-gradient: $primary-gradient;
+  secondary-gradient: $secondary-gradient;
   main-green-gradient: $main-green-gradient;
   linear-gradient: $linear-gradient
 }

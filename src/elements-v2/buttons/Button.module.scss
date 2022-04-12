@@ -1,13 +1,5 @@
 @import '../../styles/_variables.scss';
 
-.primary-gradient {
-  background: $primary-gradient;
-}
-
-.secondary-gradient {
-  background: $secondary-gradient;
-}
-
 .border-primary-gradient {
   background: linear-gradient(#fff 0 0) padding-box,
     /*this is your grey background*/ $primary-gradient border-box;
