@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { IonItem, IonLabel } from '@ionic/react';
 import styled from 'styled-components';
 
-import { ConnectionSvg, ArrowUpSvg, ArrowDownSvg } from './icons';
+import { ArrowUpSvg, ArrowDownSvg, MenuIcon } from './icons';
 
 import style from '../style.module.scss';
 
@@ -53,7 +53,7 @@ const ConnectionMenu: React.FC<Props> = ({ session }) => {
           setShowSubMenu(!showSubMenu);
         }}
       >
-        <ConnectionSvg />
+        <MenuIcon name="connections" active />
         <IonLabel
           title={
             session.tutorialStep === 4
@@ -76,7 +76,7 @@ const ConnectionMenu: React.FC<Props> = ({ session }) => {
             }
             onClick={async () => history.push('/connections/followers')}
           >
-            <ConnectionSvg />
+            <MenuIcon name="connections" active />
             <IonLabel>
               <h3>Followers</h3>
             </IonLabel>
@@ -89,7 +89,7 @@ const ConnectionMenu: React.FC<Props> = ({ session }) => {
             }
             onClick={async () => history.push('/connections/followings')}
           >
-            <ConnectionSvg />
+            <MenuIcon name="connections" active />
             <IonLabel>
               <h3>Followings</h3>
             </IonLabel>
@@ -102,7 +102,7 @@ const ConnectionMenu: React.FC<Props> = ({ session }) => {
             }
             onClick={async () => history.push('/connections/mutual-followers')}
           >
-            <ConnectionSvg />
+            <MenuIcon name="connections" active />
             <IonLabel>
               <h3>Mutual Followers</h3>
             </IonLabel>

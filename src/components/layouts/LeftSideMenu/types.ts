@@ -7,3 +7,11 @@ export type InferMappedProps = ReturnType<typeof mapStateToProps> &
 export { defaultUserInfo }; 
 export type { SubState, ActionType };
 
+export type MenuType = {
+  title: string | React.ReactNode;
+  name: string;
+  active: boolean;
+  badge?: number;
+  handleClick: () => void;
+  items?: MenuType[];
+};
