@@ -31,6 +31,8 @@ import style from './style.module.scss';
 import { LocationState } from './types';
 import { HiveService } from 'src/services/hive.service';
 import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
+import { useSetRecoilState } from 'recoil';
+import { DIDDocumentAtom } from 'src/Atoms/Atoms';
 
 const SignInPage: React.FC<RouteComponentProps<
   {},
@@ -38,7 +40,7 @@ const SignInPage: React.FC<RouteComponentProps<
   LocationState
 >> = props => {
   const history = useHistory();
-
+  const setDidDocument = useSetRecoilState(DIDDocumentAtom);
   const getPresentation = async (): Promise<
     VerifiablePresentation | undefined
   > => {
@@ -73,10 +75,14 @@ const SignInPage: React.FC<RouteComponentProps<
         return c.getId().getFragment() === 'name';
       });
       let name = nameCredential!.getSubject().getProperty('name');
-      let issuer = nameCredential!.getId().getDid();
-      let did = 'did:elastos:' + issuer.getMethodSpecificId();
+      let owner = nameCredential!.getId().getDid();
+      let did = 'did:elastos:' + owner.getMethodSpecificId();
       let mnemonic = '';
-      await didService.storeDocument(await issuer.resolve());
+
+      let resolvedDocument = await owner.resolve();
+      await didService.storeDocument(resolvedDocument);
+      setDidDocument(resolvedDocument.toString(true));
+
       let isDidPublished = await didService.isDIDPublished(did);
       if (isDidPublished) {
         let didDocument = await didService.getDidDocument(did, false);

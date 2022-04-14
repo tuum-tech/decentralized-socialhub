@@ -366,36 +366,18 @@ export class VerificationService {
       '',
       v.guid
     );
-    // let userService = new UserService(await DidService.getInstance());
-    // let fromUser = await userService.SearchUserWithDID(v.from_did);
-    // await ProfileService.addActivity(
-    //   {
-    //     guid: '',
-    //     did: session.did,
-    //     message:
-    //       `You've ${
-    //         approve ? 'approved' : 'rejected'
-    //       } verification request from <a href="/did/` +
-    //       v.from_did.replaceAll('did:elastos:', '') +
-    //       `" target="_blank">` +
-    //       fromUser.name +
-    //       `</a>`,
-    //     read: false,
-    //     createdAt: 0,
-    //     updatedAt: 0
-    //   },
-    //   session
-    // );
   }
 
   public async importCredential(v: VerifiableCredential): Promise<void> {
     let didAccess = new ConnDID.DIDAccess();
-    await didAccess.importCredentials([v]);
+    await didAccess.importCredentials([v], { forceToPublishCredentials: true });
   }
 
   public async deleteCredentials(vId: string): Promise<string[]> {
     let didAccess = new ConnDID.DIDAccess();
-    return await didAccess.deleteCredentials([vId.toString()]);
+    return await didAccess.deleteCredentials([vId.toString()], {
+      forceToPublishCredentials: true
+    });
   }
 
   public async approveCredential(
