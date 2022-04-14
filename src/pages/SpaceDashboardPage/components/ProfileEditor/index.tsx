@@ -63,7 +63,7 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
     const _spaceProfile = { ...spaceProfile, tags: category };
     await SpaceService.addSpace(session, _spaceProfile, false);
     setSpaceProfile(_spaceProfile);
-  }
+  };
   const onRemoveSpace = async () => {
     const result = window.confirm(
       'This will remove all the contents about this space from your user vault. Are you sure?'
@@ -113,7 +113,9 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
             ) : (
               ''
             )}
-            <Category profile={spaceProfile} update={onUpdateCategory}/>
+            {spaceProfile.category !== SpaceCategory.Personal && (
+              <Category profile={spaceProfile} update={onUpdateCategory} />
+            )}
             <Admins profile={spaceProfile} />
             {spaceProfile.category === SpaceCategory.Personal && (
               <DeleteSpace profile={spaceProfile} removeSpace={onRemoveSpace} />
