@@ -30,15 +30,6 @@ const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
     setDefaultImage(space?.avatar || defaultAvatar);
   }, [space]);
 
-  const onChange = (e: any) => {
-    let file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = _handleReaderLoaded;
-      reader.readAsBinaryString(file);
-    }
-  };
-
   const _handleReaderLoaded = (readerEvt: any) => {
     let binaryString = readerEvt.target.result;
     onUpload(btoa(binaryString));
@@ -52,6 +43,7 @@ const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
     e.preventDefault();
     const reader = new FileReader();
     const file = e.target.files[0];
+    if (!file) return;
 
     let maxSize = 700000; //in Bytes
     if (file.size > maxSize) {
@@ -63,52 +55,56 @@ const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
     }
 
     if (reader !== undefined && file !== undefined) {
+      reader.onload = _handleReaderLoaded;
       reader.onloadend = () => {
         setImagePreview(reader.result);
         setDefaultImage(file);
       };
-      reader.readAsDataURL(file);
+      // reader.readAsDataURL(file);
+      reader.readAsBinaryString(file);
     }
   };
 
   return (
     <IonCard className={styleWidget['overview']}>
-        <Container>
-          <Description>
-            <IonRow className="ion-justify-content-between ion-no-padding">
-              <IonCol className="ion-no-padding">
-                <IonCardTitle>Avatar</IonCardTitle>
-              </IonCol>
-            </IonRow>
-            <IonRow className="ion-justify-content-between ion-no-padding">
-              <IonCol className="ion-no-padding">
-                <TextHeader>
-                  Your profile photo is your style representation. <br />
-                  (JPG or PNG, max)
-                </TextHeader>
-              </IonCol>
-            </IonRow>
-          </Description>
-          <ImgUploadContainer>
-            <form onSubmit={e => onFileSubmit(e)} onChange={e => onChange(e)}>
-              <ImgUploadArea logo={defaultImage}>
-                <Perfil>
-                  {imagePreview !== '' && (
-                    <img src={imagePreview} alt="Icone adicionar" />
-                  )}
-                  <input
-                    type="file"
-                    name="avatar"
-                    id="file"
-                    accept=".jpeg, .png, .jpg"
-                    onChange={photoUpload}
-                    src={imagePreview}
-                  />
-                </Perfil>
-              </ImgUploadArea>
-            </form>
-          </ImgUploadContainer>
-        </Container>
+      <Container>
+        <Description>
+          <IonRow className="ion-justify-content-between ion-no-padding">
+            <IonCol className="ion-no-padding">
+              <IonCardTitle>Avatar</IonCardTitle>
+            </IonCol>
+          </IonRow>
+          <IonRow className="ion-justify-content-between ion-no-padding">
+            <IonCol className="ion-no-padding">
+              <TextHeader>
+                Your profile photo is your style representation. <br />
+                (JPG or PNG, max)
+                <br />
+                Make sure that image size should be less than 700KB.
+              </TextHeader>
+            </IonCol>
+          </IonRow>
+        </Description>
+        <ImgUploadContainer>
+          <form onSubmit={e => onFileSubmit(e)}>
+            <ImgUploadArea logo={defaultImage}>
+              <Perfil>
+                {/* {imagePreview !== '' && (
+                  <img src={imagePreview} alt="Icone adicionar" />
+                )} */}
+                <input
+                  type="file"
+                  name="avatar"
+                  id="file"
+                  accept=".jpeg, .png, .jpg"
+                  onChange={photoUpload}
+                  src={imagePreview}
+                />
+              </Perfil>
+            </ImgUploadArea>
+          </form>
+        </ImgUploadContainer>
+      </Container>
     </IonCard>
   );
 };

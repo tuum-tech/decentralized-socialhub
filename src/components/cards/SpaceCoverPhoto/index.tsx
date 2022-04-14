@@ -102,9 +102,9 @@ const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
           <form onSubmit={e => onFileSubmit(e)} onChange={e => onChange(e)}>
             <ImgUploadArea logo={defaultImage}>
               <Perfil>
-                {imagePreview !== '' && (
+                {/* {imagePreview !== '' && (
                   <img src={imagePreview} alt="Icone adicionar" />
-                )}
+                )} */}
                 <input
                   type="file"
                   name="coverPhoto"
