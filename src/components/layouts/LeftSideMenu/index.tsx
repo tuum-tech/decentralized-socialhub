@@ -15,7 +15,6 @@ import Logo from 'src/elements/Logo';
 import FooterLinks from './components/FooterLinks';
 import ConnectionMenu from './components/ConnectionMenu';
 
-import { MenuIcon } from './components/icons';
 import HelpModalContent, { HelpModal } from './modals/Help';
 import ReportModalContent, { ReportModal } from './modals/Report';
 import ContactModalContent, { ContactModal } from './modals/Contact';
@@ -23,6 +22,7 @@ import ContactModalContent, { ContactModal } from './modals/Contact';
 import style from './style.module.scss';
 import { TuumTechScriptService } from 'src/services/script.service';
 import MenuItem from './components/MenuItem';
+import Badge from 'src/elements-v2/Badge/index';
 
 const LeftSideMenu: React.FC<InferMappedProps> = ({
   eProps,
@@ -100,7 +100,9 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
         <MenuItem
           name="activities"
           title="Activities"
-          badge={2}
+          rightContent={
+            history.location.pathname === '/activities' && <Badge>2</Badge>
+          }
           active={history.location.pathname === '/activities'}
           handleClick={() => history.push('/activities')}
         />

@@ -1,3 +1,4 @@
+import React from 'react';
 import { mapDispatchToProps, mapStateToProps } from './index';
 import { SubState, ActionType, defaultUserInfo } from 'src/store/users/types';
 
@@ -11,7 +12,7 @@ export type MenuType = {
   title: string | React.ReactNode;
   name: string;
   active: boolean;
-  badge?: number;
+  rightContent?: React.ReactNode
   handleClick: () => void;
   items?: MenuType[];
 };

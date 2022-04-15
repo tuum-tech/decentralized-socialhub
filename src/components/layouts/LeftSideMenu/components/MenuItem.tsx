@@ -1,4 +1,4 @@
-import { IonBadge, IonItem, IonLabel } from '@ionic/react';
+import { IonItem, IonLabel } from '@ionic/react';
 import React from 'react';
 import styled from 'styled-components';
 import { MenuType } from '../types';
@@ -16,11 +16,18 @@ const StyledText = styled.h3<{ active: boolean }>`
       : `color: var(--color);`}
 `;
 
+const StyledBetween = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
 export const MenuItem = ({
   name,
   title,
   active = false,
-  badge,
+  rightContent,
   handleClick
 }: MenuType) => {
   return (
@@ -29,9 +36,12 @@ export const MenuItem = ({
       onClick={handleClick}
     >
       <MenuIcon name={name} active={active} />
-      <IonLabel>
-        <StyledText active={active}>{title}</StyledText>
-      </IonLabel>
+      <StyledBetween>
+        <IonLabel>
+          <StyledText active={active}>{title}</StyledText>
+        </IonLabel>
+        {rightContent}
+      </StyledBetween>
     </IonItem>
   );
 };
