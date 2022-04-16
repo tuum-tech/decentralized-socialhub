@@ -5,6 +5,31 @@ import { MenuType } from '../types';
 import { MenuIcon } from './icons';
 import styles from './style.module.scss';
 
+const StyledIonItem = styled(IonItem)<{
+  active: boolean;
+  isChild: boolean | undefined;
+}>`
+  margin: 0 10px;
+  ${props =>
+    props.active && !props.isChild
+      ? `
+        --inner-border-width: 0;
+        --background: transparent;
+        background: linear-gradient(
+          90deg,
+          rgba(153, 90, 255, 0.1) 0%,
+          rgba(220, 89, 191, 0.1) 100%
+        );
+        border-radius: 10px;
+      `
+      : `
+        --inner-border-width: 0;
+        --ion-item-background: transparent;
+        cursor: pointer;
+        color: var(--text-body-light);
+      `}
+`;
+
 const StyledText = styled.h3<{ active: boolean }>`
   ${props =>
     props.active
@@ -26,23 +51,22 @@ const StyledBetween = styled.div`
 export const MenuItem = ({
   name,
   title,
+  tooltip = '',
   active = false,
   rightContent,
+  isChild,
   handleClick
 }: MenuType) => {
   return (
-    <IonItem
-      className={active ? styles['item-active'] : styles['item-link']}
-      onClick={handleClick}
-    >
+    <StyledIonItem active={active} isChild={isChild} onClick={handleClick}>
       <MenuIcon name={name} active={active} />
       <StyledBetween>
-        <IonLabel>
+        <IonLabel title={tooltip}>
           <StyledText active={active}>{title}</StyledText>
         </IonLabel>
         {rightContent}
       </StyledBetween>
-    </IonItem>
+    </StyledIonItem>
   );
 };
 

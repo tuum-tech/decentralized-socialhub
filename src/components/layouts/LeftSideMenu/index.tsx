@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { IonBadge, IonItem, IonLabel, IonList } from '@ionic/react';
+import { IonList } from '@ionic/react';
 
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -101,7 +101,8 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
           name="activities"
           title="Activities"
           rightContent={
-            history.location.pathname === '/activities' && <Badge>2</Badge>
+            history.location.pathname === '/activities' &&
+            requestsCount > 0 && <Badge>{requestsCount}</Badge>
           }
           active={history.location.pathname === '/activities'}
           handleClick={() => history.push('/activities')}
