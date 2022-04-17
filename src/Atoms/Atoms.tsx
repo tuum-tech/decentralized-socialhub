@@ -21,3 +21,8 @@ export const FullProfileAtom = atom({
   key: 'FullProfile',
   default: defaultFullProfile as ProfileDTO
 });
+
+export const CallbackFromAtom = atom({
+  key: 'CallbackFrom',
+  default: null
+})

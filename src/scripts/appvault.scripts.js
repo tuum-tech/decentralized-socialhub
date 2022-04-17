@@ -98,6 +98,7 @@ let run = async () => {
               publicFields: '$params.publicFields',
               tags: '$params.tags',
               followers: '$params.followers',
+              socialLinks: '$params.socialLinks',
               meta: '$params.meta'
             }
           },

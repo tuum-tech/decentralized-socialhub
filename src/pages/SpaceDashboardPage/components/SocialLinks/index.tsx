@@ -1,25 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import { useSetRecoilState } from 'recoil';
-import { BadgesAtom } from 'src/Atoms/Atoms';
 import { CallbackFromAtom } from 'src/Atoms/Atoms';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 import { DidcredsService } from 'src/services/didcreds.service';
-import { UserService } from 'src/services/user.service';
 
-import style from './SocialCard.module.scss';
-import linkedinIcon from '../../../assets/icon/Linkedin.svg';
-import twitterIcon from '../../../assets/icon/Twitter.svg';
-import facebookIcon from '../../../assets/icon/Facebook.svg';
-import googleIcon from '../../../assets/icon/Google.svg';
-import githubIcon from '../../../assets/icon/Github.svg';
-import discordIcon from '../../../assets/icon/Discord.svg';
-import shieldIcon from '../../../assets/icon/shield.svg';
-import { DidService } from 'src/services/did.service.new';
+import style from './style.module.scss';
+import linkedinIcon from 'src/assets/icon/Linkedin.svg';
+import twitterIcon from 'src/assets/icon/Twitter.svg';
+import facebookIcon from 'src/assets/icon/Facebook.svg';
+import googleIcon from 'src/assets/icon/Google.svg';
+import githubIcon from 'src/assets/icon/Github.svg';
+import discordIcon from 'src/assets/icon/Discord.svg';
+import shieldIcon from 'src/assets/icon/shield.svg';
 
 import { SocialProfileCard, MyGrid } from './elements';
-
-import { alertError } from 'src/utils/notify';
 
 import {
   ManagerModal,
@@ -31,56 +26,30 @@ import {
   CloseButton,
   CardHeaderContent,
   CardContentContainer
-} from '../common';
-
-import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/';
-import { VerificationService } from 'src/services/verification.service';
+} from 'src/components/cards/common';
 
 interface Props {
-  sessionItem: ISessionItem;
-  setSession: (props: { session: ISessionItem }) => void;
+  space: any;
   mode?: string;
   openModal?: boolean;
 }
 
 const SocialProfilesCard: React.FC<Props> = ({
-  sessionItem,
-  setSession,
+  space,
   mode = 'view',
   openModal = false
 }) => {
-  const setBadges = useSetRecoilState(BadgesAtom);
-  const setCallbackFrom = useSetRecoilState(CallbackFromAtom);
+  // const setBadges = useSetRecoilState(BadgesAtom);
   const [isManagerOpen, setIsManagerOpen] = useState(openModal);
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
-  const [credentials, setCredentials] = useState<
-    Map<string, VerifiableCredential>
-  >();
+  const [credentials, setCredentials] = useState<any>(space.socialLinks || {});
+  const setCallbackFrom = useSetRecoilState(CallbackFromAtom);
 
-  useEffect(() => {
-    (async () => {
-      await getCredentials(sessionItem);
-    })();
-  }, [sessionItem]);
-
-  const getCredentials = async (sessionItem: ISessionItem) => {
-    try {
-      let cred = await DidcredsService.getAllCredentialsToVault(sessionItem);
-
-      setCredentials(cred);
-    } catch (error) {
-      console.error('Error getting credentials on vault', error);
-      alertError(
-        null,
-        `Error loading credentials from your personal vault, please verify the connection and try again later`
-      );
-    }
-  };
+  // useEffect(() => {
+  //   setCredentials(space.socialLinks);
+  // }, [space]);
 
   let template = 'default';
-  if (mode !== 'edit' && sessionItem.pageTemplate) {
-    template = sessionItem.pageTemplate;
-  }
 
   const popupCenter = (url: string, title: string, w: number, h: number) => {
     const dualScreenLeft =
@@ -118,14 +87,14 @@ const SocialProfilesCard: React.FC<Props> = ({
     var timer = setInterval(async function() {
       if (popupwindow!.closed) {
         clearInterval(timer);
-        await getCredentials(sessionItem);
+        // await getCredentials(sessionItem);
 
-        let userService = new UserService(await DidService.getInstance());
+        // let userService = new UserService(await DidService.getInstance());
 
-        let user: ISessionItem = await userService.SearchUserWithDID(
-          sessionItem.did
-        );
-        setBadges(user.badges as IBadges);
+        // let user: ISessionItem = await userService.SearchUserWithDID(
+        //   sessionItem.did
+        // );
+        // setBadges(user.badges as IBadges);
       }
     }, 1000);
   };
@@ -169,98 +138,44 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const containsVerifiedCredential = (id: string): boolean => {
-    if (!credentials) return false;
-    return credentials.has(`${sessionItem.did}#${id}`);
+    // if (!credentials) return false;
+    // return credentials.has(`${sessionItem.did}#${id}`);
+    return !!credentials[id];
   };
 
-  const getUrlFromService = (
-    service: string,
-    credential: VerifiableCredential
-  ): string => {
-    let value = 'must get';
-    if (service === 'twitter') return `https://twitter.com/${value}`;
-    if (service === 'linkedin') return `https://linkedin.com/in/${value}`;
-    if (service === 'facebook') return `https://facebook.com/${value}`;
-    if (service === 'google') return `mailto://${value}`;
-    if (service === 'github') return `https://github.com/${value}`;
-    if (service === 'discord') return `https://discordapp.com/users/${value}`;
+  const getUrlFromService = (service: string, credential: string): string => {
+    if (service === 'twitter') return `https://twitter.com/${credential}`;
+    if (service === 'linkedin') return `https://linkedin.com/in/${credential}`;
+    if (service === 'facebook') return `https://facebook.com/${credential}`;
+    if (service === 'google') return `mailto://${credential}`;
+    if (service === 'github') return `https://github.com/${credential}`;
+    if (service === 'discord')
+      return `https://discordapp.com/users/${credential}`;
     return '';
   };
 
   const parseValueFromService = (
     service: string,
-    credential: VerifiableCredential
+    credential: string
   ): string => {
-    let value = credential.subject.getProperty(service);
-
-    if (service === 'twitter') return value;
-    if (service === 'linkedin') return `linkedin.com/in/${value}`;
-    if (service === 'facebook') return `facebook.com/${value}`;
-    if (service === 'google') return `${value}`;
-    if (service === 'github') return `${value}`;
-    if (service === 'discord') return `${value}`;
+    if (service === 'twitter') return credential;
+    if (service === 'linkedin') return `linkedin.com/in/${credential}`;
+    if (service === 'facebook') return `facebook.com/${credential}`;
+    if (service === 'google') return `${credential}`;
+    if (service === 'github') return `${credential}`;
+    if (service === 'discord') return `${credential}`;
     return '';
   };
 
   const removeVc = async (key: string) => {
     setIsRemoving(true);
-
-    let vcId = sessionItem.did + '#' + key;
-    let vService = new VerificationService();
-    let deletedCreds = await vService.deleteCredentials(vcId);
-
-    if (deletedCreds[0] === vcId) {
-      await DidcredsService.removeCredentialToVault(sessionItem, vcId);
-
-      let didService = await DidService.getInstance();
-
-      let userService = new UserService(didService);
-      let currentSession = await userService.SearchUserWithDID(sessionItem.did);
-
-      // ===== temporary codes start =====
-      let newLoginCred = currentSession!.loginCred;
-      let newLoginBadges = currentSession!.badges;
-      if (!newLoginCred) {
-        return;
-      }
-      if (key === 'google' && newLoginCred.google) {
-        delete newLoginCred.google;
-        newLoginBadges.socialVerify.google.archived = false;
-      } else if (key === 'facebook' && newLoginCred.facebook) {
-        delete newLoginCred.facebook;
-        newLoginBadges.socialVerify.facebook.archived = false;
-      } else if (key === 'linkedin' && newLoginCred.linkedin) {
-        newLoginBadges.socialVerify.linkedin.archived = false;
-        delete newLoginCred.linkedin;
-      } else if (key === 'twitter' && newLoginCred.twitter) {
-        delete newLoginCred.twitter;
-        newLoginBadges.socialVerify.twitter.archived = false;
-      } else if (key === 'github' && newLoginCred.github) {
-        delete newLoginCred.github;
-        newLoginBadges.socialVerify.github.archived = false;
-      } else if (key === 'discord' && newLoginCred.discord) {
-        newLoginBadges.socialVerify.discord.archived = false;
-        delete newLoginCred.discord;
-      }
-      const newUserSession = {
-        ...sessionItem,
-        loginCred: newLoginCred,
-        badges: newLoginBadges
-      } as ISessionItem;
-
-      setSession({
-        session: await userService.updateSession(newUserSession)
-      });
-      // ===== temporary codes end =====
-    }
     setIsRemoving(false);
   };
 
   const createIonItem = (key: string, icon: any) => {
-    let id = `${sessionItem.did}#${key}`;
-    if (!credentials || !credentials.has(id)) return <></>;
+    if (!credentials[key]) return <></>;
 
-    let vc = credentials.get(id)!;
+    let vc = credentials[key];
     let isVcValid = true;
 
     return (
@@ -308,7 +223,8 @@ const SocialProfilesCard: React.FC<Props> = ({
 
     if (!credentials) return;
 
-    let vc = credentials.get(`${sessionItem.did}#${key}`);
+    // let vc = credentials.get(`${sessionItem.did}#${key}`);
+    let vc = credentials[key];
 
     let header = 'Google Account';
     if (key === 'twitter') header = 'Twitter Account';
@@ -325,7 +241,7 @@ const SocialProfilesCard: React.FC<Props> = ({
           <ManagerLogo src={icon} />
           <ManagerButton
             onClick={() => {
-              setCallbackFrom(null);
+              setCallbackFrom(space);
               sociallogin(key);
             }}
           >

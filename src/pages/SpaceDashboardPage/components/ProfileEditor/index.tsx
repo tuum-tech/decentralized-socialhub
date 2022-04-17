@@ -11,6 +11,7 @@ import OverView from '../OverView';
 import PublicFields from '../PublicFields';
 import Admins from '../Admins';
 import DeleteSpace from '../DeleteSpace';
+import SocialLinks from '../SocialLinks';
 import { SpaceCategory } from 'src/services/space.service';
 import style from './style.module.scss';
 
@@ -107,6 +108,7 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
             ) : (
               ''
             )}
+            <SocialLinks space={spaceProfile} mode="edit" />
             <Admins profile={spaceProfile} />
             {spaceProfile.category === SpaceCategory.Personal && (
               <DeleteSpace profile={spaceProfile} removeSpace={onRemoveSpace} />
