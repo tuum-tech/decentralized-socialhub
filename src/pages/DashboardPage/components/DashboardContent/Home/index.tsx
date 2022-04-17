@@ -36,6 +36,7 @@ import SentModalContent, {
 
 import { useRecoilValue } from 'recoil';
 import { DIDDocumentAtom, FullProfileAtom } from 'src/Atoms/Atoms';
+import WhatIsProfile from './Right/WhatIsProfile';
 
 const LeftCardCol = styled(IonCol)`
   padding: 22px 16px;
@@ -403,6 +404,7 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
               progress={completionPercent}
               completionStats={completionStatsDisplay}
             />
+            <WhatIsProfile />
             <ConnectWithCommunity />
             {hasSocialProfiles && (
               <ProfileBriefCard

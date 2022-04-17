@@ -27,6 +27,7 @@ import {
   CardHeaderContent,
   CardContentContainer
 } from 'src/components/cards/common';
+import { SpaceService } from 'src/services/space.service';
 
 interface Props {
   space: any;
@@ -39,15 +40,10 @@ const SocialProfilesCard: React.FC<Props> = ({
   mode = 'view',
   openModal = false
 }) => {
-  // const setBadges = useSetRecoilState(BadgesAtom);
   const [isManagerOpen, setIsManagerOpen] = useState(openModal);
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
   const [credentials, setCredentials] = useState<any>(space.socialLinks || {});
   const setCallbackFrom = useSetRecoilState(CallbackFromAtom);
-
-  // useEffect(() => {
-  //   setCredentials(space.socialLinks);
-  // }, [space]);
 
   let template = 'default';
 
@@ -169,6 +165,9 @@ const SocialProfilesCard: React.FC<Props> = ({
 
   const removeVc = async (key: string) => {
     setIsRemoving(true);
+    const socialLinks = { ...credentials };
+    delete socialLinks[key];
+    await SpaceService.addSpace(null as any, { ...space, socialLinks });
     setIsRemoving(false);
   };
 

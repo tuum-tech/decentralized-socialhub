@@ -30,7 +30,7 @@
     "sid": 2,
     "name": "Phantz Club",
     "category": "NFT Collection",
-    "owner": ["did:elastos:iUDaseyHnQUmwp6RSABCy4ZPCQCaBTDDMS"],
+    "owner": ["did:elastos:ifGdMCeKXNjP2iUjdNLfcTPrKSV4y1FBfS"],
     "tags": [
       "ERC-721",
       "Membership",
@@ -66,6 +66,44 @@
   },
   {
     "sid": 4,
+    "name": "Dropz",
+    "category": "NFT Collection",
+    "owner": ["did:elastos:iWtZBcqZa981z3YEoUxanCqvN7rFVDu52D"],
+    "tags": [
+      "ERC-721",
+      "Governance",
+      "Social Token",
+      "Membership",
+      "Collectibles",
+      "Art"
+    ],
+    "meta": {
+      "network": "Elastos Smart Contract Chain",
+      "address": "0x22900606ae7077043cf140255a80e82d691b8fd5",
+      "slug": "Dropz"
+    }
+  },
+  {
+    "sid": 5,
+    "name": "The 2821 Club",
+    "category": "NFT Collection",
+    "owner": ["did:elastos:iWtZBcqZa981z3YEoUxanCqvN7rFVDu52D"],
+    "tags": [
+      "ERC-721",
+      "Governance",
+      "Social Token",
+      "Membership",
+      "Collectibles",
+      "Art"
+    ],
+    "meta": {
+      "network": "Elastos Smart Contract Chain",
+      "address": "0x26b2341d10dC4118110825719BF733a571AB6EC5",
+      "slug": "The 2821 Club"
+    }
+  },
+  {
+    "sid": 101,
     "name": "CyberKong",
     "category": "NFT Collection",
     "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
@@ -84,7 +122,7 @@
     }
   },
   {
-    "sid": 5,
+    "sid": 102,
     "name": "LFC Heroes Club",
     "category": "NFT Collection",
     "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],

@@ -189,7 +189,11 @@ export class SpaceService {
     }
     return [];
   }
-  static async addSpace(session: ISessionItem, space: Space) {
+  static async addSpace(
+    session: ISessionItem,
+    space: Space,
+    notify: boolean = true
+  ) {
     if (space.category === SpaceCategory.Personal) {
       const hiveInstance = await HiveService.getSessionInstance(session);
       if (session && hiveInstance) {
@@ -216,7 +220,8 @@ export class SpaceService {
                 target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
               }
             });
-            showNotify('Space details has been successfuly saved', 'success');
+            if (notify)
+              showNotify('Space details has been successfuly saved', 'success');
           }
         }
       }
@@ -231,7 +236,8 @@ export class SpaceService {
             target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
           }
         });
-        showNotify('Space details has been successfuly saved', 'success');
+        if (notify)
+          showNotify('Space details has been successfuly saved', 'success');
       }
     }
   }

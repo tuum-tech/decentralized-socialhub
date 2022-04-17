@@ -1,7 +1,9 @@
 import { atom } from 'recoil';
+import { recoilPersist } from 'recoil-persist';
 import { defaultFullProfile } from 'src/services/profile.service';
 import { defaultBadges, defaultUserInfo } from 'src/store/users/types';
 
+const { persistAtom } = recoilPersist();
 export const DIDDocumentAtom = atom({
   key: 'DIDDocument',
   default: ''
@@ -24,5 +26,6 @@ export const FullProfileAtom = atom({
 
 export const CallbackFromAtom = atom({
   key: 'CallbackFrom',
-  default: null
-})
+  default: null,
+  effects_UNSTABLE: [persistAtom]
+});

@@ -80,7 +80,6 @@ const GoogleCallback: React.FC<PageProps> = ({
       if (callbackFrom) {
         // social callback from space dashboard
         const space: any = callbackFrom;
-        alert(space.name);
         await SpaceService.addSpace(session, {
           ...space,
           socialLinks: { ...space.socialLinks, google: googleId.email }
@@ -152,7 +151,7 @@ const GoogleCallback: React.FC<PageProps> = ({
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [callbackFrom]);
 
   const getRedirect = () => {
     if (credentials.loginCred.google !== '') {
