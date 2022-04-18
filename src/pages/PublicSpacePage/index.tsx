@@ -27,7 +27,6 @@ import {
   SpaceCategory,
   SpaceService
 } from 'src/services/space.service';
-import { SpaceSvg } from 'src/components/layouts/LeftSideMenu/components/icons';
 import NFTSpace from './NFT';
 interface MatchParams {
   did?: string;
