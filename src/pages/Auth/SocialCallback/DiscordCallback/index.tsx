@@ -12,6 +12,9 @@ import {
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
+import { useRecoilValue } from 'recoil';
+import { CallbackFromAtom } from 'src/Atoms/Atoms';
+
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { TokenResponse, LocationState, InferMappedProps } from './types';
@@ -25,6 +28,7 @@ import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidService } from 'src/services/did.service.new';
 import { VerificationService } from 'src/services/verification.service';
+import { SpaceService } from 'src/services/space.service';
 
 interface PageProps
   extends InferMappedProps,
@@ -40,7 +44,9 @@ const DiscordCallback: React.FC<PageProps> = ({
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
+  const { session } = props;
   const history = useHistory();
+  const callbackFrom = useRecoilValue(CallbackFromAtom);
   const [credentials, setCredentials] = useState({
     loginCred: {
       discord: ''
@@ -57,68 +63,78 @@ const DiscordCallback: React.FC<PageProps> = ({
   useEffect(() => {
     (async () => {
       let didService = await DidService.getInstance();
-      if (code !== '' && credentials.loginCred.discord === '') {
-        let t = await getToken(code);
-        let discord = t.data.username + '#' + t.data.discriminator;
-
-        if (props.session && props.session.did !== '') {
-          let verifiableCredential = await DidcredsService.generateVerifiableCredential(
-            props.session.did,
-            CredentialType.Discord,
-            discord
-          );
-
-          await DidcredsService.addOrUpdateCredentialToVault(
-            props.session,
-            verifiableCredential
-          );
-
-          const vService = new VerificationService();
-          await vService.importCredential(verifiableCredential);
-
-          let newSession = JSON.parse(JSON.stringify(props.session));
-          newSession.loginCred!.discord! = discord;
-          if (!newSession.badges!.socialVerify!.discord.archived) {
-            newSession.badges!.socialVerify!.discord.archived = new Date().getTime();
-            await ProfileService.addActivity(
-              {
-                guid: '',
-                did: newSession.did,
-                message: 'You received a Discord verfication badge',
-                read: false,
-                createdAt: 0,
-                updatedAt: 0
-              },
-              newSession.did
+      if (!code) return;
+      let t = await getToken(code);
+      let discord = t.data.username + '#' + t.data.discriminator;
+      if (callbackFrom) {
+        // social callback from space dashboard
+        const space: any = callbackFrom;
+        await SpaceService.addSpace(session, {
+          ...space,
+          socialLinks: { ...space.socialLinks, discord }
+        });
+        window.close();
+      } else {
+        if (credentials.loginCred.discord === '') {
+          if (session && session.did !== '') {
+            let verifiableCredential = await DidcredsService.generateVerifiableCredential(
+              session.did,
+              CredentialType.Discord,
+              discord
             );
-          }
-          let userService = new UserService(didService);
-          eProps.setSession({
-            session: await userService.updateSession(newSession)
-          });
 
-          window.close();
-        } else {
-          let prevUsers = await getUsersWithRegisteredDiscord(discord);
-          if (prevUsers.length > 0) {
-            history.push({
-              pathname: '/associated-profile',
-              state: {
-                users: prevUsers,
+            await DidcredsService.addOrUpdateCredentialToVault(
+              session,
+              verifiableCredential
+            );
+
+            const vService = new VerificationService();
+            await vService.importCredential(verifiableCredential);
+
+            let newSession = JSON.parse(JSON.stringify(session));
+            newSession.loginCred!.discord! = discord;
+            if (!newSession.badges!.socialVerify!.discord.archived) {
+              newSession.badges!.socialVerify!.discord.archived = new Date().getTime();
+              await ProfileService.addActivity(
+                {
+                  guid: '',
+                  did: newSession.did,
+                  message: 'You received a Discord verfication badge',
+                  read: false,
+                  createdAt: 0,
+                  updatedAt: 0
+                },
+                newSession.did
+              );
+            }
+            let userService = new UserService(didService);
+            eProps.setSession({
+              session: await userService.updateSession(newSession)
+            });
+
+            window.close();
+          } else {
+            let prevUsers = await getUsersWithRegisteredDiscord(discord);
+            if (prevUsers.length > 0) {
+              history.push({
+                pathname: '/associated-profile',
+                state: {
+                  users: prevUsers,
+                  name: discord,
+                  loginCred: {
+                    discord: discord
+                  },
+                  service: AccountType.Discord
+                }
+              });
+            } else {
+              setCredentials({
                 name: discord,
                 loginCred: {
                   discord: discord
-                },
-                service: AccountType.Discord
-              }
-            });
-          } else {
-            setCredentials({
-              name: discord,
-              loginCred: {
-                discord: discord
-              }
-            });
+                }
+              });
+            }
           }
         }
       }

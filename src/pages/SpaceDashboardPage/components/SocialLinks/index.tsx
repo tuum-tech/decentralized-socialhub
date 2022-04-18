@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import { useSetRecoilState } from 'recoil';
-import { CallbackFromAtom } from 'src/Atoms/Atoms';
+import { CallbackFromAtom, SyncSpaceAtom } from 'src/Atoms/Atoms';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 import { DidcredsService } from 'src/services/didcreds.service';
 
@@ -42,8 +42,15 @@ const SocialProfilesCard: React.FC<Props> = ({
 }) => {
   const [isManagerOpen, setIsManagerOpen] = useState(openModal);
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
-  const [credentials, setCredentials] = useState<any>(space.socialLinks || {});
+  const [credentials, setCredentials] = useState<any>({});
   const setCallbackFrom = useSetRecoilState(CallbackFromAtom);
+  const setSyncSpace = useSetRecoilState(SyncSpaceAtom);
+
+  useEffect(() => {
+    if (space && space.socialLinks) {
+      setCredentials(space.socialLinks);
+    }
+  }, [space]);
 
   let template = 'default';
 
@@ -83,14 +90,7 @@ const SocialProfilesCard: React.FC<Props> = ({
     var timer = setInterval(async function() {
       if (popupwindow!.closed) {
         clearInterval(timer);
-        // await getCredentials(sessionItem);
-
-        // let userService = new UserService(await DidService.getInstance());
-
-        // let user: ISessionItem = await userService.SearchUserWithDID(
-        //   sessionItem.did
-        // );
-        // setBadges(user.badges as IBadges);
+        setSyncSpace(true);
       }
     }, 1000);
   };
@@ -168,6 +168,7 @@ const SocialProfilesCard: React.FC<Props> = ({
     const socialLinks = { ...credentials };
     delete socialLinks[key];
     await SpaceService.addSpace(null as any, { ...space, socialLinks });
+    setSyncSpace(true);
     setIsRemoving(false);
   };
 

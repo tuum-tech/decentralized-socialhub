@@ -9,8 +9,10 @@ import {
 
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
+
 import { useRecoilValue } from 'recoil';
 import { CallbackFromAtom } from 'src/Atoms/Atoms';
+
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import {
@@ -32,7 +34,7 @@ import { ProfileService } from 'src/services/profile.service';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { DidService } from 'src/services/did.service.new';
 import { VerificationService } from 'src/services/verification.service';
-import { SpaceCategory, SpaceService } from 'src/services/space.service';
+import { SpaceService } from 'src/services/space.service';
 
 interface PageProps
   extends InferMappedProps,
@@ -47,8 +49,8 @@ const GoogleCallback: React.FC<PageProps> = ({
    * This was to show you dont need to put everything to global state
    * incoming from Server API calls. Maintain a local state.
    */
-  const history = useHistory();
   const { session } = props;
+  const history = useHistory();
   const callbackFrom = useRecoilValue(CallbackFromAtom);
   const [credentials, setCredentials] = useState({
     loginCred: {
@@ -73,10 +75,9 @@ const GoogleCallback: React.FC<PageProps> = ({
   useEffect(() => {
     (async () => {
       let didService = await DidService.getInstance();
-
+      if (!code || !state) return;
       let t = await getToken(code, state);
       let googleId = await requestGoogleId(t.data.request_token);
-      if (!code || !state) return;
       if (callbackFrom) {
         // social callback from space dashboard
         const space: any = callbackFrom;

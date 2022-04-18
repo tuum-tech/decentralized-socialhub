@@ -4,6 +4,7 @@ import { defaultFullProfile } from 'src/services/profile.service';
 import { defaultBadges, defaultUserInfo } from 'src/store/users/types';
 
 const { persistAtom } = recoilPersist();
+
 export const DIDDocumentAtom = atom({
   key: 'DIDDocument',
   default: ''
@@ -29,3 +30,8 @@ export const CallbackFromAtom = atom({
   default: null,
   effects_UNSTABLE: [persistAtom]
 });
+
+export const SyncSpaceAtom = atom({
+  key: 'UpdateSpace',
+  default: false,
+})
