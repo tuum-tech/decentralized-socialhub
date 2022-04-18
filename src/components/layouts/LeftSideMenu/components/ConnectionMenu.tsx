@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-
-import { ArrowUpSvg, ArrowDownSvg } from './icons';
+import Icon from 'src/elements-v2/icons/Icon';
 import MenuItem from './MenuItem';
 
 interface Props {
@@ -18,6 +17,7 @@ const SubMenuContainer = styled.div`
 const ConnectionMenu: React.FC<Props> = ({ session }) => {
   const history = useHistory();
   const [showSubMenu, setShowSubMenu] = useState(false);
+  const [activeMenu, setActiveMenu] = useState(false);
 
   useEffect(() => {
     if (
@@ -25,8 +25,10 @@ const ConnectionMenu: React.FC<Props> = ({ session }) => {
       history.location.pathname.includes('/connections/followings') ||
       history.location.pathname.includes('/connections/mutual-followers')
     ) {
+      setActiveMenu(true);
       setShowSubMenu(true);
     } else {
+      setActiveMenu(false);
       setShowSubMenu(false);
     }
   }, [history.location.pathname]);
@@ -41,12 +43,20 @@ const ConnectionMenu: React.FC<Props> = ({ session }) => {
             ? ''
             : 'Please complete the tutorial to access your Connections'
         }
-        active={
-          history.location.pathname.includes('/connections/followers') ||
-          history.location.pathname.includes('/connections/followings') ||
-          history.location.pathname.includes('/connections/mutual-followers')
+        active={activeMenu}
+        rightContent={
+          showSubMenu ? (
+            <Icon
+              name="chevron-up-outline"
+              color={activeMenu ? 'primary' : 'dark'}
+            ></Icon>
+          ) : (
+            <Icon
+              name="chevron-down-outline"
+              color={activeMenu ? 'primary' : 'dark'}
+            ></Icon>
+          )
         }
-        rightContent={showSubMenu ? <ArrowUpSvg /> : <ArrowDownSvg />}
         handleClick={() => setShowSubMenu(!showSubMenu)}
       />
 
