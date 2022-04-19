@@ -4,6 +4,8 @@ import { IonList } from '@ionic/react';
 
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
+import styled from 'styled-components';
+import { down } from 'styled-breakpoints';
 
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
@@ -23,6 +25,12 @@ import style from './style.module.scss';
 import { TuumTechScriptService } from 'src/services/script.service';
 import MenuItem from './components/MenuItem';
 import Badge from 'src/elements-v2/Badge/index';
+
+const Container = styled.div`
+  ${down('sm')} {
+    display: none;
+  }
+`;
 
 const LeftSideMenu: React.FC<InferMappedProps> = ({
   eProps,
@@ -58,7 +66,7 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
   }, [props.session.did]);
 
   return (
-    <div className={style['navbar']}>
+    <Container className={style['navbar']}>
       <Logo />
       <IonList>
         <MenuItem
@@ -206,7 +214,7 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
           toggleContactUs={toggleContactUs}
         />
       </ContactModal>
-    </div>
+    </Container>
   );
 };
 

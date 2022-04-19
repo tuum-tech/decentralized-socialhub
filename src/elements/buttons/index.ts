@@ -95,23 +95,6 @@ const SmallLightButton = styled.button`
   color: #4c6fff;
 `;
 
-const ViewProfileButton = styled.button`
-  background-color: #4c6fff;
-  border-radius: 9px;
-  height: 40px;
-  opacity: 1;
-  text-align: center;
-  text-transform: none;
-  letter-spacing: 0px;
-  color: #ffffff;
-  font-family: 'SF Pro Display';
-  font-size: 12px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  width: 100%;
-`;
-
 // const ThemeButton = styled.button`
 //   background: linear-gradient(204.71deg, #9a5bff 15.76%, #dd5ac0 136.38%);
 //   border-radius: 8px;
@@ -139,7 +122,6 @@ export {
   Button,
   SmallLightButton,
   StyledButton,
-  ViewProfileButton,
   ThemeButton,
   ThemeTransparentButton
 };
