@@ -13,7 +13,8 @@ const StyledLinkButton = styled(IonRouterLink)<LinkButtonProps>`
   justify-content: center;
   align-items: center;
   padding: 6px 11px;
-  width: 160px;
+  padding: 0px 20px;
+  width: fit-content;
   height: ${props =>
     props.size === 'large' ? '43px' : props.size === 'small' ? '28px' : '33px'};
   border-radius: 7px;
@@ -39,11 +40,12 @@ const LinkButton: FC<LinkButtonProps> = (props: LinkButtonProps) => {
     children,
     size = 'default',
     icon,
-    color
+    color,
+    style: customStyle = {}
   } = props;
   let backStyle = '';
   let fontColor = '';
-  let style = {};
+  let style = { ...customStyle };
   if (variant === 'contained') {
     let background =
       color === 'primary-gradient' || color === 'secondary-gradient'

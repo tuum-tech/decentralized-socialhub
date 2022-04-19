@@ -20,7 +20,7 @@ import { DID, DIDDocument, DIDURL } from '@elastosfoundation/did-js-sdk/';
 import { EssentialsService } from 'src/services/essentials.service';
 import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 
-import { ViewProfileButton } from 'src/elements/buttons';
+import LinkButton from 'src/elements-v2/buttons/LinkButton';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import style from './style.module.scss';
 import ProfileEditor from './components/ProfileEditor';
@@ -79,20 +79,20 @@ const ManagerPage: React.FC<InferMappedProps & RouteComponentProps> = ({
               <IonCol size="10" className={style['right-panel']}>
                 <Header>
                   <PageTitle>Profile Manager</PageTitle>
-                  <ViewProfileButton
-                    onClick={() => {
-                      if (user.tutorialStep === 4) {
-                        window.open(getDIDString('/did/' + user.did));
-                      }
-                    }}
+                  <LinkButton
+                    variant="contained"
+                    color="primary-gradient"
+                    icon="open-outline"
+                    size="large"
+                    href={getDIDString('/did/' + user.did)}
+                    target="_blank"
                     style={{
-                      width: '200px',
                       cursor:
                         user.tutorialStep === 4 ? ' pointer' : 'not-allowed'
                     }}
                   >
-                    View profile
-                  </ViewProfileButton>
+                    View Profile
+                  </LinkButton>
                 </Header>
 
                 {user.tutorialStep !== 4 && (

@@ -92,7 +92,8 @@ const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
             <IonCol className="ion-no-padding">
               <TextHeader>
                 Your profile photo is your style representation <br />
-                (JPG or PNG, max).
+                (JPG or PNG, max). <br />
+                1056 &#x2715;  176 would be best choose for photo dimension. (Do not upload more flat one)
               </TextHeader>
             </IonCol>
           </IonRow>
@@ -101,9 +102,9 @@ const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
           <form onSubmit={e => onFileSubmit(e)} onChange={e => onChange(e)}>
             <ImgUploadArea logo={defaultImage}>
               <Perfil>
-                {imagePreview !== '' && (
+                {/* {imagePreview !== '' && (
                   <img src={imagePreview} alt="Icone adicionar" />
-                )}
+                )} */}
                 <input
                   type="file"
                   name="coverPhoto"
