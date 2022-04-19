@@ -430,10 +430,7 @@ const SocialProfilesCard: React.FC<Props> = ({
             let credential = credentialItem.credential;
 
             return (
-              <IonRow
-                key={`creds${credentialItem.credential?.getId().toString()}`}
-                no-padding
-              >
+              <IonRow key={`creds${credentialItem.name}`} no-padding>
                 <IonCol class="ion-no-padding">
                   {credential === undefined ? (
                     <div className={style['manage-links-item']}>
