@@ -37,7 +37,7 @@ import OnBoarding from './components/OnBoarding';
 import DashboardHeader from './components/DashboardHeader';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service.new';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { DIDDocument, DID } from '@elastosfoundation/did-js-sdk/';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom, FullProfileAtom, SessionAtom } from 'src/Atoms/Atoms';
 import HeaderMobile from 'src/components/layouts/HeaderMobile';
@@ -114,12 +114,16 @@ const DashboardPage: React.FC<InferMappedProps> = ({
     }, 5000);
   };
 
-  const refreshDidDocument = async () => {
-    if (session && session.did !== '') {
-      let document = await DidDocumentService.getUserDocument(props.session);
-      setDidDocument(document.toString(true));
-    }
-  };
+  useEffect(() => {
+    (async () => {
+      if (didDocument === '') {
+        let doc: DIDDocument = (await DID.from(
+          props.session.did
+        )?.resolve()) as DIDDocument;
+        setDidDocument(doc.toString(true));
+      }
+    })();
+  }, [didDocument, props.session.did, setDidDocument]);
 
   const refreshStatus = async () => {
     if (session && session.did !== '') {
@@ -193,8 +197,6 @@ const DashboardPage: React.FC<InferMappedProps> = ({
   useEffect(() => {
     (async () => {
       if (session && session.did !== '' && session.tutorialStep === 4) {
-        await refreshDidDocument();
-
         setPublishStatus(
           session.isDIDPublished
             ? RequestStatus.Completed
