@@ -7,15 +7,15 @@ import {
   IonGrid,
   IonRow,
   IonCol,
-  IonModal,
-  IonButton
+  IonModal
 } from '@ionic/react';
-import styled from 'styled-components';
-import { useHistory } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-
+import { useHistory } from 'react-router-dom';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
+import { down, up } from 'styled-breakpoints';
+import { useBreakpoint } from 'styled-breakpoints/react-styled';
 import { makeSelectSession } from 'src/store/users/selectors';
 import { SubState, InferMappedProps } from './types';
 import { setSession } from 'src/store/users/actions';
@@ -37,9 +37,10 @@ import OnBoarding from './components/OnBoarding';
 import DashboardHeader from './components/DashboardHeader';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service.new';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { DIDDocument, DID } from '@elastosfoundation/did-js-sdk/';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom, FullProfileAtom, SessionAtom } from 'src/Atoms/Atoms';
+import HeaderMobile from 'src/components/layouts/HeaderMobile';
 
 const TutorialModal = styled(IonModal)`
   --border-radius: 16px;
@@ -53,6 +54,35 @@ const TutorialModal = styled(IonModal)`
   --box-shadow: none !important;
 `;
 
+const LeftCol = styled(IonCol)`
+  flex: 0 0 250px;
+  background-color: #f7fafc;
+  margin: 0;
+  padding: 0;
+  ${down('sm')} {
+    display: none;
+  }
+`;
+
+const RightCol = styled(IonCol)`
+  flex: 0 0;
+  flex-grow: 1;
+  background: #f7fafc;
+  padding: 0;
+  margin: 0;
+`;
+
+const Title = styled.h1`
+  color: var(--txt-heading-dark);
+  background: white;
+  font-family: 'SF Pro Display';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 28px;
+  padding: 20px;
+  margin-bottom: 0;
+`;
+
 const DashboardPage: React.FC<InferMappedProps> = ({
   eProps,
   ...props
@@ -61,6 +91,7 @@ const DashboardPage: React.FC<InferMappedProps> = ({
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');
+  const isSmUp = useBreakpoint(up('sm'));
 
   const [didDocument, setDidDocument] = useRecoilState(DIDDocumentAtom);
   const setFullProfile = useSetRecoilState<ProfileDTO>(FullProfileAtom);
@@ -83,12 +114,16 @@ const DashboardPage: React.FC<InferMappedProps> = ({
     }, 5000);
   };
 
-  const refreshDidDocument = async () => {
-    if (session && session.did !== '') {
-      let document = await DidDocumentService.getUserDocument(props.session);
-      setDidDocument(document.toString(true));
-    }
-  };
+  useEffect(() => {
+    (async () => {
+      if (didDocument === '') {
+        let doc: DIDDocument = (await DID.from(
+          props.session.did
+        )?.resolve()) as DIDDocument;
+        setDidDocument(doc.toString(true));
+      }
+    })();
+  }, [didDocument, props.session.did, setDidDocument]);
 
   const refreshStatus = async () => {
     if (session && session.did !== '') {
@@ -162,8 +197,6 @@ const DashboardPage: React.FC<InferMappedProps> = ({
   useEffect(() => {
     (async () => {
       if (session && session.did !== '' && session.tutorialStep === 4) {
-        await refreshDidDocument();
-
         setPublishStatus(
           session.isDIDPublished
             ? RequestStatus.Completed
@@ -309,20 +342,24 @@ const DashboardPage: React.FC<InferMappedProps> = ({
 
   return (
     <IonPage>
+      <HeaderMobile sessionItem={session} publishStatus={publishStatus} />
+      {!isSmUp && <Title>Dashboard</Title>}
       {loadingText && loadingText !== '' ? (
         <LoadingIndicator loadingText={loadingText} />
       ) : (
         <IonContent className={style['profilepage']}>
           <IonGrid className={style['profilepagegrid']}>
             <IonRow className={style['profilecontent']}>
-              <IonCol size="2" className={style['left-panel']}>
+              <LeftCol>
                 <LeftSideMenu />
-              </IonCol>
-              <IonCol size="10" className={style['right-panel']}>
-                <DashboardHeader
-                  sessionItem={session}
-                  publishStatus={publishStatus}
-                />
+              </LeftCol>
+              <RightCol>
+                {isSmUp && (
+                  <DashboardHeader
+                    sessionItem={session}
+                    publishStatus={publishStatus}
+                  />
+                )}
 
                 <DashboardContent
                   onTutorialStart={() => {
@@ -333,7 +370,7 @@ const DashboardPage: React.FC<InferMappedProps> = ({
                   followingDids={followingDids}
                   mutualDids={mutualDids}
                 />
-              </IonCol>
+              </RightCol>
             </IonRow>
           </IonGrid>
 

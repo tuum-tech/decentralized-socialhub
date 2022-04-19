@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
-import { useSetRecoilState } from 'recoil';
-import { BadgesAtom } from 'src/Atoms/Atoms';
-import { CallbackFromAtom } from 'src/Atoms/Atoms';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 import { DidcredsService } from 'src/services/didcreds.service';
 import { UserService } from 'src/services/user.service';
@@ -15,11 +12,10 @@ import googleIcon from '../../../assets/icon/Google.svg';
 import githubIcon from '../../../assets/icon/Github.svg';
 import discordIcon from '../../../assets/icon/Discord.svg';
 import shieldIcon from '../../../assets/icon/shield.svg';
+import spinner from '../../../assets/icon/spinner.gif';
 import { DidService } from 'src/services/did.service.new';
 
 import { SocialProfileCard, MyGrid } from './elements';
-
-import { alertError } from 'src/utils/notify';
 
 import {
   ManagerModal,
@@ -33,8 +29,19 @@ import {
   CardContentContainer
 } from '../common';
 
-import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/';
+import {
+  VerifiableCredential,
+  DIDDocument,
+  DID
+} from '@elastosfoundation/did-js-sdk/';
+import { useSetRecoilState, useRecoilState } from 'recoil';
+import { BadgesAtom, DIDDocumentAtom, CallbackFromAtom } from 'src/Atoms/Atoms';
 import { VerificationService } from 'src/services/verification.service';
+import styled from 'styled-components';
+
+const Alert = styled.span`
+  color: red;
+`;
 
 interface Props {
   sessionItem: ISessionItem;
@@ -51,30 +58,104 @@ const SocialProfilesCard: React.FC<Props> = ({
 }) => {
   const setBadges = useSetRecoilState(BadgesAtom);
   const setCallbackFrom = useSetRecoilState(CallbackFromAtom);
+  const [didDocument, setDidDocument] = useRecoilState(DIDDocumentAtom);
   const [isManagerOpen, setIsManagerOpen] = useState(openModal);
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
+  const socialCredentials = [
+    {
+      name: 'twitter',
+      display: 'Twitter',
+      credential: undefined,
+      icon: twitterIcon
+    },
+    {
+      name: 'linkedin',
+      display: 'Linkedin',
+      credential: undefined,
+      icon: linkedinIcon
+    },
+    {
+      name: 'facebook',
+      display: 'Facebook',
+      credential: undefined,
+      icon: facebookIcon
+    },
+    {
+      name: 'google',
+      display: 'Google',
+      credential: undefined,
+      icon: googleIcon
+    },
+    {
+      name: 'github',
+      display: 'Github',
+      credential: undefined,
+      icon: githubIcon
+    },
+    {
+      name: 'discord',
+      display: 'Discord',
+      credential: undefined,
+      icon: discordIcon
+    }
+  ];
+
   const [credentials, setCredentials] = useState<
-    Map<string, VerifiableCredential>
-  >();
+    {
+      name: string;
+      display: string;
+      credential: VerifiableCredential | undefined;
+      icon: string;
+    }[]
+  >(socialCredentials);
+
+  useEffect(() => {
+    (async () => {
+      if (didDocument === '') {
+        let updatedDidDocument: DIDDocument = (await DID.from(
+          sessionItem.did
+        )?.resolve(true)) as DIDDocument;
+        setDidDocument(updatedDidDocument.toString());
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionItem]);
 
   useEffect(() => {
     (async () => {
       await getCredentials(sessionItem);
+      let userService = new UserService(await DidService.getInstance());
+
+      let user: ISessionItem = await userService.SearchUserWithDID(
+        sessionItem.did
+      );
+      setBadges(user.badges as IBadges);
     })();
-  }, [sessionItem]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [didDocument]);
+
+  const forceUpdateDidDocument = async () => {
+    let updatedDidDocument: DIDDocument = (await DID.from(
+      sessionItem.did
+    )?.resolve(true)) as DIDDocument;
+    setDidDocument(updatedDidDocument.toString());
+  };
 
   const getCredentials = async (sessionItem: ISessionItem) => {
-    try {
-      let cred = await DidcredsService.getAllCredentialsToVault(sessionItem);
+    if (didDocument === '') return;
+    let didDocumentParsed = DIDDocument._parseOnly(didDocument);
+    let credsFromDidDocument = await DidcredsService.getSocialCredentials(
+      didDocumentParsed
+    );
 
-      setCredentials(cred);
-    } catch (error) {
-      console.error('Error getting credentials on vault', error);
-      alertError(
-        null,
-        `Error loading credentials from your personal vault, please verify the connection and try again later`
+    let newCredentials = credentials.map(item => {
+      item.credential = credsFromDidDocument.find(
+        cred => cred.id.getFragment() === item.name
       );
-    }
+      return item;
+    });
+
+    setCredentials(newCredentials);
   };
 
   let template = 'default';
@@ -118,14 +199,8 @@ const SocialProfilesCard: React.FC<Props> = ({
     var timer = setInterval(async function() {
       if (popupwindow!.closed) {
         clearInterval(timer);
-        await getCredentials(sessionItem);
 
-        let userService = new UserService(await DidService.getInstance());
-
-        let user: ISessionItem = await userService.SearchUserWithDID(
-          sessionItem.did
-        );
-        setBadges(user.badges as IBadges);
+        await forceUpdateDidDocument();
       }
     }, 1000);
   };
@@ -168,16 +243,11 @@ const SocialProfilesCard: React.FC<Props> = ({
     }
   };
 
-  const containsVerifiedCredential = (id: string): boolean => {
-    if (!credentials) return false;
-    return credentials.has(`${sessionItem.did}#${id}`);
-  };
-
   const getUrlFromService = (
     service: string,
     credential: VerifiableCredential
   ): string => {
-    let value = 'must get';
+    let value = credential.getSubject().getProperty(service) as string;
     if (service === 'twitter') return `https://twitter.com/${value}`;
     if (service === 'linkedin') return `https://linkedin.com/in/${value}`;
     if (service === 'facebook') return `https://facebook.com/${value}`;
@@ -210,8 +280,7 @@ const SocialProfilesCard: React.FC<Props> = ({
     let deletedCreds = await vService.deleteCredentials(vcId);
 
     if (deletedCreds[0] === vcId) {
-      await DidcredsService.removeCredentialToVault(sessionItem, vcId);
-
+      forceUpdateDidDocument();
       let didService = await DidService.getInstance();
 
       let userService = new UserService(didService);
@@ -256,151 +325,7 @@ const SocialProfilesCard: React.FC<Props> = ({
     setIsRemoving(false);
   };
 
-  const createIonItem = (key: string, icon: any) => {
-    let id = `${sessionItem.did}#${key}`;
-    if (!credentials || !credentials.has(id)) return <></>;
-
-    let vc = credentials.get(id)!;
-    let isVcValid = true;
-
-    return (
-      <ProfileItem template={template}>
-        <div className="left">
-          <img alt="icon" src={icon} height={50} />
-          {isVcValid && (
-            <img
-              alt="shield icon"
-              src={shieldIcon}
-              className="social-profile-badge"
-              height={15}
-            />
-          )}
-        </div>
-        <div className="right">
-          <p className="social-profile-network">
-            {key.replace(/^./, key[0].toUpperCase())}
-          </p>
-          {(key === 'facebook' || key === 'linkedin') && (
-            <span className="social-profile-id">
-              {parseValueFromService(key, vc)}
-            </span>
-          )}
-          {(key === 'google' ||
-            key === 'twitter' ||
-            key === 'github' ||
-            key === 'discord') && (
-            <a
-              href={getUrlFromService(key, vc)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="social-profile-id"
-            >
-              {parseValueFromService(key, vc)}
-            </a>
-          )}
-        </div>
-      </ProfileItem>
-    );
-  };
-
-  const createModalIonItem = (key: string, icon: any) => {
-    //let parsedDoc = await getParsedDoc();
-
-    if (!credentials) return;
-
-    let vc = credentials.get(`${sessionItem.did}#${key}`);
-
-    let header = 'Google Account';
-    if (key === 'twitter') header = 'Twitter Account';
-    if (key === 'facebook') header = 'Facebook Account';
-    if (key === 'linkedin') header = 'LinkedIn Account';
-    if (key === 'github') header = 'Github Account';
-    if (key === 'discord') header = 'Discord Account';
-
-    // let isEssentials = sessionItem.mnemonics === '';
-
-    if (vc === undefined)
-      return (
-        <div className={style['manage-links-item']}>
-          <ManagerLogo src={icon} />
-          <ManagerButton
-            onClick={() => {
-              setCallbackFrom(null);
-              sociallogin(key);
-            }}
-          >
-            Add
-          </ManagerButton>
-          <span className={style['manage-links-header']}>{header}</span>
-        </div>
-      );
-
-    return (
-      <div className={style['manage-links-item']}>
-        <ManagerLogo src={icon} />
-        <ManagerButton
-          disabled={isRemoving}
-          onClick={() => {
-            removeVc(key);
-          }}
-        >
-          Remove
-        </ManagerButton>
-        <span className={style['manage-links-header']}>{header}</span>
-        <span className={style['manage-links-detail']}>
-          {parseValueFromService(key, vc)}
-        </span>
-      </div>
-    );
-  };
-
-  const linkedInItem = () => {
-    return createIonItem('linkedin', linkedinIcon);
-  };
-
-  const facebookItem = () => {
-    return createIonItem('facebook', facebookIcon);
-  };
-
-  const googleItem = () => {
-    return createIonItem('google', googleIcon);
-  };
-
-  const twitterItem = () => {
-    return createIonItem('twitter', twitterIcon);
-  };
-
-  const githubItem = () => {
-    return createIonItem('github', githubIcon);
-  };
-
-  const discordItem = () => {
-    return createIonItem('discord', discordIcon);
-  };
-
-  const googleModalItem = () => {
-    return createModalIonItem('google', googleIcon);
-  };
-
-  const githubModalItem = () => {
-    return createModalIonItem('github', githubIcon);
-  };
-
-  const discordModalItem = () => {
-    return createModalIonItem('discord', discordIcon);
-  };
-
-  const twitterModalItem = () => {
-    return createModalIonItem('twitter', twitterIcon);
-  };
-
-  const facebookModalItem = () => {
-    return createModalIonItem('facebook', facebookIcon);
-  };
-
-  const linkedinModalItem = () => {
-    return createModalIonItem('linkedin', linkedinIcon);
-  };
+  if (credentials === undefined) return <></>;
 
   return (
     <>
@@ -423,36 +348,70 @@ const SocialProfilesCard: React.FC<Props> = ({
         <CardContentContainer>
           <IonGrid className={style['social-profile-grid']}>
             <IonRow>
-              {containsVerifiedCredential('linkedin') && (
-                <IonCol size={mode === 'edit' ? '6' : '12'}>
-                  {linkedInItem()}
-                </IonCol>
-              )}
-              {containsVerifiedCredential('twitter') && (
-                <IonCol size={mode === 'edit' ? '6' : '12'}>
-                  {twitterItem()}
-                </IonCol>
-              )}
-              {containsVerifiedCredential('facebook') && (
-                <IonCol size={mode === 'edit' ? '6' : '12'}>
-                  {facebookItem()}
-                </IonCol>
-              )}
-              {containsVerifiedCredential('google') && (
-                <IonCol size={mode === 'edit' ? '6' : '12'}>
-                  {googleItem()}
-                </IonCol>
-              )}
-              {containsVerifiedCredential('github') && (
-                <IonCol size={mode === 'edit' ? '6' : '12'}>
-                  {githubItem()}
-                </IonCol>
-              )}
-              {containsVerifiedCredential('discord') && (
-                <IonCol size={mode === 'edit' ? '6' : '12'}>
-                  {discordItem()}
-                </IonCol>
-              )}
+              {credentials
+                .filter(item => item.credential !== undefined)
+                ?.map(credentialItem => {
+                  return credentialItem.credential !== undefined ? (
+                    <IonCol
+                      key={credentialItem.credential.id.toString()}
+                      size={mode === 'edit' ? '6' : '12'}
+                    >
+                      <ProfileItem template={template}>
+                        <div className="left">
+                          <img
+                            alt="icon"
+                            src={credentialItem.icon}
+                            height={50}
+                          />
+                          <img
+                            alt="shield icon"
+                            src={shieldIcon}
+                            className="social-profile-badge"
+                            height={15}
+                          />
+                        </div>
+                        <div className="right">
+                          <p className="social-profile-network">
+                            {credentialItem.name.replace(
+                              /^./,
+                              credentialItem.name[0].toUpperCase()
+                            )}
+                          </p>
+                          {(credentialItem.name === 'facebook' ||
+                            credentialItem.name === 'linkedin') && (
+                            <span className="social-profile-id">
+                              {parseValueFromService(
+                                credentialItem.name,
+                                credentialItem.credential
+                              )}
+                            </span>
+                          )}
+                          {(credentialItem.name === 'google' ||
+                            credentialItem.name === 'twitter' ||
+                            credentialItem.name === 'github' ||
+                            credentialItem.name === 'discord') && (
+                            <a
+                              href={getUrlFromService(
+                                credentialItem.name,
+                                credentialItem.credential
+                              )}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="social-profile-id"
+                            >
+                              {parseValueFromService(
+                                credentialItem.name,
+                                credentialItem.credential
+                              )}
+                            </a>
+                          )}
+                        </div>
+                      </ProfileItem>
+                    </IonCol>
+                  ) : (
+                    <></>
+                  );
+                })}
             </IonRow>
           </IonGrid>
         </CardContentContainer>
@@ -467,26 +426,63 @@ const SocialProfilesCard: React.FC<Props> = ({
           <IonRow>
             <ManagerModalTitle>Manage Links</ManagerModalTitle>
           </IonRow>
-          <IonRow no-padding>
-            <IonCol class="ion-no-padding">{linkedinModalItem()}</IonCol>
-          </IonRow>
-          <IonRow no-padding>
-            <IonCol class="ion-no-padding">{twitterModalItem()}</IonCol>
-          </IonRow>
-          <IonRow no-padding>
-            <IonCol class="ion-no-padding">{facebookModalItem()}</IonCol>
-          </IonRow>
-          <IonRow no-padding>
-            <IonCol class="ion-no-padding">{googleModalItem()}</IonCol>
-          </IonRow>
-          <IonRow no-padding>
-            <IonCol class="ion-no-padding">{githubModalItem()}</IonCol>
-          </IonRow>
-          <IonRow no-padding>
-            <IonCol class="ion-no-padding">{discordModalItem()}</IonCol>
-          </IonRow>
+
+          {credentials?.map(credentialItem => {
+            let credential = credentialItem.credential;
+
+            return (
+              <IonRow key={`creds${credentialItem.name}`} no-padding>
+                <IonCol class="ion-no-padding">
+                  {credential === undefined ? (
+                    <div className={style['manage-links-item']}>
+                      <ManagerLogo src={credentialItem.icon} />
+                      <ManagerButton
+                        onClick={() => {
+                          setCallbackFrom(null);
+                          sociallogin(credentialItem.name);
+                        }}
+                      >
+                        Add
+                      </ManagerButton>
+                      <span className={style['manage-links-header']}>
+                        {credentialItem.display}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className={style['manage-links-item']}>
+                      <ManagerLogo src={credentialItem.icon} />
+                      <ManagerButton
+                        disabled={isRemoving}
+                        onClick={() => {
+                          removeVc(credentialItem.name);
+                        }}
+                      >
+                        Remove
+                      </ManagerButton>
+                      <span className={style['manage-links-header']}>
+                        {credentialItem.display}
+                      </span>
+                      <span className={style['manage-links-detail']}>
+                        {parseValueFromService(credentialItem.name, credential)}
+                      </span>
+                    </div>
+                  )}
+                </IonCol>
+              </IonRow>
+            );
+          })}
         </MyGrid>
         <ManagerModalFooter className="ion-no-border">
+          {isRemoving ? (
+            <IonRow className="ion-justify-content-around">
+              <IonCol size="auto">
+                <img src={spinner} height="20px" alt="spinner" />
+                <Alert>Please confirm deletion on Essentials</Alert>
+              </IonCol>
+            </IonRow>
+          ) : (
+            <></>
+          )}
           <IonRow className="ion-justify-content-around">
             <IonCol size="auto">
               <CloseButton

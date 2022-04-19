@@ -41,7 +41,7 @@ const WhatIsProfile: React.FC = _ => {
           href="https://www.tuum.tech"
           target="_blank"
         >
-          Read more
+          Read More
         </LinkButton>
       </div>
       <div className="right">

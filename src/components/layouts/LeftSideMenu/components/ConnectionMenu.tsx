@@ -1,27 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { IonItem, IonLabel } from '@ionic/react';
 import styled from 'styled-components';
-
-import { ConnectionSvg, ArrowUpSvg, ArrowDownSvg } from './icons';
-
-import style from '../style.module.scss';
+import Icon from 'src/elements-v2/icons/Icon';
+import MenuItem from './MenuItem';
 
 interface Props {
   session: ISessionItem;
 }
 
-interface ContainerProps {
-  showSubMenu: boolean;
-}
-const Container = styled(IonItem)<ContainerProps>`
-  --background: ${props =>
-    props.showSubMenu ? 'rgba(76, 111, 255, 0.05)' : 'white'};
+const SubMenuContainer = styled.div`
+  background: #fafafa;
+  border-radius: 10px;
+  margin: 0 10px;
 `;
 
 const ConnectionMenu: React.FC<Props> = ({ session }) => {
   const history = useHistory();
   const [showSubMenu, setShowSubMenu] = useState(false);
+  const [activeMenu, setActiveMenu] = useState(false);
 
   useEffect(() => {
     if (
@@ -29,85 +25,69 @@ const ConnectionMenu: React.FC<Props> = ({ session }) => {
       history.location.pathname.includes('/connections/followings') ||
       history.location.pathname.includes('/connections/mutual-followers')
     ) {
+      setActiveMenu(true);
       setShowSubMenu(true);
     } else {
+      setActiveMenu(false);
       setShowSubMenu(false);
     }
   }, [history.location.pathname]);
 
   return (
     <>
-      <Container
-        showSubMenu={
-          history.location.pathname.includes('/connections/followers') ||
-          history.location.pathname.includes('/connections/followings') ||
-          history.location.pathname.includes('/connections/mutual-followers')
+      <MenuItem
+        name="connections"
+        title="Connections"
+        tooltip={
+          session.tutorialStep === 4
+            ? ''
+            : 'Please complete the tutorial to access your Connections'
         }
-        disabled={session.tutorialStep !== 4}
-        className={
-          history.location.pathname === '/connections'
-            ? style['item-active']
-            : style['item-link']
+        active={activeMenu}
+        rightContent={
+          showSubMenu ? (
+            <Icon
+              name="chevron-up-outline"
+              color={activeMenu ? 'primary' : 'dark'}
+            ></Icon>
+          ) : (
+            <Icon
+              name="chevron-down-outline"
+              color={activeMenu ? 'primary' : 'dark'}
+            ></Icon>
+          )
         }
-        onClick={async () => {
-          setShowSubMenu(!showSubMenu);
-        }}
-      >
-        <ConnectionSvg />
-        <IonLabel
-          title={
-            session.tutorialStep === 4
-              ? ''
-              : 'Please complete the tutorial to access your Connections'
-          }
-        >
-          <h3>Connections</h3>
-        </IonLabel>
-        {showSubMenu ? <ArrowUpSvg /> : <ArrowDownSvg />}
-      </Container>
+        handleClick={() => setShowSubMenu(!showSubMenu)}
+      />
 
       {showSubMenu && (
-        <>
-          <IonItem
-            className={
-              history.location.pathname === '/connections/followers'
-                ? style['item-active'] + ' ' + style['item-connections-active']
-                : style['item-link'] + ' ' + style['item-connections-link']
-            }
-            onClick={async () => history.push('/connections/followers')}
-          >
-            <ConnectionSvg />
-            <IonLabel>
-              <h3>Followers</h3>
-            </IonLabel>
-          </IonItem>
-          <IonItem
-            className={
-              history.location.pathname === '/connections/followings'
-                ? style['item-active'] + ' ' + style['item-connections-active']
-                : style['item-link'] + ' ' + style['item-connections-link']
-            }
-            onClick={async () => history.push('/connections/followings')}
-          >
-            <ConnectionSvg />
-            <IonLabel>
-              <h3>Followings</h3>
-            </IonLabel>
-          </IonItem>
-          <IonItem
-            className={
+        <SubMenuContainer>
+          <MenuItem
+            name="connections"
+            title="Followers"
+            isChild
+            active={history.location.pathname === '/connections/followers'}
+            handleClick={() => history.push('/connections/followers')}
+          />
+
+          <MenuItem
+            name="connections"
+            title="Followings"
+            isChild
+            active={history.location.pathname === '/connections/followings'}
+            handleClick={() => history.push('/connections/followings')}
+          />
+
+          <MenuItem
+            name="connections"
+            title="Mutual Followers"
+            isChild
+            active={
               history.location.pathname === '/connections/mutual-followers'
-                ? style['item-active'] + ' ' + style['item-connections-active']
-                : style['item-link'] + ' ' + style['item-connections-link']
             }
-            onClick={async () => history.push('/connections/mutual-followers')}
-          >
-            <ConnectionSvg />
-            <IonLabel>
-              <h3>Mutual Followers</h3>
-            </IonLabel>
-          </IonItem>
-        </>
+            handleClick={() => history.push('/connections/mutual-followers')}
+          />
+        </SubMenuContainer>
       )}
     </>
   );
