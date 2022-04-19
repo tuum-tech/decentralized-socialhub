@@ -1,4 +1,4 @@
-import React from 'react';
+import { CSSProperties, ReactNode } from 'react';
 import { IonIconType } from '../icons/types';
 
 export interface ButtonProps {
@@ -11,11 +11,10 @@ export interface ButtonProps {
     | 'secondary-gradient';
   variant?: 'text' | 'outlined' | 'contained';
   textType?: 'normal' | 'gradient';
-  width?: string;
-  height?: string;
   bgColor?: string;
   borderRadius?: string;
   borderColor?: string;
-  icon?: IonIconType;
-  children: React.ReactNode;
+  icon?: IonIconType | null;
+  style?: CSSProperties;
+  children: ReactNode;
 }

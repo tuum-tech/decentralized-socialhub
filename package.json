@@ -72,6 +72,7 @@
     "reselect": "^4.0.0",
     "rxjs": "^6.6.7",
     "spa-serve": "^1.0.10",
+    "styled-breakpoints": "^11.0.5",
     "styled-components": "^5.3.1",
     "toastr": "^2.1.4",
     "ts-stopwatch": "0.0.4",
