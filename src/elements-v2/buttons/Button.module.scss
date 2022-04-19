@@ -3,7 +3,6 @@
 .border-primary-gradient {
   background: linear-gradient(#fff 0 0) padding-box,
     /*this is your grey background*/ $primary-gradient border-box;
-  padding: 10px;
   border: 1px solid transparent;
   border-radius: 9px;
 }
@@ -11,7 +10,6 @@
 .border-secondary-gradient {
   background: linear-gradient(#fff 0 0) padding-box,
     /*this is your grey background*/ $secondary-gradient border-box;
-  padding: 10px;
   border: 1px solid transparent;
   border-radius: 9px;
 }
