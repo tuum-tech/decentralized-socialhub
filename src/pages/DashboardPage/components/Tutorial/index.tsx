@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { IonGrid, IonRow, IonCol, IonButton } from '@ionic/react';
 import styled from 'styled-components';
 
-import { connect } from 'react-redux';
-import { InferMappedProps } from '../../types';
-import { setSession } from 'src/store/users/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSession as setSessionAction } from 'src/store/users/actions';
 
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 import TutorialStepsComponent from './TutorialSteps';
@@ -17,10 +16,10 @@ import style from './style.module.scss';
 
 import logo from '../../../../assets/logo/logo_white.svg';
 import { DidService } from 'src/services/did.service.new';
+import { selectSession } from 'src/store/users/selectors';
 
-interface TutorialComponentProps extends InferMappedProps {
+interface TutorialComponentProps {
   onClose: () => void;
-  session: ISessionItem;
 }
 
 const NoPaddingGrid = styled(IonGrid)`
@@ -28,19 +27,24 @@ const NoPaddingGrid = styled(IonGrid)`
   overflow-y: auto !important;
 `;
 
-const TutorialComponent: React.FC<TutorialComponentProps> = ({
-  eProps,
-  ...props
-}: TutorialComponentProps) => {
+const TutorialComponent: React.FC<TutorialComponentProps> = (
+  props: TutorialComponentProps
+) => {
+  const dispatch = useDispatch();
+  const session = useSelector((state: any) => selectSession(state));
+  const setSession = useCallback(
+    (value: ISessionItem) => dispatch(setSessionAction({ session: value })),
+    [dispatch]
+  );
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState('In progress...');
-  const [mnemonics] = useState<string[]>(props.session.mnemonics.split(' '));
+  const [mnemonics] = useState<string[]>(session.mnemonics.split(' '));
 
   useEffect(() => {
     if (step === 0) {
-      if (props.session && props.session.tutorialStep) {
-        setStep(props.session.tutorialStep);
+      if (session && session.tutorialStep) {
+        setStep(session.tutorialStep);
       } else {
         setStep(1);
       }
@@ -48,11 +52,9 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const nextStep = async (session: ISessionItem | null = null) => {
+  const nextStep = async (s: ISessionItem | null = null) => {
     setLoading(true);
-    let newSession = JSON.parse(
-      JSON.stringify(session ? session : props.session)
-    );
+    let newSession = JSON.parse(JSON.stringify(s ? s : session));
 
     if (step !== 4 && newSession) {
       newSession.tutorialStep = step + 1;
@@ -61,8 +63,7 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({
       }
 
       let userService = new UserService(await DidService.getInstance());
-      const updatedSession = await userService.updateSession(newSession);
-      eProps.setSession({ session: updatedSession });
+      setSession(await userService.updateSession(newSession));
 
       setStep(step + 1);
     } else {
@@ -80,13 +81,11 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({
 
   const stepComponent = () => {
     if (step === 1)
-      return (
-        <TutorialStep1Component session={props.session} onContinue={nextStep} />
-      );
+      return <TutorialStep1Component session={session} onContinue={nextStep} />;
     if (step === 2)
       return (
         <TutorialStep2Component
-          session={props.session}
+          session={session}
           onContinue={nextStep}
           mnemonics={mnemonics}
         />
@@ -94,15 +93,12 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({
     if (step === 3)
       return (
         <TutorialStep3Component
-          session={props.session}
           onContinue={nextStep}
           setLoading={setLoading}
           setLoadingText={setLoadingText}
         />
       );
-    return (
-      <TutorialStep4Component session={props.session} onContinue={nextStep} />
-    );
+    return <TutorialStep4Component session={session} onContinue={nextStep} />;
   };
 
   return (
@@ -136,15 +132,4 @@ const TutorialComponent: React.FC<TutorialComponentProps> = ({
   );
 };
 
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(null, mapDispatchToProps)(TutorialComponent);
-
-// export default TutorialComponent;
+export default TutorialComponent;
