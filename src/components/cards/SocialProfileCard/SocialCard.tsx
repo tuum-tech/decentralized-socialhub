@@ -35,7 +35,7 @@ import {
   DID
 } from '@elastosfoundation/did-js-sdk/';
 import { useSetRecoilState, useRecoilState } from 'recoil';
-import { BadgesAtom, DIDDocumentAtom } from 'src/Atoms/Atoms';
+import { BadgesAtom, DIDDocumentAtom, CallbackFromAtom } from 'src/Atoms/Atoms';
 import { VerificationService } from 'src/services/verification.service';
 import styled from 'styled-components';
 
@@ -57,6 +57,7 @@ const SocialProfilesCard: React.FC<Props> = ({
   openModal = false
 }) => {
   const setBadges = useSetRecoilState(BadgesAtom);
+  const setCallbackFrom = useSetRecoilState(CallbackFromAtom);
   const [didDocument, setDidDocument] = useRecoilState(DIDDocumentAtom);
   const [isManagerOpen, setIsManagerOpen] = useState(openModal);
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
@@ -437,6 +438,7 @@ const SocialProfilesCard: React.FC<Props> = ({
                       <ManagerLogo src={credentialItem.icon} />
                       <ManagerButton
                         onClick={() => {
+                          setCallbackFrom(null);
                           sociallogin(credentialItem.name);
                         }}
                       >
