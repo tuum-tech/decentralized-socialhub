@@ -9,16 +9,14 @@ import {
   IonCol,
   IonModal
 } from '@ionic/react';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { createStructuredSelector } from 'reselect';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { down, up } from 'styled-breakpoints';
 import { useBreakpoint } from 'styled-breakpoints/react-styled';
-import { makeSelectSession } from 'src/store/users/selectors';
-import { SubState, InferMappedProps } from './types';
-import { setSession } from 'src/store/users/actions';
+import { selectSession } from 'src/store/users/selectors';
+import { setSession as setSessionAction } from 'src/store/users/actions';
 
 import style from './style.module.scss';
 import { ExporeTime } from './constants';
@@ -83,11 +81,13 @@ const Title = styled.h1`
   margin-bottom: 0;
 `;
 
-const DashboardPage: React.FC<InferMappedProps> = ({
-  eProps,
-  ...props
-}: InferMappedProps) => {
-  const { session } = props;
+const DashboardPage: React.FC = () => {
+  const dispatch = useDispatch();
+  const session = useSelector((state: any) => selectSession(state));
+  const setSession = useCallback(
+    (value: ISessionItem) => dispatch(setSessionAction({ session: value })),
+    [dispatch]
+  );
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');
@@ -118,12 +118,12 @@ const DashboardPage: React.FC<InferMappedProps> = ({
     (async () => {
       if (didDocument === '') {
         let doc: DIDDocument = (await DID.from(
-          props.session.did
+          session.did
         )?.resolve()) as DIDDocument;
         setDidDocument(doc.toString(true));
       }
     })();
-  }, [didDocument, props.session.did, setDidDocument]);
+  }, [didDocument, session.did, setDidDocument]);
 
   const refreshStatus = async () => {
     if (session && session.did !== '') {
@@ -165,9 +165,7 @@ const DashboardPage: React.FC<InferMappedProps> = ({
       };
 
       let userService = new UserService(await DidService.getInstance());
-      eProps.setSession({
-        session: await userService.updateSession(session)
-      });
+      setSession(await userService.updateSession(session));
 
       await DidDocumentService.reloadUserDocument(session);
     }
@@ -253,7 +251,7 @@ const DashboardPage: React.FC<InferMappedProps> = ({
     (async () => {
       if (didDocument !== '') {
         if (session && session.did !== '') {
-          let newSession = JSON.parse(JSON.stringify(props.session));
+          let newSession = JSON.parse(JSON.stringify(session));
 
           const timestamp = new Date().getTime();
           let message = '';
@@ -299,9 +297,7 @@ const DashboardPage: React.FC<InferMappedProps> = ({
             );
 
             let userService = new UserService(await DidService.getInstance());
-            eProps.setSession({
-              session: await userService.updateSession(newSession)
-            });
+            setSession(await userService.updateSession(newSession));
           }
         }
       }
@@ -313,15 +309,13 @@ const DashboardPage: React.FC<InferMappedProps> = ({
     return (
       <OnBoarding
         completed={async (startTutorial: boolean) => {
-          let session = {
-            ...props.session,
+          let newSession = {
+            ...session,
             onBoardingCompleted: true
           };
 
           let userService = new UserService(await DidService.getInstance());
-          eProps.setSession({
-            session: await userService.updateSession(session)
-          });
+          setSession(await userService.updateSession(newSession));
 
           setOnBoardVisible(false);
           if (!willExpire) {
@@ -383,7 +377,6 @@ const DashboardPage: React.FC<InferMappedProps> = ({
               onClose={() => {
                 setShowTutorial(false);
               }}
-              session={props.session}
             />
           </TutorialModal>
         </IonContent>
@@ -392,17 +385,4 @@ const DashboardPage: React.FC<InferMappedProps> = ({
   );
 };
 
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardPage);
+export default DashboardPage;
