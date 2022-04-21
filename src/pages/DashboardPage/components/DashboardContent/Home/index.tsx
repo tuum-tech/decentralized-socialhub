@@ -16,7 +16,7 @@ import {
 } from 'src/utils/credential';
 
 import ManageProfile from './Left/ManageProfile';
-import ExploreConnnections from './Left/ExploreConnnections';
+import ExploreConnections from './Left/ExploreConnections';
 import ManageLinks from './Left/ManageLinks';
 import BeginnersTutorial from './Left/BeginnersTutorial';
 import ConnectWithCommunity from './Right/ConnectWithCommunity';
@@ -385,7 +385,7 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
     <>
       <IonGrid className="ion-no-padding">
         <IonRow className="ion-no-padding">
-          <LeftCardCol size="8">
+          <LeftCardCol sizeSm="8" sizeXs="12">
             {tutorialVisible && (
               <BeginnersTutorial
                 onTutorialStart={onTutorialStart}
@@ -394,11 +394,11 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
             )}
             <ManageProfile userSession={session} />
             {!hasFollowUsers && session.did && session.did !== '' && (
-              <ExploreConnnections session={session} did={session.did} />
+              <ExploreConnections session={session} did={session.did} />
             )}
             {!hasSocialProfiles && <ManageLinks />}
           </LeftCardCol>
-          <RightCardCol size="4">
+          <RightCardCol sizeSm="4" sizeXs="12">
             <VerificationStatus progress={verifiedPercent} />
             <ProfileCompletion
               progress={completionPercent}

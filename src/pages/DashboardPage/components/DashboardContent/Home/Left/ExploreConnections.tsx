@@ -10,7 +10,7 @@ interface Props {
   session: ISessionItem;
 }
 
-const ExploreConnnections: React.FC<Props> = ({ did, session }) => {
+const ExploreConnections: React.FC<Props> = ({ did, session }) => {
   const [connectedDids, setConnectedDids] = useState<string[]>([]);
 
   useEffect(() => {
@@ -67,4 +67,4 @@ const ExploreConnnections: React.FC<Props> = ({ did, session }) => {
   );
 };
 
-export default ExploreConnnections;
+export default ExploreConnections;
