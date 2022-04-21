@@ -1,30 +1,20 @@
 /**
  * Page
  */
-import { IonContent, IonPage, IonGrid, IonRow, IonCol } from '@ionic/react';
 import React, { useState, useEffect } from 'react';
 import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
-
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-
-import { makeSelectSession } from 'src/store/users/selectors';
-import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState } from './types';
+import { useBreakpoint } from 'styled-breakpoints/react-styled';
+import { up } from 'styled-breakpoints';
 
 import { UserService } from 'src/services/user.service';
 import { DidService } from 'src/services/did.service.new';
-import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
-import { DID, DIDDocument, DIDURL } from '@elastosfoundation/did-js-sdk/';
-import { EssentialsService } from 'src/services/essentials.service';
-import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 
 import LinkButton from 'src/elements-v2/buttons/LinkButton';
-import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
-import style from './style.module.scss';
 import ProfileEditor from './components/ProfileEditor';
 import { getDIDString } from 'src/utils/did';
+import MainLayout from 'src/components/layouts/MainLayout';
+import useSession from 'src/hooks/useSession';
 
 const Header = styled.div`
   width: 100%;
@@ -55,92 +45,59 @@ const WarningText = styled.div`
   padding: 0 40px;
 `;
 
-const ManagerPage: React.FC<InferMappedProps & RouteComponentProps> = ({
-  eProps,
-  ...props
-}: InferMappedProps & RouteComponentProps) => {
+const ManagerPage: React.FC<RouteComponentProps> = (
+  props: RouteComponentProps
+) => {
+  const { session, setSession } = useSession();
   const [user, setUser] = useState<ISessionItem>({} as ISessionItem);
+  const isSmUp = useBreakpoint(up('sm'));
 
   useEffect(() => {
-    if (props.session && props.session.did !== '') {
-      setUser(props.session);
+    if (session) {
+      setUser(session);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
-    <>
-      <IonPage className={style['managerpage']}>
-        <IonContent className={style['content-page']}>
-          <IonGrid className={style['profilepagegrid']}>
-            <IonRow className={style['profilecontent']}>
-              <IonCol size="2" className={style['left-panel']}>
-                <LeftSideMenu />
-              </IonCol>
-              <IonCol size="10" className={style['right-panel']}>
-                <Header>
-                  <PageTitle>Profile Manager</PageTitle>
-                  <LinkButton
-                    variant="contained"
-                    color="primary-gradient"
-                    icon="open-outline"
-                    size="large"
-                    href={getDIDString('/did/' + user.did)}
-                    target="_blank"
-                    style={{
-                      cursor:
-                        user.tutorialStep === 4 ? ' pointer' : 'not-allowed'
-                    }}
-                  >
-                    View Profile
-                  </LinkButton>
-                </Header>
+    <MainLayout>
+      {isSmUp && (
+        <Header>
+          <PageTitle>Profile Manager</PageTitle>
+          <LinkButton
+            variant="contained"
+            color="primary-gradient"
+            icon="open-outline"
+            size="large"
+            href={getDIDString('/did/' + user.did)}
+            target="_blank"
+            style={{
+              cursor: user.tutorialStep === 4 ? ' pointer' : 'not-allowed'
+            }}
+          >
+            View Profile
+          </LinkButton>
+        </Header>
+      )}
+      {user.tutorialStep !== 4 && (
+        <WarningText>
+          Please complete the tutorial first before managing your Profile.
+        </WarningText>
+      )}
 
-                {user.tutorialStep !== 4 && (
-                  <WarningText>
-                    Please complete the tutorial first before managing your
-                    Profile.
-                  </WarningText>
-                )}
-
-                {user && user.did && user.did !== '' && (
-                  <ProfileEditor
-                    session={user}
-                    badgeUrl={props.match.params}
-                    updateSession={async (newSession: {
-                      session: ISessionItem;
-                    }) => {
-                      let userService = new UserService(
-                        await DidService.getInstance()
-                      );
-                      await eProps.setSession({
-                        session: await userService.updateSession(
-                          newSession.session
-                        )
-                      });
-                      setUser(newSession.session);
-                    }}
-                  />
-                )}
-              </IonCol>
-            </IonRow>
-          </IonGrid>
-        </IonContent>
-      </IonPage>
-    </>
+      {user && user.did && user.did !== '' && (
+        <ProfileEditor
+          session={user}
+          badgeUrl={props.match.params}
+          updateSession={async (newSession: { session: ISessionItem }) => {
+            let userService = new UserService(await DidService.getInstance());
+            setSession(await userService.updateSession(newSession.session));
+            setUser(newSession.session);
+          }}
+        />
+      )}
+    </MainLayout>
   );
 };
 
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ManagerPage);
+export default ManagerPage;

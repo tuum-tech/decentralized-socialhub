@@ -1,9 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonGrid, IonRow, IonCol, IonButton } from '@ionic/react';
 import styled from 'styled-components';
-
-import { useDispatch, useSelector } from 'react-redux';
-import { setSession as setSessionAction } from 'src/store/users/actions';
 
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 import TutorialStepsComponent from './TutorialSteps';
@@ -16,7 +13,7 @@ import style from './style.module.scss';
 
 import logo from '../../../../assets/logo/logo_white.svg';
 import { DidService } from 'src/services/did.service.new';
-import { selectSession } from 'src/store/users/selectors';
+import useSession from 'src/hooks/useSession';
 
 interface TutorialComponentProps {
   onClose: () => void;
@@ -30,12 +27,7 @@ const NoPaddingGrid = styled(IonGrid)`
 const TutorialComponent: React.FC<TutorialComponentProps> = (
   props: TutorialComponentProps
 ) => {
-  const dispatch = useDispatch();
-  const session = useSelector((state: any) => selectSession(state));
-  const setSession = useCallback(
-    (value: ISessionItem) => dispatch(setSessionAction({ session: value })),
-    [dispatch]
-  );
+  const { session, setSession } = useSession();
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState('In progress...');
