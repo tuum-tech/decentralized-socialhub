@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { ProfileService } from 'src/services/profile.service';
-import { MainCard, CardText, CardTitle, CardImg } from './ManageProfile';
+import MainCard from './MainCard';
 import LinkButton from 'src/elements-v2/buttons/LinkButton';
 import exploreCardImg from '../../../../../../assets/dashboard/explore.png';
 
@@ -46,12 +46,12 @@ const ExploreConnections: React.FC<Props> = ({ did, session }) => {
   return (
     <>
       {connectedDids.length === 0 && (
-        <MainCard>
-          <CardTitle>Connect with friends, companies</CardTitle>
-          <CardText>
-            Search for like minded people and make valuable connections. Explore
-            your influence circle
-          </CardText>
+        <MainCard
+          title="Connect with friends, companies"
+          description="Search for like minded people and make valuable connections. Explore
+          your influence circle"
+          right={<img src={exploreCardImg} alt="explore-img" />}
+        >
           <LinkButton
             variant="contained"
             color="secondary-gradient"
@@ -60,7 +60,6 @@ const ExploreConnections: React.FC<Props> = ({ did, session }) => {
           >
             Explore Connections
           </LinkButton>
-          <CardImg src={exploreCardImg} />
         </MainCard>
       )}
     </>
