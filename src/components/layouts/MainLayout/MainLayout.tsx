@@ -21,11 +21,16 @@ const LeftCol = styled(IonCol)`
 `;
 
 const RightCol = styled(IonCol)`
+  height: 100vh;
+  overflow: scroll;
   flex: 0 0;
   flex-grow: 1;
   background: #f7fafc;
   padding: 0;
   margin: 0;
+  ${down('sm')} {
+    height: calc(100vh - 160px);
+  }
 `;
 
 const Title = styled.h1`
