@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { IonCard, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import { setTimeout } from 'timers';
 
+import { CardHeaderContent, CardContentContainer } from '../common';
+
 import defaultCoverPhoto from '../../../assets/default/default-cover.png';
 import {
   Container,
@@ -81,42 +83,44 @@ const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
 
   return (
     <IonCard className={styleWidget['overview']}>
-      <Container>
-        <Description>
-          <IonRow className="ion-justify-content-between ion-no-padding">
-            <IonCol className="ion-no-padding">
-              <IonCardTitle>Upload Cover Photo</IonCardTitle>
-            </IonCol>
-          </IonRow>
-          <IonRow className="ion-justify-content-between ion-no-padding">
-            <IonCol className="ion-no-padding">
-              <TextHeader>
-                Your profile photo is your style representation <br />
-                (JPG or PNG, max).
-              </TextHeader>
-            </IonCol>
-          </IonRow>
-        </Description>
-        <ImgUploadContainer>
-          <form onSubmit={e => onFileSubmit(e)} onChange={e => onChange(e)}>
-            <ImgUploadArea logo={defaultImage}>
-              <Perfil>
-                {imagePreview !== '' && (
-                  <img src={imagePreview} alt="Icone adicionar" />
-                )}
-                <input
-                  type="file"
-                  name="coverPhoto"
-                  id="file"
-                  accept=".jpef, .png, .jpg"
-                  onChange={photoUpload}
-                  src={imagePreview}
-                />
-              </Perfil>
-            </ImgUploadArea>
-          </form>
-        </ImgUploadContainer>
-      </Container>
+      <CardContentContainer>
+        <Container>
+          <Description>
+            <IonRow className="ion-justify-content-between ion-no-padding">
+              <IonCol className="ion-no-padding">
+                <IonCardTitle>Upload Cover Photo</IonCardTitle>
+              </IonCol>
+            </IonRow>
+            <IonRow className="ion-justify-content-between ion-no-padding">
+              <IonCol className="ion-no-padding">
+                <TextHeader>
+                  Your profile photo is your style representation <br />
+                  (JPG or PNG, max).
+                </TextHeader>
+              </IonCol>
+            </IonRow>
+          </Description>
+          <ImgUploadContainer>
+            <form onSubmit={e => onFileSubmit(e)} onChange={e => onChange(e)}>
+              <ImgUploadArea logo={defaultImage}>
+                <Perfil>
+                  {imagePreview !== '' && (
+                    <img src={imagePreview} alt="Icone adicionar" />
+                  )}
+                  <input
+                    type="file"
+                    name="coverPhoto"
+                    id="file"
+                    accept=".jpef, .png, .jpg"
+                    onChange={photoUpload}
+                    src={imagePreview}
+                  />
+                </Perfil>
+              </ImgUploadArea>
+            </form>
+          </ImgUploadContainer>
+        </Container>
+      </CardContentContainer>
     </IonCard>
   );
 };

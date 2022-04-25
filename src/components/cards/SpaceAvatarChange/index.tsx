@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { IonCard, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import { setTimeout } from 'timers';
 
+import { CardHeaderContent, CardContentContainer } from '../common';
 import defaultAvatar from '../../../assets/icon/dp.png';
 import {
   Container,
@@ -73,6 +74,7 @@ const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
 
   return (
     <IonCard className={styleWidget['overview']}>
+      <CardContentContainer>
         <Container>
           <Description>
             <IonRow className="ion-justify-content-between ion-no-padding">
@@ -109,6 +111,7 @@ const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
             </form>
           </ImgUploadContainer>
         </Container>
+      </CardContentContainer>
     </IonCard>
   );
 };
