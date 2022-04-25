@@ -94,7 +94,7 @@ const MultiDidLogin: React.FC<Props> = ({
   const [loading, setLoading] = useState('');
   const [showTutorial, setShowTutorial] = useState(false);
   const [uService, setUserService] = useState<any>(null);
-  const [loginType, setLoginType] = useState(0); // 1: loign without pwd, 2: loign with pwd
+  const [loginType, setLoginType] = useState(0); // 1: loign with pwd, 2: loign without pwd
 
   useEffect(() => {
     (async () => {
@@ -116,13 +116,17 @@ const MultiDidLogin: React.FC<Props> = ({
   }, [dids]);
 
   useEffect(() => {
-    if (did && did !== '' && uService !== null) {
-      if (uService.validateWithPwd(did, '')) {
-        setLoginType(1);
-      } else {
-        setLoginType(2);
+    (async () => {
+      if (did && did !== '' && uService !== null) {
+        const canLoginWithPwd = await uService.validateWithPwd(did, '');
+
+        if (canLoginWithPwd) {
+          setLoginType(2);
+        } else {
+          setLoginType(1);
+        }
       }
-    }
+    })();
   }, [did, uService]);
 
   return (

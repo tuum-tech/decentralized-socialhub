@@ -35,7 +35,7 @@ const LoginWithoutPWD: React.FC<Props> = ({
 
   return (
     <ThemeButton
-      text="Sign in to profile without password"
+      text="Sign in"
       style={{ marginTop: '20px' }}
       onClick={async () => {
         if (loading === '') {

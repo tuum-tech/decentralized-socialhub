@@ -340,19 +340,21 @@ export class UserService {
   }
 
   public async RemovePassword(session: ISessionItem) {
-    // remove local storage data
-    UserService.removeLocalUser(session.did);
+    let newSessionItem = session;
 
-    // store new local storage data wihtout pwd
-    let newSessionItem = await this.LockWithDIDAndPwd(session, '');
-
-    // update tuum vault user collection
-    newSessionItem.passhash = CryptoJS.SHA256(session.did + '').toString(
+    newSessionItem.passwordRemoved = true;
+    newSessionItem.passhash = CryptoJS.SHA256(newSessionItem.did + '').toString(
       CryptoJS.enc.Hex
     );
-    newSessionItem.passwordRemoved = true;
 
     await TuumTechScriptService.updateTuumUser(newSessionItem);
+
+    // remove local storage data
+    window.localStorage.removeItem(
+      `user_${session.did.replace('did:elastos:', '')}`
+    );
+
+    this.lockUser(UserService.key(newSessionItem.did), newSessionItem);
 
     return newSessionItem;
   }
@@ -673,11 +675,13 @@ export class UserService {
   }
 
   public async validateWithPwd(did: string, storePassword: string) {
-    let instance = this.unlockUser(UserService.key(did), storePassword);
+    let instance = this.unlockUser(UserService.key(did), storePassword, false);
+
     if (!instance) {
       return false;
     }
     let isHiveVersionValid = await this.isHiveVersionValid(instance);
+
     if (!isHiveVersionValid) {
       return false;
     }

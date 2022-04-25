@@ -42,7 +42,6 @@ const LoginWithPWD: React.FC<Props> = ({
       const session = await userService.RemovePassword(res);
 
       afterSuccess(session);
-      return;
     }
 
     setLoading('');
@@ -50,7 +49,7 @@ const LoginWithPWD: React.FC<Props> = ({
 
   return (
     <>
-      <p>
+      <p style={{ marginTop: '20px' }}>
         This is an old version of authentication workflow. <br /> Next time,
         you'll be able to loging without password.
       </p>
@@ -67,7 +66,7 @@ const LoginWithPWD: React.FC<Props> = ({
       />
       <ThemeButton
         style={{ marginTop: '20px' }}
-        text="Sign in to profile with password"
+        text="Sign in"
         onClick={async () => {
           if (loading === '') {
             await onLoginWithPWD();
