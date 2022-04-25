@@ -2,10 +2,29 @@ import React from 'react';
 import styled from 'styled-components';
 
 import ProgressBar from 'src/elements/ProgressBar';
-import {
-  MainCard as LeftCard,
-  CardTitle as LeftCardTitle
-} from '../Left/ManageProfile';
+
+export const LeftCardTitle = styled.p`
+  color: black;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: normal;
+  margin: 0;
+`;
+
+export const LeftCard = styled.div`
+  box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24),
+    0px 3px 8px -1px rgba(50, 50, 71, 0.05);
+  border-radius: 16px;
+  padding: 56px 55px;
+
+  font-family: 'SF Pro Display';
+  background-size: auto 100% !important;
+  min-height: 248px;
+  background: white;
+  position: relative;
+
+  margin-bottom: 22px;
+`;
 
 export const ProgressArea = styled.div`
   display: flex;

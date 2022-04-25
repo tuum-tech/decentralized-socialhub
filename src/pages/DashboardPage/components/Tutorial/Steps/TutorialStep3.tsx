@@ -1,17 +1,14 @@
 /* eslint-disable no-useless-escape */
 import { IonButton, IonInput, IonRadio, IonRadioGroup } from '@ionic/react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DidService } from 'src/services/did.service.new';
 import { UserService } from 'src/services/user.service';
 import { HiveService } from 'src/services/hive.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { ProfileService } from 'src/services/profile.service';
 import { UserVaultScripts } from 'src/scripts/uservault.script';
+import useSession from 'src/hooks/useSession';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { setSession as setSessionAction } from 'src/store/users/actions';
-
-import style from '../style.module.scss';
 import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
 import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
@@ -19,7 +16,7 @@ import { DidcredsService } from 'src/services/didcreds.service';
 import { useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom } from 'src/Atoms/Atoms';
 import { Stopwatch } from 'ts-stopwatch';
-import { selectSession } from 'src/store/users/selectors';
+import style from '../style.module.scss';
 
 const VersionTag = styled.div`
   display: flex;
@@ -44,12 +41,7 @@ interface ITutorialStepProp {
 }
 
 const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
-  const dispatch = useDispatch();
-  const session = useSelector((state: any) => selectSession(state));
-  const setSession = useCallback(
-    (value: ISessionItem) => dispatch(setSessionAction({ session: value })),
-    [dispatch]
-  );
+  const { session, setSession } = useSession();
   const stopwatch = new Stopwatch();
 
   const [hiveUrl, sethiveUrl] = useState('');

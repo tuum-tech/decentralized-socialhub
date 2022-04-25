@@ -97,7 +97,7 @@ const ItemTxtColum = styled.div<{ gradient: string }>`
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     `
-      : 'color : #4C6FFF;'}
+      : 'color : var(--ion-color-primary);'}
 `;
 
 const ItemTxtComplete = styled.div`
