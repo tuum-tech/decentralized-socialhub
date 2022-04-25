@@ -3,18 +3,15 @@ import { IonItem, IonList, IonSpinner } from '@ionic/react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-import { makeSelectSession } from 'src/store/users/selectors';
-import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState } from '../../../pages/DashboardPage/types';
+import { useSelector } from 'react-redux';
+import { selectSession } from 'src/store/users/selectors';
 
 import Avatar from '../../Avatar';
 import { getDIDString } from 'src/utils/did';
 import FingerPrintFill from 'src/assets/icon/fingerprint-fill.svg';
 
 import style from './DidCard.module.scss';
-interface Props extends InferMappedProps {
+interface Props {
   name?: string;
   did: string;
   avatar?: string;
@@ -35,10 +32,10 @@ const DidCard: React.FC<Props> = ({
   indexItem,
   colSize = '100%',
   type = 'user',
-  session,
   following,
   followClicked
 }: Props) => {
+  const session = useSelector((state: any) => selectSession(state));
   const tutorialStep = session ? session.tutorialStep : 1;
   const [isFollowing, setIsFollowing] = useState(
     following?.items
@@ -144,17 +141,4 @@ const DidCard: React.FC<Props> = ({
   );
 };
 
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DidCard);
+export default DidCard;

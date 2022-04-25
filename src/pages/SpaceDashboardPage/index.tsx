@@ -10,6 +10,9 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
+import { useRecoilState } from 'recoil';
+import { SyncSpaceAtom } from 'src/Atoms/Atoms';
+
 import useQuery from 'src/hooks/useQuery';
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
@@ -77,6 +80,7 @@ const ManagerPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   const query = useQuery();
   const type = query.get('type');
   const { session } = props;
+  const [syncSpace, setSyncSpace] = useRecoilState(SyncSpaceAtom);
   const [spaceProfile, setSpaceProfile] = useState<any>(defaultSpace);
   const isOwner = useMemo(() => {
     const owners = spaceProfile.owner
@@ -86,26 +90,39 @@ const ManagerPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
       : [];
     return owners.includes(session.did);
   }, [spaceProfile, session]);
+
   const capitalize = (s: string) => {
     return s.charAt(0).toUpperCase() + s.slice(1);
   };
-
+  const updateSpace = async () => {
+    if (!spaceName) return;
+    let names = [...new Set([spaceName, capitalize(spaceName)])];
+    let spaces = [];
+    if (type === 'community') {
+      spaces = await SpaceService.getCommunitySpaceByNames(names);
+    } else {
+      spaces = await SpaceService.getSpaceByNames(session, names);
+    }
+    if (spaces.length > 0) {
+      setSpaceProfile(spaces[0]);
+    }
+  };
   useEffect(() => {
     if (session && spaceName) {
       (async () => {
-        let names = [...new Set([spaceName, capitalize(spaceName)])];
-        let spaces = [];
-        if (type === 'community') {
-          spaces = await SpaceService.getCommunitySpaceByNames(names);
-        } else {
-          spaces = await SpaceService.getSpaceByNames(session, names);
-        }
-        if (spaces.length > 0) {
-          setSpaceProfile(spaces[0]);
-        }
+        await updateSpace();
       })();
     }
   }, [session, spaceName, type]);
+
+  useEffect(() => {
+    if (syncSpace) {
+      (async () => {
+        await updateSpace();
+        setSyncSpace(false);
+      })();
+    }
+  }, [syncSpace]);
   return (
     <>
       <IonPage className={style['managerpage']}>

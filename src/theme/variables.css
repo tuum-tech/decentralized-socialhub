@@ -5,14 +5,14 @@ http://ionicframework.com/docs/theming/ */
 
 /** Ionic CSS Variables **/
 :root {
-  --ion-color-primary: #4c6fff;
-	--ion-color-primary-rgb: 76,111,255;
-	--ion-color-primary-contrast: #ffffff;
-	--ion-color-primary-contrast-rgb: 255,255,255;
-	--ion-color-primary-shade: #4362e0;
-	--ion-color-primary-tint: #5e7dff;
+  --ion-color-primary: #824dd9;
+  --ion-color-primary-rgb: 76, 111, 255;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #4362e0;
+  --ion-color-primary-tint: #5e7dff;
 
-  --ion-color-secondary: #c948bc;
+  --ion-color-secondary: #dc59bf;
   --ion-color-secondary-rgb: 201, 72, 188;
   --ion-color-secondary-contrast: #ffffff;
   --ion-color-secondary-contrast-rgb: 255, 255, 255;
@@ -68,10 +68,18 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
 
+  --ion-color-gray200: #edf2f7;
+
   --txt-heading-dark: #27272e;
   --theme-primary-blue: #4c6fff;
   --theme-danger-blue: #ff5a5a;
   --text-body-light: #425466;
   --input-muted-placeholder: #c7cdd2;
   --input-default-text: #494949;
+}
+
+.popover-wrapper .popover-content {
+  box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24),
+    0px 3px 28px -1px rgba(50, 50, 71, 0.15);
+  border-radius: 20px;
 }

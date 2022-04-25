@@ -8,26 +8,6 @@
   text-align: right;
   position: relative;
 
-  .item-active {
-    // border-left: 3px solid var(--theme-primary-blue);
-    color: var(--theme-primary-blue);
-    --inner-border-width: 0;
-    --background: rgba(76, 111, 255, 0.05);
-  }
-
-  .item-link {
-    // border-left: 3px solid var(--theme-primary-blue);
-    --inner-border-width: 0;
-    cursor: pointer;
-    color: var(--text-body-light);
-  }
-  .item-connections-active,
-  .item-connections-link {
-    border-left: none;
-    padding-left: 1em;
-    --background: #fafafa;
-  }
-
   .divider {
     width: 80%;
     height: 1px;

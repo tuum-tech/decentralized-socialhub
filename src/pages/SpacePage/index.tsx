@@ -13,8 +13,6 @@ import styled from 'styled-components';
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
-import { UserService } from 'src/services/user.service';
-import { DidService } from 'src/services/did.service.new';
 import { SpaceService } from 'src/services/space.service';
 
 import SpacePageHeader, {
@@ -32,7 +30,7 @@ import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { showNotify } from 'src/utils/notify';
 
 const CustomModal = styled(IonModal)`
-  --height: 740px;
+  --height: 780px;
   --border-radius: 16px;
 `;
 

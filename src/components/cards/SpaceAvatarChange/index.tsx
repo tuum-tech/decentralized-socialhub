@@ -53,6 +53,7 @@ const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
     e.preventDefault();
     const reader = new FileReader();
     const file = e.target.files[0];
+    if (!file) return;
 
     let maxSize = 700000; //in Bytes
     if (file.size > maxSize) {
@@ -64,11 +65,13 @@ const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
     }
 
     if (reader !== undefined && file !== undefined) {
+      reader.onload = _handleReaderLoaded;
       reader.onloadend = () => {
         setImagePreview(reader.result);
         setDefaultImage(file);
       };
-      reader.readAsDataURL(file);
+      // reader.readAsDataURL(file);
+      reader.readAsBinaryString(file);
     }
   };
 

@@ -19,7 +19,21 @@ $darker-mid-purple: #824DD9 !default;
 $dark-pink: #6937BC !default;
 $darker-pink: #824DD9 !default;
 
-$dark-pink-gradient: linear-gradient(145.76deg, #995AFF 14.97%, #DC59BF 87.23%) !default;
+$primary-gradient: linear-gradient(145.76deg, #995AFF 14.97%, #DC59BF 87.23%) !default;
+$main-logo-gradient: linear-gradient(90deg, #995AFF 0%, #DC59BF 100%);
+$main-dark-gradient: radial-gradient(118.94% 95.69% at 80.26% 80.67%, #271149 0%, #04032B 100%);
 $light-pink-gradient: linear-gradient(90deg, #B990FC 0%, #EA6BFF 100%) !default;
 $blue-gradient: linear-gradient(38.75deg, #4C6FFF 14.73%, #FBFBFD 85.28%) !default;
-$dark-purple-gradient: linear-gradient(252.79deg, rgba(144, 75, 255, 0.084) -20.69%, rgba(190, 52, 160, 0.092) 151.16%);
+$secondary-gradient: linear-gradient(252.79deg, rgba(144, 75, 255, 0.084) -20.69%, rgba(190, 52, 160, 0.092) 151.16%);
+$main-green-gradient: linear-gradient(266.48deg, #2FD5DD 0.64%, #0C90EF 96.36%);
+$linear-gradient: linear-gradient(266.48deg, rgba(47, 213, 221, 0.2) 0.64%, rgba(12, 144, 239, 0.2) 96.36%);
+
+:export {
+  primary-gradient: $primary-gradient;
+  secondary-gradient: $secondary-gradient;
+  main-green-gradient: $main-green-gradient;
+  linear-gradient: $linear-gradient;
+  main-logo-gradient: $main-logo-gradient;
+  main-dark-gradient: $main-dark-gradient;
+}
+  

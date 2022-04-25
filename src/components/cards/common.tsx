@@ -210,7 +210,7 @@ export const CardContent = styled(IonCardContent)`
 export const ManagerModal = styled(IonModal)`
   --border-radius: 16px;
   --min-height: 200px;
-  --height: 580px;
+  --height: 600px;
   --width: 560px;
   :host(.modal-card) ion-header ion-toolbar:first-of-type {
     padding: 0px;
