@@ -312,4 +312,22 @@ export class SpaceService {
       });
     }
   }
+  static async post() {
+
+  }
+  static async comment() {
+
+  }
+  static async removePost() {
+
+  }
+  static async removeComment() {
+
+  }
+  static async hidePost() {
+
+  }
+  static async hideComment() {
+    
+  }
 }

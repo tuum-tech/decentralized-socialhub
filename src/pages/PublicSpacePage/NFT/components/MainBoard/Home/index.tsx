@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { IonRow, IonCol } from '@ionic/react';
+import { EditorState } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import Follower from '../common/Follower';
 import Members from '../common/Members';
 import Links from '../common/Links';
@@ -11,10 +14,22 @@ interface IProps {
 }
 
 const Home: React.FC<IProps> = ({ space }: IProps) => {
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const onEditorStateChange = (editorState: any) => {
+    console.log(editorState);
+    setEditorState(editorState);
+  };
   return (
     <Wrapper>
+      <IonRow></IonRow>
       <IonRow>
         <IonCol size="8">
+          <Editor
+            editorState={editorState}
+            wrapperClassName="demo-wrapper"
+            editorClassName="demo-editor"
+            onEditorStateChange={onEditorStateChange}
+          />
           <Post />
         </IonCol>
         <IonCol size="4">

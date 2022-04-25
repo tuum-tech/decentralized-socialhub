@@ -175,6 +175,49 @@ let run = async () => {
         }
       }
     });
+    await client.Database.createCollection('space_posts');
+    await client.Scripting.SetScript({
+      name: 'update_space_post',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_space_post',
+        body: {
+          collection: 'space_posts',
+          filter: {
+            post_id: '$params.post_id'
+          },
+          update: {
+            $set: {
+              space_sid: '$params.space_sid',
+              creator: '$params.creator',
+              visible: '$params.visible',
+              comments_visibility: '$params.comments_visibility'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+    await client.Scripting.SetScript({
+      name: 'remove_space_post',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'delete',
+        name: 'remove_space_post',
+        body: {
+          collection: 'space_posts',
+          filter: {
+            post_id: '$params.post_id'
+          }
+        }
+      }
+    });
     // ===== spaces section start =====
     await client.Database.createCollection('spaces');
     await client.Scripting.SetScript({
