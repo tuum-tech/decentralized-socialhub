@@ -87,9 +87,9 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
     })();
   }, []);
 
-  const removeUser = async (removeDid: string) => {
+  const removeUser = (removeDid: string) => {
     setLoading('Wait while remove this user');
-    await UserService.removeLocalUser(removeDid);
+    UserService.removeLocalUser(removeDid);
     const newSignedUsers = signedUsers.filter(item => item !== removeDid);
     if (newSignedUsers.length === 0) {
       setMode(0);

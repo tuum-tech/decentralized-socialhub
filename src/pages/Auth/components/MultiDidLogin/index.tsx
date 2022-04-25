@@ -15,6 +15,8 @@ import { SearchService } from 'src/services/search.service';
 import { getItemsFromData } from 'src/utils/script';
 import { ThemeButton } from 'src/elements/buttons';
 import { Text16, Title40, Text18 } from 'src/elements/texts';
+import LoginWithPWD from './LoginWithPWD';
+import LoginWithoutPWD from './LoginWithoutPWD';
 
 import eye from 'src/assets/icon/eye.png';
 import { UserService } from 'src/services/user.service';
@@ -28,7 +30,6 @@ import FooterLinks, {
 import styled from 'styled-components';
 import { IonButton, IonCol, IonGrid, IonModal, IonRow } from '@ionic/react';
 import style from './style.module.scss';
-import { SyncService } from 'src/services/sync.service';
 
 interface Props {
   changeMode: () => void;
@@ -92,6 +93,8 @@ const MultiDidLogin: React.FC<Props> = ({
   const [localUsers, setLocalUsers] = useState([]);
   const [loading, setLoading] = useState('');
   const [showTutorial, setShowTutorial] = useState(false);
+  const [uService, setUserService] = useState<any>(null);
+  const [loginType, setLoginType] = useState(0); // 1: loign without pwd, 2: loign with pwd
 
   useEffect(() => {
     (async () => {
@@ -106,24 +109,21 @@ const MultiDidLogin: React.FC<Props> = ({
         setLocalUsers(users);
         setLoading('');
       }
+
+      let uService = new UserService(await DidService.getInstance());
+      if (uService) setUserService(uService);
     })();
   }, [dids]);
 
-  const onLoginButtonClick = async () => {
-    setLoading('Signing now...');
-
-    let userService = new UserService(await DidService.getInstance());
-
-    const res = await userService.UnLockWithDIDAndPwd(did, '');
-    if (res) {
-      await SyncService.TempInitializeSignedUsers(res);
-
-      afterSuccess(res);
-      return;
+  useEffect(() => {
+    if (did && did !== '' && uService !== null) {
+      if (uService.validateWithPwd(did, '')) {
+        setLoginType(1);
+      } else {
+        setLoginType(2);
+      }
     }
-
-    setLoading('');
-  };
+  }, [did, uService]);
 
   return (
     <OnBoardLayout>
@@ -154,14 +154,22 @@ const MultiDidLogin: React.FC<Props> = ({
               }}
             />
           )}
-
-          <ThemeButton
-            text="Sign in to profile"
-            style={{ marginTop: '20px' }}
-            onClick={async () => {
-              await onLoginButtonClick();
-            }}
-          />
+          {loginType === 1 && (
+            <LoginWithPWD
+              did={did}
+              loading={loading}
+              setLoading={setLoading}
+              afterSuccess={afterSuccess}
+            />
+          )}
+          {loginType === 2 && (
+            <LoginWithoutPWD
+              did={did}
+              loading={loading}
+              setLoading={setLoading}
+              afterSuccess={afterSuccess}
+            />
+          )}
 
           <FieldDivider mt={80} />
           <ThemeButton

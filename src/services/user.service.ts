@@ -215,11 +215,12 @@ export class UserService {
 
   private unlockUser(
     key: string,
-    storePassword: string
+    storePassword: string,
+    showAlert = true
   ): ISessionItem | undefined {
     let item = window.localStorage.getItem(key);
     if (!item) {
-      alertError(null, 'User could not be found');
+      if (showAlert) alertError(null, 'User could not be found');
       return;
     }
 
@@ -238,7 +239,9 @@ export class UserService {
         return instance;
       }
     } catch (error) {}
-    alertError(null, 'Incorrect Password');
+
+    if (showAlert) alertError(null, 'Incorrect Password');
+
     return;
   }
 
@@ -253,7 +256,7 @@ export class UserService {
     return response;
   }
 
-  public static async removeLocalUser(did: string) {
+  public static removeLocalUser(did: string) {
     const didStr = did.replace('did:elastos:', '');
     const removeKeys = [];
     for (var i = 0, len = window.localStorage.length; i < len; ++i) {
@@ -334,6 +337,24 @@ export class UserService {
       };
     }
     return;
+  }
+
+  public async RemovePassword(session: ISessionItem) {
+    // remove local storage data
+    UserService.removeLocalUser(session.did);
+
+    // store new local storage data wihtout pwd
+    let newSessionItem = await this.LockWithDIDAndPwd(session, '');
+
+    // update tuum vault user collection
+    newSessionItem.passhash = CryptoJS.SHA256(session.did + '').toString(
+      CryptoJS.enc.Hex
+    );
+    newSessionItem.passwordRemoved = true;
+
+    await TuumTechScriptService.updateTuumUser(newSessionItem);
+
+    return newSessionItem;
   }
 
   public async CreateNewUser(
@@ -625,7 +646,11 @@ export class UserService {
     return true;
   }
 
-  public async UnLockWithDIDAndPwd(did: string, storePassword: string) {
+  public async UnLockWithDIDAndPwd(
+    did: string,
+    storePassword: string,
+    showAlert = true
+  ) {
     let instance = this.unlockUser(UserService.key(did), storePassword);
     if (!instance) return null;
     let isHiveVersionValid = await this.isHiveVersionValid(instance);
@@ -634,7 +659,7 @@ export class UserService {
     const res = await this.SearchUserWithDID(did);
 
     if (!res) {
-      alertError(null, 'Could not find user with this DID');
+      if (showAlert) alertError(null, 'Could not find user with this DID');
     } else if (instance) {
       instance.onBoardingCompleted = res.onBoardingCompleted;
       instance.tutorialStep = res.tutorialStep;
@@ -647,14 +672,8 @@ export class UserService {
     return null;
   }
 
-  public async validateWithPwd(
-    userSession: ISessionItem,
-    storePassword: string
-  ) {
-    let instance = this.unlockUser(
-      UserService.key(userSession.did),
-      storePassword
-    );
+  public async validateWithPwd(did: string, storePassword: string) {
+    let instance = this.unlockUser(UserService.key(did), storePassword);
     if (!instance) {
       return false;
     }
@@ -662,7 +681,7 @@ export class UserService {
     if (!isHiveVersionValid) {
       return false;
     }
-    return instance.did === userSession.did;
+    return instance.did === did;
   }
 
   public static logout() {
