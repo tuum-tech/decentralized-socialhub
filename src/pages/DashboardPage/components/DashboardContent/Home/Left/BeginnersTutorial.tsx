@@ -1,70 +1,32 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { DefaultButton } from 'src/elements/buttons';
 import ProgressBar from 'src/elements/ProgressBar';
-
+import LinkButton from 'src/elements-v2/buttons/LinkButton';
+import MainCard from './MainCard';
 import badgeImg from '../../../../../../assets/dashboard/tutorialbadge.png';
-import style from './style.module.scss';
-
-export const CardTitle = styled.p`
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-  line-height: normal;
-  margin: 0;
-`;
-
-export const CardText = styled.p`
-  margin-top: 5px;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 23px;
-  color: white;
-  max-width: 315px;
-`;
-
-export const MainCard = styled.div`
-  background-size: cover !important;
-
-  box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24),
-    0px 3px 8px -1px rgba(50, 50, 71, 0.05);
-  border-radius: 16px;
-  min-height: 189px;
-  padding: 46px 61px;
-  position: relative;
-
-  margin-bottom: 22px;
-`;
-
-export const BadgeImg = styled.img`
-  position: absolute;
-  right: 80px;
-  top: 38%;
-  transform: translateY(-50%);
-  height: 102px !important;
-  width: 102px !important;
-`;
+import styles from './style.module.scss';
 
 const ButtonsArea = styled.div`
   display: flex;
+  justify-content: center;
   align-items: center;
   color: white;
   margin-top: 15px;
 `;
 
-const ProgressArea = styled.div`
-  margin-left: 21px;
+const ProgressContainer = styled.div`
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  margin-left: 20px;
   p {
-    margin-top: 8px;
-    color: white;
-
+    padding-left: 8px;
     font-family: 'SF Pro Display';
     font-style: normal;
     font-weight: 600;
     font-size: 14px;
-    line-height: 14px;
+    line-height: 17px;
   }
 `;
 
@@ -80,32 +42,33 @@ const BeginnersTutorial: React.FC<Props> = ({
   const percent = Math.round((tutorialStep / 4) * 100);
 
   return (
-    <MainCard className={style['begginers-card']}>
-      <CardTitle>Beginners tutorial</CardTitle>
-      <CardText>
-        Complete the tutorial to start adding and sharing your profiles.
-      </CardText>
+    <MainCard
+      title="Beginners tutorial"
+      description="Complete the tutorial to start adding and sharing your profiles."
+      right={<img src={badgeImg} alt="tutorial-img" />}
+      rightFlex={0.4}
+      background={styles['dark-gradient']}
+      titleColor="white"
+      descriptionColor="white"
+    >
       <ButtonsArea>
-        <DefaultButton
-          width="160px"
-          onClick={onTutorialStart}
-          color="#4C6FFF"
-          bgColor="#F3F9FF"
+        <LinkButton
+          variant="contained"
+          color="secondary-gradient"
+          textType="gradient"
+          href="/"
+          // onClick={onTutorialStart}
         >
           {tutorialStep === 1 ? 'Start ' : 'Resume '}Tutorial
-        </DefaultButton>
-        <ProgressArea>
+        </LinkButton>
+        <ProgressContainer>
           <ProgressBar
             value={percent}
-            containerColor="#263985"
-            progressColor="#FFFFFF"
-            width="120px"
+            progressColor={styles['primary-gradient']}
           />
-          <p>{tutorialStep} / 4 completed</p>
-        </ProgressArea>
+          <p className="ion-text-nowrap">{tutorialStep} / 4 completed</p>
+        </ProgressContainer>
       </ButtonsArea>
-
-      <BadgeImg src={badgeImg} />
     </MainCard>
   );
 };

@@ -16,6 +16,7 @@ export const themeGradients = [
   'secondary-gradient',
   'main-green-gradient',
   'main-logo-gradient',
-  'main-dark-gradient'
+  'main-dark-gradient',
+  'light-gradient'
 ];
 export type ThemeGradient = typeof themeGradients[number];

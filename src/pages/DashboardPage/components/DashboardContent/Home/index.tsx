@@ -3,12 +3,6 @@ import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
 import { useHistory } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-
-import { makeSelectSession } from 'src/store/users/selectors';
-import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState } from './types';
 
 import {
   containingVerifiableCredentialDetails,
@@ -36,6 +30,7 @@ import SentModalContent, {
 
 import { useRecoilValue } from 'recoil';
 import { DIDDocumentAtom, FullProfileAtom } from 'src/Atoms/Atoms';
+import useSession from 'src/hooks/useSession';
 import WhatIsProfile from './Right/WhatIsProfile';
 
 const LeftCardCol = styled(IonCol)`
@@ -46,7 +41,7 @@ const RightCardCol = styled(IonCol)`
   padding: 22px 16px;
 `;
 
-interface Props extends InferMappedProps {
+interface Props {
   onTutorialStart: () => void;
   activeTab: (tab: string) => void;
   followerDids: string[];
@@ -54,17 +49,15 @@ interface Props extends InferMappedProps {
   mutualDids: string[];
 }
 
-const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
-  const {
-    followerDids,
-    followingDids,
-    mutualDids,
-    session,
-    onTutorialStart,
-    activeTab
-  } = props;
-
+const DashboardHome: React.FC<Props> = ({
+  followerDids,
+  followingDids,
+  mutualDids,
+  onTutorialStart,
+  activeTab
+}: Props) => {
   const history = useHistory();
+  const { session } = useSession();
 
   const [tutorialVisible, setTutorialVisible] = useState(true);
   const [hasFollowUsers, setFollowUsers] = useState(false);
@@ -495,18 +488,4 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
   );
 };
 
-// export default DashboardHome;
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardHome);
+export default DashboardHome;
