@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
-
 import { useHistory } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
 
 import {
   containingVerifiableCredentialDetails,
@@ -27,8 +27,7 @@ import { VerificationService } from 'src/services/verification.service';
 import SentModalContent, {
   SentModal
 } from 'src/pages/ActivityPage/components/MyRequests/SentModal';
-
-import { useRecoilValue } from 'recoil';
+import Slides from 'src/elements-v2/Slides';
 import { DIDDocumentAtom, FullProfileAtom } from 'src/Atoms/Atoms';
 import useSession from 'src/hooks/useSession';
 import WhatIsProfile from './Right/WhatIsProfile';
@@ -385,11 +384,13 @@ const DashboardHome: React.FC<Props> = ({
                 tutorialStep={session.tutorialStep}
               />
             )}
-            <ManageProfile userSession={session} />
-            {!hasFollowUsers && session.did && session.did !== '' && (
-              <ExploreConnections session={session} did={session.did} />
-            )}
-            {!hasSocialProfiles && <ManageLinks />}
+            <Slides>
+              <ManageProfile userSession={session} />
+              {!hasFollowUsers && session.did && session.did !== '' && (
+                <ExploreConnections session={session} did={session.did} />
+              )}
+              {!hasSocialProfiles && <ManageLinks />}
+            </Slides>
           </LeftCardCol>
           <RightCardCol sizeSm="4" sizeXs="12">
             <VerificationStatus progress={verifiedPercent} />

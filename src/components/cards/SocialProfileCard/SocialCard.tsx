@@ -129,7 +129,7 @@ const SocialProfilesCard: React.FC<Props> = ({
       let user: ISessionItem = await userService.SearchUserWithDID(
         sessionItem.did
       );
-      setBadges(user.badges as IBadges);
+      setBadges(user?.badges as IBadges);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [didDocument]);
