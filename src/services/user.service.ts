@@ -527,25 +527,29 @@ export class UserService {
       let didAlreadyAdded = await TuumTechScriptService.searchUserWithDIDs([
         did
       ]);
-      console.log('===>didAlreadyAdded', didAlreadyAdded);
+
       if (didAlreadyAdded.length === 0) {
-        await TuumTechScriptService.addUserToTuumTech(sessionItem, referal);
+        await TuumTechScriptService.addUserToTuumTech(sessionItem);
       } else {
         await TuumTechScriptService.updateTuumUser(sessionItem);
       }
 
-      // await ProfileService.addActivity(
-      //   {
-      //     guid: '',
-      //     did: sessionItem!.did,
-      //     message: 'Welcome to Profile 👏, Your service to the private web 🔐️',
-      //     read: false,
-      //     createdAt: 0,
-      //     updatedAt: 0
-      //   },
+      await ProfileService.addActivity(
+        {
+          guid: '',
+          did: sessionItem!.did,
+          message: 'Welcome to Profile 👏, Your service to the private web 🔐️',
+          read: false,
+          createdAt: 0,
+          updatedAt: 0
+        },
 
-      //   sessionItem
-      // );
+        sessionItem
+      );
+    }
+
+    if (referal !== '') {
+      await TuumTechScriptService.addReferal(referal, sessionItem.did);
     }
 
     Array.from(new Set(messages)).forEach(async message => {
@@ -558,7 +562,6 @@ export class UserService {
           createdAt: 0,
           updatedAt: 0
         },
-
         sessionItem
       );
     });
@@ -570,9 +573,9 @@ export class UserService {
       await SpaceService.follow(sessionItem, wtp[0]);
     }
 
-    // this.lockUser(UserService.key(did), sessionItem);
+    this.lockUser(UserService.key(did), sessionItem);
 
-    // window.localStorage.setItem('isLoggedIn', 'true');
+    window.localStorage.setItem('isLoggedIn', 'true');
 
     return sessionItem;
   }

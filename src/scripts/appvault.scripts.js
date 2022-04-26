@@ -98,12 +98,8 @@ let run = async () => {
               publicFields: '$params.publicFields',
               tags: '$params.tags',
               followers: '$params.followers',
-<<<<<<< HEAD
               socialLinks: '$params.socialLinks',
               meta: '$params.meta'
-=======
-              meta: '$params.owner'
->>>>>>> eaf1b4c4... commit for referal
             }
           },
           options: {
@@ -487,29 +483,6 @@ let run = async () => {
           options: {
             limit: '$params.limit',
             skip: '$params.skip'
-          }
-        }
-      }
-    });
-
-    // ===== referals ===
-    await client.Scripting.SetScript({
-      name: 'update_referals',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'update_referals',
-        output: false,
-        body: {
-          collection: 'users',
-          filter: {
-            did: '$params.did'
-          },
-          update: {
-            $set: {
-              referals: '$params.referals'
-            }
           }
         }
       }

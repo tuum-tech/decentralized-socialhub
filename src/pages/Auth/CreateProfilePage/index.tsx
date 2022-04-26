@@ -145,12 +145,11 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
           <EmailUserCreate
             onSuccess={(name: string, email: string, password: string) => {
               let referal = '';
-              if (history.location.search) {
-                // did:elastos:ii2JPv8cEijDvih6xa6nzhYCJssM4diqDv
-                const searchStr = history.location.search.toLowerCase();
-                if (searchStr.includes('?ref=did:elastos:')) {
-                  referal = searchStr.replace('?ref=', '');
-                }
+              if (
+                history.location.search &&
+                history.location.search.includes('?ref=did:elastos:')
+              ) {
+                referal = history.location.search.replace('?ref=', '');
               }
               setUser({ name, email, password });
               history.push({

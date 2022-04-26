@@ -80,12 +80,15 @@ const EmailVerificationPage: React.FC<PageProps> = ({
 
   useEffect(() => {
     const { name, email, password, referal } = props.location.state;
+
     if (name !== '' && email !== '' && password !== '') {
       setUser({ name, email, password, referal });
       setLoaded(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  console.log('===>user', user);
 
   if (
     loaded &&
@@ -132,8 +135,6 @@ const EmailVerificationPage: React.FC<PageProps> = ({
         mnemonic = userService.getTemporaryMnemonicFromDid(session.did);
       }
 
-      console.log('===>user.referal', user.referal);
-
       let sessionItem = await userService.CreateNewUser(
         session.name,
         session.service,
@@ -143,11 +144,12 @@ const EmailVerificationPage: React.FC<PageProps> = ({
         session.did,
         mnemonic,
         '',
+        '',
         user.referal
       );
 
       eProps.setSession({ session: sessionItem });
-      // history.push('/profile');
+      history.push('/profile');
     } else {
       setError('Invalid Code !');
     }

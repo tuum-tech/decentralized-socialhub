@@ -28,6 +28,7 @@ const DashboardHeader: React.FC<IProps> = ({
   publishStatus
 }: IProps) => {
   const [verifiers, setVerifiers] = useState([{ name: '', did: '' }]);
+  const [referalCounts, setReferalCounts] = useState(0);
   const isSmDown = useBreakpoint(down('sm'));
   const profile = useRecoilValue(FullProfileAtom);
 
@@ -36,8 +37,17 @@ const DashboardHeader: React.FC<IProps> = ({
       if (sessionItem.name !== '') {
         setVerifiers(profile.name.verifiers);
       }
+      if (sessionItem.referals && sessionItem.referals.length > 0) {
+        const nArray: string[] = [];
+        for (let i = 0; i < sessionItem.referals.length; i++) {
+          if (!nArray.includes(sessionItem.referals[i])) {
+            nArray.push(sessionItem.referals[i]);
+          }
+        }
+        setReferalCounts(nArray.length);
+      }
     })();
-  }, [profile, sessionItem.name]);
+  }, [profile, sessionItem.name, sessionItem.referals]);
 
   return (
     <IonGrid className={style['profileheader']}>
@@ -59,7 +69,6 @@ const DashboardHeader: React.FC<IProps> = ({
               {verifiers.length > 0 && (
                 <VerificatioBadge users={verifiers} userSession={sessionItem} />
               )}
-
               <PublishingLabel status={publishStatus} />
             </IonRow>
             <IonRow className={style['d-flex']}>
@@ -69,7 +78,7 @@ const DashboardHeader: React.FC<IProps> = ({
                   dateJoined={sessionItem.timestamp}
                 />
               </IonCol>
-              <IonCol></IonCol>
+              <IonCol>{`Number of Referals: ${referalCounts}`}</IonCol>
             </IonRow>
           </IonGrid>
         </IonCol>

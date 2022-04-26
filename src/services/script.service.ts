@@ -232,37 +232,31 @@ export class TuumTechScriptService {
     return response;
   }
 
-  public static async addUserToTuumTech(params: ISessionItem, referal: string) {
-    console.log('===>', params, referal);
-    if (referal !== '') {
+  public static async addReferal(toDid: string, didReferedFrom: string) {
+    if (toDid !== '') {
       // retrive user's referals first
-      const users = await TuumTechScriptService.searchUserWithDIDs([referal]);
-      console.log('===>users', users);
+      const users = await TuumTechScriptService.searchUserWithDIDs([toDid]);
+
+      console.log('===>users', users[0]);
+
       let referals = [];
       if (users.length > 0) {
-        referals = users[0].referals;
+        referals = users[0].referals || [];
       }
-      console.log('===>referals', referals);
-      if (referals.length === 0 || !referals.includes(params.did)) {
-        referals.push(params.did);
-
-        // add and update referals
-        const update_referals_script = {
-          name: 'update_referals',
-          params: {
-            did: referal,
-            referals
-          },
-          context: {
-            target_did: process.env.REACT_APP_APPLICATION_DID,
-            target_app_did: process.env.REACT_APP_APPLICATION_ID
-          }
-        };
-        const res = await this.runTuumTechScript(update_referals_script);
-        console.log('====>res', res);
+      if (!referals.includes(didReferedFrom)) {
+        referals.push(didReferedFrom);
+      }
+      console.log('===>referals', referals, toDid, didReferedFrom);
+      if (referals.length > 0) {
+        await TuumTechScriptService.updateTuumUser({
+          referals,
+          ...users[0]
+        });
       }
     }
+  }
 
+  public static async addUserToTuumTech(params: ISessionItem) {
     const add_user_script = {
       name: 'add_user',
       params,
