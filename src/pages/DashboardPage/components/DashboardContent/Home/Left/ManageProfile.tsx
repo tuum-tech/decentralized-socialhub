@@ -7,7 +7,7 @@ import EducationCard from 'src/components/cards/EducationCard';
 import profileCardImg from '../../../../../../assets/dashboard/profile.png';
 import { useRecoilValue } from 'recoil';
 import { FullProfileAtom } from 'src/Atoms/Atoms';
-import LinkButton from 'src/elements-v2/buttons/LinkButton';
+import { LinkButton } from 'src/elements-v2/buttons';
 import MainCard from './MainCard';
 interface Props {
   userSession: ISessionItem;
@@ -41,7 +41,7 @@ const ManageProfile: React.FC<Props> = ({ userSession }) => {
       >
         <LinkButton
           variant="contained"
-          color="secondary-gradient"
+          btnColor="secondary-gradient"
           textType="gradient"
           href="/manager"
         >

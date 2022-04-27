@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import LinkButton from 'src/elements-v2/buttons/LinkButton';
+import { LinkButton } from 'src/elements-v2/buttons';
 import { MainCard, CardTitle, CardText } from './VerificationStatus';
 import mainLogo from '../../../../../../assets/new/main-logo.svg';
 
@@ -36,7 +36,7 @@ const WhatIsProfile: React.FC = _ => {
 
         <LinkButton
           variant="outlined"
-          color="primary-gradient"
+          btnColor="primary-gradient"
           textType="gradient"
           href="https://www.tuum.tech"
           target="_blank"

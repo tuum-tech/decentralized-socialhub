@@ -2,7 +2,7 @@ import React from 'react';
 
 import MainCard from './MainCard';
 import socialCardImg from '../../../../../../assets/dashboard/social.png';
-import LinkButton from 'src/elements-v2/buttons/LinkButton';
+import { LinkButton } from 'src/elements-v2/buttons';
 
 const ManageLink: React.FC = () => {
   return (
@@ -13,7 +13,7 @@ const ManageLink: React.FC = () => {
     >
       <LinkButton
         variant="contained"
-        color="secondary-gradient"
+        btnColor="secondary-gradient"
         textType="gradient"
         href="/manager"
       >

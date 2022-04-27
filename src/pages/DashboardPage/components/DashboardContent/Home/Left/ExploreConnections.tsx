@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import { ProfileService } from 'src/services/profile.service';
 import MainCard from './MainCard';
-import LinkButton from 'src/elements-v2/buttons/LinkButton';
+import { LinkButton } from 'src/elements-v2/buttons';
 import exploreCardImg from '../../../../../../assets/dashboard/explore.png';
 
 interface Props {
@@ -54,7 +54,7 @@ const ExploreConnections: React.FC<Props> = ({ did, session }) => {
         >
           <LinkButton
             variant="contained"
-            color="secondary-gradient"
+            btnColor="secondary-gradient"
             textType="gradient"
             href="/explore"
           >

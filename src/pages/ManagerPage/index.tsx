@@ -10,7 +10,7 @@ import { up } from 'styled-breakpoints';
 import { UserService } from 'src/services/user.service';
 import { DidService } from 'src/services/did.service.new';
 
-import LinkButton from 'src/elements-v2/buttons/LinkButton';
+import { LinkButton } from 'src/elements-v2/buttons';
 import ProfileEditor from './components/ProfileEditor';
 import { getDIDString } from 'src/utils/did';
 import MainLayout from 'src/components/layouts/MainLayout';
@@ -66,7 +66,7 @@ const ManagerPage: React.FC<RouteComponentProps> = (
           <PageTitle>Profile Manager</PageTitle>
           <LinkButton
             variant="contained"
-            color="primary-gradient"
+            btnColor="primary-gradient"
             icon="open-outline"
             size="large"
             href={getDIDString('/did/' + user.did)}
