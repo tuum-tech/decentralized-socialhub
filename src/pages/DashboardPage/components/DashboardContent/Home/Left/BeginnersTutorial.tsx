@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import ProgressBar from 'src/elements/ProgressBar';
-import LinkButton from 'src/elements-v2/buttons/LinkButton';
+import { DefaultButton } from 'src/elements-v2/buttons';
 import MainCard from './MainCard';
 import badgeImg from '../../../../../../assets/dashboard/tutorialbadge.png';
 import styles from './style.module.scss';
@@ -52,15 +52,13 @@ const BeginnersTutorial: React.FC<Props> = ({
       descriptionColor="white"
     >
       <ButtonsArea>
-        <LinkButton
+        <DefaultButton
           variant="contained"
-          color="secondary-gradient"
-          textType="gradient"
-          href="/"
-          // onClick={onTutorialStart}
+          btnColor="light-gradient"
+          onClick={onTutorialStart}
         >
           {tutorialStep === 1 ? 'Start ' : 'Resume '}Tutorial
-        </LinkButton>
+        </DefaultButton>
         <ProgressContainer>
           <ProgressBar
             value={percent}
