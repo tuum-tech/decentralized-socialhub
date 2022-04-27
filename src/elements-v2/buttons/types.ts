@@ -9,7 +9,8 @@ export interface ButtonProps {
     | 'secondary'
     | 'white'
     | 'primary-gradient'
-    | 'secondary-gradient';
+    | 'secondary-gradient'
+    | 'light-gradient';
   variant?: 'text' | 'outlined' | 'contained';
   textType?: 'normal' | 'gradient';
   bgColor?: string;

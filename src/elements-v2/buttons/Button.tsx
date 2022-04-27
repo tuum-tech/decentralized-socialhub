@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import { AnimationBuilder, IonButton, IonRouterLink } from '@ionic/react';
+import { IonRouterLink } from '@ionic/react';
 import { ButtonProps, DefaultButtonProps, LinkButtonProps } from './types';
 import styles from './Button.module.scss';
 import GradientText from './GradientText';
@@ -48,7 +48,9 @@ function withStyle<T extends object>(
     let style = { ...customStyle };
     if (variant === 'contained') {
       let background =
-        btnColor === 'primary-gradient' || btnColor === 'secondary-gradient'
+        btnColor === 'primary-gradient' ||
+        btnColor === 'secondary-gradient' ||
+        btnColor === 'light-gradient'
           ? styles[btnColor]
           : bgColor
           ? bgColor
