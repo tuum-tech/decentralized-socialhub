@@ -54,6 +54,7 @@ const Avatar: React.FC<{
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    let mounted = true;
     (async () => {
       setLoaded(false);
 
@@ -82,15 +83,21 @@ const Avatar: React.FC<{
         type = 'default';
       }
 
-      setAvatarInfo({
-        name: shortName(name),
-        avatar,
-        type,
-        didPublished
-      });
+      if (mounted) {
+        setAvatarInfo({
+          name: shortName(name),
+          avatar,
+          type,
+          didPublished
+        });
 
-      setLoaded(true);
+        setLoaded(true);
+      }
     })();
+
+    return () => {
+      mounted = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [did]);
 

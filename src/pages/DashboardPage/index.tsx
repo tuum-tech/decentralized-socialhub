@@ -75,7 +75,9 @@ const DashboardPage: React.FC = () => {
         let doc: DIDDocument = (await DID.from(
           session.did
         )?.resolve()) as DIDDocument;
-        setDidDocument(doc.toString(true));
+        if (doc) {
+          setDidDocument(doc.toString(true));
+        }
       }
     })();
   }, [didDocument, session.did, setDidDocument]);
