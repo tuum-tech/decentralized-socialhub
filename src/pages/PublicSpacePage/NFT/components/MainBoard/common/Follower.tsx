@@ -40,7 +40,7 @@ const Follower: React.FC<IProps> = ({
         <CardHeader>
           <IonRow className="ion-justify-content-between ion-no-padding">
             <IonCol className="ion-no-padding">
-              <IonCardTitle>Followers ({followers.length})</IonCardTitle>
+              <IonCardTitle>Followers ({space.followers.length})</IonCardTitle>
             </IonCol>
             <IonCol size="auto" className="ion-no-padding">
               <LinkStyleSpan

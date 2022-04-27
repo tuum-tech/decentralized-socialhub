@@ -18,7 +18,9 @@ const Home: React.FC<IProps> = ({ space }: IProps) => {
           <Post />
         </IonCol>
         <IonCol size="4">
-          <Links />
+          {space.socialLinks && Object.keys(space.socialLinks).length > 0 && (
+            <Links space={space} />
+          )}
           <Members space={space} />
           {space.followers &&
             space.followers.length > 0 &&

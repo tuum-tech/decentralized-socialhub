@@ -1,6 +1,6 @@
 {
   "name": "profile",
-  "version": "1.17.0",
+  "version": "1.18.0",
   "description": "Profile",
   "dependencies": {
     "@elastosfoundation/did-js-sdk": "^2.2.3",
@@ -65,6 +65,7 @@
     "react-toastify": "^7.0.4",
     "react-tooltip": "^4.2.21",
     "recoil": "^0.6.1",
+    "recoil-persist": "^4.1.0",
     "redux": "^4.1.1",
     "redux-persist": "^6.0.0",
     "redux-saga": "^1.1.3",

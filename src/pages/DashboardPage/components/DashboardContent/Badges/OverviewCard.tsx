@@ -1,34 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonText
-} from '@ionic/react';
+import { IonCard, IonCardContent, IonCardHeader } from '@ionic/react';
 import ProgressBar from 'src/elements/ProgressBar';
+import GradientText from 'src/elements-v2/buttons/GradientText';
 import styled from 'styled-components';
 import style from './OverviewCard.module.scss';
 
+const CardTitle = styled(GradientText)`
+  font-weight: 700;
+  font-size: 18px;
+  padding-right: 16px;
+`;
+
 const ProgressBarChart = styled.div`
-  width: 200px;
+  width: 100%;
+  padding-right: 8px;
 `;
-const ProgressBarText = styled.div`
-  font-size: 10px;
-  font-weight: normal;
-  line-height: 1.71;
-  letter-spacing: 0.13px;
-  color: rgba(255, 255, 255, 0.87);
-  margin: 0 10px;
-`;
+
 const ProgressContainer = styled.div`
   display: flex;
   align-items: center;
+  flex-grow: 1;
+}
 `;
 const ScorePanel = styled.div`
   display: flex;
 `;
 const Completed = styled.div`
+  color: #04032b;
   padding: 0px 25px 0px 0px;
   height: 50px;
   border-right: 1px solid #ffffff;
@@ -41,6 +39,7 @@ const Completed = styled.div`
   }
 `;
 const Total = styled.div`
+  color: #04032b;
   padding: 0px 15px 0px 35px;
   height: 50px;
   & p:nth-child(1) {
@@ -91,26 +90,23 @@ const OverviewCard: React.FC<Props> = ({ badges }) => {
   return (
     <IonCard className={style['spotlight']}>
       <IonCardHeader className={style['card-header']}>
-        <IonCardTitle className={style['card-title']}>Overview</IonCardTitle>
+        <CardTitle>Overview</CardTitle>
         <ProgressContainer>
           <ProgressBarChart>
             <ProgressBar
               value={progressPercent}
               height={14}
-              containerColor="#3a5add"
-              progressColor="#ffffff"
+              progressColor={style['primary-gradient']}
             />
           </ProgressBarChart>
-          <ProgressBarText>{progressPercent}% Completed</ProgressBarText>
+          <GradientText className="ion-text-nowrap">{`${progressPercent}% Completed`}</GradientText>
         </ProgressContainer>
       </IonCardHeader>
       <IonCardContent className={style['card-content']}>
-        <IonText className={style['overview-text']}>
-          <p>
-            You gain badges, the more you complete and use your profile. Level
-            your profile up! Click on a badge to learn more about it.
-          </p>
-        </IonText>
+        <GradientText gradient="main-dark-gradient">
+          You gain badges, the more you complete and use your profile. Level
+          your profile up! Click on a badge to learn more about it.
+        </GradientText>
         <ScorePanel>
           <Completed>
             <p>{completedBadgeCount}</p>

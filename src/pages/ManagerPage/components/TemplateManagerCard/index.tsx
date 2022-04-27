@@ -20,6 +20,7 @@ import Avatar from 'src/components/Avatar';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import { DidService } from 'src/services/did.service.new';
 import { TemplateService } from 'src/services/template.service';
+import { DefaultButton } from 'src/elements-v2/buttons';
 
 import TemplateModalContent, { TemplateModal } from './Modal/TemplateModal';
 
@@ -55,24 +56,6 @@ const ProfileStatus = styled.span`
   letter-spacing: normal;
   text-align: left;
   color: #4c6fff;
-`;
-
-const AddNewTemplateButton = styled.div`
-  border: 1px solid #4c6fff;
-  box-sizing: border-box;
-  border-radius: 8px;
-  width: 100%;
-  padding: 16px;
-  background: white;
-
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 14px;
-  color: #4c6fff;
-
-  text-align: center;
-  cursor: pointer;
 `;
 
 const allTemplates = TemplateService.getAllTemplates();
@@ -202,9 +185,16 @@ const TemplateManagerCard: React.FC<PageProps> = ({
               })}
 
             <IonRow>
-              <AddNewTemplateButton onClick={() => setShowModal(true)}>
+              <DefaultButton
+                variant="outlined"
+                btnColor="primary-gradient"
+                textType="gradient"
+                size="large"
+                onClick={() => setShowModal(true)}
+                style={{ width: '100%' }}
+              >
                 + Add New Template
-              </AddNewTemplateButton>
+              </DefaultButton>
             </IonRow>
           </IonGrid>
         </IonRadioGroup>

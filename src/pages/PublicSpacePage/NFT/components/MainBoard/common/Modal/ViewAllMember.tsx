@@ -43,6 +43,7 @@ const ViewAllMember = ({ space, onClose }: Props) => {
       offset,
       limit
     );
+    if (!data) return;
     const { totalCount, owners } = data;
     setTotalCount(totalCount);
 

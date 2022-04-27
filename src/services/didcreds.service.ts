@@ -1,6 +1,7 @@
 import {
   JSONObject,
-  VerifiableCredential
+  VerifiableCredential,
+  DIDDocument
 } from '@elastosfoundation/did-js-sdk/';
 import request, { BaseplateResp } from 'src/baseplate/request';
 import { HiveService } from './hive.service';
@@ -23,6 +24,12 @@ export enum CredentialType {
 }
 
 export class DidcredsService {
+  static async getSocialCredentials(
+    didDocument: DIDDocument
+  ): Promise<VerifiableCredential[]> {
+    return didDocument.getCredentials();
+  }
+
   static async generateVerifiableCredential(
     did: string,
     credential_type: string,
