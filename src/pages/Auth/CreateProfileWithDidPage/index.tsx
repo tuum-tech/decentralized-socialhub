@@ -65,10 +65,6 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // if (userInfo.did === '') {
-  //   return <LoadingIndicator />;
-  // }
-
   if (
     status === 0 &&
     userInfo.name !== '' &&
