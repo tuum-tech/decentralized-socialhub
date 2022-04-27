@@ -1,35 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { IonRow, IonCol } from '@ionic/react';
-import { EditorState } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { IonRow, IonCol, IonModal } from '@ionic/react';
+import styled from 'styled-components';
 import Follower from '../common/Follower';
 import Members from '../common/Members';
 import Links from '../common/Links';
 import { Wrapper } from '../common';
 import Post from './Post';
+import PostEditor from './PostEditor';
 
+const CustomModal = styled(IonModal)`
+  --height: 400px;
+  --border-radius: 16px;
+`;
 interface IProps {
   space: any;
 }
 
 const Home: React.FC<IProps> = ({ space }: IProps) => {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const onEditorStateChange = (editorState: any) => {
-    console.log(editorState);
-    setEditorState(editorState);
+  const handleCreatePost = (content: any) => {
+    setIsModalOpen(false);
   };
+  const [isModalOpen, setIsModalOpen] = useState(true);
   return (
     <Wrapper>
       <IonRow></IonRow>
       <IonRow>
         <IonCol size="8">
-          <Editor
-            editorState={editorState}
-            wrapperClassName="demo-wrapper"
-            editorClassName="demo-editor"
-            onEditorStateChange={onEditorStateChange}
-          />
           <Post />
         </IonCol>
         <IonCol size="4">
@@ -44,6 +40,20 @@ const Home: React.FC<IProps> = ({ space }: IProps) => {
             )}
         </IonCol>
       </IonRow>
+      <CustomModal
+        onDidDismiss={() => {
+          setIsModalOpen(false);
+        }}
+        isOpen={isModalOpen}
+        cssClass="my-custom-class"
+      >
+        <PostEditor
+          onClose={() => {
+            setIsModalOpen(false);
+          }}
+          onCreate={handleCreatePost}
+        />
+      </CustomModal>
     </Wrapper>
   );
 };
