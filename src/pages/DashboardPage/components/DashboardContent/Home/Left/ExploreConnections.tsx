@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 import { ProfileService } from 'src/services/profile.service';
-import { MainCard, CardText, CardTitle, CardImg } from './ManageProfile';
-import LinkButton from 'src/elements-v2/buttons/LinkButton';
+import MainCard from './MainCard';
+import { LinkButton } from 'src/elements-v2/buttons';
 import exploreCardImg from '../../../../../../assets/dashboard/explore.png';
 
 interface Props {
@@ -10,10 +10,11 @@ interface Props {
   session: ISessionItem;
 }
 
-const ExploreConnnections: React.FC<Props> = ({ did, session }) => {
+const ExploreConnections: React.FC<Props> = ({ did, session }) => {
   const [connectedDids, setConnectedDids] = useState<string[]>([]);
 
   useEffect(() => {
+    let mounted = true;
     (async () => {
       let fUserDids: string[] = [];
       if (session && session.tutorialStep === 4) {
@@ -39,32 +40,37 @@ const ExploreConnnections: React.FC<Props> = ({ did, session }) => {
           fUserDids = fUserDids.filter(item => item !== did);
         }
       }
-      setConnectedDids(fUserDids);
+      if (mounted) {
+        setConnectedDids(fUserDids);
+      }
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [did, session]);
 
   return (
     <>
       {connectedDids.length === 0 && (
-        <MainCard>
-          <CardTitle>Connect with friends, companies</CardTitle>
-          <CardText>
-            Search for like minded people and make valuable connections. Explore
-            your influence circle
-          </CardText>
+        <MainCard
+          title="Connect with friends, companies"
+          description="Search for like minded people and make valuable connections. Explore
+          your influence circle"
+          right={<img src={exploreCardImg} alt="explore-img" />}
+        >
           <LinkButton
             variant="contained"
-            color="secondary-gradient"
+            btnColor="secondary-gradient"
             textType="gradient"
             href="/explore"
           >
             Explore Connections
           </LinkButton>
-          <CardImg src={exploreCardImg} />
         </MainCard>
       )}
     </>
   );
 };
 
-export default ExploreConnnections;
+export default ExploreConnections;

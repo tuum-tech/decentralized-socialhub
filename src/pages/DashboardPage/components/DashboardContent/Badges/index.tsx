@@ -24,12 +24,12 @@ const DashboardBadges: React.FC<Props> = ({ sessionItem }) => {
   return (
     <IonGrid className={style['tab-grid']}>
       <IonRow>
-        <IonCol size="4">
+        <IonCol sizeXs="12" sizeSm="4">
           <OverviewCard badges={badges} />
           {/* <ProfileCompletion /> */}
           <RecentBadgeCard badges={badges} />
         </IonCol>
-        <IonCol size="8">
+        <IonCol sizeXs="12" sizeSm="8">
           <BadgeCard badges={badges} badgeCategory="account" />
           <BadgeCard badges={badges} badgeCategory="socialVerify" />
           <BadgeCard badges={badges} badgeCategory="didPublishTimes" />

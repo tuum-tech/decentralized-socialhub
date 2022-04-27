@@ -14,7 +14,7 @@ import PublishingLabel from '../PublishingLabel';
 
 import { useRecoilValue } from 'recoil';
 import { FullProfileAtom } from 'src/Atoms/Atoms';
-import LinkButton from 'src/elements-v2/buttons/LinkButton';
+import { LinkButton } from 'src/elements-v2/buttons';
 
 import style from './style.module.scss';
 
@@ -76,7 +76,7 @@ const DashboardHeader: React.FC<IProps> = ({
         <IonCol size="auto">
           <LinkButton
             variant={isSmDown ? 'text' : 'contained'}
-            color="primary-gradient"
+            btnColor="primary-gradient"
             icon={isSmDown ? null : 'open-outline'}
             size="large"
             textType={isSmDown ? 'gradient' : 'normal'}

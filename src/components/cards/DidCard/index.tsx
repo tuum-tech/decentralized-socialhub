@@ -3,9 +3,7 @@ import { IonItem, IonList, IonSpinner } from '@ionic/react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 
-import { useSelector } from 'react-redux';
-import { selectSession } from 'src/store/users/selectors';
-
+import useSession from 'src/hooks/useSession';
 import Avatar from '../../Avatar';
 import { getDIDString } from 'src/utils/did';
 import FingerPrintFill from 'src/assets/icon/fingerprint-fill.svg';
@@ -35,7 +33,7 @@ const DidCard: React.FC<Props> = ({
   following,
   followClicked
 }: Props) => {
-  const session = useSelector((state: any) => selectSession(state));
+  const { session } = useSession();
   const tutorialStep = session ? session.tutorialStep : 1;
   const [isFollowing, setIsFollowing] = useState(
     following?.items

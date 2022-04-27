@@ -95,7 +95,7 @@ const BadgeCard: React.FC<Props> = ({ badgeCategory }) => {
         <IonRow>
           {Object.keys(badgeItems!).map((key, index) => {
             return (
-              <IonCol size="3" key={index}>
+              <IonCol sizeSm="3" sizeXs="6" key={index}>
                 <BadgeItem
                   image={
                     (badgeItems as any)[key].archived

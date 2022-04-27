@@ -29,6 +29,7 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
     (async () => {
       if (space && space.guid) {
         const { data }: any = await getNFTCollectionOwners(space.guid, 0, 4);
+        if (!data) return;
         const { totalCount, owners } = data;
         setTotalCount(totalCount);
         const members = await getOwners(
