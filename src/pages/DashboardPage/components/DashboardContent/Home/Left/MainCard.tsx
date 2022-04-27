@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { down } from 'styled-breakpoints';
+import { down, up } from 'styled-breakpoints';
 import { useBreakpoint } from 'styled-breakpoints/react-styled';
 import styled from 'styled-components';
 
@@ -27,6 +27,9 @@ export const CardContainer = styled.div<{ background: string }>`
   box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24),
     0px 3px 8px -1px rgba(50, 50, 71, 0.05);
   border-radius: 16px;
+  ${up('lg')} {
+    max-height: 248px;
+  }
 
   font-family: 'SF Pro Display';
   background-size: auto 100% !important;
@@ -50,12 +53,17 @@ const CardBody = styled.div<React.CSSProperties>`
 
 export const CardRight = styled.div<React.CSSProperties>`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   flex: ${props => props.flex};
   padding-right: 16px;
+  overflow: hidden;
   ${down('sm')} {
     display: none;
+  }
+  & > img {
+    margin-top: 40px;
+    object-fit: contain;
   }
 `;
 
