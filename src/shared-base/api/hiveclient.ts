@@ -13,7 +13,7 @@ import { Logger } from '../logger';
 import { HiveContextProvider } from './hivecontextprovider';
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { CacheManager } from '../cachemanager';
-import { AnonymousScriptingService } from 'src/services/anonymous.scripting.service';
+import { AnonymousScriptingService } from '../../services/anonymous.scripting.service';
 
 export class HiveClientParameters {
   public context = {} as AppContextParameters;

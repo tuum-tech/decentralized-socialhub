@@ -18,7 +18,7 @@ import {
 } from '@elastosfoundation/hive-js-sdk/';
 import dayjs from 'dayjs';
 import { DidService } from 'src/services/did.service.new';
-import { HiveContextProviderException } from '../exceptions';
+//import { HiveContextProviderException } from '../exceptions';
 import { DID as CNDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { Logger } from '../logger';
 
@@ -182,7 +182,8 @@ export class HiveContextProvider implements AppContextProvider {
         e,
         e.stack
       );
-      throw new HiveContextProviderException(e.message);
+      //throw new HiveContextProviderException(e.message);
+      return '';
     }
   }
 
