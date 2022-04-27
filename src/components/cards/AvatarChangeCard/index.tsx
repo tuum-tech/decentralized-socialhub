@@ -225,7 +225,7 @@ const Upload: React.FC<InferMappedProps> = ({
             <TextDesc>
               Your profile photo is your style representation. (JPG or PNG, max)
               <br />
-              Make sure that image size should be less than 700KB.
+              Make sure that image size should be less than 100MB.
             </TextDesc>
           </div>
 
