@@ -14,6 +14,7 @@ const ExploreConnections: React.FC<Props> = ({ did, session }) => {
   const [connectedDids, setConnectedDids] = useState<string[]>([]);
 
   useEffect(() => {
+    let mounted = true;
     (async () => {
       let fUserDids: string[] = [];
       if (session && session.tutorialStep === 4) {
@@ -39,8 +40,14 @@ const ExploreConnections: React.FC<Props> = ({ did, session }) => {
           fUserDids = fUserDids.filter(item => item !== did);
         }
       }
-      setConnectedDids(fUserDids);
+      if (mounted) {
+        setConnectedDids(fUserDids);
+      }
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [did, session]);
 
   return (
