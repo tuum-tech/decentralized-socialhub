@@ -8,14 +8,15 @@ import {
   IonRow,
   IonCol,
   IonText,
-  IonToggle,
   IonItem,
   IonLabel
 } from '@ionic/react';
+import { startCase } from 'lodash';
 
 import { ProfileService } from 'src/services/profile.service';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import { SmallLightButton } from 'src/elements/buttons';
+import Toggle from 'src/elements-v2/Toggle';
 
 import { Divider } from '../TemplateManagerCard';
 
@@ -102,10 +103,10 @@ const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
           )
           .map(field => (
             <IonItem key={field}>
-              <IonLabel>{field}</IonLabel>
-              <IonToggle
+              <IonLabel>{startCase(field)}</IonLabel>
+              <Toggle
                 checked={fields.includes(field)}
-                onClick={e => {
+                handleClick={e => {
                   toggleClicked(field);
                 }}
               />

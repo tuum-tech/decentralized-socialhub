@@ -59,7 +59,7 @@ export const MenuItem = ({
 }: MenuType) => {
   return (
     <StyledIonItem active={active} isChild={isChild} onClick={handleClick}>
-      <MenuIcon name={name} active={active} />
+      <MenuIcon name={name} active={active} customStyle={{ marginRight: 20 }} />
       <StyledBetween>
         <IonLabel title={tooltip}>
           <StyledText active={active}>{title}</StyledText>

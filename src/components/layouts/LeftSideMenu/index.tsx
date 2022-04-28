@@ -24,7 +24,7 @@ import ContactModalContent, { ContactModal } from './modals/Contact';
 import style from './style.module.scss';
 import { TuumTechScriptService } from 'src/services/script.service';
 import MenuItem from './components/MenuItem';
-import Badge from 'src/elements-v2/Badge/index';
+import Badge from 'src/elements-v2/Badge';
 
 const Container = styled.div`
   ${down('sm')} {

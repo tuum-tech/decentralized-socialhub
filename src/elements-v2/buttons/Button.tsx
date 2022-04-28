@@ -5,7 +5,7 @@ import { ButtonProps, DefaultButtonProps, LinkButtonProps } from './types';
 import styles from './Button.module.scss';
 import GradientText from './GradientText';
 import ButtonText from './ButtonText';
-import Icon from '../icons/Icon';
+import Icon from '../icons';
 
 function withStyle<T extends object>(
   Component: React.ComponentType<T>
