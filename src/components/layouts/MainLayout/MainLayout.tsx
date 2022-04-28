@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { AssistService, RequestStatus } from 'src/services/assist.service';
 import useSession from 'src/hooks/useSession';
 import HeaderMobile from '../HeaderMobile';
+import BottomNavBar from '../BottomNavBar';
 import LeftSideMenu from '../LeftSideMenu';
 import style from './style.module.scss';
 
@@ -94,6 +95,7 @@ const MainLayout: FC<IProps> = ({ children }: IProps) => {
           </IonRow>
         </IonGrid>
       </IonContent>
+      {!isSmUp && <BottomNavBar />}
     </IonPage>
   );
 };
