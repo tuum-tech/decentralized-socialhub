@@ -377,7 +377,7 @@ const DashboardHome: React.FC<Props> = ({
     <>
       <IonGrid className="ion-no-padding">
         <IonRow className="ion-no-padding">
-          <LeftCardCol sizeSm="8" sizeXs="12">
+          <LeftCardCol sizeMd="8" sizeSm="12">
             {tutorialVisible && (
               <BeginnersTutorial
                 onTutorialStart={onTutorialStart}
@@ -392,7 +392,7 @@ const DashboardHome: React.FC<Props> = ({
               {!hasSocialProfiles && <ManageLinks />}
             </Slides>
           </LeftCardCol>
-          <RightCardCol sizeSm="4" sizeXs="12">
+          <RightCardCol sizeMd="4" sizeSm="12">
             <VerificationStatus progress={verifiedPercent} />
             <ProfileCompletion
               progress={completionPercent}

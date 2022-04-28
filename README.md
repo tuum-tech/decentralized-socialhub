@@ -33,7 +33,7 @@ You need to run Profile API service before you can start Profile app
 - [Profile API Service](https://github.com/tuum-tech/profile-api-service)
 
 ## Prep the backend
-- `npm i`
+- `yarn`
 - `cp .env.example .env`
 - `node src/scripts/appvault.scripts.js`
 - `node src/scripts/spaces.script.js`

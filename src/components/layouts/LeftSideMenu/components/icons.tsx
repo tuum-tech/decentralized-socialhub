@@ -1,29 +1,32 @@
 import React, { useMemo } from 'react';
-import styled from 'styled-components';
+import styled, { CSSProperties } from 'styled-components';
 
-const LeftSvgContainer = styled.div`
-  margin-right: 20px;
+const SvgContainer = styled.div`
   svg {
     display: block;
     margin: 0 auto;
   }
 `;
 
-export const MenuIcon = ({
-  name,
-  active = false
-}: {
+interface IProps {
   name: string;
   active: boolean;
-}) => {
+  customStyle?: CSSProperties;
+}
+
+export const MenuIcon = ({
+  name,
+  active = false,
+  customStyle = {}
+}: IProps) => {
   const imgSrc = useMemo(
     () => require(`src/assets/sidebar/${name}${active ? '-active' : ''}.svg`),
     [name, active]
   );
 
   return (
-    <LeftSvgContainer>
+    <SvgContainer style={customStyle}>
       <img src={imgSrc} alt={`${name}${active ? '-active' : ''}`} />
-    </LeftSvgContainer>
+    </SvgContainer>
   );
 };
