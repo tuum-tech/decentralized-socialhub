@@ -69,6 +69,18 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   });
 
   useEffect(() => {
+    if (
+      history.location.search &&
+      history.location.search.includes('?ref=did:elastos:')
+    ) {
+      window.localStorage.setItem(
+        'referral',
+        history.location.search.replace('?ref=', '')
+      );
+    }
+  }, [history.location.search]);
+
+  useEffect(() => {
     (async () => {
       const signedUserDids = await UserService.getSignedUsers();
       setSignedUsers(signedUserDids);
@@ -144,17 +156,10 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
 
           <EmailUserCreate
             onSuccess={(name: string, email: string, password: string) => {
-              let referal = '';
-              if (
-                history.location.search &&
-                history.location.search.includes('?ref=did:elastos:')
-              ) {
-                referal = history.location.search.replace('?ref=', '');
-              }
               setUser({ name, email, password });
               history.push({
                 pathname: '/email-verification',
-                state: { name, email, password, referal }
+                state: { name, email, password }
               });
             }}
           />

@@ -15,6 +15,8 @@ import PublishingLabel from '../PublishingLabel';
 import { useRecoilValue } from 'recoil';
 import { FullProfileAtom } from 'src/Atoms/Atoms';
 import { LinkButton } from 'src/elements-v2/buttons';
+import { DashboardSignInButton } from 'src/elements/buttons';
+// import LinkButton from 'src/elements-v2/buttons/LinkButton';
 
 import style from './style.module.scss';
 
@@ -28,7 +30,6 @@ const DashboardHeader: React.FC<IProps> = ({
   publishStatus
 }: IProps) => {
   const [verifiers, setVerifiers] = useState([{ name: '', did: '' }]);
-  const [referalCounts, setReferalCounts] = useState(0);
   const isSmDown = useBreakpoint(down('sm'));
   const profile = useRecoilValue(FullProfileAtom);
 
@@ -37,17 +38,8 @@ const DashboardHeader: React.FC<IProps> = ({
       if (sessionItem.name !== '') {
         setVerifiers(profile.name.verifiers);
       }
-      if (sessionItem.referals && sessionItem.referals.length > 0) {
-        const nArray: string[] = [];
-        for (let i = 0; i < sessionItem.referals.length; i++) {
-          if (!nArray.includes(sessionItem.referals[i])) {
-            nArray.push(sessionItem.referals[i]);
-          }
-        }
-        setReferalCounts(nArray.length);
-      }
     })();
-  }, [profile, sessionItem.name, sessionItem.referals]);
+  }, [profile, sessionItem.name]);
 
   return (
     <IonGrid className={style['profileheader']}>
@@ -78,9 +70,20 @@ const DashboardHeader: React.FC<IProps> = ({
                   dateJoined={sessionItem.timestamp}
                 />
               </IonCol>
-              <IonCol>{`Number of Referals: ${referalCounts}`}</IonCol>
             </IonRow>
           </IonGrid>
+        </IonCol>
+        <IonCol size="auto">
+          <DashboardSignInButton
+            style={{ height: '43px', cursor: 'pointer' }}
+            onClick={() => {
+              navigator.clipboard.writeText(
+                `https://www.profile.site/create-profile?ref=${sessionItem.did}`
+              );
+            }}
+          >
+            Copy Referral Link
+          </DashboardSignInButton>
         </IonCol>
         <IonCol size="auto">
           <LinkButton

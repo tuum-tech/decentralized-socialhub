@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IonGrid, IonRow, IonCol, IonButton } from '@ionic/react';
 import styled from 'styled-components';
 
+import { TuumTechScriptService } from 'src/services/script.service';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 import TutorialStepsComponent from './TutorialSteps';
 import TutorialStep1Component from './Steps/TutorialStep1';
@@ -52,6 +53,15 @@ const TutorialComponent: React.FC<TutorialComponentProps> = (
       newSession.tutorialStep = step + 1;
       if (newSession.tutorialStep === 4) {
         newSession.badges!.account!.beginnerTutorial.archived = new Date().getTime();
+
+        let referral = window.localStorage.getItem('referral') || '';
+        if (referral !== '') {
+          await TuumTechScriptService.completeReferralTutorial(
+            referral,
+            newSession.did
+          );
+          window.localStorage.removeItem('referral');
+        }
       }
 
       let userService = new UserService(await DidService.getInstance());

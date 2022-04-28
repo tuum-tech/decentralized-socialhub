@@ -345,8 +345,7 @@ export class UserService {
     newDidStr: string,
     newMnemonicStr: string,
     hiveHostStr: string,
-    avatar = '',
-    referal = ''
+    avatar = ''
   ) {
     let did = newDidStr;
     let mnemonics = newMnemonicStr;
@@ -455,7 +454,7 @@ export class UserService {
       coverPhoto: '',
       pageTemplate: 'default',
       timestamp: Date.now(),
-      referals: []
+      referrals: [] as IReferral[]
     };
     let curTime = new Date().getTime();
     let messages = [];
@@ -548,8 +547,9 @@ export class UserService {
       );
     }
 
-    if (referal !== '') {
-      await TuumTechScriptService.addReferal(referal, sessionItem.did);
+    const referral = window.localStorage.getItem('referral') || '';
+    if (referral !== '') {
+      await TuumTechScriptService.addReferral(referral, sessionItem.did);
     }
 
     Array.from(new Set(messages)).forEach(async message => {

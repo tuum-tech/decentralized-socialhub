@@ -11,6 +11,7 @@ import { TuumTechScriptService } from 'src/services/script.service';
 import ActivityTimeline from './components/ActivityTimeline';
 import VerificationRequests from './components/VerificationRequests';
 import MyRequests from './components/MyRequests';
+import Referrals from './components/Referrals';
 import ActivityPageHeader, {
   Header,
   PageTitle,
@@ -78,6 +79,11 @@ const ActivityPage: React.FC<InferMappedProps> = ({
                     active={active}
                     setActive={setActive}
                     myverifications={myverifications.length}
+                    referrals={
+                      props.session.referrals
+                        ? props.session.referrals.length
+                        : 0
+                    }
                     verificationRequests={
                       verificationRequests.filter(x => x.status === 'requested')
                         .length
@@ -108,6 +114,9 @@ const ActivityPage: React.FC<InferMappedProps> = ({
                         await fetchVerificationRequestToMe();
                       }}
                     />
+                  )}
+                  {active === 'referrals' && (
+                    <Referrals session={props.session} />
                   )}
                 </ActivityTabsContainer>
               </IonCol>

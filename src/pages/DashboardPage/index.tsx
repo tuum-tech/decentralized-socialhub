@@ -43,6 +43,7 @@ const TutorialModal = styled(IonModal)`
 
 const DashboardPage: React.FC = () => {
   const { session, setSession } = useSession();
+
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');

@@ -74,15 +74,14 @@ const EmailVerificationPage: React.FC<PageProps> = ({
   const [user, setUser] = useState({
     name: '',
     email: '',
-    password: '',
-    referal: ''
+    password: ''
   });
 
   useEffect(() => {
-    const { name, email, password, referal } = props.location.state;
+    const { name, email, password } = props.location.state;
 
     if (name !== '' && email !== '' && password !== '') {
-      setUser({ name, email, password, referal });
+      setUser({ name, email, password });
       setLoaded(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -144,8 +143,7 @@ const EmailVerificationPage: React.FC<PageProps> = ({
         session.did,
         mnemonic,
         '',
-        '',
-        user.referal
+        ''
       );
 
       eProps.setSession({ session: sessionItem });

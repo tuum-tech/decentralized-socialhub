@@ -256,6 +256,11 @@ interface ProfileDTO {
   gamerTagDTO: GamerTagDTO;
 }
 
+interface IReferral {
+  did: string;
+  sign_up_date?: string;
+}
+
 interface ISessionItem {
   hiveHost: string;
   userToken: string;
@@ -279,7 +284,7 @@ interface ISessionItem {
   pageTemplate?: string;
   phone?: string;
   timestamp: number;
-  referals?: string[];
+  referrals?: IReferral[];
 }
 
 interface LoginCred {

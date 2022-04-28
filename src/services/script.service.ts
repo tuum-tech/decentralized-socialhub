@@ -232,26 +232,52 @@ export class TuumTechScriptService {
     return response;
   }
 
-  public static async addReferal(toDid: string, didReferedFrom: string) {
+  public static async addReferral(toDid: string, did: string) {
     if (toDid !== '') {
-      // retrive user's referals first
+      // retrive user's referrals first
       const users = await TuumTechScriptService.searchUserWithDIDs([toDid]);
 
-      console.log('===>users', users[0]);
-
-      let referals = [];
       if (users.length > 0) {
-        referals = users[0].referals || [];
+        let referrals = [];
+        let referralDids = (users[0].referrals || []).map(
+          (r: IReferral) => r.did
+        );
+        if (!referralDids.includes(did)) {
+          referrals.push({ did });
+        }
+
+        if (referrals.length > 0) {
+          let newUser = users[0];
+          newUser.referrals = referrals;
+          await TuumTechScriptService.updateTuumUser(newUser);
+        }
       }
-      if (!referals.includes(didReferedFrom)) {
-        referals.push(didReferedFrom);
-      }
-      console.log('===>referals', referals, toDid, didReferedFrom);
-      if (referals.length > 0) {
-        await TuumTechScriptService.updateTuumUser({
-          referals,
-          ...users[0]
-        });
+    }
+  }
+
+  public static async completeReferralTutorial(toDid: string, did: string) {
+    console.log('====>completeReferralTutorial', toDid, did);
+    if (toDid !== '') {
+      // retrive user's referrals first
+      const users = await TuumTechScriptService.searchUserWithDIDs([toDid]);
+
+      if (
+        users.length > 0 &&
+        users[0].referrals &&
+        users[0].referrals.length > 0
+      ) {
+        let referrals = users[0].referrals || [];
+        let index = referrals.findIndex((r: IReferral) => r.did === did);
+
+        console.log('====>completeReferralTutorial', referrals);
+
+        if (index > -1) {
+          referrals[index].sign_up_date = new Date();
+
+          let newUser = users[0];
+          newUser.referrals = referrals;
+          await TuumTechScriptService.updateTuumUser(newUser);
+        }
       }
     }
   }
