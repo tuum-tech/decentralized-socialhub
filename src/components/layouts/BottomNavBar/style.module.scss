@@ -1,0 +1,16 @@
+@import '../../../styles/_variables.scss';
+
+ion-tab-bar {
+  padding-top: 6px;
+  padding-left: 7px;
+}
+
+ion-tab-button {
+  border-radius: 10px;
+  --padding-start: 8px;
+  --padding-end: 8px;
+
+  &[selected='true'] {
+    --background: #{$secondary-gradient};
+  }
+}
