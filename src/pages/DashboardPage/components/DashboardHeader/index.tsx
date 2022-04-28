@@ -78,7 +78,7 @@ const DashboardHeader: React.FC<IProps> = ({
             style={{ height: '43px', cursor: 'pointer' }}
             onClick={() => {
               navigator.clipboard.writeText(
-                `https://www.profile.site/create-profile?ref=${sessionItem.did}`
+                `${process.env.REACT_APP_PROFILE_LANDING_PAGE}/create-profile?ref=${sessionItem.did}`
               );
             }}
           >

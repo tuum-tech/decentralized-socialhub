@@ -238,11 +238,9 @@ export class TuumTechScriptService {
       const users = await TuumTechScriptService.searchUserWithDIDs([toDid]);
 
       if (users.length > 0) {
-        let referrals = [];
-        let referralDids = (users[0].referrals || []).map(
-          (r: IReferral) => r.did
-        );
-        if (!referralDids.includes(did)) {
+        let referrals = users[0].referrals || [];
+
+        if (!referrals.map((r: IReferral) => r.did).includes(did)) {
           referrals.push({ did });
         }
 
