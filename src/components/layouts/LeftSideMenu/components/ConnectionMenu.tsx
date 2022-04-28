@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import Icon from 'src/elements-v2/icons/Icon';
+import Icon from 'src/elements-v2/icons';
 import MenuItem from './MenuItem';
 
 interface Props {

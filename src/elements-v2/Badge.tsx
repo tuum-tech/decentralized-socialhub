@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { IonBadge } from '@ionic/react';
 import styled from 'styled-components';
-import { ThemeColor, ThemeGradient } from '../common.types';
-import styles from './Badge.module.scss';
+import { ThemeColor, ThemeGradient } from './common.types';
+import styles from './style.module.scss';
 
 const StyledBadge = styled(IonBadge)<BadgeProps & { background: string }>`
   background: ${props => props.background};

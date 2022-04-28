@@ -6,7 +6,7 @@ import { up } from 'styled-breakpoints';
 import styles from './style.module.scss';
 import Logo from 'src/elements/Logo';
 import Avatar from 'src/components/Avatar';
-import Icon from 'src/elements-v2/icons/Icon';
+import Icon from 'src/elements-v2/icons';
 import { RequestStatus } from 'src/services/assist.service';
 import PopoverMenu from './PopoverMenu';
 

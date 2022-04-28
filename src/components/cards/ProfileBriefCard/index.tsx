@@ -5,7 +5,7 @@ import Socials from './Socials';
 import Follows from './Follows';
 
 import { CardOverview } from '../common';
-import Icon from 'src/elements-v2/icons/Icon';
+import Icon from 'src/elements-v2/icons';
 
 interface Props {
   category: string;
