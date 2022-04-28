@@ -125,8 +125,9 @@ const SpaceCard: React.FC<Props> = ({
                 <IonRow>
                   <SpaceName>{space.name}</SpaceName>
                 </IonRow>
-                <IonRow className="ion-justify-content-start">
+                <IonRow className="ion-justify-content-between">
                   <SpaceCategory>{space.category}</SpaceCategory>
+                  <SpaceCategory>{space.meta?.network}</SpaceCategory>
                 </IonRow>
               </IonGrid>
             </SpaceInfo>

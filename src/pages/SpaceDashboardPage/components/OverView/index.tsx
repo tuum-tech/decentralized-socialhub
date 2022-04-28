@@ -42,6 +42,7 @@ const OverView: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
             </IonRow>
             <IonRow className="ion-justify-content-start">
               <SpaceCategory>{category}</SpaceCategory>
+              <SpaceCategory>{profile.meta?.network}</SpaceCategory>
             </IonRow>
             <IonRow className="ion-justify-content-start">
               <Link
