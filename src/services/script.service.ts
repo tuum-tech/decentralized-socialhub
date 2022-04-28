@@ -254,7 +254,6 @@ export class TuumTechScriptService {
   }
 
   public static async completeReferralTutorial(toDid: string, did: string) {
-    console.log('====>completeReferralTutorial', toDid, did);
     if (toDid !== '') {
       // retrive user's referrals first
       const users = await TuumTechScriptService.searchUserWithDIDs([toDid]);
@@ -266,8 +265,6 @@ export class TuumTechScriptService {
       ) {
         let referrals = users[0].referrals || [];
         let index = referrals.findIndex((r: IReferral) => r.did === did);
-
-        console.log('====>completeReferralTutorial', referrals);
 
         if (index > -1) {
           referrals[index].sign_up_date = new Date();

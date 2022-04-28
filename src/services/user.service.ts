@@ -638,6 +638,7 @@ export class UserService {
     } else if (instance) {
       instance.onBoardingCompleted = res.onBoardingCompleted;
       instance.tutorialStep = res.tutorialStep;
+      instance.referrals = res.referrals || [];
       this.lockUser(UserService.key(instance.did), instance);
 
       window.localStorage.setItem('isLoggedIn', 'true');
