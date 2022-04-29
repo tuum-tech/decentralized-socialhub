@@ -131,7 +131,7 @@ const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
                   image={image}
                   crop={crop}
                   zoom={zoom}
-                  aspect={4 / 1}
+                  aspect={16 / 7}
                   onCropChange={setCrop}
                   onZoomChange={setZoom}
                   onCropComplete={onCropComplete}
