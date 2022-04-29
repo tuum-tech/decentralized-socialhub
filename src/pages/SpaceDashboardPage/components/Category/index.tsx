@@ -85,7 +85,7 @@ const Category: React.FC<IProps> = ({ profile, update }: IProps) => {
         />
       </CardContentContainer>
       <CardHeaderContent>
-        <IonCardTitle>NetWork</IonCardTitle>
+        <IonCardTitle>Network</IonCardTitle>
       </CardHeaderContent>
       <IonCardContent>{profile.meta?.network}</IonCardContent>
     </CardWrapper>

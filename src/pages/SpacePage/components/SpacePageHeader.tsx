@@ -76,13 +76,13 @@ const SpacePageHeader: React.FC<SpacePageHeaderProps> = ({
           className={(active === 'my spaces' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => setActive('my spaces')}
         >
-          <IonLabel className="tab-label">My Spaces1</IonLabel>
+          <IonLabel className="tab-label">My Spaces</IonLabel>
         </IonItem>
         <IonItem
           className={(active === 'following' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => setActive('following')}
         >
-          <IonLabel className="tab-label">Following1</IonLabel>
+          <IonLabel className="tab-label">Following</IonLabel>
         </IonItem>
       </IonList>
     </SpacePageHeaderContainer>
