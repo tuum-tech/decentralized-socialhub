@@ -57,7 +57,6 @@ import {
 
 import HomePage from './pages/HomePage';
 import DefaultPage from './pages/404Page';
-import ExplorePage from './pages/ExplorePage';
 import ManagerPage from './pages/ManagerPage';
 import ActivityPage from './pages/ActivityPage';
 import SpacePage from './pages/SpacePage';
@@ -84,6 +83,7 @@ import LoadingIndicator from './elements/LoadingIndicator';
 const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
 const SettingsPage = React.lazy(() => import('./pages/SettingsPage'));
 const PublicPage = React.lazy(() => import('./pages/PublicPage'));
+const ExplorePage = React.lazy(() => import('./pages/ExplorePage'));
 
 const StyledToastContainer = styled(ToastContainer)`
   & .Toastify__toast-body {
