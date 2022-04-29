@@ -21,7 +21,10 @@ import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import { DidService } from 'src/services/did.service.new';
 import { TemplateService } from 'src/services/template.service';
 import { DefaultButton } from 'src/elements-v2/buttons';
-
+import {
+  defaultFullProfile,
+  ProfileService
+} from 'src/services/profile.service';
 import TemplateModalContent, { TemplateModal } from './Modal/TemplateModal';
 
 export const Divider = styled.hr`
@@ -213,6 +216,24 @@ const TemplateManagerCard: React.FC<PageProps> = ({
             const newMyTemplates = allTemplates.filter((t: Template) =>
               newTemplateValues.includes(t.value)
             );
+            let userSession = JSON.parse(JSON.stringify(sessionItem));
+            if (!userSession) return false;
+
+            userSession.templates = newMyTemplates;
+            userSession.templates.archived = new Date().getTime();
+            await updateSession({ session: userSession });
+            await ProfileService.addActivity(
+              {
+                guid: '',
+                did: userSession.did,
+                message: 'You updated wallet',
+                read: false,
+                createdAt: 0,
+                updatedAt: 0
+              },
+              userSession
+            );
+
             await TemplateService.setMyTemplates(sessionItem, newMyTemplates);
             setMyTemplates(newMyTemplates);
           }}

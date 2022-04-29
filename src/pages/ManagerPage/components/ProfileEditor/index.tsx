@@ -198,6 +198,7 @@ const ProfileEditor: React.FC<Props> = ({
     prevEducationItem: EducationItem,
     educationItem: EducationItem
   ): Promise<boolean> => {
+    console.log(1231231231231);
     let userSession = JSON.parse(JSON.stringify(session));
     let archivedBadge = true;
     if (!userSession) return false;
