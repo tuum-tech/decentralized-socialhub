@@ -63,9 +63,7 @@ import SpacePage from './pages/SpacePage';
 import SpaceDashboardPage from './pages/SpaceDashboardPage';
 import PublicSpacePage from './pages/PublicSpacePage';
 import SyncPage from './pages/SyncPage';
-import FollowersPage from './pages/FollowersPage';
-import FollowingsPage from './pages/FollowingsPage';
-import MutualFollowersPage from './pages/MutualFollowersPage';
+import Connections from './pages/Connections';
 
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -136,26 +134,8 @@ const App: React.FC = () => {
                     component={DashboardPage}
                     exact={true}
                   />
-                  <ProtectedRoute
-                    path="/connections"
-                    component={FollowersPage}
-                    exact={true}
-                  />
-                  <ProtectedRoute
-                    path="/connections/followings"
-                    component={FollowingsPage}
-                    exact={true}
-                  />
-                  <ProtectedRoute
-                    path="/connections/followers"
-                    component={FollowersPage}
-                    exact={true}
-                  />
-                  <ProtectedRoute
-                    path="/connections/mutual-followers"
-                    component={MutualFollowersPage}
-                    exact={true}
-                  />
+                  <Route path="/connections" component={Connections} />
+
                   <ProtectedRoute
                     path="/explore"
                     component={ExplorePage}
