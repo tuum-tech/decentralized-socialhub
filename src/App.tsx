@@ -63,7 +63,6 @@ import SpacePage from './pages/SpacePage';
 import SpaceDashboardPage from './pages/SpaceDashboardPage';
 import PublicSpacePage from './pages/PublicSpacePage';
 import SyncPage from './pages/SyncPage';
-import Connections from './pages/Connections';
 
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -82,6 +81,7 @@ const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
 const SettingsPage = React.lazy(() => import('./pages/SettingsPage'));
 const PublicPage = React.lazy(() => import('./pages/PublicPage'));
 const ExplorePage = React.lazy(() => import('./pages/ExplorePage'));
+const Connections = React.lazy(() => import('./pages/Connections'));
 
 const StyledToastContainer = styled(ToastContainer)`
   & .Toastify__toast-body {
@@ -134,8 +134,7 @@ const App: React.FC = () => {
                     component={DashboardPage}
                     exact={true}
                   />
-                  <Route path="/connections" component={Connections} />
-
+                  <ProtectedRoute path="/connections" component={Connections} />
                   <ProtectedRoute
                     path="/explore"
                     component={ExplorePage}
