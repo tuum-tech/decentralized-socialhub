@@ -10,7 +10,6 @@ import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 import { UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
-import { SmallLightButton } from 'src/elements/buttons';
 
 import {
   CardOverview,
@@ -30,6 +29,7 @@ import { DidService, IDidService } from 'src/services/did.service.new';
 import { showNotify } from 'src/utils/notify';
 import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { DidcredsService } from 'src/services/didcreds.service';
+import { DefaultButton } from 'src/elements-v2/buttons';
 
 const Upload: React.FC<InferMappedProps> = ({
   eProps,
@@ -169,16 +169,29 @@ const Upload: React.FC<InferMappedProps> = ({
             </IonCol>
 
             <IonCol size="auto" className="ion-no-padding">
-              <SmallLightButton className="mr-2" onClick={remove}>
-                Cancel
-              </SmallLightButton>
-              <SmallLightButton
-                onClick={async () => {
-                  if (base64) await storeUploadedAvatar(base64);
-                }}
-              >
-                Save
-              </SmallLightButton>
+              <IonRow>
+                <DefaultButton
+                  className="mr-2"
+                  size="small"
+                  variant="outlined"
+                  btnColor="primary-gradient"
+                  textType="gradient"
+                  onClick={remove}
+                >
+                  Cancel
+                </DefaultButton>
+                <DefaultButton
+                  size="small"
+                  variant="outlined"
+                  btnColor="primary-gradient"
+                  textType="gradient"
+                  onClick={async () => {
+                    if (base64) await storeUploadedAvatar(base64);
+                  }}
+                >
+                  Save
+                </DefaultButton>
+              </IonRow>
             </IonCol>
           </IonRow>
         </IonGrid>

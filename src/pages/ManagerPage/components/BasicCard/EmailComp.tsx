@@ -12,6 +12,7 @@ import EmailVerificationDetailContent, {
 import { requestUpdateEmailOrPhone } from 'src/components/Auth/fetchapi';
 
 import { validateEmail } from 'src/utils/validation';
+import { DefaultButton } from 'src/elements-v2/buttons';
 
 export const ActionBtnCol = styled(IonCol)`
   margin: 0 0 0 auto;
@@ -112,14 +113,19 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
           />
         </IonCol>
         <ActionBtnCol size="auto">
-          <SaveButton
+          <DefaultButton
+            className="mr-2"
+            size="small"
+            variant="outlined"
+            btnColor="primary-gradient"
+            textType="gradient"
             disabled={disableButton()}
             onClick={async () => {
               await sendVerification();
             }}
           >
             {loading ? 'Sending Verification' : 'Send Verification'}
-          </SaveButton>
+          </DefaultButton>
         </ActionBtnCol>
       </IonRow>
 

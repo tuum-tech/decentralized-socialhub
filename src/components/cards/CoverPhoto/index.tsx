@@ -10,7 +10,6 @@ import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 import { UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
-import { SmallLightButton } from 'src/elements/buttons';
 
 import {
   CardOverview,
@@ -31,9 +30,9 @@ import {
   ImgUploadContainer,
   Perfil
 } from './upload';
-import styleWidget from '../WidgetCards.module.scss';
 import { DidService } from 'src/services/did.service.new';
 import { showNotify } from 'src/utils/notify';
+import { DefaultButton } from 'src/elements-v2/buttons';
 
 export const getCoverPhoto = (user: ISessionItem) => {
   if (user.coverPhoto && user.coverPhoto !== '') {
@@ -163,16 +162,29 @@ const Upload: React.FC<InferMappedProps> = ({
             </IonCol>
 
             <IonCol size="auto" className="ion-no-padding">
-              <SmallLightButton className="mr-2" onClick={remove}>
-                Cancel
-              </SmallLightButton>
-              <SmallLightButton
-                onClick={async () => {
-                  if (base64) await storeUploadedCoverPhoto(base64);
-                }}
-              >
-                Save
-              </SmallLightButton>
+              <IonRow>
+                <DefaultButton
+                  className="mr-2"
+                  size="small"
+                  variant="outlined"
+                  btnColor="primary-gradient"
+                  textType="gradient"
+                  onClick={remove}
+                >
+                  Cancel
+                </DefaultButton>
+                <DefaultButton
+                  size="small"
+                  variant="outlined"
+                  btnColor="primary-gradient"
+                  textType="gradient"
+                  onClick={async () => {
+                    if (base64) await storeUploadedCoverPhoto(base64);
+                  }}
+                >
+                  Save
+                </DefaultButton>
+              </IonRow>
             </IonCol>
           </IonRow>
         </IonGrid>

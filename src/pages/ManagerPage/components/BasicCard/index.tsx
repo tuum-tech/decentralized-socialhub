@@ -4,7 +4,7 @@ import { isEqual } from 'lodash';
 import styled from 'styled-components';
 
 import SmallTextInput from 'src/elements/inputs/SmallTextInput';
-import EmailComp, { SaveButton } from './EmailComp';
+import EmailComp from './EmailComp';
 import PhoneComp from './PhoneComp';
 import {
   CardOverview,
@@ -12,6 +12,7 @@ import {
   CardContentContainer
 } from 'src/components/cards/common';
 import VerificationRequestDecorator from 'src/pages/ActivityPage/components/VerificationRequests/VerificationRequestDecorator';
+import { DefaultButton } from 'src/elements-v2/buttons';
 
 const Divider = styled.hr`
   width: 100%;
@@ -58,7 +59,11 @@ const BasicCard: React.FC<IProps> = ({
               <IonCardTitle>Basic Information</IonCardTitle>
             </IonCol>
             <IonCol size="auto" className="ion-no-padding">
-              <SaveButton
+              <DefaultButton
+                size="small"
+                variant="outlined"
+                btnColor="primary-gradient"
+                textType="gradient"
                 disabled={
                   sessionItem.tutorialStep !== 4 ||
                   isEqual(sessionItem, currentBasicDTO)
@@ -66,7 +71,7 @@ const BasicCard: React.FC<IProps> = ({
                 onClick={() => updateFunc(currentBasicDTO)}
               >
                 Save
-              </SaveButton>
+              </DefaultButton>
             </IonCol>
           </IonRow>
         </IonGrid>
