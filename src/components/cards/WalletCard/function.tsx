@@ -6,6 +6,7 @@ import { EssentialsService } from 'src/services/essentials.service';
 import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { signWithMetamask } from '../../../utils/web3';
 import { requestRandomNonce, verifySignature } from './fetchapi';
+import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
 
 export const verifyWalletOwner = async (web3: Web3, address: string) => {
   const nonceStatus: any = await requestRandomNonce(address);
@@ -61,11 +62,10 @@ export const removeWalletFromDIDDocument = async (
   if (oldVC) {
     let vcKey = didDocument.getSubject().toString() + '#' + key;
     if (user.isEssentialUser) {
-      let cn = connectivity.getActiveConnector();
-
-      await cn?.deleteCredentials([vcKey], {
-        forceToPublishCredentials: true
-      });
+      let essentialsService = new EssentialsService(didService);
+      await essentialsService.removeMultipleVerifiableCredentialsToEssentials([
+        vcKey
+      ]);
 
       didDocument = await didService.getPublishedDocument(
         didDocument.getSubject()

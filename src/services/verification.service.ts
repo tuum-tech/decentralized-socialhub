@@ -485,10 +485,10 @@ export class VerificationService {
     const existingVerifiableCredential = didDocument.getCredential(didUrl);
     if (existingVerifiableCredential) {
       if (holder.isEssentialUser) {
-        const cn = connectivity.getActiveConnector();
-        await cn?.deleteCredentials([DIDstring], {
-          forceToPublishCredentials: true
-        });
+        let essentialsService = new EssentialsService(didService);
+        await essentialsService.removeMultipleVerifiableCredentialsToEssentials(
+          [DIDstring]
+        );
       } else {
         const builder = DIDDocument.Builder.newFromDocument(didDocument);
         didDocument = await builder

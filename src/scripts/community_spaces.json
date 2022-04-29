@@ -68,7 +68,7 @@
     "sid": 4,
     "name": "Dropz",
     "category": "NFT Collection",
-    "owner": ["did:elastos:iWtZBcqZa981z3YEoUxanCqvN7rFVDu52D"],
+    "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
     "tags": [
       "ERC-721",
       "Governance",
@@ -87,7 +87,7 @@
     "sid": 5,
     "name": "The 2821 Club",
     "category": "NFT Collection",
-    "owner": ["did:elastos:iWtZBcqZa981z3YEoUxanCqvN7rFVDu52D"],
+    "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
     "tags": [
       "ERC-721",
       "Governance",
