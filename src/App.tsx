@@ -80,6 +80,7 @@ import { EssentialsConnector } from '@elastosfoundation/essentials-connector-cli
 import { RecoilRoot } from 'recoil';
 import SimplePage from './pages/SimplePage';
 import LoadingIndicator from './elements/LoadingIndicator';
+import HiveClientPage from './pages/HiveClientPage';
 
 const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
 const SettingsPage = React.lazy(() => import('./pages/SettingsPage'));
@@ -199,6 +200,11 @@ const App: React.FC = () => {
                     exact={true}
                   />
 
+                  <ProtectedRoute
+                    path="/hiveClient"
+                    component={HiveClientPage}
+                    exact={true}
+                  />
                   {/* // login workflow */}
                   <Route path="/twitter_callback" component={TwitterCallback} />
                   <Route

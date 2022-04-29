@@ -32,7 +32,7 @@ const environmentParameters: HiveClientParameters = {
     appMnemonics: process.env.REACT_APP_APPLICATION_MNEMONICS,
     appPhrasePass: process.env.REACT_APP_APPLICATION_PASSPHRASE,
     appStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS,
-    userDID: '',
+    userDID: 'did:elastos:iqEndyMRZDQ4Pq99QCrYGsSGL9hsUUxdoM',
     userMnemonics: '',
     userPhrasePass: '',
     userStorePass: ''
@@ -282,6 +282,7 @@ export class HiveClient {
         getAuthorization(
           authenticationChallengeJWtCode: string
         ): Promise<string> {
+          debugger;
           HiveClient.LOG.trace(
             'HiveAnonymousContextProvider: getAuthorization'
           );
@@ -290,7 +291,7 @@ export class HiveClient {
           });
         }
       },
-      ''
+      appContextParameters.context.userDID
     );
   }
 

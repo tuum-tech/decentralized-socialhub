@@ -55,16 +55,18 @@ export class HiveContextProvider implements AppContextProvider {
     );
     HiveContextProvider.LOG.debug('Init app private identity');
 
-    this.userRootId = await this.initPrivateIdentity(
-      this.contextParameters.userMnemonics,
-      this.contextParameters.userDID,
-      this.contextParameters.userPhrasePass,
-      this.contextParameters.userStorePass
-    );
+    if (this.contextParameters.userMnemonics !== '') {
+      this.userRootId = await this.initPrivateIdentity(
+        this.contextParameters.userMnemonics,
+        this.contextParameters.userDID,
+        this.contextParameters.userPhrasePass,
+        this.contextParameters.userStorePass
+      );
+      await this.initDid(this.userRootId);
+    }
     HiveContextProvider.LOG.debug('Init user private identity');
 
     await this.initDid(this.appRootId);
-    await this.initDid(this.userRootId);
   }
 
   public async initPrivateIdentity(
@@ -75,6 +77,7 @@ export class HiveContextProvider implements AppContextProvider {
   ): Promise<RootIdentity> {
     HiveContextProvider.LOG.trace('initPrivateIdentity');
     HiveContextProvider.LOG.debug('Opens store');
+
     let id = RootIdentity.getIdFromMnemonic(mnemonic, phrasePass);
 
     HiveContextProvider.LOG.debug('ID from mnemonic {} : {}', mnemonic, id);
