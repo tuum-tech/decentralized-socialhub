@@ -107,9 +107,10 @@ export class UserService {
       builder = builder.removeCredential(credentialType.toLowerCase());
     }
 
-    return builder
-      .addCredential(verifiableCredential)
-      .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+    builder.edit();
+    return await (await builder.addCredential(verifiableCredential)).seal(
+      process.env.REACT_APP_DID_STORE_PASSWORD as string
+    );
   };
 
   private async generateTemporaryDocument(
