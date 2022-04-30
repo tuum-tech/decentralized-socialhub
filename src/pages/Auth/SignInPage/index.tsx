@@ -79,6 +79,8 @@ const SignInPage: React.FC<RouteComponentProps<
       let did = 'did:elastos:' + owner.getMethodSpecificId();
       let mnemonic = '';
 
+      DidService.InitializeMainnet();
+
       let resolvedDocument = await owner.resolve();
       await didService.storeDocument(resolvedDocument);
       setDidDocument(resolvedDocument.toString(true));
