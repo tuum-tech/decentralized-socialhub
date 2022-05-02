@@ -4,8 +4,8 @@ import { IonRow, IonCol, IonCardTitle } from '@ionic/react';
 import { TuumTechScriptService } from 'src/services/script.service';
 import {
   CardOverview,
-  CardHeader,
-  CardContent
+  CardHeaderContent,
+  CardContentContainer
 } from 'src/components/cards/common';
 import { LinkStyleSpan } from '../common';
 import Avatar from 'src/components/Avatar';
@@ -37,7 +37,7 @@ const Follower: React.FC<IProps> = ({
   return (
     <>
       <CardOverview template={template}>
-        <CardHeader>
+        <CardHeaderContent>
           <IonRow className="ion-justify-content-between ion-no-padding">
             <IonCol className="ion-no-padding">
               <IonCardTitle>Followers ({followers.length})</IonCardTitle>
@@ -52,8 +52,8 @@ const Follower: React.FC<IProps> = ({
               </LinkStyleSpan>
             </IonCol>
           </IonRow>
-        </CardHeader>
-        <CardContent>
+        </CardHeaderContent>
+        <CardContentContainer>
           {followers.map((follower: any) => {
             return (
               <IonRow className={style['row']} key={follower.did}>
@@ -71,7 +71,7 @@ const Follower: React.FC<IProps> = ({
               </IonRow>
             );
           })}
-        </CardContent>
+        </CardContentContainer>
       </CardOverview>
       {showViewAllModal && (
         <ViewAllFollower

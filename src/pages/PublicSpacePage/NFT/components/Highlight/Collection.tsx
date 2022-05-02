@@ -3,8 +3,8 @@ import { IonRow, IonCardTitle, IonCol, IonGrid } from '@ionic/react';
 import styled from 'styled-components';
 import {
   CardOverview,
-  CardHeader,
-  CardContent
+  CardHeaderContent,
+  CardContentContainer
 } from 'src/components/cards/common';
 import { LinkStyleSpan } from '../MainBoard/common';
 import img_nft_item from 'src/assets/space/nft_item.jpg';
@@ -34,7 +34,7 @@ const Collection: React.FC<IProps> = ({
   };
   return (
     <CardOverview template={template}>
-      <CardHeader>
+      <CardHeaderContent>
         <IonRow className="ion-justify-content-between ion-no-padding">
           <IonCol className="ion-no-padding">
             <IonCardTitle>NFT Collection</IonCardTitle>
@@ -43,8 +43,8 @@ const Collection: React.FC<IProps> = ({
             <LinkStyleSpan onClick={viewAll}>View all</LinkStyleSpan>
           </IonCol>
         </IonRow>
-      </CardHeader>
-      <CardContent>
+      </CardHeaderContent>
+      <CardContentContainer>
         <Grid>
           <IonRow>
             {assets.slice(0, 3).map((asset, index) => {
@@ -74,7 +74,7 @@ const Collection: React.FC<IProps> = ({
             })}
           </IonRow>
         </Grid>
-      </CardContent>
+      </CardContentContainer>
     </CardOverview>
   );
 };

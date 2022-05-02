@@ -935,7 +935,25 @@ export class UserVaultScripts {
     });
   }
 
-  static async updateSpacePost(hiveClient: HiveClient) {
+  static async getSpacePostScriptSetter(hiveClient: HiveClient) {
+    await hiveClient.Scripting.SetScript({
+      name: 'get_space_post',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_space_post',
+        output: true,
+        body: {
+          collection: 'space_posts',
+          filter: {
+            guid: '$params.guid'
+          }
+        }
+      }
+    });
+  }
+  static async updateSpacePostScriptSetter(hiveClient: HiveClient) {
     await hiveClient.Scripting.SetScript({
       name: 'update_space_post',
       allowAnonymousUser: true,
@@ -951,7 +969,7 @@ export class UserVaultScripts {
           update: {
             $set: {
               guid: '$params.guid',
-              post: '$params.post',
+              content: '$params.content',
               comments: '$params.comments'
             }
           },
@@ -1029,7 +1047,8 @@ export class UserVaultScripts {
       this.getSpacesByIdsScriptSetter(hiveClient),
       this.addSpacesScriptSetter(hiveClient),
       this.removeSpaceScriptSetter(hiveClient),
-      this.updateSpacePost(hiveClient),
+      this.getSpacePostScriptSetter(hiveClient),
+      this.updateSpacePostScriptSetter(hiveClient),
       this.removeSpacePost(hiveClient)
     ]);
   }

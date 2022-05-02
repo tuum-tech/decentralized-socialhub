@@ -1,50 +1,133 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonRow } from '@ionic/react';
+import styled from 'styled-components';
 import {
   CardContent,
   CardHeader,
-  CardOverview
+  CardOverview,
+  CardHeaderContent,
+  CardContentContainer
 } from 'src/components/cards/common';
+import {
+  SubMenu,
+  Item
+} from 'src/pages/ActivityPage/components/ActivityTimeline';
+import { HorDOMSpace16 } from '../../Highlight/About';
+import { CustomModal } from './index';
+import Comment from './Comment';
+import CommentEditor from './CommentEditor';
 import img_nft_item from 'src/assets/space/nft_item.jpg';
 import icon_emoti from 'src/assets/space/emoti.svg';
 import icon_comment from 'src/assets/space/comment.svg';
 import style from './Post.module.scss';
+import { SpaceService } from 'src/services/space.service';
+import { UserService } from 'src/services/user.service';
+import { DidService } from 'src/services/did.service.new';
+import { timeSince } from 'src/utils/time';
 
-interface IProps {}
+const Text = styled.p`
+  width: 100%;
+`;
+interface IProps {
+  post: any;
+  onComment: (content: string) => void;
+  onHidePost: () => void;
+  onHideComment: (comment_id: string) => void;
+  onRemovePost: () => void;
+  onRemoveComment: (comment_id: string) => void;
+}
 
-const Post: React.FC<IProps> = ({}: IProps) => {
+const Post: React.FC<IProps> = ({
+  post,
+  onComment,
+  onHidePost,
+  onHideComment,
+  onRemoveComment,
+  onRemovePost
+}: IProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const [author, setAuthor] = useState('');
+  const handleComment = async (content: string) => {
+    // post = await SpaceService.comment(session.did, post, content);
+    onComment(content);
+    setIsModalOpen(false);
+  };
+  useEffect(() => {
+    (async () => {
+      let didService = await DidService.getInstance();
+      let userService = new UserService(didService);
+      let tuumUser = await userService.SearchUserWithDID(post.creator);
+      setAuthor(tuumUser.name);
+    })();
+  }, [post]);
   return (
     <CardOverview template={'default'}>
       {/* <CardHeader><h6>Coming soon</h6></CardHeader> */}
-      <CardHeader>
-        <IonRow className={style['creator']}>
-          <img src={img_nft_item} />
-          <div>
-            <h1>
-              Donald Bullers <span>Admin</span>
-            </h1>
-            <h2>2 days ago</h2>
+      <CardHeaderContent>
+        {showMenu && (
+          <SubMenu>
+            <Item
+              onClick={() => {
+                setShowMenu(false);
+                onHidePost();
+              }}
+            >
+              Hide
+            </Item>
+            <Item
+              onClick={() => {
+                setShowMenu(false);
+                onRemovePost();
+              }}
+            >
+              Delete
+            </Item>
+          </SubMenu>
+        )}
+        <IonRow className="ion-justify-content-between ion-align-items-center">
+          <div className={style['creator']}>
+            <img src={img_nft_item} />
+            <div>
+              <h1>
+                {author} <span>Admin</span>
+              </h1>
+              <h2>{timeSince(post.created.$date)}</h2>
+            </div>
+          </div>
+          <div className={style['menu']} onClick={() => setShowMenu(!showMenu)}>
+            <svg
+              width="16"
+              height="17"
+              viewBox="0 0 16 17"
+              fill="black"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M6.5 3.5C6.5 2.67157 7.17157 2 8 2C8.82843 2 9.5 2.67157 9.5 3.5C9.5 4.32843 8.82843 5 8 5C7.17157 5 6.5 4.32843 6.5 3.5ZM6.5 8.5C6.5 7.67157 7.17157 7 8 7C8.82843 7 9.5 7.67157 9.5 8.5C9.5 9.32843 8.82843 10 8 10C7.17157 10 6.5 9.32843 6.5 8.5ZM6.5 13.5C6.5 12.6716 7.17157 12 8 12C8.82843 12 9.5 12.6716 9.5 13.5C9.5 14.3284 8.82843 15 8 15C7.17157 15 6.5 14.3284 6.5 13.5Z"
+                stroke="black"
+              />
+            </svg>
           </div>
         </IonRow>
-      </CardHeader>
-      <CardContent>
+      </CardHeaderContent>
+      <CardContentContainer>
         <IonRow>
-          <p>
-            Hey apes, meant to get this out last night but it's been kind of a
-            wild weekend. So here it is finally - BAYC x MAYC Mobile Game
-            Competition Leaderboard, Ape Fest Dates, and a lil tease.
-          </p>
+          <Text>{post.content}</Text>
         </IonRow>
-        <IonRow>
+        {/* <IonRow>
           <img src={img_nft_item} className={style['post-image']} />
-        </IonRow>
+        </IonRow> */}
+        <HorDOMSpace16 />
         <IonRow className="ion-justify-content-between ion-no-padding">
           <div className={style['post-analytic']}>
             <span>50K Likes</span>
             <span>300 Comments</span>
           </div>
           <div className={style['action']}>
-            <span>
+            <span onClick={() => setIsModalOpen(true)}>
               <img src={icon_comment} />
               Comment
             </span>
@@ -54,8 +137,29 @@ const Post: React.FC<IProps> = ({}: IProps) => {
             </span>
           </div>
         </IonRow>
-        <IonRow></IonRow>
-      </CardContent>
+        <HorDOMSpace16 />
+        {Object.keys(post.comments).map((id: string) => (
+          <Comment
+            comment={post.comments[id]}
+            onHideComment={() => onHideComment(id)}
+            onRemoveComment={() => onRemoveComment(id)}
+          />
+        ))}
+        <CustomModal
+          onDidDismiss={() => {
+            setIsModalOpen(false);
+          }}
+          isOpen={isModalOpen}
+          cssClass="my-custom-class"
+        >
+          <CommentEditor
+            onClose={() => {
+              setIsModalOpen(false);
+            }}
+            onCreate={handleComment}
+          />
+        </CustomModal>
+      </CardContentContainer>
     </CardOverview>
   );
 };

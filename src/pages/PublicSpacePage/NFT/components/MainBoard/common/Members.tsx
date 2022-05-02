@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { IonRow, IonCol, IonCardTitle } from '@ionic/react';
 import {
   CardOverview,
-  CardHeader,
-  CardContent
+  CardHeaderContent,
+  CardContentContainer
 } from 'src/components/cards/common';
 import { LinkStyleSpan } from '../common';
 import Avatar from 'src/components/Avatar';
@@ -42,7 +42,7 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
   return (
     <>
       <CardOverview template={template}>
-        <CardHeader>
+        <CardHeaderContent>
           <IonRow className="ion-justify-content-between ion-no-padding">
             <IonCol className="ion-no-padding">
               <IonCardTitle>Members ({totalCount})</IonCardTitle>
@@ -57,8 +57,8 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
               </LinkStyleSpan>
             </IonCol>
           </IonRow>
-        </CardHeader>
-        <CardContent>
+        </CardHeaderContent>
+        <CardContentContainer>
           {firstIV.map((member: any, index: number) => {
             const isProfileUser = typeof member === 'object';
             return (
@@ -86,7 +86,7 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
               </IonRow>
             );
           })}
-        </CardContent>
+        </CardContentContainer>
       </CardOverview>
       {showViewAllModal && (
         <ViewAllMember

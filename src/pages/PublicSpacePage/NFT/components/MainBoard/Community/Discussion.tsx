@@ -1,9 +1,9 @@
 import React from 'react';
 import { IonRow, IonInput } from '@ionic/react';
 import {
-  CardContent,
-  CardHeader,
-  CardOverview
+  CardOverview,
+  CardHeaderContent,
+  CardContentContainer
 } from 'src/components/cards/common';
 import { HorDOMSpace16 } from '../../Highlight/About';
 import img_nft_item from 'src/assets/space/nft_item.jpg';
@@ -56,7 +56,7 @@ const Discussion: React.FC<IProps> = ({}: IProps) => {
   };
   return (
     <CardOverview template={'default'}>
-      <CardHeader>
+      <CardHeaderContent>
         <IonRow className="ion-justify-content-between ion-no-padding">
           <div className={style['card-title']}>
             <h1>Community</h1>
@@ -67,8 +67,8 @@ const Discussion: React.FC<IProps> = ({}: IProps) => {
             <img src={icon_expand} />
           </div>
         </IonRow>
-      </CardHeader>
-      <CardContent>
+      </CardHeaderContent>
+      <CardContentContainer>
         <IonRow className={style['row']}>
           <img src={img_nft_item} className={style['avatar']} />
           <div className={style['new-discussion']}>
@@ -82,7 +82,7 @@ const Discussion: React.FC<IProps> = ({}: IProps) => {
         {renderTopic()}
         {renderTopic()}
         {renderTopic()}
-      </CardContent>
+      </CardContentContainer>
     </CardOverview>
   );
 };

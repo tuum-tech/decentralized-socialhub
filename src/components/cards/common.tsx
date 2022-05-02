@@ -31,7 +31,7 @@ export const CardOverview = styled(IonCard)<ThemeProps>`
   border-radius: 16px;
   padding: 26px 20px 30px 20px;
   margin: 0px 0px 22px;
-
+  overflow: visible;
   ion-card-title {
     font-family: 'SF Pro Display';
     font-size: 18px;
@@ -196,7 +196,7 @@ export const CardHeaderContent = styled(IonCardHeader)`
 
 export const CardContentContainer = styled(IonCardContent)`
   padding-left: 0px;
-  padding-right: 10px;
+  padding-right: 0px;
 `;
 
 export const CardHeader = styled(IonCardHeader)`

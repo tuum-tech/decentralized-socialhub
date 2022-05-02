@@ -2,8 +2,8 @@ import React from 'react';
 import { IonRow, IonCol, IonCardTitle } from '@ionic/react';
 import {
   CardOverview,
-  CardHeader,
-  CardContent
+  CardHeaderContent,
+  CardContentContainer
 } from 'src/components/cards/common';
 import { LinkStyleSpan } from '../common';
 
@@ -25,7 +25,7 @@ const Links: React.FC<IProps> = ({ template = 'default', space }: IProps) => {
   const links = space.socialLinks || {};
   return (
     <CardOverview template={template}>
-      <CardHeader>
+      <CardHeaderContent>
         <IonRow className="ion-justify-content-between ion-no-padding">
           <IonCol className="ion-no-padding">
             <IonCardTitle>Links</IonCardTitle>
@@ -34,8 +34,8 @@ const Links: React.FC<IProps> = ({ template = 'default', space }: IProps) => {
             <LinkStyleSpan style={{ opacity: 0.5 }}>View all</LinkStyleSpan>
           </IonCol>
         </IonRow>
-      </CardHeader>
-      <CardContent>
+      </CardHeaderContent>
+      <CardContentContainer>
         <IonRow>
           {links['linkedin'] && (
             <IonCol className={style.link} size="12">
@@ -110,7 +110,7 @@ const Links: React.FC<IProps> = ({ template = 'default', space }: IProps) => {
             </IonCol>
           )}
         </IonRow>
-      </CardContent>
+      </CardContentContainer>
     </CardOverview>
   );
 };

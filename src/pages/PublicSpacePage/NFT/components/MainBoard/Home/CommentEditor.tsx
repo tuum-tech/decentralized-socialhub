@@ -18,7 +18,7 @@ const PostEditor: React.FC<Props> = ({ onCreate, onClose }: Props) => {
   return (
     <MyGrid className={style['form']}>
       <IonRow className={style['form_title']}>
-        <IonCardTitle>Create a new post</IonCardTitle>
+        <IonCardTitle>Add new comment</IonCardTitle>
       </IonRow>
       <IonRow className="ion-justify-content-center">
         {/* <Editor
@@ -41,7 +41,7 @@ const PostEditor: React.FC<Props> = ({ onCreate, onClose }: Props) => {
             Cancel
           </IonButton>
           <IonButton shape="round" onClick={handleCreate}>
-            Create
+            Save
           </IonButton>
         </IonCol>
       </IonRow>

@@ -3,16 +3,10 @@ import { IonGrid, IonRow, IonCardTitle, IonCol } from '@ionic/react';
 import styled from 'styled-components';
 import {
   CardOverview,
-  CardHeader,
-  CardContent
+  CardHeaderContent,
+  CardContentContainer
 } from 'src/components/cards/common';
 import { LinkStyleSpan } from '../MainBoard/common';
-import space_cat1 from 'src/assets/icon/space_category1.svg';
-import space_cat2 from 'src/assets/icon/space_category2.svg';
-import space_cat3 from 'src/assets/icon/space_category3.svg';
-import space_cat4 from 'src/assets/icon/space_category4.svg';
-import space_cat5 from 'src/assets/icon/space_category5.svg';
-import space_cat6 from 'src/assets/icon/space_category6.svg';
 
 const ItemWrapper = styled(IonCol)`
   display: flex;
@@ -41,7 +35,7 @@ const Category: React.FC<IProps> = ({
 }: IProps) => {
   return (
     <CardOverview template={template}>
-      <CardHeader>
+      <CardHeaderContent>
         <IonRow className="ion-justify-content-between ion-no-padding">
           <IonCol className="ion-no-padding">
             <IonCardTitle>Category</IonCardTitle>
@@ -50,34 +44,10 @@ const Category: React.FC<IProps> = ({
             <LinkStyleSpan style={{ opacity: 0.5 }}>Explore all</LinkStyleSpan>
           </IonCol>
         </IonRow>
-      </CardHeader>
-      <CardContent>
+      </CardHeaderContent>
+      <CardContentContainer>
         <IonGrid>
           <IonRow>
-            {/* <ItemWrapper>
-            <img src={space_cat1} />
-            <span>Music</span>
-          </ItemWrapper>
-          <ItemWrapper>
-            <img src={space_cat2} />
-            <span>Identity</span>
-          </ItemWrapper>
-          <ItemWrapper>
-            <img src={space_cat3} />
-            <span>Elastos</span>
-          </ItemWrapper>
-          <ItemWrapper>
-            <img src={space_cat4} />
-            <span>GameFi</span>
-          </ItemWrapper>
-          <ItemWrapper>
-            <img src={space_cat5} />
-            <span>Metaverse</span>
-          </ItemWrapper>
-          <ItemWrapper>
-            <img src={space_cat6} />
-            <span>Tourism</span>
-          </ItemWrapper> */}
             {space.tags &&
               space.tags.map((tag: string) => (
                 <ItemWrapper key={tag}>
@@ -86,7 +56,7 @@ const Category: React.FC<IProps> = ({
               ))}
           </IonRow>
         </IonGrid>
-      </CardContent>
+      </CardContentContainer>
     </CardOverview>
   );
 };
