@@ -107,8 +107,7 @@ export class UserService {
       builder = builder.removeCredential(credentialType.toLowerCase());
     }
 
-    builder.edit();
-    return await (await builder.addCredential(verifiableCredential)).seal(
+    return (await builder.addCredential(verifiableCredential)).seal(
       process.env.REACT_APP_DID_STORE_PASSWORD as string
     );
   };
