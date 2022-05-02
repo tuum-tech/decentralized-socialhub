@@ -118,8 +118,9 @@ const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
             <IonRow className="ion-justify-content-between ion-no-padding">
               <IonCol className="ion-no-padding">
                 <TextHeader>
-                  Your profile photo is your style representation <br />
-                  (JPG or PNG, max).
+                  Your image must be JPG or PNG and less than 750KB
+                  <br />
+                  It can have a max dimension of 1056 x 176
                 </TextHeader>
               </IonCol>
             </IonRow>

@@ -217,10 +217,9 @@ const Upload: React.FC<InferMappedProps> = ({
       <CardContentContainer>
         <Container>
           <TextHeader>
-            Cover photo represents you, it goes on your profile as a header (JPG
-            or PNG, max). <br />
-            1056 &#x2715; 176 would be best choose for photo dimension. (Do not
-            upload more flat one)
+            Your image must be JPG or PNG and less than 750KB
+            <br />
+            It can have a max dimension of 1056 x 176
           </TextHeader>
 
           <Modal show={isImage} onHide={() => setIsImage(false)}>
