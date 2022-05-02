@@ -68,7 +68,7 @@
     "sid": 4,
     "name": "Dropz",
     "category": "NFT Collection",
-    "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
+    "owner": ["did:elastos:ipi6KEfaBFH3KC5fCfkKKUDSBoQ1Qb9NR6"],
     "tags": [
       "ERC-721",
       "Governance",

@@ -10,7 +10,11 @@ import {
   UserVaultScriptService
 } from './script.service';
 import { ProfileService } from './profile.service';
-import { DIDDocument, RootIdentity } from '@elastosfoundation/did-js-sdk/';
+import {
+  DIDDocument,
+  DIDURL,
+  RootIdentity
+} from '@elastosfoundation/did-js-sdk/';
 import { IDidService } from './did.service.new';
 import { CredentialType, DidcredsService } from './didcreds.service';
 import { SpaceService } from './space.service';
@@ -299,12 +303,21 @@ export class UserService {
         did
       );
       if (blockchainDocument) {
-        blockchainDocument.services?.forEach(value => {
-          let serviceType = value.type;
-          if (serviceType === 'HiveVault') {
-            userData.hiveHost = value.serviceEndpoint;
+        let serviceEndpoint = '';
+        let hiveUrl = new DIDURL(did + '#hivevault');
+        if (blockchainDocument.services?.has(hiveUrl)) {
+          serviceEndpoint = blockchainDocument.services.get(hiveUrl)
+            .serviceEndpoint;
+        } else {
+          hiveUrl = new DIDURL(did + '#HiveVault');
+          if (blockchainDocument.services?.has(hiveUrl)) {
+            serviceEndpoint = blockchainDocument.services.get(hiveUrl)
+              .serviceEndpoint;
           }
-        });
+        }
+        if (serviceEndpoint) {
+          userData.hiveHost = serviceEndpoint;
+        }
       }
       let isDIDPublished = false;
       try {

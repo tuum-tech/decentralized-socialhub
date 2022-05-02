@@ -104,9 +104,9 @@ const RecoverAccountPage: React.FC<RouteComponentProps<
           }}
           error={error}
           setError={setError}
-          onSuccess={async (uDid: string, mnemonic: string) => {
+          onSuccess={async (did: string, mnemonic: string) => {
             let didService = await DidService.getInstance();
-            const isDidPublished = await didService.isDIDPublished(uDid);
+            const isDidPublished = await didService.isDIDPublished(did);
             if (!isDidPublished) {
               alertError(
                 null,
@@ -115,13 +115,24 @@ const RecoverAccountPage: React.FC<RouteComponentProps<
             } else {
               DidService.InitializeMainnet();
 
-              let didDocument = await didService.getDidDocument(uDid, false);
+              let didDocument = await didService.getDidDocument(did, false);
+
               if (didDocument.services && didDocument.services.size > 0) {
-                let hiveUrl = new DIDURL(uDid + '#HiveVault');
-                if (didDocument.services.has(hiveUrl)) {
-                  let service = didDocument.services.get(hiveUrl);
+                let serviceEndpoint = '';
+                let hiveUrl = new DIDURL(did + '#hivevault');
+                if (didDocument.services?.has(hiveUrl)) {
+                  serviceEndpoint = didDocument.services.get(hiveUrl)
+                    .serviceEndpoint;
+                } else {
+                  hiveUrl = new DIDURL(did + '#HiveVault');
+                  if (didDocument.services?.has(hiveUrl)) {
+                    serviceEndpoint = didDocument.services.get(hiveUrl)
+                      .serviceEndpoint;
+                  }
+                }
+                if (serviceEndpoint) {
                   let hiveVersion = await HiveService.getHiveVersion(
-                    service.serviceEndpoint
+                    serviceEndpoint
                   );
                   let isHiveValid = await HiveService.isHiveVersionSupported(
                     hiveVersion
@@ -133,14 +144,25 @@ const RecoverAccountPage: React.FC<RouteComponentProps<
                     );
                     return;
                   }
+                } else {
+                  alertError(
+                    null,
+                    `This DID has no Hive Node set. Please set the hive node first using Elastos Essentials App`
+                  );
                 }
+              } else {
+                alertError(
+                  null,
+                  `This DID has no Hive Node set. Please set the hive node first using Elastos Essentials App`
+                );
+                return;
               }
 
               setLoading(true);
               let userService = new UserService(didService);
-              const res = await userService.SearchUserWithDID(uDid);
+              const res = await userService.SearchUserWithDID(did);
               window.localStorage.setItem(
-                `temporary_${uDid.replace('did:elastos:', '')}`,
+                `temporary_${did.replace('did:elastos:', '')}`,
                 JSON.stringify({
                   mnemonic: mnemonic
                 })
@@ -156,7 +178,7 @@ const RecoverAccountPage: React.FC<RouteComponentProps<
                 history.push({
                   pathname: '/create-profile-with-did',
                   state: {
-                    did: uDid,
+                    did,
                     mnemonic,
                     user
                   }
