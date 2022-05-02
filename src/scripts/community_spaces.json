@@ -11,7 +11,7 @@
     "sid": 1,
     "name": "The Bella Series",
     "category": "NFT Collection",
-    "owner": ["did:elastos:igMpnhxxUNLao3UHkENxmpUaBsGdg9cNjd"],
+    "owner": ["did:elastos:inpCykPj1JMroJfjFvDAGnEGUCGGG3ptwQ"],
     "tags": [
       "ERC-721",
       "Governance",
@@ -30,7 +30,7 @@
     "sid": 2,
     "name": "Phantz Club",
     "category": "NFT Collection",
-    "owner": ["did:elastos:ifGdMCeKXNjP2iUjdNLfcTPrKSV4y1FBfS"],
+    "owner": ["did:elastos:iUDaseyHnQUmwp6RSABCy4ZPCQCaBTDDMS"],
     "tags": [
       "ERC-721",
       "Membership",
@@ -103,8 +103,27 @@
     }
   },
   {
-    "sid": 101,
-    "name": "CyberKong",
+    "sid": 6,
+    "name": "MythicBeings",
+    "category": "NFT Collection",
+    "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
+    "tags": [
+      "ERC-721",
+      "Governance",
+      "Social Token",
+      "Membership",
+      "Collectibles",
+      "Art"
+    ],
+    "meta": {
+      "network": "Elastos Smart Contract Chain",
+      "address": "0x3536a85A9E55EB26d515653aF206465D68400feA",
+      "slug": "MythicBeings"
+    }
+  },
+  {
+    "sid": 7,
+    "name": "CryptoHoodieMan",
     "category": "NFT Collection",
     "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
     "tags": [
@@ -117,8 +136,8 @@
     ],
     "meta": {
       "network": "Ethereum",
-      "address": "0x57a204aa1042f6e66dd7730813f4024114d74f37",
-      "slug": "CyberKong"
+      "address": "0x0023b8EdbBeD4fBCF957D1a4DF55749faa9EaEed",
+      "slug": "CryptoHoodieMan"
     }
   },
   {
