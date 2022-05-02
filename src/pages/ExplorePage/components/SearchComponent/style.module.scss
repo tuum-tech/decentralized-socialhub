@@ -21,6 +21,10 @@
     color: #16192c;
     --placeholder-color: #b5b5bd;
 
+    @media (max-width: 575.98px) {
+      width: 92%;
+    }
+
     input {
       box-shadow: none;
       background: #edf2f7;

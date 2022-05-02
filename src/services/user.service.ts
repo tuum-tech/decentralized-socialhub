@@ -16,6 +16,7 @@ import { CredentialType, DidcredsService } from './didcreds.service';
 import { SpaceService } from './space.service';
 import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
 import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { DidDocumentService } from './diddocument.service';
 
 const CryptoJS = require('crypto-js');
 
@@ -294,6 +295,17 @@ export class UserService {
     const users = await TuumTechScriptService.searchUserWithDIDs([did]);
     if (users.length > 0) {
       const userData = users[0];
+      const blockchainDocument = await DidDocumentService.loadFromBlockchain(
+        did
+      );
+      if (blockchainDocument) {
+        blockchainDocument.services?.forEach(value => {
+          let serviceType = value.type;
+          if (serviceType === 'HiveVault') {
+            userData.hiveHost = value.serviceEndpoint;
+          }
+        });
+      }
       let isDIDPublished = false;
       try {
         isDIDPublished = await this.didService.isDIDPublished(userData.did);
@@ -561,6 +573,10 @@ export class UserService {
       // workaround the fact that session is not updated inside tutorial
       if (userData.userToken) {
         newSessionItem.userToken = userData.userToken;
+      }
+
+      if (userData.hiveHost) {
+        newSessionItem.hiveHost = userData.hiveHost;
       }
     }
     const res: any = await TuumTechScriptService.updateTuumUser(newSessionItem);
