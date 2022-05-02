@@ -186,7 +186,11 @@ const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
               <ImgUploadArea logo={defaultImage}>
                 <Perfil>
                   {imagePreview !== '' && (
-                    <img src={imagePreview} alt="Icone adicionar" />
+                    <img
+                      src={imagePreview}
+                      alt="Icone adicionar"
+                      style={{ objectFit: 'cover' }}
+                    />
                   )}
                   <input
                     type="file"
