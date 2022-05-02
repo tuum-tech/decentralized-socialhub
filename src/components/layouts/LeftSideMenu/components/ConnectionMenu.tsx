@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Icon from 'src/elements-v2/icons';
 import MenuItem from './MenuItem';
@@ -15,15 +15,16 @@ const SubMenuContainer = styled.div`
 `;
 
 const ConnectionMenu: React.FC<Props> = ({ session }) => {
+  const location = useLocation();
   const history = useHistory();
   const [showSubMenu, setShowSubMenu] = useState(false);
   const [activeMenu, setActiveMenu] = useState(false);
 
   useEffect(() => {
     if (
-      history.location.pathname.includes('/connections/followers') ||
-      history.location.pathname.includes('/connections/followings') ||
-      history.location.pathname.includes('/connections/mutual-followers')
+      location.pathname.includes('/connections/followers') ||
+      location.pathname.includes('/connections/followings') ||
+      location.pathname.includes('/connections/mutual-followers')
     ) {
       setActiveMenu(true);
       setShowSubMenu(true);
@@ -31,7 +32,7 @@ const ConnectionMenu: React.FC<Props> = ({ session }) => {
       setActiveMenu(false);
       setShowSubMenu(false);
     }
-  }, [history.location.pathname]);
+  }, [location]);
 
   return (
     <>
@@ -66,7 +67,7 @@ const ConnectionMenu: React.FC<Props> = ({ session }) => {
             name="connections"
             title="Followers"
             isChild
-            active={history.location.pathname === '/connections/followers'}
+            active={location.pathname === '/connections/followers'}
             handleClick={() => history.push('/connections/followers')}
           />
 
@@ -74,7 +75,7 @@ const ConnectionMenu: React.FC<Props> = ({ session }) => {
             name="connections"
             title="Followings"
             isChild
-            active={history.location.pathname === '/connections/followings'}
+            active={location.pathname === '/connections/followings'}
             handleClick={() => history.push('/connections/followings')}
           />
 
@@ -82,9 +83,7 @@ const ConnectionMenu: React.FC<Props> = ({ session }) => {
             name="connections"
             title="Mutual Followers"
             isChild
-            active={
-              history.location.pathname === '/connections/mutual-followers'
-            }
+            active={location.pathname === '/connections/mutual-followers'}
             handleClick={() => history.push('/connections/mutual-followers')}
           />
         </SubMenuContainer>
