@@ -79,6 +79,8 @@ const SignInPage: React.FC<RouteComponentProps<
       let did = 'did:elastos:' + owner.getMethodSpecificId();
       let mnemonic = '';
 
+      DidService.InitializeMainnet();
+
       let resolvedDocument = await owner.resolve();
       await didService.storeDocument(resolvedDocument);
       setDidDocument(resolvedDocument.toString(true));
@@ -87,12 +89,19 @@ const SignInPage: React.FC<RouteComponentProps<
       if (isDidPublished) {
         let didDocument = await didService.getDidDocument(did, false);
         if (didDocument.services && didDocument.services.size > 0) {
-          let hiveUrl = new DIDURL(did + '#HiveVault');
-          if (didDocument.services.has(hiveUrl)) {
-            let service = didDocument.services.get(hiveUrl);
-            let hiveVersion = await HiveService.getHiveVersion(
-              service.serviceEndpoint
-            );
+          let serviceEndpoint = '';
+          let hiveUrl = new DIDURL(did + '#hivevault');
+          if (didDocument.services?.has(hiveUrl)) {
+            serviceEndpoint = didDocument.services.get(hiveUrl).serviceEndpoint;
+          } else {
+            hiveUrl = new DIDURL(did + '#HiveVault');
+            if (didDocument.services?.has(hiveUrl)) {
+              serviceEndpoint = didDocument.services.get(hiveUrl)
+                .serviceEndpoint;
+            }
+          }
+          if (serviceEndpoint) {
+            let hiveVersion = await HiveService.getHiveVersion(serviceEndpoint);
             let isHiveValid = await HiveService.isHiveVersionSupported(
               hiveVersion
             );
@@ -103,7 +112,18 @@ const SignInPage: React.FC<RouteComponentProps<
               );
               return;
             }
+          } else {
+            alertError(
+              null,
+              `This DID has no Hive Node set. Please set the hive node first using Elastos Essentials App`
+            );
           }
+        } else {
+          alertError(
+            null,
+            `This DID has no Hive Node set. Please set the hive node first using Elastos Essentials App`
+          );
+          return;
         }
 
         let userService = new UserService(didService);
@@ -114,6 +134,7 @@ const SignInPage: React.FC<RouteComponentProps<
             mnemonic: mnemonic
           })
         );
+        console.log('hello - signinpage: ', res, name);
         if (res) {
           history.push({
             pathname: '/set-password',
@@ -123,7 +144,7 @@ const SignInPage: React.FC<RouteComponentProps<
           history.push({
             pathname: '/create-profile-with-did',
             state: {
-              did: did,
+              did,
               mnemonic,
               user: {
                 name: name,

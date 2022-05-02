@@ -25,9 +25,7 @@ export class DidDocumentService {
     return documentState;
   }
 
-  private static async loadFromBlockchain(
-    did: string
-  ): Promise<DIDDocument | null> {
+  static async loadFromBlockchain(did: string): Promise<DIDDocument | null> {
     let didService = await DidService.getInstance();
     let documentOnBlockchain = await didService.getPublishedDocument(
       new DID(did)

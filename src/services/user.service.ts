@@ -10,12 +10,17 @@ import {
   UserVaultScriptService
 } from './script.service';
 import { ProfileService } from './profile.service';
-import { DIDDocument, RootIdentity } from '@elastosfoundation/did-js-sdk/';
+import {
+  DIDDocument,
+  DIDURL,
+  RootIdentity
+} from '@elastosfoundation/did-js-sdk/';
 import { IDidService } from './did.service.new';
 import { CredentialType, DidcredsService } from './didcreds.service';
 import { SpaceService } from './space.service';
 import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
 import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { DidDocumentService } from './diddocument.service';
 
 const CryptoJS = require('crypto-js');
 
@@ -107,9 +112,9 @@ export class UserService {
       builder = builder.removeCredential(credentialType.toLowerCase());
     }
 
-    return builder
-      .addCredential(verifiableCredential)
-      .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+    return (await builder.addCredential(verifiableCredential)).seal(
+      process.env.REACT_APP_DID_STORE_PASSWORD as string
+    );
   };
 
   private async generateTemporaryDocument(
@@ -294,6 +299,26 @@ export class UserService {
     const users = await TuumTechScriptService.searchUserWithDIDs([did]);
     if (users.length > 0) {
       const userData = users[0];
+      const blockchainDocument = await DidDocumentService.loadFromBlockchain(
+        did
+      );
+      if (blockchainDocument) {
+        let serviceEndpoint = '';
+        let hiveUrl = new DIDURL(did + '#hivevault');
+        if (blockchainDocument.services?.has(hiveUrl)) {
+          serviceEndpoint = blockchainDocument.services.get(hiveUrl)
+            .serviceEndpoint;
+        } else {
+          hiveUrl = new DIDURL(did + '#HiveVault');
+          if (blockchainDocument.services?.has(hiveUrl)) {
+            serviceEndpoint = blockchainDocument.services.get(hiveUrl)
+              .serviceEndpoint;
+          }
+        }
+        if (serviceEndpoint) {
+          userData.hiveHost = serviceEndpoint;
+        }
+      }
       let isDIDPublished = false;
       try {
         isDIDPublished = await this.didService.isDIDPublished(userData.did);
@@ -561,6 +586,10 @@ export class UserService {
       // workaround the fact that session is not updated inside tutorial
       if (userData.userToken) {
         newSessionItem.userToken = userData.userToken;
+      }
+
+      if (userData.hiveHost) {
+        newSessionItem.hiveHost = userData.hiveHost;
       }
     }
     const res: any = await TuumTechScriptService.updateTuumUser(newSessionItem);

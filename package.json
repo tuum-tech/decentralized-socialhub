@@ -1,10 +1,10 @@
 {
   "name": "profile",
-  "version": "1.19.0",
+  "version": "1.22.0",
   "description": "Profile",
   "dependencies": {
-    "@elastosfoundation/did-js-sdk": "2.2.3",
-    "@elastosfoundation/elastos-connectivity-sdk-js": "^1.0.15",
+    "@elastosfoundation/did-js-sdk": "^2.2.5",
+    "@elastosfoundation/elastos-connectivity-sdk-js": "^1.0.20",
     "@elastosfoundation/elastos-hive-js-sdk": "https://rg.cnpmjs.org/@elastosfoundation/elastos-hive-js-sdk/download/@elastosfoundation/elastos-hive-js-sdk-0.3.0.tgz",
     "@elastosfoundation/elastos-js-sdk": "^1.2.12",
     "@elastosfoundation/essentials-connector-client-browser": "^1.0.37",

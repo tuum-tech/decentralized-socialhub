@@ -11,7 +11,7 @@ import useSession from 'src/hooks/useSession';
 
 import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
-import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { DID, DIDDocument, DIDURL } from '@elastosfoundation/did-js-sdk/';
 import { DidcredsService } from 'src/services/didcreds.service';
 import { useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom } from 'src/Atoms/Atoms';
@@ -145,7 +145,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
         let document = await didService.getStoredDocument(new DID(session.did));
         let docBuilder = DIDDocument.Builder.newFromDocument(document);
 
-        docBuilder.addService('#HiveVault', 'HiveVault', endpoint);
+        docBuilder.addService('#hivevault', 'HiveVault', endpoint);
         let signedDocument = await docBuilder.seal(
           process.env.REACT_APP_DID_STORE_PASSWORD as string
         );
@@ -303,9 +303,21 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
 
       if (doc.getServices() && doc.getServices().length > 0) {
         setSelected('document');
-        setHiveDocument(doc.getServices()[0].serviceEndpoint);
+        let serviceEndpoint = '';
+        let hiveUrl = new DIDURL(session.did + '#hivevault');
+        if (doc.services?.has(hiveUrl)) {
+          serviceEndpoint = doc.services.get(hiveUrl).serviceEndpoint;
+        } else {
+          hiveUrl = new DIDURL(session.did + '#HiveVault');
+          if (doc.services?.has(hiveUrl)) {
+            serviceEndpoint = doc.services.get(hiveUrl).serviceEndpoint;
+          }
+        }
+        if (serviceEndpoint) {
+          setHiveDocument(serviceEndpoint);
+        }
         setDetectedHiveVersion(
-          await HiveService.getHiveVersion(doc.getServices()[0].serviceEndpoint)
+          await HiveService.getHiveVersion(serviceEndpoint)
         );
       }
     })();

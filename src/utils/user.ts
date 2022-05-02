@@ -2,6 +2,7 @@ import { Guid } from 'guid-typescript';
 import { DidService } from 'src/services/did.service.new';
 import { defaultEducationItem } from 'src/components/cards/EducationCard';
 import { defaultExperienceItem } from 'src/components/cards/ExperienceCard';
+import { DIDURL } from '@elastosfoundation/did-js-sdk/';
 
 export type UserType = {
   did: string;
@@ -30,6 +31,7 @@ export const retrieveDocInfo = async (
     },
     avatar: ''
   };
+
   let educations: EducationItem[] = [];
   let experiences: ExperienceItem[] = [];
   if (doc && doc !== undefined) {
@@ -44,7 +46,11 @@ export const retrieveDocInfo = async (
 
         switch (subject) {
           case 'name':
-            uInfo.name = propertieValue as string;
+            if (fragment === 'namecredential') {
+              uInfo.name = propertieValue.name as string;
+            } else {
+              uInfo.name = propertieValue as string;
+            }
             break;
           case 'email':
             loginCred.email = propertieValue as string;
@@ -101,12 +107,19 @@ export const retrieveDocInfo = async (
       uInfo.loginCred = loginCred;
     }
 
-    doc.services?.forEach(value => {
-      let serviceType = value.type;
-      if (serviceType === 'HiveVault') {
-        uInfo.hiveHost = value.serviceEndpoint;
+    let serviceEndpoint = '';
+    let hiveUrl = new DIDURL(did + '#hivevault');
+    if (doc.services?.has(hiveUrl)) {
+      serviceEndpoint = doc.services.get(hiveUrl).serviceEndpoint;
+    } else {
+      hiveUrl = new DIDURL(did + '#HiveVault');
+      if (doc.services?.has(hiveUrl)) {
+        serviceEndpoint = doc.services.get(hiveUrl).serviceEndpoint;
       }
-    });
+    }
+    if (serviceEndpoint) {
+      uInfo.hiveHost = serviceEndpoint;
+    }
   }
   educations = educations.filter((itr1, index) => {
     return (

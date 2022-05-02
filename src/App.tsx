@@ -57,16 +57,12 @@ import {
 
 import HomePage from './pages/HomePage';
 import DefaultPage from './pages/404Page';
-import ExplorePage from './pages/ExplorePage';
 import ManagerPage from './pages/ManagerPage';
 import ActivityPage from './pages/ActivityPage';
 import SpacePage from './pages/SpacePage';
 import SpaceDashboardPage from './pages/SpaceDashboardPage';
 import PublicSpacePage from './pages/PublicSpacePage';
 import SyncPage from './pages/SyncPage';
-import FollowersPage from './pages/FollowersPage';
-import FollowingsPage from './pages/FollowingsPage';
-import MutualFollowersPage from './pages/MutualFollowersPage';
 
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -84,6 +80,8 @@ import LoadingIndicator from './elements/LoadingIndicator';
 const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
 const SettingsPage = React.lazy(() => import('./pages/SettingsPage'));
 const PublicPage = React.lazy(() => import('./pages/PublicPage'));
+const ExplorePage = React.lazy(() => import('./pages/ExplorePage'));
+const Connections = React.lazy(() => import('./pages/Connections'));
 
 const StyledToastContainer = styled(ToastContainer)`
   & .Toastify__toast-body {
@@ -136,26 +134,7 @@ const App: React.FC = () => {
                     component={DashboardPage}
                     exact={true}
                   />
-                  <ProtectedRoute
-                    path="/connections"
-                    component={FollowersPage}
-                    exact={true}
-                  />
-                  <ProtectedRoute
-                    path="/connections/followings"
-                    component={FollowingsPage}
-                    exact={true}
-                  />
-                  <ProtectedRoute
-                    path="/connections/followers"
-                    component={FollowersPage}
-                    exact={true}
-                  />
-                  <ProtectedRoute
-                    path="/connections/mutual-followers"
-                    component={MutualFollowersPage}
-                    exact={true}
-                  />
+                  <ProtectedRoute path="/connections" component={Connections} />
                   <ProtectedRoute
                     path="/explore"
                     component={ExplorePage}
