@@ -7,12 +7,6 @@ import {
   CardContent
 } from 'src/components/cards/common';
 import { LinkStyleSpan } from '../MainBoard/common';
-import space_cat1 from 'src/assets/icon/space_category1.svg';
-import space_cat2 from 'src/assets/icon/space_category2.svg';
-import space_cat3 from 'src/assets/icon/space_category3.svg';
-import space_cat4 from 'src/assets/icon/space_category4.svg';
-import space_cat5 from 'src/assets/icon/space_category5.svg';
-import space_cat6 from 'src/assets/icon/space_category6.svg';
 
 const ItemWrapper = styled(IonCol)`
   display: flex;

@@ -12,7 +12,6 @@ import { timeSince } from 'src/utils/time';
 import { getCategoryTitle } from 'src/utils/credential';
 
 import { UserRow, getStatusColor } from '../MyRequests/UserRows';
-import { VerificationService } from 'src/services/verification.service';
 interface Props {
   session: ISessionItem;
   verifications: VerificationRequest[];

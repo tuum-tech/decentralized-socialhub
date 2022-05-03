@@ -23,7 +23,6 @@ interface Props {
 
 const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
   const history = useHistory();
-  const [error, setError] = useState(false);
   const [userInfo, setUserInfo] = useState<ISessionItem>(session);
   const [loaded, setloaded] = useState(false);
   const [spaceProfile, setSpaceProfile] = useState<any>(profile);
@@ -103,7 +102,7 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
               space={spaceProfile}
               onUpload={onUploadCoverPhoto}
             />
-            {!error && loaded && userInfo.tutorialStep === 4 ? (
+            {loaded && userInfo.tutorialStep === 4 ? (
               <>
                 {spaceProfile && (
                   <AboutCard

@@ -7,7 +7,6 @@ import {
   Institution,
   Period,
   PopoverMenuItem,
-  Program,
   TreeDotsButton
 } from '../common';
 // import Image from '../../../elements/Image';

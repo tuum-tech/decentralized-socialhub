@@ -39,7 +39,6 @@ import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { VerificationService } from 'src/services/verification.service';
 import { SpaceService } from 'src/services/space.service';
-import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/typings';
 
 interface PageProps
   extends InferMappedProps,
