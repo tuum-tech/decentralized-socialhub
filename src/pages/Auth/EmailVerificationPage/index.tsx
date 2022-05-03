@@ -40,12 +40,6 @@ const ErrorText = styled(Text16)`
   margin-top: 8px;
 `;
 
-const DisplayText = styled(Text16)`
-  text-align: center;
-  color: green;
-  margin-top: 8px;
-`;
-
 const Content = styled(OnBoardLayoutRightContent)`
   .below {
     color: #7a7a9d;

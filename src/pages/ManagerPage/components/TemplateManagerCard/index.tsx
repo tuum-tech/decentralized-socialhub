@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   IonCardTitle,
   IonCardHeader,
@@ -13,7 +13,6 @@ import {
 } from '@ionic/react';
 import styled from 'styled-components';
 
-import { SmallLightButton } from 'src/elements/buttons';
 import { UserService } from 'src/services/user.service';
 import { ProfileName } from 'src/elements/texts';
 import Avatar from 'src/components/Avatar';
@@ -26,6 +25,7 @@ import {
   ProfileService
 } from 'src/services/profile.service';
 import TemplateModalContent, { TemplateModal } from './Modal/TemplateModal';
+import styles from './style.module.scss';
 
 export const Divider = styled.hr`
   width: 100%;
@@ -49,7 +49,7 @@ const Header3 = styled.span`
   color: #1f2d3d;
 `;
 
-const ProfileStatus = styled.span`
+const ProfileStatus = styled.span<{ ready: boolean }>`
   font-family: 'SF Pro Display';
   font-size: 16px;
   font-weight: normal;
@@ -58,7 +58,14 @@ const ProfileStatus = styled.span`
   line-height: 1.62;
   letter-spacing: normal;
   text-align: left;
-  color: #4c6fff;
+  ${props =>
+    props.ready
+      ? `-webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+        background: ${styles['primary-gradient']};`
+      : 'color: var(--ion-color-danger)'};
 `;
 
 const allTemplates = TemplateService.getAllTemplates();
@@ -90,6 +97,24 @@ const TemplateManagerCard: React.FC<PageProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionItem]);
 
+  const handleSave = useCallback(() => {
+    (async () => {
+      if (sessionItem.pageTemplate !== template) {
+        let userService = new UserService(await DidService.getInstance());
+        const newSession = await userService.updateSession(
+          {
+            ...sessionItem,
+            pageTemplate: template
+          },
+          true
+        );
+        await updateSession({ session: newSession });
+      }
+    })();
+  }, [sessionItem, template, updateSession]);
+  const ready =
+    sessionItem.onBoardingCompleted && sessionItem.tutorialStep === 4;
+
   return (
     <IonCard className={styleWidget['overview']}>
       <IonCardHeader>
@@ -99,26 +124,16 @@ const TemplateManagerCard: React.FC<PageProps> = ({
               <IonCardTitle>Profile Template Selection</IonCardTitle>
             </IonCol>
             <IonCol size="auto" className="ion-no-padding">
-              <SmallLightButton
+              <DefaultButton
+                size="small"
+                variant="outlined"
+                btnColor="primary-gradient"
+                textType="gradient"
                 disabled={sessionItem.tutorialStep !== 4}
-                onClick={async () => {
-                  if (sessionItem.pageTemplate !== template) {
-                    let userService = new UserService(
-                      await DidService.getInstance()
-                    );
-                    const newSession = await userService.updateSession(
-                      {
-                        ...sessionItem,
-                        pageTemplate: template
-                      },
-                      true
-                    );
-                    await updateSession({ session: newSession });
-                  }
-                }}
+                onClick={handleSave}
               >
                 Save
-              </SmallLightButton>
+              </DefaultButton>
             </IonCol>
           </IonRow>
         </IonGrid>
@@ -148,12 +163,8 @@ const TemplateManagerCard: React.FC<PageProps> = ({
                     <ProfileName>{sessionItem.name}</ProfileName>
                   </IonRow>
                   <IonRow>
-                    <ProfileStatus>
-                      Profile is{' '}
-                      {sessionItem.onBoardingCompleted &&
-                      sessionItem.tutorialStep === 4
-                        ? 'ready'
-                        : 'not yet ready'}
+                    <ProfileStatus ready={ready}>
+                      Profile is {ready ? 'ready' : 'not yet ready'}
                     </ProfileStatus>
                   </IonRow>
                 </IonGrid>

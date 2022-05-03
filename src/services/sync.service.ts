@@ -1,7 +1,6 @@
 import {
   DID,
   DIDDocument,
-  JSONObject,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
 import { Guid } from 'guid-typescript';
@@ -11,7 +10,6 @@ import { AssistService } from './assist.service';
 import { DidService } from './did.service.new';
 import { DidcredsService } from './didcreds.service';
 import { EssentialsService } from './essentials.service';
-import { HiveService } from './hive.service';
 import { ProfileService } from './profile.service';
 import { UserService } from './user.service';
 

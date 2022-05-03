@@ -15,9 +15,8 @@ import { startCase } from 'lodash';
 
 import { ProfileService } from 'src/services/profile.service';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
-import { SmallLightButton } from 'src/elements/buttons';
+import { DefaultButton } from 'src/elements-v2/buttons';
 import Toggle from 'src/elements-v2/Toggle';
-
 import { Divider } from '../TemplateManagerCard';
 
 interface IProps {
@@ -27,7 +26,6 @@ interface IProps {
 const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
   const [fields, setFields] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
-  const [template, setTemplate] = useState(sessionItem.pageTemplate);
   const defaultFields = [
     'about',
     'education',
@@ -75,25 +73,27 @@ const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
         <IonGrid>
           <IonRow>
             <IonCol>
-              <IonCardTitle>Manage Content Visibility</IonCardTitle>
+              <IonCardTitle>Privacy Settings</IonCardTitle>
             </IonCol>
             <IonCol size="auto">
-              <SmallLightButton
+              <DefaultButton
+                size="small"
+                variant="outlined"
+                btnColor="primary-gradient"
+                textType="gradient"
                 disabled={sessionItem.tutorialStep !== 4}
                 onClick={async () => {
                   await ProfileService.updatePublicFields(fields, sessionItem);
                 }}
               >
                 Save
-              </SmallLightButton>
+              </DefaultButton>
             </IonCol>
           </IonRow>
         </IonGrid>
       </IonCardHeader>
       <IonCardContent>
-        <IonText>
-          You can toggle fields to be shown on your public profile page.
-        </IonText>
+        <IonText>Set visibility of sections</IonText>
         <Divider />
         {defaultFields
           .concat(

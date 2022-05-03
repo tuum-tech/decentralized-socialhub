@@ -1,15 +1,7 @@
-import React, { useState } from 'react';
-import {
-  IonContent,
-  IonList,
-  IonLabel,
-  IonItem,
-  IonGrid,
-  IonRow
-} from '@ionic/react';
+import React from 'react';
+import { IonContent, IonGrid, IonRow } from '@ionic/react';
 
 import PeopleCard from 'src/components/cards/PeopleCard';
-import PagesCard from 'src/components/cards/PagesCard';
 import NoConnectionComp from 'src/components/NoConnection';
 
 import style from './style.module.scss';

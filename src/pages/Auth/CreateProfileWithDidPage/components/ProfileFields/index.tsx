@@ -15,7 +15,7 @@ import {
   OnBoardLayoutRightContent,
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
-import { Title40, Text12, Text18 } from 'src/elements/texts';
+import { Title40, Text18 } from 'src/elements/texts';
 
 import wavinghand from 'src/assets/icon/wavinghand.png';
 

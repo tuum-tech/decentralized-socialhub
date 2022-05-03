@@ -1,26 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { IonButton, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import { IonButton, IonCol, IonRow } from '@ionic/react';
 import { Guid } from 'guid-typescript';
 
 import ExperienceItem from './Item';
 
 import ExperienceCardEdit, { pattern } from './Edit';
-import {
-  CardOverview,
-  LinkStyleSpan,
-  MyModal,
-  ModalFooter,
-  Divider,
-  MODE,
-  CardHeaderContent,
-  CardContentContainer
-} from '../common';
+import { LinkStyleSpan, MyModal, ModalFooter, Divider, MODE } from '../common';
 import ProgressBar from 'src/elements/ProgressBar';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   ExperienceSelector,
   ExperienceSortedSelector
 } from 'src/Atoms/Selectors';
+import Card from 'src/elements-v2/Card';
 
 interface IExperienceProps {
   updateFunc?: (prevItem: any, item: any) => Promise<boolean>;
@@ -227,50 +219,37 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
 
   return (
     <>
-      <CardOverview template={template}>
-        <CardHeaderContent>
-          <IonGrid className="ion-no-padding">
-            <IonRow className="ion-justify-content-between ion-no-padding">
-              <IonCol className="ion-no-padding">
-                <IonCardTitle>
-                  Experience
-                  {!isEditable && !isPublicPage && (
-                    <div
-                      style={{
-                        width: '10em',
-                        float: 'right',
-                        fontSize: '0.8em'
-                      }}
-                    >
-                      <ProgressBar
-                        value={expVerifiedPercent}
-                        text={'verified'}
-                      />
-                      <div
-                        style={{ float: 'right', fontSize: '0.8em' }}
-                      >{`${expVerifiedPercent}% ${'verified'}`}</div>
-                    </div>
-                  )}
-                </IonCardTitle>
-              </IonCol>
-              {isEditable ? (
-                <IonCol size="auto" className="ion-no-padding">
-                  <LinkStyleSpan onClick={e => addItem()}>
-                    + Add Experience
-                  </LinkStyleSpan>
-                </IonCol>
-              ) : (
-                ''
-              )}
-            </IonRow>
-          </IonGrid>
-        </CardHeaderContent>
-        <CardContentContainer>
-          {experience !== undefined
-            ? getExperienceFromParameter()
-            : getExperienceFromState()}
-        </CardContentContainer>
-      </CardOverview>
+      <Card
+        title="Experience"
+        action={
+          !isEditable ? (
+            !isPublicPage && (
+              <div
+                style={{
+                  width: '10em',
+                  float: 'right',
+                  fontSize: '0.8em'
+                }}
+              >
+                <ProgressBar value={expVerifiedPercent} text={'verified'} />
+                <div
+                  style={{ float: 'right', fontSize: '0.8em' }}
+                >{`${expVerifiedPercent}% ${'verified'}`}</div>
+              </div>
+            )
+          ) : (
+            <IonCol size="auto" className="ion-no-padding">
+              <LinkStyleSpan onClick={e => addItem()}>
+                + Add Experience
+              </LinkStyleSpan>
+            </IonCol>
+          )
+        }
+      >
+        {experience !== undefined
+          ? getExperienceFromParameter()
+          : getExperienceFromState()}
+      </Card>
       <MyModal
         onDidDismiss={() => {
           setMode(MODE.NONE);

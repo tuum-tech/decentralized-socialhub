@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { IonRow, IonCol } from '@ionic/react';
 import Follower from '../common/Follower';
 import Members from '../common/Members';

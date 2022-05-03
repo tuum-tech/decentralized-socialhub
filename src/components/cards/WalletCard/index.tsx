@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
-import { Guid } from 'guid-typescript';
 import { useWeb3React } from '@web3-react/core';
 import Web3 from 'web3';
 import Blockies from 'react-blockies';
@@ -52,7 +51,7 @@ const WalletCard: React.FC<IWalletProps> = ({
   template = 'default',
   userSession
 }: IWalletProps) => {
-  const { account, library, activate, deactivate } = useWeb3React();
+  const { account, library, activate } = useWeb3React();
 
   ////////////////////////////// ***** ////////////////////////////////////
   const [adding, setAdding] = useState(false);
@@ -201,20 +200,25 @@ const WalletCard: React.FC<IWalletProps> = ({
       <ProfileItem template={template}>
         <div className="left">
           <Blockies seed={type} size={50} scale={1} />
-          {vc.isValid() && (
+          {
             <img
               alt="shield icon"
               src={shieldIcon}
               className="social-profile-badge"
               height={15}
             />
-          )}
+          }
         </div>
         <div className="right">
           <p className="social-profile-network">{type}</p>
           <span className="social-profile-id">{shortenAddress(address)}</span>
           <CopyToClipboard text={address}>
-            <img className="copy-to-clipboard" src={copyIcon} width={15} />
+            <img
+              className="copy-to-clipboard"
+              src={copyIcon}
+              width={15}
+              alt="copy to clipboard"
+            />
           </CopyToClipboard>
         </div>
       </ProfileItem>

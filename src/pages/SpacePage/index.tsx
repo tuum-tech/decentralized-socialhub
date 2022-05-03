@@ -34,7 +34,7 @@ const SpacePage: React.FC = () => {
     const timer = setTimeout(async () => {
       await refreshSpaces();
       setTimerForSpaces();
-    }, 1000);
+    }, 5000);
     return () => clearTimeout(timer);
   };
 

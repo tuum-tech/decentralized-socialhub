@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 
 import style from './style.module.scss';
-import community from 'src/assets/new/community.png';
 
 import { SectionSubTitle, SectionText } from '../../index';
 import monetizeBg from 'src/assets/new/monetize-bg.jpg';

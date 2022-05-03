@@ -2,7 +2,6 @@ import React from 'react';
 import { IonCard, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 import { getThemeData } from 'src/utils/template';
-import img_nft_item from 'src/assets/space/nft_item.jpg';
 import icon_eth from 'src/assets/space/eth.svg';
 import icon_ela from 'src/assets/space/ela.svg';
 import style from './Item.module.scss';
@@ -45,6 +44,7 @@ const Item: React.FC<IProps> = ({ data }: IProps) => {
               <img
                 src={data.last_sale.token === 'ETH' ? icon_eth : icon_ela}
                 width="20px"
+                alt="last sale"
               />
               {data.last_sale.token}
             </h1>
