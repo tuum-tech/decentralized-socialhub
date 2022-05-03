@@ -11,13 +11,13 @@ const SpaceView = () => {
   const [spaces, setSpaces] = useState<any[]>([]);
   const [loadingText, setLoadingText] = useState('');
 
-  const setTimerForSpaces = useCallback(() => {
+  const setTimerForSpaces = () => {
     const timer = setTimeout(async () => {
       await refreshSpaces();
       setTimerForSpaces();
-    }, 4000);
+    }, 5000);
     return () => clearTimeout(timer);
-  });
+  };
 
   const refreshSpaces = async () => {
     const spaces = await SpaceService.getAllSpaces();
@@ -31,7 +31,7 @@ const SpaceView = () => {
       setLoadingText('');
     })();
     setTimerForSpaces();
-  }, [setTimerForSpaces]);
+  }, []);
   return (
     <>
       {loadingText && loadingText !== '' ? (
