@@ -20,7 +20,10 @@ import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import { DidService } from 'src/services/did.service.new';
 import { TemplateService } from 'src/services/template.service';
 import { DefaultButton } from 'src/elements-v2/buttons';
-
+import {
+  defaultFullProfile,
+  ProfileService
+} from 'src/services/profile.service';
 import TemplateModalContent, { TemplateModal } from './Modal/TemplateModal';
 import styles from './style.module.scss';
 
@@ -224,6 +227,7 @@ const TemplateManagerCard: React.FC<PageProps> = ({
             const newMyTemplates = allTemplates.filter((t: Template) =>
               newTemplateValues.includes(t.value)
             );
+
             await TemplateService.setMyTemplates(sessionItem, newMyTemplates);
             setMyTemplates(newMyTemplates);
           }}

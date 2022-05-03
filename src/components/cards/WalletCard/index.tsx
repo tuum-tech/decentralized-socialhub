@@ -29,11 +29,13 @@ import {
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/typings';
 import { CredentialType } from 'src/services/didcreds.service';
+import { ProfileService } from 'src/services/profile.service';
 import { shortenAddress } from 'src/utils/web3';
 import { injected } from 'src/constant';
 import style from './WalletCard.module.scss';
 import shieldIcon from '../../../assets/icon/shield.svg';
 import copyIcon from '../../../assets/icon/copy-to-clipboard.svg';
+
 interface IWalletProps {
   setRequestEssentials: (item: boolean) => void;
   didDocument: DIDDocument;
@@ -98,6 +100,33 @@ const WalletCard: React.FC<IWalletProps> = ({
     if (!account) {
       connectWallet();
     }
+    updateSession(type);
+  };
+
+  const updateSession = async (type: CredentialType) => {
+    try {
+      let _userSession = JSON.parse(JSON.stringify(userSession));
+      if (!_userSession) return false;
+
+      _userSession.wallent = {
+        type: type,
+        archived: new Date().getTime()
+      };
+      // await updateSession({ session: _userSession });
+      await ProfileService.addActivity(
+        {
+          guid: '',
+          did: _userSession.did,
+          message: `You updated ${type} wallet`,
+          read: false,
+          createdAt: 0,
+          updatedAt: 0
+        },
+        _userSession
+      );
+    } catch (err) {
+      console.log('error======>', err);
+    }
   };
 
   const removeVc = async (type: CredentialType) => {
@@ -111,6 +140,7 @@ const WalletCard: React.FC<IWalletProps> = ({
     if (userSession.isEssentialUser) setRequestEssentials(false);
     setDidDoc(doc);
     setIsRemovingVc(false);
+    updateSession(type);
   };
 
   const parseValueFromKey = (
