@@ -4,6 +4,7 @@ import { IonIconType } from '../icons/types';
 
 export interface ButtonProps {
   size?: 'default' | 'large' | 'small' | undefined;
+  disabled?: boolean;
   btnColor?:
     | 'primary'
     | 'secondary'
@@ -18,6 +19,7 @@ export interface ButtonProps {
   borderColor?: string;
   icon?: IonIconType | null;
   style?: CSSProperties;
+  className?: string;
   children: ReactNode;
 }
 
