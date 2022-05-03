@@ -14,7 +14,6 @@ import {
 } from '@ionic/react';
 import styled from 'styled-components';
 
-import { ProfileService } from 'src/services/profile.service';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import { SmallLightButton } from 'src/elements/buttons';
 import { SpaceService } from 'src/services/space.service';

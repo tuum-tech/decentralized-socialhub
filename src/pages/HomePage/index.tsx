@@ -1,4 +1,4 @@
-import React, { useRef, Ref } from 'react';
+import React, { useRef } from 'react';
 import { IonPage } from '@ionic/react';
 import styled from 'styled-components';
 
@@ -24,6 +24,7 @@ export const SectionTitle = styled.p`
 
   background: -webkit-linear-gradient(#995aff, #dc59bf);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 
   @media only screen and (max-width: 600px) {

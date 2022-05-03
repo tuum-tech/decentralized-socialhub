@@ -14,7 +14,7 @@ import {
   CardHeaderContent,
   CardContentContainer
 } from '../common';
-import CertificationCardEdit, { pattern } from './Edit';
+import CertificationCardEdit from './Edit';
 import ProgressBar from 'src/elements/ProgressBar';
 
 interface ICertificationProps {

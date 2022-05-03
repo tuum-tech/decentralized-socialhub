@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { IonRow, IonCardTitle, IonCardContent } from '@ionic/react';
+import React, { useEffect } from 'react';
+import { IonCardTitle } from '@ionic/react';
 import Multiselect from 'multiselect-react-dropdown';
 import styled from 'styled-components';
 import {

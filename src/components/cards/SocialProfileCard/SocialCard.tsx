@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 import { DidcredsService } from 'src/services/didcreds.service';
 import { UserService } from 'src/services/user.service';
@@ -15,7 +15,7 @@ import shieldIcon from '../../../assets/icon/shield.svg';
 import spinner from '../../../assets/icon/spinner.gif';
 import { DidService } from 'src/services/did.service.new';
 
-import { SocialProfileCard, MyGrid } from './elements';
+import { MyGrid } from './elements';
 
 import {
   ManagerModal,
@@ -25,8 +25,7 @@ import {
   ProfileItem,
   ManagerButton,
   CloseButton,
-  CardHeaderContent,
-  CardContentContainer
+  LinkStyleSpan
 } from '../common';
 
 import {
@@ -38,6 +37,7 @@ import { useSetRecoilState, useRecoilState } from 'recoil';
 import { BadgesAtom, DIDDocumentAtom, CallbackFromAtom } from 'src/Atoms/Atoms';
 import { VerificationService } from 'src/services/verification.service';
 import styled from 'styled-components';
+import Card from 'src/elements-v2/Card';
 
 const Alert = styled.span`
   color: red;
@@ -329,93 +329,81 @@ const SocialProfilesCard: React.FC<Props> = ({
 
   return (
     <>
-      <SocialProfileCard template={template}>
-        <CardHeaderContent>
-          <IonCardTitle>
-            Social Profiles
-            {mode === 'edit' && (
-              <span
-                className="card-link"
-                onClick={() => {
-                  setIsManagerOpen(true);
-                }}
-              >
-                Manage Profiles
-              </span>
-            )}
-          </IonCardTitle>
-        </CardHeaderContent>
-        <CardContentContainer>
-          <IonGrid className={style['social-profile-grid']}>
-            <IonRow>
-              {credentials
-                .filter(item => item.credential !== undefined)
-                ?.map(credentialItem => {
-                  return credentialItem.credential !== undefined ? (
-                    <IonCol
-                      key={credentialItem.credential.id.toString()}
-                      size={mode === 'edit' ? '6' : '12'}
-                    >
-                      <ProfileItem template={template}>
-                        <div className="left">
-                          <img
-                            alt="icon"
-                            src={credentialItem.icon}
-                            height={50}
-                          />
-                          <img
-                            alt="shield icon"
-                            src={shieldIcon}
-                            className="social-profile-badge"
-                            height={15}
-                          />
-                        </div>
-                        <div className="right">
-                          <p className="social-profile-network">
-                            {credentialItem.name.replace(
-                              /^./,
-                              credentialItem.name[0].toUpperCase()
+      <Card
+        title="Social Profiles"
+        action={
+          mode === 'edit' && (
+            <LinkStyleSpan onClick={() => setIsManagerOpen(true)}>
+              Manage Profiles
+            </LinkStyleSpan>
+          )
+        }
+      >
+        <IonGrid className={style['social-profile-grid']}>
+          <IonRow>
+            {credentials
+              .filter(item => item.credential !== undefined)
+              ?.map(credentialItem => {
+                return credentialItem.credential !== undefined ? (
+                  <IonCol
+                    key={credentialItem.credential.id.toString()}
+                    size={mode === 'edit' ? '6' : '12'}
+                  >
+                    <ProfileItem template={template}>
+                      <div className="left">
+                        <img alt="icon" src={credentialItem.icon} height={50} />
+                        <img
+                          alt="shield icon"
+                          src={shieldIcon}
+                          className="social-profile-badge"
+                          height={15}
+                        />
+                      </div>
+                      <div className="right">
+                        <p className="social-profile-network">
+                          {credentialItem.name.replace(
+                            /^./,
+                            credentialItem.name[0].toUpperCase()
+                          )}
+                        </p>
+                        {(credentialItem.name === 'facebook' ||
+                          credentialItem.name === 'linkedin') && (
+                          <span className="social-profile-id">
+                            {parseValueFromService(
+                              credentialItem.name,
+                              credentialItem.credential
                             )}
-                          </p>
-                          {(credentialItem.name === 'facebook' ||
-                            credentialItem.name === 'linkedin') && (
-                            <span className="social-profile-id">
-                              {parseValueFromService(
-                                credentialItem.name,
-                                credentialItem.credential
-                              )}
-                            </span>
-                          )}
-                          {(credentialItem.name === 'google' ||
-                            credentialItem.name === 'twitter' ||
-                            credentialItem.name === 'github' ||
-                            credentialItem.name === 'discord') && (
-                            <a
-                              href={getUrlFromService(
-                                credentialItem.name,
-                                credentialItem.credential
-                              )}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="social-profile-id"
-                            >
-                              {parseValueFromService(
-                                credentialItem.name,
-                                credentialItem.credential
-                              )}
-                            </a>
-                          )}
-                        </div>
-                      </ProfileItem>
-                    </IonCol>
-                  ) : (
-                    <></>
-                  );
-                })}
-            </IonRow>
-          </IonGrid>
-        </CardContentContainer>
-      </SocialProfileCard>
+                          </span>
+                        )}
+                        {(credentialItem.name === 'google' ||
+                          credentialItem.name === 'twitter' ||
+                          credentialItem.name === 'github' ||
+                          credentialItem.name === 'discord') && (
+                          <a
+                            href={getUrlFromService(
+                              credentialItem.name,
+                              credentialItem.credential
+                            )}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="social-profile-id"
+                          >
+                            {parseValueFromService(
+                              credentialItem.name,
+                              credentialItem.credential
+                            )}
+                          </a>
+                        )}
+                      </div>
+                    </ProfileItem>
+                  </IonCol>
+                ) : (
+                  <></>
+                );
+              })}
+          </IonRow>
+        </IonGrid>
+      </Card>
 
       <ManagerModal
         isOpen={isManagerOpen}

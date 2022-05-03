@@ -70,11 +70,9 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
 import { DidService } from './services/did.service.new';
-import LoadDid from './pages/LoadDid';
 import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
 import { RecoilRoot } from 'recoil';
-import SimplePage from './pages/SimplePage';
 import LoadingIndicator from './elements/LoadingIndicator';
 
 const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
@@ -298,8 +296,6 @@ const App: React.FC = () => {
                     component={PublicSpacePage}
                     exact={true}
                   />
-                  <Route path="/load" component={LoadDid} />
-                  <Route path="/test" component={SimplePage} />
                   <Route component={DefaultPage} />
                 </IonRouterOutlet>
               </Suspense>

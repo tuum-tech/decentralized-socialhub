@@ -27,18 +27,6 @@ export const DidSnippetSvg = ({ color = '#979797' }) => (
   </svg>
 );
 
-const SeparatorSvg = () => (
-  <svg
-    width="3"
-    height="3"
-    viewBox="0 0 3 3"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <circle cx="1.5" cy="1.5" r="1.5" fill="#C4C4C4" />
-  </svg>
-);
-
 const CalendarSvg = () => (
   <svg
     width="15"
@@ -167,7 +155,6 @@ const DidSnippet: React.FC<IProp> = ({
     year: 'numeric'
   });
 
-  const br = '\n';
   return (
     <ProfileDesignation>
       <IonRow className="ion-align-items-center">
@@ -177,9 +164,7 @@ const DidSnippet: React.FC<IProp> = ({
           {did}
         </TruncatedSpan>
       </IonRow>
-      {/* &nbsp;&nbsp;&nbsp;&nbsp;
-      <SeparatorSvg />
-      &nbsp;&nbsp;&nbsp;&nbsp; */}
+      {}
       <IonRow className="ion-align-items-center">
         <CalendarSvg />
         <TruncatedSpan style={{ color: color, width: width }}>

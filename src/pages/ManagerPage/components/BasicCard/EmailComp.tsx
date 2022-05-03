@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { IonRow, IonCol } from '@ionic/react';
 
@@ -12,6 +12,7 @@ import EmailVerificationDetailContent, {
 import { requestUpdateEmailOrPhone } from 'src/components/Auth/fetchapi';
 
 import { validateEmail } from 'src/utils/validation';
+import { DefaultButton } from 'src/elements-v2/buttons';
 
 export const ActionBtnCol = styled(IonCol)`
   margin: 0 0 0 auto;
@@ -85,7 +86,7 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
     setLoading(false);
   };
 
-  const disableButton = () => {
+  const isDisabled = useMemo(() => {
     return (
       sessionItem.tutorialStep !== 4 ||
       loading ||
@@ -93,7 +94,7 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
       email === sessionItem.loginCred?.email ||
       email === ''
     );
-  };
+  }, [sessionItem, loading, error, email]);
 
   return (
     <Container class="ion-justify-content-start">
@@ -112,14 +113,19 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
           />
         </IonCol>
         <ActionBtnCol size="auto">
-          <SaveButton
-            disabled={disableButton()}
+          <DefaultButton
+            className="mr-2"
+            size="small"
+            variant="outlined"
+            btnColor="primary-gradient"
+            textType="gradient"
+            disabled={isDisabled}
             onClick={async () => {
               await sendVerification();
             }}
           >
             {loading ? 'Sending Verification' : 'Send Verification'}
-          </SaveButton>
+          </DefaultButton>
         </ActionBtnCol>
       </IonRow>
 

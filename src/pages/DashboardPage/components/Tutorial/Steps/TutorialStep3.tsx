@@ -15,7 +15,6 @@ import { DID, DIDDocument, DIDURL } from '@elastosfoundation/did-js-sdk/';
 import { DidcredsService } from 'src/services/didcreds.service';
 import { useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom } from 'src/Atoms/Atoms';
-import { Stopwatch } from 'ts-stopwatch';
 import style from '../style.module.scss';
 
 const VersionTag = styled.div`
@@ -42,7 +41,6 @@ interface ITutorialStepProp {
 
 const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
   const { session, setSession } = useSession();
-  const stopwatch = new Stopwatch();
 
   const [hiveUrl, sethiveUrl] = useState('');
   const [hiveDocument, setHiveDocument] = useState('');

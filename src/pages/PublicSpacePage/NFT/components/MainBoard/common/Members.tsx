@@ -69,9 +69,9 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
                   {isProfileUser ? (
                     <Avatar did={member.did} width="40px" />
                   ) : (
-                    <img src={nft_item_icon} />
+                    <img src={nft_item_icon} alt={member.name} />
                   )}
-                  <img src={welcome_badge} />
+                  <img src={welcome_badge} alt="welcome badge" />
                 </div>
                 {isProfileUser ? (
                   <Link

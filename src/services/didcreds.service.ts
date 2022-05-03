@@ -127,7 +127,7 @@ export class DidcredsService {
     vc: VerifiableCredential
   ): Promise<void> {
     let hiveClient = await HiveService.getSessionInstance(sessionItem);
-    let hiveResponse = await hiveClient?.Scripting.RunScript<any>({
+    await hiveClient?.Scripting.RunScript<any>({
       name: 'add_verifiablecredential',
       context: {
         target_did: sessionItem.did,
@@ -145,7 +145,7 @@ export class DidcredsService {
     vcKey: string
   ): Promise<void> {
     let hiveClient = await HiveService.getSessionInstance(sessionItem);
-    let hiveResponse = await hiveClient?.Scripting.RunScript<any>({
+    await hiveClient?.Scripting.RunScript<any>({
       name: 'remove_verifiablecredential',
       context: {
         target_did: sessionItem.did,

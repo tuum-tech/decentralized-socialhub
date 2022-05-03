@@ -4,7 +4,6 @@ import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import SpaceCard from '../SpaceCard';
 import styled from 'styled-components';
 
-import { SpaceCategory } from 'src/services/space.service';
 import { getDIDString } from 'src/utils/did';
 
 const Container = styled.div`
@@ -41,9 +40,7 @@ const SpaceListView: React.FC<Props> = ({ spaces, explore = false }: Props) => {
   return (
     <Container>
       <IonGrid>
-        <IonRow>
-          {spaces.map((space) => renderSpaceCol(space))}
-        </IonRow>
+        <IonRow>{spaces.map(space => renderSpaceCol(space))}</IonRow>
       </IonGrid>
     </Container>
   );

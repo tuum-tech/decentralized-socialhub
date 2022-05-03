@@ -12,7 +12,6 @@ import { InferMappedProps, SubState } from './types';
 import { TuumTechScriptService } from 'src/services/script.service';
 import { SpaceService } from 'src/services/space.service';
 import { StyledButton } from 'src/elements/buttons';
-import { DidSnippetSvg } from 'src/elements/DidSnippet';
 import { SpaceAvatar } from 'src/components/Space/SpaceCard';
 import { CardOverview, CardContent } from 'src/components/cards/common';
 import defaultAvatar from 'src/assets/icon/dp.png';
@@ -112,7 +111,7 @@ const AboutSpace: React.FC<IProps> = ({
           <div className={style['name']}>
             <h1>
               {space.name}
-              <img src={icon_shield} />
+              <img src={icon_shield} alt={space.name} />
             </h1>
             <h2>
               {/* <DidSnippetSvg /> DID:iYio2....LzNf &nbsp;&nbsp;&nbsp;by{' '} */}
