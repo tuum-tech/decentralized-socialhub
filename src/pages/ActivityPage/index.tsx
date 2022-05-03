@@ -88,7 +88,9 @@ const ActivityPage: React.FC<InferMappedProps> = ({
                     active={active}
                     setActive={setActive}
                     myverifications={myverifications.length}
-                    referrals={referrals.length}
+                    referrals={
+                      referrals.filter(v => v.sign_up_date == undefined).length
+                    }
                     verificationRequests={
                       verificationRequests.filter(x => x.status === 'requested')
                         .length

@@ -48,7 +48,6 @@ const UserRows: React.FC<Props> = ({
     if (r.sign_up_date) {
       joined = new Date(r.sign_up_date).getTime();
     }
-
     return (
       <UserRow key={r.did}>
         <div className="left">
