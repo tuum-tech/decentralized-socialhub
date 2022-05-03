@@ -41,6 +41,7 @@ let run = async () => {
           coverPhoto: '',
           description: '',
           publicFields: ['about', 'follower'],
+          socialLinks: {},
           guid: Guid.create()
         });
       }
