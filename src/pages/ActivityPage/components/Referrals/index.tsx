@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+import { ProfileService } from 'src/services/profile.service';
 import UserRows from './UserRows';
 import TopInfo from './TopInfo';
 
@@ -18,40 +19,66 @@ export const PageContent = styled.div`
 
 interface Props {
   session: ISessionItem;
+  referrals: IReferral[];
 }
 
-const Referrals: React.FC<Props> = ({ session }: Props) => {
+const Referrals: React.FC<Props> = ({ session, referrals }: Props) => {
   const [selectedStatus, setSelectedStatus] = useState('');
-
-  const [filteredRefersals, setFilteredReferals] = useState(
-    session.referrals || []
-  );
+  const [filteredRefersals, setFilteredReferals] = useState(referrals || []);
+  const [following, setFollowings] = useState<string[]>([]);
 
   useEffect(() => {
     if (selectedStatus === '') {
-      setFilteredReferals(session.referrals || []);
+      setFilteredReferals(referrals || []);
     } else if (selectedStatus === 'approved') {
       setFilteredReferals(
-        (session.referrals || []).filter((r: IReferral) => r.sign_up_date)
+        (referrals || []).filter((r: IReferral) => r.sign_up_date)
       );
     } else if (selectedStatus === 'requested') {
       setFilteredReferals(
-        (session.referrals || []).filter(
-          (r: IReferral) => r.sign_up_date === undefined
-        )
+        (referrals || []).filter((r: IReferral) => r.sign_up_date === undefined)
       );
     }
-  }, [selectedStatus, session.referrals]);
+  }, [selectedStatus, referrals]);
+
+  const retrieveFollows = useCallback(async () => {
+    if (session && session.did && session.tutorialStep === 4) {
+      try {
+        let following = await ProfileService.getFollowings(session.did);
+        if (following) {
+          setFollowings((following.get_following.items || []).map(f => f.did));
+        }
+      } catch (e) {}
+    }
+  });
+
+  const followClicked = async (isFollowing: boolean, did: string) => {
+    if (isFollowing) {
+      await ProfileService.addFollowing(did, session);
+    } else {
+      await ProfileService.unfollow(did, session);
+    }
+
+    await retrieveFollows();
+  };
+
+  useEffect(() => {
+    (async () => {
+      await retrieveFollows();
+    })();
+  }, [retrieveFollows, session.did]);
 
   return (
     <PageContainer>
-      <TopInfo
-        referrals={session.referrals || []}
-        selectStatus={setSelectedStatus}
-      />
+      <TopInfo referrals={referrals || []} selectStatus={setSelectedStatus} />
 
       <PageContent>
-        <UserRows referrals={filteredRefersals} />
+        <UserRows
+          followClicked={followClicked}
+          referrals={filteredRefersals}
+          following={following}
+          session={session}
+        />
       </PageContent>
     </PageContainer>
   );

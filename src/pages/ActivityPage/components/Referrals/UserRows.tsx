@@ -1,60 +1,91 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { IonSpinner } from '@ionic/react';
+import { Link } from 'react-router-dom';
 
 import Avatar from 'src/components/Avatar';
 import { SmallLightButton } from 'src/elements/buttons';
 
-import { SearchService } from 'src/services/search.service';
 import { UserRow, getStatusColor } from '../MyRequests/UserRows';
-import { getItemsFromData } from 'src/utils/script';
+import { getDIDString } from 'src/utils/did';
 
 interface Props {
   referrals: IReferral[];
+  following: string[];
+  followClicked: (isFollow: boolean, did: string) => void;
+  session: ISessionItem;
 }
 
-const UserRows: React.FC<Props> = ({ referrals }: Props) => {
-  const [users, setUsers] = useState<any[]>([]);
+const UserRows: React.FC<Props> = ({
+  referrals,
+  followClicked,
+  following,
+  session
+}: Props) => {
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      const searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-      let usersRes: any = await searchServiceLocal.getUsersByDIDs(
-        referrals.map(v => v.did),
-        referrals.length,
-        0
-      );
-      setUsers(getItemsFromData(usersRes, 'get_users_by_dids'));
-    })();
-  }, [referrals]);
+  const followDid = async (did: string) => {
+    setLoading(true);
+    await followClicked(true, did);
+    setLoading(false);
+  };
+
+  const unfollowDid = async (did: string) => {
+    setLoading(true);
+    await followClicked(false, did);
+    setLoading(false);
+  };
+
+  const getLink = (did: string) => {
+    return getDIDString('/did/' + did, true);
+  };
 
   const rednerUserRow = (r: IReferral) => {
+    const isFollowing = following.includes(r.did);
     const status = r.sign_up_date ? 'approved' : 'pending';
     let date = '';
     if (r.sign_up_date) {
-      date = new Date((r.sign_up_date as any)['$date']).toUTCString();
+      date = new Date(r.sign_up_date as any).toUTCString();
     }
 
     return (
       <UserRow key={r.did}>
         <div className="left">
-          <Avatar did={r.did} width="50px" />
+          <Link to={getLink(r.did)} target="_blank">
+            <Avatar did={r.did} width="50px" />
+          </Link>
         </div>
         <div className="right">
           <p className="bottom">
             <li style={{ color: getStatusColor(status) }}>
               {status.toUpperCase()}
             </li>
-
             {date !== '' ? <li>Created At: {date}</li> : <></>}
           </p>
         </div>
-        <SmallLightButton
-          style={{
-            margin: '0 0 0 auto'
-          }}
-          onClick={() => {}}
-        >
-          View Info
-        </SmallLightButton>
+        <div style={{ margin: '0 0 0 auto' }}>
+          {loading && (
+            <SmallLightButton>
+              <IonSpinner
+                color="#007bff"
+                style={{
+                  width: '1rem',
+                  height: '1rem'
+                }}
+              />
+            </SmallLightButton>
+          )}
+          {!loading && isFollowing && (
+            <SmallLightButton onClick={() => unfollowDid(r.did)}>
+              - Unfollow
+            </SmallLightButton>
+          )}
+
+          {!loading && !isFollowing && (
+            <SmallLightButton onClick={() => followDid(r.did)}>
+              + Follow
+            </SmallLightButton>
+          )}
+        </div>
       </UserRow>
     );
   };

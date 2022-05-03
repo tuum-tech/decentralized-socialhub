@@ -32,6 +32,7 @@ const ActivityPage: React.FC<InferMappedProps> = ({
   const [verificationRequests, setVerificationRequests] = useState<
     VerificationRequest[]
   >([]);
+  const [referrals, setReferrals] = useState<IReferral[]>([]);
 
   const fetchMyVerifications = async () => {
     const requests_by_me: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
@@ -49,10 +50,18 @@ const ActivityPage: React.FC<InferMappedProps> = ({
     setVerificationRequests(vRequests);
   };
 
+  const fetchReferrals = async () => {
+    const referrals: IReferral[] = await TuumTechScriptService.getReferrals(
+      props.session.did
+    );
+    setReferrals(referrals);
+  };
+
   useEffect(() => {
     (async () => {
       await fetchMyVerifications();
       await fetchVerificationRequestToMe();
+      await fetchReferrals();
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.session.did]);
@@ -79,11 +88,7 @@ const ActivityPage: React.FC<InferMappedProps> = ({
                     active={active}
                     setActive={setActive}
                     myverifications={myverifications.length}
-                    referrals={
-                      props.session.referrals
-                        ? props.session.referrals.length
-                        : 0
-                    }
+                    referrals={referrals.length}
                     verificationRequests={
                       verificationRequests.filter(x => x.status === 'requested')
                         .length
@@ -116,7 +121,7 @@ const ActivityPage: React.FC<InferMappedProps> = ({
                     />
                   )}
                   {active === 'referrals' && (
-                    <Referrals session={props.session} />
+                    <Referrals session={props.session} referrals={referrals} />
                   )}
                 </ActivityTabsContainer>
               </IonCol>

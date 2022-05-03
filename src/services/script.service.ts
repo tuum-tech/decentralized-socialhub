@@ -277,6 +277,30 @@ export class TuumTechScriptService {
     }
   }
 
+  public static async getReferrals(did: string) {
+    let referrals: IReferral[] = [];
+    if (did !== '') {
+      // retrive user's referrals first
+      const users = await TuumTechScriptService.searchUserWithDIDs([did]);
+
+      if (
+        users.length > 0 &&
+        users[0].referrals &&
+        users[0].referrals.length > 0
+      ) {
+        referrals = users[0].referrals;
+
+        if (referrals.length > 0) {
+          let newUser = users[0];
+          newUser.referrals = referrals;
+          await TuumTechScriptService.updateTuumUser(newUser);
+        }
+      }
+    }
+
+    return referrals;
+  }
+
   public static async addUserToTuumTech(params: ISessionItem) {
     const add_user_script = {
       name: 'add_user',
