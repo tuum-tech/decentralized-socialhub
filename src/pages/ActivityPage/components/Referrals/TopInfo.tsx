@@ -32,10 +32,10 @@ const TopInfo: React.FC<Props> = ({ referrals, selectStatus }: Props) => {
           bgColor="#1D1D1B"
         />
       </ClicableCol>
-      <ClicableCol onClick={() => selectStatus('approved')}>
+      <ClicableCol onClick={() => selectStatus('completed')}>
         <TopInfoCard
           img={approvedIcon}
-          title="Approved"
+          title="Completed"
           count={referrals.filter(v => v.sign_up_date != undefined).length}
           bgColor="#2FD5DD"
         />

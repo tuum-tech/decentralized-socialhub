@@ -3,6 +3,7 @@ import { IonSpinner } from '@ionic/react';
 import { Link } from 'react-router-dom';
 
 import Avatar from 'src/components/Avatar';
+import DidSnippet from 'src/elements/DidSnippet';
 import { SmallLightButton } from 'src/elements/buttons';
 
 import { UserRow, getStatusColor } from '../MyRequests/UserRows';
@@ -41,10 +42,11 @@ const UserRows: React.FC<Props> = ({
 
   const rednerUserRow = (r: IReferral) => {
     const isFollowing = following.includes(r.did);
-    const status = r.sign_up_date ? 'approved' : 'pending';
-    let date = '';
+    const status = r.sign_up_date ? 'Completed' : 'Pending';
+
+    let joined = 0;
     if (r.sign_up_date) {
-      date = new Date(r.sign_up_date as any).toUTCString();
+      joined = new Date(r.sign_up_date).getTime();
     }
 
     return (
@@ -59,7 +61,7 @@ const UserRows: React.FC<Props> = ({
             <li style={{ color: getStatusColor(status) }}>
               {status.toUpperCase()}
             </li>
-            {date !== '' ? <li>Created At: {date}</li> : <></>}
+            <DidSnippet did={r.did} dateJoined={joined} />
           </p>
         </div>
         <div style={{ margin: '0 0 0 auto' }}>

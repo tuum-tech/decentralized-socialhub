@@ -30,7 +30,7 @@ const Referrals: React.FC<Props> = ({ session, referrals }: Props) => {
   useEffect(() => {
     if (selectedStatus === '') {
       setFilteredReferals(referrals || []);
-    } else if (selectedStatus === 'approved') {
+    } else if (selectedStatus === 'completed') {
       setFilteredReferals(
         (referrals || []).filter((r: IReferral) => r.sign_up_date)
       );
