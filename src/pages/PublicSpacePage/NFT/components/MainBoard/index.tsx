@@ -24,7 +24,7 @@ const MainBoard: React.FC<IProps> = ({ space, renderSignal }: IProps) => {
           className={(active === 'home' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => setActive('home')}
         >
-          <IonLabel className="tab-label">Home</IonLabel>
+          <IonLabel className="tab-label">Home123</IonLabel>
         </IonItem>
         <IonItem
           className={(active === 'chat' ? 'tab-active' : '') + ' tab-item'}

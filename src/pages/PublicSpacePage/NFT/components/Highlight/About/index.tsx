@@ -38,6 +38,7 @@ const AboutSpace: React.FC<IProps> = ({
   session,
   template = 'default'
 }: IProps) => {
+  console.log(12312, space);
   const [followers, setFollowers] = useState<string[]>(space.followers || []);
   const [owners, setOwners] = useState<any[]>([]);
   const following = useMemo(() => followers.includes(session.did), [
@@ -141,6 +142,9 @@ const AboutSpace: React.FC<IProps> = ({
               })}
             </h2>
           </div>
+        </IonRow>
+        <IonRow>
+          <span>{space.meta?.network}</span>
         </IonRow>
         <HorDOMSpace16 />
         <IonRow>
