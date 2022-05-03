@@ -20,7 +20,6 @@ import img_nft_item from 'src/assets/space/nft_item.jpg';
 import icon_emoti from 'src/assets/space/emoti.svg';
 import icon_comment from 'src/assets/space/comment.svg';
 import style from './Post.module.scss';
-import { SpaceService } from 'src/services/space.service';
 import { UserService } from 'src/services/user.service';
 import { DidService } from 'src/services/did.service.new';
 import { timeSince } from 'src/utils/time';
@@ -29,27 +28,33 @@ const Text = styled.p`
   width: 100%;
 `;
 interface IProps {
+  session: ISessionItem;
   post: any;
   onComment: (content: string) => void;
-  onHidePost: () => void;
-  onHideComment: (comment_id: string) => void;
+  onShowOrHidePost: () => void;
+  onShowOrHideComment: (comment_id: string) => void;
   onRemovePost: () => void;
   onRemoveComment: (comment_id: string) => void;
+  isAdmin: boolean;
+  hasPermissionToComment: boolean;
 }
 
 const Post: React.FC<IProps> = ({
+  session,
   post,
   onComment,
-  onHidePost,
-  onHideComment,
+  onShowOrHidePost,
+  onShowOrHideComment,
   onRemoveComment,
-  onRemovePost
+  onRemovePost,
+  isAdmin,
+  hasPermissionToComment
 }: IProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const isAuthor = session && session.did === post.creator;
   const [author, setAuthor] = useState('');
   const handleComment = async (content: string) => {
-    // post = await SpaceService.comment(session.did, post, content);
     onComment(content);
     setIsModalOpen(false);
   };
@@ -67,22 +72,26 @@ const Post: React.FC<IProps> = ({
       <CardHeaderContent>
         {showMenu && (
           <SubMenu>
-            <Item
-              onClick={() => {
-                setShowMenu(false);
-                onHidePost();
-              }}
-            >
-              Hide
-            </Item>
-            <Item
-              onClick={() => {
-                setShowMenu(false);
-                onRemovePost();
-              }}
-            >
-              Delete
-            </Item>
+            {isAdmin && (
+              <Item
+                onClick={() => {
+                  setShowMenu(false);
+                  onShowOrHidePost();
+                }}
+              >
+                {post.visible ? 'Hide' : 'Show'}
+              </Item>
+            )}
+            {isAuthor && (
+              <Item
+                onClick={() => {
+                  setShowMenu(false);
+                  onRemovePost();
+                }}
+              >
+                Delete
+              </Item>
+            )}
           </SubMenu>
         )}
         <IonRow className="ion-justify-content-between ion-align-items-center">
@@ -90,27 +99,32 @@ const Post: React.FC<IProps> = ({
             <img src={img_nft_item} />
             <div>
               <h1>
-                {author} <span>Admin</span>
+                {author} {isAdmin && <span>Admin</span>}
               </h1>
               <h2>{timeSince(post.created.$date)}</h2>
             </div>
           </div>
-          <div className={style['menu']} onClick={() => setShowMenu(!showMenu)}>
-            <svg
-              width="16"
-              height="17"
-              viewBox="0 0 16 17"
-              fill="black"
-              xmlns="http://www.w3.org/2000/svg"
+          {(isAdmin || isAuthor) && (
+            <div
+              className={style['menu']}
+              onClick={() => setShowMenu(!showMenu)}
             >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M6.5 3.5C6.5 2.67157 7.17157 2 8 2C8.82843 2 9.5 2.67157 9.5 3.5C9.5 4.32843 8.82843 5 8 5C7.17157 5 6.5 4.32843 6.5 3.5ZM6.5 8.5C6.5 7.67157 7.17157 7 8 7C8.82843 7 9.5 7.67157 9.5 8.5C9.5 9.32843 8.82843 10 8 10C7.17157 10 6.5 9.32843 6.5 8.5ZM6.5 13.5C6.5 12.6716 7.17157 12 8 12C8.82843 12 9.5 12.6716 9.5 13.5C9.5 14.3284 8.82843 15 8 15C7.17157 15 6.5 14.3284 6.5 13.5Z"
-                stroke="black"
-              />
-            </svg>
-          </div>
+              <svg
+                width="16"
+                height="17"
+                viewBox="0 0 16 17"
+                fill="black"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M6.5 3.5C6.5 2.67157 7.17157 2 8 2C8.82843 2 9.5 2.67157 9.5 3.5C9.5 4.32843 8.82843 5 8 5C7.17157 5 6.5 4.32843 6.5 3.5ZM6.5 8.5C6.5 7.67157 7.17157 7 8 7C8.82843 7 9.5 7.67157 9.5 8.5C9.5 9.32843 8.82843 10 8 10C7.17157 10 6.5 9.32843 6.5 8.5ZM6.5 13.5C6.5 12.6716 7.17157 12 8 12C8.82843 12 9.5 12.6716 9.5 13.5C9.5 14.3284 8.82843 15 8 15C7.17157 15 6.5 14.3284 6.5 13.5Z"
+                  stroke="black"
+                />
+              </svg>
+            </div>
+          )}
         </IonRow>
       </CardHeaderContent>
       <CardContentContainer>
@@ -124,13 +138,15 @@ const Post: React.FC<IProps> = ({
         <IonRow className="ion-justify-content-between ion-no-padding">
           <div className={style['post-analytic']}>
             <span>50K Likes</span>
-            <span>300 Comments</span>
+            <span>{Object.keys(post.comments).length} Comments</span>
           </div>
           <div className={style['action']}>
-            <span onClick={() => setIsModalOpen(true)}>
-              <img src={icon_comment} />
-              Comment
-            </span>
+            {hasPermissionToComment && (
+              <span onClick={() => setIsModalOpen(true)}>
+                <img src={icon_comment} />
+                Comment
+              </span>
+            )}
             <span>
               <img src={icon_emoti} />
               React
@@ -140,9 +156,15 @@ const Post: React.FC<IProps> = ({
         <HorDOMSpace16 />
         {Object.keys(post.comments).map((id: string) => (
           <Comment
-            comment={post.comments[id]}
-            onHideComment={() => onHideComment(id)}
+            key={id}
+            session={session}
+            comment={{
+              ...post.comments[id],
+              visible: !!post.comments_visibility[id]
+            }}
+            onShowOrHideComment={() => onShowOrHideComment(id)}
             onRemoveComment={() => onRemoveComment(id)}
+            isAdmin={isAdmin}
           />
         ))}
         <CustomModal

@@ -521,10 +521,10 @@ export class SpaceService {
     }
     return null;
   }
-  static async hidePost(post: any) {
+  static async showOrHidePost(post: any) {
     const appHiveClient = await HiveService.getAppHiveClient();
     if (appHiveClient) {
-      post.visible = false;
+      post.visible = !post.visible;
       await appHiveClient.Scripting.RunScript({
         name: 'update_space_post',
         params: post,
@@ -537,10 +537,10 @@ export class SpaceService {
     }
     return null;
   }
-  static async hideComment(post: any, comment_id: string) {
+  static async showOrHideComment(post: any, comment_id: string) {
     const appHiveClient = await HiveService.getAppHiveClient();
     if (appHiveClient) {
-      post.comments_visibility[comment_id] = false;
+      post.comments_visibility[comment_id] = !post.comments_visibility[comment_id];
       await appHiveClient.Scripting.RunScript({
         name: 'update_space_post',
         params: post,

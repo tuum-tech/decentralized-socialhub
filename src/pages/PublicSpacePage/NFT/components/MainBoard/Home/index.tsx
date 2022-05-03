@@ -16,10 +16,11 @@ import Links from '../common/Links';
 import { Wrapper } from '../common';
 import Post from './Post';
 import PostEditor from './PostEditor';
-import { SpaceService } from 'src/services/space.service';
-import style from '../common/Modal/style.module.scss';
 import { HorDOMSpace16 } from '../../Highlight/About';
+import style from '../common/Modal/style.module.scss';
+import { SpaceService } from 'src/services/space.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
+import { getNFTCollectionOwners } from '../../../fetchapi';
 
 export const CustomModal = styled(IonModal)`
   --height: 400px;
@@ -35,19 +36,18 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
   const [offset, setOffset] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const limit = 5;
-  // const hasPermissionToPost = useMemo(() => {
-  //   if (!session || !session.did) return false;
-  //   if (space.owner.includes(session.did)) return true;
-  //   const network = space.meta.network || 'Elastos Smart Contract Chain';
-  //   const wallet = DidcredsService.getCredentialValue(
-  //     session,
-  //     (network.toLowerCase() === 'elastos smart contract chain'
-  //       ? CredentialType.ESCAddress
-  //       : CredentialType.ETHAddress
-  //     ).toLowerCase()
-  //   );
-  //   if (!wallet) return false;
-  // }, [session, space]);
+  const [hasPermissionToPost, setHasPermissionToPost] = useState<boolean>(
+    false
+  );
+  const hasPermissionToComment = useMemo(() => {
+    if (!session || !session.did || !space) return false;
+    return space.followers.includes(session.did) || hasPermissionToPost;
+  }, [space, session, hasPermissionToPost]);
+  const isAdmin = useMemo(() => {
+    if (!session || !session.did || !space) return false;
+    if (space.owner.includes(session.did)) return true;
+    return false;
+  }, [space, session]);
   const handlePost = async (content: any) => {
     const new_post = await SpaceService.post(session, space.sid, content);
     const _posts = [...posts];
@@ -58,7 +58,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const fetchMorePosts = async () => {
-    const _posts = await SpaceService.getPosts(space.sid, offset, limit);
+    const _posts = await SpaceService.getPosts(space.sid, offset, limit, isAdmin);
     if (_posts.length > 0) {
       setOffset(offset + limit);
       setPosts(posts.concat(_posts));
@@ -75,6 +75,39 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
       await fetchMorePosts();
     })();
   }, []);
+  useEffect(() => {
+    (async () => {
+      if (!session || !session.did) {
+        setHasPermissionToPost(false);
+        return;
+      }
+      if (space.owner.includes(session.did)) {
+        setHasPermissionToPost(true);
+        return;
+      }
+      const network = space.meta.network || 'Elastos Smart Contract Chain';
+      const wallet = DidcredsService.getCredentialValue(
+        session,
+        (network.toLowerCase() === 'elastos smart contract chain'
+          ? CredentialType.ESCAddress
+          : CredentialType.ETHAddress
+        ).toLowerCase()
+      );
+      if (!wallet) {
+        setHasPermissionToPost(false);
+        return;
+      }
+      if (space && space.guid) {
+        const { data }: any = await getNFTCollectionOwners(space.guid);
+        const { owners: members } = data;
+        if (members.includes(wallet)) {
+          setHasPermissionToPost(true);
+          return;
+        }
+      }
+      setHasPermissionToPost(false);
+    })();
+  }, [space, session]);
   return (
     <Wrapper>
       <IonRow>
@@ -89,16 +122,19 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
                 className={style['search-input']}
               ></IonSearchbar>
             </IonContent>
-            <Button
-              text={'New Post'}
-              onClick={() => setIsModalOpen(true)}
-              ml={20}
-            />
+            {hasPermissionToPost && (
+              <Button
+                text={'New Post'}
+                onClick={() => setIsModalOpen(true)}
+                ml={20}
+              />
+            )}
           </IonRow>
           <HorDOMSpace16 />
           {posts.map((post, index) => {
             return (
               <Post
+                key={index}
                 post={post}
                 onComment={async (content: string) => {
                   const _post = await SpaceService.comment(
@@ -111,8 +147,8 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
                   _posts.splice(index, 1, _post);
                   setPosts(_posts);
                 }}
-                onHideComment={async (comment_id: string) => {
-                  const _post = await SpaceService.hideComment(
+                onShowOrHideComment={async (comment_id: string) => {
+                  const _post = await SpaceService.showOrHideComment(
                     post,
                     comment_id
                   );
@@ -121,15 +157,14 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
                   _posts.splice(index, 1, _post);
                   setPosts(_posts);
                 }}
-                onHidePost={async () => {
-                  const _post = await SpaceService.hidePost(post);
+                onShowOrHidePost={async () => {
+                  const _post = await SpaceService.showOrHidePost(post);
                   if (!_post) return;
                   const _posts = [...posts];
                   _posts.splice(index, 1, _post);
                   setPosts(_posts);
                 }}
                 onRemoveComment={async (comment_id: string) => {
-                  alert('heyhey');
                   const _post = await SpaceService.removeComment(
                     post,
                     comment_id
@@ -145,6 +180,9 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
                   _posts.splice(index, 1);
                   setPosts(_posts);
                 }}
+                session={session}
+                isAdmin={isAdmin}
+                hasPermissionToComment={hasPermissionToComment}
               />
             );
           })}
