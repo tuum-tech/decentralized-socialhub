@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { ProfileService } from 'src/services/profile.service';
@@ -50,7 +50,7 @@ const Referrals: React.FC<Props> = ({ session, referrals }: Props) => {
         }
       } catch (e) {}
     }
-  });
+  }, [session]);
 
   const followClicked = async (isFollowing: boolean, did: string) => {
     if (isFollowing) {
