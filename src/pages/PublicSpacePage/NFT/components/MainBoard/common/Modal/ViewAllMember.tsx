@@ -31,7 +31,7 @@ const ViewAllMember = ({ space, onClose }: Props) => {
   const [offset, setOffset] = useState(0);
   const limit = 5;
 
-  const fetchMoreData = useCallback(async () => {
+  const fetchMoreData = async () => {
     const { data }: any = await getNFTCollectionOwners(
       space.guid,
       offset,
@@ -51,13 +51,13 @@ const ViewAllMember = ({ space, onClose }: Props) => {
     } else {
       setHasMore(false);
     }
-  });
+  };
 
   useEffect(() => {
     (async () => {
       await fetchMoreData();
     })();
-  }, [fetchMoreData]);
+  }, []);
 
   return (
     <div className={style['modal']}>
