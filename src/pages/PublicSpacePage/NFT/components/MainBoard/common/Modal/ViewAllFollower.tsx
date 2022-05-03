@@ -26,7 +26,7 @@ const ViewAllFollower = ({ space, onClose }: Props) => {
   const [pageNum, setPageNum] = useState(1);
   const pageSize = 5;
 
-  const fetchMoreData = useCallback(async () => {
+  const fetchMoreData = async () => {
     const _followers_ = await FollowService.invokeSearch(
       dids,
       searchStr,
@@ -39,13 +39,13 @@ const ViewAllFollower = ({ space, onClose }: Props) => {
     } else {
       setHasMore(false);
     }
-  });
+  };
 
   useEffect(() => {
     (async () => {
       await fetchMoreData();
     })();
-  }, [fetchMoreData]);
+  }, []);
 
   return (
     <div className={style['modal']}>
