@@ -41,7 +41,6 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
     if (!base64Str.startsWith('data:image')) {
       base64Str = `data:image/png;base64,${base64Str}`;
     }
-    console.log(1231, base64Str);
     const _spaceProfile = { ...spaceProfile, avatar: base64Str };
     await SpaceService.addSpace(session, _spaceProfile);
     setSpaceProfile(_spaceProfile);
@@ -51,7 +50,6 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
     if (!base64Str.startsWith('data:image')) {
       base64Str = `data:image/png;base64,${base64Str}`;
     }
-    console.log(1231, base64Str);
     const _spaceProfile = { ...spaceProfile, coverPhoto: base64Str };
     await SpaceService.addSpace(session, _spaceProfile);
     setSpaceProfile(_spaceProfile);
