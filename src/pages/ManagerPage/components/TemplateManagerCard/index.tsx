@@ -216,23 +216,6 @@ const TemplateManagerCard: React.FC<PageProps> = ({
             const newMyTemplates = allTemplates.filter((t: Template) =>
               newTemplateValues.includes(t.value)
             );
-            let userSession = JSON.parse(JSON.stringify(sessionItem));
-            if (!userSession) return false;
-
-            userSession.templates = newMyTemplates;
-            userSession.templates.archived = new Date().getTime();
-            await updateSession({ session: userSession });
-            await ProfileService.addActivity(
-              {
-                guid: '',
-                did: userSession.did,
-                message: 'You updated wallet',
-                read: false,
-                createdAt: 0,
-                updatedAt: 0
-              },
-              userSession
-            );
 
             await TemplateService.setMyTemplates(sessionItem, newMyTemplates);
             setMyTemplates(newMyTemplates);
