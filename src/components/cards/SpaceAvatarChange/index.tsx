@@ -121,7 +121,7 @@ const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
             <IonRow className="ion-justify-content-between ion-no-padding">
               <IonCol className="ion-no-padding">
                 <TextHeader>
-                  Your image must be JPG or PNG and less than 750KB
+                  Your image must be JPG or PNG and less than 700KB
                 </TextHeader>
               </IonCol>
             </IonRow>

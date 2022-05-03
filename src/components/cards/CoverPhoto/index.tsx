@@ -217,7 +217,7 @@ const Upload: React.FC<InferMappedProps> = ({
       <CardContentContainer>
         <Container>
           <TextHeader>
-            Your image must be JPG or PNG and less than 750KB
+            Your image must be JPG or PNG and less than 700KB
             <br />
             It can have a max dimension of 1056 x 176
           </TextHeader>
