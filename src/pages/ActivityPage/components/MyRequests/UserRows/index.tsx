@@ -48,7 +48,7 @@ export const UserRow = styled.div`
 
 export const getStatusColor = (status: string) => {
   let statusColor = '#2FD5DD';
-  if (status === 'requested') {
+  if (status === 'requested' || status === 'pending') {
     statusColor = '#FF5A5A';
   } else if (status === 'rejected') {
     statusColor = '#FF9840';

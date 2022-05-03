@@ -232,6 +232,75 @@ export class TuumTechScriptService {
     return response;
   }
 
+  public static async addReferral(toDid: string, did: string) {
+    if (toDid !== '') {
+      // retrive user's referrals first
+      const users = await TuumTechScriptService.searchUserWithDIDs([toDid]);
+
+      if (users.length > 0) {
+        let referrals = users[0].referrals || [];
+
+        if (!referrals.map((r: IReferral) => r.did).includes(did)) {
+          referrals.push({ did });
+        }
+
+        if (referrals.length > 0) {
+          let newUser = users[0];
+          newUser.referrals = referrals;
+          await TuumTechScriptService.updateTuumUser(newUser);
+        }
+      }
+    }
+  }
+
+  public static async completeReferralTutorial(toDid: string, did: string) {
+    if (toDid !== '') {
+      // retrive user's referrals first
+      const users = await TuumTechScriptService.searchUserWithDIDs([toDid]);
+
+      if (
+        users.length > 0 &&
+        users[0].referrals &&
+        users[0].referrals.length > 0
+      ) {
+        let referrals = users[0].referrals || [];
+        let index = referrals.findIndex((r: IReferral) => r.did === did);
+
+        if (index > -1) {
+          referrals[index].sign_up_date = new Date();
+
+          let newUser = users[0];
+          newUser.referrals = referrals;
+          await TuumTechScriptService.updateTuumUser(newUser);
+        }
+      }
+    }
+  }
+
+  public static async getReferrals(did: string) {
+    let referrals: IReferral[] = [];
+    if (did !== '') {
+      // retrive user's referrals first
+      const users = await TuumTechScriptService.searchUserWithDIDs([did]);
+
+      if (
+        users.length > 0 &&
+        users[0].referrals &&
+        users[0].referrals.length > 0
+      ) {
+        referrals = users[0].referrals;
+
+        if (referrals.length > 0) {
+          let newUser = users[0];
+          newUser.referrals = referrals;
+          await TuumTechScriptService.updateTuumUser(newUser);
+        }
+      }
+    }
+
+    return referrals;
+  }
+
   public static async addUserToTuumTech(params: ISessionItem) {
     const add_user_script = {
       name: 'add_user',

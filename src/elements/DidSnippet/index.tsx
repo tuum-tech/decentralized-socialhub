@@ -165,12 +165,14 @@ const DidSnippet: React.FC<IProp> = ({
         </TruncatedSpan>
       </IonRow>
       {}
-      <IonRow className="ion-align-items-center">
-        <CalendarSvg />
-        <TruncatedSpan style={{ color: color, width: width }}>
-          Joined {dateWeekday}, {dateDay} {dateMonth} {dateYear}
-        </TruncatedSpan>
-      </IonRow>
+      {dateJoined !== 0 && (
+        <IonRow className="ion-align-items-center">
+          <CalendarSvg />
+          <TruncatedSpan style={{ color: color, width: width }}>
+            Joined {dateWeekday}, {dateDay} {dateMonth} {dateYear}
+          </TruncatedSpan>
+        </IonRow>
+      )}
     </ProfileDesignation>
   );
 };

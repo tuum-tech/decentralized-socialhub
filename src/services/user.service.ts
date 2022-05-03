@@ -453,7 +453,8 @@ export class UserService {
       mnemonics,
       coverPhoto: '',
       pageTemplate: 'default',
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      referrals: [] as IReferral[]
     };
     let curTime = new Date().getTime();
     let messages = [];
@@ -525,6 +526,7 @@ export class UserService {
       let didAlreadyAdded = await TuumTechScriptService.searchUserWithDIDs([
         did
       ]);
+
       if (didAlreadyAdded.length === 0) {
         await TuumTechScriptService.addUserToTuumTech(sessionItem);
       } else {
@@ -545,6 +547,11 @@ export class UserService {
       );
     }
 
+    const referral = window.localStorage.getItem('referral') || '';
+    if (referral !== '') {
+      await TuumTechScriptService.addReferral(referral, sessionItem.did);
+    }
+
     Array.from(new Set(messages)).forEach(async message => {
       await ProfileService.addActivity(
         {
@@ -555,7 +562,6 @@ export class UserService {
           createdAt: 0,
           updatedAt: 0
         },
-
         sessionItem
       );
     });
@@ -632,6 +638,7 @@ export class UserService {
     } else if (instance) {
       instance.onBoardingCompleted = res.onBoardingCompleted;
       instance.tutorialStep = res.tutorialStep;
+      instance.referrals = res.referrals || [];
       this.lockUser(UserService.key(instance.did), instance);
 
       window.localStorage.setItem('isLoggedIn', 'true');

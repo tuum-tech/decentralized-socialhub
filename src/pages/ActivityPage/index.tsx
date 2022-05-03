@@ -11,6 +11,7 @@ import { TuumTechScriptService } from 'src/services/script.service';
 import ActivityTimeline from './components/ActivityTimeline';
 import VerificationRequests from './components/VerificationRequests';
 import MyRequests from './components/MyRequests';
+import Referrals from './components/Referrals';
 import ActivityPageHeader, {
   Header,
   PageTitle,
@@ -31,6 +32,7 @@ const ActivityPage: React.FC<InferMappedProps> = ({
   const [verificationRequests, setVerificationRequests] = useState<
     VerificationRequest[]
   >([]);
+  const [referrals, setReferrals] = useState<IReferral[]>([]);
 
   const fetchMyVerifications = async () => {
     const requests_by_me: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
@@ -48,10 +50,18 @@ const ActivityPage: React.FC<InferMappedProps> = ({
     setVerificationRequests(vRequests);
   };
 
+  const fetchReferrals = async () => {
+    const referrals: IReferral[] = await TuumTechScriptService.getReferrals(
+      props.session.did
+    );
+    setReferrals(referrals);
+  };
+
   useEffect(() => {
     (async () => {
       await fetchMyVerifications();
       await fetchVerificationRequestToMe();
+      await fetchReferrals();
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.session.did]);
@@ -78,6 +88,9 @@ const ActivityPage: React.FC<InferMappedProps> = ({
                     active={active}
                     setActive={setActive}
                     myverifications={myverifications.length}
+                    referrals={
+                      referrals.filter(v => v.sign_up_date == undefined).length
+                    }
                     verificationRequests={
                       verificationRequests.filter(x => x.status === 'requested')
                         .length
@@ -108,6 +121,9 @@ const ActivityPage: React.FC<InferMappedProps> = ({
                         await fetchVerificationRequestToMe();
                       }}
                     />
+                  )}
+                  {active === 'referrals' && (
+                    <Referrals session={props.session} referrals={referrals} />
                   )}
                 </ActivityTabsContainer>
               </IonCol>

@@ -79,12 +79,15 @@ const EmailVerificationPage: React.FC<PageProps> = ({
 
   useEffect(() => {
     const { name, email, password } = props.location.state;
+
     if (name !== '' && email !== '' && password !== '') {
       setUser({ name, email, password });
       setLoaded(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  console.log('===>user', user);
 
   if (
     loaded &&
@@ -139,6 +142,7 @@ const EmailVerificationPage: React.FC<PageProps> = ({
         user.password,
         session.did,
         mnemonic,
+        '',
         ''
       );
 
