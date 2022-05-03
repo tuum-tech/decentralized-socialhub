@@ -10,6 +10,7 @@ import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 import { UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
+import { SmallLightButton } from 'src/elements/buttons';
 
 import {
   CardOverview,
@@ -29,7 +30,11 @@ import { DidService, IDidService } from 'src/services/did.service.new';
 import { showNotify } from 'src/utils/notify';
 import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { DidcredsService } from 'src/services/didcreds.service';
-import { DefaultButton } from 'src/elements-v2/buttons';
+//Crop Image Imports
+import { IonModal } from '@ionic/react';
+import { Modal } from 'react-bootstrap';
+import Cropper from 'react-easy-crop';
+import { generateDownload } from './util/cropImage';
 
 const Upload: React.FC<InferMappedProps> = ({
   eProps,
@@ -41,9 +46,23 @@ const Upload: React.FC<InferMappedProps> = ({
     props.session.avatar || defaultAvatar
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isImage, setIsImage] = useState<boolean>(false);
   const [file, setFile] = useState<string>();
   const [name, setName] = useState<string>();
   const [size, setSize] = useState<string>();
+
+  //Crop Image Functions and states
+  const [image, setImage] = useState<any>();
+  const [croppedArea, setCroppedArea] = useState<any>();
+  const [crop, setCrop] = useState<any>({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState<any>(1);
+
+  const onCropComplete = (
+    croppedAreaPercentage: any,
+    croppedAreaPixels: any
+  ) => {
+    setCroppedArea(croppedAreaPixels);
+  };
 
   const storeUploadedAvatar = async (base64: string) => {
     let base64Str = base64;
@@ -140,10 +159,12 @@ const Upload: React.FC<InferMappedProps> = ({
 
     if (reader !== undefined && file !== undefined) {
       reader.onloadend = () => {
+        setIsImage(true);
         setFile(file);
         setSize(file.size);
         setName(file.name);
         setImagePreview(reader.result);
+        setImage(reader.result);
         setDefaultImage(file);
       };
       reader.readAsDataURL(file);
@@ -159,6 +180,20 @@ const Upload: React.FC<InferMappedProps> = ({
     setDefaultImage(props.session.avatar || defaultAvatar);
   };
 
+  //Crop Image Functions
+  React.useEffect(() => {
+    const cropOrg = async () => {
+      if (image) {
+        const cropped = await generateDownload(image, croppedArea);
+        if (cropped) {
+          setImagePreview(cropped);
+          // setImage(cropped);
+        }
+      }
+    };
+    cropOrg();
+  }, [image, croppedArea]);
+
   return (
     <CardOverview template="default">
       <CardHeaderContent>
@@ -168,31 +203,18 @@ const Upload: React.FC<InferMappedProps> = ({
               <IonCardTitle>Avatar</IonCardTitle>
             </IonCol>
 
-            <IonCol size="auto" className="ion-no-padding">
-              <IonRow>
-                <DefaultButton
-                  className="mr-2"
-                  size="small"
-                  variant="outlined"
-                  btnColor="primary-gradient"
-                  textType="gradient"
-                  onClick={remove}
-                >
-                  Cancel
-                </DefaultButton>
-                <DefaultButton
-                  size="small"
-                  variant="outlined"
-                  btnColor="primary-gradient"
-                  textType="gradient"
-                  onClick={async () => {
-                    if (base64) await storeUploadedAvatar(base64);
-                  }}
-                >
-                  Save
-                </DefaultButton>
-              </IonRow>
-            </IonCol>
+            {/* <IonCol size="auto" className="ion-no-padding">
+              <SmallLightButton className="mr-2" onClick={remove}>
+                Cancel
+              </SmallLightButton>
+              <SmallLightButton
+                onClick={async () => {
+                  if (base64) await storeUploadedAvatar(base64);
+                }}
+              >
+                Save
+              </SmallLightButton>
+            </IonCol> */}
           </IonRow>
         </IonGrid>
       </CardHeaderContent>
@@ -201,18 +223,79 @@ const Upload: React.FC<InferMappedProps> = ({
           <div>
             <TextHeader>Profile photo</TextHeader>
             <TextDesc>
-              Your profile photo is your style representation. (JPG or PNG, max)
-              <br />
-              Make sure that image size should be less than 700KB.
+              Your image must be JPG or PNG and less than 750KB
             </TextDesc>
           </div>
 
+          <Modal show={isImage} onHide={() => setIsImage(false)}>
+            <Modal.Body style={{ minHeight: '70vh' }}>
+              <div className="cropper">
+                <Cropper
+                  image={image}
+                  crop={crop}
+                  zoom={zoom}
+                  aspect={4 / 4}
+                  onCropChange={setCrop}
+                  onZoomChange={setZoom}
+                  onCropComplete={onCropComplete}
+                />
+              </div>
+            </Modal.Body>
+
+            <Modal.Footer>
+              <IonCol size="auto" className="ion-no-padding mr-auto">
+                <SmallLightButton
+                  className="mr-2"
+                  onClick={() => {
+                    setZoom((preVal: any) => preVal - 0.3);
+                  }}
+                >
+                  -
+                </SmallLightButton>
+                <SmallLightButton
+                  onClick={async () => {
+                    setZoom((preVal: any) => preVal + 0.3);
+                  }}
+                >
+                  +
+                </SmallLightButton>
+              </IonCol>
+
+              <IonCol size="auto" className="ion-no-padding">
+                <SmallLightButton
+                  className="mr-2"
+                  onClick={() => {
+                    setIsImage(false);
+                    remove();
+                  }}
+                >
+                  Cancel
+                </SmallLightButton>
+                <SmallLightButton
+                  onClick={async () => {
+                    setIsImage(false);
+                    const cropped = await generateDownload(image, croppedArea);
+                    // console.log(check);
+                    if (cropped) await storeUploadedAvatar(cropped);
+                    // console.log(imagePreview)
+                    // if (base64) await storeUploadedAvatar(base64);
+                  }}
+                >
+                  Save
+                </SmallLightButton>
+              </IonCol>
+            </Modal.Footer>
+          </Modal>
           <ImgUploadContainer>
             <form onSubmit={e => onFileSubmit(e)} onChange={e => onChange(e)}>
               <ImgUploadArea logo={defaultImage}>
                 <Perfil>
                   {imagePreview !== '' && (
-                    <img src={imagePreview} alt="Icone adicionar" />
+                    <img
+                      src={imagePreview}
+                      alt="Icone adicionar"
+                      style={{ objectFit: 'cover' }}
+                    />
                   )}
                   <input
                     type="file"

@@ -58,6 +58,7 @@
     "react-bootstrap": "^1.6.4",
     "react-copy-to-clipboard": "^5.0.4",
     "react-dom": "^16.14.0",
+    "react-easy-crop": "^4.1.5",
     "react-infinite-scroll-component": "^6.1.0",
     "react-intl": "^3.12.1",
     "react-is": "^17.0.2",
