@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { IonRow, IonCol } from '@ionic/react';
 
@@ -86,7 +86,7 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
     setLoading(false);
   };
 
-  const disableButton = () => {
+  const isDisabled = useMemo(() => {
     return (
       sessionItem.tutorialStep !== 4 ||
       loading ||
@@ -94,7 +94,7 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
       email === sessionItem.loginCred?.email ||
       email === ''
     );
-  };
+  }, [sessionItem, loading, error, email]);
 
   return (
     <Container class="ion-justify-content-start">
@@ -119,7 +119,7 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
             variant="outlined"
             btnColor="primary-gradient"
             textType="gradient"
-            disabled={disableButton()}
+            disabled={isDisabled}
             onClick={async () => {
               await sendVerification();
             }}
