@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import { DidService } from 'src/services/did.service.new';
-import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
-import { DID, DIDDocument, DIDURL } from '@elastosfoundation/did-js-sdk/';
+import { DidcredsService } from 'src/services/didcreds.service';
+import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { EssentialsService } from 'src/services/essentials.service';
 import { signWithMetamask } from '../../../utils/web3';
 import { requestRandomNonce, verifySignature } from './fetchapi';

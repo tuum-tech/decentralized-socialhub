@@ -17,16 +17,12 @@ import PaperCard from 'src/components/cards/PaperCard';
 import LicenseCard from 'src/components/cards/LicenseCard';
 import CertificationCard from 'src/components/cards/CertificationCard';
 import GameExpCard from 'src/components/cards/GameExpCard';
-import GamerTagsCard from 'src/components/cards/GamerTagsCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 import SyncBar from 'src/components/SyncBar';
 import { DidService } from 'src/services/did.service.new';
 import { DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
-import {
-  defaultFullProfile,
-  ProfileService
-} from 'src/services/profile.service';
+import { ProfileService } from 'src/services/profile.service';
 import { TuumTechScriptService } from 'src/services/script.service';
 import { showNotify } from 'src/utils/notify';
 import BasicCard from '../BasicCard';
@@ -45,7 +41,6 @@ import EssentialsModalContent, {
 } from 'src/pages/ActivityPage/components/MyRequests/EssentialsRequestModal';
 import { useRecoilState } from 'recoil';
 import { FullProfileAtom } from 'src/Atoms/Atoms';
-import EducationItem from 'src/components/cards/EducationCard/Item';
 
 interface Props {
   session: ISessionItem;

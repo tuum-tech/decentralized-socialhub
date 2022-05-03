@@ -10,7 +10,6 @@ import {
 import { LinkStyleSpan } from '../common';
 import Avatar from 'src/components/Avatar';
 import ViewAllFollower from './Modal/ViewAllFollower';
-import nft_item_icon from 'src/assets/space/nft_item.jpg';
 import style from './style.module.scss';
 import { getDIDString } from 'src/utils/did';
 

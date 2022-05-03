@@ -31,13 +31,7 @@ const ViewAllMember = ({ space, onClose }: Props) => {
   const [offset, setOffset] = useState(0);
   const limit = 5;
 
-  useEffect(() => {
-    (async () => {
-      await fetchMoreData();
-    })();
-  }, []);
-
-  const fetchMoreData = async () => {
+  const fetchMoreData = useCallback(async () => {
     const { data }: any = await getNFTCollectionOwners(
       space.guid,
       offset,
@@ -57,7 +51,14 @@ const ViewAllMember = ({ space, onClose }: Props) => {
     } else {
       setHasMore(false);
     }
-  };
+  });
+
+  useEffect(() => {
+    (async () => {
+      await fetchMoreData();
+    })();
+  }, [fetchMoreData]);
+
   return (
     <div className={style['modal']}>
       <div className={style['modal_container']}>
@@ -82,9 +83,9 @@ const ViewAllMember = ({ space, onClose }: Props) => {
                       {isProfileUser ? (
                         <Avatar did={member.did} width="40px" />
                       ) : (
-                        <img src={nft_item_icon} />
+                        <img src={nft_item_icon} alt={member.name} />
                       )}
-                      <img src={welcome_badge} />
+                      <img src={welcome_badge} alt="welcome badge" />
                     </div>
                     {isProfileUser ? (
                       <Link

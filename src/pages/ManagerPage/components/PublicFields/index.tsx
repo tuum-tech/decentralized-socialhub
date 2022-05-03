@@ -26,7 +26,6 @@ interface IProps {
 const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
   const [fields, setFields] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
-  const [template, setTemplate] = useState(sessionItem.pageTemplate);
   const defaultFields = [
     'about',
     'education',

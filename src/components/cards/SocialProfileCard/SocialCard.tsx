@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 import { DidcredsService } from 'src/services/didcreds.service';
 import { UserService } from 'src/services/user.service';

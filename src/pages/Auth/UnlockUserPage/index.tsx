@@ -16,7 +16,6 @@ import { ErrorTxt, Title40, Text12 } from 'src/elements/texts';
 import TextInput from 'src/elements/inputs/TextInput';
 import { UserService } from 'src/services/user.service';
 import wavinghand from 'src/assets/icon/wavinghand.png';
-import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import { InferMappedProps, LocationState } from './types';
 import { DidService } from 'src/services/did.service.new';
 import { createStructuredSelector } from 'reselect';

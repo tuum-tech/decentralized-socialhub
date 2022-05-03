@@ -11,7 +11,6 @@ import { getItemsFromData } from 'src/utils/script';
 import { getDIDString } from 'src/utils/did';
 import { timeSince } from 'src/utils/time';
 import { getCategoryTitle } from 'src/utils/credential';
-import { VerificationService } from 'src/services/verification.service';
 
 export const UserRow = styled.div`
   background: #ffffff;

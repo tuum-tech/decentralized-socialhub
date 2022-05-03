@@ -14,7 +14,7 @@ import {
   CardHeaderContent,
   CardContentContainer
 } from '../common';
-import GameExpCardEdit, { pattern } from './Edit';
+import GameExpCardEdit from './Edit';
 import ProgressBar from 'src/elements/ProgressBar';
 
 interface IGameExpProps {

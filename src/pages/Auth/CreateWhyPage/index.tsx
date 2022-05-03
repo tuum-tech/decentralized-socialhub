@@ -17,7 +17,7 @@ import {
 } from 'src/components/layouts/OnBoardLayout';
 import { ButtonLink, ArrowButton } from 'src/elements/buttons';
 
-import { Text16, Title40, Text18 } from 'src/elements/texts';
+import { Title40 } from 'src/elements/texts';
 
 import weird from 'src/assets/icon/weird.png';
 
