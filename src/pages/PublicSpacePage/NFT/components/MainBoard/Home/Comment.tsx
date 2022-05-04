@@ -17,22 +17,23 @@ const Text = styled.p`
 `;
 interface IProps {
   session: ISessionItem;
+  admins: string[];
   comment: any;
   onShowOrHideComment: () => void;
   onRemoveComment: () => void;
-  isAdmin: boolean;
 }
 
 const Comment: React.FC<IProps> = ({
   session,
+  admins,
   comment,
   onShowOrHideComment,
   onRemoveComment,
-  isAdmin
 }: IProps) => {
   const [showMenu, setShowMenu] = useState(false);
   const isAuthor = session && session.did === comment.creator;
   const [author, setAuthor] = useState('');
+  const isAdmin = session && session.did && admins.includes(session.did);
   useEffect(() => {
     (async () => {
       let didService = await DidService.getInstance();
@@ -48,7 +49,7 @@ const Comment: React.FC<IProps> = ({
         <IonRow className="ion-justify-content-between ion-align-items-center">
           <div className={style['creator']}>
             <h1>
-              {author} {isAdmin && <span>Admin</span>}
+              {author} {admins.includes(comment.creator) && <span>Admin</span>}
             </h1>
             <h2>{timeSince(comment.created)}</h2>
           </div>

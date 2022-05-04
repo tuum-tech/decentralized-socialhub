@@ -43,11 +43,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
     if (!session || !session.did || !space) return false;
     return space.followers.includes(session.did) || hasPermissionToPost;
   }, [space, session, hasPermissionToPost]);
-  const isAdmin = useMemo(() => {
-    if (!session || !session.did || !space) return false;
-    if (space.owner.includes(session.did)) return true;
-    return false;
-  }, [space, session]);
+  const isAdmin = space && session && session.did && space.owner.includes(session.did);
   const handlePost = async (content: any) => {
     const new_post = await SpaceService.post(session, space.sid, content);
     const _posts = [...posts];
@@ -118,7 +114,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
                 onIonChange={async e => {
                   setSearchQuery(e.detail.value || '');
                 }}
-                placeholder="Search post, comments"
+                placeholder="Search post by author name, did"
                 className={style['search-input']}
               ></IonSearchbar>
             </IonContent>
@@ -181,7 +177,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
                   setPosts(_posts);
                 }}
                 session={session}
-                isAdmin={isAdmin}
+                admins={space.owner}
                 hasPermissionToComment={hasPermissionToComment}
               />
             );

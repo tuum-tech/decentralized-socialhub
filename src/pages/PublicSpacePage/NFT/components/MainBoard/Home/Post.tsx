@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { IonRow } from '@ionic/react';
 import styled from 'styled-components';
 import {
@@ -35,7 +35,7 @@ interface IProps {
   onShowOrHideComment: (comment_id: string) => void;
   onRemovePost: () => void;
   onRemoveComment: (comment_id: string) => void;
-  isAdmin: boolean;
+  admins: string[];
   hasPermissionToComment: boolean;
 }
 
@@ -47,13 +47,22 @@ const Post: React.FC<IProps> = ({
   onShowOrHideComment,
   onRemoveComment,
   onRemovePost,
-  isAdmin,
+  admins,
   hasPermissionToComment
 }: IProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const isAuthor = session && session.did === post.creator;
   const [author, setAuthor] = useState('');
+  const isAdmin = session && session.did && admins.includes(session.did);
+  const comments = useMemo(() => {
+    if (isAdmin) return post.comments;
+    return Object.fromEntries(
+      Object.keys(post.comments)
+        .filter(id => !!post.comments_visibility[id])
+        .map(id => [id, post.comments[id]])
+    );
+  }, [post, isAdmin]);
   const handleComment = async (content: string) => {
     onComment(content);
     setIsModalOpen(false);
@@ -99,9 +108,13 @@ const Post: React.FC<IProps> = ({
             <img src={img_nft_item} />
             <div>
               <h1>
-                {author} {isAdmin && <span>Admin</span>}
+                {author} {admins.includes(post.creator) && <span>Admin</span>}
               </h1>
-              <h2>{timeSince(post.created.$date)}</h2>
+              <h2>
+                {timeSince(
+                  post.created ? post.created.$date : new Date().getTime()
+                )}
+              </h2>
             </div>
           </div>
           {(isAdmin || isAuthor) && (
@@ -138,7 +151,7 @@ const Post: React.FC<IProps> = ({
         <IonRow className="ion-justify-content-between ion-no-padding">
           <div className={style['post-analytic']}>
             <span>50K Likes</span>
-            <span>{Object.keys(post.comments).length} Comments</span>
+            <span>{Object.keys(comments).length} Comments</span>
           </div>
           <div className={style['action']}>
             {hasPermissionToComment && (
@@ -154,17 +167,17 @@ const Post: React.FC<IProps> = ({
           </div>
         </IonRow>
         <HorDOMSpace16 />
-        {Object.keys(post.comments).map((id: string) => (
+        {Object.keys(comments).map((id: string) => (
           <Comment
             key={id}
             session={session}
+            admins={admins}
             comment={{
-              ...post.comments[id],
+              ...comments[id],
               visible: !!post.comments_visibility[id]
             }}
             onShowOrHideComment={() => onShowOrHideComment(id)}
             onRemoveComment={() => onRemoveComment(id)}
-            isAdmin={isAdmin}
           />
         ))}
         <CustomModal
