@@ -1,17 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { IonItem, IonLabel } from '@ionic/react';
 import { startCase } from 'lodash';
+import styled from 'styled-components';
 
 import { ProfileService } from 'src/services/profile.service';
 import { DefaultButton } from 'src/elements-v2/buttons';
 import Toggle from 'src/elements-v2/Toggle';
 import Card from 'src/elements-v2/Card';
+import Modal from 'src/elements-v2/Modal';
+
+const StyledItem = styled(IonItem)`
+  --background: #f5f8fa;
+  --border-radius: 8px;
+  --border-style: none;
+  margin-bottom: 10px;
+`;
 
 interface IProps {
   sessionItem: ISessionItem;
 }
 
 const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
+  const modalRef = useRef(null);
   const [fields, setFields] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
   const defaultFields = [
@@ -55,43 +65,75 @@ const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
     }
   };
 
+  const handleSave = () => {
+    (async () => {
+      await ProfileService.updatePublicFields(fields, sessionItem);
+    })();
+  };
+
+  const handleEdit = () => {
+    (modalRef?.current as any).open();
+  };
+
   return (
-    <Card
-      title="Privacy Settings"
-      description="Set visibility of sections"
-      action={
-        <DefaultButton
-          size="small"
-          variant="outlined"
-          btnColor="primary-gradient"
-          textType="gradient"
-          disabled={sessionItem.tutorialStep !== 4}
-          onClick={async () => {
-            await ProfileService.updatePublicFields(fields, sessionItem);
-          }}
-        >
-          Save
-        </DefaultButton>
-      }
-    >
-      {defaultFields
-        .concat(
-          (extraFields as any)[
-            sessionItem.pageTemplate ? sessionItem.pageTemplate : 'default'
-          ]
-        )
-        .map(field => (
-          <IonItem key={field}>
-            <IonLabel>{startCase(field)}</IonLabel>
-            <Toggle
-              checked={fields.includes(field)}
-              handleClick={e => {
-                toggleClicked(field);
-              }}
-            />
-          </IonItem>
-        ))}
-    </Card>
+    <>
+      <Card
+        title="Privacy Settings"
+        description="Set visibility of sections"
+        action={
+          <DefaultButton
+            size="small"
+            variant="outlined"
+            btnColor="primary-gradient"
+            textType="gradient"
+            disabled={sessionItem.tutorialStep !== 4}
+            onClick={handleEdit}
+          >
+            Edit
+          </DefaultButton>
+        }
+      ></Card>
+      <Modal
+        title="Privacy Settings"
+        okText="Save Changes"
+        onOk={handleSave}
+        ref={modalRef}
+      >
+        <p style={{ color: '#425466', fontSize: 14, marginBottom: 24 }}>
+          Set visibility of sections
+        </p>
+        {defaultFields
+          .concat(
+            (extraFields as any)[
+              sessionItem.pageTemplate ? sessionItem.pageTemplate : 'default'
+            ]
+          )
+          .map(field => (
+            <StyledItem key={field}>
+              <IonLabel style={{ fontSize: 14, color: '#7A7A9D' }}>
+                {startCase(field)}
+              </IonLabel>
+              <Toggle
+                checked={fields.includes(field)}
+                handleClick={e => {
+                  toggleClicked(field);
+                }}
+              />
+              <IonLabel
+                style={{
+                  width: 55,
+                  marginLeft: 12,
+                  color: '#27272E',
+                  fontSize: 13
+                }}
+                slot="end"
+              >
+                {fields.includes(field) ? 'Visible' : 'Hidden'}
+              </IonLabel>
+            </StyledItem>
+          ))}
+      </Modal>
+    </>
   );
 };
 
