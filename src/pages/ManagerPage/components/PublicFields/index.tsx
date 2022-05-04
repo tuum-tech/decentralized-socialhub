@@ -1,23 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import {
-  IonCardTitle,
-  IonCardHeader,
-  IonCard,
-  IonCardContent,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonText,
-  IonItem,
-  IonLabel
-} from '@ionic/react';
+import { IonItem, IonLabel } from '@ionic/react';
 import { startCase } from 'lodash';
 
 import { ProfileService } from 'src/services/profile.service';
-import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import { DefaultButton } from 'src/elements-v2/buttons';
 import Toggle from 'src/elements-v2/Toggle';
-import { Divider } from '../TemplateManagerCard';
+import Card from 'src/elements-v2/Card';
 
 interface IProps {
   sessionItem: ISessionItem;
@@ -68,52 +56,42 @@ const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
   };
 
   return (
-    <IonCard className={styleWidget['overview']}>
-      <IonCardHeader>
-        <IonGrid>
-          <IonRow>
-            <IonCol>
-              <IonCardTitle>Privacy Settings</IonCardTitle>
-            </IonCol>
-            <IonCol size="auto">
-              <DefaultButton
-                size="small"
-                variant="outlined"
-                btnColor="primary-gradient"
-                textType="gradient"
-                disabled={sessionItem.tutorialStep !== 4}
-                onClick={async () => {
-                  await ProfileService.updatePublicFields(fields, sessionItem);
-                }}
-              >
-                Save
-              </DefaultButton>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </IonCardHeader>
-      <IonCardContent>
-        <IonText>Set visibility of sections</IonText>
-        <Divider />
-        {defaultFields
-          .concat(
-            (extraFields as any)[
-              sessionItem.pageTemplate ? sessionItem.pageTemplate : 'default'
-            ]
-          )
-          .map(field => (
-            <IonItem key={field}>
-              <IonLabel>{startCase(field)}</IonLabel>
-              <Toggle
-                checked={fields.includes(field)}
-                handleClick={e => {
-                  toggleClicked(field);
-                }}
-              />
-            </IonItem>
-          ))}
-      </IonCardContent>
-    </IonCard>
+    <Card
+      title="Privacy Settings"
+      description="Set visibility of sections"
+      action={
+        <DefaultButton
+          size="small"
+          variant="outlined"
+          btnColor="primary-gradient"
+          textType="gradient"
+          disabled={sessionItem.tutorialStep !== 4}
+          onClick={async () => {
+            await ProfileService.updatePublicFields(fields, sessionItem);
+          }}
+        >
+          Save
+        </DefaultButton>
+      }
+    >
+      {defaultFields
+        .concat(
+          (extraFields as any)[
+            sessionItem.pageTemplate ? sessionItem.pageTemplate : 'default'
+          ]
+        )
+        .map(field => (
+          <IonItem key={field}>
+            <IonLabel>{startCase(field)}</IonLabel>
+            <Toggle
+              checked={fields.includes(field)}
+              handleClick={e => {
+                toggleClicked(field);
+              }}
+            />
+          </IonItem>
+        ))}
+    </Card>
   );
 };
 
