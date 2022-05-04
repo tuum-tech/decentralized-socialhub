@@ -200,11 +200,6 @@ const App: React.FC = () => {
                     exact={true}
                   />
 
-                  <ProtectedRoute
-                    path="/hiveClient"
-                    component={HiveClientPage}
-                    exact={true}
-                  />
                   {/* // login workflow */}
                   <Route path="/twitter_callback" component={TwitterCallback} />
                   <Route
@@ -308,6 +303,8 @@ const App: React.FC = () => {
                   />
 
                   {/* ====== Public URLs ==== */}
+
+                  <Route path="/hiveClient" component={HiveClientPage} />
                   <Route path="/" component={HomePage} exact={true} />
                   <Route path="/did/:did" component={PublicPage} exact={true} />
                   <Route

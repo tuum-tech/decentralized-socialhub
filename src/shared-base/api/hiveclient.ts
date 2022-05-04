@@ -32,10 +32,10 @@ const environmentParameters: HiveClientParameters = {
     appMnemonics: process.env.REACT_APP_APPLICATION_MNEMONICS,
     appPhrasePass: process.env.REACT_APP_APPLICATION_PASSPHRASE,
     appStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS,
-    userDID: 'did:elastos:iqEndyMRZDQ4Pq99QCrYGsSGL9hsUUxdoM',
-    userMnemonics: '',
+    userDID: 'did:elastos:icbxqm6jkk6Sk5NxTpeYakBqZ5KJ91rQNs',
+    userMnemonics: '', //'web text team glue winner violin zebra case long alert share afford',
     userPhrasePass: '',
-    userStorePass: ''
+    userStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS
   } as AppContextParameters
 };
 
@@ -58,19 +58,26 @@ export class HiveClient {
     vaultServices?: VaultServices,
     vaultSubscriptionService?: VaultSubscriptionService
   ) {
-    HiveClient.LOG.debug(
-      'Creating HiveClient instance with {} ...',
-      JSON.stringify(appContext)
-    );
+    // HiveClient.LOG.debug(
+    //   'Creating HiveClient instance with {} ...',
+    //   JSON.stringify(appContext)
+    // );
+    debugger;
     this.anonymous = anonymous;
     this.appContext = appContext;
     this.hiveClientParameters = hiveClientParameters;
     if (!anonymous) {
+      debugger;
       this.databaseService = vaultServices?.getDatabaseService();
       this.scriptingService = vaultServices?.getScriptingService();
       this.vaultSubscriptionService = vaultSubscriptionService;
       this.vaultServices = vaultServices;
     } else {
+      debugger;
+      // this.databaseService = vaultServices?.getDatabaseService();
+      // this.scriptingService = vaultServices?.getScriptingService();
+      // this.vaultSubscriptionService = vaultSubscriptionService;
+      // this.vaultServices = vaultServices;
     }
   }
 
@@ -149,7 +156,8 @@ export class HiveClient {
       hiveClient = new HiveClient(
         true,
         appContext,
-        instanceAppContextParameters
+        instanceAppContextParameters,
+        new VaultServices(appContext, instanceAppContextParameters.hiveHost)
       );
       HiveClient.LOG.debug('New anonymous HiveClient created.');
       hiveClient.setAnonymousScriptingService(hiveHost);
@@ -165,6 +173,7 @@ export class HiveClient {
     let hiveClient = CacheManager.get('HiveClient', appContextParameters);
 
     if (!hiveClient) {
+      debugger;
       HiveClient.LOG.debug('Creating new HiveClient instance...');
       let instanceAppContextParameters = HiveClient.resolveDefaultParameters(
         appContextParameters
