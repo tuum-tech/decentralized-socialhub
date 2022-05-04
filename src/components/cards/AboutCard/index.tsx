@@ -1,33 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { IonButton, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
-import styled from 'styled-components';
-
-import { getThemeData } from 'src/utils/template';
+import { IonButton, IonCardTitle, IonCol, IonRow } from '@ionic/react';
 import {
-  CardOverview,
   LinkStyleSpan,
   MyModal,
   MyGrid,
   MyTextarea,
-  ModalFooter,
-  CardHeaderContent,
-  CardContentContainer
+  ModalFooter
 } from '../common';
-
-const AboutText = styled.span<ThemeProps>`
-  white-space: break-spaces !important;
-  margin: 9px 0 0 0;
-  font-family: 'SF Pro Display';
-  font-size: 14px;
-  font-weight: normal;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1.6;
-  letter-spacing: normal;
-  text-align: left;
-  color: ${({ template }: ThemeProps) =>
-    getThemeData(template, 'card', 'overviewText')};
-`;
+import Card from 'src/elements-v2/Card';
 
 interface IProps {
   mode?: string;
@@ -57,35 +37,21 @@ const AboutCard: React.FC<IProps> = ({
 
   return (
     <>
-      <CardOverview template={template}>
-        <CardHeaderContent>
-          <IonGrid className="ion-no-padding">
-            <IonRow className="ion-justify-content-between ion-no-padding">
-              <IonCol className="ion-no-padding">
-                <IonCardTitle>About</IonCardTitle>
-              </IonCol>
-              {mode === 'edit' ? (
-                <IonCol size="auto" className="ion-no-padding">
-                  <LinkStyleSpan onClick={() => setIsEditing(true)}>
-                    + Edit
-                  </LinkStyleSpan>
-                </IonCol>
-              ) : (
-                ''
-              )}
-            </IonRow>
-          </IonGrid>
-        </CardHeaderContent>
-        <CardContentContainer>
-          <IonGrid className="ion-no-padding">
-            <IonRow className="ion-no-padding">
-              <IonCol size="12" className="ion-no-padding">
-                <AboutText template={template}>{about}</AboutText>
-              </IonCol>
-            </IonRow>
-          </IonGrid>
-        </CardContentContainer>
-      </CardOverview>
+      <Card
+        title="About"
+        description={about}
+        action={
+          mode === 'edit' ? (
+            <IonCol size="auto" className="ion-no-padding">
+              <LinkStyleSpan onClick={() => setIsEditing(true)}>
+                Edit
+              </LinkStyleSpan>
+            </IonCol>
+          ) : (
+            ''
+          )
+        }
+      ></Card>
       <MyModal
         isOpen={isEditing}
         onDidDismiss={() => setIsEditing(false)}

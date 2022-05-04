@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import _ from 'lodash';
 import WelcomeSpace from './WelcomeSpace';
 import RequestCommunity from './RequestCommunity';
 
@@ -11,6 +10,20 @@ import SpaceListView from 'src/components/Space/SpaceListView';
 const SpaceView = () => {
   const [spaces, setSpaces] = useState<any[]>([]);
   const [loadingText, setLoadingText] = useState('');
+
+  const setTimerForSpaces = () => {
+    const timer = setTimeout(async () => {
+      await refreshSpaces();
+      setTimerForSpaces();
+    }, 5000);
+    return () => clearTimeout(timer);
+  };
+
+  const refreshSpaces = async () => {
+    const spaces = await SpaceService.getAllSpaces();
+    setSpaces(spaces);
+  };
+
   useEffect(() => {
     (async () => {
       setLoadingText('loading spaces...');
@@ -19,19 +32,6 @@ const SpaceView = () => {
     })();
     setTimerForSpaces();
   }, []);
-
-  const setTimerForSpaces = () => {
-    const timer = setTimeout(async () => {
-      await refreshSpaces();
-      setTimerForSpaces();
-    }, 4000);
-    return () => clearTimeout(timer);
-  };
-
-  const refreshSpaces = async () => {
-    const spaces = await SpaceService.getAllSpaces();
-    setSpaces(spaces);
-  };
   return (
     <>
       {loadingText && loadingText !== '' ? (

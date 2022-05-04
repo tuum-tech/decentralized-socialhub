@@ -118,12 +118,7 @@ const VerificationDetailContent = ({
     setLoading(approve ? 1 : 2);
 
     const vService = new VerificationService();
-    const vc = await vService.approveCredential(
-      session,
-      verification,
-      approve,
-      feedbacks
-    );
+    await vService.approveCredential(session, verification, approve, feedbacks);
     setLoading(0);
     closeModal();
   };

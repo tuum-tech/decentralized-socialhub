@@ -40,8 +40,8 @@ const Links: React.FC<IProps> = ({ template = 'default', space }: IProps) => {
           {links['linkedin'] && (
             <IonCol className={style.link} size="12">
               <div className={style.logo}>
-                <img src={icon_linkedin} />
-                <img src={icon_shield} />
+                <img src={icon_linkedin} alt="linkedin icon" />
+                <img src={icon_shield} alt="shield icon" />
               </div>
               <div className={style.name}>
                 <h1>Linkedin</h1>
@@ -52,8 +52,8 @@ const Links: React.FC<IProps> = ({ template = 'default', space }: IProps) => {
           {links['twitter'] && (
             <IonCol className={style.link} size="12">
               <div className={style.logo}>
-                <img src={icon_twitter} />
-                <img src={icon_shield} />
+                <img src={icon_twitter} alt="twitter icon" />
+                <img src={icon_shield} alt="shield icon" />
               </div>
               <div className={style.name}>
                 <h1>Twitter</h1>
@@ -64,8 +64,8 @@ const Links: React.FC<IProps> = ({ template = 'default', space }: IProps) => {
           {links['facebook'] && (
             <IonCol className={style.link} size="12">
               <div className={style.logo}>
-                <img src={icon_facebook} />
-                <img src={icon_shield} />
+                <img src={icon_facebook} alt="facebook icon" />
+                <img src={icon_shield} alt="shield icon" />
               </div>
               <div className={style.name}>
                 <h1>Facebook</h1>
@@ -76,8 +76,8 @@ const Links: React.FC<IProps> = ({ template = 'default', space }: IProps) => {
           {links['google'] && (
             <IonCol className={style.link} size="12">
               <div className={style.logo}>
-                <img src={icon_google} />
-                <img src={icon_shield} />
+                <img src={icon_google} alt="google icon" />
+                <img src={icon_shield} alt="shield icon" />
               </div>
               <div className={style.name}>
                 <h1>Google</h1>
@@ -88,8 +88,8 @@ const Links: React.FC<IProps> = ({ template = 'default', space }: IProps) => {
           {links['github'] && (
             <IonCol className={style.link} size="12">
               <div className={style.logo}>
-                <img src={icon_github} />
-                <img src={icon_shield} />
+                <img src={icon_github} alt="github icon" />
+                <img src={icon_shield} alt="shield icon" />
               </div>
               <div className={style.name}>
                 <h1>Google</h1>
@@ -100,8 +100,8 @@ const Links: React.FC<IProps> = ({ template = 'default', space }: IProps) => {
           {links['discord'] && (
             <IonCol className={style.link} size="12">
               <div className={style.logo}>
-                <img src={icon_discord} />
-                <img src={icon_shield} />
+                <img src={icon_discord} alt="discord icon" />
+                <img src={icon_shield} alt="shield icon" />
               </div>
               <div className={style.name}>
                 <h1>Google</h1>

@@ -7,7 +7,6 @@ import {
   CardContentContainer
 } from 'src/components/cards/common';
 import { LinkStyleSpan } from '../MainBoard/common';
-import img_nft_item from 'src/assets/space/nft_item.jpg';
 
 const Grid = styled(IonGrid)`
   --ion-grid-padding: 0px;
@@ -50,7 +49,10 @@ const Collection: React.FC<IProps> = ({
             {assets.slice(0, 3).map((asset, index) => {
               return (
                 <IonCol size="4" key={index}>
-                  <img src={flattenUrl(asset.image_url)} />
+                  <img
+                    src={flattenUrl(asset.image_url)}
+                    alt={asset.image_url}
+                  />
                 </IonCol>
               );
             })}
@@ -59,7 +61,10 @@ const Collection: React.FC<IProps> = ({
             {assets.slice(3, 6).map((asset, index) => {
               return (
                 <IonCol size="4" key={index + 3}>
-                  <img src={flattenUrl(asset.image_url)} />
+                  <img
+                    src={flattenUrl(asset.image_url)}
+                    alt={asset.image_url}
+                  />
                 </IonCol>
               );
             })}
@@ -68,7 +73,10 @@ const Collection: React.FC<IProps> = ({
             {assets.slice(6, 9).map((asset, index) => {
               return (
                 <IonCol size="4" key={index + 6}>
-                  <img src={flattenUrl(asset.image_url)} />
+                  <img
+                    src={flattenUrl(asset.image_url)}
+                    alt={asset.image_url}
+                  />
                 </IonCol>
               );
             })}

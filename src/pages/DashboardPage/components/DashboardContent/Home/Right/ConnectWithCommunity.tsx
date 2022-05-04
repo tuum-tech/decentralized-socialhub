@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import LinkButton from 'src/elements-v2/buttons/LinkButton';
+import { LinkButton } from 'src/elements-v2/buttons';
 import { MainCard, CardTitle } from './VerificationStatus';
 import discordImg from '../../../../../../assets/icon/discord.jpg';
 
@@ -27,7 +27,7 @@ const ConnectWithCommunity: React.FC = () => {
         <CardTitle>Connect with our community</CardTitle>
         <LinkButton
           variant="outlined"
-          color="primary-gradient"
+          btnColor="primary-gradient"
           textType="gradient"
           href="https://discord.gg/profile-mtrl"
           target="_blank"

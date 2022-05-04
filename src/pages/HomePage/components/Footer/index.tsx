@@ -6,14 +6,7 @@ import footerBG from 'src/assets/new/footer/footer-bg.png';
 import footerImg from 'src/assets/new/footer/footer-img.png';
 import footerPeople from 'src/assets/new/footer/footer-people.png';
 import logo from 'src/assets/new/logo.svg';
-import {
-  Github,
-  Reddit,
-  Twitter,
-  Discord,
-  Medium,
-  Telegram
-} from 'src/components/Icons';
+import { Twitter, Discord, Medium } from 'src/components/Icons';
 import { HomeIntro, HomeTitle } from '../Hero';
 
 const CreateButton = styled.button`

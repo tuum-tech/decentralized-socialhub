@@ -3,7 +3,7 @@ import {
   DIDDocument,
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
-import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import AboutCard from 'src/components/cards/AboutCard';
 import AvatarChangeCard from 'src/components/cards/AvatarChangeCard';
@@ -17,22 +17,17 @@ import PaperCard from 'src/components/cards/PaperCard';
 import LicenseCard from 'src/components/cards/LicenseCard';
 import CertificationCard from 'src/components/cards/CertificationCard';
 import GameExpCard from 'src/components/cards/GameExpCard';
-import GamerTagsCard from 'src/components/cards/GamerTagsCard';
 import SocialProfilesCard from 'src/components/cards/SocialProfileCard';
 import SyncBar from 'src/components/SyncBar';
 import { DidService } from 'src/services/did.service.new';
 import { DidcredsService } from 'src/services/didcreds.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
-import {
-  defaultFullProfile,
-  ProfileService
-} from 'src/services/profile.service';
+import { ProfileService } from 'src/services/profile.service';
 import { TuumTechScriptService } from 'src/services/script.service';
 import { showNotify } from 'src/utils/notify';
 import BasicCard from '../BasicCard';
 import PublicFields from '../PublicFields';
 import TemplateManagerCard from '../TemplateManagerCard';
-import style from './style.module.scss';
 import badgeDetails from 'src/data/badge_detail.json';
 import NewVerificationContent, {
   NewVerificationModal
@@ -46,7 +41,6 @@ import EssentialsModalContent, {
 } from 'src/pages/ActivityPage/components/MyRequests/EssentialsRequestModal';
 import { useRecoilState } from 'recoil';
 import { FullProfileAtom } from 'src/Atoms/Atoms';
-import EducationItem from 'src/components/cards/EducationCard/Item';
 
 interface Props {
   session: ISessionItem;
@@ -281,224 +275,220 @@ const ProfileEditor: React.FC<Props> = ({
   }, [showRequestEssentials, session]);
 
   return (
-    <IonContent className={style['profileeditor']}>
-      <IonGrid className={style['profileeditorgrid']}>
-        <IonRow>
-          <IonCol size="12">
-            <SyncBar session={session}></SyncBar>
-          </IonCol>
-        </IonRow>
-        <IonRow>
-          <IonCol size="4">
-            <TemplateManagerCard
-              sessionItem={session}
-              updateSession={updateSession}
-            />
-            <PublicFields sessionItem={userInfo} />
-          </IonCol>
-          <IonCol size="8">
-            <AvatarChangeCard />
-            <CoverPhoto />
+    <IonGrid>
+      <IonRow>
+        <IonCol size="12">
+          <SyncBar session={session}></SyncBar>
+        </IonCol>
+      </IonRow>
+      <IonRow>
+        <IonCol sizeSm="4" sizeXs="12">
+          <TemplateManagerCard
+            sessionItem={session}
+            updateSession={updateSession}
+          />
+          <PublicFields sessionItem={userInfo} />
+        </IonCol>
+        <IonCol sizeSm="8" sizeXs="12">
+          <AvatarChangeCard />
+          <CoverPhoto />
 
-            {/* <h1>{userInfo.name}</h1> */}
-            <BasicCard
-              sessionItem={userInfo}
-              requestVerification={(idKey: string) => {
-                setSelectedCredential(idKey);
-                setShowVerificationModal(true);
-              }}
-              updateFunc={async (newUserInfo: ISessionItem) => {
-                const newName = newUserInfo.name!;
-                const oldName = userInfo.name!;
+          {/* <h1>{userInfo.name}</h1> */}
+          <BasicCard
+            sessionItem={userInfo}
+            requestVerification={(idKey: string) => {
+              setSelectedCredential(idKey);
+              setShowVerificationModal(true);
+            }}
+            updateFunc={async (newUserInfo: ISessionItem) => {
+              const newName = newUserInfo.name!;
+              const oldName = userInfo.name!;
 
-                const newPhone = newUserInfo.loginCred?.phone;
-                const oldPhone = userInfo.loginCred?.phone;
+              const newPhone = newUserInfo.loginCred?.phone;
+              const oldPhone = userInfo.loginCred?.phone;
 
-                let didService = await DidService.getInstance();
-                let doc = await didService.getStoredDocument(
-                  new DID(session.did)
+              let didService = await DidService.getInstance();
+              let doc = await didService.getStoredDocument(
+                new DID(session.did)
+              );
+
+              if (newName !== oldName) {
+                let vcName: VerifiableCredential;
+
+                if (userInfo.isEssentialUser) {
+                  setShowRequestEssentials(true);
+                  vcName = await didService.newSelfVerifiableCredentialFromEssentials(
+                    userInfo.did,
+                    'name',
+                    newName
+                  );
+                  setShowRequestEssentials(false);
+                } else {
+                  vcName = await didService.newSelfVerifiableCredential(
+                    doc,
+                    'name',
+                    newName
+                  );
+                }
+
+                await DidcredsService.addOrUpdateCredentialToVault(
+                  session,
+                  vcName
                 );
+              }
 
-                if (newName !== oldName) {
-                  let vcName: VerifiableCredential;
-
-                  if (userInfo.isEssentialUser) {
-                    setShowRequestEssentials(true);
-                    vcName = await didService.newSelfVerifiableCredentialFromEssentials(
-                      userInfo.did,
-                      'name',
-                      newName
-                    );
-                    setShowRequestEssentials(false);
-                  } else {
-                    vcName = await didService.newSelfVerifiableCredential(
-                      doc,
-                      'name',
-                      newName
-                    );
-                  }
-
-                  await DidcredsService.addOrUpdateCredentialToVault(
-                    session,
-                    vcName
+              if (newPhone !== oldPhone) {
+                let vcPhone: VerifiableCredential;
+                if (userInfo.isEssentialUser) {
+                  setShowRequestEssentials(true);
+                  vcPhone = await didService.newSelfVerifiableCredentialFromEssentials(
+                    userInfo.did,
+                    'phone',
+                    newPhone
+                  );
+                  setShowRequestEssentials(false);
+                } else {
+                  vcPhone = await didService.newSelfVerifiableCredential(
+                    doc,
+                    'phone',
+                    newPhone
                   );
                 }
 
-                if (newPhone !== oldPhone) {
-                  let vcPhone: VerifiableCredential;
-                  if (userInfo.isEssentialUser) {
-                    setShowRequestEssentials(true);
-                    vcPhone = await didService.newSelfVerifiableCredentialFromEssentials(
-                      userInfo.did,
-                      'phone',
-                      newPhone
-                    );
-                    setShowRequestEssentials(false);
-                  } else {
-                    vcPhone = await didService.newSelfVerifiableCredential(
-                      doc,
-                      'phone',
-                      newPhone
-                    );
-                  }
+                await DidcredsService.addOrUpdateCredentialToVault(
+                  session,
+                  vcPhone
+                );
+              }
 
-                  await DidcredsService.addOrUpdateCredentialToVault(
-                    session,
-                    vcPhone
-                  );
-                }
+              await TuumTechScriptService.updateTuumUser(newUserInfo);
+              await updateSession({ session: newUserInfo });
+              showNotify('Basic info is successfuly saved', 'success');
+            }}
+          ></BasicCard>
 
-                await TuumTechScriptService.updateTuumUser(newUserInfo);
-                await updateSession({ session: newUserInfo });
-                showNotify('Basic info is successfuly saved', 'success');
-              }}
-            ></BasicCard>
+          {!error && loaded && userInfo.tutorialStep === 4 ? (
+            <>
+              {profile && profile.basicDTO && (
+                <AboutCard
+                  aboutText={profile.basicDTO.about || ''}
+                  mode="edit"
+                  update={async (nextAbout: string) => {
+                    const newBasicDTO = { ...profile.basicDTO };
 
-            {!error && loaded && userInfo.tutorialStep === 4 ? (
-              <>
-                {profile && profile.basicDTO && (
-                  <AboutCard
-                    aboutText={profile.basicDTO.about || ''}
-                    mode="edit"
-                    update={async (nextAbout: string) => {
-                      const newBasicDTO = { ...profile.basicDTO };
-
-                      let userSession = JSON.parse(JSON.stringify(session));
-                      newBasicDTO.did = userSession.did;
-                      newBasicDTO.about = nextAbout;
-                      if (
-                        userSession.badges &&
-                        userSession.badges.account &&
-                        !userSession.badges.account.basicProfile.archived
-                      ) {
-                        userSession.badges.account!.basicProfile.archived = new Date().getTime();
-                        await updateSession({ session: userSession });
-                        await ProfileService.addActivity(
-                          {
-                            guid: '',
-                            did: userSession.did,
-                            message: 'You received a Basic profile badge',
-                            read: false,
-                            createdAt: 0,
-                            updatedAt: 0
-                          },
-                          userSession
-                        );
-                      }
-                      await ProfileService.updateAbout(
-                        newBasicDTO,
-                        userSession
-                      );
+                    let userSession = JSON.parse(JSON.stringify(session));
+                    newBasicDTO.did = userSession.did;
+                    newBasicDTO.about = nextAbout;
+                    if (
+                      userSession.badges &&
+                      userSession.badges.account &&
+                      !userSession.badges.account.basicProfile.archived
+                    ) {
+                      userSession.badges.account!.basicProfile.archived = new Date().getTime();
+                      await updateSession({ session: userSession });
                       await ProfileService.addActivity(
                         {
                           guid: '',
                           did: userSession.did,
-                          message: 'You updated basic profile',
+                          message: 'You received a Basic profile badge',
                           read: false,
                           createdAt: 0,
                           updatedAt: 0
                         },
                         userSession
                       );
-                      await retriveProfile();
-                    }}
-                    openModal={handleRouteParam(basicProfile.title)}
-                  />
-                )}
-
-                <SocialProfilesCard
-                  targetUser={session}
-                  setSession={updateSession}
-                  mode="edit"
-                  openModal={handleSocialRouteParam()}
-                />
-                {profile && profile.educationDTO && (
-                  <EducationCard
-                    userSession={JSON.parse(JSON.stringify(session))}
-                    updateFunc={updateEducationProfile}
-                    removeFunc={async (educationItem: EducationItem) => {
-                      let userSession = JSON.parse(JSON.stringify(session));
-                      if (!userSession) return;
-                      await ProfileService.removeEducationItem(
-                        educationItem,
-                        userSession
-                      );
-                      await DidcredsService.removeCredentialToVault(
-                        userSession,
-                        `${userSession.did}#educationcredential_${educationItem.program}_at_${educationItem.institution}`
-                      );
-                    }}
-                    requestFunc={async (educationItem: EducationItem) => {
-                      setSelectedCredential(
-                        `Education: ${educationItem.program} at ${educationItem.institution}`
-                      );
-                      setShowVerificationModal(true);
-                    }}
-                    isEditable={true}
-                    template="default"
-                    openModal={handleRouteParam(educationProfile.title)}
-                  />
-                )}
-                {profile && profile.experienceDTO.isEnabled && (
-                  <ExperienceCard
-                    updateFunc={updateExperienceProfile}
-                    removeFunc={async (experienceItem: ExperienceItem) => {
-                      let userSession = JSON.parse(JSON.stringify(session));
-                      await ProfileService.removeExperienceItem(
-                        experienceItem,
-                        userSession
-                      );
-                      await DidcredsService.removeCredentialToVault(
-                        userSession,
-                        `${userSession.did}#experiencecredential_${experienceItem.title}_at_${experienceItem.institution}`
-                      );
-                    }}
-                    requestFunc={async (experienceItem: ExperienceItem) => {
-                      setSelectedCredential(
-                        `Experience: ${experienceItem.title} at ${experienceItem.institution}`
-                      );
-                      setShowVerificationModal(true);
-                    }}
-                    isEditable={true}
-                    template="default"
-                    userSession={JSON.parse(JSON.stringify(session))}
-                    openModal={handleRouteParam(experienceProfile.title)}
-                  />
-                )}
-                {userInfo.pageTemplate === 'crypto' && (
-                  <WalletCard
-                    setRequestEssentials={(value: boolean) =>
-                      setShowRequestEssentials(value)
                     }
-                    didDocument={didDocument!}
-                    isEditable={true}
-                    template="default"
-                    userSession={JSON.parse(JSON.stringify(session))}
-                  />
-                )}
-                {userInfo.pageTemplate === 'gamer' && (
-                  <>
-                    {/* <GamerTagsCard
+                    await ProfileService.updateAbout(newBasicDTO, userSession);
+                    await ProfileService.addActivity(
+                      {
+                        guid: '',
+                        did: userSession.did,
+                        message: 'You updated basic profile',
+                        read: false,
+                        createdAt: 0,
+                        updatedAt: 0
+                      },
+                      userSession
+                    );
+                    await retriveProfile();
+                  }}
+                  openModal={handleRouteParam(basicProfile.title)}
+                />
+              )}
+
+              <SocialProfilesCard
+                targetUser={session}
+                setSession={updateSession}
+                mode="edit"
+                openModal={handleSocialRouteParam()}
+              />
+              {profile && profile.educationDTO && (
+                <EducationCard
+                  userSession={JSON.parse(JSON.stringify(session))}
+                  updateFunc={updateEducationProfile}
+                  removeFunc={async (educationItem: EducationItem) => {
+                    let userSession = JSON.parse(JSON.stringify(session));
+                    if (!userSession) return;
+                    await ProfileService.removeEducationItem(
+                      educationItem,
+                      userSession
+                    );
+                    await DidcredsService.removeCredentialToVault(
+                      userSession,
+                      `${userSession.did}#educationcredential_${educationItem.program}_at_${educationItem.institution}`
+                    );
+                  }}
+                  requestFunc={async (educationItem: EducationItem) => {
+                    setSelectedCredential(
+                      `Education: ${educationItem.program} at ${educationItem.institution}`
+                    );
+                    setShowVerificationModal(true);
+                  }}
+                  isEditable={true}
+                  template="default"
+                  openModal={handleRouteParam(educationProfile.title)}
+                />
+              )}
+              {profile && profile.experienceDTO.isEnabled && (
+                <ExperienceCard
+                  updateFunc={updateExperienceProfile}
+                  removeFunc={async (experienceItem: ExperienceItem) => {
+                    let userSession = JSON.parse(JSON.stringify(session));
+                    await ProfileService.removeExperienceItem(
+                      experienceItem,
+                      userSession
+                    );
+                    await DidcredsService.removeCredentialToVault(
+                      userSession,
+                      `${userSession.did}#experiencecredential_${experienceItem.title}_at_${experienceItem.institution}`
+                    );
+                  }}
+                  requestFunc={async (experienceItem: ExperienceItem) => {
+                    setSelectedCredential(
+                      `Experience: ${experienceItem.title} at ${experienceItem.institution}`
+                    );
+                    setShowVerificationModal(true);
+                  }}
+                  isEditable={true}
+                  template="default"
+                  userSession={JSON.parse(JSON.stringify(session))}
+                  openModal={handleRouteParam(experienceProfile.title)}
+                />
+              )}
+              {userInfo.pageTemplate === 'crypto' && (
+                <WalletCard
+                  setRequestEssentials={(value: boolean) =>
+                    setShowRequestEssentials(value)
+                  }
+                  didDocument={didDocument!}
+                  isEditable={true}
+                  template="default"
+                  userSession={JSON.parse(JSON.stringify(session))}
+                />
+              )}
+              {userInfo.pageTemplate === 'gamer' && (
+                <>
+                  {/* <GamerTagsCard
                       gamerTagDTO={profile.gamerTagDTO}
                       updateFunc={() => {}}
                       isEditable={true}
@@ -506,48 +496,21 @@ const ProfileEditor: React.FC<Props> = ({
                       userSession={JSON.parse(JSON.stringify(session))}
                       openModal={false}
                     /> */}
-                    <GameExpCard
-                      gameExpDTO={profile.gameExpDTO}
-                      updateFunc={async (gameExpItem: GameExpItem) => {
-                        let userSession = JSON.parse(JSON.stringify(session));
-                        await ProfileService.updateGameExpProfile(
-                          gameExpItem,
-                          userSession
-                        );
-                        await retriveProfile();
-                      }}
-                      removeFunc={async (gameExpItem: GameExpItem) => {
-                        let userSession = JSON.parse(JSON.stringify(session));
-                        if (!userSession) return;
-                        await ProfileService.removeGameExpItem(
-                          gameExpItem,
-                          userSession
-                        );
-                        await retriveProfile();
-                      }}
-                      isEditable={true}
-                      template="default"
-                      userSession={JSON.parse(JSON.stringify(session))}
-                      openModal={false}
-                    />
-                  </>
-                )}
-                {userInfo.pageTemplate === 'soccer' && (
-                  <TeamCard
-                    teamDTO={profile.teamDTO}
-                    updateFunc={async (teamItem: TeamItem) => {
+                  <GameExpCard
+                    gameExpDTO={profile.gameExpDTO}
+                    updateFunc={async (gameExpItem: GameExpItem) => {
                       let userSession = JSON.parse(JSON.stringify(session));
-                      await ProfileService.updateTeamProfile(
-                        teamItem,
+                      await ProfileService.updateGameExpProfile(
+                        gameExpItem,
                         userSession
                       );
                       await retriveProfile();
                     }}
-                    removeFunc={async (teamItem: TeamItem) => {
+                    removeFunc={async (gameExpItem: GameExpItem) => {
                       let userSession = JSON.parse(JSON.stringify(session));
                       if (!userSession) return;
-                      await ProfileService.removeTeamItem(
-                        teamItem,
+                      await ProfileService.removeGameExpItem(
+                        gameExpItem,
                         userSession
                       );
                       await retriveProfile();
@@ -557,159 +520,182 @@ const ProfileEditor: React.FC<Props> = ({
                     userSession={JSON.parse(JSON.stringify(session))}
                     openModal={false}
                   />
-                )}
-                {userInfo.pageTemplate === 'education' && (
-                  <>
-                    <ThesisCard
-                      thesisDTO={profile.thesisDTO}
-                      updateFunc={async (thesisItem: ThesisItem) => {
-                        let userSession = JSON.parse(JSON.stringify(session));
-                        await ProfileService.updateThesisProfile(
-                          thesisItem,
-                          userSession
-                        );
-                        await retriveProfile();
-                      }}
-                      removeFunc={async (thesisItem: ThesisItem) => {
-                        let userSession = JSON.parse(JSON.stringify(session));
-                        if (!userSession) return;
-                        await ProfileService.removeThesisItem(
-                          thesisItem,
-                          userSession
-                        );
-                        await retriveProfile();
-                      }}
-                      isEditable={true}
-                      template="default"
-                      userSession={JSON.parse(JSON.stringify(session))}
-                      openModal={false}
-                    />
-                    <PaperCard
-                      paperDTO={profile.paperDTO}
-                      updateFunc={async (paperItem: PaperItem) => {
-                        let userSession = JSON.parse(JSON.stringify(session));
-                        await ProfileService.updatePaperProfile(
-                          paperItem,
-                          userSession
-                        );
-                        await retriveProfile();
-                      }}
-                      removeFunc={async (paperItem: PaperItem) => {
-                        let userSession = JSON.parse(JSON.stringify(session));
-                        if (!userSession) return;
-                        await ProfileService.removePaperItem(
-                          paperItem,
-                          userSession
-                        );
-                        await retriveProfile();
-                      }}
-                      isEditable={true}
-                      template="default"
-                      userSession={JSON.parse(JSON.stringify(session))}
-                      openModal={false}
-                    />
-                    <LicenseCard
-                      licenseDTO={profile.licenseDTO}
-                      updateFunc={async (licenseItem: LicenseItem) => {
-                        let userSession = JSON.parse(JSON.stringify(session));
-                        await ProfileService.updateLicenseProfile(
-                          licenseItem,
-                          userSession
-                        );
-                        await retriveProfile();
-                      }}
-                      removeFunc={async (licenseItem: LicenseItem) => {
-                        let userSession = JSON.parse(JSON.stringify(session));
-                        if (!userSession) return;
-                        await ProfileService.removeLicenseItem(
-                          licenseItem,
-                          userSession
-                        );
-                        await retriveProfile();
-                      }}
-                      isEditable={true}
-                      template="default"
-                      userSession={JSON.parse(JSON.stringify(session))}
-                      openModal={false}
-                    />
-                    <CertificationCard
-                      certificationDTO={profile.certificationDTO}
-                      updateFunc={async (
-                        certificationItem: CertificationItem
-                      ) => {
-                        let userSession = JSON.parse(JSON.stringify(session));
-                        await ProfileService.updateCertificationProfile(
-                          certificationItem,
-                          userSession
-                        );
-                        await retriveProfile();
-                      }}
-                      removeFunc={async (
-                        certificationItem: CertificationItem
-                      ) => {
-                        let userSession = JSON.parse(JSON.stringify(session));
-                        if (!userSession) return;
-                        await ProfileService.removeCertificationItem(
-                          certificationItem,
-                          userSession
-                        );
-                        await retriveProfile();
-                      }}
-                      isEditable={true}
-                      template="default"
-                      userSession={JSON.parse(JSON.stringify(session))}
-                      openModal={false}
-                    />
-                  </>
-                )}
-
-                <NewVerificationModal
-                  isOpen={showVerificationModal}
-                  cssClass="my-custom-class"
-                  backdropDismiss={false}
-                >
-                  <NewVerificationContent
-                    session={session}
-                    onClose={() => {
-                      setShowVerificationModal(false);
+                </>
+              )}
+              {userInfo.pageTemplate === 'soccer' && (
+                <TeamCard
+                  teamDTO={profile.teamDTO}
+                  updateFunc={async (teamItem: TeamItem) => {
+                    let userSession = JSON.parse(JSON.stringify(session));
+                    await ProfileService.updateTeamProfile(
+                      teamItem,
+                      userSession
+                    );
+                    await retriveProfile();
+                  }}
+                  removeFunc={async (teamItem: TeamItem) => {
+                    let userSession = JSON.parse(JSON.stringify(session));
+                    if (!userSession) return;
+                    await ProfileService.removeTeamItem(teamItem, userSession);
+                    await retriveProfile();
+                  }}
+                  isEditable={true}
+                  template="default"
+                  userSession={JSON.parse(JSON.stringify(session))}
+                  openModal={false}
+                />
+              )}
+              {userInfo.pageTemplate === 'education' && (
+                <>
+                  <ThesisCard
+                    thesisDTO={profile.thesisDTO}
+                    updateFunc={async (thesisItem: ThesisItem) => {
+                      let userSession = JSON.parse(JSON.stringify(session));
+                      await ProfileService.updateThesisProfile(
+                        thesisItem,
+                        userSession
+                      );
+                      await retriveProfile();
                     }}
-                    targetUser={session}
-                    sendRequest={sendRequest}
-                    selectedCredential={selectedCredential}
-                  />
-                </NewVerificationModal>
-
-                <SentModal
-                  isOpen={showSentModal}
-                  cssClass="my-custom-class"
-                  backdropDismiss={false}
-                >
-                  <SentModalContent
-                    onClose={() => {
-                      setShowSentModal(false);
+                    removeFunc={async (thesisItem: ThesisItem) => {
+                      let userSession = JSON.parse(JSON.stringify(session));
+                      if (!userSession) return;
+                      await ProfileService.removeThesisItem(
+                        thesisItem,
+                        userSession
+                      );
+                      await retriveProfile();
                     }}
+                    isEditable={true}
+                    template="default"
+                    userSession={JSON.parse(JSON.stringify(session))}
+                    openModal={false}
                   />
-                </SentModal>
-
-                <EssentialsRequestModal
-                  isOpen={showRequestEssentials}
-                  cssClass="my-custom-class"
-                  backdropDismiss={false}
-                >
-                  <EssentialsModalContent
-                    onClose={() => {
-                      setShowRequestEssentials(false);
+                  <PaperCard
+                    paperDTO={profile.paperDTO}
+                    updateFunc={async (paperItem: PaperItem) => {
+                      let userSession = JSON.parse(JSON.stringify(session));
+                      await ProfileService.updatePaperProfile(
+                        paperItem,
+                        userSession
+                      );
+                      await retriveProfile();
                     }}
+                    removeFunc={async (paperItem: PaperItem) => {
+                      let userSession = JSON.parse(JSON.stringify(session));
+                      if (!userSession) return;
+                      await ProfileService.removePaperItem(
+                        paperItem,
+                        userSession
+                      );
+                      await retriveProfile();
+                    }}
+                    isEditable={true}
+                    template="default"
+                    userSession={JSON.parse(JSON.stringify(session))}
+                    openModal={false}
                   />
-                </EssentialsRequestModal>
-              </>
-            ) : (
-              ''
-            )}
-          </IonCol>
-        </IonRow>
-      </IonGrid>
-    </IonContent>
+                  <LicenseCard
+                    licenseDTO={profile.licenseDTO}
+                    updateFunc={async (licenseItem: LicenseItem) => {
+                      let userSession = JSON.parse(JSON.stringify(session));
+                      await ProfileService.updateLicenseProfile(
+                        licenseItem,
+                        userSession
+                      );
+                      await retriveProfile();
+                    }}
+                    removeFunc={async (licenseItem: LicenseItem) => {
+                      let userSession = JSON.parse(JSON.stringify(session));
+                      if (!userSession) return;
+                      await ProfileService.removeLicenseItem(
+                        licenseItem,
+                        userSession
+                      );
+                      await retriveProfile();
+                    }}
+                    isEditable={true}
+                    template="default"
+                    userSession={JSON.parse(JSON.stringify(session))}
+                    openModal={false}
+                  />
+                  <CertificationCard
+                    certificationDTO={profile.certificationDTO}
+                    updateFunc={async (
+                      certificationItem: CertificationItem
+                    ) => {
+                      let userSession = JSON.parse(JSON.stringify(session));
+                      await ProfileService.updateCertificationProfile(
+                        certificationItem,
+                        userSession
+                      );
+                      await retriveProfile();
+                    }}
+                    removeFunc={async (
+                      certificationItem: CertificationItem
+                    ) => {
+                      let userSession = JSON.parse(JSON.stringify(session));
+                      if (!userSession) return;
+                      await ProfileService.removeCertificationItem(
+                        certificationItem,
+                        userSession
+                      );
+                      await retriveProfile();
+                    }}
+                    isEditable={true}
+                    template="default"
+                    userSession={JSON.parse(JSON.stringify(session))}
+                    openModal={false}
+                  />
+                </>
+              )}
+
+              <NewVerificationModal
+                isOpen={showVerificationModal}
+                cssClass="my-custom-class"
+                backdropDismiss={false}
+              >
+                <NewVerificationContent
+                  session={session}
+                  onClose={() => {
+                    setShowVerificationModal(false);
+                  }}
+                  targetUser={session}
+                  sendRequest={sendRequest}
+                  selectedCredential={selectedCredential}
+                />
+              </NewVerificationModal>
+
+              <SentModal
+                isOpen={showSentModal}
+                cssClass="my-custom-class"
+                backdropDismiss={false}
+              >
+                <SentModalContent
+                  onClose={() => {
+                    setShowSentModal(false);
+                  }}
+                />
+              </SentModal>
+
+              <EssentialsRequestModal
+                isOpen={showRequestEssentials}
+                cssClass="my-custom-class"
+                backdropDismiss={false}
+              >
+                <EssentialsModalContent
+                  onClose={() => {
+                    setShowRequestEssentials(false);
+                  }}
+                />
+              </EssentialsRequestModal>
+            </>
+          ) : (
+            ''
+          )}
+        </IonCol>
+      </IonRow>
+    </IonGrid>
   );
 };
 

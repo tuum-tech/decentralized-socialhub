@@ -1,7 +1,5 @@
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { TuumTechScriptService } from 'src/services/script.service';
 import { DidcredsService } from 'src/services/didcreds.service';
-import { DidDocumentService } from 'src/services/diddocument.service';
 import { CredentialType } from 'src/services/didcreds.service';
 
 export const getOwners = async (assets: any[], network: string) => {

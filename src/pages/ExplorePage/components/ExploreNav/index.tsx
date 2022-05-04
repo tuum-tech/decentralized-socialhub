@@ -9,9 +9,7 @@ import {
 } from '@ionic/react';
 
 import PeopleCard from 'src/components/cards/PeopleCard';
-import PagesCard from 'src/components/cards/PagesCard';
 import style from './style.module.scss';
-import ComingSoon from 'src/components/ComingSoon';
 import SpaceView from '../SpaceView';
 
 interface Props {

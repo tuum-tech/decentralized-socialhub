@@ -3,7 +3,7 @@ import { AssistService } from './assist.service';
 import { DidService } from './did.service.new';
 
 export class DidDocumentService {
-  private static DOCUMENT_CHANGE_EVENT = 'DocumentChangeEvent';
+  // private static DOCUMENT_CHANGE_EVENT = 'DocumentChangeEvent';
 
   static async isDidDocumentPublished(did: string): Promise<boolean> {
     let didService = await DidService.getInstance();
@@ -25,9 +25,7 @@ export class DidDocumentService {
     return documentState;
   }
 
-  private static async loadFromBlockchain(
-    did: string
-  ): Promise<DIDDocument | null> {
+  static async loadFromBlockchain(did: string): Promise<DIDDocument | null> {
     let didService = await DidService.getInstance();
     let documentOnBlockchain = await didService.getPublishedDocument(
       new DID(did)
@@ -48,13 +46,12 @@ export class DidDocumentService {
     diddocument: DIDDocument,
     userSession: ISessionItem
   ): Promise<void> {
-    let response: any = {};
     let adapter: any = {
       createIdTransaction: async (payload: any, memo: any) => {
         let request = JSON.parse(payload);
         let did = request.proof.verificationMethod;
         did = did.substring(0, did.indexOf('#'));
-        response = await AssistService.publishDocument(did, request);
+        await AssistService.publishDocument(did, request);
       }
     };
     diddocument.publish(

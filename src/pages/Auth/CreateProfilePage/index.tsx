@@ -58,7 +58,6 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   ...props
 }: InferMappedProps) => {
   const history = useHistory();
-
   const [loading, setLoading] = useState('');
 
   const [signedUsers, setSignedUsers] = useState<string[]>([]);
@@ -68,6 +67,18 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
     email: '',
     password: ''
   });
+
+  useEffect(() => {
+    if (
+      history.location.search &&
+      history.location.search.includes('?ref=did:elastos:')
+    ) {
+      window.localStorage.setItem(
+        'referral',
+        history.location.search.replace('?ref=', '')
+      );
+    }
+  }, [history.location.search]);
 
   useEffect(() => {
     (async () => {

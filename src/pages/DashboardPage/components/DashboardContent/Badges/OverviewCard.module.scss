@@ -1,13 +1,12 @@
+@import '../../../../../styles/_variables.scss';
+
 .spotlight {
-  background: url('../../../../../assets/icon/graduation_cap.svg') no-repeat top
-    right;
-  background-color: var(--theme-primary-blue);
   border-radius: 20px;
   margin-bottom: 20px;
   .card-header {
     display: flex;
     justify-content: space-between;
-
+    align-items: center;
     padding: 25px 20px;
   }
   .card-title {
@@ -19,7 +18,6 @@
     line-height: normal;
     letter-spacing: -0.09px;
     text-align: left;
-    color: #ffffff;
   }
 
   .card-content {
@@ -31,7 +29,6 @@
     line-height: 1.64;
     letter-spacing: normal;
     text-align: left;
-    color: #f2f2f2;
   }
 
   .card-button {

@@ -3,7 +3,6 @@ import { IonCardTitle, IonCol, IonRow, IonButton } from '@ionic/react';
 import SmallTextareaInput from 'src/elements/inputs/SmallTextareaInput';
 import { MyGrid } from 'src/components/cards/common';
 import style from './editor.module.scss';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 interface Props {
   onCreate: (content: any) => void;

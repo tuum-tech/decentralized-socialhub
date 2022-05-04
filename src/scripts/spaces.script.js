@@ -10,15 +10,10 @@ let run = async () => {
     config.hive_host,
     config.appId
   );
-  const users = await client.Database.findMany('users', {});
-  const dids = users.map(user => user.did);
   const indexed_spaces = initial_spaces.map(space => {
     return {
       ...space,
-      followers:
-        space.category === 'Welcome to Profile'
-          ? dids.filter(did => did.startsWith('did:'))
-          : space.owner || []
+      followers: space.owner || []
     };
   });
   Promise.all(
@@ -46,6 +41,7 @@ let run = async () => {
           coverPhoto: '',
           description: '',
           publicFields: ['about', 'follower'],
+          socialLinks: {},
           guid: Guid.create()
         });
       }

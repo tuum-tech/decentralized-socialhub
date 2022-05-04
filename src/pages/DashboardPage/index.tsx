@@ -1,29 +1,15 @@
 /**
  * Page
  */
-import {
-  IonContent,
-  IonPage,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonModal
-} from '@ionic/react';
+import { IonModal } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { createStructuredSelector } from 'reselect';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { down, up } from 'styled-breakpoints';
+import { up } from 'styled-breakpoints';
 import { useBreakpoint } from 'styled-breakpoints/react-styled';
-import { makeSelectSession } from 'src/store/users/selectors';
-import { SubState, InferMappedProps } from './types';
-import { setSession } from 'src/store/users/actions';
 
 import style from './style.module.scss';
 import { ExporeTime } from './constants';
-
-import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 
 import { FollowService } from 'src/services/follow.service';
 import { UserService } from 'src/services/user.service';
@@ -39,8 +25,9 @@ import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service.new';
 import { DIDDocument, DID } from '@elastosfoundation/did-js-sdk/';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { DIDDocumentAtom, FullProfileAtom, SessionAtom } from 'src/Atoms/Atoms';
-import HeaderMobile from 'src/components/layouts/HeaderMobile';
+import { DIDDocumentAtom, FullProfileAtom } from 'src/Atoms/Atoms';
+import MainLayout from 'src/components/layouts/MainLayout';
+import useSession from 'src/hooks/useSession';
 
 const TutorialModal = styled(IonModal)`
   --border-radius: 16px;
@@ -54,40 +41,9 @@ const TutorialModal = styled(IonModal)`
   --box-shadow: none !important;
 `;
 
-const LeftCol = styled(IonCol)`
-  flex: 0 0 250px;
-  background-color: #f7fafc;
-  margin: 0;
-  padding: 0;
-  ${down('sm')} {
-    display: none;
-  }
-`;
+const DashboardPage: React.FC = () => {
+  const { session, setSession } = useSession();
 
-const RightCol = styled(IonCol)`
-  flex: 0 0;
-  flex-grow: 1;
-  background: #f7fafc;
-  padding: 0;
-  margin: 0;
-`;
-
-const Title = styled.h1`
-  color: var(--txt-heading-dark);
-  background: white;
-  font-family: 'SF Pro Display';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 28px;
-  padding: 20px;
-  margin-bottom: 0;
-`;
-
-const DashboardPage: React.FC<InferMappedProps> = ({
-  eProps,
-  ...props
-}: InferMappedProps) => {
-  const { session } = props;
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');
@@ -118,12 +74,14 @@ const DashboardPage: React.FC<InferMappedProps> = ({
     (async () => {
       if (didDocument === '') {
         let doc: DIDDocument = (await DID.from(
-          props.session.did
+          session.did
         )?.resolve()) as DIDDocument;
-        setDidDocument(doc.toString(true));
+        if (doc) {
+          setDidDocument(doc.toString(true));
+        }
       }
     })();
-  }, [didDocument, props.session.did, setDidDocument]);
+  }, [didDocument, session.did, setDidDocument]);
 
   const refreshStatus = async () => {
     if (session && session.did !== '') {
@@ -165,15 +123,13 @@ const DashboardPage: React.FC<InferMappedProps> = ({
       };
 
       let userService = new UserService(await DidService.getInstance());
-      eProps.setSession({
-        session: await userService.updateSession(session)
-      });
+      setSession(await userService.updateSession(session));
 
       await DidDocumentService.reloadUserDocument(session);
     }
   };
 
-  const retriveProfile = async () => {
+  const retrieveProfile = async () => {
     setLoadingText('Please wait a moment...');
     let profile: ProfileDTO = await ProfileService.getFullProfile(
       session.did,
@@ -240,7 +196,7 @@ const DashboardPage: React.FC<InferMappedProps> = ({
             session.onBoardingCompleted
           ) {
             setLoadingText('loading Profile Data');
-            await retriveProfile();
+            await retrieveProfile();
             setLoadingText('');
           }
         }
@@ -253,7 +209,7 @@ const DashboardPage: React.FC<InferMappedProps> = ({
     (async () => {
       if (didDocument !== '') {
         if (session && session.did !== '') {
-          let newSession = JSON.parse(JSON.stringify(props.session));
+          let newSession = JSON.parse(JSON.stringify(session));
 
           const timestamp = new Date().getTime();
           let message = '';
@@ -299,9 +255,7 @@ const DashboardPage: React.FC<InferMappedProps> = ({
             );
 
             let userService = new UserService(await DidService.getInstance());
-            eProps.setSession({
-              session: await userService.updateSession(newSession)
-            });
+            setSession(await userService.updateSession(newSession));
           }
         }
       }
@@ -313,15 +267,13 @@ const DashboardPage: React.FC<InferMappedProps> = ({
     return (
       <OnBoarding
         completed={async (startTutorial: boolean) => {
-          let session = {
-            ...props.session,
+          let newSession = {
+            ...session,
             onBoardingCompleted: true
           };
 
           let userService = new UserService(await DidService.getInstance());
-          eProps.setSession({
-            session: await userService.updateSession(session)
-          });
+          setSession(await userService.updateSession(newSession));
 
           setOnBoardVisible(false);
           if (!willExpire) {
@@ -341,38 +293,27 @@ const DashboardPage: React.FC<InferMappedProps> = ({
   }
 
   return (
-    <IonPage>
-      <HeaderMobile sessionItem={session} publishStatus={publishStatus} />
-      {!isSmUp && <Title>Dashboard</Title>}
-      {loadingText && loadingText !== '' ? (
+    <MainLayout>
+      {loadingText ? (
         <LoadingIndicator loadingText={loadingText} />
       ) : (
-        <IonContent className={style['profilepage']}>
-          <IonGrid className={style['profilepagegrid']}>
-            <IonRow className={style['profilecontent']}>
-              <LeftCol>
-                <LeftSideMenu />
-              </LeftCol>
-              <RightCol>
-                {isSmUp && (
-                  <DashboardHeader
-                    sessionItem={session}
-                    publishStatus={publishStatus}
-                  />
-                )}
+        <React.Fragment>
+          {isSmUp && (
+            <DashboardHeader
+              sessionItem={session}
+              publishStatus={publishStatus}
+            />
+          )}
 
-                <DashboardContent
-                  onTutorialStart={() => {
-                    setShowTutorial(true);
-                  }}
-                  sessionItem={session}
-                  followerDids={followerDids}
-                  followingDids={followingDids}
-                  mutualDids={mutualDids}
-                />
-              </RightCol>
-            </IonRow>
-          </IonGrid>
+          <DashboardContent
+            onTutorialStart={() => {
+              setShowTutorial(true);
+            }}
+            sessionItem={session}
+            followerDids={followerDids}
+            followingDids={followingDids}
+            mutualDids={mutualDids}
+          />
 
           <TutorialModal
             isOpen={showTutorial}
@@ -383,26 +324,12 @@ const DashboardPage: React.FC<InferMappedProps> = ({
               onClose={() => {
                 setShowTutorial(false);
               }}
-              session={props.session}
             />
           </TutorialModal>
-        </IonContent>
+        </React.Fragment>
       )}
-    </IonPage>
+    </MainLayout>
   );
 };
 
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardPage);
+export default DashboardPage;

@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
-
 import { useHistory } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-
-import { makeSelectSession } from 'src/store/users/selectors';
-import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState } from './types';
+import { useRecoilValue } from 'recoil';
 
 import {
   containingVerifiableCredentialDetails,
@@ -16,7 +10,7 @@ import {
 } from 'src/utils/credential';
 
 import ManageProfile from './Left/ManageProfile';
-import ExploreConnnections from './Left/ExploreConnnections';
+import ExploreConnections from './Left/ExploreConnections';
 import ManageLinks from './Left/ManageLinks';
 import BeginnersTutorial from './Left/BeginnersTutorial';
 import ConnectWithCommunity from './Right/ConnectWithCommunity';
@@ -33,9 +27,10 @@ import { VerificationService } from 'src/services/verification.service';
 import SentModalContent, {
   SentModal
 } from 'src/pages/ActivityPage/components/MyRequests/SentModal';
-
-import { useRecoilValue } from 'recoil';
+import Slides from 'src/elements-v2/Slides';
 import { DIDDocumentAtom, FullProfileAtom } from 'src/Atoms/Atoms';
+import useSession from 'src/hooks/useSession';
+import useProfileFilled from 'src/hooks/useProfileFilled';
 import WhatIsProfile from './Right/WhatIsProfile';
 
 const LeftCardCol = styled(IonCol)`
@@ -46,7 +41,7 @@ const RightCardCol = styled(IonCol)`
   padding: 22px 16px;
 `;
 
-interface Props extends InferMappedProps {
+interface Props {
   onTutorialStart: () => void;
   activeTab: (tab: string) => void;
   followerDids: string[];
@@ -54,17 +49,16 @@ interface Props extends InferMappedProps {
   mutualDids: string[];
 }
 
-const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
-  const {
-    followerDids,
-    followingDids,
-    mutualDids,
-    session,
-    onTutorialStart,
-    activeTab
-  } = props;
-
+const DashboardHome: React.FC<Props> = ({
+  followerDids,
+  followingDids,
+  mutualDids,
+  onTutorialStart,
+  activeTab
+}: Props) => {
   const history = useHistory();
+  const { session } = useSession();
+  const { filledContent } = useProfileFilled();
 
   const [tutorialVisible, setTutorialVisible] = useState(true);
   const [hasFollowUsers, setFollowUsers] = useState(false);
@@ -385,20 +379,23 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
     <>
       <IonGrid className="ion-no-padding">
         <IonRow className="ion-no-padding">
-          <LeftCardCol size="8">
+          <LeftCardCol sizeMd="8" sizeSm="12">
             {tutorialVisible && (
               <BeginnersTutorial
                 onTutorialStart={onTutorialStart}
                 tutorialStep={session.tutorialStep}
               />
             )}
-            <ManageProfile userSession={session} />
-            {!hasFollowUsers && session.did && session.did !== '' && (
-              <ExploreConnnections session={session} did={session.did} />
-            )}
-            {!hasSocialProfiles && <ManageLinks />}
+            {filledContent && <ManageProfile userSession={session} />}
+            <Slides>
+              {!filledContent && <ManageProfile userSession={session} />}
+              {!hasFollowUsers && session.did && session.did !== '' && (
+                <ExploreConnections session={session} did={session.did} />
+              )}
+              {!hasSocialProfiles && <ManageLinks />}
+            </Slides>
           </LeftCardCol>
-          <RightCardCol size="4">
+          <RightCardCol sizeMd="4" sizeSm="12">
             <VerificationStatus progress={verifiedPercent} />
             <ProfileCompletion
               progress={completionPercent}
@@ -495,18 +492,4 @@ const DashboardHome: React.FC<Props> = ({ eProps, ...props }: Props) => {
   );
 };
 
-// export default DashboardHome;
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardHome);
+export default DashboardHome;

@@ -1,9 +1,5 @@
 import { ElastosClient } from '@elastosfoundation/elastos-js-sdk';
-import { DIDAccess } from '@elastosfoundation/elastos-connectivity-sdk-js/typings/did';
-import {
-  DID as CNDID,
-  connectivity
-} from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { DID as CNDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import {
   DIDDocument,
   DIDStore,
@@ -14,7 +10,6 @@ import {
   OptionsBuilder,
   IOptions
 } from '@elastosfoundation/elastos-hive-js-sdk';
-//import { VerifiablePresentation } from '@elastosfoundation/did-js-sdk/typings';
 import jwt_decode from 'jwt-decode';
 
 import { DidService } from './did.service.new';

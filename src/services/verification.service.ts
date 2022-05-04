@@ -12,10 +12,7 @@ import { UserService } from './user.service';
 import { ProfileService } from './profile.service';
 import { EssentialsService } from 'src/services/essentials.service';
 import { getItemsFromData } from 'src/utils/script';
-import {
-  DID as ConnDID,
-  connectivity
-} from '@elastosfoundation/elastos-connectivity-sdk-js/';
+import { DID as ConnDID } from '@elastosfoundation/elastos-connectivity-sdk-js/';
 
 import { DidcredsService } from './didcreds.service';
 
@@ -485,10 +482,10 @@ export class VerificationService {
     const existingVerifiableCredential = didDocument.getCredential(didUrl);
     if (existingVerifiableCredential) {
       if (holder.isEssentialUser) {
-        const cn = connectivity.getActiveConnector();
-        await cn?.deleteCredentials([DIDstring], {
-          forceToPublishCredentials: true
-        });
+        let essentialsService = new EssentialsService(didService);
+        await essentialsService.removeMultipleVerifiableCredentialsToEssentials(
+          [DIDstring]
+        );
       } else {
         const builder = DIDDocument.Builder.newFromDocument(didDocument);
         didDocument = await builder

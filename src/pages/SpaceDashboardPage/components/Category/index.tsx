@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { IonRow, IonCardTitle } from '@ionic/react';
+import React, { useEffect } from 'react';
+import { IonCardTitle, IonCardContent } from '@ionic/react';
 import Multiselect from 'multiselect-react-dropdown';
 import styled from 'styled-components';
 import {
@@ -84,6 +84,10 @@ const Category: React.FC<IProps> = ({ profile, update }: IProps) => {
           }}
         />
       </CardContentContainer>
+      <CardHeaderContent>
+        <IonCardTitle>Network</IonCardTitle>
+      </CardHeaderContent>
+      <IonCardContent>{profile.meta?.network}</IonCardContent>
     </CardWrapper>
   );
 };

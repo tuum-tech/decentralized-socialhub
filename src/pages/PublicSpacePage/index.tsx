@@ -1,4 +1,3 @@
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { IonGrid, IonContent, IonCol } from '@ionic/react';
 import { RouteComponentProps } from 'react-router';
 import React, { useEffect, useRef, useState } from 'react';
@@ -10,9 +9,8 @@ import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
-import { ProfileService, defaultUserInfo } from 'src/services/profile.service';
+import { defaultUserInfo } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
-import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service.new';
 
 import LoadingIndicator from 'src/elements/LoadingIndicator';
@@ -52,12 +50,12 @@ const PublicSpacePage: React.FC<PageProps> = ({
 
   const scrollToElement = (cardName: string) => {
     let point: number = 0;
-    let adjust = 0;
+    /*     let adjust = 0;
     if (scrollTop < 176) adjust = 292 - scrollTop;
     else {
       adjust = 260 - scrollTop;
     }
-
+ */
     if (cardName === 'about') {
       point = 0;
     }

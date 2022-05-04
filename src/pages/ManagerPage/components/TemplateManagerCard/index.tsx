@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   IonCardTitle,
   IonCardHeader,
@@ -13,15 +13,19 @@ import {
 } from '@ionic/react';
 import styled from 'styled-components';
 
-import { SmallLightButton } from 'src/elements/buttons';
 import { UserService } from 'src/services/user.service';
 import { ProfileName } from 'src/elements/texts';
 import Avatar from 'src/components/Avatar';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import { DidService } from 'src/services/did.service.new';
 import { TemplateService } from 'src/services/template.service';
-
+import { DefaultButton } from 'src/elements-v2/buttons';
+import {
+  defaultFullProfile,
+  ProfileService
+} from 'src/services/profile.service';
 import TemplateModalContent, { TemplateModal } from './Modal/TemplateModal';
+import styles from './style.module.scss';
 
 export const Divider = styled.hr`
   width: 100%;
@@ -45,7 +49,7 @@ const Header3 = styled.span`
   color: #1f2d3d;
 `;
 
-const ProfileStatus = styled.span`
+const ProfileStatus = styled.span<{ ready: boolean }>`
   font-family: 'SF Pro Display';
   font-size: 16px;
   font-weight: normal;
@@ -54,25 +58,14 @@ const ProfileStatus = styled.span`
   line-height: 1.62;
   letter-spacing: normal;
   text-align: left;
-  color: #4c6fff;
-`;
-
-const AddNewTemplateButton = styled.div`
-  border: 1px solid #4c6fff;
-  box-sizing: border-box;
-  border-radius: 8px;
-  width: 100%;
-  padding: 16px;
-  background: white;
-
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 14px;
-  color: #4c6fff;
-
-  text-align: center;
-  cursor: pointer;
+  ${props =>
+    props.ready
+      ? `-webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+        background: ${styles['primary-gradient']};`
+      : 'color: var(--ion-color-danger)'};
 `;
 
 const allTemplates = TemplateService.getAllTemplates();
@@ -104,6 +97,24 @@ const TemplateManagerCard: React.FC<PageProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionItem]);
 
+  const handleSave = useCallback(() => {
+    (async () => {
+      if (sessionItem.pageTemplate !== template) {
+        let userService = new UserService(await DidService.getInstance());
+        const newSession = await userService.updateSession(
+          {
+            ...sessionItem,
+            pageTemplate: template
+          },
+          true
+        );
+        await updateSession({ session: newSession });
+      }
+    })();
+  }, [sessionItem, template, updateSession]);
+  const ready =
+    sessionItem.onBoardingCompleted && sessionItem.tutorialStep === 4;
+
   return (
     <IonCard className={styleWidget['overview']}>
       <IonCardHeader>
@@ -113,26 +124,16 @@ const TemplateManagerCard: React.FC<PageProps> = ({
               <IonCardTitle>Profile Template Selection</IonCardTitle>
             </IonCol>
             <IonCol size="auto" className="ion-no-padding">
-              <SmallLightButton
+              <DefaultButton
+                size="small"
+                variant="outlined"
+                btnColor="primary-gradient"
+                textType="gradient"
                 disabled={sessionItem.tutorialStep !== 4}
-                onClick={async () => {
-                  if (sessionItem.pageTemplate !== template) {
-                    let userService = new UserService(
-                      await DidService.getInstance()
-                    );
-                    const newSession = await userService.updateSession(
-                      {
-                        ...sessionItem,
-                        pageTemplate: template
-                      },
-                      true
-                    );
-                    await updateSession({ session: newSession });
-                  }
-                }}
+                onClick={handleSave}
               >
                 Save
-              </SmallLightButton>
+              </DefaultButton>
             </IonCol>
           </IonRow>
         </IonGrid>
@@ -162,12 +163,8 @@ const TemplateManagerCard: React.FC<PageProps> = ({
                     <ProfileName>{sessionItem.name}</ProfileName>
                   </IonRow>
                   <IonRow>
-                    <ProfileStatus>
-                      Profile is{' '}
-                      {sessionItem.onBoardingCompleted &&
-                      sessionItem.tutorialStep === 4
-                        ? 'ready'
-                        : 'not yet ready'}
+                    <ProfileStatus ready={ready}>
+                      Profile is {ready ? 'ready' : 'not yet ready'}
                     </ProfileStatus>
                   </IonRow>
                 </IonGrid>
@@ -202,9 +199,16 @@ const TemplateManagerCard: React.FC<PageProps> = ({
               })}
 
             <IonRow>
-              <AddNewTemplateButton onClick={() => setShowModal(true)}>
+              <DefaultButton
+                variant="outlined"
+                btnColor="primary-gradient"
+                textType="gradient"
+                size="large"
+                onClick={() => setShowModal(true)}
+                style={{ width: '100%' }}
+              >
                 + Add New Template
-              </AddNewTemplateButton>
+              </DefaultButton>
             </IonRow>
           </IonGrid>
         </IonRadioGroup>
@@ -223,6 +227,7 @@ const TemplateManagerCard: React.FC<PageProps> = ({
             const newMyTemplates = allTemplates.filter((t: Template) =>
               newTemplateValues.includes(t.value)
             );
+
             await TemplateService.setMyTemplates(sessionItem, newMyTemplates);
             setMyTemplates(newMyTemplates);
           }}

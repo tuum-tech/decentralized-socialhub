@@ -1,13 +1,6 @@
 import React from 'react';
-import {
-  IonCardTitle,
-  IonCheckbox,
-  IonCol,
-  IonLabel,
-  IonRow
-} from '@ionic/react';
+import { IonCardTitle, IonCol, IonLabel, IonRow } from '@ionic/react';
 import StarRatings from 'react-star-ratings';
-import styled from 'styled-components';
 
 import SmallTextInput from '../../../elements/inputs/SmallTextInput';
 import { MODE, MyGrid, MyTextarea } from '../common';
@@ -19,11 +12,6 @@ interface GameExpItemProps {
   handleChange: any;
   mode: MODE;
 }
-
-const Spacer = styled.div`
-  margin-top: 40px;
-  padding: 5px;
-`;
 
 const GameExpCardEdit: React.FC<GameExpItemProps> = ({
   gameExpItem,
