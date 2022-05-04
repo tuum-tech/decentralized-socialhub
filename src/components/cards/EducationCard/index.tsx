@@ -9,7 +9,7 @@ import EducationCardEdit, { pattern } from './Edit';
 
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import ProgressBar from 'src/elements/ProgressBar';
+import ProgressVerified from 'src/components/ProgressVerified';
 import {
   EducationSelector,
   EducationSortedSelector
@@ -224,20 +224,7 @@ const EducationCard: React.FC<IEducationProps> = ({
         title="Education"
         action={
           !isEditable ? (
-            !isPublicPage && (
-              <div
-                style={{
-                  width: '10em',
-                  float: 'right',
-                  fontSize: '0.8em'
-                }}
-              >
-                <ProgressBar value={eduVerifiedPercent} text={'verified'} />
-                <div
-                  style={{ float: 'right', fontSize: '0.8em' }}
-                >{`${eduVerifiedPercent}% ${'verified'}`}</div>
-              </div>
-            )
+            !isPublicPage && <ProgressVerified percent={eduVerifiedPercent} />
           ) : (
             <IonCol size="auto" className="ion-no-padding">
               <LinkStyleSpan onClick={e => addItem()}>
