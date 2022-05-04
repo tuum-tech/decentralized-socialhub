@@ -6,7 +6,7 @@ import ExperienceItem from './Item';
 
 import ExperienceCardEdit, { pattern } from './Edit';
 import { LinkStyleSpan, MyModal, ModalFooter, Divider, MODE } from '../common';
-import ProgressBar from 'src/elements/ProgressBar';
+import ProgressVerified from 'src/components/ProgressVerified';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   ExperienceSelector,
@@ -223,20 +223,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
         title="Experience"
         action={
           !isEditable ? (
-            !isPublicPage && (
-              <div
-                style={{
-                  width: '10em',
-                  float: 'right',
-                  fontSize: '0.8em'
-                }}
-              >
-                <ProgressBar value={expVerifiedPercent} text={'verified'} />
-                <div
-                  style={{ float: 'right', fontSize: '0.8em' }}
-                >{`${expVerifiedPercent}% ${'verified'}`}</div>
-              </div>
-            )
+            !isPublicPage && <ProgressVerified percent={expVerifiedPercent} />
           ) : (
             <IonCol size="auto" className="ion-no-padding">
               <LinkStyleSpan onClick={e => addItem()}>
