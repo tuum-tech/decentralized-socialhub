@@ -11,6 +11,7 @@ interface IProps {
 }
 
 const Home: React.FC<IProps> = ({ space }: IProps) => {
+  console.log(space.publicFields);
   return (
     <Wrapper>
       <IonRow>
@@ -18,7 +19,7 @@ const Home: React.FC<IProps> = ({ space }: IProps) => {
           <Post />
         </IonCol>
         <IonCol size="4">
-          {space.socialLinks && Object.keys(space.socialLinks).length > 0 && (
+          {space.publicFields.includes('social links') && space.socialLinks && Object.keys(space.socialLinks).length > 0 && (
             <Links space={space} />
           )}
           <Members space={space} />
