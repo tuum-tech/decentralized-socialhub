@@ -1,6 +1,7 @@
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import React from 'react';
 import styled from 'styled-components';
+import { down } from 'styled-breakpoints';
 
 import { FollowType } from 'src/services/user.service';
 
@@ -34,10 +35,17 @@ const GridContent = styled(IonGrid)<ThemeProps>`
 const LeftContent = styled.div`
   width: calc(100% - 360px);
   padding-right: 22px;
+  ${down('sm')} {
+    width: 100%;
+    padding-right: 0;
+  }
 `;
 
 const RightContent = styled.div`
   width: 360px;
+  ${down('sm')} {
+    width: 100%;
+  }
 `;
 
 interface Props {
