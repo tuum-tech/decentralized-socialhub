@@ -1,33 +1,13 @@
-.create-space-card {
-    border-radius: 20px;
-    margin: 0px 30px;
-    .card-content {
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-      justify-content: center;
-      text-align: center;
-      margin: 100px 0px 120px 0px;
-  
-      ion-row {
-        margin: 3px 0px;
-      }
-  
-      h3 {
-        color: #27272e;
-        font-size: 20px;
-        font-weight: 600;
-        line-height: 136.52%;
-      }
-      h4 {
-        color: #27272e;
-        font-size: 14px;
-        font-weight: normal;
-        line-height: 162.502%;
-      }
-      button {
-        margin-top: 15px;
-      }
+.form {
+    &_title {
+        margin-bottom: 15px;
     }
-  }
-  
+    &_footer {
+        position: absolute;
+        bottom: 15px;
+        right: 50%;
+        transform: translateX(50%);
+        width: 350px;
+        text-align: center;
+    }
+}

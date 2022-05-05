@@ -139,11 +139,7 @@ const App: React.FC = () => {
                     exact={false}
                   />
                   {/* in a progress */}
-                  <ProtectedRoute
-                    path="/spaces"
-                    component={SpacePage}
-                    exact={true}
-                  />
+                  <ProtectedRoute path="/spaces" component={SpacePage} />
                   <ProtectedRoute
                     path="/spaces/edit/:name"
                     component={SpaceDashboardPage}
