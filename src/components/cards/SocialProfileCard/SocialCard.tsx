@@ -278,6 +278,8 @@ const SocialProfilesCard: React.FC<Props> = ({
     setIsRemoving(true);
 
     let vcId = sessionItem.did + '#' + key;
+    await DidcredsService.removeCredentialToVault(sessionItem, vcId);
+
     let vService = new VerificationService();
     let deletedCreds = await vService.deleteCredentials(vcId);
 
