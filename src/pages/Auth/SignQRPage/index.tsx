@@ -68,8 +68,6 @@ const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
       let did = 'did:elastos:' + issuer.getMethodSpecificId();
       let mnemonic = '';
 
-      DidService.InitializeMainnet();
-
       await didService.storeDocument(await issuer.resolve());
       let isDidPublished = await didService.isDIDPublished(did);
       if (isDidPublished) {

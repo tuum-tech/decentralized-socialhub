@@ -106,7 +106,7 @@
     "sid": 6,
     "name": "MythicBeings",
     "category": "NFT Collection",
-    "owner": ["did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c"],
+    "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"],
     "tags": [
       "ERC-721",
       "Governance",
@@ -125,7 +125,7 @@
     "sid": 7,
     "name": "CryptoHoodieMan",
     "category": "NFT Collection",
-    "owner": ["did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c"],
+    "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbk"],
     "tags": [
       "ERC-721",
       "Governance",

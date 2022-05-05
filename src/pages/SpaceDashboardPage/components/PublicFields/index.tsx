@@ -35,7 +35,7 @@ interface IProps {
 
 const PublicFields: React.FC<IProps> = ({ sessionItem, profile }: IProps) => {
   const [fields, setFields] = useState<string[]>([]);
-  const defaultFields = ['about', 'follower'];
+  const defaultFields = ['about', 'follower', 'social links'];
   useEffect(() => {
     (async () => {
       const orgFields = profile.publicFields || [];
