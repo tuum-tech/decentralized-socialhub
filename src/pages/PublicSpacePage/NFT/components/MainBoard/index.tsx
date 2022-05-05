@@ -56,10 +56,10 @@ const MainBoard: React.FC<IProps> = ({ space, session, renderSignal }: IProps) =
       </IonList>
 
       {active === 'home' && <Home space={space} session={session} />}
-      {active === 'chat' && <Chat />}
+      {/* {active === 'chat' && <Chat />} */}
       {active === 'collection' && <Collection space={space} />}
-      {active === 'community' && <Community space={space} />}
-      {active === 'members' && <Members space={space} />}
+      {/* {active === 'community' && <Community space={space} />} */}
+      {/* {active === 'members' && <Members space={space} />} */}
     </TabsContainer>
   );
 };

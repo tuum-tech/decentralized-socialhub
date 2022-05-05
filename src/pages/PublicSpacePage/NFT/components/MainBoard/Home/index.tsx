@@ -35,7 +35,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
   const [posts, setPosts] = useState<any[]>([]);
   const [offset, setOffset] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
-  const limit = 5;
+  const limit = 10;
   const [hasPermissionToPost, setHasPermissionToPost] = useState<boolean>(
     false
   );
@@ -57,7 +57,9 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
     const _posts = await SpaceService.getPosts(space.sid, offset, limit, isAdmin);
     if (_posts.length > 0) {
       setOffset(offset + limit);
-      setPosts(posts.concat(_posts));
+      let __posts = posts.concat(_posts);
+      __posts.sort((a, b) => b.created.$date - a.created.$date);
+      setPosts(__posts);
     } else {
       setHasMore(false);
     }

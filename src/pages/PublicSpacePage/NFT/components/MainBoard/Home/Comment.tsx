@@ -6,6 +6,7 @@ import {
   SubMenu,
   Item
 } from 'src/pages/ActivityPage/components/ActivityTimeline';
+import Avatar from 'src/components/Avatar';
 import img_nft_item from 'src/assets/space/nft_item.jpg';
 import style from '../Chat/style.module.scss';
 import { UserService } from 'src/services/user.service';
@@ -44,7 +45,7 @@ const Comment: React.FC<IProps> = ({
   }, [comment]);
   return (
     <IonRow className={style['row']}>
-      <img src={img_nft_item} className={style['avatar']} />
+      <Avatar did={comment.creator} width="40px" />
       <div className={style['msg']}>
         <IonRow className="ion-justify-content-between ion-align-items-center">
           <div className={style['creator']}>

@@ -2,12 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { IonRow } from '@ionic/react';
 import styled from 'styled-components';
 import {
-  CardContent,
-  CardHeader,
   CardOverview,
   CardHeaderContent,
   CardContentContainer
 } from 'src/components/cards/common';
+import Avatar from 'src/components/Avatar';
 import {
   SubMenu,
   Item
@@ -105,8 +104,8 @@ const Post: React.FC<IProps> = ({
         )}
         <IonRow className="ion-justify-content-between ion-align-items-center">
           <div className={style['creator']}>
-            <img src={img_nft_item} />
-            <div>
+            <Avatar did={post.creator} width="40px" />
+            <div className={style['meta']}>
               <h1>
                 {author} {admins.includes(post.creator) && <span>Admin</span>}
               </h1>
@@ -144,13 +143,10 @@ const Post: React.FC<IProps> = ({
         <IonRow>
           <Text>{post.content}</Text>
         </IonRow>
-        {/* <IonRow>
-          <img src={img_nft_item} className={style['post-image']} />
-        </IonRow> */}
         <HorDOMSpace16 />
-        <IonRow className="ion-justify-content-between ion-no-padding">
+        <IonRow className="ion-justify-content-between ion-padding-horizontal">
           <div className={style['post-analytic']}>
-            <span>50K Likes</span>
+            {/* <span>50K Likes</span> */}
             <span>{Object.keys(comments).length} Comments</span>
           </div>
           <div className={style['action']}>
@@ -160,10 +156,10 @@ const Post: React.FC<IProps> = ({
                 Comment
               </span>
             )}
-            <span>
+            {/* <span>
               <img src={icon_emoti} />
               React
-            </span>
+            </span> */}
           </div>
         </IonRow>
         <HorDOMSpace16 />
