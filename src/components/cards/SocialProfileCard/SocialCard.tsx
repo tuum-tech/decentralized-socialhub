@@ -281,13 +281,11 @@ const SocialProfilesCard: React.FC<Props> = ({
     let vcId = sessionItem.did + '#' + key;
     if (sessionItem.isEssentialUser) {
       let vService = new VerificationService();
-      let deletedCreds = await vService.deleteCredentials(vcId);
-      if (deletedCreds[0] === vcId) {
-        forceUpdateDidDocument();
-      }
+      await vService.deleteCredentials(vcId);
     }
     try {
       await DidcredsService.removeCredentialToVault(sessionItem, vcId);
+      forceUpdateDidDocument();
     } catch (error) {
       console.error('Error getting credentials from vault', error);
     }

@@ -101,8 +101,10 @@ const TwitterCallback: React.FC<PageProps> = ({
               verifiableCredential
             );
 
-            const vService = new VerificationService();
-            await vService.importCredential(verifiableCredential);
+            if (session.isEssentialUser) {
+              const vService = new VerificationService();
+              await vService.importCredential(verifiableCredential);
+            }
 
             let newSession = JSON.parse(JSON.stringify(props.session));
             newSession.loginCred!.twitter! = items[1].toString();
@@ -172,9 +174,10 @@ const TwitterCallback: React.FC<PageProps> = ({
         />
       );
     }
-    return (
-      <LoadingIndicator loadingText="Please accept Credential Import on Essentials App" />
-    );
+    let loadingText = session.isEssentialUser
+      ? 'Please accept Credential Import on Essentials App'
+      : '';
+    return <LoadingIndicator loadingText={loadingText} />;
   };
   return getRedirect();
 };
