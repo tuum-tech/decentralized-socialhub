@@ -2,13 +2,8 @@ import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { IonGrid, IonContent, IonCol } from '@ionic/react';
 import { RouteComponentProps } from 'react-router';
 import React, { useEffect, useRef, useState } from 'react';
-
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-
-import { makeSelectSession } from 'src/store/users/selectors';
-import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState } from './types';
+import { useBreakpoint } from 'styled-breakpoints/react-styled';
+import { down } from 'styled-breakpoints';
 
 import {
   ProfileService,
@@ -26,23 +21,24 @@ import ProfileComponent from 'src/components/profile/ProfileComponent';
 import PublicNavbar from 'src/components/profile/ProfileComponent/PublicNavbar';
 
 import { getDIDString } from 'src/utils/did';
+import useSession from 'src/hooks/useSession';
 
 import { ContentRow, Container, ProfileComponentContainer } from './layouts';
 
 interface MatchParams {
   did: string;
 }
-interface PageProps
-  extends InferMappedProps,
-    RouteComponentProps<MatchParams> {}
+interface PageProps extends RouteComponentProps<MatchParams> {}
 
-const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
+const PublicPage: React.FC<PageProps> = (props: PageProps) => {
   let did: string = getDIDString(props.match.params.did, false);
   const [publicUser, setPublicUser] = useState(defaultUserInfo);
   const [publicUserProfile, setPublicUserProfile] = useState<ProfileDTO>(
     defaultFullProfile
   );
   const [didDocument, setDidDocument] = useState<DIDDocument | null>(null);
+  const isSmDown = useBreakpoint(down('sm'));
+  const { session } = useSession();
 
   const [publicFields, setPublicFields] = useState<string[]>([]);
   const [showAllFollow, setShowAllFollow] = useState<boolean>(false);
@@ -116,7 +112,7 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
           setPublicFields(pFields);
         }
 
-        let profile = await ProfileService.getFullProfile(did, props.session);
+        let profile = await ProfileService.getFullProfile(did, session);
         if (profile) {
           profile.basicDTO.isEnabled = true;
           profile.experienceDTO.isEnabled = true;
@@ -135,7 +131,7 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
 
       setLoading(false);
     })();
-  }, [did, props.session]);
+  }, [did, session]);
 
   if (loading) {
     return <LoadingIndicator loadingText="Loading data..." />;
@@ -151,16 +147,16 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
             setScrollTop(e.detail.scrollTop);
           }}
         >
-          <PublicNavbar signedIn={props.session && props.session.did !== ''} />
+          <PublicNavbar signedIn={session && session.did !== ''} />
           <ContentRow
             className="ion-justify-content-around"
             template={publicUser.pageTemplate || 'default'}
           >
-            <IonCol size="9" className="ion-no-padding">
+            <IonCol size={isSmDown ? '12' : '9'} className="ion-no-padding">
               <ProfileComponentContainer>
                 <ProfileComponent
                   publicFields={publicFields}
-                  userSession={props.session}
+                  userSession={session}
                   scrollToElement={scrollToElement}
                   aboutRef={aboutRef}
                   experienceRef={experienceRef}
@@ -198,25 +194,12 @@ const PublicPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
           setFollowingDids={setFollowingDids}
           onClose={() => setShowAllFollow(false)}
           followType={followType}
-          editable={did === props.session.did}
-          userSession={props.session}
+          editable={did === session.did}
+          userSession={session}
         />
       )}
     </Container>
   );
 };
 
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PublicPage);
+export default PublicPage;

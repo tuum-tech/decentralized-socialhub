@@ -82,8 +82,10 @@ const GithubCallback: React.FC<PageProps> = ({
             //   verifiableCredential
             // );
 
-            const vService = new VerificationService();
-            await vService.importCredential(verifiableCredential);
+            if (session.isEssentialUser) {
+              const vService = new VerificationService();
+              await vService.importCredential(verifiableCredential);
+            }
 
             let newSession = JSON.parse(JSON.stringify(session));
             newSession.loginCred!.github! = github;
@@ -150,9 +152,10 @@ const GithubCallback: React.FC<PageProps> = ({
         />
       );
     }
-    return (
-      <LoadingIndicator loadingText="Please accept Credential Import on Essentials App" />
-    );
+    let loadingText = session.isEssentialUser
+      ? 'Please accept Credential Import on Essentials App'
+      : '';
+    return <LoadingIndicator loadingText={loadingText} />;
   };
   return getRedirect();
 };

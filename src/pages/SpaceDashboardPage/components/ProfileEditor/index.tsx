@@ -7,6 +7,7 @@ import SyncBar from 'src/components/SyncBar';
 import SpaceCoverPhoto from 'src/components/cards/SpaceCoverPhoto';
 import SpaceAvatarChange from 'src/components/cards/SpaceAvatarChange';
 import ProfileBriefCard from 'src/components/cards/ProfileBriefCard';
+import Followers from '../Followers';
 import OverView from '../OverView';
 import PublicFields from '../PublicFields';
 import Admins from '../Admins';
@@ -85,10 +86,9 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
           <IonCol size="4">
             <OverView sessionItem={userInfo} profile={spaceProfile} />
             {spaceProfile.followers && spaceProfile.followers.length > 0 && (
-              <ProfileBriefCard
-                category={'follower'}
+              <Followers
                 title={'Followers'}
-                data={spaceProfile.followers}
+                space={spaceProfile}
                 exploreAll={() => {}}
               />
             )}

@@ -30,6 +30,7 @@ import SentModalContent, {
 import Slides from 'src/elements-v2/Slides';
 import { DIDDocumentAtom, FullProfileAtom } from 'src/Atoms/Atoms';
 import useSession from 'src/hooks/useSession';
+import useProfileFilled from 'src/hooks/useProfileFilled';
 import WhatIsProfile from './Right/WhatIsProfile';
 
 const LeftCardCol = styled(IonCol)`
@@ -57,6 +58,7 @@ const DashboardHome: React.FC<Props> = ({
 }: Props) => {
   const history = useHistory();
   const { session } = useSession();
+  const { filledContent } = useProfileFilled();
 
   const [tutorialVisible, setTutorialVisible] = useState(true);
   const [hasFollowUsers, setFollowUsers] = useState(false);
@@ -384,8 +386,9 @@ const DashboardHome: React.FC<Props> = ({
                 tutorialStep={session.tutorialStep}
               />
             )}
+            {filledContent && <ManageProfile userSession={session} />}
             <Slides>
-              <ManageProfile userSession={session} />
+              {!filledContent && <ManageProfile userSession={session} />}
               {!hasFollowUsers && session.did && session.did !== '' && (
                 <ExploreConnections session={session} did={session.did} />
               )}
