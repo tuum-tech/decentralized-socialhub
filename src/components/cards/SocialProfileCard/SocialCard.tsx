@@ -142,20 +142,22 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const getCredentials = async (sessionItem: ISessionItem) => {
-    if (didDocument === '') return;
-    let didDocumentParsed = DIDDocument._parseOnly(didDocument);
-    let credsFromDidDocument = await DidcredsService.getSocialCredentials(
-      didDocumentParsed
-    );
-
-    let newCredentials = credentials.map(item => {
-      item.credential = credsFromDidDocument.find(
-        cred => cred.id.getFragment() === item.name
+    try {
+      let allCreds = await DidcredsService.getAllCredentialsToVault(
+        sessionItem
       );
-      return item;
-    });
 
-    setCredentials(newCredentials);
+      let newCredentials = credentials.map(item => {
+        item.credential = Array.from(allCreds.values()).find(
+          cred => cred.id.getFragment() === item.name
+        );
+        return item;
+      });
+
+      setCredentials(newCredentials);
+    } catch (error) {
+      console.error('Error getting credentials on vault', error);
+    }
   };
 
   let template = 'default';
