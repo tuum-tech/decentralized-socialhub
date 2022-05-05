@@ -108,10 +108,11 @@ const SpaceCard: React.FC<Props> = ({
     ]);
   };
   return (
+    <Link to={link} target={newTab ? '_blank' : '_self'}>
     <Container>
       <Banner bgImg={space.coverPhoto || defaultCoverPhoto} />
       <IonRow className="ion-justify-content-between ion-align-items-center">
-        <Link to={link} target={newTab ? '_blank' : '_self'}>
+        
           <Header class="ion-justify-content-center ion-align-items-center">
             <SpaceAvatar>
               <img
@@ -134,7 +135,6 @@ const SpaceCard: React.FC<Props> = ({
               </IonGrid>
             </SpaceInfo>
           </Header>
-        </Link>
         {explore && followable && (
           <StyledButton
             width="110px"
@@ -146,6 +146,7 @@ const SpaceCard: React.FC<Props> = ({
         )}
       </IonRow>
     </Container>
+    </Link>
   );
 };
 
