@@ -95,10 +95,10 @@ const GoogleCallback: React.FC<PageProps> = ({
               googleId.email
             );
 
-            await DidcredsService.addOrUpdateCredentialToVault(
-              session,
-              verifiableCredential
-            );
+            // await DidcredsService.addOrUpdateCredentialToVault(
+            //   session,
+            //   verifiableCredential
+            // );
 
             const vService = new VerificationService();
             await vService.importCredential(verifiableCredential);

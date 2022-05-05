@@ -90,10 +90,10 @@ const FacebookCallback: React.FC<PageProps> = ({
               facebookId.name
             );
 
-            await DidcredsService.addOrUpdateCredentialToVault(
-              props.session,
-              verifiableCredential
-            );
+            // await DidcredsService.addOrUpdateCredentialToVault(
+            //   props.session,
+            //   verifiableCredential
+            // );
 
             const vService = new VerificationService();
             await vService.importCredential(verifiableCredential);
