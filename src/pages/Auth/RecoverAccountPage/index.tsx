@@ -113,8 +113,6 @@ const RecoverAccountPage: React.FC<RouteComponentProps<
                 'Did is not published yet, You can only login with published DID user'
               );
             } else {
-              DidService.InitializeMainnet();
-
               let didDocument = await didService.getDidDocument(did, false);
 
               if (didDocument.services && didDocument.services.size > 0) {

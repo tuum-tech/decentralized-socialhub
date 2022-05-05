@@ -109,7 +109,7 @@ const SocialProfilesCard: React.FC<Props> = ({
     }[]
   >(socialCredentials);
 
-  useEffect(() => {
+  /*   useEffect(() => {
     (async () => {
       if (didDocument === '') {
         let updatedDidDocument: DIDDocument = (await DID.from(
@@ -119,7 +119,7 @@ const SocialProfilesCard: React.FC<Props> = ({
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionItem]);
+  }, [sessionItem]); */
 
   useEffect(() => {
     (async () => {
@@ -142,21 +142,21 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const getCredentials = async (sessionItem: ISessionItem) => {
+    let credsFromDidDocument: any[] = [];
     try {
       let allCreds = await DidcredsService.getAllCredentialsToVault(
         sessionItem
       );
-
+      credsFromDidDocument = Array.from(allCreds.values());
       let newCredentials = credentials.map(item => {
-        item.credential = Array.from(allCreds.values()).find(
+        item.credential = credsFromDidDocument.find(
           cred => cred.id.getFragment() === item.name
         );
         return item;
       });
-
       setCredentials(newCredentials);
     } catch (error) {
-      console.error('Error getting credentials on vault', error);
+      console.error('Error getting credentials from vault', error);
     }
   };
 
@@ -200,9 +200,10 @@ const SocialProfilesCard: React.FC<Props> = ({
 
     var timer = setInterval(async function() {
       if (popupwindow!.closed) {
-        clearInterval(timer);
+        //clearInterval(timer);
 
-        await forceUpdateDidDocument();
+        //if (sessionItem.isEssentialUser) await forceUpdateDidDocument();
+        await getCredentials(sessionItem);
       }
     }, 1000);
   };
@@ -278,54 +279,60 @@ const SocialProfilesCard: React.FC<Props> = ({
     setIsRemoving(true);
 
     let vcId = sessionItem.did + '#' + key;
-    await DidcredsService.removeCredentialToVault(sessionItem, vcId);
-
-    let vService = new VerificationService();
-    let deletedCreds = await vService.deleteCredentials(vcId);
-
-    if (deletedCreds[0] === vcId) {
-      forceUpdateDidDocument();
-      let didService = await DidService.getInstance();
-
-      let userService = new UserService(didService);
-      let currentSession = await userService.SearchUserWithDID(sessionItem.did);
-
-      // ===== temporary codes start =====
-      let newLoginCred = currentSession!.loginCred;
-      let newLoginBadges = currentSession!.badges;
-      if (!newLoginCred) {
-        return;
+    if (sessionItem.isEssentialUser) {
+      let vService = new VerificationService();
+      let deletedCreds = await vService.deleteCredentials(vcId);
+      if (deletedCreds[0] === vcId) {
+        forceUpdateDidDocument();
       }
-      if (key === 'google' && newLoginCred.google) {
-        delete newLoginCred.google;
-        newLoginBadges.socialVerify.google.archived = false;
-      } else if (key === 'facebook' && newLoginCred.facebook) {
-        delete newLoginCred.facebook;
-        newLoginBadges.socialVerify.facebook.archived = false;
-      } else if (key === 'linkedin' && newLoginCred.linkedin) {
-        newLoginBadges.socialVerify.linkedin.archived = false;
-        delete newLoginCred.linkedin;
-      } else if (key === 'twitter' && newLoginCred.twitter) {
-        delete newLoginCred.twitter;
-        newLoginBadges.socialVerify.twitter.archived = false;
-      } else if (key === 'github' && newLoginCred.github) {
-        delete newLoginCred.github;
-        newLoginBadges.socialVerify.github.archived = false;
-      } else if (key === 'discord' && newLoginCred.discord) {
-        newLoginBadges.socialVerify.discord.archived = false;
-        delete newLoginCred.discord;
-      }
-      const newUserSession = {
-        ...sessionItem,
-        loginCred: newLoginCred,
-        badges: newLoginBadges
-      } as ISessionItem;
-
-      setSession({
-        session: await userService.updateSession(newUserSession)
-      });
-      // ===== temporary codes end =====
     }
+    try {
+      await DidcredsService.removeCredentialToVault(sessionItem, vcId);
+    } catch (error) {
+      console.error('Error getting credentials from vault', error);
+    }
+
+    let didService = await DidService.getInstance();
+
+    let userService = new UserService(didService);
+    let currentSession = await userService.SearchUserWithDID(sessionItem.did);
+
+    // ===== temporary codes start =====
+    let newLoginCred = currentSession!.loginCred;
+    let newLoginBadges = currentSession!.badges;
+    if (!newLoginCred) {
+      return;
+    }
+    if (key === 'google' && newLoginCred.google) {
+      delete newLoginCred.google;
+      newLoginBadges.socialVerify.google.archived = false;
+    } else if (key === 'facebook' && newLoginCred.facebook) {
+      delete newLoginCred.facebook;
+      newLoginBadges.socialVerify.facebook.archived = false;
+    } else if (key === 'linkedin' && newLoginCred.linkedin) {
+      newLoginBadges.socialVerify.linkedin.archived = false;
+      delete newLoginCred.linkedin;
+    } else if (key === 'twitter' && newLoginCred.twitter) {
+      delete newLoginCred.twitter;
+      newLoginBadges.socialVerify.twitter.archived = false;
+    } else if (key === 'github' && newLoginCred.github) {
+      delete newLoginCred.github;
+      newLoginBadges.socialVerify.github.archived = false;
+    } else if (key === 'discord' && newLoginCred.discord) {
+      newLoginBadges.socialVerify.discord.archived = false;
+      delete newLoginCred.discord;
+    }
+    const newUserSession = {
+      ...sessionItem,
+      loginCred: newLoginCred,
+      badges: newLoginBadges
+    } as ISessionItem;
+
+    setSession({
+      session: await userService.updateSession(newUserSession)
+    });
+    // ===== temporary codes end =====
+
     setIsRemoving(false);
   };
 
@@ -465,7 +472,7 @@ const SocialProfilesCard: React.FC<Props> = ({
           })}
         </MyGrid>
         <ManagerModalFooter className="ion-no-border">
-          {isRemoving ? (
+          {sessionItem.isEssentialUser && isRemoving ? (
             <IonRow className="ion-justify-content-around">
               <IonCol size="auto">
                 <img src={spinner} height="20px" alt="spinner" />
