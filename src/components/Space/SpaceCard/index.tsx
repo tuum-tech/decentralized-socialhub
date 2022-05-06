@@ -93,7 +93,7 @@ const SpaceCard: React.FC<Props> = ({
   const owners = typeof space.owner === 'string' ? [space.owner] : space.owner;
   const [followers, setFollowers] = useState<string[]>(space.followers || []);
   const followable = !owners?.includes(session.did);
-  const following = useMemo(() => followers.includes(session.did), [followers]);
+  const following = useMemo(() => followers.includes(session.did), [followers, session.did]);
 
   const onFollow = async () => {
     await SpaceService.follow(session, space);
@@ -109,9 +109,9 @@ const SpaceCard: React.FC<Props> = ({
   };
   return (
     <Container>
-      <Banner bgImg={space.coverPhoto || defaultCoverPhoto} />
-      <IonRow className="ion-justify-content-between ion-align-items-center">
-        <Link to={link} target={newTab ? '_blank' : '_self'}>
+      <Link to={link} target={newTab ? '_blank' : '_self'}>
+        <Banner bgImg={space.coverPhoto || defaultCoverPhoto} />
+        <IonRow className="ion-justify-content-between ion-align-items-center">
           <Header class="ion-justify-content-center ion-align-items-center">
             <SpaceAvatar>
               <img
@@ -134,17 +134,18 @@ const SpaceCard: React.FC<Props> = ({
               </IonGrid>
             </SpaceInfo>
           </Header>
-        </Link>
-        {explore && followable && (
-          <StyledButton
-            width="110px"
-            margin="10px 10px 10px 10px"
-            onClick={following ? onUnfollow : onFollow}
-          >
-            {following ? `-Unfollow` : `+Follow`}
-          </StyledButton>
-        )}
-      </IonRow>
+
+          {explore && followable && (
+            <StyledButton
+              width="110px"
+              margin="10px 10px 10px 10px"
+              onClick={following ? onUnfollow : onFollow}
+            >
+              {following ? `-Unfollow` : `+Follow`}
+            </StyledButton>
+          )}
+        </IonRow>
+      </Link>
     </Container>
   );
 };
