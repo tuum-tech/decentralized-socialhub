@@ -26,12 +26,12 @@ const MainBoard: React.FC<IProps> = ({ space, renderSignal }: IProps) => {
         >
           <IonLabel className="tab-label">Home</IonLabel>
         </IonItem>
-        <IonItem
+        {/* <IonItem
           className={(active === 'chat' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => setActive('chat')}
         >
           <IonLabel className="tab-label">Chat(Coming soon)</IonLabel>
-        </IonItem>
+        </IonItem> */}
         <IonItem
           className={
             (active === 'collection' ? 'tab-active' : '') + ' tab-item'
@@ -40,7 +40,7 @@ const MainBoard: React.FC<IProps> = ({ space, renderSignal }: IProps) => {
         >
           <IonLabel className="tab-label">NFT Collection</IonLabel>
         </IonItem>
-        <IonItem
+        {/* <IonItem
           className={(active === 'community' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => setActive('community')}
         >
@@ -51,7 +51,7 @@ const MainBoard: React.FC<IProps> = ({ space, renderSignal }: IProps) => {
           onClick={() => setActive('members')}
         >
           <IonLabel className="tab-label">Members Access(Coming soon)</IonLabel>
-        </IonItem>
+        </IonItem> */}
       </IonList>
 
       {active === 'home' && <Home space={space} />}

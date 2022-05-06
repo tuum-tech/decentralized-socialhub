@@ -1,28 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { IonButton, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import { IonButton, IonCol, IonRow } from '@ionic/react';
 import { Guid } from 'guid-typescript';
 
 import EducationItem from './Item';
 
-import {
-  CardOverview,
-  Divider,
-  LinkStyleSpan,
-  MyModal,
-  ModalFooter,
-  MODE,
-  CardHeaderContent,
-  CardContentContainer
-} from '../common';
+import { Divider, LinkStyleSpan, MyModal, ModalFooter, MODE } from '../common';
 import EducationCardEdit, { pattern } from './Edit';
 
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import ProgressBar from 'src/elements/ProgressBar';
+import ProgressVerified from 'src/components/ProgressVerified';
 import {
   EducationSelector,
   EducationSortedSelector
 } from 'src/Atoms/Selectors';
+import Card from 'src/elements-v2/Card';
 
 interface IEducationProps {
   updateFunc?: (prevItem: any, item: any) => Promise<boolean>;
@@ -228,50 +220,24 @@ const EducationCard: React.FC<IEducationProps> = ({
 
   return (
     <>
-      <CardOverview template={template}>
-        <CardHeaderContent>
-          <IonGrid className="ion-no-padding">
-            <IonRow className="ion-justify-content-between ion-no-padding">
-              <IonCol className="ion-no-padding">
-                <IonCardTitle>
-                  Education
-                  {!isEditable && !isPublicPage && (
-                    <div
-                      style={{
-                        width: '10em',
-                        float: 'right',
-                        fontSize: '0.8em'
-                      }}
-                    >
-                      <ProgressBar
-                        value={eduVerifiedPercent}
-                        text={'verified'}
-                      />
-                      <div
-                        style={{ float: 'right', fontSize: '0.8em' }}
-                      >{`${eduVerifiedPercent}% ${'verified'}`}</div>
-                    </div>
-                  )}
-                </IonCardTitle>
-              </IonCol>
-              {isEditable ? (
-                <IonCol size="auto" className="ion-no-padding">
-                  <LinkStyleSpan onClick={e => addItem()}>
-                    + Add Education
-                  </LinkStyleSpan>
-                </IonCol>
-              ) : (
-                ''
-              )}
-            </IonRow>
-          </IonGrid>
-        </CardHeaderContent>
-        <CardContentContainer>
-          {education !== undefined
-            ? getEducationFromParameter()
-            : getEducationFromState()}
-        </CardContentContainer>
-      </CardOverview>
+      <Card
+        title="Education"
+        action={
+          !isEditable ? (
+            !isPublicPage && <ProgressVerified percent={eduVerifiedPercent} />
+          ) : (
+            <IonCol size="auto" className="ion-no-padding">
+              <LinkStyleSpan onClick={e => addItem()}>
+                + Add Education
+              </LinkStyleSpan>
+            </IonCol>
+          )
+        }
+      >
+        {education !== undefined
+          ? getEducationFromParameter()
+          : getEducationFromState()}
+      </Card>
       <MyModal
         onDidDismiss={() => {
           setMode(MODE.NONE);

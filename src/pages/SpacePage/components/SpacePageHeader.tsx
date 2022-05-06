@@ -1,6 +1,7 @@
 import React from 'react';
 import { IonList, IonLabel, IonItem } from '@ionic/react';
 import styled from 'styled-components';
+import { down } from 'styled-breakpoints';
 
 import { TabsContainer } from 'src/components/profile/ProfileComponent/PublicProfileTabs';
 
@@ -12,6 +13,9 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  ${down('sm')} {
+    padding: 20px;
+  }
 `;
 
 export const PageTitle = styled.h2`

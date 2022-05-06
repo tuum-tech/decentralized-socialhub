@@ -6,9 +6,7 @@ import styled from 'styled-components';
 import {
   Description,
   Institution,
-  Period,
   PopoverMenuItem,
-  Program,
   TreeDotsButton
 } from '../common';
 // import Image from '../../../elements/Image';

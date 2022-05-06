@@ -14,7 +14,7 @@ import {
   CardHeaderContent,
   CardContentContainer
 } from '../common';
-import TeamCardEdit, { pattern } from './Edit';
+import TeamCardEdit from './Edit';
 import ProgressBar from 'src/elements/ProgressBar';
 
 interface IPaperProps {

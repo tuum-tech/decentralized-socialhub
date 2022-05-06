@@ -39,7 +39,6 @@ import { ProfileService } from 'src/services/profile.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { VerificationService } from 'src/services/verification.service';
 import { SpaceService } from 'src/services/space.service';
-import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/typings';
 
 interface PageProps
   extends InferMappedProps,
@@ -107,8 +106,10 @@ const LinkedinCallback: React.FC<PageProps> = ({
               verifiableCredential
             );
 
-            const vService = new VerificationService();
-            await vService.importCredential(verifiableCredential);
+            if (session.isEssentialUser) {
+              const vService = new VerificationService();
+              await vService.importCredential(verifiableCredential);
+            }
 
             let newSession = JSON.parse(JSON.stringify(session));
             newSession.loginCred!.linkedin! = firstName + '' + lastName;
@@ -178,9 +179,10 @@ const LinkedinCallback: React.FC<PageProps> = ({
         />
       );
     }
-    return (
-      <LoadingIndicator loadingText="Please accept Credential Import on Essentials App" />
-    );
+    let loadingText = session.isEssentialUser
+      ? 'Please accept Credential Import on Essentials App'
+      : '';
+    return <LoadingIndicator loadingText={loadingText} />;
   };
   return getRedirect();
 };

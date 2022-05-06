@@ -10,7 +10,8 @@ import PhoneVerificationDetailContent, {
 
 import { requestUpdateEmailOrPhone } from 'src/components/Auth/fetchapi';
 
-import { ActionBtnCol, Container, ErrorText, SaveButton } from './EmailComp';
+import { ActionBtnCol, Container, ErrorText } from './EmailComp';
+import { DefaultButton } from 'src/elements-v2/buttons';
 
 interface Props {
   phoneUpdated: (phone: string) => void;
@@ -82,15 +83,24 @@ const UpdatePhoneComp: React.FC<Props> = ({ phoneUpdated, sessionItem }) => {
           />
         </IonCol>
         <ActionBtnCol size="auto">
-          <SaveButton
+          <DefaultButton
+            className="mr-2"
+            size="small"
+            variant="outlined"
+            btnColor="primary-gradient"
+            textType="gradient"
             disabled={disableButton()}
             onClick={async () => {
               await sendVerification();
             }}
           >
             {loading ? 'Sending Verification' : 'Send Verification'}
-          </SaveButton>
-          <SaveButton
+          </DefaultButton>
+          <DefaultButton
+            size="small"
+            variant="outlined"
+            btnColor="primary-gradient"
+            textType="gradient"
             disabled={phone === ''}
             onClick={() => {
               setPhone('');
@@ -98,7 +108,7 @@ const UpdatePhoneComp: React.FC<Props> = ({ phoneUpdated, sessionItem }) => {
             }}
           >
             Clear
-          </SaveButton>
+          </DefaultButton>
         </ActionBtnCol>
       </IonRow>
 

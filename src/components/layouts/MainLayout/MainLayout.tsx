@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { AssistService, RequestStatus } from 'src/services/assist.service';
 import useSession from 'src/hooks/useSession';
 import HeaderMobile from '../HeaderMobile';
+import BottomNavBar from '../BottomNavBar';
 import LeftSideMenu from '../LeftSideMenu';
 import style from './style.module.scss';
 
@@ -59,11 +60,14 @@ const MainLayout: FC<IProps> = ({ children }: IProps) => {
       ? 'Dashboard'
       : pathname === '/manager'
       ? 'Profile Manager'
+      : pathname === '/explore'
+      ? 'Explore'
       : '';
-  }, [history.location.pathname]);
+  }, [history.location]);
 
   useEffect(() => {
     refreshStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const refreshStatus = async () => {
@@ -83,7 +87,7 @@ const MainLayout: FC<IProps> = ({ children }: IProps) => {
   return (
     <IonPage>
       <HeaderMobile sessionItem={session} publishStatus={publishStatus} />
-      {!isSmUp && <Title>{title}</Title>}
+      {!isSmUp && title && <Title>{title}</Title>}
       <IonContent className={style['content']}>
         <IonGrid className={style['grid']}>
           <IonRow className={style['row']}>
@@ -94,6 +98,7 @@ const MainLayout: FC<IProps> = ({ children }: IProps) => {
           </IonRow>
         </IonGrid>
       </IonContent>
+      {!isSmUp && <BottomNavBar />}
     </IonPage>
   );
 };

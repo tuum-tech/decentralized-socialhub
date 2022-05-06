@@ -30,6 +30,7 @@ import SentModalContent, {
 import Slides from 'src/elements-v2/Slides';
 import { DIDDocumentAtom, FullProfileAtom } from 'src/Atoms/Atoms';
 import useSession from 'src/hooks/useSession';
+import useProfileFilled from 'src/hooks/useProfileFilled';
 import WhatIsProfile from './Right/WhatIsProfile';
 
 const LeftCardCol = styled(IonCol)`
@@ -57,6 +58,7 @@ const DashboardHome: React.FC<Props> = ({
 }: Props) => {
   const history = useHistory();
   const { session } = useSession();
+  const { filledContent } = useProfileFilled();
 
   const [tutorialVisible, setTutorialVisible] = useState(true);
   const [hasFollowUsers, setFollowUsers] = useState(false);
@@ -377,22 +379,23 @@ const DashboardHome: React.FC<Props> = ({
     <>
       <IonGrid className="ion-no-padding">
         <IonRow className="ion-no-padding">
-          <LeftCardCol sizeSm="8" sizeXs="12">
+          <LeftCardCol sizeMd="8" sizeSm="12">
             {tutorialVisible && (
               <BeginnersTutorial
                 onTutorialStart={onTutorialStart}
                 tutorialStep={session.tutorialStep}
               />
             )}
+            {filledContent && <ManageProfile userSession={session} />}
             <Slides>
-              <ManageProfile userSession={session} />
+              {!filledContent && <ManageProfile userSession={session} />}
               {!hasFollowUsers && session.did && session.did !== '' && (
                 <ExploreConnections session={session} did={session.did} />
               )}
               {!hasSocialProfiles && <ManageLinks />}
             </Slides>
           </LeftCardCol>
-          <RightCardCol sizeSm="4" sizeXs="12">
+          <RightCardCol sizeMd="4" sizeSm="12">
             <VerificationStatus progress={verifiedPercent} />
             <ProfileCompletion
               progress={completionPercent}

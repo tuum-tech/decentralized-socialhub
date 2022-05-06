@@ -23,9 +23,8 @@ import {
   WavingHandImg
 } from 'src/components/layouts/OnBoardLayout';
 import { ButtonLink, ArrowButton, ThemeButton } from 'src/elements/buttons';
-import { Title40, Text18, Text12, Text28 } from 'src/elements/texts';
+import { Title40, Text18, Text12 } from 'src/elements/texts';
 
-import whitelogo from 'src/assets/logo/whitetextlogo.png';
 import weird from 'src/assets/icon/weird.png';
 
 const ForgotPasswordPage: React.FC<InferMappedProps> = ({

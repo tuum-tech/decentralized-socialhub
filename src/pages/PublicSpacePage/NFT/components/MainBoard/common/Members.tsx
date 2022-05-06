@@ -62,15 +62,16 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
         <CardContent>
           {firstIV.map((member: any, index: number) => {
             const isProfileUser = typeof member === 'object';
+            if (!member) return;
             return (
               <IonRow className={style['row']} key={index}>
                 <div className={style['avatar']}>
                   {isProfileUser ? (
                     <Avatar did={member.did} width="40px" />
                   ) : (
-                    <img src={nft_item_icon} />
+                    <img src={nft_item_icon} alt={member.name} />
                   )}
-                  <img src={welcome_badge} />
+                  <img src={welcome_badge} alt="welcome badge" />
                 </div>
                 {isProfileUser ? (
                   <Link

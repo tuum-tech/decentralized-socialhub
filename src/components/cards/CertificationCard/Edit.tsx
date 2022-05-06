@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  IonCardTitle,
-  IonCheckbox,
-  IonCol,
-  IonLabel,
-  IonRow
-} from '@ionic/react';
-import styled from 'styled-components';
+import { IonCardTitle, IonCol, IonLabel, IonRow } from '@ionic/react';
 
 import SmallTextInput from '../../../elements/inputs/SmallTextInput';
 import { MODE, MyGrid, MyTextarea } from '../common';
@@ -18,11 +11,6 @@ interface CertificationItemProps {
   handleChange: any;
   mode: MODE;
 }
-
-const Spacer = styled.div`
-  margin-top: 40px;
-  padding: 5px;
-`;
 
 const TeamCardEdit: React.FC<CertificationItemProps> = ({
   certificationItem,

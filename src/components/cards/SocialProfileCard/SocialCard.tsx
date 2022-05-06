@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 import { DidcredsService } from 'src/services/didcreds.service';
 import { UserService } from 'src/services/user.service';
@@ -15,7 +15,7 @@ import shieldIcon from '../../../assets/icon/shield.svg';
 import spinner from '../../../assets/icon/spinner.gif';
 import { DidService } from 'src/services/did.service.new';
 
-import { SocialProfileCard, MyGrid } from './elements';
+import { MyGrid } from './elements';
 
 import {
   ManagerModal,
@@ -25,8 +25,7 @@ import {
   ProfileItem,
   ManagerButton,
   CloseButton,
-  CardHeaderContent,
-  CardContentContainer
+  LinkStyleSpan
 } from '../common';
 
 import {
@@ -38,6 +37,7 @@ import { useSetRecoilState, useRecoilState } from 'recoil';
 import { BadgesAtom, DIDDocumentAtom, CallbackFromAtom } from 'src/Atoms/Atoms';
 import { VerificationService } from 'src/services/verification.service';
 import styled from 'styled-components';
+import Card from 'src/elements-v2/Card';
 
 const Alert = styled.span`
   color: red;
@@ -109,7 +109,7 @@ const SocialProfilesCard: React.FC<Props> = ({
     }[]
   >(socialCredentials);
 
-  useEffect(() => {
+  /*   useEffect(() => {
     (async () => {
       if (didDocument === '') {
         let updatedDidDocument: DIDDocument = (await DID.from(
@@ -119,7 +119,7 @@ const SocialProfilesCard: React.FC<Props> = ({
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionItem]);
+  }, [sessionItem]); */
 
   useEffect(() => {
     (async () => {
@@ -142,20 +142,22 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const getCredentials = async (sessionItem: ISessionItem) => {
-    if (didDocument === '') return;
-    let didDocumentParsed = DIDDocument._parseOnly(didDocument);
-    let credsFromDidDocument = await DidcredsService.getSocialCredentials(
-      didDocumentParsed
-    );
-
-    let newCredentials = credentials.map(item => {
-      item.credential = credsFromDidDocument.find(
-        cred => cred.id.getFragment() === item.name
+    let credsFromDidDocument: any[] = [];
+    try {
+      let allCreds = await DidcredsService.getAllCredentialsToVault(
+        sessionItem
       );
-      return item;
-    });
-
-    setCredentials(newCredentials);
+      credsFromDidDocument = Array.from(allCreds.values());
+      let newCredentials = credentials.map(item => {
+        item.credential = credsFromDidDocument.find(
+          cred => cred.id.getFragment() === item.name
+        );
+        return item;
+      });
+      setCredentials(newCredentials);
+    } catch (error) {
+      console.error('Error getting credentials from vault', error);
+    }
   };
 
   let template = 'default';
@@ -198,9 +200,10 @@ const SocialProfilesCard: React.FC<Props> = ({
 
     var timer = setInterval(async function() {
       if (popupwindow!.closed) {
-        clearInterval(timer);
+        //clearInterval(timer);
 
-        await forceUpdateDidDocument();
+        //if (sessionItem.isEssentialUser) await forceUpdateDidDocument();
+        await getCredentials(sessionItem);
       }
     }, 1000);
   };
@@ -276,52 +279,58 @@ const SocialProfilesCard: React.FC<Props> = ({
     setIsRemoving(true);
 
     let vcId = sessionItem.did + '#' + key;
-    let vService = new VerificationService();
-    let deletedCreds = await vService.deleteCredentials(vcId);
-
-    if (deletedCreds[0] === vcId) {
-      forceUpdateDidDocument();
-      let didService = await DidService.getInstance();
-
-      let userService = new UserService(didService);
-      let currentSession = await userService.SearchUserWithDID(sessionItem.did);
-
-      // ===== temporary codes start =====
-      let newLoginCred = currentSession!.loginCred;
-      let newLoginBadges = currentSession!.badges;
-      if (!newLoginCred) {
-        return;
-      }
-      if (key === 'google' && newLoginCred.google) {
-        delete newLoginCred.google;
-        newLoginBadges.socialVerify.google.archived = false;
-      } else if (key === 'facebook' && newLoginCred.facebook) {
-        delete newLoginCred.facebook;
-        newLoginBadges.socialVerify.facebook.archived = false;
-      } else if (key === 'linkedin' && newLoginCred.linkedin) {
-        newLoginBadges.socialVerify.linkedin.archived = false;
-        delete newLoginCred.linkedin;
-      } else if (key === 'twitter' && newLoginCred.twitter) {
-        delete newLoginCred.twitter;
-        newLoginBadges.socialVerify.twitter.archived = false;
-      } else if (key === 'github' && newLoginCred.github) {
-        delete newLoginCred.github;
-        newLoginBadges.socialVerify.github.archived = false;
-      } else if (key === 'discord' && newLoginCred.discord) {
-        newLoginBadges.socialVerify.discord.archived = false;
-        delete newLoginCred.discord;
-      }
-      const newUserSession = {
-        ...sessionItem,
-        loginCred: newLoginCred,
-        badges: newLoginBadges
-      } as ISessionItem;
-
-      setSession({
-        session: await userService.updateSession(newUserSession)
-      });
-      // ===== temporary codes end =====
+    if (sessionItem.isEssentialUser) {
+      let vService = new VerificationService();
+      await vService.deleteCredentials(vcId);
     }
+    try {
+      await DidcredsService.removeCredentialToVault(sessionItem, vcId);
+      forceUpdateDidDocument();
+    } catch (error) {
+      console.error('Error getting credentials from vault', error);
+    }
+
+    let didService = await DidService.getInstance();
+
+    let userService = new UserService(didService);
+    let currentSession = await userService.SearchUserWithDID(sessionItem.did);
+
+    // ===== temporary codes start =====
+    let newLoginCred = currentSession!.loginCred;
+    let newLoginBadges = currentSession!.badges;
+    if (!newLoginCred) {
+      return;
+    }
+    if (key === 'google' && newLoginCred.google) {
+      delete newLoginCred.google;
+      newLoginBadges.socialVerify.google.archived = false;
+    } else if (key === 'facebook' && newLoginCred.facebook) {
+      delete newLoginCred.facebook;
+      newLoginBadges.socialVerify.facebook.archived = false;
+    } else if (key === 'linkedin' && newLoginCred.linkedin) {
+      newLoginBadges.socialVerify.linkedin.archived = false;
+      delete newLoginCred.linkedin;
+    } else if (key === 'twitter' && newLoginCred.twitter) {
+      delete newLoginCred.twitter;
+      newLoginBadges.socialVerify.twitter.archived = false;
+    } else if (key === 'github' && newLoginCred.github) {
+      delete newLoginCred.github;
+      newLoginBadges.socialVerify.github.archived = false;
+    } else if (key === 'discord' && newLoginCred.discord) {
+      newLoginBadges.socialVerify.discord.archived = false;
+      delete newLoginCred.discord;
+    }
+    const newUserSession = {
+      ...sessionItem,
+      loginCred: newLoginCred,
+      badges: newLoginBadges
+    } as ISessionItem;
+
+    setSession({
+      session: await userService.updateSession(newUserSession)
+    });
+    // ===== temporary codes end =====
+
     setIsRemoving(false);
   };
 
@@ -329,93 +338,81 @@ const SocialProfilesCard: React.FC<Props> = ({
 
   return (
     <>
-      <SocialProfileCard template={template}>
-        <CardHeaderContent>
-          <IonCardTitle>
-            Social Profiles
-            {mode === 'edit' && (
-              <span
-                className="card-link"
-                onClick={() => {
-                  setIsManagerOpen(true);
-                }}
-              >
-                Manage Profiles
-              </span>
-            )}
-          </IonCardTitle>
-        </CardHeaderContent>
-        <CardContentContainer>
-          <IonGrid className={style['social-profile-grid']}>
-            <IonRow>
-              {credentials
-                .filter(item => item.credential !== undefined)
-                ?.map(credentialItem => {
-                  return credentialItem.credential !== undefined ? (
-                    <IonCol
-                      key={credentialItem.credential.id.toString()}
-                      size={mode === 'edit' ? '6' : '12'}
-                    >
-                      <ProfileItem template={template}>
-                        <div className="left">
-                          <img
-                            alt="icon"
-                            src={credentialItem.icon}
-                            height={50}
-                          />
-                          <img
-                            alt="shield icon"
-                            src={shieldIcon}
-                            className="social-profile-badge"
-                            height={15}
-                          />
-                        </div>
-                        <div className="right">
-                          <p className="social-profile-network">
-                            {credentialItem.name.replace(
-                              /^./,
-                              credentialItem.name[0].toUpperCase()
+      <Card
+        title="Social Profiles"
+        action={
+          mode === 'edit' && (
+            <LinkStyleSpan onClick={() => setIsManagerOpen(true)}>
+              Manage Profiles
+            </LinkStyleSpan>
+          )
+        }
+      >
+        <IonGrid className={style['social-profile-grid']}>
+          <IonRow>
+            {credentials
+              .filter(item => item.credential !== undefined)
+              ?.map(credentialItem => {
+                return credentialItem.credential !== undefined ? (
+                  <IonCol
+                    key={credentialItem.credential.id.toString()}
+                    size={mode === 'edit' ? '6' : '12'}
+                  >
+                    <ProfileItem template={template}>
+                      <div className="left">
+                        <img alt="icon" src={credentialItem.icon} height={50} />
+                        <img
+                          alt="shield icon"
+                          src={shieldIcon}
+                          className="social-profile-badge"
+                          height={15}
+                        />
+                      </div>
+                      <div className="right">
+                        <p className="social-profile-network">
+                          {credentialItem.name.replace(
+                            /^./,
+                            credentialItem.name[0].toUpperCase()
+                          )}
+                        </p>
+                        {(credentialItem.name === 'facebook' ||
+                          credentialItem.name === 'linkedin') && (
+                          <span className="social-profile-id">
+                            {parseValueFromService(
+                              credentialItem.name,
+                              credentialItem.credential
                             )}
-                          </p>
-                          {(credentialItem.name === 'facebook' ||
-                            credentialItem.name === 'linkedin') && (
-                            <span className="social-profile-id">
-                              {parseValueFromService(
-                                credentialItem.name,
-                                credentialItem.credential
-                              )}
-                            </span>
-                          )}
-                          {(credentialItem.name === 'google' ||
-                            credentialItem.name === 'twitter' ||
-                            credentialItem.name === 'github' ||
-                            credentialItem.name === 'discord') && (
-                            <a
-                              href={getUrlFromService(
-                                credentialItem.name,
-                                credentialItem.credential
-                              )}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="social-profile-id"
-                            >
-                              {parseValueFromService(
-                                credentialItem.name,
-                                credentialItem.credential
-                              )}
-                            </a>
-                          )}
-                        </div>
-                      </ProfileItem>
-                    </IonCol>
-                  ) : (
-                    <></>
-                  );
-                })}
-            </IonRow>
-          </IonGrid>
-        </CardContentContainer>
-      </SocialProfileCard>
+                          </span>
+                        )}
+                        {(credentialItem.name === 'google' ||
+                          credentialItem.name === 'twitter' ||
+                          credentialItem.name === 'github' ||
+                          credentialItem.name === 'discord') && (
+                          <a
+                            href={getUrlFromService(
+                              credentialItem.name,
+                              credentialItem.credential
+                            )}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="social-profile-id"
+                          >
+                            {parseValueFromService(
+                              credentialItem.name,
+                              credentialItem.credential
+                            )}
+                          </a>
+                        )}
+                      </div>
+                    </ProfileItem>
+                  </IonCol>
+                ) : (
+                  <></>
+                );
+              })}
+          </IonRow>
+        </IonGrid>
+      </Card>
 
       <ManagerModal
         isOpen={isManagerOpen}
@@ -473,7 +470,7 @@ const SocialProfilesCard: React.FC<Props> = ({
           })}
         </MyGrid>
         <ManagerModalFooter className="ion-no-border">
-          {isRemoving ? (
+          {sessionItem.isEssentialUser && isRemoving ? (
             <IonRow className="ion-justify-content-around">
               <IonCol size="auto">
                 <img src={spinner} height="20px" alt="spinner" />

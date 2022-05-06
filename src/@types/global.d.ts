@@ -256,6 +256,11 @@ interface ProfileDTO {
   gamerTagDTO: GamerTagDTO;
 }
 
+interface IReferral {
+  did: string;
+  sign_up_date?: string;
+}
+
 interface ISessionItem {
   hiveHost: string;
   userToken: string;
@@ -279,6 +284,7 @@ interface ISessionItem {
   pageTemplate?: string;
   phone?: string;
   timestamp: number;
+  referrals?: IReferral[];
 }
 
 interface LoginCred {
@@ -570,7 +576,7 @@ interface Space {
   avatar?: string;
   coverPhoto?: string;
   owner?: string | string[];
-  meta?: NFTSpaceDetail | OrgSpaceDetail | UnivSpaceDetail;
+  meta?: NFTSpaceDetail;
   publicFields?: string[];
   followers?: string[];
   isCommunitySpace?: boolean;

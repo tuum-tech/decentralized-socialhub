@@ -67,17 +67,26 @@ const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
       let issuer = nameCredential!.getIssuer();
       let did = 'did:elastos:' + issuer.getMethodSpecificId();
       let mnemonic = '';
+
       await didService.storeDocument(await issuer.resolve());
       let isDidPublished = await didService.isDIDPublished(did);
       if (isDidPublished) {
         let didDocument = await didService.getDidDocument(did, false);
+
         if (didDocument.services && didDocument.services.size > 0) {
-          let hiveUrl = new DIDURL(did + '#HiveVault');
-          if (didDocument.services.has(hiveUrl)) {
-            let service = didDocument.services.get(hiveUrl);
-            let hiveVersion = await HiveService.getHiveVersion(
-              service.serviceEndpoint
-            );
+          let serviceEndpoint = '';
+          let hiveUrl = new DIDURL(did + '#hivevault');
+          if (didDocument.services?.has(hiveUrl)) {
+            serviceEndpoint = didDocument.services.get(hiveUrl).serviceEndpoint;
+          } else {
+            hiveUrl = new DIDURL(did + '#HiveVault');
+            if (didDocument.services?.has(hiveUrl)) {
+              serviceEndpoint = didDocument.services.get(hiveUrl)
+                .serviceEndpoint;
+            }
+          }
+          if (serviceEndpoint) {
+            let hiveVersion = await HiveService.getHiveVersion(serviceEndpoint);
             let isHiveValid = await HiveService.isHiveVersionSupported(
               hiveVersion
             );
@@ -88,7 +97,18 @@ const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
               );
               return;
             }
+          } else {
+            alertError(
+              null,
+              `This DID has no Hive Node set. Please set the hive node first using Elastos Essentials App`
+            );
           }
+        } else {
+          alertError(
+            null,
+            `This DID has no Hive Node set. Please set the hive node first using Elastos Essentials App`
+          );
+          return;
         }
 
         let userService = new UserService(didService);
@@ -108,7 +128,7 @@ const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
           history.push({
             pathname: '/create-profile-with-did',
             state: {
-              did: did,
+              did,
               mnemonic,
               user: {
                 name: name,

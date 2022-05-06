@@ -11,7 +11,6 @@ import { getItemsFromData } from 'src/utils/script';
 import { getDIDString } from 'src/utils/did';
 import { timeSince } from 'src/utils/time';
 import { getCategoryTitle } from 'src/utils/credential';
-import { VerificationService } from 'src/services/verification.service';
 
 export const UserRow = styled.div`
   background: #ffffff;
@@ -49,7 +48,7 @@ export const UserRow = styled.div`
 
 export const getStatusColor = (status: string) => {
   let statusColor = '#2FD5DD';
-  if (status === 'requested') {
+  if (status === 'requested' || status === 'pending') {
     statusColor = '#FF5A5A';
   } else if (status === 'rejected') {
     statusColor = '#FF9840';

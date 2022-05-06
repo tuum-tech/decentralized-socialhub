@@ -1,11 +1,12 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
 import { IonRouterLink } from '@ionic/react';
+import clsx from 'clsx';
 import { ButtonProps, DefaultButtonProps, LinkButtonProps } from './types';
 import styles from './Button.module.scss';
 import GradientText from './GradientText';
 import ButtonText from './ButtonText';
-import Icon from '../icons/Icon';
+import Icon from '../icons';
 
 function withStyle<T extends object>(
   Component: React.ComponentType<T>
@@ -15,14 +16,18 @@ function withStyle<T extends object>(
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 6px 11px;
-    padding: 0px 20px;
+    padding: ${props =>
+      props.size === 'large'
+        ? '15px 25px'
+        : props.size === 'small'
+        ? '6px 11px'
+        : '10px 15px'};
     width: fit-content;
     height: ${props =>
       props.size === 'large'
         ? '43px'
         : props.size === 'small'
-        ? '28px'
+        ? '27px'
         : '33px'};
     border-radius: 7px;
   `;
@@ -39,9 +44,11 @@ function withStyle<T extends object>(
       bgColor,
       children,
       size = 'default',
+      disabled = false,
       icon,
       btnColor,
-      style: customStyle = {}
+      style: customStyle = {},
+      className: customClass
     } = props;
     let backStyle = '';
     let fontColor = '';
@@ -76,6 +83,11 @@ function withStyle<T extends object>(
           : btnColor === 'white'
           ? 'var(--ion-color-medium)'
           : '';
+      if (disabled) {
+        backStyle = '';
+        borderColor = '#CBD5E0';
+        fontColor = '#CBD5E0';
+      }
       if (borderColor) {
         Object.assign(style, {
           borderColor,
@@ -88,9 +100,13 @@ function withStyle<T extends object>(
     const fontSize = size === 'default' ? 13 : size === 'large' ? 15 : 12;
 
     return (
-      <StyledButton {...(props as any)} className={backStyle} style={style}>
+      <StyledButton
+        {...(props as any)}
+        className={clsx(backStyle, customClass)}
+        style={style}
+      >
         <StyledDivCenter>
-          {textType === 'gradient' ? (
+          {textType === 'gradient' && !disabled ? (
             <GradientText fontSize={fontSize}>{children}</GradientText>
           ) : (
             <ButtonText fontSize={fontSize} color={fontColor}>

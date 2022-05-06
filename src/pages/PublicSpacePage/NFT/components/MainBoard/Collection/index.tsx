@@ -17,13 +17,7 @@ const Collection: React.FC<IProps> = ({ space }: IProps) => {
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [offset, setOffset] = useState(0);
   const limit = 9;
-  useEffect(() => {
-    (async () => {
-      if (space && space.guid) {
-        await fetchMoreData();
-      }
-    })();
-  }, [space]);
+
   const fetchMoreData = async () => {
     const { data }: any = await getNFTCollectionAssets(
       space.guid,
@@ -45,6 +39,13 @@ const Collection: React.FC<IProps> = ({ space }: IProps) => {
       setHasMore(false);
     }
   };
+  useEffect(() => {
+    (async () => {
+      if (space && space.guid) {
+        await fetchMoreData();
+      }
+    })();
+  }, [space]);
   const searchNext = async ($event: CustomEvent<void>) => {
     await fetchMoreData();
     ($event.target as HTMLIonInfiniteScrollElement).complete();

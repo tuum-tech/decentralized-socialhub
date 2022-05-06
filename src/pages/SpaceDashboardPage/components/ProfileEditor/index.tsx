@@ -7,6 +7,7 @@ import SyncBar from 'src/components/SyncBar';
 import SpaceCoverPhoto from 'src/components/cards/SpaceCoverPhoto';
 import SpaceAvatarChange from 'src/components/cards/SpaceAvatarChange';
 import ProfileBriefCard from 'src/components/cards/ProfileBriefCard';
+import Followers from '../Followers';
 import OverView from '../OverView';
 import PublicFields from '../PublicFields';
 import Admins from '../Admins';
@@ -23,7 +24,6 @@ interface Props {
 
 const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
   const history = useHistory();
-  const [error, setError] = useState(false);
   const [userInfo, setUserInfo] = useState<ISessionItem>(session);
   const [loaded, setloaded] = useState(false);
   const [spaceProfile, setSpaceProfile] = useState<any>(profile);
@@ -86,10 +86,9 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
           <IonCol size="4">
             <OverView sessionItem={userInfo} profile={spaceProfile} />
             {spaceProfile.followers && spaceProfile.followers.length > 0 && (
-              <ProfileBriefCard
-                category={'follower'}
+              <Followers
                 title={'Followers'}
-                data={spaceProfile.followers}
+                space={spaceProfile}
                 exploreAll={() => {}}
               />
             )}
@@ -101,7 +100,7 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
               space={spaceProfile}
               onUpload={onUploadCoverPhoto}
             />
-            {!error && loaded && userInfo.tutorialStep === 4 ? (
+            {loaded && userInfo.tutorialStep === 4 ? (
               <>
                 {spaceProfile && (
                   <AboutCard

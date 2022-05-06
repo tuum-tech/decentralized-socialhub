@@ -25,7 +25,7 @@ import { DidDocumentService } from 'src/services/diddocument.service';
 import { DidService } from 'src/services/did.service.new';
 import { DIDDocument, DID } from '@elastosfoundation/did-js-sdk/';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { DIDDocumentAtom, FullProfileAtom, SessionAtom } from 'src/Atoms/Atoms';
+import { DIDDocumentAtom, FullProfileAtom } from 'src/Atoms/Atoms';
 import MainLayout from 'src/components/layouts/MainLayout';
 import useSession from 'src/hooks/useSession';
 
@@ -43,6 +43,7 @@ const TutorialModal = styled(IonModal)`
 
 const DashboardPage: React.FC = () => {
   const { session, setSession } = useSession();
+
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');

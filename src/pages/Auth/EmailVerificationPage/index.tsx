@@ -40,12 +40,6 @@ const ErrorText = styled(Text16)`
   margin-top: 8px;
 `;
 
-const DisplayText = styled(Text16)`
-  text-align: center;
-  color: green;
-  margin-top: 8px;
-`;
-
 const Content = styled(OnBoardLayoutRightContent)`
   .below {
     color: #7a7a9d;
@@ -85,12 +79,15 @@ const EmailVerificationPage: React.FC<PageProps> = ({
 
   useEffect(() => {
     const { name, email, password } = props.location.state;
+
     if (name !== '' && email !== '' && password !== '') {
       setUser({ name, email, password });
       setLoaded(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  console.log('===>user', user);
 
   if (
     loaded &&
@@ -145,6 +142,7 @@ const EmailVerificationPage: React.FC<PageProps> = ({
         user.password,
         session.did,
         mnemonic,
+        '',
         ''
       );
 
