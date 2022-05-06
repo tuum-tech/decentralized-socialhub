@@ -289,17 +289,20 @@ export class HiveContextProvider implements AppContextProvider {
 
   private async getAppDocument(): Promise<DIDDocument> {
     HiveContextProvider.LOG.trace('getAppDocument');
-    //return await this.store!.loadDid(this.contextParameters.appDID);
 
-    let didAccess = new CNDID.DIDAccess();
-    await didAccess.getOrCreateAppInstanceDID();
+    if (this.contextParameters.userMnemonics === '') {
+      let didAccess = new CNDID.DIDAccess();
+      await didAccess.getOrCreateAppInstanceDID();
 
-    let response = await didAccess.getExistingAppInstanceDIDInfo();
-    let didStore = await DIDStore.open(response.storeId);
+      let response = await didAccess.getExistingAppInstanceDIDInfo();
+      let didStore = await DIDStore.open(response.storeId);
 
-    let document = await didStore.loadDid(response.didString);
+      let document = await didStore.loadDid(response.didString);
 
-    return document;
+      return document;
+    } else {
+      return await this.store!.loadDid(this.contextParameters.appDID);
+    }
   }
 
   private async createToken(
