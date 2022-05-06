@@ -43,7 +43,8 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
     if (!session || !session.did || !space) return false;
     return space.followers.includes(session.did) || hasPermissionToPost;
   }, [space, session, hasPermissionToPost]);
-  const isAdmin = space && session && session.did && space.owner.includes(session.did);
+  const isAdmin =
+    space && session && session.did && space.owner.includes(session.did);
   const handlePost = async (content: any) => {
     const new_post = await SpaceService.post(session, space.sid, content);
     const _posts = [...posts];
@@ -54,7 +55,8 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const fetchMorePosts = async () => {
-    const _posts = await SpaceService.getPosts(space.sid, offset, limit, isAdmin);
+    let _posts: any[] = await SpaceService.getPosts(space.sid, offset, limit, isAdmin);
+    _posts = _posts.filter(post => post);
     if (_posts.length > 0) {
       setOffset(offset + limit);
       let __posts = posts.concat(_posts);
@@ -197,9 +199,11 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
           {/* <Post /> */}
         </IonCol>
         <IonCol size="4">
-          {space.publicFields.includes('social links') && space.socialLinks && Object.keys(space.socialLinks).length > 0 && (
-            <Links space={space} />
-          )}
+          {space.publicFields.includes('social links') &&
+            space.socialLinks &&
+            Object.keys(space.socialLinks).length > 0 && (
+              <Links space={space} />
+            )}
           <Members space={space} />
           {space.followers &&
             space.followers.length > 0 &&
