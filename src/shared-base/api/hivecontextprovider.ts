@@ -289,7 +289,17 @@ export class HiveContextProvider implements AppContextProvider {
 
   private async getAppDocument(): Promise<DIDDocument> {
     HiveContextProvider.LOG.trace('getAppDocument');
-    return await this.store!.loadDid(this.contextParameters.appDID);
+    //return await this.store!.loadDid(this.contextParameters.appDID);
+
+    let didAccess = new CNDID.DIDAccess();
+    await didAccess.getOrCreateAppInstanceDID();
+
+    let response = await didAccess.getExistingAppInstanceDIDInfo();
+    let didStore = await DIDStore.open(response.storeId);
+
+    let document = await didStore.loadDid(response.didString);
+
+    return document;
   }
 
   private async createToken(
@@ -303,6 +313,9 @@ export class HiveContextProvider implements AppContextProvider {
     let exp = cal.add(3, 'month').unix();
 
     // Create JWT token with presentation.
+    let didAccess = new CNDID.DIDAccess();
+    let response = await didAccess.getExistingAppInstanceDIDInfo();
+
     let doc: DIDDocument = await this.getAppDocument();
     let token = await doc
       .jwtBuilder()
@@ -314,7 +327,7 @@ export class HiveContextProvider implements AppContextProvider {
       .setExpiration(exp)
       .setNotBefore(nbf)
       .claimsWithJson('presentation', vp.toString(true))
-      .sign(this.contextParameters.appStorePass);
+      .sign(response.storePassword);
 
     return token;
   }

@@ -15,20 +15,7 @@ const HiveClientPage = () => {
   const [resp, setResp] = useState('');
   useEffect(() => {
     (async () => {
-      // const anonymous = await HiveClient.createAnonymousInstance("http://localhost:9001");
-
-      // debugger;
-      // let rets = await anonymous.Scripting.callScript("get_users_by_dids", {
-      //   "limit": 200,
-      //   "skip": 0,
-      //   "dids": []
-      // },"did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX","did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX");
-
-      // debugger;
-      // setRet(rets as string);
-
       const hiveClient = await HiveClient.createInstance();
-      debugger;
 
       //let vaultInfo = await hiveClient.VaultSubscription.subscribe();
       await hiveClient.Database.createCollection('test2');

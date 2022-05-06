@@ -33,7 +33,7 @@ const environmentParameters: HiveClientParameters = {
     appPhrasePass: process.env.REACT_APP_APPLICATION_PASSPHRASE,
     appStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS,
     userDID: 'did:elastos:icbxqm6jkk6Sk5NxTpeYakBqZ5KJ91rQNs',
-    userMnemonics: '', //'web text team glue winner violin zebra case long alert share afford',
+    userMnemonics: '', // 'web text team glue winner violin zebra case long alert share afford',
     userPhrasePass: '',
     userStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS
   } as AppContextParameters
@@ -62,22 +62,15 @@ export class HiveClient {
     //   'Creating HiveClient instance with {} ...',
     //   JSON.stringify(appContext)
     // );
-    debugger;
     this.anonymous = anonymous;
     this.appContext = appContext;
     this.hiveClientParameters = hiveClientParameters;
     if (!anonymous) {
-      debugger;
       this.databaseService = vaultServices?.getDatabaseService();
       this.scriptingService = vaultServices?.getScriptingService();
       this.vaultSubscriptionService = vaultSubscriptionService;
       this.vaultServices = vaultServices;
     } else {
-      debugger;
-      // this.databaseService = vaultServices?.getDatabaseService();
-      // this.scriptingService = vaultServices?.getScriptingService();
-      // this.vaultSubscriptionService = vaultSubscriptionService;
-      // this.vaultServices = vaultServices;
     }
   }
 
@@ -173,7 +166,6 @@ export class HiveClient {
     let hiveClient = CacheManager.get('HiveClient', appContextParameters);
 
     if (!hiveClient) {
-      debugger;
       HiveClient.LOG.debug('Creating new HiveClient instance...');
       let instanceAppContextParameters = HiveClient.resolveDefaultParameters(
         appContextParameters
@@ -291,7 +283,6 @@ export class HiveClient {
         getAuthorization(
           authenticationChallengeJWtCode: string
         ): Promise<string> {
-          debugger;
           HiveClient.LOG.trace(
             'HiveAnonymousContextProvider: getAuthorization'
           );
