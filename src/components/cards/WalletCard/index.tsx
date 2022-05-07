@@ -19,26 +19,29 @@ import {
   CardContentContainer,
   ProfileItem
 } from '../common';
+import { verifyWalletOwner } from './function';
 import {
-  verifyWalletOwner,
-  addWalletToDIDDocument,
-  removeWalletFromDIDDocument
-} from './function';
-import {
+  VerifiableCredential,
   DIDDocument,
-  VerifiableCredential
-} from '@elastosfoundation/did-js-sdk/typings';
-import { CredentialType } from 'src/services/didcreds.service';
+  DID
+} from '@elastosfoundation/did-js-sdk/';
+import { useSetRecoilState, useRecoilState } from 'recoil';
+import { BadgesAtom, DIDDocumentAtom, CallbackFromAtom } from 'src/Atoms/Atoms';
+import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { ProfileService } from 'src/services/profile.service';
 import { shortenAddress } from 'src/utils/web3';
 import { injected } from 'src/constant';
 import style from './WalletCard.module.scss';
+
+import defaultIcon from '../../../assets/icon/profile-bag-blue.svg';
 import shieldIcon from '../../../assets/icon/shield.svg';
 import copyIcon from '../../../assets/icon/copy-to-clipboard.svg';
+import { UserService } from 'src/services/user.service';
+import { DidService } from 'src/services/did.service.new';
+import { VerificationService } from 'src/services/verification.service';
 
 interface IWalletProps {
   setRequestEssentials: (item: boolean) => void;
-  didDocument: DIDDocument;
   isEditable?: boolean;
   template?: string;
   userSession: ISessionItem;
@@ -46,7 +49,6 @@ interface IWalletProps {
 
 const WalletCard: React.FC<IWalletProps> = ({
   setRequestEssentials,
-  didDocument,
   isEditable = false,
   template = 'default',
   userSession
@@ -60,7 +62,69 @@ const WalletCard: React.FC<IWalletProps> = ({
   );
   const [isManagerOpen, setIsManagerOpen] = useState(false);
   const [isRemovingVc, setIsRemovingVc] = useState(false);
-  const [didDoc, setDidDoc] = useState<DIDDocument>(didDocument);
+  const setBadges = useSetRecoilState(BadgesAtom);
+  const [didDocument, setDidDocument] = useRecoilState(DIDDocumentAtom);
+  const walletCredentials = [
+    {
+      name: 'escaddress',
+      display: 'ESC Address',
+      credential: undefined,
+      icon: defaultIcon
+    },
+    {
+      name: 'ethaddress',
+      display: 'ETH Address',
+      credential: undefined,
+      icon: defaultIcon
+    }
+  ];
+  const [credentials, setCredentials] = useState<
+    {
+      name: string;
+      display: string;
+      credential: VerifiableCredential | undefined;
+      icon: string;
+    }[]
+  >(walletCredentials);
+
+  useEffect(() => {
+    (async () => {
+      await getCredentials(userSession);
+      let userService = new UserService(await DidService.getInstance());
+
+      let user: ISessionItem = await userService.SearchUserWithDID(
+        userSession.did
+      );
+      setBadges(user?.badges as IBadges);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [didDocument]);
+
+  const forceUpdateDidDocument = async () => {
+    let updatedDidDocument: DIDDocument = (await DID.from(
+      userSession.did
+    )?.resolve(true)) as DIDDocument;
+    setDidDocument(updatedDidDocument.toString());
+  };
+
+  const getCredentials = async (sessionItem: ISessionItem) => {
+    let credsFromDidDocument: any[] = [];
+    try {
+      let allCreds = await DidcredsService.getAllCredentialsToVault(
+        sessionItem
+      );
+      credsFromDidDocument = Array.from(allCreds.values());
+      let newCredentials = credentials.map(item => {
+        item.credential = credsFromDidDocument.find(
+          cred => cred.id.getFragment() === item.name
+        );
+        return item;
+      });
+      setCredentials(newCredentials);
+    } catch (error) {
+      console.error('Error getting credentials from vault', error);
+    }
+  };
 
   ////////////////////////////// ***** ////////////////////////////////////
   useEffect(() => {
@@ -73,13 +137,24 @@ const WalletCard: React.FC<IWalletProps> = ({
           return;
         }
         if (userSession.isEssentialUser) setRequestEssentials(true);
-        const doc = await addWalletToDIDDocument(
-          account,
+        let newVC = await DidcredsService.generateVerifiableCredential(
+          userSession.did,
           selectedWalletType.toLowerCase(),
-          userSession
+          account
         );
+        if (userSession.isEssentialUser) {
+          let vService = new VerificationService();
+          await vService.importCredential(newVC);
+        }
+        try {
+          await DidcredsService.addOrUpdateCredentialToVault(
+            userSession,
+            newVC
+          );
+        } catch (error) {
+          console.error('Error getting credentials from vault', error);
+        }
         if (userSession.isEssentialUser) setRequestEssentials(false);
-        setDidDoc(doc);
         setAdding(false);
       })();
     }
@@ -94,6 +169,24 @@ const WalletCard: React.FC<IWalletProps> = ({
     }
   };
 
+  const updateSession = async (key: string) => {
+    try {
+      await ProfileService.addActivity(
+        {
+          guid: '',
+          did: userSession.did,
+          message: `You updated ${key} wallet`,
+          read: false,
+          createdAt: 0,
+          updatedAt: 0
+        },
+        userSession
+      );
+    } catch (err) {
+      console.log('error======>', err);
+    }
+  };
+
   const addVc = async (type: CredentialType) => {
     setSelectedWalletType(type);
     setAdding(true);
@@ -103,44 +196,23 @@ const WalletCard: React.FC<IWalletProps> = ({
     updateSession(type);
   };
 
-  const updateSession = async (type: CredentialType) => {
-    try {
-      let _userSession = JSON.parse(JSON.stringify(userSession));
-      if (!_userSession) return false;
-
-      _userSession.wallent = {
-        type: type,
-        archived: new Date().getTime()
-      };
-      // await updateSession({ session: _userSession });
-      await ProfileService.addActivity(
-        {
-          guid: '',
-          did: _userSession.did,
-          message: `You updated ${type} wallet`,
-          read: false,
-          createdAt: 0,
-          updatedAt: 0
-        },
-        _userSession
-      );
-    } catch (err) {
-      console.log('error======>', err);
-    }
-  };
-
-  const removeVc = async (type: CredentialType) => {
+  const removeVc = async (key: string) => {
     setIsRemovingVc(true);
 
-    if (userSession.isEssentialUser) setRequestEssentials(true);
-    const doc = await removeWalletFromDIDDocument(
-      type.toLowerCase(),
-      userSession
-    );
-    if (userSession.isEssentialUser) setRequestEssentials(false);
-    setDidDoc(doc);
+    let vcId = userSession.did + '#' + key.toLowerCase();
+    if (userSession.isEssentialUser) {
+      let vService = new VerificationService();
+      await vService.deleteCredentials(vcId);
+    }
+    try {
+      await DidcredsService.removeCredentialToVault(userSession, vcId);
+      forceUpdateDidDocument();
+    } catch (error) {
+      console.error('Error getting credentials from vault', error);
+    }
+
     setIsRemovingVc(false);
-    updateSession(type);
+    updateSession(key);
   };
 
   const parseValueFromKey = (
@@ -152,7 +224,14 @@ const WalletCard: React.FC<IWalletProps> = ({
   };
 
   const walletEditItem = (type: CredentialType) => {
-    let vc = didDoc?.getCredential(type.toLowerCase());
+    let vc;
+    credentials
+      .filter(item => item.credential !== undefined)
+      ?.map(credentialItem => {
+        if (credentialItem.credential?.id.getFragment() === type.toLowerCase())
+          vc = credentialItem.credential;
+      });
+    //vc = didDoc?.getCredential(type.toLowerCase());
     if (!vc) {
       return (
         <div className={style['manage-links-item']}>
@@ -188,12 +267,26 @@ const WalletCard: React.FC<IWalletProps> = ({
   };
 
   const containsVerifiedCredential = (key: string): boolean => {
-    const vc = didDoc?.getCredential(key);
+    let vc;
+    credentials
+      .filter(item => item.credential !== undefined)
+      ?.map(credentialItem => {
+        if (credentialItem.credential?.id.getFragment() === key.toLowerCase())
+          vc = credentialItem.credential;
+      });
+    //const vc = didDoc?.getCredential(key);
     return !!vc;
   };
 
   const walletViewItem = (type: CredentialType) => {
-    let vc = didDoc?.getCredential(type.toLowerCase());
+    let vc;
+    credentials
+      .filter(item => item.credential !== undefined)
+      ?.map(credentialItem => {
+        if (credentialItem.credential?.id.getFragment() === type.toLowerCase())
+          vc = credentialItem.credential;
+      });
+    //let vc = didDoc?.getCredential(type.toLowerCase());
     if (!vc) return <></>;
     const address = parseValueFromKey(type.toLowerCase(), vc);
     return (

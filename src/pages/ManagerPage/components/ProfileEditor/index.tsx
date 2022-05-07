@@ -480,7 +480,6 @@ const ProfileEditor: React.FC<Props> = ({
                   setRequestEssentials={(value: boolean) =>
                     setShowRequestEssentials(value)
                   }
-                  didDocument={didDocument!}
                   isEditable={true}
                   template="default"
                   userSession={JSON.parse(JSON.stringify(session))}
