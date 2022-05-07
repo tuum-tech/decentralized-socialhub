@@ -193,6 +193,12 @@ const WalletCard: React.FC<IWalletProps> = ({
     if (!account) {
       connectWallet();
     }
+    var timer = setInterval(async function() {
+      //clearInterval(timer);
+
+      //if (sessionItem.isEssentialUser) await forceUpdateDidDocument();
+      await getCredentials(userSession);
+    }, 3000);
     updateSession(type);
   };
 
