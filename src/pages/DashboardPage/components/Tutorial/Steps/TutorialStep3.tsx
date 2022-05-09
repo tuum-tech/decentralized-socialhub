@@ -165,8 +165,6 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
         new DID(session.did)
       );
 
-      // store the social media/email to verifiable_credentials user vault
-
       blockchainDocument.credentials?.forEach(async vc => {
         await DidcredsService.addOrUpdateCredentialToVault(newSession, vc);
       });
