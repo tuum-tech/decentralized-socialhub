@@ -1,5 +1,5 @@
 import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/';
-import { DID as CnDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { DID as ConnDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { DidService } from './did.service.new';
 
 export class EssentialsService {
@@ -18,8 +18,8 @@ export class EssentialsService {
   addMultipleVerifiableCredentialsToEssentials = async (
     vcs: VerifiableCredential[]
   ): Promise<boolean> => {
-    let cn = new CnDID.DIDAccess();
-    let response = await cn?.importCredentials(vcs, {
+    let didAccess = new ConnDID.DIDAccess();
+    let response = await didAccess.importCredentials(vcs, {
       forceToPublishCredentials: true
     });
 
@@ -31,11 +31,10 @@ export class EssentialsService {
   removeMultipleVerifiableCredentialsToEssentials = async (
     vcs: string[]
   ): Promise<boolean> => {
-    let cn = new CnDID.DIDAccess();
-    let response = await cn?.deleteCredentials(vcs, {
+    let didAccess = new ConnDID.DIDAccess();
+    let response = await didAccess.deleteCredentials(vcs, {
       forceToPublishCredentials: true
     });
-
     return response.length > 0;
   };
 }
