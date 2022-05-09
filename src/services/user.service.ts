@@ -168,7 +168,7 @@ export class UserService {
     );
 
     this.didService.storeDocument(documentWithCredentials);
-    this.didService.publishDocument(documentWithCredentials);
+    // this.didService.publishDocument(documentWithCredentials);
 
     window.localStorage.setItem(
       `temporary_${documentWithCredentials
