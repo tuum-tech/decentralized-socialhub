@@ -44,6 +44,8 @@ export const TabsContainer = styled.div`
     margin-bottom: 0px !important;
     margin-left: 10px;
     font-size: 14px;
+    display: flex;
+    align-items: center;
   }
 `;
 

@@ -17,6 +17,8 @@ const TabLabel = styled(GradientText)`
   margin-bottom: 0px !important;
   margin-left: 10px;
   font-size: 15px;
+  display: flex;
+  align-items: center;
 `;
 interface IProps {
   space: any;
