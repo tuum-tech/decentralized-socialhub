@@ -1,0 +1,167 @@
+.message-chat-card {
+  border-radius: 16px;
+  margin-left: 15px;
+  padding-bottom: 15px;
+  background: #F7FAFC;
+  box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24), 0px 3px 8px -1px rgba(50, 50, 71, 0.05);
+
+  .message-chat-card-header {
+    background-color: #ffffff;
+    font-family: 'SF Pro Display';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 21px;
+    display: flex;
+    align-items: center;
+    letter-spacing: -0.005em;
+
+
+
+    color: #27272E;
+
+
+
+  }
+
+
+  .message-chat-card-content {
+    height: 100%;
+    min-height: 400px;
+
+    ion-row {
+      margin: 3px 0px;
+    }
+
+
+
+    h3 {
+      color: #27272e;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 136.52%;
+    }
+
+    h4 {
+      color: #27272e;
+      font-size: 14px;
+      font-weight: normal;
+      line-height: 162.502%;
+    }
+
+    button {
+      margin-top: 15px;
+      background: linear-gradient(145.76deg, #995AFF 14.97%, #DC59BF 87.23%);
+      border-radius: 9px;
+    }
+  }
+}
+
+.card-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  background-color: #ffffff;
+}
+
+.message-list {
+  --ion-item-background: transparent;
+}
+
+.message-item-direct {
+  box-sizing: border-box;
+  padding: 21px 15px;
+  
+
+  font-family: 'SF Pro Display';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 15px;
+  /* identical to box height, or 100% */
+
+
+
+  /* Gray/700 */
+
+  color: #313049;
+
+  
+}
+
+.message-time-direct {
+  font-family: 'SF Pro Display';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 162.02%;
+  
+  font-feature-settings: 'salt' on;
+
+  color: #B5B5BD;
+
+  
+  display: flexbox;
+
+}
+
+
+
+
+.message-item-direct-friend {
+  @extend .message-item-direct;
+  
+  text-align: left;
+  background: #FFFFFF;
+  border: 1px solid #EDF2F7;
+  border-radius: 0px 9px 9px 9px;
+
+  float: left;
+}
+
+.message-time-direct-friend {
+  @extend .message-time-direct;
+  display: block;
+     float: left;
+}
+
+
+.message-item-direct-user {
+  @extend .message-item-direct;
+  margin-left: auto;
+  align-self: flex-end;
+  background: linear-gradient(252.79deg, rgba(144, 75, 255, 0.084) -20.69%, rgba(190, 52, 160, 0.092) 151.16%);
+  border-radius: 9px 0px 9px 9px;
+  
+  float: right;  
+
+}
+
+.message-time-direct-user {
+  @extend .message-time-direct;
+  display: flex;
+  align-items: center;
+  text-align: right;
+  float: right;
+  align-content: flex-end;
+}
+
+.align-text-middle {
+  display: flex;
+  align-items: center;
+}
+
+.message-emojis-list {
+  padding: 10px;
+  padding-right: 15px;
+
+  .message-emojis-item {
+    cursor: pointer;
+  }
+}
+
+.teste{
+ width: 100%;
+  
+}

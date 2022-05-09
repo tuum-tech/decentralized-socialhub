@@ -1,8 +1,18 @@
-import { mapDispatchToProps, mapStateToProps } from './index';
-
 import { IonButton } from '@ionic/react';
 import styled from 'styled-components';
 import { RouteComponentProps } from 'react-router';
+
+import { mapStateToProps, mapDispatchToProps } from './index';
+import {
+  SubState as defaultSubState,
+  ActionType as defaultActionType,
+  defaultUserInfo
+} from 'src/store/users/types';
+
+export { defaultUserInfo };
+export type SubState = defaultSubState;
+
+export type ActionType = defaultActionType;
 
 export type InferMappedProps = ReturnType<typeof mapStateToProps> &
   ReturnType<typeof mapDispatchToProps>;

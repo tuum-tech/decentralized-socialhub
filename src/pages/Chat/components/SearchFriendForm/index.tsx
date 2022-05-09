@@ -6,6 +6,8 @@ import { DID } from '@elastosfoundation/did-js-sdk/typings';
 import { ProfileService } from 'src/services/profile.service';
 import { SearchService } from 'src/services/search.service';
 import { UserType } from 'src/utils/user';
+import FriendCard from '../FriendCard';
+import { getDIDString } from 'src/utils/did';
 interface Props {
   session: ISessionItem;
   selectFriend: (friend: any) => void;
@@ -58,26 +60,45 @@ const SearchFriendForm: React.FC<Props> = ({
             200,
             0
           );
-
-          console.log(listUsers?.response?.get_users_by_tutorialStep);
-
-          let usersFound = listUsers?.response?.get_users_by_tutorialStep || [];
+          let usersFound = listUsers?.response?.get_users_by_dids?.items || [];
 
           setFriends(usersFound);
         } catch (e) {
-          console.error('Error getting mutual followers');
+          console.error('Error getting friends list');
           setFriends([]);
         }
       }
     })();
   }, [session]);
 
+  const getFriends = () => {
+    if (friends.length <= 0) return <></>;
+
+    return (
+      <>
+        {' '}
+        {friends.map(item => (
+          <FriendCard
+            key={item.did}
+            did={item.did}
+            avatar={item.avatar}
+            sessionItem={session}
+            name={item.name}
+            connectClicked={did => {
+              selectFriend(getDIDString(did, true));
+            }}
+          ></FriendCard>
+        ))}
+      </>
+    );
+  };
+
   return (
     <MyGrid className={style['form']}>
       <IonRow className={style['form_title']}>
         <IonCardTitle>Select a friend to start chat</IonCardTitle>
       </IonRow>
-      <IonRow class="ion-justify-content-start"></IonRow>
+      <IonRow class="ion-justify-content-start">{getFriends()}</IonRow>
       <IonRow className={style['form_footer']}>
         <IonCol size="12">
           <IonButton shape="round" fill="outline" onClick={onClose}>

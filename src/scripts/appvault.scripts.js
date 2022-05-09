@@ -685,7 +685,12 @@ let run = async () => {
         body: {
           collection: 'users',
           filter: {
-            did: { $in: '$params.dids' }
+            did: {
+              $in: {
+                $regex: '^$params.dids$',
+                $options: 'i'
+              }
+            }
           },
           options: {
             limit: '$params.limit',

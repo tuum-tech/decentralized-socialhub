@@ -6,17 +6,20 @@ import Spaces from 'src/assets/messages/NoMessages.png';
 
 interface Props {
   session: ISessionItem;
+  roomId: string;
   openForm: () => void;
 }
 
-const MessagesCard: React.FC<Props> = ({ session, openForm }: Props) => {
+const MessagesCard: React.FC<Props> = ({
+  session,
+  roomId,
+  openForm
+}: Props) => {
   return (
     <>
       <IonCard className={style['no-message-card']}>
         <IonCardContent className={style['card-content']}>
-          <IonRow>
-            <IonImg src={Spaces}></IonImg>
-          </IonRow>
+          <IonRow></IonRow>
         </IonCardContent>
       </IonCard>
     </>
