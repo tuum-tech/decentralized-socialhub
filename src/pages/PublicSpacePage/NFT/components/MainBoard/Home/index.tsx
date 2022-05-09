@@ -134,7 +134,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
           {posts.map((post, index) => {
             return (
               <Post
-                key={index}
+                key={JSON.stringify(post)}
                 post={post}
                 onComment={async (content: string) => {
                   const _post = await SpaceService.comment(

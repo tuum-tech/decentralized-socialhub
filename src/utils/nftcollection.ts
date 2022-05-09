@@ -19,6 +19,11 @@ export const getOwners = async (assets: any[], network: string) => {
         };
       })
   );
+  console.log('tuum tech users: => ', usersWithCred);
+  console.log(
+    'collection members: => ',
+    assets.map((asset: any) => asset.owner)
+  );
   const owners = assets.map((asset: any) => {
     const { owner } = asset;
     const user: any = usersWithCred.find((user: any) => user.wallet === owner);
