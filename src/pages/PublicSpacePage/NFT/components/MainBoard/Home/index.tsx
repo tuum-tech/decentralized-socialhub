@@ -86,7 +86,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
         return;
       }
       const network = space.meta.network || 'Elastos Smart Contract Chain';
-      const wallet = DidcredsService.getCredentialValue(
+      const wallet = await DidcredsService.getCredentialValue(
         session,
         (network.toLowerCase() === 'elastos smart contract chain'
           ? CredentialType.ESCAddress
