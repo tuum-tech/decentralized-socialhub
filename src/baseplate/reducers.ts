@@ -10,6 +10,7 @@ import { ActionTags } from 'src/baseplate/models';
 import history from './history';
 import globalReducer from '../App.reducers';
 import userReducer from '../store/users/reducer';
+import spaceReducer from '../store/spaces/reducer';
 
 // import languageProviderReducer from 'containers/LanguageProvider/reducer';
 // TODO: i18n Language should be implemented
@@ -25,6 +26,7 @@ export default function createReducer(
   const rootReducer = combineReducers({
     global: globalReducer,
     user: userReducer,
+    space: spaceReducer,
 
     /* language: languageProviderReducer,
     // TODO: i18n Language should be implemented */

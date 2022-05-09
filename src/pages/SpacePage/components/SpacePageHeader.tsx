@@ -60,7 +60,7 @@ export const BlueButton = styled.button`
 
 interface SpacePageHeaderProps {
   active: string;
-  setActive: (avtive: string) => void;
+  setActive: (active: string) => void;
 }
 
 const SpacePageHeaderContainer = styled.div`
