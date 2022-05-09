@@ -280,7 +280,6 @@ const ProfileComponent: React.FC<Props> = ({
                           template === 'crypto' && (
                             <WalletCard
                               setRequestEssentials={() => {}}
-                              didDocument={didDocument!}
                               isEditable={false}
                               template={template}
                               userSession={publicUser}
