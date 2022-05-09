@@ -198,12 +198,19 @@ const WalletCard: React.FC<IWalletProps> = ({
 
       //if (sessionItem.isEssentialUser) await forceUpdateDidDocument();
       await getCredentials(userSession);
-    }, 3000);
+    }, 2000);
     updateSession(type);
   };
 
   const removeVc = async (key: string) => {
     setIsRemovingVc(true);
+
+    var timer = setInterval(async function() {
+      //clearInterval(timer);
+
+      //if (sessionItem.isEssentialUser) await forceUpdateDidDocument();
+      await getCredentials(userSession);
+    }, 2000);
 
     let vcId = userSession.did + '#' + key.toLowerCase();
     if (userSession.isEssentialUser) {
@@ -212,7 +219,6 @@ const WalletCard: React.FC<IWalletProps> = ({
     }
     try {
       await DidcredsService.removeCredentialToVault(userSession, vcId);
-      forceUpdateDidDocument();
     } catch (error) {
       console.error('Error getting credentials from vault', error);
     }

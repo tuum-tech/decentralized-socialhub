@@ -108,6 +108,7 @@ const SpaceCard: React.FC<Props> = ({
     ]);
   };
   return (
+    <Link to={link} target={newTab ? '_blank' : '_self'}>
     <Container>
       <Link to={link} target={newTab ? '_blank' : '_self'}>
         <Banner bgImg={space.coverPhoto || defaultCoverPhoto} />
@@ -147,6 +148,7 @@ const SpaceCard: React.FC<Props> = ({
         </IonRow>
       </Link>
     </Container>
+    </Link>
   );
 };
 
