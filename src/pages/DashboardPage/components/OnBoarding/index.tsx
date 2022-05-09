@@ -74,14 +74,6 @@ const OnBoarding: React.FC<Props> = ({
         <IonButton className={style['next-btn']} onClick={next}>
           Continue
         </IonButton>
-        <Container>
-          <div
-            className="item"
-            onClick={() => window.open('https://www.tuum.tech')}
-          >
-            <p>Tuum.Tech</p>
-          </div>
-        </Container>
       </div>
     );
   };
@@ -119,14 +111,6 @@ const OnBoarding: React.FC<Props> = ({
         <IonButton className={style['next-btn']} onClick={next}>
           Continue
         </IonButton>
-        <Container>
-          <div
-            className="item"
-            onClick={() => window.open('https://www.tuum.tech')}
-          >
-            <p>Tuum.Tech</p>
-          </div>
-        </Container>
       </div>
     );
   };
@@ -166,14 +150,6 @@ const OnBoarding: React.FC<Props> = ({
         <IonButton className={style['next-btn']} onClick={next}>
           Continue
         </IonButton>
-        <Container>
-          <div
-            className="item"
-            onClick={() => window.open('https://www.tuum.tech')}
-          >
-            <p>Tuum.Tech</p>
-          </div>
-        </Container>
       </div>
     );
   };
