@@ -26,6 +26,7 @@ import FooterLinks, {
 } from 'src/components/layouts/OnBoardLayout/FooterLinks';
 import { HiveService } from 'src/services/hive.service';
 import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
+import { HiveClient } from 'src/shared-base/api/hiveclient';
 
 const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
   /**
@@ -86,7 +87,7 @@ const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
             }
           }
           if (serviceEndpoint) {
-            let hiveVersion = await HiveService.getHiveVersion(serviceEndpoint);
+            let hiveVersion = await HiveClient.getHiveVersion(serviceEndpoint);
             let isHiveValid = await HiveService.isHiveVersionSupported(
               hiveVersion
             );

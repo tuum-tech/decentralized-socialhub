@@ -85,10 +85,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
     }
 
     props.setLoading(true);
-    let isValidHiveAddress = await HiveService.isHiveAddressValid(
-      endpoint,
-      session.isEssentialUser!
-    );
+    let isValidHiveAddress = await HiveService.isHiveAddressValid(endpoint);
     if (!isValidHiveAddress) {
       props.setLoading(false);
       console.log('Not valid address: ', endpoint);
@@ -169,7 +166,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
       }
       await UserVaultScripts.Execute(hiveClient!);
       let blockchainDocument: DIDDocument = await didService.getPublishedDocument(
-        new DID(props.session.did)
+        new DID(session.did)
       );
 
       blockchainDocument.getCredentials().forEach(async vc => {
@@ -289,7 +286,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
           setHiveDocument(serviceEndpoint);
         }
         setDetectedHiveVersion(
-          await HiveService.getHiveVersion(serviceEndpoint)
+          await HiveClient.getHiveVersion(serviceEndpoint)
         );
       }
     })();

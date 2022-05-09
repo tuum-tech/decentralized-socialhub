@@ -28,6 +28,7 @@ import style from './style.module.scss';
 import { UserType, LocationState } from './types';
 import { DIDURL } from '@elastosfoundation/did-js-sdk/';
 import { HiveService } from 'src/services/hive.service';
+import { HiveClient } from 'src/shared-base/api/hiveclient';
 
 const CreateButton = styled(Link)`
   background: #313049;
@@ -129,7 +130,7 @@ const RecoverAccountPage: React.FC<RouteComponentProps<
                   }
                 }
                 if (serviceEndpoint) {
-                  let hiveVersion = await HiveService.getHiveVersion(
+                  let hiveVersion = await HiveClient.getHiveVersion(
                     serviceEndpoint
                   );
                   let isHiveValid = await HiveService.isHiveVersionSupported(

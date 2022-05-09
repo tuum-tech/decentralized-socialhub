@@ -1,24 +1,31 @@
-import { HiveClient } from '@elastosfoundation/elastos-hive-js-sdk';
+import {
+  DeleteExecutable,
+  Executable,
+  FindExecutable,
+  InsertExecutable,
+  UpdateExecutable
+} from '@elastosfoundation/hive-js-sdk/';
+import { HiveClient } from 'src/shared-base/api/hiveclient';
 
 export class UserVaultScripts {
   static async Execute(hiveClient: HiveClient) {
-    await this.CreateCollections(hiveClient);
-    await new Promise(f => setTimeout(f, 200));
-    await this.SetScripts(hiveClient);
-
-    // console.log('uservaultscripts registered');
+    await Promise.all([
+      this.CreateCollections(hiveClient),
+      this.SetScripts(hiveClient)
+    ]);
+    console.log('uservaultscripts registered');
   }
 
   static async CreateCollections(hiveClient: HiveClient) {
     await Promise.all([
-      hiveClient.Database.createCollection('templates'),
-      hiveClient.Database.createCollection('public_fields'),
       hiveClient.Database.createCollection('following'),
       hiveClient.Database.createCollection('basic_profile'),
       hiveClient.Database.createCollection('education_profile'),
       hiveClient.Database.createCollection('experience_profile'),
       hiveClient.Database.createCollection('activities'),
+      hiveClient.Database.createCollection('public_fields'),
       hiveClient.Database.createCollection('verifiable_credentials'),
+      hiveClient.Database.createCollection('templates'),
       hiveClient.Database.createCollection('team_profile'),
       hiveClient.Database.createCollection('thesis_profile'),
       hiveClient.Database.createCollection('paper_profile'),
@@ -30,919 +37,797 @@ export class UserVaultScripts {
   }
 
   static async setPublicTemplateScriptSetter(hiveClient: HiveClient) {
+    let executable = new UpdateExecutable(
+      'set_public_fields',
+      'public_fields',
+      { did: '$params.did' },
+      { $set: { fields: '$params.fields' } },
+      { upsert: true, bypass_document_validation: false }
+    );
     // scripts for public fields of profile
-    await hiveClient.Scripting.SetScript({
-      name: 'set_public_fields',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'set_public_fields',
-        body: {
-          collection: 'public_fields',
-          filter: {
-            did: '$params.did'
-          },
-          update: {
-            $set: {
-              fields: '$params.fields'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
-        }
-      }
-    });
+    await hiveClient.Scripting.registerScript(
+      'set_public_fields',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async getPublicFieldsScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'get_public_fields',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_public_fields',
-        output: true,
-        body: {
-          collection: 'public_fields'
-        }
-      }
-    });
+    let executable = new FindExecutable(
+      'get_public_fields',
+      'public_fields',
+      null,
+      null
+    );
+    (executable as Executable).setOutput(true);
+    await hiveClient.Scripting.registerScript(
+      'get_public_fields',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
-  static async getMyTemplatesScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'get_my_templates',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_my_templates',
-        output: true,
-        body: {
-          collection: 'templates'
-        }
-      }
-    });
+  static async updateMyTemplatesScriptSet(hiveClient: HiveClient) {
+    let executable = new UpdateExecutable(
+      'update_my_templates',
+      'templates',
+      { did: '$params.did' },
+      { $set: { templates: '$params.templates' } },
+      { upsert: true, bypass_document_validation: false }
+    );
+    await hiveClient.Scripting.registerScript(
+      'update_my_templates',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
-  static async updateMyTemplatesScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'update_my_templates',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'update_my_templates',
-        body: {
-          collection: 'templates',
-          filter: {
-            guid: '$params.guid'
-          },
-          update: {
-            $set: {
-              templates: '$params.templates'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
-        }
-      }
-    });
+  static async getMyTemplatesScriptSet(hiveClient: HiveClient) {
+    let executable = new FindExecutable(
+      'get_my_templates',
+      'templates',
+      null,
+      null
+    );
+    (executable as Executable).setOutput(true);
+    await hiveClient.Scripting.registerScript(
+      'get_my_templates',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async getFollowingScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'get_following',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_following',
-        output: true,
-        body: {
-          collection: 'following'
-        }
-      }
-    });
+    let executable = new FindExecutable(
+      'get_following',
+      'following',
+      null,
+      null
+    );
+    (executable as Executable).setOutput(true);
+    await hiveClient.Scripting.registerScript(
+      'get_following',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async getBasicProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'get_basic_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_basic_profile',
-        output: true,
-        body: {
-          collection: 'basic_profile'
-        }
-      }
-    });
+    let executable = new FindExecutable(
+      'get_basic_profile',
+      'basic_profile',
+      null,
+      null
+    );
+    (executable as Executable).setOutput(true);
+    await hiveClient.Scripting.registerScript(
+      'get_basic_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async updateBasicProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'update_basic_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'update_basic_profile',
-        body: {
-          collection: 'basic_profile',
-          filter: {
-            did: '$params.did'
-          },
-          update: {
-            $set: {
-              about: '$params.about'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
-        }
-      }
-    });
+    let executable = new UpdateExecutable(
+      'update_basic_profile',
+      'basic_profile',
+      { did: '$params.did' },
+      { $set: { about: '$params.about' } },
+      { upsert: true, bypass_document_validation: false }
+    );
+    await hiveClient.Scripting.registerScript(
+      'update_basic_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async getTeamProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'get_team_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_team_profile',
-        output: true,
-        body: {
-          collection: 'team_profile'
-        }
-      }
-    });
+    let executable = new FindExecutable(
+      'get_team_profile',
+      'team_profile',
+      null,
+      null
+    );
+    (executable as Executable).setOutput(true);
+    await hiveClient.Scripting.registerScript(
+      'get_team_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async updateTeamProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'update_team_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'update_team_profile',
-        body: {
-          collection: 'team_profile',
-          filter: {
-            guid: '$params.guid'
-          },
-          update: {
-            $set: {
-              guid: '$params.guid',
-              name: '$params.name',
-              start: '$params.start',
-              end: '$params.end',
-              still: '$params.still',
-              description: '$params.description'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
+    let executable = new UpdateExecutable(
+      'update_team_profile',
+      'team_profile',
+      { guid: '$params.guid' },
+      {
+        $set: {
+          guid: '$params.guid',
+          name: '$params.name',
+          start: '$params.start',
+          end: '$params.end',
+          still: '$params.still',
+          description: '$params.description'
         }
-      }
-    });
+      },
+      { upsert: true, bypass_document_validation: false }
+    );
+    await hiveClient.Scripting.registerScript(
+      'update_team_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async removeTeamItemScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'remove_team_item',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'delete',
-        name: 'remove_team_item',
-        body: {
-          collection: 'team_profile',
-          filter: {
-            guid: '$params.guid'
-          }
-        }
-      }
+    let executable = new DeleteExecutable('remove_team_item', 'team_profile', {
+      guid: '$params.guid'
     });
+    await hiveClient.Scripting.registerScript(
+      'remove_team_item',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async getThesisProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'get_thesis_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_thesis_profile',
-        output: true,
-        body: {
-          collection: 'thesis_profile'
-        }
-      }
-    });
+    let executable = new FindExecutable(
+      'get_thesis_profile',
+      'thesis_profile',
+      null,
+      null
+    );
+    (executable as Executable).setOutput(true);
+    await hiveClient.Scripting.registerScript(
+      'get_thesis_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async updateThesisProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'update_thesis_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'update_thesis_profile',
-        body: {
-          collection: 'thesis_profile',
-          filter: {
-            guid: '$params.guid'
-          },
-          update: {
-            $set: {
-              guid: '$params.guid',
-              title: '$params.title',
-              publish: '$params.publish',
-              still: '$params.still',
-              description: '$params.description'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
+    let executable = new UpdateExecutable(
+      'update_thesis_profile',
+      'thesis_profile',
+      { guid: '$params.guid' },
+      {
+        $set: {
+          guid: '$params.guid',
+          title: '$params.title',
+          publish: '$params.publish',
+          still: '$params.still',
+          description: '$params.description'
         }
-      }
-    });
+      },
+      { upsert: true, bypass_document_validation: false }
+    );
+    await hiveClient.Scripting.registerScript(
+      'update_thesis_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async removeThesisProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'remove_thesis_item',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'delete',
-        name: 'remove_thesis_item',
-        body: {
-          collection: 'thesis_profile',
-          filter: {
-            guid: '$params.guid'
-          }
-        }
-      }
-    });
+    let executable = new DeleteExecutable(
+      'remove_thesis_item',
+      'thesis_profile',
+      { guid: '$params.guid' }
+    );
+    await hiveClient.Scripting.registerScript(
+      'remove_thesis_item',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async getPaperProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'get_paper_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_paper_profile',
-        output: true,
-        body: {
-          collection: 'paper_profile'
-        }
-      }
-    });
+    let executable = new FindExecutable(
+      'get_paper_profile',
+      'paper_profile',
+      null,
+      null
+    );
+    (executable as Executable).setOutput(true);
+    await hiveClient.Scripting.registerScript(
+      'get_paper_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async updatePaperProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'update_paper_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'update_paper_profile',
-        body: {
-          collection: 'paper_profile',
-          filter: {
-            guid: '$params.guid'
-          },
-          update: {
-            $set: {
-              guid: '$params.guid',
-              title: '$params.title',
-              publish: '$params.publish',
-              still: '$params.still',
-              description: '$params.description'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
+    let executable = new UpdateExecutable(
+      'update_paper_profile',
+      'paper_profile',
+      { guid: '$params.guid' },
+      {
+        $set: {
+          guid: '$params.guid',
+          title: '$params.title',
+          publish: '$params.publish',
+          still: '$params.still',
+          description: '$params.description'
         }
-      }
-    });
+      },
+      { upsert: true, bypass_document_validation: false }
+    );
+    await hiveClient.Scripting.registerScript(
+      'update_paper_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async removePaperItemScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'remove_paper_item',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'delete',
-        name: 'remove_paper_item',
-        body: {
-          collection: 'paper_profile',
-          filter: {
-            guid: '$params.guid'
-          }
-        }
-      }
-    });
+    let executable = new DeleteExecutable(
+      'remove_paper_item',
+      'paper_profile',
+      { guid: '$params.guid' }
+    );
+    await hiveClient.Scripting.registerScript(
+      'remove_paper_item',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async getLicenseProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'get_license_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_license_profile',
-        output: true,
-        body: {
-          collection: 'license_profile'
-        }
-      }
-    });
+    let executable = new FindExecutable(
+      'get_license_profile',
+      'license_profile',
+      null,
+      null
+    );
+    (executable as Executable).setOutput(true);
+    await hiveClient.Scripting.registerScript(
+      'get_license_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
   static async updateLicenseProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'update_license_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'update_license_profile',
-        body: {
-          collection: 'license_profile',
-          filter: {
-            guid: '$params.guid'
-          },
-          update: {
-            $set: {
-              guid: '$params.guid',
-              title: '$params.title',
-              acknowledger: '$params.acknowledger',
-              awardDate: '$params.awardDate',
-              description: '$params.description'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
+    let executable = new UpdateExecutable(
+      'update_license_profile',
+      'license_profile',
+      { guid: '$params.guid' },
+      {
+        $set: {
+          guid: '$params.guid',
+          title: '$params.title',
+          acknowledger: '$params.acknowledger',
+          awardDate: '$params.awardDate',
+          description: '$params.description'
         }
-      }
-    });
+      },
+      { upsert: true, bypass_document_validation: false }
+    );
+    await hiveClient.Scripting.registerScript(
+      'update_license_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async removeLicenseItemScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'remove_license_item',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'delete',
-        name: 'remove_license_item',
-        body: {
-          collection: 'license_profile',
-          filter: {
-            guid: '$params.guid'
-          }
-        }
-      }
-    });
+    let executable = new DeleteExecutable(
+      'remove_license_item',
+      'license_profile',
+      { guid: '$params.guid' }
+    );
+    await hiveClient.Scripting.registerScript(
+      'remove_license_item',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async getCertificationProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'get_certification_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_certification_profile',
-        output: true,
-        body: {
-          collection: 'certification_profile'
-        }
-      }
-    });
+    let executable = new FindExecutable(
+      'get_certification_profile',
+      'certification_profile',
+      null,
+      null
+    );
+    (executable as Executable).setOutput(true);
+    await hiveClient.Scripting.registerScript(
+      'get_certification_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async updateCertificationProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'update_certification_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'update_certification_profile',
-        body: {
-          collection: 'certification_profile',
-          filter: {
-            guid: '$params.guid'
-          },
-          update: {
-            $set: {
-              guid: '$params.guid',
-              title: '$params.title',
-              acknowledger: '$params.acknowledger',
-              awardDate: '$params.awardDate',
-              description: '$params.description'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
+    let executable = new UpdateExecutable(
+      'update_certification_profile',
+      'certification_profile',
+      { guid: '$params.guid' },
+      {
+        $set: {
+          guid: '$params.guid',
+          title: '$params.title',
+          acknowledger: '$params.acknowledger',
+          awardDate: '$params.awardDate',
+          description: '$params.description'
         }
-      }
-    });
+      },
+      { upsert: true, bypass_document_validation: false }
+    );
+    await hiveClient.Scripting.registerScript(
+      'update_certification_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async removeCertificationItemScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'remove_certification_item',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'delete',
-        name: 'remove_certification_item',
-        body: {
-          collection: 'certification_profile',
-          filter: {
-            guid: '$params.guid'
-          }
-        }
-      }
-    });
+    let executable = new DeleteExecutable(
+      'remove_certification_item',
+      'certification_profile',
+      { guid: '$params.guid' }
+    );
+    await hiveClient.Scripting.registerScript(
+      'remove_certification_item',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async getGameExpProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'get_game_exp_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_game_exp_profile',
-        output: true,
-        body: {
-          collection: 'game_exp_profile'
-        }
-      }
-    });
+    let executable = new FindExecutable(
+      'get_game_exp_profile',
+      'game_exp_profile',
+      null,
+      null
+    );
+    (executable as Executable).setOutput(true);
+    await hiveClient.Scripting.registerScript(
+      'get_game_exp_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async updateGameExpProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'update_game_exp_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'update_game_exp_profile',
-        body: {
-          collection: 'game_exp_profile',
-          filter: {
-            guid: '$params.guid'
-          },
-          update: {
-            $set: {
-              guid: '$params.guid',
-              name: '$params.name',
-              like: '$params.like',
-              description: '$params.description'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
+    let executable = new UpdateExecutable(
+      'update_game_exp_profile',
+      'game_exp_profile',
+      { guid: '$params.guid' },
+      {
+        $set: {
+          guid: '$params.guid',
+          name: '$params.name',
+          like: '$params.like',
+          description: '$params.description'
         }
-      }
-    });
+      },
+      { upsert: true, bypass_document_validation: false }
+    );
+    await hiveClient.Scripting.registerScript(
+      'update_game_exp_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async removeGameExpItemScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'remove_game_exp_item',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'delete',
-        name: 'remove_game_exp_item',
-        body: {
-          collection: 'game_exp_profile',
-          filter: {
-            guid: '$params.guid'
-          }
-        }
-      }
-    });
+    let executable = new DeleteExecutable(
+      'remove_game_exp_item',
+      'game_exp_profile',
+      { guid: '$params.guid' }
+    );
+    await hiveClient.Scripting.registerScript(
+      'remove_game_exp_item',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
   static async getEducationProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'get_education_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_education_profile',
-        output: true,
-        body: {
-          collection: 'education_profile'
-        }
-      }
-    });
+    let executable = new FindExecutable(
+      'get_education_profile',
+      'education_profile',
+      null,
+      null
+    );
+    (executable as Executable).setOutput(true);
+    await hiveClient.Scripting.registerScript(
+      'get_education_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async updateEducationProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'update_education_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'update_education_profile',
-        body: {
-          collection: 'education_profile',
-          filter: {
-            guid: '$params.guid'
-          },
-          update: {
-            $set: {
-              guid: '$params.guid',
-              program: '$params.program',
-              institution: '$params.institution',
-              start: '$params.start',
-              end: '$params.end',
-              still: '$params.still',
-              description: '$params.description'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
+    let executable = new UpdateExecutable(
+      'update_education_profile',
+      'education_profile',
+      { guid: '$params.guid' },
+      {
+        $set: {
+          guid: '$params.guid',
+          program: '$params.program',
+          institution: '$params.institution',
+          start: '$params.start',
+          end: '$params.end',
+          still: '$params.still',
+          description: '$params.description'
         }
-      }
-    });
+      },
+      { upsert: true, bypass_document_validation: false }
+    );
+    await hiveClient.Scripting.registerScript(
+      'update_education_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async removeEducationItemScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'remove_education_item',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'delete',
-        name: 'remove_education_item',
-        body: {
-          collection: 'education_profile',
-          filter: {
-            guid: '$params.guid'
-          }
-        }
-      }
-    });
+    let executable = new DeleteExecutable(
+      'remove_education_item',
+      'education_profile',
+      { guid: '$params.guid' }
+    );
+    await hiveClient.Scripting.registerScript(
+      'remove_education_item',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async getExperienceProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'get_experience_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_experience_profile',
-        output: true,
-        body: {
-          collection: 'experience_profile'
-        }
-      }
-    });
+    let executable = new FindExecutable(
+      'get_experience_profile',
+      'experience_profile',
+      null,
+      null
+    );
+    (executable as Executable).setOutput(true);
+    await hiveClient.Scripting.registerScript(
+      'get_experience_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async updateExperienceProfileScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'update_experience_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'update_experience_profile',
-        body: {
-          collection: 'experience_profile',
-          filter: {
-            guid: '$params.guid'
-          },
-          update: {
-            $set: {
-              guid: '$params.guid',
-              title: '$params.title',
-              institution: '$params.institution',
-              start: '$params.start',
-              end: '$params.end',
-              still: '$params.still',
-              description: '$params.description'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
+    let executable = new UpdateExecutable(
+      'update_experience_profile',
+      'experience_profile',
+      { guid: '$params.guid' },
+      {
+        $set: {
+          guid: '$params.guid',
+          title: '$params.title',
+          institution: '$params.institution',
+          start: '$params.start',
+          end: '$params.end',
+          still: '$params.still',
+          description: '$params.description'
         }
-      }
-    });
+      },
+      { upsert: true, bypass_document_validation: false }
+    );
+    await hiveClient.Scripting.registerScript(
+      'update_experience_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async removeExperienceItemScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'remove_experience_item',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'delete',
-        name: 'remove_experience_item',
-        body: {
-          collection: 'experience_profile',
-          filter: {
-            guid: '$params.guid'
-          }
-        }
-      }
-    });
+    let executable = new DeleteExecutable(
+      'remove_experience_item',
+      'experience_profile',
+      { guid: '$params.guid' }
+    );
+    await hiveClient.Scripting.registerScript(
+      'remove_experience_item',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async getActivityScriptSetter(hiveClient: HiveClient) {
-    // activies
-    await hiveClient.Scripting.SetScript({
-      name: 'get_activity',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_activity',
-        output: true,
-        body: {
-          collection: 'activities'
-        }
-      }
-    });
+    let executable = new FindExecutable(
+      'get_activity',
+      'activities',
+      null,
+      null
+    );
+    (executable as Executable).setOutput(true);
+    await hiveClient.Scripting.registerScript(
+      'get_activity',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async addActivityScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'add_activity',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'insert',
-        name: 'add_activity',
-        output: true,
-        body: {
-          collection: 'activities',
-          document: {
-            guid: '$params.guid',
-            did: '$params.did',
-            message: '$params.message',
-            read: '$params.read',
-            createdAt: '$params.createdAt',
-            updatedAt: '$params.updatedAt'
-          }
-        }
-      }
-    });
+    let executable = new InsertExecutable(
+      'add_activity',
+      'activities',
+      {
+        guid: '$params.guid',
+        did: '$params.did',
+        message: '$params.message',
+        read: '$params.read',
+        createdAt: '$params.createdAt',
+        updatedAt: '$params.updatedAt'
+      },
+      { bypass_document_validation: false, ordered: false }
+    );
+    await hiveClient.Scripting.registerScript(
+      'add_activity',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async updateActivityScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'update_activity',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'update_activity',
-        body: {
-          collection: 'activities',
-          filter: {
-            guid: '$params.guid'
-          },
-          update: {
-            $set: {
-              read: '$params.read',
-              updatedAt: '$params.updatedAt'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
+    let executable = new UpdateExecutable(
+      'update_activity',
+      'activities',
+      { guid: '$params.guid' },
+      {
+        $set: {
+          read: '$params.read',
+          updatedAt: '$params.updatedAt'
         }
-      }
-    });
+      },
+      { upsert: true, bypass_document_validation: false }
+    );
+    await hiveClient.Scripting.registerScript(
+      'update_activity',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async addVerifiableCredentialScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'add_verifiablecredential',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'add_verifiablecredential',
-        body: {
-          collection: 'verifiable_credentials',
-          filter: {
-            id: '$params.id'
-          },
-          update: {
-            $set: {
-              id: '$params.id',
-              vc: '$params.vc'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
+    let executable = new UpdateExecutable(
+      'add_verifiablecredential',
+      'verifiable_credentials',
+      { id: '$params.id' },
+      {
+        $set: {
+          id: '$params.id',
+          vc: '$params.vc'
         }
-      }
-    });
+      },
+      { upsert: true, bypass_document_validation: false }
+    );
+    await hiveClient.Scripting.registerScript(
+      'add_verifiablecredential',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async removeVerifiableCredentialScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'remove_verifiablecredential',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'delete',
-        name: 'remove_verifiablecredential',
-        body: {
-          collection: 'verifiable_credentials',
-          filter: {
-            id: '$params.id'
-          }
-        }
-      }
-    });
+    let executable = new DeleteExecutable(
+      'remove_verifiablecredential',
+      'verifiable_credentials',
+      { id: '$params.id' }
+    );
+    await hiveClient.Scripting.registerScript(
+      'remove_verifiablecredential',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async getVerifiableCredentialScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'get_verifiable_credentials',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_verifiable_credentials',
-        output: true,
-        body: {
-          collection: 'verifiable_credentials'
-        }
-      }
-    });
+    let executable = new FindExecutable(
+      'get_verifiable_credentials',
+      'verifiable_credentials',
+      null,
+      null
+    );
+    (executable as Executable).setOutput(true);
+    await hiveClient.Scripting.registerScript(
+      'get_verifiable_credentials',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async getAllSpacesScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'get_all_spaces',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_all_spaces',
-        output: true,
-        body: {
-          collection: 'private_spaces'
-        }
-      }
-    });
+    let executable = new FindExecutable(
+      'get_all_spaces',
+      'private_spaces',
+      null,
+      null
+    );
+    (executable as Executable).setOutput(true);
+    await hiveClient.Scripting.registerScript(
+      'get_all_spaces',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async getSpacesByNamesScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'get_space_by_names',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_space_by_names',
-        output: true,
-        body: {
-          collection: 'private_spaces',
-          filter: {
-            name: { $in: '$params.names' }
-          }
+    let executable = new FindExecutable(
+      'get_space_by_names',
+      'private_spaces',
+      {
+        name: {
+          $in: '$params.names'
         }
-      }
-    });
+      },
+      null
+    );
+    (executable as Executable).setOutput(true);
+    await hiveClient.Scripting.registerScript(
+      'get_space_by_names',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async getSpacesByIdsScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'get_space_by_ids',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_space_by_ids',
-        output: true,
-        body: {
-          collection: 'private_spaces',
-          filter: {
-            guid: { $in: '$params.guids' }
-          }
-        }
-      }
-    });
-  }
+    let executable = new FindExecutable(
+      'get_space_by_ids',
+      'private_spaces',
+      { guid: { $in: '$params.guid' } },
+      null
+    );
 
+    await hiveClient.Scripting.registerScript(
+      'get_space_by_ids',
+      executable,
+      undefined,
+      true,
+      true
+    );
+  }
   static async addSpacesScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'add_space',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'add_space',
-        body: {
-          collection: 'private_spaces',
-          filter: {
-            guid: '$params.guid'
-          },
-          update: {
-            $set: {
-              guid: '$params.guid',
-              name: '$params.name',
-              description: '$params.description',
-              category: '$params.category',
-              avatar: '$params.avatar',
-              coverPhoto: '$params.coverPhoto',
-              publicFields: '$params.publicFields',
-              socialLinks: '$parrams.socialLinks'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
+    let executable = new UpdateExecutable(
+      'add_space',
+      'private_spaces',
+      { guid: '$params.guid' },
+      {
+        $set: {
+          guid: '$params.guid',
+          name: '$params.name',
+          description: '$params.description',
+          category: '$params.category',
+          avatar: '$params.avatar',
+          coverPhoto: '$params.coverPhoto',
+          publicFields: '$params.publicFields'
         }
-      }
-    });
+      },
+      { upsert: true, bypass_document_validation: false }
+    );
+    await hiveClient.Scripting.registerScript(
+      'add_space',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async removeSpaceScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
-      name: 'remove_space',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'delete',
-        name: 'remove_space',
-        body: {
-          collection: 'private_spaces',
-          filter: {
-            guid: '$params.guid'
-          }
-        }
-      }
+    let executable = new DeleteExecutable('remove_space', 'private_spaces', {
+      guid: '$params.guid'
     });
+    await hiveClient.Scripting.registerScript(
+      'remove_space',
+      executable,
+      undefined,
+      true,
+      true
+    );
   }
 
   static async SetScripts(hiveClient: HiveClient) {
     // templates
 
-    await this.addSpacesScriptSetter(hiveClient);
-
     await Promise.all([
-      this.removeSpaceScriptSetter(hiveClient),
-      this.updateMyTemplatesScriptSetter(hiveClient),
-      this.getMyTemplatesScriptSetter(hiveClient),
+      this.getMyTemplatesScriptSet(hiveClient),
+      this.updateMyTemplatesScriptSet(hiveClient),
       this.setPublicTemplateScriptSetter(hiveClient),
       this.getPublicFieldsScriptSetter(hiveClient),
       this.getFollowingScriptSetter(hiveClient),

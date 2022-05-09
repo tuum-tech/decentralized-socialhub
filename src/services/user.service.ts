@@ -18,8 +18,7 @@ import {
 import { IDidService } from './did.service.new';
 import { CredentialType, DidcredsService } from './didcreds.service';
 import { SpaceService } from './space.service';
-import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
-import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { HiveClient } from 'src/shared-base/api/hiveclient';
 import { DidDocumentService } from './diddocument.service';
 
 const CryptoJS = require('crypto-js');
@@ -113,7 +112,7 @@ export class UserService {
     }
 
     return (await builder.addCredential(verifiableCredential)).seal(
-      process.env.REACT_APP_DID_STORE_PASSWORD as string
+      process.env.REACT_APP_APPLICATION_STORE_PASS as string
     );
   };
 
@@ -319,6 +318,7 @@ export class UserService {
           userData.hiveHost = serviceEndpoint;
         }
       }
+
       let isDIDPublished = false;
       try {
         isDIDPublished = await this.didService.isDIDPublished(userData.did);
@@ -445,7 +445,7 @@ export class UserService {
       },
       tutorialStep: 1,
       hiveHost: !hiveHostStr
-        ? `${process.env.REACT_APP_TUUM_TECH_HIVE}`
+        ? `${process.env.REACT_APP_HIVE_HOST}`
         : hiveHostStr,
       avatar,
       code: Guid.create().toString(),
@@ -526,7 +526,6 @@ export class UserService {
       let didAlreadyAdded = await TuumTechScriptService.searchUserWithDIDs([
         did
       ]);
-
       if (didAlreadyAdded.length === 0) {
         await TuumTechScriptService.addUserToTuumTech(sessionItem);
       } else {
@@ -551,7 +550,6 @@ export class UserService {
     if (referral !== '') {
       await TuumTechScriptService.addReferral(referral, sessionItem.did);
     }
-
     Array.from(new Set(messages)).forEach(async message => {
       await ProfileService.addActivity(
         {
@@ -562,6 +560,7 @@ export class UserService {
           createdAt: 0,
           updatedAt: 0
         },
+
         sessionItem
       );
     });
@@ -572,7 +571,6 @@ export class UserService {
     if (wtp.length > 0) {
       await SpaceService.follow(sessionItem, wtp[0]);
     }
-
     this.lockUser(UserService.key(did), sessionItem);
 
     window.localStorage.setItem('isLoggedIn', 'true');
@@ -593,10 +591,6 @@ export class UserService {
       if (userData.userToken) {
         newSessionItem.userToken = userData.userToken;
       }
-
-      if (userData.hiveHost) {
-        newSessionItem.hiveHost = userData.hiveHost;
-      }
     }
     const res: any = await TuumTechScriptService.updateTuumUser(newSessionItem);
     this.lockUser(UserService.key(sessionItem.did), newSessionItem);
@@ -613,7 +607,7 @@ export class UserService {
     if (sessionItem.hiveHost === undefined || sessionItem.hiveHost.length <= 0)
       return false;
 
-    let hiveVersion = await HiveService.getHiveVersion(sessionItem.hiveHost);
+    let hiveVersion = await HiveClient.getHiveVersion(sessionItem.hiveHost);
     let isHiveValid = await HiveService.isHiveVersionSupported(hiveVersion);
     if (!isHiveValid) {
       alertError(
@@ -638,7 +632,6 @@ export class UserService {
     } else if (instance) {
       instance.onBoardingCompleted = res.onBoardingCompleted;
       instance.tutorialStep = res.tutorialStep;
-      instance.referrals = res.referrals || [];
       this.lockUser(UserService.key(instance.did), instance);
 
       window.localStorage.setItem('isLoggedIn', 'true');
@@ -668,16 +661,11 @@ export class UserService {
   public static logout() {
     window.localStorage.removeItem('isLoggedIn');
     window.localStorage.removeItem('persist:root');
-
-    let connector: EssentialsConnector = connectivity.getActiveConnector() as EssentialsConnector;
-    if (connector && connector.hasWalletConnectSession()) {
-      connector.disconnectWalletConnect();
-    }
     window.location.href = '/';
   }
 
   public static async deleteUser(useSession: ISessionItem) {
-    let hiveInstance = await HiveService.getSessionInstance(useSession);
+    let hiveInstance = await HiveService.getHiveClient(useSession);
     await UserVaultScripts.Delete(hiveInstance!);
     window.localStorage.removeItem(
       `user_${useSession.did.replace('did:elastos:', '')}`

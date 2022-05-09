@@ -33,6 +33,7 @@ import { HiveService } from 'src/services/hive.service';
 import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
 import { useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom } from 'src/Atoms/Atoms';
+import { HiveClient } from 'src/shared-base/api/hiveclient';
 
 const SignInPage: React.FC<RouteComponentProps<
   {},
@@ -99,7 +100,7 @@ const SignInPage: React.FC<RouteComponentProps<
             }
           }
           if (serviceEndpoint) {
-            let hiveVersion = await HiveService.getHiveVersion(serviceEndpoint);
+            let hiveVersion = await HiveClient.getHiveVersion(serviceEndpoint);
             let isHiveValid = await HiveService.isHiveVersionSupported(
               hiveVersion
             );

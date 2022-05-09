@@ -1,11 +1,11 @@
-import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/Services/Scripting.Service';
-
+import { Logger } from 'src/shared-base/logger';
 import { getItemsFromData } from 'src/utils/script';
-
 import { HiveService } from './hive.service';
 import { SearchService } from './search.service';
 
 export class TemplateService {
+  private static LOG = new Logger('TemplateService');
+
   static getAllTemplates() {
     return [
       {
@@ -35,16 +35,18 @@ export class TemplateService {
     userSession: ISessionItem,
     templates: Template[]
   ) {
-    const hiveInstance = await HiveService.getSessionInstance(userSession);
+    const hiveInstance = await HiveService.getHiveClient(userSession);
     if (userSession && hiveInstance) {
-      await hiveInstance.Scripting.RunScript({
-        name: 'update_my_templates',
-        context: {
-          target_did: userSession.did,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-        },
-        params: { templates, did: userSession.did }
-      });
+      try {
+        await hiveInstance.Scripting.callScript(
+          'update_my_templates',
+          { templates, did: userSession.did },
+          userSession.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+      } catch (e) {
+        TemplateService.LOG.error('setMyTemplates: {}', e);
+      }
     }
   }
 
@@ -54,30 +56,30 @@ export class TemplateService {
     let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
     let userResponse = await searchServiceLocal.searchUsersByDIDs([did], 1, 0);
     if (
-      !userResponse.isSuccess ||
-      !userResponse.response ||
-      !userResponse.response.get_users_by_dids ||
-      userResponse.response.get_users_by_dids.items.length === 0
-    )
+      !userResponse ||
+      !userResponse.get_users_by_dids ||
+      userResponse.get_users_by_dids.items.length === 0
+    ) {
       return templates;
+    }
 
-    const hiveInstance = await HiveService.getReadOnlyUserHiveClient(
-      userResponse.response.get_users_by_dids.items[0].hiveHost
+    const hiveInstance = await HiveService.getAnonymousHiveClient(
+      userResponse.get_users_by_dids.items[0].hiveHost
     );
 
     if (hiveInstance) {
-      const res: IRunScriptResponse<PublicProfileResponse> = await hiveInstance.Scripting.RunScript(
-        {
-          name: 'get_my_templates',
-          context: {
-            target_did: did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          }
-        }
-      );
-
-      templates =
-        (getItemsFromData(res, 'get_my_templates')[0] || {}).templates || [];
+      try {
+        const res: PublicProfileResponse = await hiveInstance.Scripting.callScript(
+          'get_my_templates',
+          {},
+          did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        templates =
+          (getItemsFromData(res, 'get_my_templates')[0] || {}).templates || [];
+      } catch (e) {
+        TemplateService.LOG.error('getMyTemplates: {}', e);
+      }
     }
     return templates;
   }

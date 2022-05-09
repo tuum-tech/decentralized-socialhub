@@ -15,21 +15,21 @@ export class HiveService {
   private static LOG = new Logger('HiveService');
 
   static async getHiveClient(
-    instance: ISessionItem
+    session: ISessionItem
   ): Promise<HiveClient | null> {
     HiveService.LOG.trace('getHiveClient');
     try {
       let hiveClientParameters: HiveClientParameters = {
-        hiveHost: instance.hiveHost,
+        hiveHost: session.hiveHost,
         context: {
-          userDID: instance.did
+          userDID: session.did
         }
       } as HiveClientParameters;
       let hiveClient = CacheManager.get('HiveClient', hiveClientParameters);
 
       if (!hiveClient) {
         let isUserDocumentPublished = await DidDocumentService.isDidDocumentPublished(
-          instance.did
+          session.did
         );
 
         if (!isUserDocumentPublished) {
@@ -43,6 +43,19 @@ export class HiveService {
       HiveService.LOG.error('Cannot authenticate with Hive: {}', e);
       return null;
     }
+  }
+
+  static async getAnonymousHiveClient(
+    hiveHost?: string
+  ): Promise<HiveClient | undefined> {
+    HiveService.LOG.trace('getReadOnlyUserHiveClient');
+    try {
+      let host = hiveHost ? hiveHost : process.env.REACT_APP_HIVE_HOST;
+      return await HiveClient.createAnonymousInstance(host!);
+    } catch (e) {
+      HiveService.LOG.error('getReadOnlyUserHiveClient: {}', e);
+    }
+    return;
   }
 
   static async isHiveAddressValid(address: string): Promise<boolean> {
@@ -111,27 +124,5 @@ export class HiveService {
       return false;
 
     return true;
-  }
-
-  static async getAppHiveClient(): Promise<HiveClient | undefined> {
-    HiveService.LOG.trace('getAppHiveClient');
-    try {
-      return await HiveClient.createInstance();
-    } catch (e) {
-      HiveService.LOG.error('getAppHiveClient: {}', e);
-    }
-    return;
-  }
-
-  static async getReadOnlyUserHiveClient(
-    hiveHost: string
-  ): Promise<HiveClient | undefined> {
-    HiveService.LOG.trace('getReadOnlyUserHiveClient');
-    try {
-      return await HiveClient.createAnonymousInstance(hiveHost);
-    } catch (e) {
-      HiveService.LOG.error('getReadOnlyUserHiveClient: {}', e);
-    }
-    return;
   }
 }
