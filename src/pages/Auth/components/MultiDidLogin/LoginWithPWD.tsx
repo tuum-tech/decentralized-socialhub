@@ -50,8 +50,8 @@ const LoginWithPWD: React.FC<Props> = ({
   return (
     <>
       <p style={{ marginTop: '20px' }}>
-        This is an old version of authentication workflow. <br /> Next time,
-        you'll be able to loging without password.
+        This is an old version of authentication workflow. <br /> In the near
+        future, you'll be able to login without your password.
       </p>
       <TextInput
         value={password}
