@@ -101,10 +101,10 @@ const LinkedinCallback: React.FC<PageProps> = ({
               firstName + '' + lastName
             );
 
-            // await DidcredsService.addOrUpdateCredentialToVault(
-            //   session,
-            //   verifiableCredential
-            // );
+            await DidcredsService.addOrUpdateCredentialToVault(
+              session,
+              verifiableCredential
+            );
 
             if (session.isEssentialUser) {
               const vService = new VerificationService();

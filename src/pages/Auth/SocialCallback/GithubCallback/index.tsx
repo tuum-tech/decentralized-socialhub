@@ -77,10 +77,10 @@ const GithubCallback: React.FC<PageProps> = ({
               github
             );
 
-            // await DidcredsService.addOrUpdateCredentialToVault(
-            //   session,
-            //   verifiableCredential
-            // );
+            await DidcredsService.addOrUpdateCredentialToVault(
+              session,
+              verifiableCredential
+            );
 
             if (session.isEssentialUser) {
               const vService = new VerificationService();

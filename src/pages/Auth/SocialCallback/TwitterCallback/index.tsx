@@ -96,10 +96,10 @@ const TwitterCallback: React.FC<PageProps> = ({
               items[1].toString()
             );
 
-            // await DidcredsService.addOrUpdateCredentialToVault(
-            //   props.session,
-            //   verifiableCredential
-            // );
+            await DidcredsService.addOrUpdateCredentialToVault(
+              props.session,
+              verifiableCredential
+            );
 
             if (session.isEssentialUser) {
               const vService = new VerificationService();
