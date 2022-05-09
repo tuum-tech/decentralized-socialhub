@@ -7,19 +7,15 @@ import { HiveService } from 'src/services/hive.service';
 import { DidDocumentService } from 'src/services/diddocument.service';
 import { ProfileService } from 'src/services/profile.service';
 import { UserVaultScripts } from 'src/scripts/uservault.script';
+import useSession from 'src/hooks/useSession';
 
-import { connect } from 'react-redux';
-import { InferMappedProps } from '../../../types';
-import { setSession } from 'src/store/users/actions';
-
-import style from '../style.module.scss';
 import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
-import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
+import { DID, DIDDocument, DIDURL } from '@elastosfoundation/did-js-sdk/';
 import { DidcredsService } from 'src/services/didcreds.service';
 import { useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom } from 'src/Atoms/Atoms';
-import { Stopwatch } from 'ts-stopwatch';
+import style from '../style.module.scss';
 
 const VersionTag = styled.div`
   display: flex;
@@ -37,20 +33,15 @@ const VersionTag = styled.div`
   }
 `;
 
-interface ITutorialStepProp extends InferMappedProps {
+interface ITutorialStepProp {
   onContinue: (session?: ISessionItem) => void;
   setLoading?: (status: boolean) => void;
   setLoadingText: (text: string) => void;
-  session: ISessionItem;
 }
 
-const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
-  eProps,
-  ...props
-}) => {
-  const stopwatch = new Stopwatch();
+const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
+  const { session, setSession } = useSession();
 
-  const { session } = props;
   const [hiveUrl, sethiveUrl] = useState('');
   const [hiveDocument, setHiveDocument] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -89,7 +80,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     props.setLoading(true);
     let isValidHiveAddress = await HiveService.isHiveAddressValid(
       endpoint,
-      props.session.isEssentialUser!
+      session.isEssentialUser!
     );
     if (!isValidHiveAddress) {
       props.setLoading(false);
@@ -131,10 +122,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
     }
 
     try {
-      let userToken = await generateUserToken(
-        props.session.mnemonics,
-        endpoint
-      );
+      let userToken = await generateUserToken(session.mnemonics, endpoint);
       let newSession = JSON.parse(
         JSON.stringify({
           ...session,
@@ -152,12 +140,10 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       }
       let didService = await DidService.getInstance();
       if (selected !== 'document') {
-        let document = await didService.getStoredDocument(
-          new DID(props.session.did)
-        );
+        let document = await didService.getStoredDocument(new DID(session.did));
         let docBuilder = DIDDocument.Builder.newFromDocument(document);
 
-        docBuilder.addService('#HiveVault', 'HiveVault', endpoint);
+        docBuilder.addService('#hivevault', 'HiveVault', endpoint);
         let signedDocument = await docBuilder.seal(
           process.env.REACT_APP_DID_STORE_PASSWORD as string
         );
@@ -168,7 +154,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       }
       let userService = new UserService(didService);
       const updatedSession = await userService.updateSession(newSession);
-      eProps.setSession({ session: updatedSession });
+      setSession(updatedSession);
       let hiveInstance = await HiveService.getSessionInstance(newSession);
       if (hiveInstance && hiveInstance.isConnected) {
         await hiveInstance.Payment.CreateFreeVault();
@@ -176,7 +162,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
       props.setLoadingText('Installing scripts on User Vault.');
       await UserVaultScripts.Execute(hiveInstance!);
       let blockchainDocument = await didService.getPublishedDocument(
-        new DID(props.session.did)
+        new DID(session.did)
       );
 
       blockchainDocument.credentials?.forEach(async vc => {
@@ -228,7 +214,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
         newSession.badges!.account!.experienceProfile.archived =
           experiences.length > 0 ? new Date().getTime() : false;
         const updatedSession = await userService.updateSession(newSession);
-        eProps.setSession({ session: updatedSession });
+        setSession(updatedSession);
       }
 
       educations.forEach(
@@ -259,7 +245,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
 
       props.onContinue(newSession);
     } catch (error) {
-      await DidDocumentService.reloadUserDocument(props.session);
+      await DidDocumentService.reloadUserDocument(session);
       setErrorMessage(
         'We are not able to process your request at moment. Please try again later. Exception: ' +
           error
@@ -315,9 +301,21 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
 
       if (doc.getServices() && doc.getServices().length > 0) {
         setSelected('document');
-        setHiveDocument(doc.getServices()[0].serviceEndpoint);
+        let serviceEndpoint = '';
+        let hiveUrl = new DIDURL(session.did + '#hivevault');
+        if (doc.services?.has(hiveUrl)) {
+          serviceEndpoint = doc.services.get(hiveUrl).serviceEndpoint;
+        } else {
+          hiveUrl = new DIDURL(session.did + '#HiveVault');
+          if (doc.services?.has(hiveUrl)) {
+            serviceEndpoint = doc.services.get(hiveUrl).serviceEndpoint;
+          }
+        }
+        if (serviceEndpoint) {
+          setHiveDocument(serviceEndpoint);
+        }
         setDetectedHiveVersion(
-          await HiveService.getHiveVersion(doc.getServices()[0].serviceEndpoint)
+          await HiveService.getHiveVersion(serviceEndpoint)
         );
       }
     })();
@@ -413,13 +411,4 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = ({
   );
 };
 
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(null, mapDispatchToProps)(TutorialStep3Component);
+export default TutorialStep3Component;

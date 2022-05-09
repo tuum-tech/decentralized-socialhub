@@ -4,9 +4,8 @@ import Badges from './Badges';
 import Socials from './Socials';
 import Follows from './Follows';
 
-import exploreIcon from 'src/assets/icon/explore_all.svg';
-
 import { CardOverview } from '../common';
+import Icon from 'src/elements-v2/icons';
 
 interface Props {
   category: string;
@@ -110,10 +109,10 @@ const ProfileBriefCard: React.FC<Props> = ({
         <Body>
           {renderContent()}
           <ExploreAll>
-            <img
-              alt="icon"
-              src={exploreIcon}
-              height={25}
+            <Icon
+              name="chevron-forward-circle-outline"
+              style={{ width: 25, height: 25 }}
+              color="primary"
               onClick={exploreAll}
             />
           </ExploreAll>

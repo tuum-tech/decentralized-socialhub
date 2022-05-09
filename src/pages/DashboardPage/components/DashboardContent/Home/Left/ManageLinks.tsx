@@ -1,23 +1,24 @@
 import React from 'react';
 
-import {
-  MainCard,
-  CardText,
-  CardTitle,
-  CardImg,
-  LinkButton
-} from './ManageProfile';
+import MainCard from './MainCard';
 import socialCardImg from '../../../../../../assets/dashboard/social.png';
+import { LinkButton } from 'src/elements-v2/buttons';
 
 const ManageLink: React.FC = () => {
   return (
-    <MainCard>
-      <CardTitle>Connect your social profiles</CardTitle>
-      <CardText>
-        Link your verified social profiles or custom links to Profile.
-      </CardText>
-      <LinkButton href="/manager">Manage Links &gt;</LinkButton>
-      <CardImg src={socialCardImg} />
+    <MainCard
+      title="Connect your social profiles"
+      description="Link your verified social profiles or custom links to Profile."
+      right={<img src={socialCardImg} alt="social-img" />}
+    >
+      <LinkButton
+        variant="contained"
+        btnColor="secondary-gradient"
+        textType="gradient"
+        href="/manager"
+      >
+        Manage Links
+      </LinkButton>
     </MainCard>
   );
 };

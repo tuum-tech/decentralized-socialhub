@@ -1,6 +1,7 @@
 import {
   JSONObject,
-  VerifiableCredential
+  VerifiableCredential,
+  DIDDocument
 } from '@elastosfoundation/did-js-sdk/';
 import request, { BaseplateResp } from 'src/baseplate/request';
 import { HiveService } from './hive.service';
@@ -23,6 +24,12 @@ export enum CredentialType {
 }
 
 export class DidcredsService {
+  static async getSocialCredentials(
+    didDocument: DIDDocument
+  ): Promise<VerifiableCredential[]> {
+    return didDocument.getCredentials();
+  }
+
   static async generateVerifiableCredential(
     did: string,
     credential_type: string,
@@ -120,7 +127,7 @@ export class DidcredsService {
     vc: VerifiableCredential
   ): Promise<void> {
     let hiveClient = await HiveService.getSessionInstance(sessionItem);
-    let hiveResponse = await hiveClient?.Scripting.RunScript<any>({
+    await hiveClient?.Scripting.RunScript<any>({
       name: 'add_verifiablecredential',
       context: {
         target_did: sessionItem.did,
@@ -138,7 +145,7 @@ export class DidcredsService {
     vcKey: string
   ): Promise<void> {
     let hiveClient = await HiveService.getSessionInstance(sessionItem);
-    let hiveResponse = await hiveClient?.Scripting.RunScript<any>({
+    await hiveClient?.Scripting.RunScript<any>({
       name: 'remove_verifiablecredential',
       context: {
         target_did: sessionItem.did,

@@ -14,7 +14,6 @@ import {
 } from '@ionic/react';
 import styled from 'styled-components';
 
-import { ProfileService } from 'src/services/profile.service';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import { SmallLightButton } from 'src/elements/buttons';
 import { SpaceService } from 'src/services/space.service';
@@ -36,7 +35,7 @@ interface IProps {
 
 const PublicFields: React.FC<IProps> = ({ sessionItem, profile }: IProps) => {
   const [fields, setFields] = useState<string[]>([]);
-  const defaultFields = ['about', 'follower'];
+  const defaultFields = ['about', 'follower', 'social links'];
   useEffect(() => {
     (async () => {
       const orgFields = profile.publicFields || [];

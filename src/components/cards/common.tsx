@@ -13,6 +13,7 @@ import {
 } from '@ionic/react';
 import styled from 'styled-components';
 import { getThemeData } from 'src/utils/template';
+import styles from 'src/elements-v2/style.module.scss';
 
 export enum MODE {
   NONE,
@@ -98,14 +99,18 @@ export const Divider = styled.hr`
 export const LinkStyleSpan = styled.span`
   font-family: 'SF Pro Display';
   font-size: 14px;
-  font-weight: 500;
-  font-stretch: normal;
+  font-weight: 600;
   font-style: normal;
-  line-height: normal;
-  letter-spacing: -0.07px;
-  text-align: left;
-  color: #4c6fff;
+  line-height: 17px;
+  text-align: right;
+  letter-spacing: -0.005em;
   cursor: pointer;
+
+  background: ${styles['main-logo-gradient']};
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
 `;
 
 export const Description = styled.span<ThemeProps>`
@@ -210,7 +215,7 @@ export const CardContent = styled(IonCardContent)`
 export const ManagerModal = styled(IonModal)`
   --border-radius: 16px;
   --min-height: 200px;
-  --height: 580px;
+  --height: 600px;
   --width: 560px;
   :host(.modal-card) ion-header ion-toolbar:first-of-type {
     padding: 0px;

@@ -57,6 +57,7 @@ interface ActivityPageHeaderProps {
   newVerificationClicked: () => void;
   myverifications: number;
   verificationRequests: number;
+  referrals: number;
 }
 
 const ActivityPageHeaderContainer = styled.div`
@@ -69,7 +70,8 @@ const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
   setActive,
   newVerificationClicked,
   myverifications,
-  verificationRequests
+  verificationRequests,
+  referrals
 }) => {
   return (
     <ActivityPageHeaderContainer>
@@ -98,6 +100,16 @@ const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
           <IonLabel className="tab-label">
             Verification Requests
             {verificationRequests > 0 && `(${verificationRequests})`}
+          </IonLabel>
+        </IonItem>
+
+        <IonItem
+          className={(active === 'referrals' ? 'tab-active' : '') + ' tab-item'}
+          onClick={() => setActive('referrals')}
+        >
+          <IonLabel className="tab-label">
+            Referrals
+            {referrals > 0 && `(${referrals})`}
           </IonLabel>
         </IonItem>
       </IonList>

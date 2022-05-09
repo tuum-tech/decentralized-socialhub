@@ -1,29 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { IonButton, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import { IonButton, IonCol, IonRow } from '@ionic/react';
 import { Guid } from 'guid-typescript';
 
 import ExperienceItem from './Item';
 
 import ExperienceCardEdit, { pattern } from './Edit';
-import {
-  CardOverview,
-  LinkStyleSpan,
-  MyModal,
-  ModalFooter,
-  Divider,
-  MODE,
-  CardHeaderContent,
-  CardContentContainer
-} from '../common';
-import ProgressBar from 'src/elements/ProgressBar';
+import { LinkStyleSpan, MyModal, ModalFooter, Divider, MODE } from '../common';
+import ProgressVerified from 'src/components/ProgressVerified';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   ExperienceSelector,
   ExperienceSortedSelector
 } from 'src/Atoms/Selectors';
+import Card from 'src/elements-v2/Card';
 
 interface IExperienceProps {
-  updateFunc?: (item: any) => Promise<boolean>;
+  updateFunc?: (prevItem: any, item: any) => Promise<boolean>;
   isEditable?: boolean;
   removeFunc?: any;
   requestFunc?: any;
@@ -77,6 +69,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [experienceDTO, noOfVerifiedExpCred]);
 
+  const [prevItem, setPrevItem] = useState(defaultExperienceItem);
   const [editedItem, setEditedItem] = useState(defaultExperienceItem);
   const [isEditing, setIsEditing] = useState(openModal);
   const [mode, setMode] = useState(MODE.NONE);
@@ -117,10 +110,10 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     return true;
   };
 
-  const saveChanges = async (item: ExperienceItem) => {
+  const saveChanges = async (prevItem: EducationItem, item: ExperienceItem) => {
     let items = [...experienceDTO.items];
 
-    let itemToUpdate = items.find(x => x.guid === item.guid);
+    let itemToUpdate = items.find(x => x.guid.value === item.guid.value);
     if (itemToUpdate === undefined) {
       items.push(item);
     } else {
@@ -134,7 +127,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
 
     setIsEditing(false);
     if (updateFunc) {
-      if ((await updateFunc(item)) === true) {
+      if ((await updateFunc(prevItem, item)) === true) {
         setExperienceDTO({ isEnabled: true, items: items });
       }
     }
@@ -154,6 +147,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   };
 
   const editItem = (item: ExperienceItem) => {
+    setPrevItem(item);
     setEditedItem(item);
     setMode(MODE.EDIT);
   };
@@ -225,50 +219,24 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
 
   return (
     <>
-      <CardOverview template={template}>
-        <CardHeaderContent>
-          <IonGrid className="ion-no-padding">
-            <IonRow className="ion-justify-content-between ion-no-padding">
-              <IonCol className="ion-no-padding">
-                <IonCardTitle>
-                  Experience
-                  {!isEditable && !isPublicPage && (
-                    <div
-                      style={{
-                        width: '10em',
-                        float: 'right',
-                        fontSize: '0.8em'
-                      }}
-                    >
-                      <ProgressBar
-                        value={expVerifiedPercent}
-                        text={'verified'}
-                      />
-                      <div
-                        style={{ float: 'right', fontSize: '0.8em' }}
-                      >{`${expVerifiedPercent}% ${'verified'}`}</div>
-                    </div>
-                  )}
-                </IonCardTitle>
-              </IonCol>
-              {isEditable ? (
-                <IonCol size="auto" className="ion-no-padding">
-                  <LinkStyleSpan onClick={e => addItem()}>
-                    + Add Experience
-                  </LinkStyleSpan>
-                </IonCol>
-              ) : (
-                ''
-              )}
-            </IonRow>
-          </IonGrid>
-        </CardHeaderContent>
-        <CardContentContainer>
-          {experience !== undefined
-            ? getExperienceFromParameter()
-            : getExperienceFromState()}
-        </CardContentContainer>
-      </CardOverview>
+      <Card
+        title="Experience"
+        action={
+          !isEditable ? (
+            !isPublicPage && <ProgressVerified percent={expVerifiedPercent} />
+          ) : (
+            <IonCol size="auto" className="ion-no-padding">
+              <LinkStyleSpan onClick={e => addItem()}>
+                + Add Experience
+              </LinkStyleSpan>
+            </IonCol>
+          )
+        }
+      >
+        {experience !== undefined
+          ? getExperienceFromParameter()
+          : getExperienceFromState()}
+      </Card>
       <MyModal
         onDidDismiss={() => {
           setMode(MODE.NONE);
@@ -291,7 +259,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
               <IonButton
                 onClick={() => {
                   if (validate(editedItem)) {
-                    saveChanges(editedItem);
+                    saveChanges(prevItem, editedItem);
                     setMode(MODE.NONE);
                   } else {
                     setMode(MODE.ERROR);

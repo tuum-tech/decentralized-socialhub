@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { IonGrid, IonRow, IonCol } from '@ionic/react';
-import { Link } from 'react-router-dom';
+import { useBreakpoint } from 'styled-breakpoints/react-styled';
+import { down } from 'styled-breakpoints';
 
 import { RequestStatus } from 'src/services/assist.service';
-import { ProfileService } from 'src/services/profile.service';
 import { ProfileName } from 'src/elements/texts';
-import { ViewProfileButton } from 'src/elements/buttons';
 import DidSnippet from 'src/elements/DidSnippet';
 import Avatar from 'src/components/Avatar';
 import VerificatioBadge from 'src/components/VerificatioBadge';
@@ -15,6 +14,9 @@ import PublishingLabel from '../PublishingLabel';
 
 import { useRecoilValue } from 'recoil';
 import { FullProfileAtom } from 'src/Atoms/Atoms';
+import { LinkButton } from 'src/elements-v2/buttons';
+import { DashboardSignInButton } from 'src/elements/buttons';
+// import LinkButton from 'src/elements-v2/buttons/LinkButton';
 
 import style from './style.module.scss';
 
@@ -28,7 +30,7 @@ const DashboardHeader: React.FC<IProps> = ({
   publishStatus
 }: IProps) => {
   const [verifiers, setVerifiers] = useState([{ name: '', did: '' }]);
-
+  const isSmDown = useBreakpoint(down('sm'));
   const profile = useRecoilValue(FullProfileAtom);
 
   useEffect(() => {
@@ -43,7 +45,7 @@ const DashboardHeader: React.FC<IProps> = ({
     <IonGrid className={style['profileheader']}>
       <IonRow className={style['header']}>
         <IonCol size="auto">
-          {sessionItem.did && sessionItem.did !== '' && (
+          {sessionItem.did && (
             <Avatar
               did={sessionItem.did}
               didPublished={
@@ -52,14 +54,13 @@ const DashboardHeader: React.FC<IProps> = ({
             />
           )}
         </IonCol>
-        <IonCol size="8">
+        <IonCol>
           <IonGrid>
             <IonRow className={style['d-flex']}>
               <ProfileName>{sessionItem.name}</ProfileName>
               {verifiers.length > 0 && (
                 <VerificatioBadge users={verifiers} userSession={sessionItem} />
               )}
-
               <PublishingLabel status={publishStatus} />
             </IonRow>
             <IonRow className={style['d-flex']}>
@@ -69,14 +70,33 @@ const DashboardHeader: React.FC<IProps> = ({
                   dateJoined={sessionItem.timestamp}
                 />
               </IonCol>
-              <IonCol></IonCol>
             </IonRow>
           </IonGrid>
         </IonCol>
-        <IonCol size="2">
-          <Link to={getDIDString('/did/' + sessionItem.did)} target="_blank">
-            <ViewProfileButton>View profile</ViewProfileButton>
-          </Link>
+        <IonCol size="auto">
+          <DashboardSignInButton
+            style={{ height: '43px', cursor: 'pointer' }}
+            onClick={() => {
+              navigator.clipboard.writeText(
+                `${process.env.REACT_APP_PROFILE_LANDING_PAGE}/create-profile?ref=${sessionItem.did}`
+              );
+            }}
+          >
+            Copy Referral Link
+          </DashboardSignInButton>
+        </IonCol>
+        <IonCol size="auto">
+          <LinkButton
+            variant={isSmDown ? 'text' : 'contained'}
+            btnColor="primary-gradient"
+            icon={isSmDown ? null : 'open-outline'}
+            size="large"
+            textType={isSmDown ? 'gradient' : 'normal'}
+            href={getDIDString('/did/' + sessionItem.did)}
+            target="_blank"
+          >
+            View Profile
+          </LinkButton>
         </IonCol>
       </IonRow>
     </IonGrid>

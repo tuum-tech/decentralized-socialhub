@@ -1,20 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import {
-  IonContent,
-  IonPage,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonModal
-} from '@ionic/react';
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
+import { IonModal } from '@ionic/react';
 import styled from 'styled-components';
-import { makeSelectSession } from 'src/store/users/selectors';
-import { setSession } from 'src/store/users/actions';
-import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
-import { UserService } from 'src/services/user.service';
-import { DidService } from 'src/services/did.service.new';
 import { SpaceService } from 'src/services/space.service';
 
 import SpacePageHeader, {
@@ -23,24 +9,21 @@ import SpacePageHeader, {
   SpaceTabsContainer
 } from './components/SpacePageHeader';
 import SpaceListView from 'src/components/Space/SpaceListView';
-import { InferMappedProps, SubState } from './types';
-import style from './style.module.scss';
 import { Button } from 'src/elements/buttons';
 import CreateSpace from './components/CreateSpace';
 import CreateSpaceForm from './components/CreateSpaceForm';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { showNotify } from 'src/utils/notify';
+import useSession from 'src/hooks/useSession';
+import MainLayout from 'src/components/layouts/MainLayout';
 
 const CustomModal = styled(IonModal)`
-  --height: 740px;
+  --height: 780px;
   --border-radius: 16px;
 `;
 
-const SpacePage: React.FC<InferMappedProps> = ({
-  eProps,
-  ...props
-}: InferMappedProps) => {
-  const { session } = props;
+const SpacePage: React.FC = () => {
+  const { session } = useSession();
   const [loadingText, setLoadingText] = useState('');
   const [mySpaces, setMySpaces] = useState<any[]>([]);
   const [followingSpaces, setFollowingSpaces] = useState<any[]>([]);
@@ -51,19 +34,19 @@ const SpacePage: React.FC<InferMappedProps> = ({
     const timer = setTimeout(async () => {
       await refreshSpaces();
       setTimerForSpaces();
-    }, 1000);
+    }, 5000);
     return () => clearTimeout(timer);
   };
 
   const refreshSpaces = useCallback(async () => {
     const spaces: any[] = await SpaceService.getAllSpaces();
     const mySpaces = spaces.filter((x: any) => {
-      const owners = typeof(x.owner) === 'string' ? [x.owner] : x.owner;
+      const owners = typeof x.owner === 'string' ? [x.owner] : x.owner;
       return owners.includes(session.did);
     });
     const followingSpaces = spaces.filter((x: any) => {
-      return (x.followers || []).includes(session.did)
-    })
+      return (x.followers || []).includes(session.did);
+    });
     setMySpaces(mySpaces);
     setFollowingSpaces(followingSpaces);
   }, [session]);
@@ -91,83 +74,59 @@ const SpacePage: React.FC<InferMappedProps> = ({
   };
   return (
     <>
-      <IonPage className={style['spacepage']}>
-        <IonContent className={style['content-page']}>
-          <IonGrid className={style['profilepagegrid']}>
-            <IonRow className={style['profilecontent']}>
-              <IonCol size="2" className={style['left-panel']}>
-                <LeftSideMenu />
-              </IonCol>
-              <IonCol size="10" className={style['right-panel']}>
-                <Header>
-                  <PageTitle>Spaces</PageTitle>
-                  {mySpaces.length > 0 && (
-                    <Button
-                      text={'Create New Space'}
-                      onClick={() => setIsModalOpen(true)}
-                    />
+      <MainLayout>
+        <Header>
+          <PageTitle>Spaces</PageTitle>
+          {mySpaces.length > 0 && (
+            <Button
+              text={'Create New Space'}
+              onClick={() => setIsModalOpen(true)}
+            />
+          )}
+        </Header>
+        <SpaceTabsContainer template="default">
+          <SpacePageHeader active={active} setActive={setActive} />
+          {loadingText && loadingText !== '' ? (
+            <LoadingIndicator loadingText={loadingText} />
+          ) : (
+            <>
+              {active === 'my spaces' &&
+                (mySpaces.length > 0 ? (
+                  <SpaceListView spaces={mySpaces} />
+                ) : (
+                  <CreateSpace
+                    session={session}
+                    openForm={() => setIsModalOpen(true)}
+                  />
+                ))}
+              {active === 'following' && (
+                <SpaceListView
+                  spaces={followingSpaces.filter((x: any) =>
+                    (x.followers || []).includes(session.did)
                   )}
-                </Header>
-                <SpaceTabsContainer template="default">
-                  <SpacePageHeader active={active} setActive={setActive} />
-                  {loadingText && loadingText !== '' ? (
-                    <LoadingIndicator loadingText={loadingText} />
-                  ) : (
-                    <>
-                      {active === 'my spaces' &&
-                        (mySpaces.length > 0 ? (
-                          <SpaceListView spaces={mySpaces} />
-                        ) : (
-                          <CreateSpace
-                            session={session}
-                            openForm={() => setIsModalOpen(true)}
-                          />
-                        ))}
-                      {active === 'following' && (
-                        <SpaceListView
-                          spaces={followingSpaces.filter((x: any) =>
-                            (x.followers || []).includes(session.did)
-                          )}
-                          explore
-                        />
-                      )}
-                    </>
-                  )}
-                </SpaceTabsContainer>
-              </IonCol>
-            </IonRow>
-          </IonGrid>
-        </IonContent>
-      </IonPage>
-      <CustomModal
-        onDidDismiss={() => {
-          setIsModalOpen(false);
-        }}
-        isOpen={isModalOpen}
-        cssClass="my-custom-class"
-      >
-        <CreateSpaceForm
-          onClose={() => {
+                  explore
+                />
+              )}
+            </>
+          )}
+        </SpaceTabsContainer>
+        <CustomModal
+          onDidDismiss={() => {
             setIsModalOpen(false);
           }}
-          submitForm={handleCreateSpace}
-        />
-      </CustomModal>
+          isOpen={isModalOpen}
+          cssClass="my-custom-class"
+        >
+          <CreateSpaceForm
+            onClose={() => {
+              setIsModalOpen(false);
+            }}
+            submitForm={handleCreateSpace}
+          />
+        </CustomModal>
+      </MainLayout>
     </>
   );
 };
 
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SpacePage);
+export default SpacePage;

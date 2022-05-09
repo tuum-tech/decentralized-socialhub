@@ -1,9 +1,9 @@
 import React from 'react';
 import { IonText, IonImg } from '@ionic/react';
-import { style as typestyle } from 'typestyle';
+import { style as typeStyle } from 'typestyle';
 import clsx from 'clsx';
 
-import style from './Button.module.scss';
+import styles from './Button.module.scss';
 
 interface ButtonTypes {
   [key: string]: any;
@@ -42,11 +42,11 @@ const Button: React.FC<Props> = ({
   icon,
   disabled = false
 }) => {
-  const shapeStyle = style['btn-primary'];
+  const shapeStyle = styles['btn-primary'];
   const color = btnTypes[type].color;
   const bgColor = btnTypes[type].bgColor;
 
-  const colorStyle = typestyle({
+  const colorStyle = typeStyle({
     marginTop: mt && `${mt}px`,
     marginLeft: ml && `${ml}px`,
     opacity: disabled ? 0.2 : 1,

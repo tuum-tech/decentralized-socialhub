@@ -4,6 +4,7 @@ export const Container = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 20px;
 `;
 export const Description = styled.div``;
 export const TextHeader = styled.p`
@@ -69,7 +70,7 @@ export const ImgUploadArea = styled.div<{
   background: #fff;
   background-image: url(${props => props.logo});
   background-repeat: no-repeat, no-repeat;
-  background-position: 0 0;
+  background-position: 0 50%;
   background-size: 100% auto;
   animation: effectShow 0.4s cubic-bezier(0.1, 0.82, 0.25, 1);
 

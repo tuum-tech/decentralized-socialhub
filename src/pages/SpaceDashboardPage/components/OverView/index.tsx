@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { IonCard, IonGrid, IonRow, IonIcon } from '@ionic/react';
 import styled from 'styled-components';
@@ -42,6 +42,9 @@ const OverView: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
             </IonRow>
             <IonRow className="ion-justify-content-start">
               <SpaceCategory>{category}</SpaceCategory>
+            </IonRow>
+            <IonRow className="ion-justify-content-start">
+              <SpaceCategory>{profile.meta?.network}</SpaceCategory>
             </IonRow>
             <IonRow className="ion-justify-content-start">
               <Link

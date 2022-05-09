@@ -1,31 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { IonButton, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import { IonButton, IonCol, IonRow } from '@ionic/react';
 import { Guid } from 'guid-typescript';
 
 import EducationItem from './Item';
 
-import {
-  CardOverview,
-  Divider,
-  LinkStyleSpan,
-  MyModal,
-  ModalFooter,
-  MODE,
-  CardHeaderContent,
-  CardContentContainer
-} from '../common';
+import { Divider, LinkStyleSpan, MyModal, ModalFooter, MODE } from '../common';
 import EducationCardEdit, { pattern } from './Edit';
 
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import ProgressBar from 'src/elements/ProgressBar';
+import ProgressVerified from 'src/components/ProgressVerified';
 import {
   EducationSelector,
   EducationSortedSelector
 } from 'src/Atoms/Selectors';
+import Card from 'src/elements-v2/Card';
 
 interface IEducationProps {
-  updateFunc?: (item: any) => Promise<boolean>;
+  updateFunc?: (prevItem: any, item: any) => Promise<boolean>;
   isEditable?: boolean;
   removeFunc?: any;
   requestFunc?: any;
@@ -78,6 +70,7 @@ const EducationCard: React.FC<IEducationProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [educationDTO, noOfVerifiedEduCred]);
 
+  const [prevItem, setPrevItem] = useState(defaultEducationItem);
   const [editedItem, setEditedItem] = useState(defaultEducationItem);
   const [isEditing, setIsEditing] = useState(openModal);
   const [mode, setMode] = useState<MODE>(MODE.NONE);
@@ -118,10 +111,10 @@ const EducationCard: React.FC<IEducationProps> = ({
     return true;
   };
 
-  const saveChanges = async (item: EducationItem) => {
+  const saveChanges = async (prevItem: EducationItem, item: EducationItem) => {
     let items = [...educationDTO.items];
 
-    let itemToUpdate = items.find(x => x.guid === item.guid);
+    let itemToUpdate = items.find(x => x.guid.value === item.guid.value);
 
     if (itemToUpdate === undefined) {
       items.push(item);
@@ -135,7 +128,7 @@ const EducationCard: React.FC<IEducationProps> = ({
     // 5. Set the state to our new copy
     setIsEditing(false);
     if (updateFunc) {
-      if ((await updateFunc(item)) === true) {
+      if ((await updateFunc(prevItem, item)) === true) {
         setEducationDTO({ isEnabled: true, items: items });
       }
     }
@@ -155,6 +148,7 @@ const EducationCard: React.FC<IEducationProps> = ({
   };
 
   const editItem = (item: EducationItem) => {
+    setPrevItem(item);
     setEditedItem(item);
     setMode(MODE.EDIT);
   };
@@ -226,50 +220,24 @@ const EducationCard: React.FC<IEducationProps> = ({
 
   return (
     <>
-      <CardOverview template={template}>
-        <CardHeaderContent>
-          <IonGrid className="ion-no-padding">
-            <IonRow className="ion-justify-content-between ion-no-padding">
-              <IonCol className="ion-no-padding">
-                <IonCardTitle>
-                  Education
-                  {!isEditable && !isPublicPage && (
-                    <div
-                      style={{
-                        width: '10em',
-                        float: 'right',
-                        fontSize: '0.8em'
-                      }}
-                    >
-                      <ProgressBar
-                        value={eduVerifiedPercent}
-                        text={'verified'}
-                      />
-                      <div
-                        style={{ float: 'right', fontSize: '0.8em' }}
-                      >{`${eduVerifiedPercent}% ${'verified'}`}</div>
-                    </div>
-                  )}
-                </IonCardTitle>
-              </IonCol>
-              {isEditable ? (
-                <IonCol size="auto" className="ion-no-padding">
-                  <LinkStyleSpan onClick={e => addItem()}>
-                    + Add Education
-                  </LinkStyleSpan>
-                </IonCol>
-              ) : (
-                ''
-              )}
-            </IonRow>
-          </IonGrid>
-        </CardHeaderContent>
-        <CardContentContainer>
-          {education !== undefined
-            ? getEducationFromParameter()
-            : getEducationFromState()}
-        </CardContentContainer>
-      </CardOverview>
+      <Card
+        title="Education"
+        action={
+          !isEditable ? (
+            !isPublicPage && <ProgressVerified percent={eduVerifiedPercent} />
+          ) : (
+            <IonCol size="auto" className="ion-no-padding">
+              <LinkStyleSpan onClick={e => addItem()}>
+                + Add Education
+              </LinkStyleSpan>
+            </IonCol>
+          )
+        }
+      >
+        {education !== undefined
+          ? getEducationFromParameter()
+          : getEducationFromState()}
+      </Card>
       <MyModal
         onDidDismiss={() => {
           setMode(MODE.NONE);
@@ -292,7 +260,7 @@ const EducationCard: React.FC<IEducationProps> = ({
               <IonButton
                 onClick={() => {
                   if (validate(editedItem)) {
-                    saveChanges(editedItem);
+                    saveChanges(prevItem, editedItem);
                     setMode(MODE.NONE);
                   } else {
                     setMode(MODE.ERROR);

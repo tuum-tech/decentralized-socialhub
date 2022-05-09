@@ -2,7 +2,7 @@
   "account": {
     "beginnerTutorial": {
       "title": "Beginner Tutorial",
-      "description": "Complete the beginner tutorial",
+      "description": "Complete the tutorial",
       "enbl_icon": "assets/badges/enbl_tutorial.svg",
       "dsabl_icon": "assets/badges/dsabl_tutorial.svg"
     },

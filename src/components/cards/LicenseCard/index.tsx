@@ -14,7 +14,7 @@ import {
   CardHeaderContent,
   CardContentContainer
 } from '../common';
-import LicenseCardEdit, { pattern } from './Edit';
+import LicenseCardEdit from './Edit';
 import ProgressBar from 'src/elements/ProgressBar';
 
 interface ILicenseProps {

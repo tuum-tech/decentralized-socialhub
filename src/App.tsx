@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 
 import { Route, Switch } from 'react-router-dom';
 import { IonApp, IonRouterOutlet } from '@ionic/react';
@@ -44,12 +44,10 @@ import {
   AssociatedProfilePage,
   CreateProfilePage,
   CreateWhyPage,
-  CreatePasswordPage,
   GenerateDidPage,
   SignInPage,
   SignQRPage,
   ForgotPasswordPage,
-  UnlockUserPage,
   CreateProfileWithDidPage,
   RecoverAccountPage,
   EmailVerificationPage
@@ -57,19 +55,12 @@ import {
 
 import HomePage from './pages/HomePage';
 import DefaultPage from './pages/404Page';
-import ExplorePage from './pages/ExplorePage';
-import SettingsPage from './pages/SettingsPage/Loadable';
-import DashboardPage from './pages/DashboardPage/Loadable';
-import PublicPage from './pages/PublicPage/Loadable';
 import ManagerPage from './pages/ManagerPage';
 import ActivityPage from './pages/ActivityPage';
 import SpacePage from './pages/SpacePage';
 import SpaceDashboardPage from './pages/SpaceDashboardPage';
 import PublicSpacePage from './pages/PublicSpacePage';
 import SyncPage from './pages/SyncPage';
-import FollowersPage from './pages/FollowersPage';
-import FollowingsPage from './pages/FollowingsPage';
-import MutualFollowersPage from './pages/MutualFollowersPage';
 
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -77,12 +68,16 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
 import { DidService } from './services/did.service.new';
-import LoadDid from './pages/LoadDid';
 import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
 import { RecoilRoot } from 'recoil';
-import SimplePage from './pages/SimplePage';
-import ChatPage from './pages/Chat';
+import LoadingIndicator from './elements/LoadingIndicator';
+
+const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
+const SettingsPage = React.lazy(() => import('./pages/SettingsPage'));
+const PublicPage = React.lazy(() => import('./pages/PublicPage'));
+const ExplorePage = React.lazy(() => import('./pages/ExplorePage'));
+const Connections = React.lazy(() => import('./pages/Connections'));
 
 const StyledToastContainer = styled(ToastContainer)`
   & .Toastify__toast-body {
@@ -116,211 +111,181 @@ const App: React.FC = () => {
           />
           <IonReactRouter>
             <Switch>
-              <IonRouterOutlet>
-                {/* ====== Private URLs that are log in required ==== */}
+              <Suspense fallback={<LoadingIndicator />}>
+                <IonRouterOutlet>
+                  {/* ====== Private URLs that are log in required ==== */}
 
-                <ProtectedRoute
-                  path="/publish"
-                  component={PublishIdentityPage}
-                  exact={true}
-                />
-                <ProtectedRoute
-                  path="/choosevault"
-                  component={ChooseVaultPage}
-                  exact={true}
-                />
-                <ProtectedRoute
-                  path="/profile"
-                  component={DashboardPage}
-                  exact={true}
-                />
-                <ProtectedRoute
-                  path="/connections"
-                  component={FollowersPage}
-                  exact={true}
-                />
-                <ProtectedRoute
-                  path="/connections/followings"
-                  component={FollowingsPage}
-                  exact={true}
-                />
-                <ProtectedRoute
-                  path="/connections/followers"
-                  component={FollowersPage}
-                  exact={true}
-                />
-                <ProtectedRoute
-                  path="/connections/mutual-followers"
-                  component={MutualFollowersPage}
-                  exact={true}
-                />
-                <ProtectedRoute
-                  path="/explore"
-                  component={ExplorePage}
-                  exact={false}
-                />
-                {/* in a progress */}
-                <ProtectedRoute
-                  path="/spaces"
-                  component={SpacePage}
-                  exact={true}
-                />
-                <ProtectedRoute
-                  path="/spaces/edit/:name"
-                  component={SpaceDashboardPage}
-                  exact={true}
-                />
-                <ProtectedRoute
-                  path="/settings"
-                  component={SettingsPage}
-                  exact={true}
-                />
-                <ProtectedRoute
-                  path="/manager"
-                  component={ManagerPage}
-                  exact={true}
-                />
-                <ProtectedRoute
-                  path="/manager/:badge"
-                  component={ManagerPage}
-                  exact={true}
-                />
-                <ProtectedRoute
-                  path="/activities"
-                  component={ActivityPage}
-                  exact={true}
-                />
+                  <ProtectedRoute
+                    path="/publish"
+                    component={PublishIdentityPage}
+                    exact={true}
+                  />
+                  <ProtectedRoute
+                    path="/choosevault"
+                    component={ChooseVaultPage}
+                    exact={true}
+                  />
+                  <ProtectedRoute
+                    path="/profile"
+                    component={DashboardPage}
+                    exact={true}
+                  />
+                  <ProtectedRoute path="/connections" component={Connections} />
+                  <ProtectedRoute
+                    path="/explore"
+                    component={ExplorePage}
+                    exact={false}
+                  />
+                  {/* in a progress */}
+                  <ProtectedRoute
+                    path="/spaces"
+                    component={SpacePage}
+                    exact={true}
+                  />
+                  <ProtectedRoute
+                    path="/spaces/edit/:name"
+                    component={SpaceDashboardPage}
+                    exact={true}
+                  />
+                  <ProtectedRoute
+                    path="/settings"
+                    component={SettingsPage}
+                    exact={true}
+                  />
+                  <ProtectedRoute
+                    path="/manager"
+                    component={ManagerPage}
+                    exact={true}
+                  />
+                  <ProtectedRoute
+                    path="/manager/:badge"
+                    component={ManagerPage}
+                    exact={true}
+                  />
+                  <ProtectedRoute
+                    path="/activities"
+                    component={ActivityPage}
+                    exact={true}
+                  />
 
-                <ProtectedRoute
-                  path="/sync"
-                  component={SyncPage}
-                  exact={true}
-                />
+                  <ProtectedRoute
+                    path="/sync"
+                    component={SyncPage}
+                    exact={true}
+                  />
 
-                {/* // login workflow */}
-                <Route path="/twitter_callback" component={TwitterCallback} />
-                <Route path="/linkedin_callback" component={LinkedinCallback} />
-                <Route path="/google_callback" component={GoogleCallback} />
-                <Route path="/facebook_callback" component={FacebookCallback} />
-                <Route path="/github_callback" component={GithubCallback} />
-                <Route path="/discord_callback" component={DiscordCallback} />
+                  {/* // login workflow */}
+                  <Route path="/twitter_callback" component={TwitterCallback} />
+                  <Route
+                    path="/linkedin_callback"
+                    component={LinkedinCallback}
+                  />
+                  <Route path="/google_callback" component={GoogleCallback} />
+                  <Route
+                    path="/facebook_callback"
+                    component={FacebookCallback}
+                  />
+                  <Route path="/github_callback" component={GithubCallback} />
+                  <Route path="/discord_callback" component={DiscordCallback} />
 
-                {/* ok */}
-                <ProtectedRoute
-                  path="/set-password"
-                  component={CreatePasswordPage}
-                  exact={true}
-                />
-                <ProtectedRoute
-                  path="/email-verification"
-                  component={EmailVerificationPage}
-                  exact={true}
-                />
+                  {/* ok */}
+                  <ProtectedRoute
+                    path="/email-verification"
+                    component={EmailVerificationPage}
+                    exact={true}
+                  />
 
-                <ProtectedRoute
-                  path="/chat"
-                  component={ChatPage}
-                  exact={true}
-                />
+                  {/* to test */}
+                  <ProtectedRoute
+                    path="/generate-did"
+                    component={GenerateDidPage}
+                    exact={true}
+                  />
+                  {/* to test */}
+                  <ProtectedRoute
+                    path="/sign-in"
+                    component={SignInPage}
+                    exact={true}
+                  />
+                  <ProtectedRoute
+                    path="/recover-account"
+                    component={RecoverAccountPage}
+                    exact={true}
+                  />
 
-                {/* ok */}
-                <ProtectedRoute
-                  path="/unlock-user"
-                  component={UnlockUserPage}
-                  exact={true}
-                />
-                {/* to test */}
-                <ProtectedRoute
-                  path="/generate-did"
-                  component={GenerateDidPage}
-                  exact={true}
-                />
-                {/* to test */}
-                <ProtectedRoute
-                  path="/sign-in"
-                  component={SignInPage}
-                  exact={true}
-                />
-                <ProtectedRoute
-                  path="/recover-account"
-                  component={RecoverAccountPage}
-                  exact={true}
-                />
+                  {/* ok */}
+                  <ProtectedRoute
+                    path="/sign-qr"
+                    component={SignQRPage}
+                    exact={true}
+                  />
+                  {/* ok */}
+                  <ProtectedRoute
+                    path="/associated-profile"
+                    component={AssociatedProfilePage}
+                    exact={true}
+                  />
+                  {/* to ckeck */}
+                  <ProtectedRoute
+                    path="/create-why"
+                    component={CreateWhyPage}
+                    exact={true}
+                  />
+                  {/* to test */}
+                  <ProtectedRoute
+                    path="/create-profile"
+                    component={CreateProfilePage}
+                    exact={true}
+                  />
+                  {/* to test */}
+                  <ProtectedRoute
+                    path="/create-profile-with-did"
+                    component={CreateProfileWithDidPage}
+                    exact={true}
+                  />
 
-                {/* ok */}
-                <ProtectedRoute
-                  path="/sign-qr"
-                  component={SignQRPage}
-                  exact={true}
-                />
-                {/* ok */}
-                <ProtectedRoute
-                  path="/associated-profile"
-                  component={AssociatedProfilePage}
-                  exact={true}
-                />
-                {/* to ckeck */}
-                <ProtectedRoute
-                  path="/create-why"
-                  component={CreateWhyPage}
-                  exact={true}
-                />
-                {/* to test */}
-                <ProtectedRoute
-                  path="/create-profile"
-                  component={CreateProfilePage}
-                  exact={true}
-                />
-                {/* to test */}
-                <ProtectedRoute
-                  path="/create-profile-with-did"
-                  component={CreateProfileWithDidPage}
-                  exact={true}
-                />
+                  <ProtectedRoute
+                    path="/forgot-password"
+                    component={ForgotPasswordPage}
+                    exact={true}
+                  />
+                  <ProtectedRoute
+                    path="/support-forum/:num"
+                    component={SupportForum}
+                    exact={true}
+                  />
+                  <Route
+                    path="/support-forum"
+                    component={SupportForum}
+                    exact={true}
+                  />
+                  <Route
+                    path="/terms-of-use"
+                    component={TermsPage}
+                    exact={true}
+                  />
 
-                <ProtectedRoute
-                  path="/forgot-password"
-                  component={ForgotPasswordPage}
-                  exact={true}
-                />
-                <ProtectedRoute
-                  path="/support-forum/:num"
-                  component={SupportForum}
-                  exact={true}
-                />
-                <Route
-                  path="/support-forum"
-                  component={SupportForum}
-                  exact={true}
-                />
-                <Route
-                  path="/terms-of-use"
-                  component={TermsPage}
-                  exact={true}
-                />
-
-                {/* ====== Public URLs ==== */}
-                <Route path="/" component={HomePage} exact={true} />
-                <Route path="/did/:did" component={PublicPage} exact={true} />
-                <Route
-                  path="/did/:did/spaces/:name"
-                  component={PublicSpacePage}
-                  exact={true}
-                />
-                <Route
-                  path="/NFTSpaces/:name"
-                  component={PublicSpacePage}
-                  exact={true}
-                />
-                <Route
-                  path="/community-spaces/:name"
-                  component={PublicSpacePage}
-                  exact={true}
-                />
-                <Route path="/load" component={LoadDid} />
-                <Route path="/test" component={SimplePage} />
-                <Route component={DefaultPage} />
-              </IonRouterOutlet>
+                  {/* ====== Public URLs ==== */}
+                  <Route path="/" component={HomePage} exact={true} />
+                  <Route path="/did/:did" component={PublicPage} exact={true} />
+                  <Route
+                    path="/did/:did/spaces/:name"
+                    component={PublicSpacePage}
+                    exact={true}
+                  />
+                  <Route
+                    path="/NFTSpaces/:name"
+                    component={PublicSpacePage}
+                    exact={true}
+                  />
+                  <Route
+                    path="/community-spaces/:name"
+                    component={PublicSpacePage}
+                    exact={true}
+                  />
+                  <Route component={DefaultPage} />
+                </IonRouterOutlet>
+              </Suspense>
             </Switch>
           </IonReactRouter>
         </IonApp>

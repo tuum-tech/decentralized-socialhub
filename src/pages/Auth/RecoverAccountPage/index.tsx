@@ -23,9 +23,14 @@ import FooterLinks, {
 import wavinghand from 'src/assets/icon/wavinghand.png';
 
 import React, { useState, useEffect } from 'react';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
 import styled from 'styled-components';
 import style from './style.module.scss';
-import { UserType, LocationState } from './types';
+import { UserType, LocationState, InferMappedProps } from './types';
+import { SubState } from 'src/store/users/types';
 import { DIDURL } from '@elastosfoundation/did-js-sdk/';
 import { HiveService } from 'src/services/hive.service';
 
@@ -44,11 +49,11 @@ const CreateButton = styled(Link)`
   }
 `;
 
-const RecoverAccountPage: React.FC<RouteComponentProps<
-  {},
-  StaticContext,
-  LocationState
->> = props => {
+interface PageProps
+  extends InferMappedProps,
+    RouteComponentProps<{}, StaticContext, LocationState> {}
+
+const RecoverAccountPage: React.FC<PageProps> = ({ eProps, ...props }) => {
   const history = useHistory();
   const [showHelp, setShowHelp] = useState(false);
   const [error, setError] = useState(false);
@@ -104,22 +109,33 @@ const RecoverAccountPage: React.FC<RouteComponentProps<
           }}
           error={error}
           setError={setError}
-          onSuccess={async (uDid: string, mnemonic: string) => {
+          onSuccess={async (did: string, mnemonic: string) => {
             let didService = await DidService.getInstance();
-            const isDidPublished = await didService.isDIDPublished(uDid);
+            const isDidPublished = await didService.isDIDPublished(did);
             if (!isDidPublished) {
               alertError(
                 null,
                 'Did is not published yet, You can only login with published DID user'
               );
             } else {
-              let didDocument = await didService.getDidDocument(uDid, false);
+              let didDocument = await didService.getDidDocument(did, false);
+
               if (didDocument.services && didDocument.services.size > 0) {
-                let hiveUrl = new DIDURL(uDid + '#HiveVault');
-                if (didDocument.services.has(hiveUrl)) {
-                  let service = didDocument.services.get(hiveUrl);
+                let serviceEndpoint = '';
+                let hiveUrl = new DIDURL(did + '#hivevault');
+                if (didDocument.services?.has(hiveUrl)) {
+                  serviceEndpoint = didDocument.services.get(hiveUrl)
+                    .serviceEndpoint;
+                } else {
+                  hiveUrl = new DIDURL(did + '#HiveVault');
+                  if (didDocument.services?.has(hiveUrl)) {
+                    serviceEndpoint = didDocument.services.get(hiveUrl)
+                      .serviceEndpoint;
+                  }
+                }
+                if (serviceEndpoint) {
                   let hiveVersion = await HiveService.getHiveVersion(
-                    service.serviceEndpoint
+                    serviceEndpoint
                   );
                   let isHiveValid = await HiveService.isHiveVersionSupported(
                     hiveVersion
@@ -131,35 +147,47 @@ const RecoverAccountPage: React.FC<RouteComponentProps<
                     );
                     return;
                   }
+                } else {
+                  alertError(
+                    null,
+                    `This DID has no Hive Node set. Please set the hive node first using Elastos Essentials App`
+                  );
                 }
+              } else {
+                alertError(
+                  null,
+                  `This DID has no Hive Node set. Please set the hive node first using Elastos Essentials App`
+                );
+                return;
               }
 
               setLoading(true);
               let userService = new UserService(didService);
-              const res = await userService.SearchUserWithDID(uDid);
+              const res = await userService.SearchUserWithDID(did);
+
               window.localStorage.setItem(
-                `temporary_${uDid.replace('did:elastos:', '')}`,
+                `temporary_${did.replace('did:elastos:', '')}`,
                 JSON.stringify({
                   mnemonic: mnemonic
                 })
               );
-              setLoading(false);
 
               if (res) {
-                history.push({
-                  pathname: '/set-password',
-                  state: { ...res, isEssentialUser: false }
-                });
+                const session = await userService.LockWithDIDAndPwd(res);
+                eProps.setSession({ session });
+                window.localStorage.setItem('isLoggedIn', 'true');
+                history.push('/profile');
               } else {
                 history.push({
                   pathname: '/create-profile-with-did',
                   state: {
-                    did: uDid,
+                    did,
                     mnemonic,
                     user
                   }
                 });
               }
+              setLoading(false);
             }
           }}
         />
@@ -172,4 +200,16 @@ const RecoverAccountPage: React.FC<RouteComponentProps<
   );
 };
 
-export default RecoverAccountPage;
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(RecoverAccountPage);

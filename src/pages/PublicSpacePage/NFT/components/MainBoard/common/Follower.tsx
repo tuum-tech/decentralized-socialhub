@@ -10,7 +10,6 @@ import {
 import { LinkStyleSpan } from '../common';
 import Avatar from 'src/components/Avatar';
 import ViewAllFollower from './Modal/ViewAllFollower';
-import nft_item_icon from 'src/assets/space/nft_item.jpg';
 import style from './style.module.scss';
 import { getDIDString } from 'src/utils/did';
 
@@ -40,7 +39,7 @@ const Follower: React.FC<IProps> = ({
         <CardHeader>
           <IonRow className="ion-justify-content-between ion-no-padding">
             <IonCol className="ion-no-padding">
-              <IonCardTitle>Followers ({followers.length})</IonCardTitle>
+              <IonCardTitle>Followers ({space.followers.length})</IonCardTitle>
             </IonCol>
             <IonCol size="auto" className="ion-no-padding">
               <LinkStyleSpan

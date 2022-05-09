@@ -7,10 +7,13 @@ import SyncBar from 'src/components/SyncBar';
 import SpaceCoverPhoto from 'src/components/cards/SpaceCoverPhoto';
 import SpaceAvatarChange from 'src/components/cards/SpaceAvatarChange';
 import ProfileBriefCard from 'src/components/cards/ProfileBriefCard';
+import Followers from '../Followers';
 import OverView from '../OverView';
 import PublicFields from '../PublicFields';
 import Admins from '../Admins';
 import DeleteSpace from '../DeleteSpace';
+import SocialLinks from '../SocialLinks';
+import Category from '../Category';
 import { SpaceCategory } from 'src/services/space.service';
 import style from './style.module.scss';
 
@@ -21,7 +24,6 @@ interface Props {
 
 const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
   const history = useHistory();
-  const [error, setError] = useState(false);
   const [userInfo, setUserInfo] = useState<ISessionItem>(session);
   const [loaded, setloaded] = useState(false);
   const [spaceProfile, setSpaceProfile] = useState<any>(profile);
@@ -58,6 +60,11 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
     await SpaceService.addSpace(session, _spaceProfile);
     setSpaceProfile(_spaceProfile);
   };
+  const onUpdateCategory = async (category: string[]) => {
+    const _spaceProfile = { ...spaceProfile, tags: category };
+    await SpaceService.addSpace(session, _spaceProfile, false);
+    setSpaceProfile(_spaceProfile);
+  };
   const onRemoveSpace = async () => {
     const result = window.confirm(
       'This will remove all the contents about this space from your user vault. Are you sure?'
@@ -79,10 +86,9 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
           <IonCol size="4">
             <OverView sessionItem={userInfo} profile={spaceProfile} />
             {spaceProfile.followers && spaceProfile.followers.length > 0 && (
-              <ProfileBriefCard
-                category={'follower'}
+              <Followers
                 title={'Followers'}
-                data={spaceProfile.followers}
+                space={spaceProfile}
                 exploreAll={() => {}}
               />
             )}
@@ -94,7 +100,7 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
               space={spaceProfile}
               onUpload={onUploadCoverPhoto}
             />
-            {!error && loaded && userInfo.tutorialStep === 4 ? (
+            {loaded && userInfo.tutorialStep === 4 ? (
               <>
                 {spaceProfile && (
                   <AboutCard
@@ -106,6 +112,12 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
               </>
             ) : (
               ''
+            )}
+            {spaceProfile.category !== SpaceCategory.Personal && (
+              <SocialLinks space={spaceProfile} mode="edit" />
+            )}
+            {spaceProfile.category !== SpaceCategory.Personal && (
+              <Category profile={spaceProfile} update={onUpdateCategory} />
             )}
             <Admins profile={spaceProfile} />
             {spaceProfile.category === SpaceCategory.Personal && (

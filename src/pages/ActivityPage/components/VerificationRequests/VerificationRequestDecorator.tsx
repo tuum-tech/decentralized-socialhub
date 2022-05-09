@@ -1,19 +1,6 @@
-import totalIcon from 'src/assets/icon/total.png';
 import React from 'react';
-import { IonButton, IonCol, IonGrid, IonRow } from '@ionic/react';
-import { SmallLightButton } from 'src/elements/buttons';
-import styled from 'styled-components';
-
-export const RequestVerificationButton = styled(SmallLightButton)<{
-  disabled: boolean;
-}>`
-  margin-left: 10px;
-  background-color: #50c878;
-  padding: 5px;
-  color: ${props => {
-    return props.disabled ? '#666666' : '#666666';
-  }};
-`;
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
+import { DefaultButton } from 'src/elements-v2/buttons';
 
 type Props = {
   children?: React.ReactNode;
@@ -27,17 +14,19 @@ const VerificationRequestDecorator: React.FC<Props> = ({
 }) => (
   <IonGrid class="ion-no-padding">
     <IonRow class="ion-align-items-end ion-no-padding">
-      <IonCol size="10" class="ion-no-padding">
-        {children}
-      </IonCol>
-      <IonCol size="2" class="ion-no-padding">
+      <IonCol class="ion-no-padding">{children}</IonCol>
+      <IonCol size="auto" class="ion-no-padding">
         {v !== undefined && v !== '' ? (
-          <RequestVerificationButton
+          <DefaultButton
+            size="small"
+            variant="outlined"
+            btnColor="primary-gradient"
+            textType="gradient"
             disabled={false}
             onClick={onRequestVerification}
           >
             Request Verification
-          </RequestVerificationButton>
+          </DefaultButton>
         ) : (
           ''
         )}

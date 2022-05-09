@@ -98,6 +98,7 @@ let run = async () => {
               publicFields: '$params.publicFields',
               tags: '$params.tags',
               followers: '$params.followers',
+              socialLinks: '$params.socialLinks',
               meta: '$params.meta'
             }
           },
@@ -517,7 +518,9 @@ let run = async () => {
             code: '$params.code',
             status: '$params.status',
             pageTemplate: '$params.pageTemplate',
-            timestamp: '$params.timestamp'
+            timestamp: '$params.timestamp',
+            referrals: '$params.referrals',
+            passwordRemoved: true
           }
         }
       }
@@ -554,7 +557,9 @@ let run = async () => {
               tutorialStep: '$params.tutorialStep',
               hiveHost: '$params.hiveHost',
               avatar: '$params.avatar',
-              pageTemplate: '$params.pageTemplate'
+              pageTemplate: '$params.pageTemplate',
+              referrals: '$params.referrals',
+              passwordRemoved: true
             }
           }
         }

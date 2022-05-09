@@ -17,7 +17,7 @@ import { Text16, Title40, Text18, Text12 } from 'src/elements/texts';
 import { UserService } from 'src/services/user.service';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 
-import MultiDidPasswordLogin from '../components/MultiDidPasswordLogin';
+import MultiDidLogin from '../components/MultiDidLogin';
 import FieldDivider from '../components/FieldDivider';
 import style from './style.module.scss';
 import createLeftBg from 'src/assets/new/auth/create_left_bg.png';
@@ -58,16 +58,26 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   ...props
 }: InferMappedProps) => {
   const history = useHistory();
-
   const [loading, setLoading] = useState('');
 
   const [signedUsers, setSignedUsers] = useState<string[]>([]);
   const [mode, setMode] = useState(0); // 0: create new, 1: sign in using pre logged
   const [user, setUser] = useState({
     name: '',
-    email: '',
-    password: ''
+    email: ''
   });
+
+  useEffect(() => {
+    if (
+      history.location.search &&
+      history.location.search.includes('?ref=did:elastos:')
+    ) {
+      window.localStorage.setItem(
+        'referral',
+        history.location.search.replace('?ref=', '')
+      );
+    }
+  }, [history.location.search]);
 
   useEffect(() => {
     (async () => {
@@ -96,7 +106,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
 
   if (mode === 1) {
     return (
-      <MultiDidPasswordLogin
+      <MultiDidLogin
         dids={signedUsers}
         removeUser={removeUser}
         changeMode={() => setMode(0)}
@@ -144,11 +154,11 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
           </Text16>
 
           <EmailUserCreate
-            onSuccess={(name: string, email: string, password: string) => {
-              setUser({ name, email, password });
+            onSuccess={(name: string, email: string) => {
+              setUser({ name, email });
               history.push({
                 pathname: '/email-verification',
-                state: { name, email, password }
+                state: { name, email }
               });
             }}
           />

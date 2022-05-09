@@ -7,7 +7,6 @@ import logo from 'src/assets/new/logo.svg';
 const Container = styled.div`
   height: 5em;
   padding: 16px;
-  background: white;
   display: flex;
   align-items: center;
 

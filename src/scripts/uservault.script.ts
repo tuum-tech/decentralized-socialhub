@@ -903,7 +903,8 @@ export class UserVaultScripts {
               category: '$params.category',
               avatar: '$params.avatar',
               coverPhoto: '$params.coverPhoto',
-              publicFields: '$params.publicFields'
+              publicFields: '$params.publicFields',
+              socialLinks: '$parrams.socialLinks'
             }
           },
           options: {

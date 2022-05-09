@@ -31,6 +31,8 @@ import style from './style.module.scss';
 import { LocationState } from './types';
 import { HiveService } from 'src/services/hive.service';
 import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
+import { useSetRecoilState } from 'recoil';
+import { DIDDocumentAtom } from 'src/Atoms/Atoms';
 
 const SignInPage: React.FC<RouteComponentProps<
   {},
@@ -38,7 +40,7 @@ const SignInPage: React.FC<RouteComponentProps<
   LocationState
 >> = props => {
   const history = useHistory();
-
+  const setDidDocument = useSetRecoilState(DIDDocumentAtom);
   const getPresentation = async (): Promise<
     VerifiablePresentation | undefined
   > => {
@@ -73,20 +75,31 @@ const SignInPage: React.FC<RouteComponentProps<
         return c.getId().getFragment() === 'name';
       });
       let name = nameCredential!.getSubject().getProperty('name');
-      let issuer = nameCredential!.getId().getDid();
-      let did = 'did:elastos:' + issuer.getMethodSpecificId();
+      let owner = nameCredential!.getId().getDid();
+      let did = 'did:elastos:' + owner.getMethodSpecificId();
       let mnemonic = '';
-      await didService.storeDocument(await issuer.resolve());
+
+      let resolvedDocument = await owner.resolve();
+      await didService.storeDocument(resolvedDocument);
+      setDidDocument(resolvedDocument.toString(true));
+
       let isDidPublished = await didService.isDIDPublished(did);
       if (isDidPublished) {
         let didDocument = await didService.getDidDocument(did, false);
         if (didDocument.services && didDocument.services.size > 0) {
-          let hiveUrl = new DIDURL(did + '#HiveVault');
-          if (didDocument.services.has(hiveUrl)) {
-            let service = didDocument.services.get(hiveUrl);
-            let hiveVersion = await HiveService.getHiveVersion(
-              service.serviceEndpoint
-            );
+          let serviceEndpoint = '';
+          let hiveUrl = new DIDURL(did + '#hivevault');
+          if (didDocument.services?.has(hiveUrl)) {
+            serviceEndpoint = didDocument.services.get(hiveUrl).serviceEndpoint;
+          } else {
+            hiveUrl = new DIDURL(did + '#HiveVault');
+            if (didDocument.services?.has(hiveUrl)) {
+              serviceEndpoint = didDocument.services.get(hiveUrl)
+                .serviceEndpoint;
+            }
+          }
+          if (serviceEndpoint) {
+            let hiveVersion = await HiveService.getHiveVersion(serviceEndpoint);
             let isHiveValid = await HiveService.isHiveVersionSupported(
               hiveVersion
             );
@@ -97,7 +110,18 @@ const SignInPage: React.FC<RouteComponentProps<
               );
               return;
             }
+          } else {
+            alertError(
+              null,
+              `This DID has no Hive Node set. Please set the hive node first using Elastos Essentials App`
+            );
           }
+        } else {
+          alertError(
+            null,
+            `This DID has no Hive Node set. Please set the hive node first using Elastos Essentials App`
+          );
+          return;
         }
 
         let userService = new UserService(didService);
@@ -108,6 +132,7 @@ const SignInPage: React.FC<RouteComponentProps<
             mnemonic: mnemonic
           })
         );
+        console.log('hello - signinpage: ', res, name);
         if (res) {
           history.push({
             pathname: '/set-password',
@@ -117,7 +142,7 @@ const SignInPage: React.FC<RouteComponentProps<
           history.push({
             pathname: '/create-profile-with-did',
             state: {
-              did: did,
+              did,
               mnemonic,
               user: {
                 name: name,

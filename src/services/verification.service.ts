@@ -12,9 +12,8 @@ import { UserService } from './user.service';
 import { ProfileService } from './profile.service';
 import { EssentialsService } from 'src/services/essentials.service';
 import { getItemsFromData } from 'src/utils/script';
-import { DID as ConnDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { DID as ConnDID } from '@elastosfoundation/elastos-connectivity-sdk-js/';
 
-import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { DidcredsService } from './didcreds.service';
 
 export enum VerificationStatus {
@@ -343,7 +342,7 @@ export class VerificationService {
 
     if (category.includes(':')) {
       let vcTypeStrings = category.split(':');
-      vcType = vcTypeStrings[0] + 'Credential' + vcTypeStrings[1];
+      vcType = vcTypeStrings[0] + 'credential' + vcTypeStrings[1];
     } else {
       vcType = category;
     }
@@ -364,26 +363,18 @@ export class VerificationService {
       '',
       v.guid
     );
-    // let userService = new UserService(await DidService.getInstance());
-    // let fromUser = await userService.SearchUserWithDID(v.from_did);
-    // await ProfileService.addActivity(
-    //   {
-    //     guid: '',
-    //     did: session.did,
-    //     message:
-    //       `You've ${
-    //         approve ? 'approved' : 'rejected'
-    //       } verification request from <a href="/did/` +
-    //       v.from_did.replaceAll('did:elastos:', '') +
-    //       `" target="_blank">` +
-    //       fromUser.name +
-    //       `</a>`,
-    //     read: false,
-    //     createdAt: 0,
-    //     updatedAt: 0
-    //   },
-    //   session
-    // );
+  }
+
+  public async importCredential(v: VerifiableCredential): Promise<void> {
+    let didAccess = new ConnDID.DIDAccess();
+    await didAccess.importCredentials([v], { forceToPublishCredentials: true });
+  }
+
+  public async deleteCredentials(vId: string): Promise<string[]> {
+    let didAccess = new ConnDID.DIDAccess();
+    return await didAccess.deleteCredentials([vId.toString()], {
+      forceToPublishCredentials: true
+    });
   }
 
   public async approveCredential(
@@ -491,10 +482,10 @@ export class VerificationService {
     const existingVerifiableCredential = didDocument.getCredential(didUrl);
     if (existingVerifiableCredential) {
       if (holder.isEssentialUser) {
-        const cn = connectivity.getActiveConnector();
-        await cn?.deleteCredentials([DIDstring], {
-          forceToPublishCredentials: true
-        });
+        let essentialsService = new EssentialsService(didService);
+        await essentialsService.removeMultipleVerifiableCredentialsToEssentials(
+          [DIDstring]
+        );
       } else {
         const builder = DIDDocument.Builder.newFromDocument(didDocument);
         didDocument = await builder

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { IonRow, IonCol } from '@ionic/react';
 import Follower from '../common/Follower';
 import Members from '../common/Members';
@@ -11,6 +11,7 @@ interface IProps {
 }
 
 const Home: React.FC<IProps> = ({ space }: IProps) => {
+  console.log(space.publicFields);
   return (
     <Wrapper>
       <IonRow>
@@ -18,7 +19,9 @@ const Home: React.FC<IProps> = ({ space }: IProps) => {
           <Post />
         </IonCol>
         <IonCol size="4">
-          <Links />
+          {space.publicFields.includes('social links') && space.socialLinks && Object.keys(space.socialLinks).length > 0 && (
+            <Links space={space} />
+          )}
           <Members space={space} />
           {space.followers &&
             space.followers.length > 0 &&

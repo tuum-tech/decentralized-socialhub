@@ -38,7 +38,7 @@ export class TemplateService {
     const hiveInstance = await HiveService.getSessionInstance(userSession);
     if (userSession && hiveInstance) {
       await hiveInstance.Scripting.RunScript({
-        name: 'set_my_templates',
+        name: 'update_my_templates',
         context: {
           target_did: userSession.did,
           target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`

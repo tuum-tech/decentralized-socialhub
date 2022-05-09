@@ -10,12 +10,17 @@ import {
   UserVaultScriptService
 } from './script.service';
 import { ProfileService } from './profile.service';
-import { DIDDocument, RootIdentity } from '@elastosfoundation/did-js-sdk/';
+import {
+  DIDDocument,
+  DIDURL,
+  RootIdentity
+} from '@elastosfoundation/did-js-sdk/';
 import { IDidService } from './did.service.new';
 import { CredentialType, DidcredsService } from './didcreds.service';
 import { SpaceService } from './space.service';
 import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
 import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { DidDocumentService } from './diddocument.service';
 
 const CryptoJS = require('crypto-js');
 
@@ -107,9 +112,9 @@ export class UserService {
       builder = builder.removeCredential(credentialType.toLowerCase());
     }
 
-    return builder
-      .addCredential(verifiableCredential)
-      .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+    return (await builder.addCredential(verifiableCredential)).seal(
+      process.env.REACT_APP_DID_STORE_PASSWORD as string
+    );
   };
 
   private async generateTemporaryDocument(
@@ -210,11 +215,12 @@ export class UserService {
 
   private unlockUser(
     key: string,
-    storePassword: string
+    storePassword: string,
+    showAlert = true
   ): ISessionItem | undefined {
     let item = window.localStorage.getItem(key);
     if (!item) {
-      alertError(null, 'User could not be found');
+      if (showAlert) alertError(null, 'User could not be found');
       return;
     }
 
@@ -233,7 +239,9 @@ export class UserService {
         return instance;
       }
     } catch (error) {}
-    alertError(null, 'Incorrect Password');
+
+    if (showAlert) alertError(null, 'Incorrect Password');
+
     return;
   }
 
@@ -262,18 +270,15 @@ export class UserService {
     }
   }
 
-  public async LockWithDIDAndPwd(
-    sessionItem: ISessionItem,
-    password: string = ''
-  ) {
+  public async LockWithDIDAndPwd(sessionItem: ISessionItem) {
     let newSessionItem = sessionItem;
     if (
       !newSessionItem.passhash ||
       newSessionItem.passhash.trim().length === 0
     ) {
-      newSessionItem.passhash = CryptoJS.SHA256(
-        newSessionItem.did + password
-      ).toString(CryptoJS.enc.Hex);
+      newSessionItem.passhash = CryptoJS.SHA256(newSessionItem.did).toString(
+        CryptoJS.enc.Hex
+      );
     }
 
     const res = await this.SearchUserWithDID(sessionItem.did);
@@ -294,6 +299,26 @@ export class UserService {
     const users = await TuumTechScriptService.searchUserWithDIDs([did]);
     if (users.length > 0) {
       const userData = users[0];
+      const blockchainDocument = await DidDocumentService.loadFromBlockchain(
+        did
+      );
+      if (blockchainDocument) {
+        let serviceEndpoint = '';
+        let hiveUrl = new DIDURL(did + '#hivevault');
+        if (blockchainDocument.services?.has(hiveUrl)) {
+          serviceEndpoint = blockchainDocument.services.get(hiveUrl)
+            .serviceEndpoint;
+        } else {
+          hiveUrl = new DIDURL(did + '#HiveVault');
+          if (blockchainDocument.services?.has(hiveUrl)) {
+            serviceEndpoint = blockchainDocument.services.get(hiveUrl)
+              .serviceEndpoint;
+          }
+        }
+        if (serviceEndpoint) {
+          userData.hiveHost = serviceEndpoint;
+        }
+      }
       let isDIDPublished = false;
       try {
         isDIDPublished = await this.didService.isDIDPublished(userData.did);
@@ -311,12 +336,32 @@ export class UserService {
     return;
   }
 
+  public async RemovePassword(session: ISessionItem) {
+    let newSessionItem = session;
+
+    newSessionItem.passwordRemoved = true;
+    newSessionItem.passhash = CryptoJS.SHA256(newSessionItem.did + '').toString(
+      CryptoJS.enc.Hex
+    );
+
+    await TuumTechScriptService.updateTuumUser(newSessionItem);
+
+    // remove local storage data
+    window.localStorage.removeItem(
+      `user_${session.did.replace('did:elastos:', '')}`
+    );
+
+    this.lockUser(UserService.key(newSessionItem.did), newSessionItem);
+
+    return newSessionItem;
+  }
+
   public async CreateNewUser(
     name: string,
     accountType: AccountType,
     loginCred: LoginCred,
     credential: string = '',
-    storePassword: string,
+    // storePassword: string,
     newDidStr: string,
     newMnemonicStr: string,
     hiveHostStr: string,
@@ -336,9 +381,7 @@ export class UserService {
       did = newDocument.getSubject().toString();
     }
 
-    const passhash = CryptoJS.SHA256(did + storePassword).toString(
-      CryptoJS.enc.Hex
-    );
+    const passhash = CryptoJS.SHA256(did).toString(CryptoJS.enc.Hex);
     const isDIDPublished = await this.didService.isDIDPublished(did);
     let sessionItem: ISessionItem = {
       did,
@@ -428,7 +471,8 @@ export class UserService {
       mnemonics,
       coverPhoto: '',
       pageTemplate: 'default',
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      referrals: [] as IReferral[]
     };
     let curTime = new Date().getTime();
     let messages = [];
@@ -500,6 +544,7 @@ export class UserService {
       let didAlreadyAdded = await TuumTechScriptService.searchUserWithDIDs([
         did
       ]);
+
       if (didAlreadyAdded.length === 0) {
         await TuumTechScriptService.addUserToTuumTech(sessionItem);
       } else {
@@ -510,7 +555,7 @@ export class UserService {
         {
           guid: '',
           did: sessionItem!.did,
-          message: 'Welcome to Profile 👏, Your service to the private web 🔐️',
+          message: 'Welcome to Profile �, Your service to the private web �️',
           read: false,
           createdAt: 0,
           updatedAt: 0
@@ -518,6 +563,11 @@ export class UserService {
 
         sessionItem
       );
+    }
+
+    const referral = window.localStorage.getItem('referral') || '';
+    if (referral !== '') {
+      await TuumTechScriptService.addReferral(referral, sessionItem.did);
     }
 
     Array.from(new Set(messages)).forEach(async message => {
@@ -530,7 +580,6 @@ export class UserService {
           createdAt: 0,
           updatedAt: 0
         },
-
         sessionItem
       );
     });
@@ -562,6 +611,10 @@ export class UserService {
       if (userData.userToken) {
         newSessionItem.userToken = userData.userToken;
       }
+
+      if (userData.hiveHost) {
+        newSessionItem.hiveHost = userData.hiveHost;
+      }
     }
     const res: any = await TuumTechScriptService.updateTuumUser(newSessionItem);
     this.lockUser(UserService.key(sessionItem.did), newSessionItem);
@@ -590,7 +643,11 @@ export class UserService {
     return true;
   }
 
-  public async UnLockWithDIDAndPwd(did: string, storePassword: string) {
+  public async UnLockWithDIDAndPwd(
+    did: string,
+    storePassword: string,
+    showAlert = true
+  ) {
     let instance = this.unlockUser(UserService.key(did), storePassword);
     if (!instance) return null;
     let isHiveVersionValid = await this.isHiveVersionValid(instance);
@@ -599,10 +656,11 @@ export class UserService {
     const res = await this.SearchUserWithDID(did);
 
     if (!res) {
-      alertError(null, 'Could not find user with this DID');
+      if (showAlert) alertError(null, 'Could not find user with this DID');
     } else if (instance) {
       instance.onBoardingCompleted = res.onBoardingCompleted;
       instance.tutorialStep = res.tutorialStep;
+      instance.referrals = res.referrals || [];
       this.lockUser(UserService.key(instance.did), instance);
 
       window.localStorage.setItem('isLoggedIn', 'true');
@@ -611,22 +669,21 @@ export class UserService {
     return null;
   }
 
-  public async validateWithPwd(
-    userSession: ISessionItem,
-    storePassword: string
-  ) {
-    let instance = this.unlockUser(
-      UserService.key(userSession.did),
-      storePassword
-    );
+  public async validateWithPwd(did: string, storePassword: string) {
+    let instance = this.unlockUser(UserService.key(did), storePassword, false);
+    console.log('===>instance', UserService.key(did), instance);
+
     if (!instance) {
       return false;
     }
     let isHiveVersionValid = await this.isHiveVersionValid(instance);
+    console.log('===>isHiveVersionValid', isHiveVersionValid);
+
     if (!isHiveVersionValid) {
       return false;
     }
-    return instance.did === userSession.did;
+    console.log('===>isHiveVersionValid', instance.did, did);
+    return instance.did === did;
   }
 
   public static logout() {
