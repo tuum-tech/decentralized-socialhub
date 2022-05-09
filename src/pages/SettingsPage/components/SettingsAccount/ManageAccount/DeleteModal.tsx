@@ -139,7 +139,10 @@ const DeleteAccountContent = ({
           setLoading(true);
 
           let userService = new UserService(await DidService.getInstance());
-          const isPwdValid = await userService.validateWithPwd(session, pwd);
+          const isPwdValid = await userService.validateWithPwd(
+            session.did,
+            pwd
+          );
           if (isPwdValid) {
             await UserService.deleteUser(session);
           } else {

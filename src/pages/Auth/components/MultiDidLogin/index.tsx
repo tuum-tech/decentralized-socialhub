@@ -14,10 +14,11 @@ import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { SearchService } from 'src/services/search.service';
 import { getItemsFromData } from 'src/utils/script';
 import { ThemeButton } from 'src/elements/buttons';
-import { Text16, ErrorTxt, Title40, Text18 } from 'src/elements/texts';
+import { Text16, Title40, Text18 } from 'src/elements/texts';
+import LoginWithPWD from './LoginWithPWD';
+import LoginWithoutPWD from './LoginWithoutPWD';
 
 import eye from 'src/assets/icon/eye.png';
-import TextInput from 'src/elements/inputs/TextInput';
 import { UserService } from 'src/services/user.service';
 
 import FieldDivider from '../FieldDivider';
@@ -29,7 +30,6 @@ import FooterLinks, {
 import styled from 'styled-components';
 import { IonButton, IonCol, IonGrid, IonModal, IonRow } from '@ionic/react';
 import style from './style.module.scss';
-import { SyncService } from 'src/services/sync.service';
 
 interface Props {
   changeMode: () => void;
@@ -83,7 +83,7 @@ const SecondaryButton = styled(DefaultButton)`
   }
 `;
 
-const MultiDidPasswordLogin: React.FC<Props> = ({
+const MultiDidLogin: React.FC<Props> = ({
   dids,
   changeMode,
   removeUser,
@@ -91,10 +91,10 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
 }) => {
   const [did, setDid] = useState(dids[0]);
   const [localUsers, setLocalUsers] = useState([]);
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState('');
   const [showTutorial, setShowTutorial] = useState(false);
+
+  const [loginType, setLoginType] = useState(0); // 1: loign with pwd, 2: loign without pwd
 
   useEffect(() => {
     (async () => {
@@ -107,29 +107,25 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
       const users = getItemsFromData(getUserRes, 'get_users_by_dids');
       if (users.length > 0) {
         setLocalUsers(users);
+        await setLogingTypeAfterDidChanged(users[0].did);
         setLoading('');
       }
     })();
   }, [dids]);
 
-  const onLoginButtonClick = async () => {
-    if (!password || password === '') {
-      setError('Enter your password');
-      return;
+  const setLogingTypeAfterDidChanged = async (newDid: string) => {
+    if (newDid && newDid !== '') {
+      let uService = new UserService(await DidService.getInstance());
+
+      const canLoginWithPwd = await uService.validateWithPwd(newDid, '');
+      console.log('===>canLoginWithPwd', newDid, canLoginWithPwd);
+
+      if (canLoginWithPwd) {
+        setLoginType(2);
+      } else {
+        setLoginType(1);
+      }
     }
-    setLoading('Signing now...');
-
-    let userService = new UserService(await DidService.getInstance());
-
-    const res = await userService.UnLockWithDIDAndPwd(did, password);
-    if (res) {
-      await SyncService.TempInitializeSignedUsers(res);
-
-      afterSuccess(res);
-      return;
-    }
-
-    setLoading('');
   };
 
   return (
@@ -142,9 +138,7 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
           <Title40 className="mt-18px">
             We have seen your accounts before.
           </Title40>
-          <Text18 className="mt-25px">
-            You can select and login using the password you set
-          </Text18>
+          <Text18 className="mt-25px">You can select and login</Text18>
         </OnBoardLayoutLeftContent>
       </OnBoardLayoutLeft>
       <OnBoardLayoutRight>
@@ -156,36 +150,32 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
           {localUsers && localUsers.length > 0 && (
             <SelectUsers
               users={localUsers}
-              selectDID={(did: string) => setDid(did)}
+              selectDID={async (newDid: string) => {
+                setDid(newDid);
+                await setLogingTypeAfterDidChanged(newDid);
+              }}
               removeUser={removeUser}
               openModal={() => {
                 setShowTutorial(true);
               }}
             />
           )}
-          <TextInput
-            value={password}
-            type="password"
-            label="Password"
-            onChange={n => {
-              setError('');
-              setPassword(n);
-            }}
-            onHitEnter={async () => {
-              await onLoginButtonClick();
-            }}
-            placeholder="Enter your password"
-            hasError={error !== '' && password === ''}
-          />
-          {error !== '' && <ErrorTxt className="mt-3">{error}</ErrorTxt>}
-
-          <ThemeButton
-            text="Sign in to profile"
-            style={{ marginTop: '20px' }}
-            onClick={async () => {
-              await onLoginButtonClick();
-            }}
-          />
+          {loginType === 1 && (
+            <LoginWithPWD
+              did={did}
+              loading={loading}
+              setLoading={setLoading}
+              afterSuccess={afterSuccess}
+            />
+          )}
+          {loginType === 2 && (
+            <LoginWithoutPWD
+              did={did}
+              loading={loading}
+              setLoading={setLoading}
+              afterSuccess={afterSuccess}
+            />
+          )}
 
           <FieldDivider mt={80} />
           <ThemeButton
@@ -243,4 +233,4 @@ const MultiDidPasswordLogin: React.FC<Props> = ({
   );
 };
 
-export default MultiDidPasswordLogin;
+export default MultiDidLogin;

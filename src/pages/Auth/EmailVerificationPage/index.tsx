@@ -73,26 +73,20 @@ const EmailVerificationPage: React.FC<PageProps> = ({
 
   const [user, setUser] = useState({
     name: '',
-    email: '',
-    password: ''
+    email: ''
   });
 
   useEffect(() => {
-    const { name, email, password } = props.location.state;
+    const { name, email } = props.location.state;
 
-    if (name !== '' && email !== '' && password !== '') {
-      setUser({ name, email, password });
+    if (name !== '' && email !== '') {
+      setUser({ name, email });
       setLoaded(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log('===>user', user);
-
-  if (
-    loaded &&
-    (user.name === '' || user.email === '' || user.password === '')
-  ) {
+  if (loaded && (user.name === '' || user.email === '')) {
     return <Redirect to="/create-profile" />;
   }
 
@@ -139,7 +133,6 @@ const EmailVerificationPage: React.FC<PageProps> = ({
         session.service,
         session.loginCred,
         session.credential,
-        user.password,
         session.did,
         mnemonic,
         '',
