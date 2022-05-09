@@ -138,20 +138,8 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
       ) {
         newSession.badges!.dStorage!.ownVault.archived = new Date().getTime();
       }
+
       let didService = await DidService.getInstance();
-      if (selected !== 'document') {
-        let document = await didService.getStoredDocument(new DID(session.did));
-        let docBuilder = DIDDocument.Builder.newFromDocument(document);
-
-        docBuilder.addService('#hivevault', 'HiveVault', endpoint);
-        let signedDocument = await docBuilder.seal(
-          process.env.REACT_APP_DID_STORE_PASSWORD as string
-        );
-
-        await didService.storeDocument(signedDocument);
-        await didService.publishDocument(signedDocument);
-        setDidDocument(signedDocument.toString(true));
-      }
       let userService = new UserService(didService);
       const updatedSession = await userService.updateSession(newSession);
       setSession(updatedSession);
@@ -161,11 +149,11 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
       }
       props.setLoadingText('Installing scripts on User Vault.');
       await UserVaultScripts.Execute(hiveInstance!);
-      let blockchainDocument = await didService.getPublishedDocument(
+      let storedDocument = await didService.getStoredDocument(
         new DID(session.did)
       );
 
-      blockchainDocument.credentials?.forEach(async vc => {
+      storedDocument.credentials?.forEach(async vc => {
         await DidcredsService.addOrUpdateCredentialToVault(newSession, vc);
       });
 

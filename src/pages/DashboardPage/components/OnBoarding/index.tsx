@@ -191,14 +191,6 @@ const OnBoarding: React.FC<Props> = ({
           >
             Start Tutorial
           </IonButton>
-          <Container>
-            <div
-              className="item"
-              onClick={() => window.open('https://www.tuum.tech')}
-            >
-              <p>Tuum.Tech</p>
-            </div>
-          </Container>
         </div>
       );
     }

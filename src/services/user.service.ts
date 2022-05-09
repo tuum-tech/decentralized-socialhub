@@ -11,11 +11,12 @@ import {
 } from './script.service';
 import { ProfileService } from './profile.service';
 import {
+  DID,
   DIDDocument,
   DIDURL,
   RootIdentity
 } from '@elastosfoundation/did-js-sdk/';
-import { IDidService } from './did.service.new';
+import { DidService, IDidService } from './did.service.new';
 import { CredentialType, DidcredsService } from './didcreds.service';
 import { SpaceService } from './space.service';
 import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
@@ -165,6 +166,32 @@ export class UserService {
       loginCred.twitter,
       documentWithCredentials,
       CredentialType.Twitter
+    );
+
+    // Add hive to the documents
+    let endpoint = `${process.env.REACT_APP_TUUM_TECH_HIVE}`;
+    temporaryDocument = await this.didService.addServiceToDIDDocument(
+      temporaryDocument,
+      endpoint
+    );
+    documentWithCredentials = await this.didService.addServiceToDIDDocument(
+      documentWithCredentials,
+      endpoint
+    );
+
+    // Add name to the documents
+    let nameCredential = await this.didService.newSelfVerifiableCredential(
+      temporaryDocument,
+      'name',
+      name
+    );
+    documentWithCredentials = await this.didService.addVerifiableCredentialToDIDDocument(
+      documentWithCredentials,
+      nameCredential
+    );
+    temporaryDocument = await this.didService.addVerifiableCredentialToDIDDocument(
+      temporaryDocument,
+      nameCredential
     );
 
     this.didService.storeDocument(documentWithCredentials);
@@ -369,6 +396,7 @@ export class UserService {
   ) {
     let did = newDidStr;
     let mnemonics = newMnemonicStr;
+    let serviceEndpoint = hiveHostStr;
     if (!did || did === '') {
       mnemonics = await this.didService.generateNewMnemonics();
       const newDocument = await this.generateTemporaryDocument(
@@ -379,6 +407,11 @@ export class UserService {
         loginCred
       );
       did = newDocument.getSubject().toString();
+
+      let hiveUrl = new DIDURL(did + '#hivevault');
+      if (newDocument.services?.has(hiveUrl)) {
+        serviceEndpoint = newDocument.services.get(hiveUrl).serviceEndpoint;
+      }
     }
 
     const passhash = CryptoJS.SHA256(did).toString(CryptoJS.enc.Hex);
@@ -462,9 +495,9 @@ export class UserService {
         }
       },
       tutorialStep: 1,
-      hiveHost: !hiveHostStr
+      hiveHost: !serviceEndpoint
         ? `${process.env.REACT_APP_TUUM_TECH_HIVE}`
-        : hiveHostStr,
+        : serviceEndpoint,
       avatar,
       code: Guid.create().toString(),
       status: 'Created',
