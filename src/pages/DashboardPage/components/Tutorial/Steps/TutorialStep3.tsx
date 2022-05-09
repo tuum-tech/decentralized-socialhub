@@ -9,12 +9,18 @@ import { ProfileService } from 'src/services/profile.service';
 import { UserVaultScripts } from 'src/scripts/uservault.script';
 import useSession from 'src/hooks/useSession';
 
+import { connect } from 'react-redux';
+import { setSession } from 'src/store/users/actions';
+
 import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
 import { DID, DIDDocument, DIDURL } from '@elastosfoundation/did-js-sdk/';
 import { DidcredsService } from 'src/services/didcreds.service';
 import { useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom } from 'src/Atoms/Atoms';
+import { HiveClient } from 'src/shared-base/api/hiveclient';
+import { HiveException } from '@elastosfoundation/hive-js-sdk/';
+import { Logger } from 'src/shared-base/logger';
 import style from '../style.module.scss';
 
 const VersionTag = styled.div`
@@ -55,7 +61,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
 
   const getEndpoint = () => {
     if (selected === 'document') return hiveDocument;
-    if (selected === 'tuum') return `${process.env.REACT_APP_TUUM_TECH_HIVE}`;
+    if (selected === 'tuum') return `${process.env.REACT_APP_HIVE_HOST}`;
     return hiveUrl;
   };
 
@@ -73,6 +79,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
 
     let endpointValid = isEndpointValid(endpoint);
     if (!endpointValid || !props.setLoading) {
+      console.log('Endpoint not valid: ', endpoint);
       setErrorMessage('Invalid hive address');
       return;
     }
@@ -84,12 +91,13 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
     );
     if (!isValidHiveAddress) {
       props.setLoading(false);
+      console.log('Not valid address: ', endpoint);
       setErrorMessage('Invalid hive address');
       return;
     }
 
     if (!warningRead) {
-      let hiveVersion = await HiveService.getHiveVersion(endpoint);
+      let hiveVersion = await HiveClient.getHiveVersion(endpoint);
 
       if (!(await HiveService.isHiveVersionSet(hiveVersion))) {
         props.setLoading(false);
@@ -122,7 +130,11 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
     }
 
     try {
-      let userToken = await generateUserToken(session.mnemonics, endpoint);
+      let hiveClient = await HiveService.getHiveClient(session);
+
+      if (!hiveClient) throw new HiveException('Unable to create Hive client');
+      let userToken = hiveClient.getAccessToken();
+
       let newSession = JSON.parse(
         JSON.stringify({
           ...session,
@@ -132,10 +144,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
         })
       );
 
-      if (
-        selected !== 'tuum' &&
-        endpoint !== process.env.REACT_APP_TUUM_TECH_HIVE
-      ) {
+      if (selected !== 'tuum' && endpoint !== process.env.REACT_APP_HIVE_HOST) {
         newSession.badges!.dStorage!.ownVault.archived = new Date().getTime();
       }
       let didService = await DidService.getInstance();
@@ -143,9 +152,9 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
         let document = await didService.getStoredDocument(new DID(session.did));
         let docBuilder = DIDDocument.Builder.newFromDocument(document);
 
-        docBuilder.addService('#hivevault', 'HiveVault', endpoint);
+        docBuilder.addService('#hiveVault', 'HiveVault', endpoint);
         let signedDocument = await docBuilder.seal(
-          process.env.REACT_APP_DID_STORE_PASSWORD as string
+          process.env.REACT_APP_APPLICATION_STORE_PASS as string
         );
 
         await didService.storeDocument(signedDocument);
@@ -155,17 +164,15 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
       let userService = new UserService(didService);
       const updatedSession = await userService.updateSession(newSession);
       setSession(updatedSession);
-      let hiveInstance = await HiveService.getSessionInstance(newSession);
-      if (hiveInstance && hiveInstance.isConnected) {
-        await hiveInstance.Payment.CreateFreeVault();
+      if (hiveClient.isConnected()) {
+        await hiveClient.VaultSubscription.subscribe();
       }
-      props.setLoadingText('Installing scripts on User Vault.');
-      await UserVaultScripts.Execute(hiveInstance!);
-      let blockchainDocument = await didService.getPublishedDocument(
-        new DID(session.did)
+      await UserVaultScripts.Execute(hiveClient!);
+      let blockchainDocument: DIDDocument = await didService.getPublishedDocument(
+        new DID(props.session.did)
       );
 
-      blockchainDocument.credentials?.forEach(async vc => {
+      blockchainDocument.getCredentials().forEach(async vc => {
         await DidcredsService.addOrUpdateCredentialToVault(newSession, vc);
       });
 
@@ -255,48 +262,15 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
     props.setLoading(false);
   };
 
-  const generateUserToken = async (mnemonics: string, address: string) => {
-    let isEssentialsUser = mnemonics === undefined || mnemonics === '';
-    let challenge = await HiveService.getHiveChallenge(
-      address,
-      isEssentialsUser
-    );
-    let didService = await DidService.getInstance();
-    let presentation;
-    if (mnemonics) {
-      presentation = await didService.generateVerifiablePresentationFromUserMnemonics(
-        mnemonics,
-        '',
-        challenge.issuer,
-        challenge.nonce
-      );
-    } else {
-      props.setLoadingText(
-        "Please approve Profile's request on Esssentials App."
-      );
-      presentation = await didService.generateVerifiablePresentationFromEssentialCred(
-        challenge.issuer,
-        challenge.nonce
-      );
-    }
-
-    props.setLoadingText('Connecting to user Vault.');
-    const userToken = await HiveService.getUserHiveToken(
-      address,
-      presentation,
-      isEssentialsUser
-    );
-    return userToken;
-  };
-
   useEffect(() => {
     (async () => {
       let didService = await DidService.getInstance();
       setTuumHiveVersion(
-        await HiveService.getHiveVersion(
-          process.env.REACT_APP_TUUM_TECH_HIVE as string
+        await HiveClient.getHiveVersion(
+          process.env.REACT_APP_HIVE_HOST as string
         )
       );
+      new Logger('TutorialStep2.useEffect').debug('DID: {}', session.did);
       let doc = await didService.getDidDocument(session.did);
 
       if (doc.getServices() && doc.getServices().length > 0) {
