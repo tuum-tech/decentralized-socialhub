@@ -32,7 +32,7 @@ import { UserService } from 'src/services/user.service';
 
 import leftBg from 'src/assets/new/auth/signin_left_bg.png';
 import style from './style.module.scss';
-import { UserType, LocationState, InferMappedProps } from './types';
+import { LocationState, InferMappedProps } from './types';
 import { SubState } from 'src/store/users/types';
 import { HiveService } from 'src/services/hive.service';
 import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
