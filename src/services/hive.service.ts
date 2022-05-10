@@ -2,7 +2,8 @@ import { DidDocumentService } from './diddocument.service';
 import { CacheManager } from 'src/shared-base/cachemanager';
 import {
   HiveClient,
-  HiveClientParameters
+  HiveClientParameters,
+  appParameters
 } from 'src/shared-base/api/hiveclient';
 import { Logger } from 'src/shared-base/logger';
 import { UserDocumentNotPublishedException } from 'src/shared-base/exceptions';
@@ -13,6 +14,24 @@ export interface IHiveChallenge {
 }
 export class HiveService {
   private static LOG = new Logger('HiveService');
+
+  static async getApplicationHiveClient(): Promise<HiveClient | null> {
+    try {
+      let applicationParameters: HiveClientParameters = appParameters;
+      let hiveClient = CacheManager.get(
+        'ApplicationHiveClient',
+        applicationParameters
+      );
+
+      if (!hiveClient) {
+        hiveClient = await HiveClient.createInstance(applicationParameters);
+      }
+      return hiveClient;
+    } catch (e) {
+      HiveService.LOG.error('Cannot authenticate with Hive: {}', e);
+      return null;
+    }
+  }
 
   static async getHiveClient(
     session: ISessionItem

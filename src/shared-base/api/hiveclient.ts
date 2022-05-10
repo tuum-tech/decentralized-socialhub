@@ -32,9 +32,26 @@ const environmentParameters: HiveClientParameters = {
     appMnemonics: process.env.REACT_APP_APPLICATION_MNEMONICS,
     appPhrasePass: process.env.REACT_APP_APPLICATION_PASSPHRASE,
     appStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS,
-    userDID: 'did:elastos:icbxqm6jkk6Sk5NxTpeYakBqZ5KJ91rQNs',
+    userDID: '',
     userMnemonics: '', // 'web text team glue winner violin zebra case long alert share afford',
     userPhrasePass: '',
+    userStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS
+  } as AppContextParameters
+};
+
+export const appParameters: HiveClientParameters = {
+  hiveHost: process.env.REACT_APP_HIVE_HOST as string,
+  resolverUrl: process.env.REACT_APP_HIVE_RESOLVER_URL as string,
+  resolverCache: process.env.REACT_APP_HIVE_CACHE_DIR as string,
+  context: {
+    storePath: process.env.REACT_APP_APPLICATION_STORE_PATH,
+    appDID: process.env.REACT_APP_APPLICATION_DID,
+    appMnemonics: process.env.REACT_APP_APPLICATION_MNEMONICS,
+    appPhrasePass: process.env.REACT_APP_APPLICATION_PASSPHRASE,
+    appStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS,
+    userDID: process.env.REACT_APP_APPLICATION_DID,
+    userMnemonics: process.env.REACT_APP_APPLICATION_MNEMONICS, //
+    userPhrasePass: process.env.REACT_APP_APPLICATION_PASSPHRASE,
     userStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS
   } as AppContextParameters
 };

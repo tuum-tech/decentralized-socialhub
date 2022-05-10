@@ -235,7 +235,6 @@ export class HiveContextProvider implements AppContextProvider {
       .id(DIDURL.from('#app-id-credential', appDid) as DIDURL)
       .seal(process.env.REACT_APP_APPLICATION_STORE_PASS as string); // and we sign so it creates a Proof with method and signature
 
-    console.log('isValid: ' + (await vc.isValid()));
     this.store!.storeCredential(vc);
 
     let vpb = await VerifiablePresentation.createFor(appDid, null, this.store!);
@@ -315,9 +314,15 @@ export class HiveContextProvider implements AppContextProvider {
     let nbf = cal.unix();
     let exp = cal.add(3, 'month').unix();
 
-    // Create JWT token with presentation.
-    let didAccess = new CNDID.DIDAccess();
-    let response = await didAccess.getExistingAppInstanceDIDInfo();
+    let storePassword: string | undefined = undefined;
+    if (this.contextParameters.userMnemonics === '') {
+      // Create JWT token with presentation.
+      let didAccess = new CNDID.DIDAccess();
+      let response = await didAccess.getExistingAppInstanceDIDInfo();
+      storePassword = response.storePassword;
+    } else {
+      storePassword = this.contextParameters.appStorePass;
+    }
 
     let doc: DIDDocument = await this.getAppDocument();
     let token = await doc
@@ -330,7 +335,7 @@ export class HiveContextProvider implements AppContextProvider {
       .setExpiration(exp)
       .setNotBefore(nbf)
       .claimsWithJson('presentation', vp.toString(true))
-      .sign(response.storePassword);
+      .sign(storePassword);
 
     return token;
   }
