@@ -2,7 +2,7 @@ import { IonCol, IonRow } from '@ionic/react';
 import React from 'react';
 import styled from 'styled-components';
 
-export const CardTitle = styled.p<{ color: string }>`
+export const CardTitle = styled.div<{ color: string }>`
   color: ${props => props.color};
   font-size: 18px;
   font-weight: bold;

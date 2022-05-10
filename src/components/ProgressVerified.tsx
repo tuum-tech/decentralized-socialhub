@@ -16,7 +16,7 @@ const ProgressVerified = ({ percent }: Props) => (
     }}
   >
     <ProgressBar value={percent} text={'verified'} />
-    <div
+    <p
       style={{
         float: 'right',
         fontSize: '0.8em',
@@ -24,7 +24,7 @@ const ProgressVerified = ({ percent }: Props) => (
         color: '#A0AEC0'
       }}
       className="ion-text-nowrap"
-    >{`${percent}% ${'verified'}`}</div>
+    >{`${percent}% ${'verified'}`}</p>
   </div>
 );
 
