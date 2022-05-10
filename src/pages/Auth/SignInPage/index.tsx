@@ -139,6 +139,10 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
         );
         console.log('hello - signinpage: ', res, name);
         if (res) {
+          showNotify(
+            "Please approve Profile's multiple requests on Esssentials App.",
+            'warning'
+          );
           const session = await userService.LockWithDIDAndPwd(res);
           session.isEssentialUser = true;
           eProps.setSession({ session });
