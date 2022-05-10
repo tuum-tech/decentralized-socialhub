@@ -4,6 +4,10 @@ import { useHistory } from 'react-router-dom';
 import { DID } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { UserService } from 'src/services/user.service';
 import { DidService } from 'src/services/did.service.new';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
 
 import {
   OnBoardLayout,
@@ -18,6 +22,9 @@ import {
 import { Text16, Title40, Text12 } from 'src/elements/texts';
 import { ThemeButton, Button } from 'src/elements/buttons';
 
+import { LocationState, InferMappedProps } from './types';
+import { SubState } from 'src/store/users/types';
+
 import phone from 'src/assets/icon/phone.png';
 import { alertError, showNotify } from 'src/utils/notify';
 import style from './style.module.scss';
@@ -27,7 +34,11 @@ import FooterLinks, {
 import { HiveService } from 'src/services/hive.service';
 import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
 
-const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
+interface PageProps
+  extends InferMappedProps,
+    RouteComponentProps<{}, StaticContext, LocationState> {}
+
+const SignQRPage: React.FC<PageProps> = ({ eProps, ...props }) => {
   /**
    * Direct method implementation without SAGA
    * This was to show you dont need to put everything to global state
@@ -120,10 +131,11 @@ const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
           })
         );
         if (res) {
-          history.push({
-            pathname: '/set-password',
-            state: { ...res, isEssentialUser: true }
-          });
+          const session = await userService.LockWithDIDAndPwd(res);
+          session.isEssentialUser = false;
+          eProps.setSession({ session });
+          window.localStorage.setItem('isLoggedIn', 'true');
+          history.push('/profile');
         } else {
           history.push({
             pathname: '/create-profile-with-did',
@@ -193,4 +205,17 @@ const SignQRPage: React.FC<RouteComponentProps<{}, StaticContext>> = props => {
   );
 };
 
-export default SignQRPage;
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignQRPage);

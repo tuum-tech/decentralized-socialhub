@@ -141,6 +141,44 @@
     }
   },
   {
+    "sid": 8,
+    "name": "Elastos Bulls",
+    "category": "NFT Collection",
+    "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbk"],
+    "tags": [
+      "ERC-721",
+      "Governance",
+      "Social Token",
+      "Membership",
+      "Collectibles",
+      "Art"
+    ],
+    "meta": {
+      "network": "Elastos Smart Contract Chain",
+      "address": "0x0d5d0c116f2acbc19ce198e284a21b0c355b1260",
+      "slug": "Elastos Bulls"
+    }
+  },
+  {
+    "sid": 9,
+    "name": "The Meta Primates",
+    "category": "NFT Collection",
+    "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbk"],
+    "tags": [
+      "ERC-721",
+      "Governance",
+      "Social Token",
+      "Membership",
+      "Collectibles",
+      "Art"
+    ],
+    "meta": {
+      "network": "Elastos Smart Contract Chain",
+      "address": "0xcb262a92e2e3c8c3590b72a1fde3c6768ee08b7e",
+      "slug": "The Meta Primates"
+    }
+  },
+  {
     "sid": 102,
     "name": "LFC Heroes Club",
     "category": "NFT Collection",

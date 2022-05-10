@@ -1,4 +1,8 @@
 import React from 'react';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
 import { StaticContext, RouteComponentProps } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import {
@@ -28,17 +32,18 @@ import { UserService } from 'src/services/user.service';
 
 import leftBg from 'src/assets/new/auth/signin_left_bg.png';
 import style from './style.module.scss';
-import { LocationState } from './types';
+import { LocationState, InferMappedProps } from './types';
+import { SubState } from 'src/store/users/types';
 import { HiveService } from 'src/services/hive.service';
 import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
 import { useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom } from 'src/Atoms/Atoms';
 
-const SignInPage: React.FC<RouteComponentProps<
-  {},
-  StaticContext,
-  LocationState
->> = props => {
+interface PageProps
+  extends InferMappedProps,
+    RouteComponentProps<{}, StaticContext, LocationState> {}
+
+const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
   const history = useHistory();
   const setDidDocument = useSetRecoilState(DIDDocumentAtom);
   const getPresentation = async (): Promise<
@@ -134,10 +139,11 @@ const SignInPage: React.FC<RouteComponentProps<
         );
         console.log('hello - signinpage: ', res, name);
         if (res) {
-          history.push({
-            pathname: '/set-password',
-            state: { ...res, isEssentialUser: true }
-          });
+          const session = await userService.LockWithDIDAndPwd(res);
+          session.isEssentialUser = true;
+          eProps.setSession({ session });
+          window.localStorage.setItem('isLoggedIn', 'true');
+          history.push('/profile');
         } else {
           history.push({
             pathname: '/create-profile-with-did',
@@ -203,4 +209,16 @@ const SignInPage: React.FC<RouteComponentProps<
   );
 };
 
-export default SignInPage;
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(SignInPage);

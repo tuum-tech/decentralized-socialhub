@@ -44,12 +44,10 @@ import {
   AssociatedProfilePage,
   CreateProfilePage,
   CreateWhyPage,
-  CreatePasswordPage,
   GenerateDidPage,
   SignInPage,
   SignQRPage,
   ForgotPasswordPage,
-  UnlockUserPage,
   CreateProfileWithDidPage,
   RecoverAccountPage,
   EmailVerificationPage
@@ -188,22 +186,11 @@ const App: React.FC = () => {
 
                   {/* ok */}
                   <ProtectedRoute
-                    path="/set-password"
-                    component={CreatePasswordPage}
-                    exact={true}
-                  />
-                  <ProtectedRoute
                     path="/email-verification"
                     component={EmailVerificationPage}
                     exact={true}
                   />
 
-                  {/* ok */}
-                  <ProtectedRoute
-                    path="/unlock-user"
-                    component={UnlockUserPage}
-                    exact={true}
-                  />
                   {/* to test */}
                   <ProtectedRoute
                     path="/generate-did"

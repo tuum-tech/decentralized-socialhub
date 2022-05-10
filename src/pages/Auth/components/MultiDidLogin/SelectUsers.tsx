@@ -29,7 +29,6 @@ const SelectUser: React.FC<Props> = ({
   const [selectedItem, setSelectedItem] = useState(users[0]);
   const [showItems, setShowItems] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const [disableSelect, setDisableSelect] = useState(false);
 
   useEffect(() => {
     setSelectedItem(users[0]);
@@ -82,10 +81,12 @@ const SelectUser: React.FC<Props> = ({
           <div
             key={user.did}
             onClick={() => {
-              if (!disableSelect) {
-                selectDID(user.did);
-                setSelectedItem(user);
-              }
+              console.log('===>onclick');
+              // console.log('===>original', disableSelect);
+              // if (!disableSelect) {
+              selectDID(user.did);
+              setSelectedItem(user);
+              // }
               setShowItems(false);
             }}
             className={style['selectBox-items_row']}
@@ -98,8 +99,8 @@ const SelectUser: React.FC<Props> = ({
             <div
               className={style['trush']}
               onClick={() => removeUser(user.did)}
-              onMouseEnter={() => setDisableSelect(true)}
-              onMouseLeave={() => setDisableSelect(false)}
+              // onMouseEnter={() => setDisableSelect(true)}
+              // onMouseLeave={() => setDisableSelect(false)}
             >
               <Trush />
             </div>

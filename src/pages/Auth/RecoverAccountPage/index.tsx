@@ -23,9 +23,14 @@ import FooterLinks, {
 import wavinghand from 'src/assets/icon/wavinghand.png';
 
 import React, { useState, useEffect } from 'react';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
+import { makeSelectSession } from 'src/store/users/selectors';
+import { setSession } from 'src/store/users/actions';
 import styled from 'styled-components';
 import style from './style.module.scss';
-import { UserType, LocationState } from './types';
+import { UserType, LocationState, InferMappedProps } from './types';
+import { SubState } from 'src/store/users/types';
 import { DIDURL } from '@elastosfoundation/did-js-sdk/';
 import { HiveService } from 'src/services/hive.service';
 
@@ -44,11 +49,11 @@ const CreateButton = styled(Link)`
   }
 `;
 
-const RecoverAccountPage: React.FC<RouteComponentProps<
-  {},
-  StaticContext,
-  LocationState
->> = props => {
+interface PageProps
+  extends InferMappedProps,
+    RouteComponentProps<{}, StaticContext, LocationState> {}
+
+const RecoverAccountPage: React.FC<PageProps> = ({ eProps, ...props }) => {
   const history = useHistory();
   const [showHelp, setShowHelp] = useState(false);
   const [error, setError] = useState(false);
@@ -159,19 +164,19 @@ const RecoverAccountPage: React.FC<RouteComponentProps<
               setLoading(true);
               let userService = new UserService(didService);
               const res = await userService.SearchUserWithDID(did);
+
               window.localStorage.setItem(
                 `temporary_${did.replace('did:elastos:', '')}`,
                 JSON.stringify({
                   mnemonic: mnemonic
                 })
               );
-              setLoading(false);
 
               if (res) {
-                history.push({
-                  pathname: '/set-password',
-                  state: { ...res, isEssentialUser: false }
-                });
+                const session = await userService.LockWithDIDAndPwd(res);
+                eProps.setSession({ session });
+                window.localStorage.setItem('isLoggedIn', 'true');
+                history.push('/profile');
               } else {
                 history.push({
                   pathname: '/create-profile-with-did',
@@ -182,6 +187,7 @@ const RecoverAccountPage: React.FC<RouteComponentProps<
                   }
                 });
               }
+              setLoading(false);
             }
           }}
         />
@@ -194,4 +200,16 @@ const RecoverAccountPage: React.FC<RouteComponentProps<
   );
 };
 
-export default RecoverAccountPage;
+export const mapStateToProps = createStructuredSelector<SubState, SubState>({
+  session: makeSelectSession()
+});
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    eProps: {
+      setSession: (props: { session: ISessionItem }) =>
+        dispatch(setSession(props))
+    }
+  };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(RecoverAccountPage);
