@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import SpacePageHeader, {
   Header,
-  PageTitle,
   SpaceTabsContainer
 } from './components/SpacePageHeader';
 import SpaceListView from 'src/components/Space/SpaceListView';
@@ -13,6 +12,7 @@ import LoadingIndicator from 'src/elements/LoadingIndicator';
 import useSession from 'src/hooks/useSession';
 import { selectSpaces, selectSpacesLoading } from 'src/store/spaces/selectors';
 import { fetchSpaces } from 'src/store/spaces/actions';
+import HeaderMenu from 'src/elements-v2/HeaderMenu';
 
 const SpaceList: React.FC = () => {
   const dispatch = useDispatch();
@@ -57,7 +57,7 @@ const SpaceList: React.FC = () => {
   return (
     <>
       <Header>
-        <PageTitle>Spaces</PageTitle>
+        <HeaderMenu title="Spaces" />
         {!loading && mySpaces.length > 0 && (
           <LinkButton
             variant="contained"

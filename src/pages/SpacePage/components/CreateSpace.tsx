@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { IonCardTitle, IonCol, IonRow } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { Guid } from 'guid-typescript';
 import SmallTextInput from 'src/elements/inputs/SmallTextInput';
 import SmallTextareaInput from 'src/elements/inputs/SmallTextareaInput';
@@ -17,12 +18,24 @@ import {
 } from 'src/services/space.service';
 import useSession from 'src/hooks/useSession';
 import { showNotify } from 'src/utils/notify';
-import { Header, PageTitle } from './SpacePageHeader';
+import { Header } from './SpacePageHeader';
+import HeaderMenu from 'src/elements-v2/HeaderMenu';
+import { selectSpaces } from 'src/store/spaces/selectors';
+import { fetchSpaces } from 'src/store/spaces/actions';
 
 const CreateSpace: React.FC = () => {
+  const dispatch = useDispatch();
   const { session } = useSession();
   const history = useHistory();
-  const [mySpaces, setMySpaces] = useState<any[]>([]);
+  const spaces = useSelector(state => selectSpaces(state));
+  const mySpaces = useMemo(
+    () =>
+      spaces?.filter((x: any) => {
+        const owners = typeof x.owner === 'string' ? [x.owner] : x.owner;
+        return owners.includes(session.did);
+      }) ?? [],
+    [session, spaces]
+  );
   const spaceCategories = [
     { value: SpaceCategory.Personal, text: 'Personal Group' }
   ];
@@ -61,17 +74,7 @@ const CreateSpace: React.FC = () => {
   };
 
   useEffect(() => {
-    (async () => {
-      const spaces: any[] = await SpaceService.getAllSpaces();
-      const mySpaces = spaces.filter((x: any) => {
-        const owners = typeof x.owner === 'string' ? [x.owner] : x.owner;
-        return owners.includes(session.did);
-      });
-      const followingSpaces = spaces.filter((x: any) => {
-        return (x.followers || []).includes(session.did);
-      });
-      setMySpaces(mySpaces);
-    })();
+    dispatch(fetchSpaces(true));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -84,6 +87,7 @@ const CreateSpace: React.FC = () => {
       return;
     }
     await SpaceService.addSpace(session, space);
+    history.push('/spaces/list');
   };
 
   const handleSubmit = () => {
@@ -97,7 +101,12 @@ const CreateSpace: React.FC = () => {
   return (
     <>
       <Header>
-        <PageTitle>Spaces</PageTitle>
+        <HeaderMenu
+          title="Spaces"
+          subtitle="Create New Space"
+          back
+          backUrl="/spaces/list"
+        />
       </Header>
       <MyGrid className={style['form']}>
         <IonRow className={style['form_title']}>

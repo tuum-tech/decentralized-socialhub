@@ -15,6 +15,7 @@ export const Header = styled.div`
   align-items: center;
   ${down('sm')} {
     padding: 20px;
+    height: fit-content;
   }
 `;
 

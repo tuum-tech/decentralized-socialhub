@@ -17,7 +17,7 @@ const SpaceListView: React.FC<Props> = ({ spaces, explore = false }: Props) => {
   const renderSpaceCol = (space: any) => {
     const { isCommunitySpace } = space;
     return (
-      <IonCol size="4" key={JSON.stringify(space)}>
+      <IonCol sizeMd="4" sizeSm="12" key={JSON.stringify(space)}>
         <SpaceCard
           space={space}
           explore={explore}
