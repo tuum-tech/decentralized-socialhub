@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import style from './style.module.scss';
 
 import { SectionSubTitle, SectionText } from '../../index';
-import monetizeBg from 'src/assets/new/monetize-bg.jpg';
+import monetizeBg from 'src/assets/new/monetize-bg.svg';
 
 export const ContentContainer = styled.div`
   width: 100%;

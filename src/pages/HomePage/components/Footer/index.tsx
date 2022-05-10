@@ -2,9 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 
-import footerBG from 'src/assets/new/footer/footer-bg.png';
-import footerImg from 'src/assets/new/footer/footer-img.png';
-import footerPeople from 'src/assets/new/footer/footer-people.png';
+import footerBG from 'src/assets/new/footer/footer-bg.svg';
+import footerImg from 'src/assets/new/footer/footer-img.svg';
+import footerPeople from 'src/assets/new/footer/footer-people.svg';
+import arrowtop from 'src/assets/new/arrow-top.svg';
 import logo from 'src/assets/new/logo.svg';
 import { Twitter, Discord, Medium } from 'src/components/Icons';
 import { HomeIntro, HomeTitle } from '../Hero';
@@ -45,6 +46,18 @@ const Container = styled.div<{ bgImg: string }>`
     left: calc(50% - 240px);
   }
 
+  .arrowtop {
+    position: absolute;
+    top: -128px;
+    right: 40px;
+    cursor: pointer;
+
+    img {
+      width: 76px;
+      height: 76px;
+    }
+  }
+
   .content {
     display: flex;
     flex-direction: column;
@@ -83,6 +96,16 @@ const Container = styled.div<{ bgImg: string }>`
     .logo {
       display: none;
     }
+    .arrowtop {
+      position: absolute;
+      top: -58px;
+      right: 10px;
+
+      img {
+        width: 36px;
+        height: 36px;
+      }
+    }
     .icons {
       display: block;
 
@@ -111,6 +134,8 @@ const Container = styled.div<{ bgImg: string }>`
 
     .content {
       margin-top: 100px;
+      padding-left: 16px;
+      padding-right: 16px;
 
       p {
         max-width: 400px;
@@ -182,20 +207,33 @@ const FooterMenu = styled.div`
 
 interface Props {
   refProp: any;
+  rootRef: any;
 }
 
-const Footer: React.FC<Props> = ({ refProp }) => {
+const Footer: React.FC<Props> = ({ refProp, rootRef }) => {
   const history = useHistory();
+
+  const goToTop = () => {
+    (rootRef.current as any).scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
+  };
+
   return (
     <Container bgImg={footerBG} ref={refProp}>
       <img src={logo} alt="logo" className="logo" />
+      <div className="arrowtop" onClick={goToTop}>
+        <img src={arrowtop} alt="arrowtop" />
+      </div>
       <img src={footerPeople} alt="footerPeople" className="people" />
 
       <div className="content">
-        <HomeTitle>Own Yourself with a Web3 Profile</HomeTitle>
+        <HomeTitle>Get your NFT Collection listed!</HomeTitle>
         <HomeIntro style={{ marginBottom: 0 }}>
-          Once your digital footprint is created, the doors are opened to
-          countless communities and ownership opportunities.
+          Interested in adding your NFT collection to Profile? Submit key
+          information by filling out the form below
         </HomeIntro>
         <CreateButton onClick={() => history.push('/create-profile')}>
           Create Your Profile

@@ -94,6 +94,7 @@ const HomePage = () => {
   const communityRef = useRef(null);
   const ownershipRef = useRef(null);
   const connectRef = useRef(null);
+  const pageRef = useRef(null);
 
   const scrollTo = (target: string) => {
     if (target === 'About') {
@@ -110,16 +111,14 @@ const HomePage = () => {
   };
 
   return (
-    <Page>
+    <Page ref={pageRef}>
       <Hero navItemClicked={scrollTo} />
-
       <AboutSection refProp={aboutRef} />
       <UtilitySection refProp={utilityRef} />
       <CommunitySection refProp={communityRef} />
       <OwnershipSection refProp={ownershipRef} />
       {/* <ConnectSection refProp={connectRef} /> */}
-
-      <Footer refProp={connectRef} />
+      <Footer refProp={connectRef} rootRef={pageRef} />
     </Page>
   );
 };
