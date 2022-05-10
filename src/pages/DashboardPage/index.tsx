@@ -124,8 +124,6 @@ const DashboardPage: React.FC = () => {
 
       let userService = new UserService(await DidService.getInstance());
       setSession(await userService.updateSession(session));
-
-      await DidDocumentService.reloadUserDocument(session);
     }
   };
 

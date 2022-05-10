@@ -285,6 +285,7 @@ interface ISessionItem {
   phone?: string;
   timestamp: number;
   referrals?: IReferral[];
+  passwordRemoved?: boolean;
 }
 
 interface LoginCred {

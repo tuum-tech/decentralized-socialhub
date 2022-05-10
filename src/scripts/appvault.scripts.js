@@ -583,7 +583,8 @@ let run = async () => {
             status: '$params.status',
             pageTemplate: '$params.pageTemplate',
             timestamp: '$params.timestamp',
-            referrals: '$params.referrals'
+            referrals: '$params.referrals',
+            passwordRemoved: true
           }
         }
       }
@@ -621,7 +622,8 @@ let run = async () => {
               hiveHost: '$params.hiveHost',
               avatar: '$params.avatar',
               pageTemplate: '$params.pageTemplate',
-              referrals: '$params.referrals'
+              referrals: '$params.referrals',
+              passwordRemoved: true
             }
           }
         }
