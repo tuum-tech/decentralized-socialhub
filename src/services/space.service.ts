@@ -344,7 +344,6 @@ export class SpaceService {
         const tuumUser = await userService.SearchUserWithDID(post.creator);
         const hiveInstance = await HiveService.getSessionInstance(tuumUser);
         if (!tuumUser || !hiveInstance) {
-          console.log(`========== ${post.creator} doesn't exist in tuum tech vault ==========`);
           return null;
         }
         const userVaultRes: any = await hiveInstance.Scripting.RunScript({
@@ -358,9 +357,6 @@ export class SpaceService {
           }
         });
         const data = getItemsFromData(userVaultRes, 'get_space_post');
-        if (data.length <= 0) {
-          console.log(`========== The post ${post.post_id} doesn't exist in ${tuumUser.name} user vault ============`);
-        }
         return data.length > 0
           ? {
               ...post,
