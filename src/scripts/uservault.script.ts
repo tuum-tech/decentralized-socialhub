@@ -935,10 +935,6 @@ export class UserVaultScripts {
   }
 
   static async SetScripts(hiveClient: HiveClient) {
-    // templates
-
-    await this.addSpacesScriptSetter(hiveClient);
-
     await Promise.all([
       this.setPublicTemplateScriptSetter(hiveClient),
       this.getPublicFieldsScriptSetter(hiveClient),
