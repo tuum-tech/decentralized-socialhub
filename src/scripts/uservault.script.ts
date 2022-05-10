@@ -940,11 +940,10 @@ export class UserVaultScripts {
     await this.addSpacesScriptSetter(hiveClient);
 
     await Promise.all([
-      this.removeSpaceScriptSetter(hiveClient),
-      this.updateMyTemplatesScriptSetter(hiveClient),
-      this.getMyTemplatesScriptSetter(hiveClient),
       this.setPublicTemplateScriptSetter(hiveClient),
       this.getPublicFieldsScriptSetter(hiveClient),
+      this.getMyTemplatesScriptSetter(hiveClient),
+      this.updateMyTemplatesScriptSetter(hiveClient),
       this.getFollowingScriptSetter(hiveClient),
       this.getBasicProfileScriptSetter(hiveClient),
       this.updateBasicProfileScriptSetter(hiveClient),
@@ -987,14 +986,14 @@ export class UserVaultScripts {
   }
 
   static async Delete(hiveClient: HiveClient) {
+    await hiveClient.Database.deleteCollection('templates');
+    await hiveClient.Database.deleteCollection('public_fields');
     await hiveClient.Database.deleteCollection('following');
     await hiveClient.Database.deleteCollection('basic_profile');
     await hiveClient.Database.deleteCollection('education_profile');
     await hiveClient.Database.deleteCollection('experience_profile');
     await hiveClient.Database.deleteCollection('activities');
-    await hiveClient.Database.deleteCollection('public_fields');
     await hiveClient.Database.deleteCollection('verifiable_credentials');
-    await hiveClient.Database.deleteCollection('templates');
     await hiveClient.Database.deleteCollection('team_profile');
     await hiveClient.Database.deleteCollection('thesis_profile');
     await hiveClient.Database.deleteCollection('paper_profile');

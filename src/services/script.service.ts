@@ -505,15 +505,15 @@ export class UserVaultScriptService {
       }
 
       try {
-        if (!newUser.userToken) {
-          let userToken = await this.generateUserToken(
-            newUser.mnemonics,
-            newUser.hiveHost
-          );
-          newUser.userToken = userToken;
-        }
+        let userToken = await this.generateUserToken(
+          newUser.mnemonics,
+          newUser.hiveHost
+        );
+        newUser.userToken = userToken;
+
         let userService = new UserService(await DidService.getInstance());
         await userService.updateSession(newUser);
+        await TuumTechScriptService.updateTuumUser(newUser);
         let hiveInstance = await HiveService.getSessionInstance(newUser);
         await UserVaultScripts.Execute(hiveInstance!);
       } catch (error) {
