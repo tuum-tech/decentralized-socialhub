@@ -9,11 +9,15 @@ import { HiveClient } from 'src/shared-base/api/hiveclient';
 
 export class UserVaultScripts {
   static async Execute(hiveClient: HiveClient) {
-    await Promise.all([
-      this.CreateCollections(hiveClient),
-      this.SetScripts(hiveClient)
-    ]);
-    console.log('uservaultscripts registered');
+    try {
+      await Promise.all([
+        this.CreateCollections(hiveClient),
+        this.SetScripts(hiveClient)
+      ]);
+      console.log('uservaultscripts registered');
+    } catch (e) {
+      console.log(`Error: ${e}`);
+    }
   }
 
   static async CreateCollections(hiveClient: HiveClient) {

@@ -162,7 +162,11 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
       const updatedSession = await userService.updateSession(newSession);
       setSession(updatedSession);
       if (hiveClient.isConnected()) {
-        await hiveClient.VaultSubscription.subscribe();
+        let vaultInfo = await hiveClient.VaultSubscription.checkSubscription();
+        if (vaultInfo) {
+        } else {
+          await hiveClient.VaultSubscription.subscribe();
+        }
       }
       await UserVaultScripts.Execute(hiveClient!);
       let blockchainDocument: DIDDocument = await didService.getPublishedDocument(

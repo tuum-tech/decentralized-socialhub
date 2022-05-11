@@ -35,7 +35,7 @@ export class SpaceService {
   static async getPrivateSpaces(session?: ISessionItem) {
     let spaces = [];
     let groups: any = {};
-    const appHiveClient = await HiveService.getAnonymousHiveClient();
+    const appHiveClient = await HiveService.getApplicationHiveClient();
     if (appHiveClient) {
       try {
         if (session) {
@@ -84,7 +84,7 @@ export class SpaceService {
   }
   static async getCommunitySpaces(session?: ISessionItem) {
     let spaces = [];
-    const appHiveClient = await HiveService.getAnonymousHiveClient();
+    const appHiveClient = await HiveService.getApplicationHiveClient();
     if (appHiveClient) {
       const response = await appHiveClient.Scripting.callScript(
         'get_community_spaces',

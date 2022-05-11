@@ -329,8 +329,9 @@ export class HiveClient {
   }
 
   public isConnected(): boolean {
-    HiveClient.LOG.trace('isConnected');
-    return this.isConnected() || this.getAccessToken() ? true : false;
+    return true;
+    // HiveClient.LOG.trace('isConnected');
+    // return this.isConnected() || this.getAccessToken() ? true : false;
   }
 
   public getAccessToken(): string | null {
