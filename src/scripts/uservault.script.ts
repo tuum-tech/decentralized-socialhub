@@ -2,16 +2,28 @@ import { HiveClient } from '@elastosfoundation/elastos-hive-js-sdk';
 
 export class UserVaultScripts {
   static async Execute(hiveClient: HiveClient) {
-    if (hiveClient && hiveClient.isConnected) {
-      await hiveClient.Payment.CreateFreeVault();
+    try {
+      if (hiveClient && hiveClient.isConnected) {
+        await hiveClient.Payment.CreateFreeVault();
+      }
+    } catch (e) {
+      console.log(`Error while creating vault: ${e}`);
     }
-    console.log('Setup the uservault');
-    await this.CreateCollections(hiveClient);
-    console.log('Created all the collections for the uservault');
-    await new Promise(f => setTimeout(f, 2000));
-    await this.SetScripts(hiveClient);
-    console.log('Registered all the scripts for the uservault');
-    await new Promise(f => setTimeout(f, 2000));
+    try {
+      console.log('Setup the uservault');
+      await this.CreateCollections(hiveClient);
+      console.log('Created all the collections for the uservault');
+      await new Promise(f => setTimeout(f, 2000));
+    } catch (e) {
+      console.log(`Error while creating collections: ${e}`);
+    }
+    try {
+      await this.SetScripts(hiveClient);
+      console.log('Registered all the scripts for the uservault');
+      await new Promise(f => setTimeout(f, 2000));
+    } catch (e) {
+      console.log(`Error while registering scripts: ${e}`);
+    }
   }
 
   static async CreateCollections(hiveClient: HiveClient) {
