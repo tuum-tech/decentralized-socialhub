@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import TextInput from 'src/elements/inputs/TextInput';
+import { IonCol, IonGrid, IonRow, IonInput, IonTextarea } from '@ionic/react';
 
 import footerBG from 'src/assets/new/footer/footer-bg.svg';
 import footerImg from 'src/assets/new/footer/footer-img.svg';
@@ -92,6 +94,37 @@ const Container = styled.div<{ bgImg: string }>`
     }
   }
 
+  .form-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .input {
+    background: rgba(237, 242, 247, 0.09);
+    backdrop-filter: blur(16px);
+    border-radius: 20px;
+    height: 65px;
+    border: 1px solid #edf2f717;
+    font-weight: 700;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 20px 40px !important;
+  }
+
+  .textarea {
+    background: rgba(237, 242, 247, 0.09);
+    backdrop-filter: blur(16px);
+    border-radius: 20px;
+    max-width: 100%;
+    border: 1px solid #edf2f717;
+    font-weight: 700;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 30px 34px !important;
+  }
+
   @media only screen and (max-width: 1200px) {
     .logo {
       display: none;
@@ -140,6 +173,12 @@ const Container = styled.div<{ bgImg: string }>`
       p {
         max-width: 400px;
       }
+    }
+  }
+
+  @media only screen and (max-width: 742px) {
+    .form-row {
+      flex-direction: column;
     }
   }
 `;
@@ -212,6 +251,9 @@ interface Props {
 
 const Footer: React.FC<Props> = ({ refProp, rootRef }) => {
   const history = useHistory();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
 
   const goToTop = () => {
     (rootRef.current as any).scrollTo({
@@ -219,6 +261,30 @@ const Footer: React.FC<Props> = ({ refProp, rootRef }) => {
       left: 0,
       behavior: 'smooth'
     });
+  };
+
+  const send = async () => {
+    // const bodyContact = {
+    //   subject: `[Contact Us] - ${subject}`,
+    //   userinfo: userinfo,
+    //   description: description
+    // };
+    // const emailresponse: Response = await fetch(
+    //   `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/send_email`,
+    //   {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`
+    //     },
+    //     body: JSON.stringify(bodyContact)
+    //   }
+    // );
+    // if (emailresponse.status === 200) {
+    //   showNotify('Email sent successfully', 'success');
+    // } else {
+    //   showNotify('Error sending email. Please try again another time', 'error');
+    // }
   };
 
   return (
@@ -232,12 +298,43 @@ const Footer: React.FC<Props> = ({ refProp, rootRef }) => {
       <div className="content">
         <HomeTitle>Get your NFT Collection listed!</HomeTitle>
         <HomeIntro style={{ marginBottom: 0 }}>
-          Interested in adding your NFT collection to Profile? Submit key
+          Interested in adding your NFT collection to Profile? <br /> Submit key
           information by filling out the form below
         </HomeIntro>
-        <CreateButton onClick={() => history.push('/create-profile')}>
-          Create Your Profile
-        </CreateButton>
+        <form onSubmit={send} noValidate>
+          <IonGrid>
+            <IonRow className="ion-justify-content-between ion-no-padding">
+              <IonCol size="12" size-sm>
+                <IonInput
+                  value={name}
+                  className="input"
+                  placeholder="Enter your name"
+                  onIonChange={e => setName(e.detail.value!)}
+                />
+              </IonCol>
+              <IonCol size="12" size-sm>
+                <IonInput
+                  value={email}
+                  className="input"
+                  type="email"
+                  placeholder="Email"
+                  onIonChange={e => setEmail(e.detail.value!)}
+                />
+              </IonCol>
+            </IonRow>
+            <IonTextarea
+              cols={20}
+              rows={6}
+              value={message}
+              placeholder="Write your message..."
+              className="textarea"
+              onIonChange={e => setMessage(e.detail.value!)}
+            />
+            <IonRow className="ion-justify-content-center ion-no-padding">
+              <CreateButton type="submit">send</CreateButton>
+            </IonRow>
+          </IonGrid>
+        </form>
       </div>
 
       <FooterMenu>
