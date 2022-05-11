@@ -36,7 +36,6 @@ const FowllowCards: React.FC<Props> = ({
   useEffect(() => {
     (async () => {
       const searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-
       let followings: any = await searchServiceLocal.getUsersByDIDs(
         followingDids,
         5,

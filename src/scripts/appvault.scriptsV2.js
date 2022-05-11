@@ -1,5 +1,5 @@
 const config = require('./config.json');
-const { HiveService } = require('../services/hive.service');
+const { HiveClient } = require('../shared-base/api/hiveclient');
 const { FindExecutable } = require('@elastosfoundation/hive-js-sdk/typings');
 const { UpdateExecutable } = require('@elastosfoundation/hive-js-sdk/typings');
 const { DeleteExecutable } = require('@elastosfoundation/hive-js-sdk/typings');
@@ -961,7 +961,7 @@ let setupFeedbacks = async hiveClient => {
 let run = async () => {
   try {
     debugger;
-    let hiveClient = await HiveService.getApplicationHiveClient();
+    let hiveClient = await HiveClient.createAnonymousInstance();
     await hiveClient.VaultSubscription.subscribe();
     setupCommunitySpaces(hiveClient);
     setupAssets(hiveClient);

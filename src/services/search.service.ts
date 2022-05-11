@@ -68,7 +68,7 @@ export class SearchService {
 
   static async getSearchServiceAppOnlyInstance(): Promise<SearchService> {
     let searchService: SearchService = new SearchService();
-    const appHiveClient = await HiveService.getAnonymousHiveClient();
+    const appHiveClient = await HiveService.getApplicationHiveClient();
     if (appHiveClient) {
       searchService.appHiveClient = appHiveClient;
     }

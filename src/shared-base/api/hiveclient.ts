@@ -227,14 +227,20 @@ export class HiveClient {
 
   public static async getHiveVersion(hiveHost: string): Promise<string> {
     HiveClient.LOG.trace('getHiveVersion');
-    let hiveClient = await HiveClient.createAnonymousInstance(hiveHost);
+
+    let params = appParameters;
+    params.hiveHost = hiveHost;
+    let hiveClient = await HiveClient.createInstance(params);
+    //let hiveClient = await HiveClient.createAnonymousInstance(hiveHost);
 
     let serviceContext = new ServiceContext(
       hiveClient.appContext,
       hiveClient.hiveClientParameters.hiveHost
     );
 
-    return (await serviceContext.getNodeVersion()).toString();
+    //return (await serviceContext.getNodeVersion()).toString();
+    // TODO: fix sdk endpoint
+    return '2.7.1';
   }
 
   private static resolveDefaultParameters(
