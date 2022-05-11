@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import ownership from 'src/assets/new/ownership.png';
+import ownership from 'src/assets/new/ownership.svg';
 import { SectionTitle, SectionIntro, SectionText } from '../index';
 
 const Container = styled.div`
