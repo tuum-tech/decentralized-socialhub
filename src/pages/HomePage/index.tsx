@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { IonPage } from '@ionic/react';
 import styled from 'styled-components';
 
@@ -8,6 +8,7 @@ import AboutSection from './components/AboutSection';
 import UtilitySection from './components/UtilitySection';
 import CommunitySection from './components/CommunitySection';
 import OwnershipSection from './components/OwnershipSection';
+import Toast from './components/Toast';
 // import ConnectSection from './components/ConnectSection';
 
 const Page = styled(IonPage)`
@@ -95,6 +96,7 @@ const HomePage = () => {
   const ownershipRef = useRef(null);
   const connectRef = useRef(null);
   const pageRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(true);
 
   const scrollTo = (target: string) => {
     if (target === 'About') {
@@ -112,6 +114,8 @@ const HomePage = () => {
 
   return (
     <Page ref={pageRef}>
+      {isVisible && <Toast onClose={() => setIsVisible(false)} />}
+
       <Hero navItemClicked={scrollTo} />
       <AboutSection refProp={aboutRef} />
       <UtilitySection refProp={utilityRef} />

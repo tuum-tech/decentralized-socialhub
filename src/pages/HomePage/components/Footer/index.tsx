@@ -331,7 +331,7 @@ const Footer: React.FC<Props> = ({ refProp, rootRef }) => {
               onIonChange={e => setMessage(e.detail.value!)}
             />
             <IonRow className="ion-justify-content-center ion-no-padding">
-              <CreateButton type="submit">send</CreateButton>
+              <CreateButton type="submit">Send</CreateButton>
             </IonRow>
           </IonGrid>
         </form>
