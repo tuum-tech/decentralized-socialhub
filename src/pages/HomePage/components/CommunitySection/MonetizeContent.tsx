@@ -65,8 +65,8 @@ const MonetizeContent = styled(ContentContainer)`
 
   @media only screen and (max-width: 600px) {
     display: block;
-    margin-top: 421px;
-    padding-bottom: 53px;
+    margin-top: 430px;
+    padding-bottom: 47px;
   }
 `;
 

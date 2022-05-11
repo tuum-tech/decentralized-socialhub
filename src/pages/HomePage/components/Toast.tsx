@@ -24,7 +24,6 @@ const ToastContainer = styled.div`
   align-items: center;
   padding-top: 10px;
   padding-bottom: 10px;
-  max-width: 1444px;
   .close-Image {
     position: absolute;
     right: 15px;
@@ -47,10 +46,8 @@ const Toast: React.FC<IProps> = ({ onClose }) => {
   return (
     <ToastContainer>
       <ToastIntro className="intro">
-        <p>
-          Are you an NFT club member? We invite you to join NFT Spaces on
-          Profile. Contact us to Join {'>'}
-        </p>
+        Are you an NFT club member? We invite you to join NFT Spaces on Profile.
+        Contact us to Join {'>'}
       </ToastIntro>
       <img
         src={closeSvg}
