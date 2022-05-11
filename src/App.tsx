@@ -58,7 +58,6 @@ import DefaultPage from './pages/404Page';
 import ManagerPage from './pages/ManagerPage';
 import ActivityPage from './pages/ActivityPage';
 import SpacePage from './pages/SpacePage';
-import SpaceDashboardPage from './pages/SpaceDashboardPage';
 import PublicSpacePage from './pages/PublicSpacePage';
 import SyncPage from './pages/SyncPage';
 
@@ -138,11 +137,7 @@ const App: React.FC = () => {
                   />
                   {/* in a progress */}
                   <ProtectedRoute path="/spaces" component={SpacePage} />
-                  <ProtectedRoute
-                    path="/spaces/edit/:name"
-                    component={SpaceDashboardPage}
-                    exact={true}
-                  />
+
                   <ProtectedRoute
                     path="/settings"
                     component={SettingsPage}

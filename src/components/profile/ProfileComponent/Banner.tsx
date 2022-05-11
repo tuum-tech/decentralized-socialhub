@@ -26,13 +26,22 @@ const Banner: React.FC<Props> = ({ bgImg }) => {
     backgroundSize: horView ? '100% auto' : 'auto 100%'
   };
   useEffect(() => {
+    let isMounted = true;
     const photo = bgImg;
     const image = new Image();
     image.onload = () => {
-      setSize({ width: image.width, height: image.height });
+      if (isMounted) {
+        setSize({ width: image.width, height: image.height });
+      }
     };
     image.src = photo;
-  }, [bgImg]);
+
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return <div ref={ref} style={{ ...style }}></div>;
 };
 

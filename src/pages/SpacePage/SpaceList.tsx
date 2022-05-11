@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { setTimeout, clearTimeout } from 'timers';
 
 import SpacePageHeader, {
   Header,
@@ -20,14 +21,6 @@ const SpaceList: React.FC = () => {
   const loading = useSelector(state => selectSpacesLoading(state));
   const spaces = useSelector(state => selectSpaces(state));
   const [active, setActive] = useState('my spaces');
-
-  const setTimerForSpaces = () => {
-    const timer = setTimeout(async () => {
-      refreshSpaces();
-      setTimerForSpaces();
-    }, 5000);
-    return () => clearTimeout(timer);
-  };
 
   const refreshSpaces = useCallback(() => {
     dispatch(fetchSpaces());
@@ -51,7 +44,13 @@ const SpaceList: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchSpaces(true));
-    setTimerForSpaces();
+
+    let timer = setTimeout(function start() {
+      refreshSpaces();
+      timer = setTimeout(start, 5000);
+    }, 5000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
