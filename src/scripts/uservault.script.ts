@@ -2,8 +2,11 @@ import { HiveClient } from '@elastosfoundation/elastos-hive-js-sdk';
 
 export class UserVaultScripts {
   static async Execute(hiveClient: HiveClient) {
+    if (hiveClient && hiveClient.isConnected) {
+      await hiveClient.Payment.CreateFreeVault();
+    }
     await this.CreateCollections(hiveClient);
-    await new Promise(f => setTimeout(f, 200));
+    await new Promise(f => setTimeout(f, 2000));
     await this.SetScripts(hiveClient);
 
     // console.log('uservaultscripts registered');
