@@ -98,7 +98,7 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
           </IonCol>
         </IonRow>
         <IonRow>
-          <IonCol sizeMd="4" sizeSm="12" className="ion-no-padding">
+          <IonCol sizeMd="4" sizeSm="12">
             <OverView sessionItem={userInfo} profile={spaceProfile} />
             {spaceProfile.followers && spaceProfile.followers.length > 0 && (
               <Followers
@@ -109,7 +109,7 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
             )}
             <PublicFields sessionItem={userInfo} profile={spaceProfile} />
           </IonCol>
-          <IonCol sizeMd="8" sizeSm="12" className="ion-no-padding">
+          <IonCol sizeMd="8" sizeSm="12">
             <SpaceAvatarChange space={spaceProfile} onUpload={onUploadAvatar} />
             <SpaceCoverPhoto
               space={spaceProfile}
