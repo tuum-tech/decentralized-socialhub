@@ -1,4 +1,5 @@
 import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/Services/Scripting.Service';
+import { Guid } from 'guid-typescript';
 
 import { getItemsFromData } from 'src/utils/script';
 
@@ -33,7 +34,8 @@ export class TemplateService {
 
   static async setMyTemplates(
     userSession: ISessionItem,
-    templates: Template[]
+    templates: Template[],
+    guid: Guid | null
   ) {
     const hiveInstance = await HiveService.getSessionInstance(userSession);
     if (userSession && hiveInstance) {
@@ -43,13 +45,13 @@ export class TemplateService {
           target_did: userSession.did,
           target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
         },
-        params: { templates, did: userSession.did }
+        params: { templates, did: userSession.did, guid: guid || Guid.create() }
       });
     }
   }
 
   static async getMyTemplates(did: string) {
-    let templates: Template[] = [];
+    let templates: TemplatesResp;
 
     let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
     let userResponse = await searchServiceLocal.searchUsersByDIDs([did], 1, 0);
@@ -76,8 +78,7 @@ export class TemplateService {
         }
       );
 
-      templates =
-        (getItemsFromData(res, 'get_my_templates')[0] || {}).templates || [];
+      templates = getItemsFromData(res, 'get_my_templates')[0];
     }
     return templates;
   }
