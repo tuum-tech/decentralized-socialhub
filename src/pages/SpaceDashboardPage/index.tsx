@@ -4,6 +4,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
+import { down } from 'styled-breakpoints';
 
 import { useRecoilState } from 'recoil';
 import { SyncSpaceAtom } from 'src/Atoms/Atoms';
@@ -24,6 +25,10 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  ${down('sm')} {
+    padding: 10px 20px 10px;
+    height: fit-content;
+  }
 `;
 
 interface MatchParams {
