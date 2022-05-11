@@ -80,6 +80,7 @@ const TemplateManagerCard: React.FC<PageProps> = ({
   updateSession
 }: PageProps) => {
   const [myTemplates, setMyTemplates] = useState<Template[]>([]);
+  const [myGuid, setMyGuid] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [template, setTemplate] = useState(
     sessionItem.pageTemplate || 'default'
@@ -91,7 +92,8 @@ const TemplateManagerCard: React.FC<PageProps> = ({
         const mTemplates = await TemplateService.getMyTemplates(
           sessionItem.did
         );
-        setMyTemplates(mTemplates);
+        setMyTemplates(mTemplates?.templates || []);
+        setMyGuid(mTemplates?.guid || null);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -228,7 +230,11 @@ const TemplateManagerCard: React.FC<PageProps> = ({
               newTemplateValues.includes(t.value)
             );
 
-            await TemplateService.setMyTemplates(sessionItem, newMyTemplates);
+            await TemplateService.setMyTemplates(
+              sessionItem,
+              newMyTemplates,
+              myGuid
+            );
             setMyTemplates(newMyTemplates);
           }}
         />
