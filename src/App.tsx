@@ -167,7 +167,7 @@ const App: React.FC = () => {
                     component={ActivityPage}
                     exact={true}
                   />
-
+                  {/* TODO: Uncomment this once Sync works again */}
                   <ProtectedRoute
                     path="/sync"
                     component={SyncPage}
