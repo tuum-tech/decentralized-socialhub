@@ -39,7 +39,6 @@ import {
 } from './types';
 
 import { requestForceCreateUser } from './fetchapi';
-import GenerateDid from './components/GenerateDid';
 import style from './style.module.scss';
 import FooterLinks, {
   Footer
@@ -60,7 +59,7 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
   const [status, setStatus] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState<UserProps | null>(null);
-  const [screen, setScreen] = useState('');
+
   const [associatedInfo, setAssociatedIfno] = useState<SessionProp | null>(
     null
   );
@@ -84,19 +83,6 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
 
   if (!associatedInfo || !user) {
     return <LoadingIndicator />;
-  } else if (screen === '/generate-did') {
-    return (
-      <GenerateDid
-        name={associatedInfo.name}
-        loginCred={associatedInfo.loginCred}
-        credential=""
-        service={associatedInfo.service}
-        afterPasswordSet={(session: ISessionItem) => {
-          eProps.setSession({ session });
-          setStatus(1);
-        }}
-      />
-    );
   }
 
   if (status === 1) {
@@ -207,7 +193,17 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
                   );
                 }
               } else {
-                setScreen('/generate-did');
+                let accountType = Object.values(AccountType).includes(service)
+                  ? service
+                  : 'Other';
+                history.push({
+                  pathname: '/generate-did',
+                  state: {
+                    name: name,
+                    loginCred: loginCred,
+                    service: accountType
+                  }
+                });
               }
             }}
           />

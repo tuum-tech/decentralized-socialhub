@@ -67,7 +67,7 @@ const SignUpButton = styled.button`
 
   margin-left: 16.5px;
 
-  background: #995aff;
+  background: linear-gradient(145.76deg, #995aff 14.97%, #dc59bf 87.23%);
   border-radius: 10px;
 
   font-family: SF Pro Display;

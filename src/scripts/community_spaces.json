@@ -125,7 +125,7 @@
     "sid": 7,
     "name": "CryptoHoodieMan",
     "category": "NFT Collection",
-    "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbk"],
+    "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"],
     "tags": [
       "ERC-721",
       "Governance",
@@ -144,7 +144,7 @@
     "sid": 8,
     "name": "Elastos Bulls",
     "category": "NFT Collection",
-    "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbk"],
+    "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"],
     "tags": [
       "ERC-721",
       "Governance",
@@ -163,7 +163,7 @@
     "sid": 9,
     "name": "The Meta Primates",
     "category": "NFT Collection",
-    "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbk"],
+    "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"],
     "tags": [
       "ERC-721",
       "Governance",

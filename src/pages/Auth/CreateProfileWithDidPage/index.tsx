@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { StaticContext, RouteComponentProps, Redirect } from 'react-router';
+import { StaticContext, RouteComponentProps } from 'react-router';
 import { AccountType, UserService } from 'src/services/user.service';
+import { useHistory } from 'react-router-dom';
 
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
@@ -10,7 +11,7 @@ import { makeSelectSession } from 'src/store/users/selectors';
 import { DidService } from 'src/services/did.service.new';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { retrieveDocInfo, UserType } from 'src/utils/user';
-import SetPassword from '../components/SetPassword';
+
 import { InferMappedProps, LocationState, SubState } from './types';
 import ProfileFields from './components/ProfileFields';
 
@@ -33,7 +34,7 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
     avatar: ''
   });
 
-  const [status, setStatus] = useState(0);
+  const history = useHistory();
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -67,60 +68,37 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
 
   if (userInfo.did === '') {
     return <LoadingIndicator />;
-  } else {
-    if (
-      status === 0 &&
-      userInfo.name !== '' &&
-      (!userInfo.loginCred.email || userInfo.loginCred.email === '')
-    ) {
-      setStatus(1);
-    }
-
-    if (status === 1) {
-      return (
-        <SetPassword
-          loading={false}
-          next={async pwd => {
-            let userService = new UserService(await DidService.getInstance());
-            let sessionItem = await userService.CreateNewUser(
-              userInfo.name,
-              AccountType.DID,
-              userInfo.loginCred,
-              '',
-              pwd,
-              userInfo.did,
-              userInfo.mnemonic,
-              userInfo.hiveHost,
-              userInfo.avatar
-            );
-            eProps.setSession({ session: sessionItem });
-            setStatus(3);
-          }}
-        />
-      );
-    }
-
-    if (status === 3) {
-      return <Redirect to="/profile" />;
-    }
-
-    return (
-      <ProfileFields
-        userInfo={userInfo}
-        setUserInfo={(name, email) => {
-          setUserInfo({
-            ...userInfo,
-            name,
-            loginCred: {
-              ...userInfo.loginCred,
-              email
-            }
-          });
-          setStatus(1);
-        }}
-      />
-    );
   }
+
+  return (
+    <ProfileFields
+      userInfo={userInfo}
+      setUserInfo={async (name, email) => {
+        const newUserInfo = {
+          ...userInfo,
+          name,
+          loginCred: {
+            ...userInfo.loginCred,
+            email
+          }
+        };
+
+        let userService = new UserService(await DidService.getInstance());
+        let sessionItem = await userService.CreateNewUser(
+          newUserInfo.name,
+          AccountType.DID,
+          newUserInfo.loginCred,
+          '',
+          newUserInfo.did,
+          newUserInfo.mnemonic,
+          newUserInfo.hiveHost,
+          newUserInfo.avatar
+        );
+        eProps.setSession({ session: sessionItem });
+        history.push('/profile');
+      }}
+    />
+  );
 };
 
 export const mapStateToProps = createStructuredSelector<SubState, SubState>({

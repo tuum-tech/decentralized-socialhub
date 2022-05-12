@@ -144,23 +144,15 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
       if (selected !== 'tuum' && endpoint !== process.env.REACT_APP_HIVE_HOST) {
         newSession.badges!.dStorage!.ownVault.archived = new Date().getTime();
       }
+
       let didService = await DidService.getInstance();
-      if (selected !== 'document') {
-        let document = await didService.getStoredDocument(new DID(session.did));
-        let docBuilder = DIDDocument.Builder.newFromDocument(document);
-
-        docBuilder.addService('#hiveVault', 'HiveVault', endpoint);
-        let signedDocument = await docBuilder.seal(
-          process.env.REACT_APP_APPLICATION_STORE_PASS as string
-        );
-
-        await didService.storeDocument(signedDocument);
-        await didService.publishDocument(signedDocument);
-        setDidDocument(signedDocument.toString(true));
-      }
       let userService = new UserService(didService);
       const updatedSession = await userService.updateSession(newSession);
       setSession(updatedSession);
+      props.setLoadingText('Installing scripts on User Vault.');
+      let storedDocument = await didService.getStoredDocument(
+        new DID(session.did)
+      );
       if (hiveClient.isConnected()) {
         let vaultInfo = await hiveClient.VaultSubscription.checkSubscription();
         if (vaultInfo) {
@@ -169,11 +161,8 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
         }
       }
       await UserVaultScripts.Execute(hiveClient!);
-      let blockchainDocument: DIDDocument = await didService.getPublishedDocument(
-        new DID(session.did)
-      );
 
-      blockchainDocument.getCredentials().forEach(async vc => {
+      storedDocument.credentials?.forEach(async vc => {
         await DidcredsService.addOrUpdateCredentialToVault(newSession, vc);
       });
 

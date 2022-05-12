@@ -10,13 +10,26 @@ import { HiveClient } from 'src/shared-base/api/hiveclient';
 export class UserVaultScripts {
   static async Execute(hiveClient: HiveClient) {
     try {
-      await Promise.all([
-        this.CreateCollections(hiveClient),
-        this.SetScripts(hiveClient)
-      ]);
-      console.log('uservaultscripts registered');
+      if (hiveClient && hiveClient.isConnected) {
+        await hiveClient.VaultSubscription.subscribe();
+      }
     } catch (e) {
-      console.log(`Error: ${e}`);
+      console.log(`Error while creating vault: ${e}`);
+    }
+    try {
+      console.log('Setup the uservault');
+      await this.CreateCollections(hiveClient);
+      console.log('Created all the collections for the uservault');
+      await new Promise(f => setTimeout(f, 2000));
+    } catch (e) {
+      console.log(`Error while creating collections: ${e}`);
+    }
+    try {
+      await this.SetScripts(hiveClient);
+      console.log('Registered all the scripts for the uservault');
+      await new Promise(f => setTimeout(f, 2000));
+    } catch (e) {
+      console.log(`Error while registering scripts: ${e}`);
     }
   }
 
@@ -41,6 +54,7 @@ export class UserVaultScripts {
   }
 
   static async setPublicTemplateScriptSetter(hiveClient: HiveClient) {
+    console.log("Registering uservault script 'set_public_fields'...");
     let executable = new UpdateExecutable(
       'set_public_fields',
       'public_fields',
@@ -56,9 +70,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'set_public_fields'"
+    );
   }
 
   static async getPublicFieldsScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'getPublicFieldsScriptSetter'..."
+    );
     let executable = new FindExecutable(
       'get_public_fields',
       'public_fields',
@@ -73,9 +93,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'getPublicFieldsScriptSetter'"
+    );
   }
 
-  static async updateMyTemplatesScriptSet(hiveClient: HiveClient) {
+  static async updateMyTemplatesScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'updateMyTemplatesScriptSetter'..."
+    );
     let executable = new UpdateExecutable(
       'update_my_templates',
       'templates',
@@ -90,9 +116,12 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'updateMyTemplatesScriptSetter'"
+    );
   }
 
-  static async getMyTemplatesScriptSet(hiveClient: HiveClient) {
+  static async getMyTemplatesScriptSetter(hiveClient: HiveClient) {
     let executable = new FindExecutable(
       'get_my_templates',
       'templates',
@@ -110,6 +139,7 @@ export class UserVaultScripts {
   }
 
   static async getFollowingScriptSetter(hiveClient: HiveClient) {
+    console.log("Registering uservault script 'getFollowingScriptSetter'...");
     let executable = new FindExecutable(
       'get_following',
       'following',
@@ -124,9 +154,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'getFollowingScriptSetter'"
+    );
   }
 
   static async getBasicProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'getBasicProfileScriptSetter'..."
+    );
     let executable = new FindExecutable(
       'get_basic_profile',
       'basic_profile',
@@ -141,9 +177,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'getBasicProfileScriptSetter'"
+    );
   }
 
   static async updateBasicProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'updateBasicProfileScriptSetter'..."
+    );
     let executable = new UpdateExecutable(
       'update_basic_profile',
       'basic_profile',
@@ -158,9 +200,13 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'updateBasicProfileScriptSetter'"
+    );
   }
 
   static async getTeamProfileScriptSetter(hiveClient: HiveClient) {
+    console.log("Registering uservault script 'getTeamProfileScriptSetter'...");
     let executable = new FindExecutable(
       'get_team_profile',
       'team_profile',
@@ -175,9 +221,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'getTeamProfileScriptSetter'"
+    );
   }
 
   static async updateTeamProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'updateTeamProfileScriptSetter'..."
+    );
     let executable = new UpdateExecutable(
       'update_team_profile',
       'team_profile',
@@ -201,9 +253,13 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'updateTeamProfileScriptSetter'"
+    );
   }
 
   static async removeTeamItemScriptSetter(hiveClient: HiveClient) {
+    console.log("Registering uservault script 'removeTeamItemScriptSetter'...");
     let executable = new DeleteExecutable('remove_team_item', 'team_profile', {
       guid: '$params.guid'
     });
@@ -214,9 +270,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'removeTeamItemScriptSetter'"
+    );
   }
 
   static async getThesisProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'getThesisProfileScriptSetter'..."
+    );
     let executable = new FindExecutable(
       'get_thesis_profile',
       'thesis_profile',
@@ -230,10 +292,16 @@ export class UserVaultScripts {
       undefined,
       true,
       true
+    );
+    console.log(
+      "Completed registration of uservault script 'getThesisProfileScriptSetter'"
     );
   }
 
   static async updateThesisProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'updateThesisProfileScriptSetter'..."
+    );
     let executable = new UpdateExecutable(
       'update_thesis_profile',
       'thesis_profile',
@@ -255,10 +323,16 @@ export class UserVaultScripts {
       undefined,
       true,
       true
+    );
+    console.log(
+      "Completed registration of uservault script 'updateThesisProfileScriptSetter'"
     );
   }
 
   static async removeThesisProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'removeThesisProfileScriptSetter'..."
+    );
     let executable = new DeleteExecutable(
       'remove_thesis_item',
       'thesis_profile',
@@ -271,9 +345,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'removeThesisProfileScriptSetter'"
+    );
   }
 
   static async getPaperProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'getPaperProfileScriptSetter'..."
+    );
     let executable = new FindExecutable(
       'get_paper_profile',
       'paper_profile',
@@ -288,9 +368,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'getPaperProfileScriptSetter'"
+    );
   }
 
   static async updatePaperProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'updatePaperProfileScriptSetter'..."
+    );
     let executable = new UpdateExecutable(
       'update_paper_profile',
       'paper_profile',
@@ -313,9 +399,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'updatePaperProfileScriptSetter'"
+    );
   }
 
   static async removePaperItemScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'removePaperItemScriptSetter'..."
+    );
     let executable = new DeleteExecutable(
       'remove_paper_item',
       'paper_profile',
@@ -328,9 +420,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'removePaperItemScriptSetter'"
+    );
   }
 
   static async getLicenseProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'getLicenseProfileScriptSetter'..."
+    );
     let executable = new FindExecutable(
       'get_license_profile',
       'license_profile',
@@ -345,8 +443,14 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'getLicenseProfileScriptSetter'"
+    );
   }
   static async updateLicenseProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'updateLicenseProfileScriptSetter'..."
+    );
     let executable = new UpdateExecutable(
       'update_license_profile',
       'license_profile',
@@ -368,10 +472,16 @@ export class UserVaultScripts {
       undefined,
       true,
       true
+    );
+    console.log(
+      "Completed registration of uservault script 'updateLicenseProfileScriptSetter'"
     );
   }
 
   static async removeLicenseItemScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'removeLicenseItemScriptSetter'..."
+    );
     let executable = new DeleteExecutable(
       'remove_license_item',
       'license_profile',
@@ -384,9 +494,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'removeLicenseItemScriptSetter'"
+    );
   }
 
   static async getCertificationProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'getCertificationProfileScriptSetter'..."
+    );
     let executable = new FindExecutable(
       'get_certification_profile',
       'certification_profile',
@@ -401,9 +517,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'getCertificationProfileScriptSetter'"
+    );
   }
 
   static async updateCertificationProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'updateCertificationProfileScriptSetter'..."
+    );
     let executable = new UpdateExecutable(
       'update_certification_profile',
       'certification_profile',
@@ -426,9 +548,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'updateCertificationProfileScriptSetter'"
+    );
   }
 
   static async removeCertificationItemScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'removeCertificationItemScriptSetter'..."
+    );
     let executable = new DeleteExecutable(
       'remove_certification_item',
       'certification_profile',
@@ -441,9 +569,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'removeCertificationItemScriptSetter'"
+    );
   }
 
   static async getGameExpProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'getGameExpProfileScriptSetter'..."
+    );
     let executable = new FindExecutable(
       'get_game_exp_profile',
       'game_exp_profile',
@@ -458,9 +592,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'getGameExpProfileScriptSetter'"
+    );
   }
 
   static async updateGameExpProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'updateGameExpProfileScriptSetter'..."
+    );
     let executable = new UpdateExecutable(
       'update_game_exp_profile',
       'game_exp_profile',
@@ -482,9 +622,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'updateGameExpProfileScriptSetter'"
+    );
   }
 
   static async removeGameExpItemScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'removeGameExpItemScriptSetter'..."
+    );
     let executable = new DeleteExecutable(
       'remove_game_exp_item',
       'game_exp_profile',
@@ -497,8 +643,14 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'removeGameExpItemScriptSetter'"
+    );
   }
   static async getEducationProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'getEducationProfileScriptSetter'..."
+    );
     let executable = new FindExecutable(
       'get_education_profile',
       'education_profile',
@@ -513,9 +665,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'getEducationProfileScriptSetter'"
+    );
   }
 
   static async updateEducationProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'updateEducationProfileScriptSetter'..."
+    );
     let executable = new UpdateExecutable(
       'update_education_profile',
       'education_profile',
@@ -540,9 +698,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'updateEducationProfileScriptSetter'"
+    );
   }
 
   static async removeEducationItemScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'removeEducationItemScriptSetter'..."
+    );
     let executable = new DeleteExecutable(
       'remove_education_item',
       'education_profile',
@@ -555,9 +719,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'removeEducationItemScriptSetter'"
+    );
   }
 
   static async getExperienceProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'getExperienceProfileScriptSetter'..."
+    );
     let executable = new FindExecutable(
       'get_experience_profile',
       'experience_profile',
@@ -572,9 +742,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'getExperienceProfileScriptSetter'"
+    );
   }
 
   static async updateExperienceProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'updateExperienceProfileScriptSetter'..."
+    );
     let executable = new UpdateExecutable(
       'update_experience_profile',
       'experience_profile',
@@ -599,9 +775,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'updateExperienceProfileScriptSetter'"
+    );
   }
 
   static async removeExperienceItemScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'removeExperienceItemScriptSetter'..."
+    );
     let executable = new DeleteExecutable(
       'remove_experience_item',
       'experience_profile',
@@ -614,9 +796,13 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'removeExperienceItemScriptSetter'"
+    );
   }
 
   static async getActivityScriptSetter(hiveClient: HiveClient) {
+    console.log("Registering uservault script 'getActivityScriptSetter'...");
     let executable = new FindExecutable(
       'get_activity',
       'activities',
@@ -631,9 +817,13 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'getActivityScriptSetter'"
+    );
   }
 
   static async addActivityScriptSetter(hiveClient: HiveClient) {
+    console.log("Registering uservault script 'addActivityScriptSetter'...");
     let executable = new InsertExecutable(
       'add_activity',
       'activities',
@@ -654,9 +844,13 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'addActivityScriptSetter'"
+    );
   }
 
   static async updateActivityScriptSetter(hiveClient: HiveClient) {
+    console.log("Registering uservault script 'updateActivityScriptSetter'...");
     let executable = new UpdateExecutable(
       'update_activity',
       'activities',
@@ -676,9 +870,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'updateActivityScriptSetter'"
+    );
   }
 
   static async addVerifiableCredentialScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'addVerifiableCredentialScriptSetter'..."
+    );
     let executable = new UpdateExecutable(
       'add_verifiablecredential',
       'verifiable_credentials',
@@ -698,9 +898,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'addVerifiableCredentialScriptSetter'"
+    );
   }
 
   static async removeVerifiableCredentialScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'removeVerifiableCredentialScriptSetter'..."
+    );
     let executable = new DeleteExecutable(
       'remove_verifiablecredential',
       'verifiable_credentials',
@@ -713,9 +919,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'removeVerifiableCredentialScriptSetter'"
+    );
   }
 
   static async getVerifiableCredentialScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'getVerifiableCredentialScriptSetter'..."
+    );
     let executable = new FindExecutable(
       'get_verifiable_credentials',
       'verifiable_credentials',
@@ -730,9 +942,13 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'getVerifiableCredentialScriptSetter'"
+    );
   }
 
   static async getAllSpacesScriptSetter(hiveClient: HiveClient) {
+    console.log("Registering uservault script 'getAllSpacesScriptSetter'...");
     let executable = new FindExecutable(
       'get_all_spaces',
       'private_spaces',
@@ -747,9 +963,15 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'getAllSpacesScriptSetter'"
+    );
   }
 
   static async getSpacesByNamesScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'getSpacesByNamesScriptSetter'..."
+    );
     let executable = new FindExecutable(
       'get_space_by_names',
       'private_spaces',
@@ -768,9 +990,13 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'getSpacesByNamesScriptSetter'"
+    );
   }
 
   static async getSpacesByIdsScriptSetter(hiveClient: HiveClient) {
+    console.log("Registering uservault script 'getSpacesByIdsScriptSetter'...");
     let executable = new FindExecutable(
       'get_space_by_ids',
       'private_spaces',
@@ -787,6 +1013,7 @@ export class UserVaultScripts {
     );
   }
   static async addSpacesScriptSetter(hiveClient: HiveClient) {
+    console.log("Registering uservault script 'addSpacesScriptSetter'...");
     let executable = new UpdateExecutable(
       'add_space',
       'private_spaces',
@@ -811,9 +1038,13 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'addSpacesScriptSetter'"
+    );
   }
 
   static async removeSpaceScriptSetter(hiveClient: HiveClient) {
+    console.log("Registering uservault script 'removeSpaceScriptSetter'...");
     let executable = new DeleteExecutable('remove_space', 'private_spaces', {
       guid: '$params.guid'
     });
@@ -824,16 +1055,17 @@ export class UserVaultScripts {
       true,
       true
     );
+    console.log(
+      "Completed registration of uservault script 'removeSpaceScriptSetter'"
+    );
   }
 
   static async SetScripts(hiveClient: HiveClient) {
-    // templates
-
     await Promise.all([
-      this.getMyTemplatesScriptSet(hiveClient),
-      this.updateMyTemplatesScriptSet(hiveClient),
       this.setPublicTemplateScriptSetter(hiveClient),
       this.getPublicFieldsScriptSetter(hiveClient),
+      this.getMyTemplatesScriptSetter(hiveClient),
+      this.updateMyTemplatesScriptSetter(hiveClient),
       this.getFollowingScriptSetter(hiveClient),
       this.getBasicProfileScriptSetter(hiveClient),
       this.updateBasicProfileScriptSetter(hiveClient),
@@ -876,14 +1108,14 @@ export class UserVaultScripts {
   }
 
   static async Delete(hiveClient: HiveClient) {
+    await hiveClient.Database.deleteCollection('templates');
+    await hiveClient.Database.deleteCollection('public_fields');
     await hiveClient.Database.deleteCollection('following');
     await hiveClient.Database.deleteCollection('basic_profile');
     await hiveClient.Database.deleteCollection('education_profile');
     await hiveClient.Database.deleteCollection('experience_profile');
     await hiveClient.Database.deleteCollection('activities');
-    await hiveClient.Database.deleteCollection('public_fields');
     await hiveClient.Database.deleteCollection('verifiable_credentials');
-    await hiveClient.Database.deleteCollection('templates');
     await hiveClient.Database.deleteCollection('team_profile');
     await hiveClient.Database.deleteCollection('thesis_profile');
     await hiveClient.Database.deleteCollection('paper_profile');

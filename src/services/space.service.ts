@@ -230,21 +230,10 @@ export class SpaceService {
               params
             );
             if (notify)
-              showNotify('Space details has been successfuly saved', 'success');
-
-            // const appHiveClient = await HiveService.getApplicationHiveClient();
-            // if (appHiveClient) {
-            //   await appHiveClient.Scripting.callScript(
-            //     'add_space',
-            //     {
-            //       guid: (space as any).guid,
-            //       owner: session.did,
-            //       followers: [session.did]
-            //     },
-            //     `${process.env.REACT_APP_APPLICATION_DID}`,
-            //     `${process.env.REACT_APP_APPLICATION_DID}`
-            //   );
-            //}
+              showNotify(
+                'Space details has been successfully saved',
+                'success'
+              );
           }
         }
       } else {
@@ -275,15 +264,18 @@ export class SpaceService {
           session.did,
           `${process.env.REACT_APP_APPLICATION_DID}`
         );
-        if (res) {
-          await hiveInstance.Scripting.callScript(
-            'remove_space',
-            { name: space.name, owner: session.did },
-            `${process.env.REACT_APP_APPLICATION_DID}`,
-            `${process.env.REACT_APP_APPLICATION_DID}`
-          );
+        if (res.isSuccess && res.response._status === 'OK') {
+          const appHiveClient = await HiveService.getApplicationHiveClient();
+          if (appHiveClient) {
+            await appHiveClient.Scripting.callScript(
+              'remove_space',
+              { name: space.name, owner: session.did },
+              `${process.env.REACT_APP_APPLICATION_ID}`,
+              `${process.env.REACT_APP_APPLICATION_DID}`
+            );
+          }
+          showNotify('Space has been successfuly removed', 'success');
         }
-        showNotify('Space has been successfuly removed', 'success');
       } catch (e) {
         SpaceService.LOG.error('removeSpace: {}', e);
       }

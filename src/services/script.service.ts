@@ -553,6 +553,8 @@ export class UserVaultScriptService {
         }
         let userService = new UserService(await DidService.getInstance());
         await userService.updateSession(newUser);
+        await TuumTechScriptService.updateTuumUser(newUser);
+        let hiveInstance = await HiveService.getHiveClient(newUser);
         await UserVaultScripts.Execute(hiveClient);
       } catch (error) {
         console.log('Could not register: ' + error);

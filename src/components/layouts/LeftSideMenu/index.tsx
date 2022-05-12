@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { IonList } from '@ionic/react';
-
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components';
 import { down } from 'styled-breakpoints';
-
-import { makeSelectSession } from 'src/store/users/selectors';
-import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState } from './types';
 
 import { UserService } from 'src/services/user.service';
 
@@ -25,6 +18,7 @@ import style from './style.module.scss';
 import { TuumTechScriptService } from 'src/services/script.service';
 import MenuItem from './components/MenuItem';
 import Badge from 'src/elements-v2/Badge';
+import useSession from 'src/hooks/useSession';
 
 const Container = styled.div`
   ${down('sm')} {
@@ -32,11 +26,9 @@ const Container = styled.div`
   }
 `;
 
-const LeftSideMenu: React.FC<InferMappedProps> = ({
-  eProps,
-  ...props
-}: InferMappedProps) => {
+const LeftSideMenu: React.FC = () => {
   const history = useHistory();
+  const { session } = useSession();
   const [showSupportModal, setShowSupportModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
@@ -56,14 +48,14 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
     (async () => {
       const fetchVerificationRequestsCount = async (): Promise<void> => {
         let requests: VerificationRequest[] = await TuumTechScriptService.getVerificationRequests(
-          props.session.did,
+          session.did,
           false
         );
         setRequestsCount(requests.filter(x => x.status === 'requested').length);
       };
       await fetchVerificationRequestsCount();
     })();
-  }, [props.session.did]);
+  }, [session.did]);
 
   return (
     <Container className={style['navbar']}>
@@ -82,13 +74,13 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
           handleClick={() => history.push('/manager')}
         />
 
-        <ConnectionMenu session={props.session} />
+        <ConnectionMenu session={session} />
         {/* in a progress */}
 
         <MenuItem
           name="spaces"
           title="Spaces"
-          active={history.location.pathname === '/spaces'}
+          active={history.location.pathname.includes('/spaces')}
           handleClick={() => history.push('/spaces')}
         />
         <MenuItem
@@ -175,10 +167,7 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
         />
       </IonList>
 
-      <FooterLinks
-        session={props.session}
-        toggleHelpSupport={toggleHelpSupport}
-      />
+      <FooterLinks session={session} toggleHelpSupport={toggleHelpSupport} />
 
       <HelpModal
         isOpen={showSupportModal}
@@ -186,7 +175,7 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
         backdropDismiss={false}
       >
         <HelpModalContent
-          session={props.session}
+          session={session}
           toggleHelpSupport={toggleHelpSupport}
           toggleReportProblem={toggleReportProblem}
           toggleContactUs={toggleContactUs}
@@ -199,7 +188,7 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
         backdropDismiss={false}
       >
         <ReportModalContent
-          session={props.session}
+          session={session}
           toggleReportProblem={toggleReportProblem}
         />
       </ReportModal>
@@ -210,7 +199,7 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
         backdropDismiss={false}
       >
         <ContactModalContent
-          session={props.session}
+          session={session}
           toggleContactUs={toggleContactUs}
         />
       </ContactModal>
@@ -218,17 +207,4 @@ const LeftSideMenu: React.FC<InferMappedProps> = ({
   );
 };
 
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(LeftSideMenu);
+export default LeftSideMenu;

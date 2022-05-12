@@ -29,72 +29,31 @@ const DisplayText = styled(Text16)`
 `;
 
 interface Props {
-  onSuccess: (name: string, eamil: string, password: string) => void;
+  onSuccess: (name: string, eamil: string) => void;
 }
 
 const EmailUserCreate: React.FC<Props> = ({ onSuccess }) => {
   const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
-  const [repassword, setRePassword] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [displayText, setDisplayText] = useState('');
 
-  const validatePassword = (n: string): any => {
-    if (n.length <= 8) {
-      setError('Password: Should be 8+ characters');
-      return false;
-    }
-
-    if (!/[A-Z]/.test(n)) {
-      setError('Password: No Uppercase');
-      return false;
-    }
-
-    if (!/[a-z]/.test(n)) {
-      setError('Password: No Lowercase');
-      return false;
-    }
-
-    if (!/[0-9]/.test(n)) {
-      setError('Password: No Number');
-      return false;
-    }
-
-    if (!/[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/.test(n)) {
-      setError('Password: No Special Character');
-      return false;
-    }
-
-    return true;
-  };
-
   const setField = (fieldName: string, fieldValue: string) => {
     setError('');
     setDisplayText('');
     if (fieldName === 'name') setName(fieldValue);
     if (fieldName === 'email') setEmail(fieldValue);
-    if (fieldName === 'password') setPassword(fieldValue);
-    if (fieldName === 'repassword') setRePassword(fieldValue);
   };
 
   const createUser = async () => {
-    if (!name || !email || !password || !repassword) {
+    if (!name || !email) {
       setError('You should fill all fields');
       return;
     }
     if (!validateEmail(email)) {
       setError('Not correct Email');
-      return;
-    }
-    if (password !== repassword) {
-      setError('Password Not Match');
-      return;
-    }
-
-    if (!validatePassword(password)) {
       return;
     }
 
@@ -110,7 +69,7 @@ const EmailUserCreate: React.FC<Props> = ({ onSuccess }) => {
       response.data &&
       response.data.return_code === 'WAITING_CONFIRMATION'
     ) {
-      onSuccess(name, email, password);
+      onSuccess(name, email);
     } else {
       setError('An error happened when creating user.');
     }
@@ -140,33 +99,6 @@ const EmailUserCreate: React.FC<Props> = ({ onSuccess }) => {
             placeholder="Enter your e-mail"
             hasError={error !== '' && email === ''}
             type="email"
-          />
-        </IonCol>
-      </IonRow>
-
-      <IonRow>
-        <IonCol class="ion-padding-horizontal">
-          <TextInput
-            value={password}
-            label="Password"
-            onChange={n => {
-              validatePassword(n);
-              setField('password', n);
-            }}
-            placeholder="Enter your password"
-            hasError={error !== '' && password === ''}
-            type="password"
-          />
-        </IonCol>
-
-        <IonCol class="ion-padding-horizontal">
-          <TextInput
-            value={repassword}
-            label="Retype Password"
-            onChange={n => setField('repassword', n)}
-            placeholder="ReEnter your password"
-            hasError={error !== '' && repassword === ''}
-            type="password"
           />
         </IonCol>
       </IonRow>

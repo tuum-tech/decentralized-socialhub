@@ -1,4 +1,7 @@
 import { Logger } from 'src/shared-base/logger';
+import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/Services/Scripting.Service';
+import { Guid } from 'guid-typescript';
+
 import { getItemsFromData } from 'src/utils/script';
 import { HiveService } from './hive.service';
 import { SearchService } from './search.service';
@@ -33,7 +36,8 @@ export class TemplateService {
 
   static async setMyTemplates(
     userSession: ISessionItem,
-    templates: Template[]
+    templates: Template[],
+    guid: Guid | null
   ) {
     const hiveInstance = await HiveService.getHiveClient(userSession);
     if (userSession && hiveInstance) {
@@ -51,7 +55,7 @@ export class TemplateService {
   }
 
   static async getMyTemplates(did: string) {
-    let templates: Template[] = [];
+    let templates: TemplatesResp;
 
     let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
     let userResponse = await searchServiceLocal.searchUsersByDIDs([did], 1, 0);

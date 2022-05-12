@@ -5,7 +5,7 @@ import MonetizeContent, { ContentContainer } from './MonetizeContent';
 import { SectionTitle, SectionSubTitle, SectionText } from '../../index';
 import { MainLayout } from '../../components/AboutSection';
 import style from './style.module.scss';
-import community from 'src/assets/new/community.png';
+import community from 'src/assets/new/community.svg';
 
 interface Props {
   refProp: any;

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import aboutImg from 'src/assets/new/about.png';
+import aboutImg from 'src/assets/new/about.svg';
 
 export const MainLayout = styled.div`
   width: 100%;
@@ -18,7 +18,7 @@ export const MainLayout = styled.div`
 const Container = styled.div`
   width: 100%;
   max-width: 1138px;
-  margin: 138px auto 50px;
+  margin: 138px auto 0;
 
   img {
     width: 100%;
@@ -38,6 +38,7 @@ const Container = styled.div`
     color: #000000;
 
     margin-bottom: 50px;
+    margin-top: 100px;
   }
 
   .text {
@@ -53,11 +54,11 @@ const Container = styled.div`
   }
 
   @media only screen and (max-width: 600px) {
+    margin-top: 56px;
     .title {
-      margin-top: 0px;
       font-size: 40px;
       line-height: 45px;
-
+      margin-top: 30px;
       margin-bottom: 30px;
     }
 
@@ -98,7 +99,7 @@ const AboutSection: React.FC<Props> = ({ refProp }) => {
           world of possibilities.
         </p>
 
-        <p className="title" style={{ marginTop: '100px' }}>
+        <p className="title">
           What <span style={{ color: '#995AFF' }}>You</span> can do with Profile
         </p>
         <img src={aboutImg} alt="about" />

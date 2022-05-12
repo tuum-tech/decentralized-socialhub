@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 import NavBar from 'src/components/layouts/NavBar';
-import headerBg from 'src/assets/new/header-bg.png';
-import headerImg from 'src/assets/new/header-image.png';
+import headerBg from 'src/assets/new/header-bg.svg';
+import headerImg from 'src/assets/new/header-image.svg';
 
 export const HomeTitle = styled.p`
   font-family: SF Pro Display;
