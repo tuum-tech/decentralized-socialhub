@@ -28,50 +28,52 @@ const Follower: React.FC<IProps> = ({
     (async () => {
       const dids = space.followers;
       const followers = await TuumTechScriptService.searchUserWithDIDs(
-        (dids || []).slice(0, 4)
+        dids || []
       );
       setFollowers(followers);
     })();
   }, [space]);
   return (
     <>
-      <CardOverview template={template}>
-        <CardHeaderContent>
-          <IonRow className="ion-justify-content-between ion-no-padding">
-            <IonCol className="ion-no-padding">
-              <IonCardTitle>Followers ({space.followers.length})</IonCardTitle>
-            </IonCol>
-            <IonCol size="auto" className="ion-no-padding">
-              <LinkStyleSpan
-                onClick={() => {
-                  setShowViewAllModal(true);
-                }}
-              >
-                View all
-              </LinkStyleSpan>
-            </IonCol>
-          </IonRow>
-        </CardHeaderContent>
-        <CardContentContainer>
-          {followers.map((follower: any) => {
-            return (
-              <IonRow className={style['row']} key={follower.did}>
-                <div className={style['avatar']}>
-                  {/* <img src={nft_item_icon} /> */}
-                  <Avatar did={follower.did} width="40px" />
-                </div>
-                <Link
-                  className={style['name']}
-                  to={getDIDString('/did/' + follower.did)}
-                  target={'blank'}
+      {followers.length > 0 && (
+        <CardOverview template={template}>
+          <CardHeaderContent>
+            <IonRow className="ion-justify-content-between ion-no-padding">
+              <IonCol className="ion-no-padding">
+                <IonCardTitle>Followers ({followers.length})</IonCardTitle>
+              </IonCol>
+              <IonCol size="auto" className="ion-no-padding">
+                <LinkStyleSpan
+                  onClick={() => {
+                    setShowViewAllModal(true);
+                  }}
                 >
-                  <span className={style['name']}>{follower.name}</span>
-                </Link>
-              </IonRow>
-            );
-          })}
-        </CardContentContainer>
-      </CardOverview>
+                  View all
+                </LinkStyleSpan>
+              </IonCol>
+            </IonRow>
+          </CardHeaderContent>
+          <CardContentContainer>
+            {followers.slice(0, 4).map((follower: any) => {
+              return (
+                <IonRow className={style['row']} key={follower.did}>
+                  <div className={style['avatar']}>
+                    {/* <img src={nft_item_icon} /> */}
+                    <Avatar did={follower.did} width="40px" />
+                  </div>
+                  <Link
+                    className={style['name']}
+                    to={getDIDString('/did/' + follower.did)}
+                    target={'blank'}
+                  >
+                    <span className={style['name']}>{follower.name}</span>
+                  </Link>
+                </IonRow>
+              );
+            })}
+          </CardContentContainer>
+        </CardOverview>
+      )}
       {showViewAllModal && (
         <ViewAllFollower
           space={space}

@@ -150,7 +150,7 @@ const Post: React.FC<IProps> = ({
             <span>{Object.keys(comments).length} Comments</span>
           </div>
           <div className={style['action']}>
-            {hasPermissionToComment && (
+            {(hasPermissionToComment || isAuthor) && (
               <span onClick={() => setIsModalOpen(true)}>
                 <img src={icon_comment} />
                 Comment
