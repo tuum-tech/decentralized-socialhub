@@ -28,8 +28,9 @@ const ToastContainer = styled.div`
   padding-bottom: 10px;
   .close-Image {
     position: absolute;
-    right: 15px;
+    right: 5px;
     cursor: pointer;
+    padding: 10px;
   }
 
   @media only screen and (max-width: 600px) {
