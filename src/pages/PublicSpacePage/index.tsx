@@ -39,7 +39,7 @@ const PublicSpacePage: React.FC<PageProps> = ({
   ...props
 }: PageProps) => {
   let did: string = getDIDString(props.match.params.did || '', false);
-  let spaceName: string = props.match.params.name;
+  let spaceName: string = props.match.params.name.toLowerCase();
   const [publicUser, setPublicUser] = useState(defaultUserInfo);
   const [spaceProfile, setSpaceProfile] = useState(defaultSpace);
   const [scrollTop, setScrollTop] = useState(0);

@@ -1,4 +1,5 @@
 const { Guid } = require('guid-typescript');
+const slugify = require('slugify');
 const initial_spaces = require('./community_spaces.json');
 const config = require('./config.json');
 const { testHelper } = require('./testsHelper');
@@ -24,6 +25,7 @@ let run = async () => {
       if (saved) {
         const update = {
           name: space.name,
+          slug: slugify(space.name, { lower: true }),
           category: space.category,
           owner: space.owner,
           meta: space.meta,
@@ -37,6 +39,7 @@ let run = async () => {
       } else {
         await client.Database.insertOne('community_spaces', {
           ...space,
+          slug: slugify(space.name, { lower: true }),
           avatar: '',
           coverPhoto: '',
           description: '',
