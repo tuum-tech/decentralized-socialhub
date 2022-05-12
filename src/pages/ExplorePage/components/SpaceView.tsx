@@ -1,41 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setTimeout, clearTimeout } from 'timers';
 import WelcomeSpace from './WelcomeSpace';
 import RequestCommunity from './RequestCommunity';
 
-import { SpaceService } from 'src/services/space.service';
-
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 import SpaceListView from 'src/components/Space/SpaceListView';
+import { selectSpaces, selectSpacesLoading } from 'src/store/spaces/selectors';
+import { fetchSpaces } from 'src/store/spaces/actions';
 
 const SpaceView = () => {
-  const [spaces, setSpaces] = useState<any[]>([]);
-  const [loadingText, setLoadingText] = useState('');
-
-  const setTimerForSpaces = () => {
-    const timer = setTimeout(async () => {
-      await refreshSpaces();
-      setTimerForSpaces();
-    }, 5000);
-    return () => clearTimeout(timer);
-  };
+  const dispatch = useDispatch();
+  const loading = useSelector(state => selectSpacesLoading(state));
+  const spaces = useSelector(state => selectSpaces(state));
 
   const refreshSpaces = async () => {
-    const spaces = await SpaceService.getAllSpaces();
-    setSpaces(spaces);
+    dispatch(fetchSpaces());
   };
 
   useEffect(() => {
-    (async () => {
-      setLoadingText('loading spaces...');
-      await refreshSpaces();
-      setLoadingText('');
-    })();
-    setTimerForSpaces();
+    dispatch(fetchSpaces(true));
+
+    let timer = setTimeout(function start() {
+      refreshSpaces();
+      timer = setTimeout(start, 5000);
+    }, 5000);
+
+    return () => clearTimeout(timer);
   }, []);
   return (
     <>
-      {loadingText && loadingText !== '' ? (
-        <LoadingIndicator loadingText={loadingText} />
+      {loading ? (
+        <LoadingIndicator loadingText="loading spaces..." />
       ) : (
         <>
           {spaces.length > 0 ? (

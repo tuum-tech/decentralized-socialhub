@@ -144,9 +144,6 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
       const updatedSession = await userService.updateSession(newSession);
       setSession(updatedSession);
       let hiveInstance = await HiveService.getSessionInstance(newSession);
-      if (hiveInstance && hiveInstance.isConnected) {
-        await hiveInstance.Payment.CreateFreeVault();
-      }
       props.setLoadingText('Installing scripts on User Vault.');
       await UserVaultScripts.Execute(hiveInstance!);
       let storedDocument = await didService.getStoredDocument(

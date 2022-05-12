@@ -1,7 +1,7 @@
 import React from 'react';
 
 import style from './style.module.scss';
-import grow from 'src/assets/new/grow.png';
+import grow from 'src/assets/new/grow.svg';
 import { SectionSubTitle, SectionText } from '../../index';
 import { MainLayout } from '../../components/AboutSection';
 import { ContentContainer } from './MonetizeContent';

@@ -131,8 +131,12 @@ const SignQRPage: React.FC<PageProps> = ({ eProps, ...props }) => {
           })
         );
         if (res) {
+          showNotify(
+            "Please approve Profile's multiple requests on Esssentials App.",
+            'warning'
+          );
           const session = await userService.LockWithDIDAndPwd(res);
-          session.isEssentialUser = false;
+          session.isEssentialUser = true;
           eProps.setSession({ session });
           window.localStorage.setItem('isLoggedIn', 'true');
           history.push('/profile');

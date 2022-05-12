@@ -3,17 +3,12 @@ import { Link } from 'react-router-dom';
 import { IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-import { makeSelectSession } from 'src/store/users/selectors';
-import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState } from './types';
-
 import Banner from 'src/components/profile/ProfileComponent/Banner';
 import defaultCoverPhoto from 'src/assets/default/default-cover.png';
 import defaultAvatar from 'src/assets/icon/dp.png';
-import { StyledButton } from 'src/elements/buttons';
 import { SpaceService } from 'src/services/space.service';
+import { DefaultButton } from 'src/elements-v2/buttons';
+import useSession from 'src/hooks/useSession';
 
 export const Container = styled.div`
   background: white;
@@ -77,7 +72,7 @@ export const SpaceAvatar = styled.div`
     padding: 3px;
   }
 `;
-interface Props extends InferMappedProps {
+interface Props {
   space: Space;
   link: string;
   explore: boolean;
@@ -87,13 +82,16 @@ const SpaceCard: React.FC<Props> = ({
   space,
   link,
   explore,
-  newTab,
-  session
+  newTab
 }: Props) => {
+  const { session } = useSession();
   const owners = typeof space.owner === 'string' ? [space.owner] : space.owner;
   const [followers, setFollowers] = useState<string[]>(space.followers || []);
   const followable = !owners?.includes(session.did);
-  const following = useMemo(() => followers.includes(session.did), [followers, session.did]);
+  const following = useMemo(() => followers.includes(session.did), [
+    followers,
+    session.did
+  ]);
 
   const onFollow = async () => {
     await SpaceService.follow(session, space);
@@ -108,7 +106,6 @@ const SpaceCard: React.FC<Props> = ({
     ]);
   };
   return (
-    <Link to={link} target={newTab ? '_blank' : '_self'}>
     <Container>
       <Link to={link} target={newTab ? '_blank' : '_self'}>
         <Banner bgImg={space.coverPhoto || defaultCoverPhoto} />
@@ -135,34 +132,20 @@ const SpaceCard: React.FC<Props> = ({
               </IonGrid>
             </SpaceInfo>
           </Header>
-
-          {explore && followable && (
-            <StyledButton
-              width="110px"
-              margin="10px 10px 10px 10px"
-              onClick={following ? onUnfollow : onFollow}
-            >
-              {following ? `-Unfollow` : `+Follow`}
-            </StyledButton>
-          )}
+	      {explore && followable && (
+	        <DefaultButton
+	          variant="contained"
+	          btnColor="primary-gradient"
+	          onClick={following ? onUnfollow : onFollow}
+	          style={{ margin: '10px 10px 10px 10px' }}
+	        >
+	            {following ? `-Unfollow` : `+Follow`}
+	          </DefaultButton>
+	        )}
         </IonRow>
       </Link>
     </Container>
-    </Link>
   );
 };
 
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SpaceCard);
+export default SpaceCard;

@@ -10,6 +10,7 @@ import storage from 'redux-persist/lib/storage';
 
 import createReducer from './reducers';
 import history from './history';
+import { rootSaga } from './sagas';
 
 declare var window: {
   __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any;
@@ -76,6 +77,7 @@ export default () =>
     }
 
     const persistor = persistStore(store);
+    store.runSaga(rootSaga);
 
     return {
       store,

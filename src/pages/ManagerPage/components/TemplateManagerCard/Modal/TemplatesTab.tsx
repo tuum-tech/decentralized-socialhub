@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { SearchComponent } from 'src/elements/inputs/SearchInput';
 import { showNotify } from 'src/utils/notify';
+import { DefaultButton } from 'src/elements-v2/buttons';
 
 import cryptoImg from '../../../../../assets/templates/crypto.png';
 import educationImg from '../../../../../assets/templates/education.png';
@@ -62,20 +63,6 @@ export const TemplateCard = styled.div`
       color: #425466;
       margin-bottom: 11px;
     }
-
-    button {
-      background: #edf2f7;
-      border-radius: 8px;
-      padding: 5px;
-      min-width: 100px;
-
-      font-weight: normal;
-      font-size: 13px;
-      line-height: 162.02%;
-
-      font-feature-settings: 'salt' on;
-      color: #4c6fff;
-    }
   }
   .right {
     img {
@@ -113,6 +100,25 @@ const TemplatesTab = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
 
+  const handleClick = (t: Template) => {
+    if (t.value === activeTemplate) {
+      showNotify(
+        'This is an active template. Please update your template first and remove',
+        'warning'
+      );
+    } else {
+      let newTemplates = [];
+      if (myTemplates.includes(t.value)) {
+        // remove
+        newTemplates = myTemplates.filter(value => value !== t.value);
+      } else {
+        // add
+        newTemplates = myTemplates.concat([t.value]);
+      }
+      updateTemplates(newTemplates);
+    }
+  };
+
   return (
     <div>
       <SearchComponent>
@@ -128,30 +134,16 @@ const TemplatesTab = ({
             <div className="left">
               <p className="title">{t.title}</p>
               <p className="text">{t.intro}</p>
-              <button
-                onClick={() => {
-                  if (t.value === activeTemplate) {
-                    showNotify(
-                      'This is an active template. Please update your template first and remove',
-                      'warning'
-                    );
-                  } else {
-                    let newTemplates = [];
-                    if (myTemplates.includes(t.value)) {
-                      // remove
-                      newTemplates = myTemplates.filter(
-                        value => value !== t.value
-                      );
-                    } else {
-                      // add
-                      newTemplates = myTemplates.concat([t.value]);
-                    }
-                    updateTemplates(newTemplates);
-                  }
-                }}
+              <DefaultButton
+                size="small"
+                style={{ minWidth: 100 }}
+                variant="outlined"
+                btnColor="primary-gradient"
+                textType="gradient"
+                onClick={() => handleClick(t)}
               >
                 {myTemplates.includes(t.value) ? '-Remove' : '+Add'}
-              </button>
+              </DefaultButton>
             </div>
             <div className="right">
               <img src={getTemplateImg(t.value)} alt={t.value} />

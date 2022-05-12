@@ -1,6 +1,8 @@
 import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import styled from 'styled-components';
+import { down } from 'styled-breakpoints';
 import { SpaceService } from 'src/services/space.service';
 import AboutCard from 'src/components/cards/AboutCard';
 import SyncBar from 'src/components/SyncBar';
@@ -15,7 +17,20 @@ import DeleteSpace from '../DeleteSpace';
 import SocialLinks from '../SocialLinks';
 import Category from '../Category';
 import { SpaceCategory } from 'src/services/space.service';
-import style from './style.module.scss';
+
+const Container = styled(IonContent)`
+  height: 100%;
+  width: 100%;
+  background: #f7fafc;
+`;
+
+const StyledGrid = styled(IonGrid)`
+  padding: 10px 35px 20px;
+  background: #f7fafc;
+  ${down('sm')} {
+    padding: 10px 16px 20px;
+  }
+`;
 
 interface Props {
   session: ISessionItem;
@@ -25,13 +40,13 @@ interface Props {
 const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
   const history = useHistory();
   const [userInfo, setUserInfo] = useState<ISessionItem>(session);
-  const [loaded, setloaded] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const [spaceProfile, setSpaceProfile] = useState<any>(profile);
   useEffect(() => {
     (async () => {
       if (!session.userToken) return;
       setUserInfo(session);
-      setloaded(true);
+      setLoaded(true);
     })();
     setSpaceProfile(profile);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -75,15 +90,15 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
     }
   };
   return (
-    <IonContent className={style['profileeditor']}>
-      <IonGrid className={style['profileeditorgrid']}>
+    <Container>
+      <StyledGrid>
         <IonRow>
           <IonCol size="12">
             <SyncBar session={session}></SyncBar>
           </IonCol>
         </IonRow>
         <IonRow>
-          <IonCol size="4">
+          <IonCol sizeMd="4" sizeSm="12">
             <OverView sessionItem={userInfo} profile={spaceProfile} />
             {spaceProfile.followers && spaceProfile.followers.length > 0 && (
               <Followers
@@ -94,7 +109,7 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
             )}
             <PublicFields sessionItem={userInfo} profile={spaceProfile} />
           </IonCol>
-          <IonCol size="8">
+          <IonCol sizeMd="8" sizeSm="12">
             <SpaceAvatarChange space={spaceProfile} onUpload={onUploadAvatar} />
             <SpaceCoverPhoto
               space={spaceProfile}
@@ -125,8 +140,8 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
             )}
           </IonCol>
         </IonRow>
-      </IonGrid>
-    </IonContent>
+      </StyledGrid>
+    </Container>
   );
 };
 
