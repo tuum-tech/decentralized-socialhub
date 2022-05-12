@@ -50,16 +50,21 @@ const HeroContainer = styled.div`
   .header-Image {
     min-width: 1400px;
     width: 100%;
-
     height: auto;
     margin: 0 auto;
     display: block;
   }
 
+  .image-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
   @media only screen and (max-width: 1400px) {
     .header-Image {
-      min-width: 1200px;
-      margin-left: calc(50% - 600px);
+      min-width: 900px;
     }
   }
 `;
@@ -95,7 +100,9 @@ const Hero: React.FC<IProps> = ({ navItemClicked }) => {
           and blockchain enthusiasts you can trust.
         </HomeIntro>
       </Content>
-      <img src={headerImg} alt="headerImg" className="header-Image" />
+      <div className="image-wrapper">
+        <img src={headerImg} alt="headerImg" className="header-Image" />
+      </div>
     </HeroContainer>
   );
 };
