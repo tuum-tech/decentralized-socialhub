@@ -11,6 +11,7 @@ import arrowtop from 'src/assets/new/arrow-top.svg';
 import logo from 'src/assets/new/logo.svg';
 import { Twitter, Discord, Medium } from 'src/components/Icons';
 import { HomeIntro, HomeTitle } from '../Hero';
+import { showNotify } from 'src/utils/notify';
 
 const CreateButton = styled.button`
   background: linear-gradient(204.71deg, #9a5bff 15.76%, #dd5ac0 136.38%);
@@ -94,11 +95,8 @@ const Container = styled.div<{ bgImg: string }>`
     }
   }
 
-  .form-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+  .form {
+    margin-top: 50px;
   }
 
   .input {
@@ -125,13 +123,23 @@ const Container = styled.div<{ bgImg: string }>`
     padding: 30px 34px !important;
   }
 
+  .mobile-logo {
+    display: none;
+  }
+
   @media only screen and (max-width: 1200px) {
     .logo {
       display: none;
     }
+    .mobile-logo {
+      display: block;
+      margin: 0 auto;
+      margin-top: 70px;
+      margin-bottom: 0;
+    }
     .arrowtop {
       position: absolute;
-      top: -58px;
+      top: 30px;
       right: 10px;
 
       img {
@@ -177,8 +185,8 @@ const Container = styled.div<{ bgImg: string }>`
   }
 
   @media only screen and (max-width: 742px) {
-    .form-row {
-      flex-direction: column;
+    .form {
+      margin-top: 77px;
     }
   }
 `;
@@ -239,7 +247,7 @@ const FooterMenu = styled.div`
 
     .item {
       text-align: center;
-      margin-top: 20px;
+      margin-top: 0;
     }
   }
 `;
@@ -251,9 +259,8 @@ interface Props {
 
 const Footer: React.FC<Props> = ({ refProp, rootRef }) => {
   const history = useHistory();
-  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
   const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
 
   const goToTop = () => {
     (rootRef.current as any).scrollTo({
@@ -263,56 +270,55 @@ const Footer: React.FC<Props> = ({ refProp, rootRef }) => {
     });
   };
 
-  const send = async () => {
-    // const bodyContact = {
-    //   subject: `[Contact Us] - ${subject}`,
-    //   userinfo: userinfo,
-    //   description: description
-    // };
-    // const emailresponse: Response = await fetch(
-    //   `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/send_email`,
-    //   {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`
-    //     },
-    //     body: JSON.stringify(bodyContact)
-    //   }
-    // );
-    // if (emailresponse.status === 200) {
-    //   showNotify('Email sent successfully', 'success');
-    // } else {
-    //   showNotify('Error sending email. Please try again another time', 'error');
-    // }
+  const send = async (e: any) => {
+    e.preventDefault();
+    const userinfo = {
+      name: email,
+      email: email
+    };
+    const bodyContact = {
+      subject: `[Contact Us]`,
+      userinfo: userinfo,
+      description: description
+    };
+
+    const emailresponse: Response = await fetch(
+      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/send_email`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`
+        },
+        body: JSON.stringify(bodyContact)
+      }
+    );
+
+    if (emailresponse.status === 200) {
+      showNotify('Email sent successfully', 'success');
+      setDescription('');
+    } else {
+      showNotify('Error sending email. Please try again another time', 'error');
+    }
   };
 
   return (
     <Container bgImg={footerBG} ref={refProp}>
       <img src={logo} alt="logo" className="logo" />
-      <div className="arrowtop" onClick={goToTop}>
-        <img src={arrowtop} alt="arrowtop" />
-      </div>
+
       <img src={footerPeople} alt="footerPeople" className="people" />
 
       <div className="content">
         <HomeTitle>Get your NFT Collection listed!</HomeTitle>
         <HomeIntro style={{ marginBottom: 0 }}>
-          Interested in adding your NFT collection to Profile? <br /> Submit key
-          information by filling out the form below
+          Ready to be discovered and grow your NFT community? <br />
+          Submit your collection today!
         </HomeIntro>
-        <form onSubmit={send} noValidate>
+
+        <form noValidate className="form">
           <IonGrid>
             <IonRow className="ion-justify-content-between ion-no-padding">
-              <IonCol size="12" size-sm>
-                <IonInput
-                  value={name}
-                  className="input"
-                  placeholder="Enter your name"
-                  onIonChange={e => setName(e.detail.value!)}
-                />
-              </IonCol>
-              <IonCol size="12" size-sm>
+              <IonCol size="12" size-md>
                 <IonInput
                   value={email}
                   className="input"
@@ -321,22 +327,27 @@ const Footer: React.FC<Props> = ({ refProp, rootRef }) => {
                   onIonChange={e => setEmail(e.detail.value!)}
                 />
               </IonCol>
+              <IonCol size="12" size-md>
+                <IonInput
+                  value={description}
+                  className="input"
+                  placeholder="Link your NFT Marketplace"
+                  onIonChange={e => setDescription(e.detail.value!)}
+                />
+              </IonCol>
             </IonRow>
-            <IonTextarea
-              cols={20}
-              rows={6}
-              value={message}
-              placeholder="Write your message..."
-              className="textarea"
-              onIonChange={e => setMessage(e.detail.value!)}
-            />
             <IonRow className="ion-justify-content-center ion-no-padding">
-              <CreateButton type="submit">Send</CreateButton>
+              <CreateButton type="submit" onClick={send}>
+                Send
+              </CreateButton>
             </IonRow>
           </IonGrid>
         </form>
       </div>
-
+      <img src={logo} alt="logo" className="mobile-logo" />
+      <div className="arrowtop" onClick={goToTop}>
+        <img src={arrowtop} alt="arrowtop" />
+      </div>
       <FooterMenu>
         <div className="footerMenucontent">
           <div className="items">
