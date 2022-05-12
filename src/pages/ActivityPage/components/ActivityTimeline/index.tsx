@@ -27,7 +27,7 @@ const Header = styled.div`
 
   margin: 10px 0px;
 `;
-const SubMenu = styled.div`
+export const SubMenu = styled.div`
   position: absolute;
   top: 50px;
   right: -39px;
@@ -60,7 +60,7 @@ const SubMenu = styled.div`
     transform: translateX(-50%);
   }
 `;
-const Item = styled(IonItem)`
+export const Item = styled(IonItem)`
   display: flex;
   align-items: center;
   --border-color: #ffffff;

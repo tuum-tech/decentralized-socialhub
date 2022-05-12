@@ -42,7 +42,8 @@ export class UserVaultScripts {
       hiveClient.Database.createCollection('license_profile'),
       hiveClient.Database.createCollection('certification_profile'),
       hiveClient.Database.createCollection('game_exp_profile'),
-      hiveClient.Database.createCollection('private_spaces')
+      hiveClient.Database.createCollection('private_spaces'),
+      hiveClient.Database.createCollection('space_posts')
     ]);
   }
 
@@ -1180,6 +1181,69 @@ export class UserVaultScripts {
     );
   }
 
+  static async getSpacePostScriptSetter(hiveClient: HiveClient) {
+    await hiveClient.Scripting.SetScript({
+      name: 'get_space_post',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_space_post',
+        output: true,
+        body: {
+          collection: 'space_posts',
+          filter: {
+            guid: '$params.guid'
+          }
+        }
+      }
+    });
+  }
+  static async updateSpacePostScriptSetter(hiveClient: HiveClient) {
+    await hiveClient.Scripting.SetScript({
+      name: 'update_space_post',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_space_post',
+        body: {
+          collection: 'space_posts',
+          filter: {
+            guid: '$params.guid'
+          },
+          update: {
+            $set: {
+              guid: '$params.guid',
+              content: '$params.content',
+              comments: '$params.comments'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+  }
+  static async removeSpacePost(hiveClient: HiveClient) {
+    await hiveClient.Scripting.SetScript({
+      name: 'remove_space_post',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'delete',
+        name: 'remove_space_post',
+        body: {
+          collection: 'space_posts',
+          filter: {
+            guid: '$params.guid'
+          }
+        }
+      }
+    });
+  }
   static async SetScripts(hiveClient: HiveClient) {
     await Promise.all([
       this.setPublicTemplateScriptSetter(hiveClient),
@@ -1223,7 +1287,10 @@ export class UserVaultScripts {
       this.getSpacesByNamesScriptSetter(hiveClient),
       this.getSpacesByIdsScriptSetter(hiveClient),
       this.addSpacesScriptSetter(hiveClient),
-      this.removeSpaceScriptSetter(hiveClient)
+      this.removeSpaceScriptSetter(hiveClient),
+      this.getSpacePostScriptSetter(hiveClient),
+      this.updateSpacePostScriptSetter(hiveClient),
+      this.removeSpacePost(hiveClient)
     ]);
   }
 
@@ -1243,5 +1310,6 @@ export class UserVaultScripts {
     await hiveClient.Database.deleteCollection('certification_profile');
     await hiveClient.Database.deleteCollection('game_exp_profile');
     await hiveClient.Database.deleteCollection('private_spaces');
+    await hiveClient.Database.deleteCollection('space_posts');
   }
 }

@@ -22,10 +22,11 @@ const TabLabel = styled(GradientText)`
 `;
 interface IProps {
   space: any;
+  session: ISessionItem;
   renderSignal: any;
 }
 
-const MainBoard: React.FC<IProps> = ({ space, renderSignal }: IProps) => {
+const MainBoard: React.FC<IProps> = ({ space, session, renderSignal }: IProps) => {
   const [active, setActive] = useState('home');
   useEffect(() => {
     setActive(renderSignal.tab);
@@ -105,7 +106,7 @@ const MainBoard: React.FC<IProps> = ({ space, renderSignal }: IProps) => {
         </IonItem>
       </IonList>
 
-      {active === 'home' && <Home space={space} />}
+      {active === 'home' && <Home space={space} session={session} />}
       {/* {active === 'chat' && <Chat />} */}
       {active === 'collection' && <Collection space={space} />}
       {/* {active === 'community' && <Community space={space} />} */}

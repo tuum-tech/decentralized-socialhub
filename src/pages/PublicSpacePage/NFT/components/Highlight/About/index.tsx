@@ -13,7 +13,10 @@ import { TuumTechScriptService } from 'src/services/script.service';
 import { SpaceService } from 'src/services/space.service';
 import { StyledButton } from 'src/elements/buttons';
 import { SpaceAvatar } from 'src/components/Space/SpaceCard';
-import { CardOverview, CardContent } from 'src/components/cards/common';
+import {
+  CardOverview,
+  CardContentContainer
+} from 'src/components/cards/common';
 import defaultAvatar from 'src/assets/icon/dp.png';
 import icon_shield from 'src/assets/icon/shield.svg';
 import style from './About.module.scss';
@@ -99,7 +102,7 @@ const AboutSpace: React.FC<IProps> = ({
   };
   return (
     <CardOverview template={template}>
-      <CardContent>
+      <CardContentContainer>
         <IonRow>
           <SpaceAvatar>
             <img src={space.avatar || defaultAvatar} height={79} alt="avatar" />
@@ -117,7 +120,7 @@ const AboutSpace: React.FC<IProps> = ({
               by&nbsp;
               {owners.map((owner, index) => {
                 return (
-                  <>
+                  <span key={index}>
                     {owner.link !== false ? (
                       <Link
                         to={getDIDString('/did/' + owner.did)}
@@ -135,7 +138,7 @@ const AboutSpace: React.FC<IProps> = ({
                           : ''
                         : ', '
                     }`}
-                  </>
+                  </span>
                 );
               })}
             </h2>
@@ -193,7 +196,7 @@ const AboutSpace: React.FC<IProps> = ({
             Share
           </StyledButton> */}
         </IonRow>
-      </CardContent>
+      </CardContentContainer>
     </CardOverview>
   );
 };

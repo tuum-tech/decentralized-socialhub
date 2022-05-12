@@ -119,7 +119,7 @@ const PublicSpacePage: React.FC<PageProps> = ({
                   />
                 )}
                 {spaceProfile.category === SpaceCategory.NFT && (
-                  <NFTSpace space={spaceProfile} />
+                  <NFTSpace space={spaceProfile} session={props.session} />
                 )}
                 {spaceProfile.category === SpaceCategory.WTP && (
                   <ProfileComponent

@@ -6,6 +6,7 @@ import { UserService } from './user.service';
 import { DidService } from './did.service.new';
 import { showNotify } from 'src/utils/notify';
 import { Guid } from 'guid-typescript';
+import { ISession } from 'src/context/session.context';
 
 export enum SpaceCategory {
   Personal = 'Personal Group',
@@ -315,5 +316,246 @@ export class SpaceService {
         }
       });
     }
+  }
+  static async getPosts(
+    sid: string,
+    offset: number,
+    limit: number,
+    admin: boolean = false
+  ) {
+    const appHiveClient = await HiveService.getAppHiveClient();
+    if (!appHiveClient) return [];
+    const tuumVaultRes = await appHiveClient.Scripting.RunScript({
+      name: 'get_space_posts',
+      params: {
+        space_sid: sid,
+        limit: 200,
+        skip: 0
+      },
+      context: {
+        target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+      }
+    });
+    let posts = getItemsFromData(tuumVaultRes, 'get_space_posts');
+    if (!admin) {
+      posts = posts.filter((post: any) => post.visible);
+    }
+    let didService = await DidService.getInstance();
+    let userService = new UserService(didService);
+    return await Promise.all(
+      posts.slice(offset, offset + limit).map(async (post: any) => {
+        const tuumUser = await userService.SearchUserWithDID(post.creator);
+        const hiveInstance = await HiveService.getSessionInstance(tuumUser);
+        if (!tuumUser || !hiveInstance) {
+          return null;
+        }
+        const userVaultRes: any = await hiveInstance.Scripting.RunScript({
+          name: 'get_space_post',
+          context: {
+            target_did: tuumUser.did,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+          },
+          params: {
+            guid: post.post_id
+          }
+        });
+        const data = getItemsFromData(userVaultRes, 'get_space_post');
+        return data.length > 0
+          ? {
+              ...post,
+              content: data[0].content,
+              comments: data[0].comments
+            }
+          : null;
+      })
+    );
+  }
+  static async post(session: ISessionItem, sid: string, content: string) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const post = {
+        space_sid: sid,
+        post_id: Guid.create(),
+        creator: session.did,
+        visible: true,
+        comments_visibility: {},
+        content: content,
+        comments: {}
+      };
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'update_space_post',
+        context: {
+          target_did: session.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: {
+          guid: post.post_id,
+          content: post.content,
+          comments: post.comments
+        }
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        const appHiveClient = await HiveService.getAppHiveClient();
+        if (appHiveClient) {
+          await appHiveClient.Scripting.RunScript({
+            name: 'update_space_post',
+            params: post,
+            context: {
+              target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+            }
+          });
+          return post;
+        }
+      }
+    }
+    return null;
+  }
+  static async comment(creator: string, post: any, content: string) {
+    let didService = await DidService.getInstance();
+    let userService = new UserService(didService);
+    const tuumUser = await userService.SearchUserWithDID(post.creator);
+    const hiveInstance = await HiveService.getSessionInstance(tuumUser);
+    if (!tuumUser || !hiveInstance) return;
+    const commentIds = Object.keys(post.comments);
+    const newId =
+      commentIds.length > 0
+        ? parseInt(commentIds[commentIds.length - 1]) + 1
+        : 1;
+    post.comments[newId] = {
+      creator,
+      content,
+      created: new Date().getTime(),
+      modified: new Date().getTime()
+    };
+    post.comments_visibility[newId] = true;
+    const res: any = await hiveInstance.Scripting.RunScript({
+      name: 'update_space_post',
+      context: {
+        target_did: tuumUser.did,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+      },
+      params: {
+        guid: post.post_id,
+        content: post.content,
+        comments: post.comments
+      }
+    });
+    if (res.isSuccess && res.response._status === 'OK') {
+      const appHiveClient = await HiveService.getAppHiveClient();
+      if (appHiveClient) {
+        await appHiveClient.Scripting.RunScript({
+          name: 'update_space_post',
+          params: post,
+          context: {
+            target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+          }
+        });
+        return post;
+      }
+    }
+    return null;
+  }
+  static async removePost(post: any) {
+    let didService = await DidService.getInstance();
+    let userService = new UserService(didService);
+    const tuumUser = await userService.SearchUserWithDID(post.creator);
+    const hiveInstance = await HiveService.getSessionInstance(tuumUser);
+    if (!tuumUser || !hiveInstance) return;
+    const res: any = await hiveInstance.Scripting.RunScript({
+      name: 'remove_space_post',
+      context: {
+        target_did: tuumUser.did,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+      },
+      params: {
+        guid: post.post_id
+      }
+    });
+    if (res.isSuccess && res.response._status === 'OK') {
+      const appHiveClient = await HiveService.getAppHiveClient();
+      if (appHiveClient) {
+        await appHiveClient.Scripting.RunScript({
+          name: 'remove_space_post',
+          params: {
+            post_id: post.post_id
+          },
+          context: {
+            target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+          }
+        });
+      }
+    }
+  }
+  static async removeComment(post: any, comment_id: string) {
+    let didService = await DidService.getInstance();
+    let userService = new UserService(didService);
+    const tuumUser = await userService.SearchUserWithDID(post.creator);
+    const hiveInstance = await HiveService.getSessionInstance(tuumUser);
+    if (!tuumUser || !hiveInstance) return null;
+    delete post.comments[comment_id];
+    delete post.comments_visibility[comment_id];
+    const res: any = await hiveInstance.Scripting.RunScript({
+      name: 'update_space_post',
+      context: {
+        target_did: tuumUser.did,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+      },
+      params: {
+        guid: post.post_id,
+        content: post.content,
+        comments: post.comments
+      }
+    });
+    if (res.isSuccess && res.response._status === 'OK') {
+      const appHiveClient = await HiveService.getAppHiveClient();
+      if (appHiveClient) {
+        await appHiveClient.Scripting.RunScript({
+          name: 'update_space_post',
+          params: post,
+          context: {
+            target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+          }
+        });
+        return post;
+      }
+    }
+    return null;
+  }
+  static async showOrHidePost(post: any) {
+    const appHiveClient = await HiveService.getAppHiveClient();
+    if (appHiveClient) {
+      post.visible = !post.visible;
+      await appHiveClient.Scripting.RunScript({
+        name: 'update_space_post',
+        params: post,
+        context: {
+          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+        }
+      });
+      return post;
+    }
+    return null;
+  }
+  static async showOrHideComment(post: any, comment_id: string) {
+    const appHiveClient = await HiveService.getAppHiveClient();
+    if (appHiveClient) {
+      post.comments_visibility[comment_id] = !post.comments_visibility[comment_id];
+      await appHiveClient.Scripting.RunScript({
+        name: 'update_space_post',
+        params: post,
+        context: {
+          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+        }
+      });
+      return post;
+    }
+    return null;
   }
 }
