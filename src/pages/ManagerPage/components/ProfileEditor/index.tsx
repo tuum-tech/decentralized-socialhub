@@ -252,7 +252,7 @@ const ProfileEditor: React.FC<Props> = ({
 
   useEffect(() => {
     (async () => {
-      if (!session.userToken) return;
+      //if (!session.userToken) return;
       if (session.tutorialStep === 4) {
         await retriveProfile();
       }
