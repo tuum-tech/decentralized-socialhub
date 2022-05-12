@@ -30,13 +30,13 @@ const SpacePage: React.FC = () => {
   const [active, setActive] = useState('my spaces');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const setTimerForSpaces = () => {
-    const timer = setTimeout(async () => {
-      await refreshSpaces();
-      setTimerForSpaces();
-    }, 5000);
-    return () => clearTimeout(timer);
-  };
+  // const setTimerForSpaces = () => {
+  //   const timer = setTimeout(async () => {
+  //     await refreshSpaces();
+  //     setTimerForSpaces();
+  //   }, 50000);
+  //   return () => clearTimeout(timer);
+  // };
 
   const refreshSpaces = useCallback(async () => {
     const spaces: any[] = await SpaceService.getAllSpaces();
@@ -57,8 +57,8 @@ const SpacePage: React.FC = () => {
       await refreshSpaces();
       setLoadingText('');
     })();
-    setTimerForSpaces();
-  }, []);
+    //setTimerForSpaces();
+  }, [refreshSpaces]);
 
   const handleCreateSpace = async (space: Space) => {
     if (mySpaces.findIndex(_space => _space.name === space.name) > -1) {

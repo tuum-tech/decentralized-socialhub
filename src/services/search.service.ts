@@ -2,6 +2,7 @@ import { HiveService } from './hive.service';
 import { getItemsFromData } from '../utils/script';
 import { HiveClient } from 'src/shared-base/api/hiveclient';
 import { Logger } from 'src/shared-base/logger';
+import { TuumTechScriptService } from './script.service';
 
 export interface IUniversitiesResponse {
   _status?: string;
@@ -164,15 +165,11 @@ export class SearchService {
       } else {
         params['self_did'] = [userSession.did];
         params['tutorialStep'] = [4]; // only activated users
-        const usersResponse: any = await this.appHiveClient.Scripting.callScript(
-          'get_users_by_tutorialStep',
-          params,
-          `${process.env.REACT_APP_APPLICATION_DID}`,
-          `${process.env.REACT_APP_APPLICATION_DID}`
+
+        const usersResponse: any = await TuumTechScriptService.getUsersByTutorialStep(
+          params
         );
-        if (usersResponse.get_users_by_tutorialStep) {
-          res.items = usersResponse.get_users_by_tutorialStep.items;
-        }
+        res.items = usersResponse;
       }
       if (res.items.length > 0) {
         res.items = res.items.filter(item => item.did !== userSession.did);

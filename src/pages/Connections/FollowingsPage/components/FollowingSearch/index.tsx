@@ -86,7 +86,7 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
           0
         );
 
-        setFilteredUsers(listUsers.response);
+        setFilteredUsers(listUsers);
       } catch (e) {
         setFilteredUsers({ get_users_by_dids: { items: [] } });
         alertError(null, 'Could not load users');

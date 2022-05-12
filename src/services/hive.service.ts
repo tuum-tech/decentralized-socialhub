@@ -15,9 +15,15 @@ export interface IHiveChallenge {
 export class HiveService {
   private static LOG = new Logger('HiveService');
 
-  static async getApplicationHiveClient(): Promise<HiveClient | null> {
+  static async getApplicationHiveClient(
+    hiveHost?: string
+  ): Promise<HiveClient | null> {
     try {
       let applicationParameters: HiveClientParameters = appParameters;
+      if (hiveHost !== undefined && hiveHost !== '') {
+        appParameters.hiveHost = hiveHost;
+      }
+
       let hiveClient = CacheManager.get(
         'ApplicationHiveClient',
         applicationParameters

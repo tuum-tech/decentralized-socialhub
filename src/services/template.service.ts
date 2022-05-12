@@ -63,9 +63,13 @@ export class TemplateService {
       return templates;
     }
 
-    const hiveInstance = await HiveService.getAnonymousHiveClient(
+    // TODO: we can't have AnonymousClients anymore
+
+    const hiveInstance = await HiveService.getApplicationHiveClient(
       userResponse.get_users_by_dids.items[0].hiveHost
     );
+
+    //const hiveInstance = await HiveService.getApplicationHiveClient();
 
     if (hiveInstance) {
       try {

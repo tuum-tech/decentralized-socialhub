@@ -6,6 +6,7 @@ import { DidService } from './did.service.new';
 import { showNotify } from 'src/utils/notify';
 import { Guid } from 'guid-typescript';
 import { Logger } from 'src/shared-base/logger';
+import { TuumTechScriptService } from './script.service';
 
 export enum SpaceCategory {
   Personal = 'Personal Group',
@@ -219,29 +220,35 @@ export class SpaceService {
             session.did,
             `${process.env.REACT_APP_APPLICATION_DID}`
           );
-          if (res.isSuccess && res.response._status === 'OK') {
-            const appHiveClient = await HiveService.getAnonymousHiveClient();
-            if (appHiveClient) {
-              await appHiveClient.Scripting.callScript(
-                'add_space',
-                {
-                  guid: (space as any).guid,
-                  owner: session.did,
-                  followers: [session.did]
-                },
-                `${process.env.REACT_APP_APPLICATION_DID}`,
-                `${process.env.REACT_APP_APPLICATION_DID}`
-              );
-              if (notify)
-                showNotify(
-                  'Space details has been successfuly saved',
-                  'success'
-                );
-            }
+          if (res.add_space.acknowledged === true) {
+            let params = {
+              guid: (space as any).guid,
+              owner: session.did,
+              followers: [session.did]
+            };
+            const addSpaceResponse = await TuumTechScriptService.addSpaceWithParams(
+              params
+            );
+            if (notify)
+              showNotify('Space details has been successfuly saved', 'success');
+
+            // const appHiveClient = await HiveService.getApplicationHiveClient();
+            // if (appHiveClient) {
+            //   await appHiveClient.Scripting.callScript(
+            //     'add_space',
+            //     {
+            //       guid: (space as any).guid,
+            //       owner: session.did,
+            //       followers: [session.did]
+            //     },
+            //     `${process.env.REACT_APP_APPLICATION_DID}`,
+            //     `${process.env.REACT_APP_APPLICATION_DID}`
+            //   );
+            //}
           }
         }
       } else {
-        const appHiveClient = await HiveService.getAnonymousHiveClient();
+        const appHiveClient = await HiveService.getApplicationHiveClient();
         if (appHiveClient) {
           await appHiveClient.Scripting.callScript(
             'add_community_space',

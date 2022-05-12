@@ -25,6 +25,21 @@ export class TuumTechScriptService {
     );
   }
 
+  public static async getUsersByTutorialStep(params: any) {
+    const script = {
+      name: 'get_users_by_tutorialStep',
+      params: params,
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+    const { data }: any = await this.runTuumTechScript(script);
+    if (data.get_users_by_tutorialStep) {
+      return data.get_users_by_tutorialStep.items;
+    }
+  }
+
   public static async getAllUsers() {
     const script = {
       name: 'get_all_users',
@@ -467,6 +482,20 @@ export class TuumTechScriptService {
 
     await this.runTuumTechScript(add_space_request_script);
   }
+
+  public static async addSpaceWithParams(params: any) {
+    const add_space_request_script = {
+      name: 'add_space',
+      params: params,
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
+      }
+    };
+
+    return await this.runTuumTechScript(add_space_request_script);
+  }
+
   public static async removeSpace(did: string, name: string) {
     const add_space_request_script = {
       name: 'remove_space',
