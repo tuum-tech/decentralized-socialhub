@@ -6,8 +6,9 @@ import SpaceCard from '../SpaceCard';
 import { getDIDString } from 'src/utils/did';
 
 const Container = styled.div`
+  --repeat: 3;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(var(--repeat, auto-fit), minmax(240px, 1fr));
   row-gap: 22px;
   column-gap: 22px;
   margin: 22px 30px;
@@ -15,6 +16,9 @@ const Container = styled.div`
   ${down('sm')} {
     row-gap: 20px;
     margin: 22px 16px;
+  }
+  ${down('lg')} {
+    --repeat: auto-fit;
   }
 `;
 
