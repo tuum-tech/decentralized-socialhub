@@ -221,7 +221,10 @@ export class SpaceService {
               }
             });
             if (notify)
-              showNotify('Space details has been successfuly saved', 'success');
+              showNotify(
+                'Space details has been successfully saved',
+                'success'
+              );
           }
         }
       }
@@ -237,7 +240,7 @@ export class SpaceService {
           }
         });
         if (notify)
-          showNotify('Space details has been successfuly saved', 'success');
+          showNotify('Space details has been successfully saved', 'success');
       }
     }
   }
@@ -263,7 +266,7 @@ export class SpaceService {
               target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
             }
           });
-          showNotify('Space has been successfuly removed', 'success');
+          showNotify('Space has been successfully removed', 'success');
         }
       }
     }

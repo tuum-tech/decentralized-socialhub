@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  IonRow,
-  IonCardTitle
-} from '@ionic/react';
+import { IonRow, IonCardTitle } from '@ionic/react';
 import styled from 'styled-components';
 import {
   CardOverview,
@@ -39,10 +36,12 @@ interface IProps {
 }
 
 const Admins: React.FC<IProps> = ({ profile }: IProps) => {
-  const owners =
-    typeof profile.owner === 'string' ? [profile.owner] : profile.owner;
   const [admins, setAdmins] = useState([]);
+
   useEffect(() => {
+    const owners =
+      typeof profile.owner === 'string' ? [profile.owner] : profile.owner;
+
     (async () => {
       let searchServiceLocal: SearchService = await SearchService.getSearchServiceAppOnlyInstance();
       let response: any = await searchServiceLocal.getUsersByDIDs(
@@ -53,7 +52,8 @@ const Admins: React.FC<IProps> = ({ profile }: IProps) => {
       const users = getItemsFromData(response, 'get_users_by_dids');
       setAdmins(users);
     })();
-  }, [owners]);
+  }, [profile.owner]);
+
   return (
     <CardOverview template={'default'}>
       <CardHeaderContent>

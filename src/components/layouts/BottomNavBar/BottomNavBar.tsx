@@ -26,10 +26,10 @@ export const BottomNavBar: React.FC = () => {
           </TabButtonContent>
         </IonTabButton>
 
-        <IonTabButton tab="spaces" selected={path === '/spaces'}>
+        <IonTabButton tab="spaces" selected={path.includes('/spaces')}>
           <TabButtonContent
             name="spaces"
-            active={path === '/spaces'}
+            active={path.includes('/spaces')}
             handleClick={() => history.push('/spaces')}
           >
             Spaces
@@ -46,10 +46,13 @@ export const BottomNavBar: React.FC = () => {
           </TabButtonContent>
         </IonTabButton>
 
-        <IonTabButton tab="connections" selected={path === '/connections'}>
+        <IonTabButton
+          tab="connections"
+          selected={path.includes('/connections')}
+        >
           <TabButtonContent
             name="connections"
-            active={path === '/connections'}
+            active={path.includes('/connections')}
             handleClick={() => history.push('/connections')}
           >
             Connections
