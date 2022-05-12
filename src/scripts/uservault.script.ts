@@ -1086,7 +1086,7 @@ export class UserVaultScripts {
         body: {
           collection: 'private_spaces',
           filter: {
-            name: { $in: '$params.names' }
+            slug: { $in: '$params.names' }
           }
         }
       }
@@ -1137,6 +1137,7 @@ export class UserVaultScripts {
             $set: {
               guid: '$params.guid',
               name: '$params.name',
+              slug: '$params.slug',
               description: '$params.description',
               category: '$params.category',
               avatar: '$params.avatar',

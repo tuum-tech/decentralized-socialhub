@@ -17,6 +17,7 @@ export enum SpaceCategory {
 
 export const defaultSpace: Space = {
   name: '',
+  slug: '',
   description: '',
   category: SpaceCategory.Personal,
   avatar: '',

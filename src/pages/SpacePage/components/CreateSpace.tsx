@@ -22,6 +22,7 @@ import { Header } from './SpacePageHeader';
 import HeaderMenu from 'src/elements-v2/HeaderMenu';
 import { selectSpaces } from 'src/store/spaces/selectors';
 import { fetchSpaces } from 'src/store/spaces/actions';
+import slugify from 'slugify';
 
 const CreateSpace: React.FC = () => {
   const dispatch = useDispatch();
@@ -91,7 +92,11 @@ const CreateSpace: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    handleCreateSpace({ ...form, guid: Guid.create() });
+    handleCreateSpace({
+      ...form,
+      slug: slugify(form.name, { lower: true }),
+      guid: Guid.create()
+    });
   };
 
   const handleCancel = () => {

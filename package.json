@@ -83,6 +83,7 @@
     "rxjs": "^6.6.7",
     "sinon": "^13.0.2",
     "sinon-chai": "^3.7.0",
+    "slugify": "^1.6.5",
     "spa-serve": "^1.0.10",
     "styled-breakpoints": "^11.0.5",
     "styled-components": "^5.3.1",

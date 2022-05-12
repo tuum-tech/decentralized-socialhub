@@ -53,7 +53,7 @@ let run = async () => {
         body: {
           collection: 'community_spaces',
           filter: {
-            name: { $in: '$params.names' }
+            slug: { $in: '$params.names' }
           }
         }
       }
@@ -90,6 +90,7 @@ let run = async () => {
             $set: {
               guid: '$params.guid',
               name: '$params.name',
+              slug: '$params.slug',
               owner: '$params.owner',
               description: '$params.description',
               category: '$params.category',
