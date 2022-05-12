@@ -22,9 +22,8 @@ const Container = styled.div`
 
   img {
     width: 100%;
-    max-width: 800px;
     display: block;
-    margin: 50px auto 0;
+    margin: 0 auto;
   }
 
   .title {
@@ -39,6 +38,10 @@ const Container = styled.div`
 
     margin-bottom: 50px;
     margin-top: 100px;
+  }
+
+  .description {
+    margin-bottom: 0;
   }
 
   .text {
@@ -99,7 +102,7 @@ const AboutSection: React.FC<Props> = ({ refProp }) => {
           world of possibilities.
         </p>
 
-        <p className="title">
+        <p className="title description">
           What <span style={{ color: '#995AFF' }}>You</span> can do with Profile
         </p>
         <img src={aboutImg} alt="about" />

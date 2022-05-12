@@ -4,7 +4,7 @@
   padding-top: 128px;
 
   @media only screen and (max-width: 600px) {
-    padding-top: 55px;
+    padding-top: 5px;
   }
 }
 
@@ -24,22 +24,20 @@
 .monetize {
   background-position: center;
   background-size: cover;
-
+  background-color: #04032B;
   margin-top: 130px;
-
+  background-repeat: no-repeat;
   padding-top: 156px;
   padding-bottom: 156px;
   padding-left: 9%;
   padding-right: 9%;
-
   width: 100%;
-
+  min-height: 729px;
   @media only screen and (max-width: 600px) {
     margin-top: 55px;
-
-    padding-top: 100px;
-    padding-bottom: 100px;
-    padding-left: 13px;
-    padding-right: 13px;
+    padding: 0;
+    background-size: 100%;
+    background-position: initial;
+    min-height: auto;
   }
 }
