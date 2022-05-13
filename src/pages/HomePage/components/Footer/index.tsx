@@ -107,7 +107,7 @@ const Container = styled.div<{ bgImg: string }>`
     border: 1px solid #edf2f717;
     font-weight: 700;
     font-size: 18px;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255);
     padding: 20px 40px !important;
   }
 
