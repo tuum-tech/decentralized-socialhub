@@ -103,11 +103,11 @@ const Container = styled.div<{ bgImg: string }>`
     background: rgba(237, 242, 247, 0.09);
     backdrop-filter: blur(16px);
     border-radius: 20px;
-    height: 65px;
+    max-height: 65px;
     border: 1px solid #edf2f717;
     font-weight: 700;
     font-size: 18px;
-    color: rgba(255, 255, 255);
+    color: rgba(255, 255, 255, 0.6);
     padding: 20px 40px !important;
   }
 
