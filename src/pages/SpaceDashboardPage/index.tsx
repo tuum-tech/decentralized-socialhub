@@ -1,7 +1,7 @@
 /**
  * Page
  */
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
 import { down } from 'styled-breakpoints';
@@ -56,6 +56,7 @@ const SpaceDashboardPage: React.FC<PageProps> = (props: PageProps) => {
   const capitalize = (s: string) => {
     return s.charAt(0).toUpperCase() + s.slice(1);
   };
+
   const updateSpace = useCallback(async () => {
     if (!spaceName) return;
     let names = [...new Set([spaceName, capitalize(spaceName)])];
@@ -68,7 +69,8 @@ const SpaceDashboardPage: React.FC<PageProps> = (props: PageProps) => {
     if (spaces.length > 0) {
       setSpaceProfile(spaces[0]);
     }
-  });
+  }, [session, spaceName, type]);
+
   useEffect(() => {
     if (session && spaceName) {
       (async () => {
