@@ -97,8 +97,6 @@ const CommunitySection = () => {
     }
   }, [getWindowDimensions, hasWindow]);
 
-  console.log(12312, windowDimensions);
-
   return (
     <div
       className={style['monetize']}

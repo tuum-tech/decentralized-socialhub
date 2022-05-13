@@ -38,7 +38,7 @@ interface MatchParams {
 interface PageProps extends RouteComponentProps<MatchParams> {}
 
 const SpaceDashboardPage: React.FC<PageProps> = (props: PageProps) => {
-  const spaceName = props.match.params.name;
+  const spaceName = props.match.params.name.toLowerCase();
   const query = useQuery();
   const type = query.get('type');
   const { session } = useSession();

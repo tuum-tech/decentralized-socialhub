@@ -12,25 +12,16 @@ export const getOwners = async (assets: any[], network: string) => {
     users
       .filter((user: any) => user.did.startsWith('did:'))
       .map(async (user: any) => {
-        const creds = await DidcredsService.getAllCredentialsToVault(user);
-        const id = `${user.did}#${key}`;
-        const vc = creds.get(id);
+        const wallet = await DidcredsService.getCredentialValue(user, key);
         return {
           session: user,
-          wallet_address: vc
-            ? vc.getIssuer().toString() ===
-              process.env.REACT_APP_APPLICATION_DID
-              ? vc.subject.getProperty(key)
-              : ''
-            : ''
+          wallet: wallet
         };
       })
   );
   const owners = assets.map((asset: any) => {
     const { owner } = asset;
-    const user: any = usersWithCred.find(
-      (user: any) => user.wallet_address === owner
-    );
+    const user: any = usersWithCred.find((user: any) => user.wallet === owner);
     if (user) return user.session;
     return owner;
   });

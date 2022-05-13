@@ -8,12 +8,13 @@ import styled from 'styled-components';
 
 interface IProps {
   space: any;
+  session: ISessionItem;
 }
 
 const Wrapper = styled(IonRow)`
   padding: 0px 80px;
 `;
-const NFTSpace: React.FC<IProps> = ({ space }: IProps) => {
+const NFTSpace: React.FC<IProps> = ({ space, session }: IProps) => {
   const [renderSignal, setRenderSignal] = useState({ signNo: 0, tab: 'home' });
   return (
     <>
@@ -31,7 +32,11 @@ const NFTSpace: React.FC<IProps> = ({ space }: IProps) => {
           />
         </IonCol>
         <IonCol size="9">
-          <MainBoard space={space} renderSignal={renderSignal} />
+          <MainBoard
+            space={space}
+            session={session}
+            renderSignal={renderSignal}
+          />
         </IonCol>
       </Wrapper>
     </>

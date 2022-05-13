@@ -53,7 +53,7 @@ let run = async () => {
         body: {
           collection: 'community_spaces',
           filter: {
-            name: { $in: '$params.names' }
+            slug: { $in: '$params.names' }
           }
         }
       }
@@ -90,6 +90,7 @@ let run = async () => {
             $set: {
               guid: '$params.guid',
               name: '$params.name',
+              slug: '$params.slug',
               owner: '$params.owner',
               description: '$params.description',
               category: '$params.category',
@@ -171,6 +172,70 @@ let run = async () => {
           collection: 'nft_collection_assets',
           filter: {
             guid: '$params.guid'
+          }
+        }
+      }
+    });
+    await client.Database.createCollection('space_posts');
+    await client.Scripting.SetScript({
+      name: 'get_space_posts',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_space_posts',
+        output: true,
+        body: {
+          collection: 'space_posts',
+          filter: {
+            space_sid: '$params.space_sid'
+          },
+          options: {
+            limit: '$params.limit',
+            skip: '$params.skip'
+          }
+        }
+      }
+    });
+    await client.Scripting.SetScript({
+      name: 'update_space_post',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_space_post',
+        body: {
+          collection: 'space_posts',
+          filter: {
+            post_id: '$params.post_id'
+          },
+          update: {
+            $set: {
+              space_sid: '$params.space_sid',
+              post_id: '$params.post_id',
+              creator: '$params.creator',
+              visible: '$params.visible',
+              comments_visibility: '$params.comments_visibility'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+    await client.Scripting.SetScript({
+      name: 'remove_space_post',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'delete',
+        name: 'remove_space_post',
+        body: {
+          collection: 'space_posts',
+          filter: {
+            post_id: '$params.post_id'
           }
         }
       }

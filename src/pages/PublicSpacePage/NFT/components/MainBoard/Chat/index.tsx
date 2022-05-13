@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
-import {
-  IonRow,
-  IonCol,
-} from '@ionic/react';
+import { IonRow, IonCol } from '@ionic/react';
 import { Wrapper } from '../common';
 import {
-  CardContent,
-  CardHeader,
-  CardOverview
+  CardOverview,
+  CardHeaderContent,
+  CardContentContainer
 } from 'src/components/cards/common';
 import { HorDOMSpace16 } from '../../Highlight/About';
 import img_nft_item from 'src/assets/space/nft_item.jpg';
@@ -65,7 +62,7 @@ const Chat: React.FC<IProps> = ({}: IProps) => {
       <IonRow>
         <IonCol size="12">
           <CardOverview template={'default'}>
-            <CardHeader>
+            <CardHeaderContent>
               <IonRow className="ion-justify-content-between ion-no-padding">
                 <div className={style['card-title']}>
                   <h1>Chat</h1>
@@ -76,12 +73,12 @@ const Chat: React.FC<IProps> = ({}: IProps) => {
                   <img src={icon_expand} />
                 </div>
               </IonRow>
-            </CardHeader>
-            <CardContent>
+            </CardHeaderContent>
+            <CardContentContainer>
               {renderMessageBox()}
               {renderMessageBox()}
               {renderMessageBox()}
-            </CardContent>
+            </CardContentContainer>
           </CardOverview>
         </IonCol>
       </IonRow>

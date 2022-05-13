@@ -6,7 +6,11 @@ export async function getNFTCollectionAssets(
   limit: number
 ): Promise<BaseplateResp> {
   return request(
-    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/nft_collection_router/assets?collection_id=${JSON.stringify(guid)}&offset=${offset}&limit=${limit}`,
+    `${
+      process.env.REACT_APP_PROFILE_API_SERVICE_URL
+    }/v1/nft_collection_router/assets?collection_id=${JSON.stringify(
+      guid
+    )}&offset=${offset}&limit=${limit}`,
     {
       method: 'GET',
       headers: {
@@ -19,11 +23,15 @@ export async function getNFTCollectionAssets(
 
 export async function getNFTCollectionOwners(
   guid: any,
-  offset: number,
-  limit: number
+  offset: number = 0,
+  limit: number = 0
 ): Promise<BaseplateResp> {
   return request(
-    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/nft_collection_router/owners?collection_id=${JSON.stringify(guid)}&offset=${offset}&limit=${limit}`,
+    `${
+      process.env.REACT_APP_PROFILE_API_SERVICE_URL
+    }/v1/nft_collection_router/owners?collection_id=${JSON.stringify(
+      guid
+    )}&offset=${offset}&limit=${limit}`,
     {
       method: 'GET',
       headers: {

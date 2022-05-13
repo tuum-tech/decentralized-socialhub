@@ -188,4 +188,14 @@ export class DidcredsService {
 
     return response;
   }
+  static async getCredentialValue(session: ISessionItem, key: string) {
+    const creds = await this.getAllCredentialsToVault(session);
+    const id = `${session.did}#${key}`;
+    const vc = creds.get(id);
+    return vc
+      ? vc.getIssuer().toString() === process.env.REACT_APP_APPLICATION_DID
+        ? vc.subject.getProperty(key)
+        : ''
+      : '';
+  }
 }

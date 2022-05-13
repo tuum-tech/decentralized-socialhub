@@ -2,9 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { IonButton } from '@ionic/react';
 import closeSvg from 'src/assets/new/close.svg';
+import { LinkButton } from 'src/elements-v2/buttons';
+import { Link } from 'react-router-dom';
 
 export const ToastIntro = styled.p`
-  font-family: 'Rubik';
+  font-family: 'SF Pro Display';
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -26,8 +28,9 @@ const ToastContainer = styled.div`
   padding-bottom: 10px;
   .close-Image {
     position: absolute;
-    right: 15px;
+    right: 5px;
     cursor: pointer;
+    padding: 10px;
   }
 
   @media only screen and (max-width: 600px) {
@@ -45,10 +48,16 @@ interface IProps {
 const Toast: React.FC<IProps> = ({ onClose }) => {
   return (
     <ToastContainer>
-      <ToastIntro className="intro">
-        Are you an NFT club member? We invite you to join NFT Spaces on Profile.
-        Contact us to Join {'>'}
-      </ToastIntro>
+      <LinkButton
+        variant="text"
+        href="https://try.profile.site"
+        target="_blank"
+      >
+        <ToastIntro className="intro">
+          Ready to be discovered and grow your NFT community? Submit your
+          collection today!
+        </ToastIntro>
+      </LinkButton>
       <img
         src={closeSvg}
         alt="closeSvg"
