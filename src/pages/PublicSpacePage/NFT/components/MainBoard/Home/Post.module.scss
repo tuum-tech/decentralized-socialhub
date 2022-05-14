@@ -4,9 +4,10 @@
   img {
     object-fit: cover;
     max-width: 40px;
+    max-height: 40px;
     border-radius: 46%;
   }
-  div {
+  .meta {
     margin-left: 15px;
     h1 {
       font-weight: 600;
@@ -37,6 +38,13 @@
     }
   }
 }
+.menu {
+  cursor: pointer;
+  &:hover path {
+    fill: var(--theme-primary-blue);
+    stroke: var(--theme-primary-blue);
+  }
+}
 .post-image {
   width: 100%;
 }
@@ -58,7 +66,7 @@
     color: #718096;
     cursor: pointer;
     img {
-        margin-right: 2px;
+      margin-right: 2px;
     }
   }
 }

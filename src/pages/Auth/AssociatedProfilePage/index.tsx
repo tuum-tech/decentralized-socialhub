@@ -193,12 +193,15 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
                   );
                 }
               } else {
+                let accountType = Object.values(AccountType).includes(service)
+                  ? service
+                  : 'Other';
                 history.push({
                   pathname: '/generate-did',
                   state: {
                     name: name,
                     loginCred: loginCred,
-                    service: AccountType.Discord
+                    service: accountType
                   }
                 });
               }

@@ -79,8 +79,6 @@ export interface IDidService {
 
   addServiceToDIDDocument(
     diddocument: DIDDocument,
-    did: DID,
-    type: string,
     endpoint: string
   ): Promise<DIDDocument>;
 
@@ -374,14 +372,11 @@ export class DidService implements IDidService {
 
   async addServiceToDIDDocument(
     diddocument: DIDDocument,
-    did: DID,
-    type: string,
     endpoint: string
   ): Promise<DIDDocument> {
     let builder = DIDDocument.Builder.newFromDocument(diddocument);
     builder.edit();
-    let didUrl: DIDURL = DIDURL.from(`#${type}`, did) as DIDURL;
-    builder.addService(didUrl, type, endpoint);
+    builder.addService('#hivevault', 'HiveVault', endpoint);
     return await builder.seal(
       process.env.REACT_APP_DID_STORE_PASSWORD as string
     );

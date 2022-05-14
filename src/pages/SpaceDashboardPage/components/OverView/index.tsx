@@ -13,6 +13,7 @@ import {
 import defaultAvatar from 'src/assets/icon/dp.png';
 
 import { getDIDString } from 'src/utils/did';
+import slugify from 'slugify';
 
 const Container = styled.div`
   display: flex;
@@ -29,6 +30,7 @@ interface IProps {
 
 const OverView: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
   const { avatar, name, category, isCommunitySpace } = profile;
+  const slug = slugify(name, { lower: true });
   return (
     <IonCard className={styleWidget['overview']}>
       <Container>
@@ -50,11 +52,11 @@ const OverView: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
               <Link
                 to={
                   isCommunitySpace
-                    ? `/community-spaces/${name}`
+                    ? `/community-spaces/${slug}`
                     : `/did/${getDIDString(
                         sessionItem.did,
                         true
-                      )}/spaces/${name}`
+                      )}/spaces/${slug}`
                 }
               >
                 <IonRow className="ion-align-items-center ion-justify-content-between">

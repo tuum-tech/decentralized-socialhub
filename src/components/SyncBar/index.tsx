@@ -37,10 +37,12 @@ const SyncBar: React.FC<SyncBarProps> = ({ session }: SyncBarProps) => {
 
   //NO CALLBACK
   useEffect(() => {
-    if (session && session.isEssentialUser) {
+    // TODO: Uncomment this once Sync works again
+    /* if (session && session.isEssentialUser) {
       console.log('Sync disabled');
       return;
-    }
+    } */
+    return;
 
     const timer = setInterval(async () => {
       // console.log('Verify differences', new Date().toISOString(), id);

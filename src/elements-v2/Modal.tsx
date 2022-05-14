@@ -27,6 +27,11 @@ const StyledTitle = styled(IonCardTitle)`
   color: #27272e;
 `;
 
+const StyledContent = styled.div`
+  overflow: auto;
+  max-height: calc(80vh - 140px);
+`;
+
 type Props = {
   title: string;
   onOk?: () => void;
@@ -69,7 +74,9 @@ const Modal = forwardRef<React.ReactNode, Props>(
           <IonRow className="ion-no-padding">
             <StyledTitle>{title}</StyledTitle>
           </IonRow>
-          <div className="ion-padding-bottom">{children}</div>
+          <StyledContent className="ion-padding-bottom">
+            {children}
+          </StyledContent>
           <IonRow className="ion-justify-content-center ion-padding-vertical">
             <DefaultButton
               className="mr-2"

@@ -1,33 +1,23 @@
-.create-space-card {
-    border-radius: 20px;
-    margin: 0px 30px;
-    .card-content {
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-      justify-content: center;
-      text-align: center;
-      margin: 100px 0px 120px 0px;
-  
-      ion-row {
-        margin: 3px 0px;
-      }
-  
-      h3 {
-        color: #27272e;
-        font-size: 20px;
-        font-weight: 600;
-        line-height: 136.52%;
-      }
-      h4 {
-        color: #27272e;
-        font-size: 14px;
-        font-weight: normal;
-        line-height: 162.502%;
-      }
-      button {
-        margin-top: 15px;
-      }
-    }
+.form {
+  background: #ffffff;
+  box-shadow: 0px 0px 1px rgba(12, 26, 75, 24%) 0px 3px 8px -1px rgba(50, 50, 71, 5%);
+  border-radius: 16px;
+  margin: 20px 56px !important;
+  padding: 23px 20px;
+
+  @media (max-width: 575.98px) {
+    margin: 20px 13px !important;
   }
-  
+
+  &_title {
+    margin-bottom: 15px;
+  }
+  &_footer {
+    position: absolute;
+    bottom: 15px;
+    right: 50%;
+    transform: translateX(50%);
+    width: 350px;
+    text-align: center;
+  }
+}

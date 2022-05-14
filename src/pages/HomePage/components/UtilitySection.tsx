@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import authentically from 'src/assets/new/utility/1.png';
-import password from 'src/assets/new/utility/2.png';
-import nft from 'src/assets/new/utility/3.png';
+import authentically from 'src/assets/new/utility/1.svg';
+import password from 'src/assets/new/utility/2.svg';
+import nft from 'src/assets/new/utility/3.svg';
 import { SectionTitle, SectionIntro, SectionText } from '../index';
 import { MainLayout } from '../components/AboutSection';
 
@@ -34,6 +34,7 @@ const Container = styled.div`
   }
 
   @media only screen and (max-width: 600px) {
+    margin-top: 40px;
     .width-68 {
       width: 58px;
     }

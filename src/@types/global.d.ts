@@ -147,6 +147,17 @@ interface Template {
   title: string;
   intro: string;
 }
+
+type TemplatesResp =
+  | {
+      templates: Template[];
+      guid: Guid;
+      _id: string;
+      created: any;
+      modified: any;
+    }
+  | undefined;
+
 interface VerificationData {
   idKey: string;
   category: string;
@@ -572,6 +583,7 @@ interface SpaceDTO {
 }
 interface Space {
   name: string;
+  slug: string;
   description?: string;
   category: SpaceCategory;
   avatar?: string;
