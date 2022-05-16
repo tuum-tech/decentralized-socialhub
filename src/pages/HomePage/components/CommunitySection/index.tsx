@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { IonRow } from '@ionic/react';
 
@@ -27,6 +28,23 @@ export const SectionText = styled.p`
     text-align: center;
   }
 `;
+
+const SignUpButton = styled.button`
+  height: 54px;
+  width: 211px;
+  line-height: 25px;
+  background: linear-gradient(145.76deg, #995aff 14.97%, #dc59bf 87.23%);
+  border-radius: 10px;
+
+  font-family: SF Pro Display;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+  color: #ffffff;
+  margin-top: 30px;
+`;
+
 interface Props {
   refProp: any;
 }
@@ -34,6 +52,7 @@ interface Props {
 const CommunitySection: React.FC<Props> = ({ refProp }) => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const spaces = useSelector(state => selectSpaces(state));
+  const history = useHistory();
 
   const filteredSpaces = useMemo(() => {
     if (selectedCategory === 'all') {
@@ -113,6 +132,11 @@ const CommunitySection: React.FC<Props> = ({ refProp }) => {
           </IonRow>
 
           <SpaceListView spaces={filteredSpaces} />
+          <IonRow className="ion-justify-content-center">
+            <SignUpButton onClick={() => history.push('/create-profile')}>
+              Sign up & explore all
+            </SignUpButton>
+          </IonRow>
         </div>
       </MainLayout>
 
