@@ -240,7 +240,7 @@ export class HiveClient {
 
     //return (await serviceContext.getNodeVersion()).toString();
     // TODO: fix sdk endpoint
-    return '2.7.1';
+    return '2.7.2';
   }
 
   private static resolveDefaultParameters(
