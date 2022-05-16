@@ -25,6 +25,19 @@ export class TuumTechScriptService {
     );
   }
 
+  public static async getUsersByDids(params: any) {
+    const get_user_by_did_script = {
+      name: 'get_users_by_dids',
+      params: params,
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
+      }
+    };
+    let response: any = await this.runTuumTechScript(get_user_by_did_script);
+    return getItemsFromData(response, 'get_users_by_dids');
+  }
+
   public static async getUsersByTutorialStep(params: any) {
     const script = {
       name: 'get_users_by_tutorialStep',

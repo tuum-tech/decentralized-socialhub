@@ -164,7 +164,9 @@ export class SpaceService {
   }
   static async getCommunitySpaceByNames(names: string[]) {
     try {
-      const appHiveClient = await HiveService.getApplicationHiveClient();
+      const appHiveClient = await HiveService.getApplicationHiveClient(
+        `${process.env.REACT_APP_HIVE_HOST}`
+      );
       if (appHiveClient) {
         const response = await appHiveClient.Scripting.callScript(
           'get_community_space_by_names',

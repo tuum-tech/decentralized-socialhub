@@ -127,7 +127,13 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
     }
 
     try {
-      let hiveClient = await HiveService.getHiveClient(session);
+      let s = JSON.parse(
+        JSON.stringify({
+          ...session,
+          hiveHost: hiveDocument
+        })
+      );
+      let hiveClient = await HiveService.getHiveClient(s);
 
       if (!hiveClient) throw new HiveException('Unable to create Hive client');
       let userToken = hiveClient.getAccessToken();

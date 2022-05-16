@@ -196,12 +196,7 @@ export class SearchService {
 
     params['dids'] = dids;
     try {
-      usersResponse = await this.appHiveClient.Scripting.callScript(
-        'get_users_by_dids', // get all users
-        params,
-        `${process.env.REACT_APP_APPLICATION_DID}`,
-        `${process.env.REACT_APP_APPLICATION_DID}`
-      );
+      usersResponse = await TuumTechScriptService.getUsersByDids(params);
     } catch (e) {
       SearchService.LOG.error('getUsersByDIDs: {}', e);
     }
@@ -253,13 +248,8 @@ export class SearchService {
       if (this.isDID(searchString)) {
         const filteredDids = dids.filter(item => item.includes(searchString));
         params['dids'] = filteredDids;
-        const usersResponse: any = await this.appHiveClient.Scripting.callScript(
-          'get_users_by_dids',
-          params,
-          `${process.env.REACT_APP_APPLICATION_DID}`,
-          `${process.env.REACT_APP_APPLICATION_DID}`
-        );
-        items = getItemsFromData(usersResponse, 'get_users_by_dids');
+
+        items = await TuumTechScriptService.getUsersByDids(params);
       } else {
         params['name'] = '.*' + searchString + '.*';
         params['dids'] = dids;
