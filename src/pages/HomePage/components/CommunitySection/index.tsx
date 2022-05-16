@@ -42,7 +42,6 @@ const CommunitySection: React.FC<Props> = ({ refProp }) => {
     return spaces.filter(v => v.category === selectedCategory);
   }, [spaces, selectedCategory]);
 
-  console.log(11, filteredSpaces);
   return (
     <>
       <MainLayout ref={refProp}>
