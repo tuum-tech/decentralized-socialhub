@@ -5,7 +5,6 @@ import { DefaultButton } from 'src/elements-v2/buttons';
 
 const StyledModal = styled(IonModal)`
   --border-radius: 16px;
-  --min-height: 400px;
   --max-height: 80vh;
   --max-width: 435px;
   --height: auto;
