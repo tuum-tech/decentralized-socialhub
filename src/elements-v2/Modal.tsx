@@ -43,20 +43,13 @@ type Props = {
   onOk?: () => void;
   onCancel?: () => void;
   okText?: string;
-  cancelText?: string;
+  contentStyle?: React.CSSProperties;
   children?: React.ReactNode;
 };
 
 const Modal = forwardRef<React.ReactNode, Props>(
   (
-    {
-      title,
-      onOk,
-      onCancel,
-      okText = 'Ok',
-      cancelText = 'Cancel',
-      children
-    }: Props,
+    { title, onOk, onCancel, okText = 'Ok', contentStyle, children }: Props,
     ref
   ) => {
     const [showModal, setShowModal] = useState(false);
@@ -94,7 +87,7 @@ const Modal = forwardRef<React.ReactNode, Props>(
               />
             </IonButton>
           </IonRow>
-          <StyledContent className="ion-padding-bottom">
+          <StyledContent className="ion-padding-bottom" style={contentStyle}>
             {children}
           </StyledContent>
           <IonRow className="ion-justify-content-start ion-padding-vertical">
