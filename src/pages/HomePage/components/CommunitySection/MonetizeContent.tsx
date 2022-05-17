@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import style from './style.module.scss';
@@ -71,33 +71,14 @@ const MonetizeContent = styled(ContentContainer)`
   }
 `;
 
-const CommunitySection = () => {
-  const hasWindow = typeof window !== 'undefined';
+interface Props {
+  windowDimensions: {
+    width: number | null;
+    height: number | null;
+  };
+}
 
-  function getWindowDimensions() {
-    const width = hasWindow ? window.innerWidth : null;
-    const height = hasWindow ? window.innerHeight : null;
-    return {
-      width,
-      height
-    };
-  }
-
-  const [windowDimensions, setWindowDimensions] = useState(
-    getWindowDimensions()
-  );
-
-  useEffect(() => {
-    if (hasWindow) {
-      function handleResize() {
-        setWindowDimensions(getWindowDimensions());
-      }
-
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    }
-  }, [hasWindow]);
-
+const CommunitySection: React.FC<Props> = ({ windowDimensions }) => {
   return (
     <div
       className={style['monetize']}
