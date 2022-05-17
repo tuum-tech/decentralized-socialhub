@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import Lottie from 'react-lottie';
+import { Fade } from 'react-awesome-reveal';
 
 import NavBar from 'src/components/layouts/NavBar';
 import headerBg from 'src/assets/new/header-bg.svg';
@@ -121,12 +122,14 @@ const Hero: React.FC<IProps> = ({ navItemClicked, windowDimensions }) => {
       <NavBar navItemClicked={navItemClicked} />
 
       <Content>
-        <HomeTitle>Own Yourself.</HomeTitle>
-        <HomeIntro className="intro">
-          With a Web3 Decentralized Identity on Profile communicate your
-          personal story and build communities how you want with crypto, NFT,
-          and blockchain enthusiasts you can trust.
-        </HomeIntro>
+        <Fade direction="up" triggerOnce={true} cascade>
+          <HomeTitle>Own Yourself.</HomeTitle>
+          <HomeIntro className="intro">
+            With a Web3 Decentralized Identity on Profile communicate your
+            personal story and build communities how you want with crypto, NFT,
+            and blockchain enthusiasts you can trust.
+          </HomeIntro>
+        </Fade>
       </Content>
       <Lottie
         options={defaultOptions}
