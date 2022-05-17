@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
+import Lottie from 'react-lottie';
 import { Fade } from 'react-awesome-reveal';
 
 import NavBar from 'src/components/layouts/NavBar';
 import headerBg from 'src/assets/new/header-bg.svg';
-import headerImg from 'src/assets/new/header-image.svg';
+import animationData from 'src/assets/new/animation/desktop/data';
+import animationMobileData from 'src/assets/new/animation/mobile/data';
 
 export const HomeTitle = styled.p`
   font-family: SF Pro Display;
@@ -87,8 +89,34 @@ const Content = styled.div`
 
 interface IProps {
   navItemClicked: (item: string) => void;
+  windowDimensions: {
+    width: number | null;
+    height: number | null;
+  };
 }
-const Hero: React.FC<IProps> = ({ navItemClicked }) => {
+
+const Hero: React.FC<IProps> = ({ navItemClicked, windowDimensions }) => {
+  const defaultOptions = useMemo(() => {
+    if (windowDimensions?.width && windowDimensions.width > 600) {
+      return {
+        loop: true,
+        autoplay: true,
+        animationData: animationData,
+        rendererSettings: {
+          preserveAspectRatio: 'xMidYMid slice'
+        }
+      };
+    }
+
+    return {
+      loop: true,
+      autoplay: true,
+      animationData: animationMobileData,
+      rendererSettings: {
+        preserveAspectRatio: 'xMidYMid slice'
+      }
+    };
+  }, [windowDimensions]);
   return (
     <HeroContainer>
       <NavBar navItemClicked={navItemClicked} />
@@ -103,9 +131,17 @@ const Hero: React.FC<IProps> = ({ navItemClicked }) => {
           </HomeIntro>
         </Fade>
       </Content>
-      <div className="image-wrapper">
-        <img src={headerImg} alt="headerImg" className="header-Image" />
-      </div>
+      <Lottie
+        options={defaultOptions}
+        isStopped={false}
+        isPaused={false}
+        style={{
+          marginTop:
+            windowDimensions?.width && windowDimensions.width > 600
+              ? -350
+              : -480
+        }}
+      />
     </HeroContainer>
   );
 };

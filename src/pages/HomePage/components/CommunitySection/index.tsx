@@ -48,9 +48,13 @@ const SignUpButton = styled.button`
 
 interface Props {
   refProp: any;
+  windowDimensions: {
+    width: number | null;
+    height: number | null;
+  };
 }
 
-const CommunitySection: React.FC<Props> = ({ refProp }) => {
+const CommunitySection: React.FC<Props> = ({ refProp, windowDimensions }) => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const spaces = useSelector(state => selectSpaces(state));
   const history = useHistory();
@@ -143,7 +147,7 @@ const CommunitySection: React.FC<Props> = ({ refProp }) => {
         </div>
       </MainLayout>
 
-      <MonetizeContent />
+      <MonetizeContent windowDimensions={windowDimensions} />
       <GrowContent />
     </>
   );

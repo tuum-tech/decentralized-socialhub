@@ -92,6 +92,17 @@ export const SectionText = styled.p`
   }
 `;
 
+const hasWindow = typeof window !== 'undefined';
+
+function getWindowDimensions() {
+  const width = hasWindow ? window.innerWidth : null;
+  const height = hasWindow ? window.innerHeight : null;
+  return {
+    width,
+    height
+  };
+}
+
 const HomePage = () => {
   const dispatch = useDispatch();
   const aboutRef = useRef<typeof HTMLDivElement>(null);
@@ -105,6 +116,21 @@ const HomePage = () => {
   useEffect(() => {
     dispatch(fetchSpaces(true));
   }, []);
+
+  const [windowDimensions, setWindowDimensions] = useState(
+    getWindowDimensions()
+  );
+
+  useEffect(() => {
+    if (hasWindow) {
+      function handleResize() {
+        setWindowDimensions(getWindowDimensions());
+      }
+
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, [hasWindow]);
 
   const scrollTo = (target: string) => {
     if (target === 'About') {
@@ -123,10 +149,15 @@ const HomePage = () => {
   return (
     <Page ref={pageRef}>
       {isVisible && <Toast onClose={() => setIsVisible(false)} />}
-      <Hero navItemClicked={scrollTo} />
+
+      <Hero navItemClicked={scrollTo} windowDimensions={windowDimensions} />
+
       <AboutSection refProp={aboutRef} />
       <UtilitySection refProp={utilityRef} />
-      <CommunitySection refProp={communityRef} />
+      <CommunitySection
+        refProp={communityRef}
+        windowDimensions={windowDimensions}
+      />
       <OwnershipSection refProp={ownershipRef} />
       {/* <ConnectSection refProp={connectRef} /> */}
       <Footer refProp={connectRef} rootRef={pageRef} />
