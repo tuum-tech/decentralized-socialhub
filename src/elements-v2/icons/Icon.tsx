@@ -3,11 +3,12 @@ import { IonIcon } from '@ionic/react';
 import * as icons from 'ionicons/icons';
 import { camelCase } from 'lodash';
 import { IonIconType, ionIconTypes, IonIconKeyType } from './types';
+import { ThemeColor } from '../common.types';
 
 export interface IconProps {
   name: IonIconType;
   style?: React.CSSProperties;
-  color?: string;
+  color?: ThemeColor;
   onClick?: () => void;
 }
 

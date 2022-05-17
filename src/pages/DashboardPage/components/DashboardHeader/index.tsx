@@ -14,9 +14,7 @@ import PublishingLabel from '../PublishingLabel';
 
 import { useRecoilValue } from 'recoil';
 import { FullProfileAtom } from 'src/Atoms/Atoms';
-import { LinkButton } from 'src/elements-v2/buttons';
-import { DashboardSignInButton } from 'src/elements/buttons';
-// import LinkButton from 'src/elements-v2/buttons/LinkButton';
+import { DefaultButton, LinkButton } from 'src/elements-v2/buttons';
 
 import style from './style.module.scss';
 
@@ -74,8 +72,11 @@ const DashboardHeader: React.FC<IProps> = ({
           </IonGrid>
         </IonCol>
         <IonCol size="auto">
-          <DashboardSignInButton
-            style={{ height: '43px', cursor: 'pointer' }}
+          <DefaultButton
+            variant="contained"
+            btnColor="secondary-gradient"
+            textType="gradient"
+            size="large"
             onClick={() => {
               navigator.clipboard.writeText(
                 `${process.env.REACT_APP_PROFILE_LANDING_PAGE}/create-profile?ref=${sessionItem.did}`
@@ -83,7 +84,7 @@ const DashboardHeader: React.FC<IProps> = ({
             }}
           >
             Copy Referral Link
-          </DashboardSignInButton>
+          </DefaultButton>
         </IonCol>
         <IonCol size="auto">
           <LinkButton

@@ -545,7 +545,9 @@ export class SpaceService {
   static async showOrHideComment(post: any, comment_id: string) {
     const appHiveClient = await HiveService.getAppHiveClient();
     if (appHiveClient) {
-      post.comments_visibility[comment_id] = !post.comments_visibility[comment_id];
+      post.comments_visibility[comment_id] = !post.comments_visibility[
+        comment_id
+      ];
       await appHiveClient.Scripting.RunScript({
         name: 'update_space_post',
         params: post,

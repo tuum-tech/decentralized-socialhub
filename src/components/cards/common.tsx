@@ -174,7 +174,7 @@ export const MyTextarea = styled(IonTextarea)`
   box-shadow: 0px 1px 2px rgba(50, 50, 71, 0.08),
     0px 0px 1px rgba(50, 50, 71, 0.2);
   border-radius: 6px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   font-stretch: normal;
   font-style: normal;
