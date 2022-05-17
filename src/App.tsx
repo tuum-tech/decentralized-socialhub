@@ -24,6 +24,9 @@ import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
+import 'animate.css/animate.min.css';
+// import 'animate.css';
+// import 'animate.css/animate.compat.css';
 /* Theme variables */
 import './theme/variables.css';
 // import './theme/theme-clearlyme.css';
@@ -159,12 +162,12 @@ const App: React.FC = () => {
                     component={ActivityPage}
                     exact={true}
                   />
-                  {/* TODO: Uncomment this once Sync works again */}
+                  {/* TODO: Uncomment this once Sync works again
                   <ProtectedRoute
                     path="/sync"
                     component={SyncPage}
                     exact={true}
-                  />
+                  /> */}
 
                   {/* // login workflow */}
                   <Route path="/twitter_callback" component={TwitterCallback} />

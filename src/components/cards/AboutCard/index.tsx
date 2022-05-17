@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { IonButton, IonCardTitle, IonCol, IonRow } from '@ionic/react';
-import {
-  LinkStyleSpan,
-  MyModal,
-  MyGrid,
-  MyTextarea,
-  ModalFooter
-} from '../common';
+import React, { useState, useEffect, useRef } from 'react';
+import { IonCol, IonText } from '@ionic/react';
+import styled from 'styled-components';
+import { LinkStyleSpan, MyTextarea } from '../common';
 import Card from 'src/elements-v2/Card';
+import Modal from 'src/elements-v2/Modal';
+
+const StyledLabel = styled(IonText)`
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  color: #425466;
+`;
 
 interface IProps {
   mode?: string;
@@ -21,15 +24,18 @@ const AboutCard: React.FC<IProps> = ({
   aboutText,
   mode = 'read',
   update,
-  template = 'default',
-  openModal = false
+  template = 'default'
 }: IProps) => {
-  const [isEditing, setIsEditing] = useState(openModal);
+  const modalRef = useRef(null);
   const [about, setAbout] = useState(aboutText ? aboutText : '');
 
   useEffect(() => {
     setAbout(aboutText);
   }, [aboutText]);
+
+  const handleEdit = () => {
+    (modalRef?.current as any).open();
+  };
 
   if (mode !== 'edit' && (aboutText === '' || aboutText === undefined)) {
     return <></>;
@@ -43,53 +49,30 @@ const AboutCard: React.FC<IProps> = ({
         action={
           mode === 'edit' ? (
             <IonCol size="auto" className="ion-no-padding">
-              <LinkStyleSpan onClick={() => setIsEditing(true)}>
-                Edit
-              </LinkStyleSpan>
+              <LinkStyleSpan onClick={handleEdit}>Edit</LinkStyleSpan>
             </IonCol>
           ) : (
             ''
           )
         }
       ></Card>
-      <MyModal
-        isOpen={isEditing}
-        onDidDismiss={() => setIsEditing(false)}
-        cssClass="my-custom-class"
+      <Modal
+        ref={modalRef}
+        title={`${aboutText ? 'Edit' : 'Add'} About`}
+        okText={aboutText ? 'Update' : 'Save'}
+        onOk={async () => {
+          await update(about);
+        }}
+        contentStyle={{ marginTop: 27 }}
       >
-        <MyGrid className="ion-no-padding">
-          <IonRow className="ion-no-padding">
-            <IonCardTitle>Edit About</IonCardTitle>
-          </IonRow>
-          <IonRow className="ion-no-padding">
-            <IonCol className="ion-no-padding">
-              <MyTextarea
-                rows={5}
-                name="about"
-                value={about}
-                onIonChange={(evt: any) => setAbout(evt.target.value)}
-              />
-            </IonCol>
-          </IonRow>
-        </MyGrid>
-        <ModalFooter className="ion-no-border">
-          <IonRow className="ion-justify-content-around ion-no-padding">
-            <IonCol size="auto" className="ion-no-padding">
-              <IonButton fill="outline" onClick={() => setIsEditing(false)}>
-                Cancel
-              </IonButton>
-              <IonButton
-                onClick={async () => {
-                  await update(about);
-                  setIsEditing(false);
-                }}
-              >
-                Save
-              </IonButton>
-            </IonCol>
-          </IonRow>
-        </ModalFooter>
-      </MyModal>
+        <StyledLabel>Description / Responsibilities</StyledLabel>
+        <MyTextarea
+          rows={5}
+          name="about"
+          value={about}
+          onIonChange={(evt: any) => setAbout(evt.target.value)}
+        />
+      </Modal>
     </>
   );
 };

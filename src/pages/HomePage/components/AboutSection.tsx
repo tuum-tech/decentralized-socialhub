@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Fade } from 'react-awesome-reveal';
 
 import aboutImg from 'src/assets/new/about.svg';
 
@@ -84,27 +85,32 @@ const AboutSection: React.FC<Props> = ({ refProp }) => {
   return (
     <MainLayout ref={refProp}>
       <Container>
-        <p className="title">
-          Take ownership of <span style={{ color: '#995AFF' }}>You</span> with a
-          Web3 Decentralized Identity on Profile
-        </p>
-        <p className="text">
-          Web3 is the next digital revolution of a decentralized
-          blockchain-based internet empowering you to take back what's yours.
-          Your Identity, and your community.
+        <Fade direction="up" triggerOnce={true} cascade>
+          <p className="title">
+            Take ownership of <span style={{ color: '#995AFF' }}>You</span> with
+            a Web3 Decentralized Identity on Profile
+          </p>
+          <p className="text">
+            Web3 is the next digital revolution of a decentralized
+            blockchain-based internet empowering you to take back what's yours.
+            Your Identity, and your community.
+          </p>
           <br />
           <br />
-          With Profile enabled by Web3, you can tell and verify your personal
-          and professional story the way you want with digital spaces and share
-          them with whomever you want. Take social ownership back and build your
-          online repertoire by joining and building monetization with rewards,
-          self-sufficient communities, opening up a whole new decentralized
-          world of possibilities.
-        </p>
+          <p className="text">
+            With Profile enabled by Web3, you can tell and verify your personal
+            and professional story the way you want with digital spaces and
+            share them with whomever you want. Take social ownership back and
+            build your online repertoire by joining and building monetization
+            with rewards, self-sufficient communities, opening up a whole new
+            decentralized world of possibilities.
+          </p>
 
-        <p className="title description">
-          What <span style={{ color: '#995AFF' }}>You</span> can do with Profile
-        </p>
+          <p className="title description">
+            What <span style={{ color: '#995AFF' }}>You</span> can do with
+            Profile
+          </p>
+        </Fade>
         <img src={aboutImg} alt="about" />
       </Container>
     </MainLayout>

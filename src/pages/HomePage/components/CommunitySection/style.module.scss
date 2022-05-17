@@ -41,3 +41,19 @@
     min-height: auto;
   }
 }
+
+.button {
+  margin-right: 17px;
+  min-height: 55px;
+  min-width: 95px;
+  background-color: #F7FAFC;
+  margin-bottom: 10px;
+}
+.row {
+  margin-top: 80px;
+  margin-bottom: 45px;
+  @media only screen and (max-width: 600px) {
+    margin-top: 55px;
+    margin-bottom: 35px;
+  }
+}

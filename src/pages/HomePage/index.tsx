@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { IonPage } from '@ionic/react';
 import styled from 'styled-components';
 
@@ -9,6 +10,8 @@ import UtilitySection from './components/UtilitySection';
 import CommunitySection from './components/CommunitySection';
 import OwnershipSection from './components/OwnershipSection';
 import Toast from './components/Toast';
+import { fetchSpaces } from 'src/store/spaces/actions';
+
 // import ConnectSection from './components/ConnectSection';
 
 const Page = styled(IonPage)`
@@ -89,7 +92,19 @@ export const SectionText = styled.p`
   }
 `;
 
+const hasWindow = typeof window !== 'undefined';
+
+function getWindowDimensions() {
+  const width = hasWindow ? window.innerWidth : null;
+  const height = hasWindow ? window.innerHeight : null;
+  return {
+    width,
+    height
+  };
+}
+
 const HomePage = () => {
+  const dispatch = useDispatch();
   const aboutRef = useRef<typeof HTMLDivElement>(null);
   const utilityRef = useRef(null);
   const communityRef = useRef(null);
@@ -97,6 +112,25 @@ const HomePage = () => {
   const connectRef = useRef(null);
   const pageRef = useRef(null);
   const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    dispatch(fetchSpaces(true));
+  }, [dispatch]);
+
+  const [windowDimensions, setWindowDimensions] = useState(
+    getWindowDimensions()
+  );
+
+  useEffect(() => {
+    if (hasWindow) {
+      function handleResize() {
+        setWindowDimensions(getWindowDimensions());
+      }
+
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, []);
 
   const scrollTo = (target: string) => {
     if (target === 'About') {
@@ -116,10 +150,14 @@ const HomePage = () => {
     <Page ref={pageRef}>
       {isVisible && <Toast onClose={() => setIsVisible(false)} />}
 
-      <Hero navItemClicked={scrollTo} />
+      <Hero navItemClicked={scrollTo} windowDimensions={windowDimensions} />
+
       <AboutSection refProp={aboutRef} />
       <UtilitySection refProp={utilityRef} />
-      <CommunitySection refProp={communityRef} />
+      <CommunitySection
+        refProp={communityRef}
+        windowDimensions={windowDimensions}
+      />
       <OwnershipSection refProp={ownershipRef} />
       {/* <ConnectSection refProp={connectRef} /> */}
       <Footer refProp={connectRef} rootRef={pageRef} />

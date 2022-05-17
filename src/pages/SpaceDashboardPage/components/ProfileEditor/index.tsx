@@ -18,12 +18,6 @@ import SocialLinks from '../SocialLinks';
 import Category from '../Category';
 import { SpaceCategory } from 'src/services/space.service';
 
-const Container = styled(IonContent)`
-  height: 100%;
-  width: 100%;
-  background: #f7fafc;
-`;
-
 const StyledGrid = styled(IonGrid)`
   padding: 10px 35px 20px;
   background: #f7fafc;
@@ -90,58 +84,53 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
     }
   };
   return (
-    <Container>
-      <StyledGrid>
-        <IonRow>
-          <IonCol size="12">
-            <SyncBar session={session}></SyncBar>
-          </IonCol>
-        </IonRow>
-        <IonRow>
-          <IonCol sizeMd="4" sizeSm="12">
-            <OverView sessionItem={userInfo} profile={spaceProfile} />
-            {spaceProfile.followers && spaceProfile.followers.length > 0 && (
-              <Followers
-                title={'Followers'}
-                space={spaceProfile}
-                exploreAll={() => {}}
-              />
-            )}
-            <PublicFields sessionItem={userInfo} profile={spaceProfile} />
-          </IonCol>
-          <IonCol sizeMd="8" sizeSm="12">
-            <SpaceAvatarChange space={spaceProfile} onUpload={onUploadAvatar} />
-            <SpaceCoverPhoto
+    <StyledGrid>
+      <IonRow>
+        <IonCol size="12">
+          <SyncBar session={session}></SyncBar>
+        </IonCol>
+      </IonRow>
+      <IonRow>
+        <IonCol sizeMd="4" sizeSm="12">
+          <OverView sessionItem={userInfo} profile={spaceProfile} />
+          {spaceProfile.followers && spaceProfile.followers.length > 0 && (
+            <Followers
+              title={'Followers'}
               space={spaceProfile}
-              onUpload={onUploadCoverPhoto}
+              exploreAll={() => {}}
             />
-            {loaded && userInfo.tutorialStep === 4 ? (
-              <>
-                {spaceProfile && (
-                  <AboutCard
-                    aboutText={spaceProfile.description || ''}
-                    mode="edit"
-                    update={onUpdateAbout}
-                  />
-                )}
-              </>
-            ) : (
-              ''
-            )}
-            {spaceProfile.category !== SpaceCategory.Personal && (
-              <SocialLinks space={spaceProfile} mode="edit" />
-            )}
-            {spaceProfile.category !== SpaceCategory.Personal && (
-              <Category profile={spaceProfile} update={onUpdateCategory} />
-            )}
-            <Admins profile={spaceProfile} />
-            {spaceProfile.category === SpaceCategory.Personal && (
-              <DeleteSpace profile={spaceProfile} removeSpace={onRemoveSpace} />
-            )}
-          </IonCol>
-        </IonRow>
-      </StyledGrid>
-    </Container>
+          )}
+          <PublicFields sessionItem={userInfo} profile={spaceProfile} />
+        </IonCol>
+        <IonCol sizeMd="8" sizeSm="12">
+          <SpaceAvatarChange space={spaceProfile} onUpload={onUploadAvatar} />
+          <SpaceCoverPhoto space={spaceProfile} onUpload={onUploadCoverPhoto} />
+          {loaded && userInfo.tutorialStep === 4 ? (
+            <>
+              {spaceProfile && (
+                <AboutCard
+                  aboutText={spaceProfile.description || ''}
+                  mode="edit"
+                  update={onUpdateAbout}
+                />
+              )}
+            </>
+          ) : (
+            ''
+          )}
+          {spaceProfile.category !== SpaceCategory.Personal && (
+            <SocialLinks space={spaceProfile} mode="edit" />
+          )}
+          {spaceProfile.category !== SpaceCategory.Personal && (
+            <Category profile={spaceProfile} update={onUpdateCategory} />
+          )}
+          <Admins profile={spaceProfile} />
+          {spaceProfile.category === SpaceCategory.Personal && (
+            <DeleteSpace profile={spaceProfile} removeSpace={onRemoveSpace} />
+          )}
+        </IonCol>
+      </IonRow>
+    </StyledGrid>
   );
 };
 

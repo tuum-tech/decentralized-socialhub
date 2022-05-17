@@ -538,7 +538,7 @@ export class SpaceService {
       await appHiveClient.Scripting.callScript(
         'update_space_post',
         post,
-        `${process.env.REACT_APP_APPLICATION_ID}`,
+        `${process.env.REACT_APP_APPLICATION_DID}`,
         `${process.env.REACT_APP_APPLICATION_DID}`
       );
       return post;
