@@ -49,7 +49,14 @@ const Avatar: React.FC<{
   didPublished?: boolean;
   width?: string;
   ready?: boolean;
-}> = ({ did = '', didPublished = false, width = '86px', ready = false }) => {
+  noBorder?: boolean;
+}> = ({
+  did = '',
+  didPublished = false,
+  width = '86px',
+  ready = false,
+  noBorder = false
+}) => {
   const [avatarInfo, setAvatarInfo] = useState<AvatarInterface>(defaultAvatar);
   const [loaded, setLoaded] = useState(false);
 
@@ -63,6 +70,7 @@ const Avatar: React.FC<{
         await DidService.getInstance()
       );
       const tuumUser = await userService.SearchUserWithDID(did);
+      console.log(did);
 
       let avatar = '';
       let type = 'default';
@@ -101,11 +109,13 @@ const Avatar: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [did]);
 
-  const cn = ready
+  let cn = ready
     ? style['border-primary']
     : avatarInfo.didPublished || didPublished
     ? style['border-primary']
     : style['border-danger'];
+
+  if (noBorder) cn = style['no-border'];
 
   const renderContents = () => {
     if (!loaded) {

@@ -323,7 +323,7 @@ export class UserService {
   }
 
   public async SearchUserWithDID(did: string) {
-    const users = await TuumTechScriptService.searchUserWithDIDs([did]);
+    const users = await TuumTechScriptService.searchUserWithDID(did);
     if (users.length > 0) {
       const userData = users[0];
       const blockchainDocument = await DidDocumentService.loadFromBlockchain(
@@ -355,7 +355,7 @@ export class UserService {
 
       return {
         ...userData,
-        isDIDPublished: isDIDPublished ? isDIDPublished : false,
+        isDIDPublished: isDIDPublished ? isDIDPublished : true,
         onBoardingCompleted: userData ? userData.onBoardingCompleted : false,
         tutorialStep: userData ? userData.tutorialStep : 1
       };

@@ -755,12 +755,7 @@ let run = async () => {
         body: {
           collection: 'users',
           filter: {
-            did: {
-              $in: {
-                $regex: '^$params.dids$',
-                $options: 'i'
-              }
-            }
+            did: { $in: '$params.dids' }
           },
           options: {
             limit: '$params.limit',
@@ -1036,7 +1031,11 @@ let run = async () => {
         body: {
           collection: 'users',
           filter: {
-            did: { $regex: '$params.did', $nin: '$params.self_did' }
+            did: {
+              $regex: '$params.did',
+              $nin: '$params.self_did',
+              $options: 'i'
+            }
           },
           options: {
             limit: '$params.limit',
@@ -1132,7 +1131,7 @@ let run = async () => {
       }
     });
 
-    console.log('All scripts OK');
+    // console.log('All scripts OK');
   } catch (error) {
     console.log(error);
     // console.log('Failed to run appVault scripts');

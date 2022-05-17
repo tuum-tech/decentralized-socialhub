@@ -80,6 +80,7 @@ export class ProfileService {
     let userResponse = await searchServiceLocal.searchUsersByDIDs([did], 1, 0);
 
     if (
+      userResponse === undefined ||
       !userResponse.isSuccess ||
       !userResponse.response ||
       !userResponse.response.get_users_by_dids ||

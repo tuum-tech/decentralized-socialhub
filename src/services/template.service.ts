@@ -59,6 +59,7 @@ export class TemplateService {
       !userResponse.isSuccess ||
       !userResponse.response ||
       !userResponse.response.get_users_by_dids ||
+      typeof userResponse.response.get_users_by_dids === 'string' ||
       userResponse.response.get_users_by_dids.items.length === 0
     )
       return templates;

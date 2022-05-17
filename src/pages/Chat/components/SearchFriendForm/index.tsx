@@ -60,9 +60,16 @@ const SearchFriendForm: React.FC<Props> = ({
             200,
             0
           );
-          let usersFound = listUsers?.response?.get_users_by_dids?.items || [];
 
-          setFriends(usersFound);
+          let usersFound = listUsers?.response?.get_users_by_dids?.items || [];
+          let response: any[] = [];
+
+          for (const user of usersFound) {
+            let isThere = response.map(s => s.did === user.did);
+            if (isThere.length <= 0) response.push(user);
+          }
+
+          setFriends(response);
         } catch (e) {
           console.error('Error getting friends list');
           setFriends([]);

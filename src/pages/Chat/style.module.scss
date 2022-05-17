@@ -92,7 +92,7 @@
       .search-input {
         width: 100%;
         height: 100%;
-        margin-left: 1em;
+        
         border: none;
         --box-shadow: none;
         padding: 0;
@@ -181,7 +181,113 @@
   }
 
   .messages-friendlist-item{
+    --ion-item-background: transparent;
+    box-sizing: border-box;
+
+    /* Auto layout */
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px 10px;
+    gap: 13px;
+
     
+    height: 70px;
+
+    /* Theme/White/Default */
+
+    background: #FFFFFF;
+    border-radius: 9px;
+
+    /* Inside auto layout */
+
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+
+    p{
+      margin-left: 15px;
+    }
+
+
+    small{
+      font-family: 'SF Pro Display';
+      font-style: normal;
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 162.02%;
+      /* or 21px */
+
+      font-feature-settings: 'salt' on;
+
+      /* Gray/600 */
+
+      color: #718096;
+
+
+      /* Inside auto layout */
+
+      flex: none;
+      order: 1;
+      flex-grow: 0;
+    }
+
+  }
+
+  .messages-friendlist-item-header{
+    font-family: 'SF Pro Display';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 162.02%;
+    /* identical to box height, or 23px */
+
+    font-feature-settings: 'salt' on;
+
+    /* Text/Heading/Dark */
+
+    color: #27272E;
+
+
+    /* Inside auto layout */
+
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+
+  .messages-friendlist-item-selected{
+    @extend .messages-friendlist-item;
+    background: linear-gradient(252.79deg, rgba(144, 75, 255, 0.084) -20.69%, rgba(190, 52, 160, 0.092) 151.16%);
+    border-radius: 9px;
+  }
+
+  .messages-friendlist-item-time{
+    
+    font-family: 'SF Pro Display';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 162.02%;
+    /* or 21px */
+
+    font-feature-settings: 'salt' on;
+
+    /* Gray/600 */
+
+    color: #718096;
+
+
+    
+
+    
+    
+    right: 0;
+    position: absolute;
+
   }
   
  

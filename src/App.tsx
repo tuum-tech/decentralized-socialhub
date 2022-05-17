@@ -60,6 +60,7 @@ import ActivityPage from './pages/ActivityPage';
 import SpacePage from './pages/SpacePage';
 import PublicSpacePage from './pages/PublicSpacePage';
 import SyncPage from './pages/SyncPage';
+import ChatPage from './pages/Chat';
 
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -158,6 +159,13 @@ const App: React.FC = () => {
                     component={ActivityPage}
                     exact={true}
                   />
+
+                  <ProtectedRoute
+                    path="/messages"
+                    component={ChatPage}
+                    exact={true}
+                  />
+
                   {/* TODO: Uncomment this once Sync works again */}
                   <ProtectedRoute
                     path="/sync"

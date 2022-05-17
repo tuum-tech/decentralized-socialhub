@@ -83,6 +83,14 @@ const LeftSideMenu: React.FC = () => {
           active={history.location.pathname.includes('/spaces')}
           handleClick={() => history.push('/spaces')}
         />
+
+        <MenuItem
+          name="messages"
+          title="Messages"
+          active={history.location.pathname.includes('/messages')}
+          handleClick={() => history.push('/messages')}
+        />
+
         <MenuItem
           name="explore"
           title="Explore"

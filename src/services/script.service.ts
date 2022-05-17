@@ -188,6 +188,24 @@ export class TuumTechScriptService {
     return getItemsFromData(response, 'get_users_by_dids');
   }
 
+  public static async searchUserWithDID(did: string) {
+    const get_user_by_did_script = {
+      name: 'get_users_by_did',
+      params: {
+        did: did,
+        self_did: [],
+        limit: 1,
+        skip: 0
+      },
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+    let response: any = await this.runTuumTechScript(get_user_by_did_script);
+    return getItemsFromData(response, 'get_users_by_did');
+  }
+
   public static async updateTuumUser(params: ISessionItem) {
     const update_user_script = {
       name: 'update_user',

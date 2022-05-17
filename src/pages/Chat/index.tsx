@@ -10,7 +10,8 @@ import {
   IonItem,
   IonCard,
   IonCardContent,
-  IonSearchbar
+  IonSearchbar,
+  IonBadge
 } from '@ionic/react';
 
 import { connect } from 'react-redux';
@@ -37,13 +38,21 @@ import { UserService } from '../../services/user.service';
 import { DidDocumentService } from '../../services/diddocument.service';
 import { SearchService } from 'src/services/search.service';
 import { DID } from '@elastosfoundation/did-js-sdk';
+import { Guid } from 'guid-typescript';
+
+import Avatar from '../../components/Avatar';
+import messages from '../ChooseVaultPage/messages';
+import moment from 'moment';
+import { eventNames } from 'process';
 
 interface IRoomItem {
   roomId: string;
   name: string;
-  avatar: string;
+  did: string;
   messages: IChatMessage[];
   unreadMessages: number;
+  lastMessageTs: string;
+  isEnabled: boolean;
 }
 
 interface IRooms {
@@ -51,17 +60,6 @@ interface IRooms {
 }
 
 const ChatPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
-  const [accessToken, setAccessToken] = useState<string>('');
-  const [selectedRoom, setSelectedRoom] = useState<string>('');
-  const [client, setClient] = useState<MatrixClient>();
-  const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [userId, setUserId] = useState<string>('');
-
-  const [rooms, setRooms] = useState<IRooms>({});
-  const [roomsIds, setRoomsIds] = useState<string[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-
   const CustomModal = styled(IonModal)`
     --height: 740px;
     --border-radius: 16px;
@@ -93,19 +91,28 @@ const ChatPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
     margin-bottom: 0px;
   `;
 
+  const [accessToken, setAccessToken] = useState<string>('');
+  const [selectedRoom, setSelectedRoom] = useState<string>('');
+  const [client, setClient] = useState<MatrixClient>(
+    createClient(process.env.REACT_APP_SYNAPSE_SERVER || '')
+  );
+  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [userId, setUserId] = useState<string>('');
+
+  const [rooms, setRooms] = useState<IRooms>({});
+  const [roomsIds, setRoomsIds] = useState<string[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
   let did = getDIDString(props.match.params.did, false);
 
   const getUserProfile = async (did: string) => {
     let searchServiceLocal: SearchService;
     searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-    let listUsers: any = await searchServiceLocal.getUsersByDIDs(
-      [`did:elastos:${did}`],
-      200,
-      0
+    let listUsers: any = await searchServiceLocal.getUserByDID(
+      `did:elastos:${did}`
     );
-    let usersFound = listUsers?.response?.get_users_by_dids?.items || [];
-    console.log('DID search', `did:elastos:${did}`);
-    console.log('users found', usersFound);
+    let usersFound = listUsers?.response?.get_users_by_did?.items || [];
     return usersFound[0];
   };
 
@@ -116,7 +123,6 @@ const ChatPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
       friend,
       true
     ).toLowerCase()}:my.matrix.host`;
-    console.log('friend id', friendId);
     let friendProfile = await getUserProfile(friend);
 
     let room = await client!.createRoom({
@@ -129,104 +135,44 @@ const ChatPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
       roomId: room.room_id,
       name: friendProfile.name,
       unreadMessages: 0,
-      avatar: '',
-      messages: []
+      did: friend,
+      messages: [],
+      lastMessageTs: '0',
+      isEnabled: true
     };
 
     roomsIds.push(room.room_id);
 
-    setRooms(rooms);
-    setRoomsIds([...roomsIds]);
-    setSelectedRoom(room.room_id);
     setIsModalOpen(false);
+    setRooms(rooms);
+    setRoomsIds(roomsIds);
+    setSelectedRoom(room.room_id);
   };
 
   const search = (newValue: string) => {
     setSearchQuery(newValue);
   };
 
-  useEffect(() => {
-    (async () => {
-      let localUserId = `${getDIDString(props.session.did, true)}`;
-      setUserId(localUserId);
+  const leaveRoom = async (roomId: string) => {
+    try {
+      await client!.leave(roomId);
 
-      let localClient = createClient(
-        process.env.REACT_APP_SYNAPSE_SERVER || ''
-      );
-      await localClient.login('m.login.password', {
-        user: localUserId,
-        password: 'abc123'
-      });
-      await localClient.startClient({});
+      delete rooms[roomId];
 
-      // rooms[selectedRoom] = {
-      //   roomId: selectedRoom,
-      //   name: "Teste",
-      //   unreadMessages: 0,
-      //   avatar: "",
-      //   messages: [{
-      //     avatar: '',
-      //     did: props.session.did,
-      //     message: 'first message',
-      //     username: props.session.name,
-      //     messageTime: '5:40 PM'
-      //   }, {
-      //     avatar: '',
-      //     did: 'otherDID',
-      //     message: 'first response',
-      //     username: 'friend name',
-      //     messageTime: '5:41 PM'
-      //   }]
-      // }
+      let indexRoom = roomsIds.indexOf(roomId);
 
-      localClient.once('sync', async (state, prevstate, res) => {
-        if (state === 'PREPARED') {
-          console.log('set user id', localClient.getUserId());
-          setIsConnected(true);
+      setRooms(rooms);
+      setRoomsIds(roomsIds.splice(indexRoom));
+      setSelectedRoom(roomsIds.length === 0 ? '' : roomsIds[0]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-          // // find invited direct message rooms
-          const userRooms = localClient.getRooms();
-          console.log('chat rooms', userRooms);
+  const getMessages = (): IChatMessage[] => {
+    if (selectedRoom === '' || rooms[selectedRoom] === undefined) return [];
 
-          for (const r of userRooms) {
-            await addRoom(r);
-            //await localClient.leave(r.roomId)
-          }
-
-          // const invitedDMRooms = rooms.filter(room => {
-          //   //getMyMembership -> "invite", "join", "leave", "ban"
-
-          //   return membership === 'invite' && type === 'directMessage';
-          // });
-
-          // // join the first invited DM room
-          // localClient.joinRoom()
-
-          // // leave the second invited DM room
-          // localClient.leave(invitedDMRooms[1].roomId).then(...).catch(...)
-        }
-      });
-
-      localClient.on('Room.timeline', (evnt, room, toStartOfTimeline) => {
-        console.log('Room timeline event', evnt);
-        console.log('Room timeline room', room);
-        console.log('Room timeline toStartOfTimeline', toStartOfTimeline);
-        if (evnt.getType() !== 'm.room.nessage') return;
-      });
-
-      localClient.on('Room', async room => {
-        console.log('Room', room);
-        await addRoom(room);
-      });
-
-      setClient(localClient);
-      setIsConnected(true);
-    })();
-  }, [addRoom, props.session, userId]);
-
-  const getDidFromId = (matrixId: string): string => {
-    let indexEnd = matrixId.lastIndexOf(':');
-    return `${matrixId.substring(1, indexEnd)}`;
+    return rooms[selectedRoom].messages;
   };
 
   const addRoom = async (r: Room) => {
@@ -236,43 +182,183 @@ const ChatPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
       props.session.did,
       true
     ).toLowerCase()}:my.matrix.host`;
+
     let membership = r.getMyMembership();
     let isDM = r.getDMInviter() || false;
 
-    if (isDM || !membership) {
+    if (isDM || membership !== undefined) {
       if (membership === 'invite') {
         await client!.joinRoom(r.roomId);
       }
-
+      let userDid = '';
       let userName = '';
       let avatar = '';
 
       for (let member of r.currentState.getMembers()) {
         if (member.userId !== myID) {
-          let userDid = getDidFromId(member.userId);
+          userDid = getDidFromId(member.userId);
           let userProfile = await getUserProfile(userDid);
-          console.log('userProfile', userProfile);
+          userName = userProfile.name;
+          avatar = `did:elastos:${userDid}`;
         }
       }
 
+      var messages: IChatMessage[] = [];
+      var lastMessageTs = '';
+      var isEnabled = true;
+      r.timeline.forEach(evnt => {
+        if (evnt.getType() === 'm.room.message') {
+          lastMessageTs = evnt.getTs().toString();
+          messages.push({
+            messageKey: Guid.create().toString(),
+            avatar: '',
+            did: `did:elastos:${getDidFromId(evnt.event.sender)}`,
+            message: evnt.event.content.body,
+            username: userName,
+            messageTime: (evnt as any).localTimestamp
+          });
+        }
+
+        if (evnt.getType() === 'm.room.member') {
+          console.log('Event member', evnt);
+          let content: any = evnt.event.content;
+          if (content.membership === 'leave') {
+            isEnabled = false;
+            messages.push({
+              messageKey: Guid.create().toString(),
+              avatar: '',
+              did: '',
+              message: userName + ' left this channel',
+              username: userName,
+              messageTime: (evnt as any).localTimestamp
+            });
+          }
+        }
+      });
+
       rooms[r.roomId] = {
         roomId: r.roomId,
-        name: 'Ainda nao sei',
+        name: userName,
         unreadMessages: 0,
-        avatar: '',
-        messages: []
+        did: avatar,
+        messages: messages,
+        lastMessageTs,
+        isEnabled
       };
 
-      roomsIds.push(r.roomId);
+      if (roomsIds.indexOf(r.roomId) < 0) roomsIds.push(r.roomId);
 
       setRooms(rooms);
       setRoomsIds([...roomsIds]);
+      if (roomsIds.length === 1) setSelectedRoom(roomsIds[0]);
     }
+  };
+
+  useEffect(() => {
+    (async () => {
+      if (userId !== '') return;
+      let localUserId = `${getDIDString(props.session.did, true)}`;
+      setUserId(localUserId);
+
+      await client.login('m.login.password', {
+        user: localUserId,
+        password: 'abc123'
+      });
+      await client.startClient({});
+
+      client.once('sync', async (state, prevstate, res) => {
+        console.log('state');
+        if (state === 'PREPARED') {
+          console.log('set user id', client.getUserId());
+          setIsConnected(true);
+
+          const userRooms = client.getRooms();
+
+          for (const r of userRooms) {
+            if (roomsIds.indexOf(r.roomId) >= 0) continue;
+            await addRoom(r);
+          }
+        }
+      });
+
+      client.on('Room.timeline', (evnt, room, toStartOfTimeline) => {
+        console.log('Room.timeline', evnt);
+
+        if (
+          evnt.getType() !== 'm.room.member' &&
+          evnt.getType() !== 'm.room.message'
+        )
+          return;
+        if (rooms[room.roomId] == undefined) return;
+
+        if (evnt.getType() === 'm.room.member') {
+          if (evnt.event.content.membership === 'leave') {
+            rooms[room.roomId].messages.push({
+              messageKey: Guid.create().toString(),
+              avatar: '',
+              did: '',
+              message: rooms[room.roomId].name + ' left this channel',
+              username: rooms[room.roomId].name,
+              messageTime: evnt.localTimestamp
+            });
+
+            rooms[room.roomId].isEnabled = false;
+          }
+        } else if (evnt.getType() === 'm.room.message') {
+          rooms[room.roomId].messages.push({
+            messageKey: Guid.create().toString(),
+            avatar: '',
+            did: `did:elastos:${getDidFromId(evnt.event.sender)}`,
+            message: evnt.event.content.body,
+            username: rooms[room.roomId].name,
+            messageTime: evnt.localTimestamp
+          });
+        }
+
+        if (selectedRoom !== room.roomId) rooms[room.roomId].unreadMessages++;
+        rooms[room.roomId].lastMessageTs = evnt.localTimestamp;
+
+        setRooms({ ...rooms });
+      });
+
+      client.on('Room', async room => {
+        await addRoom(room);
+      });
+
+      setIsConnected(true);
+    })();
+  }, [addRoom, client, props.session, rooms, roomsIds, selectedRoom, userId]);
+
+  const getDidFromId = (matrixId: string): string => {
+    let indexEnd = matrixId.lastIndexOf(':');
+    return `${matrixId.substring(1, indexEnd)}`;
+  };
+
+  const sendMessage = (message: string, roomId: string) => {
+    var content = {
+      body: message,
+      msgtype: 'm.text'
+    };
+    client.sendEvent(roomId, 'm.room.message', content, '');
+  };
+
+  const getLastMessage = (room: IRoomItem): string => {
+    if (
+      room === undefined ||
+      room.messages === undefined ||
+      room.messages.length === 0
+    )
+      return 'No messages yet.';
+    let messageItem = room.messages.slice(-1)[0];
+
+    return messageItem.message.length > 40
+      ? messageItem.message.substring(0, 40) + '...'
+      : messageItem.message;
   };
 
   const getFriendsList = () => {
     if (roomsIds.length <= 0) return <></>;
-    //lines="none"
+
     return (
       <>
         {' '}
@@ -280,10 +366,39 @@ const ChatPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
           <IonItem
             key={roomId}
             lines="none"
-            className={style['messages-friendlist-item']}
+            onClick={e => {
+              if (roomId === selectedRoom) return;
+              rooms[roomId].unreadMessages = 0;
+              setRooms({ ...rooms });
+              setSelectedRoom(roomId);
+            }}
+            className={
+              style[
+                `messages-friendlist-item${
+                  roomId === selectedRoom ? '-selected' : ''
+                }`
+              ]
+            }
           >
-            <p>{rooms[roomId].name}</p>
-            <small>last message</small>
+            <Avatar
+              did={rooms[roomId].did}
+              width="100"
+              noBorder={true}
+            ></Avatar>
+
+            <p>
+              <span className={style[`messages-friendlist-item-header`]}>
+                {rooms[roomId].name}
+              </span>
+              <br />
+              <small>{getLastMessage(rooms[roomId])}</small>
+            </p>
+
+            <small className={style[`messages-friendlist-item-time`]}>
+              {rooms[roomId].lastMessageTs === ''
+                ? 'Never'
+                : moment(Number(rooms[roomId].lastMessageTs)).fromNow()}
+            </small>
           </IonItem>
         ))}
       </>
@@ -321,7 +436,7 @@ const ChatPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
                       >
                         <IonRow>
                           <IonCol
-                            size="3"
+                            size="4"
                             className={style['messages-card-list']}
                           >
                             <IonRow>
@@ -342,15 +457,18 @@ const ChatPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
                               </IonCol>
                             </IonRow>
                           </IonCol>
-                          <IonCol size="9">
+                          <IonCol size="8">
                             {rooms[selectedRoom] && (
                               <ChatControl
-                                avatar={rooms[selectedRoom].avatar}
+                                onLeaveRoom={leaveRoom}
+                                did={rooms[selectedRoom].did}
                                 roomId={rooms[selectedRoom].roomId}
                                 session={props.session}
                                 title={rooms[selectedRoom].name}
-                                messages={rooms[selectedRoom].messages}
+                                messages={getMessages()}
                                 isDirectChat={true}
+                                onSendMessage={sendMessage}
+                                isEnabled={rooms[selectedRoom].isEnabled}
                               ></ChatControl>
                             )}
 

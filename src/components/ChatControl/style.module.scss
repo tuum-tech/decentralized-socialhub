@@ -16,7 +16,9 @@
     align-items: center;
     letter-spacing: -0.005em;
 
-
+    span {
+      margin-left: 15px;
+    }
 
     color: #27272E;
 
@@ -24,10 +26,22 @@
 
   }
 
+  .message-list {
+    --ion-item-background: transparent;
+    overflow: hidden;
+    overflow-y: auto;
+    min-height: 400px;
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
 
   .message-chat-card-content {
-    height: 100%;
-    min-height: 400px;
+    max-height: 90%;
+    // min-height: 400px;
+    margin: 25px 0px;
 
     ion-row {
       margin: 3px 0px;
@@ -65,14 +79,12 @@
   background-color: #ffffff;
 }
 
-.message-list {
-  --ion-item-background: transparent;
-}
+
 
 .message-item-direct {
   box-sizing: border-box;
   padding: 21px 15px;
-  
+
 
   font-family: 'SF Pro Display';
   font-style: normal;
@@ -82,36 +94,61 @@
   /* identical to box height, or 100% */
 
 
+  display: block;
 
   /* Gray/700 */
 
   color: #313049;
 
-  
+
 }
 
 .message-time-direct {
+
   font-family: 'SF Pro Display';
   font-style: normal;
   font-weight: 400;
   font-size: 13px;
   line-height: 162.02%;
+  /* identical to box height, or 21px */
+
+  
   
   font-feature-settings: 'salt' on;
 
+  /* Input/Default/Placeholder */
+
   color: #B5B5BD;
 
-  
-  display: flexbox;
+
+  /* Inside auto layout */
+
+  flex: none;
+  order: 1;
+  flex-grow: 0;
 
 }
 
 
+.message-item-direct-info {
+  @extend .message-item-direct;
+
+  width: 100%;
+  text-align: center;
+  
+}
+
+.message-time-direct-info {
+  @extend .message-time-direct;
+  width: 100%;
+  text-align: center;
+  margin-top: -15px;
+}
 
 
 .message-item-direct-friend {
   @extend .message-item-direct;
-  
+
   text-align: left;
   background: #FFFFFF;
   border: 1px solid #EDF2F7;
@@ -122,8 +159,14 @@
 
 .message-time-direct-friend {
   @extend .message-time-direct;
-  display: block;
-     float: left;
+  display: flexbox;
+  position: absolute;
+  align-items: center;
+  text-align: left;
+  float: left;
+  align-content: left;
+  bottom: 0;
+  left: 5px;
 }
 
 
@@ -134,22 +177,30 @@
   background: linear-gradient(252.79deg, rgba(144, 75, 255, 0.084) -20.69%, rgba(190, 52, 160, 0.092) 151.16%);
   border-radius: 9px 0px 9px 9px;
   
-  float: right;  
+  float: right;
 
 }
 
 .message-time-direct-user {
   @extend .message-time-direct;
-  display: flex;
+  
+  display: flexbox;
+  position: absolute;
   align-items: center;
   text-align: right;
   float: right;
   align-content: flex-end;
+  bottom: 0;
+  right: 15px;
+  
 }
 
 .align-text-middle {
   display: flex;
   align-items: center;
+}
+.message-chat-emoji {
+  cursor: pointer;
 }
 
 .message-emojis-list {
@@ -161,7 +212,16 @@
   }
 }
 
-.teste{
- width: 100%;
-  
+.teste {
+  width: 100%;
+  display: block;
+  min-height: 75px;
+  margin-top: 10px;
+}
+
+.message-chat-expand {
+  float: right;
+  position: absolute;
+  right: 0;
+  cursor: pointer;
 }

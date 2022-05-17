@@ -17,6 +17,13 @@
     padding: 3px;
   }
 
+  .no-border {
+    max-width: 5.5em;
+    // border-radius: 1.5em 2em 1.5em 2em;
+    border-radius: 46%;
+    padding: 15px;
+  }
+
   .border-danger {
     max-width: 5.5em;
     border: 3px solid var(--theme-danger-blue);

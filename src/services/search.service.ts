@@ -37,6 +37,18 @@ export interface IUserResponse {
   };
 }
 
+export interface ISingleUserResponse {
+  _status?: string;
+  get_users_by_did: {
+    items: {
+      did: string;
+      name: string;
+      avatar?: string;
+      hiveHost: string;
+    }[];
+  };
+}
+
 export interface ISearchUserResponse {
   _status?: string;
   get_users_by_dids: {
@@ -227,6 +239,36 @@ export class SearchService {
     params['dids'] = dids;
     usersResponse = await this.appHiveClient.Scripting.RunScript({
       name: 'get_users_by_dids', // get all users
+      params: params,
+      context: {
+        target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+        target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+      }
+    });
+    if (usersResponse.isSuccess) {
+      return usersResponse;
+    }
+    return usersResponse.error;
+  }
+
+  async getUserByDID(
+    did: string
+  ): Promise<IRunScriptResponse<IUserResponse | undefined>> {
+    let params: any = {
+      limit: 1,
+      skip: 0
+    };
+
+    let usersResponse: IRunScriptResponse<IUserResponse> = {
+      isSuccess: false,
+      response: { get_users_by_tutorialStep: { items: [] } }
+    };
+
+    params['did'] = did;
+    params['self_did'] = [];
+
+    usersResponse = await this.appHiveClient.Scripting.RunScript({
+      name: 'get_users_by_did', // get all users
       params: params,
       context: {
         target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
