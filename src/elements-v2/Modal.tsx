@@ -1,11 +1,17 @@
 import React, { forwardRef, useState } from 'react';
-import { IonModal, IonRow, IonGrid, IonCardTitle } from '@ionic/react';
+import {
+  IonModal,
+  IonRow,
+  IonGrid,
+  IonCardTitle,
+  IonButton
+} from '@ionic/react';
 import styled from 'styled-components';
 import { DefaultButton } from 'src/elements-v2/buttons';
+import Icon from './icons';
 
 const StyledModal = styled(IonModal)`
   --border-radius: 16px;
-  --min-height: 400px;
   --max-height: 80vh;
   --max-width: 435px;
   --height: auto;
@@ -37,20 +43,13 @@ type Props = {
   onOk?: () => void;
   onCancel?: () => void;
   okText?: string;
-  cancelText?: string;
+  contentStyle?: React.CSSProperties;
   children?: React.ReactNode;
 };
 
 const Modal = forwardRef<React.ReactNode, Props>(
   (
-    {
-      title,
-      onOk,
-      onCancel,
-      okText = 'Ok',
-      cancelText = 'Cancel',
-      children
-    }: Props,
+    { title, onOk, onCancel, okText = 'Ok', contentStyle, children }: Props,
     ref
   ) => {
     const [showModal, setShowModal] = useState(false);
@@ -71,26 +70,27 @@ const Modal = forwardRef<React.ReactNode, Props>(
     return (
       <StyledModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
         <StyledGrid className="ion-no-padding">
-          <IonRow className="ion-no-padding">
+          <IonRow className="ion-no-padding ion-justify-content-between">
             <StyledTitle>{title}</StyledTitle>
-          </IonRow>
-          <StyledContent className="ion-padding-bottom">
-            {children}
-          </StyledContent>
-          <IonRow className="ion-justify-content-center ion-padding-vertical">
-            <DefaultButton
-              className="mr-2"
-              variant="outlined"
-              btnColor="primary-gradient"
-              textType="gradient"
-              style={{ minWidth: 100 }}
+            <IonButton
+              fill="clear"
+              size="small"
               onClick={() => {
                 setShowModal(false);
                 onCancel && onCancel();
               }}
             >
-              {cancelText}
-            </DefaultButton>
+              <Icon
+                name="close-outline"
+                style={{ fontSize: 20 }}
+                color="dark"
+              />
+            </IonButton>
+          </IonRow>
+          <StyledContent className="ion-padding-bottom" style={contentStyle}>
+            {children}
+          </StyledContent>
+          <IonRow className="ion-justify-content-start ion-padding-vertical">
             <DefaultButton
               variant="contained"
               btnColor="primary-gradient"

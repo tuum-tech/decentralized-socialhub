@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Fade } from 'react-awesome-reveal';
 
 import authentically from 'src/assets/new/utility/1.svg';
 import password from 'src/assets/new/utility/2.svg';
@@ -63,37 +64,47 @@ const UtilitySection: React.FC<Props> = ({ refProp }) => {
   return (
     <MainLayout ref={refProp}>
       <Container>
-        <SectionTitle>Utility</SectionTitle>
-        <div className="content">
-          <div className="item">
-            <img src={authentically} className="width-68" alt="authentically" />
-            <SectionIntro>Be authentically you, all in one place</SectionIntro>
-            <SectionText>
-              You are more than just a collection of social profiles siloed on
-              the web… Reflect who you are through your assets, identity, and
-              professional CV into one Profile.
-            </SectionText>
+        <Fade direction="up" triggerOnce={true} cascade>
+          <SectionTitle>Utility</SectionTitle>
+          <div className="content">
+            <div className="item">
+              <img
+                src={authentically}
+                className="width-68"
+                alt="authentically"
+              />
+
+              <SectionIntro>
+                Be authentically you, all in one place
+              </SectionIntro>
+              <SectionText>
+                You are more than just a collection of social profiles siloed on
+                the web… Reflect who you are through your assets, identity, and
+                professional CV into one Profile.
+              </SectionText>
+            </div>
+            <div className="item">
+              <img src={password} className="width-68" alt="authentically" />
+              <SectionIntro>
+                Eliminate endless usernames and passwords
+              </SectionIntro>
+              <SectionText>
+                Replace passwords with one self-created Decentralized ID (DID),
+                that serves as the master key to access various online
+                platforms.
+              </SectionText>
+            </div>
+            <div className="item">
+              <img src={nft} className="width-68" alt="authentically" />
+              <SectionIntro>Do more with Your NFTs</SectionIntro>
+              <SectionText>
+                Enter upcoming exclusive NFT community spaces on Profile, so
+                you'll be able to become a part of your favorite digital
+                communities and share ownership of NFTs.
+              </SectionText>
+            </div>
           </div>
-          <div className="item">
-            <img src={password} className="width-68" alt="authentically" />
-            <SectionIntro>
-              Eliminate endless usernames and passwords
-            </SectionIntro>
-            <SectionText>
-              Replace passwords with one self-created Decentralized ID (DID),
-              that serves as the master key to access various online platforms.
-            </SectionText>
-          </div>
-          <div className="item">
-            <img src={nft} className="width-68" alt="authentically" />
-            <SectionIntro>Do more with Your NFTs</SectionIntro>
-            <SectionText>
-              Enter upcoming exclusive NFT community spaces on Profile, so
-              you'll be able to become a part of your favorite digital
-              communities and share ownership of NFTs.
-            </SectionText>
-          </div>
-        </div>
+        </Fade>
       </Container>
     </MainLayout>
   );

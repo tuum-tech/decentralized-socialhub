@@ -39,9 +39,7 @@ const SpaceListView: React.FC<Props> = ({ spaces, explore = false }: Props) => (
             explore
               ? space.isCommunitySpace
                 ? `/community-spaces/${slug}`
-                : `/did/${getDIDString(space.owner!, true)}/spaces/${
-                    slug
-                  }`
+                : `/did/${getDIDString(space.owner!, true)}/spaces/${slug}`
               : `/spaces/edit/${slug}?type=${
                   space.isCommunitySpace ? `community` : `private`
                 }`

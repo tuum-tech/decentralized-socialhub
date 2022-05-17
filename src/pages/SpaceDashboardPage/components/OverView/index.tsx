@@ -14,6 +14,8 @@ import defaultAvatar from 'src/assets/icon/dp.png';
 
 import { getDIDString } from 'src/utils/did';
 import slugify from 'slugify';
+import Icon from 'src/elements-v2/icons';
+import GradientText from 'src/elements-v2/buttons/GradientText';
 
 const Container = styled.div`
   display: flex;
@@ -60,8 +62,10 @@ const OverView: React.FC<IProps> = ({ profile, sessionItem }: IProps) => {
                 }
               >
                 <IonRow className="ion-align-items-center ion-justify-content-between">
-                  <p style={{ marginRight: '5px' }}>View Profile</p>
-                  <IonIcon icon={openOutline} />
+                  <GradientText style={{ marginRight: '5px' }}>
+                    View Profile
+                  </GradientText>
+                  <Icon name="open-outline" color="primary" />
                 </IonRow>
               </Link>
             </IonRow>
