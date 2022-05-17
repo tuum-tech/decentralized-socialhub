@@ -1,4 +1,5 @@
 import React from 'react';
+import { Fade } from 'react-awesome-reveal';
 
 import style from './style.module.scss';
 import grow from 'src/assets/new/grow.svg';
@@ -15,13 +16,15 @@ const GrowContent = () => {
             <img src={grow} alt="community" />
           </div>
           <div className="item">
-            <SectionSubTitle className="subtitle">
-              Substantially grow your community
-            </SectionSubTitle>
-            <SectionText className="text">
-              Enable peer-to-peer chat as another means to authentically connect
-              with your community.
-            </SectionText>
+            <Fade direction="up" triggerOnce={true} cascade>
+              <SectionSubTitle className="subtitle">
+                Substantially grow your community
+              </SectionSubTitle>
+              <SectionText className="text">
+                Enable peer-to-peer chat as another means to authentically
+                connect with your community.
+              </SectionText>
+            </Fade>
           </div>
         </ContentContainer>
       </div>

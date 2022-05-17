@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { IonRow } from '@ionic/react';
+import { Fade } from 'react-awesome-reveal';
 
 import SpaceListView from 'src/components/Space/SpaceListView';
 import { selectSpaces } from 'src/store/spaces/selectors';
@@ -65,7 +66,9 @@ const CommunitySection: React.FC<Props> = ({ refProp }) => {
     <>
       <MainLayout ref={refProp}>
         <div className={style['community']}>
-          <SectionTitle>Community</SectionTitle>
+          <Fade direction="up" triggerOnce={true} cascade>
+            <SectionTitle>Community</SectionTitle>
+          </Fade>
           <IonRow className={style['row']}>
             <DefaultButton
               size="default"

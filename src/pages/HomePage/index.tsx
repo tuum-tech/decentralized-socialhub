@@ -123,7 +123,6 @@ const HomePage = () => {
   return (
     <Page ref={pageRef}>
       {isVisible && <Toast onClose={() => setIsVisible(false)} />}
-
       <Hero navItemClicked={scrollTo} />
       <AboutSection refProp={aboutRef} />
       <UtilitySection refProp={utilityRef} />

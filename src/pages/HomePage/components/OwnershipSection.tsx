@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Fade } from 'react-awesome-reveal';
 
 import ownership from 'src/assets/new/ownership.svg';
 import { SectionTitle, SectionIntro, SectionText } from '../index';
@@ -61,39 +62,42 @@ interface Props {
 const OwnershipSection: React.FC<Props> = ({ refProp }) => {
   return (
     <Container ref={refProp}>
-      <SectionTitle>Ownership</SectionTitle>
+      <Fade direction="up" triggerOnce={true} cascade>
+        <SectionTitle>Ownership</SectionTitle>
+      </Fade>
       <OwnershipContent>
         <div className="item">
           <img src={ownership} width="100%" alt="ownership" />
         </div>
-
         <div className="item">
           <div className="right-content ">
-            <div>
-              <SectionIntro>Finally own Your own data</SectionIntro>
-              <SectionText className="text">
-                For the first time, you can now determine how and where your
-                data is stored, without a middle man.
-              </SectionText>
-            </div>
-            <div>
-              <SectionIntro>
-                Get security as it should be, blockchain verified
-              </SectionIntro>
-              <SectionText className="text">
-                Profile does not store user data, and our core identity code is
-                open source. We've made it our mission to be fully transparent
-                and provide a secure product for everyone.
-              </SectionText>
-            </div>
-            <div>
-              <SectionIntro>So you can rest assured</SectionIntro>
-              <SectionText className="text">
-                Empower yourself by becoming the owner of the decentralized
-                communities you build and grow from the ground up, absent of any
-                censorship so you can rest assured.
-              </SectionText>
-            </div>
+            <Fade direction="up" triggerOnce={true} cascade>
+              <div>
+                <SectionIntro>Finally own Your own data</SectionIntro>
+                <SectionText className="text">
+                  For the first time, you can now determine how and where your
+                  data is stored, without a middle man.
+                </SectionText>
+              </div>
+              <div>
+                <SectionIntro>
+                  Get security as it should be, blockchain verified
+                </SectionIntro>
+                <SectionText className="text">
+                  Profile does not store user data, and our core identity code
+                  is open source. We've made it our mission to be fully
+                  transparent and provide a secure product for everyone.
+                </SectionText>
+              </div>
+              <div>
+                <SectionIntro>So you can rest assured</SectionIntro>
+                <SectionText className="text">
+                  Empower yourself by becoming the owner of the decentralized
+                  communities you build and grow from the ground up, absent of
+                  any censorship so you can rest assured.
+                </SectionText>
+              </div>
+            </Fade>
           </div>
         </div>
       </OwnershipContent>

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import TextInput from 'src/elements/inputs/TextInput';
 import { IonCol, IonGrid, IonRow, IonInput, IonTextarea } from '@ionic/react';
+import { Fade } from 'react-awesome-reveal';
 
 import footerBG from 'src/assets/new/footer/footer-bg.svg';
 import footerImg from 'src/assets/new/footer/footer-img.svg';
@@ -309,12 +310,13 @@ const Footer: React.FC<Props> = ({ refProp, rootRef }) => {
       <img src={footerPeople} alt="footerPeople" className="people" />
 
       <div className="content">
-        <HomeTitle>Get your NFT Collection listed!</HomeTitle>
-        <HomeIntro style={{ marginBottom: 0 }}>
-          Ready to be discovered and grow your NFT community? <br />
-          Submit your collection today!
-        </HomeIntro>
-
+        <Fade direction="up" triggerOnce={true} cascade>
+          <HomeTitle>Get your NFT Collection listed!</HomeTitle>
+          <HomeIntro style={{ marginBottom: 0 }}>
+            Ready to be discovered and grow your NFT community? <br />
+            Submit your collection today!
+          </HomeIntro>
+        </Fade>
         <form noValidate className="form">
           <IonGrid>
             <IonRow className="ion-justify-content-between ion-no-padding">
