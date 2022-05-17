@@ -7,6 +7,7 @@ import style from './style.module.scss';
 import { SectionSubTitle, SectionText } from '../../index';
 import monetizeBg from 'src/assets/new/monetize-bg.svg';
 import monetizeBgmobile from 'src/assets/new/mobile.svg';
+
 export const ContentContainer = styled.div`
   width: 100%;
   max-width: 1200px;
