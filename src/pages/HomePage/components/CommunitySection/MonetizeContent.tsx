@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Fade } from 'react-awesome-reveal';
 
 import style from './style.module.scss';
 
@@ -110,14 +111,16 @@ const CommunitySection = () => {
       <MonetizeContent>
         <div className="item"></div>
         <div className="item">
-          <SectionSubTitle className="subtitle">
-            Monetize via rewards- based incentives
-          </SectionSubTitle>
-          <SectionText className="text">
-            Earn rewards simply by participating and engaging with communities
-            while helping contribute to the ecosystem. Become your own financial
-            vehicle with Profile.
-          </SectionText>
+          <Fade direction="up" triggerOnce={true} cascade>
+            <SectionSubTitle className="subtitle">
+              Monetize via rewards- based incentives
+            </SectionSubTitle>
+            <SectionText className="text">
+              Earn rewards simply by participating and engaging with communities
+              while helping contribute to the ecosystem. Become your own
+              financial vehicle with Profile.
+            </SectionText>
+          </Fade>
         </div>
       </MonetizeContent>
     </div>

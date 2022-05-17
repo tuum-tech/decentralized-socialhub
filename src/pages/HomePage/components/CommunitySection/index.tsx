@@ -1,4 +1,5 @@
 import React from 'react';
+import { Fade } from 'react-awesome-reveal';
 
 import GrowContent from './GrowContent';
 import MonetizeContent, { ContentContainer } from './MonetizeContent';
@@ -15,21 +16,25 @@ const CommunitySection: React.FC<Props> = ({ refProp }) => {
     <>
       <MainLayout ref={refProp}>
         <div className={style['community']}>
-          <SectionTitle>Community</SectionTitle>
+          <Fade direction="up" triggerOnce={true} cascade>
+            <SectionTitle>Community</SectionTitle>
+          </Fade>
           <ContentContainer>
             <div className="item">
               <img src={community} alt="community" />
             </div>
             <div className="item">
-              <SectionSubTitle className="subtitle">
-                Connect with other like-minded people
-              </SectionSubTitle>
-              <SectionText className="text">
-                Unlock access to new blockchain verified Web3 communities on
-                your own terms. Engage with like-minded and trustworthy
-                creators, thinkers, and doers to grow your social network and
-                create new opportunities.
-              </SectionText>
+              <Fade direction="up" triggerOnce={true} cascade>
+                <SectionSubTitle className="subtitle">
+                  Connect with other like-minded people
+                </SectionSubTitle>
+                <SectionText className="text">
+                  Unlock access to new blockchain verified Web3 communities on
+                  your own terms. Engage with like-minded and trustworthy
+                  creators, thinkers, and doers to grow your social network and
+                  create new opportunities.
+                </SectionText>
+              </Fade>
             </div>
           </ContentContainer>
         </div>
