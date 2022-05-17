@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { IonPage } from '@ionic/react';
 import styled from 'styled-components';
 
@@ -9,6 +10,8 @@ import UtilitySection from './components/UtilitySection';
 import CommunitySection from './components/CommunitySection';
 import OwnershipSection from './components/OwnershipSection';
 import Toast from './components/Toast';
+import { fetchSpaces } from 'src/store/spaces/actions';
+
 // import ConnectSection from './components/ConnectSection';
 
 const Page = styled(IonPage)`
@@ -90,6 +93,7 @@ export const SectionText = styled.p`
 `;
 
 const HomePage = () => {
+  const dispatch = useDispatch();
   const aboutRef = useRef<typeof HTMLDivElement>(null);
   const utilityRef = useRef(null);
   const communityRef = useRef(null);
@@ -97,6 +101,10 @@ const HomePage = () => {
   const connectRef = useRef(null);
   const pageRef = useRef(null);
   const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    dispatch(fetchSpaces(true));
+  }, []);
 
   const scrollTo = (target: string) => {
     if (target === 'About') {
