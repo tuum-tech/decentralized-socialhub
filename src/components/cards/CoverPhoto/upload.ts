@@ -47,6 +47,9 @@ export const StyledIonRange = styled(IonRange)`
   --bar-background: white;
   --bar-background-active: white;
   --knob-background: white;
+  height: 20px;
+  background: #00000080;
+  border-radius: 8px;
 `;
 
 export const StyledUpload = styled.input`

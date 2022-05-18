@@ -211,7 +211,6 @@ const CoverPhoto: React.FC = () => {
           </CropContainer>
           <SliderContainer>
             <StyledIonRange
-              style={{ height: 20, background: '#00000080', borderRadius: 8 }}
               min={1}
               max={3}
               step={0.1}
