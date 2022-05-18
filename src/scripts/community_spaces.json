@@ -3,7 +3,10 @@
     "sid": 0,
     "name": "Welcome to Profile",
     "category": "Welcome to Profile",
-    "owner": ["did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c"],
+    "owner": [
+      "did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c",
+      "did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"
+    ],
     "tags": ["Welcome to Profile"],
     "meta": {}
   },
