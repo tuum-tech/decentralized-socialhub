@@ -24,9 +24,8 @@ export class HiveService {
     instance: ISessionItem
   ): Promise<HiveClient | undefined> {
     try {
-      let isUserDocumentPublished = await DidDocumentService.isDidDocumentPublished(
-        instance.did
-      );
+      let didService = await DidService.getInstance();
+      let isUserDocumentPublished = await didService.isDIDPublished(instance.did);
 
       if (!isUserDocumentPublished) {
         return;
