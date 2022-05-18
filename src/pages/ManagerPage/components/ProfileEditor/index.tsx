@@ -290,8 +290,8 @@ const ProfileEditor: React.FC<Props> = ({
           <PublicFields sessionItem={userInfo} />
         </IonCol>
         <IonCol sizeSm="8" sizeXs="12">
-          <AvatarChangeCard />
           <CoverPhoto />
+          <AvatarChangeCard />
 
           {/* <h1>{userInfo.name}</h1> */}
           <BasicCard
