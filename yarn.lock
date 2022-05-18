@@ -13242,7 +13242,7 @@ react-dom@^16.14.0:
     prop-types "^15.6.2"
     scheduler "^0.19.1"
 
-react-easy-crop@^4.1.5:
+react-easy-crop@4.1.5:
   version "4.1.5"
   resolved "https://registry.yarnpkg.com/react-easy-crop/-/react-easy-crop-4.1.5.tgz#5454a33e9c1e02f9fb870f17685d37c2e58d2bf2"
   integrity sha512-TQouajkW8GIIzNCSCmsZLXMEfbTFNnv2eSPhQBkJOfjoJJL7tXV1lQGJXx0ggqUgW46a26p51QAKfkzu+qAvDg==
@@ -13250,10 +13250,15 @@ react-easy-crop@^4.1.5:
     normalize-wheel "^1.0.1"
     tslib "2.0.1"
 
-react-error-overlay@^6.0.7:
-  version "6.0.10"
-  resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.10.tgz#0fe26db4fa85d9dbb8624729580e90e7159a59a6"
-  integrity sha512-mKR90fX7Pm5seCOfz8q9F+66VCc1PGsWSBxKbITjfKVQHMNF2zudxHnMdJiB1fRCb+XsbQV9sO9DCkgsMQgBIA==
+react-error-overlay@6.0.9, react-error-overlay@^6.0.7:
+  version "6.0.9"
+  resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.9.tgz#3c743010c9359608c375ecd6bc76f35d93995b0a"
+  integrity sha512-nQTTcUu+ATDbrSD1BZHr5kgSD4oF8OFjxun8uAaL8RwPBacGBNPf/yAuVVdx17N8XNzRDMrZ9XcKZHCjPW+9ew==
+
+react-error-overlay@^6.0.11:
+  version "6.0.11"
+  resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.11.tgz#92835de5841c5cf08ba00ddd2d677b6d17ff9adb"
+  integrity sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg==
 
 react-infinite-scroll-component@^6.1.0:
   version "6.1.0"

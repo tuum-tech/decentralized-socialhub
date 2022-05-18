@@ -1,22 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
-import { IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
-import { setTimeout } from 'timers';
+import { IonCol, IonRow } from '@ionic/react';
 
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-import { makeSelectSession } from 'src/store/users/selectors';
-import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState } from './types';
 import { UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
-import { SmallLightButton } from 'src/elements/buttons';
-
-import {
-  CardOverview,
-  CardHeaderContent,
-  CardContentContainer
-} from '../common';
 
 import defaultCoverPhoto from '../../../assets/default/default-cover.png';
 import soccerCoverPhoto from '../../../assets/cover/soccer.png';
@@ -25,21 +12,23 @@ import gamerCoverPhoto from '../../../assets/cover/gamer.png';
 import cryptoCoverPhoto from '../../../assets/cover/crypto.png';
 
 import {
-  Container,
-  TextHeader,
-  ImgUploadArea,
-  ImgUploadContainer,
-  Perfil
+  CoverActions,
+  StyledUpload,
+  CropContainer,
+  SliderContainer,
+  StyledIonRange,
+  StyledCoverContainer,
+  StyledCoverImg,
+  StyledUploadLabel
 } from './upload';
-import styleWidget from '../WidgetCards.module.scss';
 import { DidService } from 'src/services/did.service.new';
 import { showNotify } from 'src/utils/notify';
 
 //Crop Image Imports
-import { IonModal } from '@ionic/react';
-import { Modal } from 'react-bootstrap';
 import Cropper from 'react-easy-crop';
 import { generateDownload } from '../AvatarChangeCard/util/cropImage';
+import useSession from 'src/hooks/useSession';
+import { DefaultButton } from 'src/elements-v2/buttons';
 
 export const getCoverPhoto = (user: ISessionItem) => {
   if (user.coverPhoto && user.coverPhoto !== '') {
@@ -59,20 +48,12 @@ export const getCoverPhoto = (user: ISessionItem) => {
   return defaultCoverPhoto;
 };
 
-const Upload: React.FC<InferMappedProps> = ({
-  eProps,
-  ...props
-}: InferMappedProps) => {
+const CoverPhoto: React.FC = () => {
+  const { session, setSession } = useSession();
   const [imagePreview, setImagePreview] = useState<any>('');
-  const [base64, setBase64] = useState<string>();
-  const [defaultImage, setDefaultImage] = useState(
-    getCoverPhoto(props.session)
-  );
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isImage, setIsImage] = useState<boolean>(false);
+  const [defaultImage, setDefaultImage] = useState(getCoverPhoto(session));
+  const [isEdit, setIsEdit] = useState<boolean>(false);
   const [file, setFile] = useState<string>();
-  const [name, setName] = useState<string>();
-  const [size, setSize] = useState<string>();
 
   //Crop Image Functions and states
   const [image, setImage] = useState<any>();
@@ -92,14 +73,12 @@ const Upload: React.FC<InferMappedProps> = ({
     if (!base64Str.startsWith('data:image')) {
       base64Str = `data:image/png;base64,${base64Str}`;
     }
-    if (props.session && props.session.did !== '') {
-      let newSession = JSON.parse(JSON.stringify(props.session));
+    if (session && session.did !== '') {
+      let newSession = JSON.parse(JSON.stringify(session));
       newSession.coverPhoto = base64Str;
 
       let userService = new UserService(await DidService.getInstance());
-      eProps.setSession({
-        session: await userService.updateSession(newSession, true)
-      });
+      setSession(await userService.updateSession(newSession, true));
       await ProfileService.addActivity(
         {
           guid: '',
@@ -112,30 +91,6 @@ const Upload: React.FC<InferMappedProps> = ({
         newSession!.did
       );
     }
-  };
-
-  const onChange = (e: any) => {
-    let file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = _handleReaderLoaded;
-      reader.readAsBinaryString(file);
-    }
-  };
-
-  const _handleReaderLoaded = (readerEvt: any) => {
-    let binaryString = readerEvt.target.result;
-    setBase64(btoa(binaryString));
-  };
-
-  const onFileSubmit = (e: any) => {
-    setIsLoading(true);
-    e.preventDefault();
-    let payload = { image: base64 };
-
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
   };
 
   const photoUpload = (e: any) => {
@@ -154,13 +109,11 @@ const Upload: React.FC<InferMappedProps> = ({
 
     if (reader !== undefined && file !== undefined) {
       reader.onloadend = () => {
-        setIsImage(true);
         setFile(file);
-        setSize(file.size);
-        setName(file.name);
         setImage(reader.result);
         setImagePreview(reader.result);
         setDefaultImage(file);
+        setIsEdit(true);
       };
       reader.readAsDataURL(file);
     }
@@ -169,159 +122,111 @@ const Upload: React.FC<InferMappedProps> = ({
   const remove = () => {
     setFile('');
     setImagePreview('');
-    setBase64('');
-    setName('');
-    setSize('');
     setImage('');
-    setDefaultImage(getCoverPhoto(props.session));
+    setDefaultImage(getCoverPhoto(session));
+    setIsEdit(false);
   };
 
-  //Crop Image Functions
+  // Crop Image Functions
   React.useEffect(() => {
-    const cropOrg = async () => {
+    (async () => {
       if (image) {
         const cropped = await generateDownload(image, croppedArea);
         if (cropped) {
           setImagePreview(cropped);
-          // setImage(cropped);
         }
       }
-    };
-    cropOrg();
+    })();
   }, [image, croppedArea]);
 
   return (
-    <CardOverview template="default">
-      <CardHeaderContent>
-        <IonGrid className="ion-no-padding">
-          <IonRow className="ion-justify-content-between ion-no-padding">
-            <IonCol className="ion-no-padding">
-              <IonCardTitle>Cover Photo</IonCardTitle>
-            </IonCol>
-
-            {/* <IonCol size="auto" className="ion-no-padding">
-              <SmallLightButton className="mr-2" onClick={remove}>
-                Cancel
-              </SmallLightButton>
-              <SmallLightButton
-                onClick={async () => {
-                  if (base64) await storeUploadedCoverPhoto(base64);
-                }}
+    <>
+      <CoverActions>
+        <IonRow className="ion-justify-content-end ion-no-padding">
+          <IonCol size="auto" className="ion-no-padding">
+            {!isEdit && (
+              <DefaultButton
+                variant="contained"
+                size="small"
+                bgColor="#00000080"
               >
-                Save
-              </SmallLightButton>
-            </IonCol> */}
-          </IonRow>
-        </IonGrid>
-      </CardHeaderContent>
-      <CardContentContainer>
-        <Container>
-          <TextHeader>
-            Your image must be JPG or PNG and less than 700KB
-            <br />
-            It can have a max dimension of 1056 x 176
-          </TextHeader>
-
-          <Modal show={isImage} onHide={() => setIsImage(false)}>
-            <Modal.Body style={{ minHeight: '70vh' }}>
-              <div className="cropper">
-                <Cropper
-                  image={image}
-                  crop={crop}
-                  zoom={zoom}
-                  aspect={16 / 7}
-                  onCropChange={setCrop}
-                  onZoomChange={setZoom}
-                  onCropComplete={onCropComplete}
+                <StyledUpload
+                  type="file"
+                  title=""
+                  hidden
+                  name="coverPhoto"
+                  id="file"
+                  accept=".jpef, .png, .jpg"
+                  onChange={photoUpload}
+                  src={imagePreview}
                 />
-              </div>
-            </Modal.Body>
-
-            <Modal.Footer>
-              <IonCol size="auto" className="ion-no-padding mr-auto">
-                <SmallLightButton
+                <StyledUploadLabel htmlFor="file">Edit</StyledUploadLabel>
+              </DefaultButton>
+            )}
+            {isEdit && (
+              <IonRow>
+                <DefaultButton
+                  variant="contained"
+                  size="small"
+                  bgColor="#00000080"
                   className="mr-2"
-                  onClick={() => {
-                    setZoom((preVal: any) => preVal - 0.3);
-                  }}
-                >
-                  -
-                </SmallLightButton>
-                <SmallLightButton
-                  onClick={async () => {
-                    setZoom((preVal: any) => preVal + 0.3);
-                  }}
-                >
-                  +
-                </SmallLightButton>
-              </IonCol>
-
-              <IonCol size="auto" className="ion-no-padding">
-                <SmallLightButton
-                  className="mr-2"
-                  onClick={() => {
-                    setIsImage(false);
-                    remove();
-                  }}
+                  onClick={remove}
                 >
                   Cancel
-                </SmallLightButton>
-                <SmallLightButton
+                </DefaultButton>
+                <DefaultButton
+                  variant={'contained'}
+                  btnColor="primary-gradient"
+                  size="small"
                   onClick={async () => {
-                    setIsImage(false);
-                    const cropped = await generateDownload(image, croppedArea);
-                    // console.log(check);
-                    if (cropped) await storeUploadedCoverPhoto(cropped);
-                    // console.log(imagePreview)
-                    // if (base64) await storeUploadedAvatar(base64);
+                    if (imagePreview) {
+                      await storeUploadedCoverPhoto(imagePreview);
+                    }
+                    setDefaultImage(imagePreview);
+                    setIsEdit(false);
                   }}
                 >
-                  Save
-                </SmallLightButton>
-              </IonCol>
-            </Modal.Footer>
-          </Modal>
+                  Save Changes
+                </DefaultButton>
+              </IonRow>
+            )}
+          </IonCol>
+        </IonRow>
+      </CoverActions>
 
-          <ImgUploadContainer>
-            <form onSubmit={e => onFileSubmit(e)} onChange={e => onChange(e)}>
-              <ImgUploadArea logo={defaultImage}>
-                <Perfil>
-                  {imagePreview !== '' && (
-                    <img
-                      src={imagePreview}
-                      alt="Icone adicionar"
-                      style={{ objectFit: 'cover' }}
-                    />
-                  )}
-                  <input
-                    type="file"
-                    name="coverPhoto"
-                    id="file"
-                    accept=".jpef, .png, .jpg"
-                    onChange={photoUpload}
-                    src={imagePreview}
-                  />
-                </Perfil>
-              </ImgUploadArea>
-            </form>
-          </ImgUploadContainer>
-        </Container>
-      </CardContentContainer>
-    </CardOverview>
+      {isEdit ? (
+        <div>
+          <CropContainer>
+            <Cropper
+              image={image}
+              crop={crop}
+              zoom={zoom}
+              aspect={8 / 2}
+              objectFit="horizontal-cover"
+              showGrid={false}
+              onCropChange={setCrop}
+              onCropComplete={onCropComplete}
+              onZoomChange={setZoom}
+            />
+          </CropContainer>
+          <SliderContainer>
+            <StyledIonRange
+              style={{ height: 20, background: '#00000080', borderRadius: 8 }}
+              min={1}
+              max={3}
+              step={0.1}
+              value={zoom}
+              onIonChange={e => setZoom(e.detail.value as any)}
+            />
+          </SliderContainer>
+        </div>
+      ) : (
+        <StyledCoverContainer>
+          <StyledCoverImg src={defaultImage} alt="cover-photo" />
+        </StyledCoverContainer>
+      )}
+    </>
   );
 };
 
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Upload);
+export default CoverPhoto;
