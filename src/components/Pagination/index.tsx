@@ -3,7 +3,10 @@ import { IonRow } from '@ionic/react';
 import ReactPaginate from 'react-paginate';
 import Select from 'react-select';
 
-import { ITEMS_PER_PAGE } from 'src/pages/ExplorePage/constants';
+import {
+  ITEMS_PER_PAGE_DEFAULT,
+  ITEMS_PER_PAGE_SPACES
+} from 'src/pages/ExplorePage/constants';
 
 import style from './Pagination.module.scss';
 
@@ -24,6 +27,8 @@ const Pagination: React.FC<PaginationProps> = ({
   onPageCountChange,
   isVisiblePageCount = true
 }: PaginationProps) => {
+  let itemsPerPage =
+    perPage === 9 ? ITEMS_PER_PAGE_SPACES : ITEMS_PER_PAGE_DEFAULT;
   return (
     <IonRow className={style['pagination-footer']}>
       <div>
@@ -49,8 +54,8 @@ const Pagination: React.FC<PaginationProps> = ({
             className="items-per-page"
             classNamePrefix="select"
             name="pagecount"
-            options={ITEMS_PER_PAGE}
-            defaultValue={ITEMS_PER_PAGE[0]}
+            options={itemsPerPage}
+            defaultValue={itemsPerPage[0]}
             onChange={onPageCountChange}
             components={{ IndicatorSeparator: null }}
             menuPosition="fixed"

@@ -43,7 +43,7 @@ const SpaceListView: React.FC<Props> = ({
   spaces,
   explore = false,
   isVisiblePageCount = true,
-  pageCount = 10
+  pageCount = 9
 }: Props) => {
   const [pageOffset, setPageOffset] = useState(0);
   const [perPage, setPerPage] = useState<number>(pageCount);
