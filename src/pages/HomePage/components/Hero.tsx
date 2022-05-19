@@ -141,6 +141,7 @@ const Hero: React.FC<IProps> = ({ navItemClicked, windowDimensions }) => {
               ? -350
               : -480
         }}
+        height={900}
       />
     </HeroContainer>
   );
