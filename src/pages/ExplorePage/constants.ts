@@ -29,10 +29,16 @@ export const Api = {
 /** Component Constants - END */
 
 /** Pagination Dropdown Select - START */
-export const ITEMS_PER_PAGE = [
+export const ITEMS_PER_PAGE_DEFAULT = [
   { value: 0, label: 10 },
-  { value: 1, label: 25 },
+  { value: 1, label: 20 },
   { value: 2, label: 50 },
   { value: 3, label: 100 }
+];
+export const ITEMS_PER_PAGE_SPACES = [
+  { value: 0, label: 9 },
+  { value: 1, label: 18 },
+  { value: 2, label: 45 },
+  { value: 3, label: 90 }
 ];
 /** Pagination Dropdown Select - END */

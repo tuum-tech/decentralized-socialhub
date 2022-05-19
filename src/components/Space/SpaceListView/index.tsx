@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { down } from 'styled-breakpoints';
 import styled from 'styled-components';
 import slugify from 'slugify';
 import SpaceCard from '../SpaceCard';
 import { getDIDString } from 'src/utils/did';
+import Pagination from 'src/components/Pagination';
 
 const Container = styled.div`
   --repeat: 3;
@@ -25,30 +26,76 @@ const Container = styled.div`
 interface Props {
   spaces: Space[];
   explore?: boolean;
+  isVisiblePageCount?: boolean;
+  pageCount?: number;
 }
-const SpaceListView: React.FC<Props> = ({ spaces, explore = false }: Props) => (
-  <Container>
-    {spaces.map((space: any) => {
-      const slug = slugify(space.name, { lower: true });
-      return (
-        <SpaceCard
-          key={JSON.stringify(space)}
-          space={space}
-          explore={explore}
-          link={
-            explore
-              ? space.isCommunitySpace
-                ? `/community-spaces/${slug}`
-                : `/did/${getDIDString(space.owner!, true)}/spaces/${slug}`
-              : `/spaces/edit/${slug}?type=${
-                  space.isCommunitySpace ? `community` : `private`
-                }`
-          }
-          newTab={explore}
+
+interface PageCountProps {
+  label: number;
+  value: number;
+}
+
+interface PageProps {
+  selected: number;
+}
+
+const SpaceListView: React.FC<Props> = ({
+  spaces,
+  explore = false,
+  isVisiblePageCount = true,
+  pageCount = 9
+}: Props) => {
+  const [pageOffset, setPageOffset] = useState(0);
+  const [perPage, setPerPage] = useState<number>(pageCount);
+  const totalPages = Math.ceil(spaces.length / perPage) ?? 1;
+
+  const onPageCountChange = (selected: PageCountProps) => {
+    setPerPage(selected.label);
+  };
+
+  const onPageChange = (data: PageProps) => {
+    let selected = data.selected;
+    let offset = Math.ceil(selected * perPage);
+
+    setPageOffset(offset);
+  };
+
+  return (
+    <>
+      <Container>
+        {spaces.slice(pageOffset, pageOffset + perPage).map((space: any) => {
+          const slug = slugify(space.name, { lower: true });
+          return (
+            <SpaceCard
+              key={JSON.stringify(space)}
+              space={space}
+              explore={explore}
+              link={
+                explore
+                  ? space.isCommunitySpace
+                    ? `/community-spaces/${slug}`
+                    : `/did/${getDIDString(space.owner!, true)}/spaces/${slug}`
+                  : `/spaces/edit/${slug}?type=${
+                      space.isCommunitySpace ? `community` : `private`
+                    }`
+              }
+              newTab={explore}
+            />
+          );
+        })}
+      </Container>
+      {spaces.length > 0 && (
+        <Pagination
+          perPage={perPage}
+          totalPages={totalPages}
+          lists={spaces ?? []}
+          onPageCountChange={onPageCountChange}
+          onPageChange={onPageChange}
+          isVisiblePageCount={isVisiblePageCount}
         />
-      );
-    })}
-  </Container>
-);
+      )}
+    </>
+  );
+};
 
 export default SpaceListView;

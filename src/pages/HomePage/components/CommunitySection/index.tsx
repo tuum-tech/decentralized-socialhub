@@ -138,7 +138,12 @@ const CommunitySection: React.FC<Props> = ({ refProp, windowDimensions }) => {
             </DefaultButton>
           </IonRow>
 
-          <SpaceListView spaces={filteredSpaces} explore={true} />
+          <SpaceListView
+            spaces={filteredSpaces}
+            explore={false}
+            isVisiblePageCount={false}
+            pageCount={9}
+          />
           <IonRow className="ion-justify-content-center">
             <SignUpButton onClick={() => history.push('/create-profile')}>
               Sign up & explore all
