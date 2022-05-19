@@ -84,14 +84,16 @@ const SpaceListView: React.FC<Props> = ({
           );
         })}
       </Container>
-      <Pagination
-        perPage={perPage}
-        totalPages={totalPages}
-        lists={spaces ?? []}
-        onPageCountChange={onPageCountChange}
-        onPageChange={onPageChange}
-        isVisiblePageCount={isVisiblePageCount}
-      />
+      {spaces.length > 0 && (
+        <Pagination
+          perPage={perPage}
+          totalPages={totalPages}
+          lists={spaces ?? []}
+          onPageCountChange={onPageCountChange}
+          onPageChange={onPageChange}
+          isVisiblePageCount={isVisiblePageCount}
+        />
+      )}
     </>
   );
 };
