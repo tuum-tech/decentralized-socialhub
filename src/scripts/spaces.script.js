@@ -29,7 +29,9 @@ let run = async () => {
           category: space.category,
           owner: space.owner,
           meta: space.meta,
-          followers: [...new Set(saved.followers.concat(space.followers))]
+          tags: [...new Set(saved.tags.concat(space.tags))],
+          followers: [...new Set(saved.followers.concat(space.followers))],
+          socialLinks: saved.socialLinks || {}
         };
         await client.Database.updateOne(
           'community_spaces',
@@ -43,7 +45,15 @@ let run = async () => {
           avatar: '',
           coverPhoto: '',
           description: '',
-          publicFields: ['about', 'follower'],
+          tags: [
+            'ERC-721',
+            'Governance',
+            'Social Token',
+            'Membership',
+            'Collectibles',
+            'Art'
+          ],
+          publicFields: ['about', 'follower', 'social links'],
           socialLinks: {},
           guid: Guid.create()
         });
