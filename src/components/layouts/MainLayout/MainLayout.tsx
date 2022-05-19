@@ -23,7 +23,7 @@ const LeftCol = styled(IonCol)`
 
 const RightCol = styled(IonCol)`
   height: 100vh;
-  overflow: scroll;
+  overflow: auto;
   flex: 0 0;
   flex-grow: 1;
   background: #f7fafc;

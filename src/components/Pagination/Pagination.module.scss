@@ -1,0 +1,38 @@
+.pagination-footer {
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-top: 1px solid #f6f7f9;
+
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 23px;
+  color: #7a7a9d;
+
+  .pagination {
+    font-family: 'SF Pro Display';
+    text-align: center;
+    color: #4c6fff;
+    padding: 0;
+    margin-bottom: 0px;
+
+    li {
+      display: inline;
+      padding: 0.3em;
+    }
+    .page-active {
+      font-weight: 800;
+    }
+  }
+
+  .page-count-select {
+    display: flex;
+    align-items: center;
+
+    .rows-per-page-text {
+      margin-right: 11px;
+    }
+  }
+}

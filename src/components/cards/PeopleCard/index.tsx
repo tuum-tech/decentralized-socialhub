@@ -7,9 +7,6 @@ import {
   IonRow,
   IonCol
 } from '@ionic/react';
-import ReactPaginate from 'react-paginate';
-import Select from 'react-select';
-
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
@@ -17,7 +14,7 @@ import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from '../SocialProfileCard/types';
 import { ProfileService } from 'src/services/profile.service';
-import { ITEMS_PER_PAGE } from 'src/pages/ExplorePage/constants';
+import Pagination from 'src/components/Pagination';
 
 import style from './PeopleCard.module.scss';
 import DidCard from '../DidCard';
@@ -154,42 +151,21 @@ const PeopleCard: React.FC<Props> = ({
           </IonCardHeader>
         )}
         {listPeople}
-        {listPeople && (
-          <IonRow className={style['pagination-footer']}>
-            <div>
-              Showing {perPage} item out of {people?.items.length}
-            </div>
-            <ReactPaginate
-              previousLabel={'◀︎'}
-              nextLabel={'▶︎'}
-              breakLabel={'...'}
-              breakClassName={'break-me'}
-              pageCount={totalPages}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={5}
-              onPageChange={handlePeoplePageClick}
-              containerClassName={style['pagination']}
-              activeClassName={style['page-active']}
-            />
-            <div className={style['page-count-select']}>
-              <div className={style['rows-per-page-text']}>Rows per page</div>
-              <Select
-                className="items-per-page"
-                classNamePrefix="select"
-                name="pagecount"
-                options={ITEMS_PER_PAGE}
-                defaultValue={ITEMS_PER_PAGE[0]}
-                onChange={handlePageCount}
-                components={{ IndicatorSeparator: null }}
-              />
-            </div>
-          </IonRow>
-        )}
-        {!listPeople && (
+        {listPeople.length > 0 ? (
+          <Pagination
+            perPage={perPage}
+            totalPages={totalPages}
+            lists={people?.items ?? []}
+            onPageCountChange={handlePageCount}
+            onPageChange={handlePeoplePageClick}
+          />
+        ) : searchKeyword ? (
           <IonCardContent>
             No user found with the {isSearchKeywordDID ? 'DID' : 'keyword'}:{' '}
             <strong>{searchKeyword}</strong>
           </IonCardContent>
+        ) : (
+          <IonCardContent>No user</IonCardContent>
         )}
       </IonCard>
     </IonCol>
