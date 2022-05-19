@@ -11,11 +11,12 @@ import { SyncSpaceAtom } from 'src/Atoms/Atoms';
 
 import useQuery from 'src/hooks/useQuery';
 
-import ProfileEditor from './components/ProfileEditor';
+import SpaceEditor from './components/SpaceEditor';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { defaultSpace, SpaceService } from 'src/services/space.service';
 import HeaderMenu from 'src/elements-v2/HeaderMenu';
 import useSession from 'src/hooks/useSession';
+import { Guid } from 'guid-typescript';
 
 const Header = styled.div`
   width: 100%;
@@ -32,13 +33,13 @@ const Header = styled.div`
 `;
 
 interface MatchParams {
-  name: string;
+  guid: string;
 }
 
 interface PageProps extends RouteComponentProps<MatchParams> {}
 
 const SpaceDashboardPage: React.FC<PageProps> = (props: PageProps) => {
-  const spaceName = props.match.params.name.toLowerCase();
+  const guid = props.match.params.guid;
   const query = useQuery();
   const type = query.get('type');
   const { session } = useSession();
@@ -50,32 +51,29 @@ const SpaceDashboardPage: React.FC<PageProps> = (props: PageProps) => {
         ? [spaceProfile.owner]
         : spaceProfile.owner
       : [];
-    return owners.includes(session.did);
+    return true; //owners.includes(session.did);
   }, [spaceProfile, session]);
 
-  const capitalize = (s: string) => {
-    return s.charAt(0).toUpperCase() + s.slice(1);
-  };
   const updateSpace = async () => {
-    if (!spaceName) return;
-    let names = [...new Set([spaceName, capitalize(spaceName)])];
+    if (!guid) return;
     let spaces = [];
     if (type === 'community') {
-      spaces = await SpaceService.getCommunitySpaceByNames(names);
+      spaces = await SpaceService.getCommunitySpaceByIds([Guid.parse(guid)]);
     } else {
-      spaces = await SpaceService.getSpaceByNames(session, names);
+      spaces = await SpaceService.getSpaceByIds(session, [Guid.parse(guid)]);
     }
     if (spaces.length > 0) {
       setSpaceProfile(spaces[0]);
     }
   };
   useEffect(() => {
-    if (session && spaceName) {
+    if (session && guid) {
+      console.log({ session, guid });
       (async () => {
         await updateSpace();
       })();
     }
-  }, [session, spaceName, type]);
+  }, [session, guid, type]);
 
   useEffect(() => {
     if (syncSpace) {
@@ -97,7 +95,7 @@ const SpaceDashboardPage: React.FC<PageProps> = (props: PageProps) => {
         />
       </Header>
       {isOwner ? (
-        <ProfileEditor session={session} profile={spaceProfile} />
+        <SpaceEditor session={session} profile={spaceProfile} />
       ) : (
         <LoadingIndicator loadingText="Loading..." />
       )}

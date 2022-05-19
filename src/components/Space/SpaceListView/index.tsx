@@ -1,7 +1,6 @@
 import React from 'react';
 import { down } from 'styled-breakpoints';
 import styled from 'styled-components';
-import slugify from 'slugify';
 import SpaceCard from '../SpaceCard';
 import { getDIDString } from 'src/utils/did';
 
@@ -28,8 +27,9 @@ interface Props {
 }
 const SpaceListView: React.FC<Props> = ({ spaces, explore = false }: Props) => (
   <Container>
-    {spaces.map((space: any) => {
-      const slug = slugify(space.name, { lower: true });
+    {spaces.map((space: Space) => {
+      const slug = space.guid.value;
+
       return (
         <SpaceCard
           key={JSON.stringify(space)}
@@ -39,7 +39,10 @@ const SpaceListView: React.FC<Props> = ({ spaces, explore = false }: Props) => (
             explore
               ? space.isCommunitySpace
                 ? `/community-spaces/${slug}`
-                : `/did/${getDIDString(space.owner!, true)}/spaces/${slug}`
+                : `/did/${getDIDString(
+                    space.owner as string,
+                    true
+                  )}/spaces/${slug}`
               : `/spaces/edit/${slug}?type=${
                   space.isCommunitySpace ? `community` : `private`
                 }`

@@ -31,7 +31,7 @@ interface Props {
   profile: any;
 }
 
-const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
+const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
   const history = useHistory();
   const [userInfo, setUserInfo] = useState<ISessionItem>(session);
   const [loaded, setLoaded] = useState(false);
@@ -46,6 +46,7 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, profile]);
 
+  // should be updated
   const onUploadAvatar = async (value: string) => {
     let base64Str = value;
     if (!base64Str.startsWith('data:image')) {
@@ -134,4 +135,4 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
   );
 };
 
-export default ProfileEditor;
+export default SpaceEditor;

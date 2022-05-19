@@ -17,6 +17,7 @@ export enum SpaceCategory {
 }
 
 export const defaultSpace: Space = {
+  guid: null,
   name: '',
   slug: '',
   description: '',
