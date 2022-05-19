@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 declare -a Images=("hive-node:v2.5.1" "assist-restapi-node:latest")
-declare -a Containers=("hive-node" "assist-restapi-node" "restapi-mongo")
+declare -a Containers=("hive-node" "assist-restapi-node" "restapi-mongo" "matrix-synapse-node" "synapse-postgres")
 
 function stop () {
     for container in ${Containers[@]}
@@ -16,6 +16,7 @@ function stop () {
 
 function start () {
     stop
+    sudo mkdir -p ${HOME}/.profile-data/matrix-synapse-data && sudo chown -R 991:991 ${HOME}/.profile-data/matrix-synapse-data/
     docker-compose -f docker/docker-compose.yml up --remove-orphans --force-recreate -d 
 }
 

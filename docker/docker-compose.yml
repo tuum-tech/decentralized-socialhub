@@ -31,6 +31,40 @@ services:
       - profile
     tty: true
 
+  matrix-synapse-node:
+    container_name: matrix-synapse-node
+    image: matrixdotorg/synapse:latest
+    user: '991:991'
+    volumes:
+      - ${HOME}/.profile-data/matrix-synapse-data:/data
+      - ${PWD}/docker/matrix-synapse/homeserver.yaml:/data/homeserver.yaml
+      - ${PWD}/docker/matrix-synapse/my.matrix.host.log.config:/data/my.matrix.host.log.config
+      - ${PWD}/docker/matrix-synapse/my.matrix.host.signing.key:/data/my.matrix.host.signing.key
+    ports:
+      - 8008:8008
+      - 8448:8448/tcp
+    depends_on:
+      - synapse-postgres
+    networks:
+      - profile
+    tty: true
+
+  synapse-postgres:
+    container_name: synapse-postgres
+    image: docker.io/postgres:12-alpine
+    user: '${UID}:${GID}'
+    volumes:
+      - ${HOME}/.profile-data/synapse-postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=synapse
+      - POSTGRES_PASSWORD=synapse
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    networks:
+      - profile
+    tty: true
+
   restapi-mongo:
     container_name: restapi-mongo
     image: mongo
