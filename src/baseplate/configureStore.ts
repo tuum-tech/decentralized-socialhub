@@ -81,6 +81,7 @@ export default () =>
 
     return {
       store,
-      persistor
+      persistor,
+      history
     };
   };
