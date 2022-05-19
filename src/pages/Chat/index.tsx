@@ -26,7 +26,12 @@ import style from './style.module.scss';
 import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 import { SubState } from 'src/store/users/types';
 
-import { createClient, EventTimeline, MatrixClient, Room } from 'matrix-js-sdk';
+import {
+  createClient as createClientMatrix,
+  EventTimeline,
+  MatrixClient,
+  Room
+} from 'matrix-js-sdk';
 import styled from 'styled-components';
 import NoMessageCard from './components/NoMessagesCard';
 import SearchFriendForm from './components/SearchFriendForm';
@@ -44,6 +49,8 @@ import Avatar from '../../components/Avatar';
 import messages from '../ChooseVaultPage/messages';
 import moment from 'moment';
 import { eventNames } from 'process';
+import { ChatService } from '../../services/chat.service';
+import { StyledButton } from 'src/elements/buttons';
 
 interface IRoomItem {
   roomId: string;
@@ -91,20 +98,20 @@ const ChatPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
     margin-bottom: 0px;
   `;
 
-  const [accessToken, setAccessToken] = useState<string>('');
-  const [selectedRoom, setSelectedRoom] = useState<string>('');
-  const [client, setClient] = useState<MatrixClient>(
-    createClient(process.env.REACT_APP_SYNAPSE_SERVER || '')
+  const [userId] = useState<string>(
+    `@${getDIDString(props.session.did, true).toLowerCase()}:${
+      process.env.REACT_APP_SYNAPSE_SERVERNAME
+    }`
   );
+
+  const [selectedRoom, setSelectedRoom] = useState<string>('');
+  const [client, setClient] = useState<MatrixClient>(createClientMatrix(''));
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [userId, setUserId] = useState<string>('');
 
   const [rooms, setRooms] = useState<IRooms>({});
   const [roomsIds, setRoomsIds] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
-
-  let did = getDIDString(props.match.params.did, false);
 
   const getUserProfile = async (did: string) => {
     let searchServiceLocal: SearchService;
@@ -178,11 +185,6 @@ const ChatPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   const addRoom = async (r: Room) => {
     if (roomsIds.indexOf(r.roomId) >= 0) return;
 
-    let myID = `@${getDIDString(
-      props.session.did,
-      true
-    ).toLowerCase()}:my.matrix.host`;
-
     let membership = r.getMyMembership();
     let isDM = r.getDMInviter() || false;
 
@@ -195,7 +197,7 @@ const ChatPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
       let avatar = '';
 
       for (let member of r.currentState.getMembers()) {
-        if (member.userId !== myID) {
+        if (member.userId !== userId) {
           userDid = getDidFromId(member.userId);
           let userProfile = await getUserProfile(userDid);
           userName = userProfile.name;
@@ -256,20 +258,20 @@ const ChatPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
 
   useEffect(() => {
     (async () => {
-      if (userId !== '') return;
-      let localUserId = `${getDIDString(props.session.did, true)}`;
-      setUserId(localUserId);
+      if (isConnected) return;
 
-      await client.login('m.login.password', {
-        user: localUserId,
-        password: 'abc123'
+      let accessToken = await ChatService.Authentication(props.session.did);
+
+      let client = createClientMatrix({
+        baseUrl: process.env.REACT_APP_SYNAPSE_SERVER || '',
+        accessToken: accessToken,
+        userId: userId
       });
+
       await client.startClient({});
 
       client.once('sync', async (state, prevstate, res) => {
-        console.log('state');
         if (state === 'PREPARED') {
-          console.log('set user id', client.getUserId());
           setIsConnected(true);
 
           const userRooms = client.getRooms();
@@ -282,8 +284,6 @@ const ChatPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
       });
 
       client.on('Room.timeline', (evnt, room, toStartOfTimeline) => {
-        console.log('Room.timeline', evnt);
-
         if (
           evnt.getType() !== 'm.room.member' &&
           evnt.getType() !== 'm.room.message'
@@ -325,9 +325,10 @@ const ChatPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
         await addRoom(room);
       });
 
+      setClient(client);
       setIsConnected(true);
     })();
-  }, [addRoom, client, props.session, rooms, roomsIds, selectedRoom, userId]);
+  }, [addRoom, isConnected, props.session, rooms, roomsIds, selectedRoom, userId]);
 
   const getDidFromId = (matrixId: string): string => {
     let indexEnd = matrixId.lastIndexOf(':');
@@ -454,6 +455,17 @@ const ChatPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
                             <IonRow>
                               <IonCol>
                                 <IonList>{getFriendsList()}</IonList>
+                              </IonCol>
+                            </IonRow>
+                            <IonRow>
+                              <IonCol>
+                                <StyledButton
+                                  width="200px"
+                                  height="40px"
+                                  onClick={() => setIsModalOpen(true)}
+                                >
+                                  Add new friend
+                                </StyledButton>
                               </IonCol>
                             </IonRow>
                           </IonCol>
