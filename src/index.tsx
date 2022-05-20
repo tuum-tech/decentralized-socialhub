@@ -1,32 +1,32 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App";
-import { Provider } from "react-redux";
-import * as serviceWorker from "./serviceWorker";
-import configureStore from "./baseplate/configureStore";
-import { PersistGate } from 'redux-persist/lib/integration/react'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import { Provider } from 'react-redux';
+import * as serviceWorker from './serviceWorker';
+import configureStore from './baseplate/configureStore';
+import { PersistGate } from 'redux-persist/lib/integration/react';
 
-import * as Sentry from "@sentry/react";
-import { Integrations } from "@sentry/tracing";
-import packageJson from "../package.json";
+import * as Sentry from '@sentry/react';
+import { Integrations } from '@sentry/tracing';
+import packageJson from '../package.json';
 // import { Menu } from './Menu';
 
 const { store, persistor } = configureStore();
 
 const projectName =
-  process.env.NODE_ENV === "production"
+  process.env.NODE_ENV === 'production'
     ? packageJson.name
-    : packageJson.name + "-test";
-const MOUNT_NODE = document.getElementById("root");
+    : packageJson.name + '-test';
+const MOUNT_NODE = document.getElementById('root');
 
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
-  release: projectName + "@" + packageJson.version,
+  release: projectName + '@' + packageJson.version,
   integrations: [new Integrations.BrowserTracing()],
 
   // We recommend adjusting this value in production, or using tracesSampler
   // for finer control
-  tracesSampleRate: 1.0,
+  tracesSampleRate: 1.0
 });
 
 ReactDOM.render(

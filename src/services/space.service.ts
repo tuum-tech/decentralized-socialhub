@@ -17,6 +17,7 @@ export enum SpaceCategory {
 }
 
 export const defaultSpace: Space = {
+  guid: null,
   name: '',
   slug: '',
   description: '',
@@ -159,6 +160,44 @@ export class SpaceService {
     }
     return [];
   }
+  static async getSpaceById(session: ISessionItem, guid: Guid) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const result: IRunScriptResponse<SpacesResponse> = await hiveInstance.Scripting.RunScript(
+        {
+          name: 'get_space_by_ids',
+          params: { guids: [guid] },
+          context: {
+            target_did: session.did,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+          }
+        }
+      );
+      const spaces = getItemsFromData(result, 'get_space_by_ids');
+      if (!spaces.length) {
+        return null;
+      }
+
+      const appHiveClient = await HiveService.getAppHiveClient();
+      if (appHiveClient) {
+        const response = await appHiveClient.Scripting.RunScript({
+          name: 'get_space_by_ids',
+          params: { guids: [guid] },
+          context: {
+            target_did: process.env.REACT_APP_APPLICATION_DID,
+            target_app_did: process.env.REACT_APP_APPLICATION_ID
+          }
+        });
+        let items = getItemsFromData(response, 'get_space_by_ids');
+        if (!items.length) {
+          return null;
+        }
+
+        return { ...items[0], ...spaces[0] };
+      }
+    }
+    return null;
+  }
   static async getCommunitySpaceByNames(names: string[]) {
     const appHiveClient = await HiveService.getAppHiveClient();
     if (appHiveClient) {
@@ -196,6 +235,7 @@ export class SpaceService {
     space: Space,
     notify: boolean = true
   ) {
+    let resp;
     if (space.category === SpaceCategory.Personal) {
       const hiveInstance = await HiveService.getSessionInstance(session);
       if (session && hiveInstance) {
@@ -210,7 +250,7 @@ export class SpaceService {
         if (res.isSuccess && res.response._status === 'OK') {
           const appHiveClient = await HiveService.getAppHiveClient();
           if (appHiveClient) {
-            await appHiveClient.Scripting.RunScript({
+            resp = await appHiveClient.Scripting.RunScript({
               name: 'add_space',
               params: {
                 guid: (space as any).guid,
@@ -233,7 +273,7 @@ export class SpaceService {
     } else {
       const appHiveClient = await HiveService.getAppHiveClient();
       if (appHiveClient) {
-        await appHiveClient.Scripting.RunScript({
+        resp = await appHiveClient.Scripting.RunScript({
           name: 'add_community_space',
           params: space,
           context: {
@@ -245,6 +285,7 @@ export class SpaceService {
           showNotify('Space details has been successfully saved', 'success');
       }
     }
+    return resp;
   }
   static async removeSpace(session: ISessionItem, space: Space) {
     const hiveInstance = await HiveService.getSessionInstance(session);

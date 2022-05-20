@@ -1,9 +1,9 @@
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { down } from 'styled-breakpoints';
-import { SpaceService } from 'src/services/space.service';
 import AboutCard from 'src/components/cards/AboutCard';
 import SyncBar from 'src/components/SyncBar';
 import SpaceCoverPhoto from 'src/components/cards/SpaceCoverPhoto';
@@ -17,6 +17,7 @@ import DeleteSpace from '../DeleteSpace';
 import SocialLinks from '../SocialLinks';
 import Category from '../Category';
 import { SpaceCategory } from 'src/services/space.service';
+import { removeSpace, updateSpace } from 'src/store/spaces/actions';
 
 const StyledGrid = styled(IonGrid)`
   padding: 10px 35px 20px;
@@ -31,11 +32,12 @@ interface Props {
   profile: any;
 }
 
-const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
+const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
+  const dispatch = useDispatch();
   const history = useHistory();
   const [userInfo, setUserInfo] = useState<ISessionItem>(session);
   const [loaded, setLoaded] = useState(false);
-  const [spaceProfile, setSpaceProfile] = useState<any>(profile);
+  const [spaceProfile, setSpaceProfile] = useState<Space>(profile);
   useEffect(() => {
     (async () => {
       if (!session.userToken) return;
@@ -46,13 +48,14 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, profile]);
 
+  // should be updated
   const onUploadAvatar = async (value: string) => {
     let base64Str = value;
     if (!base64Str.startsWith('data:image')) {
       base64Str = `data:image/png;base64,${base64Str}`;
     }
     const _spaceProfile = { ...spaceProfile, avatar: base64Str };
-    await SpaceService.addSpace(session, _spaceProfile);
+    dispatch(updateSpace(_spaceProfile));
     setSpaceProfile(_spaceProfile);
   };
   const onUploadCoverPhoto = async (value: string) => {
@@ -61,17 +64,17 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
       base64Str = `data:image/png;base64,${base64Str}`;
     }
     const _spaceProfile = { ...spaceProfile, coverPhoto: base64Str };
-    await SpaceService.addSpace(session, _spaceProfile);
+    dispatch(updateSpace(_spaceProfile));
     setSpaceProfile(_spaceProfile);
   };
   const onUpdateAbout = async (value: string) => {
     const _spaceProfile = { ...spaceProfile, description: value };
-    await SpaceService.addSpace(session, _spaceProfile);
+    dispatch(updateSpace(_spaceProfile));
     setSpaceProfile(_spaceProfile);
   };
   const onUpdateCategory = async (category: string[]) => {
     const _spaceProfile = { ...spaceProfile, tags: category };
-    await SpaceService.addSpace(session, _spaceProfile, false);
+    dispatch(updateSpace(_spaceProfile, false));
     setSpaceProfile(_spaceProfile);
   };
   const onRemoveSpace = async () => {
@@ -79,8 +82,7 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
       'This will remove all the contents about this space from your user vault. Are you sure?'
     );
     if (result) {
-      await SpaceService.removeSpace(session, spaceProfile);
-      history.push('/spaces');
+      dispatch(removeSpace(spaceProfile));
     }
   };
   return (
@@ -134,4 +136,4 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
   );
 };
 
-export default ProfileEditor;
+export default SpaceEditor;
