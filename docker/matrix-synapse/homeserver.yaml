@@ -63,6 +63,7 @@ public_baseurl: https://matrix.profile.site
 
 # Uncomment the following to tell other servers to send federation traffic on
 # port 443.
+# TODO: uncomment this on production
 #
 # By default, other servers will try to reach our server on port 8448, which can
 # be inconvenient in some environments.
@@ -77,7 +78,7 @@ public_baseurl: https://matrix.profile.site
 #
 # Defaults to 'false'.
 #
-serve_server_wellknown: true
+#serve_server_wellknown: true
 
 # Set the soft limit on the number of file descriptors synapse can use
 # Zero is used to indicate synapse should set the soft limit to the
@@ -670,7 +671,7 @@ retention:
 #
 federation_metrics_domains:
   - matrix.org
-#  - example.com
+  - matrix.profile.site
 
 # Uncomment to disable profile lookup over federation. By default, the
 # Federation API allows other homeservers to obtain profile data of any user
@@ -1187,13 +1188,13 @@ oembed:
 # you use either captcha, email, or token-based verification to verify that new users are not bots. In order to enable registration
 # without any verification, you must also set `enable_registration_without_verification`, found below.
 #
-# enable_registration: true
+enable_registration: true
 
 # Enable registration without email or captcha verification. Note: this option is *not* recommended,
 # as registration without verification is a known vector for spam and abuse. Defaults to false. Has no effect
 # unless `enable_registration` is also enabled.
 #
-#enable_registration_without_verification: true
+enable_registration_without_verification: true
 
 # Time that a user's session remains valid for, after they log in.
 #
@@ -1270,13 +1271,14 @@ session_lifetime: 1h
 #enable_3pid_lookup: true
 
 # Require users to submit a token during registration.
+# TODO: Maybe enable this for production?
 # Tokens can be managed using the admin API:
 # https://matrix-org.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html
 # Note that `enable_registration` must be set to `true`.
 # Disabling this option will not delete any tokens previously generated.
 # Defaults to false. Uncomment the following to require tokens:
 #
-#registration_requires_token: true
+# registration_requires_token: true
 
 # Allow users to submit a token during registration to bypass any required 3pid
 # steps configured in `registrations_require_3pid`.
@@ -1461,8 +1463,8 @@ account_threepid_delegates:
 # information, and it in turn may then diseminate sensitive information
 # through insecure notification channels if so configured.
 #
-#sentry:
-#    dsn: "..."
+sentry:
+  dsn: 'https://1fc95e421bdc4e81aa0085ba46430433@o346232.ingest.sentry.io/5651096'
 
 # Flags to enable Prometheus metrics which are not suitable to be
 # enabled by default, either for performance reasons or limited use.

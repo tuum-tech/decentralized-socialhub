@@ -126,10 +126,9 @@ const ChatPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
   const handleAddFriendChat = async (friend: string) => {
     if (!isConnected) return;
 
-    let friendId = `@${getDIDString(
-      friend,
-      true
-    ).toLowerCase()}:my.matrix.host`;
+    let friendId = `@${getDIDString(friend, true).toLowerCase()}:${
+      process.env.REACT_APP_SYNAPSE_SERVERNAME
+    }`;
     let friendProfile = await getUserProfile(friend);
 
     let room = await client!.createRoom({
@@ -328,7 +327,15 @@ const ChatPage: React.FC<PageProps> = ({ eProps, ...props }: PageProps) => {
       setClient(client);
       setIsConnected(true);
     })();
-  }, [addRoom, isConnected, props.session, rooms, roomsIds, selectedRoom, userId]);
+  }, [
+    addRoom,
+    isConnected,
+    props.session,
+    rooms,
+    roomsIds,
+    selectedRoom,
+    userId
+  ]);
 
   const getDidFromId = (matrixId: string): string => {
     let indexEnd = matrixId.lastIndexOf(':');

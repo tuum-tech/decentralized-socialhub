@@ -58,6 +58,23 @@ services:
     ports:
       - 8008:8008
       - 8448:8448/tcp
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.http-synapse.entryPoints=http
+      - traefik.http.routers.http-synapse.rule=Host(`my.matrix.host`)
+      - traefik.http.middlewares.https_redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https_redirect.redirectscheme.permanent=true
+      - traefik.http.routers.http-synapse.middlewares=https_redirect
+      - traefik.http.routers.https-synapse.entryPoints=https
+      - traefik.http.routers.https-synapse.rule=Host(`my.matrix.host`)
+      - traefik.http.routers.https-synapse.service=synapse
+      - traefik.http.routers.https-synapse.tls=true
+      - traefik.http.services.synapse.loadbalancer.server.port=8008
+      - traefik.http.routers.https-synapse.tls.certResolver=le-ssl
+      - traefik.http.middlewares.myCors.headers.accesscontrolallowmethods=GET,POST,OPTIONS,PUT
+      - traefik.http.middlewares.myCors.headers.accesscontrolalloworigin=origin-list-or-null
+      - traefik.http.middlewares.myCors.headers.accesscontrolmaxage=100
+      - traefik.http.middlewares.myCors.headers.addvaryheader=true
     depends_on:
       - synapse-postgres
     networks:
