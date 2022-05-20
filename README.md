@@ -44,4 +44,18 @@ You need to run Profile API service before you can start Profile app
 - `npm start`
 - Your app should be running at localhost:3000
 
+## Debugging
+
+Connect to postgres database
+
+```
+docker container exec -it synapse-postgres psql -h localhost -U synapse -d synapse
+## Some psql commands that may be useful
+- Listing databases - \l
+- Switching to a database: - \c synapse
+- Get help for psql - \?
+- Listing tables - \d
+- Get details related to a table - \d users
+```
+
 ## Deploy to production

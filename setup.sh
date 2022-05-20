@@ -16,7 +16,6 @@ function stop () {
 
 function start () {
     stop
-    sudo mkdir -p ${HOME}/.profile-data/matrix-synapse-data && sudo chown -R 991:991 ${HOME}/.profile-data/matrix-synapse-data/
     docker-compose -f docker/docker-compose.yml up --remove-orphans --force-recreate -d 
 }
 
@@ -27,6 +26,7 @@ function cleanup () {
         docker image rm -f tuumtech/${image}
     done
     sudo rm -rf ${HOME}/.profile-data
+    sudo mkdir -p ${HOME}/.profile-data/matrix-synapse-data && sudo chown -R 991:991 ${HOME}/.profile-data/matrix-synapse-data/
 }
 
 case "$1" in
