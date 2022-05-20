@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { down } from 'styled-breakpoints';
-import { SpaceService } from 'src/services/space.service';
 import AboutCard from 'src/components/cards/AboutCard';
 import SyncBar from 'src/components/SyncBar';
 import SpaceCoverPhoto from 'src/components/cards/SpaceCoverPhoto';
@@ -84,8 +83,6 @@ const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
     );
     if (result) {
       dispatch(removeSpace(spaceProfile));
-      // TODO move to redux
-      history.push('/spaces/list');
     }
   };
   return (

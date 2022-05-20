@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ConnectedRouter } from 'connected-react-router';
 import App from './App';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
@@ -34,9 +33,7 @@ ReactDOM.render(
   <Provider store={store}>
     {/* <Menu /> */}
     <PersistGate loading={null} persistor={persistor}>
-      <ConnectedRouter history={history}>
-        <App />
-      </ConnectedRouter>
+      <App />
     </PersistGate>
   </Provider>,
   MOUNT_NODE
