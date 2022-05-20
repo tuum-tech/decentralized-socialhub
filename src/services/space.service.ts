@@ -160,6 +160,44 @@ export class SpaceService {
     }
     return [];
   }
+  static async getSpaceById(session: ISessionItem, guid: Guid) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const result: IRunScriptResponse<SpacesResponse> = await hiveInstance.Scripting.RunScript(
+        {
+          name: 'get_space_by_ids',
+          params: { guids: [guid] },
+          context: {
+            target_did: session.did,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+          }
+        }
+      );
+      const spaces = getItemsFromData(result, 'get_space_by_ids');
+      if (!spaces.length) {
+        return null;
+      }
+
+      const appHiveClient = await HiveService.getAppHiveClient();
+      if (appHiveClient) {
+        const response = await appHiveClient.Scripting.RunScript({
+          name: 'get_space_by_ids',
+          params: { guids: [guid] },
+          context: {
+            target_did: process.env.REACT_APP_APPLICATION_DID,
+            target_app_did: process.env.REACT_APP_APPLICATION_ID
+          }
+        });
+        let items = getItemsFromData(response, 'get_space_by_ids');
+        if (!items.length) {
+          return null;
+        }
+
+        return { ...items[0], ...spaces[0] };
+      }
+    }
+    return null;
+  }
   static async getCommunitySpaceByNames(names: string[]) {
     const appHiveClient = await HiveService.getAppHiveClient();
     if (appHiveClient) {

@@ -11,7 +11,7 @@ import { Integrations } from '@sentry/tracing';
 import packageJson from '../package.json';
 // import { Menu } from './Menu';
 
-const { store, persistor, history } = configureStore();
+const { store, persistor } = configureStore();
 
 const projectName =
   process.env.NODE_ENV === 'production'

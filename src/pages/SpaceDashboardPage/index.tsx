@@ -51,19 +51,23 @@ const SpaceDashboardPage: React.FC<PageProps> = (props: PageProps) => {
         ? [spaceProfile.owner]
         : spaceProfile.owner
       : [];
-    return true; //owners.includes(session.did);
+    return owners.includes(session.did);
   }, [spaceProfile, session]);
 
   const updateSpace = async () => {
     if (!guid) return;
-    let spaces = [];
     if (type === 'community') {
-      spaces = await SpaceService.getCommunitySpaceByIds([Guid.parse(guid)]);
+      let spaces = await SpaceService.getCommunitySpaceByIds([
+        Guid.parse(guid)
+      ]);
+      if (spaces.length > 0) {
+        setSpaceProfile(spaces[0]);
+      }
     } else {
-      spaces = await SpaceService.getSpaceByIds(session, [Guid.parse(guid)]);
-    }
-    if (spaces.length > 0) {
-      setSpaceProfile(spaces[0]);
+      let space = await SpaceService.getSpaceById(session, Guid.parse(guid));
+      if (space) {
+        setSpaceProfile(space);
+      }
     }
   };
   useEffect(() => {
