@@ -1,4 +1,4 @@
-import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -103,8 +103,8 @@ const ProfileEditor: React.FC<Props> = ({ session, profile }) => {
           <PublicFields sessionItem={userInfo} profile={spaceProfile} />
         </IonCol>
         <IonCol sizeMd="8" sizeSm="12">
-          <SpaceAvatarChange space={spaceProfile} onUpload={onUploadAvatar} />
           <SpaceCoverPhoto space={spaceProfile} onUpload={onUploadCoverPhoto} />
+          <SpaceAvatarChange space={spaceProfile} onUpload={onUploadAvatar} />
           {loaded && userInfo.tutorialStep === 4 ? (
             <>
               {spaceProfile && (
