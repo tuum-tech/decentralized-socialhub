@@ -14,7 +14,7 @@ export class ChatService {
     };
 
     let postData: any = {
-      method: 'GET',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: process.env.REACT_APP_PROFILE_API_SERVICE_KEY
