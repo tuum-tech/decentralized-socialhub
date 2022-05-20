@@ -11,7 +11,7 @@ import Icon from '../icons';
 function withStyle<T extends object>(
   Component: React.ComponentType<T>
 ): FC<T & ButtonProps> {
-  const StyledButton = styled(Component)<T & ButtonProps>`
+  const StyledButton = styled(Component)<ButtonProps>`
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -37,19 +37,21 @@ function withStyle<T extends object>(
     align-items: center;
   `;
 
-  return props => {
-    const {
-      variant,
-      textType,
-      bgColor,
-      children,
-      size = 'default',
-      disabled = false,
-      icon,
-      btnColor,
-      style: customStyle = {},
-      className: customClass
-    } = props;
+  return ({
+    variant,
+    textType,
+    bgColor,
+    children,
+    size = 'default',
+    disabled = false,
+    icon,
+    btnColor,
+    style: customStyle = {},
+    className: customClass,
+    ...originalProps
+  }) => {
+    const props = { ...originalProps, disabled, size };
+
     let backStyle = '';
     let fontColor = '';
     let style = { ...customStyle };
@@ -122,9 +124,9 @@ function withStyle<T extends object>(
   };
 }
 
-const LinkButton = withStyle<LinkButtonProps & ButtonProps>(IonRouterLink);
+const LinkButton = withStyle<LinkButtonProps>(IonRouterLink);
 
-const DefaultButton = withStyle((props: DefaultButtonProps) => (
+const DefaultButton = withStyle<DefaultButtonProps>(props => (
   <button {...props} />
 ));
 

@@ -105,8 +105,8 @@ const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
           <PublicFields sessionItem={userInfo} profile={spaceProfile} />
         </IonCol>
         <IonCol sizeMd="8" sizeSm="12">
-          <SpaceAvatarChange space={spaceProfile} onUpload={onUploadAvatar} />
           <SpaceCoverPhoto space={spaceProfile} onUpload={onUploadCoverPhoto} />
+          <SpaceAvatarChange space={spaceProfile} onUpload={onUploadAvatar} />
           {loaded && userInfo.tutorialStep === 4 ? (
             <>
               {spaceProfile && (

@@ -110,6 +110,7 @@ const Container = styled.div<{ bgImg: string }>`
     font-size: 18px;
     color: rgba(255, 255, 255, 0.6);
     padding: 20px 40px !important;
+    min-width: 340px;
   }
 
   .textarea {
@@ -182,6 +183,15 @@ const Container = styled.div<{ bgImg: string }>`
       p {
         max-width: 400px;
       }
+    }
+
+    .input {
+      font-weight: 700;
+      font-size: 12px;
+      padding: 10px !important;
+      max-height: 45px;
+      border-radius: 16px;
+      min-width: 100%;
     }
   }
 
@@ -317,9 +327,10 @@ const Footer: React.FC<Props> = ({ refProp, rootRef }) => {
             Submit your collection today!
           </HomeIntro>
         </Fade>
+
         <form noValidate className="form">
           <IonGrid>
-            <IonRow className="ion-justify-content-between ion-no-padding">
+            <IonRow className="ion-no-padding">
               <IonCol size="12" size-md>
                 <IonInput
                   value={email}

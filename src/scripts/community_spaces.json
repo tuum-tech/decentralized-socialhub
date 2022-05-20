@@ -3,7 +3,10 @@
     "sid": 0,
     "name": "Welcome to Profile",
     "category": "Welcome to Profile",
-    "owner": ["did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c"],
+    "owner": [
+      "did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c",
+      "did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"
+    ],
     "tags": ["Welcome to Profile"],
     "meta": {}
   },
@@ -12,14 +15,6 @@
     "name": "The Bella Series",
     "category": "NFT Collection",
     "owner": ["did:elastos:inpCykPj1JMroJfjFvDAGnEGUCGGG3ptwQ"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
-    ],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0xef5f768618139d0f5fa3bcbbbcaaf09fe9d7a07d",
@@ -31,14 +26,6 @@
     "name": "Phantz Club",
     "category": "NFT Collection",
     "owner": ["did:elastos:iUDaseyHnQUmwp6RSABCy4ZPCQCaBTDDMS"],
-    "tags": [
-      "ERC-721",
-      "Membership",
-      "Collectibles",
-      "Avatar",
-      "DAO",
-      "Social Token"
-    ],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0xfDdE60866508263e30C769e8592BB0f8C3274ba7",
@@ -50,14 +37,6 @@
     "name": "Bunny Punk",
     "category": "NFT Collection",
     "owner": ["did:elastos:iWtZBcqZa981z3YEoUxanCqvN7rFVDu52D"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
-    ],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0xE27934fB3683872e35b8d9E57c30978e1260c614",
@@ -69,14 +48,6 @@
     "name": "Dropz",
     "category": "NFT Collection",
     "owner": ["did:elastos:ipi6KEfaBFH3KC5fCfkKKUDSBoQ1Qb9NR6"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
-    ],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0x22900606ae7077043cf140255a80e82d691b8fd5",
@@ -88,14 +59,6 @@
     "name": "The 2821 Club",
     "category": "NFT Collection",
     "owner": ["did:elastos:iqWDMtthjadiJAok8mukxPyHwZeHoehJKc"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
-    ],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0x26b2341d10dC4118110825719BF733a571AB6EC5",
@@ -107,14 +70,6 @@
     "name": "MythicBeings",
     "category": "NFT Collection",
     "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
-    ],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0x3536a85A9E55EB26d515653aF206465D68400feA",
@@ -126,14 +81,6 @@
     "name": "CryptoHoodieMan",
     "category": "NFT Collection",
     "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
-    ],
     "meta": {
       "network": "Ethereum",
       "address": "0x0023b8EdbBeD4fBCF957D1a4DF55749faa9EaEed",
@@ -145,14 +92,6 @@
     "name": "Elastos Bulls",
     "category": "NFT Collection",
     "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
-    ],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0x0d5d0c116f2acbc19ce198e284a21b0c355b1260",
@@ -164,14 +103,6 @@
     "name": "The Meta Primates",
     "category": "NFT Collection",
     "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
-    ],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0xcb262a92e2e3c8c3590b72a1fde3c6768ee08b7e",
@@ -182,15 +113,7 @@
     "sid": 102,
     "name": "LFC Heroes Club",
     "category": "NFT Collection",
-    "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
-    ],
+    "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"],
     "meta": {
       "network": "Polygon",
       "address": "0x4ffa698ca3374ff154e58c8388a3aafe430dc2d3",
