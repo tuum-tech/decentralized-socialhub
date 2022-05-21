@@ -583,6 +583,7 @@ interface SpaceDTO {
 }
 interface Space {
   name: string;
+  guid: Guid | null;
   slug: string;
   description?: string;
   category: SpaceCategory;
