@@ -118,16 +118,8 @@ const PublicSpacePage: React.FC<PageProps> = ({
                     loading={loading}
                   />
                 )}
-                {spaceProfile.category === SpaceCategory.NFT && (
+                {(spaceProfile.category === SpaceCategory.NFT || spaceProfile.category === SpaceCategory.WTP) && (
                   <NFTSpace space={spaceProfile} session={props.session} />
-                )}
-                {spaceProfile.category === SpaceCategory.WTP && (
-                  <ProfileComponent
-                    scrollToElement={scrollToElement}
-                    aboutRef={aboutRef}
-                    profile={spaceProfile}
-                    loading={loading}
-                  />
                 )}
               </ProfileComponentContainer>
             </IonCol>

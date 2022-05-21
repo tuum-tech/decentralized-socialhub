@@ -16,6 +16,7 @@ import { getNFTCollectionOwners } from '../../../../fetchapi';
 import { getDIDString } from 'src/utils/did';
 import { getOwners } from 'src/utils/nftcollection';
 import { shortenAddress } from 'src/utils/web3';
+import { SpaceCategory } from 'src/services/space.service';
 
 interface Props {
   space: any;
@@ -23,6 +24,7 @@ interface Props {
 }
 
 const ViewAllMember = ({ space, onClose }: Props) => {
+  const isNFTSpace = space?.category === SpaceCategory.NFT;
   const style = { ...modal_style, ...common_style };
   const [members, setMembers] = useState<any[]>([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -31,21 +33,31 @@ const ViewAllMember = ({ space, onClose }: Props) => {
   const [offset, setOffset] = useState(0);
   const limit = 5;
 
-  const fetchMoreData = async () => {
+  const membersForNFTSpace = async () => {
     const { data }: any = await getNFTCollectionOwners(
       space.guid,
       offset,
       limit
     );
-    if (!data) return;
+    if (!data) return [];
     const { totalCount, owners } = data;
     setTotalCount(totalCount);
+    const members = await getOwners(
+      owners.map((owner: string) => ({ owner })),
+      space.meta.network || 'Elastos Smart Contract Chain'
+    );
+    return members;
+  };
+  const membersForNonNFTSpace = async () => {
+    return [];
+  };
 
-    if (owners.length > 0) {
-      const _members_ = await getOwners(
-        owners.map((owner: string) => ({ owner })),
-        space.meta.network || 'Ethereum'
-      );
+  const fetchMoreData = async () => {
+    const _members_ = isNFTSpace
+      ? await membersForNFTSpace()
+      : await membersForNonNFTSpace();
+
+    if (_members_.length > 0) {
       setOffset(offset + limit);
       setMembers(members.concat(_members_));
     } else {
