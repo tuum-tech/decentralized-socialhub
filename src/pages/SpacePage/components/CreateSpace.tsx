@@ -141,7 +141,7 @@ const CreateSpace: React.FC = () => {
             ></SmallTextareaInput>
           </IonCol>
         </IonRow>
-        <IonRow class="ion-justify-content-start">
+        <IonRow class="ion-justify-content-start mb-4">
           <IonCol size="12">
             <SmallSelectInput
               onChange={onSelectCategory}
@@ -154,12 +154,12 @@ const CreateSpace: React.FC = () => {
         </IonRow>
         <IonRow class="ion-justify-content-start">
           <IonCol size="12">
-            <SpaceAvatarChange onUpload={onUploadAvatar} />
+            <SpaceCoverPhoto onUpload={onUploadCoverPhoto} />
           </IonCol>
         </IonRow>
         <IonRow class="ion-justify-content-start">
           <IonCol size="12">
-            <SpaceCoverPhoto onUpload={onUploadCoverPhoto} />
+            <SpaceAvatarChange onUpload={onUploadAvatar} />
           </IonCol>
         </IonRow>
         <IonRow className="ion-padding-vertical">
