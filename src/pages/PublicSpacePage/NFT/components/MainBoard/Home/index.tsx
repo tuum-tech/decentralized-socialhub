@@ -55,7 +55,12 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const fetchMorePosts = async () => {
-    let _posts: any[] = await SpaceService.getPosts(space.sid, offset, limit, isAdmin);
+    let _posts: any[] = await SpaceService.getPosts(
+      space.sid,
+      offset,
+      limit,
+      isAdmin
+    );
     _posts = _posts.filter(post => post);
     if (_posts.length > 0) {
       setOffset(offset + limit);
