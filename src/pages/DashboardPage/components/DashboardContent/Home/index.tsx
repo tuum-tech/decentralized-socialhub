@@ -417,7 +417,12 @@ const DashboardHome: React.FC<Props> = ({
                 title={'Followers'}
                 data={followerDids}
                 exploreAll={() => {
-                  history.push('/connections/followers');
+                  history.push({
+                    pathname: '/connections',
+                    state: {
+                      active: 'followers'
+                    }
+                  });
                 }}
               />
             )}
@@ -427,7 +432,12 @@ const DashboardHome: React.FC<Props> = ({
                 title={'Following'}
                 data={followingDids}
                 exploreAll={() => {
-                  history.push('/connections/followings');
+                  history.push({
+                    pathname: '/connections',
+                    state: {
+                      active: 'following'
+                    }
+                  });
                 }}
               />
             )}
@@ -437,7 +447,12 @@ const DashboardHome: React.FC<Props> = ({
                 title={'Mutual Follower'}
                 data={mutualDids}
                 exploreAll={() => {
-                  history.push('/connections/mutual-followers');
+                  history.push({
+                    pathname: '/connections',
+                    state: {
+                      active: 'mutual'
+                    }
+                  });
                 }}
               />
             )}
