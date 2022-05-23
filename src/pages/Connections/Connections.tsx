@@ -1,29 +1,80 @@
-import React from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { StaticContext, RouteComponentProps } from 'react-router';
+
 import MainLayout from 'src/components/layouts/MainLayout';
+import HeaderMenu from 'src/elements-v2/HeaderMenu';
+import { ProfileService } from 'src/services/profile.service';
+import useSession from 'src/hooks/useSession';
 import FollowersPage from './FollowersPage';
 import FollowingsPage from './FollowingsPage';
 import MutualFollowersPage from './MutualFollowersPage';
+import ConnectionPageHeader, {
+  ConnectionTabsContainer,
+  Header
+} from './ConnectionHeader';
 
-const Connections = () => {
+interface PageProps
+  extends RouteComponentProps<{}, StaticContext, { active?: string }> {}
+
+const Connections: React.FC<PageProps> = ({ ...props }: PageProps) => {
+  const [active, setActive] = useState(
+    props.location.state?.active ?? 'followers'
+  );
+
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
+  const [mutualFollowerCount, setMutualFollowerCount] = useState(0);
+
+  const { session } = useSession();
+  useEffect(() => {
+    (async () => {
+      try {
+        if (session && session.did && session.tutorialStep === 4) {
+          let followers = await ProfileService.getFollowers([session.did]);
+          let following = await ProfileService.getFollowings(session.did);
+          const item = followers?.get_followers.items.find(
+            item => item.did === session.did
+          );
+          setFollowersCount(item?.followers.length ?? 0);
+          setFollowingCount(following?.get_following.items.length ?? 0);
+
+          if (followers && following) {
+            let followingDids = following?.get_following.items.length
+              ? following?.get_following.items.map(item => item.did)
+              : [];
+            let followerDids = followers?.get_followers.items.length
+              ? followers?.get_followers.items[0].followers
+              : [];
+
+            setMutualFollowerCount(
+              followerDids?.filter(did => followingDids.indexOf(did) !== -1)
+                .length ?? 0
+            );
+          }
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    })();
+  }, [session, session.did]);
+
   return (
     <MainLayout>
-      <Switch>
-        <Route path="/connections/followers" component={FollowersPage} exact />
-        <Route
-          path="/connections/followings"
-          component={FollowingsPage}
-          exact
+      <Header>
+        <HeaderMenu title="Connections" />
+      </Header>
+      <ConnectionTabsContainer template="default">
+        <ConnectionPageHeader
+          active={active}
+          setActive={setActive}
+          followersCount={followersCount}
+          followingCount={followingCount}
+          mutualFollowerCount={mutualFollowerCount}
         />
-        <Route
-          path="/connections/mutual-followers"
-          component={MutualFollowersPage}
-          exact
-        />
-        <Route exact path="/connections">
-          <Redirect to="/connections/followers" />
-        </Route>
-      </Switch>
+        {active === 'followers' && <FollowersPage />}
+        {active === 'following' && <FollowingsPage />}
+        {active === 'mutual' && <MutualFollowersPage />}
+      </ConnectionTabsContainer>
     </MainLayout>
   );
 };
