@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import { down } from 'styled-breakpoints';
@@ -94,13 +94,15 @@ const ProfileComponent: React.FC<Props> = ({
               </IonCol>
             </IonRow>
           </GridContent>
-          <ViewAllFollower
-            isOpen={showViewAllModal}
-            space={profile}
-            onClose={() => {
-              setShowViewAllModal(false);
-            }}
-          />
+          {showViewAllModal && (
+            <ViewAllFollower
+              isOpen={true}
+              space={profile}
+              onClose={() => {
+                setShowViewAllModal(false);
+              }}
+            />
+          )}
         </>
       )}
     </>
