@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { down } from 'styled-breakpoints';
 import styled from 'styled-components';
-import slugify from 'slugify';
 import SpaceCard from '../SpaceCard';
 import { getDIDString } from 'src/utils/did';
 import Pagination from 'src/components/Pagination';
@@ -63,8 +62,8 @@ const SpaceListView: React.FC<Props> = ({
   return (
     <>
       <Container>
-        {spaces.slice(pageOffset, pageOffset + perPage).map((space: any) => {
-          const slug = slugify(space.name, { lower: true });
+        {spaces.slice(pageOffset, pageOffset + perPage).map((space: Space) => {
+          const slug = space.guid.value;
           return (
             <SpaceCard
               key={JSON.stringify(space)}
@@ -74,7 +73,7 @@ const SpaceListView: React.FC<Props> = ({
                 explore
                   ? space.isCommunitySpace
                     ? `/community-spaces/${slug}`
-                    : `/did/${getDIDString(space.owner!, true)}/spaces/${slug}`
+                    : `/did/${getDIDString(space.owner as string, true)}/spaces/${slug}`
                   : `/spaces/edit/${slug}?type=${
                       space.isCommunitySpace ? `community` : `private`
                     }`

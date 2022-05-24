@@ -198,7 +198,7 @@ const Upload: React.FC<Props> = ({ space, onUpload }: Props) => {
                   <input
                     type="file"
                     name="avatar"
-                    id="file"
+                    id="file_avatar"
                     accept=".jpeg, .png, .jpg"
                     onChange={photoUpload}
                     src={imagePreview}
