@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
+import { down } from 'styled-breakpoints';
 import { FollowType } from 'src/services/user.service';
 import AboutCard from 'src/components/cards/AboutCard';
 import FollowCards from 'src/components/cards/FollowCards';
@@ -16,15 +17,22 @@ const GridContent = styled(IonGrid)<ThemeProps>`
   z-index: 100;
   background-color: ${({ template }: ThemeProps) =>
     getThemeData(template, 'gridContent', 'backgroundColor')};
+  padding: 0;
 `;
 
 const LeftContent = styled.div`
   width: calc(100% - 360px);
   padding-right: 22px;
+  ${down('sm')} {
+    width: 100%;
+  }
 `;
 
 const RightContent = styled.div`
   width: 360px;
+  ${down('sm')} {
+    width: 100%;
+  }
 `;
 
 interface Props {
@@ -54,8 +62,8 @@ const ProfileComponent: React.FC<Props> = ({
           <GridContent template={template}>
             <IonRow className="ion-justify-content-center">
               <IonCol size="12">
-                <IonGrid>
-                  <IonRow>
+                <IonGrid className="ion-no-padding">
+                  <IonRow className="ion-no-padding pt-3">
                     <LeftContent>
                       <div ref={aboutRef}>
                         {profile.publicFields.includes('about') && (
@@ -86,14 +94,13 @@ const ProfileComponent: React.FC<Props> = ({
               </IonCol>
             </IonRow>
           </GridContent>
-          {showViewAllModal && (
-            <ViewAllFollower
-              space={profile}
-              onClose={() => {
-                setShowViewAllModal(false);
-              }}
-            />
-          )}
+          <ViewAllFollower
+            isOpen={showViewAllModal}
+            space={profile}
+            onClose={() => {
+              setShowViewAllModal(false);
+            }}
+          />
         </>
       )}
     </>
