@@ -78,7 +78,8 @@ const SpaceListView: React.FC<Props> = ({
         {filteredSpaces
           .slice(pageOffset, pageOffset + perPage)
           .map((space: Space) => {
-            const slug = space.guid.value;
+            const slug = space.slug;
+            const guid = space.guid.value;
             return (
               <SpaceCard
                 key={JSON.stringify(space)}
@@ -92,7 +93,7 @@ const SpaceListView: React.FC<Props> = ({
                           space.owner as string,
                           true
                         )}/spaces/${slug}`
-                    : `/spaces/edit/${slug}?type=${
+                    : `/spaces/edit/${guid}?type=${
                         space.isCommunitySpace ? `community` : `private`
                       }`
                 }

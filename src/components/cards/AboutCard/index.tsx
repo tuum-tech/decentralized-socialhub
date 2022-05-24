@@ -63,7 +63,6 @@ const AboutCard: React.FC<IProps> = ({
         onOk={async () => {
           await update(about);
         }}
-        contentStyle={{ marginTop: 27 }}
       >
         <StyledLabel>Description / Responsibilities</StyledLabel>
         <MyTextarea

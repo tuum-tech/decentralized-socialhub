@@ -18,7 +18,7 @@ import Post from './Post';
 import PostEditor from './PostEditor';
 import { HorDOMSpace16 } from '../../Highlight/About';
 import style from '../common/Modal/style.module.scss';
-import { SpaceService } from 'src/services/space.service';
+import { SpaceService, SpaceCategory } from 'src/services/space.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { getNFTCollectionOwners } from '../../../fetchapi';
 
@@ -32,6 +32,7 @@ interface IProps {
 }
 
 const Home: React.FC<IProps> = ({ space, session }: IProps) => {
+  const isNFTSpace = space?.category === SpaceCategory.NFT;
   const [posts, setPosts] = useState<any[]>([]);
   const [offset, setOffset] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -82,6 +83,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
   }, []);
   useEffect(() => {
     (async () => {
+      if (!space || !space.guid) return;
       if (!session || !session.did) {
         setHasPermissionToPost(false);
         return;
@@ -90,19 +92,19 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
         setHasPermissionToPost(true);
         return;
       }
-      const network = space.meta.network || 'Elastos Smart Contract Chain';
-      const wallet = await DidcredsService.getCredentialValue(
-        session,
-        (network.toLowerCase() === 'elastos smart contract chain'
-          ? CredentialType.ESCAddress
-          : CredentialType.ETHAddress
-        ).toLowerCase()
-      );
-      if (!wallet) {
-        setHasPermissionToPost(false);
-        return;
-      }
-      if (space && space.guid) {
+      if (isNFTSpace) {
+        const network = space.meta.network || 'Elastos Smart Contract Chain';
+        const wallet = await DidcredsService.getCredentialValue(
+          session,
+          (network.toLowerCase() === 'elastos smart contract chain'
+            ? CredentialType.ESCAddress
+            : CredentialType.ETHAddress
+          ).toLowerCase()
+        );
+        if (!wallet) {
+          setHasPermissionToPost(false);
+          return;
+        }
         const { data }: any = await getNFTCollectionOwners(space.guid);
         const { owners: members } = data;
         if (members.includes(wallet)) {
