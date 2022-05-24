@@ -122,7 +122,7 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
 
   return (
     <>
-      <FollowingHeader followingCount={getFollowingCount()} />
+      {/* <FollowingHeader followingCount={getFollowingCount()} /> */}
       {/* <IonContent className={style['followingsearch']}>
         <IonSearchbar
           value={searchQuery}

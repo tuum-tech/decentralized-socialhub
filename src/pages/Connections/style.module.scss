@@ -1,12 +1,13 @@
 /** All your component stuyles */
 
+.tab-list {
+  background: #f7fafc;
+}
+
 .tab-grid {
   background: #f7fafc;
   min-height: 100%;
-}
-
-.tab-list {
-  background: #f7fafc;
+  padding: 5px 30px;
 }
 
 .tab-item {
@@ -16,6 +17,7 @@
   display: inline-block;
   --background: #f7fafc;
   --inner-padding-bottom: 0.5em;
+  --inner-padding-end: 0px;
   font-weight: 600;
   color: #718096;
 }
@@ -23,10 +25,20 @@
 .tab-active {
   --border-color: var(--theme-primary-blue) !important;
   color: #1a202c;
+
+  .tab-label {
+    background: linear-gradient(90deg, #995AFF 0%, #DC59BF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+  }
 }
 
 .tab-label {
   font-family: 'SF Pro Display';
+  display: flex;
+  align-items: center;
 }
 
 .tab-card {
