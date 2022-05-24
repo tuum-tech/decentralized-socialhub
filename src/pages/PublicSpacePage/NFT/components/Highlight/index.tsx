@@ -10,7 +10,7 @@ const Container = styled.div`
   position: relative;
   top: -120px;
   ${down('sm')} {
-    top: -16px;
+    top: 22px;
   }
 `;
 interface IProps {
