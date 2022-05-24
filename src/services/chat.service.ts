@@ -24,6 +24,6 @@ export class ChatService {
 
     let fetchRresponse = await fetch(url, postData);
     let json = await fetchRresponse.json();
-    return json.access_token;
+    return json.data.access_token;
   }
 }
