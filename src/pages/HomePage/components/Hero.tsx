@@ -2,11 +2,13 @@ import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import Lottie from 'react-lottie';
 import { Fade } from 'react-awesome-reveal';
+import { useHistory } from 'react-router-dom';
 
 import NavBar from 'src/components/layouts/NavBar';
 import headerBg from 'src/assets/new/header-bg.svg';
 import animationData from 'src/assets/new/animation/desktop/data';
 import animationMobileData from 'src/assets/new/animation/mobile/data';
+import { DefaultButton } from 'src/elements-v2/buttons';
 
 export const HomeTitle = styled.p`
   font-family: SF Pro Display;
@@ -84,9 +86,18 @@ const Content = styled.div`
   @media only screen and (max-width: 600px) {
     padding-left: 13px;
     padding-right: 13px;
+    margin: 150px auto 0px;
   }
 `;
 
+const ButtonContainer = styled.div`
+  display: none;
+  @media only screen and (max-width: 600px) {
+    display: flex;
+    justify-content: center;
+    z-index: 9999;
+  }
+`;
 interface IProps {
   navItemClicked: (item: string) => void;
   windowDimensions: {
@@ -96,6 +107,8 @@ interface IProps {
 }
 
 const Hero: React.FC<IProps> = ({ navItemClicked, windowDimensions }) => {
+  const history = useHistory();
+
   const defaultOptions = useMemo(() => {
     if (windowDimensions?.width && windowDimensions.width > 600) {
       return {
@@ -131,11 +144,24 @@ const Hero: React.FC<IProps> = ({ navItemClicked, windowDimensions }) => {
             </HomeIntro>
           </Fade>
         </Content>
+        <ButtonContainer>
+          <DefaultButton
+            variant={'contained'}
+            btnColor="primary-gradient"
+            size="large"
+            onClick={() => history.push('/create-profile')}
+            className="create-btn"
+            style={{ width: 200 }}
+          >
+            Create Your Profile
+          </DefaultButton>
+        </ButtonContainer>
         <Lottie
           options={defaultOptions}
           isStopped={false}
           isPaused={false}
           style={{
+            zIndex: 10,
             marginTop:
               windowDimensions?.width && windowDimensions.width > 600
                 ? -350

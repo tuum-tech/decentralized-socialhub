@@ -35,6 +35,7 @@ function withStyle<T extends object>(
   const StyledDivCenter = styled.div`
     display: flex;
     align-items: center;
+    z-index: 9999;
   `;
 
   return ({
