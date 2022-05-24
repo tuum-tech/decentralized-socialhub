@@ -64,6 +64,8 @@ export const OnBoardLayoutRight = styled.div`
   @media only screen and (max-width: 980px) {
     display: block;
     height: 100%;
+    margin-top: 102px;
+    padding-top: 0;
   }
 `;
 
@@ -83,6 +85,7 @@ export const OnBoardLayoutRightContent = styled.div`
 
   @media only screen and (max-width: 980px) {
     width: 90%;
+    padding-top: 0;
   }
 `;
 
@@ -92,4 +95,11 @@ export const OnBoardLayoutRightContentTitle = styled(Text28)`
 
 export const WavingHandImg = styled(IonImg)`
   width: 38px;
+`;
+
+export const NavContainer = styled.div`
+  display: none;
+  @media only screen and (max-width: 980px) {
+    display: block;
+  }
 `;
