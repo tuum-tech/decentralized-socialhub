@@ -18,14 +18,15 @@ import {
   OnBoardLayoutLogo,
   OnBoardLayoutRight,
   OnBoardLayoutRightContent,
-  OnBoardLayoutRightContentTitle
+  OnBoardLayoutRightContentTitle,
+  NavContainer
 } from 'src/components/layouts/OnBoardLayout';
 import FooterLinks, {
   Footer
 } from 'src/components/layouts/OnBoardLayout/FooterLinks';
 import { Text16 } from 'src/elements/texts';
 import { ThemeButton, ThemeTransparentButton } from 'src/elements/buttons';
-import Navbar from '../components/Navbar';
+import Navbar from 'src/components/layouts/NavBar';
 import { alertError, showNotify } from 'src/utils/notify';
 import { DidService } from 'src/services/did.service.new';
 import { UserService } from 'src/services/user.service';
@@ -171,7 +172,9 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
 
   return (
     <OnBoardLayout className={style['did-signin']}>
-      <Navbar navItemClicked={(item: string) => {}} />
+      <NavContainer>
+        <Navbar navItemClicked={(item: string) => {}} />
+      </NavContainer>
       <OnBoardLayoutLeft
         style={{
           backgroundImage: `url(${leftBg})`

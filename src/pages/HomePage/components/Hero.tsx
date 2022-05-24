@@ -120,29 +120,30 @@ const Hero: React.FC<IProps> = ({ navItemClicked, windowDimensions }) => {
   return (
     <HeroContainer>
       <NavBar navItemClicked={navItemClicked} />
-
-      <Content>
-        <Fade direction="up" triggerOnce={true} cascade>
-          <HomeTitle>Own Yourself.</HomeTitle>
-          <HomeIntro className="intro">
-            With a Web3 Decentralized Identity on Profile communicate your
-            personal story and build communities how you want with crypto, NFT,
-            and blockchain enthusiasts you can trust.
-          </HomeIntro>
-        </Fade>
-      </Content>
-      <Lottie
-        options={defaultOptions}
-        isStopped={false}
-        isPaused={false}
-        style={{
-          marginTop:
-            windowDimensions?.width && windowDimensions.width > 600
-              ? -350
-              : -480
-        }}
-        height={900}
-      />
+      <div>
+        <Content>
+          <Fade direction="up" triggerOnce={true} cascade>
+            <HomeTitle>Own Yourself.</HomeTitle>
+            <HomeIntro className="intro">
+              With a Web3 Decentralized Identity on Profile communicate your
+              personal story and build communities how you want with crypto,{' '}
+              NFT, and blockchain enthusiasts you can trust.
+            </HomeIntro>
+          </Fade>
+        </Content>
+        <Lottie
+          options={defaultOptions}
+          isStopped={false}
+          isPaused={false}
+          style={{
+            marginTop:
+              windowDimensions?.width && windowDimensions.width > 600
+                ? -350
+                : -480
+          }}
+          height={900}
+        />
+      </div>
     </HeroContainer>
   );
 };
