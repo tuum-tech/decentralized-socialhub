@@ -14,6 +14,7 @@ import {
 import styled from 'styled-components';
 import { getThemeData } from 'src/utils/template';
 import styles from 'src/elements-v2/style.module.scss';
+import { DefaultButton } from 'src/elements-v2/buttons';
 
 export enum MODE {
   NONE,
@@ -269,25 +270,9 @@ export const CloseButton = styled(IonButton)`
   text-align: left;
   color: #ffffff;
 `;
-export const ManagerButton = styled(IonButton)`
-  position: relative;
-  --ion-color-primary: transparent !important;
-  --ion-color-primary-tint: transparent;
+export const ManagerButton = styled(DefaultButton)`
   width: 90px;
-  height: 26px;
   float: right;
-
-  font-family: 'SF Pro Display';
-  border-radius: 8px;
-  border: solid 1px #4c6fff;
-  font-size: 13px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1.92;
-  letter-spacing: normal;
-  text-align: center;
-  color: #4c6fff;
 `;
 
 export const ProfileItem = styled(IonItem)<ThemeProps>`
