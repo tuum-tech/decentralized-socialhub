@@ -80,7 +80,7 @@ const CreateSpace: React.FC = () => {
   }, []);
 
   const handleCreateSpace = async (space: Space) => {
-    if (mySpaces.findIndex(_space => _space.name === space.name) > -1) {
+    if (mySpaces.findIndex(_space => _space.name.toLowerCase() === space.name.toLowerCase()) > -1) {
       showNotify(
         'Space with same name already exist. Try with another name',
         'warning'
