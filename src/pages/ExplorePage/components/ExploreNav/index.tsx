@@ -109,7 +109,7 @@ const ExploreNav: React.FC<Props> = ({
           </IonRow>
         </IonGrid>
       )}
-      {active === 'spaces' && <SpaceView />}
+      {active === 'spaces' && <SpaceView searchKeyword={searchKeyword} />}
       {/* {active === 'pages' && (s
         <IonGrid className={style['tab-grid']}>
           <IonRow>
