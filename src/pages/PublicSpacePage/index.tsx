@@ -1,13 +1,8 @@
 import { IonGrid, IonContent, IonCol } from '@ionic/react';
 import { RouteComponentProps } from 'react-router';
 import React, { useEffect, useRef, useState } from 'react';
-
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-
-import { makeSelectSession } from 'src/store/users/selectors';
-import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState } from './types';
+import { down } from 'styled-breakpoints';
+import { useBreakpoint } from 'styled-breakpoints/react-styled';
 
 import { defaultUserInfo } from 'src/services/profile.service';
 import { UserService } from 'src/services/user.service';
@@ -26,24 +21,23 @@ import {
   SpaceService
 } from 'src/services/space.service';
 import NFTSpace from './NFT';
+import useSession from 'src/hooks/useSession';
+
 interface MatchParams {
   did?: string;
   name: string;
 }
-interface PageProps
-  extends InferMappedProps,
-    RouteComponentProps<MatchParams> {}
+interface PageProps extends RouteComponentProps<MatchParams> {}
 
-const PublicSpacePage: React.FC<PageProps> = ({
-  eProps,
-  ...props
-}: PageProps) => {
+const PublicSpacePage: React.FC<PageProps> = (props: PageProps) => {
+  const { session } = useSession();
   let did: string = getDIDString(props.match.params.did || '', false);
   let spaceName: string = props.match.params.name.toLowerCase();
   const [publicUser, setPublicUser] = useState(defaultUserInfo);
   const [spaceProfile, setSpaceProfile] = useState(defaultSpace);
   const [scrollTop, setScrollTop] = useState(0);
   const [loading, setLoading] = useState(false);
+  const isSmDown = useBreakpoint(down('sm'));
 
   const contentRef = useRef<HTMLIonContentElement | null>(null);
   const aboutRef = useRef<HTMLDivElement | null>(null);
@@ -86,7 +80,7 @@ const PublicSpacePage: React.FC<PageProps> = ({
 
       setLoading(false);
     })();
-  }, [did, spaceName, props.session]);
+  }, [did, spaceName, session]);
 
   if (loading) {
     return <LoadingIndicator loadingText="Loading data..." />;
@@ -102,12 +96,12 @@ const PublicSpacePage: React.FC<PageProps> = ({
             setScrollTop(e.detail.scrollTop);
           }}
         >
-          <Navbar signedIn={props.session && props.session.did !== ''} />
+          <Navbar signedIn={session && session.did !== ''} />
           <ContentRow
             className="ion-justify-content-around"
             template={publicUser.pageTemplate || 'default'}
           >
-            <IonCol size="10" className="ion-no-padding">
+            <IonCol size={isSmDown ? '11' : '10'} className="ion-no-padding">
               <ProfileComponentContainer>
                 {spaceProfile.category === SpaceCategory.Personal && (
                   <ProfileComponent
@@ -119,7 +113,7 @@ const PublicSpacePage: React.FC<PageProps> = ({
                   />
                 )}
                 {spaceProfile.category === SpaceCategory.NFT && (
-                  <NFTSpace space={spaceProfile} session={props.session} />
+                  <NFTSpace space={spaceProfile} session={session} />
                 )}
                 {spaceProfile.category === SpaceCategory.WTP && (
                   <ProfileComponent
@@ -138,17 +132,4 @@ const PublicSpacePage: React.FC<PageProps> = ({
   );
 };
 
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PublicSpacePage);
+export default PublicSpacePage;
