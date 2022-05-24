@@ -115,10 +115,11 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
       setHasPermissionToPost(false);
     })();
   }, [space, session]);
+
   return (
     <Wrapper>
       <IonRow>
-        <IonCol size="8">
+        <IonCol sizeXs="12" sizeSm="8">
           <IonRow className="ion-justify-content-between ion-align-items-center">
             <IonContent className={style['searchcomponent']}>
               <IonSearchbar
@@ -205,7 +206,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
           </IonInfiniteScroll>
           {/* <Post /> */}
         </IonCol>
-        <IonCol size="4">
+        <IonCol sizeXs="12" sizeSm="4">
           {space.publicFields.includes('social links') &&
             space.socialLinks &&
             Object.keys(space.socialLinks).length > 0 && (
