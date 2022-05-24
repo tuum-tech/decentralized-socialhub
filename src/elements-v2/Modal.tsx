@@ -27,10 +27,16 @@ const StyledGrid = styled(IonGrid)`
   margin: 20px 25px;
 `;
 
-const StyledTitle = styled(IonCardTitle)`
+const Title = styled(IonCardTitle)`
   font-weight: 600;
   font-size: 28px;
   color: #27272e;
+`;
+
+const Subtitle = styled.p`
+  font-size: 14px;
+  margin-bottom: 24px;
+  color: #425466;
 `;
 
 const StyledContent = styled.div`
@@ -40,6 +46,7 @@ const StyledContent = styled.div`
 
 type Props = {
   title: string;
+  subtitle?: string;
   onOk?: () => void;
   onCancel?: () => void;
   okText?: string;
@@ -49,7 +56,15 @@ type Props = {
 
 const Modal = forwardRef<React.ReactNode, Props>(
   (
-    { title, onOk, onCancel, okText = 'Ok', contentStyle, children }: Props,
+    {
+      title,
+      subtitle,
+      onOk,
+      onCancel,
+      okText = 'Ok',
+      contentStyle,
+      children
+    }: Props,
     ref
   ) => {
     const [showModal, setShowModal] = useState(false);
@@ -71,7 +86,7 @@ const Modal = forwardRef<React.ReactNode, Props>(
       <StyledModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
         <StyledGrid className="ion-no-padding">
           <IonRow className="ion-no-padding ion-justify-content-between">
-            <StyledTitle>{title}</StyledTitle>
+            <Title>{title}</Title>
             <IonButton
               fill="clear"
               size="small"
@@ -87,6 +102,7 @@ const Modal = forwardRef<React.ReactNode, Props>(
               />
             </IonButton>
           </IonRow>
+          <Subtitle>{subtitle}</Subtitle>
           <StyledContent className="ion-padding-bottom" style={contentStyle}>
             {children}
           </StyledContent>
