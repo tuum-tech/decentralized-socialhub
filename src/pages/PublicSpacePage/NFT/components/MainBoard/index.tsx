@@ -10,6 +10,7 @@ import Chat from './Chat';
 import Members from './Members';
 import icon_lock_gray from 'src/assets/space/lock_gray.svg';
 import icon_lock_color from 'src/assets/space/lock_color.svg';
+import { SpaceCategory } from 'src/services/space.service';
 
 const TabLabel = styled(GradientText)`
   font-family: 'SF Pro Display';
@@ -26,8 +27,13 @@ interface IProps {
   renderSignal: any;
 }
 
-const MainBoard: React.FC<IProps> = ({ space, session, renderSignal }: IProps) => {
+const MainBoard: React.FC<IProps> = ({
+  space,
+  session,
+  renderSignal
+}: IProps) => {
   const [active, setActive] = useState('home');
+  const isNFTSpace = space?.category === SpaceCategory.NFT;
   useEffect(() => {
     setActive(renderSignal.tab);
   }, [renderSignal]);
@@ -60,18 +66,20 @@ const MainBoard: React.FC<IProps> = ({ space, session, renderSignal }: IProps) =
             </IonLabel>
           )}
         </IonItem>
-        <IonItem
-          className={
-            (active === 'collection' ? 'tab-active' : '') + ' tab-item'
-          }
-          onClick={() => setActive('collection')}
-        >
-          {active === 'collection' ? (
-            <TabLabel>NFT Collection</TabLabel>
-          ) : (
-            <IonLabel className="tab-label">NFT Collection</IonLabel>
-          )}
-        </IonItem>
+        {isNFTSpace && (
+          <IonItem
+            className={
+              (active === 'collection' ? 'tab-active' : '') + ' tab-item'
+            }
+            onClick={() => setActive('collection')}
+          >
+            {active === 'collection' ? (
+              <TabLabel>NFT Collection</TabLabel>
+            ) : (
+              <IonLabel className="tab-label">NFT Collection</IonLabel>
+            )}
+          </IonItem>
+        )}
         <IonItem
           className={(active === 'community' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => setActive('community')}
@@ -108,7 +116,7 @@ const MainBoard: React.FC<IProps> = ({ space, session, renderSignal }: IProps) =
 
       {active === 'home' && <Home space={space} session={session} />}
       {/* {active === 'chat' && <Chat />} */}
-      {active === 'collection' && <Collection space={space} />}
+      {isNFTSpace && active === 'collection' && <Collection space={space} />}
       {/* {active === 'community' && <Community space={space} />} */}
       {/* {active === 'members' && <Members space={space} />} */}
     </TabsContainer>

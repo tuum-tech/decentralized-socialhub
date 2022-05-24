@@ -618,7 +618,7 @@ export class UserService {
     });
 
     const wtp = await SpaceService.getCommunitySpaceByNames([
-      'Welcome to Profile'
+      'welcome-to-profile'
     ]);
     if (wtp.length > 0) {
       await SpaceService.follow(sessionItem, wtp[0]);
