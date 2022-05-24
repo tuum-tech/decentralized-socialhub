@@ -2,6 +2,7 @@ import { IonGrid, IonContent, IonCol } from '@ionic/react';
 import { RouteComponentProps } from 'react-router';
 import React, { useEffect, useRef, useState } from 'react';
 
+import { Guid } from 'guid-typescript';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
@@ -40,6 +41,7 @@ const PublicSpacePage: React.FC<PageProps> = ({
 }: PageProps) => {
   let did: string = getDIDString(props.match.params.did || '', false);
   let spaceName: string = props.match.params.name.toLowerCase();
+  const isGuid = Guid.isGuid(spaceName);
   const [publicUser, setPublicUser] = useState(defaultUserInfo);
   const [spaceProfile, setSpaceProfile] = useState(defaultSpace);
   const [scrollTop, setScrollTop] = useState(0);
@@ -69,7 +71,9 @@ const PublicSpacePage: React.FC<PageProps> = ({
       setLoading(true);
 
       if (!did) {
-        const spaces = await SpaceService.getCommunitySpaceByNames([spaceName]);
+        const spaces = isGuid
+          ? await SpaceService.getCommunitySpaceByIds([Guid.parse(spaceName)])
+          : await SpaceService.getCommunitySpaceByNames([spaceName]);
         if (spaces.length > 0) {
           setSpaceProfile(spaces[0]);
         }
@@ -77,10 +81,10 @@ const PublicSpacePage: React.FC<PageProps> = ({
         let pUser = await userService.SearchUserWithDID(did);
         if (pUser && pUser.did) {
           setPublicUser(pUser as any);
-          const spaces = await SpaceService.getSpaceByNames(pUser, [spaceName]);
-          if (spaces.length > 0) {
-            setSpaceProfile(spaces[0]);
-          }
+          const spaces = isGuid
+            ? [await SpaceService.getSpaceById(pUser, Guid.parse(spaceName))]
+            : await SpaceService.getSpaceByNames(pUser, [spaceName]);
+          if (spaces.length > 0 && spaces[0]) setSpaceProfile(spaces[0]);
         }
       }
 
@@ -118,7 +122,8 @@ const PublicSpacePage: React.FC<PageProps> = ({
                     loading={loading}
                   />
                 )}
-                {(spaceProfile.category === SpaceCategory.NFT || spaceProfile.category === SpaceCategory.WTP) && (
+                {(spaceProfile.category === SpaceCategory.NFT ||
+                  spaceProfile.category === SpaceCategory.WTP) && (
                   <NFTSpace space={spaceProfile} session={props.session} />
                 )}
               </ProfileComponentContainer>
