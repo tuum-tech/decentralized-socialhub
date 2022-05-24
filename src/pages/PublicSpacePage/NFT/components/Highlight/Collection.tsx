@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { IonRow, IonCardTitle, IonCol, IonGrid } from '@ionic/react';
 import styled from 'styled-components';
 import {
@@ -7,6 +7,7 @@ import {
   CardContentContainer
 } from 'src/components/cards/common';
 import { LinkStyleSpan } from '../MainBoard/common';
+import { getNFTCollectionAssets } from '../../fetchapi';
 
 const Grid = styled(IonGrid)`
   --ion-grid-padding: 0px;
@@ -17,20 +18,29 @@ const Grid = styled(IonGrid)`
 `;
 interface IProps {
   template?: string;
-  assets: any[];
+  space: any;
   viewAll: () => void;
 }
 
 const Collection: React.FC<IProps> = ({
   template = 'default',
-  assets,
+  space,
   viewAll
 }: IProps) => {
+  const [assets, setAssets] = useState<any[]>([]);
   const flattenUrl = (url: string) => {
     if (url.startsWith('ipfs://'))
       return url.replace('ipfs://', 'https://ipfs.io/ipfs/');
     return url;
   };
+  useEffect(() => {
+    (async () => {
+      if (space && space.guid) {
+        const { data }: any = await getNFTCollectionAssets(space.guid, 0, 9);
+        setAssets(data.assets);
+      }
+    })();
+  }, [space]);
   return (
     <CardOverview template={template}>
       <CardHeaderContent>

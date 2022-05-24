@@ -16,27 +16,40 @@ import { getNFTCollectionOwners } from '../../../fetchapi';
 import { shortenAddress } from 'src/utils/web3';
 import { getDIDString } from 'src/utils/did';
 import { getOwners } from 'src/utils/nftcollection';
+import { SpaceCategory } from 'src/services/space.service';
 interface IProps {
   template?: string;
   space: any;
 }
 
 const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
+  const isNFTSpace = space?.category === SpaceCategory.NFT;
   const [showViewAllModal, setShowViewAllModal] = useState(false);
   const [firstIV, setFirstIV] = useState<any[]>([]);
   const [totalCount, setTotalCount] = useState(0);
+
+  const membersForNFTSpace = async () => {
+    const { data }: any = await getNFTCollectionOwners(space.guid, 0, 4);
+    if (!data) return [];
+    const { totalCount, owners } = data;
+    setTotalCount(totalCount);
+    const members = await getOwners(
+      owners.map((owner: string) => ({ owner })),
+      space.meta.network || 'Elastos Smart Contract Chain'
+    );
+    return members;
+  };
+  const membersForNonNFTSpace = async () => {
+    return [];
+  };
   useEffect(() => {
     (async () => {
       if (space && space.guid) {
-        const { data }: any = await getNFTCollectionOwners(space.guid, 0, 4);
-        if (!data) return;
-        const { totalCount, owners } = data;
-        setTotalCount(totalCount);
-        const members = await getOwners(
-          owners.map((owner: string) => ({ owner })),
-          space.meta.network || 'Elastos Smart Contract Chain'
+        setFirstIV(
+          isNFTSpace
+            ? await membersForNFTSpace()
+            : await membersForNonNFTSpace()
         );
-        setFirstIV(members);
       }
     })();
   }, [space]);
@@ -46,7 +59,7 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
         <CardHeaderContent>
           <IonRow className="ion-justify-content-between ion-no-padding">
             <IonCol className="ion-no-padding">
-              <IonCardTitle>Members ({totalCount})</IonCardTitle>
+              <IonCardTitle>Members ({isNFTSpace ? totalCount : 'Coming soon'})</IonCardTitle>
             </IonCol>
             <IonCol size="auto" className="ion-no-padding">
               <LinkStyleSpan
