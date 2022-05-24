@@ -140,7 +140,7 @@ const CommunitySection: React.FC<Props> = ({ refProp, windowDimensions }) => {
 
           <SpaceListView
             spaces={filteredSpaces}
-            explore={false}
+            explore={true}
             isVisiblePageCount={false}
             pageCount={9}
           />
