@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import {
   IonModal,
   IonRow,
@@ -27,10 +27,16 @@ const StyledGrid = styled(IonGrid)`
   margin: 20px 25px;
 `;
 
-const StyledTitle = styled(IonCardTitle)`
+const Title = styled(IonCardTitle)`
   font-weight: 600;
   font-size: 28px;
   color: #27272e;
+`;
+
+const Subtitle = styled.p`
+  font-size: 14px;
+  margin-bottom: 24px;
+  color: #425466;
 `;
 
 const StyledContent = styled.div`
@@ -40,19 +46,38 @@ const StyledContent = styled.div`
 
 type Props = {
   title: string;
+  subtitle?: string;
+  isOpen?: boolean;
+  onClose?: () => void;
   onOk?: () => void;
   onCancel?: () => void;
   okText?: string;
+  noButton?: boolean;
   contentStyle?: React.CSSProperties;
   children?: React.ReactNode;
 };
 
 const Modal = forwardRef<React.ReactNode, Props>(
   (
-    { title, onOk, onCancel, okText = 'Ok', contentStyle, children }: Props,
+    {
+      title,
+      subtitle,
+      isOpen = false,
+      onClose,
+      onOk,
+      onCancel,
+      okText = 'Ok',
+      noButton = false,
+      contentStyle,
+      children
+    }: Props,
     ref
   ) => {
     const [showModal, setShowModal] = useState(false);
+
+    useEffect(() => {
+      setShowModal(isOpen);
+    }, [isOpen]);
 
     React.useImperativeHandle(
       ref,
@@ -67,16 +92,21 @@ const Modal = forwardRef<React.ReactNode, Props>(
       []
     );
 
+    const handleClose = () => {
+      setShowModal(false);
+      onClose && onClose();
+    };
+
     return (
       <StyledModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
         <StyledGrid className="ion-no-padding">
           <IonRow className="ion-no-padding ion-justify-content-between">
-            <StyledTitle>{title}</StyledTitle>
+            <Title>{title}</Title>
             <IonButton
               fill="clear"
               size="small"
               onClick={() => {
-                setShowModal(false);
+                handleClose();
                 onCancel && onCancel();
               }}
             >
@@ -87,22 +117,25 @@ const Modal = forwardRef<React.ReactNode, Props>(
               />
             </IonButton>
           </IonRow>
+          <Subtitle>{subtitle}</Subtitle>
           <StyledContent className="ion-padding-bottom" style={contentStyle}>
             {children}
           </StyledContent>
-          <IonRow className="ion-justify-content-start ion-padding-vertical">
-            <DefaultButton
-              variant="contained"
-              btnColor="primary-gradient"
-              style={{ minWidth: 100 }}
-              onClick={() => {
-                setShowModal(false);
-                onOk && onOk();
-              }}
-            >
-              {okText}
-            </DefaultButton>
-          </IonRow>
+          {!noButton && (
+            <IonRow className="ion-justify-content-start ion-padding-vertical">
+              <DefaultButton
+                variant="contained"
+                btnColor="primary-gradient"
+                style={{ minWidth: 100 }}
+                onClick={() => {
+                  handleClose();
+                  onOk && onOk();
+                }}
+              >
+                {okText}
+              </DefaultButton>
+            </IonRow>
+          )}
         </StyledGrid>
       </StyledModal>
     );

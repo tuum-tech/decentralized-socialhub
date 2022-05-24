@@ -1,5 +1,6 @@
 import { IonPage, IonRow } from '@ionic/react';
 import styled from 'styled-components';
+import { down } from 'styled-breakpoints';
 
 import { getThemeData } from 'src/utils/template';
 
@@ -8,6 +9,11 @@ export const ContentRow = styled(IonRow)<ThemeProps>`
     getThemeData(template, 'container', 'backgroundColor')};
   padding: 16px;
   min-height: 100%;
+
+  ${down('sm')} {
+    padding-left: 0;
+    padding-right: 0;
+  }
 `;
 
 export const Container = styled(IonPage)`

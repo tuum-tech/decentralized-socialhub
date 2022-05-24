@@ -78,14 +78,13 @@ const Followers: React.FC<Props> = ({ title, space, exploreAll }) => {
           </ExploreAll>
         </Body>
       </Container>
-      {showViewAllModal && (
-        <ViewAllFollower
-          space={space}
-          onClose={() => {
-            setShowViewAllModal(false);
-          }}
-        />
-      )}
+      <ViewAllFollower
+        isOpen={showViewAllModal}
+        space={space}
+        onClose={() => {
+          setShowViewAllModal(false);
+        }}
+      />
     </CardOverview>
   );
 };

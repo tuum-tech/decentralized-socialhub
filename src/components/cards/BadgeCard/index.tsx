@@ -13,9 +13,9 @@ import {
 
 import { timeSince } from 'src/utils/time';
 import badgeDetails from 'src/data/badge_detail.json';
-import { CardOverview } from '../common';
-import { ViewAll } from '../FollowCards/FollowCard';
+import { CardOverview, LinkStyleSpan } from '../common';
 import style from '../FollowCards/style.module.scss';
+
 interface Props {
   badges: IBadges;
   template: string;
@@ -60,7 +60,7 @@ const BadgeCard: React.FC<Props> = ({ badges, template }) => {
               </IonCardTitle>
             </IonCol>
             <IonCol size="auto">
-              <ViewAll
+              <LinkStyleSpan
                 onClick={() => {
                   if (maxBadges === 6) {
                     setMaxBadges(archivedBadges.length);
@@ -70,7 +70,7 @@ const BadgeCard: React.FC<Props> = ({ badges, template }) => {
                 }}
               >
                 {maxBadges === 6 ? 'View All' : 'Collapse'}
-              </ViewAll>
+              </LinkStyleSpan>
             </IonCol>
           </IonRow>
         </IonGrid>
