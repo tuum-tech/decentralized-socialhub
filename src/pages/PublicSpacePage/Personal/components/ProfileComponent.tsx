@@ -25,6 +25,7 @@ const LeftContent = styled.div`
   padding-right: 22px;
   ${down('sm')} {
     width: 100%;
+    padding-right: 0;
   }
 `;
 
