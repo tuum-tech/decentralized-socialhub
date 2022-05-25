@@ -10,10 +10,10 @@ import styled from 'styled-components';
 import { DefaultButton } from 'src/elements-v2/buttons';
 import Icon from './icons';
 
-const StyledModal = styled(IonModal)`
+const StyledModal = styled(IonModal)<{ autoWidth: boolean }>`
   --border-radius: 16px;
   --max-height: 80vh;
-  --max-width: 435px;
+  --max-width: ${props => (props.autoWidth ? 'auto' : '435px')};
   --height: auto;
 
   .ion-page {
@@ -53,6 +53,7 @@ type Props = {
   onCancel?: () => void;
   okText?: string;
   noButton?: boolean;
+  autoWidth?: boolean;
   contentStyle?: React.CSSProperties;
   children?: React.ReactNode;
 };
@@ -68,6 +69,7 @@ const Modal = forwardRef<React.ReactNode, Props>(
       onCancel,
       okText = 'Ok',
       noButton = false,
+      autoWidth = false,
       contentStyle,
       children
     }: Props,
@@ -98,7 +100,11 @@ const Modal = forwardRef<React.ReactNode, Props>(
     };
 
     return (
-      <StyledModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
+      <StyledModal
+        isOpen={showModal}
+        onDidDismiss={() => setShowModal(false)}
+        autoWidth={autoWidth}
+      >
         <StyledGrid className="ion-no-padding">
           <IonRow className="ion-no-padding ion-justify-content-between">
             <Title>{title}</Title>
