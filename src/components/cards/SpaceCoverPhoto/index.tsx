@@ -128,7 +128,7 @@ const SpaceCoverPhoto: React.FC<Props> = ({ space, onUpload }: Props) => {
                   Cancel
                 </DefaultButton>
                 <DefaultButton
-                  variant={'contained'}
+                  variant="contained"
                   btnColor="primary-gradient"
                   size="small"
                   onClick={async () => {

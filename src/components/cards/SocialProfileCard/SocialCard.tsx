@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import TwitterApi from 'src/shared-base/api/twitter-api';
 import { DidcredsService } from 'src/services/didcreds.service';
@@ -12,19 +12,12 @@ import googleIcon from '../../../assets/icon/Google.svg';
 import githubIcon from '../../../assets/icon/Github.svg';
 import discordIcon from '../../../assets/icon/Discord.svg';
 import shieldIcon from '../../../assets/icon/shield.svg';
-import spinner from '../../../assets/icon/spinner.gif';
 import { DidService } from 'src/services/did.service.new';
 
-import { MyGrid } from './elements';
-
 import {
-  ManagerModal,
-  ManagerModalTitle,
-  ManagerModalFooter,
   ManagerLogo,
   ProfileItem,
   ManagerButton,
-  CloseButton,
   LinkStyleSpan
 } from '../common';
 
@@ -36,12 +29,8 @@ import {
 import { useSetRecoilState, useRecoilState } from 'recoil';
 import { BadgesAtom, DIDDocumentAtom, CallbackFromAtom } from 'src/Atoms/Atoms';
 import { VerificationService } from 'src/services/verification.service';
-import styled from 'styled-components';
 import Card from 'src/elements-v2/Card';
-
-const Alert = styled.span`
-  color: red;
-`;
+import Modal from 'src/elements-v2/Modal';
 
 interface Props {
   sessionItem: ISessionItem;
@@ -56,10 +45,10 @@ const SocialProfilesCard: React.FC<Props> = ({
   mode = 'view',
   openModal = false
 }) => {
+  const modalRef = useRef(null);
   const setBadges = useSetRecoilState(BadgesAtom);
   const setCallbackFrom = useSetRecoilState(CallbackFromAtom);
   const [didDocument, setDidDocument] = useRecoilState(DIDDocumentAtom);
-  const [isManagerOpen, setIsManagerOpen] = useState(openModal);
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
   const socialCredentials = [
     {
@@ -342,7 +331,11 @@ const SocialProfilesCard: React.FC<Props> = ({
         title="Social Profiles"
         action={
           mode === 'edit' && (
-            <LinkStyleSpan onClick={() => setIsManagerOpen(true)}>
+            <LinkStyleSpan
+              onClick={() => {
+                (modalRef?.current as any).open();
+              }}
+            >
               Manage Profiles
             </LinkStyleSpan>
           )
@@ -414,86 +407,60 @@ const SocialProfilesCard: React.FC<Props> = ({
         </IonGrid>
       </Card>
 
-      <ManagerModal
-        isOpen={isManagerOpen}
-        cssClass="my-custom-class"
-        backdropDismiss={false}
-      >
-        <MyGrid class="ion-no-padding">
-          <IonRow>
-            <ManagerModalTitle>Manage Links</ManagerModalTitle>
-          </IonRow>
+      <Modal title="Manage Links" ref={modalRef} noButton>
+        {credentials?.map(credentialItem => {
+          let credential = credentialItem.credential;
 
-          {credentials?.map(credentialItem => {
-            let credential = credentialItem.credential;
-
-            return (
-              <IonRow key={`creds${credentialItem.name}`} no-padding>
-                <IonCol class="ion-no-padding">
-                  {credential === undefined ? (
-                    <div className={style['manage-links-item']}>
-                      <ManagerLogo src={credentialItem.icon} />
-                      <ManagerButton
-                        onClick={() => {
-                          setCallbackFrom(null);
-                          sociallogin(credentialItem.name);
-                        }}
-                      >
-                        Add
-                      </ManagerButton>
-                      <span className={style['manage-links-header']}>
-                        {credentialItem.display}
-                      </span>
-                    </div>
-                  ) : (
-                    <div className={style['manage-links-item']}>
-                      <ManagerLogo src={credentialItem.icon} />
-                      <ManagerButton
-                        disabled={isRemoving}
-                        onClick={() => {
-                          removeVc(credentialItem.name);
-                        }}
-                      >
-                        Remove
-                      </ManagerButton>
-                      <span className={style['manage-links-header']}>
-                        {credentialItem.display}
-                      </span>
-                      <span className={style['manage-links-detail']}>
-                        {parseValueFromService(credentialItem.name, credential)}
-                      </span>
-                    </div>
-                  )}
-                </IonCol>
-              </IonRow>
-            );
-          })}
-        </MyGrid>
-        <ManagerModalFooter className="ion-no-border">
-          {sessionItem.isEssentialUser && isRemoving ? (
-            <IonRow className="ion-justify-content-around">
-              <IonCol size="auto">
-                <img src={spinner} height="20px" alt="spinner" />
-                <Alert>Please confirm deletion on Essentials</Alert>
+          return (
+            <IonRow key={`creds${credentialItem.name}`} no-padding>
+              <IonCol class="ion-no-padding">
+                {credential === undefined ? (
+                  <div className={style['manage-links-item']}>
+                    <ManagerLogo src={credentialItem.icon} />
+                    <ManagerButton
+                      variant="outlined"
+                      btnColor="primary-gradient"
+                      textType="gradient"
+                      size="small"
+                      onClick={() => {
+                        setCallbackFrom(null);
+                        sociallogin(credentialItem.name);
+                      }}
+                    >
+                      Add
+                    </ManagerButton>
+                    <span className={style['manage-links-header']}>
+                      {credentialItem.display}
+                    </span>
+                  </div>
+                ) : (
+                  <div className={style['manage-links-item']}>
+                    <ManagerLogo src={credentialItem.icon} />
+                    <ManagerButton
+                      variant="outlined"
+                      btnColor="primary-gradient"
+                      textType="gradient"
+                      size="small"
+                      disabled={isRemoving}
+                      onClick={() => {
+                        removeVc(credentialItem.name);
+                      }}
+                    >
+                      Remove
+                    </ManagerButton>
+                    <span className={style['manage-links-header']}>
+                      {credentialItem.display}
+                    </span>
+                    <span className={style['manage-links-detail']}>
+                      {parseValueFromService(credentialItem.name, credential)}
+                    </span>
+                  </div>
+                )}
               </IonCol>
             </IonRow>
-          ) : (
-            <></>
-          )}
-          <IonRow className="ion-justify-content-around">
-            <IonCol size="auto">
-              <CloseButton
-                disabled={isRemoving}
-                onClick={() => {
-                  setIsManagerOpen(false);
-                }}
-              >
-                Close
-              </CloseButton>
-            </IonCol>
-          </IonRow>
-        </ManagerModalFooter>
-      </ManagerModal>
+          );
+        })}
+      </Modal>
     </>
   );
 };
