@@ -165,7 +165,7 @@ export const PopoverMenuItem = styled.div`
 
 export const MyGrid = styled(IonGrid)`
   margin: 10px 20px 10px 20px;
-  height: 100 %;
+  height: 100%;
 `;
 
 export const MyTextarea = styled(IonTextarea)`
