@@ -257,8 +257,8 @@ const EducationCard: React.FC<IEducationProps> = ({
           : getEducationFromState()}
       </Card>
       <Modal
-        title="Education"
-        okText="Save"
+        title={mode === MODE.ADD ? 'Add new education' : 'Edit Education'}
+        okText={mode === MODE.ADD ? 'Save' : 'Update'}
         isOpen={isEditing}
         onOk={handleSave}
         onCancel={handleCancel}

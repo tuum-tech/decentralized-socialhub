@@ -407,7 +407,7 @@ const SocialProfilesCard: React.FC<Props> = ({
         </IonGrid>
       </Card>
 
-      <Modal title="Manage Links" ref={modalRef}>
+      <Modal title="Manage Links" ref={modalRef} noButton>
         {credentials?.map(credentialItem => {
           let credential = credentialItem.credential;
 

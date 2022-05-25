@@ -9,12 +9,14 @@ import {
   IonModal,
   IonItem,
   IonTextarea,
-  IonCardContent
+  IonCardContent,
+  IonLabel
 } from '@ionic/react';
 import styled from 'styled-components';
 import { getThemeData } from 'src/utils/template';
 import styles from 'src/elements-v2/style.module.scss';
 import { DefaultButton } from 'src/elements-v2/buttons';
+import { down } from 'styled-breakpoints';
 
 export enum MODE {
   NONE,
@@ -340,4 +342,28 @@ export const ProfileItem = styled(IonItem)<ThemeProps>`
     top: 0px;
     right: 0px;
   }
+`;
+
+export const Spacer = styled.div`
+  margin-top: 38px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  ${down('sm')} {
+    margin-top: 10px;
+  }
+`;
+
+export const StyledLabel = styled(IonLabel)`
+  font-family: 'SF Pro Display';
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-body-light);
+`;
+
+export const CheckboxLabel = styled(IonLabel)`
+  font-size: 14px;
+  font-weight: 500;
+  padding-left: 10px;
+  color: #0a1f44;
 `;
