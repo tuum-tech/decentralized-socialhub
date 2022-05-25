@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IonRow } from '@ionic/react';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -31,6 +31,14 @@ const ViewAllMember = ({ space, isOpen, onClose }: Props) => {
 
   const [offset, setOffset] = useState(0);
   const limit = 5;
+
+  const [itemsContainerRef, setItemsContainerRef] = useState();
+
+  const onItemsContainerRefChange = useCallback(node => {
+    if (node !== null) {
+      setItemsContainerRef(node);
+    }
+  }, []);
 
   const membersForNFTSpace = async () => {
     const { data }: any = await getNFTCollectionOwners(
@@ -77,45 +85,50 @@ const ViewAllMember = ({ space, isOpen, onClose }: Props) => {
       onClose={onClose}
       noButton
     >
-      <div className={style['scrollableContent']} id="scrollableDiv">
-        <InfiniteScroll
-          dataLength={members.length}
-          next={fetchMoreData}
-          hasMore={hasMore}
-          style={{
-            width: '100%'
-          }}
-          loader={<LoadMore />}
-          scrollableTarget="scrollableDiv"
-        >
-          {members.map((member: any, index: number) => {
-            const isProfileUser = member && typeof member === 'object';
-            return (
-              <IonRow className={style['row']} key={index}>
-                <div className={style['avatar']}>
+      <div
+        ref={onItemsContainerRefChange}
+        className={style['scrollableContent']}
+      >
+        {itemsContainerRef && (
+          <InfiniteScroll
+            dataLength={members.length}
+            next={fetchMoreData}
+            hasMore={hasMore}
+            style={{
+              width: '100%'
+            }}
+            loader={<LoadMore />}
+            scrollableTarget={itemsContainerRef}
+          >
+            {members.map((member: any, index: number) => {
+              const isProfileUser = member && typeof member === 'object';
+              return (
+                <IonRow className={style['row']} key={index}>
+                  <div className={style['avatar']}>
+                    {isProfileUser ? (
+                      <Avatar did={member.did} width="40px" />
+                    ) : (
+                      <img src={nft_item_icon} alt={member.name} />
+                    )}
+                    <img src={welcome_badge} alt="welcome badge" />
+                  </div>
                   {isProfileUser ? (
-                    <Avatar did={member.did} width="40px" />
+                    <Link
+                      to={getDIDString('/did/' + member.did)}
+                      target={'blank'}
+                    >
+                      <span className={style['name']}>{member.name}</span>
+                    </Link>
                   ) : (
-                    <img src={nft_item_icon} alt={member.name} />
+                    <span className={style['name']}>
+                      {shortenAddress(member)}
+                    </span>
                   )}
-                  <img src={welcome_badge} alt="welcome badge" />
-                </div>
-                {isProfileUser ? (
-                  <Link
-                    to={getDIDString('/did/' + member.did)}
-                    target={'blank'}
-                  >
-                    <span className={style['name']}>{member.name}</span>
-                  </Link>
-                ) : (
-                  <span className={style['name']}>
-                    {shortenAddress(member)}
-                  </span>
-                )}
-              </IonRow>
-            );
-          })}
-        </InfiniteScroll>
+                </IonRow>
+              );
+            })}
+          </InfiniteScroll>
+        )}
       </div>
     </Modal>
   );

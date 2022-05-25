@@ -105,15 +105,13 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
           })}
         </CardContentContainer>
       </CardOverview>
-      {showViewAllModal && (
-        <ViewAllMember
-          space={space}
-          isOpen={showViewAllModal}
-          onClose={() => {
-            setShowViewAllModal(false);
-          }}
-        />
-      )}
+      <ViewAllMember
+        space={space}
+        isOpen={showViewAllModal}
+        onClose={() => {
+          setShowViewAllModal(false);
+        }}
+      />
     </>
   );
 };
