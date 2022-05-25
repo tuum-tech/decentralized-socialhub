@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StaticContext, RouteComponentProps } from 'react-router';
+import { IonContent, IonSearchbar } from '@ionic/react';
 
 import MainLayout from 'src/components/layouts/MainLayout';
 import HeaderMenu from 'src/elements-v2/HeaderMenu';
@@ -12,6 +13,7 @@ import ConnectionPageHeader, {
   ConnectionTabsContainer,
   Header
 } from './ConnectionHeader';
+import style from './style.module.scss';
 
 interface PageProps
   extends RouteComponentProps<{}, StaticContext, { active?: string }> {}
@@ -24,6 +26,7 @@ const Connections: React.FC<PageProps> = ({ ...props }: PageProps) => {
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [mutualFollowerCount, setMutualFollowerCount] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const { session } = useSession();
   useEffect(() => {
@@ -42,6 +45,7 @@ const Connections: React.FC<PageProps> = ({ ...props }: PageProps) => {
             let followingDids = following?.get_following.items.length
               ? following?.get_following.items.map(item => item.did)
               : [];
+            console.log(12312, followingDids);
             let followerDids = followers?.get_followers.items.length
               ? followers?.get_followers.items[0].followers
               : [];
@@ -63,6 +67,14 @@ const Connections: React.FC<PageProps> = ({ ...props }: PageProps) => {
       <Header>
         <HeaderMenu title="Connections" />
       </Header>
+      <IonContent className={style['searchcomponent']}>
+        <IonSearchbar
+          value={searchQuery}
+          onIonChange={(e: any) => setSearchQuery(e.target.value)}
+          placeholder="Search people, pages by name or DID"
+          className={style['search-input']}
+        ></IonSearchbar>
+      </IonContent>
       <ConnectionTabsContainer template="default">
         <ConnectionPageHeader
           active={active}
@@ -71,9 +83,11 @@ const Connections: React.FC<PageProps> = ({ ...props }: PageProps) => {
           followingCount={followingCount}
           mutualFollowerCount={mutualFollowerCount}
         />
-        {active === 'followers' && <FollowersPage />}
-        {active === 'following' && <FollowingsPage />}
-        {active === 'mutual' && <MutualFollowersPage />}
+        {active === 'followers' && <FollowersPage searchQuery={searchQuery} />}
+        {active === 'following' && <FollowingsPage searchQuery={searchQuery} />}
+        {active === 'mutual' && (
+          <MutualFollowersPage searchQuery={searchQuery} />
+        )}
       </ConnectionTabsContainer>
     </MainLayout>
   );

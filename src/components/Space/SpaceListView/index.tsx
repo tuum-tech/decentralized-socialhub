@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { down } from 'styled-breakpoints';
 import styled from 'styled-components';
 import SpaceCard from '../SpaceCard';
@@ -27,6 +27,7 @@ interface Props {
   explore?: boolean;
   isVisiblePageCount?: boolean;
   pageCount?: number;
+  searchQuery?: string;
 }
 
 interface PageCountProps {
@@ -42,7 +43,8 @@ const SpaceListView: React.FC<Props> = ({
   spaces,
   explore = false,
   isVisiblePageCount = true,
-  pageCount = 9
+  pageCount = 9,
+  searchQuery
 }: Props) => {
   const [pageOffset, setPageOffset] = useState(0);
   const [perPage, setPerPage] = useState<number>(pageCount);
@@ -59,36 +61,52 @@ const SpaceListView: React.FC<Props> = ({
     setPageOffset(offset);
   };
 
+  const filteredSpaces = useMemo(() => {
+    if (searchQuery) {
+      return spaces.filter(
+        v =>
+          v.name.toLowerCase().includes(searchQuery) ||
+          v.owner?.includes(searchQuery)
+      );
+    }
+    return spaces;
+  }, [spaces, searchQuery]);
+
   return (
     <>
       <Container>
-        {spaces.slice(pageOffset, pageOffset + perPage).map((space: Space) => {
-          const slug = space.slug;
-          const guid = space.guid.value;
-          return (
-            <SpaceCard
-              key={JSON.stringify(space)}
-              space={space}
-              explore={explore}
-              link={
-                explore
-                  ? space.isCommunitySpace
-                    ? `/community-spaces/${slug}`
-                    : `/did/${getDIDString(space.owner as string, true)}/spaces/${slug}`
-                  : `/spaces/edit/${guid}?type=${
-                      space.isCommunitySpace ? `community` : `private`
-                    }`
-              }
-              newTab={explore}
-            />
-          );
-        })}
+        {filteredSpaces
+          .slice(pageOffset, pageOffset + perPage)
+          .map((space: Space) => {
+            const slug = space.slug;
+            const guid = space.guid.value;
+            return (
+              <SpaceCard
+                key={JSON.stringify(space)}
+                space={space}
+                explore={explore}
+                link={
+                  explore
+                    ? space.isCommunitySpace
+                      ? `/community-spaces/${slug}`
+                      : `/did/${getDIDString(
+                          space.owner as string,
+                          true
+                        )}/spaces/${slug}`
+                    : `/spaces/edit/${guid}?type=${
+                        space.isCommunitySpace ? `community` : `private`
+                      }`
+                }
+                newTab={explore}
+              />
+            );
+          })}
       </Container>
-      {spaces.length > 0 && (
+      {filteredSpaces.length > 0 && (
         <Pagination
           perPage={perPage}
           totalPages={totalPages}
-          lists={spaces ?? []}
+          lists={filteredSpaces ?? []}
           onPageCountChange={onPageCountChange}
           onPageChange={onPageChange}
           isVisiblePageCount={isVisiblePageCount}

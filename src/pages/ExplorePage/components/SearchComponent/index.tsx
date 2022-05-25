@@ -136,12 +136,13 @@ const SearchComponent: React.FC<Props> = ({ userSession }: Props) => {
     (async () => {
       if (searchQuery !== '' && searchQuery.length > 2) {
         invokeSearch(searchQuery);
-      } else if (searchQuery === '') {
-        setSearchQuery('');
-        setIsLoading(true);
-        await loadData();
-        setIsLoading(false);
       }
+      // else if (searchQuery === '') {
+      //   setSearchQuery('');
+      //   setIsLoading(true);
+      //   await loadData();
+      //   setIsLoading(false);
+      // }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
