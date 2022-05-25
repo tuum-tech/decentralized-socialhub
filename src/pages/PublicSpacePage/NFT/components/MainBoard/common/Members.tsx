@@ -59,7 +59,9 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
         <CardHeaderContent>
           <IonRow className="ion-justify-content-between ion-no-padding">
             <IonCol className="ion-no-padding">
-              <IonCardTitle>Members ({isNFTSpace ? totalCount : 'Coming soon'})</IonCardTitle>
+              <IonCardTitle>
+                Members ({isNFTSpace ? totalCount : 'Coming soon'})
+              </IonCardTitle>
             </IonCol>
             <IonCol size="auto" className="ion-no-padding">
               <LinkStyleSpan
@@ -103,14 +105,13 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
           })}
         </CardContentContainer>
       </CardOverview>
-      {showViewAllModal && (
-        <ViewAllMember
-          space={space}
-          onClose={() => {
-            setShowViewAllModal(false);
-          }}
-        />
-      )}
+      <ViewAllMember
+        space={space}
+        isOpen={showViewAllModal}
+        onClose={() => {
+          setShowViewAllModal(false);
+        }}
+      />
     </>
   );
 };

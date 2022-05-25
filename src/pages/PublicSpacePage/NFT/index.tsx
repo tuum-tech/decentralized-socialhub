@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { IonRow, IonCol } from '@ionic/react';
+import styled from 'styled-components';
+import { down } from 'styled-breakpoints';
 import Banner from 'src/components/profile/ProfileComponent/Banner';
 import Highlight from './components/Highlight';
 import MainBoard from './components/MainBoard';
 import defaultCoverPhoto from 'src/assets/default/default-cover.png';
-import styled from 'styled-components';
 
 interface IProps {
   space: any;
@@ -13,14 +14,19 @@ interface IProps {
 
 const Wrapper = styled(IonRow)`
   padding: 0px 80px;
+  ${down('sm')} {
+    padding: 0;
+  }
 `;
+
 const NFTSpace: React.FC<IProps> = ({ space, session }: IProps) => {
   const [renderSignal, setRenderSignal] = useState({ signNo: 0, tab: 'home' });
+
   return (
     <>
       <Banner bgImg={space.coverPhoto || defaultCoverPhoto} />
       <Wrapper>
-        <IonCol size="3">
+        <IonCol sizeXs="12" sizeSm="3">
           <Highlight
             space={space}
             viewAllNFTCollectionAssets={() => {
@@ -31,8 +37,12 @@ const NFTSpace: React.FC<IProps> = ({ space, session }: IProps) => {
             }}
           />
         </IonCol>
-        <IonCol size="9">
-          <MainBoard space={space} session={session} renderSignal={renderSignal} />
+        <IonCol sizeXs="12" sizeSm="9">
+          <MainBoard
+            space={space}
+            session={session}
+            renderSignal={renderSignal}
+          />
         </IonCol>
       </Wrapper>
     </>
