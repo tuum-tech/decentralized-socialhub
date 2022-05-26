@@ -21,11 +21,7 @@ const SpaceView: React.FC<Props> = ({ searchKeyword }: Props) => {
   const filteredSpaces = useMemo(() => {
     if (searchKeyword) {
       return spaces.filter(
-        v =>
-          v.name.includes(searchKeyword) ||
-          v.slug.includes(searchKeyword) ||
-          v.owner?.includes(searchKeyword) ||
-          v.category.includes(searchKeyword)
+        v => v.name.includes(searchKeyword) || v.owner?.includes(searchKeyword)
       );
     }
     return spaces;
