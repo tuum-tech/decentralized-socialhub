@@ -9,7 +9,8 @@ import {
   JWTParserBuilder,
   RootIdentity,
   VerifiableCredential,
-  VerifiablePresentation
+  VerifiablePresentation,
+  JWT
 } from '@elastosfoundation/did-js-sdk/';
 import {
   HiveException,
@@ -55,15 +56,15 @@ export class HiveContextProvider implements AppContextProvider {
     );
     HiveContextProvider.LOG.debug('Init app private identity');
 
-    if (this.contextParameters.userMnemonics !== '') {
-      this.userRootId = await this.initPrivateIdentity(
-        this.contextParameters.userMnemonics,
-        this.contextParameters.userDID,
-        this.contextParameters.userPhrasePass,
-        this.contextParameters.userStorePass
-      );
-      await this.initDid(this.userRootId);
-    }
+    // if (this.contextParameters.userMnemonics !== '') {
+    //   this.userRootId = await this.initPrivateIdentity(
+    //     this.contextParameters.userMnemonics,
+    //     this.contextParameters.userDID,
+    //     this.contextParameters.userPhrasePass,
+    //     this.contextParameters.userStorePass
+    //   );
+    //   await this.initDid(this.userRootId);
+    // }
     HiveContextProvider.LOG.debug('Init user private identity');
 
     await this.initDid(this.appRootId);
@@ -111,20 +112,24 @@ export class HiveContextProvider implements AppContextProvider {
     await rootIdentity.synchronize();
     rootIdentity.setDefaultDid(did);
 
+    let ind = rootIdentity.getIndex();
+    //this.store!.storeRootIdentity(rootIdentity, storePass);
     return rootIdentity;
   }
 
   public async initDid(rootIdentity: RootIdentity): Promise<void> {
     HiveContextProvider.LOG.trace('initDid');
-    let dids = await this.store!.listDids();
-    if (dids.length > 0) {
-      this.contextParameters.appDID = dids[0];
-      return;
-    }
+    // let dids = await this.store!.listDids();
+    // if (dids.length > 0) {
+    //   this.contextParameters.appDID = dids[0];
+    //   return;
+    // }
     HiveContextProvider.LOG.debug('Init app did');
 
-    let did = await rootIdentity.getDefaultDid();
-    let resolvedDoc = await did.resolve();
+    //let did = await rootIdentity.getDefaultDid();
+
+    let did: DID = DID.from(`${process.env.REACT_APP_APPLICATION_DID}`) as DID;
+    let resolvedDoc = await did.resolve(true);
     await this.store!.storeDid(resolvedDoc);
     HiveContextProvider.LOG.debug('Resolve app doc');
   }
@@ -213,19 +218,36 @@ export class HiveContextProvider implements AppContextProvider {
     );
     let didService = await DidService.getInstance();
     let appMnemonic = process.env.REACT_APP_APPLICATION_MNEMONICS as string;
-    let appDid = await didService.loadDid(appMnemonic);
+    let appDid = await didService.loadDid(
+      appMnemonic,
+      process.env.REACT_APP_APPLICATION_PASSPHRASE as string
+    );
     let userDid = await didService.loadDid(userMnemonic, password);
 
     let userDocument: DIDDocument = await this.store!.loadDid(userDid);
 
+    let rootId = (await this.store?.loadRootIdentity()) as RootIdentity;
+    let defaultDID = rootId?.getDefaultDid();
+
     // the storePrivateKey method should probably go to loadDid method
     let id: DIDURL = DIDURL.from('#primary', userDid) as DIDURL;
-    await didService.storePrivatekey(id, userMnemonic, password, 0);
+    await didService.storePrivatekey(
+      id,
+      userMnemonic,
+      password,
+      rootId.getIndex()
+    );
 
     let id2: DIDURL = DIDURL.from('#primary', appDid) as DIDURL;
-    await didService.storePrivatekey(id2, userMnemonic, password, 0);
+    await didService.storePrivatekey(
+      id2,
+      userMnemonic,
+      password,
+      rootId.getIndex()
+    );
 
     let issuerObject = new Issuer(userDocument, id);
+
     let vcBuilder = new VerifiableCredential.Builder(issuerObject, appDid);
     let vc = await vcBuilder
       .expirationDate(this.getExpirationDate())
@@ -329,6 +351,7 @@ export class HiveContextProvider implements AppContextProvider {
       .jwtBuilder()
       .addHeader(JWTHeader.TYPE, JWTHeader.JWT_TYPE)
       .addHeader('version', '1.0')
+      .addHeader(JWTHeader.CONTENT_TYPE, 'json')
       .setSubject('DIDAuthResponse')
       .setAudience(hiveDid)
       .setIssuedAt(iat)
