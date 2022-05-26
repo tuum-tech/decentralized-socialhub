@@ -55,7 +55,7 @@ export class DidDocumentService {
       }
     };
     diddocument.publish(
-      process.env.REACT_APP_DID_STORE_PASSWORD as string,
+      process.env.REACT_APP_APPLICATION_STORE_PASS as string,
       undefined,
       undefined,
       adapter

@@ -109,7 +109,7 @@ export class DidService implements IDidService {
 
   public static getInstance = async () => {
     let store = await DIDStore.open(
-      process.env.REACT_APP_DID_STORE_PATH as string
+      process.env.REACT_APP_APPLICATION_STORE_PATH as string
     );
     const me = new DidService(store);
 
@@ -152,16 +152,18 @@ export class DidService implements IDidService {
         mnemonic,
         password,
         this.Store,
-        process.env.REACT_APP_DID_STORE_PASSWORD as string,
+        process.env.REACT_APP_APPLICATION_STORE_PASS as string,
         true
       );
 
+      let did: DID = DID.from(`${process.env.REACT_APP_APPLICATION_DID}`) as DID;
+      rootIdentity.setDefaultDid(did);
       this.Store.storeRootIdentity(rootIdentity);
     } else {
       rootIdentity = identity as RootIdentity;
     }
 
-    let did = rootIdentity.getDid(index);
+    let did = rootIdentity.getDefaultDid();
     let didDocument = await this.Store.loadDid(did);
 
     if (didDocument === null) {
@@ -174,7 +176,7 @@ export class DidService implements IDidService {
           DIDURL.from('#primary', did) as DIDURL,
           mnemonic,
           password,
-          0
+          rootIdentity.getIndex()
         );
       }
     }
@@ -188,11 +190,10 @@ export class DidService implements IDidService {
     password: string,
     index: number
   ): Promise<void> {
-    let storePassw = process.env.REACT_APP_DID_STORE_PASSWORD as string;
+    let storePassw = process.env.REACT_APP_APPLICATION_STORE_PASS as string;
 
-    let key = HDKey.newWithMnemonic(mnemonics, password).deriveWithPath(
-      HDKey.DERIVE_PATH_PREFIX + index
-    );
+    let path =  HDKey.DERIVE_PATH_PREFIX + index;
+    let key = HDKey.newWithMnemonic(mnemonics, password).deriveWithPath(path);
 
     this.Store.storePrivateKey(id as DIDURL, key.serialize(), storePassw);
   }
@@ -209,7 +210,7 @@ export class DidService implements IDidService {
       mnemonics,
       '',
       this.Store,
-      process.env.REACT_APP_DID_STORE_PASSWORD as string,
+      process.env.REACT_APP_APPLICATION_STORE_PASS as string,
       true
     );
 
@@ -219,7 +220,7 @@ export class DidService implements IDidService {
   addRootIdentityToStore(rootIdentity: RootIdentity) {
     this.Store.storeRootIdentity(
       rootIdentity,
-      process.env.REACT_APP_DID_STORE_PASSWORD as string
+      process.env.REACT_APP_APPLICATION_STORE_PASS as string
     );
   }
 
@@ -245,7 +246,7 @@ export class DidService implements IDidService {
 
   async newDIDDocument(rootIdentity: RootIdentity): Promise<DIDDocument> {
     return await rootIdentity.newDid(
-      process.env.REACT_APP_DID_STORE_PASSWORD as string
+      process.env.REACT_APP_APPLICATION_STORE_PASS as string
     );
   }
 
@@ -287,7 +288,7 @@ export class DidService implements IDidService {
     };
 
     didDocument.publish(
-      process.env.REACT_APP_DID_STORE_PASSWORD as string,
+      process.env.REACT_APP_APPLICATION_STORE_PASS as string,
       undefined,
       true,
       adapter
@@ -301,7 +302,7 @@ export class DidService implements IDidService {
     let builder = DIDDocument.Builder.newFromDocument(diddocument);
     builder.edit();
     return await (await builder.addCredential(vc)).seal(
-      process.env.REACT_APP_DID_STORE_PASSWORD as string
+      process.env.REACT_APP_APPLICATION_STORE_PASS as string
     );
   }
 
@@ -330,7 +331,7 @@ export class DidService implements IDidService {
     }
 
     return await builder.seal(
-      process.env.REACT_APP_DID_STORE_PASSWORD as string
+      process.env.REACT_APP_APPLICATION_STORE_PASS as string
     );
   }
 
@@ -349,7 +350,7 @@ export class DidService implements IDidService {
     });
 
     return await builder.seal(
-      process.env.REACT_APP_DID_STORE_PASSWORD as string
+      process.env.REACT_APP_APPLICATION_STORE_PASS as string
     );
   }
 
@@ -378,7 +379,7 @@ export class DidService implements IDidService {
     builder.edit();
     builder.addService('#hivevault', 'HiveVault', endpoint);
     return await builder.seal(
-      process.env.REACT_APP_DID_STORE_PASSWORD as string
+      process.env.REACT_APP_APPLICATION_STORE_PASS as string
     );
 
     //ElastosClient.didDocuments.addServiceToDIDDocument(diddocument, service);
@@ -438,7 +439,7 @@ export class DidService implements IDidService {
       .type('SelfProclaimedCredential')
       .property(subjectName, subjectValue)
       .id(DIDURL.from('#' + subjectName.toLowerCase(), did) as DIDURL)
-      .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+      .seal(process.env.REACT_APP_APPLICATION_STORE_PASS as string);
   }
 
   generateService(did: DID, type: string, endpoint: string): any {
@@ -463,13 +464,15 @@ export class DidService implements IDidService {
     let userDid = await this.loadDid(userMnemonic, password);
 
     let userDocument: DIDDocument = await this.Store.loadDid(userDid);
+    let rootId: RootIdentity = await this.Store.loadRootIdentity();
+
 
     // the storePrivateKey method should probably go to loadDid method
     let id: DIDURL = DIDURL.from('#primary', userDid) as DIDURL;
-    await this.storePrivatekey(id, userMnemonic, password, 0);
+    await this.storePrivatekey(id, userMnemonic, password, rootId.getIndex());
 
     let id2: DIDURL = DIDURL.from('#primary', appDid) as DIDURL;
-    await this.storePrivatekey(id2, userMnemonic, password, 0);
+    await this.storePrivatekey(id2, userMnemonic, password, rootId.getIndex());
 
     let issuerObject = new Issuer(userDocument, id);
     let vcBuilder = new VerifiableCredential.Builder(issuerObject, appDid);
@@ -479,7 +482,7 @@ export class DidService implements IDidService {
       .property('appDid', appDid.toString())
       .property('appInstanceDid', appDid.toString())
       .id(DIDURL.from('#app-id-credential', appDid) as DIDURL)
-      .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string); // and we sign so it creates a Proof with method and signature
+      .seal(process.env.REACT_APP_APPLICATION_STORE_PASS as string); // and we sign so it creates a Proof with method and signature
 
     this.Store.storeCredential(vc);
 
@@ -488,7 +491,7 @@ export class DidService implements IDidService {
       .realm(issuer)
       .nonce(nonce)
       .credentials(vc)
-      .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+      .seal(process.env.REACT_APP_APPLICATION_STORE_PASS as string);
 
     return vp;
   }

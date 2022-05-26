@@ -20,7 +20,8 @@ const HiveClientPage = () => {
       let hiveClient = (await HiveService.getApplicationHiveClient()) as HiveClient;
 
       debugger;
-      //let vaultInfo = await hiveClient.VaultSubscription.subscribe();
+      
+      let vaultInfo = await hiveClient.VaultSubscription.subscribe();
       await hiveClient.Database.createCollection('test7');
 
       // setResp(resp as string);
@@ -28,7 +29,8 @@ const HiveClientPage = () => {
     })();
   }, []);
 
-  return <>{JSON.stringify(resp)}</>;
+  //return <>{JSON.stringify(resp)}</>;
+  return <>teste</>;
 };
 
 export default HiveClientPage;

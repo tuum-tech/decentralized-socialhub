@@ -416,7 +416,7 @@ export class VerificationService {
           .type(vcType)
           .property(vcType, content)
           .id(DIDURL.from(DIDstring) as DIDURL)
-          .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+          .seal(process.env.REACT_APP_APPLICATION_STORE_PASS as string);
       } else {
         let didAccess = new ConnDID.DIDAccess();
 
@@ -490,7 +490,7 @@ export class VerificationService {
         const builder = DIDDocument.Builder.newFromDocument(didDocument);
         didDocument = await builder
           .removeCredential(didUrl)
-          .seal(process.env.REACT_APP_DID_STORE_PASSWORD as string);
+          .seal(process.env.REACT_APP_APPLICATION_STORE_PASS as string);
       }
     }
     // add new credential

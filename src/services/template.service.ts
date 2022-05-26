@@ -1,5 +1,4 @@
 import { Logger } from 'src/shared-base/logger';
-import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 import { Guid } from 'guid-typescript';
 
 import { getItemsFromData } from 'src/utils/script';
