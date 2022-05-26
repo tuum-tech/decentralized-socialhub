@@ -187,7 +187,7 @@ const TemplateManagerCard: React.FC<PageProps> = ({
                 return (
                   <div key={t.value}>
                     <IonRow className="ion-justify-content-between">
-                      <IonCol size="*">
+                      <IonCol size="10">
                         <Header3>{t.title}</Header3>
                         <h4> {t.intro}</h4>
                       </IonCol>
