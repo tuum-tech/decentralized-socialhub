@@ -13,6 +13,7 @@ import Icon from './icons';
 const StyledModal = styled(IonModal)<{ autoWidth: boolean }>`
   --border-radius: 16px;
   --max-height: 80vh;
+  --min-height: 400px;
   --max-width: ${props => (props.autoWidth ? 'auto' : '435px')};
   --height: auto;
 
