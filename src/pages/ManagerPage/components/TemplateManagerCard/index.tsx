@@ -24,8 +24,9 @@ import {
   defaultFullProfile,
   ProfileService
 } from 'src/services/profile.service';
-import TemplateModalContent, { TemplateModal } from './Modal/TemplateModal';
+import TemplateModalContent from './Modal/TemplateModal';
 import styles from './style.module.scss';
+import Modal from 'src/elements-v2/Modal';
 
 export const Divider = styled.hr`
   width: 100%;
@@ -186,7 +187,7 @@ const TemplateManagerCard: React.FC<PageProps> = ({
                 return (
                   <div key={t.value}>
                     <IonRow className="ion-justify-content-between">
-                      <IonCol size="*">
+                      <IonCol size="10">
                         <Header3>{t.title}</Header3>
                         <h4> {t.intro}</h4>
                       </IonCol>
@@ -216,10 +217,12 @@ const TemplateManagerCard: React.FC<PageProps> = ({
         </IonRadioGroup>
       </IonCardContent>
 
-      <TemplateModal
+      <Modal
+        title="Profile Templates"
         isOpen={showModal}
-        cssClass="my-custom-class"
-        onDidDismiss={() => setShowModal(false)}
+        onClose={() => setShowModal(false)}
+        autoWidth
+        noButton
       >
         <TemplateModalContent
           activeTemplate={template}
@@ -238,7 +241,7 @@ const TemplateManagerCard: React.FC<PageProps> = ({
             setMyTemplates(newMyTemplates);
           }}
         />
-      </TemplateModal>
+      </Modal>
     </IonCard>
   );
 };
