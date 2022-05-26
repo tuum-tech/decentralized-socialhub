@@ -78,8 +78,16 @@ const WalletCard: React.FC<IWalletProps> = ({
   >(walletCredentials);
 
   useEffect(() => {
+    let timer = setTimeout(function start() {
+      getCredentials(userSession);
+      timer = setTimeout(start, 2000);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     (async () => {
-      await getCredentials(userSession);
       let userService = new UserService(await DidService.getInstance());
 
       let user: ISessionItem = await userService.SearchUserWithDID(
@@ -183,24 +191,12 @@ const WalletCard: React.FC<IWalletProps> = ({
     if (!account) {
       connectWallet();
     }
-    var timer = setInterval(async function() {
-      //clearInterval(timer);
 
-      //if (sessionItem.isEssentialUser) await forceUpdateDidDocument();
-      await getCredentials(userSession);
-    }, 2000);
     updateSession(type);
   };
 
   const removeVc = async (key: string) => {
     setIsRemovingVc(true);
-
-    var timer = setInterval(async function() {
-      //clearInterval(timer);
-
-      //if (sessionItem.isEssentialUser) await forceUpdateDidDocument();
-      await getCredentials(userSession);
-    }, 2000);
 
     let vcId = userSession.did + '#' + key.toLowerCase();
     if (userSession.isEssentialUser) {
