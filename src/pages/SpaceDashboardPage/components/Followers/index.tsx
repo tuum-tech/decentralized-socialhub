@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Follows from 'src/components/cards/ProfileBriefCard/Follows';
-import ViewAllFollower from 'src/pages/PublicSpacePage/NFT/components/MainBoard/common/Modal/ViewAllFollower';
+import ViewAllFollower from 'src/pages/PublicSpacePage/components/MainBoard/common/Modal/ViewAllFollower';
 import { CardOverview } from 'src/components/cards/common';
 import Icon from 'src/elements-v2/icons';
 

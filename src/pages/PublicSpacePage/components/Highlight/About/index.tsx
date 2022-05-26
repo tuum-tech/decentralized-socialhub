@@ -10,7 +10,7 @@ import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
 import { TuumTechScriptService } from 'src/services/script.service';
-import { SpaceService } from 'src/services/space.service';
+import { SpaceCategory, SpaceService } from 'src/services/space.service';
 import { StyledButton } from 'src/elements/buttons';
 import { SpaceAvatar } from 'src/components/Space/SpaceCard';
 import {
@@ -48,7 +48,13 @@ const AboutSpace: React.FC<IProps> = ({
   ]);
   const isExpandable = (space.description || '').length > 250;
   const [isExpanded, setIsExpanded] = useState(!isExpandable);
-  const isOwner = space.owner && space.owner.includes(session.did);
+  const ownerDids =
+    space.category === SpaceCategory.Personal
+      ? space.owner
+        ? [space.owner]
+        : []
+      : space.owner || [];
+  const isOwner = ownerDids.includes(session.did);
   const isLoggedIn = window.localStorage.getItem('isLoggedIn');
   const auth = () => {
     if (!isLoggedIn) {
@@ -60,15 +66,14 @@ const AboutSpace: React.FC<IProps> = ({
 
   useEffect(() => {
     (async () => {
-      const dids = space.owner || [];
       const owners: any[] = await TuumTechScriptService.searchUserWithDIDs(
-        dids
+        ownerDids
       );
       let ownersDids: string[] = [];
       owners.forEach(owner => {
         ownersDids.push(owner.did);
       });
-      dids.forEach((did: string) => {
+      ownerDids.forEach((did: string) => {
         let shortenedDid = did.replace('did:elastos:', '');
         shortenedDid = `${shortenedDid.substring(
           0,

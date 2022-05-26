@@ -1144,7 +1144,8 @@ export class UserVaultScripts {
               avatar: '$params.avatar',
               coverPhoto: '$params.coverPhoto',
               publicFields: '$params.publicFields',
-              socialLinks: '$parrams.socialLinks'
+              socialLinks: '$params.socialLinks',
+              tags: '$params.tags'
             }
           },
           options: {

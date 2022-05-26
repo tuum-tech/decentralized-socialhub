@@ -65,8 +65,9 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
             </IonCol>
             <IonCol size="auto" className="ion-no-padding">
               <LinkStyleSpan
+                style={{ opacity: isNFTSpace ? 1 : 0.5 }}
                 onClick={() => {
-                  setShowViewAllModal(true);
+                  isNFTSpace && setShowViewAllModal(true);
                 }}
               >
                 View all

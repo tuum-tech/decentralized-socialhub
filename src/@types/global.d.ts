@@ -594,4 +594,6 @@ interface Space {
   publicFields?: string[];
   followers?: string[];
   isCommunitySpace?: boolean;
+  socialLinks?: any;
+  tags?: string[];
 }

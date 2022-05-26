@@ -24,7 +24,10 @@ export const defaultSpace: Space = {
   category: SpaceCategory.Personal,
   avatar: '',
   coverPhoto: '',
-  publicFields: []
+  publicFields: [],
+  followers: [],
+  socialLinks: {},
+  tags: []
 };
 export class SpaceService {
   static async getAllSpaces(session?: ISessionItem) {
@@ -369,7 +372,7 @@ export class SpaceService {
     const tuumVaultRes = await appHiveClient.Scripting.RunScript({
       name: 'get_space_posts',
       params: {
-        space_sid: sid,
+        space_id: sid,
         limit: 200,
         skip: 0
       },
@@ -416,7 +419,7 @@ export class SpaceService {
     const hiveInstance = await HiveService.getSessionInstance(session);
     if (session && hiveInstance) {
       const post = {
-        space_sid: sid,
+        space_id: sid,
         post_id: Guid.create(),
         creator: session.did,
         visible: true,
