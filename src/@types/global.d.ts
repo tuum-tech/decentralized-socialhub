@@ -297,6 +297,7 @@ interface ISessionItem {
   timestamp: number;
   referrals?: IReferral[];
   passwordRemoved?: boolean;
+  created?: {$date: number}
 }
 
 interface LoginCred {

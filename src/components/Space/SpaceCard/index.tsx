@@ -132,16 +132,16 @@ const SpaceCard: React.FC<Props> = ({
               </IonGrid>
             </SpaceInfo>
           </Header>
-	      {explore && followable && (
-	        <DefaultButton
-	          variant="contained"
-	          btnColor="primary-gradient"
-	          onClick={following ? onUnfollow : onFollow}
-	          style={{ margin: '10px 10px 10px 10px' }}
-	        >
-	            {following ? `-Unfollow` : `+Follow`}
-	          </DefaultButton>
-	        )}
+          {explore && followable && (
+            <DefaultButton
+              variant="contained"
+              btnColor="primary-gradient"
+              onClick={following ? onUnfollow : onFollow}
+              style={{ margin: '10px 10px 10px 10px' }}
+            >
+              {following ? `-Unfollow` : `+Follow`}
+            </DefaultButton>
+          )}
         </IonRow>
       </Link>
     </Container>

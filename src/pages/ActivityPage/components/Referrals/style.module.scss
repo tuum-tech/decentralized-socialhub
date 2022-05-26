@@ -1,0 +1,40 @@
+
+.tab-label {
+  font-family: 'SF Pro Display';
+  font-family: 'SF Pro Display';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  background: linear-gradient(90deg, #995AFF 0%, #DC59BF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+.name {
+  font-family: 'SF Pro Display';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  color: #425466;
+}
+
+.date {
+  font-family: 'SF Pro Display';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  color: #425466;
+}
+
+.item-row {
+  margin-top: 15px !important;
+  &:hover, &:focus {
+    background: linear-gradient(252.79deg, rgba(144, 75, 255, 0.0504) -20.69%, rgba(190, 52, 160, 0.0552) 151.16%);
+    border-radius: 16px;
+  }
+}
+.button {
+  width: 160px !important;
+  max-width: 100%;
+}
