@@ -1,42 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import {
-  IUniversitiesResponse,
-  SearchService
-} from 'src/services/search.service';
+import { IUniversitiesResponse } from 'src/services/search.service';
 import FollowingTabs from '../FollowingTabs';
-import FollowingHeader from '../FollowingHeader';
 import { ProfileService } from 'src/services/profile.service';
 import { alertError } from 'src/utils/notify';
+import { FollowService } from 'src/services/follow.service';
 
 export interface IUserResponse {
-  _status?: string;
-  get_users_by_dids: {
-    items: {
-      did: string;
-      name: string;
-      avatar?: string;
-      hiveHost: string;
-    }[];
-  };
+  items: {
+    did: string;
+    name: string;
+    avatar?: string;
+    hiveHost: string;
+  }[];
 }
 
 interface Props {
   userSession: ISessionItem;
+  searchQuery: string;
 }
 
-const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
+const FollowingSearch: React.FC<Props> = ({
+  userSession,
+  searchQuery
+}: Props) => {
   const [filteredUniversities] = useState<IUniversitiesResponse>({
     get_universities: { items: [] }
   });
 
   const [filteredUsers, setFilteredUsers] = useState<IUserResponse>({
-    get_users_by_dids: { items: [] }
+    items: []
   });
   const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
     get_following: { items: [] }
   });
-
-  const [searchQuery, setSearchQuery] = useState('');
 
   // ID text strings within Elastos DID is an ID Sidechain address encoded
   // using Bitcoin-style Base58 and starting with the letter "i",
@@ -67,8 +63,6 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
 
   useEffect(() => {
     (async () => {
-      let searchServiceLocal: SearchService;
-
       let dids: string[] = [];
 
       if (
@@ -77,44 +71,23 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
       ) {
         dids = listFollowing.get_following.items.map(u => u.did);
       }
-
       try {
-        searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-        let listUsers: any = await searchServiceLocal.getUsersByDIDs(
+        const fUsers = await FollowService.invokeSearch(
           dids,
+          searchQuery,
           200,
-          0
+          1
         );
 
-        setFilteredUsers(listUsers.response);
+        setFilteredUsers({ items: fUsers });
       } catch (e) {
-        setFilteredUsers({ get_users_by_dids: { items: [] } });
+        setFilteredUsers({ items: [] });
         alertError(null, 'Could not load users');
         return;
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listFollowing]);
-
-  const invokeSearch = async (searchQuery: string) => {
-    // let listUniversities: any = await searchService.getUniversities(
-    //   searchQuery,
-    //   200,
-    //   0
-    // );
-    // setFilteredUniversities(listUniversities.response);
-    // let listUsers: any = await searchService.getUsers(searchQuery, 200, 0);
-    // setFilteredUsers(listUsers.response);
-  };
-
-  useEffect(() => {
-    if (searchQuery !== '' && searchQuery.length > 2) {
-      invokeSearch(searchQuery);
-    } else if (searchQuery === '') {
-      setSearchQuery('');
-      // loadData();
-    }
-  }, [searchQuery]);
+  }, [listFollowing, searchQuery]);
 
   const getFollowingCount = (): number => {
     return listFollowing.get_following.items.length;
@@ -123,16 +96,8 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
   return (
     <>
       {/* <FollowingHeader followingCount={getFollowingCount()} /> */}
-      {/* <IonContent className={style['followingsearch']}>
-        <IonSearchbar
-          value={searchQuery}
-          onIonChange={(e) => search(e)}
-          placeholder='Search people, pages by name or DID'
-          className={style['search-input']}
-        ></IonSearchbar>
-      </IonContent> */}
       <FollowingTabs
-        people={filteredUsers.get_users_by_dids}
+        people={filteredUsers}
         following={listFollowing.get_following}
         pages={filteredUniversities.get_universities}
         searchKeyword={searchQuery}

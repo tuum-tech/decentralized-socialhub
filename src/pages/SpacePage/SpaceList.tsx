@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setTimeout, clearTimeout } from 'timers';
+import { IonContent, IonSearchbar } from '@ionic/react';
 
 import SpacePageHeader, {
   Header,
@@ -14,6 +15,7 @@ import useSession from 'src/hooks/useSession';
 import { selectSpaces, selectSpacesLoading } from 'src/store/spaces/selectors';
 import { fetchSpaces } from 'src/store/spaces/actions';
 import HeaderMenu from 'src/elements-v2/HeaderMenu';
+import style from './style.module.scss';
 
 const SpaceList: React.FC = () => {
   const dispatch = useDispatch();
@@ -21,6 +23,7 @@ const SpaceList: React.FC = () => {
   const loading = useSelector(state => selectSpacesLoading(state));
   const spaces = useSelector(state => selectSpaces(state));
   const [active, setActive] = useState('my spaces');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const refreshSpaces = useCallback(() => {
     dispatch(fetchSpaces());
@@ -67,6 +70,14 @@ const SpaceList: React.FC = () => {
           </LinkButton>
         )}
       </Header>
+      <IonContent className={style['searchcomponent']}>
+        <IonSearchbar
+          value={searchQuery}
+          onIonChange={(e: any) => setSearchQuery(e.target.value)}
+          placeholder="Search people, pages by name or DID"
+          className={style['search-input']}
+        ></IonSearchbar>
+      </IonContent>
       <SpaceTabsContainer template="default">
         <SpacePageHeader active={active} setActive={setActive} />
         {loading ? (
@@ -75,7 +86,7 @@ const SpaceList: React.FC = () => {
           <>
             {active === 'my spaces' &&
               (mySpaces.length > 0 ? (
-                <SpaceListView spaces={mySpaces} />
+                <SpaceListView spaces={mySpaces} searchQuery={searchQuery} />
               ) : (
                 <SpaceFirstPage />
               ))}
@@ -85,6 +96,7 @@ const SpaceList: React.FC = () => {
                   (x.followers || []).includes(session.did)
                 )}
                 explore
+                searchQuery={searchQuery}
               />
             )}
           </>

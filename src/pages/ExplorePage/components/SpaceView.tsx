@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setTimeout, clearTimeout } from 'timers';
 import WelcomeSpace from './WelcomeSpace';
@@ -9,10 +9,27 @@ import SpaceListView from 'src/components/Space/SpaceListView';
 import { selectSpaces, selectSpacesLoading } from 'src/store/spaces/selectors';
 import { fetchSpaces } from 'src/store/spaces/actions';
 
-const SpaceView = () => {
+interface Props {
+  searchKeyword?: string;
+}
+
+const SpaceView: React.FC<Props> = ({ searchKeyword }: Props) => {
   const dispatch = useDispatch();
   const loading = useSelector(state => selectSpacesLoading(state));
   const spaces = useSelector(state => selectSpaces(state));
+
+  const filteredSpaces = useMemo(() => {
+    if (searchKeyword) {
+      return spaces.filter(
+        v =>
+          v.name.includes(searchKeyword) ||
+          v.slug.includes(searchKeyword) ||
+          v.owner?.includes(searchKeyword) ||
+          v.category.includes(searchKeyword)
+      );
+    }
+    return spaces;
+  }, [spaces, searchKeyword]);
 
   const refreshSpaces = async () => {
     dispatch(fetchSpaces());
@@ -34,10 +51,10 @@ const SpaceView = () => {
         <LoadingIndicator loadingText="loading spaces..." />
       ) : (
         <>
-          {spaces.length > 0 ? (
+          {filteredSpaces.length > 0 ? (
             <>
               <RequestCommunity />
-              <SpaceListView spaces={spaces} explore={true} />
+              <SpaceListView spaces={filteredSpaces} explore={true} />
             </>
           ) : (
             <>

@@ -7,26 +7,28 @@ import { alertError } from 'src/utils/notify';
 import { SearchService } from 'src/services/search.service';
 import NoConnectionComp from 'src/components/NoConnection';
 import FollowersHeader from '../FollowersHeader';
+import { FollowService } from 'src/services/follow.service';
 
 export interface IUserResponse {
-  _status?: string;
-  get_users_by_dids: {
-    items: {
-      did: string;
-      name: string;
-      avatar?: string;
-      hiveHost: string;
-    }[];
-  };
+  items: {
+    did: string;
+    name: string;
+    avatar?: string;
+    hiveHost: string;
+  }[];
 }
 interface Props {
   userSession: ISessionItem;
+  searchQuery: string;
 }
 
 // const FollowersSearch: React.FC = () => {
-const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
+const FollowersSearch: React.FC<Props> = ({
+  userSession,
+  searchQuery
+}: Props) => {
   const [filteredUsers, setFilteredUsers] = useState<IUserResponse>({
-    get_users_by_dids: { items: [] }
+    items: []
   });
   const [listFollowers, setListFollowers] = useState<IFollowerResponse>({
     get_followers: { items: [] }
@@ -36,7 +38,6 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
   });
 
   const [followersCount, setFollowersCount] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('');
 
   // ID text strings within Elastos DID is an ID Sidechain address encoded
   // using Bitcoin-style Base58 and starting with the letter "i",
@@ -93,7 +94,6 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
         setFollowersCount(getFollowersCount(userSession.did));
       }
 
-      let searchServiceLocal: SearchService;
       let dids: string[] = [];
       if (
         listFollowers.get_followers.items &&
@@ -103,35 +103,21 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
       }
 
       try {
-        searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-        let listUsers: any = await searchServiceLocal.getUsersByDIDs(
+        const fUsers = await FollowService.invokeSearch(
           dids,
+          searchQuery,
           200,
-          0
+          1
         );
-        setFilteredUsers(listUsers.response);
+        setFilteredUsers({ items: fUsers });
       } catch (e) {
-        setFilteredUsers({ get_users_by_dids: { items: [] } });
+        setFilteredUsers({ items: [] });
         alertError(null, 'Could not load users');
         return;
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listFollowers]);
-
-  const invokeSearch = async (searchQuery: string) => {
-    // let listUsers: any = await searchService.getUsers(searchQuery, 200, 0);
-    // setFilteredUsers(listUsers.response);
-  };
-
-  useEffect(() => {
-    if (searchQuery !== '' && searchQuery.length > 2) {
-      invokeSearch(searchQuery);
-    } else if (searchQuery === '') {
-      setSearchQuery('');
-      // loadData();
-    }
-  }, [searchQuery]);
+  }, [listFollowers, searchQuery]);
 
   const getFollowersCount = (did: string): number => {
     let val: number = 0;
@@ -153,21 +139,13 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
   return (
     <>
       {/* <FollowersHeader followersCount={followersCount} /> */}
-      {/* <IonContent className={style['followingsearch']}>
-        <IonSearchbar
-          value={searchQuery}
-          onIonChange={(e) => search(e)}
-          placeholder='Search people, pages by name or DID'
-          className={style['search-input']}
-        ></IonSearchbar>
-      </IonContent> */}
       <IonGrid>
         <IonRow>
           {followersCount === 0 ? (
             <NoConnectionComp pageType="followers" />
           ) : (
             <PeopleCard
-              people={filteredUsers.get_users_by_dids}
+              people={filteredUsers}
               following={
                 listFollowing && listFollowing.get_following
                   ? listFollowing.get_following

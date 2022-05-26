@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import AboutSpace from './About';
 import Category from './Category';
 import Collection from './Collection';
-import { getNFTCollectionAssets } from '../../fetchapi';
+import { SpaceCategory } from 'src/services/space.service';
 
 const Container = styled.div`
   position: relative;
@@ -18,19 +18,13 @@ const Highlight: React.FC<IProps> = ({
   space,
   viewAllNFTCollectionAssets
 }: IProps) => {
-  const [assets, setAssets] = useState([]);
-  useEffect(() => {
-    (async () => {
-      if (space && space.guid) {
-        const { data }: any = await getNFTCollectionAssets(space.guid, 0, 9);
-        setAssets(data.assets);
-      }
-    })();
-  }, [space]);
+  const isNFTSpace = space?.category === SpaceCategory.NFT;
   return (
     <Container>
       {space.publicFields.includes('about') && <AboutSpace space={space} />}
-      <Collection assets={assets} viewAll={viewAllNFTCollectionAssets} />
+      {isNFTSpace && (
+        <Collection space={space} viewAll={viewAllNFTCollectionAssets} />
+      )}
       <Category space={space} />
     </Container>
   );

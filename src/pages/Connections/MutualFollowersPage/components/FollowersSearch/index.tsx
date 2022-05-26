@@ -8,26 +8,28 @@ import { SearchService } from 'src/services/search.service';
 import NoConnectionComp from 'src/components/NoConnection';
 
 import FollowersHeader from '../FollowersHeader';
+import { FollowService } from 'src/services/follow.service';
 
 export interface IUserResponse {
-  _status?: string;
-  get_users_by_dids: {
-    items: {
-      did: string;
-      name: string;
-      avatar?: string;
-      hiveHost: string;
-    }[];
-  };
+  items: {
+    did: string;
+    name: string;
+    avatar?: string;
+    hiveHost: string;
+  }[];
 }
 interface Props {
   userSession: ISessionItem;
+  searchQuery: string;
 }
 
 // const FollowersSearch: React.FC = () => {
-const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
+const FollowersSearch: React.FC<Props> = ({
+  userSession,
+  searchQuery
+}: Props) => {
   const [filteredUsers, setFilteredUsers] = useState<IUserResponse>({
-    get_users_by_dids: { items: [] }
+    items: []
   });
 
   const [listFollowers, setListFollowers] = useState<IFollowerItem[]>([]);
@@ -36,7 +38,6 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
   const [mutualFollowerDids, setMutualFollowerDids] = useState<string[]>([]);
 
   const [followersCount, setFollowersCount] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('');
 
   // ID text strings within Elastos DID is an ID Sidechain address encoded
   // using Bitcoin-style Base58 and starting with the letter "i",
@@ -87,7 +88,12 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
   useEffect(() => {
     (async () => {
       setFollowersCount(mutualFollowerDids.length);
-
+      const fUsers = await FollowService.invokeSearch(
+        mutualFollowerDids,
+        searchQuery,
+        200,
+        1
+      );
       let searchServiceLocal: SearchService;
       try {
         searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
@@ -96,48 +102,26 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
           200,
           0
         );
-        setFilteredUsers(listUsers.response);
+        setFilteredUsers({ items: fUsers });
       } catch (e) {
-        setFilteredUsers({ get_users_by_dids: { items: [] } });
+        setFilteredUsers({ items: [] });
         alertError(null, 'Could not load users');
         return;
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mutualFollowerDids]);
-
-  const invokeSearch = async (searchQuery: string) => {
-    // let listUsers: any = await searchService.getUsers(searchQuery, 200, 0);
-    // setFilteredUsers(listUsers.response);
-  };
-
-  useEffect(() => {
-    if (searchQuery !== '' && searchQuery.length > 2) {
-      invokeSearch(searchQuery);
-    } else if (searchQuery === '') {
-      setSearchQuery('');
-      // loadData();
-    }
-  }, [searchQuery]);
+  }, [mutualFollowerDids, searchQuery]);
 
   return (
     <>
       {/* <FollowersHeader followersCount={followersCount} /> */}
-      {/* <IonContent className={style['followingsearch']}>
-        <IonSearchbar
-          value={searchQuery}
-          onIonChange={(e) => search(e)}
-          placeholder='Search people, pages by name or DID'
-          className={style['search-input']}
-        ></IonSearchbar>
-      </IonContent> */}
       <IonGrid>
         <IonRow>
           {followersCount === 0 ? (
             <NoConnectionComp pageType="mutuals" />
           ) : (
             <PeopleCard
-              people={filteredUsers.get_users_by_dids}
+              people={filteredUsers}
               following={{ items: listFollowing }}
               searchKeyword={searchQuery}
               isSearchKeywordDID={isDID(searchQuery)}

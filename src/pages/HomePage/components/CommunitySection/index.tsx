@@ -61,7 +61,7 @@ const CommunitySection: React.FC<Props> = ({ refProp, windowDimensions }) => {
 
   const filteredSpaces = useMemo(() => {
     if (selectedCategory === 'all') {
-      return spaces;
+      return spaces.filter(v => v.category !== 'Personal Group');
     }
     return spaces.filter(v => v.category === selectedCategory);
   }, [spaces, selectedCategory]);
@@ -140,7 +140,7 @@ const CommunitySection: React.FC<Props> = ({ refProp, windowDimensions }) => {
 
           <SpaceListView
             spaces={filteredSpaces}
-            explore={false}
+            explore={true}
             isVisiblePageCount={false}
             pageCount={9}
           />

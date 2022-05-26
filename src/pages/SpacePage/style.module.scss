@@ -1,11 +1,12 @@
+/** All your component stuyles */
 .searchcomponent {
   position: relative;
-  height: 50px;
-  margin-top: 15px;
+  height: 5em;
 
   .search-input {
-    width: 100%;
+    width: 50%;
     height: 100%;
+    margin-left: 1em;
     border: none;
     --box-shadow: none;
     padding: 0;
@@ -19,6 +20,10 @@
     text-align: left;
     color: #16192c;
     --placeholder-color: #b5b5bd;
+
+    @media (max-width: 575.98px) {
+      width: 92%;
+    }
 
     input {
       box-shadow: none;
@@ -36,13 +41,4 @@
       color: #16192c;
     }
   }
-}
-
-.scrollableContent {
-  margin-top: 20px;
-  height: 220px;
-  width: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  display: block;
 }
