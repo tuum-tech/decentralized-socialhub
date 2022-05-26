@@ -44,6 +44,7 @@ const AboutCard: React.FC<IProps> = ({
   return (
     <>
       <Card
+        template={template}
         title="About"
         description={about}
         action={

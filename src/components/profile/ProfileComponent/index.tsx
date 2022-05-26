@@ -140,7 +140,7 @@ const ProfileComponent: React.FC<Props> = ({
                         <div ref={aboutRef}>
                           {publicFields.includes('about') && (
                             <AboutCard
-                              template={publicUser.pageTemplate}
+                              template={template}
                               aboutText={publicUserProfile.basicDTO.about}
                               mode="read"
                             />
