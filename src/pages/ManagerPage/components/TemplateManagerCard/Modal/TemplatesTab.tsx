@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { IonSearchbar } from '@ionic/react';
 import styled from 'styled-components';
+import { down } from 'styled-breakpoints';
 
-import { SearchComponent } from 'src/elements/inputs/SearchInput';
+import SearchInput from 'src/elements/inputs/SearchInput';
 import { showNotify } from 'src/utils/notify';
 import { DefaultButton } from 'src/elements-v2/buttons';
 
@@ -10,6 +10,7 @@ import cryptoImg from '../../../../../assets/templates/crypto.png';
 import educationImg from '../../../../../assets/templates/education.png';
 import gamerImg from '../../../../../assets/templates/gamer.png';
 import soccerImg from '../../../../../assets/templates/soccer.png';
+import comingImg from '../../../../../assets/templates/coming.png';
 
 export const getTemplateImg = (t: string) => {
   if (t === 'crypto') {
@@ -21,29 +22,38 @@ export const getTemplateImg = (t: string) => {
   if (t === 'gamer') {
     return gamerImg;
   }
-  return soccerImg;
+  if (t === 'soccer') {
+    return soccerImg;
+  }
+  return comingImg;
 };
 
 export const Content = styled.div`
+  width: 100%;
   padding: 0px;
   display: inline-grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: auto auto;
+  gap: 16px;
+  ${down('sm')} {
+    grid-template-columns: 100%;
+  }
 `;
 
 export const TemplateCard = styled.div`
   background: #ffffff;
-  margin: 8px;
 
   box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24),
     0px 3px 8px -1px rgba(50, 50, 71, 0.05);
   border-radius: 16px;
 
   display: flex;
+  flex: 1;
   padding: 30px 20px;
   align-items: center;
   justify-content: space-between;
 
   .left {
+    flex: 0.7;
     .title {
       font-weight: bold;
       font-size: 18px;
@@ -65,6 +75,7 @@ export const TemplateCard = styled.div`
     }
   }
   .right {
+    flex: 0.3;
     img {
       display: block;
     }
@@ -121,29 +132,42 @@ const TemplatesTab = ({
 
   return (
     <div>
-      <SearchComponent>
-        <IonSearchbar
-          value={searchQuery}
-          onIonChange={e => setSearchQuery(e.detail.value!)}
-          placeholder="Search people, pages by name or DID"
-        ></IonSearchbar>
-      </SearchComponent>
+      <SearchInput
+        value={searchQuery}
+        onIonChange={e => setSearchQuery(e.detail.value!)}
+        placeholder="Search people, pages by name or DID"
+      ></SearchInput>
       <Content>
         {filteredTemplates.map((t: Template) => (
           <TemplateCard key={t.value}>
             <div className="left">
               <p className="title">{t.title}</p>
               <p className="text">{t.intro}</p>
-              <DefaultButton
-                size="small"
-                style={{ minWidth: 100 }}
-                variant="outlined"
-                btnColor="primary-gradient"
-                textType="gradient"
-                onClick={() => handleClick(t)}
-              >
-                {myTemplates.includes(t.value) ? '-Remove' : '+Add'}
-              </DefaultButton>
+              {myTemplates.includes(t.value) ? (
+                <DefaultButton
+                  size="small"
+                  style={{ minWidth: 100 }}
+                  variant="outlined"
+                  btnColor="primary-gradient"
+                  textType="gradient"
+                  onClick={() => handleClick(t)}
+                >
+                  -Remove
+                </DefaultButton>
+              ) : (
+                t.value !== 'coming' && (
+                  <DefaultButton
+                    size="small"
+                    style={{ minWidth: 100 }}
+                    variant="contained"
+                    btnColor="secondary-gradient"
+                    textType="gradient"
+                    onClick={() => handleClick(t)}
+                  >
+                    +Add
+                  </DefaultButton>
+                )
+              )}
             </div>
             <div className="right">
               <img src={getTemplateImg(t.value)} alt={t.value} />

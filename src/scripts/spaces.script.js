@@ -29,7 +29,7 @@ let run = async () => {
           category: space.category,
           owner: space.owner,
           meta: space.meta,
-          tags: [...new Set(saved.tags.concat(space.tags))],
+          tags: [...new Set(saved.tags.concat(space.tags || []))],
           followers: [...new Set(saved.followers.concat(space.followers))],
           socialLinks: saved.socialLinks || {}
         };

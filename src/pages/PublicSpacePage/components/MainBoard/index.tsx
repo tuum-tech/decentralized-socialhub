@@ -57,12 +57,12 @@ const MainBoard: React.FC<IProps> = ({
           {active === 'chat' ? (
             <TabLabel>
               Chat
-              <img src={icon_lock_color} />
+              <img src={icon_lock_color} alt="icon_lock_color" />
             </TabLabel>
           ) : (
             <IonLabel className="tab-label">
               Chat
-              <img src={icon_lock_gray} />
+              <img src={icon_lock_gray} alt="icon_lock_gray" />
             </IonLabel>
           )}
         </IonItem>
@@ -87,12 +87,12 @@ const MainBoard: React.FC<IProps> = ({
           {active === 'community' ? (
             <TabLabel>
               Community
-              <img src={icon_lock_color} />
+              <img src={icon_lock_color} alt="icon_lock_color" />
             </TabLabel>
           ) : (
             <IonLabel className="tab-label">
               Community
-              <img src={icon_lock_gray} />
+              <img src={icon_lock_gray} alt="icon_lock_gray" />
             </IonLabel>
           )}
         </IonItem>
@@ -103,12 +103,12 @@ const MainBoard: React.FC<IProps> = ({
           {active === 'members' ? (
             <TabLabel>
               Member Access
-              <img src={icon_lock_color} />
+              <img src={icon_lock_color} alt="icon_lock_color" />
             </TabLabel>
           ) : (
             <IonLabel className="tab-label">
               Member Access
-              <img src={icon_lock_gray} />
+              <img src={icon_lock_gray} alt="icon_lock_gray" />
             </IonLabel>
           )}
         </IonItem>

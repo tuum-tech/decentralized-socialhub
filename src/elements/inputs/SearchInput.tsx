@@ -1,42 +1,17 @@
-import { IonContent } from '@ionic/react';
+import { IonSearchbar } from '@ionic/react';
 import styled from 'styled-components';
 
-export const SearchComponent = styled(IonContent)`
-  position: relative;
-  height: 5em;
+const SearchInput = styled(IonSearchbar)`
+  padding-left: 0;
+  padding-right: 0;
+  margin-bottom: 8px;
 
-  .search-input {
-    width: 50%;
-    height: 100%;
-    margin-left: 1em;
-    border: none;
-    --box-shadow: none;
-    padding: 0;
-    border-radius: 9px;
-    --placeholder-font-style: 'SF Pro Display';
-    font-family: 'SF Pro Display';
-    font-size: 15px;
-    font-weight: 500;
-    line-height: 1;
-    letter-spacing: normal;
-    text-align: left;
-    color: #16192c;
-    --placeholder-color: #b5b5bd;
-
-    input {
-      box-shadow: none;
-      background: #edf2f7;
-      border: 1px solid #edf2f7;
-      border-radius: 9px;
-
-      &:focus {
-        background: #fff;
-        border: 1px solid #ececec;
-      }
-    }
-
-    .active {
-      color: #16192c;
-    }
+  input.searchbar-input {
+    background: #edf2f7;
+    box-shadow: 0px 1px 2px rgba(50, 50, 71, 0.08),
+      0px 0px 1px rgba(50, 50, 71, 0.2);
+    border-radius: 6px;
   }
 `;
+
+export default SearchInput;

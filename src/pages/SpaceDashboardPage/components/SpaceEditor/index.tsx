@@ -77,6 +77,11 @@ const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
     dispatch(updateSpace(_spaceProfile, false));
     setSpaceProfile(_spaceProfile);
   };
+  const onUpdatePublicFields = async (fields: string[]) => {
+    const _spaceProfile = { ...spaceProfile, publicFields: fields };
+    dispatch(updateSpace(_spaceProfile, false));
+    setSpaceProfile(_spaceProfile);
+  }
   const onRemoveSpace = async () => {
     const result = window.confirm(
       'This will remove all the contents about this space from your user vault. Are you sure?'
@@ -102,7 +107,7 @@ const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
               exploreAll={() => {}}
             />
           )}
-          <PublicFields sessionItem={userInfo} profile={spaceProfile} />
+          <PublicFields sessionItem={userInfo} profile={spaceProfile} update={onUpdatePublicFields} />
         </IonCol>
         <IonCol sizeMd="8" sizeSm="12">
           <SpaceCoverPhoto space={spaceProfile} onUpload={onUploadCoverPhoto} />
@@ -120,12 +125,8 @@ const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
           ) : (
             ''
           )}
-          {spaceProfile.category !== SpaceCategory.Personal && (
-            <SocialLinks space={spaceProfile} mode="edit" />
-          )}
-          {spaceProfile.category !== SpaceCategory.Personal && (
-            <Category profile={spaceProfile} update={onUpdateCategory} />
-          )}
+          <SocialLinks space={spaceProfile} mode="edit" />
+          <Category profile={spaceProfile} update={onUpdateCategory} />
           <Admins profile={spaceProfile} />
           {spaceProfile.category === SpaceCategory.Personal && (
             <DeleteSpace profile={spaceProfile} removeSpace={onRemoveSpace} />
