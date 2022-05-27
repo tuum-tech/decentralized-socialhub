@@ -306,7 +306,7 @@ export class SpaceService {
         if (appHiveClient) {
           await appHiveClient.Scripting.RunScript({
             name: 'remove_space',
-            params: { name: space.name, owner: session.did },
+            params: space,
             context: {
               target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
               target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
