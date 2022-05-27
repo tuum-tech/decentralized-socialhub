@@ -24,7 +24,7 @@ const Gamer: React.FC<IProps> = ({
   return (
     <HeaderContainer className="ion-no-padding">
       <HeaderImg bgImg={getCoverPhoto(publicUser)} />
-      <HeaderContent>
+      <HeaderContent background="#111123">
         <div className="content">
           <Avatar did={publicUser.did} />
           <div className="name">

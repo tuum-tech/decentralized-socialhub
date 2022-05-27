@@ -23,7 +23,7 @@ const Education: React.FC<IProps> = ({
 }: IProps) => {
   return (
     <HeaderContainer className="ion-no-padding">
-      <HeaderContent>
+      <HeaderContent background="#000000">
         <div className="content">
           <Avatar did={publicUser.did} />
           <div className="name">

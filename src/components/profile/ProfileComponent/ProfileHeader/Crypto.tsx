@@ -21,14 +21,14 @@ export const HeaderContainer = styled.div`
   }
 `;
 
-export const HeaderContent = styled.div`
+export const HeaderContent = styled.div<{ background: string }>`
   width: 50%;
   ${down('sm')} {
     width: 100%;
     order: 1;
     border-radius: 20px;
   }
-  background-color: #141419;
+  background-color: ${props => props.background};
   display: flex;
   align-items: flex-start;
   flex-direction: column;
@@ -99,7 +99,7 @@ const Crypto: React.FC<IProps> = ({
 }: IProps) => {
   return (
     <HeaderContainer className="ion-no-padding">
-      <HeaderContent>
+      <HeaderContent background="#141419">
         <div className="content">
           <Avatar did={publicUser.did} />
           <div className="name">

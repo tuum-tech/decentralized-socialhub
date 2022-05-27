@@ -18,7 +18,6 @@ import {
 import VerificationBadge from '../../../VerificatioBadge';
 
 const Container = styled(HeaderContainer)`
-  background-color: #4c6fff;
   span {
     color: white;
   }
@@ -31,7 +30,7 @@ const Soccer: React.FC<IProps> = ({
 }: IProps) => {
   return (
     <Container className="ion-no-padding">
-      <HeaderContent>
+      <HeaderContent background="#4C6FFF">
         <div className="content">
           <Avatar did={publicUser.did} />
           <div className="name">
