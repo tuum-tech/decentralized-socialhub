@@ -166,6 +166,20 @@
     }
   },
   {
+    "sid": 13,
+    "name": "Yeah! BIRDIE!",
+    "category": "NFT Collection",
+    "owner": [
+      "did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c",
+      "did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"
+    ],
+    "meta": {
+      "network": "Elastos Smart Contract Chain",
+      "address": "0xd5aFf849495487e3c405c9fcA1b878bDd72B9e97",
+      "collectionSlug": "Yeah! BIRDIE!"
+    }
+  },
+  {
     "sid": 102,
     "name": "LFC Heroes Club",
     "category": "NFT Collection",
