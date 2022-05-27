@@ -13,6 +13,7 @@ import { getItemsFromData } from 'src/utils/script';
 import { timeSince } from 'src/utils/time';
 import style from './style.module.scss';
 import { DefaultButton } from 'src/elements-v2/buttons';
+import RingIcon from 'src/assets/icon/ring.svg';
 
 export const SpaceAvatar = styled.div`
   width: 44px;
@@ -146,7 +147,8 @@ const UserRows: React.FC<Props> = ({
           btnColor="primary-gradient"
           className={style['button']}
         >
-          <IonLabel className={style['tab-label']}>Send Reminder</IonLabel>
+          <img src={RingIcon} alt="ownership" />
+          <IonLabel className={style['tab-label']}> Send Reminder</IonLabel>
         </DefaultButton>
         <div style={{ margin: '0 0 0 auto' }}>
           {loading && (
