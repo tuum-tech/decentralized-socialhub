@@ -48,6 +48,7 @@ const BasicCard: React.FC<IProps> = ({
 
   return (
     <Card
+      template="default"
       title="Basic Information"
       action={
         <DefaultButton

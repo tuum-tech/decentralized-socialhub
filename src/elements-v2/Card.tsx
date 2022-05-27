@@ -1,29 +1,33 @@
 import { IonCol, IonRow } from '@ionic/react';
 import React from 'react';
 import styled from 'styled-components';
+import { getThemeData } from 'src/utils/template';
 
-export const CardTitle = styled.div<{ color: string }>`
-  color: ${props => props.color};
+export const CardTitle = styled.div<ThemeProps>`
+  color: ${({ template }: ThemeProps) =>
+    getThemeData(template, 'card', 'cardTitle')};
   font-size: 18px;
   font-weight: bold;
   line-height: normal;
   margin-bottom: 10px;
 `;
 
-export const CardDescription = styled.p<{ color: string }>`
+export const CardDescription = styled.p<ThemeProps>`
   margin-top: 5px;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
   line-height: 23px;
-  color: ${props => props.color};
+  color: ${({ template }: ThemeProps) =>
+    getThemeData(template, 'card', 'cardText')};
   margin-bottom: 15px;
 `;
 
-export const CardContainer = styled.div<{ background: string }>`
-  background: #ffffff;
-  box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24),
-    0px 3px 8px -1px rgba(50, 50, 71, 0.05);
+export const CardContainer = styled.div<ThemeProps>`
+  background-color: ${({ template }: ThemeProps) =>
+    getThemeData(template, 'card', 'backgroundColor')};
+  box-shadow: ${({ template }: ThemeProps) =>
+    getThemeData(template, 'card', 'cardShadow')};
   border-radius: 16px;
   margin-bottom: 15px;
 `;
@@ -42,6 +46,7 @@ export const CardRight = styled.div<React.CSSProperties>`
 `;
 
 interface IProps {
+  template: string;
   title: string;
   description?: string;
   action?: React.ReactNode;
@@ -54,29 +59,25 @@ interface IProps {
 }
 
 const Card: React.FC<IProps> = ({
+  template,
   title,
   description,
   action = null,
   right = null,
   rightFlex = 0.5,
-  background = 'white',
-  titleColor = '#27272E',
-  descriptionColor = '#425466',
   children
 }: IProps) => {
   return (
-    <CardContainer background={background}>
+    <CardContainer template={template}>
       <CardBody flex={1 - rightFlex}>
-        <CardTitle color={titleColor}>
+        <CardTitle template={template}>
           <IonRow>
             <IonCol style={{ paddingLeft: 0 }}>{title}</IonCol>
             <IonCol size="auto">{action}</IonCol>
           </IonRow>
         </CardTitle>
         {description && (
-          <CardDescription color={descriptionColor}>
-            {description}
-          </CardDescription>
+          <CardDescription template={template}>{description}</CardDescription>
         )}
         {children}
       </CardBody>

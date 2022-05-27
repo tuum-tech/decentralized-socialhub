@@ -30,7 +30,7 @@ export const CardOverview = styled(IonCard)<ThemeProps>`
     getThemeData(template, 'card', 'backgroundColor')};
 
   box-shadow: ${({ template }: ThemeProps) =>
-    getThemeData(template, 'card', 'cardShawdow')};
+    getThemeData(template, 'card', 'cardShadow')};
 
   border-radius: 16px;
   padding: 26px 20px 30px 20px;

@@ -239,6 +239,7 @@ const EducationCard: React.FC<IEducationProps> = ({
   return (
     <>
       <Card
+        template={template}
         title="Education"
         action={
           !isEditable ? (

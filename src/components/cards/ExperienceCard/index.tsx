@@ -235,6 +235,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   return (
     <>
       <Card
+        template={template}
         title="Experience"
         action={
           !isEditable ? (

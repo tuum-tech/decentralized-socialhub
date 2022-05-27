@@ -56,6 +56,7 @@ const PublicFields: React.FC<IProps> = ({ sessionItem, profile, update }: IProps
   return (
     <>
       <Card
+        template="default"
         title="Privacy Settings"
         description="Set visibility of sections"
         action={
