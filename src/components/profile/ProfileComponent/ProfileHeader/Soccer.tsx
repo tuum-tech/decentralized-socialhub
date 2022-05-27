@@ -13,7 +13,8 @@ import {
   HeaderContainer,
   HeaderImg,
   Buttons,
-  IProps
+  IProps,
+  Info
 } from './Crypto';
 import VerificationBadge from '../../../VerificatioBadge';
 
@@ -33,22 +34,24 @@ const Soccer: React.FC<IProps> = ({
       <HeaderContent background="#4C6FFF">
         <div className="content">
           <Avatar did={publicUser.did} />
-          <div className="name">
-            <p>{publicUser.name}</p>
-            {publicUserProfile.name &&
-              publicUserProfile.name.verifiers &&
-              publicUserProfile.name.verifiers.length > 0 && (
-                <VerificationBadge
-                  users={publicUserProfile.name.verifiers}
-                  userSession={publicUser}
-                />
-              )}
-          </div>
-          <DidSnippet
-            did={publicUser.did}
-            dateJoined={publicUser.timestamp}
-            color="white"
-          />
+          <Info>
+            <div className="name">
+              <p>{publicUser.name}</p>
+              {publicUserProfile.name &&
+                publicUserProfile.name.verifiers &&
+                publicUserProfile.name.verifiers.length > 0 && (
+                  <VerificationBadge
+                    users={publicUserProfile.name.verifiers}
+                    userSession={publicUser}
+                  />
+                )}
+            </div>
+            <DidSnippet
+              did={publicUser.did}
+              dateJoined={publicUser.timestamp}
+              color="white"
+            />
+          </Info>
           <Buttons>
             {signedUser.did === '' ? (
               <Link to="/sign-in">
