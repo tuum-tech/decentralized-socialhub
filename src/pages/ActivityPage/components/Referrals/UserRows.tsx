@@ -130,7 +130,8 @@ const UserRows: React.FC<Props> = ({
             </IonRow>
           </p>
         </div>
-        <DefaultButton
+        {/* TODO */}
+        {/* <DefaultButton
           variant="outlined"
           size="large"
           btnColor="primary-gradient"
@@ -139,7 +140,7 @@ const UserRows: React.FC<Props> = ({
         >
           <img src={RingIcon} alt="ownership" />
           <IonLabel className={style['tab-label']}> Send Reminder</IonLabel>
-        </DefaultButton>
+        </DefaultButton> */}
         <div style={{ margin: '0 0 0 auto' }}>
           {loading && (
             <SmallLightButton>
