@@ -258,10 +258,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
         okText={mode === MODE.ADD ? 'Save' : 'Update'}
         isOpen={isEditing}
         onOk={handleSave}
-        onCancel={() => {
-          setMode(MODE.NONE);
-          setIsEditing(false);
-        }}
+        onClose={handleCancel}
         autoWidth
       >
         <ExperienceCardEdit

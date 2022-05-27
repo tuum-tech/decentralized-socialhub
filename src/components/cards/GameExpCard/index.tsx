@@ -1,21 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { IonButton, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { IonCol } from '@ionic/react';
 import { Guid } from 'guid-typescript';
 
 import GameExpItem from './Item';
 
-import {
-  CardOverview,
-  Divider,
-  LinkStyleSpan,
-  MyModal,
-  ModalFooter,
-  MODE,
-  CardHeaderContent,
-  CardContentContainer
-} from '../common';
+import { Divider, LinkStyleSpan, MODE } from '../common';
 import GameExpCardEdit from './Edit';
 import ProgressBar from 'src/elements/ProgressBar';
+import Card from 'src/elements-v2/Card';
+import Modal from 'src/elements-v2/Modal';
 
 interface IGameExpProps {
   gameExpDTO: GameExpDTO;
@@ -50,6 +43,13 @@ const GameExpCard: React.FC<IGameExpProps> = ({
 }: IGameExpProps) => {
   const [currentGameExpDTO, setCurrentGameExpDTO] = useState(gameExpDTO);
   const [gameExpVerifiedPercent, setGameExpVerifiedPercent] = useState(0);
+
+  const sortedGameExpItems = useMemo(() => {
+    return [...currentGameExpDTO.items].sort(
+      (a: any, b: any) =>
+        new Date(b.start).getTime() - new Date(a.start).getTime()
+    );
+  }, [currentGameExpDTO]);
 
   useEffect(() => {
     setCurrentGameExpDTO(gameExpDTO);
@@ -121,7 +121,16 @@ const GameExpCard: React.FC<IGameExpProps> = ({
     setIsEditing(false);
   };
 
-  const cancel = () => {
+  const handleSave = () => {
+    if (validate(editedItem)) {
+      saveChanges(editedItem);
+      setMode(MODE.NONE);
+    } else {
+      setMode(MODE.ERROR);
+    }
+  };
+
+  const handleCancel = () => {
     setMode(MODE.NONE);
     setIsEditing(false);
   };
@@ -157,108 +166,66 @@ const GameExpCard: React.FC<IGameExpProps> = ({
     <>
       {gameExpDTO.isEnabled === true ? (
         <>
-          <CardOverview template={template}>
-            <CardHeaderContent>
-              <IonGrid className="ion-no-padding">
-                <IonRow className="ion-justify-content-between ion-no-padding">
-                  <IonCol className="ion-no-padding">
-                    <IonCardTitle>
-                      Game Experience
-                      {!isEditable && !isPublicPage && (
-                        <div
-                          style={{
-                            width: '10em',
-                            float: 'right',
-                            fontSize: '0.8em'
-                          }}
-                        >
-                          <ProgressBar
-                            value={gameExpVerifiedPercent}
-                            text={'verified'}
-                          />
-                          <div
-                            style={{ float: 'right', fontSize: '0.8em' }}
-                          >{`${gameExpVerifiedPercent}% ${'verified'}`}</div>
-                        </div>
-                      )}
-                    </IonCardTitle>
-                  </IonCol>
-                  {isEditable ? (
-                    <IonCol size="auto" className="ion-no-padding">
-                      <LinkStyleSpan onClick={e => addItem()}>
-                        + Add Game
-                      </LinkStyleSpan>
-                    </IonCol>
-                  ) : (
-                    ''
-                  )}
-                </IonRow>
-              </IonGrid>
-            </CardHeaderContent>
-            <CardContentContainer>
-              {currentGameExpDTO.items.sort(
-                (a: any, b: any) =>
-                  new Date(b.start).getTime() - new Date(a.start).getTime()
-              ) &&
-                currentGameExpDTO.items.map((x, i) => {
-                  return (
-                    <div key={i}>
-                      <GameExpItem
-                        gameExpItem={x}
-                        handleChange={handleChange}
-                        updateFunc={saveChanges}
-                        editFunc={editItem}
-                        index={i}
-                        removeFunc={removeItem}
-                        isEditable={isEditable}
-                        template={template}
-                        userSession={userSession}
-                      />
-                      {i < currentGameExpDTO.items.length - 1 ? (
-                        <Divider />
-                      ) : (
-                        ''
-                      )}
-                    </div>
-                  );
-                })}
-            </CardContentContainer>
-          </CardOverview>
-          <MyModal
-            onDidDismiss={() => {
-              setMode(MODE.NONE);
-              setIsEditing(false);
-            }}
+          <Card
+            title="Game Experience"
+            action={
+              !isEditable && !isPublicPage ? (
+                <div
+                  style={{
+                    width: '10em',
+                    float: 'right',
+                    fontSize: '0.8em'
+                  }}
+                >
+                  <ProgressBar
+                    value={gameExpVerifiedPercent}
+                    text={'verified'}
+                  />
+                  <div
+                    style={{ float: 'right', fontSize: '0.8em' }}
+                  >{`${gameExpVerifiedPercent}% ${'verified'}`}</div>
+                </div>
+              ) : isEditable ? (
+                <IonCol size="auto" className="ion-no-padding">
+                  <LinkStyleSpan onClick={e => addItem()}>
+                    + Add Game
+                  </LinkStyleSpan>
+                </IonCol>
+              ) : (
+                ''
+              )
+            }
+          >
+            {sortedGameExpItems.map((x, i) => (
+              <div key={i}>
+                <GameExpItem
+                  gameExpItem={x}
+                  handleChange={handleChange}
+                  updateFunc={saveChanges}
+                  editFunc={editItem}
+                  index={i}
+                  removeFunc={removeItem}
+                  isEditable={isEditable}
+                  template={template}
+                  userSession={userSession}
+                />
+                {i < currentGameExpDTO.items.length - 1 ? <Divider /> : ''}
+              </div>
+            ))}
+          </Card>
+          <Modal
+            title={mode === MODE.ADD ? 'Add new GameExp' : 'Edit GameExp'}
+            okText={mode === MODE.ADD ? 'Save' : 'Update'}
+            onOk={handleSave}
+            onClose={handleCancel}
             isOpen={isEditing}
-            cssClass="my-custom-class"
           >
             <GameExpCardEdit
               gameExpItem={editedItem}
               handleChange={handleChange}
               mode={mode}
             />
-            <ModalFooter className="ion-no-border">
-              <IonRow className="ion-justify-content-around">
-                <IonCol size="auto">
-                  <IonButton fill="outline" onClick={cancel}>
-                    Cancel
-                  </IonButton>
-                  <IonButton
-                    onClick={() => {
-                      if (validate(editedItem)) {
-                        saveChanges(editedItem);
-                        setMode(MODE.NONE);
-                      } else {
-                        setMode(MODE.ERROR);
-                      }
-                    }}
-                  >
-                    Save
-                  </IonButton>
-                </IonCol>
-              </IonRow>
-            </ModalFooter>
-          </MyModal>
+          </Modal>
         </>
       ) : (
         ''

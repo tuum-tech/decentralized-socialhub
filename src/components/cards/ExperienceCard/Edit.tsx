@@ -89,7 +89,7 @@ const ExperienceCardEdit: React.FC<Props> = ({
           </Spacer>
         </IonCol>
       </IonRow>
-      <IonRow class="ion-justify-content-start">
+      <IonRow class="ion-justify-content-start mt-3">
         <IonCol sizeXs="12" sizeSm="8">
           <StyledLabel>Description</StyledLabel>
           <MyTextarea

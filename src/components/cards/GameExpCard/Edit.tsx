@@ -1,9 +1,9 @@
 import React from 'react';
-import { IonCardTitle, IonCol, IonLabel, IonRow } from '@ionic/react';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import StarRatings from 'react-star-ratings';
 
 import SmallTextInput from '../../../elements/inputs/SmallTextInput';
-import { MODE, MyGrid, MyTextarea } from '../common';
+import { MODE, MyTextarea, StyledLabel } from '../common';
 
 export const pattern = new RegExp('^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$');
 
@@ -22,12 +22,9 @@ const GameExpCardEdit: React.FC<GameExpItemProps> = ({
     handleChange({ target: { name: 'like', value: rate } });
   };
   return (
-    <MyGrid>
-      <IonRow>
-        <IonCardTitle>GameExp</IonCardTitle>
-      </IonRow>
+    <IonGrid>
       <IonRow class="ion-justify-content-start">
-        <IonCol size="5">
+        <IonCol size="12">
           <SmallTextInput
             label="Name"
             placeholder="e.g. War craft"
@@ -38,9 +35,9 @@ const GameExpCardEdit: React.FC<GameExpItemProps> = ({
           />
         </IonCol>
       </IonRow>
-      <IonRow class="ion-justify-content-start">
-        <IonCol size="8">
-          <IonLabel>Description</IonLabel>
+      <IonRow class="ion-justify-content-start mt-3">
+        <IonCol size="12">
+          <StyledLabel>Description</StyledLabel>
           <MyTextarea
             rows={3}
             name="description"
@@ -51,7 +48,7 @@ const GameExpCardEdit: React.FC<GameExpItemProps> = ({
         </IonCol>
       </IonRow>
       <IonRow class="ion-justify-content-start">
-        <IonCol size="8">
+        <IonCol size="12">
           <StarRatings
             rating={gameExpItem.like}
             starRatedColor="orange"
@@ -64,7 +61,7 @@ const GameExpCardEdit: React.FC<GameExpItemProps> = ({
           />
         </IonCol>
       </IonRow>
-    </MyGrid>
+    </IonGrid>
   );
 };
 
