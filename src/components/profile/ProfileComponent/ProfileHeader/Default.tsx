@@ -35,7 +35,7 @@ const Buttons = styled.div`
 `;
 
 const Info = styled.div`
-  flex-grow: 1;
+  width: calc(100% - 90px);
   padding: 0 10px;
 `;
 

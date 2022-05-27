@@ -334,6 +334,7 @@ const WalletCard: React.FC<IWalletProps> = ({
   return (
     <>
       <Card
+        template={template}
         title="Wallets"
         action={
           isEditable ? (

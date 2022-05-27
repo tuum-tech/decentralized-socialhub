@@ -1,7 +1,7 @@
 import React from 'react';
-import { IonRow, IonCol } from '@ionic/react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { down } from 'styled-breakpoints';
 
 import DidSnippet from 'src/elements/DidSnippet';
 import { FollowButton } from 'src/elements/buttons';
@@ -11,14 +11,24 @@ import { getCoverPhoto } from 'src/components/cards/CoverPhoto';
 import FollowOrUnFollowButton from '../../FollowOrUnFollow';
 import VerificationBadge from '../../../VerificatioBadge';
 
-export const HeaderContainer = styled(IonRow)`
-  background-color: #141419;
+export const HeaderContainer = styled.div`
+  display: flex;
+  flex-direction: row;
   min-height: 456px;
+  ${down('sm')} {
+    flex-direction: column;
+    min-height: auto;
+  }
 `;
 
-export const HeaderContent = styled(IonCol)`
+export const HeaderContent = styled.div`
   width: 50%;
-
+  ${down('sm')} {
+    width: 100%;
+    order: 1;
+    border-radius: 20px;
+  }
+  background-color: #141419;
   display: flex;
   align-items: flex-start;
   flex-direction: column;
@@ -26,6 +36,9 @@ export const HeaderContent = styled(IonCol)`
 
   .content {
     margin: 0 50px;
+    ${down('sm')} {
+      margin: 20px 24px;
+    }
   }
 
   .name {
@@ -51,10 +64,17 @@ export const HeaderContent = styled(IonCol)`
   }
 `;
 
-export const HeaderImg = styled(IonCol)<{
+export const HeaderImg = styled.div<{
   bgImg: string;
 }>`
   width: 50%;
+  ${down('sm')} {
+    width: 100%;
+    height: 200px;
+    order: 0;
+    border-radius: 20px;
+    margin-bottom: 15px;
+  }
   background-image: url(${props => props.bgImg});
   background-size: cover;
   background-repeat: no-repeat;
