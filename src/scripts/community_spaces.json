@@ -169,6 +169,7 @@
     "sid": 13,
     "name": "Yeah! BIRDIE!",
     "category": "NFT Collection",
+    "slug": "yeah-birdie",
     "owner": [
       "did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c",
       "did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"
