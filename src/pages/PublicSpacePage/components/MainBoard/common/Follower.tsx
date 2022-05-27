@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IonRow, IonCol, IonCardTitle } from '@ionic/react';
-import { TuumTechScriptService } from 'src/services/script.service';
+import { FollowService } from 'src/services/follow.service';
 import {
   CardOverview,
   CardHeaderContent,
@@ -27,10 +27,13 @@ const Follower: React.FC<IProps> = ({
   useEffect(() => {
     (async () => {
       const dids = space.followers;
-      const followers = await TuumTechScriptService.searchUserWithDIDs(
-        dids || []
+      const _followers_ = await FollowService.invokeSearch(
+        dids || [],
+        '',
+        4,
+        1
       );
-      setFollowers(followers);
+      setFollowers(_followers_);
     })();
   }, [space]);
   return (
@@ -40,7 +43,9 @@ const Follower: React.FC<IProps> = ({
           <CardHeaderContent>
             <IonRow className="ion-justify-content-between ion-no-padding">
               <IonCol className="ion-no-padding">
-                <IonCardTitle>Followers ({followers.length})</IonCardTitle>
+                <IonCardTitle>
+                  Followers ({space.followers.length})
+                </IonCardTitle>
               </IonCol>
               <IonCol size="auto" className="ion-no-padding">
                 <LinkStyleSpan
@@ -54,7 +59,7 @@ const Follower: React.FC<IProps> = ({
             </IonRow>
           </CardHeaderContent>
           <CardContentContainer>
-            {followers.slice(0, 4).map((follower: any) => {
+            {followers.map((follower: any) => {
               return (
                 <IonRow className={style['row']} key={follower.did}>
                   <div className={style['avatar']}>
