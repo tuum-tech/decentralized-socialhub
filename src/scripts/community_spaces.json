@@ -90,7 +90,8 @@
     "meta": {
       "network": "Ethereum",
       "address": "0x495f947276749ce646f68ac8c248420045cb7b5e",
-      "slug": "CryptoHoodieMan"
+      "slug": "cryptohoodieman",
+      "isOpenseaCollection": true
     }
   },
   {
@@ -146,7 +147,8 @@
     "meta": {
       "network": "Ethereum",
       "address": "0xd22B236fad04eB97FaEE1D03415a4CeDcfCBB31D",
-      "slug": "Moonstars"
+      "slug": "moonstars",
+      "isOpenseaCollection": true
     }
   },
   {

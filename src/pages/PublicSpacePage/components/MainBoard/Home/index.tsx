@@ -42,12 +42,12 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
   );
   const hasPermissionToComment = useMemo(() => {
     if (!session || !session.did || !space) return false;
-    return space.followers.includes(session.did) || hasPermissionToPost;
+    return space?.followers?.includes(session.did) || hasPermissionToPost;
   }, [space, session, hasPermissionToPost]);
   const isAdmin =
-    space && session && session.did && space.owner.includes(session.did);
+    space && session && session.did && space?.owner?.includes(session.did);
   const handlePost = async (content: any) => {
-    const new_post = await SpaceService.post(session, space.sid, content);
+    const new_post = await SpaceService.post(session, space.guid, content);
     const _posts = [...posts];
     _posts.unshift(new_post);
     setPosts(_posts);
@@ -57,7 +57,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const fetchMorePosts = async () => {
     let _posts: any[] = await SpaceService.getPosts(
-      space.sid,
+      space.guid,
       offset,
       limit,
       isAdmin
@@ -80,7 +80,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
     (async () => {
       await fetchMorePosts();
     })();
-  }, []);
+  }, [space]);
   useEffect(() => {
     (async () => {
       if (!space || !space.guid) return;
