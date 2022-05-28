@@ -297,6 +297,7 @@ interface ISessionItem {
   timestamp: number;
   referrals?: IReferral[];
   passwordRemoved?: boolean;
+  wallets?: any;
 }
 
 interface LoginCred {

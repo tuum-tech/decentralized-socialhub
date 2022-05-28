@@ -585,6 +585,7 @@ let run = async () => {
             pageTemplate: '$params.pageTemplate',
             timestamp: '$params.timestamp',
             referrals: '$params.referrals',
+            wallets: '$params.wallets',
             passwordRemoved: true
           }
         }
@@ -624,6 +625,7 @@ let run = async () => {
               avatar: '$params.avatar',
               pageTemplate: '$params.pageTemplate',
               referrals: '$params.referrals',
+              wallets: '$params.wallets',
               passwordRemoved: true
             }
           }

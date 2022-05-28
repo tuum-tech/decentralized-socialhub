@@ -12,6 +12,8 @@ import { HiveService } from './hive.service';
 import { UserService } from './user.service';
 import { DidService } from './did.service.new';
 import { SearchService } from './search.service';
+import { DidcredsService, CredentialType } from './didcreds.service';
+import useSession from 'src/hooks/useSession';
 
 export class ProfileService {
   static didDocument: any = null;
@@ -109,6 +111,41 @@ export class ProfileService {
   }
 
   static async updatePublicFields(fields: string[], userSession: ISessionItem) {
+    let userService = new UserService(await DidService.getInstance());
+    const prevFields = await this.getPublicFields(userSession.did);
+    // Is wallet removed
+    if (prevFields.includes('wallet') && !fields.includes('wallet')) {
+      await userService.updateSession({
+        ...userSession,
+        wallets: {}
+      });
+    }
+    // Is wallet added
+    if (!prevFields.includes('wallet') && fields.includes('wallet')) {
+      let wallets: any = {};
+      const key1 = CredentialType.EIDAddress.toLowerCase();
+      const key2 = CredentialType.ESCAddress.toLowerCase();
+      const key3 = CredentialType.ETHAddress.toLowerCase();
+      const address1 = await DidcredsService.getCredentialValue(
+        userSession,
+        key1
+      );
+      const address2 = await DidcredsService.getCredentialValue(
+        userSession,
+        key2
+      );
+      const address3 = await DidcredsService.getCredentialValue(
+        userSession,
+        key3
+      );
+      if (address1) wallets[key1] = address1;
+      if (address2) wallets[key2] = address2;
+      if (address3) wallets[key3] = address3;
+      await userService.updateSession({
+        ...userSession,
+        wallets
+      });
+    }
     const hiveInstance = await HiveService.getSessionInstance(userSession);
     if (userSession && hiveInstance) {
       const res: any = await hiveInstance.Scripting.RunScript({
