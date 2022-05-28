@@ -328,6 +328,7 @@ const SocialProfilesCard: React.FC<Props> = ({
   return (
     <>
       <Card
+        template={template}
         title="Social Profiles"
         action={
           mode === 'edit' && (

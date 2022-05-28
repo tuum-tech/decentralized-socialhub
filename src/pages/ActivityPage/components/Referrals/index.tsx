@@ -1,9 +1,18 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import {
+  IonCardHeader,
+  IonText,
+  IonLabel,
+  IonSelect,
+  IonSelectOption,
+  IonSearchbar,
+  IonContent
+} from '@ionic/react';
 import styled from 'styled-components';
 
-import { ProfileService } from 'src/services/profile.service';
 import UserRows from './UserRows';
 import TopInfo from './TopInfo';
+import style from '../../style.module.scss';
 
 export const PageContainer = styled.div`
   padding: 0 20px 20px 20px;
@@ -15,6 +24,7 @@ export const PageContent = styled.div`
     0px 3px 8px -1px rgba(50, 50, 71, 0.05);
   border-radius: 16px;
   padding: 17px 20px;
+  margin-top: 38px;
 `;
 
 interface Props {
@@ -25,8 +35,8 @@ interface Props {
 const Referrals: React.FC<Props> = ({ session, referrals }: Props) => {
   const [selectedStatus, setSelectedStatus] = useState('');
   const [filteredRefersals, setFilteredReferals] = useState(referrals || []);
-  const [following, setFollowings] = useState<string[]>([]);
-
+  const [sort, setSort] = useState(-1);
+  const [searchQuery, setSearchQuery] = useState('');
   useEffect(() => {
     if (selectedStatus === '') {
       setFilteredReferals(referrals || []);
@@ -41,43 +51,36 @@ const Referrals: React.FC<Props> = ({ session, referrals }: Props) => {
     }
   }, [selectedStatus, referrals]);
 
-  const retrieveFollows = useCallback(async () => {
-    if (session && session.did && session.tutorialStep === 4) {
-      try {
-        let following = await ProfileService.getFollowings(session.did);
-        if (following) {
-          setFollowings((following.get_following.items || []).map(f => f.did));
-        }
-      } catch (e) {}
-    }
-  }, [session]);
-
-  const followClicked = async (isFollowing: boolean, did: string) => {
-    if (isFollowing) {
-      await ProfileService.addFollowing(did, session);
-    } else {
-      await ProfileService.unfollow(did, session);
-    }
-
-    await retrieveFollows();
-  };
-
-  useEffect(() => {
-    (async () => {
-      await retrieveFollows();
-    })();
-  }, [retrieveFollows, session.did]);
-
   return (
     <PageContainer>
       <TopInfo referrals={referrals || []} selectStatus={setSelectedStatus} />
-
       <PageContent>
+        <IonCardHeader className={style['card-header']}>
+          <IonContent className={style['searchcomponent']}>
+            <IonSearchbar
+              onIonChange={(e: any) => setSearchQuery(e.detail.value)}
+              placeholder="Search people, pages by name or DID"
+              className={style['search-input']}
+              value={searchQuery}
+            ></IonSearchbar>
+          </IonContent>
+          <IonText className={style['selectinput']}>
+            <IonLabel className={style['selectinput_label']}>Sort by</IonLabel>
+            <IonSelect
+              className={style['selectinput_field']}
+              placeholder="Latest"
+              onIonChange={e => setSort(e.detail.value)}
+            >
+              <IonSelectOption value={0}>Latest</IonSelectOption>
+              <IonSelectOption value={1}>Oldest</IonSelectOption>
+            </IonSelect>
+          </IonText>
+        </IonCardHeader>
         <UserRows
-          followClicked={followClicked}
           referrals={filteredRefersals}
-          following={following}
           session={session}
+          sortBy={sort}
+          searchQuery={searchQuery}
         />
       </PageContent>
     </PageContainer>

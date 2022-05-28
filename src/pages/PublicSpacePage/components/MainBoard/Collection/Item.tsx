@@ -12,7 +12,7 @@ export const CardWrapper = styled(IonCard)<ThemeProps>`
     getThemeData(template, 'card', 'backgroundColor')};
 
   box-shadow: ${({ template }: ThemeProps) =>
-    getThemeData(template, 'card', 'cardShawdow')};
+    getThemeData(template, 'card', 'cardShadow')};
 
   border-radius: 16px;
   margin: 0px;

@@ -11,19 +11,31 @@ on:
 
 jobs:
   test:
-    name: Test
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          #- macos-latest
+        node_version:
+          #- 12
+          - 14
+          #- 16
+        architecture:
+          - x64
+        # an extra windows-x86 run:
+        #include:
+        #  - os: windows-2016
+        #    node_version: 12
+        #    architecture: x86
+    name: Node ${{ matrix.node_version }} - ${{ matrix.architecture }} on ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
         with:
-          node-version: 14.19.1
-      - uses: borales/actions-yarn@v2.3.0
-        with:
-          cmd: install # will run `yarn install` command
-      #- uses: borales/actions-yarn@v2.3.0
-      #  with:
-      #    cmd: build # will run `yarn build` command
-      - uses: borales/actions-yarn@v2.3.0
-        with:
-          cmd: test # will run `yarn test` command
+          node-version: ${{ matrix.node_version }}
+          architecture: ${{ matrix.architecture }}
+          cache: yarn
+      - run: yarn install --frozen-lockfile # optional, --immutable
+      - run: yarn test

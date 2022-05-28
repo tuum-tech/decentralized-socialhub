@@ -28,6 +28,7 @@ const GridContent = styled(IonGrid)<ThemeProps>`
   width: 100%;
   min-height: 600px;
   z-index: 100;
+  padding: 0;
   background-color: ${({ template }: ThemeProps) =>
     getThemeData(template, 'gridContent', 'backgroundColor')};
 `;
@@ -45,6 +46,13 @@ const RightContent = styled.div`
   width: 360px;
   ${down('sm')} {
     width: 100%;
+  }
+`;
+
+const Container = styled.div`
+  margin-bottom: 46px;
+  ${down('sm')} {
+    margin-bottom: 16px;
   }
 `;
 
@@ -114,33 +122,29 @@ const ProfileComponent: React.FC<Props> = ({
 
   return (
     <>
-      <ProfileHeader
-        onlyText={displayText}
-        publicUser={publicUser}
-        publicUserProfile={publicUserProfile}
-        signedUser={userSession}
-      />
+      <Container>
+        <ProfileHeader
+          onlyText={displayText}
+          publicUser={publicUser}
+          publicUserProfile={publicUserProfile}
+          signedUser={userSession}
+        />
+      </Container>
 
       {!loading &&
         publicUser.did !== '' &&
         publicUserProfile.basicDTO.isEnabled === true && (
           <>
-            {template === 'default' && (
-              <PublicProfileTabs
-                template={template}
-                scrollToPosition={scrollToElement}
-              />
-            )}
             <GridContent template={template}>
               <IonRow className="ion-justify-content-center">
                 <IonCol size="12">
-                  <IonGrid>
+                  <IonGrid className="ion-no-padding">
                     <IonRow>
                       <LeftContent>
                         <div ref={aboutRef}>
                           {publicFields.includes('about') && (
                             <AboutCard
-                              template={publicUser.pageTemplate}
+                              template={template}
                               aboutText={publicUserProfile.basicDTO.about}
                               mode="read"
                             />

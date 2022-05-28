@@ -298,6 +298,8 @@ interface ISessionItem {
   referrals?: IReferral[];
   passwordRemoved?: boolean;
   wallets?: any;
+  created?: {$date: number}
+  sign_up_date?: string
 }
 
 interface LoginCred {
