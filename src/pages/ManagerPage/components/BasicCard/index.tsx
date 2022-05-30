@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { IonGrid, IonRow, IonCol } from '@ionic/react';
 import { isEqual } from 'lodash';
 import styled from 'styled-components';
@@ -32,15 +32,18 @@ const BasicCard: React.FC<IProps> = ({
   requestVerification
 }: IProps) => {
   const [currentBasicDTO, setCurrentBasicDTO] = useState(sessionItem);
-  const handleChange = (evt: any) => {
-    const value =
-      evt.target.type === 'checkbox' ? evt.target.checked : evt.target.value;
+  const handleChange = useCallback(
+    (evt: any) => {
+      const value =
+        evt.target.type === 'checkbox' ? evt.target.checked : evt.target.value;
 
-    setCurrentBasicDTO({
-      ...currentBasicDTO,
-      [evt.target.name]: value
-    });
-  };
+      setCurrentBasicDTO({
+        ...currentBasicDTO,
+        [evt.target.name]: value
+      });
+    },
+    [currentBasicDTO]
+  );
 
   useEffect(() => {
     setCurrentBasicDTO(sessionItem);

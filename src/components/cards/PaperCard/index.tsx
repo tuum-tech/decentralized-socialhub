@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { IonCol } from '@ionic/react';
 import { Guid } from 'guid-typescript';
 
@@ -77,21 +77,24 @@ const PaperCard: React.FC<IPaperProps> = ({
     }
   }, [mode]);
 
-  const handleChange = (evt: any) => {
-    let v: any;
-    if (evt.target.name === 'still') {
-      v = evt.target.checked;
-    } else {
-      v = evt.target.value;
-    }
+  const handleChange = useCallback(
+    (evt: any) => {
+      let v: any;
+      if (evt.target.name === 'still') {
+        v = evt.target.checked;
+      } else {
+        v = evt.target.value;
+      }
 
-    let item = {
-      ...editedItem,
-      [evt.target.name]: v
-    };
+      let item = {
+        ...editedItem,
+        [evt.target.name]: v
+      };
 
-    setEditedItem(item);
-  };
+      setEditedItem(item);
+    },
+    [editedItem]
+  );
 
   const validate = (item: PaperItem) => {
     if (!item.title || (!item.publish && !item.still)) return false;

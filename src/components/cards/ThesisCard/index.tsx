@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { IonCol } from '@ionic/react';
 import { Guid } from 'guid-typescript';
 
@@ -77,21 +77,24 @@ const ThesisCard: React.FC<IThesisProps> = ({
     }
   }, [mode]);
 
-  const handleChange = (evt: any) => {
-    let v: any;
-    if (evt.target.name === 'still') {
-      v = evt.target.checked;
-    } else {
-      v = evt.target.value;
-    }
+  const handleChange = useCallback(
+    (evt: any) => {
+      let v: any;
+      if (evt.target.name === 'still') {
+        v = evt.target.checked;
+      } else {
+        v = evt.target.value;
+      }
 
-    let item = {
-      ...editedItem,
-      [evt.target.name]: v
-    };
+      let item = {
+        ...editedItem,
+        [evt.target.name]: v
+      };
 
-    setEditedItem(item);
-  };
+      setEditedItem(item);
+    },
+    [editedItem]
+  );
 
   const validate = (item: ThesisItem) => {
     if (!item.title || (!item.publish && !item.still)) return false;
@@ -211,10 +214,7 @@ const ThesisCard: React.FC<IThesisProps> = ({
           }
         }}
         isOpen={isEditing}
-        onClose={() => {
-          setMode(MODE.NONE);
-          setIsEditing(false);
-        }}
+        onClose={cancel}
       >
         <ThesisEditCard
           thesisItem={editedItem}
