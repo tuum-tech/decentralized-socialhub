@@ -104,7 +104,7 @@ const Modal = forwardRef<React.ReactNode, Props>(
     return (
       <StyledModal
         isOpen={showModal}
-        onDidDismiss={() => setShowModal(false)}
+        onDidDismiss={handleClose}
         autoWidth={autoWidth}
       >
         <StyledGrid className="ion-no-padding">
