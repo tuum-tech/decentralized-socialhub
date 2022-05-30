@@ -154,7 +154,7 @@ const GameExpCard: React.FC<IGameExpProps> = ({
   const removeItem = async (index: number) => {
     let items = [...currentGameExpDTO.items];
     await removeFunc(items[index]);
-    items = items.splice(index, 1);
+    items.splice(index, 1);
     setCurrentGameExpDTO({ isEnabled: true, items: items });
   };
 

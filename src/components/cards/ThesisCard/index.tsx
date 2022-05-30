@@ -142,7 +142,7 @@ const ThesisCard: React.FC<IThesisProps> = ({
   const removeItem = async (index: number) => {
     let items = [...currentThesisDTO.items];
     await removeFunc(items[index]);
-    items = items.splice(index, 1);
+    items.splice(index, 1);
     setCurrentThesisDTO({ isEnabled: true, items: items });
   };
 

@@ -151,7 +151,7 @@ const CertificationCard: React.FC<ICertificationProps> = ({
   const removeItem = async (index: number) => {
     let items = [...currentCertificationDTO.items];
     await removeFunc(items[index]);
-    items = items.splice(index, 1);
+    items.splice(index, 1);
     setCurrentCertificationDTO({ isEnabled: true, items: items });
   };
 

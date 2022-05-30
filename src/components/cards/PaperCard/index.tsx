@@ -142,7 +142,7 @@ const PaperCard: React.FC<IPaperProps> = ({
   const removeItem = async (index: number) => {
     let items = [...currentPaperDTO.items];
     await removeFunc(items[index]);
-    items = items.splice(index, 1);
+    items.splice(index, 1);
     setCurrentPaperDTO({ isEnabled: true, items: items });
   };
 

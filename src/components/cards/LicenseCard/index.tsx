@@ -146,7 +146,7 @@ const LicenseCard: React.FC<ILicenseProps> = ({
   const removeItem = async (index: number) => {
     let items = [...currentLicenseDTO.items];
     await removeFunc(items[index]);
-    items = items.splice(index, 1);
+    items.splice(index, 1);
     setCurrentLicenseDTO({ isEnabled: true, items: items });
   };
 

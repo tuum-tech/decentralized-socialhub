@@ -145,7 +145,7 @@ const TeamCard: React.FC<ITeamProps> = ({
   const removeItem = async (index: number) => {
     let items = [...currentTeamDTO.items];
     await removeFunc(items[index]);
-    items = items.splice(index, 1);
+    items.splice(index, 1);
     setCurrentTeamDTO({ isEnabled: true, items: items });
   };
 
