@@ -1,21 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { IonButton, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { IonCol } from '@ionic/react';
 import { Guid } from 'guid-typescript';
 
 import ThesisItem from './Item';
 
-import {
-  CardOverview,
-  Divider,
-  LinkStyleSpan,
-  MyModal,
-  ModalFooter,
-  MODE,
-  CardHeaderContent,
-  CardContentContainer
-} from '../common';
-import TeamCardEdit from './Edit';
+import { Divider, LinkStyleSpan, MODE } from '../common';
+import ThesisEditCard from './Edit';
 import ProgressBar from 'src/elements/ProgressBar';
+import Card from 'src/elements-v2/Card';
+import Modal from 'src/elements-v2/Modal';
 
 interface IThesisProps {
   thesisDTO: ThesisDTO;
@@ -39,7 +32,7 @@ export const defaultThesisItem: ThesisItem = {
   verifiers: []
 };
 
-const TeamCard: React.FC<IThesisProps> = ({
+const ThesisCard: React.FC<IThesisProps> = ({
   thesisDTO,
   updateFunc,
   removeFunc,
@@ -51,6 +44,13 @@ const TeamCard: React.FC<IThesisProps> = ({
 }: IThesisProps) => {
   const [currentThesisDTO, setCurrentThesisDTO] = useState(thesisDTO);
   const [verifiedPercent, setVerifiedPercent] = useState(0);
+
+  const sortedThesisItems = useMemo(() => {
+    return [...currentThesisDTO.items].sort(
+      (a: any, b: any) =>
+        new Date(b.start).getTime() - new Date(a.start).getTime()
+    );
+  }, [currentThesisDTO]);
 
   useEffect(() => {
     setCurrentThesisDTO(thesisDTO);
@@ -152,112 +152,78 @@ const TeamCard: React.FC<IThesisProps> = ({
 
   return (
     <>
-      {thesisDTO.isEnabled === true ? (
-        <>
-          <CardOverview template={template}>
-            <CardHeaderContent>
-              <IonGrid className="ion-no-padding">
-                <IonRow className="ion-justify-content-between ion-no-padding">
-                  <IonCol className="ion-no-padding">
-                    <IonCardTitle>
-                      Thesis
-                      {!isEditable && !isPublicPage && (
-                        <div
-                          style={{
-                            width: '10em',
-                            float: 'right',
-                            fontSize: '0.8em'
-                          }}
-                        >
-                          <ProgressBar
-                            value={verifiedPercent}
-                            text={'verified'}
-                          />
-                          <div
-                            style={{ float: 'right', fontSize: '0.8em' }}
-                          >{`${verifiedPercent}% ${'verified'}`}</div>
-                        </div>
-                      )}
-                    </IonCardTitle>
-                  </IonCol>
-                  {isEditable ? (
-                    <IonCol size="auto" className="ion-no-padding">
-                      <LinkStyleSpan onClick={e => addItem()}>
-                        + Add Thesis
-                      </LinkStyleSpan>
-                    </IonCol>
-                  ) : (
-                    ''
-                  )}
-                </IonRow>
-              </IonGrid>
-            </CardHeaderContent>
-            <CardContentContainer>
-              {currentThesisDTO.items.sort(
-                (a: any, b: any) =>
-                  new Date(b.start).getTime() - new Date(a.start).getTime()
-              ) &&
-                currentThesisDTO.items.map((x, i) => {
-                  return (
-                    <div key={i}>
-                      <ThesisItem
-                        thesisItem={x}
-                        handleChange={handleChange}
-                        updateFunc={saveChanges}
-                        editFunc={editItem}
-                        index={i}
-                        removeFunc={removeItem}
-                        isEditable={isEditable}
-                        template={template}
-                        userSession={userSession}
-                      />
-                      {i < currentThesisDTO.items.length - 1 ? <Divider /> : ''}
-                    </div>
-                  );
-                })}
-            </CardContentContainer>
-          </CardOverview>
-          <MyModal
-            onDidDismiss={() => {
-              setMode(MODE.NONE);
-              setIsEditing(false);
-            }}
-            isOpen={isEditing}
-            cssClass="my-custom-class"
-          >
-            <TeamCardEdit
-              thesisItem={editedItem}
-              handleChange={handleChange}
-              mode={mode}
-            />
-            <ModalFooter className="ion-no-border">
-              <IonRow className="ion-justify-content-around">
-                <IonCol size="auto">
-                  <IonButton fill="outline" onClick={cancel}>
-                    Cancel
-                  </IonButton>
-                  <IonButton
-                    onClick={() => {
-                      if (validate(editedItem)) {
-                        saveChanges(editedItem);
-                        setMode(MODE.NONE);
-                      } else {
-                        setMode(MODE.ERROR);
-                      }
-                    }}
-                  >
-                    Save
-                  </IonButton>
-                </IonCol>
-              </IonRow>
-            </ModalFooter>
-          </MyModal>
-        </>
-      ) : (
-        ''
-      )}
+      <Card
+        template={template}
+        title="Thesis"
+        action={
+          !isEditable && !isPublicPage ? (
+            <div
+              style={{
+                width: '10em',
+                float: 'right',
+                fontSize: '0.8em'
+              }}
+            >
+              <ProgressBar value={verifiedPercent} text={'verified'} />
+              <div
+                style={{ float: 'right', fontSize: '0.8em' }}
+              >{`${verifiedPercent}% ${'verified'}`}</div>
+            </div>
+          ) : isEditable ? (
+            <IonCol size="auto" className="ion-no-padding">
+              <LinkStyleSpan onClick={e => addItem()}>
+                + Add Thesis
+              </LinkStyleSpan>
+            </IonCol>
+          ) : (
+            ''
+          )
+        }
+      >
+        {sortedThesisItems.map((x, i) => {
+          return (
+            <div key={i}>
+              <ThesisItem
+                thesisItem={x}
+                handleChange={handleChange}
+                updateFunc={saveChanges}
+                editFunc={editItem}
+                index={i}
+                removeFunc={removeItem}
+                isEditable={isEditable}
+                template={template}
+                userSession={userSession}
+              />
+              {i < sortedThesisItems.length - 1 ? <Divider /> : ''}
+            </div>
+          );
+        })}
+      </Card>
+      <Modal
+        title={mode === MODE.ADD ? 'Add new Thesis' : 'Edit Thesis'}
+        okText={mode === MODE.ADD ? 'Save' : 'Update'}
+        onOk={() => {
+          if (validate(editedItem)) {
+            saveChanges(editedItem);
+            setMode(MODE.NONE);
+          } else {
+            setMode(MODE.ERROR);
+          }
+        }}
+        isOpen={isEditing}
+        onClose={() => {
+          setMode(MODE.NONE);
+          setIsEditing(false);
+        }}
+      >
+        <ThesisEditCard
+          thesisItem={editedItem}
+          handleChange={handleChange}
+          mode={mode}
+        />
+      </Modal>
     </>
   );
 };
 
-export default TeamCard;
+export default ThesisCard;

@@ -167,6 +167,7 @@ const GameExpCard: React.FC<IGameExpProps> = ({
       {gameExpDTO.isEnabled === true ? (
         <>
           <Card
+            template={template}
             title="Game Experience"
             action={
               !isEditable && !isPublicPage ? (

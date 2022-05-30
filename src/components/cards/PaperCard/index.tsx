@@ -1,21 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { IonButton, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { IonCol } from '@ionic/react';
 import { Guid } from 'guid-typescript';
 
 import PaperItem from './Item';
 
-import {
-  CardOverview,
-  Divider,
-  LinkStyleSpan,
-  MyModal,
-  ModalFooter,
-  MODE,
-  CardHeaderContent,
-  CardContentContainer
-} from '../common';
-import TeamCardEdit from './Edit';
+import { Divider, LinkStyleSpan, MODE } from '../common';
+import PaperCardEdit from './Edit';
 import ProgressBar from 'src/elements/ProgressBar';
+import Card from 'src/elements-v2/Card';
+import Modal from 'src/elements-v2/Modal';
 
 interface IPaperProps {
   paperDTO: PaperDTO;
@@ -39,7 +32,7 @@ export const defaultPaperItem: PaperItem = {
   verifiers: []
 };
 
-const TeamCard: React.FC<IPaperProps> = ({
+const PaperCard: React.FC<IPaperProps> = ({
   paperDTO,
   updateFunc,
   removeFunc,
@@ -51,6 +44,13 @@ const TeamCard: React.FC<IPaperProps> = ({
 }: IPaperProps) => {
   const [currentPaperDTO, setCurrentPaperDTO] = useState(paperDTO);
   const [verifiedPercent, setVerifiedPercent] = useState(0);
+
+  const sortedPaperItems = useMemo(() => {
+    return [...currentPaperDTO.items].sort(
+      (a: any, b: any) =>
+        new Date(b.start).getTime() - new Date(a.start).getTime()
+    );
+  }, [currentPaperDTO]);
 
   useEffect(() => {
     setCurrentPaperDTO(paperDTO);
@@ -152,112 +152,82 @@ const TeamCard: React.FC<IPaperProps> = ({
 
   return (
     <>
-      {paperDTO.isEnabled === true ? (
-        <>
-          <CardOverview template={template}>
-            <CardHeaderContent>
-              <IonGrid className="ion-no-padding">
-                <IonRow className="ion-justify-content-between ion-no-padding">
-                  <IonCol className="ion-no-padding">
-                    <IonCardTitle>
-                      Paper
-                      {!isEditable && !isPublicPage && (
-                        <div
-                          style={{
-                            width: '10em',
-                            float: 'right',
-                            fontSize: '0.8em'
-                          }}
-                        >
-                          <ProgressBar
-                            value={verifiedPercent}
-                            text={'verified'}
-                          />
-                          <div
-                            style={{ float: 'right', fontSize: '0.8em' }}
-                          >{`${verifiedPercent}% ${'verified'}`}</div>
-                        </div>
-                      )}
-                    </IonCardTitle>
-                  </IonCol>
-                  {isEditable ? (
-                    <IonCol size="auto" className="ion-no-padding">
-                      <LinkStyleSpan onClick={e => addItem()}>
-                        + Add Paper
-                      </LinkStyleSpan>
-                    </IonCol>
-                  ) : (
-                    ''
-                  )}
-                </IonRow>
-              </IonGrid>
-            </CardHeaderContent>
-            <CardContentContainer>
-              {currentPaperDTO.items.sort(
-                (a: any, b: any) =>
-                  new Date(b.start).getTime() - new Date(a.start).getTime()
-              ) &&
-                currentPaperDTO.items.map((x, i) => {
-                  return (
-                    <div key={i}>
-                      <PaperItem
-                        paperItem={x}
-                        handleChange={handleChange}
-                        updateFunc={saveChanges}
-                        editFunc={editItem}
-                        index={i}
-                        removeFunc={removeItem}
-                        isEditable={isEditable}
-                        template={template}
-                        userSession={userSession}
-                      />
-                      {i < currentPaperDTO.items.length - 1 ? <Divider /> : ''}
-                    </div>
-                  );
-                })}
-            </CardContentContainer>
-          </CardOverview>
-          <MyModal
-            onDidDismiss={() => {
-              setMode(MODE.NONE);
-              setIsEditing(false);
-            }}
-            isOpen={isEditing}
-            cssClass="my-custom-class"
-          >
-            <TeamCardEdit
-              paperItem={editedItem}
-              handleChange={handleChange}
-              mode={mode}
-            />
-            <ModalFooter className="ion-no-border">
-              <IonRow className="ion-justify-content-around">
-                <IonCol size="auto">
-                  <IonButton fill="outline" onClick={cancel}>
-                    Cancel
-                  </IonButton>
-                  <IonButton
-                    onClick={() => {
-                      if (validate(editedItem)) {
-                        saveChanges(editedItem);
-                        setMode(MODE.NONE);
-                      } else {
-                        setMode(MODE.ERROR);
-                      }
-                    }}
-                  >
-                    Save
-                  </IonButton>
-                </IonCol>
-              </IonRow>
-            </ModalFooter>
-          </MyModal>
-        </>
-      ) : (
-        ''
-      )}
+      <Card
+        template={template}
+        title="Paper"
+        action={
+          !isEditable && !isPublicPage ? (
+            <div
+              style={{
+                width: '10em',
+                float: 'right',
+                fontSize: '0.8em'
+              }}
+            >
+              <ProgressBar value={verifiedPercent} text={'verified'} />
+              <div
+                style={{ float: 'right', fontSize: '0.8em' }}
+              >{`${verifiedPercent}% ${'verified'}`}</div>
+            </div>
+          ) : isEditable ? (
+            <IonCol size="auto" className="ion-no-padding">
+              <LinkStyleSpan onClick={e => addItem()}>
+                + Add Paper
+              </LinkStyleSpan>
+            </IonCol>
+          ) : (
+            ''
+          )
+        }
+      >
+        {currentPaperDTO.items.sort(
+          (a: any, b: any) =>
+            new Date(b.start).getTime() - new Date(a.start).getTime()
+        ) &&
+          sortedPaperItems.map((x, i) => {
+            return (
+              <div key={i}>
+                <PaperItem
+                  paperItem={x}
+                  handleChange={handleChange}
+                  updateFunc={saveChanges}
+                  editFunc={editItem}
+                  index={i}
+                  removeFunc={removeItem}
+                  isEditable={isEditable}
+                  template={template}
+                  userSession={userSession}
+                />
+                {i < sortedPaperItems.length - 1 ? <Divider /> : ''}
+              </div>
+            );
+          })}
+      </Card>
+      <Modal
+        title={mode === MODE.ADD ? 'Add new Paper' : 'Edit Paper'}
+        okText={mode === MODE.ADD ? 'Save' : 'Update'}
+        onOk={() => {
+          if (validate(editedItem)) {
+            saveChanges(editedItem);
+            setMode(MODE.NONE);
+          } else {
+            setMode(MODE.ERROR);
+          }
+        }}
+        onClose={() => {
+          setMode(MODE.NONE);
+          setIsEditing(false);
+        }}
+        isOpen={isEditing}
+      >
+        <PaperCardEdit
+          paperItem={editedItem}
+          handleChange={handleChange}
+          mode={mode}
+        />
+      </Modal>
     </>
   );
 };
 
-export default TeamCard;
+export default PaperCard;
