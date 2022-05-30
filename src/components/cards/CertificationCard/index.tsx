@@ -1,21 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { IonButton, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { IonCol } from '@ionic/react';
 import { Guid } from 'guid-typescript';
 
 import CertificationItem from './Item';
 
-import {
-  CardOverview,
-  Divider,
-  LinkStyleSpan,
-  MyModal,
-  ModalFooter,
-  MODE,
-  CardHeaderContent,
-  CardContentContainer
-} from '../common';
+import { Divider, LinkStyleSpan, MODE } from '../common';
 import CertificationCardEdit from './Edit';
 import ProgressBar from 'src/elements/ProgressBar';
+import Card from 'src/elements-v2/Card';
+import Modal from 'src/elements-v2/Modal';
 
 interface ICertificationProps {
   certificationDTO: CertificationDTO;
@@ -56,6 +49,13 @@ const CertificationCard: React.FC<ICertificationProps> = ({
     certificationVerifiedPercent,
     setCertificationVerifiedPercent
   ] = useState(0);
+
+  const sortedCertificationItems = useMemo(() => {
+    return [...currentCertificationDTO.items].sort(
+      (a: any, b: any) =>
+        new Date(b.start).getTime() - new Date(a.start).getTime()
+    );
+  }, [currentCertificationDTO]);
 
   useEffect(() => {
     setCurrentCertificationDTO(certificationDTO);
@@ -161,114 +161,82 @@ const CertificationCard: React.FC<ICertificationProps> = ({
 
   return (
     <>
-      {certificationDTO.isEnabled === true ? (
-        <>
-          <CardOverview template={template}>
-            <CardHeaderContent>
-              <IonGrid className="ion-no-padding">
-                <IonRow className="ion-justify-content-between ion-no-padding">
-                  <IonCol className="ion-no-padding">
-                    <IonCardTitle>
-                      Certification
-                      {!isEditable && !isPublicPage && (
-                        <div
-                          style={{
-                            width: '10em',
-                            float: 'right',
-                            fontSize: '0.8em'
-                          }}
-                        >
-                          <ProgressBar
-                            value={certificationVerifiedPercent}
-                            text={'verified'}
-                          />
-                          <div
-                            style={{ float: 'right', fontSize: '0.8em' }}
-                          >{`${certificationVerifiedPercent}% ${'verified'}`}</div>
-                        </div>
-                      )}
-                    </IonCardTitle>
-                  </IonCol>
-                  {isEditable ? (
-                    <IonCol size="auto" className="ion-no-padding">
-                      <LinkStyleSpan onClick={e => addItem()}>
-                        + Add Certification
-                      </LinkStyleSpan>
-                    </IonCol>
-                  ) : (
-                    ''
-                  )}
-                </IonRow>
-              </IonGrid>
-            </CardHeaderContent>
-            <CardContentContainer>
-              {currentCertificationDTO.items.sort(
-                (a: any, b: any) =>
-                  new Date(b.start).getTime() - new Date(a.start).getTime()
-              ) &&
-                currentCertificationDTO.items.map((x, i) => {
-                  return (
-                    <div key={i}>
-                      <CertificationItem
-                        certificationItem={x}
-                        handleChange={handleChange}
-                        updateFunc={saveChanges}
-                        editFunc={editItem}
-                        index={i}
-                        removeFunc={removeItem}
-                        isEditable={isEditable}
-                        template={template}
-                        userSession={userSession}
-                      />
-                      {i < currentCertificationDTO.items.length - 1 ? (
-                        <Divider />
-                      ) : (
-                        ''
-                      )}
-                    </div>
-                  );
-                })}
-            </CardContentContainer>
-          </CardOverview>
-          <MyModal
-            onDidDismiss={() => {
-              setMode(MODE.NONE);
-              setIsEditing(false);
-            }}
-            isOpen={isEditing}
-            cssClass="my-custom-class"
-          >
-            <CertificationCardEdit
-              certificationItem={editedItem}
-              handleChange={handleChange}
-              mode={mode}
-            />
-            <ModalFooter className="ion-no-border">
-              <IonRow className="ion-justify-content-around">
-                <IonCol size="auto">
-                  <IonButton fill="outline" onClick={cancel}>
-                    Cancel
-                  </IonButton>
-                  <IonButton
-                    onClick={() => {
-                      if (validate(editedItem)) {
-                        saveChanges(editedItem);
-                        setMode(MODE.NONE);
-                      } else {
-                        setMode(MODE.ERROR);
-                      }
-                    }}
-                  >
-                    Save
-                  </IonButton>
-                </IonCol>
-              </IonRow>
-            </ModalFooter>
-          </MyModal>
-        </>
-      ) : (
-        ''
-      )}
+      <Card
+        template={template}
+        title="Certification"
+        action={
+          !isEditable && !isPublicPage ? (
+            <div
+              style={{
+                width: '10em',
+                float: 'right',
+                fontSize: '0.8em'
+              }}
+            >
+              <ProgressBar
+                value={certificationVerifiedPercent}
+                text={'verified'}
+              />
+              <div
+                style={{ float: 'right', fontSize: '0.8em' }}
+              >{`${certificationVerifiedPercent}% ${'verified'}`}</div>
+            </div>
+          ) : isEditable ? (
+            <IonCol size="auto" className="ion-no-padding">
+              <LinkStyleSpan onClick={e => addItem()}>
+                + Add Certification
+              </LinkStyleSpan>
+            </IonCol>
+          ) : (
+            ''
+          )
+        }
+      >
+        {currentCertificationDTO.items.sort(
+          (a: any, b: any) =>
+            new Date(b.start).getTime() - new Date(a.start).getTime()
+        ) &&
+          sortedCertificationItems.map((x, i) => {
+            return (
+              <div key={i}>
+                <CertificationItem
+                  certificationItem={x}
+                  handleChange={handleChange}
+                  updateFunc={saveChanges}
+                  editFunc={editItem}
+                  index={i}
+                  removeFunc={removeItem}
+                  isEditable={isEditable}
+                  template={template}
+                  userSession={userSession}
+                />
+                {i < sortedCertificationItems.length - 1 ? <Divider /> : ''}
+              </div>
+            );
+          })}
+      </Card>
+      <Modal
+        title={
+          mode === MODE.ADD ? 'Add new Certification' : 'Edit Certification'
+        }
+        okText={mode === MODE.ADD ? 'Save' : 'Update'}
+        onClose={cancel}
+        onOk={() => {
+          if (validate(editedItem)) {
+            saveChanges(editedItem);
+            setMode(MODE.NONE);
+          } else {
+            setMode(MODE.ERROR);
+          }
+        }}
+        isOpen={isEditing}
+      >
+        <CertificationCardEdit
+          certificationItem={editedItem}
+          handleChange={handleChange}
+          mode={mode}
+        />
+      </Modal>
     </>
   );
 };

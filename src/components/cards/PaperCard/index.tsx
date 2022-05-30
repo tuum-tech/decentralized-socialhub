@@ -214,10 +214,7 @@ const PaperCard: React.FC<IPaperProps> = ({
             setMode(MODE.ERROR);
           }
         }}
-        onClose={() => {
-          setMode(MODE.NONE);
-          setIsEditing(false);
-        }}
+        onClose={cancel}
         isOpen={isEditing}
       >
         <PaperCardEdit
