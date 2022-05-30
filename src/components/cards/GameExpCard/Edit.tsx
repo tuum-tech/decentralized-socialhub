@@ -47,7 +47,7 @@ const GameExpCardEdit: React.FC<GameExpItemProps> = ({
           />
         </IonCol>
       </IonRow>
-      <IonRow class="ion-justify-content-start">
+      <IonRow class="ion-justify-content-start mt-3">
         <IonCol size="12">
           <StarRatings
             rating={gameExpItem.like}

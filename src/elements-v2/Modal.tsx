@@ -43,6 +43,7 @@ const Subtitle = styled.p`
 const StyledContent = styled.div`
   overflow: auto;
   max-height: calc(80vh - 140px);
+  min-height: 230px;
 `;
 
 type Props = {

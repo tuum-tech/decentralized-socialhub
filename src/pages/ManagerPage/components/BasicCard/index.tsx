@@ -74,7 +74,7 @@ const BasicCard: React.FC<IProps> = ({
           }
         >
           <IonRow class="ion-justify-content-start ion-no-padding">
-            <IonCol size="5" className="ion-no-padding">
+            <IonCol sizeXs="10" sizeSm="5" className="ion-no-padding">
               <SmallTextInput
                 disabled={sessionItem.tutorialStep !== 4}
                 label="Name"
