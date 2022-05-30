@@ -13,7 +13,6 @@ import { UserService } from './user.service';
 import { DidService } from './did.service.new';
 import { SearchService } from './search.service';
 import { DidcredsService, CredentialType } from './didcreds.service';
-import useSession from 'src/hooks/useSession';
 
 export class ProfileService {
   static didDocument: any = null;

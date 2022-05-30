@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import { useWeb3React } from '@web3-react/core';
 import Web3 from 'web3';
@@ -8,13 +8,7 @@ import { showNotify } from 'src/utils/notify';
 
 import { ManagerButton, LinkStyleSpan, ProfileItem } from '../common';
 import { verifyWalletOwner } from './function';
-import {
-  VerifiableCredential,
-  DIDDocument,
-  DID
-} from '@elastosfoundation/did-js-sdk/';
-import { useSetRecoilState, useRecoilState } from 'recoil';
-import { BadgesAtom, DIDDocumentAtom, CallbackFromAtom } from 'src/Atoms/Atoms';
+import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { ProfileService } from 'src/services/profile.service';
 import { shortenAddress } from 'src/utils/web3';
@@ -29,6 +23,7 @@ import { DidService } from 'src/services/did.service.new';
 import { VerificationService } from 'src/services/verification.service';
 import Card from 'src/elements-v2/Card';
 import Modal from 'src/elements-v2/Modal';
+import useSession from 'src/hooks/useSession';
 
 interface IWalletProps {
   setRequestEssentials: (item: boolean) => void;
@@ -44,7 +39,8 @@ const WalletCard: React.FC<IWalletProps> = ({
   userSession
 }: IWalletProps) => {
   const { account, library, activate } = useWeb3React();
-
+  const { session, setSession } = useSession();
+  const wallets = useMemo(() => session.wallets, [session]);
   ////////////////////////////// ***** ////////////////////////////////////
   const [adding, setAdding] = useState(false);
   const [selectedWalletType, setSelectedWalletType] = useState<CredentialType>(
@@ -52,8 +48,6 @@ const WalletCard: React.FC<IWalletProps> = ({
   );
   const [isManagerOpen, setIsManagerOpen] = useState(false);
   const [isRemovingVc, setIsRemovingVc] = useState(false);
-  const setBadges = useSetRecoilState(BadgesAtom);
-  const [didDocument, setDidDocument] = useRecoilState(DIDDocumentAtom);
   const walletCredentials = [
     {
       name: 'escaddress',
@@ -85,25 +79,6 @@ const WalletCard: React.FC<IWalletProps> = ({
 
     return () => clearTimeout(timer);
   }, []);
-
-  useEffect(() => {
-    (async () => {
-      let userService = new UserService(await DidService.getInstance());
-
-      let user: ISessionItem = await userService.SearchUserWithDID(
-        userSession.did
-      );
-      setBadges(user?.badges as IBadges);
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [didDocument]);
-
-  const forceUpdateDidDocument = async () => {
-    let updatedDidDocument: DIDDocument = (await DID.from(
-      userSession.did
-    )?.resolve(true)) as DIDDocument;
-    setDidDocument(updatedDidDocument.toString());
-  };
 
   const getCredentials = async (sessionItem: ISessionItem) => {
     let credsFromDidDocument: any[] = [];
@@ -145,6 +120,23 @@ const WalletCard: React.FC<IWalletProps> = ({
           await vService.importCredential(newVC);
         }
         try {
+          const publicFields = await ProfileService.getPublicFields(
+            userSession.did
+          );
+          if (publicFields.includes('wallet')) {
+            const key = newVC
+              .getId()
+              .toString()
+              .split(`${userSession.did}#`)[1];
+            const value = newVC.subject.getProperty(key);
+            let userService = new UserService(await DidService.getInstance());
+            setSession(
+              await userService.updateSession({
+                ...userSession,
+                wallets: { ...wallets, [key]: value }
+              })
+            );
+          }
           await DidcredsService.addOrUpdateCredentialToVault(
             userSession,
             newVC
@@ -204,6 +196,21 @@ const WalletCard: React.FC<IWalletProps> = ({
       await vService.deleteCredentials(vcId);
     }
     try {
+      const publicFields = await ProfileService.getPublicFields(
+        userSession.did
+      );
+      if (publicFields.includes('wallet')) {
+        const key = vcId.split(`${userSession.did}#`)[1];
+        const _wallets = { ...wallets };
+        if (_wallets && _wallets[key]) delete _wallets[key];
+        let userService = new UserService(await DidService.getInstance());
+        setSession(
+          await userService.updateSession({
+            ...userSession,
+            wallets: _wallets
+          })
+        );
+      }
       await DidcredsService.removeCredentialToVault(userSession, vcId);
     } catch (error) {
       console.error('Error getting credentials from vault', error);
