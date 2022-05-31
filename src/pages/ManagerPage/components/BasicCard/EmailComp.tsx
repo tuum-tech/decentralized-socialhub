@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { IonRow, IonCol } from '@ionic/react';
+import { down } from 'styled-breakpoints';
 
 import { Text16 } from 'src/elements/texts';
 import { SmallLightButton } from 'src/elements/buttons';
@@ -18,6 +19,9 @@ export const ActionBtnCol = styled(IonCol)`
   margin: 0 0 0 auto;
   display: flex;
   align-items: flex-end;
+  ${down('sm')} {
+    margin-top: 12px;
+  }
 `;
 
 export const Container = styled(IonRow)`
@@ -99,7 +103,7 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
   return (
     <Container class="ion-justify-content-start">
       <IonRow style={{ width: '100%', paddingLeft: 0, paddingRight: 0 }}>
-        <IonCol size="5">
+        <IonCol sizeXs="12" sizeSm="5">
           <SmallTextInput
             disabled={sessionItem.tutorialStep !== 4 || loading}
             label="Email"

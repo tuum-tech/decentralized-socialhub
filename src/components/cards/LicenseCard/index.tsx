@@ -1,21 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { IonButton, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { IonCol } from '@ionic/react';
 import { Guid } from 'guid-typescript';
 
 import LicenseItem from './Item';
 
-import {
-  CardOverview,
-  Divider,
-  LinkStyleSpan,
-  MyModal,
-  ModalFooter,
-  MODE,
-  CardHeaderContent,
-  CardContentContainer
-} from '../common';
+import { Divider, LinkStyleSpan, MODE } from '../common';
 import LicenseCardEdit from './Edit';
 import ProgressBar from 'src/elements/ProgressBar';
+import Card from 'src/elements-v2/Card';
+import Modal from 'src/elements-v2/Modal';
 
 interface ILicenseProps {
   licenseDTO: LicenseDTO;
@@ -52,6 +45,13 @@ const LicenseCard: React.FC<ILicenseProps> = ({
   const [currentLicenseDTO, setCurrentLicenseDTO] = useState(licenseDTO);
   const [licenseVerifiedPercent, setLicenseVerifiedPercent] = useState(0);
 
+  const sortedLicenseItems = useMemo(() => {
+    return [...currentLicenseDTO.items].sort(
+      (a: any, b: any) =>
+        new Date(b.start).getTime() - new Date(a.start).getTime()
+    );
+  }, [currentLicenseDTO]);
+
   useEffect(() => {
     setCurrentLicenseDTO(licenseDTO);
   }, [licenseDTO]);
@@ -79,21 +79,24 @@ const LicenseCard: React.FC<ILicenseProps> = ({
     }
   }, [mode]);
 
-  const handleChange = (evt: any) => {
-    let v: any;
-    if (evt.target.name === 'still') {
-      v = evt.target.checked;
-    } else {
-      v = evt.target.value;
-    }
+  const handleChange = useCallback(
+    (evt: any) => {
+      let v: any;
+      if (evt.target.name === 'still') {
+        v = evt.target.checked;
+      } else {
+        v = evt.target.value;
+      }
 
-    let item = {
-      ...editedItem,
-      [evt.target.name]: v
-    };
+      let item = {
+        ...editedItem,
+        [evt.target.name]: v
+      };
 
-    setEditedItem(item);
-  };
+      setEditedItem(item);
+    },
+    [editedItem]
+  );
 
   const validate = (item: LicenseItem) => {
     if (!item.title || !item.acknowledger || !item.awardDate) return false;
@@ -143,7 +146,7 @@ const LicenseCard: React.FC<ILicenseProps> = ({
   const removeItem = async (index: number) => {
     let items = [...currentLicenseDTO.items];
     await removeFunc(items[index]);
-    items = items.splice(index, 1);
+    items.splice(index, 1);
     setCurrentLicenseDTO({ isEnabled: true, items: items });
   };
 
@@ -156,114 +159,73 @@ const LicenseCard: React.FC<ILicenseProps> = ({
 
   return (
     <>
-      {licenseDTO.isEnabled === true ? (
-        <>
-          <CardOverview template={template}>
-            <CardHeaderContent>
-              <IonGrid className="ion-no-padding">
-                <IonRow className="ion-justify-content-between ion-no-padding">
-                  <IonCol className="ion-no-padding">
-                    <IonCardTitle>
-                      License
-                      {!isEditable && !isPublicPage && (
-                        <div
-                          style={{
-                            width: '10em',
-                            float: 'right',
-                            fontSize: '0.8em'
-                          }}
-                        >
-                          <ProgressBar
-                            value={licenseVerifiedPercent}
-                            text={'verified'}
-                          />
-                          <div
-                            style={{ float: 'right', fontSize: '0.8em' }}
-                          >{`${licenseVerifiedPercent}% ${'verified'}`}</div>
-                        </div>
-                      )}
-                    </IonCardTitle>
-                  </IonCol>
-                  {isEditable ? (
-                    <IonCol size="auto" className="ion-no-padding">
-                      <LinkStyleSpan onClick={e => addItem()}>
-                        + Add License
-                      </LinkStyleSpan>
-                    </IonCol>
-                  ) : (
-                    ''
-                  )}
-                </IonRow>
-              </IonGrid>
-            </CardHeaderContent>
-            <CardContentContainer>
-              {currentLicenseDTO.items.sort(
-                (a: any, b: any) =>
-                  new Date(b.start).getTime() - new Date(a.start).getTime()
-              ) &&
-                currentLicenseDTO.items.map((x, i) => {
-                  return (
-                    <div key={i}>
-                      <LicenseItem
-                        licenseItem={x}
-                        handleChange={handleChange}
-                        updateFunc={saveChanges}
-                        editFunc={editItem}
-                        index={i}
-                        removeFunc={removeItem}
-                        isEditable={isEditable}
-                        template={template}
-                        userSession={userSession}
-                      />
-                      {i < currentLicenseDTO.items.length - 1 ? (
-                        <Divider />
-                      ) : (
-                        ''
-                      )}
-                    </div>
-                  );
-                })}
-            </CardContentContainer>
-          </CardOverview>
-          <MyModal
-            onDidDismiss={() => {
-              setMode(MODE.NONE);
-              setIsEditing(false);
-            }}
-            isOpen={isEditing}
-            cssClass="my-custom-class"
-          >
-            <LicenseCardEdit
-              licenseItem={editedItem}
-              handleChange={handleChange}
-              mode={mode}
-            />
-            <ModalFooter className="ion-no-border">
-              <IonRow className="ion-justify-content-around">
-                <IonCol size="auto">
-                  <IonButton fill="outline" onClick={cancel}>
-                    Cancel
-                  </IonButton>
-                  <IonButton
-                    onClick={() => {
-                      if (validate(editedItem)) {
-                        saveChanges(editedItem);
-                        setMode(MODE.NONE);
-                      } else {
-                        setMode(MODE.ERROR);
-                      }
-                    }}
-                  >
-                    Save
-                  </IonButton>
-                </IonCol>
-              </IonRow>
-            </ModalFooter>
-          </MyModal>
-        </>
-      ) : (
-        ''
-      )}
+      <Card
+        template={template}
+        title="License"
+        action={
+          !isEditable && !isPublicPage ? (
+            <div
+              style={{
+                width: '10em',
+                float: 'right',
+                fontSize: '0.8em'
+              }}
+            >
+              <ProgressBar value={licenseVerifiedPercent} text={'verified'} />
+              <div
+                style={{ float: 'right', fontSize: '0.8em' }}
+              >{`${licenseVerifiedPercent}% ${'verified'}`}</div>
+            </div>
+          ) : isEditable ? (
+            <IonCol size="auto" className="ion-no-padding">
+              <LinkStyleSpan onClick={e => addItem()}>
+                + Add License
+              </LinkStyleSpan>
+            </IonCol>
+          ) : (
+            ''
+          )
+        }
+      >
+        {sortedLicenseItems.map((x, i) => {
+          return (
+            <div key={i}>
+              <LicenseItem
+                licenseItem={x}
+                handleChange={handleChange}
+                updateFunc={saveChanges}
+                editFunc={editItem}
+                index={i}
+                removeFunc={removeItem}
+                isEditable={isEditable}
+                template={template}
+                userSession={userSession}
+              />
+              {i < sortedLicenseItems.length - 1 ? <Divider /> : ''}
+            </div>
+          );
+        })}
+      </Card>
+      <Modal
+        title={mode === MODE.ADD ? 'Add new License' : 'Edit License'}
+        okText={mode === MODE.ADD ? 'Save' : 'Update'}
+        onOk={() => {
+          if (validate(editedItem)) {
+            saveChanges(editedItem);
+            setMode(MODE.NONE);
+          } else {
+            setMode(MODE.ERROR);
+          }
+        }}
+        onClose={cancel}
+        isOpen={isEditing}
+      >
+        <LicenseCardEdit
+          licenseItem={editedItem}
+          handleChange={handleChange}
+          mode={mode}
+        />
+      </Modal>
     </>
   );
 };

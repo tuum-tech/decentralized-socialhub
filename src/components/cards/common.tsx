@@ -344,13 +344,14 @@ export const ProfileItem = styled(IonItem)<ThemeProps>`
   }
 `;
 
-export const Spacer = styled.div`
+export const Spacer = styled.div<{ noWrap?: boolean }>`
   margin-top: 38px;
   padding: 5px;
   display: flex;
   align-items: center;
+
   ${down('sm')} {
-    margin-top: 10px;
+    margin-top: ${props => (props.noWrap ? 38 : 10)}px;
   }
 `;
 

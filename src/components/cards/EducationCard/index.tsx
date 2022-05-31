@@ -262,7 +262,7 @@ const EducationCard: React.FC<IEducationProps> = ({
         okText={mode === MODE.ADD ? 'Save' : 'Update'}
         isOpen={isEditing}
         onOk={handleSave}
-        onCancel={handleCancel}
+        onClose={handleCancel}
         autoWidth
       >
         <EducationCardEdit

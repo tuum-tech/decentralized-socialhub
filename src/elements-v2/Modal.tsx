@@ -43,6 +43,7 @@ const Subtitle = styled.p`
 const StyledContent = styled.div`
   overflow: auto;
   max-height: calc(80vh - 140px);
+  min-height: 230px;
 `;
 
 type Props = {
@@ -103,7 +104,7 @@ const Modal = forwardRef<React.ReactNode, Props>(
     return (
       <StyledModal
         isOpen={showModal}
-        onDidDismiss={() => setShowModal(false)}
+        onDidDismiss={handleClose}
         autoWidth={autoWidth}
       >
         <StyledGrid className="ion-no-padding">

@@ -1,8 +1,8 @@
 import React from 'react';
-import { IonCardTitle, IonCol, IonLabel, IonRow } from '@ionic/react';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
 
 import SmallTextInput from '../../../elements/inputs/SmallTextInput';
-import { MODE, MyGrid, MyTextarea } from '../common';
+import { MODE, MyTextarea, StyledLabel } from '../common';
 
 export const pattern = new RegExp('^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$');
 
@@ -18,12 +18,9 @@ const TeamCardEdit: React.FC<LicenseItemProps> = ({
   mode
 }: LicenseItemProps) => {
   return (
-    <MyGrid>
-      <IonRow>
-        <IonCardTitle>License</IonCardTitle>
-      </IonRow>
+    <IonGrid>
       <IonRow class="ion-justify-content-start">
-        <IonCol size="5">
+        <IonCol sizeXs="12" sizeSm="8">
           <SmallTextInput
             label="Title"
             placeholder="e.g. Pari S.G"
@@ -35,7 +32,7 @@ const TeamCardEdit: React.FC<LicenseItemProps> = ({
         </IonCol>
       </IonRow>
       <IonRow class="ion-justify-content-start">
-        <IonCol size="5">
+        <IonCol sizeXs="12" sizeSm="8">
           <SmallTextInput
             label="Acknowledger"
             placeholder="e.g. Pari S.G"
@@ -47,7 +44,7 @@ const TeamCardEdit: React.FC<LicenseItemProps> = ({
         </IonCol>
       </IonRow>
       <IonRow class="ion-justify-content-start">
-        <IonCol size="4.5">
+        <IonCol sizeXs="8" sizeSm="5">
           <SmallTextInput
             label="Award Date"
             placeholder="Start"
@@ -59,9 +56,9 @@ const TeamCardEdit: React.FC<LicenseItemProps> = ({
           />
         </IonCol>
       </IonRow>
-      <IonRow class="ion-justify-content-start">
-        <IonCol size="8">
-          <IonLabel>Description</IonLabel>
+      <IonRow class="ion-justify-content-start mt-3">
+        <IonCol size="12">
+          <StyledLabel>Description</StyledLabel>
           <MyTextarea
             rows={3}
             name="description"
@@ -71,7 +68,7 @@ const TeamCardEdit: React.FC<LicenseItemProps> = ({
           />
         </IonCol>
       </IonRow>
-    </MyGrid>
+    </IonGrid>
   );
 };
 
