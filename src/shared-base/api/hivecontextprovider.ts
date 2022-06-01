@@ -225,6 +225,10 @@ export class HiveContextProvider implements AppContextProvider {
 
     debugger;
 
+    // the storePrivateKey method should probably go to loadDid method
+
+    //----------------------
+
     try {
       const id = RootIdentity.getIdFromMnemonic(userMnemonic, password);
       let rootIdentityUser = this.store?.containsRootIdentity(id)
@@ -248,8 +252,11 @@ export class HiveContextProvider implements AppContextProvider {
       ) as DIDURL;
 
       let issuerObject = new Issuer(userDocument, didUrl);
-
-      let vcBuilder = new VerifiableCredential.Builder(issuerObject, userDid);
+      //let vcBuilder = new VerifiableCredential.Builder(issuerObject, userDid);
+      let vcBuilder = new VerifiableCredential.Builder(
+        issuerObject,
+        doc.getSubject()
+      );
 
       let vc = await vcBuilder
         .expirationDate(this.getExpirationDate())
