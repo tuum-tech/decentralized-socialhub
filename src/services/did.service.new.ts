@@ -156,7 +156,9 @@ export class DidService implements IDidService {
         true
       );
 
-      let did: DID = DID.from(`${process.env.REACT_APP_APPLICATION_DID}`) as DID;
+      let did: DID = DID.from(
+        `${process.env.REACT_APP_APPLICATION_DID}`
+      ) as DID;
       rootIdentity.setDefaultDid(did);
       this.Store.storeRootIdentity(rootIdentity);
     } else {
@@ -192,7 +194,7 @@ export class DidService implements IDidService {
   ): Promise<void> {
     let storePassw = process.env.REACT_APP_APPLICATION_STORE_PASS as string;
 
-    let path =  HDKey.DERIVE_PATH_PREFIX + index;
+    let path = HDKey.DERIVE_PATH_PREFIX + index;
     let key = HDKey.newWithMnemonic(mnemonics, password).deriveWithPath(path);
 
     this.Store.storePrivateKey(id as DIDURL, key.serialize(), storePassw);
@@ -466,13 +468,9 @@ export class DidService implements IDidService {
     let userDocument: DIDDocument = await this.Store.loadDid(userDid);
     let rootId: RootIdentity = await this.Store.loadRootIdentity();
 
-
     // the storePrivateKey method should probably go to loadDid method
-    let id: DIDURL = DIDURL.from('#primary', userDid) as DIDURL;
-    await this.storePrivatekey(id, userMnemonic, password, rootId.getIndex());
-
-    let id2: DIDURL = DIDURL.from('#primary', appDid) as DIDURL;
-    await this.storePrivatekey(id2, userMnemonic, password, rootId.getIndex());
+    let id: DIDURL = DIDURL.from('#primary', appDid) as DIDURL;
+    await this.storePrivatekey(id, appMnemonic, password, rootId.getIndex());
 
     let issuerObject = new Issuer(userDocument, id);
     let vcBuilder = new VerifiableCredential.Builder(issuerObject, appDid);

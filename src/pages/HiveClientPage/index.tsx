@@ -8,8 +8,13 @@ import { createStructuredSelector } from 'reselect';
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import SignedPublicPageHeader from 'src/components/layouts/SignedPublicPageHeader';
-import { HiveClient } from 'src/shared-base/api/hiveclient';
+import {
+  HiveClient,
+  HiveClientParameters
+} from 'src/shared-base/api/hiveclient';
 import { HiveService } from 'src/services/hive.service';
+import { AppVaultScripts } from 'src/scripts/appvault.scriptsV2';
+import { AppContextParameters } from '@elastosfoundation/hive-js-sdk';
 
 const HiveClientPage = () => {
   const [ret, setRet] = useState('');
@@ -17,20 +22,36 @@ const HiveClientPage = () => {
   useEffect(() => {
     (async () => {
       debugger;
-      let hiveClient = (await HiveService.getApplicationHiveClient()) as HiveClient;
+      // let tuumVaultHiveClient = (await HiveService.getApplicationHiveClient()) as HiveClient;
+      // let appVaultscripts = new AppVaultScripts();
+      // await appVaultscripts.Execute(tuumVaultHiveClient);
+
+      const userParameters: HiveClientParameters = {
+        hiveHost: process.env.REACT_APP_HIVE_HOST as string,
+        resolverUrl: process.env.REACT_APP_HIVE_RESOLVER_URL as string,
+        resolverCache: process.env.REACT_APP_HIVE_CACHE_DIR as string,
+        context: {
+          storePath: process.env.REACT_APP_APPLICATION_STORE_PATH,
+          appDID: process.env.REACT_APP_APPLICATION_DID,
+          appMnemonics: process.env.REACT_APP_APPLICATION_MNEMONICS,
+          appPhrasePass: process.env.REACT_APP_APPLICATION_PASSPHRASE,
+          appStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS,
+          userDID: 'did:elastos:iWqo4UfANavywAdSeHEtZMERNrjPsZdDrY',
+          userMnemonics:
+            'off blue outside have farm torch sail image screen odor secret true',
+          userPhrasePass: 'password',
+          userStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS
+        } as AppContextParameters
+      };
 
       debugger;
-      
-      let vaultInfo = await hiveClient.VaultSubscription.subscribe();
-      await hiveClient.Database.createCollection('test7');
-
-      // setResp(resp as string);
-      debugger;
+      let userHiveClient = await HiveClient.createInstance(userParameters);
+      let vaultInfo = await userHiveClient.VaultSubscription.subscribe();
+      userHiveClient.Database.createCollection('user collection');
     })();
   }, []);
 
-  //return <>{JSON.stringify(resp)}</>;
-  return <>teste</>;
+  return <>{resp}</>;
 };
 
 export default HiveClientPage;

@@ -50,7 +50,7 @@ export const appParameters: HiveClientParameters = {
     appPhrasePass: process.env.REACT_APP_APPLICATION_PASSPHRASE,
     appStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS,
     userDID: process.env.REACT_APP_APPLICATION_DID,
-    userMnemonics: process.env.REACT_APP_APPLICATION_MNEMONICS, //
+    userMnemonics: process.env.REACT_APP_APPLICATION_MNEMONICS,
     userPhrasePass: process.env.REACT_APP_APPLICATION_PASSPHRASE,
     userStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS
   } as AppContextParameters

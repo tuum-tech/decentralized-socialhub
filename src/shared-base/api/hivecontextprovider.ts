@@ -22,6 +22,7 @@ import { DidService } from 'src/services/did.service.new';
 //import { HiveContextProviderException } from '../exceptions';
 import { DID as CNDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { Logger } from '../logger';
+import { UserDocumentNotPublishedException } from '../exceptions';
 
 export class HiveContextProvider implements AppContextProvider {
   private static LOG = new Logger('HiveContextProvider');
@@ -56,15 +57,15 @@ export class HiveContextProvider implements AppContextProvider {
     );
     HiveContextProvider.LOG.debug('Init app private identity');
 
-    // if (this.contextParameters.userMnemonics !== '') {
-    //   this.userRootId = await this.initPrivateIdentity(
-    //     this.contextParameters.userMnemonics,
-    //     this.contextParameters.userDID,
-    //     this.contextParameters.userPhrasePass,
-    //     this.contextParameters.userStorePass
-    //   );
-    //   await this.initDid(this.userRootId);
-    // }
+    if (this.contextParameters.userMnemonics !== '') {
+      this.userRootId = await this.initPrivateIdentity(
+        this.contextParameters.userMnemonics,
+        this.contextParameters.userDID,
+        this.contextParameters.userPhrasePass,
+        this.contextParameters.userStorePass
+      );
+      await this.initDid(this.userRootId);
+    }
     HiveContextProvider.LOG.debug('Init user private identity');
 
     await this.initDid(this.appRootId);
@@ -110,9 +111,14 @@ export class HiveContextProvider implements AppContextProvider {
     }
 
     await rootIdentity.synchronize();
-    rootIdentity.setDefaultDid(did);
 
-    let ind = rootIdentity.getIndex();
+    debugger;
+    did = rootIdentity.getDid(0);
+    let doc = await DID.from(did)?.resolve(true);
+    await this.store?.storeDid(doc as DIDDocument);
+
+    //let userDocument = await this.store?.loadDid(did);
+
     //this.store!.storeRootIdentity(rootIdentity, storePass);
     return rootIdentity;
   }
@@ -216,58 +222,66 @@ export class HiveContextProvider implements AppContextProvider {
     HiveContextProvider.LOG.trace(
       'generateVerifiablePresentationFromUserMnemonics'
     );
-    let didService = await DidService.getInstance();
-    let appMnemonic = process.env.REACT_APP_APPLICATION_MNEMONICS as string;
-    let appDid = await didService.loadDid(
-      appMnemonic,
-      process.env.REACT_APP_APPLICATION_PASSPHRASE as string
-    );
-    let userDid = await didService.loadDid(userMnemonic, password);
 
-    let userDocument: DIDDocument = await this.store!.loadDid(userDid);
+    debugger;
 
-    let rootId = (await this.store?.loadRootIdentity()) as RootIdentity;
-    let defaultDID = rootId?.getDefaultDid();
+    try {
+      const id = RootIdentity.getIdFromMnemonic(userMnemonic, password);
+      let rootIdentityUser = this.store?.containsRootIdentity(id)
+        ? await this.store?.loadRootIdentity(id)
+        : RootIdentity.createFromMnemonic(
+            userMnemonic,
+            password,
+            this.store as DIDStore,
+            process.env.REACT_APP_APPLICATION_STORE_PASS as string
+          );
 
-    // the storePrivateKey method should probably go to loadDid method
-    let id: DIDURL = DIDURL.from('#primary', userDid) as DIDURL;
-    await didService.storePrivatekey(
-      id,
-      userMnemonic,
-      password,
-      rootId.getIndex()
-    );
+      let userDid = rootIdentityUser.getDid(0);
+      let userDoc = await DID.from(userDid)?.resolve(true);
+      await this.store?.storeDid(userDoc as DIDDocument);
 
-    let id2: DIDURL = DIDURL.from('#primary', appDid) as DIDURL;
-    await didService.storePrivatekey(
-      id2,
-      userMnemonic,
-      password,
-      rootId.getIndex()
-    );
+      let userDocument = (await this.store?.loadDid(userDid)) as DIDDocument;
+      let doc = await this.getAppDocument();
+      let didUrl: DIDURL = DIDURL.from(
+        '#primary',
+        userDocument.getSubject()
+      ) as DIDURL;
 
-    let issuerObject = new Issuer(userDocument, id);
+      let issuerObject = new Issuer(userDocument, didUrl);
 
-    let vcBuilder = new VerifiableCredential.Builder(issuerObject, appDid);
-    let vc = await vcBuilder
-      .expirationDate(this.getExpirationDate())
-      .type('AppIdCredential')
-      .property('appDid', appDid.toString())
-      .property('appInstanceDid', appDid.toString())
-      .id(DIDURL.from('#app-id-credential', appDid) as DIDURL)
-      .seal(process.env.REACT_APP_APPLICATION_STORE_PASS as string); // and we sign so it creates a Proof with method and signature
+      let vcBuilder = new VerifiableCredential.Builder(issuerObject, userDid);
 
-    this.store!.storeCredential(vc);
+      let vc = await vcBuilder
+        .expirationDate(this.getExpirationDate())
+        .type('AppIdCredential')
+        .property('appDid', doc.getSubject().toString())
+        .property('appInstanceDid', doc.getSubject().toString())
+        .id(
+          DIDURL.from(
+            '#app-id-credential',
+            doc.getSubject().toString()
+          ) as DIDURL
+        )
+        .seal(process.env.REACT_APP_APPLICATION_STORE_PASS as string); // and we sign so it creates a Proof with method and signature
 
-    let vpb = await VerifiablePresentation.createFor(appDid, null, this.store!);
-    let vp = await vpb
-      .realm(issuer)
-      .nonce(nonce)
-      .credentials(vc)
-      .seal(process.env.REACT_APP_APPLICATION_STORE_PASS as string);
+      this.store?.storeCredential(vc);
 
-    console.log('vp: ' + vp.toString(true));
-    return vp;
+      let vpb = await VerifiablePresentation.createFor(
+        doc.getSubject(),
+        null,
+        this.store as DIDStore
+      );
+      let vp = await vpb
+        .realm(issuer)
+        .nonce(nonce)
+        .credentials(vc)
+        .seal(process.env.REACT_APP_APPLICATION_STORE_PASS as string);
+
+      console.log('vp: ' + vp.toString(true));
+      return vp;
+    } catch (e) {
+      HiveContextProvider.LOG.debug('Error generating presentation {}', e);
+    }
   }
 
   // Copied from did.service.new.ts
@@ -323,6 +337,35 @@ export class HiveContextProvider implements AppContextProvider {
       return document;
     } else {
       return await this.store!.loadDid(this.contextParameters.appDID);
+      //let did1 = await this.store!.loadDid(this.contextParameters.appDID);
+      //HiveContextProvider.testStore = await DIDStore.open("test");
+      // let store =       HiveContextProvider.testStore;
+      // let did2 = await store.loadDid(this.contextParameters.appDID);
+
+      // let didtest: DID | null;
+      // if (did2 == null) {
+
+      //   const id = RootIdentity.getIdFromMnemonic(this.contextParameters.appMnemonics, this.contextParameters.appPhrasePass);
+      //   let rootIdentityTest = store.containsRootIdentity(id) ?
+      //     await store.loadRootIdentity(id) :
+      //     RootIdentity.createFromMnemonic(this.contextParameters.appMnemonics, this.contextParameters.appPhrasePass, store, "test");
+
+      //   const synced = await rootIdentityTest.synchronizeIndex(0);
+      //   //DIDEntity.LOG.info(`${this.name}: identity synchronized result: ${synced}`);
+      //   didtest = rootIdentityTest.getDid(0);
+      //   let docTest = await didtest.resolve(true);
+      //   await store.storeDid(docTest as DIDDocument);
+
+      //   return await store.loadDid(didtest);
+
+      //   // debugger;
+      //   // let doc = await DID.from(this.contextParameters.appDID)?.resolve(true) as DIDDocument;
+      //   // await store.storeDid(docTest);
+      // }
+      //   debugger;
+      //   return await store.loadDid(DID.from("") as DID);
+      //let did3 = await store.loadDid(didD);
+      //return did3;
     }
   }
 
