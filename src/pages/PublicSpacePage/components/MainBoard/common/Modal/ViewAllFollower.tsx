@@ -9,6 +9,7 @@ import modal_style from './style.module.scss';
 import common_style from '../style.module.scss';
 import { getDIDString } from 'src/utils/did';
 import Modal from 'src/elements-v2/Modal';
+import { TuumTechScriptService } from 'src/services/script.service';
 
 interface Props {
   space: any;
@@ -20,6 +21,7 @@ const ViewAllFollower = ({ space, isOpen, onClose }: Props) => {
   const style = { ...modal_style, ...common_style };
   const dids = space.followers || [];
   const [followers, setFollowers] = useState<any[]>([]);
+  const [totalCount, setTotalCount] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [searchStr, setSearchStr] = useState('');
   const [pageNum, setPageNum] = useState(1);
@@ -52,11 +54,15 @@ const ViewAllFollower = ({ space, isOpen, onClose }: Props) => {
     (async () => {
       await fetchMoreData();
     })();
-  }, []);
+    (async () => {
+      const _followers_ = await TuumTechScriptService.searchUserWithDIDs(dids);
+      setTotalCount(_followers_.length);
+    })();
+  }, [space]);
 
   return (
     <Modal
-      title={`Followers (${dids.length})`}
+      title={`Followers (${totalCount})`}
       isOpen={isOpen}
       onClose={onClose}
       noButton

@@ -12,6 +12,7 @@ import Avatar from 'src/components/Avatar';
 import ViewAllFollower from './Modal/ViewAllFollower';
 import style from './style.module.scss';
 import { getDIDString } from 'src/utils/did';
+import { TuumTechScriptService } from 'src/services/script.service';
 
 interface IProps {
   template?: string;
@@ -26,11 +27,11 @@ const Follower: React.FC<IProps> = ({
   const [followers, setFollowers] = useState([]);
   useEffect(() => {
     (async () => {
-      const dids = space.followers;
+      const dids = space.followers || [];
       const _followers_ = await FollowService.invokeSearch(
-        dids || [],
+        dids,
         '',
-        4,
+        dids.length,
         1
       );
       setFollowers(_followers_);
@@ -44,7 +45,7 @@ const Follower: React.FC<IProps> = ({
             <IonRow className="ion-justify-content-between ion-no-padding">
               <IonCol className="ion-no-padding">
                 <IonCardTitle>
-                  Followers ({space.followers.length})
+                  Followers ({followers.length})
                 </IonCardTitle>
               </IonCol>
               <IonCol size="auto" className="ion-no-padding">
@@ -59,7 +60,7 @@ const Follower: React.FC<IProps> = ({
             </IonRow>
           </CardHeaderContent>
           <CardContentContainer>
-            {followers.map((follower: any) => {
+            {followers.slice(0, 4).map((follower: any) => {
               return (
                 <IonRow className={style['row']} key={follower.did}>
                   <div className={style['avatar']}>
