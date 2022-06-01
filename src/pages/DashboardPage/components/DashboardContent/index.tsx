@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IonList, IonLabel, IonItem } from '@ionic/react';
+import { IonList, IonLabel } from '@ionic/react';
 
 import { TabsContainer } from 'src/components/profile/ProfileComponent/PublicProfileTabs';
 import DashboardHome from './Home';
@@ -7,6 +7,18 @@ import DashboardHome from './Home';
 import DashboardBadges from './Badges';
 import SyncBar from 'src/components/SyncBar';
 import styled from 'styled-components';
+import { TabItem } from 'src/elements-v2/tabs';
+
+const SyncDiv = styled.div`
+  margin-left: 25px;
+  margin-top: 15px;
+  margin-right: 25px;
+`;
+
+const TabList = styled(IonList)`
+  background: none;
+  padding-left: 20px;
+`;
 
 interface Props {
   onTutorialStart: () => void;
@@ -15,12 +27,6 @@ interface Props {
   followingDids: string[];
   mutualDids: string[];
 }
-
-const SyncDiv = styled.div`
-  margin-left: 25px;
-  margin-top: 15px;
-  margin-right: 25px;
-`;
 
 const DashboardContent: React.FC<Props> = ({
   onTutorialStart,
@@ -32,26 +38,23 @@ const DashboardContent: React.FC<Props> = ({
   const [active, setActive] = useState('home');
   return (
     <TabsContainer template="default">
-      <IonList>
-        <IonItem
-          className={(active === 'home' ? 'tab-active' : '') + ' tab-item'}
-          onClick={() => setActive('home')}
-        >
-          <IonLabel className="tab-label">Home</IonLabel>
-        </IonItem>
-        {/* <IonItem
-          className={(active === 'status' ? 'tab-active' : '') + ' tab-item'}
+      <TabList>
+        <TabItem active={active === 'home'} onClick={() => setActive('home')}>
+          <IonLabel>Home</IonLabel>
+        </TabItem>
+        {/* <TabItem
+          active={active === 'status'}
           onClick={() => setActive('status')}
         >
-          <IonLabel className="tab-label">Status</IonLabel>
-        </IonItem> */}
-        <IonItem
-          className={(active === 'badges' ? 'tab-active' : '') + ' tab-item'}
+          <IonLabel>Status</IonLabel>
+        </TabItem> */}
+        <TabItem
+          active={active === 'badges'}
           onClick={() => setActive('badges')}
         >
-          <IonLabel className="tab-label">Badges</IonLabel>
-        </IonItem>
-      </IonList>
+          <IonLabel>Badges</IonLabel>
+        </TabItem>
+      </TabList>
 
       {active === 'home' && (
         <>
