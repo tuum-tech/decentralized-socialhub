@@ -18,6 +18,8 @@ import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { ProfileService } from 'src/services/profile.service';
 
 import TutorialComponent from './components/Tutorial';
+import NewRelease from './components/NewRelease';
+
 import DashboardContent from './components/DashboardContent';
 import OnBoarding from './components/OnBoarding';
 import DashboardHeader from './components/DashboardHeader';
@@ -41,12 +43,22 @@ const TutorialModal = styled(IonModal)`
   --box-shadow: none !important;
 `;
 
+const ReleaseModal = styled(IonModal)`
+  --border-radius: 16px;
+  --min-height: 538px;
+  --max-width: 541px;
+  width: 100% !important;
+  --background: transparent !important;
+  --box-shadow: none !important;
+`;
+
 const DashboardPage: React.FC = () => {
   const { session, setSession } = useSession();
 
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');
+  const [showReleaseModal, setShowReleaseModal] = useState(false);
   const isSmUp = useBreakpoint(up('sm'));
 
   const [didDocument, setDidDocument] = useRecoilState(DIDDocumentAtom);
@@ -69,6 +81,12 @@ const DashboardPage: React.FC = () => {
       await refreshStatus();
     }, 5000);
   };
+
+  useEffect(() => {
+    if (!session.onLatestVersion) {
+      setShowReleaseModal(true);
+    }
+  }, [session]);
 
   useEffect(() => {
     (async () => {
@@ -302,7 +320,6 @@ const DashboardPage: React.FC = () => {
               publishStatus={publishStatus}
             />
           )}
-
           <DashboardContent
             onTutorialStart={() => {
               setShowTutorial(true);
@@ -324,6 +341,17 @@ const DashboardPage: React.FC = () => {
               }}
             />
           </TutorialModal>
+          <ReleaseModal
+            isOpen={showReleaseModal}
+            backdropDismiss={false}
+            cssClass={style['tutorialpage']}
+          >
+            <NewRelease
+              onClose={() => {
+                setShowReleaseModal(false);
+              }}
+            />
+          </ReleaseModal>
         </React.Fragment>
       )}
     </MainLayout>

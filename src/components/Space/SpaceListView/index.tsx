@@ -62,7 +62,6 @@ const SpaceListView: React.FC<Props> = ({
   };
 
   const filteredSpaces = useMemo(() => {
-    console.log('spaces====>', spaces);
     if (searchQuery) {
       return spaces.filter(
         v =>

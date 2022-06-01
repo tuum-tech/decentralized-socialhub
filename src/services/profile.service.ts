@@ -408,6 +408,23 @@ export class ProfileService {
     }
   }
 
+  static async updateVersion(basicDTO: BasicDTO, session: ISessionItem) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'update_basic_profile',
+        context: {
+          target_did: session.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: basicDTO
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Latest version checked', 'success');
+      }
+    }
+  }
+
   static async updateExperienceProfile(
     experienceItem: ExperienceItem,
     session: ISessionItem,
