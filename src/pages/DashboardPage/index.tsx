@@ -13,17 +13,19 @@ import { ExporeTime } from './constants';
 
 import { FollowService } from 'src/services/follow.service';
 import { UserService } from 'src/services/user.service';
+import { ProfileService } from 'src/services/profile.service';
 import { AssistService, RequestStatus } from 'src/services/assist.service';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
-import { ProfileService } from 'src/services/profile.service';
+import OnBoarding from 'src/components/OnBoarding';
+// import OnBoarding from './components/OnBoarding';
 
 import TutorialComponent from './components/Tutorial';
 import NewRelease from './components/NewRelease';
 
 import DashboardContent from './components/DashboardContent';
-import OnBoarding from './components/OnBoarding';
+
 import DashboardHeader from './components/DashboardHeader';
-import { DidDocumentService } from 'src/services/diddocument.service';
+
 import { DidService } from 'src/services/did.service.new';
 import { DIDDocument, DID } from '@elastosfoundation/did-js-sdk/';
 import { useRecoilState, useSetRecoilState } from 'recoil';
@@ -308,30 +310,32 @@ const DashboardPage: React.FC = () => {
 
   if (session.tutorialStep < 4 && onBoardVisible) {
     return (
-      <OnBoarding
-        completed={async (startTutorial: boolean) => {
-          let newSession = {
-            ...session,
-            onBoardingCompleted: true
-          };
+      <OnBoarding sessionItem={session} />
 
-          let userService = new UserService(await DidService.getInstance());
-          setSession(await userService.updateSession(newSession));
+      // <OnBoarding
+      //   completed={async (startTutorial: boolean) => {
+      //     let newSession = {
+      //       ...session,
+      //       onBoardingCompleted: true
+      //     };
 
-          setOnBoardVisible(false);
-          if (!willExpire) {
-            setWillExpire(true);
-            setTimeout(() => {
-              UserService.logout();
-            }, ExporeTime);
-          }
-          if (startTutorial) {
-            setShowTutorial(true);
-          }
-        }}
-        sessionItem={session}
-        publishStatus={publishStatus}
-      />
+      //     let userService = new UserService(await DidService.getInstance());
+      //     setSession(await userService.updateSession(newSession));
+
+      //     setOnBoardVisible(false);
+      //     if (!willExpire) {
+      //       setWillExpire(true);
+      //       setTimeout(() => {
+      //         UserService.logout();
+      //       }, ExporeTime);
+      //     }
+      //     if (startTutorial) {
+      //       setShowTutorial(true);
+      //     }
+      //   }}
+      //   sessionItem={session}
+      //   publishStatus={publishStatus}
+      // />
     );
   }
 

@@ -4,7 +4,7 @@ import { IonProgressBar } from '@ionic/react';
 
 import logo from 'src/assets/new/logo.svg';
 
-const LoadingContainer = styled.div`
+export const LoadingContainer = styled.div`
   background: linear-gradient(252.79deg, #f4eeff -20.69%, #ffffff 151.16%);
   backdrop-filter: blur(10px);
 
@@ -20,7 +20,7 @@ const LoadingContainer = styled.div`
   justify-content: center;
 `;
 
-const Content = styled.div`
+export const Content = styled.div`
   .progress-bar-indeterminate {
     height: 8px;
     border-radius: 4px;
