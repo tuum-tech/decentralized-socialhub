@@ -1,10 +1,10 @@
 import React from 'react';
-import { IonList, IonLabel, IonItem } from '@ionic/react';
+import { IonList, IonLabel } from '@ionic/react';
 import styled from 'styled-components';
 
 import { TabsContainer } from 'src/components/profile/ProfileComponent/PublicProfileTabs';
-import style from '../style.module.scss';
 import { DefaultButton } from 'src/elements-v2/buttons';
+import { TabItem } from 'src/elements-v2/tabs';
 
 export const Header = styled.div`
   width: 100%;
@@ -77,33 +77,24 @@ const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
 }) => {
   return (
     <ActivityPageHeaderContainer>
-      <IonList>
-        <IonItem
-          className={
-            (active === 'timeline' ? style['tab-active'] : '') + ' tab-item'
-          }
+      <IonList className="pl-4">
+        <TabItem
+          active={active === 'timeline'}
           onClick={() => setActive('timeline')}
         >
-          <IonLabel className={style['tab-label']}>Timeline</IonLabel>
-        </IonItem>
-        <IonItem
-          className={
-            (active === 'myrequests' ? style['tab-active'] : '') + ' tab-item'
-          }
+          <IonLabel>Timeline</IonLabel>
+        </TabItem>
+        <TabItem
+          active={active === 'myrequests'}
           onClick={() => setActive('myrequests')}
         >
-          <IonLabel className={style['tab-label']}>My Requests</IonLabel>
-        </IonItem>
-        <IonItem
-          className={
-            (active === 'verificationrequests' ? style['tab-active'] : '') +
-            ' tab-item'
-          }
+          <IonLabel>My Requests</IonLabel>
+        </TabItem>
+        <TabItem
+          active={active === 'verificationrequests'}
           onClick={() => setActive('verificationrequests')}
         >
-          <IonLabel className={style['tab-label']}>
-            Verification Requests
-          </IonLabel>
+          <IonLabel>Verification Requests</IonLabel>
           {verificationRequests > 0 && (
             <DefaultButton
               variant="contained"
@@ -119,15 +110,13 @@ const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
               {verificationRequests}
             </DefaultButton>
           )}
-        </IonItem>
+        </TabItem>
 
-        <IonItem
-          className={
-            (active === 'referrals' ? style['tab-active'] : '') + ' tab-item'
-          }
+        <TabItem
+          active={active === 'referrals'}
           onClick={() => setActive('referrals')}
         >
-          <IonLabel className={style['tab-label']}>Referrals</IonLabel>
+          <IonLabel>Referrals</IonLabel>
           {referrals > 0 && (
             <DefaultButton
               variant="contained"
@@ -143,7 +132,7 @@ const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
               {referrals}
             </DefaultButton>
           )}
-        </IonItem>
+        </TabItem>
       </IonList>
       {active === 'myrequests' && (
         <BlueButton onClick={newVerificationClicked}>
