@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { IonCardTitle, IonCol, IonRow, IonButton } from '@ionic/react';
+import { IonCol, IonRow, IonGrid } from '@ionic/react';
 import Web3 from 'web3';
 import SmallTextInput from 'src/elements/inputs/SmallTextInput';
-import { MyGrid } from 'src/components/cards/common';
 import SmallSelectInput from 'src/elements/inputs/SmallSelectInput';
-import style from './RequestCommunityForm.module.scss';
 import { categories, networks } from './constants';
+import { DefaultButton } from 'src/elements-v2/buttons';
 interface Props {
   sendRequest: (request: any) => void;
   onClose: () => void;
@@ -37,10 +36,7 @@ const RequestCommunityForm: React.FC<Props> = ({
     );
   };
   return (
-    <MyGrid className={style['form']}>
-      <IonRow className={style['form_title']}>
-        <IonCardTitle>Request for Community Space</IonCardTitle>
-      </IonRow>
+    <IonGrid>
       <IonRow class="ion-justify-content-start">
         <IonCol size="12">
           <SmallSelectInput
@@ -143,13 +139,11 @@ const RequestCommunityForm: React.FC<Props> = ({
           </IonRow>
         </>
       )}
-      <IonRow className={style['form_footer']}>
+      <IonRow className="mt-4">
         <IonCol size="12">
-          <IonButton shape="round" fill="outline" onClick={onClose}>
-            Cancel
-          </IonButton>
-          <IonButton
-            shape="round"
+          <DefaultButton
+            variant="contained"
+            btnColor="primary-gradient"
             onClick={() => {
               if (validateRequest()) {
                 const category = categories.find(
@@ -170,10 +164,10 @@ const RequestCommunityForm: React.FC<Props> = ({
             }}
           >
             Send Request
-          </IonButton>
+          </DefaultButton>
         </IonCol>
       </IonRow>
-    </MyGrid>
+    </IonGrid>
   );
 };
 

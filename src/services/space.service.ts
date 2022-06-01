@@ -96,11 +96,11 @@ export class SpaceService {
         }
       });
       spaces = getItemsFromData(response, 'get_community_spaces');
-      spaces = spaces.filter((space: any) =>
+      /*       spaces = spaces.filter((space: any) =>
         space.owner.includes(
           session && session.did ? session.did : space.owner[0]
         )
-      );
+      ); */
     }
     return spaces.map((space: any) => ({ ...space, isCommunitySpace: true }));
   }

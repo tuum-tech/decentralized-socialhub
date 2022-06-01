@@ -81,21 +81,24 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     }
   }, [mode]);
 
-  const handleChange = (evt: any) => {
-    let v: any;
-    if (evt.target.name === 'still') {
-      v = evt.target.checked;
-    } else {
-      v = evt.target.value;
-    }
+  const handleChange = useCallback(
+    (evt: any) => {
+      let v: any;
+      if (evt.target.name === 'still') {
+        v = evt.target.checked;
+      } else {
+        v = evt.target.value;
+      }
 
-    let item = {
-      ...editedItem,
-      [evt.target.name]: v
-    };
+      let item = {
+        ...editedItem,
+        [evt.target.name]: v
+      };
 
-    setEditedItem(item);
-  };
+      setEditedItem(item);
+    },
+    [editedItem]
+  );
 
   const validate = (item: ExperienceItem) => {
     if (
@@ -258,10 +261,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
         okText={mode === MODE.ADD ? 'Save' : 'Update'}
         isOpen={isEditing}
         onOk={handleSave}
-        onCancel={() => {
-          setMode(MODE.NONE);
-          setIsEditing(false);
-        }}
+        onClose={handleCancel}
         autoWidth
       >
         <ExperienceCardEdit

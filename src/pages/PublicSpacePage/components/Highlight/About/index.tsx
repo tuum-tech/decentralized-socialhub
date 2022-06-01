@@ -84,7 +84,7 @@ const AboutSpace: React.FC<IProps> = ({
         setOwners(_owners);
       }
     })();
-  }, [space]);
+  }, [ownerDids, space]);
 
   const onFollow = async () => {
     if (!auth()) return;
@@ -117,7 +117,7 @@ const AboutSpace: React.FC<IProps> = ({
             </h1>
             <h2>
               {/* <DidSnippetSvg /> DID:iYio2....LzNf &nbsp;&nbsp;&nbsp;by{' '} */}
-              by&nbsp;
+              {owners && owners.length > 0 ? 'by ' : ''}
               {owners.map((owner, index) => {
                 return (
                   <span key={index}>
