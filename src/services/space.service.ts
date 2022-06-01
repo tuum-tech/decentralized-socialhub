@@ -361,12 +361,7 @@ export class SpaceService {
       });
     }
   }
-  static async getPosts(
-    sid: string,
-    offset: number,
-    limit: number,
-    admin: boolean = false
-  ) {
+  static async getPostList(sid: string) {
     const appHiveClient = await HiveService.getAppHiveClient();
     if (!appHiveClient) return [];
     const tuumVaultRes = await appHiveClient.Scripting.RunScript({
@@ -382,6 +377,15 @@ export class SpaceService {
       }
     });
     let posts = getItemsFromData(tuumVaultRes, 'get_space_posts');
+    return posts;
+  }
+  static async getPosts(
+    sid: string,
+    offset: number,
+    limit: number,
+    admin: boolean = false
+  ) {
+    let posts: any[] = await this.getPostList(sid);
     if (!admin) {
       posts = posts.filter((post: any) => post.visible);
     }

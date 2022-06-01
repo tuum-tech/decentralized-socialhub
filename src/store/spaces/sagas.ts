@@ -14,6 +14,7 @@ import {
 import { fetchSpacesApi, removeSpaceApi, updateSpaceApi } from './fetchapi';
 import { SagaIterator } from 'redux-saga';
 import { selectSession } from '../users/selectors';
+import { SpaceService } from 'src/services/space.service';
 
 export function* getSpacesSaga(): SagaIterator {
   try {
@@ -47,6 +48,12 @@ export function* removeSpaceSaga(
   try {
     const session = yield select(selectSession);
     yield call(removeSpaceApi, session, action.payLoad.space);
+    // remove all posts created for the space
+    const posts = yield call(
+      SpaceService.getPostList,
+      action.payLoad.space.guid
+    );
+    yield all(posts.map((post: any) => call(SpaceService.removePost, post)));
     yield put(removeSpaceSuccess({ space: action.payLoad.space }));
     yield put(push('/spaces/list'));
   } catch (error) {
