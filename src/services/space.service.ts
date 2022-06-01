@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 import { getItemsFromData } from 'src/utils/script';
+import { TuumTechScriptService } from './script.service';
 import { HiveService } from './hive.service';
 import { UserService } from './user.service';
 import { DidService } from './did.service.new';
 import { showNotify } from 'src/utils/notify';
 import { Guid } from 'guid-typescript';
-import { ISession } from 'src/context/session.context';
 
 export enum SpaceCategory {
   Personal = 'Personal Group',
@@ -36,7 +36,7 @@ export class SpaceService {
     return p_spaces.concat(c_spaces);
   }
   static async getPrivateSpaces(session?: ISessionItem) {
-    let spaces = [];
+    let spaces: any[] = [];
     let groups: any = {};
     const appHiveClient = await HiveService.getAppHiveClient();
     if (appHiveClient) {
@@ -62,15 +62,15 @@ export class SpaceService {
         const items = getItemsFromData(response, 'get_all_spaces');
         groups = _.groupBy(items, 'owner');
       }
-      let didService = await DidService.getInstance();
-      let userService = new UserService(didService);
+      const users = await TuumTechScriptService.searchUserWithDIDs(
+        Object.keys(groups)
+      );
       spaces = await Promise.all(
-        Object.keys(groups).map(async (did: any) => {
-          const guids = groups[did].map((x: any) => x.guid);
-          const tuumUser = await userService.SearchUserWithDID(did);
-          const _spaces = await this.getSpaceByIds(tuumUser, guids);
+        users.map(async (user: any) => {
+          const guids = groups[user.did].map((x: any) => x.guid);
+          const _spaces = await this.getSpaceByIds(user, guids);
           return _spaces.map((x: any) => {
-            const y = groups[did].find(
+            const y = groups[user.did].find(
               (y: any) => y.guid.value === x.guid.value
             );
             return {
@@ -385,19 +385,20 @@ export class SpaceService {
     if (!admin) {
       posts = posts.filter((post: any) => post.visible);
     }
-    let didService = await DidService.getInstance();
-    let userService = new UserService(didService);
+    posts = posts.slice(offset, offset + limit);
+    const dids = posts.map((post: any) => post.creator);
+    const users = await TuumTechScriptService.searchUserWithDIDs(dids);
     return await Promise.all(
-      posts.slice(offset, offset + limit).map(async (post: any) => {
-        const tuumUser = await userService.SearchUserWithDID(post.creator);
-        const hiveInstance = await HiveService.getSessionInstance(tuumUser);
-        if (!tuumUser || !hiveInstance) {
+      users.map(async (user: any) => {
+        const hiveInstance = await HiveService.getSessionInstance(user);
+        if (!user || !hiveInstance) {
           return null;
         }
+        const post = posts.find((post: any) => post.creator === user.did);
         const userVaultRes: any = await hiveInstance.Scripting.RunScript({
           name: 'get_space_post',
           context: {
-            target_did: tuumUser.did,
+            target_did: user.did,
             target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
           },
           params: {

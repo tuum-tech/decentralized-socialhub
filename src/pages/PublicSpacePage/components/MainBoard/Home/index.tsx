@@ -21,6 +21,7 @@ import style from '../common/Modal/style.module.scss';
 import { SpaceService, SpaceCategory } from 'src/services/space.service';
 import { DidcredsService, CredentialType } from 'src/services/didcreds.service';
 import { getNFTCollectionOwners } from '../../../fetchapi';
+import { showNotify } from 'src/utils/notify';
 
 export const CustomModal = styled(IonModal)`
   --height: 400px;
@@ -47,11 +48,15 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
   const isAdmin =
     space && session && session.did && space?.owner?.includes(session.did);
   const handlePost = async (content: any) => {
+    setIsModalOpen(false);
     const new_post = await SpaceService.post(session, space.guid, content);
+    if (!new_post) {
+      showNotify('Posting failed', 'error');
+      return;
+    }
     const _posts = [...posts];
     _posts.unshift(new_post);
     setPosts(_posts);
-    setIsModalOpen(false);
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -65,9 +70,9 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
     _posts = _posts.filter(post => post);
     if (_posts.length > 0) {
       setOffset(offset + limit);
-      let __posts = posts.concat(_posts);
-      __posts.sort((a, b) => b.created.$date - a.created.$date);
-      setPosts(__posts);
+      _posts = posts.concat(_posts);
+      _posts.sort((a, b) => b.created.$date - a.created.$date);
+      setPosts(_posts);
     } else {
       setHasMore(false);
     }
@@ -150,7 +155,10 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
                     post,
                     content
                   );
-                  if (!_post) return;
+                  if (!_post) {
+                    showNotify('Commenting failed', 'error');
+                    return;
+                  }
                   const _posts = [...posts];
                   _posts.splice(index, 1, _post);
                   setPosts(_posts);

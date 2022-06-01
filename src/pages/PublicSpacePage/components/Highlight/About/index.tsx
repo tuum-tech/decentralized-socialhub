@@ -66,28 +66,23 @@ const AboutSpace: React.FC<IProps> = ({
 
   useEffect(() => {
     (async () => {
-      const owners: any[] = await TuumTechScriptService.searchUserWithDIDs(
+      let _owners: any[] = await TuumTechScriptService.searchUserWithDIDs(
         ownerDids
       );
-      let ownersDids: string[] = [];
-      owners.forEach(owner => {
-        ownersDids.push(owner.did);
-      });
-      ownerDids.forEach((did: string) => {
-        let shortenedDid = did.replace('did:elastos:', '');
-        shortenedDid = `${shortenedDid.substring(
-          0,
-          4
-        )}...${shortenedDid.substring(shortenedDid.length - 4)}`;
-        if (!ownersDids.includes(did)) {
-          owners.push({
-            link: false,
-            name: shortenedDid,
-            did: shortenedDid
-          });
-        }
-      });
-      setOwners(owners.filter(owner => owner && owner.name));
+      if (ownerDids.length > 0) {
+        _owners = ownerDids.map((did: string) => {
+          let shortenedDid = did.replace('did:elastos:', '');
+          shortenedDid = `${shortenedDid.substring(
+            0,
+            4
+          )}...${shortenedDid.substring(shortenedDid.length - 4)}`;
+          const owner = _owners.find(owner => owner.did === did);
+          return (
+            owner ?? { link: false, name: shortenedDid, did: shortenedDid }
+          );
+        });
+        setOwners(_owners);
+      }
     })();
   }, [space]);
 
