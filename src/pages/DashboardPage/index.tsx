@@ -45,12 +45,23 @@ const TutorialModal = styled(IonModal)`
 
 const ReleaseModal = styled(IonModal)`
   --border-radius: 16px;
-  --min-height: 538px;
   --max-width: 541px;
   width: 100% !important;
   --background: transparent !important;
   --box-shadow: none !important;
 `;
+// TODO
+const DATA = {
+  latestVersion: '1.5.11',
+  releaseNotes: [
+    'NFT Introduced: Now showcase your NFTs under your profile.',
+    'Automatically select a portion of your image as you hover over it and click. Saves time while making complex edits and delivers faster results.',
+    'Import playable Lottie animations right into your prototype for lifelike motion',
+    'Fine-tune the size and quality of your images with enhanced export controls.',
+    'Runs natively on Apple Silicon devices. Experience faster load times, smoother navigation, and quick rendering.'
+  ],
+  videoUpdateUrl: 'https://www.youtube.com/embed/tgbNymZ7vqY'
+};
 
 const DashboardPage: React.FC = () => {
   const { session, setSession } = useSession();
@@ -83,9 +94,12 @@ const DashboardPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!session.onLatestVersion) {
+    // TODO
+    // API call to check version
+    if (!session?.latestVersion || session.latestVersion < DATA.latestVersion) {
       setShowReleaseModal(true);
     }
+    setShowReleaseModal(true);
   }, [session]);
 
   useEffect(() => {
@@ -350,6 +364,7 @@ const DashboardPage: React.FC = () => {
               onClose={() => {
                 setShowReleaseModal(false);
               }}
+              contents={DATA}
             />
           </ReleaseModal>
         </React.Fragment>

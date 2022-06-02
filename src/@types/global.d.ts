@@ -238,7 +238,7 @@ interface BasicDTO {
   about: string;
   title: string;
   address: AddressDTO;
-  onLatestVersion?: boolean
+  latestVersion?: string
 }
 
 interface ProfileDTO {
@@ -300,7 +300,7 @@ interface ISessionItem {
   passwordRemoved?: boolean;
   created?: {$date: number}
   sign_up_date?: string
-  onLatestVersion?: boolean
+  latestVersion?: string
 }
 
 interface LoginCred {
