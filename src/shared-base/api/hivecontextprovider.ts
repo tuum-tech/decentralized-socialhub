@@ -299,18 +299,17 @@ export class HiveContextProvider implements AppContextProvider {
     HiveContextProvider.LOG.trace(
       'generateVerifiablePresentationFromEssentialCred'
     );
-    let didService = await DidService.getInstance();
-    let appMnemonic = process.env.REACT_APP_APPLICATION_MNEMONICS as string;
-    let appDidInstance = await didService.loadDid(appMnemonic);
+    let appDid = process.env.REACT_APP_APPLICATION_DID as string;
+    let appDidInstance = (await this.store?.loadDid(appDid)) as DIDDocument;
 
     let didAccess = new CNDID.DIDAccess();
     let vc: VerifiableCredential = await didAccess.generateAppIdCredential();
 
     this.store!.storeCredential(vc);
 
-    // store private key
-    let id: DIDURL = DIDURL.from('#primary', appDidInstance) as DIDURL;
-    didService.storePrivatekey(id, appMnemonic, '', 0);
+    // // store private key
+    // let id: DIDURL = DIDURL.from('#primary', appDidInstance) as DIDURL;
+    // didService.storePrivatekey(id, appMnemonic, '', 0);
     let response = await didAccess.getExistingAppInstanceDIDInfo();
     let didStore = await DIDStore.open(response.storeId);
 

@@ -231,16 +231,15 @@ export class HiveClient {
     let params = appParameters;
     params.hiveHost = hiveHost;
     let hiveClient = await HiveClient.createInstance(params);
-    //let hiveClient = await HiveClient.createAnonymousInstance(hiveHost);
 
     let serviceContext = new ServiceContext(
       hiveClient.appContext,
       hiveClient.hiveClientParameters.hiveHost
     );
 
-    //return (await serviceContext.getNodeVersion()).toString();
+    return (await serviceContext.getNodeVersion()).toString();
     // TODO: fix sdk endpoint
-    return '2.7.2';
+    //return '2.7.2';
   }
 
   private static resolveDefaultParameters(
