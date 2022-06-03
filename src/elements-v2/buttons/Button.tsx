@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { ButtonProps, DefaultButtonProps, LinkButtonProps } from './types';
 import styles from './Button.module.scss';
 import GradientText from './GradientText';
-import ButtonText from './ButtonText';
+import ColorText from './ColorText';
 import Icon from '../icons';
 
 const Spinner = styled(IonSpinner)`
@@ -126,9 +126,9 @@ function withStyle<T extends object>(
               {textType === 'gradient' && !disabled ? (
                 <GradientText fontSize={fontSize}>{children}</GradientText>
               ) : (
-                <ButtonText fontSize={fontSize} color={fontColor}>
+                <ColorText fontSize={fontSize} color={fontColor}>
                   {children}
-                </ButtonText>
+                </ColorText>
               )}
               {icon && (
                 <Icon

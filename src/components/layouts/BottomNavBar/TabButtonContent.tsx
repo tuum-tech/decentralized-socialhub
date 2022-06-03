@@ -1,7 +1,7 @@
 import React from 'react';
 import { MenuIcon } from '../LeftSideMenu/components/icons';
 import GradientText from 'src/elements-v2/buttons/GradientText';
-import ButtonText from 'src/elements-v2/buttons/ButtonText';
+import ColorText from 'src/elements-v2/buttons/ColorText';
 
 interface ITabButtonContentProps {
   name: string;
@@ -22,7 +22,7 @@ const TabButtonContent = ({
       {active ? (
         <GradientText>{children}</GradientText>
       ) : (
-        <ButtonText color="#425466">{children}</ButtonText>
+        <ColorText color="#425466">{children}</ColorText>
       )}
     </div>
   );
