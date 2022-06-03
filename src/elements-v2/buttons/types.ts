@@ -5,6 +5,7 @@ import { IonIconType } from '../icons/types';
 export interface ButtonProps {
   size?: 'default' | 'large' | 'small' | undefined;
   disabled?: boolean;
+  loading?: boolean;
   btnColor?:
     | 'primary'
     | 'secondary'
@@ -25,6 +26,7 @@ export interface ButtonProps {
 
 export interface DefaultButtonProps {
   onClick?: () => void;
+  loading?: boolean;
 }
 
 export interface LinkButtonProps {
