@@ -56,6 +56,7 @@ type Props = {
   okText?: string;
   noButton?: boolean;
   autoWidth?: boolean;
+  backdropDismiss?: boolean;
   contentStyle?: React.CSSProperties;
   titleStyle?: React.CSSProperties;
   children?: React.ReactNode;
@@ -75,6 +76,7 @@ const Modal = forwardRef<React.ReactNode, Props>(
       autoWidth = false,
       contentStyle,
       titleStyle,
+      backdropDismiss = true,
       children
     }: Props,
     ref
@@ -108,6 +110,7 @@ const Modal = forwardRef<React.ReactNode, Props>(
         isOpen={showModal}
         onDidDismiss={handleClose}
         autoWidth={autoWidth}
+        backdropDismiss={backdropDismiss}
       >
         <StyledGrid className="ion-no-padding">
           <IonRow className="ion-no-padding ion-justify-content-between">
