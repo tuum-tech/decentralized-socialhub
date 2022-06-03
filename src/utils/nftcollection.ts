@@ -11,7 +11,7 @@ export const getOwners = async (assets: any[], network: string) => {
   const owners = assets.map((asset: any) => {
     const { owner } = asset;
     const user: any = filteredUsers
-      .find((user: any) => user.wallets[key] === owner);
+      .find((user: any) => user.wallets && user.wallets[key] === owner);
     return user || owner;
   });
   return owners;
