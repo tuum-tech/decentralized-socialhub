@@ -83,7 +83,7 @@ const DashboardPage: React.FC = () => {
   const [followingDids, setFollowingDids] = useState<string[]>([]);
   const [followerDids, setFollowerDids] = useState<string[]>([]);
   const [mutualDids, setMutualDids] = useState<string[]>([]);
-
+  const [version, setVersion] = useState<Version | null>(null);
   const history = useHistory();
 
   let timer: NodeJS.Timeout;
@@ -93,14 +93,21 @@ const DashboardPage: React.FC = () => {
     }, 5000);
   };
 
-  useEffect(() => {
-    // TODO
-    // API call to check version
-    if (!session?.latestVersion || session.latestVersion < DATA.latestVersion) {
+  const handleCheckVersion = async () => {
+    const res: any = await ProfileService.getCurrentVersion();
+    if (
+      !session?.latestVersion ||
+      session.latestVersion < res.data.latestVersion
+    ) {
+      setVersion(res.data);
       setShowReleaseModal(true);
     }
     setShowReleaseModal(true);
-  }, [session]);
+  };
+
+  useEffect(() => {
+    handleCheckVersion();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -355,18 +362,20 @@ const DashboardPage: React.FC = () => {
               }}
             />
           </TutorialModal>
-          <ReleaseModal
-            isOpen={showReleaseModal}
-            backdropDismiss={false}
-            cssClass={style['tutorialpage']}
-          >
-            <NewRelease
-              onClose={() => {
-                setShowReleaseModal(false);
-              }}
-              contents={DATA}
-            />
-          </ReleaseModal>
+          {version && (
+            <ReleaseModal
+              isOpen={showReleaseModal}
+              backdropDismiss={false}
+              cssClass={style['tutorialpage']}
+            >
+              <NewRelease
+                onClose={() => {
+                  setShowReleaseModal(false);
+                }}
+                contents={version}
+              />
+            </ReleaseModal>
+          )}
         </React.Fragment>
       )}
     </MainLayout>

@@ -14,11 +14,7 @@ import logo from '../../../../assets/release/release.svg';
 
 interface ComponentProps {
   onClose: () => void;
-  contents: {
-    latestVersion: string;
-    releaseNotes: string[];
-    videoUpdateUrl?: string;
-  };
+  contents: Version;
 }
 
 const Component: React.FC<ComponentProps> = ({

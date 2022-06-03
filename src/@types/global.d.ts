@@ -601,3 +601,9 @@ interface Space {
   socialLinks?: any;
   tags?: string[];
 }
+
+interface Version {
+  latestVersion: string;
+  releaseNotes: string[];
+  videoUpdateUrl?: string;
+}

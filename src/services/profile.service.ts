@@ -3,6 +3,7 @@ import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { ActivityResponse } from 'src/pages/ActivityPage/types';
 import { VerificationService } from 'src/services/verification.service';
+import request, { BaseplateResp } from 'src/baseplate/request';
 
 import { showNotify } from 'src/utils/notify';
 import { getItemsFromData } from 'src/utils/script';
@@ -406,6 +407,19 @@ export class ProfileService {
         showNotify('About info is successfuly saved', 'success');
       }
     }
+  }
+
+  static getCurrentVersion(): Promise<BaseplateResp> {
+    return request(
+      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/version`,
+      {
+        method: 'GET',
+        headers: {
+          'content-Type': 'application/json',
+          Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`
+        }
+      }
+    );
   }
 
   static async updateVersion(basicDTO: BasicDTO, session: ISessionItem) {
