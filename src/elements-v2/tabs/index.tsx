@@ -55,7 +55,7 @@ export const TabItem = ({ badgeCount, children, ...props }: TabItemProps) => {
   return (
     <StyledIonItem {...props}>
       {children}
-      {props.active ? (
+      {props.active && badgeCount !== undefined ? (
         <Badge
           textGradient="primary-gradient"
           gradient="secondary-gradient"
@@ -64,9 +64,11 @@ export const TabItem = ({ badgeCount, children, ...props }: TabItemProps) => {
           {badgeCount}
         </Badge>
       ) : (
-        <Badge color="#425466" bgColor="#EDF2F7" className="ml-2">
-          {badgeCount}
-        </Badge>
+        badgeCount !== undefined && (
+          <Badge color="#425466" bgColor="#EDF2F7" className="ml-2">
+            {badgeCount}
+          </Badge>
+        )
       )}
     </StyledIonItem>
   );
