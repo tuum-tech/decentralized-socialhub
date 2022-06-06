@@ -56,10 +56,7 @@ const Component: React.FC<ComponentProps> = ({
       newSession.latestVersion = contents.latestVersion;
       let userService = new UserService(await DidService.getInstance());
       setSession(await userService.updateSession(newSession));
-      const newBasicDTO = { ...profile.basicDTO };
-      newBasicDTO.did = newSession.did;
-      newBasicDTO.latestVersion = contents.latestVersion;
-      await ProfileService.updateVersion(newBasicDTO, newSession);
+      await ProfileService.updateVersion(contents.latestVersion, newSession);
     } catch (err) {
       console.log('update session err ===>', err);
     }

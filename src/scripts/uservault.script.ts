@@ -828,6 +828,61 @@ export class UserVaultScripts {
     );
   }
 
+  static async getVersionProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'getVersionProfileScriptSetter'..."
+    );
+    await hiveClient.Scripting.SetScript({
+      name: 'get_version_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_version_profile',
+        output: true,
+        body: {
+          collection: 'version_profile'
+        }
+      }
+    });
+    console.log(
+      "Completed registration of uservault script 'getVersionProfileScriptSetter'"
+    );
+  }
+
+  static async updateVersionProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'updateVersionProfileScriptSetter'..."
+    );
+    await hiveClient.Scripting.SetScript({
+      name: 'update_version_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_version_profile',
+        body: {
+          collection: 'version_profile',
+          filter: {
+            guid: '$params.guid'
+          },
+          update: {
+            $set: {
+              latestVersion: '$params.latestVersion',
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+    console.log(
+      "Completed registration of uservault script 'updateVersionProfileScriptSetter'"
+    );
+  }
+
   static async updateExperienceProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'updateExperienceProfileScriptSetter'..."
@@ -1276,6 +1331,8 @@ export class UserVaultScripts {
       this.updateEducationProfileScriptSetter(hiveClient),
       this.removeEducationItemScriptSetter(hiveClient),
       this.getExperienceProfileScriptSetter(hiveClient),
+      this.getVersionProfileScriptSetter(hiveClient),
+      this.updateVersionProfileScriptSetter(hiveClient),
       this.updateExperienceProfileScriptSetter(hiveClient),
       this.removeExperienceItemScriptSetter(hiveClient),
       this.getActivityScriptSetter(hiveClient),

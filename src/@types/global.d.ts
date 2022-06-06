@@ -238,7 +238,6 @@ interface BasicDTO {
   about: string;
   title: string;
   address: AddressDTO;
-  latestVersion?: string
 }
 
 interface ProfileDTO {
@@ -266,6 +265,7 @@ interface ProfileDTO {
   certificationDTO: CertificationDTO;
   gameExpDTO: GameExpDTO;
   gamerTagDTO: GamerTagDTO;
+  versionDTO: Version
 }
 
 interface IReferral {
@@ -461,6 +461,11 @@ interface GameExpProfileResponse {
 interface EducationProfileResponse {
   _status: string;
   get_education_profile: EducationDTO;
+}
+
+interface VersionProfileResponse {
+  _status: string;
+  get_version_profile: Version;
 }
 
 interface ExperienceProfileResponse {

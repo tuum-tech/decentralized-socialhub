@@ -95,7 +95,7 @@ const DashboardPage: React.FC = () => {
 
   useEffect(() => {
     handleCheckVersion();
-  }, [handleCheckVersion]);
+  }, []);
 
   useEffect(() => {
     (async () => {

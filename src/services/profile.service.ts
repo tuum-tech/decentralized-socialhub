@@ -139,6 +139,11 @@ export class ProfileService {
       verifiers: [] as any[]
     };
     let basicDTO: any = {};
+    let versionDTO: Version = {
+      latestVersion: '',
+      releaseNotes: [],
+      videoUpdateUrl: ''
+    };
     let educationDTO: EducationDTO = {
       items: [],
       isEnabled: true
@@ -260,6 +265,18 @@ export class ProfileService {
           cpRes,
           'get_certification_profile'
         );
+
+        const versionRes: IRunScriptResponse<VersionProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_version_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+            }
+          }
+        );
+
+        versionDTO = getItemsFromData(versionRes, 'get_version_profile');
 
         const gexpRes: IRunScriptResponse<GameExpProfileResponse> = await hiveInstance.Scripting.RunScript(
           {
@@ -388,7 +405,8 @@ export class ProfileService {
       licenseDTO,
       certificationDTO,
       gameExpDTO,
-      gamerTagDTO
+      gamerTagDTO,
+      versionDTO
     };
   }
 
@@ -422,19 +440,21 @@ export class ProfileService {
     );
   }
 
-  static async updateVersion(basicDTO: BasicDTO, session: ISessionItem) {
+  static async updateVersion(latestVersion: string, session: ISessionItem) {
     const hiveInstance = await HiveService.getSessionInstance(session);
     if (session && hiveInstance) {
       const res: any = await hiveInstance.Scripting.RunScript({
-        name: 'update_basic_profile',
+        name: 'update_version_profile',
         context: {
           target_did: session.did,
           target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
         },
-        params: basicDTO
+        params: latestVersion
       });
       if (res.isSuccess && res.response._status === 'OK') {
         showNotify('Latest version checked', 'success');
+      } else {
+        showNotify('Error executing script', 'error');
       }
     }
   }
@@ -1197,6 +1217,12 @@ export const defaultFullProfile = {
   educationDTO: {
     isEnabled: false,
     items: [] as EducationItem[]
+  },
+  versionDTO: {
+    isEnabled: false,
+    latestVersion: '',
+    releaseNotes: [],
+    videoUpdateUrl: ''
   },
   experienceDTO: {
     isEnabled: false,
