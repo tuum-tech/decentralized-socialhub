@@ -411,7 +411,6 @@ export class ProfileService {
   }
 
   static async updateAbout(basicDTO: BasicDTO, session: ISessionItem) {
-    console.log(12312, basicDTO)
     const hiveInstance = await HiveService.getSessionInstance(session);
     if (session && hiveInstance) {
       const res: any = await hiveInstance.Scripting.RunScript({
