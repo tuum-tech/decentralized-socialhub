@@ -297,6 +297,7 @@ interface ISessionItem {
   timestamp: number;
   referrals?: IReferral[];
   passwordRemoved?: boolean;
+  wallets?: any;
   created?: {$date: number}
   sign_up_date?: string
 }
