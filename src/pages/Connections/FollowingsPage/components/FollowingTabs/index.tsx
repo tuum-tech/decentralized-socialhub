@@ -24,22 +24,20 @@ const FollowingTabs: React.FC<Props> = ({
   isSearchKeywordDID = false
 }) => {
   return (
-    <IonContent className={style['followingtabs']}>
-      <IonGrid className={style['tab-grid']}>
-        <IonRow>
-          {people?.items.length === 0 ? (
-            <NoConnectionComp pageType="followingPeople" />
-          ) : (
-            <PeopleCard
-              people={people}
-              following={following}
-              searchKeyword={searchKeyword}
-              size="6"
-            />
-          )}
-        </IonRow>
-      </IonGrid>
-    </IonContent>
+    <IonGrid className={style['tab-grid']}>
+      <IonRow>
+        {people?.items.length === 0 ? (
+          <NoConnectionComp pageType="followingPeople" />
+        ) : (
+          <PeopleCard
+            people={people}
+            following={following}
+            searchKeyword={searchKeyword}
+            size="6"
+          />
+        )}
+      </IonRow>
+    </IonGrid>
   );
 };
 

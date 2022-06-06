@@ -30,7 +30,7 @@ export const UserRow = styled.div`
 
   .right {
     display: block;
-
+    width: 100%;
     .top {
       font-size: 16px;
       line-height: 162.02%;

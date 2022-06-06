@@ -1,9 +1,10 @@
 import React from 'react';
-import { IonList, IonLabel, IonItem } from '@ionic/react';
+import { IonList, IonLabel } from '@ionic/react';
 import styled from 'styled-components';
 import { down } from 'styled-breakpoints';
 
 import { TabsContainer } from 'src/components/profile/ProfileComponent/PublicProfileTabs';
+import { TabItem } from 'src/elements-v2/tabs';
 
 export const Header = styled.div`
   width: 100%;
@@ -77,18 +78,18 @@ const SpacePageHeader: React.FC<SpacePageHeaderProps> = ({
   return (
     <SpacePageHeaderContainer>
       <IonList>
-        <IonItem
-          className={(active === 'my spaces' ? 'tab-active' : '') + ' tab-item'}
+        <TabItem
+          active={active === 'my spaces'}
           onClick={() => setActive('my spaces')}
         >
           <IonLabel className="tab-label">My Spaces</IonLabel>
-        </IonItem>
-        <IonItem
-          className={(active === 'following' ? 'tab-active' : '') + ' tab-item'}
+        </TabItem>
+        <TabItem
+          active={active === 'following'}
           onClick={() => setActive('following')}
         >
           <IonLabel className="tab-label">Following</IonLabel>
-        </IonItem>
+        </TabItem>
       </IonList>
     </SpacePageHeaderContainer>
   );

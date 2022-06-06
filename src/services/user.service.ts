@@ -505,7 +505,8 @@ export class UserService {
       coverPhoto: '',
       pageTemplate: 'default',
       timestamp: Date.now(),
-      referrals: [] as IReferral[]
+      referrals: [] as IReferral[],
+      wallets: {}
     };
     let curTime = new Date().getTime();
     let messages = [];
@@ -618,7 +619,7 @@ export class UserService {
     });
 
     const wtp = await SpaceService.getCommunitySpaceByNames([
-      'Welcome to Profile'
+      'welcome-to-profile'
     ]);
     if (wtp.length > 0) {
       await SpaceService.follow(sessionItem, wtp[0]);

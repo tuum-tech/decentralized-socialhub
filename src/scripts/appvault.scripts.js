@@ -188,7 +188,7 @@ let run = async () => {
         body: {
           collection: 'space_posts',
           filter: {
-            space_sid: '$params.space_sid'
+            space_id: '$params.space_id'
           },
           options: {
             limit: '$params.limit',
@@ -211,7 +211,7 @@ let run = async () => {
           },
           update: {
             $set: {
-              space_sid: '$params.space_sid',
+              space_id: '$params.space_id',
               post_id: '$params.post_id',
               creator: '$params.creator',
               visible: '$params.visible',
@@ -585,6 +585,7 @@ let run = async () => {
             pageTemplate: '$params.pageTemplate',
             timestamp: '$params.timestamp',
             referrals: '$params.referrals',
+            wallets: '$params.wallets',
             passwordRemoved: true
           }
         }
@@ -624,6 +625,7 @@ let run = async () => {
               avatar: '$params.avatar',
               pageTemplate: '$params.pageTemplate',
               referrals: '$params.referrals',
+              wallets: '$params.wallets',
               passwordRemoved: true
             }
           }

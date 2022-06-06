@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import {
-  IonContent,
-  IonList,
-  IonLabel,
-  IonItem,
-  IonGrid,
-  IonRow
-} from '@ionic/react';
+import { IonContent, IonGrid, IonLabel, IonList, IonRow } from '@ionic/react';
+import styled from 'styled-components';
 
 import PeopleCard from 'src/components/cards/PeopleCard';
 import style from './style.module.scss';
 import SpaceView from '../SpaceView';
+import { TabItem } from 'src/elements-v2/tabs';
+
+export const TabList = styled(IonList)`
+  background: #f7fafc;
+  padding: 5px 30px;
+`;
 
 interface Props {
   tab?: string;
@@ -34,50 +34,31 @@ const ExploreNav: React.FC<Props> = ({
 
   return (
     <IonContent className={style['explorenav']}>
-      <IonList className={style['tab-list']}>
-        {/* <IonItem
-          className={
-            (active === 'all' ? style['tab-active'] : '') +
-            ' ' +
-            style['tab-item']
-          }
+      <TabList>
+        {/* <TabItem
+          active={active === 'all'}
           onClick={() => setActive('all')}
         >
-          <IonLabel className={style['tab-label']}>All</IonLabel>
-        </IonItem> */}
-        <IonItem
-          className={
-            (active === 'people' ? style['tab-active'] : '') +
-            ' ' +
-            style['tab-item']
-          }
+          <IonLabel>All</IonLabel>
+        </TabItem> */}
+        <TabItem
+          active={active === 'people'}
           onClick={() => setActive('people')}
         >
-          <IonLabel className={style['tab-label']}>People</IonLabel>
-        </IonItem>
-        <IonItem
-          className={
-            (active === 'spaces' ? style['tab-active'] : '') +
-            ' ' +
-            style['tab-item']
-          }
+          <IonLabel>People</IonLabel>
+        </TabItem>
+        <TabItem
+          active={active === 'spaces'}
           onClick={() => setActive('spaces')}
         >
-          <IonLabel className={style['tab-label']}>Spaces</IonLabel>
-        </IonItem>
-        {/* <IonItem
-          className={
-            (active === 'pages' ? style['tab-active'] : '') +
-            ' ' +
-            style['tab-item']
-          }
-          onClick={() => setActive('pages')}
-        >
-          <IonLabel className={style['tab-label']}>
+          <IonLabel>Spaces</IonLabel>
+        </TabItem>
+        {/* <TabItem active={active === 'pages'} onClick={() => setActive('pages')}>
+          <IonLabel>
             Pages <ComingSoon />
           </IonLabel>
-        </IonItem> */}
-      </IonList>
+        </TabItem> */}
+      </TabList>
       {active === 'all' && (
         <IonGrid className={style['tab-grid']}>
           <IonRow>
@@ -109,7 +90,7 @@ const ExploreNav: React.FC<Props> = ({
           </IonRow>
         </IonGrid>
       )}
-      {active === 'spaces' && <SpaceView />}
+      {active === 'spaces' && <SpaceView searchKeyword={searchKeyword} />}
       {/* {active === 'pages' && (s
         <IonGrid className={style['tab-grid']}>
           <IonRow>

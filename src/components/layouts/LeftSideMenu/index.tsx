@@ -74,7 +74,14 @@ const LeftSideMenu: React.FC = () => {
           handleClick={() => history.push('/manager')}
         />
 
-        <ConnectionMenu session={session} />
+        <MenuItem
+          name="connections"
+          title="Connections"
+          active={history.location.pathname === '/connections'}
+          handleClick={() => history.push('/connections')}
+        />
+
+        {/* <ConnectionMenu session={session} /> */}
         {/* in a progress */}
 
         <MenuItem

@@ -1,11 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react';
 import useSize from '@react-hook/size';
+import { down } from 'styled-breakpoints';
+import { useBreakpoint } from 'styled-breakpoints/react-styled';
 
 interface Props {
   bgImg: string;
 }
 
 const Banner: React.FC<Props> = ({ bgImg }) => {
+  const isSmDown = useBreakpoint(down('sm'));
   const ref = useRef() as React.MutableRefObject<HTMLDivElement>;
   const [width, height] = useSize(ref);
   const [size, setSize] = useState({ width: 1056, height: 176 });
@@ -17,7 +20,7 @@ const Banner: React.FC<Props> = ({ bgImg }) => {
     gap: '10px',
     marginTop: '0px',
     width: '100%',
-    borderRadius: '16px 16px 0px 0px',
+    borderRadius: isSmDown ? 16 : '16px 16px 0px 0px',
     paddingBottom: '2px',
     background: '#fff',
     backgroundImage: `url(${bgImg})`,

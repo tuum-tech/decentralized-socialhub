@@ -78,6 +78,7 @@ const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
   return (
     <>
       <Card
+        template="default"
         title="Privacy Settings"
         description="Set visibility of sections"
         action={
@@ -95,13 +96,11 @@ const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
       ></Card>
       <Modal
         title="Privacy Settings"
+        subtitle="Set visibility of sections"
         okText="Save Changes"
         onOk={handleSave}
         ref={modalRef}
       >
-        <p style={{ color: '#425466', fontSize: 14, marginBottom: 24 }}>
-          Set visibility of sections
-        </p>
         {defaultFields
           .concat(
             (extraFields as any)[

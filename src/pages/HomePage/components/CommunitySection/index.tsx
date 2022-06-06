@@ -61,7 +61,7 @@ const CommunitySection: React.FC<Props> = ({ refProp, windowDimensions }) => {
 
   const filteredSpaces = useMemo(() => {
     if (selectedCategory === 'all') {
-      return spaces;
+      return spaces.filter(v => v.category !== 'Personal Group');
     }
     return spaces.filter(v => v.category === selectedCategory);
   }, [spaces, selectedCategory]);
@@ -138,7 +138,12 @@ const CommunitySection: React.FC<Props> = ({ refProp, windowDimensions }) => {
             </DefaultButton>
           </IonRow>
 
-          <SpaceListView spaces={filteredSpaces} explore={true} />
+          <SpaceListView
+            spaces={filteredSpaces}
+            explore={true}
+            isVisiblePageCount={false}
+            pageCount={6}
+          />
           <IonRow className="ion-justify-content-center">
             <SignUpButton onClick={() => history.push('/create-profile')}>
               Sign up & explore all

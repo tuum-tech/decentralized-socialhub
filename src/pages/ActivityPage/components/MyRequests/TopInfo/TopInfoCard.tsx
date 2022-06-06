@@ -9,11 +9,10 @@ interface TopInfoCardProps {
 }
 
 const TopInfoCardContainer = styled.div`
-  background: #ffffff;
+  background: #edf2f7;
   border-radius: 16px;
   width: 100%;
   display: flex;
-  align-items: center;
   padding: 28px 24px;
 
   .left {

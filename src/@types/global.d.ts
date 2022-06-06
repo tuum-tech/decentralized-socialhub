@@ -297,6 +297,9 @@ interface ISessionItem {
   timestamp: number;
   referrals?: IReferral[];
   passwordRemoved?: boolean;
+  wallets?: any;
+  created?: {$date: number}
+  sign_up_date?: string
 }
 
 interface LoginCred {
@@ -583,6 +586,7 @@ interface SpaceDTO {
 }
 interface Space {
   name: string;
+  guid: Guid | null;
   slug: string;
   description?: string;
   category: SpaceCategory;
@@ -593,4 +597,6 @@ interface Space {
   publicFields?: string[];
   followers?: string[];
   isCommunitySpace?: boolean;
+  socialLinks?: any;
+  tags?: string[];
 }
