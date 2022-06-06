@@ -55,8 +55,8 @@ const Component: React.FC<ComponentProps> = ({
       let newSession = JSON.parse(JSON.stringify(session));
       newSession.latestVersion = contents.latestVersion;
       let userService = new UserService(await DidService.getInstance());
-      setSession(await userService.updateSession(newSession));
       await ProfileService.updateVersion(contents.latestVersion, newSession);
+      setSession(await userService.updateSession(newSession));
     } catch (err) {
       console.log('update session err ===>', err);
     }

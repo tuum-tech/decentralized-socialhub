@@ -864,11 +864,12 @@ export class UserVaultScripts {
         body: {
           collection: 'version_profile',
           filter: {
-            guid: '$params.guid'
+            did: '$params.did'
           },
           update: {
             $set: {
               latestVersion: '$params.latestVersion',
+              did: '$params.did',
             }
           },
           options: {

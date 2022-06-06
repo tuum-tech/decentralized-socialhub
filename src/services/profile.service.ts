@@ -276,8 +276,8 @@ export class ProfileService {
           }
         );
 
-        versionDTO = getItemsFromData(versionRes, 'get_version_profile');
-
+        const versionPData = getItemsFromData(versionRes, 'get_version_profile');
+        versionDTO = versionPData[0]
         const gexpRes: IRunScriptResponse<GameExpProfileResponse> = await hiveInstance.Scripting.RunScript(
           {
             name: 'get_game_exp_profile',
@@ -411,6 +411,7 @@ export class ProfileService {
   }
 
   static async updateAbout(basicDTO: BasicDTO, session: ISessionItem) {
+    console.log(12312, basicDTO)
     const hiveInstance = await HiveService.getSessionInstance(session);
     if (session && hiveInstance) {
       const res: any = await hiveInstance.Scripting.RunScript({
@@ -449,7 +450,10 @@ export class ProfileService {
           target_did: session.did,
           target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
         },
-        params: latestVersion
+        params: {
+          latestVersion,
+          did: session.did,
+        }
       });
       if (res.isSuccess && res.response._status === 'OK') {
         showNotify('Latest version checked', 'success');
