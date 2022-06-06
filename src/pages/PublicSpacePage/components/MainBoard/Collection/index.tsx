@@ -55,7 +55,7 @@ const Collection: React.FC<IProps> = ({ space }: IProps) => {
       <IonRow>
         {assets.map((asset, index) => {
           return (
-            <IonCol size="4" key={index}>
+            <IonCol sizeXs="12" sizeSm="4" key={index}>
               <Item data={asset} />
             </IonCol>
           );

@@ -18,7 +18,7 @@
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0xef5f768618139d0f5fa3bcbbbcaaf09fe9d7a07d",
-      "slug": "The Bella Series"
+      "collectionSlug": "The Bella Series"
     }
   },
   {
@@ -29,7 +29,7 @@
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0xfDdE60866508263e30C769e8592BB0f8C3274ba7",
-      "slug": "Phantz Club"
+      "collectionSlug": "Phantz Club"
     }
   },
   {
@@ -40,7 +40,7 @@
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0xE27934fB3683872e35b8d9E57c30978e1260c614",
-      "slug": "Bunny Punk"
+      "collectionSlug": "Bunny Punk"
     }
   },
   {
@@ -51,7 +51,7 @@
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0x22900606ae7077043cf140255a80e82d691b8fd5",
-      "slug": "Dropz"
+      "collectionSlug": "Dropz"
     }
   },
   {
@@ -62,7 +62,7 @@
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0x26b2341d10dC4118110825719BF733a571AB6EC5",
-      "slug": "The 2821 Club"
+      "collectionSlug": "The 2821 Club"
     }
   },
   {
@@ -76,7 +76,7 @@
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0x3536a85A9E55EB26d515653aF206465D68400feA",
-      "slug": "MythicBeings"
+      "collectionSlug": "MythicBeings"
     }
   },
   {
@@ -90,7 +90,8 @@
     "meta": {
       "network": "Ethereum",
       "address": "0x495f947276749ce646f68ac8c248420045cb7b5e",
-      "slug": "CryptoHoodieMan"
+      "collectionSlug": "cryptohoodieman",
+      "isOpenseaCollection": true
     }
   },
   {
@@ -104,7 +105,7 @@
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0x0d5d0c116f2acbc19ce198e284a21b0c355b1260",
-      "slug": "Elastos Bulls"
+      "collectionSlug": "Elastos Bulls"
     }
   },
   {
@@ -118,7 +119,7 @@
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0xcb262a92e2e3c8c3590b72a1fde3c6768ee08b7e",
-      "slug": "The Meta Primates"
+      "collectionSlug": "The Meta Primates"
     }
   },
   {
@@ -132,7 +133,7 @@
     "meta": {
       "network": "Ethereum",
       "address": "0x86C3D2697E675bB069a8c2D549F774CF73DCB047",
-      "slug": "Metalink"
+      "collectionSlug": "Metalink"
     }
   },
   {
@@ -146,7 +147,7 @@
     "meta": {
       "network": "Ethereum",
       "address": "0xd22B236fad04eB97FaEE1D03415a4CeDcfCBB31D",
-      "slug": "Moonstars"
+      "collectionSlug": "Moonstars"
     }
   },
   {
@@ -160,7 +161,23 @@
     "meta": {
       "network": "Ethereum",
       "address": "0xdc11c23A38590fAD6aD6F2727f02BceB85ee3607",
-      "slug": "Maskhuman"
+      "collectionSlug": "maskhuman",
+      "isOpenseaCollection": true
+    }
+  },
+  {
+    "sid": 13,
+    "name": "Yeah! BIRDIE!",
+    "category": "NFT Collection",
+    "slug": "yeah-birdie",
+    "owner": [
+      "did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c",
+      "did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"
+    ],
+    "meta": {
+      "network": "Elastos Smart Contract Chain",
+      "address": "0xd5aFf849495487e3c405c9fcA1b878bDd72B9e97",
+      "collectionSlug": "Yeah! BIRDIE!"
     }
   },
   {
@@ -174,7 +191,7 @@
     "meta": {
       "network": "Polygon",
       "address": "0x4ffa698ca3374ff154e58c8388a3aafe430dc2d3",
-      "slug": "LFC Heroes Club"
+      "collectionSlug": "LFC Heroes Club"
     }
   }
 ]

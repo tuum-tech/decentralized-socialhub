@@ -1,24 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import { useWeb3React } from '@web3-react/core';
 import Web3 from 'web3';
 import Blockies from 'react-blockies';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { showNotify } from 'src/utils/notify';
 
-import {
-  CloseButton,
-  ManagerButton,
-  ManagerModal,
-  ManagerModalTitle,
-  ManagerModalFooter,
-  MyGrid,
-  CardOverview,
-  LinkStyleSpan,
-  CardHeaderContent,
-  CardContentContainer,
-  ProfileItem
-} from '../common';
+import { ManagerButton, LinkStyleSpan, ProfileItem } from '../common';
 import { verifyWalletOwner } from './function';
 import {
   VerifiableCredential,
@@ -39,6 +27,8 @@ import copyIcon from '../../../assets/icon/copy-to-clipboard.svg';
 import { UserService } from 'src/services/user.service';
 import { DidService } from 'src/services/did.service.new';
 import { VerificationService } from 'src/services/verification.service';
+import Card from 'src/elements-v2/Card';
+import Modal from 'src/elements-v2/Modal';
 
 interface IWalletProps {
   setRequestEssentials: (item: boolean) => void;
@@ -88,8 +78,16 @@ const WalletCard: React.FC<IWalletProps> = ({
   >(walletCredentials);
 
   useEffect(() => {
+    let timer = setTimeout(function start() {
+      getCredentials(userSession);
+      timer = setTimeout(start, 2000);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     (async () => {
-      await getCredentials(userSession);
       let userService = new UserService(await DidService.getInstance());
 
       let user: ISessionItem = await userService.SearchUserWithDID(
@@ -193,24 +191,12 @@ const WalletCard: React.FC<IWalletProps> = ({
     if (!account) {
       connectWallet();
     }
-    var timer = setInterval(async function() {
-      //clearInterval(timer);
 
-      //if (sessionItem.isEssentialUser) await forceUpdateDidDocument();
-      await getCredentials(userSession);
-    }, 2000);
     updateSession(type);
   };
 
   const removeVc = async (key: string) => {
     setIsRemovingVc(true);
-
-    var timer = setInterval(async function() {
-      //clearInterval(timer);
-
-      //if (sessionItem.isEssentialUser) await forceUpdateDidDocument();
-      await getCredentials(userSession);
-    }, 2000);
 
     let vcId = userSession.did + '#' + key.toLowerCase();
     if (userSession.isEssentialUser) {
@@ -249,7 +235,15 @@ const WalletCard: React.FC<IWalletProps> = ({
         <div className={style['manage-links-item']}>
           <Blockies seed={type} size={50} scale={1} />
           <div className={style['manage-links-header']}>{type}</div>
-          <ManagerButton onClick={() => addVc(type)}>Add</ManagerButton>
+          <ManagerButton
+            variant="outlined"
+            btnColor="primary-gradient"
+            textType="gradient"
+            size="small"
+            onClick={() => addVc(type)}
+          >
+            Add
+          </ManagerButton>
         </div>
       );
     }
@@ -271,7 +265,14 @@ const WalletCard: React.FC<IWalletProps> = ({
             </CopyToClipboard>
           </p>
         </div>
-        <ManagerButton disabled={isRemovingVc} onClick={() => removeVc(type)}>
+        <ManagerButton
+          variant="outlined"
+          btnColor="primary-gradient"
+          textType="gradient"
+          size="small"
+          disabled={isRemovingVc}
+          onClick={() => removeVc(type)}
+        >
           Remove
         </ManagerButton>
       </div>
@@ -332,62 +333,56 @@ const WalletCard: React.FC<IWalletProps> = ({
 
   return (
     <>
-      <CardOverview template={template}>
-        <CardHeaderContent>
-          <IonGrid className="ion-no-padding">
-            <IonRow className="ion-justify-content-between ion-no-padding">
-              <IonCol className="ion-no-padding">
-                <IonCardTitle>Wallets</IonCardTitle>
-              </IonCol>
-              {isEditable ? (
-                <IonCol size="auto" className="ion-no-padding">
-                  <LinkStyleSpan onClick={e => setIsManagerOpen(true)}>
-                    Manage Wallets
-                  </LinkStyleSpan>
-                </IonCol>
-              ) : (
-                ''
-              )}
-            </IonRow>
-          </IonGrid>
-        </CardHeaderContent>
-        <CardContentContainer>
-          <IonGrid className="social-profile-grid">
-            <IonRow>
-              {containsVerifiedCredential(
-                CredentialType.ETHAddress.toLowerCase()
-              ) && (
-                <IonCol size={isEditable ? '6' : '12'}>
-                  {walletViewItem(CredentialType.ETHAddress)}
-                </IonCol>
-              )}
-              {containsVerifiedCredential(
-                CredentialType.EIDAddress.toLowerCase()
-              ) && (
-                <IonCol size={isEditable ? '6' : '12'}>
-                  {walletViewItem(CredentialType.EIDAddress)}
-                </IonCol>
-              )}
-              {containsVerifiedCredential(
-                CredentialType.ESCAddress.toLowerCase()
-              ) && (
-                <IonCol size={isEditable ? '6' : '12'}>
-                  {walletViewItem(CredentialType.ESCAddress)}
-                </IonCol>
-              )}
-            </IonRow>
-          </IonGrid>
-        </CardContentContainer>
-      </CardOverview>
-      <ManagerModal
-        isOpen={isManagerOpen}
-        cssClass="my-custom-class"
-        backdropDismiss={false}
+      <Card
+        template={template}
+        title="Wallets"
+        action={
+          isEditable ? (
+            <IonCol size="auto" className="ion-no-padding">
+              <LinkStyleSpan onClick={e => setIsManagerOpen(true)}>
+                Manage Wallets
+              </LinkStyleSpan>
+            </IonCol>
+          ) : (
+            ''
+          )
+        }
       >
-        <MyGrid class="ion-no-padding">
+        <IonGrid className="social-profile-grid">
           <IonRow>
-            <ManagerModalTitle>Manage Wallets</ManagerModalTitle>
+            {containsVerifiedCredential(
+              CredentialType.ETHAddress.toLowerCase()
+            ) && (
+              <IonCol size={isEditable ? '6' : '12'}>
+                {walletViewItem(CredentialType.ETHAddress)}
+              </IonCol>
+            )}
+            {containsVerifiedCredential(
+              CredentialType.EIDAddress.toLowerCase()
+            ) && (
+              <IonCol size={isEditable ? '6' : '12'}>
+                {walletViewItem(CredentialType.EIDAddress)}
+              </IonCol>
+            )}
+            {containsVerifiedCredential(
+              CredentialType.ESCAddress.toLowerCase()
+            ) && (
+              <IonCol size={isEditable ? '6' : '12'}>
+                {walletViewItem(CredentialType.ESCAddress)}
+              </IonCol>
+            )}
           </IonRow>
+        </IonGrid>
+      </Card>
+      <Modal
+        title="Manage Wallets"
+        isOpen={isManagerOpen}
+        onClose={() => {
+          setIsManagerOpen(false);
+        }}
+        noButton
+      >
+        <IonGrid class="ion-no-padding">
           <IonRow no-padding>
             <IonCol class="ion-no-padding">
               {walletEditItem(CredentialType.EIDAddress)}
@@ -403,22 +398,8 @@ const WalletCard: React.FC<IWalletProps> = ({
               {walletEditItem(CredentialType.ETHAddress)}
             </IonCol>
           </IonRow>
-        </MyGrid>
-        <ManagerModalFooter className="ion-no-border">
-          <IonRow className="ion-justify-content-around">
-            <IonCol size="auto">
-              <CloseButton
-                disabled={isRemovingVc}
-                onClick={() => {
-                  setIsManagerOpen(false);
-                }}
-              >
-                Close
-              </CloseButton>
-            </IonCol>
-          </IonRow>
-        </ManagerModalFooter>
-      </ManagerModal>
+        </IonGrid>
+      </Modal>
     </>
   );
 };

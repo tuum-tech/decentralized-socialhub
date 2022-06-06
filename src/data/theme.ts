@@ -47,7 +47,7 @@ export const themeData = {
       cardTitle2: '#27272E',
       cardTitle3: '#27272E',
       cardText: 'rgba(66, 84, 102, 0.57)',
-      cardShawdow:
+      cardShadow:
         '0px 0px 1px rgba(12, 26, 75, 0.24), 0px 3px 8px -1px rgba(50, 50, 71, 0.05)'
     }
   },
@@ -66,7 +66,7 @@ export const themeData = {
       cardTitle2: '#A0AEC0',
       cardTitle3: '#A0AEC0',
       cardText: '#718096',
-      cardShawdow:
+      cardShadow:
         'box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24), 0px 3px 8px -1px rgba(50, 50, 71, 0.05);'
     }
   },
@@ -85,7 +85,7 @@ export const themeData = {
       cardTitle2: '#A0AEC0',
       cardTitle3: '#A0AEC0',
       cardText: '#718096',
-      cardShawdow:
+      cardShadow:
         'box-shadow: 0px 0px 1px rgba(12, 26, 75, 0.24), 0px 3px 8px -1px rgba(50, 50, 71, 0.05);'
     }
   }

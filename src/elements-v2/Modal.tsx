@@ -13,6 +13,7 @@ import Icon from './icons';
 const StyledModal = styled(IonModal)<{ autoWidth: boolean }>`
   --border-radius: 16px;
   --max-height: 80vh;
+  --min-height: 400px;
   --max-width: ${props => (props.autoWidth ? 'auto' : '435px')};
   --height: auto;
 
@@ -42,6 +43,7 @@ const Subtitle = styled.p`
 const StyledContent = styled.div`
   overflow: auto;
   max-height: calc(80vh - 140px);
+  min-height: 230px;
 `;
 
 type Props = {
@@ -54,7 +56,9 @@ type Props = {
   okText?: string;
   noButton?: boolean;
   autoWidth?: boolean;
+  backdropDismiss?: boolean;
   contentStyle?: React.CSSProperties;
+  titleStyle?: React.CSSProperties;
   children?: React.ReactNode;
 };
 
@@ -71,6 +75,8 @@ const Modal = forwardRef<React.ReactNode, Props>(
       noButton = false,
       autoWidth = false,
       contentStyle,
+      titleStyle,
+      backdropDismiss = true,
       children
     }: Props,
     ref
@@ -102,12 +108,13 @@ const Modal = forwardRef<React.ReactNode, Props>(
     return (
       <StyledModal
         isOpen={showModal}
-        onDidDismiss={() => setShowModal(false)}
+        onDidDismiss={handleClose}
         autoWidth={autoWidth}
+        backdropDismiss={backdropDismiss}
       >
         <StyledGrid className="ion-no-padding">
           <IonRow className="ion-no-padding ion-justify-content-between">
-            <Title>{title}</Title>
+            <Title style={titleStyle}>{title}</Title>
             <IonButton
               fill="clear"
               size="small"

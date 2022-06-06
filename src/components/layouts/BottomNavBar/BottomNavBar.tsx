@@ -6,7 +6,7 @@ import TabButtonContent from './TabButtonContent';
 import './style.module.scss';
 
 const Container = styled.div`
-  height: 100px;
+  height: 70px;
 `;
 
 export const BottomNavBar: React.FC = () => {

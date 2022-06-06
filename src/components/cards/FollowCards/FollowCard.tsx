@@ -25,6 +25,7 @@ const FollowCard: React.FC<FollowCardProps> = ({
 }: FollowCardProps) => {
   return (
     <Card
+      template={template}
       title={title}
       action={
         <IonCol size="auto" className="ion-no-padding">

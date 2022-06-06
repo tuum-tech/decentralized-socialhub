@@ -298,6 +298,7 @@ interface ISessionItem {
   referrals?: IReferral[];
   passwordRemoved?: boolean;
   created?: {$date: number}
+  sign_up_date?: string
 }
 
 interface LoginCred {
@@ -595,4 +596,6 @@ interface Space {
   publicFields?: string[];
   followers?: string[];
   isCommunitySpace?: boolean;
+  socialLinks?: any;
+  tags?: string[];
 }

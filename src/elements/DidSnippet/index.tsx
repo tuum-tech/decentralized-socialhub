@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { IonText, IonRow } from '@ionic/react';
 import styled from 'styled-components';
+import { useBreakpoint } from 'styled-breakpoints/react-styled';
+import { down } from 'styled-breakpoints';
 
 export const DidSnippetSvg = ({ color = '#979797' }) => (
   <svg
@@ -143,6 +145,7 @@ const DidSnippet: React.FC<IProp> = ({
   color = '#979797',
   width
 }: IProp) => {
+  const isSmDown = useBreakpoint(down('sm'));
   const dateJoinedObject = new Date(dateJoined);
   const dateWeekday = dateJoinedObject.toLocaleString('en-US', {
     weekday: 'short'
@@ -155,13 +158,19 @@ const DidSnippet: React.FC<IProp> = ({
     year: 'numeric'
   });
 
+  const shortenedDid = useMemo(() => {
+    let sDid = did.replace('did:elastos:', '');
+    sDid = `${sDid.substring(0, 4)}...${sDid.substring(sDid.length - 4)}`;
+    return `did:elastos:${sDid}`;
+  }, [did]);
+
   return (
     <ProfileDesignation>
       <IonRow className="ion-align-items-center">
         <DidSnippetSvg color={color} />
         &nbsp;
         <TruncatedSpan style={{ color: color, width: width }}>
-          {did}
+          {isSmDown ? shortenedDid : did}
         </TruncatedSpan>
       </IonRow>
       {}

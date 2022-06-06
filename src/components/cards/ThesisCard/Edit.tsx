@@ -1,15 +1,14 @@
 import React from 'react';
-import {
-  IonCardTitle,
-  IonCheckbox,
-  IonCol,
-  IonLabel,
-  IonRow
-} from '@ionic/react';
-import styled from 'styled-components';
+import { IonCheckbox, IonCol, IonGrid, IonRow } from '@ionic/react';
 
 import SmallTextInput from '../../../elements/inputs/SmallTextInput';
-import { MODE, MyGrid, MyTextarea } from '../common';
+import {
+  CheckboxLabel,
+  MODE,
+  MyTextarea,
+  Spacer,
+  StyledLabel
+} from '../common';
 
 export const pattern = new RegExp('^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$');
 
@@ -19,21 +18,13 @@ interface ThesisItemProps {
   mode: MODE;
 }
 
-const Spacer = styled.div`
-  margin-top: 40px;
-  padding: 5px;
-`;
-
 const ThesisCardEdit: React.FC<ThesisItemProps> = ({
   thesisItem,
   handleChange,
   mode
 }: ThesisItemProps) => {
   return (
-    <MyGrid>
-      <IonRow>
-        <IonCardTitle>Thesis</IonCardTitle>
-      </IonRow>
+    <IonGrid>
       <IonRow class="ion-justify-content-start">
         <IonCol size="8">
           <SmallTextInput
@@ -47,7 +38,7 @@ const ThesisCardEdit: React.FC<ThesisItemProps> = ({
         </IonCol>
       </IonRow>
       <IonRow class="ion-justify-content-start">
-        <IonCol size="4.5">
+        <IonCol size="7" className="mr-3">
           <SmallTextInput
             label="Publish date"
             placeholder="Publish date"
@@ -58,20 +49,21 @@ const ThesisCardEdit: React.FC<ThesisItemProps> = ({
             onChange={handleChange}
           />
         </IonCol>
-        <IonCol size="3">
-          <Spacer>
+        <IonCol size="4">
+          <Spacer noWrap>
             <IonCheckbox
+              mode="md"
               checked={thesisItem.still}
               name="still"
               onIonChange={handleChange}
-            />{' '}
-            Still writing
+            />
+            <CheckboxLabel>Still writing</CheckboxLabel>
           </Spacer>
         </IonCol>
       </IonRow>
-      <IonRow class="ion-justify-content-start">
-        <IonCol size="8">
-          <IonLabel>Description</IonLabel>
+      <IonRow class="ion-justify-content-start mt-3">
+        <IonCol size="12">
+          <StyledLabel>Description</StyledLabel>
           <MyTextarea
             rows={3}
             name="description"
@@ -81,7 +73,7 @@ const ThesisCardEdit: React.FC<ThesisItemProps> = ({
           />
         </IonCol>
       </IonRow>
-    </MyGrid>
+    </IonGrid>
   );
 };
 

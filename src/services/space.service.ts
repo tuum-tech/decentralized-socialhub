@@ -24,7 +24,10 @@ export const defaultSpace: Space = {
   category: SpaceCategory.Personal,
   avatar: '',
   coverPhoto: '',
-  publicFields: []
+  publicFields: [],
+  followers: [],
+  socialLinks: {},
+  tags: []
 };
 export class SpaceService {
   static async getAllSpaces(session?: ISessionItem) {
@@ -93,11 +96,11 @@ export class SpaceService {
         }
       });
       spaces = getItemsFromData(response, 'get_community_spaces');
-      spaces = spaces.filter((space: any) =>
+      /*       spaces = spaces.filter((space: any) =>
         space.owner.includes(
           session && session.did ? session.did : space.owner[0]
         )
-      );
+      ); */
     }
     return spaces.map((space: any) => ({ ...space, isCommunitySpace: true }));
   }
@@ -303,7 +306,7 @@ export class SpaceService {
         if (appHiveClient) {
           await appHiveClient.Scripting.RunScript({
             name: 'remove_space',
-            params: { name: space.name, owner: session.did },
+            params: space,
             context: {
               target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
               target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
@@ -369,7 +372,7 @@ export class SpaceService {
     const tuumVaultRes = await appHiveClient.Scripting.RunScript({
       name: 'get_space_posts',
       params: {
-        space_sid: sid,
+        space_id: sid,
         limit: 200,
         skip: 0
       },
@@ -416,7 +419,7 @@ export class SpaceService {
     const hiveInstance = await HiveService.getSessionInstance(session);
     if (session && hiveInstance) {
       const post = {
-        space_sid: sid,
+        space_id: sid,
         post_id: Guid.create(),
         creator: session.did,
         visible: true,

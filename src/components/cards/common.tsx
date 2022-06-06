@@ -30,7 +30,7 @@ export const CardOverview = styled(IonCard)<ThemeProps>`
     getThemeData(template, 'card', 'backgroundColor')};
 
   box-shadow: ${({ template }: ThemeProps) =>
-    getThemeData(template, 'card', 'cardShawdow')};
+    getThemeData(template, 'card', 'cardShadow')};
 
   border-radius: 16px;
   padding: 26px 20px 30px 20px;
@@ -249,10 +249,14 @@ export const ManagerModalFooter = styled(IonFooter)`
   }
 `;
 
-export const ManagerLogo = styled(IonImg)`
+export const ManagerLogo = styled.img`
   position: relative;
   float: left;
   width: 42px;
+
+  outline: 1px solid #cc2a8b;
+  outline-offset: 2px;
+  border-radius: 50%;
 `;
 
 export const CloseButton = styled(IonButton)`
@@ -306,6 +310,7 @@ export const ProfileItem = styled(IonItem)<ThemeProps>`
   }
 
   .left {
+    min-width: 50px;
     position: relative;
     & > img {
       border-radius: 50%;
@@ -321,6 +326,7 @@ export const ProfileItem = styled(IonItem)<ThemeProps>`
       margin-left: 5px;
       cursor: pointer;
     }
+    overflow: auto;
   }
 
   .social-profile-network {
@@ -344,13 +350,14 @@ export const ProfileItem = styled(IonItem)<ThemeProps>`
   }
 `;
 
-export const Spacer = styled.div`
+export const Spacer = styled.div<{ noWrap?: boolean }>`
   margin-top: 38px;
   padding: 5px;
   display: flex;
   align-items: center;
+
   ${down('sm')} {
-    margin-top: 10px;
+    margin-top: ${props => (props.noWrap ? 38 : 10)}px;
   }
 `;
 

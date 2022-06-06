@@ -79,7 +79,13 @@ const UserRows: React.FC<Props> = ({
           0
         );
         setLoading(false);
-        setUsers(getItemsFromData(usersRes, 'get_users_by_dids'));
+        const data = getItemsFromData(usersRes, 'get_users_by_dids');
+        setUsers(
+          data.map((v: any) => ({
+            ...v,
+            sign_up_date: referrals.find(p => p.did === v.did)?.sign_up_date
+          }))
+        );
       } catch (err) {
         setLoading(false);
       }
@@ -88,25 +94,6 @@ const UserRows: React.FC<Props> = ({
 
   const getLink = (did: string) => {
     return getDIDString('/did/' + did, true);
-  };
-
-  const getBadges = (badges: IBadges | undefined) => {
-    let _completedBadgeCount = 0;
-    if (!badges) return _completedBadgeCount;
-
-    _completedBadgeCount += Object.keys(badges?.account).filter(
-      key => (badges?.account as any)[key].archived
-    ).length;
-    _completedBadgeCount += Object.keys(badges?.socialVerify).filter(
-      key => (badges?.socialVerify as any)[key].archived
-    ).length;
-    _completedBadgeCount += Object.keys(badges?.didPublishTimes).filter(
-      key => (badges?.didPublishTimes as any)[key].archived
-    ).length;
-    _completedBadgeCount += Object.keys(badges?.dStorage).filter(
-      key => (badges?.dStorage as any)[key].archived
-    ).length;
-    return _completedBadgeCount;
   };
 
   const rednerUserRow = (r: ISessionItem) => {
@@ -128,28 +115,32 @@ const UserRows: React.FC<Props> = ({
               </IonLabel>
               <li
                 style={{
-                  color: getStatusColor(r?.status ?? ''),
+                  color: getStatusColor(
+                    r?.sign_up_date ? 'completed' : 'pending'
+                  ),
                   marginLeft: '9px'
                 }}
                 className={style['date']}
               >
-                {r?.status}
+                {r?.sign_up_date ? 'Completed' : 'Pending'}
               </li>
               <li className={style['tab-label']} style={{ marginLeft: '9px' }}>
-                Earned: {getBadges(r?.badges)} MTRL
+                Earned: 0 MTRL
               </li>
             </IonRow>
           </p>
         </div>
-        <DefaultButton
+        {/* TODO */}
+        {/* <DefaultButton
           variant="outlined"
           size="large"
           btnColor="primary-gradient"
           className={style['button']}
+          disabled
         >
           <img src={RingIcon} alt="ownership" />
           <IonLabel className={style['tab-label']}> Send Reminder</IonLabel>
-        </DefaultButton>
+        </DefaultButton> */}
         <div style={{ margin: '0 0 0 auto' }}>
           {loading && (
             <SmallLightButton>

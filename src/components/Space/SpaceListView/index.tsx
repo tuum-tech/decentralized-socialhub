@@ -62,10 +62,11 @@ const SpaceListView: React.FC<Props> = ({
   };
 
   const filteredSpaces = useMemo(() => {
+    console.log('spaces====>', spaces);
     if (searchQuery) {
       return spaces.filter(
         v =>
-          v.name.toLowerCase().includes(searchQuery) ||
+          v.name?.toLowerCase().includes(searchQuery) ||
           v.owner?.includes(searchQuery)
       );
     }
