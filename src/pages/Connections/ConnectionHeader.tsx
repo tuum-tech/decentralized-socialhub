@@ -59,20 +59,23 @@ const ConnectionPageHeader: React.FC<ConnectionPageHeaderProps> = ({
         <TabItem
           active={active === 'followers'}
           onClick={() => setActive('followers')}
+          badgeCount={followersCount}
         >
-          <IonLabel>Followers({followersCount})</IonLabel>
+          <IonLabel>Followers</IonLabel>
         </TabItem>
         <TabItem
           active={active === 'following'}
           onClick={() => setActive('following')}
+          badgeCount={followingCount}
         >
-          <IonLabel>Following({followingCount})</IonLabel>
+          <IonLabel>Following</IonLabel>
         </TabItem>
         <TabItem
           active={active === 'mutual'}
           onClick={() => setActive('mutual')}
+          badgeCount={mutualFollowerCount}
         >
-          <IonLabel>Mutual Followers({mutualFollowerCount})</IonLabel>
+          <IonLabel>Mutual Followers</IonLabel>
         </TabItem>
       </IonList>
     </ConnectionHeaderContainer>
