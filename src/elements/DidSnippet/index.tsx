@@ -3,6 +3,7 @@ import { IonText, IonRow } from '@ionic/react';
 import styled from 'styled-components';
 import { useBreakpoint } from 'styled-breakpoints/react-styled';
 import { down } from 'styled-breakpoints';
+import { getShortenedDid } from 'src/utils/did';
 
 export const DidSnippetSvg = ({ color = '#979797' }) => (
   <svg
@@ -158,11 +159,7 @@ const DidSnippet: React.FC<IProp> = ({
     year: 'numeric'
   });
 
-  const shortenedDid = useMemo(() => {
-    let sDid = did.replace('did:elastos:', '');
-    sDid = `${sDid.substring(0, 4)}...${sDid.substring(sDid.length - 4)}`;
-    return `did:elastos:${sDid}`;
-  }, [did]);
+  const shortenedDid = useMemo(() => getShortenedDid(did, 4), [did]);
 
   return (
     <ProfileDesignation>

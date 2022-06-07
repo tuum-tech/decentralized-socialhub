@@ -1302,55 +1302,53 @@ export class UserVaultScripts {
     });
   }
   static async SetScripts(hiveClient: HiveClient) {
-    await Promise.all([
-      this.setPublicTemplateScriptSetter(hiveClient),
-      this.getPublicFieldsScriptSetter(hiveClient),
-      this.getMyTemplatesScriptSetter(hiveClient),
-      this.updateMyTemplatesScriptSetter(hiveClient),
-      this.getFollowingScriptSetter(hiveClient),
-      this.getBasicProfileScriptSetter(hiveClient),
-      this.updateBasicProfileScriptSetter(hiveClient),
-      this.getTeamProfileScriptSetter(hiveClient),
-      this.updateTeamProfileScriptSetter(hiveClient),
-      this.removeTeamItemScriptSetter(hiveClient),
-      this.getThesisProfileScriptSetter(hiveClient),
-      this.updateThesisProfileScriptSetter(hiveClient),
-      this.removeThesisProfileScriptSetter(hiveClient),
-      this.getPaperProfileScriptSetter(hiveClient),
-      this.updatePaperProfileScriptSetter(hiveClient),
-      this.removePaperItemScriptSetter(hiveClient),
-      this.getLicenseProfileScriptSetter(hiveClient),
-      this.updateLicenseProfileScriptSetter(hiveClient),
-      this.removeLicenseItemScriptSetter(hiveClient),
-      this.getCertificationProfileScriptSetter(hiveClient),
-      this.updateCertificationProfileScriptSetter(hiveClient),
-      this.removeCertificationItemScriptSetter(hiveClient),
-      this.getGameExpProfileScriptSetter(hiveClient),
-      this.updateGameExpProfileScriptSetter(hiveClient),
-      this.removeGameExpItemScriptSetter(hiveClient),
-      this.getEducationProfileScriptSetter(hiveClient),
-      this.updateEducationProfileScriptSetter(hiveClient),
-      this.removeEducationItemScriptSetter(hiveClient),
-      this.getExperienceProfileScriptSetter(hiveClient),
-      this.getVersionProfileScriptSetter(hiveClient),
-      this.updateVersionProfileScriptSetter(hiveClient),
-      this.updateExperienceProfileScriptSetter(hiveClient),
-      this.removeExperienceItemScriptSetter(hiveClient),
-      this.getActivityScriptSetter(hiveClient),
-      this.addActivityScriptSetter(hiveClient),
-      this.updateActivityScriptSetter(hiveClient),
-      this.addVerifiableCredentialScriptSetter(hiveClient),
-      this.removeVerifiableCredentialScriptSetter(hiveClient),
-      this.getVerifiableCredentialScriptSetter(hiveClient),
-      this.getAllSpacesScriptSetter(hiveClient),
-      this.getSpacesByNamesScriptSetter(hiveClient),
-      this.getSpacesByIdsScriptSetter(hiveClient),
-      this.addSpacesScriptSetter(hiveClient),
-      this.removeSpaceScriptSetter(hiveClient),
-      this.getSpacePostScriptSetter(hiveClient),
-      this.updateSpacePostScriptSetter(hiveClient),
-      this.removeSpacePost(hiveClient)
-    ]);
+    await this.setPublicTemplateScriptSetter(hiveClient);
+    await this.getPublicFieldsScriptSetter(hiveClient);
+    await this.getMyTemplatesScriptSetter(hiveClient);
+    await this.updateMyTemplatesScriptSetter(hiveClient);
+    await this.getFollowingScriptSetter(hiveClient);
+    await this.getBasicProfileScriptSetter(hiveClient);
+    await this.updateBasicProfileScriptSetter(hiveClient);
+    await this.getTeamProfileScriptSetter(hiveClient);
+    await this.updateTeamProfileScriptSetter(hiveClient);
+    await this.removeTeamItemScriptSetter(hiveClient);
+    await this.getThesisProfileScriptSetter(hiveClient);
+    await this.updateThesisProfileScriptSetter(hiveClient);
+    await this.removeThesisProfileScriptSetter(hiveClient);
+    await this.getPaperProfileScriptSetter(hiveClient);
+    await this.updatePaperProfileScriptSetter(hiveClient);
+    await this.removePaperItemScriptSetter(hiveClient);
+    await this.getLicenseProfileScriptSetter(hiveClient);
+    await this.updateLicenseProfileScriptSetter(hiveClient);
+    await this.removeLicenseItemScriptSetter(hiveClient);
+    await this.getCertificationProfileScriptSetter(hiveClient);
+    await this.updateCertificationProfileScriptSetter(hiveClient);
+    await this.removeCertificationItemScriptSetter(hiveClient);
+    await this.getGameExpProfileScriptSetter(hiveClient);
+    await this.updateGameExpProfileScriptSetter(hiveClient);
+    await this.removeGameExpItemScriptSetter(hiveClient);
+    await this.getEducationProfileScriptSetter(hiveClient);
+    await this.updateEducationProfileScriptSetter(hiveClient);
+    await this.removeEducationItemScriptSetter(hiveClient);
+    await this.getExperienceProfileScriptSetter(hiveClient);
+    await this.updateExperienceProfileScriptSetter(hiveClient);
+    await this.removeExperienceItemScriptSetter(hiveClient);
+    await this.getActivityScriptSetter(hiveClient);
+    await this.addActivityScriptSetter(hiveClient);
+    await this.updateActivityScriptSetter(hiveClient);
+    await this.addVerifiableCredentialScriptSetter(hiveClient);
+    await this.removeVerifiableCredentialScriptSetter(hiveClient);
+    await this.getVerifiableCredentialScriptSetter(hiveClient);
+    await this.getAllSpacesScriptSetter(hiveClient);
+    await this.getSpacesByNamesScriptSetter(hiveClient);
+    await this.getSpacesByIdsScriptSetter(hiveClient);
+    await this.addSpacesScriptSetter(hiveClient);
+    await this.removeSpaceScriptSetter(hiveClient);
+    await this.getSpacePostScriptSetter(hiveClient);
+    await this.updateSpacePostScriptSetter(hiveClient);
+    await this.removeSpacePost(hiveClient);
+    await this.getVersionProfileScriptSetter(hiveClient);
+    await this.updateVersionProfileScriptSetter(hiveClient);
   }
 
   static async Delete(hiveClient: HiveClient) {

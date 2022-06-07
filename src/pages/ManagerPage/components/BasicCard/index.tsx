@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { IonGrid, IonRow, IonCol } from '@ionic/react';
 import { isEqual } from 'lodash';
 import styled from 'styled-components';
@@ -32,15 +32,18 @@ const BasicCard: React.FC<IProps> = ({
   requestVerification
 }: IProps) => {
   const [currentBasicDTO, setCurrentBasicDTO] = useState(sessionItem);
-  const handleChange = (evt: any) => {
-    const value =
-      evt.target.type === 'checkbox' ? evt.target.checked : evt.target.value;
+  const handleChange = useCallback(
+    (evt: any) => {
+      const value =
+        evt.target.type === 'checkbox' ? evt.target.checked : evt.target.value;
 
-    setCurrentBasicDTO({
-      ...currentBasicDTO,
-      [evt.target.name]: value
-    });
-  };
+      setCurrentBasicDTO({
+        ...currentBasicDTO,
+        [evt.target.name]: value
+      });
+    },
+    [currentBasicDTO]
+  );
 
   useEffect(() => {
     setCurrentBasicDTO(sessionItem);
@@ -74,7 +77,7 @@ const BasicCard: React.FC<IProps> = ({
           }
         >
           <IonRow class="ion-justify-content-start ion-no-padding">
-            <IonCol size="5" className="ion-no-padding">
+            <IonCol sizeXs="10" sizeSm="5" className="ion-no-padding">
               <SmallTextInput
                 disabled={sessionItem.tutorialStep !== 4}
                 label="Name"

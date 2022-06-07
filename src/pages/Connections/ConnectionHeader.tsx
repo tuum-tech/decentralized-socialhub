@@ -1,9 +1,10 @@
 import React from 'react';
-import { IonList, IonLabel, IonItem } from '@ionic/react';
+import { IonList, IonLabel } from '@ionic/react';
 import styled from 'styled-components';
 import { down } from 'styled-breakpoints';
 
 import { TabsContainer } from 'src/components/profile/ProfileComponent/PublicProfileTabs';
+import { TabItem } from 'src/elements-v2/tabs';
 
 import style from './style.module.scss';
 
@@ -55,42 +56,27 @@ const ConnectionPageHeader: React.FC<ConnectionPageHeaderProps> = ({
   return (
     <ConnectionHeaderContainer>
       <IonList className={style['tab-list']}>
-        <IonItem
-          className={
-            (active === 'followers' ? style['tab-active'] : '') +
-            ' ' +
-            style['tab-item']
-          }
+        <TabItem
+          active={active === 'followers'}
           onClick={() => setActive('followers')}
+          badgeCount={followersCount}
         >
-          <IonLabel className={style['tab-label']}>
-            Followers({followersCount})
-          </IonLabel>
-        </IonItem>
-        <IonItem
-          className={
-            (active === 'following' ? style['tab-active'] : '') +
-            ' ' +
-            style['tab-item']
-          }
+          <IonLabel>Followers</IonLabel>
+        </TabItem>
+        <TabItem
+          active={active === 'following'}
           onClick={() => setActive('following')}
+          badgeCount={followingCount}
         >
-          <IonLabel className={style['tab-label']}>
-            Following({followingCount})
-          </IonLabel>
-        </IonItem>
-        <IonItem
-          className={
-            (active === 'mutual' ? style['tab-active'] : '') +
-            ' ' +
-            style['tab-item']
-          }
+          <IonLabel>Following</IonLabel>
+        </TabItem>
+        <TabItem
+          active={active === 'mutual'}
           onClick={() => setActive('mutual')}
+          badgeCount={mutualFollowerCount}
         >
-          <IonLabel className={style['tab-label']}>
-            Mutual Followers({mutualFollowerCount})
-          </IonLabel>
-        </IonItem>
+          <IonLabel>Mutual Followers</IonLabel>
+        </TabItem>
       </IonList>
     </ConnectionHeaderContainer>
   );
