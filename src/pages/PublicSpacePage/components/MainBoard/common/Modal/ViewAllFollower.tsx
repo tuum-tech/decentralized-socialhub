@@ -55,7 +55,7 @@ const ViewAllFollower = ({ space, isOpen, onClose }: Props) => {
       await fetchMoreData();
     })();
     (async () => {
-      const _followers_ = await TuumTechScriptService.searchUserWithDIDs(dids);
+      const _followers_ = await TuumTechScriptService.searchUserWithDIDs(dids, dids.length);
       setTotalCount(_followers_.length);
     })();
   }, [space]);
