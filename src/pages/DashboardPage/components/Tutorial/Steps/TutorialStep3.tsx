@@ -16,6 +16,7 @@ import { DidcredsService } from 'src/services/didcreds.service';
 import { useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom } from 'src/Atoms/Atoms';
 import style from '../style.module.scss';
+import request from 'src/baseplate/request';
 
 const VersionTag = styled.div`
   display: flex;
@@ -149,6 +150,23 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
       let storedDocument = await didService.getStoredDocument(
         new DID(session.did)
       );
+
+      const profileVersionResponse: any = await request(
+        `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/version`,
+        {
+          method: 'GET',
+          headers: {
+            'content-Type': 'application/json',
+            Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`
+          }
+        }
+      );
+      let profileVersion = '';
+      if (profileVersionResponse.meta.code === 200) {
+        let profileVersionData = profileVersionResponse.data;
+        profileVersion = profileVersionData.latestVersion;
+      }
+      await ProfileService.updateVersion(profileVersion, newSession);
 
       storedDocument.credentials?.forEach(async vc => {
         await DidcredsService.addOrUpdateCredentialToVault(newSession, vc);
