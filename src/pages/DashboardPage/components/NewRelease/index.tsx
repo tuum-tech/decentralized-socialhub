@@ -36,6 +36,7 @@ const Component: React.FC<ComponentProps> = ({
       if (contents.profileVersion)
         await ProfileService.updateVersion(contents.profileVersion, newSession);
       setSession(await userService.updateSession(newSession));
+      UserService.logout();
     } catch (err) {
       console.log('update session err ===>', err);
     }
@@ -45,10 +46,12 @@ const Component: React.FC<ComponentProps> = ({
     <div className={style['release-component']}>
       <img alt="logo" src={logo} className={style['img']} />
       <h2>New Release v{contents.profileVersion}</h2>
+      <h3>Note that you'll need to relogin upon closing this notification</h3>
       <h3>
         We've worked hard to implement the following new features and
         improvements to Profile:
       </h3>
+
       <ContentComponent contents={contents} />
       <DefaultButton
         variant="contained"
