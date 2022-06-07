@@ -28,8 +28,6 @@ const Component: React.FC<ComponentProps> = ({
     updateSession();
   };
 
-  console.log('hello - new releaese: ', contents);
-
   const updateSession = async () => {
     try {
       let newSession = JSON.parse(JSON.stringify(session));
