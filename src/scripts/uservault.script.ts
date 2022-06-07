@@ -43,7 +43,8 @@ export class UserVaultScripts {
       hiveClient.Database.createCollection('certification_profile'),
       hiveClient.Database.createCollection('game_exp_profile'),
       hiveClient.Database.createCollection('private_spaces'),
-      hiveClient.Database.createCollection('space_posts')
+      hiveClient.Database.createCollection('space_posts'),
+      hiveClient.Database.createCollection('version_profile'),
     ]);
   }
 
@@ -884,6 +885,30 @@ export class UserVaultScripts {
     );
   }
 
+  static async removeVersionScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'removeVersionScriptSetter'..."
+    );
+    await hiveClient.Scripting.SetScript({
+      name: 'remove_version_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'delete',
+        name: 'remove_version_profile',
+        body: {
+          collection: 'version_profile',
+          filter: {
+            did: '$params.did'
+          }
+        }
+      }
+    });
+    console.log(
+      "Completed registration of uservault script 'removeVersionScriptSetter'"
+    );
+  }
+
   static async updateExperienceProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'updateExperienceProfileScriptSetter'..."
@@ -1349,6 +1374,7 @@ export class UserVaultScripts {
     await this.removeSpacePost(hiveClient);
     await this.getVersionProfileScriptSetter(hiveClient);
     await this.updateVersionProfileScriptSetter(hiveClient);
+    await this.removeVersionScriptSetter(hiveClient);
   }
 
   static async Delete(hiveClient: HiveClient) {
@@ -1368,5 +1394,6 @@ export class UserVaultScripts {
     await hiveClient.Database.deleteCollection('game_exp_profile');
     await hiveClient.Database.deleteCollection('private_spaces');
     await hiveClient.Database.deleteCollection('space_posts');
+    await hiveClient.Database.deleteCollection('version_profile');
   }
 }
