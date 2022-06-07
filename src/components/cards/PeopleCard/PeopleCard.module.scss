@@ -1,9 +1,19 @@
 .people {
+  @media (min-width: 575.98px) {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
   .tab-card {
     border-radius: 16px;
     background: #fff;
     overflow: visible;
     padding: 16px 8px;
+
+    @media (min-width: 575.98px) {
+      margin-left: 0;
+      margin-right: 0;
+    }
   }
 
   .pagination-footer {

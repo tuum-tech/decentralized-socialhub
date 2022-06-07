@@ -1,20 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   IonCard,
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
-  IonRow,
   IonCol
 } from '@ionic/react';
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
+import { useBreakpoint } from 'styled-breakpoints/react-styled';
+import { down } from 'styled-breakpoints';
 
-import { makeSelectSession } from 'src/store/users/selectors';
-import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState } from '../SocialProfileCard/types';
 import { ProfileService } from 'src/services/profile.service';
 import Pagination from 'src/components/Pagination';
+import useSession from 'src/hooks/useSession';
 
 import style from './PeopleCard.module.scss';
 import DidCard from '../DidCard';
@@ -24,28 +21,34 @@ export interface IFollowingResponse {
   get_following: IGetFollowing;
 }
 
-const peopleItem = (
-  peopleItem: any,
-  following: FollowingDTO,
-  indexItem: number,
-  colSize: any,
-  followClicked: (isFollow: boolean, did: string) => void
-) => {
-  return (
-    <DidCard
-      name={peopleItem.name}
-      did={peopleItem.did}
-      avatar={peopleItem.avatar}
-      colSize={colSize}
-      following={following}
-      type="user"
-      key={'did-people-card-' + indexItem}
-      followClicked={followClicked}
-    />
-  );
-};
+interface PeopleItemProps {
+  peopleItem: any;
+  following: FollowingDTO;
+  indexItem: number;
+  colSize: any;
+  followClicked: (isFollow: boolean, did: string) => void;
+}
 
-interface Props extends InferMappedProps {
+const PeopleItem = ({
+  peopleItem,
+  following,
+  indexItem,
+  colSize,
+  followClicked
+}: PeopleItemProps) => (
+  <DidCard
+    name={peopleItem.name}
+    did={peopleItem.did}
+    avatar={peopleItem.avatar}
+    colSize={colSize}
+    following={following}
+    type="user"
+    key={'did-people-card-' + indexItem}
+    followClicked={followClicked}
+  />
+);
+
+interface Props {
   people?: PeopleDTO;
   following: FollowingDTO;
   searchKeyword?: string;
@@ -64,16 +67,26 @@ const PeopleCard: React.FC<Props> = ({
   showHeader = true,
   showMutualFollowers = false,
   size = '12',
-  session,
   unfollowMutualFollower
 }: Props) => {
+  const { session } = useSession();
+  const isSmDown = useBreakpoint(down('sm'));
   // const perPage = parseInt(size) / 12 === 1 ? 4 : 8;
   const [perPage, setPerPage] = useState<number>(10);
-  const totalPages = people && people.items ? people.items.length / perPage : 1;
+  const totalPages = useMemo(
+    () => (people && people.items ? people.items.length / perPage : 1),
+    [people, perPage]
+  );
 
   const [peoplePageOffset, setPeoplePageOffset] = useState(0);
-  const [listPeople, setListPeople] = useState<any[]>([]);
   const [listFollowing, setListFollowing] = useState<FollowingDTO>(following);
+  const listPeople = useMemo(() => {
+    let listPeopleLocal = people
+      ? people.items.slice(peoplePageOffset, peoplePageOffset + perPage)
+      : [];
+
+    return listPeopleLocal;
+  }, [peoplePageOffset, people, perPage]);
 
   const followClicked = async (isFollowing: boolean, did: string) => {
     if (!isFollowing && showMutualFollowers && unfollowMutualFollower) {
@@ -103,31 +116,6 @@ const PeopleCard: React.FC<Props> = ({
     })();
   }, [session]);
 
-  useEffect(() => {
-    (async () => {
-      let peopleCardRatio = parseInt(size) / 12 === 1 ? '100%' : '50%';
-      peopleCardRatio = perPage > 10 ? '33.33%' : '50%';
-      let listPeopleLocal: any =
-        people &&
-        people.items
-          .slice(peoplePageOffset, peoplePageOffset + perPage)
-          .map((p, index) =>
-            peopleItem(
-              p,
-              listFollowing,
-              index,
-              peopleCardRatio,
-              // handleUnfollow,
-              // loadFollowing
-              followClicked
-            )
-          );
-
-      setListPeople(listPeopleLocal);
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [peoplePageOffset, people, listFollowing, perPage]);
-
   const handlePeoplePageClick = (data: any) => {
     let selected = data.selected;
     let offset = Math.ceil(selected * perPage);
@@ -139,18 +127,28 @@ const PeopleCard: React.FC<Props> = ({
     setPerPage(selected.label);
   };
 
+  let peopleCardRatio = isSmDown ? '100%' : perPage > 10 ? '33.33%' : '50%';
+
   return (
-    <IonCol
-      size={(parseInt(size) / 12 === 1 ? parseInt(size) / 2 : 12).toString()}
-      className={style['people']}
-    >
+    <IonCol className={style['people']}>
       <IonCard className={style['tab-card']}>
         {showHeader && (
           <IonCardHeader>
             <IonCardTitle className={style['card-title']}>People</IonCardTitle>
           </IonCardHeader>
         )}
-        {listPeople}
+        {listPeople.map((p, index) => (
+          <PeopleItem
+            key={index}
+            peopleItem={p}
+            following={listFollowing}
+            indexItem={index}
+            colSize={peopleCardRatio}
+            followClicked={followClicked}
+          />
+          // handleUnfollow,
+          // loadFollowing
+        ))}
         {listPeople.length > 0 ? (
           <Pagination
             perPage={perPage}
@@ -172,19 +170,4 @@ const PeopleCard: React.FC<Props> = ({
   );
 };
 
-// export default PeopleCard;
-
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PeopleCard);
+export default PeopleCard;
