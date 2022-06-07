@@ -183,7 +183,7 @@ const DashboardPage: React.FC = () => {
     if (profile) {
       profile.experienceDTO.isEnabled = true;
       profile.educationDTO.isEnabled = true;
-      handleCheckVersion(profile.versionDTO.latestVersion);
+      handleCheckVersion(profile.versionDTO?.latestVersion);
       setFullProfile(profile);
     }
 
