@@ -163,10 +163,7 @@ const DashboardPage: React.FC = () => {
         releaseNotes: profileVersionData.releaseNotes,
         videoUpdateUrl: profileVersionData.videoUpdateUrl
       };
-      if (
-        !session?.latestVersion ||
-        session?.latestVersion < profileVersionData?.latestVersion
-      ) {
+      if (!userVersion || userVersion < profileVersionData.latestVersion) {
         v.latestVersion = profileVersionData.latestVersion;
         setShowReleaseModal(true);
       }

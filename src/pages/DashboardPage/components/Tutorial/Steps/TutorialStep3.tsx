@@ -161,15 +161,13 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
           }
         }
       );
-      let profileVersion = '';
       if (profileVersionResponse.meta.code === 200) {
         let profileVersionData = profileVersionResponse.data;
-        profileVersion = profileVersionData.latestVersion;
+        await ProfileService.updateVersion(
+          profileVersionData.latestVersion,
+          newSession
+        );
       }
-      newSession = JSON.parse(JSON.stringify({ ...newSession }));
-      newSession.latestVersion = profileVersion;
-      await ProfileService.updateVersion(profileVersion, newSession);
-      setSession(await userService.updateSession(newSession));
 
       storedDocument.credentials?.forEach(async vc => {
         await DidcredsService.addOrUpdateCredentialToVault(newSession, vc);

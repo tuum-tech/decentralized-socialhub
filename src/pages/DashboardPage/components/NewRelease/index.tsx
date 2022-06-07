@@ -25,20 +25,17 @@ const Component: React.FC<ComponentProps> = ({
 
   const handleClose = () => {
     onClose();
-    updateSession();
+    updateVersion();
   };
 
-  const updateSession = async () => {
+  const updateVersion = async () => {
     try {
       let newSession = JSON.parse(JSON.stringify(session));
-      newSession.latestVersion = contents.profileVersion;
-      let userService = new UserService(await DidService.getInstance());
       if (contents.profileVersion)
         await ProfileService.updateVersion(contents.profileVersion, newSession);
-      setSession(await userService.updateSession(newSession));
       UserService.logout();
     } catch (err) {
-      console.log('update session err ===>', err);
+      console.log('update version err ===>', err);
     }
   };
 
