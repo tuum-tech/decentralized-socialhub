@@ -265,6 +265,7 @@ interface ProfileDTO {
   certificationDTO: CertificationDTO;
   gameExpDTO: GameExpDTO;
   gamerTagDTO: GamerTagDTO;
+  versionDTO: Version;
 }
 
 interface IReferral {
@@ -298,8 +299,9 @@ interface ISessionItem {
   referrals?: IReferral[];
   passwordRemoved?: boolean;
   wallets?: any;
-  created?: {$date: number}
-  sign_up_date?: string
+  created?: { $date: number };
+  sign_up_date?: string;
+  latestVersion?: string;
 }
 
 interface LoginCred {
@@ -462,6 +464,11 @@ interface EducationProfileResponse {
   get_education_profile: EducationDTO;
 }
 
+interface VersionProfileResponse {
+  _status: string;
+  get_version_profile: Version;
+}
+
 interface ExperienceProfileResponse {
   _status: string;
   get_experience_profile: ExperienceDTO;
@@ -599,4 +606,11 @@ interface Space {
   isCommunitySpace?: boolean;
   socialLinks?: any;
   tags?: string[];
+}
+
+interface Version {
+  latestVersion: string;
+  profileVersion?: string;
+  releaseNotes?: string[];
+  videoUpdateUrl?: string;
 }

@@ -3,6 +3,7 @@ import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { ActivityResponse } from 'src/pages/ActivityPage/types';
 import { VerificationService } from 'src/services/verification.service';
+import request, { BaseplateResp } from 'src/baseplate/request';
 
 import { showNotify } from 'src/utils/notify';
 import { getItemsFromData } from 'src/utils/script';
@@ -174,6 +175,9 @@ export class ProfileService {
       verifiers: [] as any[]
     };
     let basicDTO: any = {};
+    let versionDTO: Version = {
+      latestVersion: ''
+    };
     let educationDTO: EducationDTO = {
       items: [],
       isEnabled: true
@@ -295,6 +299,21 @@ export class ProfileService {
           cpRes,
           'get_certification_profile'
         );
+
+        const versionRes: IRunScriptResponse<VersionProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_version_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+            }
+          }
+        );
+        const versionPData = getItemsFromData(
+          versionRes,
+          'get_version_profile'
+        );
+        versionDTO = versionPData[0];
 
         const gexpRes: IRunScriptResponse<GameExpProfileResponse> = await hiveInstance.Scripting.RunScript(
           {
@@ -423,7 +442,8 @@ export class ProfileService {
       licenseDTO,
       certificationDTO,
       gameExpDTO,
-      gamerTagDTO
+      gamerTagDTO,
+      versionDTO
     };
   }
 
@@ -440,6 +460,28 @@ export class ProfileService {
       });
       if (res.isSuccess && res.response._status === 'OK') {
         showNotify('About info is successfuly saved', 'success');
+      }
+    }
+  }
+
+  static async updateVersion(latestVersion: string, session: ISessionItem) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'update_version_profile',
+        context: {
+          target_did: session.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: {
+          latestVersion,
+          did: session.did
+        }
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Updated to latest version', 'success');
+      } else {
+        showNotify('Error executing script', 'error');
       }
     }
   }
@@ -1202,6 +1244,10 @@ export const defaultFullProfile = {
   educationDTO: {
     isEnabled: false,
     items: [] as EducationItem[]
+  },
+  versionDTO: {
+    isEnabled: false,
+    latestVersion: ''
   },
   experienceDTO: {
     isEnabled: false,
