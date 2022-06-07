@@ -22,40 +22,21 @@ const Component: React.FC<ComponentProps> = ({
   contents
 }: ComponentProps) => {
   const { session, setSession } = useSession();
-  const [profile, setProfile] = useRecoilState<ProfileDTO>(FullProfileAtom);
 
   const handleClose = () => {
     onClose();
     updateSession();
   };
 
-  useEffect(() => {
-    retriveProfile();
-  }, [session]);
-
-  const retriveProfile = async () => {
-    if (!session.userToken) return;
-    try {
-      let res: ProfileDTO | undefined = await ProfileService.getFullProfile(
-        session.did,
-        session
-      );
-      console.log('profile ===>', res);
-      if (res) {
-        res.basicDTO.isEnabled = true;
-        setProfile(res);
-      }
-    } catch (e) {
-      console.log('getFullProfile err ======>', e);
-    }
-  };
+  console.log('hello - new releaese: ', contents);
 
   const updateSession = async () => {
     try {
       let newSession = JSON.parse(JSON.stringify(session));
-      newSession.latestVersion = contents.latestVersion;
+      newSession.latestVersion = contents.profileVersion;
       let userService = new UserService(await DidService.getInstance());
-      await ProfileService.updateVersion(contents.latestVersion, newSession);
+      if (contents.profileVersion)
+        await ProfileService.updateVersion(contents.profileVersion, newSession);
       setSession(await userService.updateSession(newSession));
     } catch (err) {
       console.log('update session err ===>', err);
@@ -65,8 +46,11 @@ const Component: React.FC<ComponentProps> = ({
   return (
     <div className={style['release-component']}>
       <img alt="logo" src={logo} className={style['img']} />
-      <h2>New Releases</h2>
-      <h3>We've worked hard to implement new features and improvements</h3>
+      <h2>New Release v{contents.profileVersion}</h2>
+      <h3>
+        We've worked hard to implement the following new features and
+        improvements to Profile:
+      </h3>
       <ContentComponent contents={contents} />
       <DefaultButton
         variant="contained"

@@ -6,7 +6,7 @@ import style from './style.module.scss';
 interface Props {
   contents: {
     latestVersion: string;
-    releaseNotes: string[];
+    releaseNotes?: string[];
     videoUpdateUrl?: string;
   };
 }
@@ -14,16 +14,17 @@ interface Props {
 const ContentComponent: React.FC<Props> = ({ contents }: Props) => {
   return (
     <IonGrid className="ion-no-padding">
-      {contents.releaseNotes.map((v, index) => (
-        <IonRow className={style['item']} key={index}>
-          <IonCol size="auto" className="ion-no-padding">
-            <p>{index + 1}. </p>
-          </IonCol>
-          <IonCol size="auto" className="ion-no-padding">
-            <p className={style['item-left']}>{v}</p>
-          </IonCol>
-        </IonRow>
-      ))}
+      {contents.releaseNotes &&
+        contents.releaseNotes.map((v, index) => (
+          <IonRow className={style['item']} key={index}>
+            <IonCol size="auto" className="ion-no-padding">
+              <p>{index + 1}. </p>
+            </IonCol>
+            <IonCol size="auto" className="ion-no-padding">
+              <p className={style['item-left']}>{v}</p>
+            </IonCol>
+          </IonRow>
+        ))}
       {contents.videoUpdateUrl && (
         <IonRow className="ion-justify-content-center">
           <iframe

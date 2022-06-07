@@ -265,7 +265,7 @@ interface ProfileDTO {
   certificationDTO: CertificationDTO;
   gameExpDTO: GameExpDTO;
   gamerTagDTO: GamerTagDTO;
-  versionDTO: Version
+  versionDTO: Version;
 }
 
 interface IReferral {
@@ -299,9 +299,9 @@ interface ISessionItem {
   referrals?: IReferral[];
   passwordRemoved?: boolean;
   wallets?: any;
-  created?: {$date: number}
-  sign_up_date?: string
-  latestVersion?: string
+  created?: { $date: number };
+  sign_up_date?: string;
+  latestVersion?: string;
 }
 
 interface LoginCred {
@@ -610,6 +610,7 @@ interface Space {
 
 interface Version {
   latestVersion: string;
-  releaseNotes: string[];
+  profileVersion?: string;
+  releaseNotes?: string[];
   videoUpdateUrl?: string;
 }

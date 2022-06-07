@@ -176,9 +176,7 @@ export class ProfileService {
     };
     let basicDTO: any = {};
     let versionDTO: Version = {
-      latestVersion: '',
-      releaseNotes: [],
-      videoUpdateUrl: ''
+      latestVersion: ''
     };
     let educationDTO: EducationDTO = {
       items: [],
@@ -311,9 +309,12 @@ export class ProfileService {
             }
           }
         );
+        const versionPData = getItemsFromData(
+          versionRes,
+          'get_version_profile'
+        );
+        versionDTO = versionPData[0];
 
-        const versionPData = getItemsFromData(versionRes, 'get_version_profile');
-        versionDTO = versionPData[0]
         const gexpRes: IRunScriptResponse<GameExpProfileResponse> = await hiveInstance.Scripting.RunScript(
           {
             name: 'get_game_exp_profile',
@@ -463,19 +464,6 @@ export class ProfileService {
     }
   }
 
-  static getCurrentVersion(): Promise<BaseplateResp> {
-    return request(
-      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/version`,
-      {
-        method: 'GET',
-        headers: {
-          'content-Type': 'application/json',
-          Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`
-        }
-      }
-    );
-  }
-
   static async updateVersion(latestVersion: string, session: ISessionItem) {
     const hiveInstance = await HiveService.getSessionInstance(session);
     if (session && hiveInstance) {
@@ -487,11 +475,11 @@ export class ProfileService {
         },
         params: {
           latestVersion,
-          did: session.did,
+          did: session.did
         }
       });
       if (res.isSuccess && res.response._status === 'OK') {
-        showNotify('Latest version checked', 'success');
+        showNotify('Updated to latest version', 'success');
       } else {
         showNotify('Error executing script', 'error');
       }
@@ -1259,9 +1247,7 @@ export const defaultFullProfile = {
   },
   versionDTO: {
     isEnabled: false,
-    latestVersion: '',
-    releaseNotes: [],
-    videoUpdateUrl: ''
+    latestVersion: ''
   },
   experienceDTO: {
     isEnabled: false,
