@@ -155,7 +155,7 @@ const DashboardPage: React.FC = () => {
       let profileVersionData = profileVersionResponse.data;
       let profileVersionLatestVersion = profileVersionData.latestVersion;
       console.log(
-        `User is on v${userVersion} and Profile App is on v${profileVersionLatestVersion}`
+        `User is on version '${userVersion}' and Profile App is on version '${profileVersionLatestVersion}'`
       );
       let v: Version = {
         latestVersion: userVersion,
