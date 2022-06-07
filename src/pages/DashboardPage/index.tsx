@@ -82,36 +82,6 @@ const DashboardPage: React.FC = () => {
     }, 5000);
   };
 
-  const handleCheckVersion = async (userVersion: string) => {
-    const profileVersionResponse: any = await request(
-      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/version`,
-      {
-        method: 'GET',
-        headers: {
-          'content-Type': 'application/json',
-          Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`
-        }
-      }
-    );
-    if (profileVersionResponse.meta.code === 200) {
-      let profileVersionData = profileVersionResponse.data;
-      let v: Version = {
-        latestVersion: userVersion,
-        profileVersion: profileVersionData.latestVersion,
-        releaseNotes: profileVersionData.releaseNotes,
-        videoUpdateUrl: profileVersionData.videoUpdateUrl
-      };
-      if (
-        !session?.latestVersion ||
-        session.latestVersion < profileVersionData.latestVersion
-      ) {
-        v.latestVersion = profileVersionData.latestVersion;
-        setShowReleaseModal(true);
-      }
-      setVersion(v);
-    }
-  };
-
   useEffect(() => {
     (async () => {
       if (didDocument === '') {
@@ -166,6 +136,41 @@ const DashboardPage: React.FC = () => {
 
       let userService = new UserService(await DidService.getInstance());
       setSession(await userService.updateSession(session));
+    }
+  };
+
+  const handleCheckVersion = async (userVersion: string) => {
+    const profileVersionResponse: any = await request(
+      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/version`,
+      {
+        method: 'GET',
+        headers: {
+          'content-Type': 'application/json',
+          Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`
+        }
+      }
+    );
+
+    if (profileVersionResponse.meta.code === 200) {
+      let profileVersionData = profileVersionResponse.data;
+      let profileVersionLatestVersion = profileVersionData.latestVersion;
+      console.log(
+        `User is on v${userVersion} and Profile App is on v${profileVersionLatestVersion}`
+      );
+      let v: Version = {
+        latestVersion: userVersion,
+        profileVersion: profileVersionLatestVersion,
+        releaseNotes: profileVersionData.releaseNotes,
+        videoUpdateUrl: profileVersionData.videoUpdateUrl
+      };
+      if (
+        !session?.latestVersion ||
+        session?.latestVersion < profileVersionData.latestVersion
+      ) {
+        v.latestVersion = profileVersionData.latestVersion;
+        setShowReleaseModal(true);
+      }
+      setVersion(v);
     }
   };
 
