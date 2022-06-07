@@ -103,7 +103,7 @@ const DashboardPage: React.FC = () => {
       };
       if (
         !session?.latestVersion ||
-        session.latestVersion < profileVersionData
+        session.latestVersion < profileVersionData.latestVersion
       ) {
         v.latestVersion = profileVersionData.latestVersion;
         setShowReleaseModal(true);
