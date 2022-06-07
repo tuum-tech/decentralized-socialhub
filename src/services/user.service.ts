@@ -505,7 +505,8 @@ export class UserService {
       coverPhoto: '',
       pageTemplate: 'default',
       timestamp: Date.now(),
-      referrals: [] as IReferral[]
+      referrals: [] as IReferral[],
+      wallets: {}
     };
     let curTime = new Date().getTime();
     let messages = [];

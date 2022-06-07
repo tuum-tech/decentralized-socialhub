@@ -18,6 +18,8 @@ import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { ProfileService } from 'src/services/profile.service';
 
 import TutorialComponent from './components/Tutorial';
+import NewRelease from './components/NewRelease';
+
 import DashboardContent from './components/DashboardContent';
 import OnBoarding from './components/OnBoarding';
 import DashboardHeader from './components/DashboardHeader';
@@ -28,6 +30,8 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom, FullProfileAtom } from 'src/Atoms/Atoms';
 import MainLayout from 'src/components/layouts/MainLayout';
 import useSession from 'src/hooks/useSession';
+import request from 'src/baseplate/request';
+import { validatePhoneNumberLength } from 'libphonenumber-js/min';
 
 const TutorialModal = styled(IonModal)`
   --border-radius: 16px;
@@ -41,12 +45,21 @@ const TutorialModal = styled(IonModal)`
   --box-shadow: none !important;
 `;
 
+const ReleaseModal = styled(IonModal)`
+  --border-radius: 16px;
+  --max-width: 541px;
+  width: 100% !important;
+  --background: transparent !important;
+  --box-shadow: none !important;
+`;
+
 const DashboardPage: React.FC = () => {
   const { session, setSession } = useSession();
 
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');
+  const [showReleaseModal, setShowReleaseModal] = useState(false);
   const isSmUp = useBreakpoint(up('sm'));
 
   const [didDocument, setDidDocument] = useRecoilState(DIDDocumentAtom);
@@ -60,7 +73,7 @@ const DashboardPage: React.FC = () => {
   const [followingDids, setFollowingDids] = useState<string[]>([]);
   const [followerDids, setFollowerDids] = useState<string[]>([]);
   const [mutualDids, setMutualDids] = useState<string[]>([]);
-
+  const [version, setVersion] = useState<Version | null>(null);
   const history = useHistory();
 
   let timer: NodeJS.Timeout;
@@ -68,6 +81,72 @@ const DashboardPage: React.FC = () => {
     timer = setInterval(async () => {
       await refreshStatus();
     }, 5000);
+  };
+
+  const isLatestVersion = async (
+    userVersion: string,
+    profileVersionData: Version
+  ) => {
+    let pattern = /[v\s]*/gi;
+    let minVersion = profileVersionData.latestVersion
+      .replace(pattern, '')
+      .split('.');
+
+    let actualVersion = userVersion?.replace(pattern, '').split('.');
+
+    if (minVersion === undefined) return false;
+
+    let majorMin = Number(minVersion[0]);
+    let majorActual = Number(actualVersion[0]);
+
+    if (majorActual < majorMin) return false;
+
+    let minorMin = Number(minVersion[1]);
+    let minorActual = Number(actualVersion[1]);
+
+    if (majorActual === majorMin && minorActual < minorMin) return false;
+
+    let versionMin = Number(minVersion[2]);
+    let versionActual = Number(actualVersion[2]);
+
+    if (
+      majorActual === majorMin &&
+      minorActual === minorMin &&
+      versionActual < versionMin
+    ) {
+      return false;
+    }
+    return true;
+  };
+
+  const handleCheckVersion = async (userVersion: string) => {
+    const profileVersionResponse: any = await request(
+      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/version`,
+      {
+        method: 'GET',
+        headers: {
+          'content-Type': 'application/json',
+          Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`
+        }
+      }
+    );
+    if (profileVersionResponse.meta.code === 200) {
+      let profileVersionData = profileVersionResponse.data;
+      let v: Version = {
+        latestVersion: userVersion,
+        profileVersion: profileVersionData.latestVersion,
+        releaseNotes: profileVersionData.releaseNotes,
+        videoUpdateUrl: profileVersionData.videoUpdateUrl
+      };
+      if (
+        !session?.latestVersion ||
+        !isLatestVersion(session.latestVersion, profileVersionData)
+      ) {
+        v.latestVersion = profileVersionData.latestVersion;
+        setShowReleaseModal(true);
+      }
+      setVersion(v);
+    }
   };
 
   useEffect(() => {
@@ -136,6 +215,7 @@ const DashboardPage: React.FC = () => {
     if (profile) {
       profile.experienceDTO.isEnabled = true;
       profile.educationDTO.isEnabled = true;
+      handleCheckVersion(profile.versionDTO.latestVersion);
       setFullProfile(profile);
     }
 
@@ -302,7 +382,6 @@ const DashboardPage: React.FC = () => {
               publishStatus={publishStatus}
             />
           )}
-
           <DashboardContent
             onTutorialStart={() => {
               setShowTutorial(true);
@@ -324,6 +403,20 @@ const DashboardPage: React.FC = () => {
               }}
             />
           </TutorialModal>
+          {version && (
+            <ReleaseModal
+              isOpen={showReleaseModal}
+              backdropDismiss={false}
+              cssClass={style['tutorialpage']}
+            >
+              <NewRelease
+                onClose={() => {
+                  setShowReleaseModal(false);
+                }}
+                contents={version}
+              />
+            </ReleaseModal>
+          )}
         </React.Fragment>
       )}
     </MainLayout>

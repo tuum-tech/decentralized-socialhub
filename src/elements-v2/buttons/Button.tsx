@@ -1,12 +1,18 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import { IonRouterLink } from '@ionic/react';
+import { IonRouterLink, IonSpinner } from '@ionic/react';
 import clsx from 'clsx';
 import { ButtonProps, DefaultButtonProps, LinkButtonProps } from './types';
 import styles from './Button.module.scss';
 import GradientText from './GradientText';
-import ButtonText from './ButtonText';
+import ColorText from './ColorText';
 import Icon from '../icons';
+
+const Spinner = styled(IonSpinner)`
+  --color: #dc59bf;
+  width: 1rem;
+  height: 1rem;
+`;
 
 function withStyle<T extends object>(
   Component: React.ComponentType<T>
@@ -23,6 +29,7 @@ function withStyle<T extends object>(
         ? '6px 11px'
         : '10px 15px'};
     width: fit-content;
+    min-width: ${props => (props.loading ? '70px' : 'unset')};
     height: ${props =>
       props.size === 'large'
         ? '43px'
@@ -42,6 +49,7 @@ function withStyle<T extends object>(
     variant,
     textType,
     bgColor,
+    loading,
     children,
     size = 'default',
     disabled = false,
@@ -51,7 +59,7 @@ function withStyle<T extends object>(
     className: customClass,
     ...originalProps
   }) => {
-    const props = { ...originalProps, disabled, size };
+    const props = { ...originalProps, disabled, size, loading };
 
     let backStyle = '';
     let fontColor = '';
@@ -99,6 +107,8 @@ function withStyle<T extends object>(
         });
         fontColor = borderColor;
       }
+    } else if (variant === 'text') {
+      Object.assign(style, { background: 'transparent' });
     }
     const fontSize = size === 'default' ? 13 : size === 'large' ? 15 : 12;
 
@@ -109,15 +119,25 @@ function withStyle<T extends object>(
         style={style}
       >
         <StyledDivCenter>
-          {textType === 'gradient' && !disabled ? (
-            <GradientText fontSize={fontSize}>{children}</GradientText>
+          {loading ? (
+            <Spinner />
           ) : (
-            <ButtonText fontSize={fontSize} color={fontColor}>
-              {children}
-            </ButtonText>
-          )}
-          {icon && (
-            <Icon name={icon} style={{ paddingLeft: 6 }} color="medium"></Icon>
+            <>
+              {textType === 'gradient' && !disabled ? (
+                <GradientText fontSize={fontSize}>{children}</GradientText>
+              ) : (
+                <ColorText fontSize={fontSize} color={fontColor}>
+                  {children}
+                </ColorText>
+              )}
+              {icon && (
+                <Icon
+                  name={icon}
+                  style={{ paddingLeft: 6 }}
+                  color="medium"
+                ></Icon>
+              )}
+            </>
           )}
         </StyledDivCenter>
       </StyledButton>
@@ -127,8 +147,10 @@ function withStyle<T extends object>(
 
 const LinkButton = withStyle<LinkButtonProps>(IonRouterLink);
 
-const DefaultButton = withStyle<DefaultButtonProps>(props => (
-  <button {...props} />
-));
+const DefaultButton = withStyle<DefaultButtonProps>(
+  ({ onClick, loading, ...props }) => (
+    <button {...props} onClick={() => !loading && onClick && onClick()} />
+  )
+);
 
 export { LinkButton, DefaultButton };

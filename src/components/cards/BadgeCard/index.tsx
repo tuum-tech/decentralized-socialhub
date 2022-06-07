@@ -2,19 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 
-import {
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonCol,
-  IonGrid,
-  IonRow
-} from '@ionic/react';
+import { IonCol, IonGrid } from '@ionic/react';
 
 import { timeSince } from 'src/utils/time';
 import badgeDetails from 'src/data/badge_detail.json';
-import { CardOverview, LinkStyleSpan } from '../common';
-import style from '../FollowCards/style.module.scss';
+import Card from 'src/elements-v2/Card';
+import { LinkStyleSpan } from '../common';
 
 interface Props {
   badges: IBadges;
@@ -45,74 +38,57 @@ const BadgeCard: React.FC<Props> = ({ badges, template }) => {
   }, [badges]);
 
   return (
-    <CardOverview template={template}>
-      <IonCardHeader className={style['card-header']}>
-        <IonGrid>
-          <IonRow className="ion-justify-content-between">
-            <IonCol size="6">
-              <IonCardTitle id="education">
-                Badges{' '}
-                {`${
-                  archivedBadges.length > 0
-                    ? '(' + archivedBadges.length + ')'
-                    : ''
-                }`}
-              </IonCardTitle>
-            </IonCol>
-            <IonCol size="auto">
-              <LinkStyleSpan
-                onClick={() => {
-                  if (maxBadges === 6) {
-                    setMaxBadges(archivedBadges.length);
-                  } else {
-                    setMaxBadges(6);
-                  }
-                }}
-              >
-                {maxBadges === 6 ? 'View All' : 'Collapse'}
-              </LinkStyleSpan>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </IonCardHeader>
-
-      <IonCardContent>
-        <IonGrid
-          className={style['following-widget']}
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap'
+    <Card
+      template={template}
+      title={`Badges ${
+        archivedBadges.length > 0 ? '(' + archivedBadges.length + ')' : ''
+      }`}
+      action={
+        <LinkStyleSpan
+          onClick={() => {
+            if (maxBadges === 6) {
+              setMaxBadges(archivedBadges.length);
+            } else {
+              setMaxBadges(6);
+            }
           }}
         >
-          {archivedBadges.slice(0, maxBadges).map((badge, index) => {
-            const { category, name, archived } = badge;
-            const { title, description, enbl_icon, dsabl_icon } = badgeDetails[
-              category
-            ][name];
-            const text = `${title} <br/> Achieved ${timeSince(archived)}`;
-            return (
-              <IonCol
-                key={title}
-                size="2"
-                style={{
-                  paddingLeft: '2.5px',
-                  paddingRight: '2.5px',
-                  marginBottom: '10px'
-                }}
-                data-for={title}
-                data-tip={text}
-                data-iscapture="true"
-              >
-                <div className={style['badge-icon']}>
-                  <img alt="enable icon" src={enbl_icon} height={40} />
-                </div>
-                <ReactTooltip id={title} multiline={true} />
-              </IonCol>
-            );
-          })}
-        </IonGrid>
-      </IonCardContent>
-    </CardOverview>
+          {maxBadges === 6 ? 'View All' : 'Collapse'}
+        </LinkStyleSpan>
+      }
+    >
+      <IonGrid
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap'
+        }}
+      >
+        {archivedBadges.slice(0, maxBadges).map((badge, index) => {
+          const { category, name, archived } = badge;
+          const { title, description, enbl_icon, dsabl_icon } = badgeDetails[
+            category
+          ][name];
+          const text = `${title} <br/> Achieved ${timeSince(archived)}`;
+          return (
+            <IonCol
+              key={title}
+              size="2"
+              style={{
+                paddingLeft: '2.5px',
+                paddingRight: '2.5px',
+                marginBottom: '10px'
+              }}
+              data-for={title}
+              data-tip={text}
+              data-iscapture="true"
+            >
+              <img alt="enable icon" src={enbl_icon} height={40} />
+              <ReactTooltip id={title} multiline={true} />
+            </IonCol>
+          );
+        })}
+      </IonGrid>
+    </Card>
   );
 };
 

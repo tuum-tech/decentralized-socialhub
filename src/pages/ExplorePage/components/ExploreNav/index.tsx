@@ -1,15 +1,30 @@
 import React, { useState } from 'react';
 import { IonContent, IonGrid, IonLabel, IonList, IonRow } from '@ionic/react';
 import styled from 'styled-components';
+import { down } from 'styled-breakpoints';
 
 import PeopleCard from 'src/components/cards/PeopleCard';
-import style from './style.module.scss';
 import SpaceView from '../SpaceView';
 import { TabItem } from 'src/elements-v2/tabs';
 
 export const TabList = styled(IonList)`
   background: #f7fafc;
   padding: 5px 30px;
+`;
+
+const Container = styled(IonContent)`
+  background: #f7fafc;
+  height: calc(100vh - 80px);
+`;
+
+const TabGrid = styled(IonGrid)`
+  background: #f7fafc;
+  min-height: 100%;
+  padding: 5px 30px;
+
+  ${down('sm')} {
+    padding: 5px 0;
+  }
 `;
 
 interface Props {
@@ -33,7 +48,7 @@ const ExploreNav: React.FC<Props> = ({
   const [active, setActive] = useState(tab);
 
   return (
-    <IonContent className={style['explorenav']}>
+    <Container>
       <TabList>
         {/* <TabItem
           active={active === 'all'}
@@ -60,10 +75,9 @@ const ExploreNav: React.FC<Props> = ({
         </TabItem> */}
       </TabList>
       {active === 'all' && (
-        <IonGrid className={style['tab-grid']}>
+        <TabGrid>
           <IonRow>
             <PeopleCard
-              size="6"
               people={people}
               following={following}
               searchKeyword={searchKeyword}
@@ -75,30 +89,29 @@ const ExploreNav: React.FC<Props> = ({
               isSearchKeywordDID={isSearchKeywordDID}
             /> */}
           </IonRow>
-        </IonGrid>
+        </TabGrid>
       )}
       {active === 'people' && (
-        <IonGrid className={style['tab-grid']}>
-          <IonRow>
+        <TabGrid>
+          <IonRow className="ion-no-padding">
             <PeopleCard
               showHeader={false}
               people={people}
               following={following}
               searchKeyword={searchKeyword}
-              size="6"
             />
           </IonRow>
-        </IonGrid>
+        </TabGrid>
       )}
       {active === 'spaces' && <SpaceView searchKeyword={searchKeyword} />}
       {/* {active === 'pages' && (s
-        <IonGrid className={style['tab-grid']}>
+        <TabGrid>
           <IonRow>
             <PagesCard pages={pages} searchKeyword={searchKeyword} size="6" />
           </IonRow>
-        </IonGrid>
+        </TabGrid>
       )} */}
-    </IonContent>
+    </Container>
   );
 };
 

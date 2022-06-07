@@ -1,8 +1,10 @@
+import React from 'react';
 import { IonItem } from '@ionic/react';
 import styled from 'styled-components';
+import Badge from '../Badge';
 import styles from '../style.module.scss';
 
-export const TabItem = styled(IonItem)<{ active: boolean }>`
+const StyledIonItem = styled(IonItem)<{ active: boolean }>`
   cursor: pointer;
   display: inline-block;
   --background: #f7fafc;
@@ -41,3 +43,33 @@ export const TabItem = styled(IonItem)<{ active: boolean }>`
         : ``}
   }
 `;
+
+interface TabItemProps {
+  children: React.ReactNode;
+  active: boolean;
+  badgeCount?: number;
+  onClick: () => void;
+}
+
+export const TabItem = ({ badgeCount, children, ...props }: TabItemProps) => {
+  return (
+    <StyledIonItem {...props}>
+      {children}
+      {props.active && badgeCount !== undefined ? (
+        <Badge
+          textGradient="primary-gradient"
+          gradient="secondary-gradient"
+          className="ml-2"
+        >
+          {badgeCount}
+        </Badge>
+      ) : (
+        badgeCount !== undefined && (
+          <Badge color="#425466" bgColor="#EDF2F7" className="ml-2">
+            {badgeCount}
+          </Badge>
+        )
+      )}
+    </StyledIonItem>
+  );
+};
