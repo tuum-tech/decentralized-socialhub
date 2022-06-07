@@ -31,7 +31,6 @@ import { DIDDocumentAtom, FullProfileAtom } from 'src/Atoms/Atoms';
 import MainLayout from 'src/components/layouts/MainLayout';
 import useSession from 'src/hooks/useSession';
 import request from 'src/baseplate/request';
-import { validatePhoneNumberLength } from 'libphonenumber-js/min';
 
 const TutorialModal = styled(IonModal)`
   --border-radius: 16px;
@@ -83,42 +82,6 @@ const DashboardPage: React.FC = () => {
     }, 5000);
   };
 
-  const isLatestVersion = async (
-    userVersion: string,
-    profileVersionData: Version
-  ) => {
-    let pattern = /[v\s]*/gi;
-    let minVersion = profileVersionData.latestVersion
-      .replace(pattern, '')
-      .split('.');
-
-    let actualVersion = userVersion?.replace(pattern, '').split('.');
-
-    if (minVersion === undefined) return false;
-
-    let majorMin = Number(minVersion[0]);
-    let majorActual = Number(actualVersion[0]);
-
-    if (majorActual < majorMin) return false;
-
-    let minorMin = Number(minVersion[1]);
-    let minorActual = Number(actualVersion[1]);
-
-    if (majorActual === majorMin && minorActual < minorMin) return false;
-
-    let versionMin = Number(minVersion[2]);
-    let versionActual = Number(actualVersion[2]);
-
-    if (
-      majorActual === majorMin &&
-      minorActual === minorMin &&
-      versionActual < versionMin
-    ) {
-      return false;
-    }
-    return true;
-  };
-
   const handleCheckVersion = async (userVersion: string) => {
     const profileVersionResponse: any = await request(
       `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/version`,
@@ -140,7 +103,7 @@ const DashboardPage: React.FC = () => {
       };
       if (
         !session?.latestVersion ||
-        !isLatestVersion(session.latestVersion, profileVersionData)
+        session.latestVersion < profileVersionData
       ) {
         v.latestVersion = profileVersionData.latestVersion;
         setShowReleaseModal(true);
