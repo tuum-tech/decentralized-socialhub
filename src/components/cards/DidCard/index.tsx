@@ -72,7 +72,7 @@ const DidCard: React.FC<Props> = ({
 
   return (
     <IonList
-      className={clsx(style['did'], { [style['col-3']]: colSize === '33.33%' })}
+      className={clsx(style['did'])}
       style={{ width: colSize, display: 'inline-block' }}
       key={indexItem}
     >
