@@ -1,4 +1,6 @@
 import { HiveClient } from '@elastosfoundation/elastos-hive-js-sdk';
+import parallel from 'async/parallel';
+import series from 'async/series';
 
 export class UserVaultScripts {
   static async Execute(hiveClient: HiveClient) {
@@ -9,45 +11,96 @@ export class UserVaultScripts {
     } catch (e) {
       console.log(`Error while creating vault: ${e}`);
     }
+
     try {
       console.log('Setup the uservault');
-      await this.CreateCollections(hiveClient);
-      console.log('Created all the collections for the uservault');
+      await parallel([
+        hiveClient.Database.createCollection('templates'),
+        hiveClient.Database.createCollection('public_fields'),
+        hiveClient.Database.createCollection('following'),
+        hiveClient.Database.createCollection('activities'),
+        hiveClient.Database.createCollection('basic_profile'),
+        hiveClient.Database.createCollection('verifiable_credentials'),
+        hiveClient.Database.createCollection('education_profile'),
+        hiveClient.Database.createCollection('experience_profile'),
+        hiveClient.Database.createCollection('team_profile'),
+        hiveClient.Database.createCollection('thesis_profile'),
+        hiveClient.Database.createCollection('paper_profile'),
+        hiveClient.Database.createCollection('license_profile'),
+        hiveClient.Database.createCollection('certification_profile'),
+        hiveClient.Database.createCollection('game_exp_profile'),
+        hiveClient.Database.createCollection('private_spaces'),
+        hiveClient.Database.createCollection('space_posts'),
+        hiveClient.Database.createCollection('version_profile')
+      ]);
+      await new Promise(f => setTimeout(f, 2000));
+      console.log('Created all collections for the uservault');
     } catch (e) {
       console.log(`Error while creating collections: ${e}`);
     }
+
     try {
-      this.SetScripts(hiveClient);
-      console.log('Registered all the scripts for the uservault');
+      console.log('Setup the scripts');
+      await parallel([
+        this.getMyTemplatesScriptSetter(hiveClient),
+        this.updateMyTemplatesScriptSetter(hiveClient),
+        this.setPublicFieldsScriptSetter(hiveClient),
+        this.getPublicFieldsScriptSetter(hiveClient),
+        this.getFollowingScriptSetter(hiveClient),
+        this.getActivityScriptSetter(hiveClient),
+        this.addActivityScriptSetter(hiveClient),
+        this.updateActivityScriptSetter(hiveClient),
+        this.getBasicProfileScriptSetter(hiveClient),
+        this.updateBasicProfileScriptSetter(hiveClient),
+        this.addVerifiableCredentialScriptSetter(hiveClient),
+        this.removeVerifiableCredentialScriptSetter(hiveClient),
+        this.getVerifiableCredentialScriptSetter(hiveClient),
+        this.getEducationProfileScriptSetter(hiveClient),
+        this.updateEducationProfileScriptSetter(hiveClient),
+        this.removeEducationItemScriptSetter(hiveClient),
+        this.getExperienceProfileScriptSetter(hiveClient),
+        this.updateExperienceProfileScriptSetter(hiveClient),
+        this.removeExperienceItemScriptSetter(hiveClient),
+        this.getTeamProfileScriptSetter(hiveClient),
+        this.updateTeamProfileScriptSetter(hiveClient),
+        this.removeTeamItemScriptSetter(hiveClient),
+        this.getThesisProfileScriptSetter(hiveClient),
+        this.updateThesisProfileScriptSetter(hiveClient),
+        this.removeThesisProfileScriptSetter(hiveClient),
+        this.getPaperProfileScriptSetter(hiveClient),
+        this.updatePaperProfileScriptSetter(hiveClient),
+        this.removePaperItemScriptSetter(hiveClient),
+        this.getLicenseProfileScriptSetter(hiveClient),
+        this.updateLicenseProfileScriptSetter(hiveClient),
+        this.removeLicenseItemScriptSetter(hiveClient),
+        this.getCertificationProfileScriptSetter(hiveClient),
+        this.updateCertificationProfileScriptSetter(hiveClient),
+        this.removeCertificationItemScriptSetter(hiveClient),
+        this.getGameExpProfileScriptSetter(hiveClient),
+        this.updateGameExpProfileScriptSetter(hiveClient),
+        this.removeGameExpItemScriptSetter(hiveClient),
+        this.getAllSpacesScriptSetter(hiveClient),
+        this.getSpacesByNamesScriptSetter(hiveClient),
+        this.getSpacesByIdsScriptSetter(hiveClient),
+        this.addSpacesScriptSetter(hiveClient),
+        this.removeSpaceScriptSetter(hiveClient),
+        this.getSpacePostScriptSetter(hiveClient),
+        this.updateSpacePostScriptSetter(hiveClient),
+        this.removeSpacePost(hiveClient),
+        this.getVersionProfileScriptSetter(hiveClient),
+        this.updateVersionProfileScriptSetter(hiveClient),
+        this.removeVersionScriptSetter(hiveClient)
+      ]);
+      await new Promise(f => setTimeout(f, 2000));
     } catch (e) {
       console.log(`Error while registering scripts: ${e}`);
     }
   }
 
-  static async CreateCollections(hiveClient: HiveClient) {
-    await Promise.all([
-      hiveClient.Database.createCollection('templates'),
-      hiveClient.Database.createCollection('public_fields'),
-      hiveClient.Database.createCollection('following'),
-      hiveClient.Database.createCollection('basic_profile'),
-      hiveClient.Database.createCollection('education_profile'),
-      hiveClient.Database.createCollection('experience_profile'),
-      hiveClient.Database.createCollection('activities'),
-      hiveClient.Database.createCollection('verifiable_credentials'),
-      hiveClient.Database.createCollection('team_profile'),
-      hiveClient.Database.createCollection('thesis_profile'),
-      hiveClient.Database.createCollection('paper_profile'),
-      hiveClient.Database.createCollection('license_profile'),
-      hiveClient.Database.createCollection('certification_profile'),
-      hiveClient.Database.createCollection('game_exp_profile'),
-      hiveClient.Database.createCollection('private_spaces'),
-      hiveClient.Database.createCollection('space_posts'),
-      hiveClient.Database.createCollection('version_profile')
-    ]);
-  }
-
-  static async setPublicTemplateScriptSetter(hiveClient: HiveClient) {
-    console.log("Registering uservault script 'set_public_fields'...");
+  static async setPublicFieldsScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'setPublicFieldsScriptSetter'..."
+    );
     // scripts for public fields of profile
     await hiveClient.Scripting.SetScript({
       name: 'set_public_fields',
@@ -74,7 +127,7 @@ export class UserVaultScripts {
       }
     });
     console.log(
-      "Completed registration of uservault script 'set_public_fields'"
+      "Completed registration of uservault script 'setPublicFieldsScriptSetter'"
     );
   }
 
@@ -1321,56 +1374,6 @@ export class UserVaultScripts {
         }
       }
     });
-  }
-  static async SetScripts(hiveClient: HiveClient) {
-    this.setPublicTemplateScriptSetter(hiveClient);
-    this.getPublicFieldsScriptSetter(hiveClient);
-    this.getMyTemplatesScriptSetter(hiveClient);
-    this.updateMyTemplatesScriptSetter(hiveClient);
-    this.getFollowingScriptSetter(hiveClient);
-    this.getBasicProfileScriptSetter(hiveClient);
-    this.updateBasicProfileScriptSetter(hiveClient);
-    this.getTeamProfileScriptSetter(hiveClient);
-    this.updateTeamProfileScriptSetter(hiveClient);
-    this.removeTeamItemScriptSetter(hiveClient);
-    this.getThesisProfileScriptSetter(hiveClient);
-    this.updateThesisProfileScriptSetter(hiveClient);
-    this.removeThesisProfileScriptSetter(hiveClient);
-    this.getPaperProfileScriptSetter(hiveClient);
-    this.updatePaperProfileScriptSetter(hiveClient);
-    this.removePaperItemScriptSetter(hiveClient);
-    this.getLicenseProfileScriptSetter(hiveClient);
-    this.updateLicenseProfileScriptSetter(hiveClient);
-    this.removeLicenseItemScriptSetter(hiveClient);
-    this.getCertificationProfileScriptSetter(hiveClient);
-    this.updateCertificationProfileScriptSetter(hiveClient);
-    this.removeCertificationItemScriptSetter(hiveClient);
-    this.getGameExpProfileScriptSetter(hiveClient);
-    this.updateGameExpProfileScriptSetter(hiveClient);
-    this.removeGameExpItemScriptSetter(hiveClient);
-    this.getEducationProfileScriptSetter(hiveClient);
-    this.updateEducationProfileScriptSetter(hiveClient);
-    this.removeEducationItemScriptSetter(hiveClient);
-    this.getExperienceProfileScriptSetter(hiveClient);
-    this.updateExperienceProfileScriptSetter(hiveClient);
-    this.removeExperienceItemScriptSetter(hiveClient);
-    this.getActivityScriptSetter(hiveClient);
-    this.addActivityScriptSetter(hiveClient);
-    this.updateActivityScriptSetter(hiveClient);
-    this.addVerifiableCredentialScriptSetter(hiveClient);
-    this.removeVerifiableCredentialScriptSetter(hiveClient);
-    this.getVerifiableCredentialScriptSetter(hiveClient);
-    this.getAllSpacesScriptSetter(hiveClient);
-    this.getSpacesByNamesScriptSetter(hiveClient);
-    this.getSpacesByIdsScriptSetter(hiveClient);
-    this.addSpacesScriptSetter(hiveClient);
-    this.removeSpaceScriptSetter(hiveClient);
-    this.getSpacePostScriptSetter(hiveClient);
-    this.updateSpacePostScriptSetter(hiveClient);
-    this.removeSpacePost(hiveClient);
-    this.getVersionProfileScriptSetter(hiveClient);
-    this.updateVersionProfileScriptSetter(hiveClient);
-    this.removeVersionScriptSetter(hiveClient);
   }
 
   static async Delete(hiveClient: HiveClient) {
