@@ -216,6 +216,24 @@ export class TuumTechScriptService {
     return getItemsFromData(response, 'get_users_by_dids');
   }
 
+  public static async searchUserWithWallet(wallet: {type: string; address: string}, limit = 200, skip = 0) {
+    const script_name = `get_users_by_${wallet.type}`;
+    const get_user_by_wallet = {
+      name: script_name,
+      params: {
+        address: wallet.address,
+        limit,
+        skip
+      },
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    }
+    let response: any = await this.runTuumTechScript(get_user_by_wallet);
+    return getItemsFromData(response, script_name);
+  }
+
   public static async updateTuumUser(params: ISessionItem) {
     const update_user_script = {
       name: 'update_user',

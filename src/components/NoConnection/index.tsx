@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { IonCard } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 
-import noFollwersImg from 'src/assets/noconnect/followers.png';
-import noFollwingsImg from 'src/assets/noconnect/followings.png';
-import noMutalsImg from 'src/assets/noconnect/mutals.png';
+import noFollwersImg from 'src/assets/noconnect/followers.svg';
+import noFollwingsImg from 'src/assets/noconnect/followings.svg';
+import noMutalsImg from 'src/assets/noconnect/mutals.svg';
 
 interface Props {
   pageType?: string;

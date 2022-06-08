@@ -1,8 +1,10 @@
 import React from 'react';
-import { IonList, IonLabel, IonItem } from '@ionic/react';
+import { IonList, IonLabel } from '@ionic/react';
 import styled from 'styled-components';
 
 import { TabsContainer } from 'src/components/profile/ProfileComponent/PublicProfileTabs';
+import { DefaultButton } from 'src/elements-v2/buttons';
+import { TabItem } from 'src/elements-v2/tabs';
 
 export const Header = styled.div`
   width: 100%;
@@ -75,43 +77,62 @@ const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
 }) => {
   return (
     <ActivityPageHeaderContainer>
-      <IonList>
-        <IonItem
-          className={(active === 'timeline' ? 'tab-active' : '') + ' tab-item'}
+      <IonList className="pl-4">
+        <TabItem
+          active={active === 'timeline'}
           onClick={() => setActive('timeline')}
         >
-          <IonLabel className="tab-label">Timeline</IonLabel>
-        </IonItem>
-        <IonItem
-          className={
-            (active === 'myrequests' ? 'tab-active' : '') + ' tab-item'
-          }
+          <IonLabel>Timeline</IonLabel>
+        </TabItem>
+        <TabItem
+          active={active === 'myrequests'}
           onClick={() => setActive('myrequests')}
         >
-          <IonLabel className="tab-label">My Requests</IonLabel>
-        </IonItem>
-        <IonItem
-          className={
-            (active === 'verificationrequests' ? 'tab-active' : '') +
-            ' tab-item'
-          }
+          <IonLabel>My Requests</IonLabel>
+        </TabItem>
+        <TabItem
+          active={active === 'verificationrequests'}
           onClick={() => setActive('verificationrequests')}
         >
-          <IonLabel className="tab-label">
-            Verification Requests
-            {verificationRequests > 0 && `(${verificationRequests})`}
-          </IonLabel>
-        </IonItem>
+          <IonLabel>Verification Requests</IonLabel>
+          {verificationRequests > 0 && (
+            <DefaultButton
+              variant="contained"
+              btnColor="primary-gradient"
+              style={{
+                borderRadius: 9,
+                padding: '0px 10px',
+                width: 34,
+                height: 21,
+                marginLeft: 4
+              }}
+            >
+              {verificationRequests}
+            </DefaultButton>
+          )}
+        </TabItem>
 
-        <IonItem
-          className={(active === 'referrals' ? 'tab-active' : '') + ' tab-item'}
+        <TabItem
+          active={active === 'referrals'}
           onClick={() => setActive('referrals')}
         >
-          <IonLabel className="tab-label">
-            Referrals
-            {referrals > 0 && `(${referrals})`}
-          </IonLabel>
-        </IonItem>
+          <IonLabel>Referrals</IonLabel>
+          {referrals > 0 && (
+            <DefaultButton
+              variant="contained"
+              btnColor="primary-gradient"
+              style={{
+                borderRadius: 9,
+                padding: '0px 10px',
+                width: 34,
+                height: 21,
+                marginLeft: 4
+              }}
+            >
+              {referrals}
+            </DefaultButton>
+          )}
+        </TabItem>
       </IonList>
       {active === 'myrequests' && (
         <BlueButton onClick={newVerificationClicked}>

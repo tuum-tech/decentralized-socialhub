@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { IonButton, IonCol, IonRow } from '@ionic/react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { IonCol } from '@ionic/react';
 import { Guid } from 'guid-typescript';
 
 import ExperienceItem from './Item';
 
 import ExperienceCardEdit, { pattern } from './Edit';
-import { LinkStyleSpan, MyModal, ModalFooter, Divider, MODE } from '../common';
+import { LinkStyleSpan, Divider, MODE } from '../common';
 import ProgressVerified from 'src/components/ProgressVerified';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
@@ -13,6 +13,7 @@ import {
   ExperienceSortedSelector
 } from 'src/Atoms/Selectors';
 import Card from 'src/elements-v2/Card';
+import Modal from 'src/elements-v2/Modal';
 
 interface IExperienceProps {
   updateFunc?: (prevItem: any, item: any) => Promise<boolean>;
@@ -80,21 +81,24 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     }
   }, [mode]);
 
-  const handleChange = (evt: any) => {
-    let v: any;
-    if (evt.target.name === 'still') {
-      v = evt.target.checked;
-    } else {
-      v = evt.target.value;
-    }
+  const handleChange = useCallback(
+    (evt: any) => {
+      let v: any;
+      if (evt.target.name === 'still') {
+        v = evt.target.checked;
+      } else {
+        v = evt.target.value;
+      }
 
-    let item = {
-      ...editedItem,
-      [evt.target.name]: v
-    };
+      let item = {
+        ...editedItem,
+        [evt.target.name]: v
+      };
 
-    setEditedItem(item);
-  };
+      setEditedItem(item);
+    },
+    [editedItem]
+  );
 
   const validate = (item: ExperienceItem) => {
     if (
@@ -110,33 +114,47 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
     return true;
   };
 
-  const saveChanges = async (prevItem: EducationItem, item: ExperienceItem) => {
-    let items = [...experienceDTO.items];
+  const saveChanges = useCallback(
+    (prevItem: EducationItem, item: ExperienceItem) => {
+      (async () => {
+        let items = [...experienceDTO.items];
 
-    let itemToUpdate = items.find(x => x.guid.value === item.guid.value);
-    if (itemToUpdate === undefined) {
-      items.push(item);
+        let itemToUpdate = items.find(x => x.guid.value === item.guid.value);
+        if (itemToUpdate === undefined) {
+          items.push(item);
+        } else {
+          let index = items.indexOf(itemToUpdate);
+          items[index] = item;
+        }
+
+        // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
+
+        // 5. Set the state to our new copy
+
+        setIsEditing(false);
+        if (updateFunc) {
+          if ((await updateFunc(prevItem, item)) === true) {
+            setExperienceDTO({ isEnabled: true, items: items });
+          }
+        }
+      })();
+    },
+    [experienceDTO.items, setExperienceDTO, updateFunc]
+  );
+
+  const handleSave = useCallback(() => {
+    if (validate(editedItem)) {
+      saveChanges(prevItem, editedItem);
+      setMode(MODE.NONE);
     } else {
-      let index = items.indexOf(itemToUpdate);
-      items[index] = item;
+      setMode(MODE.ERROR);
     }
+  }, [editedItem, prevItem, saveChanges]);
 
-    // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
-
-    // 5. Set the state to our new copy
-
-    setIsEditing(false);
-    if (updateFunc) {
-      if ((await updateFunc(prevItem, item)) === true) {
-        setExperienceDTO({ isEnabled: true, items: items });
-      }
-    }
-  };
-
-  const cancel = () => {
+  const handleCancel = useCallback(() => {
     setMode(MODE.NONE);
     setIsEditing(false);
-  };
+  }, []);
 
   const addItem = () => {
     setMode(MODE.ADD);
@@ -220,6 +238,7 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
   return (
     <>
       <Card
+        template={template}
         title="Experience"
         action={
           !isEditable ? (
@@ -237,41 +256,20 @@ const ExperienceCard: React.FC<IExperienceProps> = ({
           ? getExperienceFromParameter()
           : getExperienceFromState()}
       </Card>
-      <MyModal
-        onDidDismiss={() => {
-          setMode(MODE.NONE);
-          setIsEditing(false);
-        }}
+      <Modal
+        title={mode === MODE.ADD ? 'Add new experience' : 'Edit Experience'}
+        okText={mode === MODE.ADD ? 'Save' : 'Update'}
         isOpen={isEditing}
-        cssClass="my-custom-class"
+        onOk={handleSave}
+        onClose={handleCancel}
+        autoWidth
       >
         <ExperienceCardEdit
           experienceItem={editedItem}
           handleChange={handleChange}
           mode={mode}
         />
-        <ModalFooter className="ion-no-border">
-          <IonRow className="ion-justify-content-around">
-            <IonCol size="auto">
-              <IonButton fill="outline" onClick={cancel}>
-                Cancel
-              </IonButton>
-              <IonButton
-                onClick={() => {
-                  if (validate(editedItem)) {
-                    saveChanges(prevItem, editedItem);
-                    setMode(MODE.NONE);
-                  } else {
-                    setMode(MODE.ERROR);
-                  }
-                }}
-              >
-                Save
-              </IonButton>
-            </IonCol>
-          </IonRow>
-        </ModalFooter>
-      </MyModal>
+      </Modal>
     </>
   );
 };

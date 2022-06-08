@@ -22,9 +22,10 @@ export const Divider = styled.hr`
 interface IProps {
   sessionItem: ISessionItem;
   profile: any;
+  update: (fields: string[]) => void;
 }
 
-const PublicFields: React.FC<IProps> = ({ sessionItem, profile }: IProps) => {
+const PublicFields: React.FC<IProps> = ({ sessionItem, profile, update }: IProps) => {
   const modalRef = useRef(null);
   const [fields, setFields] = useState<string[]>([]);
   const defaultFields = ['about', 'follower', 'social links'];
@@ -49,17 +50,13 @@ const PublicFields: React.FC<IProps> = ({ sessionItem, profile }: IProps) => {
   };
 
   const handleSave = () => {
-    (async () => {
-      await SpaceService.addSpace(sessionItem, {
-        ...profile,
-        publicFields: fields
-      });
-    })();
+    update(fields);
   };
 
   return (
     <>
       <Card
+        template="default"
         title="Privacy Settings"
         description="Set visibility of sections"
         action={
@@ -77,13 +74,11 @@ const PublicFields: React.FC<IProps> = ({ sessionItem, profile }: IProps) => {
       ></Card>
       <Modal
         title="Privacy Settings"
+        subtitle="Set visibility of sections"
         okText="Save Changes"
         onOk={handleSave}
         ref={modalRef}
       >
-        <p style={{ color: '#425466', fontSize: 14, marginBottom: 24 }}>
-          Set visibility of sections
-        </p>
         {defaultFields.map(field => (
           <IonItem key={field}>
             <IonLabel>{startCase(field)}</IonLabel>

@@ -1,21 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { IonButton, IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { IonCol } from '@ionic/react';
 import { Guid } from 'guid-typescript';
 
 import TeamItem from './Item';
 
-import {
-  CardOverview,
-  Divider,
-  LinkStyleSpan,
-  MyModal,
-  ModalFooter,
-  MODE,
-  CardHeaderContent,
-  CardContentContainer
-} from '../common';
+import { Divider, LinkStyleSpan, MODE } from '../common';
 import TeamCardEdit from './Edit';
 import ProgressBar from 'src/elements/ProgressBar';
+import Modal from 'src/elements-v2/Modal';
+import Card from 'src/elements-v2/Card';
 
 interface ITeamProps {
   teamDTO: TeamDTO;
@@ -53,6 +46,13 @@ const TeamCard: React.FC<ITeamProps> = ({
   const [currentTeamDTO, setCurrentTeamDTO] = useState(teamDTO);
   const [teamVerifiedPercent, setTeamVerifiedPercent] = useState(0);
 
+  const sortedTeamItems = useMemo(() => {
+    return [...currentTeamDTO.items].sort(
+      (a: any, b: any) =>
+        new Date(b.start).getTime() - new Date(a.start).getTime()
+    );
+  }, [currentTeamDTO]);
+
   useEffect(() => {
     setCurrentTeamDTO(teamDTO);
   }, [teamDTO]);
@@ -78,21 +78,24 @@ const TeamCard: React.FC<ITeamProps> = ({
     }
   }, [mode]);
 
-  const handleChange = (evt: any) => {
-    let v: any;
-    if (evt.target.name === 'still') {
-      v = evt.target.checked;
-    } else {
-      v = evt.target.value;
-    }
+  const handleChange = useCallback(
+    (evt: any) => {
+      let v: any;
+      if (evt.target.name === 'still') {
+        v = evt.target.checked;
+      } else {
+        v = evt.target.value;
+      }
 
-    let item = {
-      ...editedItem,
-      [evt.target.name]: v
-    };
+      let item = {
+        ...editedItem,
+        [evt.target.name]: v
+      };
 
-    setEditedItem(item);
-  };
+      setEditedItem(item);
+    },
+    [editedItem]
+  );
 
   const validate = (item: TeamItem) => {
     if (!item.name || !item.start || (!item.end && !item.still)) return false;
@@ -142,7 +145,7 @@ const TeamCard: React.FC<ITeamProps> = ({
   const removeItem = async (index: number) => {
     let items = [...currentTeamDTO.items];
     await removeFunc(items[index]);
-    items = items.splice(index, 1);
+    items.splice(index, 1);
     setCurrentTeamDTO({ isEnabled: true, items: items });
   };
 
@@ -155,110 +158,72 @@ const TeamCard: React.FC<ITeamProps> = ({
 
   return (
     <>
-      {teamDTO.isEnabled === true ? (
-        <>
-          <CardOverview template={template}>
-            <CardHeaderContent>
-              <IonGrid className="ion-no-padding">
-                <IonRow className="ion-justify-content-between ion-no-padding">
-                  <IonCol className="ion-no-padding">
-                    <IonCardTitle>
-                      Team
-                      {!isEditable && !isPublicPage && (
-                        <div
-                          style={{
-                            width: '10em',
-                            float: 'right',
-                            fontSize: '0.8em'
-                          }}
-                        >
-                          <ProgressBar
-                            value={teamVerifiedPercent}
-                            text={'verified'}
-                          />
-                          <div
-                            style={{ float: 'right', fontSize: '0.8em' }}
-                          >{`${teamVerifiedPercent}% ${'verified'}`}</div>
-                        </div>
-                      )}
-                    </IonCardTitle>
-                  </IonCol>
-                  {isEditable ? (
-                    <IonCol size="auto" className="ion-no-padding">
-                      <LinkStyleSpan onClick={e => addItem()}>
-                        + Add Team
-                      </LinkStyleSpan>
-                    </IonCol>
-                  ) : (
-                    ''
-                  )}
-                </IonRow>
-              </IonGrid>
-            </CardHeaderContent>
-            <CardContentContainer>
-              {currentTeamDTO.items.sort(
-                (a: any, b: any) =>
-                  new Date(b.start).getTime() - new Date(a.start).getTime()
-              ) &&
-                currentTeamDTO.items.map((x, i) => {
-                  return (
-                    <div key={i}>
-                      <TeamItem
-                        teamItem={x}
-                        handleChange={handleChange}
-                        updateFunc={saveChanges}
-                        editFunc={editItem}
-                        index={i}
-                        removeFunc={removeItem}
-                        isEditable={isEditable}
-                        template={template}
-                        userSession={userSession}
-                      />
-                      {i < currentTeamDTO.items.length - 1 ? <Divider /> : ''}
-                    </div>
-                  );
-                })}
-            </CardContentContainer>
-          </CardOverview>
-          <MyModal
-            onDidDismiss={() => {
-              setMode(MODE.NONE);
-              setIsEditing(false);
-            }}
-            isOpen={isEditing}
-            cssClass="my-custom-class"
-          >
-            <TeamCardEdit
-              teamItem={editedItem}
-              handleChange={handleChange}
-              mode={mode}
-            />
-            <ModalFooter className="ion-no-border">
-              <IonRow className="ion-justify-content-around">
-                <IonCol size="auto">
-                  <IonButton fill="outline" onClick={cancel}>
-                    Cancel
-                  </IonButton>
-                  <IonButton
-                    onClick={() => {
-                      if (validate(editedItem)) {
-                        saveChanges(editedItem);
-                        setMode(MODE.NONE);
-                      } else {
-                        setMode(MODE.ERROR);
-                      }
-                    }}
-                  >
-                    Save
-                  </IonButton>
-                </IonCol>
-              </IonRow>
-            </ModalFooter>
-          </MyModal>
-        </>
-      ) : (
-        ''
-      )}
+      <Card
+        title="Team"
+        template={template}
+        action={
+          !isEditable && !isPublicPage ? (
+            <div
+              style={{
+                width: '10em',
+                float: 'right',
+                fontSize: '0.8em'
+              }}
+            >
+              <ProgressBar value={teamVerifiedPercent} text={'verified'} />
+              <div
+                style={{ float: 'right', fontSize: '0.8em' }}
+              >{`${teamVerifiedPercent}% ${'verified'}`}</div>
+            </div>
+          ) : isEditable ? (
+            <IonCol size="auto" className="ion-no-padding">
+              <LinkStyleSpan onClick={e => addItem()}>+ Add Team</LinkStyleSpan>
+            </IonCol>
+          ) : (
+            ''
+          )
+        }
+      >
+        {sortedTeamItems.map((x, i) => {
+          return (
+            <div key={i}>
+              <TeamItem
+                teamItem={x}
+                handleChange={handleChange}
+                updateFunc={saveChanges}
+                editFunc={editItem}
+                index={i}
+                removeFunc={removeItem}
+                isEditable={isEditable}
+                template={template}
+                userSession={userSession}
+              />
+              {i < sortedTeamItems.length - 1 ? <Divider /> : ''}
+            </div>
+          );
+        })}
+      </Card>
+      <Modal
+        title={mode === MODE.ADD ? 'Add new team' : 'Edit Team'}
+        okText={mode === MODE.ADD ? 'Save' : 'Update'}
+        onOk={() => {
+          if (validate(editedItem)) {
+            saveChanges(editedItem);
+            setMode(MODE.NONE);
+          } else {
+            setMode(MODE.ERROR);
+          }
+        }}
+        onClose={cancel}
+        isOpen={isEditing}
+        autoWidth
+      >
+        <TeamCardEdit
+          teamItem={editedItem}
+          handleChange={handleChange}
+          mode={mode}
+        />
+      </Modal>
     </>
   );
 };

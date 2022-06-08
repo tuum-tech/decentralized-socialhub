@@ -1,34 +1,6 @@
 /** All your component stuyles */
-.followingtabs {
+
+.tab-grid {
   background: #f7fafc;
-
-  .tab-grid {
-    background: #f7fafc;
-    min-height: 100%;
-  }
-  .tab-list {
-    background: #f7fafc;
-  }
-  .tab-item {
-    cursor: pointer;
-    --border-color: #f7fafc;
-    --inner-border-width: 0 0 2px 0;
-    display: inline-block;
-    --background: #f7fafc;
-    --inner-padding-bottom: 0.5em;
-    font-weight: 600;
-    color: #718096;
-  }
-  .tab-active {
-    --border-color: var(--theme-primary-blue) !important;
-    color: #1a202c;
-  }
-  .tab-label {
-    font-family: 'SF Pro Display';
-  }
-
-  .tab-card {
-    border-radius: 16px;
-    background: #fff;
-  }
+  min-height: 100%;
 }

@@ -19,7 +19,7 @@ interface Props {
   template?: string;
 }
 
-const FowllowCards: React.FC<Props> = ({
+const FollowCards: React.FC<Props> = ({
   followerDids,
   followingDids,
   mutualDids,
@@ -33,7 +33,9 @@ const FowllowCards: React.FC<Props> = ({
   const [followingUsers, setFollowingUsers] = useState<any[]>([]);
   const [followerUsers, setFollowerUsers] = useState<any[]>([]);
   const [mutualFollowerUsers, setMutualFollowerUsers] = useState<any[]>([]);
+
   useEffect(() => {
+    let mounted = true;
     (async () => {
       const searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
       let followings: any = await searchServiceLocal.getUsersByDIDs(
@@ -42,7 +44,9 @@ const FowllowCards: React.FC<Props> = ({
         0
       );
       followings = getItemsFromData(followings, 'get_users_by_dids');
-      setFollowingUsers(followings);
+      if (mounted) {
+        setFollowingUsers(followings);
+      }
 
       let followers: any = await searchServiceLocal.getUsersByDIDs(
         followerDids,
@@ -50,7 +54,9 @@ const FowllowCards: React.FC<Props> = ({
         0
       );
       followers = getItemsFromData(followers, 'get_users_by_dids');
-      setFollowerUsers(followers);
+      if (mounted) {
+        setFollowerUsers(followers);
+      }
 
       let mutualFollowers: any = await searchServiceLocal.getUsersByDIDs(
         mutualDids,
@@ -58,9 +64,16 @@ const FowllowCards: React.FC<Props> = ({
         0
       );
       mutualFollowers = getItemsFromData(mutualFollowers, 'get_users_by_dids');
-      setMutualFollowerUsers(mutualFollowers);
+      if (mounted) {
+        setMutualFollowerUsers(mutualFollowers);
+      }
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [followerDids, followingDids, mutualDids]);
+
   return (
     <>
       {followingDids.length > 0 && showFollowingCard && (
@@ -104,4 +117,4 @@ const FowllowCards: React.FC<Props> = ({
   );
 };
 
-export default FowllowCards;
+export default FollowCards;

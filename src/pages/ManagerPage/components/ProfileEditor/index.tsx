@@ -101,23 +101,18 @@ const ProfileEditor: React.FC<Props> = ({
     setShowSentModal(true);
   };
 
-  const handleSocialRouteParam = () => {
-    if (
-      badgeUrl?.badge &&
-      [
-        linkedin.title,
-        facebook.title,
-        twitter.title,
-        google.title,
-        github.title,
-        discord.title,
-        email.title,
-        phone.title
-      ].includes(badgeUrl.badge)
-    ) {
-      return true;
-    } else return false;
-  };
+  const handleSocialRouteParam = () =>
+    badgeUrl?.badge &&
+    [
+      linkedin.title,
+      facebook.title,
+      twitter.title,
+      google.title,
+      github.title,
+      discord.title,
+      email.title,
+      phone.title
+    ].includes(badgeUrl.badge);
 
   const retriveProfile = async () => {
     if (!session.userToken) return;
@@ -290,8 +285,8 @@ const ProfileEditor: React.FC<Props> = ({
           <PublicFields sessionItem={userInfo} />
         </IonCol>
         <IonCol sizeSm="8" sizeXs="12">
-          <AvatarChangeCard />
           <CoverPhoto />
+          <AvatarChangeCard />
 
           {/* <h1>{userInfo.name}</h1> */}
           <BasicCard

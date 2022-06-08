@@ -2,9 +2,9 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 import { ThemeGradient } from '../common.types';
 import styles from './Button.module.scss';
-import ButtonText from './ButtonText';
+import ColorText from './ColorText';
 
-const StyledButtonText = styled(ButtonText)<{ background: string }>`
+const StyledColorText = styled(ColorText)<{ background: string }>`
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -29,14 +29,14 @@ const GradientText: FC<GradientTextProps> = ({
   ...props
 }: GradientTextProps) => {
   return (
-    <StyledButtonText
+    <StyledColorText
       {...props}
       background={styles[gradient]}
       className={className}
       style={style}
     >
       {children}
-    </StyledButtonText>
+    </StyledColorText>
   );
 };
 

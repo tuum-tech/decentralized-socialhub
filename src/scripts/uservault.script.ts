@@ -50,7 +50,8 @@ export class UserVaultScripts {
       hiveClient.Database.createCollection('certification_profile'),
       hiveClient.Database.createCollection('game_exp_profile'),
       hiveClient.Database.createCollection('private_spaces'),
-      hiveClient.Database.createCollection('space_posts')
+      hiveClient.Database.createCollection('space_posts'),
+      hiveClient.Database.createCollection('version_profile'),
     ]);
   }
 
@@ -748,6 +749,86 @@ export class UserVaultScripts {
     );
   }
 
+  static async getVersionProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'getVersionProfileScriptSetter'..."
+    );
+    await hiveClient.Scripting.SetScript({
+      name: 'get_version_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_version_profile',
+        output: true,
+        body: {
+          collection: 'version_profile'
+        }
+      }
+    });
+    console.log(
+      "Completed registration of uservault script 'getVersionProfileScriptSetter'"
+    );
+  }
+
+  static async updateVersionProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'updateVersionProfileScriptSetter'..."
+    );
+    await hiveClient.Scripting.SetScript({
+      name: 'update_version_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_version_profile',
+        body: {
+          collection: 'version_profile',
+          filter: {
+            did: '$params.did'
+          },
+          update: {
+            $set: {
+              latestVersion: '$params.latestVersion',
+              did: '$params.did',
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+    console.log(
+      "Completed registration of uservault script 'updateVersionProfileScriptSetter'"
+    );
+  }
+
+  static async removeVersionScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'removeVersionScriptSetter'..."
+    );
+    await hiveClient.Scripting.SetScript({
+      name: 'remove_version_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'delete',
+        name: 'remove_version_profile',
+        body: {
+          collection: 'version_profile',
+          filter: {
+            did: '$params.did'
+          }
+        }
+      }
+    });
+    console.log(
+      "Completed registration of uservault script 'removeVersionScriptSetter'"
+    );
+  }
+
   static async updateExperienceProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'updateExperienceProfileScriptSetter'..."
@@ -1015,6 +1096,36 @@ export class UserVaultScripts {
   }
   static async addSpacesScriptSetter(hiveClient: HiveClient) {
     console.log("Registering uservault script 'addSpacesScriptSetter'...");
+    await hiveClient.Scripting.SetScript({
+      name: 'add_space',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'add_space',
+        body: {
+          collection: 'private_spaces',
+          filter: {
+            guid: '$params.guid'
+          },
+          update: {
+            $set: {
+              guid: '$params.guid',
+              name: '$params.name',
+              slug: '$params.slug',
+              description: '$params.description',
+              category: '$params.category',
+              avatar: '$params.avatar',
+              coverPhoto: '$params.coverPhoto',
+              publicFields: '$params.publicFields',
+              socialLinks: '$parrams.socialLinks',
+              tags:"$param.tags"
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
     let executable = new UpdateExecutable(
       'add_space',
       'private_spaces',
@@ -1125,53 +1236,54 @@ export class UserVaultScripts {
   }
 
   static async SetScripts(hiveClient: HiveClient) {
-    await Promise.all([
-      this.setPublicTemplateScriptSetter(hiveClient),
-      this.getPublicFieldsScriptSetter(hiveClient),
-      this.getMyTemplatesScriptSetter(hiveClient),
-      this.updateMyTemplatesScriptSetter(hiveClient),
-      this.getFollowingScriptSetter(hiveClient),
-      this.getBasicProfileScriptSetter(hiveClient),
-      this.updateBasicProfileScriptSetter(hiveClient),
-      this.getTeamProfileScriptSetter(hiveClient),
-      this.updateTeamProfileScriptSetter(hiveClient),
-      this.removeTeamItemScriptSetter(hiveClient),
-      this.getThesisProfileScriptSetter(hiveClient),
-      this.updateThesisProfileScriptSetter(hiveClient),
-      this.removeThesisProfileScriptSetter(hiveClient),
-      this.getPaperProfileScriptSetter(hiveClient),
-      this.updatePaperProfileScriptSetter(hiveClient),
-      this.removePaperItemScriptSetter(hiveClient),
-      this.getLicenseProfileScriptSetter(hiveClient),
-      this.updateLicenseProfileScriptSetter(hiveClient),
-      this.removeLicenseItemScriptSetter(hiveClient),
-      this.getCertificationProfileScriptSetter(hiveClient),
-      this.updateCertificationProfileScriptSetter(hiveClient),
-      this.removeCertificationItemScriptSetter(hiveClient),
-      this.getGameExpProfileScriptSetter(hiveClient),
-      this.updateGameExpProfileScriptSetter(hiveClient),
-      this.removeGameExpItemScriptSetter(hiveClient),
-      this.getEducationProfileScriptSetter(hiveClient),
-      this.updateEducationProfileScriptSetter(hiveClient),
-      this.removeEducationItemScriptSetter(hiveClient),
-      this.getExperienceProfileScriptSetter(hiveClient),
-      this.updateExperienceProfileScriptSetter(hiveClient),
-      this.removeExperienceItemScriptSetter(hiveClient),
-      this.getActivityScriptSetter(hiveClient),
-      this.addActivityScriptSetter(hiveClient),
-      this.updateActivityScriptSetter(hiveClient),
-      this.addVerifiableCredentialScriptSetter(hiveClient),
-      this.removeVerifiableCredentialScriptSetter(hiveClient),
-      this.getVerifiableCredentialScriptSetter(hiveClient),
-      this.getAllSpacesScriptSetter(hiveClient),
-      this.getSpacesByNamesScriptSetter(hiveClient),
-      this.getSpacesByIdsScriptSetter(hiveClient),
-      this.addSpacesScriptSetter(hiveClient),
-      this.removeSpaceScriptSetter(hiveClient),
-      this.getSpacePostScriptSetter(hiveClient),
-      this.updateSpacePostScriptSetter(hiveClient),
-      this.removeSpacePost(hiveClient)
-    ]);
+    await this.setPublicTemplateScriptSetter(hiveClient);
+    await this.getPublicFieldsScriptSetter(hiveClient);
+    await this.getMyTemplatesScriptSetter(hiveClient);
+    await this.updateMyTemplatesScriptSetter(hiveClient);
+    await this.getFollowingScriptSetter(hiveClient);
+    await this.getBasicProfileScriptSetter(hiveClient);
+    await this.updateBasicProfileScriptSetter(hiveClient);
+    await this.getTeamProfileScriptSetter(hiveClient);
+    await this.updateTeamProfileScriptSetter(hiveClient);
+    await this.removeTeamItemScriptSetter(hiveClient);
+    await this.getThesisProfileScriptSetter(hiveClient);
+    await this.updateThesisProfileScriptSetter(hiveClient);
+    await this.removeThesisProfileScriptSetter(hiveClient);
+    await this.getPaperProfileScriptSetter(hiveClient);
+    await this.updatePaperProfileScriptSetter(hiveClient);
+    await this.removePaperItemScriptSetter(hiveClient);
+    await this.getLicenseProfileScriptSetter(hiveClient);
+    await this.updateLicenseProfileScriptSetter(hiveClient);
+    await this.removeLicenseItemScriptSetter(hiveClient);
+    await this.getCertificationProfileScriptSetter(hiveClient);
+    await this.updateCertificationProfileScriptSetter(hiveClient);
+    await this.removeCertificationItemScriptSetter(hiveClient);
+    await this.getGameExpProfileScriptSetter(hiveClient);
+    await this.updateGameExpProfileScriptSetter(hiveClient);
+    await this.removeGameExpItemScriptSetter(hiveClient);
+    await this.getEducationProfileScriptSetter(hiveClient);
+    await this.updateEducationProfileScriptSetter(hiveClient);
+    await this.removeEducationItemScriptSetter(hiveClient);
+    await this.getExperienceProfileScriptSetter(hiveClient);
+    await this.updateExperienceProfileScriptSetter(hiveClient);
+    await this.removeExperienceItemScriptSetter(hiveClient);
+    await this.getActivityScriptSetter(hiveClient);
+    await this.addActivityScriptSetter(hiveClient);
+    await this.updateActivityScriptSetter(hiveClient);
+    await this.addVerifiableCredentialScriptSetter(hiveClient);
+    await this.removeVerifiableCredentialScriptSetter(hiveClient);
+    await this.getVerifiableCredentialScriptSetter(hiveClient);
+    await this.getAllSpacesScriptSetter(hiveClient);
+    await this.getSpacesByNamesScriptSetter(hiveClient);
+    await this.getSpacesByIdsScriptSetter(hiveClient);
+    await this.addSpacesScriptSetter(hiveClient);
+    await this.removeSpaceScriptSetter(hiveClient);
+    await this.getSpacePostScriptSetter(hiveClient);
+    await this.updateSpacePostScriptSetter(hiveClient);
+    await this.removeSpacePost(hiveClient);
+    await this.getVersionProfileScriptSetter(hiveClient);
+    await this.updateVersionProfileScriptSetter(hiveClient);
+    await this.removeVersionScriptSetter(hiveClient);
   }
 
   static async Delete(hiveClient: HiveClient) {
@@ -1191,5 +1303,6 @@ export class UserVaultScripts {
     await hiveClient.Database.deleteCollection('game_exp_profile');
     await hiveClient.Database.deleteCollection('private_spaces');
     await hiveClient.Database.deleteCollection('space_posts');
+    await hiveClient.Database.deleteCollection('version_profile');
   }
 }

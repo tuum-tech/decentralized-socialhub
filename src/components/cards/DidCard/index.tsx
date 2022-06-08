@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { IonItem, IonList, IonSpinner } from '@ionic/react';
+import { IonItem, IonList } from '@ionic/react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 
 import useSession from 'src/hooks/useSession';
 import Avatar from '../../Avatar';
-import { getDIDString } from 'src/utils/did';
+import { getDIDString, getShortenedDid } from 'src/utils/did';
+import { DefaultButton } from 'src/elements-v2/buttons';
 import FingerPrintFill from 'src/assets/icon/fingerprint-fill.svg';
-
 import style from './DidCard.module.scss';
+
 interface Props {
   name?: string;
   did: string;
@@ -71,7 +72,7 @@ const DidCard: React.FC<Props> = ({
 
   return (
     <IonList
-      className={clsx(style['did'], { [style['col-3']]: colSize === '33.33%' })}
+      className={clsx(style['did'])}
       style={{ width: colSize, display: 'inline-block' }}
       key={indexItem}
     >
@@ -93,45 +94,36 @@ const DidCard: React.FC<Props> = ({
             </Link>
             <span className={style['did-value']}>
               <img src={FingerPrintFill} alt="filgerprint" />
-              {'DID:' + did.replace('did:elastos:', '')}
+              {getShortenedDid(did, 9).replace('did:elastos:', 'DID:')}
             </span>
           </div>
 
           {type === 'user' && tutorialStep === 4 && (
-            <div className={style['card-link']}>
-              {loading && (
-                <span className={style['card-link-inner']}>
-                  <IonSpinner
-                    color="#007bff"
-                    style={{
-                      width: '1rem',
-                      height: '1rem'
-                    }}
-                  />
-                  {/* <span>Wait a while...</span> */}
-                </span>
-              )}
-              {!loading && isFollowing && (
-                <span
-                  className={clsx(
-                    style['card-link-inner'],
-                    style['card-link-unfollow']
-                  )}
+            <>
+              {isFollowing ? (
+                <DefaultButton
+                  size="small"
+                  variant="outlined"
+                  btnColor="grey"
+                  textType="gradient"
+                  loading={loading}
                   onClick={() => unfollowDid(did)}
                 >
                   - Unfollow
-                </span>
-              )}
-
-              {!loading && !isFollowing && (
-                <span
-                  className={style['card-link-inner']}
+                </DefaultButton>
+              ) : (
+                <DefaultButton
+                  size="small"
+                  variant="outlined"
+                  btnColor="primary-gradient"
+                  textType="gradient"
+                  loading={loading}
                   onClick={() => followDid(did)}
                 >
                   + Follow
-                </span>
+                </DefaultButton>
               )}
-            </div>
+            </>
           )}
         </div>
       </IonItem>

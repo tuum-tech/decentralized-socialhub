@@ -25,6 +25,7 @@ export const PageContent = styled.div`
     0px 3px 8px -1px rgba(50, 50, 71, 0.05);
   border-radius: 16px;
   padding: 17px 20px;
+  margin-top: 38px;
 `;
 
 interface Props {

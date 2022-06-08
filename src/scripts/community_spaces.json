@@ -3,7 +3,10 @@
     "sid": 0,
     "name": "Welcome to Profile",
     "category": "Welcome to Profile",
-    "owner": ["did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c"],
+    "owner": [
+      "did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c",
+      "did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"
+    ],
     "tags": ["Welcome to Profile"],
     "meta": {}
   },
@@ -12,18 +15,10 @@
     "name": "The Bella Series",
     "category": "NFT Collection",
     "owner": ["did:elastos:inpCykPj1JMroJfjFvDAGnEGUCGGG3ptwQ"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
-    ],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0xef5f768618139d0f5fa3bcbbbcaaf09fe9d7a07d",
-      "slug": "The Bella Series"
+      "collectionSlug": "The Bella Series"
     }
   },
   {
@@ -31,18 +26,10 @@
     "name": "Phantz Club",
     "category": "NFT Collection",
     "owner": ["did:elastos:iUDaseyHnQUmwp6RSABCy4ZPCQCaBTDDMS"],
-    "tags": [
-      "ERC-721",
-      "Membership",
-      "Collectibles",
-      "Avatar",
-      "DAO",
-      "Social Token"
-    ],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0xfDdE60866508263e30C769e8592BB0f8C3274ba7",
-      "slug": "Phantz Club"
+      "collectionSlug": "Phantz Club"
     }
   },
   {
@@ -50,18 +37,10 @@
     "name": "Bunny Punk",
     "category": "NFT Collection",
     "owner": ["did:elastos:iWtZBcqZa981z3YEoUxanCqvN7rFVDu52D"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
-    ],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0xE27934fB3683872e35b8d9E57c30978e1260c614",
-      "slug": "Bunny Punk"
+      "collectionSlug": "Bunny Punk"
     }
   },
   {
@@ -69,18 +48,10 @@
     "name": "Dropz",
     "category": "NFT Collection",
     "owner": ["did:elastos:ipi6KEfaBFH3KC5fCfkKKUDSBoQ1Qb9NR6"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
-    ],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0x22900606ae7077043cf140255a80e82d691b8fd5",
-      "slug": "Dropz"
+      "collectionSlug": "Dropz"
     }
   },
   {
@@ -88,113 +59,139 @@
     "name": "The 2821 Club",
     "category": "NFT Collection",
     "owner": ["did:elastos:iqWDMtthjadiJAok8mukxPyHwZeHoehJKc"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
-    ],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0x26b2341d10dC4118110825719BF733a571AB6EC5",
-      "slug": "The 2821 Club"
+      "collectionSlug": "The 2821 Club"
     }
   },
   {
     "sid": 6,
     "name": "MythicBeings",
     "category": "NFT Collection",
-    "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
+    "owner": [
+      "did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c",
+      "did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"
     ],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0x3536a85A9E55EB26d515653aF206465D68400feA",
-      "slug": "MythicBeings"
+      "collectionSlug": "MythicBeings"
     }
   },
   {
     "sid": 7,
     "name": "CryptoHoodieMan",
     "category": "NFT Collection",
-    "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
+    "owner": [
+      "did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c",
+      "did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"
     ],
     "meta": {
       "network": "Ethereum",
-      "address": "0x0023b8EdbBeD4fBCF957D1a4DF55749faa9EaEed",
-      "slug": "CryptoHoodieMan"
+      "address": "0x495f947276749ce646f68ac8c248420045cb7b5e",
+      "collectionSlug": "cryptohoodieman",
+      "isOpenseaCollection": true
     }
   },
   {
     "sid": 8,
     "name": "Elastos Bulls",
     "category": "NFT Collection",
-    "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
+    "owner": [
+      "did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c",
+      "did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"
     ],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0x0d5d0c116f2acbc19ce198e284a21b0c355b1260",
-      "slug": "Elastos Bulls"
+      "collectionSlug": "Elastos Bulls"
     }
   },
   {
     "sid": 9,
     "name": "The Meta Primates",
     "category": "NFT Collection",
-    "owner": ["did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
+    "owner": [
+      "did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c",
+      "did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"
     ],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0xcb262a92e2e3c8c3590b72a1fde3c6768ee08b7e",
-      "slug": "The Meta Primates"
+      "collectionSlug": "The Meta Primates"
+    }
+  },
+  {
+    "sid": 10,
+    "name": "Metalink",
+    "category": "NFT Collection",
+    "owner": [
+      "did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c",
+      "did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"
+    ],
+    "meta": {
+      "network": "Ethereum",
+      "address": "0x86C3D2697E675bB069a8c2D549F774CF73DCB047",
+      "collectionSlug": "Metalink"
+    }
+  },
+  {
+    "sid": 11,
+    "name": "Moonstars",
+    "category": "NFT Collection",
+    "owner": [
+      "did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c",
+      "did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"
+    ],
+    "meta": {
+      "network": "Ethereum",
+      "address": "0xd22B236fad04eB97FaEE1D03415a4CeDcfCBB31D",
+      "collectionSlug": "Moonstars"
+    }
+  },
+  {
+    "sid": 12,
+    "name": "Maskhuman",
+    "category": "NFT Collection",
+    "owner": [
+      "did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c",
+      "did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"
+    ],
+    "meta": {
+      "network": "Ethereum",
+      "address": "0xdc11c23A38590fAD6aD6F2727f02BceB85ee3607",
+      "collectionSlug": "maskhuman",
+      "isOpenseaCollection": true
+    }
+  },
+  {
+    "sid": 13,
+    "name": "Yeah! BIRDIE!",
+    "category": "NFT Collection",
+    "slug": "yeah-birdie",
+    "owner": [
+      "did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c",
+      "did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"
+    ],
+    "meta": {
+      "network": "Elastos Smart Contract Chain",
+      "address": "0xd5aFf849495487e3c405c9fcA1b878bDd72B9e97",
+      "collectionSlug": "Yeah! BIRDIE!"
     }
   },
   {
     "sid": 102,
     "name": "LFC Heroes Club",
     "category": "NFT Collection",
-    "owner": ["did:elastos:iag8qwq1xPBpLsGv4zR4CmzLpLUkBNfPHX"],
-    "tags": [
-      "ERC-721",
-      "Governance",
-      "Social Token",
-      "Membership",
-      "Collectibles",
-      "Art"
+    "owner": [
+      "did:elastos:iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c",
+      "did:elastos:ipTmfhv6MivQS6frFuZD7NygjmNziJkYbK"
     ],
     "meta": {
       "network": "Polygon",
       "address": "0x4ffa698ca3374ff154e58c8388a3aafe430dc2d3",
-      "slug": "LFC Heroes Club"
+      "collectionSlug": "LFC Heroes Club"
     }
   }
 ]

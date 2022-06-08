@@ -46,7 +46,7 @@ const Admins: React.FC<IProps> = ({ profile }: IProps) => {
   }, [profile.owner]);
 
   return (
-    <Card title="Admins">
+    <Card template="default" title="Admins">
       {admins.map((admin: any, index) => {
         return (
           <IonRow key={index} className="mb-3">

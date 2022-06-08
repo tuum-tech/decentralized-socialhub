@@ -1,4 +1,5 @@
 .request-community-card {
+  margin-top: 24px;
   border-radius: 20px;
   .card-content {
     margin: 15px 10px;
@@ -7,7 +8,7 @@
       display: flex;
       justify-content: space-between;
       div {
-        display:flex;
+        display: flex;
         flex-direction: column;
         justify-content: center;
       }
@@ -20,7 +21,7 @@
       line-height: 136.52%;
     }
     h4 {
-      color: #4A5568;
+      color: #4a5568;
       font-size: 14px;
       font-weight: normal;
       line-height: 162.502%;

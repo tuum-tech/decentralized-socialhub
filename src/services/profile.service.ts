@@ -2,6 +2,8 @@ import { Guid } from 'guid-typescript';
 import { ActivityResponse } from 'src/pages/ActivityPage/types';
 import { VerificationService } from 'src/services/verification.service';
 import { DIDDocument, Logger } from '@elastosfoundation/did-js-sdk/';
+import request, { BaseplateResp } from 'src/baseplate/request';
+
 import { showNotify } from 'src/utils/notify';
 import { getItemsFromData } from 'src/utils/script';
 
@@ -11,6 +13,7 @@ import { UserService } from './user.service';
 import { DidService } from './did.service.new';
 import { SearchService } from './search.service';
 import exp from 'constants';
+import { DidcredsService, CredentialType } from './didcreds.service';
 
 export class ProfileService {
   private static LOG = new Logger('ProfileService');
@@ -107,6 +110,41 @@ export class ProfileService {
   }
 
   static async updatePublicFields(fields: string[], userSession: ISessionItem) {
+    let userService = new UserService(await DidService.getInstance());
+    const prevFields = await this.getPublicFields(userSession.did);
+    // Is wallet removed
+    if (prevFields.includes('wallet') && !fields.includes('wallet')) {
+      await userService.updateSession({
+        ...userSession,
+        wallets: {}
+      });
+    }
+    // Is wallet added
+    if (!prevFields.includes('wallet') && fields.includes('wallet')) {
+      let wallets: any = {};
+      const key1 = CredentialType.EIDAddress.toLowerCase();
+      const key2 = CredentialType.ESCAddress.toLowerCase();
+      const key3 = CredentialType.ETHAddress.toLowerCase();
+      const address1 = await DidcredsService.getCredentialValue(
+        userSession,
+        key1
+      );
+      const address2 = await DidcredsService.getCredentialValue(
+        userSession,
+        key2
+      );
+      const address3 = await DidcredsService.getCredentialValue(
+        userSession,
+        key3
+      );
+      if (address1) wallets[key1] = address1;
+      if (address2) wallets[key2] = address2;
+      if (address3) wallets[key3] = address3;
+      await userService.updateSession({
+        ...userSession,
+        wallets
+      });
+    }
     const hiveInstance = await HiveService.getHiveClient(userSession);
     if (userSession && hiveInstance) {
       try {
@@ -136,6 +174,9 @@ export class ProfileService {
       verifiers: [] as any[]
     };
     let basicDTO: any = {};
+    let versionDTO: Version = {
+      latestVersion: ''
+    };
     let educationDTO: EducationDTO = {
       items: [],
       isEnabled: true
@@ -244,6 +285,29 @@ export class ProfileService {
           {},
           did,
           `${process.env.REACT_APP_APPLICATION_DID}`
+        const versionRes: IRunScriptResponse<VersionProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_version_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+            }
+          }
+        );
+        const versionPData = getItemsFromData(
+          versionRes,
+          'get_version_profile'
+        );
+        versionDTO = versionPData[0];
+
+        const gexpRes: IRunScriptResponse<GameExpProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_game_exp_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            }
+          }
         );
         gameExpDTO.items = getItemsFromData(gexpRes, 'get_game_exp_profile');
 
@@ -354,7 +418,8 @@ export class ProfileService {
       licenseDTO,
       certificationDTO,
       gameExpDTO,
-      gamerTagDTO
+      gamerTagDTO,
+      versionDTO
     };
   }
 
@@ -371,6 +436,28 @@ export class ProfileService {
         showNotify('About info is successfuly saved', 'success');
       } catch (e) {
         ProfileService.LOG.error('updateAbout: {}', e);
+      }
+    }
+  }
+
+  static async updateVersion(latestVersion: string, session: ISessionItem) {
+    const hiveInstance = await HiveService.getSessionInstance(session);
+    if (session && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.RunScript({
+        name: 'update_version_profile',
+        context: {
+          target_did: session.did,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+        },
+        params: {
+          latestVersion,
+          did: session.did
+        }
+      });
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Updated to latest version', 'success');
+      } else {
+        showNotify('Error executing script', 'error');
       }
     }
   }
@@ -1135,6 +1222,10 @@ export const defaultFullProfile = {
   educationDTO: {
     isEnabled: false,
     items: [] as EducationItem[]
+  },
+  versionDTO: {
+    isEnabled: false,
+    latestVersion: ''
   },
   experienceDTO: {
     isEnabled: false,

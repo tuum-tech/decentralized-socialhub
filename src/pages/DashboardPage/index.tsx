@@ -18,6 +18,8 @@ import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { ProfileService } from 'src/services/profile.service';
 
 import TutorialComponent from './components/Tutorial';
+import NewRelease from './components/NewRelease';
+
 import DashboardContent from './components/DashboardContent';
 import OnBoarding from './components/OnBoarding';
 import DashboardHeader from './components/DashboardHeader';
@@ -28,6 +30,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom, FullProfileAtom } from 'src/Atoms/Atoms';
 import MainLayout from 'src/components/layouts/MainLayout';
 import useSession from 'src/hooks/useSession';
+import request from 'src/baseplate/request';
 
 const TutorialModal = styled(IonModal)`
   --border-radius: 16px;
@@ -41,12 +44,21 @@ const TutorialModal = styled(IonModal)`
   --box-shadow: none !important;
 `;
 
+const ReleaseModal = styled(IonModal)`
+  --border-radius: 16px;
+  --max-width: 541px;
+  width: 100% !important;
+  --background: transparent !important;
+  --box-shadow: none !important;
+`;
+
 const DashboardPage: React.FC = () => {
   const { session, setSession } = useSession();
 
   const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');
+  const [showReleaseModal, setShowReleaseModal] = useState(false);
   const isSmUp = useBreakpoint(up('sm'));
 
   const [didDocument, setDidDocument] = useRecoilState(DIDDocumentAtom);
@@ -60,7 +72,7 @@ const DashboardPage: React.FC = () => {
   const [followingDids, setFollowingDids] = useState<string[]>([]);
   const [followerDids, setFollowerDids] = useState<string[]>([]);
   const [mutualDids, setMutualDids] = useState<string[]>([]);
-
+  const [version, setVersion] = useState<Version | null>(null);
   const history = useHistory();
 
   let timer: NodeJS.Timeout;
@@ -127,6 +139,38 @@ const DashboardPage: React.FC = () => {
     }
   };
 
+  const handleCheckVersion = async (userVersion: string) => {
+    const profileVersionResponse: any = await request(
+      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/version`,
+      {
+        method: 'GET',
+        headers: {
+          'content-Type': 'application/json',
+          Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`
+        }
+      }
+    );
+
+    if (profileVersionResponse.meta.code === 200) {
+      let profileVersionData = profileVersionResponse.data;
+      let profileVersionLatestVersion = profileVersionData.latestVersion;
+      console.log(
+        `User is on version '${userVersion}' and Profile App is on version '${profileVersionLatestVersion}'`
+      );
+      let v: Version = {
+        latestVersion: userVersion,
+        profileVersion: profileVersionLatestVersion,
+        releaseNotes: profileVersionData.releaseNotes,
+        videoUpdateUrl: profileVersionData.videoUpdateUrl
+      };
+      if (!userVersion || userVersion < profileVersionData.latestVersion) {
+        v.latestVersion = profileVersionData.latestVersion;
+        setShowReleaseModal(true);
+      }
+      setVersion(v);
+    }
+  };
+
   const retrieveProfile = async () => {
     setLoadingText('Please wait a moment...');
     let profile: ProfileDTO = await ProfileService.getFullProfile(
@@ -136,6 +180,7 @@ const DashboardPage: React.FC = () => {
     if (profile) {
       profile.experienceDTO.isEnabled = true;
       profile.educationDTO.isEnabled = true;
+      handleCheckVersion(profile.versionDTO?.latestVersion);
       setFullProfile(profile);
     }
 
@@ -302,7 +347,6 @@ const DashboardPage: React.FC = () => {
               publishStatus={publishStatus}
             />
           )}
-
           <DashboardContent
             onTutorialStart={() => {
               setShowTutorial(true);
@@ -324,6 +368,20 @@ const DashboardPage: React.FC = () => {
               }}
             />
           </TutorialModal>
+          {version && (
+            <ReleaseModal
+              isOpen={showReleaseModal}
+              backdropDismiss={false}
+              cssClass={style['tutorialpage']}
+            >
+              <NewRelease
+                onClose={() => {
+                  setShowReleaseModal(false);
+                }}
+                contents={version}
+              />
+            </ReleaseModal>
+          )}
         </React.Fragment>
       )}
     </MainLayout>

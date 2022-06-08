@@ -75,6 +75,7 @@ import { EssentialsConnector } from '@elastosfoundation/essentials-connector-cli
 import { RecoilRoot } from 'recoil';
 import LoadingIndicator from './elements/LoadingIndicator';
 import HiveClientPage from './pages/HiveClientPage';
+import history from './baseplate/history';
 
 const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
 const SettingsPage = React.lazy(() => import('./pages/SettingsPage'));
@@ -112,7 +113,7 @@ const App: React.FC = () => {
             closeOnClick={true}
             position="top-right"
           />
-          <IonReactRouter>
+          <IonReactRouter history={history}>
             <Switch>
               <Suspense fallback={<LoadingIndicator />}>
                 <IonRouterOutlet>

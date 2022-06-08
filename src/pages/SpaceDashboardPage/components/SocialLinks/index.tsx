@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import { useSetRecoilState } from 'recoil';
 import { CallbackFromAtom, SyncSpaceAtom } from 'src/Atoms/Atoms';
 import TwitterApi from 'src/shared-base/api/twitter-api';
@@ -14,20 +14,15 @@ import githubIcon from 'src/assets/icon/Github.svg';
 import discordIcon from 'src/assets/icon/Discord.svg';
 import shieldIcon from 'src/assets/icon/shield.svg';
 
-import { SocialProfileCard, MyGrid } from './elements';
-
 import {
-  ManagerModal,
-  ManagerModalTitle,
-  ManagerModalFooter,
   ManagerLogo,
   ProfileItem,
   ManagerButton,
-  CloseButton,
-  CardHeaderContent,
-  CardContentContainer
+  LinkStyleSpan
 } from 'src/components/cards/common';
 import { SpaceService } from 'src/services/space.service';
+import Card from 'src/elements-v2/Card';
+import Modal from 'src/elements-v2/Modal';
 
 interface Props {
   space: any;
@@ -240,6 +235,10 @@ const SocialProfilesCard: React.FC<Props> = ({
         <div className={style['manage-links-item']}>
           <ManagerLogo src={icon} />
           <ManagerButton
+            variant="outlined"
+            btnColor="primary-gradient"
+            textType="gradient"
+            size="small"
             onClick={() => {
               setCallbackFrom(space);
               sociallogin(key);
@@ -255,6 +254,10 @@ const SocialProfilesCard: React.FC<Props> = ({
       <div className={style['manage-links-item']}>
         <ManagerLogo src={icon} />
         <ManagerButton
+          variant="outlined"
+          btnColor="primary-gradient"
+          textType="gradient"
+          size="small"
           disabled={isRemoving}
           onClick={() => {
             removeVc(key);
@@ -320,69 +323,67 @@ const SocialProfilesCard: React.FC<Props> = ({
 
   return (
     <>
-      <SocialProfileCard template={template}>
-        <CardHeaderContent>
-          <IonCardTitle>
-            Social Profiles
-            {mode === 'edit' && (
-              <span
-                className="card-link"
-                onClick={() => {
-                  setIsManagerOpen(true);
-                }}
-              >
-                Manage Profiles
-              </span>
-            )}
-          </IonCardTitle>
-        </CardHeaderContent>
-        <CardContentContainer>
-          <IonGrid className={style['social-profile-grid']}>
-            <IonRow>
-              {containsVerifiedCredential('linkedin') && (
-                <IonCol size={mode === 'edit' ? '6' : '12'}>
-                  {linkedInItem()}
-                </IonCol>
-              )}
-              {containsVerifiedCredential('twitter') && (
-                <IonCol size={mode === 'edit' ? '6' : '12'}>
-                  {twitterItem()}
-                </IonCol>
-              )}
-              {containsVerifiedCredential('facebook') && (
-                <IonCol size={mode === 'edit' ? '6' : '12'}>
-                  {facebookItem()}
-                </IonCol>
-              )}
-              {containsVerifiedCredential('google') && (
-                <IonCol size={mode === 'edit' ? '6' : '12'}>
-                  {googleItem()}
-                </IonCol>
-              )}
-              {containsVerifiedCredential('github') && (
-                <IonCol size={mode === 'edit' ? '6' : '12'}>
-                  {githubItem()}
-                </IonCol>
-              )}
-              {containsVerifiedCredential('discord') && (
-                <IonCol size={mode === 'edit' ? '6' : '12'}>
-                  {discordItem()}
-                </IonCol>
-              )}
-            </IonRow>
-          </IonGrid>
-        </CardContentContainer>
-      </SocialProfileCard>
-
-      <ManagerModal
-        isOpen={isManagerOpen}
-        cssClass="my-custom-class"
-        backdropDismiss={false}
+      <Card
+        template={template}
+        title="Social Profiles"
+        action={
+          mode === 'edit' && (
+            <LinkStyleSpan
+              onClick={() => {
+                setIsManagerOpen(true);
+              }}
+            >
+              Manage Profiles
+            </LinkStyleSpan>
+          )
+        }
       >
-        <MyGrid class="ion-no-padding">
+        <IonGrid className="ion-no-padding">
           <IonRow>
-            <ManagerModalTitle>Manage Links</ManagerModalTitle>
+            {containsVerifiedCredential('linkedin') && (
+              <IonCol size={mode === 'edit' ? '6' : '12'}>
+                {linkedInItem()}
+              </IonCol>
+            )}
+            {containsVerifiedCredential('twitter') && (
+              <IonCol size={mode === 'edit' ? '6' : '12'}>
+                {twitterItem()}
+              </IonCol>
+            )}
+            {containsVerifiedCredential('facebook') && (
+              <IonCol size={mode === 'edit' ? '6' : '12'}>
+                {facebookItem()}
+              </IonCol>
+            )}
+            {containsVerifiedCredential('google') && (
+              <IonCol size={mode === 'edit' ? '6' : '12'}>
+                {googleItem()}
+              </IonCol>
+            )}
+            {containsVerifiedCredential('github') && (
+              <IonCol size={mode === 'edit' ? '6' : '12'}>
+                {githubItem()}
+              </IonCol>
+            )}
+            {containsVerifiedCredential('discord') && (
+              <IonCol size={mode === 'edit' ? '6' : '12'}>
+                {discordItem()}
+              </IonCol>
+            )}
           </IonRow>
+        </IonGrid>
+      </Card>
+
+      <Modal
+        title="Manage Links"
+        onClose={() => {
+          setIsManagerOpen(false);
+        }}
+        isOpen={isManagerOpen}
+        backdropDismiss={false}
+        noButton
+      >
+        <IonGrid class="ion-no-padding">
           <IonRow no-padding>
             <IonCol class="ion-no-padding">{linkedinModalItem()}</IonCol>
           </IonRow>
@@ -401,22 +402,8 @@ const SocialProfilesCard: React.FC<Props> = ({
           <IonRow no-padding>
             <IonCol class="ion-no-padding">{discordModalItem()}</IonCol>
           </IonRow>
-        </MyGrid>
-        <ManagerModalFooter className="ion-no-border">
-          <IonRow className="ion-justify-content-around">
-            <IonCol size="auto">
-              <CloseButton
-                disabled={isRemoving}
-                onClick={() => {
-                  setIsManagerOpen(false);
-                }}
-              >
-                Close
-              </CloseButton>
-            </IonCol>
-          </IonRow>
-        </ManagerModalFooter>
-      </ManagerModal>
+        </IonGrid>
+      </Modal>
     </>
   );
 };

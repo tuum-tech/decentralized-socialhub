@@ -4,16 +4,18 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonGrid,
-  IonImg,
   IonButton,
   IonModal,
   IonItem,
   IonTextarea,
-  IonCardContent
+  IonCardContent,
+  IonLabel
 } from '@ionic/react';
 import styled from 'styled-components';
 import { getThemeData } from 'src/utils/template';
 import styles from 'src/elements-v2/style.module.scss';
+import { DefaultButton } from 'src/elements-v2/buttons';
+import { down } from 'styled-breakpoints';
 
 export enum MODE {
   NONE,
@@ -27,7 +29,7 @@ export const CardOverview = styled(IonCard)<ThemeProps>`
     getThemeData(template, 'card', 'backgroundColor')};
 
   box-shadow: ${({ template }: ThemeProps) =>
-    getThemeData(template, 'card', 'cardShawdow')};
+    getThemeData(template, 'card', 'cardShadow')};
 
   border-radius: 16px;
   padding: 26px 20px 30px 20px;
@@ -164,7 +166,7 @@ export const PopoverMenuItem = styled.div`
 
 export const MyGrid = styled(IonGrid)`
   margin: 10px 20px 10px 20px;
-  height: 100 %;
+  height: 100%;
 `;
 
 export const MyTextarea = styled(IonTextarea)`
@@ -246,10 +248,14 @@ export const ManagerModalFooter = styled(IonFooter)`
   }
 `;
 
-export const ManagerLogo = styled(IonImg)`
+export const ManagerLogo = styled.img`
   position: relative;
   float: left;
   width: 42px;
+
+  outline: 1px solid #cc2a8b;
+  outline-offset: 2px;
+  border-radius: 50%;
 `;
 
 export const CloseButton = styled(IonButton)`
@@ -269,25 +275,9 @@ export const CloseButton = styled(IonButton)`
   text-align: left;
   color: #ffffff;
 `;
-export const ManagerButton = styled(IonButton)`
-  position: relative;
-  --ion-color-primary: transparent !important;
-  --ion-color-primary-tint: transparent;
+export const ManagerButton = styled(DefaultButton)`
   width: 90px;
-  height: 26px;
   float: right;
-
-  font-family: 'SF Pro Display';
-  border-radius: 8px;
-  border: solid 1px #4c6fff;
-  font-size: 13px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1.92;
-  letter-spacing: normal;
-  text-align: center;
-  color: #4c6fff;
 `;
 
 export const ProfileItem = styled(IonItem)<ThemeProps>`
@@ -319,6 +309,7 @@ export const ProfileItem = styled(IonItem)<ThemeProps>`
   }
 
   .left {
+    min-width: 50px;
     position: relative;
     & > img {
       border-radius: 50%;
@@ -334,6 +325,7 @@ export const ProfileItem = styled(IonItem)<ThemeProps>`
       margin-left: 5px;
       cursor: pointer;
     }
+    overflow: auto;
   }
 
   .social-profile-network {
@@ -355,4 +347,29 @@ export const ProfileItem = styled(IonItem)<ThemeProps>`
     top: 0px;
     right: 0px;
   }
+`;
+
+export const Spacer = styled.div<{ noWrap?: boolean }>`
+  margin-top: 38px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+
+  ${down('sm')} {
+    margin-top: ${props => (props.noWrap ? 38 : 10)}px;
+  }
+`;
+
+export const StyledLabel = styled(IonLabel)`
+  font-family: 'SF Pro Display';
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-body-light);
+`;
+
+export const CheckboxLabel = styled(IonLabel)`
+  font-size: 14px;
+  font-weight: 500;
+  padding-left: 10px;
+  color: #0a1f44;
 `;

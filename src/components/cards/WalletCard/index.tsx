@@ -1,32 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import { useWeb3React } from '@web3-react/core';
 import Web3 from 'web3';
 import Blockies from 'react-blockies';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { showNotify } from 'src/utils/notify';
 
-import {
-  CloseButton,
-  ManagerButton,
-  ManagerModal,
-  ManagerModalTitle,
-  ManagerModalFooter,
-  MyGrid,
-  CardOverview,
-  LinkStyleSpan,
-  CardHeaderContent,
-  CardContentContainer,
-  ProfileItem
-} from '../common';
+import { ManagerButton, LinkStyleSpan, ProfileItem } from '../common';
 import { verifyWalletOwner } from './function';
-import {
-  VerifiableCredential,
-  DIDDocument,
-  DID
-} from '@elastosfoundation/did-js-sdk/';
-import { useSetRecoilState, useRecoilState } from 'recoil';
-import { BadgesAtom, DIDDocumentAtom, CallbackFromAtom } from 'src/Atoms/Atoms';
+import { VerifiableCredential } from '@elastosfoundation/did-js-sdk/';
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { ProfileService } from 'src/services/profile.service';
 import { shortenAddress } from 'src/utils/web3';
@@ -39,6 +21,9 @@ import copyIcon from '../../../assets/icon/copy-to-clipboard.svg';
 import { UserService } from 'src/services/user.service';
 import { DidService } from 'src/services/did.service.new';
 import { VerificationService } from 'src/services/verification.service';
+import Card from 'src/elements-v2/Card';
+import Modal from 'src/elements-v2/Modal';
+import useSession from 'src/hooks/useSession';
 
 interface IWalletProps {
   setRequestEssentials: (item: boolean) => void;
@@ -54,7 +39,8 @@ const WalletCard: React.FC<IWalletProps> = ({
   userSession
 }: IWalletProps) => {
   const { account, library, activate } = useWeb3React();
-
+  const { session, setSession } = useSession();
+  const wallets = useMemo(() => session.wallets, [session]);
   ////////////////////////////// ***** ////////////////////////////////////
   const [adding, setAdding] = useState(false);
   const [selectedWalletType, setSelectedWalletType] = useState<CredentialType>(
@@ -62,8 +48,6 @@ const WalletCard: React.FC<IWalletProps> = ({
   );
   const [isManagerOpen, setIsManagerOpen] = useState(false);
   const [isRemovingVc, setIsRemovingVc] = useState(false);
-  const setBadges = useSetRecoilState(BadgesAtom);
-  const [didDocument, setDidDocument] = useRecoilState(DIDDocumentAtom);
   const walletCredentials = [
     {
       name: 'escaddress',
@@ -88,24 +72,13 @@ const WalletCard: React.FC<IWalletProps> = ({
   >(walletCredentials);
 
   useEffect(() => {
-    (async () => {
-      await getCredentials(userSession);
-      let userService = new UserService(await DidService.getInstance());
+    let timer = setTimeout(function start() {
+      getCredentials(userSession);
+      timer = setTimeout(start, 2000);
+    }, 2000);
 
-      let user: ISessionItem = await userService.SearchUserWithDID(
-        userSession.did
-      );
-      setBadges(user?.badges as IBadges);
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [didDocument]);
-
-  const forceUpdateDidDocument = async () => {
-    let updatedDidDocument: DIDDocument = (await DID.from(
-      userSession.did
-    )?.resolve(true)) as DIDDocument;
-    setDidDocument(updatedDidDocument.toString());
-  };
+    return () => clearTimeout(timer);
+  }, []);
 
   const getCredentials = async (sessionItem: ISessionItem) => {
     let credsFromDidDocument: any[] = [];
@@ -147,6 +120,23 @@ const WalletCard: React.FC<IWalletProps> = ({
           await vService.importCredential(newVC);
         }
         try {
+          const publicFields = await ProfileService.getPublicFields(
+            userSession.did
+          );
+          if (publicFields.includes('wallet')) {
+            const key = newVC
+              .getId()
+              .toString()
+              .split(`${userSession.did}#`)[1];
+            const value = newVC.subject.getProperty(key);
+            let userService = new UserService(await DidService.getInstance());
+            setSession(
+              await userService.updateSession({
+                ...userSession,
+                wallets: { ...wallets, [key]: value }
+              })
+            );
+          }
           await DidcredsService.addOrUpdateCredentialToVault(
             userSession,
             newVC
@@ -193,24 +183,12 @@ const WalletCard: React.FC<IWalletProps> = ({
     if (!account) {
       connectWallet();
     }
-    var timer = setInterval(async function() {
-      //clearInterval(timer);
 
-      //if (sessionItem.isEssentialUser) await forceUpdateDidDocument();
-      await getCredentials(userSession);
-    }, 2000);
     updateSession(type);
   };
 
   const removeVc = async (key: string) => {
     setIsRemovingVc(true);
-
-    var timer = setInterval(async function() {
-      //clearInterval(timer);
-
-      //if (sessionItem.isEssentialUser) await forceUpdateDidDocument();
-      await getCredentials(userSession);
-    }, 2000);
 
     let vcId = userSession.did + '#' + key.toLowerCase();
     if (userSession.isEssentialUser) {
@@ -218,6 +196,21 @@ const WalletCard: React.FC<IWalletProps> = ({
       await vService.deleteCredentials(vcId);
     }
     try {
+      const publicFields = await ProfileService.getPublicFields(
+        userSession.did
+      );
+      if (publicFields.includes('wallet')) {
+        const key = vcId.split(`${userSession.did}#`)[1];
+        const _wallets = { ...wallets };
+        if (_wallets && _wallets[key]) delete _wallets[key];
+        let userService = new UserService(await DidService.getInstance());
+        setSession(
+          await userService.updateSession({
+            ...userSession,
+            wallets: _wallets
+          })
+        );
+      }
       await DidcredsService.removeCredentialToVault(userSession, vcId);
     } catch (error) {
       console.error('Error getting credentials from vault', error);
@@ -249,7 +242,15 @@ const WalletCard: React.FC<IWalletProps> = ({
         <div className={style['manage-links-item']}>
           <Blockies seed={type} size={50} scale={1} />
           <div className={style['manage-links-header']}>{type}</div>
-          <ManagerButton onClick={() => addVc(type)}>Add</ManagerButton>
+          <ManagerButton
+            variant="outlined"
+            btnColor="primary-gradient"
+            textType="gradient"
+            size="small"
+            onClick={() => addVc(type)}
+          >
+            Add
+          </ManagerButton>
         </div>
       );
     }
@@ -271,7 +272,14 @@ const WalletCard: React.FC<IWalletProps> = ({
             </CopyToClipboard>
           </p>
         </div>
-        <ManagerButton disabled={isRemovingVc} onClick={() => removeVc(type)}>
+        <ManagerButton
+          variant="outlined"
+          btnColor="primary-gradient"
+          textType="gradient"
+          size="small"
+          disabled={isRemovingVc}
+          onClick={() => removeVc(type)}
+        >
           Remove
         </ManagerButton>
       </div>
@@ -332,62 +340,56 @@ const WalletCard: React.FC<IWalletProps> = ({
 
   return (
     <>
-      <CardOverview template={template}>
-        <CardHeaderContent>
-          <IonGrid className="ion-no-padding">
-            <IonRow className="ion-justify-content-between ion-no-padding">
-              <IonCol className="ion-no-padding">
-                <IonCardTitle>Wallets</IonCardTitle>
-              </IonCol>
-              {isEditable ? (
-                <IonCol size="auto" className="ion-no-padding">
-                  <LinkStyleSpan onClick={e => setIsManagerOpen(true)}>
-                    Manage Wallets
-                  </LinkStyleSpan>
-                </IonCol>
-              ) : (
-                ''
-              )}
-            </IonRow>
-          </IonGrid>
-        </CardHeaderContent>
-        <CardContentContainer>
-          <IonGrid className="social-profile-grid">
-            <IonRow>
-              {containsVerifiedCredential(
-                CredentialType.ETHAddress.toLowerCase()
-              ) && (
-                <IonCol size={isEditable ? '6' : '12'}>
-                  {walletViewItem(CredentialType.ETHAddress)}
-                </IonCol>
-              )}
-              {containsVerifiedCredential(
-                CredentialType.EIDAddress.toLowerCase()
-              ) && (
-                <IonCol size={isEditable ? '6' : '12'}>
-                  {walletViewItem(CredentialType.EIDAddress)}
-                </IonCol>
-              )}
-              {containsVerifiedCredential(
-                CredentialType.ESCAddress.toLowerCase()
-              ) && (
-                <IonCol size={isEditable ? '6' : '12'}>
-                  {walletViewItem(CredentialType.ESCAddress)}
-                </IonCol>
-              )}
-            </IonRow>
-          </IonGrid>
-        </CardContentContainer>
-      </CardOverview>
-      <ManagerModal
-        isOpen={isManagerOpen}
-        cssClass="my-custom-class"
-        backdropDismiss={false}
+      <Card
+        template={template}
+        title="Wallets"
+        action={
+          isEditable ? (
+            <IonCol size="auto" className="ion-no-padding">
+              <LinkStyleSpan onClick={e => setIsManagerOpen(true)}>
+                Manage Wallets
+              </LinkStyleSpan>
+            </IonCol>
+          ) : (
+            ''
+          )
+        }
       >
-        <MyGrid class="ion-no-padding">
+        <IonGrid className="social-profile-grid">
           <IonRow>
-            <ManagerModalTitle>Manage Wallets</ManagerModalTitle>
+            {containsVerifiedCredential(
+              CredentialType.ETHAddress.toLowerCase()
+            ) && (
+              <IonCol size={isEditable ? '6' : '12'}>
+                {walletViewItem(CredentialType.ETHAddress)}
+              </IonCol>
+            )}
+            {containsVerifiedCredential(
+              CredentialType.EIDAddress.toLowerCase()
+            ) && (
+              <IonCol size={isEditable ? '6' : '12'}>
+                {walletViewItem(CredentialType.EIDAddress)}
+              </IonCol>
+            )}
+            {containsVerifiedCredential(
+              CredentialType.ESCAddress.toLowerCase()
+            ) && (
+              <IonCol size={isEditable ? '6' : '12'}>
+                {walletViewItem(CredentialType.ESCAddress)}
+              </IonCol>
+            )}
           </IonRow>
+        </IonGrid>
+      </Card>
+      <Modal
+        title="Manage Wallets"
+        isOpen={isManagerOpen}
+        onClose={() => {
+          setIsManagerOpen(false);
+        }}
+        noButton
+      >
+        <IonGrid class="ion-no-padding">
           <IonRow no-padding>
             <IonCol class="ion-no-padding">
               {walletEditItem(CredentialType.EIDAddress)}
@@ -403,22 +405,8 @@ const WalletCard: React.FC<IWalletProps> = ({
               {walletEditItem(CredentialType.ETHAddress)}
             </IonCol>
           </IonRow>
-        </MyGrid>
-        <ManagerModalFooter className="ion-no-border">
-          <IonRow className="ion-justify-content-around">
-            <IonCol size="auto">
-              <CloseButton
-                disabled={isRemovingVc}
-                onClick={() => {
-                  setIsManagerOpen(false);
-                }}
-              >
-                Close
-              </CloseButton>
-            </IonCol>
-          </IonRow>
-        </ManagerModalFooter>
-      </ManagerModal>
+        </IonGrid>
+      </Modal>
     </>
   );
 };

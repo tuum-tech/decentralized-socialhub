@@ -19,10 +19,7 @@ export class HiveService {
     hiveHost?: string
   ): Promise<HiveClient | null> {
     try {
-      let applicationParameters: HiveClientParameters = appParameters;
       if (hiveHost !== undefined && hiveHost !== '') {
-        appParameters.hiveHost = hiveHost;
-      }
 
       let hiveClient = CacheManager.get('ApplicationHiveClient');
 

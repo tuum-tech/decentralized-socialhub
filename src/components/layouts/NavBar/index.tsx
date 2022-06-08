@@ -13,6 +13,7 @@ const NavContainer = styled.div`
   position: absolute;
   width: 100%;
   top: 0;
+  z-index: 99;
 
   .content {
     width: 100%;
@@ -61,7 +62,14 @@ const NavBar: React.FC<IProps> = ({ navItemClicked }) => {
     <NavContainer>
       <div className="content">
         <DesktopNavContent navItemClicked={navItemClicked} />
-        {toggleMenu && <MobileNavContent navItemClicked={navItemClicked} />}
+        {toggleMenu && (
+          <MobileNavContent
+            navItemClicked={path => {
+              setToggleMenu(false);
+              navItemClicked(path);
+            }}
+          />
+        )}
         <button
           className="btn"
           style={{ outline: 0 }}

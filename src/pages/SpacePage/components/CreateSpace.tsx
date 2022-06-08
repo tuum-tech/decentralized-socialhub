@@ -80,10 +80,14 @@ const CreateSpace: React.FC = () => {
   }, []);
 
   const handleCreateSpace = async (space: Space) => {
-    if (mySpaces.findIndex(_space => _space.name === space.name) > -1) {
+    if (
+      mySpaces.findIndex(
+        _space => _space.name.toLowerCase() === space.name.toLowerCase()
+      ) > -1
+    ) {
       showNotify(
-        'Space with same name already exist. Try with another name',
-        'warning'
+        'Space with the same name already exists. Please use another name',
+        'error'
       );
       return;
     }
@@ -141,7 +145,7 @@ const CreateSpace: React.FC = () => {
             ></SmallTextareaInput>
           </IonCol>
         </IonRow>
-        <IonRow class="ion-justify-content-start">
+        <IonRow class="ion-justify-content-start mb-4">
           <IonCol size="12">
             <SmallSelectInput
               onChange={onSelectCategory}
@@ -154,12 +158,12 @@ const CreateSpace: React.FC = () => {
         </IonRow>
         <IonRow class="ion-justify-content-start">
           <IonCol size="12">
-            <SpaceAvatarChange onUpload={onUploadAvatar} />
+            <SpaceCoverPhoto onUpload={onUploadCoverPhoto} />
           </IonCol>
         </IonRow>
         <IonRow class="ion-justify-content-start">
           <IonCol size="12">
-            <SpaceCoverPhoto onUpload={onUploadCoverPhoto} />
+            <SpaceAvatarChange onUpload={onUploadAvatar} />
           </IonCol>
         </IonRow>
         <IonRow className="ion-padding-vertical">

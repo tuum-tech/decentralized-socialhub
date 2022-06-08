@@ -12,7 +12,8 @@ import {
   HeaderContent,
   HeaderImg,
   Buttons,
-  IProps
+  IProps,
+  Info
 } from './Crypto';
 import VerificationBadge from '../../../VerificatioBadge';
 
@@ -24,26 +25,28 @@ const Gamer: React.FC<IProps> = ({
   return (
     <HeaderContainer className="ion-no-padding">
       <HeaderImg bgImg={getCoverPhoto(publicUser)} />
-      <HeaderContent>
+      <HeaderContent background="#111123">
         <div className="content">
           <Avatar did={publicUser.did} />
-          <div className="name">
-            <p>{publicUser.name}</p>
-            {publicUserProfile.name &&
-              publicUserProfile.name.verifiers &&
-              publicUserProfile.name.verifiers.length > 0 && (
-                <VerificationBadge
-                  users={publicUserProfile.name.verifiers}
-                  userSession={publicUser}
-                />
-              )}
-          </div>
+          <Info>
+            <div className="name">
+              <p>{publicUser.name}</p>
+              {publicUserProfile.name &&
+                publicUserProfile.name.verifiers &&
+                publicUserProfile.name.verifiers.length > 0 && (
+                  <VerificationBadge
+                    users={publicUserProfile.name.verifiers}
+                    userSession={publicUser}
+                  />
+                )}
+            </div>
 
-          <DidSnippet
-            did={publicUser.did}
-            dateJoined={publicUser.timestamp}
-            color="white"
-          />
+            <DidSnippet
+              did={publicUser.did}
+              dateJoined={publicUser.timestamp}
+              color="white"
+            />
+          </Info>
           <Buttons>
             {signedUser.did === '' ? (
               <Link to="/sign-in">

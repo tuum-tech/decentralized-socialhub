@@ -2,6 +2,7 @@ import React from 'react';
 import { IonGrid, IonRow, IonCol } from '@ionic/react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { down } from 'styled-breakpoints';
 
 import DidSnippet from 'src/elements/DidSnippet';
 import { ProfileName } from 'src/elements/texts';
@@ -13,18 +14,21 @@ import { getCoverPhoto } from 'src/components/cards/CoverPhoto';
 import FollowOrUnFollowButton from '../../FollowOrUnFollow';
 import VerificationBadge from '../../../VerificatioBadge';
 
-const HeaderContainer = styled(IonGrid)`
-  background-color: white;
-`;
-
 const Header = styled(IonRow)`
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: white;
   padding: 13px 32px;
   img {
     margin: 0;
     display: block;
+  }
+  ${down('sm')} {
+    margin-top: 15px;
+    box-shadow: 0px 0px 1px rgb(12 26 75 / 24%),
+      0px 3px 8px -1px rgb(50 50 71 / 5%);
+    border-radius: 16px;
   }
 `;
 
@@ -35,7 +39,7 @@ const Buttons = styled.div`
 `;
 
 const Info = styled.div`
-  flex-grow: 1;
+  width: calc(100% - 90px);
   padding: 0 10px;
 `;
 
@@ -51,7 +55,7 @@ const Default: React.FC<IProps> = ({
   publicUserProfile
 }: IProps) => {
   return (
-    <HeaderContainer className="ion-no-padding">
+    <IonGrid className="ion-no-padding">
       <Banner bgImg={getCoverPhoto(publicUser)} />
       {/* <Banner>
         <img src={getCoverPhoto(publicUser)} />
@@ -94,7 +98,7 @@ const Default: React.FC<IProps> = ({
           )}
         </Buttons>
       </Header>
-    </HeaderContainer>
+    </IonGrid>
   );
 };
 

@@ -22,6 +22,7 @@ import { HiveClient } from '@dchagastelles/commons.js.tools';
 import { HiveException } from '@elastosfoundation/hive-js-sdk/';
 import { Logger } from 'src/shared-base/logger';
 import style from '../style.module.scss';
+import request from 'src/baseplate/request';
 
 const VersionTag = styled.div`
   display: flex;
@@ -167,6 +168,24 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
         }
       }
       await UserVaultScripts.Execute(hiveClient!);
+
+      const profileVersionResponse: any = await request(
+        `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/version`,
+        {
+          method: 'GET',
+          headers: {
+            'content-Type': 'application/json',
+            Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`
+          }
+        }
+      );
+      if (profileVersionResponse.meta.code === 200) {
+        let profileVersionData = profileVersionResponse.data;
+        await ProfileService.updateVersion(
+          profileVersionData.latestVersion,
+          newSession
+        );
+      }
 
       storedDocument.credentials?.forEach(async vc => {
         await DidcredsService.addOrUpdateCredentialToVault(newSession, vc);

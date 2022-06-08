@@ -188,7 +188,7 @@ let run = async () => {
         body: {
           collection: 'space_posts',
           filter: {
-            space_sid: '$params.space_sid'
+            space_id: '$params.space_id'
           },
           options: {
             limit: '$params.limit',
@@ -211,7 +211,7 @@ let run = async () => {
           },
           update: {
             $set: {
-              space_sid: '$params.space_sid',
+              space_id: '$params.space_id',
               post_id: '$params.post_id',
               creator: '$params.creator',
               visible: '$params.visible',
@@ -585,6 +585,7 @@ let run = async () => {
             pageTemplate: '$params.pageTemplate',
             timestamp: '$params.timestamp',
             referrals: '$params.referrals',
+            wallets: '$params.wallets',
             passwordRemoved: true
           }
         }
@@ -624,6 +625,7 @@ let run = async () => {
               avatar: '$params.avatar',
               pageTemplate: '$params.pageTemplate',
               referrals: '$params.referrals',
+              wallets: '$params.wallets',
               passwordRemoved: true
             }
           }
@@ -720,6 +722,66 @@ let run = async () => {
           filter: {
             did: '',
             timestamp: { $lt: '$params.timestamp' }
+          }
+        }
+      }
+    });
+    await client.Scripting.SetScript({
+      name: 'get_users_by_ethaddress',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_users_by_ethaddress',
+        output: true,
+        body: {
+          collection: 'users',
+          filter: {
+            wallets: { ethaddress: '$params.address' }
+          },
+          options: {
+            limit: '$params.limit',
+            skip: '$params.skip'
+          }
+        }
+      }
+    });
+    await client.Scripting.SetScript({
+      name: 'get_users_by_eidaddress',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_users_by_eidaddress',
+        output: true,
+        body: {
+          collection: 'users',
+          filter: {
+            wallets: { eidaddress: '$params.address' }
+          },
+          options: {
+            limit: '$params.limit',
+            skip: '$params.skip'
+          }
+        }
+      }
+    });
+    await client.Scripting.SetScript({
+      name: 'get_users_by_escaddress',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_users_by_escaddress',
+        output: true,
+        body: {
+          collection: 'users',
+          filter: {
+            wallets: { escaddress: '$params.address' }
+          },
+          options: {
+            limit: '$params.limit',
+            skip: '$params.skip'
           }
         }
       }

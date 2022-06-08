@@ -25,11 +25,13 @@ let run = async () => {
       if (saved) {
         const update = {
           name: space.name,
-          slug: slugify(space.name, { lower: true }),
+          slug: space.slug ? space.slug : slugify(space.name, { lower: true }),
           category: space.category,
           owner: space.owner,
           meta: space.meta,
-          followers: [...new Set(saved.followers.concat(space.followers))]
+          tags: [...new Set(saved.tags.concat(space.tags || []))],
+          followers: [...new Set(saved.followers.concat(space.followers))],
+          socialLinks: saved.socialLinks || {}
         };
         await client.Database.updateOne(
           'community_spaces',
@@ -39,11 +41,19 @@ let run = async () => {
       } else {
         await client.Database.insertOne('community_spaces', {
           ...space,
-          slug: slugify(space.name, { lower: true }),
+          slug: space.slug ? space.slug : slugify(space.name, { lower: true }),
           avatar: '',
           coverPhoto: '',
           description: '',
-          publicFields: ['about', 'follower'],
+          tags: [
+            'ERC-721',
+            'Governance',
+            'Social Token',
+            'Membership',
+            'Collectibles',
+            'Art'
+          ],
+          publicFields: ['about', 'follower', 'social links'],
           socialLinks: {},
           guid: Guid.create()
         });

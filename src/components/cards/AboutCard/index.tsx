@@ -44,6 +44,7 @@ const AboutCard: React.FC<IProps> = ({
   return (
     <>
       <Card
+        template={template}
         title="About"
         description={about}
         action={
@@ -63,7 +64,6 @@ const AboutCard: React.FC<IProps> = ({
         onOk={async () => {
           await update(about);
         }}
-        contentStyle={{ marginTop: 27 }}
       >
         <StyledLabel>Description / Responsibilities</StyledLabel>
         <MyTextarea

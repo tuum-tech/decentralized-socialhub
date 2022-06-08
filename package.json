@@ -1,6 +1,6 @@
 {
   "name": "profile",
-  "version": "1.25.0",
+  "version": "1.26.1",
   "description": "Profile",
   "dependencies": {
     "@dchagastelles/commons.js.tools": "^1.0.6",
@@ -35,13 +35,14 @@
     "chai": "^4.3.6",
     "clsx": "^1.1.1",
     "compress-base64": "^1.0.2",
-    "connected-react-router": "^6.8.0",
+    "connected-react-router": "6.9.1",
     "crypto-js": "^4.0.0",
     "dotenv": "8.2.0",
     "dotenv-expand": "5.1.0",
     "events": "^3.3.0",
     "github-api": "^3.4.0",
     "guid-typescript": "^1.0.9",
+    "history": "4.10.1",
     "hoist-non-react-statics": "^3.3.2",
     "identity-obj-proxy": "3.0.0",
     "immer": "^9.0.6",
@@ -62,7 +63,7 @@
     "react-bootstrap": "^1.6.4",
     "react-copy-to-clipboard": "^5.0.4",
     "react-dom": "^16.14.0",
-    "react-easy-crop": "^4.1.5",
+    "react-easy-crop": "4.1.5",
     "react-infinite-scroll-component": "^6.1.0",
     "react-intl": "^3.12.1",
     "react-is": "^17.0.2",
@@ -158,6 +159,7 @@
     "lint-staged": "^10.0.8",
     "nodemon": "^2.0.13",
     "prettier": "^1.19.1",
+    "react-error-overlay": "^6.0.11",
     "tslint-react": "^4.1.0"
   },
   "husky": {
@@ -170,5 +172,8 @@
       "prettier --write",
       "eslint --fix"
     ]
+  },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
   }
 }
