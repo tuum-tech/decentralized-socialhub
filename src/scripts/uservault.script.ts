@@ -1,6 +1,5 @@
 import { HiveClient } from '@elastosfoundation/elastos-hive-js-sdk';
 import parallel from 'async/parallel';
-import series from 'async/series';
 
 export class UserVaultScripts {
   static async Execute(hiveClient: HiveClient) {
@@ -217,7 +216,11 @@ export class UserVaultScripts {
         name: 'get_following',
         output: true,
         body: {
-          collection: 'following'
+          collection: 'following',
+          options: {
+            limit: '$params.limit',
+            skip: '$params.skip'
+          }
         }
       }
     });

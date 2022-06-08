@@ -434,6 +434,8 @@ let run = async () => {
             did: { $in: '$params.did' }
           },
           options: {
+            limit: '$params.limit',
+            skip: '$params.skip',
             projection: {
               _id: false,
               created: false
