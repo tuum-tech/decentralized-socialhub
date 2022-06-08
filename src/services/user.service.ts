@@ -16,11 +16,11 @@ import {
   DIDURL,
   RootIdentity
 } from '@elastosfoundation/did-js-sdk/';
-import { DidService, IDidService } from './did.service.new';
+import { IDidService } from './did.service.new';
 import { CredentialType, DidcredsService } from './didcreds.service';
 import { SpaceService } from './space.service';
-import { HiveClient } from 'src/shared-base/api/hiveclient';
 import { DidDocumentService } from './diddocument.service';
+import { HiveClient } from '@dchagastelles/commons.js.tools';
 
 const CryptoJS = require('crypto-js');
 

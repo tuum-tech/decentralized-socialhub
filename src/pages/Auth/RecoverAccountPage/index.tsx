@@ -33,7 +33,7 @@ import { UserType, LocationState, InferMappedProps } from './types';
 import { SubState } from 'src/store/users/types';
 import { DIDURL } from '@elastosfoundation/did-js-sdk/';
 import { HiveService } from 'src/services/hive.service';
-import { HiveClient } from 'src/shared-base/api/hiveclient';
+import { HiveClient } from '@dchagastelles/commons.js.tools';
 
 const CreateButton = styled(Link)`
   background: #313049;

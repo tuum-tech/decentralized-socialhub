@@ -1,4 +1,4 @@
-import { HiveClient } from 'src/shared-base/api/hiveclient';
+import { HiveClient } from '@dchagastelles/commons.js.tools';
 import {
   FindExecutable,
   UpdateExecutable,

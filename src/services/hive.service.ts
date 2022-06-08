@@ -1,11 +1,11 @@
 import { DidDocumentService } from './diddocument.service';
-import { CacheManager } from 'src/shared-base/cachemanager';
 import {
+  Logger,
+  CacheManager,
   HiveClient,
   HiveClientParameters,
   appParameters
-} from 'src/shared-base/api/hiveclient';
-import { Logger } from 'src/shared-base/logger';
+} from '@dchagastelles/commons.js.tools';
 import { UserDocumentNotPublishedException } from 'src/shared-base/exceptions';
 
 export interface IHiveChallenge {
@@ -24,10 +24,7 @@ export class HiveService {
         appParameters.hiveHost = hiveHost;
       }
 
-      let hiveClient = CacheManager.get(
-        'ApplicationHiveClient',
-        applicationParameters
-      );
+      let hiveClient = CacheManager.get('ApplicationHiveClient');
 
       if (!hiveClient) {
         hiveClient = await HiveClient.createInstance(applicationParameters);
@@ -50,7 +47,7 @@ export class HiveService {
           userDID: session.did
         }
       } as HiveClientParameters;
-      let hiveClient = CacheManager.get('HiveClient', hiveClientParameters);
+      let hiveClient = CacheManager.get('HiveClient');
 
       if (!hiveClient) {
         let isUserDocumentPublished = await DidDocumentService.isDidDocumentPublished(
@@ -76,7 +73,7 @@ export class HiveService {
     HiveService.LOG.trace('getReadOnlyUserHiveClient');
     try {
       let host = hiveHost ? hiveHost : process.env.REACT_APP_HIVE_HOST;
-      return await HiveClient.createAnonymousInstance(host!);
+      //return await HiveClient.createAnonymousInstance(host!);
     } catch (e) {
       HiveService.LOG.error('getReadOnlyUserHiveClient: {}', e);
     }

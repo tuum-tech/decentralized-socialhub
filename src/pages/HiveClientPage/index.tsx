@@ -11,7 +11,7 @@ import SignedPublicPageHeader from 'src/components/layouts/SignedPublicPageHeade
 import {
   HiveClient,
   HiveClientParameters
-} from 'src/shared-base/api/hiveclient';
+} from '@dchagastelles/commons.js.tools';
 import { HiveService } from 'src/services/hive.service';
 import { AppVaultScripts } from 'src/scripts/appvault.scriptsV2';
 import { AppContextParameters } from '@elastosfoundation/hive-js-sdk';

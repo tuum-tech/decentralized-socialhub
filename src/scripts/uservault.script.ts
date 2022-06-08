@@ -5,7 +5,7 @@ import {
   InsertExecutable,
   UpdateExecutable
 } from '@elastosfoundation/hive-js-sdk/';
-import { HiveClient } from 'src/shared-base/api/hiveclient';
+import { HiveClient } from '@dchagastelles/commons.js.tools';
 
 export class UserVaultScripts {
   static async Execute(hiveClient: HiveClient) {

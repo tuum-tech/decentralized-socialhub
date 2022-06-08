@@ -1416,13 +1416,6 @@
     svelte-i18n "^3.3.6"
     web3-core "^1.6.1"
 
-"@elastosfoundation/elastos-hive-js-sdk@https://rg.cnpmjs.org/@elastosfoundation/elastos-hive-js-sdk/download/@elastosfoundation/elastos-hive-js-sdk-0.3.0.tgz":
-  version "0.3.0"
-  resolved "https://rg.cnpmjs.org/@elastosfoundation/elastos-hive-js-sdk/download/@elastosfoundation/elastos-hive-js-sdk-0.3.0.tgz#8be445debfad3c4d6f4d2fc285796eb837e873e2"
-  dependencies:
-    jsrsasign "^10.1.4"
-    jsrsasign-util "^1.0.2"
-
 "@elastosfoundation/elastos-js-sdk@^1.2.12":
   version "1.2.12"
   resolved "https://registry.yarnpkg.com/@elastosfoundation/elastos-js-sdk/-/elastos-js-sdk-1.2.12.tgz#86e61946857e44b1ed696899c2fdedace53a77c8"
@@ -10099,7 +10092,7 @@ jsrsasign-util@^1.0.2:
     jsonc-parser ">= 0.0.1"
     jsrsasign ">= 4.8.2"
 
-"jsrsasign@>= 4.8.2", jsrsasign@^10.1.4:
+"jsrsasign@>= 4.8.2":
   version "10.5.1"
   resolved "https://registry.yarnpkg.com/jsrsasign/-/jsrsasign-10.5.1.tgz#85dc7c6c3f6a5fded26030971c08ce5058f525f6"
   integrity sha512-yW0fq87KNZFw4Pn5ySllXs3ztZAROQZczEheKZTqmiNpCe/Xj9r5NhuAQ7MXTOyEZGJ/+MPHGTsfbgPFaLpwHQ==

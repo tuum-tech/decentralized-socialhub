@@ -33,7 +33,7 @@ import FooterLinks, {
 } from 'src/components/layouts/OnBoardLayout/FooterLinks';
 import { HiveService } from 'src/services/hive.service';
 import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
-import { HiveClient } from 'src/shared-base/api/hiveclient';
+import { HiveClient } from '@dchagastelles/commons.js.tools';
 
 interface PageProps
   extends InferMappedProps,
