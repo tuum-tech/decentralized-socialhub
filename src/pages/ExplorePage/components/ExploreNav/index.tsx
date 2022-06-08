@@ -13,7 +13,7 @@ export const TabList = styled(IonList)`
 `;
 
 const Container = styled(IonContent)`
-  background: #f7fafc;
+  --background: #f7fafc;
   height: calc(100vh - 80px);
 `;
 

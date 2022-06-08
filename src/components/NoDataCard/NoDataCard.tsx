@@ -4,7 +4,7 @@ import { IonCard } from '@ionic/react';
 
 import { LinkButton } from 'src/elements-v2/buttons';
 
-const Container = styled(IonCard)`
+const Container = styled(IonCard)<{ noBorder: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,7 +12,10 @@ const Container = styled(IonCard)`
 
   padding: 185px 20px;
   background: #ffffff;
-  box-shadow: none;
+  box-shadow: ${props =>
+    props.noBorder
+      ? 'none'
+      : '0px 0px 1px rgba(12, 26, 75, 0.24), 0px 3px 8px -1px rgba(50, 50, 71, 0.05)'};
   border-radius: 16px;
 
   @media (max-width: 575.98px) {
@@ -46,7 +49,7 @@ const Container = styled(IonCard)`
     line-height: 162.02%;
     text-align: center;
 
-    max-width: 246px;
+    max-width: 354px;
   }
 `;
 
@@ -56,6 +59,7 @@ interface Props {
   description: string;
   buttonLink?: string;
   buttonTitle?: string;
+  noBorder?: boolean;
 }
 
 const NoDataCard: React.FC<Props> = ({
@@ -63,10 +67,11 @@ const NoDataCard: React.FC<Props> = ({
   title,
   description,
   buttonLink,
-  buttonTitle
+  buttonTitle,
+  noBorder = true
 }: Props) => {
   return (
-    <Container>
+    <Container noBorder={noBorder}>
       <img src={img} alt="no-img" />
       <p className="title">{title}</p>
       <p className="description">{description}</p>
