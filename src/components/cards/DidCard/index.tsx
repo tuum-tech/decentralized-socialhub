@@ -103,8 +103,8 @@ const DidCard: React.FC<Props> = ({
               {isFollowing ? (
                 <DefaultButton
                   size="small"
-                  variant="text"
-                  btnColor="primary-gradient"
+                  variant="outlined"
+                  btnColor="grey"
                   textType="gradient"
                   loading={loading}
                   onClick={() => unfollowDid(did)}

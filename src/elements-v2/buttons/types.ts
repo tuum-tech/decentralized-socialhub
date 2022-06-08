@@ -10,6 +10,7 @@ export interface ButtonProps {
     | 'primary'
     | 'secondary'
     | 'white'
+    | 'grey'
     | 'primary-gradient'
     | 'secondary-gradient'
     | 'light-gradient';
