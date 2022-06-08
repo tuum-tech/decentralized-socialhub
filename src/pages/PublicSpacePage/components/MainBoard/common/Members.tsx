@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { IonRow, IonCol, IonCardTitle } from '@ionic/react';
 import {
@@ -23,7 +23,7 @@ interface IProps {
 }
 
 const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
-  const isNFTSpace = space?.category === SpaceCategory.NFT;
+  const isNFTSpace = useMemo(() => space.category === SpaceCategory.NFT, [space.category]);
   const [showViewAllModal, setShowViewAllModal] = useState(false);
   const [firstIV, setFirstIV] = useState<any[]>([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -34,8 +34,8 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
     const { totalCount, owners } = data;
     setTotalCount(totalCount);
     const members = await getOwners(
-      owners.map((owner: string) => ({ owner })),
-      space.meta.network || 'Elastos Smart Contract Chain'
+      owners,
+      space.meta?.network || 'Elastos Smart Contract Chain'
     );
     return members;
   };
@@ -44,7 +44,7 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
   };
   useEffect(() => {
     (async () => {
-      if (space && space.guid) {
+      if (space.guid) {
         setFirstIV(
           isNFTSpace
             ? await membersForNFTSpace()
@@ -52,7 +52,7 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
         );
       }
     })();
-  }, [space]);
+  }, [space.guid]);
   return (
     <>
       <CardOverview template={template}>
