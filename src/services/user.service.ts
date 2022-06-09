@@ -297,31 +297,6 @@ export class UserService {
     }
   }
 
-  public async LockWithDIDAndPwd(sessionItem: ISessionItem) {
-    let newSessionItem = sessionItem;
-    if (
-      !newSessionItem.passhash ||
-      newSessionItem.passhash.trim().length === 0
-    ) {
-      newSessionItem.passhash = CryptoJS.SHA256(newSessionItem.did).toString(
-        CryptoJS.enc.Hex
-      );
-    }
-
-    const res = await this.SearchUserWithDID(sessionItem.did);
-    if (res) {
-      newSessionItem.onBoardingCompleted = res.onBoardingCompleted;
-      newSessionItem.tutorialStep = res.tutorialStep;
-    }
-
-    this.lockUser(UserService.key(newSessionItem.did), newSessionItem);
-
-    if (newSessionItem && newSessionItem.did !== '') {
-      return await UserVaultScriptService.register(newSessionItem);
-    }
-    return newSessionItem;
-  }
-
   public async SearchUserWithDID(did: string) {
     const users = await TuumTechScriptService.searchUserWithDIDs([did]);
     if (users.length > 0) {
@@ -675,6 +650,32 @@ export class UserService {
       return false;
     }
     return true;
+  }
+
+  public async LockWithDIDAndPwd(sessionItem: ISessionItem) {
+    let newSessionItem = sessionItem;
+    if (
+      !newSessionItem.passhash ||
+      newSessionItem.passhash.trim().length === 0
+    ) {
+      newSessionItem.passhash = CryptoJS.SHA256(newSessionItem.did).toString(
+        CryptoJS.enc.Hex
+      );
+    }
+
+    const res = await this.SearchUserWithDID(sessionItem.did);
+    if (res) {
+      newSessionItem.onBoardingCompleted = res.onBoardingCompleted;
+      newSessionItem.tutorialStep = res.tutorialStep;
+      newSessionItem.referrals = res.referrals || [];
+    }
+
+    this.lockUser(UserService.key(newSessionItem.did), newSessionItem);
+
+    if (newSessionItem && newSessionItem.did !== '') {
+      return await UserVaultScriptService.register(newSessionItem);
+    }
+    return newSessionItem;
   }
 
   public async UnLockWithDIDAndPwd(
