@@ -13,8 +13,11 @@ import { ProfileService } from 'src/services/profile.service';
 import Pagination from 'src/components/Pagination';
 import useSession from 'src/hooks/useSession';
 
-import style from './PeopleCard.module.scss';
 import DidCard from '../DidCard';
+import NoDataCard from 'src/components/NoDataCard';
+import noResultImg from 'src/assets/nodata/no-result.svg';
+import noPeopleImg from 'src/assets/nodata/no-people.svg';
+import style from './PeopleCard.module.scss';
 
 export interface IFollowingResponse {
   _status?: string;
@@ -149,7 +152,7 @@ const PeopleCard: React.FC<Props> = ({
           // handleUnfollow,
           // loadFollowing
         ))}
-        {listPeople.length > 0 ? (
+        {listPeople.length ? (
           <Pagination
             perPage={perPage}
             totalPages={totalPages}
@@ -158,12 +161,17 @@ const PeopleCard: React.FC<Props> = ({
             onPageChange={handlePeoplePageClick}
           />
         ) : searchKeyword ? (
-          <IonCardContent>
-            No user found with the {isSearchKeywordDID ? 'DID' : 'keyword'}:{' '}
-            <strong>{searchKeyword}</strong>
-          </IonCardContent>
+          <NoDataCard
+            img={noResultImg}
+            title="Couldn’t find anyone"
+            description="We couldn’t find what you are looking for"
+          />
         ) : (
-          <IonCardContent>No user</IonCardContent>
+          <NoDataCard
+            img={noPeopleImg}
+            title="Explore Connections"
+            description="Search for friends, colleagues & people"
+          />
         )}
       </IonCard>
     </IonCol>

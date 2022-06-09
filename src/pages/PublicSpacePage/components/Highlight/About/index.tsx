@@ -40,21 +40,29 @@ const AboutSpace: React.FC<IProps> = ({
   session,
   template = 'default'
 }: IProps) => {
-  const [followers, setFollowers] = useState<string[]>(space.followers || []);
+  const [followers, setFollowers] = useState<string[]>([]);
   const [owners, setOwners] = useState<any[]>([]);
   const following = useMemo(() => followers.includes(session.did), [
-    followers,
+    JSON.stringify(followers),
     session.did
   ]);
-  const isExpandable = (space.description || '').length > 250;
+  const isExpandable = useMemo(() => (space.description || '').length > 250, [
+    space.description
+  ]);
   const [isExpanded, setIsExpanded] = useState(!isExpandable);
-  const ownerDids =
-    space.category === SpaceCategory.Personal
-      ? space.owner
-        ? [space.owner]
-        : []
-      : space.owner || [];
-  const isOwner = ownerDids.includes(session.did);
+  const ownerDids = useMemo(
+    () =>
+      space.category === SpaceCategory.Personal
+        ? space.owner
+          ? [space.owner]
+          : []
+        : space.owner || [],
+    [space.category, JSON.stringify(space.owner)]
+  );
+  const isOwner = useMemo(() => ownerDids.includes(session.did), [
+    JSON.stringify(ownerDids),
+    session.did
+  ]);
   const isLoggedIn = window.localStorage.getItem('isLoggedIn');
   const auth = () => {
     if (!isLoggedIn) {
@@ -63,6 +71,10 @@ const AboutSpace: React.FC<IProps> = ({
     }
     return true;
   };
+
+  useEffect(() => {
+    setFollowers(space.followers || []);
+  }, [JSON.stringify(space.followers)]);
 
   useEffect(() => {
     (async () => {
@@ -84,7 +96,7 @@ const AboutSpace: React.FC<IProps> = ({
         setOwners(_owners);
       }
     })();
-  }, [ownerDids, space]);
+  }, [JSON.stringify(ownerDids)]);
 
   const onFollow = async () => {
     if (!auth()) return;

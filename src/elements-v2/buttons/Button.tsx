@@ -93,6 +93,8 @@ function withStyle<T extends object>(
           ? 'var(--ion-color-secondary)'
           : btnColor === 'white'
           ? 'var(--ion-color-medium)'
+          : btnColor === 'grey'
+          ? 'var(--ion-color-gray200)'
           : '';
       if (disabled) {
         backStyle = '';
@@ -106,6 +108,9 @@ function withStyle<T extends object>(
           borderWidth: 1
         });
         fontColor = borderColor;
+      }
+      if (!backStyle) {
+        Object.assign(style, { background: 'transparent' });
       }
     } else if (variant === 'text') {
       Object.assign(style, { background: 'transparent' });

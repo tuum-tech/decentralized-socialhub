@@ -227,6 +227,21 @@ export class ProfileService {
       );
 
       if (hiveInstance) {
+        const versionRes: IRunScriptResponse<VersionProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_version_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+            }
+          }
+        );
+        const versionPData = getItemsFromData(
+          versionRes,
+          'get_version_profile'
+        );
+        versionDTO = versionPData[0];
+
         const bpRes: IRunScriptResponse<BasicProfileResponse> = await hiveInstance.Scripting.RunScript(
           {
             name: 'get_basic_profile',
@@ -934,7 +949,8 @@ export class ProfileService {
   }
 
   static async getFollowers(
-    dids: string[]
+    dids: string[],
+    limit: number = 0
   ): Promise<IFollowerResponse | undefined> {
     const appHiveClient = await HiveService.getAppHiveClient();
     if (appHiveClient && dids && dids.length > 0) {
@@ -942,7 +958,9 @@ export class ProfileService {
         {
           name: 'get_followers',
           params: {
-            did: dids
+            did: dids,
+            limit: limit,
+            skip: 0
           },
           context: {
             target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
@@ -1012,7 +1030,8 @@ export class ProfileService {
   }
 
   static async getFollowings(
-    targetDid: string
+    targetDid: string,
+    limit: number = 0
   ): Promise<IFollowingResponse | undefined> {
     let response: IFollowingResponse = {
       get_following: { items: [] }
@@ -1038,9 +1057,14 @@ export class ProfileService {
       );
 
       if (hiveInstance) {
+        let params = {
+          limit: limit,
+          skip: 0
+        };
         const followingResponse: IRunScriptResponse<IFollowingResponse> = await hiveInstance.Scripting.RunScript(
           {
             name: 'get_following',
+            params: params,
             context: {
               target_did: targetDid,
               target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`

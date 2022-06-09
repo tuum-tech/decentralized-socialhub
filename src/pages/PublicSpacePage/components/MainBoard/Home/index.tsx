@@ -33,7 +33,9 @@ interface IProps {
 }
 
 const Home: React.FC<IProps> = ({ space, session }: IProps) => {
-  const isNFTSpace = space?.category === SpaceCategory.NFT;
+  const isNFTSpace = useMemo(() => space.category === SpaceCategory.NFT, [
+    space.category
+  ]);
   const [posts, setPosts] = useState<any[]>([]);
   const [offset, setOffset] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -42,11 +44,15 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
     false
   );
   const hasPermissionToComment = useMemo(() => {
-    if (!session || !session.did || !space) return false;
-    return space?.followers?.includes(session.did) || hasPermissionToPost;
-  }, [space, session, hasPermissionToPost]);
-  const isAdmin =
-    space && session && session.did && space?.owner?.includes(session.did);
+    return (
+      session.did &&
+      (space.followers?.includes(session.did) || hasPermissionToPost)
+    );
+  }, [JSON.stringify(space.followers), session.did, hasPermissionToPost]);
+  const isAdmin = useMemo(
+    () => session.did && space.owner?.includes(session.did),
+    [JSON.stringify(space.owner), session.did]
+  );
   const handlePost = async (content: any) => {
     setIsModalOpen(false);
     const new_post = await SpaceService.post(session, space.guid, content);
@@ -82,14 +88,16 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
     ($event.target as HTMLIonInfiniteScrollElement).complete();
   };
   useEffect(() => {
-    (async () => {
-      await fetchMorePosts();
-    })();
-  }, [space]);
+    if (space.guid) {
+      (async () => {
+        await fetchMorePosts();
+      })();
+    }
+  }, [space.guid]);
   useEffect(() => {
     (async () => {
-      if (!space || !space.guid) return;
-      if (!session || !session.did) {
+      if (!space.guid) return;
+      if (!session.did) {
         setHasPermissionToPost(false);
         return;
       }
@@ -98,7 +106,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
         return;
       }
       if (isNFTSpace) {
-        const network = space.meta.network || 'Elastos Smart Contract Chain';
+        const network = space.meta?.network || 'Elastos Smart Contract Chain';
         const wallet = await DidcredsService.getCredentialValue(
           session,
           (network.toLowerCase() === 'elastos smart contract chain'
@@ -119,7 +127,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
       }
       setHasPermissionToPost(false);
     })();
-  }, [space, session]);
+  }, [space.guid, JSON.stringify(space.owner), session]);
 
   return (
     <Wrapper>
@@ -215,15 +223,13 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
           {/* <Post /> */}
         </IonCol>
         <IonCol sizeXs="12" sizeSm="4">
-          {space.publicFields.includes('social links') &&
-            space.socialLinks &&
+          {space.publicFields?.includes('social links') &&
             Object.keys(space.socialLinks).length > 0 && (
               <Links space={space} />
             )}
           <Members space={space} />
-          {space.followers &&
-            space.followers.length > 0 &&
-            space.publicFields.includes('follower') && (
+          {space.followers?.length > 0 &&
+            space.publicFields?.includes('follower') && (
               <Follower space={space} />
             )}
         </IonCol>
