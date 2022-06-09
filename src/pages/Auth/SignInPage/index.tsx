@@ -147,7 +147,6 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
           const session = await userService.LockWithDIDAndPwd(res);
           session.isEssentialUser = true;
           eProps.setSession({ session });
-          window.localStorage.setItem('isLoggedIn', 'true');
           history.push('/profile');
         } else {
           history.push({

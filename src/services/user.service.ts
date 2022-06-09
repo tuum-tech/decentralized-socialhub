@@ -671,8 +671,9 @@ export class UserService {
     }
 
     this.lockUser(UserService.key(newSessionItem.did), newSessionItem);
+    window.localStorage.setItem('isLoggedIn', 'true');
 
-    if (newSessionItem && newSessionItem.did !== '') {
+    if (newSessionItem) {
       return await UserVaultScriptService.register(newSessionItem);
     }
     return newSessionItem;
