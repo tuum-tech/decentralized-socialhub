@@ -14,6 +14,7 @@ import { UserService } from './user.service';
 import { DidService } from './did.service.new';
 import { SearchService } from './search.service';
 import { DidcredsService, CredentialType } from './didcreds.service';
+import { consoleSandbox } from '@sentry/utils';
 
 export class ProfileService {
   static didDocument: any = null;
@@ -227,6 +228,27 @@ export class ProfileService {
       );
 
       if (hiveInstance) {
+        const versionRes: IRunScriptResponse<VersionProfileResponse> = await hiveInstance.Scripting.RunScript(
+          {
+            name: 'get_version_profile',
+            context: {
+              target_did: did,
+              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+            },
+            params: {
+              limit: 0,
+              skip: 0
+            }
+          }
+        );
+        const versionPData = getItemsFromData(
+          versionRes,
+          'get_version_profile'
+        );
+        if (versionPData.length > 0) {
+          versionDTO = versionPData[0];
+        }
+
         const bpRes: IRunScriptResponse<BasicProfileResponse> = await hiveInstance.Scripting.RunScript(
           {
             name: 'get_basic_profile',
@@ -299,22 +321,6 @@ export class ProfileService {
           cpRes,
           'get_certification_profile'
         );
-
-        const versionRes: IRunScriptResponse<VersionProfileResponse> = await hiveInstance.Scripting.RunScript(
-          {
-            name: 'get_version_profile',
-            context: {
-              target_did: did,
-              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-            },
-          }
-        );
-        const versionPData = getItemsFromData(
-          versionRes,
-          'get_version_profile'
-        );
-        versionDTO = versionPData[0];
-
         const gexpRes: IRunScriptResponse<GameExpProfileResponse> = await hiveInstance.Scripting.RunScript(
           {
             name: 'get_game_exp_profile',
@@ -481,8 +487,7 @@ export class ProfileService {
         params: {
           latestVersion,
           releaseNotes: releaseNotes,
-          videoUpdateUrl: videoUpdateUrl,
-          did: session.did
+          videoUpdateUrl: videoUpdateUrl
         }
       });
       if (res.isSuccess && res.response._status === 'OK') {
