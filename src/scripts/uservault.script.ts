@@ -11,6 +11,7 @@ export class UserVaultScripts {
       console.log(`Error while creating vault: ${e}`);
     }
 
+    let timeOutInMilliseconds = 2000;
     try {
       console.log('Creating all collections for the uservault');
       let results = await parallel({
@@ -20,7 +21,7 @@ export class UserVaultScripts {
               null,
               await hiveClient.Database.createCollection('templates')
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         public_fields: (callback: any) => {
           setTimeout(async () => {
@@ -28,7 +29,7 @@ export class UserVaultScripts {
               null,
               await hiveClient.Database.createCollection('public_fields')
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         following: (callback: any) => {
           setTimeout(async () => {
@@ -36,7 +37,7 @@ export class UserVaultScripts {
               null,
               await hiveClient.Database.createCollection('following')
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         activities: (callback: any) => {
           setTimeout(async () => {
@@ -44,7 +45,7 @@ export class UserVaultScripts {
               null,
               await hiveClient.Database.createCollection('activities')
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         public_fibasic_profileelds: (callback: any) => {
           setTimeout(async () => {
@@ -52,7 +53,7 @@ export class UserVaultScripts {
               null,
               await hiveClient.Database.createCollection('basic_profile')
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         verifiable_credentials: (callback: any) => {
           setTimeout(async () => {
@@ -62,7 +63,7 @@ export class UserVaultScripts {
                 'verifiable_credentials'
               )
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         education_profile: (callback: any) => {
           setTimeout(async () => {
@@ -70,7 +71,7 @@ export class UserVaultScripts {
               null,
               await hiveClient.Database.createCollection('education_profile')
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         experience_profile: (callback: any) => {
           setTimeout(async () => {
@@ -78,7 +79,7 @@ export class UserVaultScripts {
               null,
               await hiveClient.Database.createCollection('experience_profile')
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         team_profile: (callback: any) => {
           setTimeout(async () => {
@@ -86,7 +87,7 @@ export class UserVaultScripts {
               null,
               await hiveClient.Database.createCollection('team_profile')
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         thesis_profile: (callback: any) => {
           setTimeout(async () => {
@@ -94,7 +95,7 @@ export class UserVaultScripts {
               null,
               await hiveClient.Database.createCollection('thesis_profile')
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         paper_profile: (callback: any) => {
           setTimeout(async () => {
@@ -102,7 +103,7 @@ export class UserVaultScripts {
               null,
               await hiveClient.Database.createCollection('paper_profile')
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         license_profile: (callback: any) => {
           setTimeout(async () => {
@@ -110,7 +111,7 @@ export class UserVaultScripts {
               null,
               await hiveClient.Database.createCollection('license_profile')
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         certification_profile: (callback: any) => {
           setTimeout(async () => {
@@ -120,7 +121,7 @@ export class UserVaultScripts {
                 'certification_profile'
               )
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         game_exp_profile: (callback: any) => {
           setTimeout(async () => {
@@ -128,7 +129,7 @@ export class UserVaultScripts {
               null,
               await hiveClient.Database.createCollection('game_exp_profile')
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         private_spaces: (callback: any) => {
           setTimeout(async () => {
@@ -136,7 +137,7 @@ export class UserVaultScripts {
               null,
               await hiveClient.Database.createCollection('private_spaces')
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         space_posts: (callback: any) => {
           setTimeout(async () => {
@@ -144,7 +145,7 @@ export class UserVaultScripts {
               null,
               await hiveClient.Database.createCollection('space_posts')
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         version_profile: (callback: any) => {
           setTimeout(async () => {
@@ -152,14 +153,20 @@ export class UserVaultScripts {
               null,
               await hiveClient.Database.createCollection('version_profile')
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         }
       });
       for (let result in results) {
         if (result) {
-          console.log(`Created collection '${result}'`);
+          console.log(
+            `Created collection '${result}': ${JSON.stringify(results[result])}`
+          );
         } else {
-          console.log(`Could not create collection '${result}'`);
+          console.log(
+            `Could not create collection '${result}': ${JSON.stringify(
+              results[result]
+            )}`
+          );
         }
       }
     } catch (err) {
@@ -174,7 +181,7 @@ export class UserVaultScripts {
         getMyTemplatesScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.getMyTemplatesScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         updateMyTemplatesScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -182,42 +189,42 @@ export class UserVaultScripts {
               null,
               await this.updateMyTemplatesScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         setPublicFieldsScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.setPublicFieldsScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         getPublicFieldsScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.getPublicFieldsScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         getFollowingScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.getFollowingScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         getActivityScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.getActivityScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         addActivityScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.addActivityScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         updateActivityScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.updateActivityScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         getBasicProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.getBasicProfileScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         updateBasicProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -225,7 +232,7 @@ export class UserVaultScripts {
               null,
               await this.updateBasicProfileScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         addVerifiableCredentialScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -233,7 +240,7 @@ export class UserVaultScripts {
               null,
               await this.addVerifiableCredentialScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         removeVerifiableCredentialScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -241,7 +248,7 @@ export class UserVaultScripts {
               null,
               await this.removeVerifiableCredentialScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         getVerifiableCredentialScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -249,7 +256,7 @@ export class UserVaultScripts {
               null,
               await this.getVerifiableCredentialScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         getEducationProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -257,7 +264,7 @@ export class UserVaultScripts {
               null,
               await this.getEducationProfileScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         updateEducationProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -265,7 +272,7 @@ export class UserVaultScripts {
               null,
               await this.updateEducationProfileScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         removeEducationItemScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -273,7 +280,7 @@ export class UserVaultScripts {
               null,
               await this.removeEducationItemScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
 
         getExperienceProfileScriptSetter: (callback: any) => {
@@ -282,7 +289,7 @@ export class UserVaultScripts {
               null,
               await this.getExperienceProfileScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         updateExperienceProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -290,7 +297,7 @@ export class UserVaultScripts {
               null,
               await this.updateExperienceProfileScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         removeExperienceItemScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -298,12 +305,12 @@ export class UserVaultScripts {
               null,
               await this.removeExperienceItemScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         getTeamProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.getTeamProfileScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         updateTeamProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -311,17 +318,17 @@ export class UserVaultScripts {
               null,
               await this.updateTeamProfileScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         removeTeamItemScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.removeTeamItemScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         getThesisProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.getThesisProfileScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         updateThesisProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -329,7 +336,7 @@ export class UserVaultScripts {
               null,
               await this.updateThesisProfileScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         removeThesisProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -337,12 +344,12 @@ export class UserVaultScripts {
               null,
               await this.updateMyTemplatesScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         getPaperProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.getPaperProfileScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
 
         updatePaperProfileScriptSetter: (callback: any) => {
@@ -351,12 +358,12 @@ export class UserVaultScripts {
               null,
               await this.updatePaperProfileScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         removePaperItemScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.removePaperItemScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         getLicenseProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -364,7 +371,7 @@ export class UserVaultScripts {
               null,
               await this.getLicenseProfileScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         updateLicenseProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -372,7 +379,7 @@ export class UserVaultScripts {
               null,
               await this.updateLicenseProfileScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         removeLicenseItemScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -380,7 +387,7 @@ export class UserVaultScripts {
               null,
               await this.removeLicenseItemScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         getCertificationProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -388,7 +395,7 @@ export class UserVaultScripts {
               null,
               await this.getCertificationProfileScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         updateCertificationProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -396,7 +403,7 @@ export class UserVaultScripts {
               null,
               await this.updateCertificationProfileScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         removeCertificationItemScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -404,7 +411,7 @@ export class UserVaultScripts {
               null,
               await this.removeCertificationItemScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         getGameExpProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -412,7 +419,7 @@ export class UserVaultScripts {
               null,
               await this.getGameExpProfileScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         updateGameExpProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -420,7 +427,7 @@ export class UserVaultScripts {
               null,
               await this.updateGameExpProfileScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
 
         removeGameExpItemScriptSetter: (callback: any) => {
@@ -429,47 +436,47 @@ export class UserVaultScripts {
               null,
               await this.removeGameExpItemScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         getAllSpacesScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.getAllSpacesScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         getSpacesByNamesScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.getSpacesByNamesScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         getSpacesByIdsScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.getSpacesByIdsScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         addSpacesScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.addSpacesScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         removeSpaceScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.removeSpaceScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         getSpacePostScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.getSpacePostScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         updateSpacePostScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.updateSpacePostScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         removeSpacePost: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.removeSpacePost(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         getVersionProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -477,7 +484,7 @@ export class UserVaultScripts {
               null,
               await this.getVersionProfileScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         updateVersionProfileScriptSetter: (callback: any) => {
           setTimeout(async () => {
@@ -485,12 +492,12 @@ export class UserVaultScripts {
               null,
               await this.updateVersionProfileScriptSetter(hiveClient)
             );
-          }, 2000);
+          }, timeOutInMilliseconds);
         },
         removeVersionScriptSetter: (callback: any) => {
           setTimeout(async () => {
             callback(null, await this.removeVersionScriptSetter(hiveClient));
-          }, 2000);
+          }, timeOutInMilliseconds);
         }
       });
       for (let result in results) {
@@ -501,7 +508,11 @@ export class UserVaultScripts {
             )}`
           );
         } else {
-          console.log(`Could not register script '${result}'`);
+          console.log(
+            `Could not register script '${result}': ${JSON.stringify(
+              results[result]
+            )}`
+          );
         }
       }
     } catch (err) {
