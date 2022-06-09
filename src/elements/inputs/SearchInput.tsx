@@ -5,6 +5,7 @@ const SearchInput = styled(IonSearchbar)`
   padding-left: 0;
   padding-right: 0;
   margin-bottom: 8px;
+  max-width: 568px;
 
   input.searchbar-input {
     background: #edf2f7;

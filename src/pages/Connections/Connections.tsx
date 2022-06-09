@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { StaticContext, RouteComponentProps } from 'react-router';
-import { IonContent, IonSearchbar } from '@ionic/react';
 
 import MainLayout from 'src/components/layouts/MainLayout';
 import HeaderMenu from 'src/elements-v2/HeaderMenu';
 import { ProfileService } from 'src/services/profile.service';
 import useSession from 'src/hooks/useSession';
-import FollowersPage from './FollowersPage';
-import FollowingsPage from './FollowingsPage';
-import MutualFollowersPage from './MutualFollowersPage';
+import FollowersSearch from './FollowersPage/components/FollowersSearch';
+import MutualFollowersSearch from './MutualFollowersPage/components/FollowersSearch';
+import FollowingSearch from './FollowingsPage/components/FollowingSearch';
 import ConnectionPageHeader, {
   ConnectionTabsContainer,
   Header
 } from './ConnectionHeader';
-import style from './style.module.scss';
 
 interface PageProps
   extends RouteComponentProps<{}, StaticContext, { active?: string }> {}
@@ -67,14 +65,7 @@ const Connections: React.FC<PageProps> = ({ ...props }: PageProps) => {
       <Header>
         <HeaderMenu title="Connections" />
       </Header>
-      <IonContent className={style['searchcomponent']}>
-        <IonSearchbar
-          value={searchQuery}
-          onIonChange={(e: any) => setSearchQuery(e.target.value)}
-          placeholder="Search people, pages by name or DID"
-          className={style['search-input']}
-        ></IonSearchbar>
-      </IonContent>
+
       <ConnectionTabsContainer template="default">
         <ConnectionPageHeader
           active={active}
@@ -83,10 +74,16 @@ const Connections: React.FC<PageProps> = ({ ...props }: PageProps) => {
           followingCount={followingCount}
           mutualFollowerCount={mutualFollowerCount}
         />
-        {active === 'followers' && <FollowersPage searchQuery={searchQuery} />}
-        {active === 'following' && <FollowingsPage searchQuery={searchQuery} />}
+
+        {active === 'followers' && <FollowersSearch userSession={session} />}
+        {active === 'following' && (
+          <FollowingSearch userSession={session} searchQuery={searchQuery} />
+        )}
         {active === 'mutual' && (
-          <MutualFollowersPage searchQuery={searchQuery} />
+          <MutualFollowersSearch
+            userSession={session}
+            searchQuery={searchQuery}
+          />
         )}
       </ConnectionTabsContainer>
     </MainLayout>
