@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   IonRow,
   IonCol,
@@ -48,10 +48,10 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
       session.did &&
       (space.followers?.includes(session.did) || hasPermissionToPost)
     );
-  }, [JSON.stringify(space.followers), session.did, hasPermissionToPost]);
+  }, [session.did, space.followers, hasPermissionToPost]);
   const isAdmin = useMemo(
     () => session.did && space.owner?.includes(session.did),
-    [JSON.stringify(space.owner), session.did]
+    [session.did, space.owner]
   );
   const handlePost = async (content: any) => {
     setIsModalOpen(false);
@@ -66,15 +66,9 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-<<<<<<< HEAD:src/pages/PublicSpacePage/NFT/components/MainBoard/Home/index.tsx
   const fetchMorePosts = useCallback(async () => {
     let _posts: any[] = await SpaceService.getPosts(
-      space.sid,
-=======
-  const fetchMorePosts = async () => {
-    let _posts: any[] = await SpaceService.getPosts(
       space.guid,
->>>>>>> dev:src/pages/PublicSpacePage/components/MainBoard/Home/index.tsx
       offset,
       limit,
       isAdmin
@@ -88,25 +82,18 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
     } else {
       setHasMore(false);
     }
-  }, [isAdmin, offset, posts, space.sid]);
+  });
   const searchNext = async ($event: CustomEvent<void>) => {
     await fetchMorePosts();
     ($event.target as HTMLIonInfiniteScrollElement).complete();
   };
   useEffect(() => {
-<<<<<<< HEAD:src/pages/PublicSpacePage/NFT/components/MainBoard/Home/index.tsx
-    (async () => {
-      await fetchMorePosts();
-    })();
-  }, [fetchMorePosts]);
-=======
     if (space.guid) {
       (async () => {
         await fetchMorePosts();
       })();
     }
-  }, [space.guid]);
->>>>>>> dev:src/pages/PublicSpacePage/components/MainBoard/Home/index.tsx
+  }, [fetchMorePosts, space.guid]);
   useEffect(() => {
     (async () => {
       if (!space.guid) return;
@@ -140,7 +127,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
       }
       setHasPermissionToPost(false);
     })();
-  }, [space.guid, JSON.stringify(space.owner), session]);
+  }, [space.guid, session, space.owner, space.meta, isNFTSpace]);
 
   return (
     <Wrapper>

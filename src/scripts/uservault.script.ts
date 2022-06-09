@@ -51,7 +51,7 @@ export class UserVaultScripts {
       hiveClient.Database.createCollection('game_exp_profile'),
       hiveClient.Database.createCollection('private_spaces'),
       hiveClient.Database.createCollection('space_posts'),
-      hiveClient.Database.createCollection('version_profile'),
+      hiveClient.Database.createCollection('version_profile')
     ]);
   }
 
@@ -753,19 +753,20 @@ export class UserVaultScripts {
     console.log(
       "Registering uservault script 'getVersionProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
-      name: 'get_version_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_version_profile',
-        output: true,
-        body: {
-          collection: 'version_profile'
-        }
-      }
-    });
+    let executable = new FindExecutable(
+      'get_version_profile',
+      'version_profile',
+      null,
+      null
+    );
+
+    await hiveClient.Scripting.registerScript(
+      'get_version_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
     console.log(
       "Completed registration of uservault script 'getVersionProfileScriptSetter'"
     );
@@ -775,55 +776,52 @@ export class UserVaultScripts {
     console.log(
       "Registering uservault script 'updateVersionProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
-      name: 'update_version_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'update_version_profile',
-        body: {
-          collection: 'version_profile',
-          filter: {
-            did: '$params.did'
-          },
-          update: {
-            $set: {
-              latestVersion: '$params.latestVersion',
-              did: '$params.did',
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
+
+    let executable = new UpdateExecutable(
+      'update_version_profile',
+      'version_profile',
+      {
+        did: '$params.did'
+      },
+      {
+        $set: {
+          latestVersion: '$params.latestVersion',
+          did: '$params.did'
         }
-      }
-    });
+      },
+      { upsert: true, bypass_document_validation: false }
+    );
+
+    await hiveClient.Scripting.registerScript(
+      'update_version_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
     console.log(
       "Completed registration of uservault script 'updateVersionProfileScriptSetter'"
     );
   }
 
   static async removeVersionScriptSetter(hiveClient: HiveClient) {
-    console.log(
-      "Registering uservault script 'removeVersionScriptSetter'..."
-    );
-    await hiveClient.Scripting.SetScript({
-      name: 'remove_version_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'delete',
-        name: 'remove_version_profile',
-        body: {
-          collection: 'version_profile',
-          filter: {
-            did: '$params.did'
-          }
-        }
+    console.log("Registering uservault script 'removeVersionScriptSetter'...");
+
+    let executable = new DeleteExecutable(
+      'remove_version_profile',
+      'version_profile',
+      {
+        did: '$params.did'
       }
-    });
+    );
+
+    await hiveClient.Scripting.registerScript(
+      'remove_version_profile',
+      executable,
+      undefined,
+      true,
+      true
+    );
     console.log(
       "Completed registration of uservault script 'removeVersionScriptSetter'"
     );
@@ -1096,55 +1094,30 @@ export class UserVaultScripts {
   }
   static async addSpacesScriptSetter(hiveClient: HiveClient) {
     console.log("Registering uservault script 'addSpacesScriptSetter'...");
-    await hiveClient.Scripting.SetScript({
-      name: 'add_space',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'add_space',
-        body: {
-          collection: 'private_spaces',
-          filter: {
-            guid: '$params.guid'
-          },
-          update: {
-            $set: {
-              guid: '$params.guid',
-              name: '$params.name',
-              slug: '$params.slug',
-              description: '$params.description',
-              category: '$params.category',
-              avatar: '$params.avatar',
-              coverPhoto: '$params.coverPhoto',
-              publicFields: '$params.publicFields',
-              socialLinks: '$parrams.socialLinks',
-              tags:"$param.tags"
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
+
     let executable = new UpdateExecutable(
       'add_space',
       'private_spaces',
-      { guid: '$params.guid' },
+      {
+        guid: '$params.guid'
+      },
       {
         $set: {
           guid: '$params.guid',
           name: '$params.name',
+          slug: '$params.slug',
           description: '$params.description',
           category: '$params.category',
           avatar: '$params.avatar',
           coverPhoto: '$params.coverPhoto',
           publicFields: '$params.publicFields',
-          slug: '$params.slug',
-          socialLinks: '$parrams.socialLinks'
+          socialLinks: '$parrams.socialLinks',
+          tags: '$param.tags'
         }
       },
       { upsert: true, bypass_document_validation: false }
     );
+
     await hiveClient.Scripting.registerScript(
       'add_space',
       executable,

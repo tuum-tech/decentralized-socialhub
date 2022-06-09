@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { getItemsFromData } from 'src/utils/script';
-import { TuumTechScriptService } from './script.service';
 import { HiveService } from './hive.service';
 import { UserService } from './user.service';
 import { DidService } from './did.service.new';
@@ -186,33 +185,27 @@ export class SpaceService {
     }
   }
   static async getSpaceById(session: ISessionItem, guid: Guid) {
-    const hiveInstance = await HiveService.getSessionInstance(session);
+    const hiveInstance = await HiveService.getHiveClient(session);
     if (session && hiveInstance) {
-      const result: IRunScriptResponse<SpacesResponse> = await hiveInstance.Scripting.RunScript(
-        {
-          name: 'get_space_by_ids',
-          params: { guids: [guid] },
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          }
-        }
+      const result: any = await hiveInstance.Scripting.callScript(
+        'get_space_by_ids',
+        { guids: [guid] },
+        session.did,
+        `${process.env.REACT_APP_APPLICATION_ID}`
       );
       const spaces = getItemsFromData(result, 'get_space_by_ids');
       if (!spaces.length) {
         return null;
       }
 
-      const appHiveClient = await HiveService.getAppHiveClient();
+      const appHiveClient = await HiveService.getApplicationHiveClient();
       if (appHiveClient) {
-        const response = await appHiveClient.Scripting.RunScript({
-          name: 'get_space_by_ids',
-          params: { guids: [guid] },
-          context: {
-            target_did: process.env.REACT_APP_APPLICATION_DID,
-            target_app_did: process.env.REACT_APP_APPLICATION_ID
-          }
-        });
+        const response = await appHiveClient.Scripting.callScript(
+          'get_space_by_ids',
+          { guids: [guid] },
+          `${process.env.REACT_APP_APPLICATION_DID}`,
+          `${process.env.REACT_APP_APPLICATION_ID}`
+        );
         let items = getItemsFromData(response, 'get_space_by_ids');
         if (!items.length) {
           return null;
@@ -277,29 +270,27 @@ export class SpaceService {
   ) {
     let resp;
     if (space.category === SpaceCategory.Personal) {
-        const hiveInstance = await HiveService.getHiveClient(session);
-        if (session && hiveInstance) {
-          const res: any = await hiveInstance.Scripting.callScript(
-            'add_space',
-            space,
-            session.did,
-            `${process.env.REACT_APP_APPLICATION_DID}`
-          );
+      const hiveInstance = await HiveService.getHiveClient(session);
+      if (session && hiveInstance) {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'add_space',
+          space,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
         if (res.isSuccess && res.response._status === 'OK') {
-          const appHiveClient = await HiveService.getAppHiveClient();
+          const appHiveClient = await HiveService.getApplicationHiveClient();
           if (appHiveClient) {
-            resp = await appHiveClient.Scripting.RunScript({
-              name: 'add_space',
-              params: {
+            resp = await appHiveClient.Scripting.callScript(
+              'add_space',
+              {
                 guid: (space as any).guid,
                 owner: session.did,
                 followers: [session.did]
               },
-              context: {
-                target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-              }
-            });
+              `${process.env.REACT_APP_APPLICATION_ID}`,
+              `${process.env.REACT_APP_APPLICATION_DID}`
+            );
             if (notify)
               showNotify(
                 'Space details has been successfully saved',
@@ -321,16 +312,14 @@ export class SpaceService {
         }
       }
     } else {
-      const appHiveClient = await HiveService.getAppHiveClient();
+      const appHiveClient = await HiveService.getApplicationHiveClient();
       if (appHiveClient) {
-        resp = await appHiveClient.Scripting.RunScript({
-          name: 'add_community_space',
-          params: space,
-          context: {
-            target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-          }
-        });
+        resp = await appHiveClient.Scripting.callScript(
+          'add_community_space',
+          space,
+          `${process.env.REACT_APP_APPLICATION_ID}`,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
         if (notify)
           showNotify('Space details has been successfully saved', 'success');
       }
@@ -405,18 +394,13 @@ export class SpaceService {
       );
     }
   }
-  static async getPosts(
-    sid: string,
-    offset: number,
-    limit: number,
-    admin: boolean = false
-  ) {
+  static async getPostList(sid: string) {
     const appHiveClient = await HiveService.getApplicationHiveClient();
     if (!appHiveClient) return [];
     const tuumVaultRes = await appHiveClient.Scripting.callScript(
       'get_space_posts',
       {
-        space_sid: sid,
+        space_id: sid,
         limit: 200,
         skip: 0
       },
@@ -441,20 +425,17 @@ export class SpaceService {
     const users = await TuumTechScriptService.searchUserWithDIDs(dids);
     return await Promise.all(
       users.map(async (user: any) => {
-        const hiveInstance = await HiveService.getHiveClient(tuumUser);
+        const hiveInstance = await HiveService.getHiveClient(user);
         if (!user || !hiveInstance) {
           return null;
         }
         const post = posts.find((post: any) => post.creator === user.did);
         const userVaultRes: any = await hiveInstance.Scripting.callScript(
           'get_space_post',
-          {
-            guid: post.post_id
-          },
-          tuumUser.did,
+          { guid: post.post_id },
+          user.did,
           `${process.env.REACT_APP_APPLICATION_ID}`
         );
-
         const data = getItemsFromData(userVaultRes, 'get_space_post');
         return data.length > 0
           ? {

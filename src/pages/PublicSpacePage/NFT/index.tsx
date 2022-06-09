@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { IonRow, IonCol } from '@ionic/react';
 import Banner from 'src/components/profile/ProfileComponent/Banner';
-import Highlight from './components/Highlight';
-import MainBoard from './components/MainBoard';
+
 import defaultCoverPhoto from 'src/assets/default/default-cover.png';
 import styled from 'styled-components';
+import Highlight from '../components/Highlight';
+import MainBoard from '../components/MainBoard';
 
 interface IProps {
   space: any;

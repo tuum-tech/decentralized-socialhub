@@ -285,14 +285,13 @@ export class ProfileService {
           {},
           did,
           `${process.env.REACT_APP_APPLICATION_DID}`
-        const versionRes: IRunScriptResponse<VersionProfileResponse> = await hiveInstance.Scripting.RunScript(
-          {
-            name: 'get_version_profile',
-            context: {
-              target_did: did,
-              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-            }
-          }
+        );
+
+        const versionRes: any = await hiveInstance.Scripting.callScript(
+          'get_version_profile',
+          {},
+          did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
         );
         const versionPData = getItemsFromData(
           versionRes,
@@ -300,15 +299,6 @@ export class ProfileService {
         );
         versionDTO = versionPData[0];
 
-        const gexpRes: IRunScriptResponse<GameExpProfileResponse> = await hiveInstance.Scripting.RunScript(
-          {
-            name: 'get_game_exp_profile',
-            context: {
-              target_did: did,
-              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-            }
-          }
-        );
         gameExpDTO.items = getItemsFromData(gexpRes, 'get_game_exp_profile');
 
         const edRes: EducationProfileResponse = await hiveInstance.Scripting.callScript(
@@ -441,19 +431,17 @@ export class ProfileService {
   }
 
   static async updateVersion(latestVersion: string, session: ISessionItem) {
-    const hiveInstance = await HiveService.getSessionInstance(session);
+    const hiveInstance = await HiveService.getHiveClient(session);
     if (session && hiveInstance) {
-      const res: any = await hiveInstance.Scripting.RunScript({
-        name: 'update_version_profile',
-        context: {
-          target_did: session.did,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-        },
-        params: {
+      const res: any = await hiveInstance.Scripting.callScript(
+        'update_version_profile',
+        {
           latestVersion,
           did: session.did
-        }
-      });
+        },
+        session.did,
+        `${process.env.REACT_APP_APPLICATION_ID}`
+      );
       if (res.isSuccess && res.response._status === 'OK') {
         showNotify('Updated to latest version', 'success');
       } else {

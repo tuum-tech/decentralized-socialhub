@@ -20,17 +20,18 @@ export class HiveService {
   ): Promise<HiveClient | null> {
     try {
       if (hiveHost !== undefined && hiveHost !== '') {
+        let hiveClient = CacheManager.get('ApplicationHiveClient');
 
-      let hiveClient = CacheManager.get('ApplicationHiveClient');
-
-      if (!hiveClient) {
-        hiveClient = await HiveClient.createInstance(applicationParameters);
+        if (!hiveClient) {
+          hiveClient = await HiveClient.createInstance(appParameters);
+        }
+        return hiveClient;
       }
-      return hiveClient;
     } catch (e) {
       HiveService.LOG.error('Cannot authenticate with Hive: {}', e);
       return null;
     }
+    return null;
   }
 
   static async getHiveClient(
