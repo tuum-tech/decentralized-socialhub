@@ -23,7 +23,7 @@ const TabGrid = styled(IonGrid)`
   padding: 5px 30px;
 
   ${down('sm')} {
-    padding: 5px 0;
+    padding: 5px 16px;
   }
 `;
 

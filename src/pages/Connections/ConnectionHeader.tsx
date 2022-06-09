@@ -30,12 +30,15 @@ export const ConnectionTabsContainer = styled(TabsContainer)`
     --border-color: transparent;
   }
   padding: 5px 30px;
+
+  ${down('sm')} {
+    padding: 5px 16px;
+  }
 `;
 
 const ConnectionHeaderContainer = styled.div`
   display: flex;
   align-items: center;
-  padding: 0px 10px;
 `;
 
 interface ConnectionPageHeaderProps {
