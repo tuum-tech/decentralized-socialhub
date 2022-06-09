@@ -12,87 +12,502 @@ export class UserVaultScripts {
     }
 
     try {
-      console.log('Setup the uservault');
-      await parallel([
-        hiveClient.Database.createCollection('templates'),
-        hiveClient.Database.createCollection('public_fields'),
-        hiveClient.Database.createCollection('following'),
-        hiveClient.Database.createCollection('activities'),
-        hiveClient.Database.createCollection('basic_profile'),
-        hiveClient.Database.createCollection('verifiable_credentials'),
-        hiveClient.Database.createCollection('education_profile'),
-        hiveClient.Database.createCollection('experience_profile'),
-        hiveClient.Database.createCollection('team_profile'),
-        hiveClient.Database.createCollection('thesis_profile'),
-        hiveClient.Database.createCollection('paper_profile'),
-        hiveClient.Database.createCollection('license_profile'),
-        hiveClient.Database.createCollection('certification_profile'),
-        hiveClient.Database.createCollection('game_exp_profile'),
-        hiveClient.Database.createCollection('private_spaces'),
-        hiveClient.Database.createCollection('space_posts'),
-        hiveClient.Database.createCollection('version_profile')
-      ]);
-      await new Promise(f => setTimeout(f, 2000));
-      console.log('Created all collections for the uservault');
-    } catch (e) {
-      console.log(`Error while creating collections: ${e}`);
+      console.log('Creating all collections for the uservault');
+      let results = await parallel({
+        templates: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await hiveClient.Database.createCollection('templates')
+            );
+          }, 2000);
+        },
+        public_fields: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await hiveClient.Database.createCollection('public_fields')
+            );
+          }, 2000);
+        },
+        following: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await hiveClient.Database.createCollection('following')
+            );
+          }, 2000);
+        },
+        activities: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await hiveClient.Database.createCollection('activities')
+            );
+          }, 2000);
+        },
+        public_fibasic_profileelds: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await hiveClient.Database.createCollection('basic_profile')
+            );
+          }, 2000);
+        },
+        verifiable_credentials: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await hiveClient.Database.createCollection(
+                'verifiable_credentials'
+              )
+            );
+          }, 2000);
+        },
+        education_profile: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await hiveClient.Database.createCollection('education_profile')
+            );
+          }, 2000);
+        },
+        experience_profile: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await hiveClient.Database.createCollection('experience_profile')
+            );
+          }, 2000);
+        },
+        team_profile: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await hiveClient.Database.createCollection('team_profile')
+            );
+          }, 2000);
+        },
+        thesis_profile: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await hiveClient.Database.createCollection('thesis_profile')
+            );
+          }, 2000);
+        },
+        paper_profile: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await hiveClient.Database.createCollection('paper_profile')
+            );
+          }, 2000);
+        },
+        license_profile: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await hiveClient.Database.createCollection('license_profile')
+            );
+          }, 2000);
+        },
+        certification_profile: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await hiveClient.Database.createCollection(
+                'certification_profile'
+              )
+            );
+          }, 2000);
+        },
+        game_exp_profile: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await hiveClient.Database.createCollection('game_exp_profile')
+            );
+          }, 2000);
+        },
+        private_spaces: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await hiveClient.Database.createCollection('private_spaces')
+            );
+          }, 2000);
+        },
+        space_posts: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await hiveClient.Database.createCollection('space_posts')
+            );
+          }, 2000);
+        },
+        version_profile: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await hiveClient.Database.createCollection('version_profile')
+            );
+          }, 2000);
+        }
+      });
+      for (let result in results) {
+        if (result) {
+          console.log(`Created collection '${result}'`);
+        } else {
+          console.log(`Could not create collection '${result}'`);
+        }
+      }
+    } catch (err) {
+      console.log(`Error while creating collections for the uservault: ${err}`);
+    } finally {
+      console.log('Finished creating all collections for the uservault');
     }
 
     try {
-      console.log('Setup the scripts');
-      await parallel([
-        this.getMyTemplatesScriptSetter(hiveClient),
-        this.updateMyTemplatesScriptSetter(hiveClient),
-        this.setPublicFieldsScriptSetter(hiveClient),
-        this.getPublicFieldsScriptSetter(hiveClient),
-        this.getFollowingScriptSetter(hiveClient),
-        this.getActivityScriptSetter(hiveClient),
-        this.addActivityScriptSetter(hiveClient),
-        this.updateActivityScriptSetter(hiveClient),
-        this.getBasicProfileScriptSetter(hiveClient),
-        this.updateBasicProfileScriptSetter(hiveClient),
-        this.addVerifiableCredentialScriptSetter(hiveClient),
-        this.removeVerifiableCredentialScriptSetter(hiveClient),
-        this.getVerifiableCredentialScriptSetter(hiveClient),
-        this.getEducationProfileScriptSetter(hiveClient),
-        this.updateEducationProfileScriptSetter(hiveClient),
-        this.removeEducationItemScriptSetter(hiveClient),
-        this.getExperienceProfileScriptSetter(hiveClient),
-        this.updateExperienceProfileScriptSetter(hiveClient),
-        this.removeExperienceItemScriptSetter(hiveClient),
-        this.getTeamProfileScriptSetter(hiveClient),
-        this.updateTeamProfileScriptSetter(hiveClient),
-        this.removeTeamItemScriptSetter(hiveClient),
-        this.getThesisProfileScriptSetter(hiveClient),
-        this.updateThesisProfileScriptSetter(hiveClient),
-        this.removeThesisProfileScriptSetter(hiveClient),
-        this.getPaperProfileScriptSetter(hiveClient),
-        this.updatePaperProfileScriptSetter(hiveClient),
-        this.removePaperItemScriptSetter(hiveClient),
-        this.getLicenseProfileScriptSetter(hiveClient),
-        this.updateLicenseProfileScriptSetter(hiveClient),
-        this.removeLicenseItemScriptSetter(hiveClient),
-        this.getCertificationProfileScriptSetter(hiveClient),
-        this.updateCertificationProfileScriptSetter(hiveClient),
-        this.removeCertificationItemScriptSetter(hiveClient),
-        this.getGameExpProfileScriptSetter(hiveClient),
-        this.updateGameExpProfileScriptSetter(hiveClient),
-        this.removeGameExpItemScriptSetter(hiveClient),
-        this.getAllSpacesScriptSetter(hiveClient),
-        this.getSpacesByNamesScriptSetter(hiveClient),
-        this.getSpacesByIdsScriptSetter(hiveClient),
-        this.addSpacesScriptSetter(hiveClient),
-        this.removeSpaceScriptSetter(hiveClient),
-        this.getSpacePostScriptSetter(hiveClient),
-        this.updateSpacePostScriptSetter(hiveClient),
-        this.removeSpacePost(hiveClient),
-        this.getVersionProfileScriptSetter(hiveClient),
-        this.updateVersionProfileScriptSetter(hiveClient),
-        this.removeVersionScriptSetter(hiveClient)
-      ]);
-      await new Promise(f => setTimeout(f, 2000));
-    } catch (e) {
-      console.log(`Error while registering scripts: ${e}`);
+      console.log('Registering all scripts for the uservault');
+      let results = await parallel({
+        getMyTemplatesScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.getMyTemplatesScriptSetter(hiveClient));
+          }, 2000);
+        },
+        updateMyTemplatesScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.updateMyTemplatesScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        setPublicFieldsScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.setPublicFieldsScriptSetter(hiveClient));
+          }, 2000);
+        },
+        getPublicFieldsScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.getPublicFieldsScriptSetter(hiveClient));
+          }, 2000);
+        },
+        getFollowingScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.getFollowingScriptSetter(hiveClient));
+          }, 2000);
+        },
+        getActivityScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.getActivityScriptSetter(hiveClient));
+          }, 2000);
+        },
+        addActivityScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.addActivityScriptSetter(hiveClient));
+          }, 2000);
+        },
+        updateActivityScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.updateActivityScriptSetter(hiveClient));
+          }, 2000);
+        },
+        getBasicProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.getBasicProfileScriptSetter(hiveClient));
+          }, 2000);
+        },
+        updateBasicProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.updateBasicProfileScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        addVerifiableCredentialScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.addVerifiableCredentialScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        removeVerifiableCredentialScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.removeVerifiableCredentialScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        getVerifiableCredentialScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.getVerifiableCredentialScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        getEducationProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.getEducationProfileScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        updateEducationProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.updateEducationProfileScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        removeEducationItemScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.removeEducationItemScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+
+        getExperienceProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.getExperienceProfileScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        updateExperienceProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.updateExperienceProfileScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        removeExperienceItemScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.removeExperienceItemScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        getTeamProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.getTeamProfileScriptSetter(hiveClient));
+          }, 2000);
+        },
+        updateTeamProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.updateTeamProfileScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        removeTeamItemScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.removeTeamItemScriptSetter(hiveClient));
+          }, 2000);
+        },
+        getThesisProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.getThesisProfileScriptSetter(hiveClient));
+          }, 2000);
+        },
+        updateThesisProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.updateThesisProfileScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        removeThesisProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.updateMyTemplatesScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        getPaperProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.getPaperProfileScriptSetter(hiveClient));
+          }, 2000);
+        },
+
+        updatePaperProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.updatePaperProfileScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        removePaperItemScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.removePaperItemScriptSetter(hiveClient));
+          }, 2000);
+        },
+        getLicenseProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.getLicenseProfileScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        updateLicenseProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.updateLicenseProfileScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        removeLicenseItemScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.removeLicenseItemScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        getCertificationProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.getCertificationProfileScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        updateCertificationProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.updateCertificationProfileScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        removeCertificationItemScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.removeCertificationItemScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        getGameExpProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.getGameExpProfileScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        updateGameExpProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.updateGameExpProfileScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+
+        removeGameExpItemScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.removeGameExpItemScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        getAllSpacesScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.getAllSpacesScriptSetter(hiveClient));
+          }, 2000);
+        },
+        getSpacesByNamesScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.getSpacesByNamesScriptSetter(hiveClient));
+          }, 2000);
+        },
+        getSpacesByIdsScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.getSpacesByIdsScriptSetter(hiveClient));
+          }, 2000);
+        },
+        addSpacesScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.addSpacesScriptSetter(hiveClient));
+          }, 2000);
+        },
+        removeSpaceScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.removeSpaceScriptSetter(hiveClient));
+          }, 2000);
+        },
+        getSpacePostScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.getSpacePostScriptSetter(hiveClient));
+          }, 2000);
+        },
+        updateSpacePostScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.updateSpacePostScriptSetter(hiveClient));
+          }, 2000);
+        },
+        removeSpacePost: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.removeSpacePost(hiveClient));
+          }, 2000);
+        },
+        getVersionProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.getVersionProfileScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        updateVersionProfileScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(
+              null,
+              await this.updateVersionProfileScriptSetter(hiveClient)
+            );
+          }, 2000);
+        },
+        removeVersionScriptSetter: (callback: any) => {
+          setTimeout(async () => {
+            callback(null, await this.removeVersionScriptSetter(hiveClient));
+          }, 2000);
+        }
+      });
+      for (let result in results) {
+        if (result) {
+          console.log(
+            `Completed registeration of uservault script '${result}': ${JSON.stringify(
+              results[result]
+            )}`
+          );
+        } else {
+          console.log(`Could not register script '${result}'`);
+        }
+      }
+    } catch (err) {
+      console.log(`Error while registering scripts for the uservault: ${err}`);
+    } finally {
+      console.log('Finished registering all scripts for the uservault');
     }
   }
 
@@ -101,7 +516,7 @@ export class UserVaultScripts {
       "Registering uservault script 'setPublicFieldsScriptSetter'..."
     );
     // scripts for public fields of profile
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'set_public_fields',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -125,16 +540,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'setPublicFieldsScriptSetter'"
-    );
   }
 
   static async getPublicFieldsScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'getPublicFieldsScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'get_public_fields',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -147,14 +559,11 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'getPublicFieldsScriptSetter'"
-    );
   }
 
   static async getMyTemplatesScriptSetter(hiveClient: HiveClient) {
     console.log("Registering uservault script 'getMyTemplatesScriptSetter'...");
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'get_my_templates',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -167,16 +576,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'getMyTemplatesScriptSetter'"
-    );
   }
 
   static async updateMyTemplatesScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'updateMyTemplatesScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'update_my_templates',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -200,14 +606,11 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'updateMyTemplatesScriptSetter'"
-    );
   }
 
   static async getFollowingScriptSetter(hiveClient: HiveClient) {
     console.log("Registering uservault script 'getFollowingScriptSetter'...");
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'get_following',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -224,16 +627,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'getFollowingScriptSetter'"
-    );
   }
 
   static async getBasicProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'getBasicProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'get_basic_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -246,16 +646,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'getBasicProfileScriptSetter'"
-    );
   }
 
   static async updateBasicProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'updateBasicProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'update_basic_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -279,14 +676,11 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'updateBasicProfileScriptSetter'"
-    );
   }
 
   static async getTeamProfileScriptSetter(hiveClient: HiveClient) {
     console.log("Registering uservault script 'getTeamProfileScriptSetter'...");
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'get_team_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -299,16 +693,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'getTeamProfileScriptSetter'"
-    );
   }
 
   static async updateTeamProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'updateTeamProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'update_team_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -337,14 +728,11 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'updateTeamProfileScriptSetter'"
-    );
   }
 
   static async removeTeamItemScriptSetter(hiveClient: HiveClient) {
     console.log("Registering uservault script 'removeTeamItemScriptSetter'...");
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'remove_team_item',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -359,16 +747,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'removeTeamItemScriptSetter'"
-    );
   }
 
   static async getThesisProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'getThesisProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'get_thesis_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -381,16 +766,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'getThesisProfileScriptSetter'"
-    );
   }
 
   static async updateThesisProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'updateThesisProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'update_thesis_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -418,16 +800,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'updateThesisProfileScriptSetter'"
-    );
   }
 
   static async removeThesisProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'removeThesisProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'remove_thesis_item',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -442,16 +821,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'removeThesisProfileScriptSetter'"
-    );
   }
 
   static async getPaperProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'getPaperProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'get_paper_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -464,16 +840,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'getPaperProfileScriptSetter'"
-    );
   }
 
   static async updatePaperProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'updatePaperProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'update_paper_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -501,16 +874,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'updatePaperProfileScriptSetter'"
-    );
   }
 
   static async removePaperItemScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'removePaperItemScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'remove_paper_item',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -525,16 +895,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'removePaperItemScriptSetter'"
-    );
   }
 
   static async getLicenseProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'getLicenseProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'get_license_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -547,15 +914,12 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'getLicenseProfileScriptSetter'"
-    );
   }
   static async updateLicenseProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'updateLicenseProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'update_license_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -583,16 +947,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'updateLicenseProfileScriptSetter'"
-    );
   }
 
   static async removeLicenseItemScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'removeLicenseItemScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'remove_license_item',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -607,16 +968,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'removeLicenseItemScriptSetter'"
-    );
   }
 
   static async getCertificationProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'getCertificationProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'get_certification_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -629,16 +987,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'getCertificationProfileScriptSetter'"
-    );
   }
 
   static async updateCertificationProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'updateCertificationProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'update_certification_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -666,16 +1021,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'updateCertificationProfileScriptSetter'"
-    );
   }
 
   static async removeCertificationItemScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'removeCertificationItemScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'remove_certification_item',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -690,16 +1042,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'removeCertificationItemScriptSetter'"
-    );
   }
 
   static async getGameExpProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'getGameExpProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'get_game_exp_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -712,16 +1061,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'getGameExpProfileScriptSetter'"
-    );
   }
 
   static async updateGameExpProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'updateGameExpProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'update_game_exp_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -748,16 +1094,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'updateGameExpProfileScriptSetter'"
-    );
   }
 
   static async removeGameExpItemScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'removeGameExpItemScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'remove_game_exp_item',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -772,15 +1115,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'removeGameExpItemScriptSetter'"
-    );
   }
+
   static async getEducationProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'getEducationProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'get_education_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -793,16 +1134,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'getEducationProfileScriptSetter'"
-    );
   }
 
   static async updateEducationProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'updateEducationProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'update_education_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -832,16 +1170,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'updateEducationProfileScriptSetter'"
-    );
   }
 
   static async removeEducationItemScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'removeEducationItemScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'remove_education_item',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -856,16 +1191,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'removeEducationItemScriptSetter'"
-    );
   }
 
   static async getExperienceProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'getExperienceProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'get_experience_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -878,94 +1210,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'getExperienceProfileScriptSetter'"
-    );
-  }
-
-  static async getVersionProfileScriptSetter(hiveClient: HiveClient) {
-    console.log(
-      "Registering uservault script 'getVersionProfileScriptSetter'..."
-    );
-    await hiveClient.Scripting.SetScript({
-      name: 'get_version_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_version_profile',
-        output: true,
-        body: {
-          collection: 'version_profile'
-        }
-      }
-    });
-    console.log(
-      "Completed registration of uservault script 'getVersionProfileScriptSetter'"
-    );
-  }
-
-  static async updateVersionProfileScriptSetter(hiveClient: HiveClient) {
-    console.log(
-      "Registering uservault script 'updateVersionProfileScriptSetter'..."
-    );
-    await hiveClient.Scripting.SetScript({
-      name: 'update_version_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'update',
-        name: 'update_version_profile',
-        body: {
-          collection: 'version_profile',
-          filter: {
-            did: '$params.did'
-          },
-          update: {
-            $set: {
-              latestVersion: '$params.latestVersion',
-              did: '$params.did'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
-          }
-        }
-      }
-    });
-    console.log(
-      "Completed registration of uservault script 'updateVersionProfileScriptSetter'"
-    );
-  }
-
-  static async removeVersionScriptSetter(hiveClient: HiveClient) {
-    console.log("Registering uservault script 'removeVersionScriptSetter'...");
-    await hiveClient.Scripting.SetScript({
-      name: 'remove_version_profile',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'delete',
-        name: 'remove_version_profile',
-        body: {
-          collection: 'version_profile',
-          filter: {
-            did: '$params.did'
-          }
-        }
-      }
-    });
-    console.log(
-      "Completed registration of uservault script 'removeVersionScriptSetter'"
-    );
   }
 
   static async updateExperienceProfileScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'updateExperienceProfileScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'update_experience_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -995,16 +1246,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'updateExperienceProfileScriptSetter'"
-    );
   }
 
   static async removeExperienceItemScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'removeExperienceItemScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'remove_experience_item',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -1019,15 +1267,12 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'removeExperienceItemScriptSetter'"
-    );
   }
 
   static async getActivityScriptSetter(hiveClient: HiveClient) {
     console.log("Registering uservault script 'getActivityScriptSetter'...");
     // activies
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'get_activity',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -1040,14 +1285,11 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'getActivityScriptSetter'"
-    );
   }
 
   static async addActivityScriptSetter(hiveClient: HiveClient) {
     console.log("Registering uservault script 'addActivityScriptSetter'...");
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'add_activity',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -1068,14 +1310,11 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'addActivityScriptSetter'"
-    );
   }
 
   static async updateActivityScriptSetter(hiveClient: HiveClient) {
     console.log("Registering uservault script 'updateActivityScriptSetter'...");
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'update_activity',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -1100,16 +1339,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'updateActivityScriptSetter'"
-    );
   }
 
   static async addVerifiableCredentialScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'addVerifiableCredentialScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'add_verifiablecredential',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -1134,16 +1370,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'addVerifiableCredentialScriptSetter'"
-    );
   }
 
   static async removeVerifiableCredentialScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'removeVerifiableCredentialScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'remove_verifiablecredential',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -1158,16 +1391,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'removeVerifiableCredentialScriptSetter'"
-    );
   }
 
   static async getVerifiableCredentialScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'getVerifiableCredentialScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'get_verifiable_credentials',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -1180,14 +1410,11 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'getVerifiableCredentialScriptSetter'"
-    );
   }
 
   static async getAllSpacesScriptSetter(hiveClient: HiveClient) {
     console.log("Registering uservault script 'getAllSpacesScriptSetter'...");
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'get_all_spaces',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -1200,16 +1427,13 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'getAllSpacesScriptSetter'"
-    );
   }
 
   static async getSpacesByNamesScriptSetter(hiveClient: HiveClient) {
     console.log(
       "Registering uservault script 'getSpacesByNamesScriptSetter'..."
     );
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'get_space_by_names',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -1225,14 +1449,11 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'getSpacesByNamesScriptSetter'"
-    );
   }
 
   static async getSpacesByIdsScriptSetter(hiveClient: HiveClient) {
     console.log("Registering uservault script 'getSpacesByIdsScriptSetter'...");
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'get_space_by_ids',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -1248,14 +1469,11 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'getSpacesByIdsScriptSetter'"
-    );
   }
 
   static async addSpacesScriptSetter(hiveClient: HiveClient) {
     console.log("Registering uservault script 'addSpacesScriptSetter'...");
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'add_space',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -1288,14 +1506,11 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'addSpacesScriptSetter'"
-    );
   }
 
   static async removeSpaceScriptSetter(hiveClient: HiveClient) {
     console.log("Registering uservault script 'removeSpaceScriptSetter'...");
-    await hiveClient.Scripting.SetScript({
+    return await hiveClient.Scripting.SetScript({
       name: 'remove_space',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -1310,13 +1525,11 @@ export class UserVaultScripts {
         }
       }
     });
-    console.log(
-      "Completed registration of uservault script 'removeSpaceScriptSetter'"
-    );
   }
 
   static async getSpacePostScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
+    console.log("Registering uservault script 'getSpacePostScriptSetter'...");
+    return await hiveClient.Scripting.SetScript({
       name: 'get_space_post',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -1333,8 +1546,12 @@ export class UserVaultScripts {
       }
     });
   }
+
   static async updateSpacePostScriptSetter(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
+    console.log(
+      "Registering uservault script 'updateSpacePostScriptSetter'..."
+    );
+    return await hiveClient.Scripting.SetScript({
       name: 'update_space_post',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -1361,8 +1578,10 @@ export class UserVaultScripts {
       }
     });
   }
+
   static async removeSpacePost(hiveClient: HiveClient) {
-    await hiveClient.Scripting.SetScript({
+    console.log("Registering uservault script 'removeSpacePost'...");
+    return await hiveClient.Scripting.SetScript({
       name: 'remove_space_post',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
@@ -1373,6 +1592,75 @@ export class UserVaultScripts {
           collection: 'space_posts',
           filter: {
             guid: '$params.guid'
+          }
+        }
+      }
+    });
+  }
+
+  static async getVersionProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'getVersionProfileScriptSetter'..."
+    );
+    return await hiveClient.Scripting.SetScript({
+      name: 'get_version_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'find',
+        name: 'get_version_profile',
+        output: true,
+        body: {
+          collection: 'version_profile'
+        }
+      }
+    });
+  }
+
+  static async updateVersionProfileScriptSetter(hiveClient: HiveClient) {
+    console.log(
+      "Registering uservault script 'updateVersionProfileScriptSetter'..."
+    );
+    return await hiveClient.Scripting.SetScript({
+      name: 'update_version_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'update',
+        name: 'update_version_profile',
+        body: {
+          collection: 'version_profile',
+          filter: {
+            did: '$params.did'
+          },
+          update: {
+            $set: {
+              latestVersion: '$params.latestVersion',
+              did: '$params.did'
+            }
+          },
+          options: {
+            upsert: true,
+            bypass_document_validation: false
+          }
+        }
+      }
+    });
+  }
+
+  static async removeVersionScriptSetter(hiveClient: HiveClient) {
+    console.log("Registering uservault script 'removeVersionScriptSetter'...");
+    return await hiveClient.Scripting.SetScript({
+      name: 'remove_version_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'delete',
+        name: 'remove_version_profile',
+        body: {
+          collection: 'version_profile',
+          filter: {
+            did: '$params.did'
           }
         }
       }
