@@ -80,7 +80,7 @@ const MainBoard: React.FC<IProps> = ({
             )}
           </IonItem>
         )}
-        <IonItem
+        {/* <IonItem
           className={(active === 'community' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => setActive('community')}
         >
@@ -95,7 +95,7 @@ const MainBoard: React.FC<IProps> = ({
               <img src={icon_lock_gray} alt="icon_lock_gray" />
             </IonLabel>
           )}
-        </IonItem>
+        </IonItem> */}
         <IonItem
           className={(active === 'members' ? 'tab-active' : '') + ' tab-item'}
           onClick={() => setActive('members')}
