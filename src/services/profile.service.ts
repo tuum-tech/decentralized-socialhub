@@ -227,21 +227,6 @@ export class ProfileService {
       );
 
       if (hiveInstance) {
-        const versionRes: IRunScriptResponse<VersionProfileResponse> = await hiveInstance.Scripting.RunScript(
-          {
-            name: 'get_version_profile',
-            context: {
-              target_did: did,
-              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-            }
-          }
-        );
-        const versionPData = getItemsFromData(
-          versionRes,
-          'get_version_profile'
-        );
-        versionDTO = versionPData[0];
-
         const bpRes: IRunScriptResponse<BasicProfileResponse> = await hiveInstance.Scripting.RunScript(
           {
             name: 'get_basic_profile',
