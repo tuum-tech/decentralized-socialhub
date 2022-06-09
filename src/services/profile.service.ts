@@ -307,9 +307,6 @@ export class ProfileService {
               target_did: did,
               target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
             },
-            params: {
-              version: "1.26.1" // TODO
-            }
           }
         );
         const versionPData = getItemsFromData(
