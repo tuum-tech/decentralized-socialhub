@@ -5,7 +5,6 @@ import { ProfileService } from 'src/services/profile.service';
 import { alertError } from 'src/utils/notify';
 import { SearchService } from 'src/services/search.service';
 import NoConnectionComp from 'src/components/NoConnection';
-import FollowersHeader from '../FollowersHeader';
 import { FollowService } from 'src/services/follow.service';
 import SearchInput from 'src/elements/inputs/SearchInput';
 
@@ -136,7 +135,6 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
 
   return (
     <>
-      {/* <FollowersHeader followersCount={followersCount} /> */}
       {followersCount === 0 ? (
         <NoConnectionComp pageType="followers" />
       ) : (
