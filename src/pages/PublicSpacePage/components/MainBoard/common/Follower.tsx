@@ -25,7 +25,6 @@ const Follower: React.FC<IProps> = ({
 }: IProps) => {
   const [showViewAllModal, setShowViewAllModal] = useState(false);
   const [followers, setFollowers] = useState([]);
-  const [totalCount, setTotalCount] = useState(0);
   useEffect(() => {
     const dids = space.followers || [];
     (async () => {
@@ -37,10 +36,6 @@ const Follower: React.FC<IProps> = ({
       );
       setFollowers(_followers_);
     })();
-    (async () => {
-      const _followers_ = await TuumTechScriptService.searchUserWithDIDs(dids, dids.length);
-      setTotalCount(_followers_.length);
-    })();
   }, [JSON.stringify(space.followers)]);
   return (
     <>
@@ -50,7 +45,7 @@ const Follower: React.FC<IProps> = ({
             <IonRow className="ion-justify-content-between ion-no-padding">
               <IonCol className="ion-no-padding">
                 <IonCardTitle>
-                  Followers ({totalCount})
+                  Followers ({space.followers?.length})
                 </IonCardTitle>
               </IonCol>
               <IonCol size="auto" className="ion-no-padding">

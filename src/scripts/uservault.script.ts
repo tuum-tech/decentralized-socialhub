@@ -1541,17 +1541,17 @@ export class UserVaultScripts {
   static async getSpacePostScriptSetter(hiveClient: HiveClient) {
     console.log("Registering uservault script 'getSpacePostScriptSetter'...");
     return await hiveClient.Scripting.SetScript({
-      name: 'get_space_post',
+      name: 'get_space_posts',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
       executable: {
         type: 'find',
-        name: 'get_space_post',
+        name: 'get_space_posts',
         output: true,
         body: {
           collection: 'space_posts',
           filter: {
-            guid: '$params.guid'
+            guid: { $in: '$params.guids' }
           }
         }
       }

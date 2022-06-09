@@ -21,7 +21,6 @@ const ViewAllFollower = ({ space, isOpen, onClose }: Props) => {
   const style = { ...modal_style, ...common_style };
   const dids = space.followers || [];
   const [followers, setFollowers] = useState<any[]>([]);
-  const [totalCount, setTotalCount] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [searchStr, setSearchStr] = useState('');
   const [pageNum, setPageNum] = useState(1);
@@ -54,15 +53,11 @@ const ViewAllFollower = ({ space, isOpen, onClose }: Props) => {
     (async () => {
       await fetchMoreData();
     })();
-    (async () => {
-      const _followers_ = await TuumTechScriptService.searchUserWithDIDs(dids, dids.length);
-      setTotalCount(_followers_.length);
-    })();
   }, [space]);
 
   return (
     <Modal
-      title={`Followers (${totalCount})`}
+      title={`Followers (${space.followers?.length})`}
       isOpen={isOpen}
       onClose={onClose}
       noButton
