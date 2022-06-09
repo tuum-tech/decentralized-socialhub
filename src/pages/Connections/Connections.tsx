@@ -24,7 +24,6 @@ const Connections: React.FC<PageProps> = ({ ...props }: PageProps) => {
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [mutualFollowerCount, setMutualFollowerCount] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const { session } = useSession();
   useEffect(() => {
@@ -76,15 +75,8 @@ const Connections: React.FC<PageProps> = ({ ...props }: PageProps) => {
         />
 
         {active === 'followers' && <FollowersSearch userSession={session} />}
-        {active === 'following' && (
-          <FollowingSearch userSession={session} searchQuery={searchQuery} />
-        )}
-        {active === 'mutual' && (
-          <MutualFollowersSearch
-            userSession={session}
-            searchQuery={searchQuery}
-          />
-        )}
+        {active === 'following' && <FollowingSearch userSession={session} />}
+        {active === 'mutual' && <MutualFollowersSearch userSession={session} />}
       </ConnectionTabsContainer>
     </MainLayout>
   );

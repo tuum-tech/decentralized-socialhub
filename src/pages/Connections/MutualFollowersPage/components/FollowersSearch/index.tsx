@@ -9,6 +9,7 @@ import NoConnectionComp from 'src/components/NoConnection';
 
 import FollowersHeader from '../FollowersHeader';
 import { FollowService } from 'src/services/follow.service';
+import SearchInput from 'src/elements/inputs/SearchInput';
 
 export interface IUserResponse {
   items: {
@@ -20,14 +21,11 @@ export interface IUserResponse {
 }
 interface Props {
   userSession: ISessionItem;
-  searchQuery: string;
 }
 
 // const FollowersSearch: React.FC = () => {
-const FollowersSearch: React.FC<Props> = ({
-  userSession,
-  searchQuery
-}: Props) => {
+const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
+  const [searchQuery, setSearchQuery] = useState('');
   const [filteredUsers, setFilteredUsers] = useState<IUserResponse>({
     items: []
   });
@@ -115,24 +113,27 @@ const FollowersSearch: React.FC<Props> = ({
   return (
     <>
       {/* <FollowersHeader followersCount={followersCount} /> */}
-      <IonGrid>
-        <IonRow>
-          {followersCount === 0 ? (
-            <NoConnectionComp pageType="mutuals" />
-          ) : (
-            <PeopleCard
-              people={filteredUsers}
-              following={{ items: listFollowing }}
-              searchKeyword={searchQuery}
-              isSearchKeywordDID={isDID(searchQuery)}
-              showHeader={false}
-              showMutualFollowers={true}
-              unfollowMutualFollower={unfollowMutualFollower}
-              size="6"
-            />
-          )}
-        </IonRow>
-      </IonGrid>
+      {followersCount === 0 ? (
+        <NoConnectionComp pageType="mutuals" />
+      ) : (
+        <>
+          <SearchInput
+            value={searchQuery}
+            onIonChange={(e: any) => setSearchQuery(e.target.value)}
+            placeholder="Search people, pages by name or DID"
+          ></SearchInput>
+          <PeopleCard
+            people={filteredUsers}
+            following={{ items: listFollowing }}
+            searchKeyword={searchQuery}
+            isSearchKeywordDID={isDID(searchQuery)}
+            showHeader={false}
+            showMutualFollowers={true}
+            unfollowMutualFollower={unfollowMutualFollower}
+            size="6"
+          />
+        </>
+      )}
     </>
   );
 };
