@@ -390,35 +390,36 @@ export class SpaceService {
       posts = posts.filter((post: any) => post.visible);
     }
     posts = posts.slice(offset, offset + limit);
-    const dids = posts.map((post: any) => post.creator);
-    const users = await TuumTechScriptService.searchUserWithDIDs(dids);
-    return await Promise.all(
+    const groups = _.groupBy(posts, 'creator');
+    const users = await TuumTechScriptService.searchUserWithDIDs(
+      Object.keys(groups)
+    );
+    posts = await Promise.all(
       users.map(async (user: any) => {
         const hiveInstance = await HiveService.getSessionInstance(user);
         if (!user || !hiveInstance) {
-          return null;
+          return [];
         }
-        const post = posts.find((post: any) => post.creator === user.did);
+        const guids = groups[user.did].map((x: any) => x.post_id);
         const userVaultRes: any = await hiveInstance.Scripting.RunScript({
-          name: 'get_space_post',
+          name: 'get_space_posts',
           context: {
             target_did: user.did,
             target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
           },
-          params: {
-            guid: post.post_id
-          }
+          params: { guids }
         });
-        const data = getItemsFromData(userVaultRes, 'get_space_post');
-        return data.length > 0
-          ? {
-              ...post,
-              content: data[0].content,
-              comments: data[0].comments
-            }
-          : null;
+        const data: any[] = getItemsFromData(userVaultRes, 'get_space_posts');
+        return data.map(({ guid, content, comments }) => {
+          const x = groups[user.did].find(
+            (x: any) => x.post_id.value === guid.value
+          );
+          return { ...x, content, comments };
+        });
       })
     );
+    posts = posts.reduce((total, x) => total.concat(x), []);
+    return posts;
   }
   static async post(session: ISessionItem, sid: string, content: string) {
     const hiveInstance = await HiveService.getSessionInstance(session);
