@@ -141,7 +141,7 @@ const DashboardPage: React.FC = () => {
 
   const handleCheckVersion = async (userVersion: string) => {
     const profileVersionResponse: any = await request(
-      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/version`,
+      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/version/releaseNotes?version=latest`,
       {
         method: 'GET',
         headers: {

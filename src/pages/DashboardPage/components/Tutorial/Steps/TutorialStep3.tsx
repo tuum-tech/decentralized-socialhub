@@ -152,7 +152,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
       );
 
       const profileVersionResponse: any = await request(
-        `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/version`,
+        `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/version/releaseNotes?version=latest`,
         {
           method: 'GET',
           headers: {
@@ -162,9 +162,11 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
         }
       );
       if (profileVersionResponse.meta.code === 200) {
-        let profileVersionData = profileVersionResponse.data;
-        await ProfileService.updateVersion(
+        let profileVersionData: Version = profileVersionResponse.data;
+        await ProfileService.addVersionHistory(
           profileVersionData.latestVersion,
+          profileVersionData.releaseNotes ?? [],
+          profileVersionData.videoUpdateUrl ?? '',
           newSession
         );
       }

@@ -842,12 +842,41 @@ export class UserVaultScripts {
         name: 'get_version_profile',
         output: true,
         body: {
-          collection: 'version_profile'
+          collection: 'version_profile',
+          filter: {
+            latestVersion: '$params.version',
+          }
         }
       }
     });
     console.log(
       "Completed registration of uservault script 'getVersionProfileScriptSetter'"
+    );
+  }
+
+  static async addVersionProfileScriptSetter(hiveClient: HiveClient) {
+    console.log("Registering uservault script 'addVersionProfileScriptSetter'...");
+    await hiveClient.Scripting.SetScript({
+      name: 'add_version_profile',
+      allowAnonymousUser: true,
+      allowAnonymousApp: true,
+      executable: {
+        type: 'insert',
+        name: 'add_version_profile',
+        output: true,
+        body: {
+          collection: 'version_profile',
+          document: {
+            did: '$params.did',
+            latestVersion: '$params.latestVersion',
+            releaseNotes: '$params.releaseNotes',
+            videoUpdateUrl: '$params.videoUpdateUrl'
+          }
+        }
+      }
+    });
+    console.log(
+      "Completed registration of uservault script 'addVersionProfileScriptSetter'"
     );
   }
 
@@ -1374,6 +1403,7 @@ export class UserVaultScripts {
     await this.removeSpacePost(hiveClient);
     await this.getVersionProfileScriptSetter(hiveClient);
     await this.updateVersionProfileScriptSetter(hiveClient);
+    await this.addVersionProfileScriptSetter(hiveClient);
     await this.removeVersionScriptSetter(hiveClient);
   }
 

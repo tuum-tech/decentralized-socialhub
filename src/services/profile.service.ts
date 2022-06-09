@@ -306,6 +306,9 @@ export class ProfileService {
             context: {
               target_did: did,
               target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+            },
+            params: {
+              version: "1.26.1" // TODO
             }
           }
         );
@@ -464,17 +467,24 @@ export class ProfileService {
     }
   }
 
-  static async updateVersion(latestVersion: string, session: ISessionItem) {
+  static async addVersionHistory(
+    latestVersion: string,
+    releaseNotes: string[],
+    videoUpdateUrl: string,
+    session: ISessionItem
+  ) {
     const hiveInstance = await HiveService.getSessionInstance(session);
     if (session && hiveInstance) {
       const res: any = await hiveInstance.Scripting.RunScript({
-        name: 'update_version_profile',
+        name: 'add_version_profile',
         context: {
           target_did: session.did,
           target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
         },
         params: {
           latestVersion,
+          releaseNotes: releaseNotes,
+          videoUpdateUrl: videoUpdateUrl,
           did: session.did
         }
       });
@@ -1247,7 +1257,9 @@ export const defaultFullProfile = {
   },
   versionDTO: {
     isEnabled: false,
-    latestVersion: ''
+    latestVersion: '',
+    releaseNotes: [],
+    videoUpdateUrl: ''
   },
   experienceDTO: {
     isEnabled: false,
