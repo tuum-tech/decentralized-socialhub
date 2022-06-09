@@ -1,12 +1,26 @@
 import { DidDocumentService } from './diddocument.service';
-import {
-  Logger,
-  CacheManager,
-  HiveClient,
-  HiveClientParameters,
-  appParameters
-} from '@dchagastelles/commons.js.tools';
+import { HiveClient, AppContextParameters } from '@dchagastelles/hive-js-sdk';
+
+import { CacheManager, Logger } from '@dchagastelles/commons.js.tools';
+
 import { UserDocumentNotPublishedException } from 'src/shared-base/exceptions';
+
+export const appParameters: any = {
+  hiveHost: process.env.REACT_APP_HIVE_HOST as string,
+  resolverUrl: process.env.REACT_APP_HIVE_RESOLVER_URL as string,
+  resolverCache: process.env.REACT_APP_HIVE_CACHE_DIR as string,
+  context: {
+    storePath: process.env.REACT_APP_APPLICATION_STORE_PATH,
+    appDID: process.env.REACT_APP_APPLICATION_DID,
+    appMnemonics: process.env.REACT_APP_APPLICATION_MNEMONICS,
+    appPhrasePass: process.env.REACT_APP_APPLICATION_PASSPHRASE,
+    appStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS,
+    userDID: process.env.REACT_APP_APPLICATION_DID,
+    userMnemonics: process.env.REACT_APP_APPLICATION_MNEMONICS,
+    userPhrasePass: process.env.REACT_APP_APPLICATION_PASSPHRASE,
+    userStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS
+  } as AppContextParameters
+};
 
 export interface IHiveChallenge {
   issuer: string;
@@ -39,12 +53,12 @@ export class HiveService {
   ): Promise<HiveClient | null> {
     HiveService.LOG.trace('getHiveClient');
     try {
-      let hiveClientParameters: HiveClientParameters = {
+      let hiveClientParameters: any = {
         hiveHost: session.hiveHost,
         context: {
           userDID: session.did
         }
-      } as HiveClientParameters;
+      } as any;
       let hiveClient = CacheManager.get('HiveClient');
 
       if (!hiveClient) {

@@ -3,9 +3,9 @@ import {
   Executable,
   FindExecutable,
   InsertExecutable,
-  UpdateExecutable
-} from '@elastosfoundation/hive-js-sdk/';
-import { HiveClient } from '@dchagastelles/commons.js.tools';
+  UpdateExecutable,
+  HiveClient
+} from '@dchagastelles/hive-js-sdk/';
 
 export class UserVaultScripts {
   static async Execute(hiveClient: HiveClient) {
@@ -57,13 +57,13 @@ export class UserVaultScripts {
 
   static async setPublicTemplateScriptSetter(hiveClient: HiveClient) {
     console.log("Registering uservault script 'set_public_fields'...");
-    let executable = new UpdateExecutable(
+    let executable: Executable = new UpdateExecutable(
       'set_public_fields',
       'public_fields',
       { did: '$params.did' },
       { $set: { fields: '$params.fields' } },
       { upsert: true, bypass_document_validation: false }
-    );
+    ) as Executable;
     // scripts for public fields of profile
     await hiveClient.Scripting.registerScript(
       'set_public_fields',

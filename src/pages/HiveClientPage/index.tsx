@@ -8,13 +8,9 @@ import { createStructuredSelector } from 'reselect';
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import SignedPublicPageHeader from 'src/components/layouts/SignedPublicPageHeader';
-import {
-  HiveClient,
-  HiveClientParameters
-} from '@dchagastelles/commons.js.tools';
+import { HiveClient, AppContextParameters } from '@dchagastelles/hive-js-sdk';
 import { HiveService } from 'src/services/hive.service';
-import { AppVaultScripts } from 'src/scripts/appvault.scriptsV2';
-import { AppContextParameters } from '@elastosfoundation/hive-js-sdk';
+//import { AppVaultScripts } from 'src/scripts/appvault.scriptsV2';
 import {
   DID,
   connectivity
@@ -61,7 +57,7 @@ const HiveClientPage = () => {
       });
       debugger;
 
-      const userParameters: HiveClientParameters = {
+      const userParameters: any = {
         hiveHost: process.env.REACT_APP_HIVE_HOST as string,
         resolverUrl: process.env.REACT_APP_HIVE_RESOLVER_URL as string,
         resolverCache: process.env.REACT_APP_HIVE_CACHE_DIR as string,

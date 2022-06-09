@@ -18,7 +18,7 @@ import { DID, DIDDocument, DIDURL } from '@elastosfoundation/did-js-sdk/';
 import { DidcredsService } from 'src/services/didcreds.service';
 import { useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom } from 'src/Atoms/Atoms';
-import { HiveClient } from '@dchagastelles/commons.js.tools';
+import { HiveClient } from '@dchagastelles/hive-js-sdk';
 import { HiveException } from '@elastosfoundation/hive-js-sdk/';
 import { Logger } from 'src/shared-base/logger';
 import style from '../style.module.scss';
