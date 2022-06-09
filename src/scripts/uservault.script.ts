@@ -1622,7 +1622,12 @@ export class UserVaultScripts {
         name: 'get_version_profile',
         output: true,
         body: {
-          collection: 'version_profile'
+          collection: 'version_profile',
+          options: {
+            sort: { latestVersion: -1 },
+            limit: '$params.limit',
+            skip: '$params.skip'
+          }
         }
       }
     });
@@ -1633,26 +1638,19 @@ export class UserVaultScripts {
       "Registering uservault script 'updateVersionProfileScriptSetter'..."
     );
     return await hiveClient.Scripting.SetScript({
-      name: 'update_version_profile',
+      name: 'add_version_profile',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
       executable: {
-        type: 'update',
-        name: 'update_version_profile',
+        type: 'insert',
+        name: 'add_version_profile',
+        output: true,
         body: {
           collection: 'version_profile',
-          filter: {
-            did: '$params.did'
-          },
-          update: {
-            $set: {
-              latestVersion: '$params.latestVersion',
-              did: '$params.did'
-            }
-          },
-          options: {
-            upsert: true,
-            bypass_document_validation: false
+          document: {
+            latestVersion: '$params.latestVersion',
+            releaseNotes: '$params.releaseNotes',
+            videoUpdateUrl: '$params.videoUpdateUrl'
           }
         }
       }
@@ -1671,7 +1669,7 @@ export class UserVaultScripts {
         body: {
           collection: 'version_profile',
           filter: {
-            did: '$params.did'
+            latestVersion: '$params.latestVersion'
           }
         }
       }

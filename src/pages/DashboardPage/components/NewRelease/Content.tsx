@@ -4,11 +4,7 @@ import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import style from './style.module.scss';
 
 interface Props {
-  contents: {
-    latestVersion: string;
-    releaseNotes?: string[];
-    videoUpdateUrl?: string;
-  };
+  contents: Version;
 }
 
 const ContentComponent: React.FC<Props> = ({ contents }: Props) => {

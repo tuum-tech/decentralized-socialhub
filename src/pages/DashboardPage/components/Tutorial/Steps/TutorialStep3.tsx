@@ -151,6 +151,26 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
         new DID(session.did)
       );
 
+      const profileVersionResponse: any = await request(
+        `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/version/releaseNotes?version=latest`,
+        {
+          method: 'GET',
+          headers: {
+            'content-Type': 'application/json',
+            Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`
+          }
+        }
+      );
+      if (profileVersionResponse.meta.code === 200) {
+        let profileVersionData: Version = profileVersionResponse.data;
+        await ProfileService.addVersionHistory(
+          profileVersionData.latestVersion,
+          profileVersionData.releaseNotes ?? [],
+          profileVersionData.videoUpdateUrl ?? '',
+          newSession
+        );
+      }
+
       storedDocument.credentials?.forEach(async vc => {
         await DidcredsService.addOrUpdateCredentialToVault(newSession, vc);
       });
@@ -228,24 +248,6 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
       window.localStorage.removeItem(
         `temp_experiences_${newSession.did.replace('did:elastos:', '')}`
       );
-
-      const profileVersionResponse: any = await request(
-        `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/support_router/version`,
-        {
-          method: 'GET',
-          headers: {
-            'content-Type': 'application/json',
-            Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`
-          }
-        }
-      );
-      if (profileVersionResponse.meta.code === 200) {
-        let profileVersionData = profileVersionResponse.data;
-        await ProfileService.updateVersion(
-          profileVersionData.latestVersion,
-          newSession
-        );
-      }
 
       props.onContinue(newSession);
     } catch (error) {

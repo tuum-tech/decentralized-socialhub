@@ -14,6 +14,7 @@ import { UserService } from './user.service';
 import { DidService } from './did.service.new';
 import { SearchService } from './search.service';
 import { DidcredsService, CredentialType } from './didcreds.service';
+import { consoleSandbox } from '@sentry/utils';
 
 export class ProfileService {
   static didDocument: any = null;
@@ -233,6 +234,10 @@ export class ProfileService {
             context: {
               target_did: did,
               target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+            },
+            params: {
+              limit: 0,
+              skip: 0
             }
           }
         );
@@ -240,7 +245,9 @@ export class ProfileService {
           versionRes,
           'get_version_profile'
         );
-        versionDTO = versionPData[0];
+        if (versionPData.length > 0) {
+          versionDTO = versionPData[0];
+        }
 
         const bpRes: IRunScriptResponse<BasicProfileResponse> = await hiveInstance.Scripting.RunScript(
           {
@@ -314,7 +321,6 @@ export class ProfileService {
           cpRes,
           'get_certification_profile'
         );
-
         const gexpRes: IRunScriptResponse<GameExpProfileResponse> = await hiveInstance.Scripting.RunScript(
           {
             name: 'get_game_exp_profile',
@@ -464,18 +470,24 @@ export class ProfileService {
     }
   }
 
-  static async updateVersion(latestVersion: string, session: ISessionItem) {
+  static async addVersionHistory(
+    latestVersion: string,
+    releaseNotes: string[],
+    videoUpdateUrl: string,
+    session: ISessionItem
+  ) {
     const hiveInstance = await HiveService.getSessionInstance(session);
     if (session && hiveInstance) {
       const res: any = await hiveInstance.Scripting.RunScript({
-        name: 'update_version_profile',
+        name: 'add_version_profile',
         context: {
           target_did: session.did,
           target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
         },
         params: {
           latestVersion,
-          did: session.did
+          releaseNotes: releaseNotes,
+          videoUpdateUrl: videoUpdateUrl
         }
       });
       if (res.isSuccess && res.response._status === 'OK') {
@@ -1256,7 +1268,9 @@ export const defaultFullProfile = {
   },
   versionDTO: {
     isEnabled: false,
-    latestVersion: ''
+    latestVersion: '',
+    releaseNotes: [],
+    videoUpdateUrl: ''
   },
   experienceDTO: {
     isEnabled: false,
