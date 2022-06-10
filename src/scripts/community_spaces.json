@@ -89,7 +89,7 @@
     "sid": 8,
     "name": "Elastos Bulls",
     "category": "NFT Collection",
-    "owner": ["did:elastos:iddNu2pmcpQ1ePcSnTBjHSNWCAsZS455TY"],
+    "owner": ["did:elastos:iU3wMiJcCZ8JAX6xWausLTZUs7nsrVoq4M"],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0x0d5d0c116f2acbc19ce198e284a21b0c355b1260",
@@ -100,7 +100,7 @@
     "sid": 9,
     "name": "The Meta Primates",
     "category": "NFT Collection",
-    "owner": ["did:elastos:iddNu2pmcpQ1ePcSnTBjHSNWCAsZS455TY"],
+    "owner": ["did:elastos:ipPVe3orURNxZ5nJUEc4CaBQhABjpWTU9w"],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0xcb262a92e2e3c8c3590b72a1fde3c6768ee08b7e",
