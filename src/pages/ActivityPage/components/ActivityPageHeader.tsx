@@ -34,25 +34,6 @@ export const ActivityTabsContainer = styled(TabsContainer)`
   }
 `;
 
-export const BlueButton = styled.button`
-  height: 40px;
-
-  padding: 12px 20px;
-  border-radius: 9px;
-  background-color: #4c6fff;
-
-  font-family: 'SF Pro Display';
-  font-size: 12px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1;
-  text-align: left;
-  color: #ffffff;
-
-  margin: 0 20px 0 auto;
-`;
-
 interface ActivityPageHeaderProps {
   active: string;
   setActive: (avtive: string) => void;
@@ -135,9 +116,15 @@ const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
         </TabItem>
       </IonList>
       {active === 'myrequests' && (
-        <BlueButton onClick={newVerificationClicked}>
+        <DefaultButton
+          variant="contained"
+          btnColor="primary-gradient"
+          size="large"
+          onClick={newVerificationClicked}
+          style={{ margin: '0 20px 0 auto' }}
+        >
           New Verification Request
-        </BlueButton>
+        </DefaultButton>
       )}
     </ActivityPageHeaderContainer>
   );

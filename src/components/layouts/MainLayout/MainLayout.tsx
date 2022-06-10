@@ -62,6 +62,8 @@ const MainLayout: FC<IProps> = ({ children }: IProps) => {
       ? 'Profile Manager'
       : pathname === '/explore'
       ? 'Explore'
+      : pathname === '/activities'
+      ? 'Activities'
       : '';
   }, [history.location]);
 
