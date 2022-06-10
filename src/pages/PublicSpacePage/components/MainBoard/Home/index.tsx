@@ -152,7 +152,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
             )}
           </IonRow>
           <HorDOMSpace16 />
-          {posts.map((post, index) => {
+          {posts.map((post: any, index: any) => {
             return (
               <Post
                 key={JSON.stringify(post)}
