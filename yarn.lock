@@ -1359,10 +1359,10 @@
     create-hash "1.2.0"
     dayjs "^1.11.2"
 
-"@dchagastelles/hive-js-sdk@^2.7.12":
-  version "2.7.12"
-  resolved "https://registry.yarnpkg.com/@dchagastelles/hive-js-sdk/-/hive-js-sdk-2.7.12.tgz#a15e137767efffe910cf94518d28c74d7849ee52"
-  integrity sha512-r3FCus5um4wSZKK6604xLZfsgZZ4VahFPb5ZSl6nIqOEpyRYrv/G4sIyUOGY7fFKAWAOLrWrx+W3PYHLA372Hw==
+"@dchagastelles/hive-js-sdk@^2.7.13":
+  version "2.7.13"
+  resolved "https://registry.yarnpkg.com/@dchagastelles/hive-js-sdk/-/hive-js-sdk-2.7.13.tgz#10cc94ac4581887439bd9303f3a5bede5eb8cf18"
+  integrity sha512-UaFz0Prtu9OP4vtHPrza11OI51T1Xu4bdB0eMdJWFu9gKZIawdZtqyD24wmHnNRxqTZ8ZxWU45m9Oc4hbYGJog==
   dependencies:
     "@dchagastelles/commons.js.tools" "^1.0.11"
     "@elastosfoundation/did-js-sdk" "^2.2.4"

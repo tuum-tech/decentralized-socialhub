@@ -15,6 +15,7 @@ import {
   DID,
   connectivity
 } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { AppVaultScripts } from 'src/scripts/appvault.scriptsV2';
 
 const HiveClientPage = () => {
   const [ret, setRet] = useState('');
@@ -22,11 +23,13 @@ const HiveClientPage = () => {
   useEffect(() => {
     (async () => {
       debugger;
-      // let tuumVaultHiveClient = (await HiveService.getApplicationHiveClient()) as HiveClient;
-      // let appVaultscripts = new AppVaultScripts();
-      // await appVaultscripts.Execute(tuumVaultHiveClient);
+      let tuumVaultHiveClient = (await HiveService.getApplicationHiveClient(
+        `${process.env.REACT_APP_HIVE_HOST}`
+      )) as HiveClient;
+      let appVaultscripts = new AppVaultScripts();
+      await appVaultscripts.Execute(tuumVaultHiveClient);
 
-      // const userParameters: HiveClientParameters = {
+      // const userParameters: any = {
       //   hiveHost: process.env.REACT_APP_HIVE_HOST as string,
       //   resolverUrl: process.env.REACT_APP_HIVE_RESOLVER_URL as string,
       //   resolverCache: process.env.REACT_APP_HIVE_CACHE_DIR as string,
@@ -49,35 +52,35 @@ const HiveClientPage = () => {
       // let vaultInfo = await userHiveClient.VaultSubscription.subscribe();
       // userHiveClient.Database.createCollection('user collection');
 
-      let didAccess = new DID.DIDAccess();
+      // let didAccess = new DID.DIDAccess();
 
-      let cred = await didAccess.requestCredentials({
-        claims: [DID.simpleIdClaim('Your name', 'name', true)],
-        didMustBePublished: true
-      });
-      debugger;
+      // let cred = await didAccess.requestCredentials({
+      //   claims: [DID.simpleIdClaim('Your name', 'name', true)],
+      //   didMustBePublished: true
+      // });
+      // debugger;
 
-      const userParameters: any = {
-        hiveHost: process.env.REACT_APP_HIVE_HOST as string,
-        resolverUrl: process.env.REACT_APP_HIVE_RESOLVER_URL as string,
-        resolverCache: process.env.REACT_APP_HIVE_CACHE_DIR as string,
-        context: {
-          storePath: process.env.REACT_APP_APPLICATION_STORE_PATH,
-          appDID: process.env.REACT_APP_APPLICATION_DID,
-          appMnemonics: process.env.REACT_APP_APPLICATION_MNEMONICS,
-          appPhrasePass: process.env.REACT_APP_APPLICATION_PASSPHRASE,
-          appStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS,
-          userDID: 'did:elastos:iWqo4UfANavywAdSeHEtZMERNrjPsZdDrY',
-          userMnemonics: '',
-          userPhrasePass: '',
-          userStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS
-        } as AppContextParameters
-      };
+      // const userParameters: any = {
+      //   hiveHost: process.env.REACT_APP_HIVE_HOST as string,
+      //   resolverUrl: process.env.REACT_APP_HIVE_RESOLVER_URL as string,
+      //   resolverCache: process.env.REACT_APP_HIVE_CACHE_DIR as string,
+      //   context: {
+      //     storePath: process.env.REACT_APP_APPLICATION_STORE_PATH,
+      //     appDID: process.env.REACT_APP_APPLICATION_DID,
+      //     appMnemonics: process.env.REACT_APP_APPLICATION_MNEMONICS,
+      //     appPhrasePass: process.env.REACT_APP_APPLICATION_PASSPHRASE,
+      //     appStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS,
+      //     userDID: 'did:elastos:iWqo4UfANavywAdSeHEtZMERNrjPsZdDrY',
+      //     userMnemonics: '',
+      //     userPhrasePass: '',
+      //     userStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS
+      //   } as AppContextParameters
+      // };
 
-      debugger;
-      let userHiveClient = await HiveClient.createInstance(userParameters);
-      let vaultInfo = await userHiveClient.VaultSubscription.subscribe();
-      userHiveClient.Database.createCollection('user collection');
+      // debugger;
+      // let userHiveClient = await HiveClient.createInstance(userParameters);
+      // let vaultInfo = await userHiveClient.VaultSubscription.subscribe();
+      // userHiveClient.Database.createCollection('user collection');
     })();
   }, []);
 
