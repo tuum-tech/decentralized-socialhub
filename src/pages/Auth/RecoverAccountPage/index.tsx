@@ -173,12 +173,12 @@ const RecoverAccountPage: React.FC<PageProps> = ({ eProps, ...props }) => {
               );
 
               if (res) {
-                history.push('/profile');
                 const session = await userService.LockWithDIDAndPwd(
                   res,
                   serviceEndpoint
                 );
                 eProps.setSession({ session });
+                history.push('/profile');
               } else {
                 history.push({
                   pathname: '/create-profile-with-did',

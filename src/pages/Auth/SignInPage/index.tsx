@@ -140,13 +140,13 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
         );
         console.log('signinpage: ', res, name);
         if (res) {
-          history.push('/profile');
           const session = await userService.LockWithDIDAndPwd(
             res,
             serviceEndpoint
           );
           session.isEssentialUser = true;
           eProps.setSession({ session });
+          history.push('/profile');
         } else {
           history.push({
             pathname: '/create-profile-with-did',
