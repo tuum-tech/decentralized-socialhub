@@ -152,16 +152,5 @@
       "address": "0xd5aFf849495487e3c405c9fcA1b878bDd72B9e97",
       "collectionSlug": "Yeah! BIRDIE!"
     }
-  },
-  {
-    "sid": 102,
-    "name": "LFC Heroes Club",
-    "category": "NFT Collection",
-    "owner": ["did:elastos:iddNu2pmcpQ1ePcSnTBjHSNWCAsZS455TY"],
-    "meta": {
-      "network": "Polygon",
-      "address": "0x4ffa698ca3374ff154e58c8388a3aafe430dc2d3",
-      "collectionSlug": "LFC Heroes Club"
-    }
   }
 ]
