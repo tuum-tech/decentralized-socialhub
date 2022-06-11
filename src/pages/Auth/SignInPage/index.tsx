@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { makeSelectSession } from 'src/store/users/selectors';
@@ -47,6 +47,16 @@ interface PageProps
 const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
   const history = useHistory();
   const setDidDocument = useSetRecoilState(DIDDocumentAtom);
+
+  useEffect(() => {
+    (async () => {
+      let connector: EssentialsConnector = connectivity.getActiveConnector() as EssentialsConnector;
+      if (connector && connector.hasWalletConnectSession()) {
+        connector.disconnectWalletConnect();
+      }
+    })();
+  }, []);
+
   const getPresentation = async (): Promise<
     VerifiablePresentation | undefined
   > => {
