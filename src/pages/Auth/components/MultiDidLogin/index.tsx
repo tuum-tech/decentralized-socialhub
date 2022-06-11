@@ -104,6 +104,15 @@ const MultiDidLogin: React.FC<Props> = ({
         200,
         0
       );
+      if (getUserRes.isSuccess === true) {
+        for (let user in getUserRes.response.get_users_by_dids.items) {
+          if (
+            getUserRes.response.get_users_by_dids.items[user].isEssentialUser
+          ) {
+            delete getUserRes.response.get_users_by_dids.items[user];
+          }
+        }
+      }
       const users = getItemsFromData(getUserRes, 'get_users_by_dids');
       if (users.length > 0) {
         setLocalUsers(users);

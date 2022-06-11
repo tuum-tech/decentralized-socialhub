@@ -118,10 +118,10 @@ const RecoverAccountPage: React.FC<PageProps> = ({ eProps, ...props }) => {
                 'Did is not published yet, You can only login with published DID user'
               );
             } else {
+              let serviceEndpoint = '';
               let didDocument = await didService.getDidDocument(did, false);
 
               if (didDocument.services && didDocument.services.size > 0) {
-                let serviceEndpoint = '';
                 let hiveUrl = new DIDURL(did + '#hivevault');
                 if (didDocument.services?.has(hiveUrl)) {
                   serviceEndpoint = didDocument.services.get(hiveUrl)
@@ -173,9 +173,12 @@ const RecoverAccountPage: React.FC<PageProps> = ({ eProps, ...props }) => {
               );
 
               if (res) {
-                const session = await userService.LockWithDIDAndPwd(res);
-                eProps.setSession({ session });
                 history.push('/profile');
+                const session = await userService.LockWithDIDAndPwd(
+                  res,
+                  serviceEndpoint
+                );
+                eProps.setSession({ session });
               } else {
                 history.push({
                   pathname: '/create-profile-with-did',

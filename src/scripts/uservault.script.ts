@@ -47,7 +47,7 @@ export class UserVaultScripts {
             );
           }, timeOutInMilliseconds);
         },
-        public_fibasic_profileelds: (callback: any) => {
+        basic_profile: (callback: any) => {
           setTimeout(async () => {
             callback(
               null,

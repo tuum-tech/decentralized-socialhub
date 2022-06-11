@@ -652,7 +652,10 @@ export class UserService {
     return true;
   }
 
-  public async LockWithDIDAndPwd(sessionItem: ISessionItem) {
+  public async LockWithDIDAndPwd(
+    sessionItem: ISessionItem,
+    serviceEndpoint: string
+  ) {
     let newSessionItem = sessionItem;
     if (
       !newSessionItem.passhash ||
@@ -668,15 +671,16 @@ export class UserService {
       newSessionItem.onBoardingCompleted = res.onBoardingCompleted;
       newSessionItem.tutorialStep = res.tutorialStep;
       newSessionItem.referrals = res.referrals || [];
+      newSessionItem.wallets = res.wallets || {};
     }
 
     this.lockUser(UserService.key(newSessionItem.did), newSessionItem);
     window.localStorage.setItem('isLoggedIn', 'true');
 
-    if (newSessionItem) {
-      return await UserVaultScriptService.register(newSessionItem);
-    }
-    return newSessionItem;
+    return await UserVaultScriptService.register(
+      newSessionItem,
+      serviceEndpoint
+    );
   }
 
   public async UnLockWithDIDAndPwd(
@@ -697,10 +701,11 @@ export class UserService {
       instance.onBoardingCompleted = res.onBoardingCompleted;
       instance.tutorialStep = res.tutorialStep;
       instance.referrals = res.referrals || [];
+      instance.wallets = res.wallets || {};
       this.lockUser(UserService.key(instance.did), instance);
 
       window.localStorage.setItem('isLoggedIn', 'true');
-      return await UserVaultScriptService.register(instance);
+      return await UserVaultScriptService.register(instance, instance.hiveHost);
     }
     return null;
   }

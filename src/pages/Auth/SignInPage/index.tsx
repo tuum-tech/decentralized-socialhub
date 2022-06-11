@@ -89,11 +89,11 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
       await didService.storeDocument(resolvedDocument);
       setDidDocument(resolvedDocument.toString(true));
 
+      let serviceEndpoint = '';
       let isDidPublished = await didService.isDIDPublished(did);
       if (isDidPublished) {
         let didDocument = await didService.getDidDocument(did, false);
         if (didDocument.services && didDocument.services.size > 0) {
-          let serviceEndpoint = '';
           let hiveUrl = new DIDURL(did + '#hivevault');
           if (didDocument.services?.has(hiveUrl)) {
             serviceEndpoint = didDocument.services.get(hiveUrl).serviceEndpoint;
@@ -138,16 +138,15 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
             mnemonic: mnemonic
           })
         );
-        console.log('hello - signinpage: ', res, name);
+        console.log('signinpage: ', res, name);
         if (res) {
-          showNotify(
-            "Please approve Profile's multiple requests on Esssentials App.",
-            'warning'
+          history.push('/profile');
+          const session = await userService.LockWithDIDAndPwd(
+            res,
+            serviceEndpoint
           );
-          const session = await userService.LockWithDIDAndPwd(res);
           session.isEssentialUser = true;
           eProps.setSession({ session });
-          history.push('/profile');
         } else {
           history.push({
             pathname: '/create-profile-with-did',

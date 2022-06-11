@@ -49,7 +49,6 @@ import {
   CreateWhyPage,
   GenerateDidPage,
   SignInPage,
-  SignQRPage,
   ForgotPasswordPage,
   CreateProfileWithDidPage,
   RecoverAccountPage,
@@ -205,13 +204,6 @@ const App: React.FC = () => {
                   <ProtectedRoute
                     path="/recover-account"
                     component={RecoverAccountPage}
-                    exact={true}
-                  />
-
-                  {/* ok */}
-                  <ProtectedRoute
-                    path="/sign-qr"
-                    component={SignQRPage}
                     exact={true}
                   />
                   {/* ok */}

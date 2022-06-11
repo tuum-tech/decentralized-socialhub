@@ -188,7 +188,11 @@ export class TuumTechScriptService {
     return getItemsFromData(response, 'get_users_by_dids');
   }
 
-  public static async searchUserWithWallet(wallet: {type: string; address: string}, limit = 200, skip = 0) {
+  public static async searchUserWithWallet(
+    wallet: { type: string; address: string },
+    limit = 200,
+    skip = 0
+  ) {
     const script_name = `get_users_by_${wallet.type}`;
     const get_user_by_wallet = {
       name: script_name,
@@ -201,7 +205,7 @@ export class TuumTechScriptService {
         target_did: process.env.REACT_APP_APPLICATION_DID,
         target_app_did: process.env.REACT_APP_APPLICATION_ID
       }
-    }
+    };
     let response: any = await this.runTuumTechScript(get_user_by_wallet);
     return getItemsFromData(response, script_name);
   }
@@ -491,7 +495,10 @@ export class UserVaultScriptService {
     return userToken;
   }
 
-  public static async register(user: ISessionItem): Promise<ISessionItem> {
+  public static async register(
+    user: ISessionItem,
+    serviceEndpointFromBlockchain: string
+  ): Promise<ISessionItem> {
     //if (!user) return;
 
     let newUser = user;
@@ -523,11 +530,14 @@ export class UserVaultScriptService {
       }
 
       try {
-        let userToken = await this.generateUserToken(
-          newUser.mnemonics,
-          newUser.hiveHost
-        );
-        newUser.userToken = userToken;
+        if (serviceEndpointFromBlockchain != newUser.hiveHost) {
+          let userToken = await this.generateUserToken(
+            newUser.mnemonics,
+            serviceEndpointFromBlockchain
+          );
+          newUser.hiveHost = serviceEndpointFromBlockchain;
+          newUser.userToken = userToken;
+        }
 
         let userService = new UserService(await DidService.getInstance());
         await userService.updateSession(newUser);
