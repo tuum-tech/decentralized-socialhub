@@ -38,7 +38,7 @@ export const OnBoardingTitle = styled.p`
   background-clip: text;
   text-fill-color: transparent;
 
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 `;
 
 export const ProgressBar = styled(IonProgressBar)`
@@ -52,11 +52,19 @@ export const ProgressBar = styled(IonProgressBar)`
   --progress-background: #9f30fe;
 `;
 
-const InitialLoading: React.FC = () => {
+interface Props {
+  title?: string;
+  hasImage?: boolean;
+}
+
+const LoadingModal: React.FC<Props> = ({
+  title = 'Welcome to Profile',
+  hasImage = true
+}) => {
   return (
     <OnBoardingContainer style={{ maxWidth: '415px' }}>
-      <img src={thumbUp} alt="thumbup" />
-      <OnBoardingTitle>Welcome to Profile</OnBoardingTitle>
+      {hasImage && <img src={thumbUp} alt="thumbup" />}
+      <OnBoardingTitle>{title}</OnBoardingTitle>
       <p style={{ fontSize: '14px', lineHeight: '160%' }}>
         Your Personal Decentralized Web3 Identity
       </p>
@@ -70,4 +78,4 @@ const InitialLoading: React.FC = () => {
   );
 };
 
-export default InitialLoading;
+export default LoadingModal;

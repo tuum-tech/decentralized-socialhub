@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { ThemeButton } from 'src/elements/buttons';
-import { OnBoardingTitle, OnBoardingContainer } from './WelcomeProfile';
+import { OnBoardingTitle, OnBoardingContainer } from './LoadingModal';
 import { TransparentButton } from './OwnYourSelf';
 import TutorialSteps from './TutorialSteps';
 import {
@@ -99,16 +99,19 @@ const AllIsSet: React.FC<Props> = ({ seeMyBades, close, share }) => {
       </Container>
 
       <RowContainer style={{ maxWidth: '380px' }}>
-        <TransparentWithBorderlineButton style={{ width: '170px' }}>
-          <p>Back</p>
+        <TransparentWithBorderlineButton
+          style={{ width: '170px' }}
+          onClick={seeMyBades}
+        >
+          <p>See My Bages</p>
         </TransparentWithBorderlineButton>
         <ThemeButton
           style={{ width: '170px', fontSize: '16px' }}
-          onClick={() => {}}
-          text="Activate Profile"
+          onClick={share}
+          text="Share"
         />
       </RowContainer>
-      <TransparentButton>
+      <TransparentButton onClick={close}>
         <p>Close</p>
       </TransparentButton>
     </OnBoardingContainer>

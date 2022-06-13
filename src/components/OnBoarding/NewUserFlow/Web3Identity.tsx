@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
+import {
+  DID,
+  connectivity
+} from '@elastosfoundation/elastos-connectivity-sdk-js';
+import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
+
+import { DidService } from 'src/services/did.service.new';
+import { HiveService } from 'src/services/hive.service';
+import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
+import { useSetRecoilState } from 'recoil';
+import { DIDDocumentAtom } from 'src/Atoms/Atoms';
+import { alertError, showNotify } from 'src/utils/notify';
 
 import { ThemeButton } from 'src/elements/buttons';
-import { OnBoardingTitle, OnBoardingContainer } from './WelcomeProfile';
+import { OnBoardingTitle, OnBoardingContainer } from './LoadingModal';
 import { TransparentButton } from './OwnYourSelf';
 import TutorialSteps from './TutorialSteps';
 import {
@@ -50,11 +62,120 @@ const DisplayInfo = styled.div`
 `;
 
 interface Props {
+  session: ISessionItem;
   next: () => void;
   back: () => void;
   close: () => void;
 }
-const Web3Identity: React.FC<Props> = ({ back, next, close }) => {
+const Web3Identity: React.FC<Props> = ({ session, back, next, close }) => {
+  const mnemonics = session.mnemonics.split(' ');
+  const setDidDocument = useSetRecoilState(DIDDocumentAtom);
+
+  useEffect(() => {
+    (async () => {
+      let connector: EssentialsConnector = connectivity.getActiveConnector() as EssentialsConnector;
+      if (connector && connector.hasWalletConnectSession()) {
+        connector.disconnectWalletConnect();
+      }
+    })();
+  }, []);
+
+  const getPresentation = async (): Promise<
+    VerifiablePresentation | undefined
+  > => {
+    let connector: EssentialsConnector = connectivity.getActiveConnector() as EssentialsConnector;
+    if (connector && connector.hasWalletConnectSession()) {
+      connector.disconnectWalletConnect();
+    }
+
+    console.log('Entering on connect');
+    let didAccess = new DID.DIDAccess();
+
+    try {
+      return await didAccess.requestCredentials({
+        claims: [DID.simpleIdClaim('Your name', 'name', true)],
+        didMustBePublished: true
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      console.log('end of popup?');
+    }
+
+    return;
+  };
+
+  const connect = async () => {
+    let presentation = await getPresentation();
+
+    const didService = await DidService.getInstance();
+    if (presentation !== null && presentation !== undefined) {
+      let nameCredential = presentation!.getCredentials().find((c: any) => {
+        return c.getId().getFragment() === 'name';
+      });
+
+      let owner = nameCredential!.getId().getDid();
+      let did = 'did:elastos:' + owner.getMethodSpecificId();
+
+      if (did != session.did) {
+        alertError(null, 'Invalid Session');
+        return;
+      }
+
+      let resolvedDocument = await owner.resolve();
+      await didService.storeDocument(resolvedDocument);
+      setDidDocument(resolvedDocument.toString(true));
+
+      let serviceEndpoint = '';
+      let isDidPublished = await didService.isDIDPublished(did);
+      if (isDidPublished) {
+        let didDocument = await didService.getDidDocument(did, false);
+        if (didDocument.services && didDocument.services.size > 0) {
+          let hiveUrl = new DIDURL(did + '#hivevault');
+          if (didDocument.services?.has(hiveUrl)) {
+            serviceEndpoint = didDocument.services.get(hiveUrl).serviceEndpoint;
+          } else {
+            hiveUrl = new DIDURL(did + '#HiveVault');
+            if (didDocument.services?.has(hiveUrl)) {
+              serviceEndpoint = didDocument.services.get(hiveUrl)
+                .serviceEndpoint;
+            }
+          }
+          if (serviceEndpoint) {
+            let hiveVersion = await HiveService.getHiveVersion(serviceEndpoint);
+            let isHiveValid = await HiveService.isHiveVersionSupported(
+              hiveVersion
+            );
+            if (!isHiveValid) {
+              alertError(
+                null,
+                `Hive version ${hiveVersion} not supported. The minimal supported version is ${process.env.REACT_APP_HIVE_MIN_VERSION} and maximun is ${process.env.REACT_APP_HIVE_MAX_VERSION}`
+              );
+              return;
+            }
+          } else {
+            alertError(
+              null,
+              `This DID has no Hive Node set. Please set the hive node first using Elastos Essentials App`
+            );
+          }
+        } else {
+          alertError(
+            null,
+            `This DID has no Hive Node set. Please set the hive node first using Elastos Essentials App`
+          );
+          return;
+        }
+
+        next();
+      } else {
+        showNotify('Did is not published on the blockchain yet', 'error');
+      }
+    } else {
+      showNotify('Unable to get credential from essential', 'error');
+    }
+  };
+
   const renderMnemonicInput = (index: number) => {
     return (
       <IonCol
@@ -66,10 +187,11 @@ const Web3Identity: React.FC<Props> = ({ back, next, close }) => {
         }}
       >
         <span style={{ width: '25px' }}>{(index + 1).toString()}</span>
-        <Word>word</Word>
+        <Word>{mnemonics[index]}</Word>
       </IonCol>
     );
   };
+
   return (
     <OnBoardingContainer style={{ maxWidth: '545px' }}>
       <TutorialSteps step={2} />
@@ -78,6 +200,7 @@ const Web3Identity: React.FC<Props> = ({ back, next, close }) => {
       <p
         style={{
           fontSize: '14px',
+          marginBottom: '10px',
           lineHeight: '22px',
           color: '#27272E'
         }}
@@ -89,28 +212,28 @@ const Web3Identity: React.FC<Props> = ({ back, next, close }) => {
 
       <IonGrid>
         <IonRow>
+          <IonCol>{renderMnemonicInput(0)}</IonCol>
           <IonCol>{renderMnemonicInput(1)}</IonCol>
           <IonCol>{renderMnemonicInput(2)}</IonCol>
-          <IonCol>{renderMnemonicInput(3)}</IonCol>
         </IonRow>
         <IonRow>
+          <IonCol>{renderMnemonicInput(3)}</IonCol>
           <IonCol>{renderMnemonicInput(4)}</IonCol>
           <IonCol>{renderMnemonicInput(5)}</IonCol>
-          <IonCol>{renderMnemonicInput(6)}</IonCol>
         </IonRow>
         <IonRow>
+          <IonCol>{renderMnemonicInput(6)}</IonCol>
           <IonCol>{renderMnemonicInput(7)}</IonCol>
           <IonCol>{renderMnemonicInput(8)}</IonCol>
-          <IonCol>{renderMnemonicInput(9)}</IonCol>
         </IonRow>
         <IonRow>
+          <IonCol>{renderMnemonicInput(9)}</IonCol>
           <IonCol>{renderMnemonicInput(10)}</IonCol>
           <IonCol>{renderMnemonicInput(11)}</IonCol>
-          <IonCol>{renderMnemonicInput(12)}</IonCol>
         </IonRow>
       </IonGrid>
 
-      <DisplayInfo>
+      <DisplayInfo style={{ marginTop: '10px' }}>
         <p>
           Do not share your secret words with anyone & keep a backup in a secure
           location!
@@ -126,7 +249,7 @@ const Web3Identity: React.FC<Props> = ({ back, next, close }) => {
         </TransparentWithBorderlineButton>
         <ThemeButton
           style={{ width: '170px', fontSize: '14px' }}
-          onClick={next}
+          onClick={connect}
           text="Activate Profile"
         />
       </RowContainer>

@@ -32,6 +32,7 @@ import { DIDDocumentAtom, FullProfileAtom } from 'src/Atoms/Atoms';
 import useSession from 'src/hooks/useSession';
 import useProfileFilled from 'src/hooks/useProfileFilled';
 import WhatIsProfile from './Right/WhatIsProfile';
+import { OnBoardingService } from 'src/services/onboarding.service';
 
 const LeftCardCol = styled(IonCol)`
   padding: 22px 16px;
@@ -382,8 +383,11 @@ const DashboardHome: React.FC<Props> = ({
           <LeftCardCol sizeMd="8" sizeSm="12">
             {tutorialVisible && (
               <BeginnersTutorial
+                totalSteps={OnBoardingService.getOnBoardingTotalSteps(session)}
                 onTutorialStart={onTutorialStart}
-                tutorialStep={session.tutorialStep}
+                tutorialStep={
+                  session.onBoardingInfo ? session.onBoardingInfo.step : 0
+                }
               />
             )}
             {filledContent && <ManageProfile userSession={session} />}

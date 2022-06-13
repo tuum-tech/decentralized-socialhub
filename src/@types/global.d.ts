@@ -273,6 +273,11 @@ interface IReferral {
   sign_up_date?: string;
 }
 
+interface IOnboardingInfo {
+  type: number; // 0: create new, 1: login with essentials, 2: recover account
+  step: number;
+}
+
 interface ISessionItem {
   hiveHost: string;
   userToken: string;
@@ -302,11 +307,7 @@ interface ISessionItem {
   latestVersion?: string;
   created?: { $date: number };
   sign_up_date?: string;
-  onBoardingInfo?: {
-    type: number;
-    step: number;
-    completed: boolean;
-  };
+  onBoardingInfo?: IOnboardingInfo;
 }
 
 interface LoginCred {

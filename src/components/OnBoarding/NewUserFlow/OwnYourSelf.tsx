@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { ThemeButton } from 'src/elements/buttons';
-import { OnBoardingContainer, OnBoardingTitle } from './WelcomeProfile';
+import { OnBoardingContainer, OnBoardingTitle } from './LoadingModal';
 
 export const TransparentButton = styled.button`
   background: transparent;

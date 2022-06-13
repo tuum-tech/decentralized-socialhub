@@ -8,7 +8,7 @@ export interface Props {
 const Container = styled.div`
   width: 100%;
   position: relative;
-  height: 100px;
+  height: 80px;
   display: block;
 `;
 

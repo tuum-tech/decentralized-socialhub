@@ -1,56 +1,53 @@
 import React, { useState } from 'react';
 
 import OwnYourSelf from '../NewUserFlow/OwnYourSelf';
-import WelcomeProfile from '../NewUserFlow/WelcomeProfile';
+import LoadingModal from '../NewUserFlow/LoadingModal';
 import Web3Storage from '../NewUserFlow/Web3Storage';
 import AllIsSet from '../NewUserFlow/AllIsSet';
 
 interface Props {
-  sessionItem: ISessionItem;
+  changeStep: (step: number) => void;
+  session: ISessionItem;
   close: (step: number) => void;
+  onBoardingInfo: IOnboardingInfo;
 }
 
-const LoginInWithEssential: React.FC<Props> = ({ sessionItem, close }) => {
-  const [step, setStep] = useState(0);
+const LoginInWithEssential: React.FC<Props> = ({
+  session,
+  close,
+  onBoardingInfo,
+  changeStep
+}) => {
+  const step = onBoardingInfo.step;
+
+  const nextStep = async () => {
+    await changeStep(step + 1);
+  };
+
+  const prevStep = async () => {
+    if (step >= 1) {
+      await changeStep(step - 1);
+    }
+  };
 
   if (step === 0) {
-    return <WelcomeProfile />;
+    return <OwnYourSelf next={nextStep} close={() => close(step)} />;
   }
 
   if (step === 1) {
     return (
-      <OwnYourSelf
-        next={() => {
-          setStep(step + 1);
-        }}
+      <Web3Storage
+        session={session}
+        complete={nextStep}
         close={() => close(step)}
       />
     );
   }
 
   if (step === 2) {
-    return (
-      <Web3Storage
-        complete={() => {
-          // TODO
-          setStep(step + 1);
-        }}
-        close={() => close(step)}
-      />
-    );
+    return <AllIsSet seeMyBades={() => {}} close={nextStep} share={() => {}} />;
   }
-
-  return (
-    <AllIsSet
-      seeMyBades={() => {
-        // setStep(step + 1);
-      }}
-      close={() => close(step)}
-      share={() => {
-        setStep(step - 1);
-      }}
-    />
-  );
+  return <LoadingModal />;
 };
 
 export default LoginInWithEssential;

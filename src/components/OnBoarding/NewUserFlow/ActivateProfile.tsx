@@ -15,7 +15,7 @@ import { alertError, showNotify } from 'src/utils/notify';
 import { UserService } from 'src/services/user.service';
 
 import { ThemeButton, ThemeTransparentButton } from 'src/elements/buttons';
-import { OnBoardingTitle, OnBoardingContainer } from './WelcomeProfile';
+import { OnBoardingTitle, OnBoardingContainer } from './LoadingModal';
 import { TransparentButton } from './OwnYourSelf';
 import TutorialSteps from './TutorialSteps';
 import { TransparentWithBorderlineButton } from './DownloadEssentials';
@@ -40,12 +40,30 @@ const Container = styled.div`
 `;
 
 interface Props {
+  session: ISessionItem;
   next: () => void;
   back: () => void;
   close: () => void;
 }
-const ActivateProfile: React.FC<Props> = ({ back, next, close }) => {
+
+const ActivateProfile: React.FC<Props> = ({
+  session,
+  next,
+  back,
+  close
+}: Props) => {
   const setDidDocument = useSetRecoilState(DIDDocumentAtom);
+
+  useEffect(() => {
+    (async () => {
+      let connector: EssentialsConnector = connectivity.getActiveConnector() as EssentialsConnector;
+      if (connector && connector.hasWalletConnectSession()) {
+        connector.disconnectWalletConnect();
+      }
+    })();
+  }, []);
+
+  console.log('====>props', session);
 
   const getPresentation = async (): Promise<
     VerifiablePresentation | undefined
@@ -85,15 +103,21 @@ const ActivateProfile: React.FC<Props> = ({ back, next, close }) => {
       let did = 'did:elastos:' + owner.getMethodSpecificId();
       let mnemonic = '';
 
+      if (did !== session.did) {
+        alertError(null, 'You should login with previously created DID user');
+        return;
+      }
+
       let resolvedDocument = await owner.resolve();
       await didService.storeDocument(resolvedDocument);
       setDidDocument(resolvedDocument.toString(true));
 
       let isDidPublished = await didService.isDIDPublished(did);
+      let serviceEndpoint = '';
+
       if (isDidPublished) {
         let didDocument = await didService.getDidDocument(did, false);
         if (didDocument.services && didDocument.services.size > 0) {
-          let serviceEndpoint = '';
           let hiveUrl = new DIDURL(did + '#hivevault');
           if (didDocument.services?.has(hiveUrl)) {
             serviceEndpoint = didDocument.services.get(hiveUrl).serviceEndpoint;
@@ -132,36 +156,17 @@ const ActivateProfile: React.FC<Props> = ({ back, next, close }) => {
 
         let userService = new UserService(didService);
         const res = await userService.SearchUserWithDID(did);
-        window.localStorage.setItem(
-          `temporary_${did.replace('did:elastos:', '')}`,
-          JSON.stringify({
-            mnemonic: mnemonic
-          })
-        );
-        // console.log('hello - signinpage: ', res, name);
-        // if (res) {
-        //   showNotify(
-        //     "Please approve Profile's multiple requests on Esssentials App.",
-        //     'warning'
-        //   );
-        //   const session = await userService.LockWithDIDAndPwd(res);
-        //   session.isEssentialUser = true;
-        //   eProps.setSession({ session });
-        //   window.localStorage.setItem('isLoggedIn', 'true');
-        //   history.push('/profile');
-        // } else {
-        //   history.push({
-        //     pathname: '/create-profile-with-did',
-        //     state: {
-        //       did,
-        //       mnemonic,
-        //       user: {
-        //         name: name,
-        //         loginCred: {}
-        //       }
-        //     }
-        //   });
-        // }
+        if (res) {
+          showNotify(
+            "Please approve Profile's multiple requests on Esssentials App.",
+            'warning'
+          );
+          const session = await userService.LockWithDIDAndPwd(
+            res,
+            serviceEndpoint
+          );
+          session.isEssentialUser = true;
+        }
       } else {
         showNotify('Did is not published on the blockchain yet', 'error');
       }
@@ -169,12 +174,6 @@ const ActivateProfile: React.FC<Props> = ({ back, next, close }) => {
       showNotify('Unable to get credential from essential', 'error');
     }
   };
-
-  // useEffect(() => {
-  //   (async () => {
-  //     await connect();
-  //   })();
-  // }, []);
 
   return (
     <OnBoardingContainer style={{ maxWidth: '545px' }}>
@@ -185,8 +184,7 @@ const ActivateProfile: React.FC<Props> = ({ back, next, close }) => {
         <ThemeButton
           text="Activate Your Profile"
           img="white"
-          // onClick={connect}
-          onClick={next}
+          onClick={connect}
         />
 
         <TransparentWithBorderlineButton

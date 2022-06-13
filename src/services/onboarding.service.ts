@@ -9,7 +9,6 @@ export class OnBoardingService {
       let newSessionItem = user;
       newSessionItem.onBoardingInfo = {
         type: 1,
-        completed: false,
         step: 1
       };
 
@@ -23,12 +22,36 @@ export class OnBoardingService {
     return user;
   }
 
+  public static isOnBoardingCompleted = (
+    onBoardingInfo: IOnboardingInfo | undefined
+  ) => {
+    if (onBoardingInfo === undefined) {
+      return false;
+    }
+    if (onBoardingInfo.type === 1) {
+      return onBoardingInfo.step === 5;
+    } else if (onBoardingInfo.type === 2) {
+      return onBoardingInfo.step === 4;
+    }
+    return onBoardingInfo.step === 6;
+  };
+
+  public static getOnBoardingTotalSteps = (session: ISessionItem) => {
+    if (session.onBoardingInfo) {
+      if (session.onBoardingInfo.type === 1) {
+        return 5;
+      } else if (session.onBoardingInfo.type === 2) {
+        return 4;
+      }
+    }
+    return 6;
+  };
+
   public static async checkRecoverLogin(user: ISessionItem) {
     if (user.onBoardingInfo === undefined) {
       let newSessionItem = user;
       newSessionItem.onBoardingInfo = {
         type: 2,
-        completed: false,
         step: 1
       };
 
@@ -42,7 +65,7 @@ export class OnBoardingService {
         session: newSessionItem
       };
     }
-    if (user.onBoardingInfo.completed) {
+    if (this.isOnBoardingCompleted(user.onBoardingInfo)) {
       return {
         canLogin: false,
         session: user

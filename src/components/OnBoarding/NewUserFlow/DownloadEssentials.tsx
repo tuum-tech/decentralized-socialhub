@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { ThemeButton } from 'src/elements/buttons';
-import { OnBoardingTitle, OnBoardingContainer } from './WelcomeProfile';
+import { OnBoardingTitle, OnBoardingContainer } from './LoadingModal';
 import { TransparentButton } from './OwnYourSelf';
 import TutorialSteps from './TutorialSteps';
 
@@ -84,8 +84,13 @@ const DownloadEssentials: React.FC<Props> = ({ back, next, close }) => {
       </p>
 
       <RowContainer style={{ maxWidth: '230px' }}>
-        <img src={appstore} alt="appstore" width="100px" />
-        <img src={googleplay} alt="googleplay" width="100px" />
+        <a href="https://apps.apple.com/us/app/elastos-essentials/id1568931743">
+          <img src={appstore} alt="appstore" width="100px" />
+        </a>
+
+        <a href="https://play.google.com/store/apps/details?id=org.elastos.essentials.app&hl=en&gl=US">
+          <img src={googleplay} alt="googleplay" width="100px" />
+        </a>
       </RowContainer>
 
       <RowContainer style={{ maxWidth: '380px' }}>
