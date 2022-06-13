@@ -83,7 +83,6 @@ const RequestCommunity: React.FC = () => {
     });
   };
   const sendRequest = (request: any) => {
-    console.log(request);
     (async () => {
       sendEmail(request);
       addSpace(request);
