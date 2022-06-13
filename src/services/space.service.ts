@@ -28,6 +28,11 @@ export const CategoriesForPrivateSpace = [
   SpaceCategory.Personal_NFT
 ];
 
+export const CategoriesForCommunitySpace = [
+  SpaceCategory.NFT,
+  SpaceCategory.WTP
+];
+
 export const defaultSpace: Space = {
   guid: null,
   name: '',

@@ -580,7 +580,8 @@ interface IGithubCommentItem {
 interface NFTSpaceDetail {
   network: string;
   address: string;
-  ref: string;
+  isOpenseaCollection: boolean;
+  collectionSlug: string;
 }
 interface OrgSpaceDetail {}
 interface UnivSpaceDetail {}
@@ -592,6 +593,7 @@ interface SpaceDTO {
   items: Space[];
 }
 interface Space {
+  sid?: number;
   name: string;
   guid: Guid | null;
   slug: string;

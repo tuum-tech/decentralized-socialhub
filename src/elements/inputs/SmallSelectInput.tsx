@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { IonSelect, IonSelectOption, IonLabel } from '@ionic/react';
 import style from './SmallSelectInput.module.scss';
@@ -7,10 +7,10 @@ interface Props {
   placeholder?: string;
   label?: string;
   values?: {
-    value: number | string;
+    value: number | string | boolean;
     text: string;
   }[];
-  defaultValue?: string;
+  defaultValue?: string | number | boolean;
   flexDirection?: string;
   hasError?: boolean;
   multiple?: boolean;
@@ -29,7 +29,7 @@ const SmallSelectInput: React.FC<Props> = ({
   multiple = false,
   className
 }) => {
-  const [value, setValue] = useState(defaultValue);
+  const [value, setValue] = useState<any>('');
   let cName = style['selectinput'];
   if (flexDirection === 'column') {
     cName += ` ${style['flex-row']}`;
@@ -41,6 +41,9 @@ const SmallSelectInput: React.FC<Props> = ({
     cName += ` ${className}`;
   }
   let options = values ? values : [];
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue])
   return (
     <div className={cName}>
       {label && label !== '' && (
