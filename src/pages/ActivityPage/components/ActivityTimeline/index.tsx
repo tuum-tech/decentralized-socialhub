@@ -46,10 +46,11 @@ const ActivityTimeline: React.FC<Props> = ({ session }: Props) => {
       _activities.sort(
         (a: any, b: any) => (b as any).createdAt - (a as any).createdAt
       );
+      console.log('_activities===============', _activities);
       setActivities(_activities);
       setTotalPages(pageCount(_activities.length));
       setTimerForActivity();
-    }, 1000);
+    }, 5000);
     return () => clearTimeout(timer);
   }, [session]);
 
