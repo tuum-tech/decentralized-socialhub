@@ -14,7 +14,7 @@ interface Props {
   selectStatus: any;
 }
 
-const ClicableCol = styled(IonCol)`
+const ClickableCol = styled(IonCol)`
   cursor: pointer;
   &:hover {
     div {
@@ -29,39 +29,39 @@ const TopInfo: React.FC<Props> = ({
 }: Props) => {
   return (
     <IonRow>
-      <ClicableCol onClick={() => selectStatus('')}>
+      <ClickableCol onClick={() => selectStatus('')}>
         <TopInfoCard
           img={totalIcon}
           title="Total Requests"
           count={verificationStatus.length}
           bgColor="#1D1D1B"
         />
-      </ClicableCol>
-      <ClicableCol onClick={() => selectStatus('approved')}>
+      </ClickableCol>
+      <ClickableCol onClick={() => selectStatus('approved')}>
         <TopInfoCard
           img={approvedIcon}
           title="Approved"
           count={verificationStatus.filter(v => v === 'approved').length}
           bgColor="#2FD5DD"
         />
-      </ClicableCol>
-      <ClicableCol onClick={() => selectStatus('requested')}>
+      </ClickableCol>
+      <ClickableCol onClick={() => selectStatus('requested')}>
         <TopInfoCard
           img={pendingIcon}
           title="Pending"
           count={verificationStatus.filter(v => v === 'requested').length}
           bgColor="#FF9840"
         />
-      </ClicableCol>
-      <ClicableCol onClick={() => selectStatus('rejected')}>
+      </ClickableCol>
+      <ClickableCol onClick={() => selectStatus('rejected')}>
         <TopInfoCard
           img={rejectedIcon}
           title="Rejected"
           count={verificationStatus.filter(v => v === 'rejected').length}
           bgColor="#FF5A5A"
         />
-      </ClicableCol>
-      <ClicableCol onClick={() => selectStatus('saved to identity')}>
+      </ClickableCol>
+      <ClickableCol onClick={() => selectStatus('saved to identity')}>
         <TopInfoCard
           img={shield}
           title="Saved to identity"
@@ -70,7 +70,7 @@ const TopInfo: React.FC<Props> = ({
           }
           bgColor="#FF5A5A"
         />
-      </ClicableCol>
+      </ClickableCol>
     </IonRow>
   );
 };

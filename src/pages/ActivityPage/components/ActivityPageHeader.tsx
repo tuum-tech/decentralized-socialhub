@@ -6,25 +6,6 @@ import { TabsContainer } from 'src/components/profile/ProfileComponent/PublicPro
 import { DefaultButton } from 'src/elements-v2/buttons';
 import { TabItem } from 'src/elements-v2/tabs';
 
-export const Header = styled.div`
-  width: 100%;
-  height: 83px;
-  background: #fff;
-  padding: 27px 25px 20px 48px;
-`;
-
-export const PageTitle = styled.h2`
-  font-family: 'SF Pro Display';
-  font-size: 28px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1.36;
-  letter-spacing: normal;
-  text-align: left;
-  color: #27272e;
-`;
-
 export const ActivityTabsContainer = styled(TabsContainer)`
   ion-list,
   .tab-item {
@@ -32,25 +13,6 @@ export const ActivityTabsContainer = styled(TabsContainer)`
     --background: transparent;
     --border-color: transparent;
   }
-`;
-
-export const BlueButton = styled.button`
-  height: 40px;
-
-  padding: 12px 20px;
-  border-radius: 9px;
-  background-color: #4c6fff;
-
-  font-family: 'SF Pro Display';
-  font-size: 12px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1;
-  text-align: left;
-  color: #ffffff;
-
-  margin: 0 20px 0 auto;
 `;
 
 interface ActivityPageHeaderProps {
@@ -135,9 +97,15 @@ const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
         </TabItem>
       </IonList>
       {active === 'myrequests' && (
-        <BlueButton onClick={newVerificationClicked}>
+        <DefaultButton
+          variant="contained"
+          btnColor="primary-gradient"
+          size="large"
+          onClick={newVerificationClicked}
+          style={{ margin: '0 20px 0 auto' }}
+        >
           New Verification Request
-        </BlueButton>
+        </DefaultButton>
       )}
     </ActivityPageHeaderContainer>
   );

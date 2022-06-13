@@ -30,7 +30,7 @@ const StyleTitle = styled.p`
   font-size: 28px;
   line-height: 136.02%;
   /* or 38px */
-  color: #27272e;
+  color: var(--txt-heading-dark);
 `;
 
 const StyledLabel = styled.label`
