@@ -11,6 +11,8 @@ import ActivityPageHeader, {
 
 import MainLayout from 'src/components/layouts/MainLayout';
 import useSession from 'src/hooks/useSession';
+import HeaderMenu from 'src/elements-v2/HeaderMenu';
+import { Header } from 'src/components/layouts/MainLayout/Header';
 
 const ActivityPage: React.FC = () => {
   const { session } = useSession();
@@ -61,6 +63,10 @@ const ActivityPage: React.FC = () => {
 
   return (
     <MainLayout>
+      <Header>
+        <HeaderMenu title="Activities" />
+      </Header>
+
       <ActivityTabsContainer template="default">
         <ActivityPageHeader
           active={active}
