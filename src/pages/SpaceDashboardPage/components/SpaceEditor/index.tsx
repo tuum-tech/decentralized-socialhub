@@ -16,7 +16,7 @@ import Admins from '../Admins';
 import DeleteSpace from '../DeleteSpace';
 import SocialLinks from '../SocialLinks';
 import Category from '../Category';
-import { SpaceCategory } from 'src/services/space.service';
+import { CategoriesForPrivateSpace } from 'src/services/space.service';
 import { removeSpace, updateSpace } from 'src/store/spaces/actions';
 
 const StyledGrid = styled(IonGrid)`
@@ -128,7 +128,7 @@ const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
           <SocialLinks space={spaceProfile} mode="edit" />
           <Category profile={spaceProfile} update={onUpdateCategory} />
           <Admins profile={spaceProfile} />
-          {spaceProfile.category === SpaceCategory.Personal && (
+          {CategoriesForPrivateSpace.includes(spaceProfile.category) && (
             <DeleteSpace profile={spaceProfile} removeSpace={onRemoveSpace} />
           )}
         </IonCol>
