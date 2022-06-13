@@ -55,7 +55,7 @@ const SignHelpPage: React.FC<InferMappedProps> = ({
           <Text12 className="my-25px">
             Download for iOS here or Android here
           </Text12>
-          <ButtonLink width={26} to="/sign-qr">
+          <ButtonLink width={26} to="/sign-in">
             <ArrowButton />
           </ButtonLink>
         </OnBoardLayoutLeftContent>
