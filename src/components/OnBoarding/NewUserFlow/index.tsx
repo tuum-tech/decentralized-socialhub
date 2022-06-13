@@ -16,10 +16,6 @@ interface Props {
 const NewUserFlow: React.FC<Props> = ({ sessionItem, close }) => {
   const [step, setStep] = useState(0);
 
-  if (step === 0) {
-    return <WelcomeProfile />;
-  }
-
   if (step === 1) {
     return (
       <OwnYourSelf
@@ -85,17 +81,21 @@ const NewUserFlow: React.FC<Props> = ({ sessionItem, close }) => {
     );
   }
 
-  return (
-    <AllIsSet
-      seeMyBades={() => {
-        // setStep(step + 1);
-      }}
-      close={() => close(step)}
-      share={() => {
-        setStep(step - 1);
-      }}
-    />
-  );
+  if (step === 6) {
+    return (
+      <AllIsSet
+        seeMyBades={() => {
+          // setStep(step + 1);
+        }}
+        close={() => close(step)}
+        share={() => {
+          setStep(step - 1);
+        }}
+      />
+    );
+  }
+
+  return <WelcomeProfile />;
 };
 
 export default NewUserFlow;

@@ -299,9 +299,14 @@ interface ISessionItem {
   referrals?: IReferral[];
   passwordRemoved?: boolean;
   wallets?: any;
+  latestVersion?: string;
   created?: { $date: number };
   sign_up_date?: string;
-  latestVersion?: string;
+  onBoardingInfo?: {
+    type: number;
+    step: number;
+    completed: boolean;
+  };
 }
 
 interface LoginCred {

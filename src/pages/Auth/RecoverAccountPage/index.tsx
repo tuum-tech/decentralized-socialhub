@@ -33,6 +33,7 @@ import { UserType, LocationState, InferMappedProps } from './types';
 import { SubState } from 'src/store/users/types';
 import { DIDURL } from '@elastosfoundation/did-js-sdk/';
 import { HiveService } from 'src/services/hive.service';
+import { OnBoardingService } from 'src/services/onboarding.service';
 
 const CreateButton = styled(Link)`
   background: #313049;
@@ -173,8 +174,20 @@ const RecoverAccountPage: React.FC<PageProps> = ({ eProps, ...props }) => {
               );
 
               if (res) {
+                let checkRecoverLoginRes = await OnBoardingService.checkRecoverLogin(
+                  res
+                );
+
+                if (!checkRecoverLoginRes.canLogin) {
+                  alertError(
+                    null,
+                    'You already completed the onboarding tutorial with this DID account. You should login using essential wallet'
+                  );
+                  return;
+                }
+
                 const session = await userService.LockWithDIDAndPwd(
-                  res,
+                  checkRecoverLoginRes.session,
                   serviceEndpoint
                 );
                 eProps.setSession({ session });
