@@ -66,7 +66,7 @@
     "sid": 6,
     "name": "MythicBeings",
     "category": "NFT Collection",
-    "owner": ["did:elastos:iddNu2pmcpQ1ePcSnTBjHSNWCAsZS455TY"],
+    "owner": [],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0x3536a85A9E55EB26d515653aF206465D68400feA",
@@ -77,7 +77,7 @@
     "sid": 7,
     "name": "CryptoHoodieMan",
     "category": "NFT Collection",
-    "owner": ["did:elastos:iddNu2pmcpQ1ePcSnTBjHSNWCAsZS455TY"],
+    "owner": [],
     "meta": {
       "network": "Ethereum",
       "address": "0x495f947276749ce646f68ac8c248420045cb7b5e",
@@ -111,7 +111,7 @@
     "sid": 10,
     "name": "Metalink",
     "category": "NFT Collection",
-    "owner": ["did:elastos:iddNu2pmcpQ1ePcSnTBjHSNWCAsZS455TY"],
+    "owner": [],
     "meta": {
       "network": "Ethereum",
       "address": "0x86C3D2697E675bB069a8c2D549F774CF73DCB047",
@@ -122,7 +122,7 @@
     "sid": 11,
     "name": "Moonstars",
     "category": "NFT Collection",
-    "owner": ["did:elastos:iddNu2pmcpQ1ePcSnTBjHSNWCAsZS455TY"],
+    "owner": [],
     "meta": {
       "network": "Ethereum",
       "address": "0xd22B236fad04eB97FaEE1D03415a4CeDcfCBB31D",
@@ -133,7 +133,7 @@
     "sid": 12,
     "name": "Maskhuman",
     "category": "NFT Collection",
-    "owner": ["did:elastos:iddNu2pmcpQ1ePcSnTBjHSNWCAsZS455TY"],
+    "owner": [],
     "meta": {
       "network": "Ethereum",
       "address": "0xdc11c23A38590fAD6aD6F2727f02BceB85ee3607",
@@ -146,7 +146,7 @@
     "name": "Yeah! BIRDIE!",
     "category": "NFT Collection",
     "slug": "yeah-birdie",
-    "owner": ["did:elastos:iddNu2pmcpQ1ePcSnTBjHSNWCAsZS455TY"],
+    "owner": [],
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0xd5aFf849495487e3c405c9fcA1b878bDd72B9e97",
