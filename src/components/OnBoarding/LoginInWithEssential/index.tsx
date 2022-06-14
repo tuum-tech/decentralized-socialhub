@@ -17,7 +17,7 @@ const LoginInWithEssential: React.FC<Props> = ({
   close,
   onBoardingInfo,
   changeStep
-}) => {
+}: Props) => {
   const step = onBoardingInfo.step;
 
   const nextStep = async () => {

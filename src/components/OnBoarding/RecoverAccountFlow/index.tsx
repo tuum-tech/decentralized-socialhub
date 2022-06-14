@@ -20,7 +20,7 @@ const RecoverAccountFlow: React.FC<Props> = ({
   close,
   onBoardingInfo,
   changeStep
-}) => {
+}: Props) => {
   const step = onBoardingInfo.step;
 
   const nextStep = async () => {
