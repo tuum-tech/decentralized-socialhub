@@ -3,17 +3,15 @@ import {
   IonCard,
   IonCardHeader,
   IonCardTitle,
-  // IonGrid,
-  // IonContent,
   IonItem,
   IonCardContent,
   IonText,
-  IonButton,
-  IonAlert
+  IonButton
 } from '@ionic/react';
 import styled from 'styled-components';
 import clsx from 'clsx';
 import { UserService } from 'src/services/user.service';
+import DeactivateModal from './DeactivateModal';
 import style from './style.module.scss';
 
 const ButtonDisabled = styled(IonButton)`
@@ -130,33 +128,6 @@ const SettingsAccount: React.FC<Props> = ({ userSession }) => {
                 time.
               </IonText>
               <br></br>
-              <IonAlert
-                isOpen={isAlertOpen}
-                onDidDismiss={() => setIsAlertOpen(false)}
-                cssClass="my-custom-class"
-                header={'Delete'}
-                subHeader={'Subtitle'}
-                message={
-                  'Are you sure you want to delete? This operation is irreversible'
-                }
-                buttons={[
-                  {
-                    text: 'Cancel',
-                    role: 'cancel',
-                    cssClass: 'secondary',
-                    handler: () => {}
-                  },
-                  {
-                    text: 'Delete',
-                    handler: async () => {
-                      if (!userSession) return;
-                      setLoading('Deleting Account');
-                      await UserService.deleteUser(userSession);
-                      setLoading('');
-                    }
-                  }
-                ]}
-              />
               <DeleteButton
                 className={clsx(
                   style['section-button'],
@@ -175,6 +146,16 @@ const SettingsAccount: React.FC<Props> = ({ userSession }) => {
           </IonItem>
         </IonCardContent>
       </IonCard>
+      <DeactivateModal
+        isAlertOpen={isAlertOpen}
+        setIsAlertOpen={setIsAlertOpen}
+        onClick={async () => {
+          if (!userSession) return;
+          setLoading('Deleting Account');
+          await UserService.deleteUser(userSession);
+          setLoading('');
+        }}
+      />
     </div>
   );
 };
