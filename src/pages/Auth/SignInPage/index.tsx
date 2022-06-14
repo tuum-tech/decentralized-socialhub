@@ -148,12 +148,13 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
             mnemonic: mnemonic
           })
         );
-        console.log('signinpage: ', res, name);
+        console.log('userdata before registering: ', res, name);
         if (res) {
           const session = await userService.LockWithDIDAndPwd(
             res,
             serviceEndpoint
           );
+          console.log('userdata after registering: ', session);
           session.isEssentialUser = true;
           eProps.setSession({ session });
           history.push('/profile');
