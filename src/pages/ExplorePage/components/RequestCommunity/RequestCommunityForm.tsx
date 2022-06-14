@@ -55,10 +55,6 @@ const RequestCommunityForm: React.FC<Props> = ({
       showNotify('Input opensea collection url', 'warning');
       return false;
     }
-    if (!Web3.utils.isAddress(request.contract)) {
-      showNotify('Invalid smart contract address', 'warning');
-      return false;
-    }
     if (
       spaces.find(
         (space: any) => space.name.toLowerCase() === request.name.toLowerCase()
@@ -67,17 +63,23 @@ const RequestCommunityForm: React.FC<Props> = ({
       showNotify('Community space with same name already exists', 'warning');
       return false;
     }
-    if (
-      spaces.find(
-        (space: any) =>
-          space.meta.address?.toLowerCase() === request.contract.toLowerCase()
-      )
-    ) {
-      showNotify(
-        'Community space with same contract address already exists',
-        'warning'
-      );
-      return false;
+    if (request.network === 'ela') {
+      if (!Web3.utils.isAddress(request.contract)) {
+        showNotify('Invalid smart contract address', 'warning');
+        return false;
+      }
+      if (
+        spaces.find(
+          (space: any) =>
+            space.meta.address?.toLowerCase() === request.contract.toLowerCase()
+        )
+      ) {
+        showNotify(
+          'Community space with same contract address already exists',
+          'warning'
+        );
+        return false;
+      }
     }
     return true;
   };
@@ -157,24 +159,26 @@ const RequestCommunityForm: React.FC<Props> = ({
           ></SmallTextInput>
         </IonCol>
       </IonRow>
-      {request && request.category === SpaceCategory.NFT && (
-        <>
-          <IonRow class="ion-justify-content-start">
-            <IonCol size="12">
-              <SmallTextInput
-                label="Smart Contract Address"
-                name="contract"
-                placeholder="e.g.0x5d07b4f9cA73589d84E70A8191ed7fc948f169c0"
-                onChange={onInputChange}
-                value={request.contract}
-                hasError={
-                  !request.contract || !Web3.utils.isAddress(request.contract)
-                }
-              ></SmallTextInput>
-            </IonCol>
-          </IonRow>
-        </>
-      )}
+      {request &&
+        request.category === SpaceCategory.NFT &&
+        request.network === 'ela' && (
+          <>
+            <IonRow class="ion-justify-content-start">
+              <IonCol size="12">
+                <SmallTextInput
+                  label="Smart Contract Address"
+                  name="contract"
+                  placeholder="e.g.0x5d07b4f9cA73589d84E70A8191ed7fc948f169c0"
+                  onChange={onInputChange}
+                  value={request.contract}
+                  hasError={
+                    !request.contract || !Web3.utils.isAddress(request.contract)
+                  }
+                ></SmallTextInput>
+              </IonCol>
+            </IonRow>
+          </>
+        )}
       {request && request.category !== SpaceCategory.NFT && (
         <>
           <IonRow class="ion-justify-content-start">

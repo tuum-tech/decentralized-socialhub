@@ -56,7 +56,7 @@ const RequestCommunity: React.FC = () => {
       category: request['Space Category'],
       meta: {
         network: request['Network'],
-        address: request['Smart Contract Address'],
+        address: request['Smart Contract Address'] || '',
         isOpenseaCollection: !!request['NFT Collection URL'],
         collectionSlug: !!request['NFT Collection URL']
           ? request['NFT Collection URL']

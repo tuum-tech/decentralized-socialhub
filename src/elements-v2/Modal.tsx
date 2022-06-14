@@ -16,7 +16,7 @@ const StyledModal = styled(IonModal)<{ autoWidth: boolean }>`
   --min-height: 400px;
   --max-width: ${props => (props.autoWidth ? 'auto' : '435px')};
   --height: auto;
-
+  z-index: 0 !important;
   .ion-page {
     position: relative;
     display: block;
