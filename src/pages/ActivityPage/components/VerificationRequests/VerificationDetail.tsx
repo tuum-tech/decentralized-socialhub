@@ -167,7 +167,7 @@ const VerificationDetailContent = ({
           <h4 className="mt-4">Verification Details</h4>
           <Expander
             title={getCategoryTitle(verification)}
-            categories={records}
+            cateogiries={records}
           />
           {verification.msg && verification.msg !== '' && (
             <div className="mt-4 mb-2">

@@ -18,7 +18,7 @@ import {
 } from 'src/services/space.service';
 import useSession from 'src/hooks/useSession';
 import { showNotify } from 'src/utils/notify';
-import { Header } from 'src/components/layouts/MainLayout/Header';
+import { Header } from './SpacePageHeader';
 import HeaderMenu from 'src/elements-v2/HeaderMenu';
 import { selectSpaces } from 'src/store/spaces/selectors';
 import { fetchSpaces } from 'src/store/spaces/actions';

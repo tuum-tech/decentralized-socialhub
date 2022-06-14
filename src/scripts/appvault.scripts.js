@@ -588,7 +588,8 @@ let run = async () => {
             timestamp: '$params.timestamp',
             referrals: '$params.referrals',
             wallets: '$params.wallets',
-            passwordRemoved: true
+            passwordRemoved: true,
+            onBoardingInfo: '$params.onBoardingInfo'
           }
         }
       }
@@ -628,7 +629,8 @@ let run = async () => {
               pageTemplate: '$params.pageTemplate',
               referrals: '$params.referrals',
               wallets: '$params.wallets',
-              passwordRemoved: true
+              passwordRemoved: true,
+              onBoardingInfo: '$params.onBoardingInfo'
             }
           }
         }
@@ -661,7 +663,8 @@ let run = async () => {
               onBoardingCompleted: '$params.onBoardingCompleted',
               tutorialStep: '$params.tutorialStep',
               hiveHost: '$params.hiveHost',
-              avatar: '$params.avatar'
+              avatar: '$params.avatar',
+              onBoardingInfo: '$params.onBoardingInfo'
             }
           }
         }

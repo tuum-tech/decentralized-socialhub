@@ -51,7 +51,7 @@ const ReviewPage = ({
         {credentials.map(c => (
           <Expander
             title={getCategoryTitle(c)}
-            categories={c.records}
+            cateogiries={c.records}
             key={c.idKey}
           />
         ))}

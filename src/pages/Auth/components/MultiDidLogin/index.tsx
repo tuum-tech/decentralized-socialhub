@@ -127,7 +127,6 @@ const MultiDidLogin: React.FC<Props> = ({
       let uService = new UserService(await DidService.getInstance());
 
       const canLoginWithPwd = await uService.validateWithPwd(newDid, '');
-      console.log('===>canLoginWithPwd', newDid, canLoginWithPwd);
 
       if (canLoginWithPwd) {
         setLoginType(2);

@@ -13,17 +13,17 @@ import { ExporeTime } from './constants';
 
 import { FollowService } from 'src/services/follow.service';
 import { UserService } from 'src/services/user.service';
+import { ProfileService } from 'src/services/profile.service';
 import { AssistService, RequestStatus } from 'src/services/assist.service';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
-import { ProfileService } from 'src/services/profile.service';
+import OnBoarding from 'src/components/OnBoarding';
 
-import TutorialComponent from './components/Tutorial';
 import NewRelease from './components/NewRelease';
 
 import DashboardContent from './components/DashboardContent';
-import OnBoarding from './components/OnBoarding';
+
 import DashboardHeader from './components/DashboardHeader';
-import { DidDocumentService } from 'src/services/diddocument.service';
+
 import { DidService } from 'src/services/did.service.new';
 import { DIDDocument, DID } from '@elastosfoundation/did-js-sdk/';
 import { useRecoilState, useSetRecoilState } from 'recoil';
@@ -31,18 +31,7 @@ import { DIDDocumentAtom, FullProfileAtom } from 'src/Atoms/Atoms';
 import MainLayout from 'src/components/layouts/MainLayout';
 import useSession from 'src/hooks/useSession';
 import request from 'src/baseplate/request';
-
-const TutorialModal = styled(IonModal)`
-  --border-radius: 16px;
-  --min-height: 200px;
-  --max-width: 1250px;
-  --height: 100%;
-  --width: 100%;
-  height: 100% !important;
-  width: 100% !important;
-  --background: transparent !important;
-  --box-shadow: none !important;
-`;
+import { OnBoardingService } from 'src/services/onboarding.service';
 
 const ReleaseModal = styled(IonModal)`
   --border-radius: 16px;
@@ -131,7 +120,6 @@ const DashboardPage: React.FC = () => {
       let session = {
         ...newSession,
         isDIDPublished: true
-        // onBoardingCompleted: true // WORKAROUND: when Onboarding window is closed before publishing, it sets onBoardingCompleted: true, but the session here dont get the updated session
       };
 
       let userService = new UserService(await DidService.getInstance());
@@ -195,18 +183,18 @@ const DashboardPage: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      if (session && session.did !== '' && session.tutorialStep === 4) {
+      if (session && session.did !== '') {
         setPublishStatus(
           session.isDIDPublished
             ? RequestStatus.Completed
             : RequestStatus.Pending
         );
-        setOnBoardVisible(true);
-        if (
-          session.onBoardingCompleted &&
-          session.tutorialStep === 4 &&
-          !willExpire
-        ) {
+
+        if (!OnBoardingService.isOnBoardingCompleted(session.onBoardingInfo)) {
+          setOnBoardVisible(true);
+        }
+
+        if (session.tutorialStep === 4 && !willExpire) {
           setWillExpire(true);
           setTimeout(() => {
             UserService.logout();
@@ -231,13 +219,7 @@ const DashboardPage: React.FC = () => {
     (async () => {
       if (session && session.did !== '') {
         if (history.location.pathname === '/profile') {
-          if (!session.onBoardingCompleted) setOnBoardVisible(true);
-
-          if (
-            session.tutorialStep &&
-            session.tutorialStep === 4 &&
-            session.onBoardingCompleted
-          ) {
+          if (session.tutorialStep && session.tutorialStep === 4) {
             setLoadingText('loading Profile Data');
             await retrieveProfile();
             setLoadingText('');
@@ -306,31 +288,16 @@ const DashboardPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (session.tutorialStep < 4 && onBoardVisible) {
+  if (
+    onBoardVisible &&
+    session.onBoardingInfo &&
+    !OnBoardingService.isOnBoardingCompleted(session.onBoardingInfo)
+  ) {
     return (
       <OnBoarding
-        completed={async (startTutorial: boolean) => {
-          let newSession = {
-            ...session,
-            onBoardingCompleted: true
-          };
-
-          let userService = new UserService(await DidService.getInstance());
-          setSession(await userService.updateSession(newSession));
-
+        onClose={() => {
           setOnBoardVisible(false);
-          if (!willExpire) {
-            setWillExpire(true);
-            setTimeout(() => {
-              UserService.logout();
-            }, ExporeTime);
-          }
-          if (startTutorial) {
-            setShowTutorial(true);
-          }
         }}
-        sessionItem={session}
-        publishStatus={publishStatus}
       />
     );
   }
@@ -349,7 +316,7 @@ const DashboardPage: React.FC = () => {
           )}
           <DashboardContent
             onTutorialStart={() => {
-              setShowTutorial(true);
+              setOnBoardVisible(true);
             }}
             sessionItem={session}
             followerDids={followerDids}
@@ -357,17 +324,6 @@ const DashboardPage: React.FC = () => {
             mutualDids={mutualDids}
           />
 
-          <TutorialModal
-            isOpen={showTutorial}
-            backdropDismiss={false}
-            cssClass={style['tutorialpage']}
-          >
-            <TutorialComponent
-              onClose={() => {
-                setShowTutorial(false);
-              }}
-            />
-          </TutorialModal>
           {version && (
             <ReleaseModal
               isOpen={showReleaseModal}

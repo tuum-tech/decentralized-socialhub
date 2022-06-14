@@ -33,13 +33,26 @@ const ProgressContainer = styled.div`
 interface Props {
   onTutorialStart: () => void;
   tutorialStep: number;
+  totalSteps: number;
 }
 
 const BeginnersTutorial: React.FC<Props> = ({
   onTutorialStart,
-  tutorialStep
+  tutorialStep,
+  totalSteps
 }) => {
-  const percent = Math.round((tutorialStep / 4) * 100);
+  const percent = (tutorialStep / totalSteps) * 100;
+
+  const renderButtonTxt = () => {
+    if (tutorialStep === 1) {
+      return 'Start Tutorial';
+    }
+    if (tutorialStep < totalSteps) {
+      return 'Resume Tutorial';
+    }
+
+    return 'Already Completed';
+  };
 
   return (
     <MainCard
@@ -57,14 +70,16 @@ const BeginnersTutorial: React.FC<Props> = ({
           btnColor="light-gradient"
           onClick={onTutorialStart}
         >
-          {tutorialStep === 1 ? 'Start ' : 'Resume '}Tutorial
+          {renderButtonTxt()}
         </DefaultButton>
         <ProgressContainer>
           <ProgressBar
             value={percent}
             progressColor={styles['primary-gradient']}
           />
-          <p className="ion-text-nowrap">{tutorialStep} / 4 completed</p>
+          <p className="ion-text-nowrap">
+            {tutorialStep} / {totalSteps} completed
+          </p>
         </ProgressContainer>
       </ButtonsArea>
     </MainCard>

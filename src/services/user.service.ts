@@ -1,27 +1,27 @@
 import { Guid } from 'guid-typescript';
+import {
+  DIDDocument,
+  DIDURL,
+  RootIdentity,
+  VerifiablePresentation
+} from '@elastosfoundation/did-js-sdk/';
+import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
+import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 
 import { alertError, showNotify } from 'src/utils/notify';
-
-import { HiveService } from './hive.service';
-
 import { UserVaultScripts } from '../scripts/uservault.script';
+import { HiveService } from './hive.service';
 import {
   TuumTechScriptService,
   UserVaultScriptService
 } from './script.service';
 import { ProfileService } from './profile.service';
-import {
-  DID,
-  DIDDocument,
-  DIDURL,
-  RootIdentity
-} from '@elastosfoundation/did-js-sdk/';
-import { DidService, IDidService } from './did.service.new';
+import { IDidService } from './did.service.new';
 import { CredentialType, DidcredsService } from './didcreds.service';
 import { SpaceService } from './space.service';
-import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
-import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { DidDocumentService } from './diddocument.service';
+import { DidService } from './did.service.new';
+import { OnBoardingService } from './onboarding.service';
 
 const CryptoJS = require('crypto-js');
 
@@ -363,7 +363,6 @@ export class UserService {
     accountType: AccountType,
     loginCred: LoginCred,
     credential: string = '',
-    // storePassword: string,
     newDidStr: string,
     newMnemonicStr: string,
     hiveHostStr: string,
@@ -402,6 +401,10 @@ export class UserService {
       didPublishTime: 0,
       onBoardingCompleted: false,
       loginCred: loginCred || {},
+      onBoardingInfo: {
+        type: 1,
+        step: 0
+      },
       badges: {
         account: {
           beginnerTutorial: {
@@ -751,5 +754,105 @@ export class UserService {
       `userdiddocument_${useSession.did.replace('did:elastos:', '')}`
     );
     UserService.logout();
+  }
+
+  public static async checkAfterEssentialSignin(
+    did: string,
+    mnemonic: string,
+    name: string
+  ) {
+    // const didService = await DidService.getInstance();
+    // let didDocument = await didService.getDidDocument(did, false);
+    // if (didDocument.services && didDocument.services.size > 0) {
+    //   let serviceEndpoint = '';
+    //   let hiveUrl = new DIDURL(did + '#hivevault');
+    //   if (didDocument.services?.has(hiveUrl)) {
+    //     serviceEndpoint = didDocument.services.get(hiveUrl).serviceEndpoint;
+    //   } else {
+    //     hiveUrl = new DIDURL(did + '#HiveVault');
+    //     if (didDocument.services?.has(hiveUrl)) {
+    //       serviceEndpoint = didDocument.services.get(hiveUrl).serviceEndpoint;
+    //     }
+    //   }
+    //   if (serviceEndpoint) {
+    //     let hiveVersion = await HiveService.getHiveVersion(serviceEndpoint);
+    //     let isHiveValid = await HiveService.isHiveVersionSupported(hiveVersion);
+    //     if (!isHiveValid) {
+    //       return {
+    //         error: `Hive version ${hiveVersion} not supported. The minimal supported version is ${process.env.REACT_APP_HIVE_MIN_VERSION} and maximun is ${process.env.REACT_APP_HIVE_MAX_VERSION}`
+    //       };
+    //     }
+    //   } else {
+    //     return {
+    //       error:
+    //         'This DID has no Hive Node set. Please set the hive node first using Elastos Essentials App'
+    //     };
+    //   }
+    // } else {
+    //   return {
+    //     error:
+    //       'This DID has no Hive Node set. Please set the hive node first using Elastos Essentials App'
+    //   };
+    // }
+    // // return '';
+    // const res = await this.SearchUserWithDID(did);
+    // window.localStorage.setItem(
+    //   `temporary_${did.replace('did:elastos:', '')}`,
+    //   JSON.stringify({
+    //     mnemonic: mnemonic
+    //   })
+    // );
+    // console.log('hello - signinpage: ', res, name);
+    // if (res) {
+    //   const recoverCheckRes = await OnBoardingService.checkRecoverLogin(res);
+    //   if (!recoverCheckRes.canLogin) {
+    //     return 'You already completed the onboarding. You can only login with Essential.';
+    //   }
+    //   let session = await this.LockWithDIDAndPwd(recoverCheckRes.session);
+    //   session.isEssentialUser = true;
+    //   // eProps.setSession({ session });
+    //   // window.localStorage.setItem('isLoggedIn', 'true');
+    //   // history.push('/profile');
+    //   return {
+    //     error: '',
+    //     redirect: '/profile',
+    //     session
+    //   };
+    // } else {
+    //   // history.push({
+    //   //   pathname: '/create-profile-with-did',
+    //   //   state: {
+    //   //     did,
+    //   //     mnemonic,
+    //   //     user: {
+    //   //       name: name,
+    //   //       loginCred: {}
+    //   //     }
+    //   //   }
+    //   // });
+    // }
+    // // if (res) {
+    // //   showNotify(
+    // //     "Please approve Profile's multiple requests on Esssentials App.",
+    // //     'warning'
+    // //   );
+    // //   const session = await userService.LockWithDIDAndPwd(res);
+    // //   session.isEssentialUser = true;
+    // //   eProps.setSession({ session });
+    // //   window.localStorage.setItem('isLoggedIn', 'true');
+    // //   history.push('/profile');
+    // // } else {
+    // //   history.push({
+    // //     pathname: '/create-profile-with-did',
+    // //     state: {
+    // //       did,
+    // //       mnemonic,
+    // //       user: {
+    // //         name: name,
+    // //         loginCred: {}
+    // //       }
+    // //     }
+    // //   });
+    // // }
   }
 }

@@ -27,6 +27,7 @@ import { connect } from 'react-redux';
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
+import { OnBoardingService } from 'src/services/onboarding.service';
 
 import FooterLinks, {
   Footer
@@ -110,8 +111,11 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
         dids={signedUsers}
         removeUser={removeUser}
         changeMode={() => setMode(0)}
-        afterSuccess={(session: ISessionItem) => {
-          eProps.setSession({ session });
+        afterSuccess={async (session: ISessionItem) => {
+          const customizedUser = await OnBoardingService.syncOnBoardingWithOldUser(
+            session
+          );
+          eProps.setSession({ session: customizedUser });
           window.location.href = '/profile';
         }}
       />

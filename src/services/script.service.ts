@@ -530,11 +530,7 @@ export class UserVaultScriptService {
       }
 
       try {
-        if (
-          !newUser.userToken ||
-          !newUser.hiveHost ||
-          serviceEndpointFromBlockchain != newUser.hiveHost
-        ) {
+        if (serviceEndpointFromBlockchain != newUser.hiveHost) {
           let userToken = await this.generateUserToken(
             newUser.mnemonics,
             serviceEndpointFromBlockchain

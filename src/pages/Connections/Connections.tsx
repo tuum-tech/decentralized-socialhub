@@ -5,12 +5,12 @@ import MainLayout from 'src/components/layouts/MainLayout';
 import HeaderMenu from 'src/elements-v2/HeaderMenu';
 import { ProfileService } from 'src/services/profile.service';
 import useSession from 'src/hooks/useSession';
-import { Header } from 'src/components/layouts/MainLayout/Header';
 import FollowersSearch from './FollowersPage/FollowersSearch';
 import MutualFollowersSearch from './MutualFollowersPage/FollowersSearch';
 import FollowingSearch from './FollowingsPage/FollowingSearch';
 import ConnectionPageHeader, {
-  ConnectionTabsContainer
+  ConnectionTabsContainer,
+  Header
 } from './ConnectionHeader';
 
 interface PageProps
