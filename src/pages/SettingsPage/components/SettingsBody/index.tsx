@@ -10,7 +10,6 @@ import {
   IonIcon
 } from '@ionic/react';
 import styled from 'styled-components';
-import SettingsHeader from '../SettingsHeader/Loadable';
 import SettingsAccount from '../SettingsAccount/Loadable';
 import SettingsTerms from '../SettingsTerms/Loadable';
 import SettingsSubscription from '../SettingsSubscription/Loadable';
@@ -35,7 +34,6 @@ const SettingsBody: React.FC<Props> = ({
 
   return (
     <>
-      <SettingsHeader />
       <IonContent className={style['settingsbody']}>
         <IonGrid className={style['settingspagegrid']}>
           <IonRow className={style['settingscontent']}>

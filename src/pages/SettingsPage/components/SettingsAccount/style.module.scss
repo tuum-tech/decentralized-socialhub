@@ -1,12 +1,16 @@
 .settingsaccount {
   background-color: #f7fafc;
-  padding-left: 36px;
-  padding-top: 10px;
+  padding: 26px 54px 0;
+
+  @media (max-width: 575.98px) {
+    padding: 16px 15px 0;
+  }
 
   .tab-card {
     font-family: 'SF Pro Display';
     border-radius: 16px;
     background: #fff;
+    margin: 0;
   }
 
   .card-title {
