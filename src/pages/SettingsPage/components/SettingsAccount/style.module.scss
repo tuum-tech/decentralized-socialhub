@@ -27,6 +27,11 @@
       padding: 1.5em 1.5em 1.5em 0em;
       width: 80%;
 
+      @media (max-width: 575.98px) {
+        width: 100%;
+        padding-right: 0;
+      }
+
       .section-title {
         font-size: 14px;
         font-weight: bold;
@@ -68,7 +73,7 @@
     }
 
     .section-action {
-      padding: 1em 1em 1em 0em;
+      padding: 1em 1em 1em 1em;
       width: 60%;
 
       .section-action-inner {

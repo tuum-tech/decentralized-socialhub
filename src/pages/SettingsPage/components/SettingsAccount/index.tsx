@@ -10,8 +10,8 @@ import {
 } from '@ionic/react';
 import styled from 'styled-components';
 import clsx from 'clsx';
-import { UserService } from 'src/services/user.service';
-import DeactivateModal from './DeactivateModal';
+import DeleteModal from './DeleteModal';
+// import ManageAccount from './ManageAccount';
 import style from './style.module.scss';
 
 const ButtonDisabled = styled(IonButton)`
@@ -39,11 +39,7 @@ const DeleteButton = styled(IonButton)`
   color: red;
 `;
 
-interface Props {
-  userSession: ISessionItem;
-}
-
-const SettingsAccount: React.FC<Props> = ({ userSession }) => {
+const SettingsAccount: React.FC = () => {
   const [loading, setLoading] = useState('');
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
@@ -146,16 +142,8 @@ const SettingsAccount: React.FC<Props> = ({ userSession }) => {
           </IonItem>
         </IonCardContent>
       </IonCard>
-      <DeactivateModal
-        isAlertOpen={isAlertOpen}
-        setIsAlertOpen={setIsAlertOpen}
-        onClick={async () => {
-          if (!userSession) return;
-          setLoading('Deleting Account');
-          await UserService.deleteUser(userSession);
-          setLoading('');
-        }}
-      />
+      {/* <ManageAccount userSession={userSession} /> */}
+      <DeleteModal isAlertOpen={isAlertOpen} setIsAlertOpen={setIsAlertOpen} />
     </div>
   );
 };
