@@ -266,6 +266,8 @@ interface ProfileDTO {
   gameExpDTO: GameExpDTO;
   gamerTagDTO: GamerTagDTO;
   versionDTO: Version;
+  escaddressCredential: Wallet;
+  ethaddressCredential: Wallet;
 }
 
 interface IReferral {
@@ -613,4 +615,9 @@ interface Version {
   profileVersion?: string;
   releaseNotes?: string[];
   videoUpdateUrl?: string;
+}
+
+interface Wallet {
+  address: string;
+  id: string;
 }

@@ -175,6 +175,14 @@ export class ProfileService {
       email: '',
       verifiers: [] as any[]
     };
+    let escaddressCredential = {
+      address: '',
+      id: ''
+    };
+    let ethaddressCredential = {
+      address: '',
+      id: ''
+    };
     let basicDTO: any = {};
     let versionDTO: Version = {
       latestVersion: ''
@@ -430,6 +438,12 @@ export class ProfileService {
             ) {
               emailCredential.email = userSession.loginCred.email;
               emailCredential.verifiers = [verifier];
+            } else if (s === 'ethaddress' && verifier.did !== userSession.did) {
+              ethaddressCredential.address = vc.credentialSubject.ethaddress;
+              ethaddressCredential.id = vc.credentialSubject.id;
+            } else if (s === 'escaddress' && verifier.did !== userSession.did) {
+              escaddressCredential.address = vc.credentialSubject.escaddress;
+              escaddressCredential.id = vc.credentialSubject.id;
             }
           }
         }
@@ -439,6 +453,8 @@ export class ProfileService {
     return {
       name: nameCredential,
       email: emailCredential,
+      escaddressCredential,
+      ethaddressCredential,
       basicDTO,
       educationDTO,
       experienceDTO,
@@ -1303,5 +1319,13 @@ export const defaultFullProfile = {
   gamerTagDTO: {
     isEnabled: false,
     items: [] as GamerTagItem[]
+  },
+  escaddressCredential: {
+    address: '',
+    id: ''
+  },
+  ethaddressCredential: {
+    address: '',
+    id: ''
   }
 };
