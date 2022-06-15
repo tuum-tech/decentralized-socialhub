@@ -11,7 +11,6 @@ import {
 import styled from 'styled-components';
 import clsx from 'clsx';
 import DeleteModal from './DeleteModal';
-// import ManageAccount from './ManageAccount';
 import style from './style.module.scss';
 
 const ButtonDisabled = styled(IonButton)`
@@ -142,7 +141,6 @@ const SettingsAccount: React.FC = () => {
           </IonItem>
         </IonCardContent>
       </IonCard>
-      {/* <ManageAccount userSession={userSession} /> */}
       <DeleteModal isAlertOpen={isAlertOpen} setIsAlertOpen={setIsAlertOpen} />
     </div>
   );
