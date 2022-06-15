@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 import Avatar from 'src/components/Avatar';
-import { SmallLightButton } from 'src/elements/buttons';
+import { DefaultButton } from 'src/elements-v2/buttons';
 
 import { SearchService } from 'src/services/search.service';
 
@@ -30,7 +30,7 @@ export const UserRow = styled.div`
 
   .right {
     display: block;
-    width: 100%;
+    flex-grow: 1;
     .top {
       font-size: 16px;
       line-height: 162.02%;
@@ -111,9 +111,15 @@ const UserRows: React.FC<Props> = ({
             </li>
           </p>
         </div>
-        <SmallLightButton
+
+        <DefaultButton
+          size="small"
+          variant="contained"
+          btnColor="primary-gradient"
+          bgColor="#F7FAFC"
+          textType="gradient"
           style={{
-            margin: '0 0 0 auto'
+            margin: '0 10px 0 auto'
           }}
           onClick={() => {
             setSelectVerification({
@@ -123,9 +129,14 @@ const UserRows: React.FC<Props> = ({
           }}
         >
           View Info
-        </SmallLightButton>
+        </DefaultButton>
         {v.status === 'requested' ? (
-          <SmallLightButton
+          <DefaultButton
+            size="small"
+            variant="contained"
+            btnColor="primary-gradient"
+            bgColor="#F7FAFC"
+            textType="gradient"
             style={{
               margin: '0 0 0 auto'
             }}
@@ -134,7 +145,7 @@ const UserRows: React.FC<Props> = ({
             }}
           >
             Cancel Request
-          </SmallLightButton>
+          </DefaultButton>
         ) : (
           ''
         )}

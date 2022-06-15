@@ -96,7 +96,7 @@ const UserRows: React.FC<Props> = ({
     return getDIDString('/did/' + did, true);
   };
 
-  const rednerUserRow = (r: ISessionItem) => {
+  const renderUserRow = (r: ISessionItem) => {
     return (
       <UserRow key={r.did} className={style['item-row']}>
         <div className="left">
@@ -158,7 +158,7 @@ const UserRows: React.FC<Props> = ({
     );
   };
 
-  return <>{filteredUsers.map(r => rednerUserRow(r))}</>;
+  return <>{filteredUsers.map(r => renderUserRow(r))}</>;
 };
 
 export default UserRows;

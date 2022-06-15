@@ -2,16 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import { SearchService } from 'src/services/search.service';
-import { SmallLightButton } from 'src/elements/buttons';
-
+import { DefaultButton } from 'src/elements-v2/buttons';
 import Avatar from 'src/components/Avatar';
-
 import { getItemsFromData } from 'src/utils/script';
 import { getDIDString } from 'src/utils/did';
 import { timeSince } from 'src/utils/time';
 import { getCategoryTitle } from 'src/utils/credential';
-
 import { UserRow, getStatusColor } from '../MyRequests/UserRows';
+
 interface Props {
   session: ISessionItem;
   verifications: VerificationRequest[];
@@ -66,7 +64,12 @@ const UserRows: React.FC<Props> = ({
             </li>
           </p>
         </div>
-        <SmallLightButton
+        <DefaultButton
+          size="small"
+          variant="contained"
+          btnColor="primary-gradient"
+          bgColor="#F7FAFC"
+          textType="gradient"
           style={{
             margin: '0 0 0 auto'
           }}
@@ -78,8 +81,13 @@ const UserRows: React.FC<Props> = ({
           }}
         >
           View Info
-        </SmallLightButton>
-        {/* <SmallLightButton
+        </DefaultButton>
+        {/* <DefaultButton
+          size="small"
+          variant="contained"
+          btnColor="primary-gradient"
+          bgColor="#F7FAFC"
+          textType="gradient"
           style={{
             margin: '0 0 0 auto'
           }}
@@ -88,7 +96,7 @@ const UserRows: React.FC<Props> = ({
           }}
         >
           Cancel Request
-        </SmallLightButton> */}
+        </DefaultButton> */}
       </UserRow>
     );
   };

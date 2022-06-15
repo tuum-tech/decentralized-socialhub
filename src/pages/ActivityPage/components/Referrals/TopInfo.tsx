@@ -12,7 +12,7 @@ interface Props {
   selectStatus: any;
 }
 
-const ClicableCol = styled(IonCol)`
+const ClickableCol = styled(IonCol)`
   cursor: pointer;
   &:hover {
     div {
@@ -24,30 +24,30 @@ const ClicableCol = styled(IonCol)`
 const TopInfo: React.FC<Props> = ({ referrals, selectStatus }: Props) => {
   return (
     <IonRow>
-      <ClicableCol onClick={() => selectStatus('')}>
+      <ClickableCol onClick={() => selectStatus('')}>
         <TopInfoCard
           img={totalIcon}
           title="Total Referrals"
           count={referrals.length}
           bgColor="#1D1D1B"
         />
-      </ClicableCol>
-      <ClicableCol onClick={() => selectStatus('completed')}>
+      </ClickableCol>
+      <ClickableCol onClick={() => selectStatus('completed')}>
         <TopInfoCard
           img={approvedIcon}
           title="Completed"
           count={referrals.filter(v => v.sign_up_date != undefined).length}
           bgColor="#2FD5DD"
         />
-      </ClicableCol>
-      <ClicableCol onClick={() => selectStatus('requested')}>
+      </ClickableCol>
+      <ClickableCol onClick={() => selectStatus('requested')}>
         <TopInfoCard
           img={pendingIcon}
           title="Pending"
           count={referrals.filter(v => v.sign_up_date == undefined).length}
           bgColor="#FF9840"
         />
-      </ClicableCol>
+      </ClickableCol>
     </IonRow>
   );
 };

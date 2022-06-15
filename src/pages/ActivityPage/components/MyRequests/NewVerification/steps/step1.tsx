@@ -59,7 +59,7 @@ const CredentialView = ({
   setCredentials,
   onNext
 }: Props) => {
-  const selectedCategoreis = credentials.map(c => c.idKey);
+  const selectedCategories = credentials.map(c => c.idKey);
   const [selectedItem, setSelectedItem] = useState(
     selectedCredential === '' || selectedCredential === undefined
       ? categories[0]
@@ -120,7 +120,7 @@ const CredentialView = ({
               <div
                 key={cate.idKey}
                 onClick={() => {
-                  if (selectedCategoreis.includes(cate.idKey)) {
+                  if (selectedCategories.includes(cate.idKey)) {
                     setCredentials(
                       credentials.filter(c => c.idKey !== cate.idKey)
                     );
@@ -137,7 +137,7 @@ const CredentialView = ({
                 <div>{cate.idKey}</div>
                 <img
                   src={
-                    selectedCategoreis.includes(cate.idKey)
+                    selectedCategories.includes(cate.idKey)
                       ? CheckFill
                       : CheckEmpty
                   }
@@ -150,9 +150,9 @@ const CredentialView = ({
       </div>
 
       <NextButton
-        disabled={selectedCategoreis.length === 0}
+        disabled={selectedCategories.length === 0}
         style={{
-          cursor: selectedCategoreis.length === 0 ? 'not-allowed' : 'pointer'
+          cursor: selectedCategories.length === 0 ? 'not-allowed' : 'pointer'
         }}
         onClick={onNext}
       >

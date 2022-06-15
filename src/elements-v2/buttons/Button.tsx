@@ -65,18 +65,17 @@ function withStyle<T extends object>(
     let fontColor = '';
     let style = { ...customStyle };
     if (variant === 'contained') {
-      let background =
-        btnColor === 'primary-gradient' ||
-        btnColor === 'secondary-gradient' ||
-        btnColor === 'light-gradient'
-          ? styles[btnColor]
-          : bgColor
-          ? bgColor
-          : btnColor === 'primary'
-          ? 'var(--ion-color-primary)'
-          : btnColor === 'secondary'
-          ? 'var(--ion-color-secondary)'
-          : '';
+      let background = bgColor
+        ? bgColor
+        : btnColor === 'primary-gradient' ||
+          btnColor === 'secondary-gradient' ||
+          btnColor === 'light-gradient'
+        ? styles[btnColor]
+        : btnColor === 'primary'
+        ? 'var(--ion-color-primary)'
+        : btnColor === 'secondary'
+        ? 'var(--ion-color-secondary)'
+        : '';
       if (background) {
         Object.assign(style, { background });
       }

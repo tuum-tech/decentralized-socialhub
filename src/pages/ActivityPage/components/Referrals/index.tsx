@@ -34,18 +34,18 @@ interface Props {
 
 const Referrals: React.FC<Props> = ({ session, referrals }: Props) => {
   const [selectedStatus, setSelectedStatus] = useState('');
-  const [filteredRefersals, setFilteredReferals] = useState(referrals || []);
+  const [filteredReferrals, setFilteredReferrals] = useState(referrals || []);
   const [sort, setSort] = useState(-1);
   const [searchQuery, setSearchQuery] = useState('');
   useEffect(() => {
     if (selectedStatus === '') {
-      setFilteredReferals(referrals || []);
+      setFilteredReferrals(referrals || []);
     } else if (selectedStatus === 'completed') {
-      setFilteredReferals(
+      setFilteredReferrals(
         (referrals || []).filter((r: IReferral) => r.sign_up_date)
       );
     } else if (selectedStatus === 'requested') {
-      setFilteredReferals(
+      setFilteredReferrals(
         (referrals || []).filter((r: IReferral) => r.sign_up_date === undefined)
       );
     }
@@ -77,7 +77,7 @@ const Referrals: React.FC<Props> = ({ session, referrals }: Props) => {
           </IonText>
         </IonCardHeader>
         <UserRows
-          referrals={filteredRefersals}
+          referrals={filteredReferrals}
           session={session}
           sortBy={sort}
           searchQuery={searchQuery}
