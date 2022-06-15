@@ -1,60 +1,24 @@
 /**
  * Page
  */
-import { IonPage, IonContent, IonGrid, IonRow, IonCol } from '@ionic/react';
 import React from 'react';
 
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-
-import { makeSelectSession } from 'src/store/users/selectors';
-import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState } from './types';
-
-import style from './style.module.scss';
-
-import LeftSideMenu from 'src/components/layouts/LeftSideMenu';
 // import SettingsBody from './components/SettingsBody';
-import SettingsHeader from './components/SettingsHeader/Loadable';
 import SettingsAccount from './components/SettingsAccount/Loadable';
 import SettingsSubscription from './components/SettingsSubscription/Loadable';
+import MainLayout from 'src/components/layouts/MainLayout';
+import { Header } from 'src/components/layouts/MainLayout/Header';
+import HeaderMenu from 'src/elements-v2/HeaderMenu';
 
-const SettingsPage: React.FC<InferMappedProps> = ({
-  eProps,
-  ...props
-}: InferMappedProps) => {
-  return (
-    <IonPage className={style['settingspage']}>
-      <IonContent>
-        <IonGrid className={style['settingspagegrid']}>
-          <IonRow className={style['settingscontent']}>
-            <IonCol size="2" className={style['left-panel']}>
-              <LeftSideMenu />
-            </IonCol>
-            <IonCol size="10" className={style['right-panel']}>
-              {/* <SettingsBody useSession={props.session} /> */}
-              <SettingsHeader />
-              <SettingsAccount userSession={props.session} />
-              <SettingsSubscription />
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </IonContent>
-    </IonPage>
-  );
-};
+const SettingsPage: React.FC = () => (
+  <MainLayout>
+    <Header>
+      <HeaderMenu title="Settings" subtitle="Account" back />
+    </Header>
+    {/* <SettingsBody useSession={session} /> */}
+    <SettingsAccount />
+    <SettingsSubscription />
+  </MainLayout>
+);
 
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SettingsPage);
+export default SettingsPage;
