@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { IonModal } from '@ionic/react';
+import { down } from 'styled-breakpoints';
 
 import Expander from 'src/elements/Expander';
 import { timeSince } from 'src/utils/time';
 import { getStatusColor } from '../common';
-import { BlueButton } from './SentModal';
 import { VerificationService } from 'src/services/verification.service';
 import { getCategoryTitle } from 'src/utils/credential';
+import { DefaultButton } from 'src/elements-v2/buttons';
 
 export const InfoTxt = styled.span`
   font-style: normal;
@@ -49,6 +50,25 @@ export const Container = styled.div`
   }
 `;
 
+export const Title = styled.div`
+  h4 {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 136.02%;
+  }
+`;
+
+const RowContainer = styled(Container)`
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 40px;
+  margin: 40px 0px;
+  ${down('sm')} {
+    flex-direction: column;
+    padding: 0px 20px;
+  }
+`;
+
 export const VerificationDetailModal = styled(IonModal)`
   --border-radius: 16px;
   --width: 670px;
@@ -69,16 +89,13 @@ const VerificationDetailContent = ({ verification, user, onClose }: Props) => {
   const { records } = verification;
 
   return (
-    <Container
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between'
-      }}
-    >
+    <RowContainer>
       <div>
-        <p>
-          Verification Request Sent To <InfoTxt>{user.name}</InfoTxt>
-        </p>
+        <Title>
+          <h4>
+            Verification Request Sent To <InfoTxt>{user.name}</InfoTxt>
+          </h4>
+        </Title>
 
         <p className="bottom mt-4" style={{ display: 'flex' }}>
           {timeSince(new Date(verification.modified.$date))}
@@ -97,20 +114,22 @@ const VerificationDetailContent = ({ verification, user, onClose }: Props) => {
         {verification.msg && verification.msg !== '' && (
           <div className="mt-4 mb-2">
             <InfoTxt>Message</InfoTxt>
-            <p>{verification.msg}</p>
+            <InfoMessage>{verification.msg}</InfoMessage>
           </div>
         )}
 
         {verification.feedbacks && verification.feedbacks !== '' && (
           <div className="mt-4 mb-2">
             <InfoTxt>Feedbacks</InfoTxt>
-            <p>{verification.feedbacks || ''}</p>
+            <InfoMessage>{verification.feedbacks || ''}</InfoMessage>
           </div>
         )}
       </div>
       {verification.status === 'approved' && (
-        <BlueButton
-          style={{ textAlign: 'center' }}
+        <DefaultButton
+          variant="contained"
+          btnColor="primary-gradient"
+          style={{ textAlign: 'center', width: '100%' }}
           disabled={loading}
           onClick={async () => {
             setLoading(true);
@@ -123,9 +142,9 @@ const VerificationDetailContent = ({ verification, user, onClose }: Props) => {
           {loading
             ? 'Approve Credential Import on Essentials App'
             : 'Save signed Credential'}
-        </BlueButton>
+        </DefaultButton>
       )}
-    </Container>
+    </RowContainer>
   );
 };
 

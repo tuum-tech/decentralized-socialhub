@@ -2,7 +2,7 @@ import { IonCol } from '@ionic/react';
 import React from 'react';
 import styled from 'styled-components';
 
-export const ClickableCol = styled(IonCol)`
+const StyledCol = styled(IonCol)`
   cursor: pointer;
   &:hover {
     div {
@@ -10,6 +10,10 @@ export const ClickableCol = styled(IonCol)`
     }
   }
 `;
+
+export const ClickableCol = (props: any) => (
+  <StyledCol sizeXs="12" sizeSm="auto" {...props} />
+);
 
 interface TopInfoCardProps {
   img: string;

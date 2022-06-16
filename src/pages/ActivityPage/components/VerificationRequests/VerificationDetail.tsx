@@ -17,7 +17,8 @@ import Avatar from 'src/components/Avatar';
 import {
   InfoTxt,
   Container,
-  InfoMessage
+  InfoMessage,
+  Title
 } from '../MyRequests/VerificationDetail';
 import { getStatusColor } from '../common';
 
@@ -53,13 +54,6 @@ const RowFooter = styled.div`
     button {
       padding: 12px 20px;
     }
-  }
-`;
-const Title = styled.div`
-  h4 {
-    font-size: 28px;
-    font-weight: 600;
-    line-height: 136.02%;
   }
 `;
 
