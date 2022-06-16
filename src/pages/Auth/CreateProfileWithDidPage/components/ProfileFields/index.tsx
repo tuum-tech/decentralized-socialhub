@@ -159,22 +159,26 @@ const UseDetailsForm: React.FC<Props> = ({ setUserInfo, userInfo }) => {
             placeholder="Enter your full name"
             hasError={error !== '' && name === ''}
           />
-          <TextInput
-            value={email}
-            label={
-              error === 'Invalid Email address' ? 'Type valid Email' : 'E-mail'
-            }
-            onChange={n => setField('email', n)}
-            onHitEnter={async () => {
-              await onSubmit();
-            }}
-            placeholder="Enter your email"
-            readonly={isEmailReadOnly()}
-            hasError={
-              (error !== '' && email === '') || error === 'Not correct Email'
-            }
-            type="email"
-          />
+          {email && (
+            <TextInput
+              value={email}
+              label={
+                error === 'Invalid Email address'
+                  ? 'Type valid Email'
+                  : 'E-mail'
+              }
+              onChange={n => setField('email', n)}
+              onHitEnter={async () => {
+                await onSubmit();
+              }}
+              placeholder="Enter your email"
+              readonly={isEmailReadOnly()}
+              hasError={
+                (error !== '' && email === '') || error === 'Not correct Email'
+              }
+              type="email"
+            />
+          )}
 
           {error !== '' && <ErrorText>{error}</ErrorText>}
           {displayText !== '' && <DisplayText>{displayText}</DisplayText>}
