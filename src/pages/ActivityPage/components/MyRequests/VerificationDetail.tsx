@@ -15,6 +15,19 @@ export const InfoTxt = styled.span`
   font-size: 14px;
   line-height: 17px;
   color: #425466;
+  padding: 5px 7px;
+`;
+
+export const InfoMessage = styled.p`
+  display: flex;
+  flex-direction: row;
+  padding: 5px 7px;
+  min-height: 56px;
+  background: #edf2f7;
+  border-radius: 8px;
+  margin-top: 5px;
+  color: #425466;
+  font-size: 14px;
 `;
 
 export const Container = styled.div`
