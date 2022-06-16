@@ -176,7 +176,6 @@ const RecoverAccountPage: React.FC<PageProps> = ({ eProps, ...props }) => {
               if (res) {
                 const session = await userService.LockWithDIDAndPwd(res);
                 eProps.setSession({ session });
-                window.localStorage.setItem('isLoggedIn', 'true');
                 history.push('/profile');
               } else {
                 history.push({

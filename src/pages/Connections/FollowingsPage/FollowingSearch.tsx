@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { IUniversitiesResponse } from 'src/services/search.service';
-import FollowingTabs from '../FollowingTabs';
 import { ProfileService } from 'src/services/profile.service';
 import { alertError } from 'src/utils/notify';
 import { FollowService } from 'src/services/follow.service';
+import NoConnectionComp from 'src/components/NoConnection';
+import PeopleCard from 'src/components/cards/PeopleCard';
+import SearchInput from 'src/elements/inputs/SearchInput';
 
 export interface IUserResponse {
   items: {
@@ -16,13 +18,10 @@ export interface IUserResponse {
 
 interface Props {
   userSession: ISessionItem;
-  searchQuery: string;
 }
 
-const FollowingSearch: React.FC<Props> = ({
-  userSession,
-  searchQuery
-}: Props) => {
+const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
+  const [searchQuery, setSearchQuery] = useState('');
   const [filteredUniversities] = useState<IUniversitiesResponse>({
     get_universities: { items: [] }
   });
@@ -96,13 +95,23 @@ const FollowingSearch: React.FC<Props> = ({
   return (
     <>
       {/* <FollowingHeader followingCount={getFollowingCount()} /> */}
-      <FollowingTabs
-        people={filteredUsers}
-        following={listFollowing.get_following}
-        pages={filteredUniversities.get_universities}
-        searchKeyword={searchQuery}
-        isSearchKeywordDID={isDID(searchQuery)}
-      />
+      {filteredUsers?.items.length === 0 ? (
+        <NoConnectionComp pageType="followingPeople" />
+      ) : (
+        <>
+          <SearchInput
+            value={searchQuery}
+            onIonChange={(e: any) => setSearchQuery(e.target.value)}
+            placeholder="Search people, pages by name or DID"
+          ></SearchInput>
+          <PeopleCard
+            people={filteredUsers}
+            following={listFollowing.get_following}
+            searchKeyword={searchQuery}
+            size="6"
+          />
+        </>
+      )}
     </>
   );
 };

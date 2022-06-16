@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import {
   IonRow,
   IonCol,
@@ -82,7 +82,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
     } else {
       setHasMore(false);
     }
-  });
+  }, [isAdmin, offset, posts, space.guid]);
   const searchNext = async ($event: CustomEvent<void>) => {
     await fetchMorePosts();
     ($event.target as HTMLIonInfiniteScrollElement).complete();

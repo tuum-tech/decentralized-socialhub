@@ -26,10 +26,11 @@ export class FollowService {
     return res_user_dids;
   }
 
-  public static async getFollowerDids(did: string) {
-    const followersRes = (await ProfileService.getFollowers([
-      did
-    ])) as IFollowerResponse;
+  public static async getFollowerDids(did: string, limit: number = 0) {
+    const followersRes = (await ProfileService.getFollowers(
+      [did],
+      limit
+    )) as IFollowerResponse;
     let followerDids = [];
 
     const array_res = getItemsFromData(followersRes, 'get_followers');
@@ -40,9 +41,10 @@ export class FollowService {
     return followerDids;
   }
 
-  public static async getFollowingDids(did: string) {
+  public static async getFollowingDids(did: string, limit: number = 0) {
     const followingRes = (await ProfileService.getFollowings(
-      did
+      did,
+      limit
     )) as IFollowingResponse;
     let followingDids = getItemsFromData(followingRes, 'get_following').map(
       (item: any) => item.did

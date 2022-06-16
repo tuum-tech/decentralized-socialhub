@@ -11,7 +11,7 @@ import { HiveException } from '@elastosfoundation/hive-js-sdk/';
 export class TuumTechScriptService {
   private static async runTuumTechScript(script: any) {
     return request(
-      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/tuumvault_router/scripting/run_script`,
+      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v2/tuumvault_router/scripting/run_script`,
       {
         method: 'POST',
         headers: {
@@ -216,7 +216,11 @@ export class TuumTechScriptService {
     return getItemsFromData(response, 'get_users_by_dids');
   }
 
-  public static async searchUserWithWallet(wallet: {type: string; address: string}, limit = 200, skip = 0) {
+  public static async searchUserWithWallet(
+    wallet: { type: string; address: string },
+    limit = 200,
+    skip = 0
+  ) {
     const script_name = `get_users_by_${wallet.type}`;
     const get_user_by_wallet = {
       name: script_name,
@@ -229,7 +233,7 @@ export class TuumTechScriptService {
         target_did: process.env.REACT_APP_APPLICATION_DID,
         target_app_did: process.env.REACT_APP_APPLICATION_ID
       }
-    }
+    };
     let response: any = await this.runTuumTechScript(get_user_by_wallet);
     return getItemsFromData(response, script_name);
   }

@@ -9,6 +9,7 @@ const Container = styled(IonCard)<{ noBorder: boolean }>`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  margin: 0;
 
   padding: 185px 20px;
   background: #ffffff;

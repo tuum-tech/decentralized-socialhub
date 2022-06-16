@@ -12,12 +12,12 @@ const SpaceFirstPage: React.FC = () => (
       </IonRow>
       <IonRow>
         <IonText>
-          <h3>Your Community Pages</h3>
+          <h3>Your Spaces</h3>
         </IonText>
       </IonRow>
       <IonRow>
         <IonText className="ion-margin-bottom">
-          <h4>You dont have any pages yet.</h4>
+          <h4>You dont have any spaces yet.</h4>
         </IonText>
       </IonRow>
       <IonRow>

@@ -14,6 +14,7 @@ import { DidService } from './did.service.new';
 import { SearchService } from './search.service';
 import exp from 'constants';
 import { DidcredsService, CredentialType } from './didcreds.service';
+import { consoleSandbox } from '@sentry/utils';
 
 export class ProfileService {
   private static LOG = new Logger('ProfileService');
@@ -225,6 +226,22 @@ export class ProfileService {
       );
 
       if (hiveInstance) {
+        const versionRes: VersionProfileResponse = await hiveInstance.Scripting.callScript(
+          'get_version_profile',
+          {
+            limit: 0,
+            skip: 0
+          },
+          did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        const versionPData = getItemsFromData(
+          versionRes,
+          'get_version_profile'
+        );
+        if (versionPData.length > 0) {
+          versionDTO = versionPData[0];
+        }
         const bpRes: BasicProfileResponse = await hiveInstance.Scripting.callScript(
           'get_basic_profile',
           {},
@@ -279,26 +296,12 @@ export class ProfileService {
           cpRes,
           'get_certification_profile'
         );
-
         const gexpRes: GameExpProfileResponse = await hiveInstance.Scripting.callScript(
           'get_game_exp_profile',
           {},
           did,
-          `${process.env.REACT_APP_APPLICATION_DID}`
+          `${process.env.REACT_APP_APPLICATION_ID}`
         );
-
-        const versionRes: any = await hiveInstance.Scripting.callScript(
-          'get_version_profile',
-          {},
-          did,
-          `${process.env.REACT_APP_APPLICATION_DID}`
-        );
-        const versionPData = getItemsFromData(
-          versionRes,
-          'get_version_profile'
-        );
-        versionDTO = versionPData[0];
-
         gameExpDTO.items = getItemsFromData(gexpRes, 'get_game_exp_profile');
 
         const edRes: EducationProfileResponse = await hiveInstance.Scripting.callScript(
@@ -430,14 +433,20 @@ export class ProfileService {
     }
   }
 
-  static async updateVersion(latestVersion: string, session: ISessionItem) {
+  static async addVersionHistory(
+    latestVersion: string,
+    releaseNotes: string[],
+    videoUpdateUrl: string,
+    session: ISessionItem
+  ) {
     const hiveInstance = await HiveService.getHiveClient(session);
     if (session && hiveInstance) {
       const res: any = await hiveInstance.Scripting.callScript(
-        'update_version_profile',
+        'add_version_profile',
         {
           latestVersion,
-          did: session.did
+          releaseNotes: releaseNotes,
+          videoUpdateUrl: videoUpdateUrl
         },
         session.did,
         `${process.env.REACT_APP_APPLICATION_ID}`
@@ -888,15 +897,18 @@ export class ProfileService {
   }
 
   static async getFollowers(
-    dids: string[]
+    dids: string[],
+    limit: number = 0
   ): Promise<IFollowerResponse | undefined> {
     const appHiveClient = await HiveService.getApplicationHiveClient();
     if (appHiveClient && dids && dids.length > 0) {
       try {
-        return await appHiveClient.Scripting.callScript(
+        let followersResponse: IFollowerResponse = await appHiveClient.Scripting.callScript(
           'get_followers',
           {
-            did: dids
+            did: dids,
+            limit: limit,
+            skip: 0
           },
           `${process.env.REACT_APP_APPLICATION_DID}`,
           `${process.env.REACT_APP_APPLICATION_DID}`
@@ -968,7 +980,8 @@ export class ProfileService {
   }
 
   static async getFollowings(
-    targetDid: string
+    targetDid: string,
+    limit: number = 0
   ): Promise<IFollowingResponse | undefined> {
     let response: IFollowingResponse = {
       get_following: { items: [] }
@@ -994,15 +1007,19 @@ export class ProfileService {
       );
 
       if (hiveInstance) {
-        try {
-          return await hiveInstance.Scripting.callScript(
-            'get_following',
-            {},
-            targetDid,
-            `${process.env.REACT_APP_APPLICATION_DID}`
-          );
-        } catch (e) {
-          ProfileService.LOG.error('getFollowings: {}', e);
+        let params = {
+          limit: limit,
+          skip: 0
+        };
+        const followingResponse: IFollowingResponse = await hiveInstance.Scripting.callScript(
+          'get_following',
+          params,
+          targetDid,
+          `${process.env.REACT_APP_APPLICATION_ID}`
+        );
+
+        if (followingResponse.get_following) {
+          return followingResponse;
         }
       }
     }
@@ -1213,7 +1230,9 @@ export const defaultFullProfile = {
   },
   versionDTO: {
     isEnabled: false,
-    latestVersion: ''
+    latestVersion: '',
+    releaseNotes: [],
+    videoUpdateUrl: ''
   },
   experienceDTO: {
     isEnabled: false,

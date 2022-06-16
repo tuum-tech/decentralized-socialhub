@@ -9,8 +9,7 @@
 Run the following command to ensure all the dependencies are installed and background services are started:
 
 ```
-# Change to your own SMTP server info on docker/assist-restapi.env and docker/didcreds-validator.env
-# Change from 'localhost' to your own IP on docker/didcreds-validator.env
+# Change to your own SMTP server info on docker/assist-restapi.env
 ./setup.sh start
 ```
 
