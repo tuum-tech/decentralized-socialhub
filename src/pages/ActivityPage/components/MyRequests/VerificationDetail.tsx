@@ -4,7 +4,7 @@ import { IonModal } from '@ionic/react';
 
 import Expander from 'src/elements/Expander';
 import { timeSince } from 'src/utils/time';
-import { getStatusColor } from './UserRows';
+import { getStatusColor } from '../common';
 import { BlueButton } from './SentModal';
 import { VerificationService } from 'src/services/verification.service';
 import { getCategoryTitle } from 'src/utils/credential';

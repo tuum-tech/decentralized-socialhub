@@ -52,7 +52,7 @@ const MyRequests: React.FC<Props> = ({
   const [selectedVerification, setSelectVerification] = useState<any>(null);
   const [selectedStatus, setSelectedStatus] = useState('');
 
-  const sendReuqest = async (
+  const sendRequest = async (
     dids: string[],
     credentials: VerificationData[],
     msg: string
@@ -102,7 +102,7 @@ const MyRequests: React.FC<Props> = ({
           session={session}
           onClose={closeNewVerificationModal}
           targetUser={session}
-          sendRequest={sendReuqest}
+          sendRequest={sendRequest}
         />
       </NewVerificationModal>
 

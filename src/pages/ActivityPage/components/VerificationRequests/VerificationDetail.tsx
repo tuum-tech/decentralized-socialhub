@@ -14,7 +14,7 @@ import DidSnippet from 'src/elements/DidSnippet';
 import CloseIcon from 'src/elements/svg/Close';
 import Avatar from 'src/components/Avatar';
 import { InfoTxt, Container } from '../MyRequests/VerificationDetail';
-import { getStatusColor } from '../MyRequests/UserRows';
+import { getStatusColor } from '../common';
 
 import { VerificationService } from 'src/services/verification.service';
 

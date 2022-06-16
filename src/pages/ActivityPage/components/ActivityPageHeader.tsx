@@ -1,6 +1,8 @@
 import React from 'react';
 import { IonList, IonLabel } from '@ionic/react';
 import styled from 'styled-components';
+import { down } from 'styled-breakpoints';
+import { useBreakpoint } from 'styled-breakpoints/react-styled';
 
 import { TabsContainer } from 'src/components/profile/ProfileComponent/PublicProfileTabs';
 import { DefaultButton } from 'src/elements-v2/buttons';
@@ -27,6 +29,11 @@ interface ActivityPageHeaderProps {
 const ActivityPageHeaderContainer = styled.div`
   display: flex;
   align-items: center;
+  flex-direction: row;
+  margin-bottom: 12px;
+  ${down('sm')} {
+    flex-direction: column;
+  }
 `;
 
 const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
@@ -37,6 +44,8 @@ const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
   verificationRequests,
   referrals
 }) => {
+  const isSmDown = useBreakpoint(down('sm'));
+
   return (
     <ActivityPageHeaderContainer>
       <IonList className="pl-4">
@@ -100,9 +109,9 @@ const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
         <DefaultButton
           variant="contained"
           btnColor="primary-gradient"
-          size="large"
+          size={isSmDown ? 'default' : 'large'}
           onClick={newVerificationClicked}
-          style={{ margin: '0 20px 0 auto' }}
+          style={{ margin: isSmDown ? '0 auto 0 20px' : '0 20px 0 auto' }}
         >
           New Verification Request
         </DefaultButton>

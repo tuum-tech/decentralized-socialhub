@@ -37,6 +37,7 @@ const Referrals: React.FC<Props> = ({ session, referrals }: Props) => {
   const [filteredReferrals, setFilteredReferrals] = useState(referrals || []);
   const [sort, setSort] = useState(-1);
   const [searchQuery, setSearchQuery] = useState('');
+
   useEffect(() => {
     if (selectedStatus === '') {
       setFilteredReferrals(referrals || []);

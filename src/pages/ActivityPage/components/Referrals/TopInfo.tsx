@@ -1,25 +1,15 @@
 import React from 'react';
-import { IonRow, IonCol } from '@ionic/react';
+import { IonRow } from '@ionic/react';
 
+import { ClickableCol, TopInfoCard } from '../TopInfoCard';
 import totalIcon from 'src/assets/icon/total.png';
 import approvedIcon from 'src/assets/icon/approved.png';
 import pendingIcon from 'src/assets/icon/pending.png';
-import TopInfoCard from '../MyRequests/TopInfo/TopInfoCard';
-import styled from 'styled-components';
 
 interface Props {
   referrals: IReferral[];
   selectStatus: any;
 }
-
-const ClickableCol = styled(IonCol)`
-  cursor: pointer;
-  &:hover {
-    div {
-      background: #f3f3f3;
-    }
-  }
-`;
 
 const TopInfo: React.FC<Props> = ({ referrals, selectStatus }: Props) => {
   return (
@@ -36,7 +26,7 @@ const TopInfo: React.FC<Props> = ({ referrals, selectStatus }: Props) => {
         <TopInfoCard
           img={approvedIcon}
           title="Completed"
-          count={referrals.filter(v => v.sign_up_date != undefined).length}
+          count={referrals.filter(v => v.sign_up_date !== undefined).length}
           bgColor="#2FD5DD"
         />
       </ClickableCol>
@@ -44,7 +34,7 @@ const TopInfo: React.FC<Props> = ({ referrals, selectStatus }: Props) => {
         <TopInfoCard
           img={pendingIcon}
           title="Pending"
-          count={referrals.filter(v => v.sign_up_date == undefined).length}
+          count={referrals.filter(v => v.sign_up_date === undefined).length}
           bgColor="#FF9840"
         />
       </ClickableCol>

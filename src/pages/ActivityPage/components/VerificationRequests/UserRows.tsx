@@ -8,7 +8,7 @@ import { getItemsFromData } from 'src/utils/script';
 import { getDIDString } from 'src/utils/did';
 import { timeSince } from 'src/utils/time';
 import { getCategoryTitle } from 'src/utils/credential';
-import { UserRow, getStatusColor } from '../MyRequests/UserRows';
+import { UserRow, getStatusColor, InfoCol, ActionCol } from '../common';
 
 interface Props {
   session: ISessionItem;
@@ -34,7 +34,7 @@ const UserRows: React.FC<Props> = ({
     })();
   }, [verifications]);
 
-  const rednerUserRow = (v: VerificationRequest) => {
+  const renderUserRow = (v: VerificationRequest) => {
     const user = users.filter((user: any) => user.did === v.from_did)[0];
 
     const renderUserName = (user: ISessionItem, v: VerificationRequest) => {
@@ -46,43 +46,47 @@ const UserRows: React.FC<Props> = ({
 
     return (
       <UserRow key={(v as any)._id.$oid}>
-        <div className="left">
-          <Avatar did={v.from_did} width="50px" />
-        </div>
-        <div className="right">
-          <p className="top">
-            {getCategoryTitle(v)}
-            <span style={{ fontWeight: 'bold' }}>from </span>
-            {renderUserName(user, v)}
-          </p>
-          <p className="bottom" style={{ display: 'flex' }}>
-            {timeSince(new Date(v.modified.$date))}
-            <li
-              style={{ color: getStatusColor(v.status), marginLeft: ' 20px' }}
-            >
-              {v.status}
-            </li>
-          </p>
-        </div>
-        <DefaultButton
-          size="small"
-          variant="contained"
-          btnColor="primary-gradient"
-          bgColor="#F7FAFC"
-          textType="gradient"
-          style={{
-            margin: '0 0 0 auto'
-          }}
-          onClick={() => {
-            setSelectVerification({
-              verification: v,
-              user
-            });
-          }}
-        >
-          View Info
-        </DefaultButton>
-        {/* <DefaultButton
+        <InfoCol>
+          <div className="left">
+            <Avatar did={v.from_did} width="50px" />
+          </div>
+          <div className="right">
+            <p className="top">
+              {getCategoryTitle(v)}
+              <span style={{ fontWeight: 'bold' }}>from </span>
+              {renderUserName(user, v)}
+            </p>
+            <p className="bottom" style={{ display: 'flex' }}>
+              {timeSince(new Date(v.modified.$date))}
+              <li
+                style={{ color: getStatusColor(v.status), marginLeft: ' 20px' }}
+              >
+                {v.status}
+              </li>
+            </p>
+          </div>
+        </InfoCol>
+
+        <ActionCol size="auto">
+          <DefaultButton
+            size="small"
+            variant="contained"
+            btnColor="primary-gradient"
+            bgColor="#F7FAFC"
+            textType="gradient"
+            style={{
+              margin: '0 0 0 auto'
+            }}
+            onClick={() => {
+              setSelectVerification({
+                verification: v,
+                user
+              });
+            }}
+          >
+            View Info
+          </DefaultButton>
+          {/* <DefaultButton
           size="small"
           variant="contained"
           btnColor="primary-gradient"
@@ -97,11 +101,12 @@ const UserRows: React.FC<Props> = ({
         >
           Cancel Request
         </DefaultButton> */}
+        </ActionCol>
       </UserRow>
     );
   };
 
-  return <>{verifications.map(v => rednerUserRow(v))}</>;
+  return <>{verifications.map(v => renderUserRow(v))}</>;
 };
 
 export default UserRows;
