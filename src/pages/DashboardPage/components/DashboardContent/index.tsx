@@ -47,7 +47,8 @@ const DashboardContent: React.FC<Props> = ({
   const [active, setActive] = useState('home');
   const [nfts, setNFTs] = useState<any[]>([]);
   const [ethCursor, setEthCursor] = useState('');
-  const [escCursor, setEscCursor] = useState('');
+  const [page, setPage] = useState(0);
+  const [isMore, setIsMore] = useState(false);
 
   useEffect(() => {
     if (profile?.ethaddressCredential.address) {
@@ -70,13 +71,13 @@ const DashboardContent: React.FC<Props> = ({
       }
     );
     console.log('ethResponse=====>', ethResponse);
-    setNFTs([...nfts, ...ethResponse.data.assets]);
+    setNFTs(nfts => [...nfts, ...ethResponse.data.assets]);
     setEthCursor(ethResponse.data.cursor ?? '');
   };
 
   const getNFTEscCollectionAssets = async (address: string) => {
     const escResponse: any = await request(
-      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/nft_collection_router/escaddress?address=${address}&cursor=${escCursor}`,
+      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/nft_collection_router/escaddress?address=${address}&page=${page}`,
       {
         method: 'GET',
         headers: {
@@ -86,8 +87,13 @@ const DashboardContent: React.FC<Props> = ({
       }
     );
     console.log('escResponse=====>', escResponse);
-    // setNFTs([...nfts, ...escResponse.data.assets]);
-    // setEscCursor(escResponse.data.cursor ?? '');
+    setNFTs(nfts => [...nfts, ...escResponse.data.assets]);
+    if (escResponse.data.totalPage > page) {
+      setPage(page + 1);
+      setIsMore(true);
+    } else {
+      setIsMore(false);
+    }
   };
 
   const fetchMoreEthData = () => {
@@ -97,7 +103,7 @@ const DashboardContent: React.FC<Props> = ({
   };
 
   const fetchMoreEscData = () => {
-    if (profile?.escaddressCredential.address && escCursor) {
+    if (profile?.escaddressCredential.address && isMore) {
       getNFTEscCollectionAssets(profile?.escaddressCredential.address);
     }
   };
@@ -148,7 +154,7 @@ const DashboardContent: React.FC<Props> = ({
           <DashboardNFTs
             nfts={nfts}
             ethCursor={ethCursor}
-            escCursor={escCursor}
+            escCursor={isMore}
             fetchMoreEthData={fetchMoreEthData}
             fetchMoreEscData={fetchMoreEscData}
           />

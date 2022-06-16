@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { getThemeData } from 'src/utils/template';
 import icon_eth from 'src/assets/space/eth.svg';
 import icon_ela from 'src/assets/space/ela.svg';
+import defaultNFT from 'src/assets/default/nft.png';
+
 import style from './Item.module.scss';
 import { shortenAddress } from 'src/utils/web3';
 
@@ -24,14 +26,20 @@ interface IProps {
 
 const Item: React.FC<IProps> = ({ data }: IProps) => {
   const flattenUrl = (url: string) => {
-    if (url.startsWith('ipfs://'))
+    if (url && url.includes('ipfs://ipfs'))
+      return url.replace('ipfs://ipfs', 'https://ipfs.io/ipfs/');
+    if (url && url.includes('ipfs://'))
       return url.replace('ipfs://', 'https://ipfs.io/ipfs/');
     return url;
   };
+
   return (
     <CardWrapper template={'default'}>
       <IonRow>
-        <img src={flattenUrl(data.image_url)} alt={data.image_url} />
+        <img
+          src={data.image_url ? flattenUrl(data.image_url) : defaultNFT}
+          alt={data.name}
+        />
       </IonRow>
       <IonRow className="ion-justify-content-between ion-no-padding">
         <div className={style['name']}>

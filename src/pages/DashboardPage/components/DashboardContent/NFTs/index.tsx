@@ -26,7 +26,7 @@ export const Wrapper = styled.div`
 interface IProps {
   nfts: any[];
   ethCursor: string;
-  escCursor: string;
+  escCursor: boolean;
   fetchMoreEthData: () => void;
   fetchMoreEscData: () => void;
 }
@@ -39,7 +39,6 @@ const DashboardNFTs: React.FC<IProps> = ({
   fetchMoreEscData
 }: IProps) => {
   const searchNext = async ($event: CustomEvent<void>) => {
-    console.log(12312312312);
     await fetchMoreEthData();
     await fetchMoreEscData();
     ($event.target as HTMLIonInfiniteScrollElement).complete();
