@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { IonSearchbar } from '@ionic/react';
 import styled from 'styled-components';
+import { useBreakpoint } from 'styled-breakpoints/react-styled';
+import { down } from 'styled-breakpoints';
 
 import arrowLeft from 'src/assets/icon/arrow-left-square.svg';
 import { SearchService } from 'src/services/search.service';
 import { alertError } from 'src/utils/notify';
 import Avatar from 'src/components/Avatar';
-import { Container, NextButton } from './step1';
+import { DefaultButton } from 'src/elements-v2/buttons';
+import { Container } from './step1';
+import { getShortenedDid } from 'src/utils/did';
 
 const UsersContainer = styled.div`
   ion-searchbar {
@@ -89,6 +93,7 @@ const UsersView = ({
   onNext,
   onPrev
 }: Props) => {
+  const isSmDown = useBreakpoint(down('sm'));
   const [filteredUsers, setFilteredUsers] = useState<PeopleDTO>({ items: [] });
   const [searchService, setSearchService] = useState(new SearchService());
 
@@ -158,7 +163,7 @@ const UsersView = ({
 
   return (
     <Container>
-      <div>
+      <div className="content">
         <img
           onClick={() => onPrev()}
           src={arrowLeft}
@@ -166,7 +171,7 @@ const UsersView = ({
           className="mb-1"
           width="20px"
         />
-        <div className="title mb-2">Choose Verifiers</div>
+        <p className="title mb-2">Choose Verifiers</p>
         <div className="intro mb-2" style={{ color: 'black' }}>
           Select user(s) to verify your credentials
           <span style={{ color: 'red' }}>(max 3 users)</span>
@@ -187,10 +192,15 @@ const UsersView = ({
                   <div className="userRow_info">
                     <span className="name">{name}</span>
                     <br />
-                    <span className="truncatedDID">{did}</span>
+                    <span className="truncatedDID">
+                      {isSmDown ? getShortenedDid(did, 5) : did}
+                    </span>
                   </div>
-                  <button
-                    className="userRow_button"
+                  <DefaultButton
+                    variant="outlined"
+                    btnColor="primary-gradient"
+                    textType="gradient"
+                    size="small"
                     onClick={() => {
                       if (selectedDids.includes(did)) {
                         const newSelectedDids = selectedDids.filter(
@@ -204,7 +214,7 @@ const UsersView = ({
                     }}
                   >
                     {selectedDids.includes(did) ? 'Remove' : 'Add'}
-                  </button>
+                  </DefaultButton>
                 </div>
               ))
             )}
@@ -212,15 +222,19 @@ const UsersView = ({
         </UsersContainer>
       </div>
 
-      <NextButton
+      <DefaultButton
+        variant="contained"
+        btnColor="primary-gradient"
+        size="large"
         style={{
-          cursor: selectedDids.length === 0 ? 'not-allowed' : 'pointer'
+          cursor: selectedDids.length === 0 ? 'not-allowed' : 'pointer',
+          width: 212
         }}
         onClick={onNext}
         disabled={selectedDids.length === 0}
       >
         Continue
-      </NextButton>
+      </DefaultButton>
     </Container>
   );
 };
