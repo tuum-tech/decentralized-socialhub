@@ -125,7 +125,7 @@ const List: React.FC<ListProp> = ({ githubIssues }) => {
     }
     if (labels) {
       filteredIssues = filteredIssues.filter(issue => {
-        const lblNames = issue.labels.map((label: any) => label.name);
+        const lblNames = issue.labels?.map((label: any) => label.name) ?? [];
         return lblNames
           .sort()
           .join()
@@ -185,7 +185,7 @@ const List: React.FC<ListProp> = ({ githubIssues }) => {
                   <Link to={linkUrl}>{issue.title}</Link>
                 </div>
                 <div className="category">
-                  {issue.labels.map((label: any) => {
+                  {issue.labels?.map((label: any) => {
                     return <Category label={label.name}>{label.name}</Category>;
                   })}
                 </div>

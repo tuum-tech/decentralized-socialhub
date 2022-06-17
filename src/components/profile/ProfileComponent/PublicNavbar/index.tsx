@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import React from 'react';
 import styled from 'styled-components';
 
-import { DashboardSignInButton } from 'src/elements/buttons';
+import { DefaultButton } from 'src/elements-v2/buttons';
 import logo from 'src/assets/new/logo.svg';
 
 const PublicNavbarContainer = styled(IonRow)`
@@ -19,14 +19,6 @@ const PublicNavbarContainer = styled(IonRow)`
     margin-left: 15px;
   }
 `;
-
-const RegisterButton = styled(DashboardSignInButton)`
-  margin-right: 14px;
-  background: #f3f9ff;
-  color: #4c6fff;
-`;
-
-const SignButton = styled(DashboardSignInButton)``;
 
 interface Props {
   signedIn: boolean;
@@ -50,14 +42,26 @@ const PublicNavbar: React.FC<Props> = ({ signedIn }) => {
       <IonCol size="auto">
         {!signedIn && (
           <IonRow>
-            <IonCol>
-              <RegisterButton href="/create-profile">
-                Register new user
-              </RegisterButton>
-            </IonCol>
-            <IonCol>
-              <SignButton href="/sign-in">Sign In</SignButton>
-            </IonCol>
+            <DefaultButton
+              variant="outlined"
+              btnColor="primary-gradient"
+              textType="gradient"
+              onClick={() => {
+                history.push('/create-profile');
+              }}
+            >
+              Register new user
+            </DefaultButton>
+            <DefaultButton
+              variant="contained"
+              btnColor="primary-gradient"
+              className="ml-3"
+              onClick={() => {
+                history.push('/sign-in');
+              }}
+            >
+              Sign in
+            </DefaultButton>
           </IonRow>
         )}
       </IonCol>

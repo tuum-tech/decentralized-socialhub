@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { IonModal } from '@ionic/react';
 
+import { DefaultButton } from 'src/elements-v2/buttons';
 import airplane from 'src/assets/icon/airplane.png';
 
 export const SentModal = styled(IonModal)`
@@ -11,24 +12,6 @@ export const SentModal = styled(IonModal)`
   :host(.modal-card) ion-header ion-toolbar:first-of-type {
     padding: 0px;
   }
-`;
-
-export const BlueButton = styled.button`
-  height: 40px;
-  margin-top: 20px;
-
-  padding: 12px 20px;
-  border-radius: 9px;
-  background-color: #4c6fff;
-
-  font-family: 'SF Pro Display';
-  font-size: 12px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1;
-  text-align: left;
-  color: #ffffff;
 `;
 
 const Container = styled.div`
@@ -75,7 +58,14 @@ const SentModalContent: React.FC<Props> = ({ onClose }) => {
       <p className="text">
         You can track your requests from the activities panel.
       </p>
-      <BlueButton onClick={onClose}>Done</BlueButton>
+      <DefaultButton
+        variant="contained"
+        btnColor="primary-gradient"
+        style={{ width: 212, marginTop: 28 }}
+        onClick={onClose}
+      >
+        Done
+      </DefaultButton>
     </Container>
   );
 };
