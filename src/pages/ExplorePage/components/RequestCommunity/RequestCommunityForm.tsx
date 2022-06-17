@@ -19,7 +19,10 @@ const RequestCommunityForm: React.FC<Props> = ({
   const [spaces, setSpaces] = useState<any[]>([]);
   const [request, setRequest] = useState<any>({
     category: SpaceCategory.NFT,
-    network: 'eth'
+    network: {
+      text: 'Ethereum',
+      value: 'eth'
+    }
   });
   const categories = [{ text: SpaceCategory.NFT, value: SpaceCategory.NFT }];
   const [isOpenseaCollection, setIsOpenseaCollection] = useState<boolean>(
@@ -30,7 +33,9 @@ const RequestCommunityForm: React.FC<Props> = ({
   };
   const onSelectNetwork = (value: string) => {
     setIsOpenseaCollection(false);
-    setRequest({ ...request, network: value });
+    let text = networks.find((network: any) => network.value === value)?.text;
+
+    setRequest({ ...request, network: { text: text, value: value } });
   };
   const onSelectOpenseaBox = (value: boolean) => {
     setIsOpenseaCollection(value);
@@ -55,6 +60,10 @@ const RequestCommunityForm: React.FC<Props> = ({
       showNotify('Input opensea collection url', 'warning');
       return false;
     }
+    if (!Web3.utils.isAddress(request.contract)) {
+      showNotify('Invalid smart contract address', 'warning');
+      return false;
+    }
     if (
       spaces.find(
         (space: any) => space.name.toLowerCase() === request.name.toLowerCase()
@@ -63,24 +72,23 @@ const RequestCommunityForm: React.FC<Props> = ({
       showNotify('Community space with same name already exists', 'warning');
       return false;
     }
-    if (request.network === 'ela') {
-      if (!Web3.utils.isAddress(request.contract)) {
-        showNotify('Invalid smart contract address', 'warning');
-        return false;
-      }
-      if (
-        spaces.find(
-          (space: any) =>
-            space.meta.address?.toLowerCase() === request.contract.toLowerCase()
-        )
-      ) {
-        showNotify(
-          'Community space with same contract address already exists',
-          'warning'
-        );
-        return false;
-      }
+
+    if (
+      spaces.find(
+        (space: any) =>
+          space.meta.address?.toLowerCase() ===
+            request.contract.toLowerCase() &&
+          space.meta.network?.toLowerCase() ===
+            request.network.text.toLowerCase()
+      )
+    ) {
+      showNotify(
+        'Community space with same contract address already exists',
+        'warning'
+      );
+      return false;
     }
+
     return true;
   };
   useEffect(() => {
@@ -108,14 +116,15 @@ const RequestCommunityForm: React.FC<Props> = ({
             <SmallSelectInput
               onChange={onSelectNetwork}
               values={networks}
-              defaultValue={request.network}
+              defaultValue={request.network.value}
               label="Network"
               placeholder="Select Network(Ethereum, Elastos...)"
             ></SmallSelectInput>
           </IonCol>
         </IonRow>
       )}
-      {(request.network === 'eth' || request.network === 'polygon') && (
+      {(request.network.value === 'eth' ||
+        request.network.value === 'polygon') && (
         <>
           <IonRow class="ion-justify-content-start">
             <IonCol size="12">
@@ -159,26 +168,24 @@ const RequestCommunityForm: React.FC<Props> = ({
           ></SmallTextInput>
         </IonCol>
       </IonRow>
-      {request &&
-        request.category === SpaceCategory.NFT &&
-        request.network === 'ela' && (
-          <>
-            <IonRow class="ion-justify-content-start">
-              <IonCol size="12">
-                <SmallTextInput
-                  label="Smart Contract Address"
-                  name="contract"
-                  placeholder="e.g.0x5d07b4f9cA73589d84E70A8191ed7fc948f169c0"
-                  onChange={onInputChange}
-                  value={request.contract}
-                  hasError={
-                    !request.contract || !Web3.utils.isAddress(request.contract)
-                  }
-                ></SmallTextInput>
-              </IonCol>
-            </IonRow>
-          </>
-        )}
+      {request && request.category === SpaceCategory.NFT && (
+        <>
+          <IonRow class="ion-justify-content-start">
+            <IonCol size="12">
+              <SmallTextInput
+                label="Smart Contract Address"
+                name="contract"
+                placeholder="e.g.0x5d07b4f9cA73589d84E70A8191ed7fc948f169c0"
+                onChange={onInputChange}
+                value={request.contract}
+                hasError={
+                  !request.contract || !Web3.utils.isAddress(request.contract)
+                }
+              ></SmallTextInput>
+            </IonCol>
+          </IonRow>
+        </>
+      )}
       {request && request.category !== SpaceCategory.NFT && (
         <>
           <IonRow class="ion-justify-content-start">
@@ -227,7 +234,7 @@ const RequestCommunityForm: React.FC<Props> = ({
                   cg => cg.value === request.category
                 );
                 const network = networks.find(
-                  nt => nt.value === request.network
+                  nt => nt.value === request.network.value
                 );
                 // dedicate code for nft collection space.
                 sendRequest({
