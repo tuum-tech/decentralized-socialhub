@@ -129,6 +129,7 @@ const VerificationDetailContent = ({ verification, user, onClose }: Props) => {
         <DefaultButton
           variant="contained"
           btnColor="primary-gradient"
+          size="large"
           style={{ textAlign: 'center', width: '100%' }}
           disabled={loading}
           onClick={async () => {
