@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import { TabItem } from 'src/elements-v2/tabs';
 import request from 'src/baseplate/request';
 import { FullProfileAtom } from 'src/Atoms/Atoms';
+import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 
 const SyncDiv = styled.div`
   margin-left: 25px;
@@ -51,13 +52,31 @@ const DashboardContent: React.FC<Props> = ({
   const [isMore, setIsMore] = useState(false);
 
   useEffect(() => {
-    if (profile?.ethaddressCredential.address) {
-      getNFTEthCollectionAssets(profile?.ethaddressCredential.address);
-    }
-    if (profile?.escaddressCredential.address) {
-      getNFTEscCollectionAssets(profile?.escaddressCredential.address);
-    }
-  }, [profile]);
+    (async () => {
+      const ethWallet = await DidcredsService.getCredentialValue(
+        sessionItem,
+        CredentialType.ETHAddress.toLowerCase()
+      );
+      if (ethWallet) {
+        getNFTEthCollectionAssets(ethWallet);
+      } else {
+        console.log(
+          `Error fetching NFTs for address ${profile?.ethaddressCredential.address} as this VC was not issued by Tuum Tech`
+        );
+      }
+      const escWallet = await DidcredsService.getCredentialValue(
+        sessionItem,
+        CredentialType.ESCAddress.toLowerCase()
+      );
+      if (ethWallet) {
+        getNFTEscCollectionAssets(escWallet);
+      } else {
+        console.log(
+          `Error fetching NFTs for address ${profile?.escaddressCredential.address} as this VC was not issued by Tuum Tech`
+        );
+      }
+    })();
+  }, [profile, sessionItem]);
 
   const getNFTEthCollectionAssets = async (address: string) => {
     const ethResponse: any = await request(
