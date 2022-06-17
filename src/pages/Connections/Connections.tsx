@@ -42,7 +42,6 @@ const Connections: React.FC<PageProps> = ({ ...props }: PageProps) => {
             let followingDids = following?.get_following.items.length
               ? following?.get_following.items.map(item => item.did)
               : [];
-            console.log(12312, followingDids);
             let followerDids = followers?.get_followers.items.length
               ? followers?.get_followers.items[0].followers
               : [];
