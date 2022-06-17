@@ -19,6 +19,7 @@ export const CardWrapper = styled(IonCard)<ThemeProps>`
   border-radius: 16px;
   margin: 0px;
   padding: 10px 10px 23px;
+  height: 100%;
 `;
 interface IProps {
   data: any;
@@ -39,6 +40,7 @@ const Item: React.FC<IProps> = ({ data }: IProps) => {
         <img
           src={data.image_url ? flattenUrl(data.image_url) : defaultNFT}
           alt={data.name}
+          className={style['image']}
         />
       </IonRow>
       <IonRow className="ion-justify-content-between ion-no-padding">
