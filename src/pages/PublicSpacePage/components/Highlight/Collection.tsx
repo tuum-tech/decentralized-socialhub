@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { IonRow, IonCardTitle, IonCol, IonGrid } from '@ionic/react';
 import styled from 'styled-components';
 import {
@@ -37,7 +37,7 @@ const Collection: React.FC<IProps> = ({
     (async () => {
       if (space && space.guid) {
         const { data }: any = await getNFTCollectionAssets(space.guid, 0, 9);
-        setAssets(data.assets);
+        setAssets(data.assets || []);
       }
     })();
   }, [space]);
@@ -54,44 +54,48 @@ const Collection: React.FC<IProps> = ({
         </IonRow>
       </CardHeaderContent>
       <CardContentContainer>
-        <Grid>
-          <IonRow>
-            {assets.slice(0, 3).map((asset, index) => {
-              return (
-                <IonCol size="4" key={index}>
-                  <img
-                    src={flattenUrl(asset.image_url)}
-                    alt={asset.image_url}
-                  />
-                </IonCol>
-              );
-            })}
-          </IonRow>
-          <IonRow>
-            {assets.slice(3, 6).map((asset, index) => {
-              return (
-                <IonCol size="4" key={index + 3}>
-                  <img
-                    src={flattenUrl(asset.image_url)}
-                    alt={asset.image_url}
-                  />
-                </IonCol>
-              );
-            })}
-          </IonRow>
-          <IonRow>
-            {assets.slice(6, 9).map((asset, index) => {
-              return (
-                <IonCol size="4" key={index + 6}>
-                  <img
-                    src={flattenUrl(asset.image_url)}
-                    alt={asset.image_url}
-                  />
-                </IonCol>
-              );
-            })}
-          </IonRow>
-        </Grid>
+        {assets.length > 0 ? (
+          <Grid>
+            <IonRow>
+              {assets.slice(0, 3).map((asset, index) => {
+                return (
+                  <IonCol size="4" key={index}>
+                    <img
+                      src={flattenUrl(asset.image_url)}
+                      alt={asset.image_url}
+                    />
+                  </IonCol>
+                );
+              })}
+            </IonRow>
+            <IonRow>
+              {assets.slice(3, 6).map((asset, index) => {
+                return (
+                  <IonCol size="4" key={index + 3}>
+                    <img
+                      src={flattenUrl(asset.image_url)}
+                      alt={asset.image_url}
+                    />
+                  </IonCol>
+                );
+              })}
+            </IonRow>
+            <IonRow>
+              {assets.slice(6, 9).map((asset, index) => {
+                return (
+                  <IonCol size="4" key={index + 6}>
+                    <img
+                      src={flattenUrl(asset.image_url)}
+                      alt={asset.image_url}
+                    />
+                  </IonCol>
+                );
+              })}
+            </IonRow>
+          </Grid>
+        ) : (
+          `No collections yet`
+        )}
       </CardContentContainer>
     </CardOverview>
   );

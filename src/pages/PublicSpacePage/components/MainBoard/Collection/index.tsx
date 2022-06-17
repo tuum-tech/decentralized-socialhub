@@ -25,7 +25,7 @@ const Collection: React.FC<IProps> = ({ space }: IProps) => {
       limit
     );
     const { assets: _assets_ } = data;
-    if (_assets_.length > 0) {
+    if (_assets_?.length > 0) {
       setOffset(offset + limit);
       setAssets(
         assets.concat(

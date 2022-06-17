@@ -14,6 +14,7 @@ import SpaceAvatarChange from 'src/components/cards/SpaceAvatarChange';
 import {
   defaultSpace,
   SpaceCategory,
+  CategoriesForPrivateSpace,
   SpaceService
 } from 'src/services/space.service';
 import useSession from 'src/hooks/useSession';
@@ -37,9 +38,10 @@ const CreateSpace: React.FC = () => {
       }) ?? [],
     [session, spaces]
   );
-  const spaceCategories = [
-    { value: SpaceCategory.Personal, text: 'Personal Group' }
-  ];
+  const spaceCategories = CategoriesForPrivateSpace.map(category => ({
+    value: category,
+    text: category
+  }));
   const [form, setForm] = useState<any>(defaultSpace);
   const onSelectCategory = (value: string) => {
     setForm({ ...form, category: value });

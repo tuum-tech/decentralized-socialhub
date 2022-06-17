@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { IonSelect, IonSelectOption, IonLabel } from '@ionic/react';
 import style from './SmallSelectInput.module.scss';
@@ -7,10 +7,10 @@ interface Props {
   placeholder?: string;
   label?: string;
   values?: {
-    value: number | string;
+    value: number | string | boolean;
     text: string;
   }[];
-  defaultValue?: string;
+  defaultValue?: string | number | boolean;
   flexDirection?: string;
   hasError?: boolean;
   multiple?: boolean;
@@ -27,8 +27,9 @@ const SmallSelectInput: React.FC<Props> = ({
   flexDirection = 'row',
   hasError = false,
   multiple = false,
-  className,
+  className
 }) => {
+  const [value, setValue] = useState<any>('');
   let cName = style['selectinput'];
   if (flexDirection === 'column') {
     cName += ` ${style['flex-row']}`;
@@ -40,6 +41,9 @@ const SmallSelectInput: React.FC<Props> = ({
     cName += ` ${className}`;
   }
   let options = values ? values : [];
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue])
   return (
     <div className={cName}>
       {label && label !== '' && (
@@ -48,9 +52,12 @@ const SmallSelectInput: React.FC<Props> = ({
       <IonSelect
         className={style['selectinput_field']}
         placeholder={placeholder}
-        onIonChange={e => onChange(e.detail.value!)}
+        onIonChange={e => {
+          setValue(e.detail.value!);
+          onChange(e.detail.value!);
+        }}
         multiple={multiple}
-        value={defaultValue}
+        value={value}
       >
         {options.map(function(item, index) {
           return (

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonCol, IonRow, IonGrid } from '@ionic/react';
 import Web3 from 'web3';
 import SmallTextInput from 'src/elements/inputs/SmallTextInput';
 import SmallSelectInput from 'src/elements/inputs/SmallSelectInput';
-import { categories, networks } from './constants';
+import { networks } from './constants';
 import { DefaultButton } from 'src/elements-v2/buttons';
+import { SpaceService, SpaceCategory } from 'src/services/space.service';
+import { showNotify } from 'src/utils/notify';
 interface Props {
   sendRequest: (request: any) => void;
   onClose: () => void;
@@ -14,15 +16,34 @@ const RequestCommunityForm: React.FC<Props> = ({
   sendRequest,
   onClose
 }: Props) => {
+  const [spaces, setSpaces] = useState<any[]>([]);
   const [request, setRequest] = useState<any>({
-    category: 'nft',
-    network: 'eth'
+    category: SpaceCategory.NFT,
+    network: {
+      text: 'Ethereum',
+      value: 'eth'
+    }
   });
+  const categories = [{ text: SpaceCategory.NFT, value: SpaceCategory.NFT }];
+  const [isOpenseaCollection, setIsOpenseaCollection] = useState<boolean>(
+    false
+  );
   const onSelectCategory = (value: string) => {
     setRequest({ ...request, category: value });
   };
   const onSelectNetwork = (value: string) => {
-    setRequest({ ...request, network: value });
+    setIsOpenseaCollection(false);
+    let text = networks.find((network: any) => network.value === value)?.text;
+
+    setRequest({ ...request, network: { text: text, value: value } });
+  };
+  const onSelectOpenseaBox = (value: boolean) => {
+    setIsOpenseaCollection(value);
+    const _request = { ...request };
+    if (!value) {
+      delete _request['nftlink'];
+      setRequest({ ..._request });
+    }
   };
   const onInputChange = (evt: any) => {
     setRequest({
@@ -31,10 +52,51 @@ const RequestCommunityForm: React.FC<Props> = ({
     });
   };
   const validateRequest = () => {
-    return (
-      request.name && request.contract && Web3.utils.isAddress(request.contract)
-    );
+    if (!request.name) {
+      showNotify('Input space name', 'warning');
+      return false;
+    }
+    if (isOpenseaCollection && !request.nftlink) {
+      showNotify('Input opensea collection url', 'warning');
+      return false;
+    }
+    if (!Web3.utils.isAddress(request.contract)) {
+      showNotify('Invalid smart contract address', 'warning');
+      return false;
+    }
+    if (
+      spaces.find(
+        (space: any) => space.name.toLowerCase() === request.name.toLowerCase()
+      )
+    ) {
+      showNotify('Community space with same name already exists', 'warning');
+      return false;
+    }
+
+    if (
+      spaces.find(
+        (space: any) =>
+          space.meta.address?.toLowerCase() ===
+            request.contract.toLowerCase() &&
+          space.meta.network?.toLowerCase() ===
+            request.network.text.toLowerCase()
+      )
+    ) {
+      showNotify(
+        'Community space with same contract address already exists',
+        'warning'
+      );
+      return false;
+    }
+
+    return true;
   };
+  useEffect(() => {
+    (async () => {
+      const spaces = await SpaceService.getCommunitySpaces();
+      setSpaces(spaces);
+    })();
+  }, []);
   return (
     <IonGrid>
       <IonRow class="ion-justify-content-start">
@@ -48,18 +110,51 @@ const RequestCommunityForm: React.FC<Props> = ({
           ></SmallSelectInput>
         </IonCol>
       </IonRow>
-      {request && request.category === 'nft' && (
+      {request && request.category === SpaceCategory.NFT && (
         <IonRow class="ion-justify-content-start">
           <IonCol size="12">
             <SmallSelectInput
               onChange={onSelectNetwork}
               values={networks}
-              defaultValue={request.network}
+              defaultValue={request.network.value}
               label="Network"
               placeholder="Select Network(Ethereum, Elastos...)"
             ></SmallSelectInput>
           </IonCol>
         </IonRow>
+      )}
+      {(request.network.value === 'eth' ||
+        request.network.value === 'polygon') && (
+        <>
+          <IonRow class="ion-justify-content-start">
+            <IonCol size="12">
+              <SmallSelectInput
+                onChange={onSelectOpenseaBox}
+                values={[
+                  { value: true, text: 'Yes' },
+                  { value: false, text: 'No' }
+                ]}
+                defaultValue={isOpenseaCollection}
+                label="Is this an Opensea NFT Collection?"
+                placeholder="Select whether the collection exists on opensea or not"
+              ></SmallSelectInput>
+            </IonCol>
+          </IonRow>
+          {isOpenseaCollection && (
+            <IonRow class="ion-justify-content-start">
+              <IonCol size="12">
+                <SmallTextInput
+                  label="Opensea Collection URL"
+                  name="nftlink"
+                  placeholder="https://opensea.io/BoredApeYatchClub"
+                  onChange={onInputChange}
+                  value={request.nftlink}
+                  hasError={!request.nftlink}
+                ></SmallTextInput>
+              </IonCol>
+            </IonRow>
+          )}
+        </>
       )}
       <IonRow class="ion-justify-content-start">
         <IonCol size="12">
@@ -73,7 +168,7 @@ const RequestCommunityForm: React.FC<Props> = ({
           ></SmallTextInput>
         </IonCol>
       </IonRow>
-      {request && request.category === 'nft' && (
+      {request && request.category === SpaceCategory.NFT && (
         <>
           <IonRow class="ion-justify-content-start">
             <IonCol size="12">
@@ -89,20 +184,9 @@ const RequestCommunityForm: React.FC<Props> = ({
               ></SmallTextInput>
             </IonCol>
           </IonRow>
-          <IonRow class="ion-justify-content-start">
-            <IonCol size="12">
-              <SmallTextInput
-                label="NFT collection URL (Profile pages)"
-                name="nftlink"
-                placeholder="https://opensea.io/BoredApeYatchClub"
-                onChange={onInputChange}
-                value={request.nftlink}
-              ></SmallTextInput>
-            </IonCol>
-          </IonRow>
         </>
       )}
-      {request && request.category !== 'nft' && (
+      {request && request.category !== SpaceCategory.NFT && (
         <>
           <IonRow class="ion-justify-content-start">
             <IonCol size="12">
@@ -150,7 +234,7 @@ const RequestCommunityForm: React.FC<Props> = ({
                   cg => cg.value === request.category
                 );
                 const network = networks.find(
-                  nt => nt.value === request.network
+                  nt => nt.value === request.network.value
                 );
                 // dedicate code for nft collection space.
                 sendRequest({
@@ -158,7 +242,8 @@ const RequestCommunityForm: React.FC<Props> = ({
                   Network: network?.text,
                   Name: request.name,
                   'Smart Contract Address': request.contract,
-                  'NFT Collection URL': request.nftlink || ''
+                  'NFT Collection URL': request.nftlink || '',
+                  Id: Math.max(...spaces.map(space => space.sid)) + 1
                 });
               }
             }}
