@@ -1,5 +1,19 @@
+import { IonCol } from '@ionic/react';
 import React from 'react';
 import styled from 'styled-components';
+
+const StyledCol = styled(IonCol)`
+  cursor: pointer;
+  &:hover {
+    div {
+      background: #f3f3f3;
+    }
+  }
+`;
+
+export const ClickableCol = (props: any) => (
+  <StyledCol sizeXs="12" sizeSm="auto" {...props} />
+);
 
 interface TopInfoCardProps {
   img: string;
@@ -44,28 +58,24 @@ const TopInfoCardContainer = styled.div`
   }
 `;
 
-const TopInfoCard: React.FC<TopInfoCardProps> = ({
+export const TopInfoCard: React.FC<TopInfoCardProps> = ({
   img,
   title,
   count,
   bgColor
-}) => {
-  return (
-    <TopInfoCardContainer>
-      <div
-        className="left"
-        style={{
-          background: bgColor || '#1D1D1B'
-        }}
-      >
-        <img src={img} alt="info" />
-      </div>
-      <div className="right">
-        <p className="title">{title}</p>
-        <p className="text"> {count}</p>
-      </div>
-    </TopInfoCardContainer>
-  );
-};
-
-export default TopInfoCard;
+}) => (
+  <TopInfoCardContainer>
+    <div
+      className="left"
+      style={{
+        background: bgColor || '#1D1D1B'
+      }}
+    >
+      <img src={img} alt="info" />
+    </div>
+    <div className="right">
+      <p className="title">{title}</p>
+      <p className="text"> {count}</p>
+    </div>
+  </TopInfoCardContainer>
+);

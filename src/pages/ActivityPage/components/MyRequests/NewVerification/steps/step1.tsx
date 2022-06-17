@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
+import { down } from 'styled-breakpoints';
 
 import DropDown from 'src/elements/svg/DropDown';
 import DropUp from 'src/elements/svg/DropUp';
 import CheckFill from 'src/assets/icon/check-circle-fill.svg';
 import CheckEmpty from 'src/assets/icon/check-circle.svg';
+import { DefaultButton } from 'src/elements-v2/buttons';
 
 import style from '../../../../../Auth/components/MultiDidLogin/style.module.scss';
 
@@ -17,11 +19,24 @@ export const Container = styled.div`
   overflow: auto;
   height: 600px;
 
-  .title {
+  ${down('sm')} {
+    height: auto;
+  }
+
+  .content {
+    margin-top: 50px;
+  }
+
+  & > button {
+    margin-top: 20px;
+  }
+
+  p.title {
     font-weight: 600;
     font-size: 28px;
     line-height: 136.02%;
     color: #27272e;
+    margin-bottom: 12px;
   }
   .intro {
     font-size: 16px;
@@ -31,19 +46,6 @@ export const Container = styled.div`
   }
 `;
 
-export const NextButton = styled.button`
-  padding: 0px 20px;
-
-  width: 296px;
-  height: 36px;
-  line-height: 36px;
-  left: 0px;
-  bottom: 20px;
-
-  color: white;
-  background: #4c6fff;
-  border-radius: 6px;
-`;
 interface Props {
   credentials: VerificationData[];
   selectedCredential?: string;
@@ -59,7 +61,7 @@ const CredentialView = ({
   setCredentials,
   onNext
 }: Props) => {
-  const selectedCategoreis = credentials.map(c => c.idKey);
+  const selectedCategories = credentials.map(c => c.idKey);
   const [selectedItem, setSelectedItem] = useState(
     selectedCredential === '' || selectedCredential === undefined
       ? categories[0]
@@ -89,7 +91,7 @@ const CredentialView = ({
 
   return (
     <Container>
-      <div>
+      <div className="content">
         <p className="title">Choose Credentials</p>
         <p>Please select one record per request</p>
 
@@ -120,7 +122,7 @@ const CredentialView = ({
               <div
                 key={cate.idKey}
                 onClick={() => {
-                  if (selectedCategoreis.includes(cate.idKey)) {
+                  if (selectedCategories.includes(cate.idKey)) {
                     setCredentials(
                       credentials.filter(c => c.idKey !== cate.idKey)
                     );
@@ -137,7 +139,7 @@ const CredentialView = ({
                 <div>{cate.idKey}</div>
                 <img
                   src={
-                    selectedCategoreis.includes(cate.idKey)
+                    selectedCategories.includes(cate.idKey)
                       ? CheckFill
                       : CheckEmpty
                   }
@@ -149,15 +151,19 @@ const CredentialView = ({
         </div>
       </div>
 
-      <NextButton
-        disabled={selectedCategoreis.length === 0}
+      <DefaultButton
+        variant="contained"
+        btnColor="primary-gradient"
+        size="large"
+        disabled={selectedCategories.length === 0}
         style={{
-          cursor: selectedCategoreis.length === 0 ? 'not-allowed' : 'pointer'
+          cursor: selectedCategories.length === 0 ? 'not-allowed' : 'pointer',
+          width: 212
         }}
         onClick={onNext}
       >
-        Next
-      </NextButton>
+        Continue
+      </DefaultButton>
     </Container>
   );
 };

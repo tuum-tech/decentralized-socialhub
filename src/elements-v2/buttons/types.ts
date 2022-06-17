@@ -9,13 +9,14 @@ export interface ButtonProps {
   btnColor?:
     | 'primary'
     | 'secondary'
-    | 'white'
+    | 'light'
     | 'grey'
     | 'primary-gradient'
     | 'secondary-gradient'
     | 'light-gradient';
   variant?: 'text' | 'outlined' | 'contained';
   textType?: 'normal' | 'gradient';
+  textColor?: string;
   bgColor?: string;
   borderRadius?: string;
   borderColor?: string;
