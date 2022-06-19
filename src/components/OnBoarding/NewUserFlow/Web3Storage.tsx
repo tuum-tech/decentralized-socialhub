@@ -341,6 +341,7 @@ const Web3Storage: React.FC<Props> = ({ session, complete, close }) => {
           }
         }
       );
+      console.log('profile version === ', profileVersionResponse);
       if (profileVersionResponse.meta.code === 200) {
         let profileVersionData: Version = profileVersionResponse.data;
         await ProfileService.addVersionHistory(

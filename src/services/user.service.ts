@@ -218,15 +218,15 @@ export class UserService {
   }
 
   private lockUser(key: string, instance: ISessionItem) {
-    if (!instance.mnemonics || instance.mnemonics === '') {
-      instance.mnemonics =
-        window.localStorage.getItem(
-          `temporary_${instance.did.replace('did:elastos:', '')}`
-        ) || '';
+    // if (!instance.mnemonics || instance.mnemonics === '') {
+    //   instance.mnemonics =
+    //     window.localStorage.getItem(
+    //       `temporary_${instance.did.replace('did:elastos:', '')}`
+    //     ) || '';
 
-      const decodedMnemonic = JSON.parse(instance.mnemonics);
-      instance.mnemonics = decodedMnemonic.mnemonic || '';
-    }
+    //   const decodedMnemonic = JSON.parse(instance.mnemonics);
+    //   instance.mnemonics = decodedMnemonic.mnemonic || '';
+    // }
     let encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(instance),
       instance.passhash
@@ -338,38 +338,17 @@ export class UserService {
     return;
   }
 
-  public async RemovePassword(session: ISessionItem) {
-    let newSessionItem = session;
-
-    newSessionItem.passwordRemoved = true;
-    newSessionItem.passhash = CryptoJS.SHA256(newSessionItem.did + '').toString(
-      CryptoJS.enc.Hex
-    );
-
-    await TuumTechScriptService.updateTuumUser(newSessionItem);
-
-    // remove local storage data
-    window.localStorage.removeItem(
-      `user_${session.did.replace('did:elastos:', '')}`
-    );
-
-    this.lockUser(UserService.key(newSessionItem.did), newSessionItem);
-
-    return newSessionItem;
-  }
-
   public async CreateNewUser(
     name: string,
     accountType: AccountType,
     loginCred: LoginCred,
     credential: string = '',
     newDidStr: string,
-    newMnemonicStr: string,
     hiveHostStr: string,
     avatar = ''
   ) {
     let did = newDidStr;
-    let mnemonics = newMnemonicStr;
+    let mnemonics = '';
     let serviceEndpoint = hiveHostStr;
     if (!did || did === '') {
       mnemonics = await this.didService.generateNewMnemonics();

@@ -17,7 +17,6 @@ import { Text16, Title40, Text18, Text12 } from 'src/elements/texts';
 import { UserService } from 'src/services/user.service';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 
-import MultiDidLogin from '../components/MultiDidLogin';
 import FieldDivider from '../components/FieldDivider';
 import style from './style.module.scss';
 import createLeftBg from 'src/assets/new/auth/create_left_bg.png';
@@ -103,23 +102,6 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   const isLoggedIn = window.localStorage.getItem('isLoggedIn');
   if (isLoggedIn) {
     return <Redirect to="/profile" />;
-  }
-
-  if (mode === 1) {
-    return (
-      <MultiDidLogin
-        dids={signedUsers}
-        removeUser={removeUser}
-        changeMode={() => setMode(0)}
-        afterSuccess={async (session: ISessionItem) => {
-          const customizedUser = await OnBoardingService.syncOnBoardingWithOldUser(
-            session
-          );
-          eProps.setSession({ session: customizedUser });
-          window.location.href = '/profile';
-        }}
-      />
-    );
   }
 
   return (

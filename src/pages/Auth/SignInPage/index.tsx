@@ -29,7 +29,7 @@ import { ThemeButton, ThemeTransparentButton } from 'src/elements/buttons';
 import Navbar from 'src/components/layouts/NavBar';
 import { alertError, showNotify } from 'src/utils/notify';
 import { DidService } from 'src/services/did.service.new';
-import { UserService } from 'src/services/user.service';
+import { AccountType, UserService } from 'src/services/user.service';
 
 import leftBg from 'src/assets/new/auth/signin_left_bg.png';
 import style from './style.module.scss';
@@ -101,6 +101,7 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
 
       let serviceEndpoint = '';
       let isDidPublished = await didService.isDIDPublished(did);
+
       if (isDidPublished) {
         let didDocument = await didService.getDidDocument(did, false);
         if (didDocument.services && didDocument.services.size > 0) {
@@ -148,7 +149,6 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
             mnemonic: mnemonic
           })
         );
-        console.log('signinpage: ', res, name);
         if (res) {
           const session = await userService.LockWithDIDAndPwd(
             res,
@@ -158,17 +158,34 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
           eProps.setSession({ session });
           history.push('/profile');
         } else {
-          history.push({
-            pathname: '/create-profile-with-did',
-            state: {
-              did,
-              mnemonic,
-              user: {
-                name: name,
-                loginCred: {}
-              }
-            }
-          });
+          let userService = new UserService(await DidService.getInstance());
+          let sessionItem = await userService.CreateNewUser(
+            name,
+            AccountType.DID,
+            {},
+            '',
+            did,
+            serviceEndpoint,
+            ''
+          );
+          sessionItem.onBoardingInfo = {
+            type: 2,
+            step: 0
+          };
+          eProps.setSession({ session: sessionItem });
+          history.push('/profile');
+
+          // history.push({
+          //   pathname: '/create-profile-with-did',
+          //   state: {
+          //     did,
+          //     mnemonic,
+          //     user: {
+          //       name: name,
+          //       loginCred: {}
+          //     }
+          //   }
+          // });
         }
       } else {
         showNotify('Did is not published on the blockchain yet', 'error');

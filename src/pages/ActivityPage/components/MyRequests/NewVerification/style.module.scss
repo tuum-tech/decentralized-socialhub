@@ -143,3 +143,203 @@
 
 .userRow {
 }
+.selectBox-box {
+  position: relative;
+}
+.selectBox-container {
+  height: 65px;
+  box-shadow: 0px 1px 2px rgba(50, 50, 71, 0.08),
+    0px 0px 1px rgba(50, 50, 71, 0.2);
+  width: 100%;
+  position: relative;
+  background: #edf2f7;
+  border-radius: 6px;
+  padding: 16.5px 14.5px;
+  margin-top: 8px;
+}
+
+.selectBox-selected-item {
+  background: #edf2f7;
+  padding: 0px;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.selectBox-items {
+  position: absolute;
+  z-index: 10001;
+  display: block;
+  left: 0;
+  width: 100%;
+  display: block;
+  max-height: 300px;
+  overflow-y: auto;
+
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+
+  border-bottom: 1px solid rgba(50, 50, 71, 0.08);
+  border-left: 1px solid rgba(50, 50, 71, 0.08);
+  border-right: 1px solid rgba(50, 50, 71, 0.08);
+
+  display: block;
+  top: 63px;
+  background: #edf2f7;
+  
+  &_row {
+    background: #edf2f7;
+    padding: 14.5px;
+    border-top: 1px solid rgba(50, 50, 71, 0.08);
+
+    display: flex;
+    align-items: center;
+    height: 78px;
+    position: relative;
+    padding-right: 30px;
+    //cursor: pointer !important;
+    
+  }
+  // &_row:hover {
+  //   background: #e9f2f7 0% 0% no-repeat padding-box;
+  // }
+
+  
+
+  .clear-path{
+    width: 53px;
+    height: 100%;
+    border-radius: 25px;
+    background: #FF5A5A;
+    box-sizing: border-box;
+    
+  }
+  .clear-path svg{
+    position:relative;
+    top: calc(50% - 12px); /* 50% - 3/4 of icon height */
+    left: calc(50% - 12px); /* 50% - 3/4 of icon height */
+    width: 25px;
+    height: 25px;
+  }
+}
+
+.selectBox-arrow svg {
+  position: absolute;
+  right: 14.5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.trush {
+  position: absolute;
+  right: 14.5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+
+
+.name {
+  font-family: SF Pro Display;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 15px;
+  color: #16192c;
+  margin-left: 10px;
+}
+
+.name-clear{
+  font-family: SF Pro Display;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 15px;
+  color: #FF5A5A;
+  margin-left: 10px;
+}
+
+.did {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 15px;
+
+  color: #8492a6;
+
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.ClearStorageModal {
+  height: 100%;
+  width: 100%;
+  padding-top: 25%;
+  padding-bottom: 25%;
+  padding-left: 25%;
+  padding-right: 25%;
+
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(10px);
+}
+
+.tutorial-component {
+  background-color: transparent !important;
+  width: 100%;
+  height: 100%;
+  font-family: 'SF Pro Display';
+
+  h2 {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 40px;
+    line-height: 48px;
+    margin-top: 15px;
+  }
+
+  text-align: center;
+
+  ion-grid {
+    background-color: white !important;
+    height: 100%;
+    ion-row {
+      background-color: transparent !important;
+      height: 100%;
+    }
+  }
+
+  .tutorial-button {
+    --ion-color-primary: #4c6fff;
+    font-family: 'SF Pro Display';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 12px;
+    color: #ffffff;
+    position: absolute;
+    left: 85px;
+    bottom: 40px;
+
+    width: 300px;
+  }
+
+  .tutorial-left-bottom {
+    position: absolute;
+
+    bottom: 25px;
+    left: 0;
+    right: 0;
+
+    .tutorial-quit-button {
+      @extend .tutorial-button;
+      width: 137px;
+      height: 32px;
+      --ion-color-primary: #16192c1e;
+
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translate(-50%, 0);
+    }
+  }
+}

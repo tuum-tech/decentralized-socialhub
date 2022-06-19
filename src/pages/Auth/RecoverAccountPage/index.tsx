@@ -165,13 +165,12 @@ const RecoverAccountPage: React.FC<PageProps> = ({ eProps, ...props }) => {
               setLoading(true);
               let userService = new UserService(didService);
               const res = await userService.SearchUserWithDID(did);
-
-              window.localStorage.setItem(
-                `temporary_${did.replace('did:elastos:', '')}`,
-                JSON.stringify({
-                  mnemonic: mnemonic
-                })
-              );
+              // window.localStorage.setItem(
+              //   `temporary_${did.replace('did:elastos:', '')}`,
+              //   JSON.stringify({
+              //     mnemonic: mnemonic
+              //   })
+              // );
 
               if (res) {
                 let checkRecoverLoginRes = await OnBoardingService.checkRecoverLogin(
@@ -183,6 +182,7 @@ const RecoverAccountPage: React.FC<PageProps> = ({ eProps, ...props }) => {
                     null,
                     'You already completed the onboarding tutorial with this DID account. You should login using essential wallet'
                   );
+                  setLoading(false);
                   return;
                 }
 
@@ -193,14 +193,7 @@ const RecoverAccountPage: React.FC<PageProps> = ({ eProps, ...props }) => {
                 eProps.setSession({ session });
                 history.push('/profile');
               } else {
-                history.push({
-                  pathname: '/create-profile-with-did',
-                  state: {
-                    did,
-                    mnemonic,
-                    user
-                  }
-                });
+                history.push('/sign-in');
               }
               setLoading(false);
             }

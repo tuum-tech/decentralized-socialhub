@@ -189,7 +189,6 @@ const DashboardPage: React.FC = () => {
             ? RequestStatus.Completed
             : RequestStatus.Pending
         );
-
         if (!OnBoardingService.isOnBoardingCompleted(session.onBoardingInfo)) {
           setOnBoardVisible(true);
         }

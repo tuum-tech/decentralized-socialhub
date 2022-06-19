@@ -31,9 +31,9 @@ export class OnBoardingService {
     if (onBoardingInfo.type === 1) {
       return onBoardingInfo.step === 5;
     } else if (onBoardingInfo.type === 2) {
-      return onBoardingInfo.step === 4;
+      return onBoardingInfo.step === 3;
     }
-    return onBoardingInfo.step === 6;
+    return onBoardingInfo.step === 4;
   };
 
   public static getOnBoardingTotalSteps = (session: ISessionItem) => {
@@ -41,19 +41,19 @@ export class OnBoardingService {
       if (session.onBoardingInfo.type === 1) {
         return 5;
       } else if (session.onBoardingInfo.type === 2) {
-        return 4;
+        return 3;
       }
     }
-    return 6;
+    return 4;
   };
 
   public static async checkRecoverLogin(user: ISessionItem) {
     if (user.onBoardingInfo === undefined) {
       let newSessionItem = user;
-      newSessionItem.onBoardingInfo = {
-        type: 2,
-        step: 1
-      };
+      // newSessionItem.onBoardingInfo = {
+      //   type: 2,
+      //   step: 1
+      // };
 
       let userService: UserService = new UserService(
         await DidService.getInstance()
@@ -71,6 +71,17 @@ export class OnBoardingService {
         session: user
       };
     }
+
+    let newSessionItem = user;
+    let userService: UserService = new UserService(
+      await DidService.getInstance()
+    );
+    newSessionItem.onBoardingInfo = {
+      type: 0,
+      step: 0
+    };
+    newSessionItem = await userService.updateSession(newSessionItem, false);
+
     return {
       canLogin: true,
       session: user

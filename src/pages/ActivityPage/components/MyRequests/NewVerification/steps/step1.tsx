@@ -6,7 +6,7 @@ import DropUp from 'src/elements/svg/DropUp';
 import CheckFill from 'src/assets/icon/check-circle-fill.svg';
 import CheckEmpty from 'src/assets/icon/check-circle.svg';
 
-import style from '../../../../../Auth/components/MultiDidLogin/style.module.scss';
+import style from './../style.module.scss';
 
 export const Container = styled.div`
   position: relative;
