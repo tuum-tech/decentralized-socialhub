@@ -165,12 +165,6 @@ const RecoverAccountPage: React.FC<PageProps> = ({ eProps, ...props }) => {
               setLoading(true);
               let userService = new UserService(didService);
               const res = await userService.SearchUserWithDID(did);
-              // window.localStorage.setItem(
-              //   `temporary_${did.replace('did:elastos:', '')}`,
-              //   JSON.stringify({
-              //     mnemonic: mnemonic
-              //   })
-              // );
 
               if (res) {
                 let checkRecoverLoginRes = await OnBoardingService.checkRecoverLogin(
