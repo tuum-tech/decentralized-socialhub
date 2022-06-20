@@ -47,7 +47,7 @@ const ViewAllFollower = ({ space, isOpen, onClose }: Props) => {
     } else {
       setHasMore(false);
     }
-  });
+  }, [dids, followers, pageNum, searchStr]);
 
   useEffect(() => {
     (async () => {
