@@ -72,7 +72,7 @@ const BasicCardConent = ({
         <IonRow class="ion-justify-content-start ion-no-padding">
           <IonCol sizeXs="10" sizeSm="5" className="ion-no-padding">
             <SmallTextInput
-              disabled={sessionItem.tutorialStep !== 4}
+              disabled={sessionItem.tutorialStep !== 4 || !isEdit}
               label="Name"
               name="name"
               value={currentBasicDTO.name}
@@ -120,6 +120,7 @@ const BasicCardConent = ({
               loginCred: { ...currentBasicDTO.loginCred, email: newEmail }
             });
           }}
+          isEdit={isEdit}
         />
       </VerificationRequestDecorator>
       <PhoneComp
@@ -130,6 +131,7 @@ const BasicCardConent = ({
             loginCred: { ...currentBasicDTO.loginCred, phone: newPhon }
           });
         }}
+        isEdit={isEdit}
       />
 
       {isEdit && (

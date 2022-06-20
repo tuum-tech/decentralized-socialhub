@@ -151,7 +151,7 @@ const DashboardPage: React.FC = () => {
       }
     );
 
-    if (profileVersionResponse.meta.code === 200) {
+    if (profileVersionResponse.meta?.code === 200) {
       let profileVersionData = profileVersionResponse.data;
       let profileVersionLatestVersion = profileVersionData.latestVersion;
       console.log(
