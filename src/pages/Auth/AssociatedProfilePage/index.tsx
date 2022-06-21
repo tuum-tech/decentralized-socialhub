@@ -26,17 +26,7 @@ import LoadingIndicator from 'src/elements/LoadingIndicator';
 
 import eye from 'src/assets/icon/eye.png';
 
-import { createStructuredSelector } from 'reselect';
-import { connect } from 'react-redux';
-import { makeSelectSession } from 'src/store/users/selectors';
-import { setSession } from 'src/store/users/actions';
-import {
-  SubState,
-  UserProps,
-  SessionProp,
-  LocationState,
-  InferMappedProps
-} from './types';
+import { UserProps, SessionProp, LocationState } from './types';
 
 import { requestForceCreateUser } from './fetchapi';
 import style from './style.module.scss';
@@ -51,10 +41,9 @@ const DisplayText = styled(Text16)`
 `;
 
 interface PageProps
-  extends InferMappedProps,
-    RouteComponentProps<{}, StaticContext, LocationState> {}
+  extends RouteComponentProps<{}, StaticContext, LocationState> {}
 
-const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
+const AssociatedProfilePage: React.FC<PageProps> = props => {
   const history = useHistory();
   const [status, setStatus] = useState(0);
   const [showModal, setShowModal] = useState(false);
@@ -233,20 +222,4 @@ const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
   );
 };
 
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AssociatedProfilePage);
+export default AssociatedProfilePage;

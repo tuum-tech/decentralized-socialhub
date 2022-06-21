@@ -16,17 +16,12 @@ import { ThemeButton, ThemeTransparentButton } from 'src/elements/buttons';
 import { Text16, Title40, Text18, Text12 } from 'src/elements/texts';
 import { UserService } from 'src/services/user.service';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
+import useSession from 'src/hooks/useSession';
 
 import MultiDidLogin from '../components/MultiDidLogin';
 import FieldDivider from '../components/FieldDivider';
 import style from './style.module.scss';
 import createLeftBg from 'src/assets/new/auth/create_left_bg.png';
-
-import { createStructuredSelector } from 'reselect';
-import { connect } from 'react-redux';
-import { makeSelectSession } from 'src/store/users/selectors';
-import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState } from './types';
 
 import FooterLinks, {
   Footer
@@ -53,10 +48,8 @@ const MobileContent = styled.div`
   }
 `;
 
-const CreateProfilePage: React.FC<InferMappedProps> = ({
-  eProps,
-  ...props
-}: InferMappedProps) => {
+const CreateProfilePage: React.FC = () => {
+  const { setSession } = useSession();
   const history = useHistory();
   const [loading, setLoading] = useState('');
 
@@ -111,7 +104,7 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
         removeUser={removeUser}
         changeMode={() => setMode(0)}
         afterSuccess={(session: ISessionItem) => {
-          eProps.setSession({ session });
+          setSession(session);
           window.location.href = '/profile';
         }}
       />
@@ -185,17 +178,4 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
   );
 };
 
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(CreateProfilePage);
+export default CreateProfilePage;
