@@ -47,7 +47,6 @@ const DashboardContent: React.FC<Props> = ({
   const profile = useRecoilValue(FullProfileAtom);
   const [active, setActive] = useState('home');
   const [nfts, setNFTs] = useState<any[]>([]);
-  const [ethCursor, setEthCursor] = useState('');
   const [page, setPage] = useState(0);
   const [isMore, setIsMore] = useState(false);
 
@@ -76,11 +75,11 @@ const DashboardContent: React.FC<Props> = ({
         );
       }
     })();
-  }, [profile, sessionItem]);
+  }, [getNFTEscCollectionAssets, profile, sessionItem]);
 
   const getNFTEthCollectionAssets = async (address: string) => {
     const ethResponse: any = await request(
-      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/nft_collection_router/ethaddress?address=${address}&cursor=${ethCursor}`,
+      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/nft_collection_router/ethaddress?address=${address}&chain=eth`,
       {
         method: 'GET',
         headers: {
@@ -91,10 +90,9 @@ const DashboardContent: React.FC<Props> = ({
     );
     console.log('ethResponse=====>', ethResponse);
     setNFTs(nfts => [...nfts, ...ethResponse.data.assets]);
-    setEthCursor(ethResponse.data.cursor ?? '');
   };
 
-  const getNFTEscCollectionAssets = async (address: string) => {
+  const getNFTEscCollectionAssets = useCallback(async (address: string) => {
     const escResponse: any = await request(
       `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/nft_collection_router/escaddress?address=${address}&page=${page}`,
       {
@@ -113,10 +111,10 @@ const DashboardContent: React.FC<Props> = ({
     } else {
       setIsMore(false);
     }
-  };
+  });
 
   const fetchMoreEthData = () => {
-    if (profile?.ethaddressCredential.address && ethCursor) {
+    if (profile?.ethaddressCredential.address) {
       getNFTEthCollectionAssets(profile.ethaddressCredential.address);
     }
   };
@@ -172,7 +170,6 @@ const DashboardContent: React.FC<Props> = ({
         {active === 'NFTs' && (
           <DashboardNFTs
             nfts={nfts}
-            ethCursor={ethCursor}
             escCursor={isMore}
             fetchMoreEthData={fetchMoreEthData}
             fetchMoreEscData={fetchMoreEscData}
