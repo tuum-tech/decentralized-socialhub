@@ -109,7 +109,7 @@ export class ProfileService {
           (getItemsFromData(res, 'get_public_fields')[0] || {}).fields || [];
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
     return fields;
   }
@@ -166,7 +166,7 @@ export class ProfileService {
         }
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -459,7 +459,7 @@ export class ProfileService {
       }
 
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
     return {
       name: nameCredential,
@@ -497,7 +497,7 @@ export class ProfileService {
         }
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -529,7 +529,7 @@ export class ProfileService {
         }
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -584,7 +584,7 @@ export class ProfileService {
       }
       return true;
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
       return false;
     }
   }
@@ -639,7 +639,7 @@ export class ProfileService {
       return true;
 
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
       return false;
     }
   }
@@ -672,7 +672,7 @@ export class ProfileService {
         }
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
 
   }
@@ -708,7 +708,7 @@ export class ProfileService {
         }
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -740,7 +740,7 @@ export class ProfileService {
         }
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -775,7 +775,7 @@ export class ProfileService {
         }
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -810,7 +810,7 @@ export class ProfileService {
         }
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -845,7 +845,7 @@ export class ProfileService {
         }
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -869,7 +869,7 @@ export class ProfileService {
         }
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -890,7 +890,7 @@ export class ProfileService {
         }
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -911,7 +911,7 @@ export class ProfileService {
         }
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -932,7 +932,7 @@ export class ProfileService {
         }
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -956,7 +956,7 @@ export class ProfileService {
         }
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -983,7 +983,7 @@ export class ProfileService {
         }
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -1010,7 +1010,7 @@ export class ProfileService {
         }
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -1034,7 +1034,7 @@ export class ProfileService {
         }
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -1065,7 +1065,7 @@ export class ProfileService {
       }
       return;
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -1115,7 +1115,7 @@ export class ProfileService {
 
       return;
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -1127,7 +1127,7 @@ export class ProfileService {
       await hiveInstance.Database.createCollection('following');
       return this.getFollowings(session.did);
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -1181,7 +1181,7 @@ export class ProfileService {
       }
       return response;
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -1246,7 +1246,7 @@ export class ProfileService {
       }
       return;
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
   static async getActivity(session: ISessionItem) {
@@ -1275,7 +1275,7 @@ export class ProfileService {
       );
       return tmp_activities;
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
   static async addActivity(activity: ActivityItem, session: ISessionItem) {
@@ -1310,7 +1310,7 @@ export class ProfileService {
         );
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -1347,7 +1347,7 @@ export class ProfileService {
         );
       }
     } catch (err) {
-      showNotify('Error executing script', 'error');
+      showNotify((err as Error).message, 'error');
     }
   }
 }
