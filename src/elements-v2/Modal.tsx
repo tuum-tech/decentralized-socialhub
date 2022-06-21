@@ -16,7 +16,7 @@ const StyledModal = styled(IonModal)<{ autoWidth: boolean }>`
   --min-height: 400px;
   --max-width: ${props => (props.autoWidth ? 'auto' : '435px')};
   --height: auto;
-
+  z-index: 0 !important;
   .ion-page {
     position: relative;
     display: block;
@@ -26,6 +26,7 @@ const StyledModal = styled(IonModal)<{ autoWidth: boolean }>`
 
 const StyledGrid = styled(IonGrid)`
   margin: 20px 25px;
+  position: relative;
 `;
 
 const Title = styled(IonCardTitle)`
@@ -44,6 +45,12 @@ const StyledContent = styled.div`
   overflow: auto;
   max-height: calc(80vh - 140px);
   min-height: 230px;
+`;
+
+const CloseButton = styled(IonButton)`
+  position: absolute;
+  right: 0;
+  top: 0;
 `;
 
 type Props = {
@@ -115,21 +122,17 @@ const Modal = forwardRef<React.ReactNode, Props>(
         <StyledGrid className="ion-no-padding">
           <IonRow className="ion-no-padding ion-justify-content-between">
             <Title style={titleStyle}>{title}</Title>
-            <IonButton
-              fill="clear"
-              size="small"
-              onClick={() => {
-                handleClose();
-                onCancel && onCancel();
-              }}
-            >
-              <Icon
-                name="close-outline"
-                style={{ fontSize: 20 }}
-                color="dark"
-              />
-            </IonButton>
           </IonRow>
+          <CloseButton
+            fill="clear"
+            size="small"
+            onClick={() => {
+              handleClose();
+              onCancel && onCancel();
+            }}
+          >
+            <Icon name="close-outline" style={{ fontSize: 20 }} color="dark" />
+          </CloseButton>
           <Subtitle>{subtitle}</Subtitle>
           <StyledContent className="ion-padding-bottom" style={contentStyle}>
             {children}

@@ -10,7 +10,7 @@ import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
 import { TuumTechScriptService } from 'src/services/script.service';
-import { SpaceCategory, SpaceService } from 'src/services/space.service';
+import { SpaceService, CategoriesForPrivateSpace } from 'src/services/space.service';
 import { StyledButton } from 'src/elements/buttons';
 import { SpaceAvatar } from 'src/components/Space/SpaceCard';
 import {
@@ -52,7 +52,7 @@ const AboutSpace: React.FC<IProps> = ({
   const [isExpanded, setIsExpanded] = useState(!isExpandable);
   const ownerDids = useMemo(
     () =>
-      space.category === SpaceCategory.Personal
+      CategoriesForPrivateSpace.includes(space.category)
         ? space.owner
           ? [space.owner]
           : []

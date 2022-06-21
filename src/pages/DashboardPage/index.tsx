@@ -1,7 +1,7 @@
 /**
  * Page
  */
-import { IonModal } from '@ionic/react';
+import { IonModal, IonContent } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -139,7 +139,7 @@ const DashboardPage: React.FC = () => {
       }
     );
 
-    if (profileVersionResponse.meta.code === 200) {
+    if (profileVersionResponse.meta?.code === 200) {
       let profileVersionData = profileVersionResponse.data;
       let profileVersionLatestVersion = profileVersionData.latestVersion;
       console.log(
@@ -306,7 +306,7 @@ const DashboardPage: React.FC = () => {
       {loadingText ? (
         <LoadingIndicator loadingText={loadingText} />
       ) : (
-        <React.Fragment>
+        <IonContent>
           {isSmUp && (
             <DashboardHeader
               sessionItem={session}
@@ -337,7 +337,7 @@ const DashboardPage: React.FC = () => {
               />
             </ReleaseModal>
           )}
-        </React.Fragment>
+        </IonContent>
       )}
     </MainLayout>
   );

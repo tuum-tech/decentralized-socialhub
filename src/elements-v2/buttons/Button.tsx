@@ -49,6 +49,7 @@ function withStyle<T extends object>(
     variant,
     textType,
     bgColor,
+    textColor,
     loading,
     children,
     size = 'default',
@@ -65,22 +66,21 @@ function withStyle<T extends object>(
     let fontColor = '';
     let style = { ...customStyle };
     if (variant === 'contained') {
-      let background =
-        btnColor === 'primary-gradient' ||
-        btnColor === 'secondary-gradient' ||
-        btnColor === 'light-gradient'
-          ? styles[btnColor]
-          : bgColor
-          ? bgColor
-          : btnColor === 'primary'
-          ? 'var(--ion-color-primary)'
-          : btnColor === 'secondary'
-          ? 'var(--ion-color-secondary)'
-          : '';
+      let background = bgColor
+        ? bgColor
+        : btnColor === 'primary-gradient' ||
+          btnColor === 'secondary-gradient' ||
+          btnColor === 'light-gradient'
+        ? styles[btnColor]
+        : btnColor === 'primary'
+        ? 'var(--ion-color-primary)'
+        : btnColor === 'secondary'
+        ? 'var(--ion-color-secondary)'
+        : '';
       if (background) {
         Object.assign(style, { background });
       }
-      fontColor = 'white';
+      fontColor = textColor || 'white';
     } else if (variant === 'outlined') {
       backStyle =
         btnColor === 'primary-gradient'
@@ -91,8 +91,8 @@ function withStyle<T extends object>(
           ? 'var(--ion-color-primary)'
           : btnColor === 'secondary'
           ? 'var(--ion-color-secondary)'
-          : btnColor === 'white'
-          ? 'var(--ion-color-medium)'
+          : btnColor === 'light'
+          ? 'var(--ion-color-light)'
           : btnColor === 'grey'
           ? 'var(--ion-color-gray200)'
           : '';
@@ -107,7 +107,7 @@ function withStyle<T extends object>(
           borderStyle: 'solid',
           borderWidth: 1
         });
-        fontColor = borderColor;
+        fontColor = textColor || borderColor;
       }
       if (!backStyle) {
         Object.assign(style, { background: 'transparent' });

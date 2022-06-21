@@ -16,7 +16,8 @@ import Admins from '../Admins';
 import DeleteSpace from '../DeleteSpace';
 import SocialLinks from '../SocialLinks';
 import Category from '../Category';
-import { SpaceCategory } from 'src/services/space.service';
+import Tags from '../Tags';
+import { CategoriesForPrivateSpace } from 'src/services/space.service';
 import { removeSpace, updateSpace } from 'src/store/spaces/actions';
 
 const StyledGrid = styled(IonGrid)`
@@ -72,8 +73,13 @@ const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
     dispatch(updateSpace(_spaceProfile));
     setSpaceProfile(_spaceProfile);
   };
-  const onUpdateCategory = async (category: string[]) => {
-    const _spaceProfile = { ...spaceProfile, tags: category };
+  const onUpdateTags = async (tags: string[]) => {
+    const _spaceProfile = { ...spaceProfile, tags };
+    dispatch(updateSpace(_spaceProfile, false));
+    setSpaceProfile(_spaceProfile);
+  };
+  const onUpdateCategory = async (category: string) => {
+    const _spaceProfile = { ...spaceProfile, category };
     dispatch(updateSpace(_spaceProfile, false));
     setSpaceProfile(_spaceProfile);
   };
@@ -81,7 +87,7 @@ const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
     const _spaceProfile = { ...spaceProfile, publicFields: fields };
     dispatch(updateSpace(_spaceProfile, false));
     setSpaceProfile(_spaceProfile);
-  }
+  };
   const onRemoveSpace = async () => {
     const result = window.confirm(
       'This will remove all the contents about this space from your user vault. Are you sure?'
@@ -107,7 +113,11 @@ const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
               exploreAll={() => {}}
             />
           )}
-          <PublicFields sessionItem={userInfo} profile={spaceProfile} update={onUpdatePublicFields} />
+          <PublicFields
+            sessionItem={userInfo}
+            profile={spaceProfile}
+            update={onUpdatePublicFields}
+          />
         </IonCol>
         <IonCol sizeMd="8" sizeSm="12">
           <SpaceCoverPhoto space={spaceProfile} onUpload={onUploadCoverPhoto} />
@@ -126,9 +136,12 @@ const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
             ''
           )}
           <SocialLinks space={spaceProfile} mode="edit" />
-          <Category profile={spaceProfile} update={onUpdateCategory} />
+          {CategoriesForPrivateSpace.includes(spaceProfile.category) && (
+            <Category profile={spaceProfile} update={onUpdateCategory} />
+          )}
+          <Tags profile={spaceProfile} update={onUpdateTags} />
           <Admins profile={spaceProfile} />
-          {spaceProfile.category === SpaceCategory.Personal && (
+          {CategoriesForPrivateSpace.includes(spaceProfile.category) && (
             <DeleteSpace profile={spaceProfile} removeSpace={onRemoveSpace} />
           )}
         </IonCol>

@@ -48,9 +48,9 @@ const ViewAllMember = ({ space, isOpen, onClose }: Props) => {
     );
     if (!data) return [];
     const { totalCount, owners } = data;
-    setTotalCount(totalCount);
+    setTotalCount(totalCount || 0);
     const members = await getOwners(
-      owners,
+      owners || [],
       space.meta?.network || 'Elastos Smart Contract Chain'
     );
     return members;

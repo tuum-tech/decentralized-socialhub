@@ -4,7 +4,7 @@ import { IonItem, IonIcon } from '@ionic/react';
 import styled from 'styled-components';
 import { chevronDownOutline, chevronUpOutline } from 'ionicons/icons';
 
-import { Button } from 'src/elements/buttons';
+import { DefaultButton } from 'src/elements-v2/buttons';
 import Logo from 'src/elements/Logo';
 import { UserService } from 'src/services/user.service';
 import { getDIDString } from 'src/utils/did';
@@ -74,22 +74,26 @@ const SignedPublicPageHeader: React.FC<Props> = ({ userSession }: Props) => {
           </Menu>
         ) : (
           <>
-            <Button
-              type="secondary"
-              text="Register new user"
-              ml={10}
+            <DefaultButton
+              variant="outlined"
+              btnColor="primary-gradient"
+              textType="gradient"
               onClick={() => {
                 history.push('/create-profile');
               }}
-            />
-            <Button
-              type="primary"
-              text="Sign in"
-              ml={10}
+            >
+              Register new user
+            </DefaultButton>
+            <DefaultButton
+              variant="contained"
+              btnColor="primary-gradient"
+              className="ml-3"
               onClick={() => {
-                history.push('/create-profile');
+                history.push('/sign-in');
               }}
-            />
+            >
+              Sign in
+            </DefaultButton>
           </>
         )}
       </Right>

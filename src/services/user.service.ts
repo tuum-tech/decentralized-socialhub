@@ -596,7 +596,7 @@ export class UserService {
     let newSessionItem = sessionItem;
     const userData = await this.SearchUserWithDID(sessionItem.did);
     if (userData && userData.code) {
-      newSessionItem.code = userData.code;
+      newSessionItem = { ...newSessionItem, code: userData.code };
 
       // workaround the fact that session is not updated inside tutorial
       if (userData.userToken) {

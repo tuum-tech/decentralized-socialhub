@@ -88,6 +88,7 @@ let run = async () => {
           },
           update: {
             $set: {
+              sid: '$params.sid',
               guid: '$params.guid',
               name: '$params.name',
               slug: '$params.slug',

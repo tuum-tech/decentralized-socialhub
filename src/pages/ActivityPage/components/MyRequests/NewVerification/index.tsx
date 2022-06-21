@@ -40,7 +40,7 @@ const NewVerificationContent: React.FC<Props> = ({
   selectedCredential
 }: Props) => {
   const [step, setStep] = useState(1);
-  const [categories, setCateogries] = useState<VerificationData[]>([]);
+  const [categories, setCategories] = useState<VerificationData[]>([]);
   const [credentials, setCredentials] = useState<VerificationData[]>([]);
   const [selectedDids, setSelectedDids] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -56,7 +56,7 @@ const NewVerificationContent: React.FC<Props> = ({
             profile,
             session
           );
-          setCateogries(cates);
+          setCategories(cates);
         }
         setLoading(false);
       }
@@ -107,7 +107,7 @@ const NewVerificationContent: React.FC<Props> = ({
   return (
     <div className={style['verification-modal']}>
       <IonRow>
-        <IonCol size="5" className={style['col-left']}>
+        <IonCol sizeXs="12" sizeSm="5" className={style['col-left']}>
           <img alt="shield" src={shield} />
           <h2>New verification request</h2>
           <p>
@@ -123,7 +123,11 @@ const NewVerificationContent: React.FC<Props> = ({
             </IonButton>
           </div>
         </IonCol>
-        <IonCol className={style['verification-col-right']} size="7">
+        <IonCol
+          className={style['verification-col-right']}
+          sizeXs="12"
+          sizeSm="7"
+        >
           {loading && <p>Loading...</p>}
           {!loading && renderRightContents()}
         </IonCol>

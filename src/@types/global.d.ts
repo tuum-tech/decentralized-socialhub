@@ -266,6 +266,8 @@ interface ProfileDTO {
   gameExpDTO: GameExpDTO;
   gamerTagDTO: GamerTagDTO;
   versionDTO: Version;
+  escaddressCredential: Wallet;
+  ethaddressCredential: Wallet;
 }
 
 interface IReferral {
@@ -586,7 +588,8 @@ interface IGithubCommentItem {
 interface NFTSpaceDetail {
   network: string;
   address: string;
-  ref: string;
+  isOpenseaCollection: boolean;
+  collectionSlug: string;
 }
 interface OrgSpaceDetail {}
 interface UnivSpaceDetail {}
@@ -598,6 +601,7 @@ interface SpaceDTO {
   items: Space[];
 }
 interface Space {
+  sid?: number;
   name: string;
   guid: Guid | null;
   slug: string;
@@ -619,4 +623,9 @@ interface Version {
   profileVersion?: string;
   releaseNotes?: string[];
   videoUpdateUrl?: string;
+}
+
+interface Wallet {
+  address: string;
+  id: string;
 }

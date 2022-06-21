@@ -1,0 +1,32 @@
+.modal-input {
+  display: flex;
+  flex-direction: column;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 21px;
+
+  ion-label {
+    font-family: 'SF Pro Display';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 160%;
+    /* or 22px */
+    text-align: center;
+    font-feature-settings: 'salt' on;
+    color: #425466;
+    margin-bottom: 10px;
+  }
+
+  ion-input {
+    background: #edf2f7;
+    input {
+      height: 45px;
+    }
+  }
+
+  ion-textarea {
+    background: #edf2f7;
+  }
+}

@@ -142,12 +142,12 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
 
         let userService = new UserService(didService);
         const res = await userService.SearchUserWithDID(did);
-
         if (res) {
           const session = await userService.LockWithDIDAndPwd(
             res,
             serviceEndpoint
           );
+          console.log('userdata after registering: ', session);
           session.isEssentialUser = true;
           eProps.setSession({ session });
           history.push('/profile');

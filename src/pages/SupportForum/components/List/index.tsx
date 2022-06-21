@@ -125,7 +125,7 @@ const List: React.FC<ListProp> = ({ githubIssues }) => {
     }
     if (labels) {
       filteredIssues = filteredIssues.filter(issue => {
-        const lblNames = issue.labels.map((label: any) => label.name);
+        const lblNames = issue.labels?.map((label: any) => label.name) ?? [];
         return lblNames
           .sort()
           .join()
@@ -175,18 +175,21 @@ const List: React.FC<ListProp> = ({ githubIssues }) => {
             <div className="status">Status</div>
             <div className="date">Date</div>
           </div>
-
-          {filteredIssues.forEach((issue, index) => {
+          {filteredIssues.map(issue => {
             if (issue.hasOwnProperty('pull_request')) return;
             const linkUrl = '/support-forum/' + issue.number;
             return (
-              <div className="table-row" key={index}>
+              <div className="table-row" key={issue.id}>
                 <div className="topic">
                   <Link to={linkUrl}>{issue.title}</Link>
                 </div>
                 <div className="category">
-                  {issue.labels.map((label: any) => {
-                    return <Category label={label.name}>{label.name}</Category>;
+                  {issue.labels?.map((label: any) => {
+                    return (
+                      <Category key={label.id} label={label.name}>
+                        {label.name}
+                      </Category>
+                    );
                   })}
                 </div>
                 <div className="status">{issue.state}</div>

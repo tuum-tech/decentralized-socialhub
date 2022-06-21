@@ -1,13 +1,12 @@
 import React from 'react';
 import { IonRow, IonCol } from '@ionic/react';
-
+import styled from "styled-components";
+import { ClickableCol, TopInfoCard } from '../TopInfoCard';
 import rejectedIcon from 'src/assets/icon/rejected.png';
 import totalIcon from 'src/assets/icon/total.png';
 import approvedIcon from 'src/assets/icon/approved.png';
 import pendingIcon from 'src/assets/icon/pending.png';
 import shield from 'src/assets/icon/pending.png';
-import TopInfoCard from './TopInfoCard';
-import styled from 'styled-components';
 
 interface Props {
   verificationStatus: string[];
