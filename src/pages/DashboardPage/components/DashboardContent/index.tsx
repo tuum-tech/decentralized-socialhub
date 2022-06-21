@@ -75,7 +75,7 @@ const DashboardContent: React.FC<Props> = ({
         );
       }
     })();
-  }, [getNFTEscCollectionAssets, profile, sessionItem]);
+  }, [profile, sessionItem]);
 
   const getNFTEthCollectionAssets = async (address: string) => {
     const ethResponse: any = await request(
