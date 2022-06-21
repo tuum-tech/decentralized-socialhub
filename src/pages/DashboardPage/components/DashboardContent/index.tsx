@@ -92,7 +92,7 @@ const DashboardContent: React.FC<Props> = ({
     setNFTs(nfts => [...nfts, ...ethResponse.data.assets]);
   };
 
-  const getNFTEscCollectionAssets = useCallback(async (address: string) => {
+  const getNFTEscCollectionAssets = async (address: string) => {
     const escResponse: any = await request(
       `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/nft_collection_router/escaddress?address=${address}&page=${page}`,
       {
@@ -111,7 +111,7 @@ const DashboardContent: React.FC<Props> = ({
     } else {
       setIsMore(false);
     }
-  });
+  };
 
   const fetchMoreEthData = () => {
     if (profile?.ethaddressCredential.address) {
