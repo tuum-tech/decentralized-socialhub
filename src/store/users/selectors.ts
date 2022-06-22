@@ -6,7 +6,12 @@ const userState = (state: any): SubState => state['user'];
 
 const selectSession = createSelector(userState, state => state.session);
 
+const selectTemplate = createSelector(
+  selectSession,
+  session => session?.pageTemplate
+);
+
 const makeSelectSession = () =>
   createSelector(userState, (state: SubState) => state.session);
 
-export { userState, makeSelectSession, selectSession };
+export { userState, makeSelectSession, selectSession, selectTemplate };
