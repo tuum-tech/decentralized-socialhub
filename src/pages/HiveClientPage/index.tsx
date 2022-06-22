@@ -8,7 +8,7 @@ import { createStructuredSelector } from 'reselect';
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import SignedPublicPageHeader from 'src/components/layouts/SignedPublicPageHeader';
-import { HiveClient, AppContextParameters } from '@dchagastelles/hive-js-sdk';
+import { HiveClient, AppContextParameters } from '@tuum-tech/hive-js-sdk';
 import { HiveService } from 'src/services/hive.service';
 //import { AppVaultScripts } from 'src/scripts/appvault.scriptsV2';
 import {
@@ -22,7 +22,6 @@ const HiveClientPage = () => {
   const [resp, setResp] = useState('');
   useEffect(() => {
     (async () => {
-      debugger;
       let tuumVaultHiveClient = (await HiveService.getApplicationHiveClient(
         `${process.env.REACT_APP_HIVE_HOST}`
       )) as HiveClient;

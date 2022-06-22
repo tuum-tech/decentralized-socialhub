@@ -583,8 +583,9 @@ export class UserVaultScriptService {
         let hiveClient = await HiveService.getHiveClient(user);
         if (!hiveClient)
           throw new HiveException('Unable to create Hive client');
+
         if (!newUser.userToken) {
-          newUser.userToken = hiveClient.getAccessToken()!;
+          newUser.userToken = (await hiveClient.getAccessToken()) as string;
         }
         let userService = new UserService(await DidService.getInstance());
         await userService.updateSession(newUser);

@@ -6,7 +6,7 @@ import {
   DeleteExecutable,
   InsertExecutable,
   AggregatedExecutable
-} from '@dchagastelles/hive-js-sdk';
+} from '@tuum-tech/hive-js-sdk';
 
 export class AppVaultScripts {
   public async setupAssets(hiveClient: HiveClient) {

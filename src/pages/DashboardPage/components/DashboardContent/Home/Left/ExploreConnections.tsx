@@ -19,20 +19,15 @@ const ExploreConnections: React.FC<Props> = ({ did, session }) => {
       let fUserDids: string[] = [];
       if (session && session.tutorialStep === 4) {
         let followings = await ProfileService.getFollowings(session.did);
-        if (
-          followings &&
-          followings.get_following &&
-          followings.get_following.items &&
-          followings.get_following.items.length > 0
-        ) {
-          fUserDids = followings.get_following.items.map(item => item.did);
+        if (followings && followings.items && followings.items.length > 0) {
+          fUserDids = followings.items.map(item => item.did);
         }
 
         let followers = await ProfileService.getFollowers([did]);
         if (followers) {
-          for (let i = 0; i < followers.get_followers.items.length; i++) {
-            if (!fUserDids.includes(followers.get_followers.items[i].did)) {
-              fUserDids.push(followers.get_followers.items[i].did);
+          for (let i = 0; i < followers.items.length; i++) {
+            if (!fUserDids.includes(followers.items[i].did)) {
+              fUserDids.push(followers.items[i].did);
             }
           }
         }

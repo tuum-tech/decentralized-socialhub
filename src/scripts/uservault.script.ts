@@ -5,7 +5,7 @@ import {
   InsertExecutable,
   UpdateExecutable,
   HiveClient
-} from '@dchagastelles/hive-js-sdk/';
+} from '@tuum-tech/hive-js-sdk/';
 import parallel from 'async/parallel';
 
 export class UserVaultScripts {

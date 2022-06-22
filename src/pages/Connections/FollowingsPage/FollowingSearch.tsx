@@ -30,7 +30,7 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
     items: []
   });
   const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
-    get_following: { items: [] }
+    items: []
   });
 
   // ID text strings within Elastos DID is an ID Sidechain address encoded
@@ -64,11 +64,8 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
     (async () => {
       let dids: string[] = [];
 
-      if (
-        listFollowing.get_following.items &&
-        listFollowing.get_following.items.length
-      ) {
-        dids = listFollowing.get_following.items.map(u => u.did);
+      if (listFollowing.items && listFollowing.items.length) {
+        dids = listFollowing.items.map(u => u.did);
       }
       try {
         const fUsers = await FollowService.invokeSearch(
@@ -89,7 +86,7 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
   }, [listFollowing, searchQuery]);
 
   const getFollowingCount = (): number => {
-    return listFollowing.get_following.items.length;
+    return listFollowing.items.length;
   };
 
   return (
@@ -106,7 +103,7 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
           ></SearchInput>
           <PeopleCard
             people={filteredUsers}
-            following={listFollowing.get_following}
+            following={listFollowing}
             searchKeyword={searchQuery}
             size="6"
           />

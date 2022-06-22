@@ -18,8 +18,7 @@ import { DID, DIDDocument, DIDURL } from '@elastosfoundation/did-js-sdk/';
 import { DidcredsService } from 'src/services/didcreds.service';
 import { useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom } from 'src/Atoms/Atoms';
-import { HiveClient } from '@dchagastelles/hive-js-sdk';
-import { HiveException } from '@elastosfoundation/hive-js-sdk/';
+import { HiveClient, HiveException } from '@tuum-tech/hive-js-sdk';
 import { Logger } from 'src/shared-base/logger';
 import style from '../style.module.scss';
 import request from 'src/baseplate/request';
@@ -137,7 +136,7 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
       let hiveClient = await HiveService.getHiveClient(s);
 
       if (!hiveClient) throw new HiveException('Unable to create Hive client');
-      let userToken = hiveClient.getAccessToken();
+      let userToken = (await hiveClient.getAccessToken()) as string;
 
       let newSession = JSON.parse(
         JSON.stringify({

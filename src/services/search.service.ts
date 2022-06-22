@@ -1,6 +1,6 @@
 import { HiveService } from './hive.service';
 import { getItemsFromData } from '../utils/script';
-import { HiveClient } from '@dchagastelles/hive-js-sdk';
+import { HiveClient } from '@tuum-tech/hive-js-sdk';
 import { Logger } from 'src/shared-base/logger';
 import { TuumTechScriptService } from './script.service';
 

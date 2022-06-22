@@ -1,7 +1,7 @@
 import { DidDocumentService } from './diddocument.service';
-import { HiveClient, AppContextParameters } from '@dchagastelles/hive-js-sdk';
+import { HiveClient, AppContextParameters } from '@tuum-tech/hive-js-sdk';
 
-import { CacheManager, Logger } from '@dchagastelles/commons.js.tools';
+import { CacheManager, Logger } from '@tuum-tech/commons.js.tools';
 
 import { UserDocumentNotPublishedException } from 'src/shared-base/exceptions';
 
@@ -34,7 +34,9 @@ export class HiveService {
   ): Promise<HiveClient | null> {
     try {
       if (hiveHost !== undefined && hiveHost !== '') {
-        let hiveClient = CacheManager.get('ApplicationHiveClient');
+        let hiveClient = CacheManager.get(
+          'ApplicationHiveClient'
+        ) as HiveClient;
 
         if (!hiveClient) {
           hiveClient = await HiveClient.createInstance(appParameters);
@@ -59,7 +61,7 @@ export class HiveService {
           userDID: session.did
         }
       } as any;
-      let hiveClient = CacheManager.get('HiveClient');
+      let hiveClient = CacheManager.get('HiveClient') as HiveClient;
 
       if (!hiveClient) {
         let isUserDocumentPublished = await DidDocumentService.isDidDocumentPublished(

@@ -3,8 +3,7 @@
   "version": "1.26.1",
   "description": "Profile",
   "dependencies": {
-    "@dchagastelles/commons.js.tools": "^1.0.6",
-    "@dchagastelles/hive-js-sdk": "^2.7.13",
+    "@tuum-tech/hive-js-sdk": "^2.7.14",
     "@elastosfoundation/did-js-sdk": "^2.2.5",
     "@elastosfoundation/elastos-connectivity-sdk-js": "^1.0.20",
     "@elastosfoundation/elastos-js-sdk": "^1.2.12",
@@ -14,6 +13,7 @@
     "@sentry/react": "^6.12.0",
     "@sentry/tracing": "^6.12.0",
     "@svgr/webpack": "4.3.3",
+    "@tuum-tech/commons.js.tools": "0.0.3",
     "@types/chai": "^4.3.1",
     "@types/mocha": "^9.1.1",
     "@types/node-fetch": "^2.6.1",

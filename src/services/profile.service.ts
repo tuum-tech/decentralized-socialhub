@@ -932,12 +932,9 @@ export class ProfileService {
 
       let followersResponse = await this.getFollowers([did]);
       let followersList: string[] = [];
-      if (
-        followersResponse &&
-        followersResponse.get_followers.items.length > 0
-      ) {
+      if (followersResponse && followersResponse.items.length > 0) {
         // TODO: handle this better
-        followersList = followersResponse.get_followers.items[0].followers;
+        followersList = followersResponse.items[0].followers;
       }
 
       const sDid = session ? session.did : '';
@@ -984,7 +981,7 @@ export class ProfileService {
     limit: number = 0
   ): Promise<IFollowingResponse | undefined> {
     let response: IFollowingResponse = {
-      get_following: { items: [] }
+      items: []
     };
 
     if (targetDid && targetDid !== '') {
@@ -1018,7 +1015,7 @@ export class ProfileService {
           `${process.env.REACT_APP_APPLICATION_ID}`
         );
 
-        if (followingResponse.get_following) {
+        if (followingResponse) {
           return followingResponse;
         }
       }
@@ -1034,9 +1031,9 @@ export class ProfileService {
       let followersResponse = await this.getFollowers([did]);
 
       let followersList: string[] = [];
-      if (followersResponse && followersResponse.get_followers.items.length > 0)
+      if (followersResponse && followersResponse.items.length > 0)
         // TODO: handle this better
-        followersList = followersResponse.get_followers.items[0].followers;
+        followersList = followersResponse.items[0].followers;
 
       const sDid = session ? session.did : '';
       if (sDid !== '') {

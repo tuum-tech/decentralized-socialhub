@@ -5,7 +5,7 @@ import {
 } from '@elastosfoundation/did-js-sdk/';
 import request, { BaseplateResp } from 'src/baseplate/request';
 import { HiveService } from './hive.service';
-import { HiveClient } from '@dchagastelles/hive-js-sdk';
+import { HiveClient } from '@tuum-tech/hive-js-sdk';
 
 export enum CredentialType {
   Linkedin = 'Linkedin',

@@ -59,8 +59,8 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
           let followers = await ProfileService.getFollowers([userSession.did]);
           let following = await ProfileService.getFollowings(userSession.did);
 
-          if (followers) setListFollowers(followers?.get_followers.items);
-          if (following) setListFollowing(following?.get_following.items);
+          if (followers) setListFollowers(followers?.items);
+          if (following) setListFollowing(following?.items);
         } catch (e) {
           alertError(null, 'Could not load connected users');
         }

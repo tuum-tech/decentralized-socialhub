@@ -346,10 +346,6 @@ interface FollowingDTO {
 
 interface IFollowingResponse {
   _status?: string;
-  get_following: IGetFollowing;
-}
-
-interface IGetFollowing {
   items: IFollowingItem[];
 }
 
@@ -363,10 +359,6 @@ interface IFollowingItem {
 
 interface IFollowerResponse {
   _status?: string;
-  get_followers: IGetFollowersBody;
-}
-
-interface IGetFollowersBody {
   items: IFollowerItem[];
 }
 

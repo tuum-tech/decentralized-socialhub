@@ -20,7 +20,7 @@ import { IDidService } from './did.service.new';
 import { CredentialType, DidcredsService } from './didcreds.service';
 import { SpaceService } from './space.service';
 import { DidDocumentService } from './diddocument.service';
-import { HiveClient } from '@dchagastelles/hive-js-sdk';
+import { HiveClient } from '@tuum-tech/hive-js-sdk';
 
 const CryptoJS = require('crypto-js');
 

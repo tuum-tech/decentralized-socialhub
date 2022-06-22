@@ -39,7 +39,7 @@ import { HiveService } from 'src/services/hive.service';
 import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
 import { useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom } from 'src/Atoms/Atoms';
-import { HiveClient } from '@dchagastelles/hive-js-sdk';
+import { HiveClient } from '@tuum-tech/hive-js-sdk';
 
 interface PageProps
   extends InferMappedProps,
