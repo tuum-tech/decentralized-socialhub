@@ -8,17 +8,6 @@
     "meta": {}
   },
   {
-    "sid": 1,
-    "name": "The Bella Series",
-    "category": "NFT Collection",
-    "owner": ["did:elastos:inpCykPj1JMroJfjFvDAGnEGUCGGG3ptwQ"],
-    "meta": {
-      "network": "Elastos Smart Contract Chain",
-      "address": "0xef5f768618139d0f5fa3bcbbbcaaf09fe9d7a07d",
-      "collectionSlug": "The Bella Series"
-    }
-  },
-  {
     "sid": 2,
     "name": "Phantz Club",
     "category": "NFT Collection",
@@ -27,50 +16,6 @@
       "network": "Elastos Smart Contract Chain",
       "address": "0xfDdE60866508263e30C769e8592BB0f8C3274ba7",
       "collectionSlug": "Phantz Club"
-    }
-  },
-  {
-    "sid": 3,
-    "name": "Bunny Punk",
-    "category": "NFT Collection",
-    "owner": ["did:elastos:iWtZBcqZa981z3YEoUxanCqvN7rFVDu52D"],
-    "meta": {
-      "network": "Elastos Smart Contract Chain",
-      "address": "0xE27934fB3683872e35b8d9E57c30978e1260c614",
-      "collectionSlug": "Bunny Punk"
-    }
-  },
-  {
-    "sid": 4,
-    "name": "Dropz",
-    "category": "NFT Collection",
-    "owner": ["did:elastos:ipi6KEfaBFH3KC5fCfkKKUDSBoQ1Qb9NR6"],
-    "meta": {
-      "network": "Elastos Smart Contract Chain",
-      "address": "0x22900606ae7077043cf140255a80e82d691b8fd5",
-      "collectionSlug": "Dropz"
-    }
-  },
-  {
-    "sid": 5,
-    "name": "The 2821 Club",
-    "category": "NFT Collection",
-    "owner": ["did:elastos:iqWDMtthjadiJAok8mukxPyHwZeHoehJKc"],
-    "meta": {
-      "network": "Elastos Smart Contract Chain",
-      "address": "0x26b2341d10dC4118110825719BF733a571AB6EC5",
-      "collectionSlug": "The 2821 Club"
-    }
-  },
-  {
-    "sid": 6,
-    "name": "MythicBeings",
-    "category": "NFT Collection",
-    "owner": [],
-    "meta": {
-      "network": "Elastos Smart Contract Chain",
-      "address": "0x3536a85A9E55EB26d515653aF206465D68400feA",
-      "collectionSlug": "MythicBeings"
     }
   },
   {
@@ -86,39 +31,6 @@
     }
   },
   {
-    "sid": 8,
-    "name": "Elastos Bulls",
-    "category": "NFT Collection",
-    "owner": ["did:elastos:iU3wMiJcCZ8JAX6xWausLTZUs7nsrVoq4M"],
-    "meta": {
-      "network": "Elastos Smart Contract Chain",
-      "address": "0x0d5d0c116f2acbc19ce198e284a21b0c355b1260",
-      "collectionSlug": "Elastos Bulls"
-    }
-  },
-  {
-    "sid": 9,
-    "name": "The Meta Primates",
-    "category": "NFT Collection",
-    "owner": ["did:elastos:ipPVe3orURNxZ5nJUEc4CaBQhABjpWTU9w"],
-    "meta": {
-      "network": "Elastos Smart Contract Chain",
-      "address": "0xcb262a92e2e3c8c3590b72a1fde3c6768ee08b7e",
-      "collectionSlug": "The Meta Primates"
-    }
-  },
-  {
-    "sid": 10,
-    "name": "Metalink",
-    "category": "NFT Collection",
-    "owner": [],
-    "meta": {
-      "network": "Ethereum",
-      "address": "0x86C3D2697E675bB069a8c2D549F774CF73DCB047",
-      "collectionSlug": "Metalink"
-    }
-  },
-  {
     "sid": 12,
     "name": "Maskhuman",
     "category": "NFT Collection",
@@ -127,29 +39,6 @@
       "network": "Ethereum",
       "address": "0x52f687b1c6aacc92b47da5209cf25d987c876628",
       "collectionSlug": "maskhuman"
-    }
-  },
-  {
-    "sid": 13,
-    "name": "Yeah! BIRDIE!",
-    "category": "NFT Collection",
-    "slug": "yeah-birdie",
-    "owner": [],
-    "meta": {
-      "network": "Elastos Smart Contract Chain",
-      "address": "0xd5aFf849495487e3c405c9fcA1b878bDd72B9e97",
-      "collectionSlug": "Yeah! BIRDIE!"
-    }
-  },
-  {
-    "sid": 11,
-    "name": "Moonstars",
-    "category": "NFT Collection",
-    "owner": [],
-    "meta": {
-      "network": "Ethereum",
-      "address": "0xd22B236fad04eB97FaEE1D03415a4CeDcfCBB31D",
-      "collectionSlug": "Moonstars"
     }
   }
 ]
