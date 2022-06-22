@@ -94,7 +94,7 @@ export class ProfileService {
         userResponse.response!.get_users_by_dids.items[0].hiveHost
       );
 
-      if (hiveInstance) {
+      if (hiveInstance && hiveInstance.isConnected) {
         const res: IRunScriptResponse<PublicProfileResponse> = await hiveInstance.Scripting.RunScript(
           {
             name: 'get_public_fields',
@@ -483,7 +483,7 @@ export class ProfileService {
   static async updateAbout(basicDTO: BasicDTO, session: ISessionItem) {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'update_basic_profile',
           context: {
@@ -509,7 +509,7 @@ export class ProfileService {
   ) {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'add_version_profile',
           context: {
@@ -540,7 +540,7 @@ export class ProfileService {
   ): Promise<boolean> {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'update_experience_profile',
           context: {
@@ -596,7 +596,7 @@ export class ProfileService {
   ): Promise<boolean> {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'update_education_profile',
           context: {
@@ -647,7 +647,7 @@ export class ProfileService {
   static async updateTeamProfile(teamItem: TeamItem, session: ISessionItem) {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'update_team_profile',
           context: {
@@ -683,7 +683,7 @@ export class ProfileService {
   ) {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'update_thesis_profile',
           context: {
@@ -715,7 +715,7 @@ export class ProfileService {
   static async updatePaperProfile(paperItem: PaperItem, session: ISessionItem) {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'update_paper_profile',
           context: {
@@ -750,7 +750,7 @@ export class ProfileService {
   ) {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'update_license_profile',
           context: {
@@ -785,7 +785,7 @@ export class ProfileService {
   ) {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'update_certification_profile',
           context: {
@@ -820,7 +820,7 @@ export class ProfileService {
   ) {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'update_game_exp_profile',
           context: {
@@ -855,7 +855,7 @@ export class ProfileService {
   ) {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'remove_education_item',
           context: {
@@ -876,7 +876,7 @@ export class ProfileService {
   static async removeTeamItem(teamItem: TeamItem, session: ISessionItem) {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'remove_team_item',
           context: {
@@ -897,7 +897,7 @@ export class ProfileService {
   static async removeThesisItem(thesisItem: ThesisItem, session: ISessionItem) {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'remove_thesis_item',
           context: {
@@ -918,7 +918,7 @@ export class ProfileService {
   static async removePaperItem(paperItem: PaperItem, session: ISessionItem) {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'remove_paper_item',
           context: {
@@ -942,7 +942,7 @@ export class ProfileService {
   ) {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'remove_license_item',
           context: {
@@ -966,7 +966,7 @@ export class ProfileService {
   ) {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'remove_certification_item',
           context: {
@@ -993,7 +993,7 @@ export class ProfileService {
   ) {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'remove_game_exp_item',
           context: {
@@ -1020,7 +1020,7 @@ export class ProfileService {
   ) {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'remove_experience_item',
           context: {
@@ -1253,7 +1253,7 @@ export class ProfileService {
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
 
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const result: IRunScriptResponse<ActivityResponse> = await hiveInstance.Scripting.RunScript(
           {
             name: 'get_activity',
@@ -1285,7 +1285,7 @@ export class ProfileService {
     if (!activity.updatedAt) activity.updatedAt = new Date().getTime();
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'add_activity',
           context: {
@@ -1318,7 +1318,7 @@ export class ProfileService {
     activity.updatedAt = new Date().getTime();
     try {
       const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance) {
+      if (session && hiveInstance && hiveInstance.isConnected) {
         const res: any = await hiveInstance.Scripting.RunScript({
           name: 'update_activity',
           context: {
