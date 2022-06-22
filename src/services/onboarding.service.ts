@@ -50,10 +50,6 @@ export class OnBoardingService {
   public static async checkRecoverLogin(user: ISessionItem) {
     if (user.onBoardingInfo === undefined) {
       let newSessionItem = user;
-      // newSessionItem.onBoardingInfo = {
-      //   type: 2,
-      //   step: 1
-      // };
 
       let userService: UserService = new UserService(
         await DidService.getInstance()

@@ -192,7 +192,6 @@ const DashboardPage: React.FC = () => {
         if (!OnBoardingService.isOnBoardingCompleted(session.onBoardingInfo)) {
           setOnBoardVisible(true);
         }
-
         if (session.tutorialStep === 4 && !willExpire) {
           setWillExpire(true);
           setTimeout(() => {

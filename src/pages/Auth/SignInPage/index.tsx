@@ -39,6 +39,7 @@ import { HiveService } from 'src/services/hive.service';
 import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
 import { useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom } from 'src/Atoms/Atoms';
+import { OnBoardingService } from 'src/services/onboarding.service';
 
 interface PageProps
   extends InferMappedProps,
@@ -148,6 +149,12 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
             serviceEndpoint
           );
           console.log('userdata after registering: ', session);
+          if(!OnBoardingService.isOnBoardingCompleted(session.onBoardingInfo)){
+            session.onBoardingInfo = {
+              type: 2,
+              step: 0
+            };
+          }
           session.isEssentialUser = true;
           eProps.setSession({ session });
           history.push('/profile');

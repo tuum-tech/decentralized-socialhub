@@ -118,7 +118,7 @@ const Web3Identity: React.FC<Props> = ({ session, back, next, close }) => {
       let did = 'did:elastos:' + owner.getMethodSpecificId();
 
       if (did != session.did) {
-        alertError(null, 'Invalid Session');
+        alertError(null, 'Please scan again with the correct DID wallet');
         return;
       }
 
