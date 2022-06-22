@@ -75,7 +75,7 @@ const DashboardContent: React.FC<Props> = ({
         );
       }
     })();
-  }, [profile, sessionItem]);
+  }, [getNFTEscCollectionAssets, profile, sessionItem]);
 
   const getNFTEthCollectionAssets = async (address: string) => {
     const ethResponse: any = await request(
@@ -89,10 +89,12 @@ const DashboardContent: React.FC<Props> = ({
       }
     );
     console.log('ethResponse=====>', ethResponse);
-    setNFTs(nfts => [...nfts, ...ethResponse.data.assets]);
+    if (ethResponse.data) {
+      setNFTs(nfts => [...nfts, ...ethResponse.data.assets]);
+    }
   };
 
-  const getNFTEscCollectionAssets = async (address: string) => {
+  const getNFTEscCollectionAssets = useCallback(async (address: string) => {
     const escResponse: any = await request(
       `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/nft_collection_router/escaddress?address=${address}&page=${page}`,
       {
@@ -104,14 +106,16 @@ const DashboardContent: React.FC<Props> = ({
       }
     );
     console.log('escResponse=====>', escResponse);
-    setNFTs(nfts => [...nfts, ...escResponse.data.assets]);
-    if (escResponse.data.totalPage > page) {
-      setPage(page + 1);
-      setIsMore(true);
-    } else {
-      setIsMore(false);
+    if (escResponse.data) {
+      setNFTs(nfts => [...nfts, ...escResponse.data.assets]);
+      if (escResponse.data.totalPage > page) {
+        setPage(page + 1);
+        setIsMore(true);
+      } else {
+        setIsMore(false);
+      }
     }
-  };
+  });
 
   const fetchMoreEthData = () => {
     if (profile?.ethaddressCredential.address) {
