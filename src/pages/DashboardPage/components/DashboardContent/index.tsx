@@ -47,7 +47,6 @@ const DashboardContent: React.FC<Props> = ({
   const profile = useRecoilValue(FullProfileAtom);
   const [active, setActive] = useState('home');
   const [nfts, setNFTs] = useState<any[]>([]);
-  const [ethCursor, setEthCursor] = useState('');
   const [page, setPage] = useState(0);
   const [isMore, setIsMore] = useState(false);
 
@@ -80,7 +79,7 @@ const DashboardContent: React.FC<Props> = ({
 
   const getNFTEthCollectionAssets = async (address: string) => {
     const ethResponse: any = await request(
-      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/nft_collection_router/ethaddress?address=${address}&cursor=${ethCursor}`,
+      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/nft_collection_router/ethaddress?address=${address}&chain=eth`,
       {
         method: 'GET',
         headers: {
@@ -90,8 +89,9 @@ const DashboardContent: React.FC<Props> = ({
       }
     );
     console.log('ethResponse=====>', ethResponse);
-    setNFTs(nfts => [...nfts, ...ethResponse.data.assets]);
-    setEthCursor(ethResponse.data.cursor ?? '');
+    if (ethResponse.data) {
+      setNFTs(nfts => [...nfts, ...ethResponse.data.assets]);
+    }
   };
 
   const getNFTEscCollectionAssets = async (address: string) => {
@@ -106,17 +106,19 @@ const DashboardContent: React.FC<Props> = ({
       }
     );
     console.log('escResponse=====>', escResponse);
-    setNFTs(nfts => [...nfts, ...escResponse.data.assets]);
-    if (escResponse.data.totalPage > page) {
-      setPage(page + 1);
-      setIsMore(true);
-    } else {
-      setIsMore(false);
+    if (escResponse.data) {
+      setNFTs(nfts => [...nfts, ...escResponse.data.assets]);
+      if (escResponse.data.totalPage > page) {
+        setPage(page + 1);
+        setIsMore(true);
+      } else {
+        setIsMore(false);
+      }
     }
   };
 
   const fetchMoreEthData = () => {
-    if (profile?.ethaddressCredential.address && ethCursor) {
+    if (profile?.ethaddressCredential.address) {
       getNFTEthCollectionAssets(profile.ethaddressCredential.address);
     }
   };
@@ -172,7 +174,6 @@ const DashboardContent: React.FC<Props> = ({
         {active === 'NFTs' && (
           <DashboardNFTs
             nfts={nfts}
-            ethCursor={ethCursor}
             escCursor={isMore}
             fetchMoreEthData={fetchMoreEthData}
             fetchMoreEscData={fetchMoreEscData}

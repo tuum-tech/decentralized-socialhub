@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { IonRow, IonCol } from '@ionic/react';
 import { down } from 'styled-breakpoints';
 
-import { Text16 } from 'src/elements/texts';
 import { SmallLightButton } from 'src/elements/buttons';
 import SmallTextInput from 'src/elements/inputs/SmallTextInput';
 
@@ -14,6 +13,7 @@ import { requestUpdateEmailOrPhone } from 'src/components/Auth/fetchapi';
 
 import { validateEmail } from 'src/utils/validation';
 import { DefaultButton } from 'src/elements-v2/buttons';
+import { ErrorText } from 'src/elements/texts';
 
 export const ActionBtnCol = styled(IonCol)`
   margin: 0 0 0 auto;
@@ -34,12 +34,6 @@ export const Container = styled(IonRow)`
   }
 `;
 
-export const ErrorText = styled(Text16)`
-  text-align: left;
-  color: red;
-  margin-top: 0;
-`;
-
 export const SaveButton = styled(SmallLightButton)<{ disabled: boolean }>`
   margin-left: 10px;
   color: ${props => {
@@ -50,9 +44,14 @@ export const SaveButton = styled(SmallLightButton)<{ disabled: boolean }>`
 interface Props {
   emailUpdated: (email: string) => void;
   sessionItem: ISessionItem;
+  isEdit?: boolean;
 }
 
-const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
+const EmailComp: React.FC<Props> = ({
+  emailUpdated,
+  sessionItem,
+  isEdit = false
+}) => {
   const [showEmailVerifyModal, setShowEmailVerifyModal] = useState(false);
   const [email, setEmail] = useState(sessionItem.loginCred?.email || '');
   const [loading, setLoading] = useState(false);
@@ -105,7 +104,7 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
       <IonRow style={{ width: '100%', paddingLeft: 0, paddingRight: 0 }}>
         <IonCol sizeXs="12" sizeSm="5">
           <SmallTextInput
-            disabled={sessionItem.tutorialStep !== 4 || loading}
+            disabled={sessionItem.tutorialStep !== 4 || loading || !isEdit}
             label="Email"
             placeholder={sessionItem.loginCred?.email}
             name="email"
@@ -116,27 +115,29 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
             }}
           />
         </IonCol>
-        <ActionBtnCol size="auto">
-          <DefaultButton
-            className="mr-2"
-            size="small"
-            variant="outlined"
-            btnColor="primary-gradient"
-            textType="gradient"
-            disabled={isDisabled}
-            onClick={async () => {
-              await sendVerification();
-            }}
-          >
-            {loading ? 'Sending Verification' : 'Send Verification'}
-          </DefaultButton>
-        </ActionBtnCol>
+        {!isEdit && (
+          <ActionBtnCol size="auto">
+            <DefaultButton
+              className="mr-2"
+              size="small"
+              variant="outlined"
+              btnColor="primary-gradient"
+              textType="gradient"
+              disabled={isDisabled}
+              onClick={async () => {
+                await sendVerification();
+              }}
+            >
+              {loading ? 'Sending Verification' : 'Send Verification'}
+            </DefaultButton>
+          </ActionBtnCol>
+        )}
       </IonRow>
 
       {error !== '' && (
         <IonRow style={{ width: '100%' }}>
           <IonCol size="12" style={{ paddingTop: 0 }}>
-            <ErrorText>{error}</ErrorText>
+            <ErrorText position="relative">{error}</ErrorText>
           </IonCol>
         </IonRow>
       )}
@@ -160,4 +161,4 @@ const UpdateEmailComp: React.FC<Props> = ({ emailUpdated, sessionItem }) => {
   );
 };
 
-export default UpdateEmailComp;
+export default EmailComp;

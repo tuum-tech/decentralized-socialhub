@@ -1,4 +1,4 @@
-import { IonCol, IonRow } from '@ionic/react';
+import { IonCol, IonRow, IonSpinner } from '@ionic/react';
 import React from 'react';
 import styled from 'styled-components';
 import { getThemeData } from 'src/utils/template';
@@ -32,9 +32,11 @@ export const CardContainer = styled.div<ThemeProps>`
   margin-bottom: 15px;
 `;
 
-const CardBody = styled.div<React.CSSProperties>`
+const CardBody = styled.div<{ flex: number; loading: string }>`
   flex: ${props => (props.flex ? props.flex : '1')};
   padding: 25px 20px;
+  position: relative;
+  opacity: ${({ loading }) => (loading === 'true' ? '0.5' : '1')};
 `;
 
 export const CardRight = styled.div<React.CSSProperties>`
@@ -43,6 +45,18 @@ export const CardRight = styled.div<React.CSSProperties>`
   justify-content: center;
   flex: ${props => props.flex};
   padding-right: 16px;
+`;
+
+const LoadingContainer = styled.div`
+  position: absolute;
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
+  display: flex;
+`;
+
+const StyledSpinner = styled(IonSpinner)`
+  color: black;
+  margin: auto;
 `;
 
 interface IProps {
@@ -55,6 +69,7 @@ interface IProps {
   background?: string;
   titleColor?: string;
   descriptionColor?: string;
+  loading?: boolean;
   children?: React.ReactNode;
 }
 
@@ -65,11 +80,17 @@ const Card: React.FC<IProps> = ({
   action = null,
   right = null,
   rightFlex = 0.5,
+  loading = false,
   children
 }: IProps) => {
   return (
     <CardContainer template={template}>
-      <CardBody flex={1 - rightFlex}>
+      <CardBody flex={1 - rightFlex} loading={loading.toString()}>
+        {loading && (
+          <LoadingContainer>
+            <StyledSpinner />
+          </LoadingContainer>
+        )}
         <CardTitle template={template}>
           <IonRow>
             <IonCol style={{ paddingLeft: 0 }}>{title}</IonCol>

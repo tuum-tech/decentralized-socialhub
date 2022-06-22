@@ -5,7 +5,8 @@ import { DefaultButton } from 'src/elements-v2/buttons';
 import TextareaInput from 'src/elements/inputs/TextareaInput';
 import { TuumTechScriptService } from 'src/services/script.service';
 import useSession from 'src/hooks/useSession';
-import { ErrorTxt, ModalTitle } from './common';
+import { ModalTitle } from './common';
+import { ErrorText } from 'src/elements/texts';
 import ByeIcon from 'src/assets/icon/bye.svg';
 import style from './style.module.scss';
 
@@ -62,7 +63,7 @@ const FeedbackModalContent: React.FC<Props> = ({ closeModal }) => {
         placeholder="Write your response here..."
         className={style['modal-input']}
       />
-      {error && <ErrorTxt>{error}</ErrorTxt>}
+      {error && <ErrorText align="center">{error}</ErrorText>}
 
       <ButtonContainer>
         <StyledButton
