@@ -66,7 +66,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const fetchMorePosts = useCallback(async () => {
+  const fetchMorePosts = async () => {
     let _posts: any[] = await SpaceService.getPosts(
       space.guid,
       offset,
@@ -82,7 +82,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
     } else {
       setHasMore(false);
     }
-  });
+  };
   const searchNext = async ($event: CustomEvent<void>) => {
     await fetchMorePosts();
     ($event.target as HTMLIonInfiniteScrollElement).complete();
