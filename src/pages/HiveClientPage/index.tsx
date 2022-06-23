@@ -22,11 +22,11 @@ const HiveClientPage = () => {
   const [resp, setResp] = useState('');
   useEffect(() => {
     (async () => {
-      let tuumVaultHiveClient = (await HiveService.getApplicationHiveClient(
-        `${process.env.REACT_APP_HIVE_HOST}`
-      )) as HiveClient;
-      let appVaultscripts = new AppVaultScripts();
-      await appVaultscripts.Execute(tuumVaultHiveClient);
+      // let tuumVaultHiveClient = (await HiveService.getApplicationHiveClient(
+      //   `${process.env.REACT_APP_HIVE_HOST}`
+      // )) as HiveClient;
+      // let appVaultscripts = new AppVaultScripts();
+      // await appVaultscripts.Execute(tuumVaultHiveClient);
 
       // const userParameters: any = {
       //   hiveHost: process.env.REACT_APP_HIVE_HOST as string,
@@ -59,27 +59,26 @@ const HiveClientPage = () => {
       // });
       // debugger;
 
-      // const userParameters: any = {
-      //   hiveHost: process.env.REACT_APP_HIVE_HOST as string,
-      //   resolverUrl: process.env.REACT_APP_HIVE_RESOLVER_URL as string,
-      //   resolverCache: process.env.REACT_APP_HIVE_CACHE_DIR as string,
-      //   context: {
-      //     storePath: process.env.REACT_APP_APPLICATION_STORE_PATH,
-      //     appDID: process.env.REACT_APP_APPLICATION_DID,
-      //     appMnemonics: process.env.REACT_APP_APPLICATION_MNEMONICS,
-      //     appPhrasePass: process.env.REACT_APP_APPLICATION_PASSPHRASE,
-      //     appStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS,
-      //     userDID: 'did:elastos:iWqo4UfANavywAdSeHEtZMERNrjPsZdDrY',
-      //     userMnemonics: '',
-      //     userPhrasePass: '',
-      //     userStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS
-      //   } as AppContextParameters
-      // };
+      const userParameters: any = {
+        hiveHost: process.env.REACT_APP_HIVE_HOST as string,
+        resolverUrl: process.env.REACT_APP_HIVE_RESOLVER_URL as string,
+        resolverCache: process.env.REACT_APP_HIVE_CACHE_DIR as string,
+        context: {
+          storePath: process.env.REACT_APP_APPLICATION_STORE_PATH,
+          appDID: process.env.REACT_APP_APPLICATION_DID,
+          appMnemonics: process.env.REACT_APP_APPLICATION_MNEMONICS,
+          appPhrasePass: process.env.REACT_APP_APPLICATION_PASSPHRASE,
+          appStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS,
+          userDID: '',
+          userMnemonics: '',
+          userPhrasePass: '',
+          userStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS
+        } as AppContextParameters
+      };
 
-      // debugger;
-      // let userHiveClient = await HiveClient.createInstance(userParameters);
-      // let vaultInfo = await userHiveClient.VaultSubscription.subscribe();
-      // userHiveClient.Database.createCollection('user collection');
+      let userHiveClient = await HiveClient.createInstance(userParameters);
+      let vaultInfo = await userHiveClient.VaultSubscription.subscribe();
+      userHiveClient.Database.createCollection('user collection');
     })();
   }, []);
 

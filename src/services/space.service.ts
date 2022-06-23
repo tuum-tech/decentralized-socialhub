@@ -5,7 +5,7 @@ import { UserService } from './user.service';
 import { DidService } from './did.service.new';
 import { showNotify } from 'src/utils/notify';
 import { Guid } from 'guid-typescript';
-import { Logger } from 'src/shared-base/logger';
+import { Logger } from '@tuum-tech/commons.js.tools';
 import { TuumTechScriptService } from './script.service';
 import { ISession } from 'src/context/session.context';
 
