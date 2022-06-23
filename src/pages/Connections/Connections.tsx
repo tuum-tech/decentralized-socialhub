@@ -29,7 +29,7 @@ const Connections: React.FC<PageProps> = ({ ...props }: PageProps) => {
   useEffect(() => {
     (async () => {
       try {
-        if (session && session.did && session.tutorialStep === 4) {
+        if (session && session.did && session.onBoardingCompleted) {
           let followers = await ProfileService.getFollowers([session.did]);
           let following = await ProfileService.getFollowings(session.did);
           const item = followers?.get_followers.items.find(

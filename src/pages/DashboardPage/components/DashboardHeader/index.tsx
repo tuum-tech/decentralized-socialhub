@@ -47,7 +47,7 @@ const DashboardHeader: React.FC<IProps> = ({
             <Avatar
               did={sessionItem.did}
               didPublished={
-                sessionItem.isDIDPublished && sessionItem.tutorialStep === 4
+                sessionItem.isDIDPublished && sessionItem.onBoardingCompleted
               }
             />
           )}

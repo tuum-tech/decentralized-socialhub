@@ -46,7 +46,7 @@ const SyncBar: React.FC<SyncBarProps> = ({ session }: SyncBarProps) => {
 
     const timer = setInterval(async () => {
       // console.log('Verify differences', new Date().toISOString(), id);
-      if (session && session.did !== '' && session.tutorialStep === 4) {
+      if (session && session.did !== '' && session.onBoardingCompleted) {
         let hasDiff = await SyncService.HasDifferences(session);
         setHasDifferences(hasDiff);
       }

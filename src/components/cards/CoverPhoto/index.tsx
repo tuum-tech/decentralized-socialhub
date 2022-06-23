@@ -149,6 +149,7 @@ const CoverPhoto: React.FC = () => {
                 variant="contained"
                 size="small"
                 bgColor="#00000080"
+                disabled={!session.onBoardingCompleted}
               >
                 <StyledUpload
                   type="file"
@@ -159,6 +160,7 @@ const CoverPhoto: React.FC = () => {
                   accept=".jpef, .png, .jpg"
                   onChange={photoUpload}
                   src={imagePreview}
+                  disabled={!session.onBoardingCompleted}
                 />
                 <StyledUploadLabel htmlFor="file">Edit</StyledUploadLabel>
               </DefaultButton>

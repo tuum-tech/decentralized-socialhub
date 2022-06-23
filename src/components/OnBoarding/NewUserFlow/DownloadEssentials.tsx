@@ -7,6 +7,8 @@ import { TransparentButton } from './OwnYourSelf';
 import TutorialSteps from './TutorialSteps';
 
 import downloadQR from 'src/assets/onboarding/download-qr.png';
+import AppStoredownloadQR from 'src/assets/onboarding/qr1.png';
+import PlayStoredownloadQR from 'src/assets/onboarding/qr2.png';
 import googleplay from 'src/assets/googleplay.png';
 import appstore from 'src/assets/appstore.png';
 
@@ -65,12 +67,27 @@ const DownloadEssentials: React.FC<Props> = ({ back, next, close }) => {
     <OnBoardingContainer style={{ maxWidth: '545px' }}>
       <TutorialSteps step={1} />
       <OnBoardingTitle>Download Essentials App</OnBoardingTitle>
+      <RowContainer>
+        <img
+          src={AppStoredownloadQR}
+          alt="download"
+          style={{ display: 'block', margin: '20px auto', width: '40%' }}
+        />
+        <img
+          src={PlayStoredownloadQR}
+          alt="download"
+          style={{ display: 'block', margin: '20px auto', width: '40%' }}
+        />
+      </RowContainer>
+      <RowContainer style={{ maxWidth: '230px' }}>
+        <a href="https://apps.apple.com/us/app/elastos-essentials/id1568931743">
+          <img src={appstore} alt="appstore" width="100px" />
+        </a>
 
-      <img
-        src={downloadQR}
-        alt="download"
-        style={{ display: 'block', margin: '20px auto', width: '188px' }}
-      />
+        <a href="https://play.google.com/store/apps/details?id=org.elastos.essentials.app&hl=en&gl=US">
+          <img src={googleplay} alt="googleplay" width="100px" />
+        </a>
+      </RowContainer>
 
       <p
         style={{
@@ -82,16 +99,6 @@ const DownloadEssentials: React.FC<Props> = ({ back, next, close }) => {
         Download the Essentials wallet app to backup, login, and unlock all the
         features Profile offers.
       </p>
-
-      <RowContainer style={{ maxWidth: '230px' }}>
-        <a href="https://apps.apple.com/us/app/elastos-essentials/id1568931743">
-          <img src={appstore} alt="appstore" width="100px" />
-        </a>
-
-        <a href="https://play.google.com/store/apps/details?id=org.elastos.essentials.app&hl=en&gl=US">
-          <img src={googleplay} alt="googleplay" width="100px" />
-        </a>
-      </RowContainer>
 
       <RowContainer style={{ maxWidth: '380px' }}>
         <TransparentWithBorderlineButton

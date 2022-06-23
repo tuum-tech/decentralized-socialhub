@@ -72,14 +72,14 @@ const ManagerPage: React.FC<RouteComponentProps> = (
             href={getDIDString('/did/' + user.did)}
             target="_blank"
             style={{
-              cursor: user.tutorialStep === 4 ? ' pointer' : 'not-allowed'
+              cursor: user.onBoardingCompleted ? ' pointer' : 'not-allowed'
             }}
           >
             View Profile
           </LinkButton>
         </Header>
       )}
-      {user.tutorialStep !== 4 && (
+      {!user.onBoardingCompleted && (
         <WarningText>
           Please complete the tutorial first before managing your Profile.
         </WarningText>

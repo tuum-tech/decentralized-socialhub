@@ -248,7 +248,7 @@ const ProfileEditor: React.FC<Props> = ({
   useEffect(() => {
     (async () => {
       if (!session.userToken) return;
-      if (session.tutorialStep === 4) {
+      if (session.onBoardingCompleted) {
         await retriveProfile();
       }
 
@@ -362,7 +362,7 @@ const ProfileEditor: React.FC<Props> = ({
             }}
           ></BasicCard>
 
-          {!error && loaded && userInfo.tutorialStep === 4 ? (
+          {!error && loaded && userInfo.onBoardingCompleted ? (
             <>
               {profile && profile.basicDTO && (
                 <AboutCard

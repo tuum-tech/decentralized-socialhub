@@ -44,7 +44,7 @@ const BeginnersTutorial: React.FC<Props> = ({
   const percent = (tutorialStep / totalSteps) * 100;
 
   const renderButtonTxt = () => {
-    if (tutorialStep === 1) {
+    if (tutorialStep === 0) {
       return 'Start Tutorial';
     }
     if (tutorialStep < totalSteps) {

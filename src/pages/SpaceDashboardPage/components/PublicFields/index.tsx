@@ -65,7 +65,7 @@ const PublicFields: React.FC<IProps> = ({ sessionItem, profile, update }: IProps
             variant="outlined"
             btnColor="primary-gradient"
             textType="gradient"
-            disabled={sessionItem.tutorialStep !== 4}
+            disabled={!sessionItem.onBoardingCompleted}
             onClick={handleEdit}
           >
             Edit

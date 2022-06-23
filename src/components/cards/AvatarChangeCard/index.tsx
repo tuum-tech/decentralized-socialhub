@@ -304,6 +304,7 @@ const Upload: React.FC<InferMappedProps> = ({
                     accept=".jpeg, .png, .jpg"
                     onChange={photoUpload}
                     src={imagePreview}
+                    disabled={!props.session.onBoardingCompleted}
                   />
                 </Perfil>
               </ImgUploadArea>

@@ -101,7 +101,7 @@ const PublicPage: React.FC<PageProps> = (props: PageProps) => {
       if (pUser && pUser.did) {
         setPublicUser(pUser as any);
 
-        if (pUser.tutorialStep === 4) {
+        if (pUser.onBoardingCompleted) {
           const followerDids = await FollowService.getFollowerDids(did);
           setFollowerDids(followerDids);
 

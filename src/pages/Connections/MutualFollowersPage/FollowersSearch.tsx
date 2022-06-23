@@ -54,7 +54,7 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
 
   useEffect(() => {
     (async () => {
-      if (userSession && userSession.did && userSession.tutorialStep === 4) {
+      if (userSession && userSession.did && userSession.onBoardingCompleted) {
         try {
           let followers = await ProfileService.getFollowers([userSession.did]);
           let following = await ProfileService.getFollowings(userSession.did);

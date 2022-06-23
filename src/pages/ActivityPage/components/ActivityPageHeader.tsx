@@ -7,6 +7,7 @@ import { useBreakpoint } from 'styled-breakpoints/react-styled';
 import { TabsContainer } from 'src/components/profile/ProfileComponent/PublicProfileTabs';
 import { DefaultButton } from 'src/elements-v2/buttons';
 import { TabItem } from 'src/elements-v2/tabs';
+import useSession from 'src/hooks/useSession';
 
 export const Header = styled.div`
   width: 100%;
@@ -83,6 +84,7 @@ const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
   referrals
 }) => {
   const isSmDown = useBreakpoint(down('sm'));
+  const { session, setSession } = useSession();
 
   return (
     <ActivityPageHeaderContainer>
@@ -150,6 +152,7 @@ const ActivityPageHeader: React.FC<ActivityPageHeaderProps> = ({
           size={isSmDown ? 'default' : 'large'}
           onClick={newVerificationClicked}
           style={{ margin: isSmDown ? '0 auto 0 20px' : '0 20px 0 auto' }}
+          disabled={!session.onBoardingCompleted}
         >
           New Verification Request
         </DefaultButton>

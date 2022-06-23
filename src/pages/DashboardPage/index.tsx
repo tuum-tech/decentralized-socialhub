@@ -192,7 +192,7 @@ const DashboardPage: React.FC = () => {
         if (!OnBoardingService.isOnBoardingCompleted(session.onBoardingInfo)) {
           setOnBoardVisible(true);
         }
-        if (session.tutorialStep === 4 && !willExpire) {
+        if (session.onBoardingCompleted && !willExpire) {
           setWillExpire(true);
           setTimeout(() => {
             UserService.logout();
@@ -217,7 +217,7 @@ const DashboardPage: React.FC = () => {
     (async () => {
       if (session && session.did !== '') {
         if (history.location.pathname === '/profile') {
-          if (session.tutorialStep && session.tutorialStep === 4) {
+          if (session.onBoardingCompleted) {
             setLoadingText('loading Profile Data');
             await retrieveProfile();
             setLoadingText('');

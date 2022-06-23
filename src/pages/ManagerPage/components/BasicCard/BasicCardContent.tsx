@@ -72,7 +72,7 @@ const BasicCardConent = ({
         <IonRow class="ion-justify-content-start ion-no-padding">
           <IonCol sizeXs="10" sizeSm="5" className="ion-no-padding">
             <SmallTextInput
-              disabled={sessionItem.tutorialStep !== 4 || !isEdit}
+              disabled={!sessionItem.onBoardingCompleted || !isEdit}
               label="Name"
               name="name"
               value={currentBasicDTO.name}

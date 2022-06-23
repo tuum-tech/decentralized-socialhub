@@ -122,7 +122,7 @@ const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
         <IonCol sizeMd="8" sizeSm="12">
           <SpaceCoverPhoto space={spaceProfile} onUpload={onUploadCoverPhoto} />
           <SpaceAvatarChange space={spaceProfile} onUpload={onUploadAvatar} />
-          {loaded && userInfo.tutorialStep === 4 ? (
+          {loaded && userInfo.onBoardingCompleted ? (
             <>
               {spaceProfile && (
                 <AboutCard

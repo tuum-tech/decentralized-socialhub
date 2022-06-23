@@ -35,13 +35,13 @@ const Intro = styled.p`
 const VaultContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   width: 100%;
   margin-top: 40px;
   margin-bottom: 60px;
 
   .content {
     padding: 17px;
-    margin-left: 18px;
 
     background: linear-gradient(
       252.79deg,
@@ -242,9 +242,11 @@ const Web3Storage: React.FC<Props> = ({ session, complete, close }) => {
         newSession.badges!.dStorage!.ownVault.archived = new Date().getTime();
       }
 
+      console.log("newSession", newSession)
       let didService = await DidService.getInstance();
       let userService = new UserService(didService);
       const updatedSession = await userService.updateSession(newSession);
+      console.log("updatedSession", updatedSession)
       // setSession(updatedSession);
       let hiveInstance = await HiveService.getSessionInstance(newSession);
       // props.setLoadingText('Installing scripts on User Vault.');
@@ -341,7 +343,6 @@ const Web3Storage: React.FC<Props> = ({ session, complete, close }) => {
           }
         }
       );
-      console.log('profile version === ', profileVersionResponse);
       if (profileVersionResponse.meta.code === 200) {
         let profileVersionData: Version = profileVersionResponse.data;
         await ProfileService.addVersionHistory(
@@ -422,7 +423,7 @@ const Web3Storage: React.FC<Props> = ({ session, complete, close }) => {
         >
           {hiveDocument !== '' && (
             <div
-              style={{ width: '100%', display: 'flex', alignItems: 'center' }}
+              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
               <div className="content">
                 <img alt="tuum logo" src={tuumlogo} />
@@ -434,7 +435,7 @@ const Web3Storage: React.FC<Props> = ({ session, complete, close }) => {
                   <p>{detectedHiveVersion}</p>
                 </VersionTag>
               </div>
-              <IonRadio value="tuum" style={{ marginLeft: '2px' }}></IonRadio>
+              {/* <IonRadio value="tuum" style={{ marginLeft: '2px' }}></IonRadio> */}
             </div>
           )}
         </IonRadioGroup>
@@ -445,7 +446,7 @@ const Web3Storage: React.FC<Props> = ({ session, complete, close }) => {
         onClick={saveSelection}
         text="Complete"
       />
-      <TransparentButton>
+      <TransparentButton onClick={close}>
         <p>Skip for now</p>
       </TransparentButton>
     </OnBoardingContainer>

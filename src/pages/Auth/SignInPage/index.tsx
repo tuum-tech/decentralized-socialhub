@@ -101,7 +101,6 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
 
       let serviceEndpoint = '';
       let isDidPublished = await didService.isDIDPublished(did);
-
       if (isDidPublished) {
         let didDocument = await didService.getDidDocument(did, false);
         if (didDocument.services && didDocument.services.size > 0) {
@@ -159,22 +158,30 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
           eProps.setSession({ session });
           history.push('/profile');
         } else {
-          let userService = new UserService(await DidService.getInstance());
-          let sessionItem = await userService.CreateNewUser(
-            name,
-            AccountType.DID,
-            {},
-            '',
-            did,
-            serviceEndpoint,
-            ''
-          );
-          sessionItem.onBoardingInfo = {
-            type: 2,
-            step: 0
-          };
-          eProps.setSession({ session: sessionItem });
-          history.push('/profile');
+          if(didDocument.credentials && didDocument.credentials.size > 0) {
+            let userService = new UserService(await DidService.getInstance());
+            let sessionItem = await userService.CreateNewUser(
+              name,
+              AccountType.DID,
+              {},
+              '',
+              did,
+              serviceEndpoint,
+              ''
+            );
+            sessionItem.onBoardingInfo = {
+              type: 2,
+              step: 0
+            };
+            eProps.setSession({ session: sessionItem });
+            history.push('/profile');
+          } else {
+            alertError(
+              null,
+              `This account has registered essential app. But this is not published yet.`
+            );
+            return;
+          }
         }
       } else {
         showNotify('Did is not published on the blockchain yet', 'error');

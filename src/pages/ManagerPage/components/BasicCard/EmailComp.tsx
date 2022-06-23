@@ -91,7 +91,7 @@ const EmailComp: React.FC<Props> = ({
 
   const isDisabled = useMemo(() => {
     return (
-      sessionItem.tutorialStep !== 4 ||
+      !sessionItem.onBoardingCompleted ||
       loading ||
       error !== '' ||
       email === sessionItem.loginCred?.email ||
@@ -104,7 +104,7 @@ const EmailComp: React.FC<Props> = ({
       <IonRow style={{ width: '100%', paddingLeft: 0, paddingRight: 0 }}>
         <IonCol sizeXs="12" sizeSm="5">
           <SmallTextInput
-            disabled={sessionItem.tutorialStep !== 4 || loading || !isEdit}
+            disabled={!sessionItem.onBoardingCompleted || loading || !isEdit}
             label="Email"
             placeholder={sessionItem.loginCred?.email}
             name="email"

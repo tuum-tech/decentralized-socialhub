@@ -520,8 +520,6 @@ export class UserVaultScriptService {
     if (items.length > 0) {
       const userInfo = items[0];
       if (
-        !userInfo.tutorialStep ||
-        userInfo.tutorialStep !== 4 ||
         !userInfo.onBoardingCompleted
       ) {
         // Backup mnemonic from locked user info

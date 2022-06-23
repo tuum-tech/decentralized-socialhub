@@ -50,7 +50,7 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
     (async () => {
       // await loadFollowingData();
       try {
-        if (userSession && userSession.did && userSession.tutorialStep === 4) {
+        if (userSession && userSession.did && userSession.onBoardingCompleted) {
           let following = await ProfileService.getFollowings(userSession.did);
           setListFollowing(following as IFollowingResponse);
         }

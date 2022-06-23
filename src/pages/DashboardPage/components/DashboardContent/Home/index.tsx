@@ -101,7 +101,7 @@ const DashboardHome: React.FC<Props> = ({
           title: 'Setup Account',
           targetList: ['Tutorial Completed', 'Social Media Authenticated'],
           accomplishedList: [
-            session.tutorialStep === 4 ? 'Tutorial Completed' : '',
+            session.onBoardingCompleted ? 'Tutorial Completed' : '',
             session.loginCred &&
             (session.loginCred.linkedin ||
               session.loginCred.twitter ||
@@ -134,7 +134,7 @@ const DashboardHome: React.FC<Props> = ({
             {
               name: 'Tutorial Completed',
               code: 'tutorialCompleted',
-              value: session.tutorialStep === 4 ? true : false
+              value: session.onBoardingCompleted ? true : false
             },
             {
               name: 'Social Media Authenticated',
@@ -210,7 +210,7 @@ const DashboardHome: React.FC<Props> = ({
       return profileCompletion;
     };
     setCompletionStats(profileCompletionStats());
-    setTutorialVisible(session.tutorialStep !== 4);
+    setTutorialVisible(!session.onBoardingCompleted);
   }, [profile, session]);
 
   useEffect(() => {

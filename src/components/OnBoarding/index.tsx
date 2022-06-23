@@ -15,6 +15,7 @@ import NewUserFlow from './NewUserFlow';
 import LoginInWithEssential from './LoginInWithEssential';
 import RecoverAccountFlow from './RecoverAccountFlow';
 import LoadingModal from './NewUserFlow/LoadingModal';
+import { OnBoardingService } from 'src/services/onboarding.service';
 
 const DarkTransparentBG = styled(IonContent)`
   --background: url('../../assets/alphabg.png') no-repeat center top / cover;
@@ -42,12 +43,13 @@ const OnBoarding: React.FC<Props> = ({ eProps, ...props }: Props) => {
       type: obdInfo.type,
       step: step
     };
-
+    const onBoardingCompleted = OnBoardingService.isOnBoardingCompleted(newObdInfo)
     eProps.setSession({
       session: await userService.updateSession(
         {
           ...props.session,
-          onBoardingInfo: newObdInfo
+          onBoardingInfo: newObdInfo,
+          onBoardingCompleted: onBoardingCompleted
         },
         false
       )

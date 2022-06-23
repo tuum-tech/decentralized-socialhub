@@ -94,7 +94,7 @@ const SearchComponent: React.FC<Props> = ({ userSession }: Props) => {
     }
 
     try {
-      if (userSession && userSession.did && userSession.tutorialStep === 4) {
+      if (userSession && userSession.did && userSession.onBoardingCompleted) {
         let following = await ProfileService.getFollowings(userSession.did);
         if (following) {
           setListFollowing(following as IFollowingResponse);
