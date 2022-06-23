@@ -54,7 +54,7 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
         );
       }
     })();
-  }, [space.guid, isNFTSpace, membersForNFTSpace]);
+  }, [space.guid, isNFTSpace]);
   return (
     <>
       <CardOverview template={template}>

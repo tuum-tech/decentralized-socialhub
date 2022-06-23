@@ -115,7 +115,7 @@ const HomePage = () => {
 
   useEffect(() => {
     dispatch(fetchSpaces(true));
-  }, [dispatch]);
+  }, []);
 
   const [windowDimensions, setWindowDimensions] = useState(
     getWindowDimensions()

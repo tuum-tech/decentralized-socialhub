@@ -30,7 +30,7 @@ interface SyncBarProps {
 
 const SyncBar: React.FC<SyncBarProps> = ({ session }: SyncBarProps) => {
   const history = useHistory();
-  const [hasDifferences] = useState(false);
+  const [hasDifferences, setHasDifferences] = useState(false);
 
   const [id] = useState(Guid.create().toString());
 

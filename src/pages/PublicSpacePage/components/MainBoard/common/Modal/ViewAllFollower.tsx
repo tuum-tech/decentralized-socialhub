@@ -52,7 +52,7 @@ const ViewAllFollower = ({ space, isOpen, onClose }: Props) => {
     (async () => {
       await fetchMoreData();
     })();
-  }, [fetchMoreData, space]);
+  }, [space]);
 
   return (
     <Modal
