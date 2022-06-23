@@ -17,7 +17,7 @@ const Component: React.FC<ComponentProps> = ({
   onClose,
   contents
 }: ComponentProps) => {
-  const { session } = useSession();
+  const { session, setSession } = useSession();
 
   const handleClose = () => {
     onClose();

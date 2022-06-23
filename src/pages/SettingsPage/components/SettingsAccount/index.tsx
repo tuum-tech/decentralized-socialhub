@@ -39,7 +39,7 @@ const DeleteButton = styled(IonButton)`
 `;
 
 const SettingsAccount: React.FC = () => {
-  const [loading] = useState('');
+  const [loading, setLoading] = useState('');
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   return (

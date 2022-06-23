@@ -31,7 +31,7 @@ const FeedbackModalContent: React.FC<Props> = ({ closeModal }) => {
   const { session } = useSession();
   const [feedback, setFeedback] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error] = useState('');
+  const [error, setError] = useState('');
 
   const handleFeedbackChange = useCallback(v => {
     setFeedback(v);
