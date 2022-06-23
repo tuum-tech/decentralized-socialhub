@@ -15,9 +15,11 @@ const FollowOrUnFollowButton: React.FC<IProps> = ({
 }: IProps) => {
   const [text, setText] = useState('Follow');
   const [loading, setLoading] = useState(true);
+  const [following, setFollowing] = useState(false);
 
   const follow = async (follow: boolean) => {
     setLoading(true);
+    setFollowing(follow);
     try {
       if (follow) {
         await ProfileService.addFollowing(did, signedUser);
@@ -66,14 +68,14 @@ const FollowOrUnFollowButton: React.FC<IProps> = ({
     <FollowButton
       onClick={async () => {
         if (loading) return;
-        if (text === 'Follow') {
-          await follow(true);
-        } else {
+        if (following) {
           await follow(false);
+        } else {
+          await follow(true);
         }
       }}
     >
-      {loading ? `${text}ing` : text}
+      {following ? `${text}ing` : text}
     </FollowButton>
   );
 };
