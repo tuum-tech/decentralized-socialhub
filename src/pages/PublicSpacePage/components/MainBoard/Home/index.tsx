@@ -48,10 +48,10 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
       session.did &&
       (space.followers?.includes(session.did) || hasPermissionToPost)
     );
-  }, [JSON.stringify(space.followers), session.did, hasPermissionToPost]);
+  }, [space.followers, session.did, hasPermissionToPost]);
   const isAdmin = useMemo(
     () => session.did && space.owner?.includes(session.did),
-    [JSON.stringify(space.owner), session.did]
+    [space.owner, session.did]
   );
   const handlePost = async (content: any) => {
     setIsModalOpen(false);
@@ -66,7 +66,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const fetchMorePosts = async () => {
+  const fetchMorePosts = useCallback(async () => {
     let _posts: any[] = await SpaceService.getPosts(
       space.guid,
       offset,
@@ -82,7 +82,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
     } else {
       setHasMore(false);
     }
-  };
+  });
   const searchNext = async ($event: CustomEvent<void>) => {
     await fetchMorePosts();
     ($event.target as HTMLIonInfiniteScrollElement).complete();
@@ -93,7 +93,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
         await fetchMorePosts();
       })();
     }
-  }, [space.guid]);
+  }, [fetchMorePosts, space.guid]);
   useEffect(() => {
     (async () => {
       if (!space.guid) return;
@@ -127,7 +127,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
       }
       setHasPermissionToPost(false);
     })();
-  }, [space.guid, JSON.stringify(space.owner), session]);
+  }, [space.guid, session, space.owner, space.meta, isNFTSpace]);
 
   return (
     <Wrapper>

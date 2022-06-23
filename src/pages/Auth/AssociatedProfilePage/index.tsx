@@ -56,7 +56,7 @@ interface PageProps
 
 const AssociatedProfilePage: React.FC<PageProps> = ({ eProps, ...props }) => {
   const history = useHistory();
-  const [status, setStatus] = useState(0);
+  const [status] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState<UserProps | null>(null);
 

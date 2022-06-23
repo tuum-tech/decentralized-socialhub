@@ -9,8 +9,6 @@
     "@elastosfoundation/elastos-js-sdk": "^1.2.12",
     "@elastosfoundation/essentials-connector-client-browser": "^1.0.37",
     "@react-hook/size": "^2.1.2",
-    "@sentry/react": "^6.12.0",
-    "@sentry/tracing": "^6.12.0",
     "@svgr/webpack": "4.3.3",
     "@types/chai": "^4.3.1",
     "@types/mocha": "^9.1.1",

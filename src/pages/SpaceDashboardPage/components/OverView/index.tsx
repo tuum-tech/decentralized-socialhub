@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { IonCard, IonGrid, IonRow, IonIcon } from '@ionic/react';
+import { IonCard, IonGrid, IonRow } from '@ionic/react';
 import styled from 'styled-components';
-import { openOutline } from 'ionicons/icons';
 import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import {
   SpaceAvatar,

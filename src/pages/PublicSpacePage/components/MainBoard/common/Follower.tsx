@@ -12,7 +12,6 @@ import Avatar from 'src/components/Avatar';
 import ViewAllFollower from './Modal/ViewAllFollower';
 import style from './style.module.scss';
 import { getDIDString } from 'src/utils/did';
-import { TuumTechScriptService } from 'src/services/script.service';
 
 interface IProps {
   template?: string;
@@ -28,15 +27,10 @@ const Follower: React.FC<IProps> = ({
   useEffect(() => {
     const dids = space.followers || [];
     (async () => {
-      const _followers_ = await FollowService.invokeSearch(
-        dids,
-        '',
-        4,
-        1
-      );
+      const _followers_ = await FollowService.invokeSearch(dids, '', 4, 1);
       setFollowers(_followers_);
     })();
-  }, [JSON.stringify(space.followers)]);
+  }, [space.followers]);
   return (
     <>
       {followers.length > 0 && (

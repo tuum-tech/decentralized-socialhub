@@ -1,11 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonCol
-} from '@ionic/react';
+import { IonCard, IonCardHeader, IonCardTitle, IonCol } from '@ionic/react';
 import { useBreakpoint } from 'styled-breakpoints/react-styled';
 import { down } from 'styled-breakpoints';
 
@@ -152,7 +146,7 @@ const PeopleCard: React.FC<Props> = ({
           // handleUnfollow,
           // loadFollowing
         ))}
-        {listPeople.length ? (
+        {listPeople.length > 0 ? (
           <Pagination
             perPage={perPage}
             totalPages={totalPages}

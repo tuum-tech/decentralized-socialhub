@@ -8,7 +8,6 @@ import { UserService } from 'src/services/user.service';
 
 import Logo from 'src/elements/Logo';
 import FooterLinks from './components/FooterLinks';
-import ConnectionMenu from './components/ConnectionMenu';
 
 import HelpModalContent, { HelpModal } from './modals/Help';
 import ReportModalContent, { ReportModal } from './modals/Report';

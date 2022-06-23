@@ -3,7 +3,6 @@ import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { ActivityResponse } from 'src/pages/ActivityPage/types';
 import { VerificationService } from 'src/services/verification.service';
-import request, { BaseplateResp } from 'src/baseplate/request';
 
 import { showNotify } from 'src/utils/notify';
 import { getItemsFromData } from 'src/utils/script';
@@ -14,7 +13,6 @@ import { UserService } from './user.service';
 import { DidService } from './did.service.new';
 import { SearchService } from './search.service';
 import { DidcredsService, CredentialType } from './didcreds.service';
-import { consoleSandbox } from '@sentry/utils';
 
 export class ProfileService {
   static didDocument: any = null;
@@ -232,7 +230,11 @@ export class ProfileService {
     };
     try {
       let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-      let userResponse = await searchServiceLocal.searchUsersByDIDs([did], 1, 0);
+      let userResponse = await searchServiceLocal.searchUsersByDIDs(
+        [did],
+        1,
+        0
+      );
       if (
         userResponse.isSuccess &&
         userResponse.response &&
@@ -378,7 +380,9 @@ export class ProfileService {
 
           /* Calculate verified education credentials starts */
           for (let educationItem of educationItems) {
-            let edItem: EducationItem = JSON.parse(JSON.stringify(educationItem));
+            let edItem: EducationItem = JSON.parse(
+              JSON.stringify(educationItem)
+            );
             edItem.verifiers = await ProfileService.getVerifiers(
               educationItem,
               'education',
@@ -446,10 +450,16 @@ export class ProfileService {
               ) {
                 emailCredential.email = userSession.loginCred.email;
                 emailCredential.verifiers = [verifier];
-              } else if (s === 'ethaddress' && verifier.did !== userSession.did) {
+              } else if (
+                s === 'ethaddress' &&
+                verifier.did !== userSession.did
+              ) {
                 ethaddressCredential.address = vc.credentialSubject.ethaddress;
                 ethaddressCredential.id = vc.credentialSubject.id;
-              } else if (s === 'escaddress' && verifier.did !== userSession.did) {
+              } else if (
+                s === 'escaddress' &&
+                verifier.did !== userSession.did
+              ) {
                 escaddressCredential.address = vc.credentialSubject.escaddress;
                 escaddressCredential.id = vc.credentialSubject.id;
               }
@@ -457,7 +467,6 @@ export class ProfileService {
           }
         }
       }
-
     } catch (err) {
       showNotify((err as Error).message, 'error');
     }
@@ -637,7 +646,6 @@ export class ProfileService {
         }
       }
       return true;
-
     } catch (err) {
       showNotify((err as Error).message, 'error');
       return false;
@@ -674,7 +682,6 @@ export class ProfileService {
     } catch (err) {
       showNotify((err as Error).message, 'error');
     }
-
   }
 
   static async updateThesisProfile(
@@ -1189,12 +1196,19 @@ export class ProfileService {
     try {
       const hiveClient = await HiveService.getSessionInstance(session);
       if (hiveClient && did && did !== '') {
-        await hiveClient.Database.insertOne('following', { did: did }, undefined);
+        await hiveClient.Database.insertOne(
+          'following',
+          { did: did },
+          undefined
+        );
 
         let followersResponse = await this.getFollowers([did]);
 
         let followersList: string[] = [];
-        if (followersResponse && followersResponse.get_followers.items.length > 0)
+        if (
+          followersResponse &&
+          followersResponse.get_followers.items.length > 0
+        )
           // TODO: handle this better
           followersList = followersResponse.get_followers.items[0].followers;
 

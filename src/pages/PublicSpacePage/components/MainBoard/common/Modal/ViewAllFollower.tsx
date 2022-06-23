@@ -9,7 +9,6 @@ import modal_style from './style.module.scss';
 import common_style from '../style.module.scss';
 import { getDIDString } from 'src/utils/did';
 import Modal from 'src/elements-v2/Modal';
-import { TuumTechScriptService } from 'src/services/script.service';
 
 interface Props {
   space: any;
@@ -34,7 +33,7 @@ const ViewAllFollower = ({ space, isOpen, onClose }: Props) => {
     }
   }, []);
 
-  const fetchMoreData = async () => {
+  const fetchMoreData = useCallback(async () => {
     const _followers_ = await FollowService.invokeSearch(
       dids,
       searchStr,
@@ -47,13 +46,13 @@ const ViewAllFollower = ({ space, isOpen, onClose }: Props) => {
     } else {
       setHasMore(false);
     }
-  };
+  });
 
   useEffect(() => {
     (async () => {
       await fetchMoreData();
     })();
-  }, [space]);
+  }, [fetchMoreData, space]);
 
   return (
     <Modal

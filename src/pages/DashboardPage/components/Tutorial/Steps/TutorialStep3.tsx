@@ -11,10 +11,8 @@ import useSession from 'src/hooks/useSession';
 
 import tuumlogo from '../../../../../assets/tuumtech.png';
 import styled from 'styled-components';
-import { DID, DIDDocument, DIDURL } from '@elastosfoundation/did-js-sdk/';
+import { DID, DIDURL } from '@elastosfoundation/did-js-sdk/';
 import { DidcredsService } from 'src/services/didcreds.service';
-import { useSetRecoilState } from 'recoil';
-import { DIDDocumentAtom } from 'src/Atoms/Atoms';
 import style from '../style.module.scss';
 import request from 'src/baseplate/request';
 
@@ -52,7 +50,6 @@ const TutorialStep3Component: React.FC<ITutorialStepProp> = props => {
   const [selected, setSelected] = useState(
     hiveDocument === '' ? 'tuum' : 'document'
   );
-  const setDidDocument = useSetRecoilState(DIDDocumentAtom);
 
   const getEndpoint = () => {
     if (selected === 'document') return hiveDocument;

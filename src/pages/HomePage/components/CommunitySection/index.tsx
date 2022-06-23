@@ -13,7 +13,6 @@ import MonetizeContent from './MonetizeContent';
 import { SectionTitle } from '../../index';
 import { MainLayout } from '../../components/AboutSection';
 import style from './style.module.scss';
-import community from 'src/assets/new/community.svg';
 
 export const SectionText = styled.p`
   font-family: SF Pro Display;

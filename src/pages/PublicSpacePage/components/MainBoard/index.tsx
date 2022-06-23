@@ -5,9 +5,6 @@ import { TabsContainer } from 'src/components/profile/ProfileComponent/PublicPro
 import GradientText from 'src/elements-v2/buttons/GradientText';
 import Home from './Home';
 import Collection from './Collection';
-import Community from './Community';
-import Chat from './Chat';
-import Members from './Members';
 import icon_lock_gray from 'src/assets/space/lock_gray.svg';
 import icon_lock_color from 'src/assets/space/lock_color.svg';
 import { SpaceCategory } from 'src/services/space.service';

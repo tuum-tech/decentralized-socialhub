@@ -1,9 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import ContentComponent from './Content';
 import { DefaultButton } from 'src/elements-v2/buttons';
-import { UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
 import useSession from 'src/hooks/useSession';
 import style from './style.module.scss';
@@ -18,7 +17,7 @@ const Component: React.FC<ComponentProps> = ({
   onClose,
   contents
 }: ComponentProps) => {
-  const { session, setSession } = useSession();
+  const { session } = useSession();
 
   const handleClose = () => {
     onClose();

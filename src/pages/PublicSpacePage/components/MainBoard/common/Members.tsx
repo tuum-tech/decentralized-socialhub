@@ -23,7 +23,9 @@ interface IProps {
 }
 
 const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
-  const isNFTSpace = useMemo(() => space.category === SpaceCategory.NFT, [space.category]);
+  const isNFTSpace = useMemo(() => space.category === SpaceCategory.NFT, [
+    space.category
+  ]);
   const [showViewAllModal, setShowViewAllModal] = useState(false);
   const [firstIV, setFirstIV] = useState<any[]>([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -52,7 +54,7 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
         );
       }
     })();
-  }, [space.guid]);
+  }, [space.guid, isNFTSpace, membersForNFTSpace]);
   return (
     <>
       <CardOverview template={template}>
@@ -76,38 +78,36 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
           </IonRow>
         </CardHeaderContent>
         <CardContentContainer>
-          {totalCount > 0 ? (
-            firstIV.map((member: any, index: number) => {
-              const isProfileUser = typeof member === 'object';
-              if (!member) return;
-              return (
-                <IonRow className={style['row']} key={index}>
-                  <div className={style['avatar']}>
+          {totalCount > 0
+            ? firstIV.map((member: any, index: number) => {
+                const isProfileUser = typeof member === 'object';
+                if (!member) return <></>;
+                return (
+                  <IonRow className={style['row']} key={index}>
+                    <div className={style['avatar']}>
+                      {isProfileUser ? (
+                        <Avatar did={member.did} width="40px" />
+                      ) : (
+                        <img src={nft_item_icon} alt={member.name} />
+                      )}
+                      <img src={welcome_badge} alt="welcome badge" />
+                    </div>
                     {isProfileUser ? (
-                      <Avatar did={member.did} width="40px" />
+                      <Link
+                        to={getDIDString('/did/' + member.did)}
+                        target={'blank'}
+                      >
+                        <span className={style['name']}>{member.name}</span>
+                      </Link>
                     ) : (
-                      <img src={nft_item_icon} alt={member.name} />
+                      <span className={style['name']}>
+                        {shortenAddress(member)}
+                      </span>
                     )}
-                    <img src={welcome_badge} alt="welcome badge" />
-                  </div>
-                  {isProfileUser ? (
-                    <Link
-                      to={getDIDString('/did/' + member.did)}
-                      target={'blank'}
-                    >
-                      <span className={style['name']}>{member.name}</span>
-                    </Link>
-                  ) : (
-                    <span className={style['name']}>
-                      {shortenAddress(member)}
-                    </span>
-                  )}
-                </IonRow>
-              );
-            })
-          ) : (
-            `No members yet`
-          )}
+                  </IonRow>
+                );
+              })
+            : `No members yet`}
         </CardContentContainer>
       </CardOverview>
       <ViewAllMember

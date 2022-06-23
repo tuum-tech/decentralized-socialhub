@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { IUniversitiesResponse } from 'src/services/search.service';
 import { ProfileService } from 'src/services/profile.service';
 import { alertError } from 'src/utils/notify';
 import { FollowService } from 'src/services/follow.service';
@@ -22,16 +21,16 @@ interface Props {
 
 const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredUniversities] = useState<IUniversitiesResponse>({
-    get_universities: { items: [] }
-  });
 
   const [filteredUsers, setFilteredUsers] = useState<IUserResponse>({
     items: []
   });
+
   const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
     get_following: { items: [] }
   });
+
+  const [followingCount, setFollowingCount] = useState(0);
 
   // ID text strings within Elastos DID is an ID Sidechain address encoded
   // using Bitcoin-style Base58 and starting with the letter "i",
@@ -48,28 +47,37 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
 
   useEffect(() => {
     (async () => {
-      // await loadFollowingData();
-      try {
-        if (userSession && userSession.did && userSession.tutorialStep === 4) {
-          let following = await ProfileService.getFollowings(userSession.did);
-          setListFollowing(following as IFollowingResponse);
+      if (
+        userSession &&
+        userSession.did !== '' &&
+        userSession.tutorialStep === 4
+      ) {
+        try {
+          if (userSession && userSession.did) {
+            let following = await ProfileService.getFollowings(userSession.did);
+            setListFollowing(following as IFollowingResponse);
+          }
+        } catch (e) {
+          alertError(null, 'Could not load users that you follow');
         }
-      } catch (e) {
-        alertError(null, 'Could not load users that you follow');
       }
     })();
   }, [userSession, userSession.did]);
 
   useEffect(() => {
     (async () => {
-      let dids: string[] = [];
+      if (userSession && userSession.did) {
+        setFollowingCount(getFollowingCount());
+      }
 
+      let dids: string[] = [];
       if (
         listFollowing.get_following.items &&
         listFollowing.get_following.items.length
       ) {
         dids = listFollowing.get_following.items.map(u => u.did);
       }
+
       try {
         const fUsers = await FollowService.invokeSearch(
           dids,
@@ -77,7 +85,6 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
           200,
           1
         );
-
         setFilteredUsers({ items: fUsers });
       } catch (e) {
         setFilteredUsers({ items: [] });
@@ -95,7 +102,7 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
   return (
     <>
       {/* <FollowingHeader followingCount={getFollowingCount()} /> */}
-      {filteredUsers?.items.length === 0 ? (
+      {followingCount === 0 ? (
         <NoConnectionComp pageType="followingPeople" />
       ) : (
         <>
@@ -108,6 +115,8 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
             people={filteredUsers}
             following={listFollowing.get_following}
             searchKeyword={searchQuery}
+            isSearchKeywordDID={isDID(searchQuery)}
+            showHeader={false}
             size="6"
           />
         </>
