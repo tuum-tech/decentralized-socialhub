@@ -93,7 +93,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
         await fetchMorePosts();
       })();
     }
-  }, [fetchMorePosts, space.guid]);
+  }, [space.guid]);
   useEffect(() => {
     (async () => {
       if (!space.guid) return;

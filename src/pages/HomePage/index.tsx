@@ -130,7 +130,7 @@ const HomePage = () => {
       window.addEventListener('resize', handleResize);
       return () => window.removeEventListener('resize', handleResize);
     }
-  }, []);
+  }, [hasWindow]);
 
   const scrollTo = (target: string) => {
     if (target === 'About') {
