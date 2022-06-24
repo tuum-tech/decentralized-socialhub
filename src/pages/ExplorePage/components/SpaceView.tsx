@@ -90,31 +90,32 @@ const SpaceView: React.FC<Props> = ({ searchKeyword }: Props) => {
 
     return () => clearTimeout(timer);
   }, []);
+
   return (
     <>
       {loading ? (
         <LoadingIndicator loadingText="loading spaces..." />
       ) : (
         <>
+          <IonRow style={{ padding: '10px' }}>
+            {categories.map(v => (
+              <DefaultButton
+                size="default"
+                variant="outlined"
+                btnColor={
+                  selectedCategory === v.id ? 'primary-gradient' : undefined
+                }
+                textType={selectedCategory === v.id ? 'gradient' : 'normal'}
+                onClick={() => setSelectedCategory(v.id)}
+                className={style['button']}
+                key={v.id}
+              >
+                <SectionText>{v.label}</SectionText>
+              </DefaultButton>
+            ))}
+          </IonRow>
           {filteredSpaces.length ? (
             <>
-              <IonRow style={{ padding: '10px' }}>
-                {categories.map(v => (
-                  <DefaultButton
-                    size="default"
-                    variant="outlined"
-                    btnColor={
-                      selectedCategory === v.id ? 'primary-gradient' : undefined
-                    }
-                    textType={selectedCategory === v.id ? 'gradient' : 'normal'}
-                    onClick={() => setSelectedCategory(v.id)}
-                    className={style['button']}
-                    key={v.id}
-                  >
-                    <SectionText>{v.label}</SectionText>
-                  </DefaultButton>
-                ))}
-              </IonRow>
               <RequestCommunity />
               <SpaceListView spaces={filteredSpaces} explore={true} />
             </>
