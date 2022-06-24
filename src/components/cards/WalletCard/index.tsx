@@ -364,13 +364,13 @@ const WalletCard: React.FC<IWalletProps> = ({
                 {walletViewItem(CredentialType.ETHAddress)}
               </IonCol>
             )}
-            {containsVerifiedCredential(
+            {/* {containsVerifiedCredential(
               CredentialType.EIDAddress.toLowerCase()
             ) && (
               <IonCol size={isEditable ? '6' : '12'}>
                 {walletViewItem(CredentialType.EIDAddress)}
               </IonCol>
-            )}
+            )} */}
             {containsVerifiedCredential(
               CredentialType.ESCAddress.toLowerCase()
             ) && (
@@ -390,11 +390,11 @@ const WalletCard: React.FC<IWalletProps> = ({
         noButton
       >
         <IonGrid class="ion-no-padding">
-          <IonRow no-padding>
+          {/* <IonRow no-padding>
             <IonCol class="ion-no-padding">
               {walletEditItem(CredentialType.EIDAddress)}
             </IonCol>
-          </IonRow>
+          </IonRow> */}
           <IonRow no-padding>
             <IonCol class="ion-no-padding">
               {walletEditItem(CredentialType.ESCAddress)}
