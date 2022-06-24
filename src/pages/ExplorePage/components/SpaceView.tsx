@@ -6,8 +6,6 @@ import RequestCommunity from './RequestCommunity';
 
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 import SpaceListView from 'src/components/Space/SpaceListView';
-import { selectSpaces, selectSpacesLoading } from 'src/store/spaces/selectors';
-import { fetchSpaces } from 'src/store/spaces/actions';
 import { SpaceService } from 'src/services/space.service';
 import NoDataCard from 'src/components/NoDataCard';
 import welcomeSpacesImg from 'src/assets/nodata/welcome-spaces.svg';
@@ -39,7 +37,6 @@ const categories = [
 ];
 
 const SpaceView: React.FC<Props> = ({ searchKeyword }: Props) => {
-  const dispatch = useDispatch();
   // const loading = useSelector(state => selectSpacesLoading(state));
   // const spaces = useSelector(state => selectSpaces(state));
   const [loading, setLoading] = useState(false);

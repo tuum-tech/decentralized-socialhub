@@ -3,26 +3,19 @@ import { StaticContext, RouteComponentProps } from 'react-router';
 import { AccountType, UserService } from 'src/services/user.service';
 import { useHistory } from 'react-router-dom';
 
-import { createStructuredSelector } from 'reselect';
-import { connect } from 'react-redux';
-import { setSession } from 'src/store/users/actions';
-import { makeSelectSession } from 'src/store/users/selectors';
-
 import { DidService } from 'src/services/did.service.new';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { retrieveDocInfo, UserType } from 'src/utils/user';
 
-import { InferMappedProps, LocationState, SubState } from './types';
+import { LocationState } from './types';
 import ProfileFields from './components/ProfileFields';
+import useSession from 'src/hooks/useSession';
 
 interface PageProps
-  extends InferMappedProps,
-    RouteComponentProps<{}, StaticContext, LocationState> {}
+  extends RouteComponentProps<{}, StaticContext, LocationState> {}
 
-const CreateProfileWithDidPage: React.FC<PageProps> = ({
-  eProps,
-  ...props
-}: PageProps) => {
+const CreateProfileWithDidPage: React.FC<PageProps> = (props: PageProps) => {
+  const { setSession } = useSession();
   const [userInfo, setUserInfo] = useState<UserType>({
     did: '',
     mnemonic: '',
@@ -94,24 +87,11 @@ const CreateProfileWithDidPage: React.FC<PageProps> = ({
           newUserInfo.hiveHost,
           newUserInfo.avatar
         );
-        eProps.setSession({ session: sessionItem });
+        setSession(sessionItem);
         history.push('/profile');
       }}
     />
   );
 };
 
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(null, mapDispatchToProps)(CreateProfileWithDidPage);
+export default CreateProfileWithDidPage;

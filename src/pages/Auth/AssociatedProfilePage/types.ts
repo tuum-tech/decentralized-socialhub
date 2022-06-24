@@ -1,12 +1,8 @@
-import { mapDispatchToProps, mapStateToProps } from './index';
-import { SubState, ActionType, defaultUserInfo } from 'src/store/users/types';
+import { SubState, defaultUserInfo } from 'src/store/users/types';
 import { AccountType } from 'src/services/user.service';
 
-export type InferMappedProps = ReturnType<typeof mapStateToProps> &
-  ReturnType<typeof mapDispatchToProps>;
-
 export { defaultUserInfo }; 
-export type { SubState, ActionType };
+export type { SubState };
 
 export type UserProps = {
   status: string;

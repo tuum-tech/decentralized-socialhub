@@ -187,7 +187,7 @@ const SocialProfilesCard: React.FC<Props> = ({
       `
     );
 
-    var timer = setInterval(async function() {
+    setInterval(async function() {
       if (popupwindow!.closed) {
         //clearInterval(timer);
 

@@ -1,9 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { IonButton } from '@ionic/react';
 import closeSvg from 'src/assets/new/close.svg';
 import { LinkButton } from 'src/elements-v2/buttons';
-import { Link } from 'react-router-dom';
 
 export const ToastIntro = styled.p`
   font-family: 'SF Pro Display';

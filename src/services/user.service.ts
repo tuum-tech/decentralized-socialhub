@@ -11,12 +11,11 @@ import {
 } from './script.service';
 import { ProfileService } from './profile.service';
 import {
-  DID,
   DIDDocument,
   DIDURL,
   RootIdentity
 } from '@elastosfoundation/did-js-sdk/';
-import { DidService, IDidService } from './did.service.new';
+import { IDidService } from './did.service.new';
 import { CredentialType, DidcredsService } from './didcreds.service';
 import { SpaceService } from './space.service';
 import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
