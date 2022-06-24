@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { IonRow } from '@ionic/react';
 import { setTimeout, clearTimeout } from 'timers';
 import RequestCommunity from './RequestCommunity';
@@ -33,6 +32,22 @@ const categories = [
   {
     id: 'Personal Group',
     label: 'Personal Group'
+  },
+  {
+    id: 'Creator',
+    label: 'Creator'
+  },
+  {
+    id: 'Business',
+    label: 'Business'
+  },
+  {
+    id: 'DAO',
+    label: 'DAO'
+  },
+  {
+    id: 'Personal NFT Group',
+    label: 'Personal NFT Group'
   }
 ];
 

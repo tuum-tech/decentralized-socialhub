@@ -65,6 +65,22 @@ const categories = [
   {
     id: 'Personal Group',
     label: 'Personal Group'
+  },
+  {
+    id: 'Creator',
+    label: 'Creator'
+  },
+  {
+    id: 'Business',
+    label: 'Business'
+  },
+  {
+    id: 'DAO',
+    label: 'DAO'
+  },
+  {
+    id: 'Personal NFT Group',
+    label: 'Personal NFT Group'
   }
 ];
 
