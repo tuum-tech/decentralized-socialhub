@@ -56,9 +56,7 @@ const DashboardContent: React.FC<Props> = ({
   const [isMore, setIsMore] = useState(false);
 
   useEffect(() => {
-    if (activeTab === 'badges') {
-      setActive('badges');
-    }
+    setActive(activeTab);
   }, [activeTab]);
 
   useEffect(() => {

@@ -137,7 +137,7 @@ const Web3Storage: React.FC<Props> = ({ session, complete, close }) => {
   };
 
   const generateUserToken = async (mnemonics: string, address: string) => {
-    let isEssentialsUser = session.isEssentialUser;
+    let isEssentialsUser = mnemonics === undefined || mnemonics === '';
     let challenge = await HiveService.getHiveChallenge(
       address,
       isEssentialsUser
