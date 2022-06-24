@@ -213,16 +213,13 @@ export class SearchService {
     dids: string[],
     limit: number,
     offset: number
-  ): Promise<IRunScriptResponse<IUserResponse | undefined>> {
+  ): Promise<IRunScriptResponse<ISearchUserResponse>> {
     let params: any = {
       limit: limit,
       skip: offset
     };
 
-    let usersResponse: IRunScriptResponse<IUserResponse> = {
-      isSuccess: false,
-      response: { get_users_by_tutorialStep: { items: [] } }
-    };
+    let usersResponse: IRunScriptResponse<ISearchUserResponse>;
 
     params['dids'] = dids;
     usersResponse = await this.appHiveClient.Scripting.RunScript({
@@ -233,12 +230,20 @@ export class SearchService {
         target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
       }
     });
+    if (usersResponse.error) {
+      throw usersResponse.error;
+    }
     if (usersResponse.isSuccess) {
       return usersResponse;
     }
-    return usersResponse.error;
+
+    return {
+      isSuccess: false,
+      response: { get_users_by_dids: { items: [] } }
+    };
   }
 
+  // TODO: duplicated function, need to remove
   async searchUsersByDIDs(
     dids: string[],
     limit: number,

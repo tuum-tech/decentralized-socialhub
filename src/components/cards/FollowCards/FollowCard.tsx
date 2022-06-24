@@ -9,7 +9,7 @@ import { LinkStyleSpan } from '../common';
 import style from './style.module.scss';
 
 interface FollowCardProps {
-  users: string[];
+  users: ISessionItem[];
   getLinkFunc: any;
   viewAllClicked: () => void;
   template: string;

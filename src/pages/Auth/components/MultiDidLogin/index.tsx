@@ -99,17 +99,16 @@ const MultiDidLogin: React.FC<Props> = ({
   useEffect(() => {
     (async () => {
       const searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-      const getUserRes: any = await searchServiceLocal.getUsersByDIDs(
-        dids,
-        200,
-        0
-      );
-      if (getUserRes.isSuccess === true) {
+      const getUserRes = await searchServiceLocal.getUsersByDIDs(dids, 200, 0);
+      if (getUserRes.isSuccess === true && getUserRes.response) {
         for (let user in getUserRes.response.get_users_by_dids.items) {
           if (
             getUserRes.response.get_users_by_dids.items[user].isEssentialUser
           ) {
-            getUserRes.response.get_users_by_dids.items.splice(user, 1);
+            getUserRes.response.get_users_by_dids.items.splice(
+              parseInt(user),
+              1
+            );
           }
         }
       }
