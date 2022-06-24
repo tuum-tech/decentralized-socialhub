@@ -15,19 +15,23 @@ const FollowOrUnFollowButton: React.FC<IProps> = ({
 }: IProps) => {
   const [text, setText] = useState('Follow');
   const [loading, setLoading] = useState(true);
-  const [following, setFollowing] = useState(false);
+  const [toggleFollowing, setToggleFollowing] = useState(false);
 
   const follow = async (follow: boolean) => {
     setLoading(true);
-    setFollowing(follow);
+    let res;
     try {
       if (follow) {
-        await ProfileService.addFollowing(did, signedUser);
+        res = await ProfileService.addFollowing(did, signedUser);
       } else {
-        await ProfileService.unfollow(did, signedUser);
+        res = await ProfileService.unfollow(did, signedUser);
       }
-      await loadData();
+      if (res) {
+        await loadData();
+        setToggleFollowing(!toggleFollowing);
+      }
     } catch (e) {
+      setLoading(false);
       alertError(null, `Failed to ${follow ? 'follow' : 'unfollow'} this user`);
     }
   };
@@ -46,16 +50,17 @@ const FollowOrUnFollowButton: React.FC<IProps> = ({
 
         setText(followingDids.includes(did) ? 'Unfollow' : 'Follow');
       }
-      setLoading(false);
       return;
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
       await loadData();
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -68,14 +73,14 @@ const FollowOrUnFollowButton: React.FC<IProps> = ({
     <FollowButton
       onClick={async () => {
         if (loading) return;
-        if (following) {
+        if (toggleFollowing) {
           await follow(false);
         } else {
           await follow(true);
         }
       }}
     >
-      {following ? `${text}ing` : text}
+      {toggleFollowing ? `${text}ing` : text}
     </FollowButton>
   );
 };
