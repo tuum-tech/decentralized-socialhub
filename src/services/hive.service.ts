@@ -146,7 +146,7 @@ export class HiveService {
 
   private static async getHiveOptions(
     hiveHost: string,
-    isEssentialUser: boolean
+    isEssentialUser?: boolean
   ): Promise<IOptions> {
     //TODO: change to appInstance
     let builder = new OptionsBuilder();
@@ -183,7 +183,7 @@ export class HiveService {
 
   static async getHiveChallenge(
     hiveHost: string,
-    isEssentialUser: boolean
+    isEssentialUser?: boolean
   ): Promise<IHiveChallenge> {
     let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
     let options = await this.getHiveOptions(hiveHost, isEssentialUser);
@@ -233,7 +233,7 @@ export class HiveService {
   static async getUserHiveToken(
     hiveHost: string,
     presentation: VerifiablePresentation,
-    isEssentialUser: boolean
+    isEssentialUser?: boolean
   ): Promise<string> {
     let options = await this.getHiveOptions(hiveHost, isEssentialUser);
     return await HiveClient.getAuthenticationToken(

@@ -159,6 +159,7 @@ const RecoverAccountFlow: React.FC<Props> = ({
           );
           return;
         }
+        session.isEssentialUser = true;
 
         nextStep();
       } else {

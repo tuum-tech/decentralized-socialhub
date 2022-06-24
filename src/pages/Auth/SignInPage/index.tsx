@@ -147,14 +147,13 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
             res,
             serviceEndpoint
           );
-          console.log('userdata after registering: ', session);
+          
           if(!OnBoardingService.isOnBoardingCompleted(session.onBoardingInfo)){
             session.onBoardingInfo = {
               type: 2,
               step: 0
             };
           }
-          session.isEssentialUser = true;
           eProps.setSession({ session });
           history.push('/profile');
         } else {

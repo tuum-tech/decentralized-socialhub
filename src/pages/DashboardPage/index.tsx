@@ -325,6 +325,7 @@ const DashboardPage: React.FC<RouteComponentProps> = (
             followingDids={followingDids}
             mutualDids={mutualDids}
             activeTab={currentTab}
+            setCurrentTab={setCurrentTab}
           />
 
           {version && (

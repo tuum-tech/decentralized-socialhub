@@ -599,7 +599,6 @@ export class UserService {
     }
     const res: any = await TuumTechScriptService.updateTuumUser(newSessionItem);
     this.lockUser(UserService.key(sessionItem.did), newSessionItem);
-
     if (notifyUser && res.meta.code === 200 && res.data._status === 'OK') {
       showNotify('User info is successfuly saved', 'success');
     }

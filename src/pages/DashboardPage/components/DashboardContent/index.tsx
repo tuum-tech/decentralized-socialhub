@@ -36,6 +36,7 @@ interface Props {
   followingDids: string[];
   mutualDids: string[];
   activeTab?: any;
+  setCurrentTab: (active: string)=> void;
 }
 
 const DashboardContent: React.FC<Props> = ({
@@ -44,7 +45,8 @@ const DashboardContent: React.FC<Props> = ({
   followerDids,
   followingDids,
   mutualDids,
-  activeTab
+  activeTab,
+  setCurrentTab
 }) => {
   const profile = useRecoilValue(FullProfileAtom);
   const [active, setActive] = useState('home');
@@ -137,7 +139,7 @@ const DashboardContent: React.FC<Props> = ({
     <Wrapper>
       <TabsContainer template="default">
         <TabList>
-          <TabItem active={active === 'home'} onClick={() => setActive('home')}>
+          <TabItem active={active === 'home'} onClick={() => {setActive('home'); setCurrentTab('home');}}>
             <IonLabel>Home</IonLabel>
           </TabItem>
           {/* <TabItem
@@ -148,11 +150,11 @@ const DashboardContent: React.FC<Props> = ({
         </TabItem> */}
           <TabItem
             active={active === 'badges'}
-            onClick={() => setActive('badges')}
+            onClick={() => {setActive('badges'); setCurrentTab('badges')}}
           >
             <IonLabel>Badges</IonLabel>
           </TabItem>
-          <TabItem active={active === 'NFTs'} onClick={() => setActive('NFTs')}>
+          <TabItem active={active === 'NFTs'} onClick={() => {setActive('NFTs'); setCurrentTab('NFTs');}}>
             <IonLabel>NFTs</IonLabel>
           </TabItem>
         </TabList>

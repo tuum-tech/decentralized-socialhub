@@ -54,7 +54,6 @@ const NewUserFlow: React.FC<Props> = ({
   }
 
   const shareLink = async () => {
-    await changeStep(step + 1);
     if (navigator.clipboard) {
       navigator.clipboard.writeText(`${process.env.REACT_APP_TUUM_TECH_HIVE}` + getDIDString('/did/' + session.did));
       showNotify(`Copied Profile URL`, 'success');

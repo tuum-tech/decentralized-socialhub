@@ -166,7 +166,7 @@ const Web3Identity: React.FC<Props> = ({ session, back, next, close }) => {
           );
           return;
         }
-        window.localStorage.removeItem('mnemonic');
+        session.isEssentialUser = true;
         next();
       } else {
         showNotify('Did is not published on the blockchain yet', 'error');

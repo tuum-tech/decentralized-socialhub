@@ -137,7 +137,7 @@ const Web3Storage: React.FC<Props> = ({ session, complete, close }) => {
   };
 
   const generateUserToken = async (mnemonics: string, address: string) => {
-    let isEssentialsUser = mnemonics === undefined || mnemonics === '';
+    let isEssentialsUser = session.isEssentialUser;
     let challenge = await HiveService.getHiveChallenge(
       address,
       isEssentialsUser
@@ -245,6 +245,7 @@ const Web3Storage: React.FC<Props> = ({ session, complete, close }) => {
       let didService = await DidService.getInstance();
       let userService = new UserService(didService);
       const updatedSession = await userService.updateSession(newSession);
+      console.log("updatedSession", updatedSession)
       // setSession(updatedSession);
       let hiveInstance = await HiveService.getSessionInstance(newSession);
       // props.setLoadingText('Installing scripts on User Vault.');
