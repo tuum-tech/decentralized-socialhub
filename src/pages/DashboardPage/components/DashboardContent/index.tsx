@@ -35,6 +35,7 @@ interface Props {
   followerDids: string[];
   followingDids: string[];
   mutualDids: string[];
+  activeTab?: any;
 }
 
 const DashboardContent: React.FC<Props> = ({
@@ -42,7 +43,8 @@ const DashboardContent: React.FC<Props> = ({
   sessionItem,
   followerDids,
   followingDids,
-  mutualDids
+  mutualDids,
+  activeTab
 }) => {
   const profile = useRecoilValue(FullProfileAtom);
   const [active, setActive] = useState('home');
@@ -50,6 +52,12 @@ const DashboardContent: React.FC<Props> = ({
   const [ethCursor, setEthCursor] = useState('');
   const [page, setPage] = useState(0);
   const [isMore, setIsMore] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === 'badges') {
+      setActive('badges');
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     (async () => {
@@ -89,7 +97,6 @@ const DashboardContent: React.FC<Props> = ({
         }
       }
     );
-    console.log('ethResponse=====>', ethResponse);
     setNFTs(nfts => [...nfts, ...ethResponse.data.assets]);
     setEthCursor(ethResponse.data.cursor ?? '');
   };
@@ -105,7 +112,6 @@ const DashboardContent: React.FC<Props> = ({
         }
       }
     );
-    console.log('escResponse=====>', escResponse);
     setNFTs(nfts => [...nfts, ...escResponse.data.assets]);
     if (escResponse.data.totalPage > page) {
       setPage(page + 1);

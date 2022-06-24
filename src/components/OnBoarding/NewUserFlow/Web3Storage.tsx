@@ -242,11 +242,9 @@ const Web3Storage: React.FC<Props> = ({ session, complete, close }) => {
         newSession.badges!.dStorage!.ownVault.archived = new Date().getTime();
       }
 
-      console.log("newSession", newSession)
       let didService = await DidService.getInstance();
       let userService = new UserService(didService);
       const updatedSession = await userService.updateSession(newSession);
-      console.log("updatedSession", updatedSession)
       // setSession(updatedSession);
       let hiveInstance = await HiveService.getSessionInstance(newSession);
       // props.setLoadingText('Installing scripts on User Vault.');

@@ -197,16 +197,6 @@ export class UserService {
     this.didService.storeDocument(documentWithCredentials);
     this.didService.publishDocument(temporaryDocument);
 
-    window.localStorage.setItem(
-      `temporary_${documentWithCredentials
-        .getSubject()
-        .toString()
-        .replace('did:elastos:', '')}`,
-      JSON.stringify({
-        mnemonic: mnemonics
-      })
-    );
-
     return documentWithCredentials;
   }
 

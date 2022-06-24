@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import DownloadEssentials from './DownloadEssentials';
 import OwnYourSelf from './OwnYourSelf';
@@ -7,6 +8,8 @@ import Web3Identity from './Web3Identity';
 import Web3Storage from './Web3Storage';
 import ActivateProfile from './ActivateProfile';
 import AllIsSet from './AllIsSet';
+import { showNotify } from 'src/utils/notify';
+import { getDIDString } from 'src/utils/did';
 
 /**
  * 0: own your self
@@ -22,15 +25,18 @@ interface Props {
   session: ISessionItem;
   close: (step: number) => void;
   onBoardingInfo: IOnboardingInfo;
+  setCurrentTab: (active: string) => void;
 }
 
 const NewUserFlow: React.FC<Props> = ({
   session,
   close,
   onBoardingInfo,
-  changeStep
+  changeStep,
+  setCurrentTab
 }: Props) => {
   const step = onBoardingInfo.step;
+  const history = useHistory();
 
   const nextStep = async () => {
     await changeStep(step + 1);
@@ -41,6 +47,19 @@ const NewUserFlow: React.FC<Props> = ({
       await changeStep(step - 1);
     }
   };
+
+  const seeMyBades = async () => {
+    await changeStep(step + 1);
+    setCurrentTab('badges')
+  }
+
+  const shareLink = async () => {
+    await changeStep(step + 1);
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(`${process.env.REACT_APP_TUUM_TECH_HIVE}` + getDIDString('/did/' + session.did));
+      showNotify(`Copied Profile URL`, 'success');
+    }
+  }
 
   if (step === 0) {
     return <OwnYourSelf next={nextStep} close={() => close(step)} />;
@@ -78,7 +97,7 @@ const NewUserFlow: React.FC<Props> = ({
   }
 
   if (step === 4) {
-    return <AllIsSet seeMyBades={() => {}} close={nextStep} share={() => {}} />;
+    return <AllIsSet seeMyBades={seeMyBades} close={nextStep} share={shareLink} />;
   }
 
   return <LoadingModal />;

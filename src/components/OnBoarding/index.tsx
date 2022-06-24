@@ -23,6 +23,7 @@ const DarkTransparentBG = styled(IonContent)`
 
 interface Props extends InferMappedProps {
   onClose: () => void;
+  setCurrentTab: (active: string) => void;
 }
 const OnBoarding: React.FC<Props> = ({ eProps, ...props }: Props) => {
   const [obdInfo, setObdInfo] = useState<IOnboardingInfo | null>(null);
@@ -43,7 +44,9 @@ const OnBoarding: React.FC<Props> = ({ eProps, ...props }: Props) => {
       type: obdInfo.type,
       step: step
     };
-    const onBoardingCompleted = OnBoardingService.isOnBoardingCompleted(newObdInfo)
+    const onBoardingCompleted = OnBoardingService.isOnBoardingCompleted(
+      newObdInfo
+    );
     eProps.setSession({
       session: await userService.updateSession(
         {
@@ -70,6 +73,7 @@ const OnBoarding: React.FC<Props> = ({ eProps, ...props }: Props) => {
             close={props.onClose}
             changeStep={changeStep}
             onBoardingInfo={obdInfo}
+            setCurrentTab={props.setCurrentTab}
           />
         );
       } else if (obdInfo.type === 2) {
@@ -79,6 +83,7 @@ const OnBoarding: React.FC<Props> = ({ eProps, ...props }: Props) => {
             close={props.onClose}
             changeStep={changeStep}
             onBoardingInfo={obdInfo}
+            setCurrentTab={props.setCurrentTab}
           />
         );
       }
@@ -88,6 +93,7 @@ const OnBoarding: React.FC<Props> = ({ eProps, ...props }: Props) => {
           close={props.onClose}
           changeStep={changeStep}
           onBoardingInfo={obdInfo}
+          setCurrentTab={props.setCurrentTab}
         />
       );
     }

@@ -174,7 +174,7 @@ const RecoverAccountPage: React.FC<PageProps> = ({ eProps, ...props }) => {
                 if (!checkRecoverLoginRes.canLogin) {
                   alertError(
                     null,
-                    'You already completed the onboarding tutorial with this DID account. You should login using essential wallet'
+                    'This account already exists on Profile. Please sign in using Essentials from the Sign in page.'
                   );
                   setLoading(false);
                   return;

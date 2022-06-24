@@ -3,6 +3,7 @@
  */
 import { IonModal, IonContent } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
+import { RouteComponentProps } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { up } from 'styled-breakpoints';
@@ -41,10 +42,11 @@ const ReleaseModal = styled(IonModal)`
   --box-shadow: none !important;
 `;
 
-const DashboardPage: React.FC = () => {
+const DashboardPage: React.FC<RouteComponentProps> = (
+  props: RouteComponentProps
+) => {
   const { session, setSession } = useSession();
 
-  const [showTutorial, setShowTutorial] = useState(false);
   const [willExpire, setWillExpire] = useState(false);
   const [loadingText, setLoadingText] = useState('');
   const [showReleaseModal, setShowReleaseModal] = useState(false);
@@ -54,6 +56,7 @@ const DashboardPage: React.FC = () => {
   const setFullProfile = useSetRecoilState<ProfileDTO>(FullProfileAtom);
 
   //const [session, setSession] = useRecoilState(SessionAtom);
+  const [currentTab, setCurrentTab] = useState('home');
 
   const [publishStatus, setPublishStatus] = useState(RequestStatus.NotFound);
   const [onBoardVisible, setOnBoardVisible] = useState(false);
@@ -296,6 +299,7 @@ const DashboardPage: React.FC = () => {
         onClose={() => {
           setOnBoardVisible(false);
         }}
+        setCurrentTab={setCurrentTab}
       />
     );
   }
@@ -320,6 +324,7 @@ const DashboardPage: React.FC = () => {
             followerDids={followerDids}
             followingDids={followingDids}
             mutualDids={mutualDids}
+            activeTab={currentTab}
           />
 
           {version && (

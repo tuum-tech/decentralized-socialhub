@@ -130,6 +130,11 @@ const App: React.FC = () => {
                     component={DashboardPage}
                     exact={true}
                   />
+                  <ProtectedRoute
+                    path="/profile/:active"
+                    component={DashboardPage}
+                    exact={true}
+                  />
                   <ProtectedRoute path="/connections" component={Connections} />
                   <ProtectedRoute
                     path="/explore"

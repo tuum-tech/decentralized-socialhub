@@ -6,7 +6,6 @@ import { OnBoardingTitle, OnBoardingContainer } from './LoadingModal';
 import { TransparentButton } from './OwnYourSelf';
 import TutorialSteps from './TutorialSteps';
 
-import downloadQR from 'src/assets/onboarding/download-qr.png';
 import AppStoredownloadQR from 'src/assets/onboarding/qr1.png';
 import PlayStoredownloadQR from 'src/assets/onboarding/qr2.png';
 import googleplay from 'src/assets/googleplay.png';

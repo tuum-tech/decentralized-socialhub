@@ -103,7 +103,7 @@ const AllIsSet: React.FC<Props> = ({ seeMyBades, close, share }) => {
           style={{ width: '170px' }}
           onClick={seeMyBades}
         >
-          <p>See My Bages</p>
+          <p>See My Badges</p>
         </TransparentWithBorderlineButton>
         <ThemeButton
           style={{ width: '170px', fontSize: '16px' }}

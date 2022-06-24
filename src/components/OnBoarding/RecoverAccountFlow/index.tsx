@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import {
   DID,
@@ -11,6 +12,7 @@ import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
 import { useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom } from 'src/Atoms/Atoms';
 import { alertError, showNotify } from 'src/utils/notify';
+import { getDIDString } from 'src/utils/did';
 
 import DownloadEssentials from '../NewUserFlow/DownloadEssentials';
 import OwnYourSelf from '../NewUserFlow/OwnYourSelf';
@@ -25,15 +27,18 @@ interface Props {
   session: ISessionItem;
   close: (step: number) => void;
   onBoardingInfo: IOnboardingInfo;
+  setCurrentTab: (active: string) => void;
 }
 
 const RecoverAccountFlow: React.FC<Props> = ({
   session,
   close,
   onBoardingInfo,
-  changeStep
+  changeStep,
+  setCurrentTab
 }: Props) => {
   const step = onBoardingInfo.step;
+  const history = useHistory();
   const setDidDocument = useSetRecoilState(DIDDocumentAtom);
 
   const nextStep = async () => {
@@ -45,6 +50,19 @@ const RecoverAccountFlow: React.FC<Props> = ({
       await changeStep(step - 1);
     }
   };
+
+  const seeMyBades = async () => {
+    await changeStep(step + 1);
+    setCurrentTab('badges')
+  }
+
+  const shareLink = async () => {
+    await changeStep(step + 1);
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(`${process.env.REACT_APP_TUUM_TECH_HIVE}` + getDIDString('/did/' + session.did));
+      showNotify(`Copied Profile URL`, 'success');
+    }
+  }
 
   useEffect(() => {
     (async () => {
@@ -187,7 +205,7 @@ const RecoverAccountFlow: React.FC<Props> = ({
   }
 
   if (step === 3) {
-    return <AllIsSet seeMyBades={() => {}} close={nextStep} share={() => {}} />;
+    return <AllIsSet seeMyBades={seeMyBades} close={nextStep} share={shareLink} />;
   }
 
   return <LoadingModal />;
