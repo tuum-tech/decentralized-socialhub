@@ -1,8 +1,8 @@
-import { SubState, ActionType, defaultUserInfo } from 'src/store/users/types';
+import { SubState, defaultUserInfo } from 'src/store/users/types';
 import { AccountType } from 'src/services/user.service';
 
 export { defaultUserInfo }; 
-export type { SubState, ActionType };
+export type { SubState };
 
 export type UserProps = {
   status: string;

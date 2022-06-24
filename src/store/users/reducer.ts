@@ -1,9 +1,9 @@
-import produce from 'immer';
-import { ActionType, defaultUserInfo } from './types';
-import { Actions } from './constants';
-import { SubState } from './types';
-import { ActionTags } from 'src/baseplate/models';
-import { createEntityAdapter } from '@reduxjs/toolkit';
+import { defaultUserInfo } from './types';
+import {
+  createEntityAdapter,
+  createSlice,
+  PayloadAction
+} from '@reduxjs/toolkit';
 
 export const usersAdapter = createEntityAdapter<ISessionItem>({
   // Assume IDs are stored in a field other than `user.did`
@@ -19,22 +19,38 @@ export const initialState = usersAdapter.getInitialState({
   error: null
 });
 
-export default (
-  state = initialState,
-  action: ActionTags<ActionType, SubState>
-) => {
-  return produce(state, draft => {
-    const { payLoad } = action;
-    switch (action.type) {
-      case Actions.SET_SESSION: {
-        draft.session = payLoad.session;
-        break;
-      }
-      case Actions.GET_USERS_BY_DID: {
-        draft.loading = true;
-        draft.loading = true;
-        break;
-      }
+export const usersSlice = createSlice({
+  name: 'users',
+  initialState: usersAdapter.getInitialState({
+    session: defaultUserInfo,
+    loading: false,
+    error: null
+  }),
+  reducers: {
+    setSession: (state, action: PayloadAction<{ session: ISessionItem }>) => {
+      state.session = action.payload.session;
+    },
+    getUsersByDid: (
+      state,
+      action: PayloadAction<{ dids: string[]; limit: number; offset: number }>
+    ) => {
+      state.loading = true;
+      state.error = null;
+    },
+    getUsersByDidSuccess: (
+      state,
+      action: PayloadAction<{ users: Array<ISessionItem> }>
+    ) => {
+      usersAdapter.upsertMany(state, action.payload.users);
+    },
+    getUsersByDidFailure: (state, action: PayloadAction<{ error: any }>) => {
+      state.loading = false;
+      state.error = action.payload.error;
+    },
+    setUsers(state, action) {
+      usersAdapter.setAll(state, action.payload.users);
     }
-  });
-};
+  }
+});
+
+export default usersSlice.reducer;
