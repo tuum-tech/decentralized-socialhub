@@ -48,10 +48,10 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
       session.did &&
       (space.followers?.includes(session.did) || hasPermissionToPost)
     );
-  }, [JSON.stringify(space.followers), session.did, hasPermissionToPost]);
+  }, [space.followers, session.did, hasPermissionToPost]);
   const isAdmin = useMemo(
     () => session.did && space.owner?.includes(session.did),
-    [JSON.stringify(space.owner), session.did]
+    [space.owner, session.did]
   );
   const handlePost = async (content: any) => {
     setIsModalOpen(false);
@@ -127,7 +127,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
       }
       setHasPermissionToPost(false);
     })();
-  }, [space.guid, JSON.stringify(space.owner), session]);
+  }, [space.guid, session, space.owner, space.meta, isNFTSpace]);
 
   return (
     <Wrapper>

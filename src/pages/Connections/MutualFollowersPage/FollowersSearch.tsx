@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import PeopleCard from 'src/components/cards/PeopleCard';
 import { ProfileService } from 'src/services/profile.service';
 import { alertError } from 'src/utils/notify';
-import { SearchService } from 'src/services/search.service';
 import NoConnectionComp from 'src/components/NoConnection';
 
 import { FollowService } from 'src/services/follow.service';
@@ -28,8 +27,12 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
     items: []
   });
 
-  const [listFollowers, setListFollowers] = useState<IFollowerItem[]>([]);
-  const [listFollowing, setListFollowing] = useState<IFollowingItem[]>([]);
+  const [listFollowers, setListFollowers] = useState<IFollowerResponse>({
+    get_followers: { items: [] }
+  });
+  const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
+    get_following: { items: [] }
+  });
 
   const [mutualFollowerDids, setMutualFollowerDids] = useState<string[]>([]);
 
@@ -49,20 +52,41 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
   };
 
   const unfollowMutualFollower = (did: string) => {
-    setListFollowing(listFollowing.filter(item => item.did !== did));
+    let newItems: any = listFollowing.get_following.items.filter(
+      item => item.did !== did
+    );
+
+    let following: IFollowingResponse = {
+      get_following: { items: newItems }
+    };
+
+    setListFollowing(following);
   };
 
   useEffect(() => {
     (async () => {
-      if (userSession && userSession.did && userSession.tutorialStep === 4) {
+      if (
+        userSession &&
+        userSession.did !== '' &&
+        userSession.tutorialStep === 4
+      ) {
         try {
-          let followers = await ProfileService.getFollowers([userSession.did]);
-          let following = await ProfileService.getFollowings(userSession.did);
-
-          if (followers) setListFollowers(followers?.get_followers.items);
-          if (following) setListFollowing(following?.get_following.items);
+          if (userSession && userSession.did) {
+            let listDids = [userSession.did];
+            let followers = await ProfileService.getFollowers(listDids);
+            setListFollowers(followers as IFollowerResponse);
+          }
         } catch (e) {
-          alertError(null, 'Could not load connected users');
+          alertError(null, 'Could not retrieve your followers');
+        }
+
+        try {
+          if (userSession && userSession.did) {
+            let following = await ProfileService.getFollowings(userSession.did);
+            setListFollowing(following as IFollowingResponse);
+          }
+        } catch (e) {
+          alertError(null, 'Could not load users that you follow');
         }
       }
     })();
@@ -71,32 +95,29 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
   useEffect(() => {
     if (!listFollowing || !listFollowers) return;
 
-    let followingDids = listFollowing.length
-      ? listFollowing.map(item => item.did)
-      : [];
-    let followerDids = listFollowers.length ? listFollowers[0].followers : [];
+    let followingDids =
+      listFollowing.get_following.items.length > 0
+        ? listFollowing.get_following.items.map(item => item.did)
+        : [];
+    let followerDids =
+      listFollowers.get_followers.items.length > 0
+        ? listFollowers.get_followers.items[0].followers
+        : [];
 
     setMutualFollowerDids(
-      followerDids.filter(did => followingDids.indexOf(did) !== -1)
+      followerDids.filter((did: string) => followingDids.indexOf(did) !== -1)
     );
   }, [listFollowers, listFollowing]);
 
   useEffect(() => {
     (async () => {
       setFollowersCount(mutualFollowerDids.length);
-      const fUsers = await FollowService.invokeSearch(
-        mutualFollowerDids,
-        searchQuery,
-        200,
-        1
-      );
-      let searchServiceLocal: SearchService;
       try {
-        searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-        let listUsers: any = await searchServiceLocal.getUsersByDIDs(
+        const fUsers = await FollowService.invokeSearch(
           mutualFollowerDids,
+          searchQuery,
           200,
-          0
+          1
         );
         setFilteredUsers({ items: fUsers });
       } catch (e) {
@@ -121,7 +142,7 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
           ></SearchInput>
           <PeopleCard
             people={filteredUsers}
-            following={{ items: listFollowing }}
+            following={listFollowing.get_following}
             searchKeyword={searchQuery}
             isSearchKeywordDID={isDID(searchQuery)}
             showHeader={false}

@@ -1,6 +1,5 @@
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { down } from 'styled-breakpoints';
@@ -8,7 +7,6 @@ import AboutCard from 'src/components/cards/AboutCard';
 import SyncBar from 'src/components/SyncBar';
 import SpaceCoverPhoto from 'src/components/cards/SpaceCoverPhoto';
 import SpaceAvatarChange from 'src/components/cards/SpaceAvatarChange';
-import ProfileBriefCard from 'src/components/cards/ProfileBriefCard';
 import Followers from '../Followers';
 import OverView from '../OverView';
 import PublicFields from '../PublicFields';
@@ -35,7 +33,6 @@ interface Props {
 
 const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const [userInfo, setUserInfo] = useState<ISessionItem>(session);
   const [loaded, setLoaded] = useState(false);
   const [spaceProfile, setSpaceProfile] = useState<Space>(profile);

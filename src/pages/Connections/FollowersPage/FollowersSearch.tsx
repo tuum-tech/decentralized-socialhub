@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import PeopleCard from 'src/components/cards/PeopleCard';
 import { ProfileService } from 'src/services/profile.service';
 import { alertError } from 'src/utils/notify';
-import { SearchService } from 'src/services/search.service';
 import NoConnectionComp from 'src/components/NoConnection';
 import { FollowService } from 'src/services/follow.service';
 import SearchInput from 'src/elements/inputs/SearchInput';
@@ -146,11 +145,7 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
           ></SearchInput>
           <PeopleCard
             people={filteredUsers}
-            following={
-              listFollowing && listFollowing.get_following
-                ? listFollowing.get_following
-                : { items: [] }
-            }
+            following={listFollowing.get_following}
             searchKeyword={searchQuery}
             isSearchKeywordDID={isDID(searchQuery)}
             showHeader={false}

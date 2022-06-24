@@ -13,7 +13,6 @@ import {
 import jwt_decode from 'jwt-decode';
 
 import { DidService } from './did.service.new';
-import { DidDocumentService } from './diddocument.service';
 
 export interface IHiveChallenge {
   issuer: string;
@@ -25,7 +24,9 @@ export class HiveService {
   ): Promise<HiveClient | undefined> {
     try {
       let didService = await DidService.getInstance();
-      let isUserDocumentPublished = await didService.isDIDPublished(instance.did);
+      let isUserDocumentPublished = await didService.isDIDPublished(
+        instance.did
+      );
 
       if (!isUserDocumentPublished) {
         return;

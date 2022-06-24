@@ -25,7 +25,6 @@ export const Wrapper = styled.div`
 `;
 interface IProps {
   nfts: any[];
-  ethCursor: string;
   escCursor: boolean;
   fetchMoreEthData: () => void;
   fetchMoreEscData: () => void;
@@ -33,7 +32,6 @@ interface IProps {
 
 const DashboardNFTs: React.FC<IProps> = ({
   nfts,
-  ethCursor,
   escCursor,
   fetchMoreEthData,
   fetchMoreEscData
@@ -57,7 +55,7 @@ const DashboardNFTs: React.FC<IProps> = ({
       </IonRow>
       <IonInfiniteScroll
         threshold="100px"
-        disabled={!ethCursor && !escCursor}
+        disabled={!escCursor}
         onIonInfinite={(e: CustomEvent<void>) => searchNext(e)}
       >
         <IonInfiniteScrollContent

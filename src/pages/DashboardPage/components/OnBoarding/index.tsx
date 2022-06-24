@@ -9,7 +9,6 @@ import clsx from 'clsx';
 import { RequestStatus } from 'src/services/assist.service';
 import AlphaContent from 'src/elements/AlphaContent';
 import Avatar from 'src/components/Avatar';
-import styled from 'styled-components';
 
 import PublishingLabel from '../PublishingLabel';
 import transparentlogo from '../../../../assets/logo/transparentlogo.png';
@@ -19,13 +18,6 @@ import emojiCool from '../../../../assets/icon/emoji-cool.png';
 
 import style from './style.module.scss';
 
-const Container = styled.div`
-  .item {
-    font-style: normal;
-    font-weight: 500;
-    cursor: pointer;
-  }
-`;
 interface Props {
   completed: (startTutorial: boolean) => void;
   publishStatus: RequestStatus;

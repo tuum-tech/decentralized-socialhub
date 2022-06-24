@@ -20,7 +20,6 @@ import GameExpCard from 'src/components/cards/GameExpCard';
 import WalletCard from 'src/components/cards/WalletCard';
 import { getThemeData } from 'src/utils/template';
 
-import PublicProfileTabs from './PublicProfileTabs';
 import ProfileHeader from './ProfileHeader';
 import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 

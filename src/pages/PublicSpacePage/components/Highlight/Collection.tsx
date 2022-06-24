@@ -8,6 +8,7 @@ import {
 } from 'src/components/cards/common';
 import { LinkStyleSpan } from '../MainBoard/common';
 import { getNFTCollectionAssets } from '../../fetchapi';
+import defaultNFT from 'src/assets/default/nft.png';
 
 const Grid = styled(IonGrid)`
   --ion-grid-padding: 0px;
@@ -29,7 +30,9 @@ const Collection: React.FC<IProps> = ({
 }: IProps) => {
   const [assets, setAssets] = useState<any[]>([]);
   const flattenUrl = (url: string) => {
-    if (url.startsWith('ipfs://'))
+    if (url && url.includes('ipfs://ipfs'))
+      return url.replace('ipfs://ipfs', 'https://ipfs.io/ipfs/');
+    if (url && url.includes('ipfs://'))
       return url.replace('ipfs://', 'https://ipfs.io/ipfs/');
     return url;
   };
@@ -61,8 +64,12 @@ const Collection: React.FC<IProps> = ({
                 return (
                   <IonCol size="4" key={index}>
                     <img
-                      src={flattenUrl(asset.image_url)}
-                      alt={asset.image_url}
+                      src={
+                        asset.image_url
+                          ? flattenUrl(asset.image_url)
+                          : defaultNFT
+                      }
+                      alt={asset.name}
                     />
                   </IonCol>
                 );
@@ -73,8 +80,12 @@ const Collection: React.FC<IProps> = ({
                 return (
                   <IonCol size="4" key={index + 3}>
                     <img
-                      src={flattenUrl(asset.image_url)}
-                      alt={asset.image_url}
+                      src={
+                        asset.image_url
+                          ? flattenUrl(asset.image_url)
+                          : defaultNFT
+                      }
+                      alt={asset.name}
                     />
                   </IonCol>
                 );
@@ -85,8 +96,12 @@ const Collection: React.FC<IProps> = ({
                 return (
                   <IonCol size="4" key={index + 6}>
                     <img
-                      src={flattenUrl(asset.image_url)}
-                      alt={asset.image_url}
+                      src={
+                        asset.image_url
+                          ? flattenUrl(asset.image_url)
+                          : defaultNFT
+                      }
+                      alt={asset.name}
                     />
                   </IonCol>
                 );

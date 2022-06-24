@@ -3,7 +3,6 @@ import { IonItem, IonLabel } from '@ionic/react';
 import styled from 'styled-components';
 import { startCase } from 'lodash';
 
-import { SpaceService } from 'src/services/space.service';
 import Card from 'src/elements-v2/Card';
 import { DefaultButton } from 'src/elements-v2/buttons';
 import Modal from 'src/elements-v2/Modal';
@@ -25,7 +24,11 @@ interface IProps {
   update: (fields: string[]) => void;
 }
 
-const PublicFields: React.FC<IProps> = ({ sessionItem, profile, update }: IProps) => {
+const PublicFields: React.FC<IProps> = ({
+  sessionItem,
+  profile,
+  update
+}: IProps) => {
   const modalRef = useRef(null);
   const [fields, setFields] = useState<string[]>([]);
   const defaultFields = ['about', 'follower', 'social links'];
