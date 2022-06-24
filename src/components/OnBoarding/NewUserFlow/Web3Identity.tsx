@@ -9,6 +9,7 @@ import { EssentialsConnector } from '@elastosfoundation/essentials-connector-cli
 
 import { DidService } from 'src/services/did.service.new';
 import { HiveService } from 'src/services/hive.service';
+import { UserService } from 'src/services/user.service';
 import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
 import { useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom } from 'src/Atoms/Atoms';
@@ -166,7 +167,19 @@ const Web3Identity: React.FC<Props> = ({ session, back, next, close }) => {
           );
           return;
         }
-        session.isEssentialUser = true;
+        let userService = new UserService(didService);
+        const res = await userService.SearchUserWithDID(did);
+        if (res) {
+          showNotify(
+            "Please approve Profile's multiple requests on Esssentials App.",
+            'warning'
+          );
+          const session = await userService.LockWithDIDAndPwd(
+            res,
+            serviceEndpoint
+          );
+          session.isEssentialUser = true;
+        }
         next();
       } else {
         showNotify('Did is not published on the blockchain yet', 'error');
