@@ -200,6 +200,7 @@ const TemplateManagerCard: React.FC<PageProps> = ({
               size="large"
               onClick={() => setShowModal(true)}
               style={{ width: '100%' }}
+              disabled={!sessionItem.onBoardingCompleted}
             >
               + Add New Template
             </DefaultButton>

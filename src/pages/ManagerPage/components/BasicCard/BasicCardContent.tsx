@@ -68,6 +68,7 @@ const BasicCardConent = ({
         onRequestVerification={() =>
           requestVerification(`Name: ${currentBasicDTO.name}`)
         }
+        disabled={!sessionItem.onBoardingCompleted}
       >
         <IonRow class="ion-justify-content-start ion-no-padding">
           <IonCol sizeXs="10" sizeSm="5" className="ion-no-padding">
@@ -111,6 +112,7 @@ const BasicCardConent = ({
         onRequestVerification={() =>
           requestVerification(`Email: ${currentBasicDTO.loginCred?.email}`)
         }
+        disabled={!sessionItem.onBoardingCompleted}
       >
         <EmailComp
           sessionItem={sessionItem}

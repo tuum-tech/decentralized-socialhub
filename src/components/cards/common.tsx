@@ -113,6 +113,12 @@ export const LinkStyleSpan = styled.span`
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-fill-color: transparent;
+
+  &.disable {
+    background: grey;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 `;
 
 export const Description = styled.span<ThemeProps>`

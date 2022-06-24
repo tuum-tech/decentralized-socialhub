@@ -468,15 +468,16 @@ const DashboardHome: React.FC<Props> = ({
                 activeTab('badges');
               }}
             />
-
-            <ProfileBriefCard
-              category={'request'}
-              title={'Request Verification'}
-              data={session.badges!}
-              exploreAll={() => {
-                setShowVerificationModal(true);
-              }}
-            />
+            { session.onBoardingCompleted && (
+              <ProfileBriefCard
+                category={'request'}
+                title={'Request Verification'}
+                data={session.badges!}
+                exploreAll={() => {
+                  setShowVerificationModal(true);
+                }}
+              />
+            )}
           </RightCardCol>
         </IonRow>
       </IonGrid>
