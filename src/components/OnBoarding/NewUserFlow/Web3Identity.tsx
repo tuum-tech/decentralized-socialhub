@@ -167,19 +167,6 @@ const Web3Identity: React.FC<Props> = ({ session, back, next, close }) => {
           );
           return;
         }
-        let userService = new UserService(didService);
-        const res = await userService.SearchUserWithDID(did);
-        if (res) {
-          showNotify(
-            "Please approve Profile's multiple requests on Esssentials App.",
-            'warning'
-          );
-          const session = await userService.LockWithDIDAndPwd(
-            res,
-            serviceEndpoint
-          );
-          session.isEssentialUser = true;
-        }
         next();
       } else {
         showNotify('Did is not published on the blockchain yet', 'error');

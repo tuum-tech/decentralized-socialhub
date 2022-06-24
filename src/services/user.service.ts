@@ -335,10 +335,11 @@ export class UserService {
     credential: string = '',
     newDidStr: string,
     hiveHostStr: string,
-    avatar = ''
+    avatar = '',
+    newMnemonicStr: string,
   ) {
     let did = newDidStr;
-    let mnemonics = '';
+    let mnemonics = newMnemonicStr;
     let serviceEndpoint = hiveHostStr;
     if (!did || did === '') {
       mnemonics = await this.didService.generateNewMnemonics();

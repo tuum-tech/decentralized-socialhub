@@ -166,6 +166,7 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
               '',
               did,
               serviceEndpoint,
+              '',
               ''
             );
             sessionItem.onBoardingInfo = {

@@ -47,12 +47,21 @@ const OnBoarding: React.FC<Props> = ({ eProps, ...props }: Props) => {
     const onBoardingCompleted = OnBoardingService.isOnBoardingCompleted(
       newObdInfo
     );
+    let isEssentialUser = false;
+    if(obdInfo.type == 0 && step >= 2) {
+      isEssentialUser = true;
+    } else if(obdInfo.type == 1 && step >= 3) {
+      isEssentialUser = true;
+    } else if (obdInfo.type == 2){
+      isEssentialUser = true;
+    }
     eProps.setSession({
       session: await userService.updateSession(
         {
           ...props.session,
           onBoardingInfo: newObdInfo,
-          onBoardingCompleted: onBoardingCompleted
+          onBoardingCompleted: onBoardingCompleted,
+          isEssentialUser: isEssentialUser
         },
         false
       )

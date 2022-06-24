@@ -133,6 +133,7 @@ const EmailVerificationPage: React.FC<PageProps> = ({
         session.credential,
         session.did,
         '',
+        '',
         ''
       );
 

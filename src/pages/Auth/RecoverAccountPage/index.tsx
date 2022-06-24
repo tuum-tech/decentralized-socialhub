@@ -1,7 +1,7 @@
 import { StaticContext, RouteComponentProps } from 'react-router';
 import { useHistory, Link } from 'react-router-dom';
 
-import { UserService } from 'src/services/user.service';
+import { AccountType, UserService } from 'src/services/user.service';
 import { DidService } from 'src/services/did.service.new';
 import { alertError } from 'src/utils/notify';
 import {
@@ -178,16 +178,54 @@ const RecoverAccountPage: React.FC<PageProps> = ({ eProps, ...props }) => {
                   );
                   setLoading(false);
                   return;
+                } else {
+                  const session = await userService.LockWithDIDAndPwd(
+                    checkRecoverLoginRes.session,
+                    serviceEndpoint
+                  );
+                  let onBoardingInfo = {
+                    type: 0,
+                    step: 0
+                  };
+                  const newSession = {
+                    ...session,
+                    onBoardingInfo: onBoardingInfo
+                  }
+                  eProps.setSession({ session: newSession });
+                  history.push('/profile');
                 }
 
-                const session = await userService.LockWithDIDAndPwd(
-                  checkRecoverLoginRes.session,
-                  serviceEndpoint
-                );
-                eProps.setSession({ session });
-                history.push('/profile');
               } else {
-                history.push('/sign-in');
+                if(didDocument.credentials && didDocument.credentials.size > 0) {
+                  let nameCredential = didDocument.getCredentials().find((c: any) => {
+                    return c.getId().getFragment() === 'name';
+                  });
+                  let name = nameCredential!.getSubject().getProperty('name');
+                  // let name = didDocument.getCredential(did)
+                  let userService = new UserService(await DidService.getInstance());
+                  let sessionItem = await userService.CreateNewUser(
+                    name,
+                    AccountType.DID,
+                    {},
+                    '',
+                    did,
+                    serviceEndpoint,
+                    '',
+                    mnemonic
+                  );
+                  sessionItem.onBoardingInfo = {
+                    type: 1,
+                    step: 0
+                  };
+                  eProps.setSession({ session: sessionItem });
+                  history.push('/profile');
+                } else {
+                  alertError(
+                    null,
+                    `This account has registered essential app. But this is not published yet.`
+                  );
+                  return;
+                }
               }
               setLoading(false);
             }

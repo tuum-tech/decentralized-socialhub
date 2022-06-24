@@ -67,6 +67,8 @@ const GenerateDidPage: React.FC<PageProps> = ({
           session.loginCred,
           session.credential,
           session.did,
+          '',
+          '',
           ''
         );
         eProps.setSession({ session: sessionItem });

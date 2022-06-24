@@ -29,11 +29,11 @@ export class OnBoardingService {
       return false;
     }
     if (onBoardingInfo.type === 1) {
-      return onBoardingInfo.step === 5;
+      return onBoardingInfo.step === 5;  // new user
     } else if (onBoardingInfo.type === 2) {
-      return onBoardingInfo.step === 3;
+      return onBoardingInfo.step === 3; /// login 
     }
-    return onBoardingInfo.step === 4;
+    return onBoardingInfo.step === 4; // recover
   };
 
   public static getOnBoardingTotalSteps = (session: ISessionItem) => {
@@ -61,9 +61,14 @@ export class OnBoardingService {
         session: newSessionItem
       };
     }
-    if (this.isOnBoardingCompleted(user.onBoardingInfo)) {
+    if (user.isEssentialUser) {
       return {
         canLogin: false,
+        session: user
+      };
+    } else if(!user.isEssentialUser) {
+      return {
+        canLogin: true,
         session: user
       };
     }
