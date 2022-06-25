@@ -120,6 +120,10 @@ const Web3Identity: React.FC<Props> = ({ session, back, next, close }) => {
 
       if (did != session.did) {
         alertError(null, 'Please scan again with the correct DID wallet');
+        let connector: EssentialsConnector = connectivity.getActiveConnector() as EssentialsConnector;
+        if (connector && connector.hasWalletConnectSession()) {
+          connector.disconnectWalletConnect();
+        }
         return;
       }
 
