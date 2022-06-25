@@ -126,13 +126,13 @@ export class ProfileService {
       // Is wallet added
       if (!prevFields.includes('wallet') && fields.includes('wallet')) {
         let wallets: any = {};
-        const key1 = CredentialType.EIDAddress.toLowerCase();
+        // const key1 = CredentialType.EIDAddress.toLowerCase();
         const key2 = CredentialType.ESCAddress.toLowerCase();
         const key3 = CredentialType.ETHAddress.toLowerCase();
-        const address1 = await DidcredsService.getCredentialValue(
-          userSession,
-          key1
-        );
+        // const address1 = await DidcredsService.getCredentialValue(
+        //   userSession,
+        //   key1
+        // );
         const address2 = await DidcredsService.getCredentialValue(
           userSession,
           key2
@@ -141,7 +141,7 @@ export class ProfileService {
           userSession,
           key3
         );
-        if (address1) wallets[key1] = address1;
+        // if (address1) wallets[key1] = address1;
         if (address2) wallets[key2] = address2;
         if (address3) wallets[key3] = address3;
         await userService.updateSession({

@@ -1,17 +1,13 @@
-import { Actions } from './constants';
-import { ActionType } from './types';
-import { ActionTags } from 'src/baseplate/models';
+import { usersSlice } from './reducer';
 
-export function getSession<T>(payLoad = {}): ActionTags<ActionType, T> {
-  return {
-    type: Actions.GET_SESSION,
-    payLoad
-  };
+export function setSession(payload: { session: ISessionItem }) {
+  return usersSlice.actions.setSession(payload);
 }
 
-export function setSession<T>(payLoad: T): ActionTags<ActionType, T> {
-  return {
-    type: Actions.SET_SESSION,
-    payLoad
-  };
+export function getUsersByDid(dids: string[], limit: number, offset = 0) {
+  return usersSlice.actions.getUsersByDid({
+    dids: [...new Set(dids)],
+    limit,
+    offset
+  });
 }

@@ -97,7 +97,7 @@ const DashboardContent: React.FC<Props> = ({
       }
     );
     console.log('ethResponse=====>', ethResponse);
-    if (ethResponse.data) {
+    if (ethResponse.data && ethResponse.data.assets.length > 0) {
       setNFTs(nfts => [...nfts, ...ethResponse.data.assets]);
     }
   };
@@ -114,7 +114,7 @@ const DashboardContent: React.FC<Props> = ({
       }
     );
     console.log('escResponse=====>', escResponse);
-    if (escResponse.data) {
+    if (escResponse.data && escResponse.data.assets.length > 0) {
       setNFTs(nfts => [...nfts, ...escResponse.data.assets]);
       if (escResponse.data.totalPage > page) {
         setPage(page + 1);

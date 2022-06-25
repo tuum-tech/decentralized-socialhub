@@ -40,7 +40,7 @@ export class SyncService {
     'Phone',
     'ETHAddress',
     'ESCAddress',
-    'EIDAddress'
+    // 'EIDAddress'
   ];
 
   private static async GetVerifiableCredentialsFromVault(
@@ -131,11 +131,11 @@ export class SyncService {
         (syncItem.BlockchainCredential !== undefined &&
           syncItem.VaultCredential !== undefined &&
           syncItem.BlockchainCredential.getSubject().getProperties()[
-            field.toLowerCase()
+          field.toLowerCase()
           ] ===
-            syncItem.VaultCredential.getSubject().getProperties()[
-              field.toLowerCase()
-            ])
+          syncItem.VaultCredential.getSubject().getProperties()[
+          field.toLowerCase()
+          ])
       )
         return;
 

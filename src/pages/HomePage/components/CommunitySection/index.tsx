@@ -53,15 +53,43 @@ interface Props {
   };
 }
 
+const categories = [
+  {
+    id: 'NFT Collection',
+    label: 'NFT Collection'
+  },
+  {
+    id: 'Welcome to Profile',
+    label: 'Welcome to Profile'
+  },
+  {
+    id: 'Personal Group',
+    label: 'Personal Group'
+  },
+  {
+    id: 'Creator',
+    label: 'Creator'
+  },
+  {
+    id: 'Business',
+    label: 'Business'
+  },
+  {
+    id: 'DAO',
+    label: 'DAO'
+  },
+  {
+    id: 'Personal NFT Group',
+    label: 'Personal NFT Group'
+  }
+];
+
 const CommunitySection: React.FC<Props> = ({ refProp, windowDimensions }) => {
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('NFT Collection');
   const spaces = useSelector(state => selectSpaces(state));
   const history = useHistory();
 
   const filteredSpaces = useMemo(() => {
-    if (selectedCategory === 'all') {
-      return spaces.filter(v => v.category !== 'Personal Group');
-    }
     return spaces.filter(v => v.category === selectedCategory);
   }, [spaces, selectedCategory]);
 
@@ -73,68 +101,21 @@ const CommunitySection: React.FC<Props> = ({ refProp, windowDimensions }) => {
             <SectionTitle>Community</SectionTitle>
           </Fade>
           <IonRow className={style['row']}>
-            <DefaultButton
-              size="default"
-              variant="outlined"
-              btnColor={
-                selectedCategory === 'all' ? 'primary-gradient' : undefined
-              }
-              textType={selectedCategory === 'all' ? 'gradient' : 'normal'}
-              onClick={() => setSelectedCategory('all')}
-              className={style['button']}
-            >
-              <SectionText>All</SectionText>
-            </DefaultButton>
-            <DefaultButton
-              size="default"
-              variant="outlined"
-              btnColor={
-                selectedCategory === 'Welcome to Profile'
-                  ? 'primary-gradient'
-                  : undefined
-              }
-              textType={
-                selectedCategory === 'Welcome to Profile'
-                  ? 'gradient'
-                  : 'normal'
-              }
-              onClick={() => setSelectedCategory('Welcome to Profile')}
-              className={style['button']}
-            >
-              <SectionText>Welcome to Profile</SectionText>
-            </DefaultButton>
-            <DefaultButton
-              size="default"
-              variant="outlined"
-              btnColor={
-                selectedCategory === 'Personal Group'
-                  ? 'primary-gradient'
-                  : undefined
-              }
-              textType={
-                selectedCategory === 'Personal Group' ? 'gradient' : 'normal'
-              }
-              onClick={() => setSelectedCategory('Personal Group')}
-              className={style['button']}
-            >
-              <SectionText>Personal Group</SectionText>
-            </DefaultButton>
-            <DefaultButton
-              size="default"
-              variant="outlined"
-              btnColor={
-                selectedCategory === 'NFT Collection'
-                  ? 'primary-gradient'
-                  : undefined
-              }
-              textType={
-                selectedCategory === 'NFT Collection' ? 'gradient' : 'normal'
-              }
-              onClick={() => setSelectedCategory('NFT Collection')}
-              className={style['button']}
-            >
-              <SectionText>NFT Collection</SectionText>
-            </DefaultButton>
+            {categories.map(v => (
+              <DefaultButton
+                size="default"
+                variant="outlined"
+                btnColor={
+                  selectedCategory === v.id ? 'primary-gradient' : undefined
+                }
+                textType={selectedCategory === v.id ? 'gradient' : 'normal'}
+                onClick={() => setSelectedCategory(v.id)}
+                className={style['button']}
+                key={v.id}
+              >
+                <SectionText>{v.label}</SectionText>
+              </DefaultButton>
+            ))}
           </IonRow>
 
           <SpaceListView

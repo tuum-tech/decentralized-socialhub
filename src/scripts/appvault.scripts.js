@@ -752,26 +752,26 @@ let run = async () => {
         }
       }
     });
-    await client.Scripting.SetScript({
-      name: 'get_users_by_eidaddress',
-      allowAnonymousUser: true,
-      allowAnonymousApp: true,
-      executable: {
-        type: 'find',
-        name: 'get_users_by_eidaddress',
-        output: true,
-        body: {
-          collection: 'users',
-          filter: {
-            wallets: { eidaddress: '$params.address' }
-          },
-          options: {
-            limit: '$params.limit',
-            skip: '$params.skip'
-          }
-        }
-      }
-    });
+    // await client.Scripting.SetScript({
+    //   name: 'get_users_by_eidaddress',
+    //   allowAnonymousUser: true,
+    //   allowAnonymousApp: true,
+    //   executable: {
+    //     type: 'find',
+    //     name: 'get_users_by_eidaddress',
+    //     output: true,
+    //     body: {
+    //       collection: 'users',
+    //       filter: {
+    //         wallets: { eidaddress: '$params.address' }
+    //       },
+    //       options: {
+    //         limit: '$params.limit',
+    //         skip: '$params.skip'
+    //       }
+    //     }
+    //   }
+    // });
     await client.Scripting.SetScript({
       name: 'get_users_by_escaddress',
       allowAnonymousUser: true,

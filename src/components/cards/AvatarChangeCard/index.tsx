@@ -3,11 +3,6 @@ import React, { useState } from 'react';
 import { IonCardTitle, IonCol, IonGrid, IonRow } from '@ionic/react';
 import { setTimeout } from 'timers';
 
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-import { makeSelectSession } from 'src/store/users/selectors';
-import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, SubState } from './types';
 import { UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
 import { SmallLightButton } from 'src/elements/buttons';
@@ -31,19 +26,17 @@ import { showNotify } from 'src/utils/notify';
 import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { DidcredsService } from 'src/services/didcreds.service';
 //Crop Image Imports
-import { IonModal } from '@ionic/react';
 import { Modal } from 'react-bootstrap';
 import Cropper from 'react-easy-crop';
+import useSession from 'src/hooks/useSession';
 import { generateDownload } from './util/cropImage';
 
-const Upload: React.FC<InferMappedProps> = ({
-  eProps,
-  ...props
-}: InferMappedProps) => {
+const Upload: React.FC = () => {
+  const { session, setSession } = useSession();
   const [imagePreview, setImagePreview] = useState<any>('');
   const [base64, setBase64] = useState<string>();
   const [defaultImage, setDefaultImage] = useState(
-    props.session.avatar || defaultAvatar
+    session.avatar || defaultAvatar
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isImage, setIsImage] = useState<boolean>(false);
@@ -69,31 +62,26 @@ const Upload: React.FC<InferMappedProps> = ({
     if (!base64Str.startsWith('data:image')) {
       base64Str = `data:image/png;base64,${base64Str}`;
     }
-    if (props.session && props.session.did !== '') {
-      let newSession = JSON.parse(JSON.stringify(props.session));
+    if (session && session.did !== '') {
+      let newSession = JSON.parse(JSON.stringify(session));
       newSession.avatar = base64Str;
 
       let didService: IDidService = await DidService.getInstance();
       let userService = new UserService(didService);
-      let did = new DID(props.session.did);
+      let did = new DID(session.did);
       let didDocument: DIDDocument = await didService.getStoredDocument(did);
 
-      if (props.session.mnemonics !== '') {
+      if (session.mnemonics !== '') {
         let avatarVC = await didService.newSelfVerifiableCredential(
           didDocument,
           'avatar',
           getAvatarVCData(base64Str)
         );
 
-        await DidcredsService.addOrUpdateCredentialToVault(
-          props.session,
-          avatarVC
-        );
+        await DidcredsService.addOrUpdateCredentialToVault(session, avatarVC);
       }
 
-      eProps.setSession({
-        session: await userService.updateSession(newSession, true)
-      });
+      setSession(await userService.updateSession(newSession, true));
       await ProfileService.addActivity(
         {
           guid: '',
@@ -177,7 +165,7 @@ const Upload: React.FC<InferMappedProps> = ({
     setBase64('');
     setName('');
     setSize('');
-    setDefaultImage(props.session.avatar || defaultAvatar);
+    setDefaultImage(session.avatar || defaultAvatar);
   };
 
   //Crop Image Functions
@@ -316,17 +304,4 @@ const Upload: React.FC<InferMappedProps> = ({
   );
 };
 
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Upload);
+export default Upload;
