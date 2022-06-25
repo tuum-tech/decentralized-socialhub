@@ -10,7 +10,10 @@ import { setSession } from 'src/store/users/actions';
 import { InferMappedProps, SubState } from './types';
 
 import { TuumTechScriptService } from 'src/services/script.service';
-import { SpaceService, CategoriesForPrivateSpace } from 'src/services/space.service';
+import {
+  SpaceService,
+  CategoriesForPrivateSpace
+} from 'src/services/space.service';
 import { StyledButton } from 'src/elements/buttons';
 import { SpaceAvatar } from 'src/components/Space/SpaceCard';
 import {
@@ -43,7 +46,7 @@ const AboutSpace: React.FC<IProps> = ({
   const [followers, setFollowers] = useState<string[]>([]);
   const [owners, setOwners] = useState<any[]>([]);
   const following = useMemo(() => followers.includes(session.did), [
-    JSON.stringify(followers),
+    followers,
     session.did
   ]);
   const isExpandable = useMemo(() => (space.description || '').length > 250, [
@@ -57,10 +60,10 @@ const AboutSpace: React.FC<IProps> = ({
           ? [space.owner]
           : []
         : space.owner || [],
-    [space.category, JSON.stringify(space.owner)]
+    [space.category, space.owner]
   );
   const isOwner = useMemo(() => ownerDids.includes(session.did), [
-    JSON.stringify(ownerDids),
+    ownerDids,
     session.did
   ]);
   const isLoggedIn = window.localStorage.getItem('isLoggedIn');
@@ -74,7 +77,7 @@ const AboutSpace: React.FC<IProps> = ({
 
   useEffect(() => {
     setFollowers(space.followers || []);
-  }, [JSON.stringify(space.followers)]);
+  }, [space.followers]);
 
   useEffect(() => {
     (async () => {
@@ -96,7 +99,7 @@ const AboutSpace: React.FC<IProps> = ({
         setOwners(_owners);
       }
     })();
-  }, [JSON.stringify(ownerDids)]);
+  }, [ownerDids]);
 
   const onFollow = async () => {
     if (!auth()) return;

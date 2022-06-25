@@ -9,10 +9,6 @@ import Avatar from 'src/components/Avatar';
 import { DidService } from 'src/services/did.service.new';
 import { TemplateService } from 'src/services/template.service';
 import { DefaultButton } from 'src/elements-v2/buttons';
-import {
-  defaultFullProfile,
-  ProfileService
-} from 'src/services/profile.service';
 import TemplateModalContent from './Modal/TemplateModal';
 import styles from './style.module.scss';
 import Modal from 'src/elements-v2/Modal';

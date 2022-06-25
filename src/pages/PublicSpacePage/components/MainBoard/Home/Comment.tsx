@@ -7,7 +7,6 @@ import {
   Item
 } from 'src/pages/ActivityPage/components/ActivityTimeline';
 import Avatar from 'src/components/Avatar';
-import img_nft_item from 'src/assets/space/nft_item.jpg';
 import style from '../Chat/style.module.scss';
 import { UserService } from 'src/services/user.service';
 import { DidService } from 'src/services/did.service.new';

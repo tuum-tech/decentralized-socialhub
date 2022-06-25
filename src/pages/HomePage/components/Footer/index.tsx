@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
-import TextInput from 'src/elements/inputs/TextInput';
-import { IonCol, IonGrid, IonRow, IonInput, IonTextarea } from '@ionic/react';
+import { IonCol, IonGrid, IonRow, IonInput } from '@ionic/react';
 import { Fade } from 'react-awesome-reveal';
 
 import footerBG from 'src/assets/new/footer/footer-bg.svg';

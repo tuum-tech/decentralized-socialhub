@@ -11,7 +11,6 @@ import { getItemsFromData } from 'src/utils/script';
 import { timeSince } from 'src/utils/time';
 import Avatar from 'src/components/Avatar';
 import style from './style.module.scss';
-import RingIcon from 'src/assets/icon/ring.svg';
 
 interface Props {
   referrals: IReferral[];

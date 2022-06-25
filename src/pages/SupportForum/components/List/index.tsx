@@ -176,7 +176,7 @@ const List: React.FC<ListProp> = ({ githubIssues }) => {
             <div className="date">Date</div>
           </div>
           {filteredIssues.map(issue => {
-            if (issue.hasOwnProperty('pull_request')) return;
+            if (issue.hasOwnProperty('pull_request')) return <></>;
             const linkUrl = '/support-forum/' + issue.number;
             return (
               <div className="table-row" key={issue.id}>

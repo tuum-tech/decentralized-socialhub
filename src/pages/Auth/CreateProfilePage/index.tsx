@@ -62,10 +62,6 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
 
   const [signedUsers, setSignedUsers] = useState<string[]>([]);
   const [mode, setMode] = useState(0); // 0: create new, 1: sign in using pre logged
-  const [user, setUser] = useState({
-    name: '',
-    email: ''
-  });
 
   useEffect(() => {
     if (
@@ -141,7 +137,6 @@ const CreateProfilePage: React.FC<InferMappedProps> = ({
 
           <EmailUserCreate
             onSuccess={(name: string, email: string) => {
-              setUser({ name, email });
               history.push({
                 pathname: '/email-verification',
                 state: { name, email }

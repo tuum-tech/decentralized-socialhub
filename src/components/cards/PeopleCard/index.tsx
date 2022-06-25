@@ -1,11 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonCol
-} from '@ionic/react';
+import { IonCard, IonCardHeader, IonCardTitle, IonCol } from '@ionic/react';
 import { useBreakpoint } from 'styled-breakpoints/react-styled';
 import { down } from 'styled-breakpoints';
 
@@ -74,10 +68,10 @@ const PeopleCard: React.FC<Props> = ({
 }: Props) => {
   const { session } = useSession();
   const isSmDown = useBreakpoint(down('sm'));
-  // const perPage = parseInt(size) / 12 === 1 ? 4 : 8;
   const [perPage, setPerPage] = useState<number>(10);
   const totalPages = useMemo(
-    () => (people && people.items ? people.items.length / perPage : 1),
+    () =>
+      people && people.items ? Math.ceil(people.items.length / perPage) : 1,
     [people, perPage]
   );
 
@@ -152,7 +146,7 @@ const PeopleCard: React.FC<Props> = ({
           // handleUnfollow,
           // loadFollowing
         ))}
-        {listPeople.length ? (
+        {listPeople.length > 0 ? (
           <Pagination
             perPage={perPage}
             totalPages={totalPages}

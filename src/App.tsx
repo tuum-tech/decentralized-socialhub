@@ -3,7 +3,6 @@ import React, { Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { IonApp, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import * as Sentry from '@sentry/react';
 
 import { Web3ReactProvider } from '@web3-react/core';
 import Web3 from 'web3';
@@ -59,7 +58,7 @@ import ManagerPage from './pages/ManagerPage';
 import ActivityPage from './pages/ActivityPage';
 import SpacePage from './pages/SpacePage';
 import PublicSpacePage from './pages/PublicSpacePage';
-import SyncPage from './pages/SyncPage';
+/* import SyncPage from './pages/SyncPage'; */
 
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -274,4 +273,4 @@ const App: React.FC = () => {
   );
 };
 
-export default Sentry.withProfiler(App);
+export default App;

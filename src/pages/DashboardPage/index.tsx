@@ -24,7 +24,6 @@ import NewRelease from './components/NewRelease';
 import DashboardContent from './components/DashboardContent';
 
 import DashboardHeader from './components/DashboardHeader';
-
 import { DidService } from 'src/services/did.service.new';
 import { DIDDocument, DID } from '@elastosfoundation/did-js-sdk/';
 import { useRecoilState, useSetRecoilState } from 'recoil';
