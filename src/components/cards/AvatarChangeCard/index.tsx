@@ -292,7 +292,7 @@ const Upload: React.FC = () => {
                     accept=".jpeg, .png, .jpg"
                     onChange={photoUpload}
                     src={imagePreview}
-                    disabled={!props.session.onBoardingCompleted}
+                    disabled={!session.onBoardingCompleted}
                   />
                 </Perfil>
               </ImgUploadArea>
