@@ -9,7 +9,6 @@ import { EssentialsConnector } from '@elastosfoundation/essentials-connector-cli
 
 import { DidService } from 'src/services/did.service.new';
 import { HiveService } from 'src/services/hive.service';
-import { UserService } from 'src/services/user.service';
 import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
 import { useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom } from 'src/Atoms/Atoms';
@@ -118,7 +117,7 @@ const Web3Identity: React.FC<Props> = ({ session, back, next, close }) => {
       let owner = nameCredential!.getId().getDid();
       let did = 'did:elastos:' + owner.getMethodSpecificId();
 
-      if (did != session.did) {
+      if (did !== session.did) {
         alertError(null, 'Please scan again with the correct DID wallet');
         let connector: EssentialsConnector = connectivity.getActiveConnector() as EssentialsConnector;
         if (connector && connector.hasWalletConnectSession()) {

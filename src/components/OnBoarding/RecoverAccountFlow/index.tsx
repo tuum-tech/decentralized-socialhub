@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import {
@@ -17,9 +17,7 @@ import { getDIDString } from 'src/utils/did';
 import DownloadEssentials from '../NewUserFlow/DownloadEssentials';
 import OwnYourSelf from '../NewUserFlow/OwnYourSelf';
 import LoadingModal from '../NewUserFlow/LoadingModal';
-import Web3Identity from '../NewUserFlow/Web3Identity';
 import Web3Storage from '../NewUserFlow/Web3Storage';
-import ActivateProfile from '../NewUserFlow/ActivateProfile';
 import AllIsSet from '../NewUserFlow/AllIsSet';
 
 interface Props {
@@ -38,7 +36,6 @@ const RecoverAccountFlow: React.FC<Props> = ({
   setCurrentTab
 }: Props) => {
   const step = onBoardingInfo.step;
-  const history = useHistory();
   const setDidDocument = useSetRecoilState(DIDDocumentAtom);
 
   const nextStep = async () => {
@@ -113,7 +110,7 @@ const RecoverAccountFlow: React.FC<Props> = ({
       let owner = nameCredential!.getId().getDid();
       let did = 'did:elastos:' + owner.getMethodSpecificId();
 
-      if (did != session.did) {
+      if (did !== session.did) {
         alertError(null, 'Invalid Session');
         return;
       }

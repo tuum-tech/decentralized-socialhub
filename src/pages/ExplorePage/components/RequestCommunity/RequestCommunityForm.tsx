@@ -8,7 +8,7 @@ import { networks } from './constants';
 import { DefaultButton } from 'src/elements-v2/buttons';
 import { SpaceService, SpaceCategory } from 'src/services/space.service';
 import { showNotify } from 'src/utils/notify';
-import { getNFTCollectionOwners, getNFTCollectionValidateForm } from '../../../PublicSpacePage/fetchapi';
+import { getNFTCollectionValidateForm } from '../../../PublicSpacePage/fetchapi';
 interface Props {
   sendRequest: (request: any) => void;
   onClose: () => void;
@@ -78,6 +78,7 @@ const RequestCommunityForm: React.FC<Props> = ({
     if (
       spaces.find(
         (space: any) =>
+          isOpenseaCollection === false &&
           space.meta.address?.toLowerCase() ===
             request.contract.toLowerCase() &&
           space.meta.network?.toLowerCase() ===
@@ -97,15 +98,13 @@ const RequestCommunityForm: React.FC<Props> = ({
       contract_address: request.contract || '',
       isOpenseaCollection: isOpenseaCollection,
       collectionSlug: !!request.nftlink
-          ? request.nftlink
-              .split('opensea.io/collection/')[1]
-              ?.replace('/', '')
-          : request.name
-    }
-    
+        ? request.nftlink.split('opensea.io/collection/')[1]?.replace('/', '')
+        : request.name
+    };
+
     const response: any = await getNFTCollectionValidateForm(forminfo);
 
-    if(response.meta.code != 200){
+    if (response.meta.code !== 200) {
       showNotify(response.data, 'warning');
       return false;
     }
@@ -144,8 +143,7 @@ const RequestCommunityForm: React.FC<Props> = ({
           </IonCol>
         </IonRow>
       )}
-      {(request.network.value === 'eth' ||
-        request.network.value === 'polygon') && (
+      {request.network.value === 'eth' && (
         <>
           <IonRow class="ion-justify-content-start">
             <IonCol size="12">

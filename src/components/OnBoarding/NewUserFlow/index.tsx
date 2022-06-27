@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 
 import DownloadEssentials from './DownloadEssentials';
@@ -6,7 +6,6 @@ import OwnYourSelf from './OwnYourSelf';
 import LoadingModal from './LoadingModal';
 import Web3Identity from './Web3Identity';
 import Web3Storage from './Web3Storage';
-import ActivateProfile from './ActivateProfile';
 import AllIsSet from './AllIsSet';
 import { showNotify } from 'src/utils/notify';
 import { getDIDString } from 'src/utils/did';
@@ -36,7 +35,6 @@ const NewUserFlow: React.FC<Props> = ({
   setCurrentTab
 }: Props) => {
   const step = onBoardingInfo.step;
-  const history = useHistory();
 
   const nextStep = async () => {
     await changeStep(step + 1);

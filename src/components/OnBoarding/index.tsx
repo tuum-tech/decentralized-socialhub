@@ -7,7 +7,7 @@ import { createStructuredSelector } from 'reselect';
 import { makeSelectSession } from 'src/store/users/selectors';
 import { setSession } from 'src/store/users/actions';
 import { InferMappedProps } from './types';
-import { SubState, ActionType, defaultUserInfo } from 'src/store/users/types';
+import { SubState } from 'src/store/users/types';
 import { DidService, IDidService } from 'src/services/did.service.new';
 import { UserService } from 'src/services/user.service';
 
@@ -48,11 +48,11 @@ const OnBoarding: React.FC<Props> = ({ eProps, ...props }: Props) => {
       newObdInfo
     );
     let isEssentialUser = false;
-    if(obdInfo.type == 0 && step >= 2) {
+    if (obdInfo.type === 0 && step >= 2) {
       isEssentialUser = true;
-    } else if(obdInfo.type == 1 && step >= 3) {
+    } else if (obdInfo.type === 1 && step >= 3) {
       isEssentialUser = true;
-    } else if (obdInfo.type == 2){
+    } else if (obdInfo.type === 2) {
       isEssentialUser = true;
     }
     eProps.setSession({

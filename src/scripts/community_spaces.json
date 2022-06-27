@@ -40,5 +40,16 @@
       "address": "0x52f687b1c6aacc92b47da5209cf25d987c876628",
       "collectionSlug": "maskhuman"
     }
+  },
+  {
+    "sid": 11,
+    "name": "Moonstars",
+    "category": "NFT Collection",
+    "owner": [],
+    "meta": {
+      "network": "Polygon",
+      "address": "0xd22B236fad04eB97FaEE1D03415a4CeDcfCBB31D",
+      "collectionSlug": "Moonstars"
+    }
   }
 ]
