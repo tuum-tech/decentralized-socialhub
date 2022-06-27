@@ -39,14 +39,17 @@ const LoginInWithEssential: React.FC<Props> = ({
   const seeMyBades = async () => {
     await changeStep(step + 1);
     setCurrentTab('badges');
-  }
+  };
 
   const shareLink = async () => {
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(`${process.env.REACT_APP_TUUM_TECH_HIVE}` + getDIDString('/did/' + session.did));
+      navigator.clipboard.writeText(
+        `${process.env.REACT_APP_PROFILE_LANDING_PAGE}` +
+          getDIDString('/did/' + session.did)
+      );
       showNotify(`Copied Profile URL`, 'success');
     }
-  }
+  };
 
   if (step === 0) {
     return <OwnYourSelf next={nextStep} close={() => close(step)} />;
@@ -63,7 +66,9 @@ const LoginInWithEssential: React.FC<Props> = ({
   }
 
   if (step === 2) {
-    return <AllIsSet seeMyBades={seeMyBades} close={nextStep} share={shareLink} />;
+    return (
+      <AllIsSet seeMyBades={seeMyBades} close={nextStep} share={shareLink} />
+    );
   }
   return <LoadingModal />;
 };
