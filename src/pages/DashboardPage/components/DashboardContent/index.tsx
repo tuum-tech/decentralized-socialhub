@@ -73,7 +73,10 @@ const DashboardContent: React.FC<Props> = ({
         );
       }
     })();
-  }, [profile, sessionItem]);
+  }, [
+    profile?.ethaddressCredential.address,
+    profile?.escaddressCredential.address
+  ]);
 
   const getNFTEthCollectionAssets = async (address: string) => {
     const ethResponse: any = await request(
