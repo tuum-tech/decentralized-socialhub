@@ -1,36 +1,9 @@
 import React from 'react';
 import { IonList, IonLabel } from '@ionic/react';
 import styled from 'styled-components';
-import { down } from 'styled-breakpoints';
 
 import { TabsContainer } from 'src/components/profile/ProfileComponent/PublicProfileTabs';
 import { TabItem } from 'src/elements-v2/tabs';
-
-export const Header = styled.div`
-  width: 100%;
-  height: 83px;
-  background: #fff;
-  padding: 27px 25px 20px 48px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  ${down('sm')} {
-    padding: 20px;
-    height: fit-content;
-  }
-`;
-
-export const PageTitle = styled.h2`
-  font-family: 'SF Pro Display';
-  font-size: 28px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1.36;
-  letter-spacing: normal;
-  text-align: left;
-  color: #27272e;
-`;
 
 export const SpaceTabsContainer = styled(TabsContainer)`
   ion-list,

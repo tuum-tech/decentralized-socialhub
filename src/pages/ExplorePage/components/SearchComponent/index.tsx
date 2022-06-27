@@ -72,7 +72,6 @@ const SearchComponent: React.FC<Props> = ({ userSession }: Props) => {
           0,
           userSession
         );
-        console.log('hello - ', listUsers);
 
         setFilteredUsers(listUsers);
       } catch (e) {

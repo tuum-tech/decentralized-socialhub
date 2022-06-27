@@ -336,7 +336,7 @@ export class UserService {
     newDidStr: string,
     hiveHostStr: string,
     avatar = '',
-    newMnemonicStr: string,
+    newMnemonicStr: string
   ) {
     let did = newDidStr;
     let mnemonics = newMnemonicStr;
@@ -771,7 +771,6 @@ export class UserService {
     //     mnemonic: mnemonic
     //   })
     // );
-    // console.log('hello - signinpage: ', res, name);
     // if (res) {
     //   const recoverCheckRes = await OnBoardingService.checkRecoverLogin(res);
     //   if (!recoverCheckRes.canLogin) {
