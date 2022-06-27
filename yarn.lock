@@ -1349,13 +1349,13 @@
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-10.1.0.tgz#f0950bba18819512d42f7197e56c518aa491cf18"
   integrity sha512-ij4wRiunFfaJxjB0BdrYHIH8FxBJpOwNPhhAcunlmPdXudL1WQV1qoP9un6JsEBAgQH+7UXyyjh0g7jTxXK6tg==
 
-"@elastosfoundation/did-js-sdk@^2.1.0", "@elastosfoundation/did-js-sdk@^2.2.5":
-  version "2.2.6"
-  resolved "https://registry.yarnpkg.com/@elastosfoundation/did-js-sdk/-/did-js-sdk-2.2.6.tgz#b9d5785da21492e7f00d38075d08d38ec8bc1a52"
-  integrity sha512-qglmnu4AdmCUTjL4tVoNY4qsur0KADMS7OxOPArKrvYwPfi5nPJGSkJHj9BhFEzM+wD8Um9OkUuk/SkCmUw3hA==
+"@elastosfoundation/did-js-sdk@^2.2.7", "@elastosfoundation/did-js-sdk@^2.2.9":
+  version "2.2.9"
+  resolved "https://registry.yarnpkg.com/@elastosfoundation/did-js-sdk/-/did-js-sdk-2.2.9.tgz#f4f7ab0357f0bcb756e9f235ae9215fcec2d4878"
+  integrity sha512-m1MD1YwbMyRldUbyFIFM0A+5R09LPPtVucE8YA4FCdTnED9bQoJQfEF7Mb1I3cDtr99qaA4MYR7HrkzFliGpNg==
   dependencies:
     assert "2.0.0"
-    axios "0.21.4"
+    axios "0.27.2"
     bip32 "2.0.6"
     bip39 "3.0.4"
     bn.js "5.2.0"
@@ -1378,11 +1378,14 @@
     typedoc "0.22.11"
     util "0.12.4"
 
-"@elastosfoundation/elastos-connectivity-sdk-js@^1.0.20":
-  version "1.0.20"
-  resolved "https://registry.yarnpkg.com/@elastosfoundation/elastos-connectivity-sdk-js/-/elastos-connectivity-sdk-js-1.0.20.tgz#07066e2a3f8c240d354641860e0c2dd6d2fb3e4c"
-  integrity sha512-eXFlblxprC+5nTYLZZQoU7hkhtzvXjoNSV564HiCwQ8ayLnLbLcpg2CMRIrTKEhc2n0xg4skmpqn5zqL6DyNZQ==
+"@elastosfoundation/elastos-connectivity-sdk-js@^1.0.23":
+  version "1.0.23"
+  resolved "https://registry.yarnpkg.com/@elastosfoundation/elastos-connectivity-sdk-js/-/elastos-connectivity-sdk-js-1.0.23.tgz#5fa34cd6d6dd50a58366555589608303a52fd296"
+  integrity sha512-neTbQM2QTcXBVfkm5v8lpj+bnmQhEhHTbIm07/Wiqfpow2AJ/1uPDoZPa6gCKO3qWVbKIQR5o6hY6kIXrGZDkQ==
   dependencies:
+    "@elastosfoundation/did-js-sdk" "^2.2.7"
+    moment "^2.29.1"
+    rxjs "^7.5.1"
     svelte-copy-to-clipboard "^0.2.5"
     svelte-i18n "^3.3.6"
     web3-core "^1.6.1"
@@ -1412,12 +1415,12 @@
     randombytes "^2.1.0"
     secp256r1 "0.0.3"
 
-"@elastosfoundation/essentials-connector-client-browser@^1.0.37":
-  version "1.0.37"
-  resolved "https://registry.yarnpkg.com/@elastosfoundation/essentials-connector-client-browser/-/essentials-connector-client-browser-1.0.37.tgz#ed57f718824fa559f9bc2aa932221238beb869cf"
-  integrity sha512-8JOMVraPGrfHIf/UQul+2mf6C+erwNDMviNPJ7QlLqvNDcp749U6XrS8eQh+x/TaAG1bBtsAgy712QSwb1oOsA==
+"@elastosfoundation/essentials-connector-client-browser@^1.0.38":
+  version "1.0.38"
+  resolved "https://registry.yarnpkg.com/@elastosfoundation/essentials-connector-client-browser/-/essentials-connector-client-browser-1.0.38.tgz#600967e74c01ce35f14b9000aa0ead4d675a4d75"
+  integrity sha512-raXo4jLSZ+PraedV0zoo93m0wWlkzasiP88nfN1mLaAreWaaChqwWqswV5rHkm2sTBAey8cMdvOkwrDwddLA7g==
   dependencies:
-    "@elastosfoundation/did-js-sdk" "^2.1.0"
+    "@elastosfoundation/did-js-sdk" "^2.2.7"
     "@walletconnect/client" "^1.7.0"
     "@walletconnect/utils" "^1.7.0"
     "@walletconnect/web3-provider" "^1.7.0"
@@ -3797,20 +3800,20 @@ axe-core@^4.3.5:
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.3.5.tgz#78d6911ba317a8262bfee292aeafcc1e04b49cc5"
   integrity sha512-WKTW1+xAzhMS5dJsxWkliixlO/PqC4VhmO9T4juNYcaTg9jzWiJsou6m5pxWYGfigWbwzJWeFY6z47a+4neRXA==
 
-axios@0.21.4, axios@^0.21.1:
-  version "0.21.4"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.4.tgz#c67b90dc0568e5c1cf2b0b858c43ba28e2eda575"
-  integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
-  dependencies:
-    follow-redirects "^1.14.0"
-
-axios@^0.27.2:
+axios@0.27.2, axios@^0.27.2:
   version "0.27.2"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.27.2.tgz#207658cc8621606e586c85db4b41a750e756d972"
   integrity sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==
   dependencies:
     follow-redirects "^1.14.9"
     form-data "^4.0.0"
+
+axios@^0.21.1:
+  version "0.21.4"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.4.tgz#c67b90dc0568e5c1cf2b0b858c43ba28e2eda575"
+  integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
+  dependencies:
+    follow-redirects "^1.14.0"
 
 axobject-query@^2.0.2, axobject-query@^2.2.0:
   version "2.2.0"
