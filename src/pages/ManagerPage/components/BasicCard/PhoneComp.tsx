@@ -64,7 +64,7 @@ const PhoneComp: React.FC<Props> = ({
 
   const disableButton = () => {
     return (
-      sessionItem.tutorialStep !== 4 ||
+      !sessionItem.onBoardingCompleted ||
       loading ||
       error !== '' ||
       phone === sessionItem.loginCred?.phone ||
@@ -77,7 +77,7 @@ const PhoneComp: React.FC<Props> = ({
       <IonRow style={{ width: '100%', paddingLeft: 0, paddingRight: 0 }}>
         <IonCol size="5">
           <SmallTextInput
-            disabled={sessionItem.tutorialStep !== 4 || loading || !isEdit}
+            disabled={!sessionItem.onBoardingCompleted || loading || !isEdit}
             label="Phone Number"
             placeholder="+79149625769"
             name="phoneNumber"

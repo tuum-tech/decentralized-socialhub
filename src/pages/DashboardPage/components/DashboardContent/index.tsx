@@ -47,8 +47,6 @@ const DashboardContent: React.FC<Props> = ({
   const profile = useRecoilValue(FullProfileAtom);
   const [active, setActive] = useState('home');
   const [nfts, setNFTs] = useState<any[]>([]);
-  const [page, setPage] = useState(0);
-  const [isMore, setIsMore] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -89,14 +87,14 @@ const DashboardContent: React.FC<Props> = ({
       }
     );
     console.log('ethResponse=====>', ethResponse);
-    if (ethResponse.data && ethResponse.data.assets.length > 0) {
-      setNFTs(nfts => [...nfts, ...ethResponse.data.assets]);
+    if (ethResponse.data && ethResponse.data.nfts.length > 0) {
+      setNFTs(nfts => [...nfts, ...ethResponse.data.nfts]);
     }
   };
 
   const getNFTEscCollectionAssets = async (address: string) => {
     const escResponse: any = await request(
-      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/nft_collection_router/escaddress?address=${address}&page=${page}`,
+      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/nft_collection_router/escaddress?address=${address}`,
       {
         method: 'GET',
         headers: {
@@ -106,14 +104,8 @@ const DashboardContent: React.FC<Props> = ({
       }
     );
     console.log('escResponse=====>', escResponse);
-    if (escResponse.data && escResponse.data.assets.length > 0) {
-      setNFTs(nfts => [...nfts, ...escResponse.data.assets]);
-      if (escResponse.data.totalPage > page) {
-        setPage(page + 1);
-        setIsMore(true);
-      } else {
-        setIsMore(false);
-      }
+    if (escResponse.data && escResponse.data.nfts.length > 0) {
+      setNFTs(nfts => [...nfts, ...escResponse.data.nfts]);
     }
   };
 
@@ -124,8 +116,8 @@ const DashboardContent: React.FC<Props> = ({
   };
 
   const fetchMoreEscData = () => {
-    if (profile?.escaddressCredential.address && isMore) {
-      getNFTEscCollectionAssets(profile?.escaddressCredential.address);
+    if (profile?.escaddressCredential.address) {
+      getNFTEscCollectionAssets(profile.escaddressCredential.address);
     }
   };
 
@@ -133,7 +125,12 @@ const DashboardContent: React.FC<Props> = ({
     <Wrapper>
       <TabsContainer template="default">
         <TabList>
-          <TabItem active={active === 'home'} onClick={() => setActive('home')}>
+          <TabItem
+            active={active === 'home'}
+            onClick={() => {
+              setActive('home');
+            }}
+          >
             <IonLabel>Home</IonLabel>
           </TabItem>
           {/* <TabItem
@@ -144,11 +141,18 @@ const DashboardContent: React.FC<Props> = ({
         </TabItem> */}
           <TabItem
             active={active === 'badges'}
-            onClick={() => setActive('badges')}
+            onClick={() => {
+              setActive('badges');
+            }}
           >
             <IonLabel>Badges</IonLabel>
           </TabItem>
-          <TabItem active={active === 'NFTs'} onClick={() => setActive('NFTs')}>
+          <TabItem
+            active={active === 'NFTs'}
+            onClick={() => {
+              setActive('NFTs');
+            }}
+          >
             <IonLabel>NFTs</IonLabel>
           </TabItem>
         </TabList>
@@ -174,7 +178,6 @@ const DashboardContent: React.FC<Props> = ({
         {active === 'NFTs' && (
           <DashboardNFTs
             nfts={nfts}
-            escCursor={isMore}
             fetchMoreEthData={fetchMoreEthData}
             fetchMoreEscData={fetchMoreEscData}
           />

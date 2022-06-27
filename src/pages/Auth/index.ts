@@ -9,8 +9,6 @@ import CreateProfilePage from './CreateProfilePage/Loadable';
 import CreateWhyPage from './CreateWhyPage/Loadable';
 import GenerateDidPage from './GenerateDidPage/Loadable';
 import SignInPage from './SignInPage/Loadable';
-import ForgotPasswordPage from './ForgotPasswordPage/Loadable';
-import CreateProfileWithDidPage from './CreateProfileWithDidPage/Loadable';
 import RecoverAccountPage from './RecoverAccountPage/Loadable';
 import EmailVerificationPage from './EmailVerificationPage/Loadable';
 
@@ -26,8 +24,6 @@ export {
   CreateWhyPage,
   GenerateDidPage,
   SignInPage,
-  ForgotPasswordPage,
-  CreateProfileWithDidPage,
   RecoverAccountPage,
   EmailVerificationPage
 };

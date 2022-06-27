@@ -193,29 +193,31 @@ const VerificationDetailContent = ({
               </LinkButton>
             )}
           </div>
-          <div className="profile-info">
-            <p className="mb-2 name">{user.name}</p>
-            <DidSnippet
-              did={user.did}
-              dateJoined={user.timestamp}
-              width={isSmDown ? 'auto' : '200px'}
-            />
-            {!isSmDown && (
-              <LinkButton
-                className="mt-2"
-                variant="contained"
-                bgColor="#E2E8F0"
-                textColor="grey"
-                icon="open-outline"
-                size="small"
-                href={getDIDString('/did/' + user.did)}
-                target="_blank"
-                style={{ margin: 'auto' }}
-              >
-                View Profile
-              </LinkButton>
-            )}
-          </div>
+          {user && (
+            <div className="profile-info">
+              <p className="mb-2 name">{user.name}</p>
+              <DidSnippet
+                did={user.did}
+                dateJoined={user.timestamp}
+                width={isSmDown ? 'auto' : '200px'}
+              />
+              {!isSmDown && (
+                <LinkButton
+                  className="mt-2"
+                  variant="contained"
+                  bgColor="#E2E8F0"
+                  textColor="grey"
+                  icon="open-outline"
+                  size="small"
+                  href={getDIDString('/did/' + user.did)}
+                  target="_blank"
+                  style={{ margin: 'auto' }}
+                >
+                  View Profile
+                </LinkButton>
+              )}
+            </div>
+          )}
         </ProfileContent>
 
         <ContentArea>

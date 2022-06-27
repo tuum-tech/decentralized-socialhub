@@ -86,9 +86,7 @@ export class SyncService {
   static async TempInitializeSignedUsers(sessionItem: ISessionItem) {
     if (
       !sessionItem ||
-      !sessionItem.onBoardingCompleted ||
-      !sessionItem.tutorialStep ||
-      sessionItem.tutorialStep < 4
+      !sessionItem.onBoardingCompleted
     )
       return;
 

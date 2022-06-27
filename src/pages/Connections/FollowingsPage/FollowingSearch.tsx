@@ -47,19 +47,14 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
 
   useEffect(() => {
     (async () => {
-      if (
-        userSession &&
-        userSession.did !== '' &&
-        userSession.tutorialStep === 4
-      ) {
-        try {
-          if (userSession && userSession.did) {
-            let following = await ProfileService.getFollowings(userSession.did);
-            setListFollowing(following as IFollowingResponse);
-          }
-        } catch (e) {
-          alertError(null, 'Could not load users that you follow');
+      // await loadFollowingData();
+      try {
+        if (userSession && userSession.did && userSession.onBoardingCompleted) {
+          let following = await ProfileService.getFollowings(userSession.did);
+          setListFollowing(following as IFollowingResponse);
         }
+      } catch (e) {
+        alertError(null, 'Could not load users that you follow');
       }
     })();
   }, [userSession, userSession.did]);

@@ -589,7 +589,8 @@ let run = async () => {
             timestamp: '$params.timestamp',
             referrals: '$params.referrals',
             wallets: '$params.wallets',
-            passwordRemoved: true
+            passwordRemoved: true,
+            onBoardingInfo: '$params.onBoardingInfo'
           }
         }
       }
@@ -629,7 +630,8 @@ let run = async () => {
               pageTemplate: '$params.pageTemplate',
               referrals: '$params.referrals',
               wallets: '$params.wallets',
-              passwordRemoved: true
+              passwordRemoved: true,
+              onBoardingInfo: '$params.onBoardingInfo'
             }
           }
         }
@@ -662,7 +664,8 @@ let run = async () => {
               onBoardingCompleted: '$params.onBoardingCompleted',
               tutorialStep: '$params.tutorialStep',
               hiveHost: '$params.hiveHost',
-              avatar: '$params.avatar'
+              avatar: '$params.avatar',
+              onBoardingInfo: '$params.onBoardingInfo'
             }
           }
         }
@@ -790,17 +793,18 @@ let run = async () => {
       }
     });
     await client.Scripting.SetScript({
-      name: 'get_users_by_tutorialStep',
+      name: 'get_users_by_onBoardingInfo',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
       executable: {
         type: 'find',
-        name: 'get_users_by_tutorialStep',
+        name: 'get_users_by_onBoardingInfo',
         output: true,
         body: {
           collection: 'users',
           filter: {
-            tutorialStep: { $in: '$params.tutorialStep' }
+            'onBoardingInfo.type': '$params.onBoardingInfoType',
+            'onBoardingInfo.step': '$params.onBoardingInfoStep'
           },
           options: {
             limit: '$params.limit',

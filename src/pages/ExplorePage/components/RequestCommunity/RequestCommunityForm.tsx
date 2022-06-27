@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { IonCol, IonRow, IonGrid } from '@ionic/react';
 import Web3 from 'web3';
+import slugify from 'slugify';
 import SmallTextInput from 'src/elements/inputs/SmallTextInput';
 import SmallSelectInput from 'src/elements/inputs/SmallSelectInput';
 import { networks } from './constants';
 import { DefaultButton } from 'src/elements-v2/buttons';
 import { SpaceService, SpaceCategory } from 'src/services/space.service';
 import { showNotify } from 'src/utils/notify';
+import { getNFTCollectionValidateForm } from '../../../PublicSpacePage/fetchapi';
 interface Props {
   sendRequest: (request: any) => void;
   onClose: () => void;
@@ -51,7 +53,7 @@ const RequestCommunityForm: React.FC<Props> = ({
       [evt.target.name]: evt.target.value
     });
   };
-  const validateRequest = () => {
+  const validateRequest = async () => {
     if (!request.name) {
       showNotify('Input space name', 'warning');
       return false;
@@ -76,6 +78,7 @@ const RequestCommunityForm: React.FC<Props> = ({
     if (
       spaces.find(
         (space: any) =>
+          isOpenseaCollection === false &&
           space.meta.address?.toLowerCase() ===
             request.contract.toLowerCase() &&
           space.meta.network?.toLowerCase() ===
@@ -86,6 +89,23 @@ const RequestCommunityForm: React.FC<Props> = ({
         'Community space with same contract address already exists',
         'warning'
       );
+      return false;
+    }
+
+    const forminfo = {
+      slug: slugify(request.name, { lower: true }),
+      network_type: request.network.value,
+      contract_address: request.contract || '',
+      isOpenseaCollection: isOpenseaCollection,
+      collectionSlug: !!request.nftlink
+        ? request.nftlink.split('opensea.io/collection/')[1]?.replace('/', '')
+        : request.name
+    };
+
+    const response: any = await getNFTCollectionValidateForm(forminfo);
+
+    if (response.meta.code !== 200) {
+      showNotify(response.data, 'warning');
       return false;
     }
 
@@ -123,8 +143,7 @@ const RequestCommunityForm: React.FC<Props> = ({
           </IonCol>
         </IonRow>
       )}
-      {(request.network.value === 'eth' ||
-        request.network.value === 'polygon') && (
+      {request.network.value === 'eth' && (
         <>
           <IonRow class="ion-justify-content-start">
             <IonCol size="12">
@@ -228,8 +247,8 @@ const RequestCommunityForm: React.FC<Props> = ({
           <DefaultButton
             variant="contained"
             btnColor="primary-gradient"
-            onClick={() => {
-              if (validateRequest()) {
+            onClick={async () => {
+              if (await validateRequest()) {
                 const category = categories.find(
                   cg => cg.value === request.category
                 );

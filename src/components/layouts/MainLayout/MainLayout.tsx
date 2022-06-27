@@ -34,7 +34,7 @@ const RightCol = styled(IonCol)`
   }
 `;
 
-const TitleMobile = styled.h1`
+const Title = styled.h1`
   color: var(--txt-heading-dark);
   background: white;
   font-family: 'SF Pro Display';
@@ -58,6 +58,8 @@ const MainLayout: FC<IProps> = ({ children }: IProps) => {
     const { pathname } = history.location;
     return pathname === '/profile'
       ? 'Dashboard'
+      : pathname === '/manager'
+      ? 'Profile Manager'
       : pathname === '/explore'
       ? 'Explore'
       : '';
@@ -85,7 +87,7 @@ const MainLayout: FC<IProps> = ({ children }: IProps) => {
   return (
     <IonPage>
       <HeaderMobile sessionItem={session} publishStatus={publishStatus} />
-      {!isSmUp && title && <TitleMobile>{title}</TitleMobile>}
+      {!isSmUp && title && <Title>{title}</Title>}
       <IonContent className={style['content']}>
         <IonGrid className={style['grid']}>
           <IonRow className={style['row']}>

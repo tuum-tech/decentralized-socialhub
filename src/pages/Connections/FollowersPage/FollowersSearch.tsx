@@ -60,7 +60,7 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
       if (
         userSession &&
         userSession.did !== '' &&
-        userSession.tutorialStep === 4
+        userSession.onBoardingCompleted
       ) {
         try {
           if (userSession && userSession.did) {

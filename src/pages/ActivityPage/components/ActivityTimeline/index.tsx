@@ -49,7 +49,7 @@ const ActivityTimeline: React.FC<Props> = ({ session }: Props) => {
       setActivities(_activities);
       setTotalPages(pageCount(_activities.length));
       setTimerForActivity();
-    }, 5000);
+    }, 1000);
     return () => clearTimeout(timer);
   }, [session]);
 

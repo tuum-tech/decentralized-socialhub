@@ -48,8 +48,6 @@ import {
   CreateWhyPage,
   GenerateDidPage,
   SignInPage,
-  ForgotPasswordPage,
-  CreateProfileWithDidPage,
   RecoverAccountPage,
   EmailVerificationPage
 } from './pages/Auth';
@@ -128,6 +126,11 @@ const App: React.FC = () => {
                   />
                   <ProtectedRoute
                     path="/profile"
+                    component={DashboardPage}
+                    exact={true}
+                  />
+                  <ProtectedRoute
+                    path="/profile/:active"
                     component={DashboardPage}
                     exact={true}
                   />
@@ -224,17 +227,7 @@ const App: React.FC = () => {
                     exact={true}
                   />
                   {/* to test */}
-                  <ProtectedRoute
-                    path="/create-profile-with-did"
-                    component={CreateProfileWithDidPage}
-                    exact={true}
-                  />
 
-                  <ProtectedRoute
-                    path="/forgot-password"
-                    component={ForgotPasswordPage}
-                    exact={true}
-                  />
                   <ProtectedRoute
                     path="/support-forum/:num"
                     component={SupportForum}

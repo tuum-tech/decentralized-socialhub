@@ -18,7 +18,6 @@ import { UserService } from 'src/services/user.service';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 import useSession from 'src/hooks/useSession';
 
-import MultiDidLogin from '../components/MultiDidLogin';
 import FieldDivider from '../components/FieldDivider';
 import style from './style.module.scss';
 import createLeftBg from 'src/assets/new/auth/create_left_bg.png';
@@ -91,20 +90,6 @@ const CreateProfilePage: React.FC = () => {
   const isLoggedIn = window.localStorage.getItem('isLoggedIn');
   if (isLoggedIn) {
     return <Redirect to="/profile" />;
-  }
-
-  if (mode === 1) {
-    return (
-      <MultiDidLogin
-        dids={signedUsers}
-        removeUser={removeUser}
-        changeMode={() => setMode(0)}
-        afterSuccess={(session: ISessionItem) => {
-          setSession(session);
-          window.location.href = '/profile';
-        }}
-      />
-    );
   }
 
   return (

@@ -19,7 +19,9 @@ const BasicCard: React.FC<IProps> = ({
   const modalRef = useRef(null);
 
   const handleEdit = () => {
-    (modalRef?.current as any).open();
+    if(sessionItem.onBoardingCompleted) {
+      (modalRef?.current as any).open();
+    }
   };
 
   const closeModal = () => {
@@ -31,7 +33,14 @@ const BasicCard: React.FC<IProps> = ({
       <Card
         template="default"
         title="Basic Information"
-        action={<LinkStyleSpan onClick={handleEdit}>Edit</LinkStyleSpan>}
+        action={
+          <LinkStyleSpan
+            onClick={handleEdit}
+            className={!sessionItem.onBoardingCompleted ? 'disable' : 'active'}
+          >
+            Edit
+          </LinkStyleSpan>
+        }
       >
         <BasicCardConent
           sessionItem={sessionItem}

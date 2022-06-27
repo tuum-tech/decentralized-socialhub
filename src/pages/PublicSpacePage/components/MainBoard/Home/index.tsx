@@ -120,7 +120,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
         }
         const { data }: any = await getNFTCollectionOwners(space.guid);
         const { owners: members } = data;
-        if (members.includes(wallet)) {
+        if (members && members.includes(wallet)) {
           setHasPermissionToPost(true);
           return;
         }

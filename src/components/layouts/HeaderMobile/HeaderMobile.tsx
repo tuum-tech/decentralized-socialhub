@@ -60,7 +60,7 @@ const HeaderMobile = ({ sessionItem, publishStatus }: IProps) => {
           <Avatar
             did={sessionItem.did}
             didPublished={
-              sessionItem.isDIDPublished && sessionItem.tutorialStep === 4
+              sessionItem.isDIDPublished && sessionItem.onBoardingCompleted
             }
             width="50px"
           />

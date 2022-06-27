@@ -103,7 +103,7 @@ const PeopleCard: React.FC<Props> = ({
 
   useEffect(() => {
     (async () => {
-      if (!session.did || session.did === '' || session.tutorialStep !== 4)
+      if (!session.did || session.did === '' || !session.onBoardingCompleted)
         return;
 
       const response = (await ProfileService.getFollowings(

@@ -86,7 +86,7 @@ const TemplateManagerCard: React.FC<PageProps> = ({
 
   useEffect(() => {
     (async () => {
-      if (sessionItem && sessionItem.did && sessionItem.tutorialStep === 4) {
+      if (sessionItem && sessionItem.did && sessionItem.onBoardingCompleted) {
         const mTemplates = await TemplateService.getMyTemplates(
           sessionItem.did
         );
@@ -121,7 +121,7 @@ const TemplateManagerCard: React.FC<PageProps> = ({
   const handleTemplateChange = useCallback(
     (e: CustomEvent<RadioGroupChangeEventDetail<any>>) => {
       setTemplate(e.detail.value);
-      if (sessionItem.tutorialStep === 4) {
+      if (sessionItem.onBoardingCompleted) {
         handleSave(e.detail.value);
       }
     },
@@ -129,7 +129,7 @@ const TemplateManagerCard: React.FC<PageProps> = ({
   );
 
   const ready =
-    sessionItem.onBoardingCompleted && sessionItem.tutorialStep === 4;
+    sessionItem.onBoardingCompleted;
 
   return (
     <Card
@@ -196,6 +196,7 @@ const TemplateManagerCard: React.FC<PageProps> = ({
               size="large"
               onClick={() => setShowModal(true)}
               style={{ width: '100%' }}
+              disabled={!sessionItem.onBoardingCompleted}
             >
               + Add New Template
             </DefaultButton>

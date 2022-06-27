@@ -114,11 +114,9 @@ const EmailVerificationPage: React.FC<PageProps> = (props: PageProps) => {
       };
 
       let userService = new UserService(await DidService.getInstance());
-      let mnemonic = '';
+
       if (session.did && !session.did.startsWith('did:elastos:')) {
         session.did = '';
-      } else {
-        mnemonic = userService.getTemporaryMnemonicFromDid(session.did);
       }
 
       let sessionItem = await userService.CreateNewUser(
@@ -127,7 +125,7 @@ const EmailVerificationPage: React.FC<PageProps> = (props: PageProps) => {
         session.loginCred,
         session.credential,
         session.did,
-        mnemonic,
+        '',
         '',
         ''
       );

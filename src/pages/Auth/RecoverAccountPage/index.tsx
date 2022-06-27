@@ -1,7 +1,7 @@
 import { StaticContext, RouteComponentProps } from 'react-router';
 import { useHistory, Link } from 'react-router-dom';
 
-import { UserService } from 'src/services/user.service';
+import { AccountType, UserService } from 'src/services/user.service';
 import { DidService } from 'src/services/did.service.new';
 import { alertError } from 'src/utils/notify';
 import {
@@ -33,6 +33,7 @@ import { UserType, LocationState, InferMappedProps } from './types';
 import { SubState } from 'src/store/users/types';
 import { DIDURL } from '@elastosfoundation/did-js-sdk/';
 import { HiveService } from 'src/services/hive.service';
+import { OnBoardingService } from 'src/services/onboarding.service';
 
 const CreateButton = styled(Link)`
   background: #313049;
@@ -165,29 +166,66 @@ const RecoverAccountPage: React.FC<PageProps> = ({ eProps, ...props }) => {
               let userService = new UserService(didService);
               const res = await userService.SearchUserWithDID(did);
 
-              window.localStorage.setItem(
-                `temporary_${did.replace('did:elastos:', '')}`,
-                JSON.stringify({
-                  mnemonic: mnemonic
-                })
-              );
-
               if (res) {
-                const session = await userService.LockWithDIDAndPwd(
-                  res,
-                  serviceEndpoint
+                let checkRecoverLoginRes = await OnBoardingService.checkRecoverLogin(
+                  res
                 );
-                eProps.setSession({ session });
-                history.push('/profile');
-              } else {
-                history.push({
-                  pathname: '/create-profile-with-did',
-                  state: {
-                    did,
-                    mnemonic,
-                    user
+
+                if (!checkRecoverLoginRes.canLogin) {
+                  alertError(
+                    null,
+                    'This account already exists on Profile. Please sign in using Essentials from the Sign in page.'
+                  );
+                  setLoading(false);
+                  return;
+                } else {
+                  const session = await userService.LockWithDIDAndPwd(
+                    checkRecoverLoginRes.session,
+                    serviceEndpoint
+                  );
+                  let onBoardingInfo = {
+                    type: 0,
+                    step: 0
+                  };
+                  const newSession = {
+                    ...session,
+                    onBoardingInfo: onBoardingInfo
                   }
-                });
+                  eProps.setSession({ session: newSession });
+                  history.push('/profile');
+                }
+
+              } else {
+                if(didDocument.credentials && didDocument.credentials.size > 0) {
+                  let nameCredential = didDocument.getCredentials().find((c: any) => {
+                    return c.getId().getFragment() === 'name';
+                  });
+                  let name = nameCredential!.getSubject().getProperty('name');
+                  // let name = didDocument.getCredential(did)
+                  let userService = new UserService(await DidService.getInstance());
+                  let sessionItem = await userService.CreateNewUser(
+                    name,
+                    AccountType.DID,
+                    {},
+                    '',
+                    did,
+                    serviceEndpoint,
+                    '',
+                    mnemonic
+                  );
+                  sessionItem.onBoardingInfo = {
+                    type: 1,
+                    step: 0
+                  };
+                  eProps.setSession({ session: sessionItem });
+                  history.push('/profile');
+                } else {
+                  alertError(
+                    null,
+                    `This account has registered essential app. But this is not published yet.`
+                  );
+                  return;
+                }
               }
               setLoading(false);
             }

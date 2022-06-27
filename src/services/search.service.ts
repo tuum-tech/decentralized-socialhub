@@ -183,11 +183,11 @@ export class SearchService {
         }
       }
     } else {
-      params['self_did'] = [userSession.did];
-      params['tutorialStep'] = [4]; // only activated users
-
-      const usersResponse: any = await this.appHiveClient.Scripting.RunScript({
-        name: 'get_users_by_tutorialStep',
+      // Scenario 1
+      params['onBoardingInfoType'] = 1;
+      params['onBoardingInfoStep'] = 5;
+      let usersResponse: any = await this.appHiveClient.Scripting.RunScript({
+        name: 'get_users_by_onBoardingInfo',
         params: params,
         context: {
           target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
@@ -197,9 +197,53 @@ export class SearchService {
       if (
         usersResponse &&
         usersResponse.response &&
-        usersResponse.response.get_users_by_tutorialStep
+        usersResponse.response.get_users_by_onBoardingInfo
       ) {
-        res.items = usersResponse.response.get_users_by_tutorialStep.items;
+        res.items = res.items.concat(
+          usersResponse.response.get_users_by_onBoardingInfo.items
+        );
+      }
+
+      // Scenario 2
+      params['onBoardingInfoType'] = 2;
+      params['onBoardingInfoStep'] = 3;
+      usersResponse = await this.appHiveClient.Scripting.RunScript({
+        name: 'get_users_by_onBoardingInfo',
+        params: params,
+        context: {
+          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+        }
+      });
+      if (
+        usersResponse &&
+        usersResponse.response &&
+        usersResponse.response.get_users_by_onBoardingInfo
+      ) {
+        res.items = res.items.concat(
+          usersResponse.response.get_users_by_onBoardingInfo.items
+        );
+      }
+
+      // Scenario 3
+      params['onBoardingInfoType'] = 0;
+      params['onBoardingInfoStep'] = 4;
+      usersResponse = await this.appHiveClient.Scripting.RunScript({
+        name: 'get_users_by_onBoardingInfo',
+        params: params,
+        context: {
+          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
+          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+        }
+      });
+      if (
+        usersResponse &&
+        usersResponse.response &&
+        usersResponse.response.get_users_by_onBoardingInfo
+      ) {
+        res.items = res.items.concat(
+          usersResponse.response.get_users_by_onBoardingInfo.items
+        );
       }
     }
     if (res.items.length > 0) {

@@ -65,11 +65,7 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
 
   useEffect(() => {
     (async () => {
-      if (
-        userSession &&
-        userSession.did !== '' &&
-        userSession.tutorialStep === 4
-      ) {
+      if (userSession && userSession.did && userSession.onBoardingCompleted) {
         try {
           if (userSession && userSession.did) {
             let listDids = [userSession.did];

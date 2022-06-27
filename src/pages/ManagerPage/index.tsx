@@ -59,7 +59,7 @@ const ManagerPage: React.FC<RouteComponentProps> = (
           </LinkButton>
         )}
       </Header>
-      {user.tutorialStep !== 4 && (
+      {!user.onBoardingCompleted && (
         <WarningText>
           Please complete the tutorial first before managing your Profile.
         </WarningText>
