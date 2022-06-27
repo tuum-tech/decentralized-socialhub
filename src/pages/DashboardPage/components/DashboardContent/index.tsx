@@ -11,7 +11,7 @@ import SyncBar from 'src/components/SyncBar';
 import styled from 'styled-components';
 import { TabItem } from 'src/elements-v2/tabs';
 import request from 'src/baseplate/request';
-import { FullProfileAtom } from 'src/Atoms/Atoms';
+
 import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 
 const SyncDiv = styled.div`
@@ -44,7 +44,6 @@ const DashboardContent: React.FC<Props> = ({
   followingDids,
   mutualDids
 }) => {
-  const profile = useRecoilValue(FullProfileAtom);
   const [active, setActive] = useState('home');
   const [nfts, setNFTs] = useState<any[]>([]);
 
@@ -58,25 +57,22 @@ const DashboardContent: React.FC<Props> = ({
         getNFTEthCollectionAssets(ethWallet);
       } else {
         console.log(
-          `Error fetching NFTs for address ${profile?.ethaddressCredential.address} as this VC was not issued by Tuum Tech`
+          `Error fetching NFTs for address ${ethWallet} as this VC was not issued by Tuum Tech`
         );
       }
       const escWallet = await DidcredsService.getCredentialValue(
         sessionItem,
         CredentialType.ESCAddress.toLowerCase()
       );
-      if (ethWallet) {
+      if (escWallet) {
         getNFTEscCollectionAssets(escWallet);
       } else {
         console.log(
-          `Error fetching NFTs for address ${profile?.escaddressCredential.address} as this VC was not issued by Tuum Tech`
+          `Error fetching NFTs for address ${escWallet} as this VC was not issued by Tuum Tech`
         );
       }
     })();
-  }, [
-    profile?.ethaddressCredential.address,
-    profile?.escaddressCredential.address
-  ]);
+  }, [sessionItem]);
 
   const getNFTEthCollectionAssets = async (address: string) => {
     const ethResponse: any = await request(
@@ -96,7 +92,7 @@ const DashboardContent: React.FC<Props> = ({
   };
 
   const getNFTEscCollectionAssets = async (address: string) => {
-    const escResponse: any = await request(
+    const ethResponse: any = await request(
       `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/nft_collection_router/escaddress?address=${address}`,
       {
         method: 'GET',
@@ -106,21 +102,9 @@ const DashboardContent: React.FC<Props> = ({
         }
       }
     );
-    console.log('escResponse=====>', escResponse);
-    if (escResponse.data && escResponse.data.nfts.length > 0) {
-      setNFTs(nfts => [...nfts, ...escResponse.data.nfts]);
-    }
-  };
-
-  const fetchMoreEthData = () => {
-    if (profile?.ethaddressCredential.address) {
-      getNFTEthCollectionAssets(profile.ethaddressCredential.address);
-    }
-  };
-
-  const fetchMoreEscData = () => {
-    if (profile?.escaddressCredential.address) {
-      getNFTEscCollectionAssets(profile.escaddressCredential.address);
+    console.log('escResponse=====>', ethResponse);
+    if (ethResponse.data && ethResponse.data.nfts.length > 0) {
+      setNFTs(nfts => [...nfts, ...ethResponse.data.nfts]);
     }
   };
 
@@ -178,13 +162,7 @@ const DashboardContent: React.FC<Props> = ({
         )}
         {/* {active === 'status' && <DashboardStatus />} */}
         {active === 'badges' && <DashboardBadges sessionItem={sessionItem} />}
-        {active === 'NFTs' && (
-          <DashboardNFTs
-            nfts={nfts}
-            fetchMoreEthData={fetchMoreEthData}
-            fetchMoreEscData={fetchMoreEscData}
-          />
-        )}
+        {active === 'NFTs' && <DashboardNFTs nfts={nfts} />}
       </TabsContainer>
     </Wrapper>
   );

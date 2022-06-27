@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   IonRow,
   IonCol,
@@ -7,6 +7,7 @@ import {
 } from '@ionic/react';
 import { down } from 'styled-breakpoints';
 import styled from 'styled-components';
+import request from 'src/baseplate/request';
 
 import Item from './Item';
 
@@ -25,21 +26,9 @@ export const Wrapper = styled.div`
 `;
 interface IProps {
   nfts: any[];
-  fetchMoreEthData: () => void;
-  fetchMoreEscData: () => void;
 }
 
-const DashboardNFTs: React.FC<IProps> = ({
-  nfts,
-  fetchMoreEthData,
-  fetchMoreEscData
-}: IProps) => {
-  const searchNext = async ($event: CustomEvent<void>) => {
-    await fetchMoreEthData();
-    await fetchMoreEscData();
-    ($event.target as HTMLIonInfiniteScrollElement).complete();
-  };
-
+const DashboardNFTs: React.FC<IProps> = ({ nfts }: IProps) => {
   return (
     <Wrapper>
       <IonRow>
@@ -51,15 +40,6 @@ const DashboardNFTs: React.FC<IProps> = ({
           );
         })}
       </IonRow>
-      <IonInfiniteScroll
-        threshold="100px"
-        onIonInfinite={(e: CustomEvent<void>) => searchNext(e)}
-      >
-        <IonInfiniteScrollContent
-          loadingSpinner="bubbles"
-          loadingText="Loading more assets..."
-        ></IonInfiniteScrollContent>
-      </IonInfiniteScroll>
     </Wrapper>
   );
 };
