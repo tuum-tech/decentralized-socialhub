@@ -233,7 +233,7 @@ const ProfileEditor: React.FC<Props> = ({
 
       if (session.userToken) setUserInfo(session);
       startTimer();
-    }, 1000);
+    }, 5000);
     setTimer(timer);
     return () => clearTimeout(timer);
   };
