@@ -4,13 +4,13 @@ import { StaticContext, RouteComponentProps } from 'react-router';
 import MainLayout from 'src/components/layouts/MainLayout';
 import HeaderMenu from 'src/elements-v2/HeaderMenu';
 import { ProfileService } from 'src/services/profile.service';
+import { Header } from 'src/components/layouts/MainLayout/Header';
 import useSession from 'src/hooks/useSession';
 import FollowersSearch from './FollowersPage/FollowersSearch';
 import MutualFollowersSearch from './MutualFollowersPage/FollowersSearch';
 import FollowingSearch from './FollowingsPage/FollowingSearch';
 import ConnectionPageHeader, {
-  ConnectionTabsContainer,
-  Header
+  ConnectionTabsContainer
 } from './ConnectionHeader';
 
 interface PageProps

@@ -43,7 +43,7 @@ const UserRows: React.FC<Props> = ({
     return <Link to={getDIDString('/did/' + v.to_did)}>{v.to_did}</Link>;
   };
 
-  const rednerUserRow = (v: VerificationRequest) => {
+  const renderUserRow = (v: VerificationRequest) => {
     const user = users.filter((user: any) => user.did === v.to_did)[0];
 
     return (
@@ -112,7 +112,7 @@ const UserRows: React.FC<Props> = ({
     );
   };
 
-  return <>{verifications.map(v => rednerUserRow(v))}</>;
+  return <>{verifications.map(v => renderUserRow(v))}</>;
 };
 
 export default UserRows;

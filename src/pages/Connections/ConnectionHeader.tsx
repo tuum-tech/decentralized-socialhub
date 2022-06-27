@@ -8,20 +8,6 @@ import { TabItem } from 'src/elements-v2/tabs';
 
 import style from './style.module.scss';
 
-export const Header = styled.div`
-  width: 100%;
-  height: 83px;
-  background: #fff;
-  padding: 27px 25px 20px 48px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  ${down('sm')} {
-    padding: 20px;
-    height: fit-content;
-  }
-`;
-
 export const ConnectionTabsContainer = styled(TabsContainer)`
   ion-list,
   .tab-item {

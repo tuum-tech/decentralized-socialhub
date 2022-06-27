@@ -793,17 +793,18 @@ let run = async () => {
       }
     });
     await client.Scripting.SetScript({
-      name: 'get_users_by_tutorialStep',
+      name: 'get_users_by_onBoardingInfo',
       allowAnonymousUser: true,
       allowAnonymousApp: true,
       executable: {
         type: 'find',
-        name: 'get_users_by_tutorialStep',
+        name: 'get_users_by_onBoardingInfo',
         output: true,
         body: {
           collection: 'users',
           filter: {
-            tutorialStep: { $in: '$params.tutorialStep' }
+            'onBoardingInfo.type': '$params.onBoardingInfoType',
+            'onBoardingInfo.step': '$params.onBoardingInfoStep'
           },
           options: {
             limit: '$params.limit',

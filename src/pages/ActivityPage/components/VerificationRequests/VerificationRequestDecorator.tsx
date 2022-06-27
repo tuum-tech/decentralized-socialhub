@@ -6,13 +6,11 @@ type Props = {
   children?: React.ReactNode;
   onRequestVerification: any;
   showButton: boolean;
-  disabled: boolean;
 };
 const VerificationRequestDecorator: React.FC<Props> = ({
   children,
   onRequestVerification,
-  showButton,
-  disabled
+  showButton
 }) => (
   <IonGrid class="ion-no-padding">
     <IonRow class="ion-align-items-end ion-no-padding">
@@ -24,7 +22,7 @@ const VerificationRequestDecorator: React.FC<Props> = ({
             variant="outlined"
             btnColor="primary-gradient"
             textType="gradient"
-            disabled={disabled}
+            disabled={false}
             onClick={onRequestVerification}
           >
             Request Verification

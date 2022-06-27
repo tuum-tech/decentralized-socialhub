@@ -12,7 +12,7 @@ import LoadingIndicator from 'src/elements/LoadingIndicator';
 
 export interface IUserResponse {
   _status?: string;
-  get_users_by_tutorialStep: {
+  get_users_by_onBoardingInfo: {
     items: {
       did: string;
       name: string;
@@ -65,19 +65,6 @@ const SearchComponent: React.FC<Props> = ({ userSession }: Props) => {
 
   const loadData = async () => {
     if (searchService.appHiveClient) {
-      // try {
-      //   let listUniversities: any = await searchService.getUniversities(
-      //     '',
-      //     200,
-      //     0
-      //   );
-      //   setFilteredUniversities(listUniversities.response);
-      // } catch (e) {
-      //   setFilteredUniversities({ get_universities: { items: [] } });
-      //   alertError(null, 'Could not load universities');
-      //   return;
-      // }
-
       try {
         let listUsers: any = await searchService.getUsers(
           '',
@@ -85,6 +72,8 @@ const SearchComponent: React.FC<Props> = ({ userSession }: Props) => {
           0,
           userSession
         );
+        console.log('hello - ', listUsers);
+
         setFilteredUsers(listUsers);
       } catch (e) {
         setFilteredUsers({ items: [] });

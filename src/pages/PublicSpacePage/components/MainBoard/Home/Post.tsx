@@ -10,7 +10,7 @@ import Avatar from 'src/components/Avatar';
 import {
   SubMenu,
   Item
-} from 'src/pages/ActivityPage/components/ActivityTimeline';
+} from 'src/pages/ActivityPage/components/ActivityTimeline/ActivityRow';
 import { HorDOMSpace16 } from '../../Highlight/About';
 import { CustomModal } from './index';
 import Comment from './Comment';

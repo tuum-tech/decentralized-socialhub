@@ -35,8 +35,6 @@ interface Props {
   followerDids: string[];
   followingDids: string[];
   mutualDids: string[];
-  activeTab?: any;
-  setCurrentTab: (active: string) => void;
 }
 
 const DashboardContent: React.FC<Props> = ({
@@ -44,17 +42,11 @@ const DashboardContent: React.FC<Props> = ({
   sessionItem,
   followerDids,
   followingDids,
-  mutualDids,
-  activeTab,
-  setCurrentTab
+  mutualDids
 }) => {
   const profile = useRecoilValue(FullProfileAtom);
   const [active, setActive] = useState('home');
   const [nfts, setNFTs] = useState<any[]>([]);
-
-  useEffect(() => {
-    setActive(activeTab);
-  }, [activeTab]);
 
   useEffect(() => {
     (async () => {
@@ -137,7 +129,6 @@ const DashboardContent: React.FC<Props> = ({
             active={active === 'home'}
             onClick={() => {
               setActive('home');
-              setCurrentTab('home');
             }}
           >
             <IonLabel>Home</IonLabel>
@@ -152,7 +143,6 @@ const DashboardContent: React.FC<Props> = ({
             active={active === 'badges'}
             onClick={() => {
               setActive('badges');
-              setCurrentTab('badges');
             }}
           >
             <IonLabel>Badges</IonLabel>
@@ -161,7 +151,6 @@ const DashboardContent: React.FC<Props> = ({
             active={active === 'NFTs'}
             onClick={() => {
               setActive('NFTs');
-              setCurrentTab('NFTs');
             }}
           >
             <IonLabel>NFTs</IonLabel>

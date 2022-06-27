@@ -5,7 +5,7 @@ import { HorDOMSpace16 } from '../../Highlight/About';
 import {
   SubMenu,
   Item
-} from 'src/pages/ActivityPage/components/ActivityTimeline';
+} from 'src/pages/ActivityPage/components/ActivityTimeline/ActivityRow';
 import Avatar from 'src/components/Avatar';
 import style from '../Chat/style.module.scss';
 import { UserService } from 'src/services/user.service';
@@ -28,7 +28,7 @@ const Comment: React.FC<IProps> = ({
   admins,
   comment,
   onShowOrHideComment,
-  onRemoveComment,
+  onRemoveComment
 }: IProps) => {
   const [showMenu, setShowMenu] = useState(false);
   const isAuthor = session && session.did === comment.creator;

@@ -41,9 +41,7 @@ const ReleaseModal = styled(IonModal)`
   --box-shadow: none !important;
 `;
 
-const DashboardPage: React.FC<RouteComponentProps> = (
-  props: RouteComponentProps
-) => {
+const DashboardPage: React.FC<RouteComponentProps> = () => {
   const { session, setSession } = useSession();
 
   const [willExpire, setWillExpire] = useState(false);
@@ -323,8 +321,6 @@ const DashboardPage: React.FC<RouteComponentProps> = (
             followerDids={followerDids}
             followingDids={followingDids}
             mutualDids={mutualDids}
-            activeTab={currentTab}
-            setCurrentTab={setCurrentTab}
           />
 
           {version && (

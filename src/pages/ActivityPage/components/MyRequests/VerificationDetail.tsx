@@ -109,10 +109,7 @@ const VerificationDetailContent = ({ verification, user, onClose }: Props) => {
           </li>
         </p>
 
-        <Expander
-          title={getCategoryTitle(verification)}
-          cateogiries={records}
-        />
+        <Expander title={getCategoryTitle(verification)} categories={records} />
 
         {verification.msg && verification.msg !== '' && (
           <div className="mt-4 mb-2">
