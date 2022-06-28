@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { IonSpinner } from '@ionic/react';
 
 import { DidService } from 'src/services/did.service.new';
-import { UserService } from 'src/services/user.service';
+import { getUsersByDid as getUsersByDidAction } from 'src/store/users/actions';
+import { selectUserById } from 'src/store/users/selectors';
 
 import style from './style.module.scss';
 
@@ -50,56 +52,65 @@ const Avatar: React.FC<{
   width?: string;
   ready?: boolean;
 }> = ({ did = '', didPublished = false, width = '86px', ready = false }) => {
+  const dispatch = useDispatch();
+  const tuumUser = useSelector(state => selectUserById(state, did));
   const [avatarInfo, setAvatarInfo] = useState<AvatarInterface>(defaultAvatar);
   const [loaded, setLoaded] = useState(false);
 
+  const getUsersByDid = useCallback(
+    (ids, limit, offset) => {
+      dispatch(getUsersByDidAction(ids, limit, offset));
+    },
+    [dispatch]
+  );
+
+  useEffect(() => {
+    if (did && !tuumUser) {
+      getUsersByDid([did], 1, 0);
+    }
+  }, [did, getUsersByDid, tuumUser]);
+
   useEffect(() => {
     let mounted = true;
+
     (async () => {
       setLoaded(false);
+      if (tuumUser) {
+        let avatar = '';
+        let type = 'default';
+        let name = 'Anonymous';
+        let didPublished = false;
 
-      // retrive avatar info
-      let userService: UserService = new UserService(
-        await DidService.getInstance()
-      );
-      const tuumUser = await userService.SearchUserWithDID(did);
+        let didService = await DidService.getInstance();
+        didPublished = await didService.isDIDPublished(did);
 
-      let avatar = '';
-      let type = 'default';
-      let name = 'Anonymous';
-      let didPublished = false;
+        if (tuumUser && tuumUser.did) {
+          avatar = tuumUser.avatar || '';
+          type = avatar ? 'vault' : 'default';
+          name = tuumUser.name;
+        }
 
-      let didService = await DidService.getInstance();
-      didPublished = await didService.isDIDPublished(did);
+        //TODO: Remove when we can get avatar image from hive
+        if (tuumUser && avatar.indexOf('hive://') > -1) {
+          type = 'default';
+        }
+        if (mounted) {
+          setAvatarInfo({
+            name: shortName(name),
+            avatar,
+            type,
+            didPublished
+          });
 
-      if (tuumUser && tuumUser.did) {
-        avatar = tuumUser.avatar;
-        type = avatar ? 'vault' : 'default';
-        name = tuumUser.name;
-      }
-
-      //TODO: Remove when we can get avatar image from hive
-      if (tuumUser && avatar.indexOf('hive://') > -1) {
-        type = 'default';
-      }
-
-      if (mounted) {
-        setAvatarInfo({
-          name: shortName(name),
-          avatar,
-          type,
-          didPublished
-        });
-
-        setLoaded(true);
+          setLoaded(true);
+        }
       }
     })();
 
     return () => {
       mounted = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [did]);
+  }, [tuumUser]);
 
   const cn = ready
     ? style['border-primary']

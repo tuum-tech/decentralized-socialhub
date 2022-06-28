@@ -44,6 +44,7 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
   const membersForNonNFTSpace = async () => {
     return [];
   };
+
   useEffect(() => {
     (async () => {
       if (space.guid) {
@@ -55,6 +56,7 @@ const Members: React.FC<IProps> = ({ space, template = 'default' }: IProps) => {
       }
     })();
   }, [space.guid, isNFTSpace]);
+
   return (
     <>
       <CardOverview template={template}>

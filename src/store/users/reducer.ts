@@ -47,6 +47,9 @@ export const usersSlice = createSlice({
       state.loading = false;
       state.error = action.payload.error;
     },
+    cancel: state => {
+      state.loading = false;
+    },
     setUsers(state, action) {
       usersAdapter.setAll(state, action.payload.users);
     }

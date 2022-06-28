@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { IonRow, IonCol, IonCardTitle } from '@ionic/react';
-import { FollowService } from 'src/services/follow.service';
 import {
   CardOverview,
   CardHeaderContent,
   CardContentContainer
 } from 'src/components/cards/common';
+import { getUsersByDid as getUsersByDidAction } from 'src/store/users/actions';
+import { selectAllUsers } from 'src/store/users/selectors';
 import { LinkStyleSpan } from '../common';
 import Avatar from 'src/components/Avatar';
 import ViewAllFollower from './Modal/ViewAllFollower';
@@ -22,15 +24,26 @@ const Follower: React.FC<IProps> = ({
   template = 'default',
   space
 }: IProps) => {
+  const dispatch = useDispatch();
+  const users = useSelector(selectAllUsers);
   const [showViewAllModal, setShowViewAllModal] = useState(false);
-  const [followers, setFollowers] = useState([]);
+  const followers = useMemo(
+    () => users.filter(user => space.followers?.includes(user.did)),
+    [space, users]
+  );
+
+  const getUsersByDid = useCallback(
+    (ids, limit, offset) => {
+      dispatch(getUsersByDidAction(ids, limit, offset));
+    },
+    [dispatch]
+  );
+
   useEffect(() => {
     const dids = space.followers || [];
-    (async () => {
-      const _followers_ = await FollowService.invokeSearch(dids, '', 4, 1);
-      setFollowers(_followers_);
-    })();
-  }, [space.followers]);
+    getUsersByDid(dids, 4, 0);
+  }, [getUsersByDid, space.followers]);
+
   return (
     <>
       {followers.length > 0 && (
