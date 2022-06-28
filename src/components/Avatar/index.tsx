@@ -81,8 +81,9 @@ const Avatar: React.FC<{
         let name = 'Anonymous';
         let didPublished = false;
 
-        let didService = await DidService.getInstance();
-        didPublished = await didService.isDIDPublished(did);
+        // let didService = await DidService.getInstance();
+        // didPublished = await didService.isDIDPublished(did);
+        didPublished = tuumUser.isDIDPublished;
 
         if (tuumUser && tuumUser.did) {
           avatar = tuumUser.avatar || '';
