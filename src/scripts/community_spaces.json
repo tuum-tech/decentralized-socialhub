@@ -15,7 +15,7 @@
     "meta": {
       "network": "Elastos Smart Contract Chain",
       "address": "0xfDdE60866508263e30C769e8592BB0f8C3274ba7",
-      "collectionSlug": "Phantz Club"
+      "collectionSlug": "phantz-club"
     }
   },
   {
@@ -49,7 +49,7 @@
     "meta": {
       "network": "Polygon",
       "address": "0xd22B236fad04eB97FaEE1D03415a4CeDcfCBB31D",
-      "collectionSlug": "Moonstars"
+      "collectionSlug": "moonstars"
     }
   }
 ]
