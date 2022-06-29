@@ -28,6 +28,7 @@ const ViewAllMember = ({ space, isOpen, onClose }: Props) => {
   const [members, setMembers] = useState<any[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [isMounted, setMounted] = useState(false);
 
   const [offset, setOffset] = useState(0);
   const limit = 5;
@@ -64,18 +65,23 @@ const ViewAllMember = ({ space, isOpen, onClose }: Props) => {
       ? await membersForNFTSpace()
       : await membersForNonNFTSpace();
 
-    if (_members_.length > 0) {
-      setOffset(offset + limit);
-      setMembers(members.concat(_members_));
-    } else {
-      setHasMore(false);
+    if (isMounted) {
+      if (_members_.length > 0) {
+        setOffset(offset + limit);
+        setMembers(members.concat(_members_));
+      } else {
+        setHasMore(false);
+      }
     }
   };
 
   useEffect(() => {
-    (async () => {
-      await fetchMoreData();
-    })();
+    setMounted(true);
+    fetchMoreData();
+
+    return () => {
+      setMounted(false);
+    };
   }, []);
 
   return (

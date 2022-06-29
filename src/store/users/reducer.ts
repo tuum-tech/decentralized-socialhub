@@ -29,6 +29,7 @@ export const usersSlice = createSlice({
   reducers: {
     setSession: (state, action: PayloadAction<{ session: ISessionItem }>) => {
       state.session = action.payload.session;
+      usersAdapter.upsertOne(state, action.payload.session);
     },
     getUsersByDid: (
       state,
@@ -42,10 +43,14 @@ export const usersSlice = createSlice({
       action: PayloadAction<{ users: Array<ISessionItem> }>
     ) => {
       usersAdapter.upsertMany(state, action.payload.users);
+      state.loading = false;
     },
     getUsersByDidFailure: (state, action: PayloadAction<{ error: any }>) => {
       state.loading = false;
       state.error = action.payload.error;
+    },
+    cancel: state => {
+      state.loading = false;
     },
     setUsers(state, action) {
       usersAdapter.setAll(state, action.payload.users);
