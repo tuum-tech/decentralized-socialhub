@@ -2,9 +2,10 @@
  * Page
  */
 import { IonModal, IonContent } from '@ionic/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { up } from 'styled-breakpoints';
 import { useBreakpoint } from 'styled-breakpoints/react-styled';
@@ -12,7 +13,6 @@ import { useBreakpoint } from 'styled-breakpoints/react-styled';
 import style from './style.module.scss';
 import { ExporeTime } from './constants';
 
-import { FollowService } from 'src/services/follow.service';
 import { UserService } from 'src/services/user.service';
 import { ProfileService } from 'src/services/profile.service';
 import { AssistService, RequestStatus } from 'src/services/assist.service';
@@ -32,6 +32,8 @@ import MainLayout from 'src/components/layouts/MainLayout';
 import useSession from 'src/hooks/useSession';
 import request from 'src/baseplate/request';
 import { OnBoardingService } from 'src/services/onboarding.service';
+import { profileSlice } from 'src/store/profile/reducer';
+import { selectProfileById } from 'src/store/profile/selectors';
 
 const ReleaseModal = styled(IonModal)`
   --border-radius: 16px;
@@ -42,6 +44,7 @@ const ReleaseModal = styled(IonModal)`
 `;
 
 const DashboardPage: React.FC<RouteComponentProps> = () => {
+  const dispatch = useDispatch();
   const { session, setSession } = useSession();
 
   const [willExpire, setWillExpire] = useState(false);
@@ -58,9 +61,12 @@ const DashboardPage: React.FC<RouteComponentProps> = () => {
   const [publishStatus, setPublishStatus] = useState(RequestStatus.NotFound);
   const [onBoardVisible, setOnBoardVisible] = useState(false);
 
-  const [followingDids, setFollowingDids] = useState<string[]>([]);
-  const [followerDids, setFollowerDids] = useState<string[]>([]);
-  const [mutualDids, setMutualDids] = useState<string[]>([]);
+  const { followings: followingDids = [], followers: followerDids = [] } =
+    useSelector(state => selectProfileById(state, session.did)) || {};
+  const mutualDids = useMemo(
+    () => followingDids.filter((did: any) => followerDids.indexOf(did) !== -1),
+    [followingDids, followerDids]
+  );
   const [version, setVersion] = useState<Version | null>(null);
   const history = useHistory();
 
@@ -70,6 +76,14 @@ const DashboardPage: React.FC<RouteComponentProps> = () => {
       await refreshStatus();
     }, 5000);
   };
+
+  const getFollowings = useCallback(() => {
+    dispatch(profileSlice.actions.getFollowingDids());
+  }, [dispatch]);
+
+  const getFollowers = useCallback(() => {
+    dispatch(profileSlice.actions.getFollowerDids());
+  }, [dispatch]);
 
   useEffect(() => {
     (async () => {
@@ -172,11 +186,8 @@ const DashboardPage: React.FC<RouteComponentProps> = () => {
       setFullProfile(profile);
     }
 
-    const followingDids = await FollowService.getFollowingDids(session.did);
-    setFollowingDids(followingDids);
-
-    const followerDids = await FollowService.getFollowerDids(session.did);
-    setFollowerDids(followerDids);
+    getFollowings();
+    getFollowers();
 
     setLoadingText('');
   };
@@ -205,13 +216,6 @@ const DashboardPage: React.FC<RouteComponentProps> = () => {
     setTimerForStatus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    const mutualDids = followingDids.filter(
-      (did: any) => followerDids.indexOf(did) !== -1
-    );
-    setMutualDids(mutualDids);
-  }, [followingDids, followerDids]);
 
   useEffect(() => {
     (async () => {
