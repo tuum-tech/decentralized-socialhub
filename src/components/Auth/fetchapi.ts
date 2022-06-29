@@ -6,7 +6,7 @@ export function requestCreateEmailUser(
   did: string
 ): Promise<BaseplateResp> {
   return request(
-    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/credential/create`,
+    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v2/credential/create`,
     {
       method: 'POST',
       headers: {
@@ -29,7 +29,7 @@ export function requestVerifyCode(
   phone: string
 ): Promise<BaseplateResp> {
   return request(
-    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/credential/verify`,
+    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v2/credential/verify`,
     {
       method: 'POST',
       headers: {

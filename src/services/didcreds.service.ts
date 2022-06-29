@@ -5,6 +5,7 @@ import {
 } from '@elastosfoundation/did-js-sdk/';
 import request, { BaseplateResp } from 'src/baseplate/request';
 import { HiveService } from './hive.service';
+import { HiveClient } from '@tuum-tech/hive-js-sdk';
 
 export enum CredentialType {
   Linkedin = 'Linkedin',
@@ -29,7 +30,6 @@ export class DidcredsService {
   ): Promise<VerifiableCredential[]> {
     return didDocument.getCredentials();
   }
-
   static async generateVerifiableCredential(
     did: string,
     credential_type: string,
@@ -126,48 +126,54 @@ export class DidcredsService {
     sessionItem: ISessionItem,
     vc: VerifiableCredential
   ): Promise<void> {
-    let hiveClient = await HiveService.getSessionInstance(sessionItem);
-    await hiveClient?.Scripting.RunScript<any>({
-      name: 'add_verifiablecredential',
-      context: {
-        target_did: sessionItem.did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-      },
-      params: {
+    let hiveClient: HiveClient = (await HiveService.getHiveClient(
+      sessionItem
+    )) as HiveClient;
+    let hiveResponse = await hiveClient?.Scripting.callScript<any>(
+      'add_verifiablecredential',
+      {
         id: vc.getId().toString(),
         vc: vc.toJSON()
-      }
-    });
+      },
+      sessionItem.did,
+      `${process.env.REACT_APP_APPLICATION_DID}`
+    );
+
+    console.log(hiveResponse);
   }
 
   static async removeCredentialToVault(
     sessionItem: ISessionItem,
     vcKey: string
   ): Promise<void> {
-    let hiveClient = await HiveService.getSessionInstance(sessionItem);
-    await hiveClient?.Scripting.RunScript<any>({
-      name: 'remove_verifiablecredential',
-      context: {
-        target_did: sessionItem.did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-      },
-      params: {
+    let hiveClient = (await HiveService.getHiveClient(
+      sessionItem
+    )) as HiveClient;
+    let hiveResponse = await hiveClient?.Scripting.callScript<any>(
+      'remove_verifiablecredential',
+
+      {
         id: vcKey
-      }
-    });
+      },
+      sessionItem.did,
+      `${process.env.REACT_APP_APPLICATION_DID}`
+    );
+
+    console.log(hiveResponse);
   }
 
   static async getAllCredentialsToVault(
     sessionItem: ISessionItem
   ): Promise<Map<string, VerifiableCredential>> {
-    let hiveClient = await HiveService.getSessionInstance(sessionItem);
-    let hiveResponse = await hiveClient?.Scripting.RunScript<any>({
-      name: 'get_verifiable_credentials',
-      context: {
-        target_did: sessionItem.did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-      }
-    });
+    let hiveClient = (await HiveService.getHiveClient(
+      sessionItem
+    )) as HiveClient;
+    let hiveResponse = await hiveClient?.Scripting.callScript<any>(
+      'get_verifiable_credentials',
+      {},
+      sessionItem.did,
+      `${process.env.REACT_APP_APPLICATION_ID}`
+    );
 
     let response = new Map<string, VerifiableCredential>();
 

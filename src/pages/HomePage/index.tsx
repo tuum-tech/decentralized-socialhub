@@ -115,7 +115,7 @@ const HomePage = () => {
 
   useEffect(() => {
     dispatch(fetchSpaces(true));
-  }, []);
+  }, [dispatch]);
 
   const [windowDimensions, setWindowDimensions] = useState(
     getWindowDimensions()
@@ -130,7 +130,7 @@ const HomePage = () => {
       window.addEventListener('resize', handleResize);
       return () => window.removeEventListener('resize', handleResize);
     }
-  }, [hasWindow]);
+  }, []);
 
   const scrollTo = (target: string) => {
     if (target === 'About') {

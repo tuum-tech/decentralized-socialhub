@@ -1,8 +1,8 @@
 import { Guid } from 'guid-typescript';
-import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/Services/Scripting.Service';
-import { DIDDocument } from '@elastosfoundation/did-js-sdk/';
 import { ActivityResponse } from 'src/pages/ActivityPage/types';
 import { VerificationService } from 'src/services/verification.service';
+import { DIDDocument, Logger } from '@elastosfoundation/did-js-sdk/';
+import request, { BaseplateResp } from 'src/baseplate/request';
 
 import { showNotify } from 'src/utils/notify';
 import { getItemsFromData } from 'src/utils/script';
@@ -12,9 +12,12 @@ import { HiveService } from './hive.service';
 import { UserService } from './user.service';
 import { DidService } from './did.service.new';
 import { SearchService } from './search.service';
+import exp from 'constants';
 import { DidcredsService, CredentialType } from './didcreds.service';
 
 export class ProfileService {
+  private static LOG = new Logger('ProfileService');
+
   static didDocument: any = null;
 
   static getVerifiers = async (
@@ -81,27 +84,23 @@ export class ProfileService {
     let userResponse = await searchServiceLocal.searchUsersByDIDs([did], 1, 0);
 
     if (
-      !userResponse.isSuccess ||
-      !userResponse.response ||
-      !userResponse.response.get_users_by_dids ||
-      userResponse.response.get_users_by_dids.items.length <= 0
-    )
+      !userResponse ||
+      !userResponse.get_users_by_dids ||
+      userResponse.get_users_by_dids.items.length <= 0
+    ) {
       return fields;
     try {
-      const hiveInstance = await HiveService.getReadOnlyUserHiveClient(
-        userResponse.response!.get_users_by_dids.items[0].hiveHost
-      );
 
+    const hiveInstance = await HiveService.getAnonymousHiveClient(
+      userResponse.get_users_by_dids.items[0].hiveHost
+    );
       if (hiveInstance && hiveInstance.isConnected) {
-        const res: IRunScriptResponse<PublicProfileResponse> = await hiveInstance.Scripting.RunScript(
-          {
-            name: 'get_public_fields',
-            context: {
-              target_did: did,
-              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-            }
-          }
-        );
+      const res: PublicProfileResponse = await hiveInstance.Scripting.callScript(
+        'get_public_fields',
+        {},
+        did,
+        `${process.env.REACT_APP_APPLICATION_DID}`
+      );
 
         fields =
           (getItemsFromData(res, 'get_public_fields')[0] || {}).fields || [];
@@ -245,129 +244,114 @@ export class ProfileService {
           userResponse.response!.get_users_by_dids.items[0].hiveHost
         );
 
-        if (hiveInstance) {
-          const versionRes: IRunScriptResponse<VersionProfileResponse> = await hiveInstance.Scripting.RunScript(
-            {
-              name: 'get_version_profile',
-              context: {
-                target_did: did,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-              },
-              params: {
-                limit: 0,
-                skip: 0
-              }
-            }
-          );
-          const versionPData = getItemsFromData(
-            versionRes,
-            'get_version_profile'
-          );
-          if (versionPData.length > 0) {
-            versionDTO = versionPData[0];
-          }
+      if (hiveInstance) {
+        const versionRes: VersionProfileResponse = await hiveInstance.Scripting.callScript(
+          'get_version_profile',
+          {
+            limit: 0,
+            skip: 0
+          },
+          did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        const versionPData = getItemsFromData(
+          versionRes,
+          'get_version_profile'
+        );
+        if (versionPData.length > 0) {
+          versionDTO = versionPData[0];
+        }
+        const bpRes: BasicProfileResponse = await hiveInstance.Scripting.callScript(
+          'get_basic_profile',
+          {},
+          did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
 
-          const bpRes: IRunScriptResponse<BasicProfileResponse> = await hiveInstance.Scripting.RunScript(
-            {
-              name: 'get_basic_profile',
-              context: {
-                target_did: did,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-              }
-            }
-          );
+        const gbPData = getItemsFromData(bpRes, 'get_basic_profile');
+        if (gbPData.length > 0) {
+          basicDTO = gbPData[0];
+        }
 
-          const gbPData = getItemsFromData(bpRes, 'get_basic_profile');
-          if (gbPData.length > 0) {
-            basicDTO = gbPData[0];
-          }
+        const tpRes: TeamProfileResponse = await hiveInstance.Scripting.callScript(
+          'get_team_profile',
+          {},
+          did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        teamDTO.items = getItemsFromData(tpRes, 'get_team_profile');
 
-          const tpRes: IRunScriptResponse<TeamProfileResponse> = await hiveInstance.Scripting.RunScript(
-            {
-              name: 'get_team_profile',
-              context: {
-                target_did: did,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-              }
-            }
-          );
-          teamDTO.items = getItemsFromData(tpRes, 'get_team_profile');
+        const thpRes: ThesisProfileResponse = await hiveInstance.Scripting.callScript(
+          'get_thesis_profile',
+          {},
+          did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        thesisDTO.items = getItemsFromData(thpRes, 'get_thesis_profile');
 
-          const thpRes: IRunScriptResponse<ThesisProfileResponse> = await hiveInstance.Scripting.RunScript(
-            {
-              name: 'get_thesis_profile',
-              context: {
-                target_did: did,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-              }
-            }
-          );
-          thesisDTO.items = getItemsFromData(thpRes, 'get_thesis_profile');
+        const p2Res: PaperProfileResponse = await hiveInstance.Scripting.callScript(
+          'get_paper_profile',
+          {},
+          did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        thesisDTO.items = getItemsFromData(p2Res, 'get_paper_profile');
 
-          const p2Res: IRunScriptResponse<PaperProfileResponse> = await hiveInstance.Scripting.RunScript(
-            {
-              name: 'get_paper_profile',
-              context: {
-                target_did: did,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-              }
-            }
-          );
-          thesisDTO.items = getItemsFromData(p2Res, 'get_paper_profile');
+        const lpRes: LicenseProfileResponse = await hiveInstance.Scripting.callScript(
+          'get_license_profile',
+          {},
+          did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        licenseDTO.items = getItemsFromData(lpRes, 'get_license_profile');
 
-          const lpRes: IRunScriptResponse<LicenseProfileResponse> = await hiveInstance.Scripting.RunScript(
-            {
-              name: 'get_license_profile',
-              context: {
-                target_did: did,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-              }
-            }
-          );
-          licenseDTO.items = getItemsFromData(lpRes, 'get_license_profile');
+        const cpRes: CertificationProfileResponse = await hiveInstance.Scripting.callScript(
+          'get_certification_profile',
+          {},
+          did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        certificationDTO.items = getItemsFromData(
+          cpRes,
+          'get_certification_profile'
+        );
+        const gexpRes: GameExpProfileResponse = await hiveInstance.Scripting.callScript(
+          'get_game_exp_profile',
+          {},
+          did,
+          `${process.env.REACT_APP_APPLICATION_ID}`
+        );
+        gameExpDTO.items = getItemsFromData(gexpRes, 'get_game_exp_profile');
 
-          const cpRes: IRunScriptResponse<CertificationProfileResponse> = await hiveInstance.Scripting.RunScript(
-            {
-              name: 'get_certification_profile',
-              context: {
-                target_did: did,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-              }
-            }
-          );
-          certificationDTO.items = getItemsFromData(
-            cpRes,
-            'get_certification_profile'
-          );
-          const gexpRes: IRunScriptResponse<GameExpProfileResponse> = await hiveInstance.Scripting.RunScript(
-            {
-              name: 'get_game_exp_profile',
-              context: {
-                target_did: did,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-              }
-            }
-          );
-          gameExpDTO.items = getItemsFromData(gexpRes, 'get_game_exp_profile');
+        const edRes: EducationProfileResponse = await hiveInstance.Scripting.callScript(
+          'get_education_profile',
+          {},
+          did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
 
-          const edRes: IRunScriptResponse<EducationProfileResponse> = await hiveInstance.Scripting.RunScript(
-            {
-              name: 'get_education_profile',
-              context: {
-                target_did: did,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-              }
-            }
-          );
+        const epRes: ExperienceProfileResponse = await hiveInstance.Scripting.callScript(
+          'get_experience_profile',
+          {},
+          did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        let educationItems: EducationItem[] = getItemsFromData(
+          edRes,
+          'get_education_profile'
+        );
+        let experienceItems: ExperienceItem[] = getItemsFromData(
+          epRes,
+          'get_experience_profile'
+        );
 
-          const epRes: IRunScriptResponse<ExperienceProfileResponse> = await hiveInstance.Scripting.RunScript(
-            {
-              name: 'get_experience_profile',
-              context: {
-                target_did: did,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-              }
-            }
+        /* Calculate verified education credentials starts */
+        for (let educationItem of educationItems) {
+          let edItem: EducationItem = JSON.parse(JSON.stringify(educationItem));
+          edItem.verifiers = await ProfileService.getVerifiers(
+            educationItem,
+            'education',
+            userSession
           );
           let educationItems: EducationItem[] = getItemsFromData(
             edRes,
@@ -378,27 +362,18 @@ export class ProfileService {
             'get_experience_profile'
           );
 
-          /* Calculate verified education credentials starts */
-          for (let educationItem of educationItems) {
-            let edItem: EducationItem = JSON.parse(
-              JSON.stringify(educationItem)
-            );
-            edItem.verifiers = await ProfileService.getVerifiers(
-              educationItem,
-              'education',
-              userSession
-            );
-            if (
-              edItem.verifiers &&
-              edItem.verifiers.length > 0 &&
-              edItem.verifiers[0].did !== userSession.did
-            ) {
-              educationDTO.items.push(edItem);
-            } else {
-              educationDTO.items.push(educationItem);
-            }
-          }
-          /* Calculate verified education credentials ends */
+        const allVcsRes: BasicProfileResponse = await hiveInstance.Scripting.callScript(
+          'get_verifiable_credentials',
+          {},
+          did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        let allVcsItems: [] = getItemsFromData(
+          allVcsRes,
+          'get_verifiable_credentials'
+        );
+        for (let vcItem of allVcsItems) {
+          const item: any = JSON.parse(JSON.stringify(vcItem));
 
           /* Calculate verified experience credentials starts */
           for (let experienceItem of experienceItems) {
@@ -490,20 +465,18 @@ export class ProfileService {
   }
 
   static async updateAbout(basicDTO: BasicDTO, session: ISessionItem) {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'update_basic_profile',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          },
-          params: basicDTO
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          showNotify('About info is successfuly saved', 'success');
-        }
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'update_basic_profile',
+          basicDTO,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        showNotify('About info is successfuly saved', 'success');
+      } catch (e) {
+        ProfileService.LOG.error('updateAbout: {}', e);
       }
     } catch (err) {
       showNotify((err as Error).message, 'error');
@@ -516,26 +489,22 @@ export class ProfileService {
     videoUpdateUrl: string,
     session: ISessionItem
   ) {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'add_version_profile',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          },
-          params: {
-            latestVersion,
-            releaseNotes: releaseNotes,
-            videoUpdateUrl: videoUpdateUrl
-          }
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          showNotify('Updated to latest version', 'success');
-        } else {
-          showNotify('Error executing script', 'error');
-        }
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (session && hiveInstance) {
+      const res: any = await hiveInstance.Scripting.callScript(
+        'add_version_profile',
+        {
+          latestVersion,
+          releaseNotes: releaseNotes,
+          videoUpdateUrl: videoUpdateUrl
+        },
+        session.did,
+        `${process.env.REACT_APP_APPLICATION_ID}`
+      );
+      if (res.isSuccess && res.response._status === 'OK') {
+        showNotify('Updated to latest version', 'success');
+      } else {
+        showNotify('Error executing script', 'error');
       }
     } catch (err) {
       showNotify((err as Error).message, 'error');
@@ -547,33 +516,18 @@ export class ProfileService {
     session: ISessionItem,
     archivedBadge: boolean
   ): Promise<boolean> {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'update_experience_profile',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          },
-          params: experienceItem
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          showNotify('Experience info is successfuly saved', 'success');
-          if (!archivedBadge) {
-            await ProfileService.addActivity(
-              {
-                guid: '',
-                did: session.did,
-                message: 'You received a Experience profile badge',
-                read: false,
-                createdAt: 0,
-                updatedAt: 0
-              },
+    const hiveInstance = await HiveService.getHiveClient(session);
 
-              session
-            );
-          }
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'update_experience_profile',
+          experienceItem,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        showNotify('Experience info is successfuly saved', 'success');
+        if (!archivedBadge) {
           await ProfileService.addActivity(
             {
               guid: '',
@@ -590,6 +544,22 @@ export class ProfileService {
           showNotify('Error executing script', 'error');
           return false;
         }
+        await ProfileService.addActivity(
+          {
+            guid: '',
+            did: session!.did,
+            message: 'You updated experience profile',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
+          },
+
+          session
+        );
+      } catch (e) {
+        ProfileService.LOG.error('updateExperienceProfile: {}', e);
+        showNotify('Error executing script', 'error');
+        return false;
       }
       return true;
     } catch (err) {
@@ -603,33 +573,19 @@ export class ProfileService {
     session: ISessionItem,
     archivedBadge: boolean
   ): Promise<boolean> {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'update_education_profile',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          },
-          params: educationItem
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          showNotify('Education info is successfuly saved', 'success');
-          if (!archivedBadge) {
-            await this.addActivity(
-              {
-                guid: '',
-                did: session.did,
-                message: 'You received a Education profile badge',
-                read: false,
-                createdAt: 0,
-                updatedAt: 0
-              },
-              session
-            );
-          }
-          await this.addActivity(
+    const hiveInstance = await HiveService.getHiveClient(session);
+
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'update_education_profile',
+          educationItem,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        showNotify('Education info is successfuly saved', 'success');
+        if (!archivedBadge) {
+          await ProfileService.addActivity(
             {
               guid: '',
               did: session!.did,
@@ -644,6 +600,21 @@ export class ProfileService {
           showNotify('Error executing script', 'error');
           return false;
         }
+        await ProfileService.addActivity(
+          {
+            guid: '',
+            did: session!.did,
+            message: 'You updated education profile',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
+          },
+          session
+        );
+      } catch (e) {
+        ProfileService.LOG.error('updateEducationProfile: {}', e);
+        showNotify('Error executing script', 'error');
+        return false;
       }
       return true;
     } catch (err) {
@@ -653,31 +624,29 @@ export class ProfileService {
   }
 
   static async updateTeamProfile(teamItem: TeamItem, session: ISessionItem) {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'update_team_profile',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'update_team_profile',
+          teamItem,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        showNotify('Team profile is successfuly saved', 'success');
+        await ProfileService.addActivity(
+          {
+            guid: '',
+            did: session!.did,
+            message: 'You updated team profile',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
           },
-          params: teamItem
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          showNotify('Team profile is successfuly saved', 'success');
-          await this.addActivity(
-            {
-              guid: '',
-              did: session!.did,
-              message: 'You updated team profile',
-              read: false,
-              createdAt: 0,
-              updatedAt: 0
-            },
-            session
-          );
-        }
+          session
+        );
+      } catch (e) {
+        ProfileService.LOG.error('updateTeamProfile: {}', e);
       }
     } catch (err) {
       showNotify((err as Error).message, 'error');
@@ -688,31 +657,29 @@ export class ProfileService {
     thesisItem: ThesisItem,
     session: ISessionItem
   ) {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'update_thesis_profile',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'update_thesis_profile',
+          thesisItem,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        showNotify('Thesis profile is successfuly saved', 'success');
+        await ProfileService.addActivity(
+          {
+            guid: '',
+            did: session!.did,
+            message: 'You updated thesis profile',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
           },
-          params: thesisItem
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          showNotify('Thesis profile is successfuly saved', 'success');
-          await this.addActivity(
-            {
-              guid: '',
-              did: session!.did,
-              message: 'You updated thesis profile',
-              read: false,
-              createdAt: 0,
-              updatedAt: 0
-            },
-            session
-          );
-        }
+          session
+        );
+      } catch (e) {
+        ProfileService.LOG.error('updateThesisProfile: {}', e);
       }
     } catch (err) {
       showNotify((err as Error).message, 'error');
@@ -720,31 +687,29 @@ export class ProfileService {
   }
 
   static async updatePaperProfile(paperItem: PaperItem, session: ISessionItem) {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'update_paper_profile',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'update_paper_profile',
+          paperItem,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        showNotify('Paper profile is successfuly saved', 'success');
+        await ProfileService.addActivity(
+          {
+            guid: '',
+            did: session!.did,
+            message: 'You updated paper profile',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
           },
-          params: paperItem
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          showNotify('Paper profile is successfuly saved', 'success');
-          await this.addActivity(
-            {
-              guid: '',
-              did: session!.did,
-              message: 'You updated paper profile',
-              read: false,
-              createdAt: 0,
-              updatedAt: 0
-            },
-            session
-          );
-        }
+          session
+        );
+      } catch (e) {
+        ProfileService.LOG.error('updatePaperProfile: {}', e);
       }
     } catch (err) {
       showNotify((err as Error).message, 'error');
@@ -755,31 +720,29 @@ export class ProfileService {
     licenseItem: LicenseItem,
     session: ISessionItem
   ) {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'update_license_profile',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'update_license_profile',
+          licenseItem,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        showNotify('License profile is successfuly saved', 'success');
+        await ProfileService.addActivity(
+          {
+            guid: '',
+            did: session!.did,
+            message: 'You updated license profile',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
           },
-          params: licenseItem
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          showNotify('License profile is successfuly saved', 'success');
-          await this.addActivity(
-            {
-              guid: '',
-              did: session!.did,
-              message: 'You updated license profile',
-              read: false,
-              createdAt: 0,
-              updatedAt: 0
-            },
-            session
-          );
-        }
+          session
+        );
+      } catch (e) {
+        ProfileService.LOG.error('updatePaperProfile: {}', e);
       }
     } catch (err) {
       showNotify((err as Error).message, 'error');
@@ -790,31 +753,29 @@ export class ProfileService {
     certificationItem: CertificationItem,
     session: ISessionItem
   ) {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'update_certification_profile',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'update_certification_profile',
+          certificationItem,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        showNotify('Certification profile is successfuly saved', 'success');
+        await ProfileService.addActivity(
+          {
+            guid: '',
+            did: session!.did,
+            message: 'You updated certification profile',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
           },
-          params: certificationItem
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          showNotify('Certification profile is successfuly saved', 'success');
-          await this.addActivity(
-            {
-              guid: '',
-              did: session!.did,
-              message: 'You updated certification profile',
-              read: false,
-              createdAt: 0,
-              updatedAt: 0
-            },
-            session
-          );
-        }
+          session
+        );
+      } catch (e) {
+        ProfileService.LOG.error('updateCertificationProfile: {}', e);
       }
     } catch (err) {
       showNotify((err as Error).message, 'error');
@@ -825,31 +786,29 @@ export class ProfileService {
     gameExpItem: GameExpItem,
     session: ISessionItem
   ) {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'update_game_exp_profile',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'update_game_exp_profile',
+          gameExpItem,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        showNotify('Game experience profile is successfuly saved', 'success');
+        await ProfileService.addActivity(
+          {
+            guid: '',
+            did: session!.did,
+            message: 'You updated game experience profile',
+            read: false,
+            createdAt: 0,
+            updatedAt: 0
           },
-          params: gameExpItem
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          showNotify('Game experience profile is successfuly saved', 'success');
-          await this.addActivity(
-            {
-              guid: '',
-              did: session!.did,
-              message: 'You updated game experience profile',
-              read: false,
-              createdAt: 0,
-              updatedAt: 0
-            },
-            session
-          );
-        }
+          session
+        );
+      } catch (e) {
+        ProfileService.LOG.error('updateGameExpProfile: {}', e);
       }
     } catch (err) {
       showNotify((err as Error).message, 'error');
@@ -860,20 +819,18 @@ export class ProfileService {
     educationItem: EducationItem,
     session: ISessionItem
   ) {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'remove_education_item',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          },
-          params: educationItem
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          showNotify('Education info is successfuly removed', 'success');
-        }
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'remove_education_item',
+          educationItem,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        showNotify('Education info is successfuly removed', 'success');
+      } catch (e) {
+        ProfileService.LOG.error('removeEducationItem: {}', e);
       }
     } catch (err) {
       showNotify((err as Error).message, 'error');
@@ -881,20 +838,18 @@ export class ProfileService {
   }
 
   static async removeTeamItem(teamItem: TeamItem, session: ISessionItem) {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'remove_team_item',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          },
-          params: teamItem
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          showNotify('Team profile info is successfuly removed', 'success');
-        }
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'remove_team_item',
+          teamItem,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        showNotify('Team profile info is successfuly removed', 'success');
+      } catch (e) {
+        ProfileService.LOG.error('removeTeamItem: {}', e);
       }
     } catch (err) {
       showNotify((err as Error).message, 'error');
@@ -902,20 +857,18 @@ export class ProfileService {
   }
 
   static async removeThesisItem(thesisItem: ThesisItem, session: ISessionItem) {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'remove_thesis_item',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          },
-          params: thesisItem
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          showNotify('Thesis profile info is successfuly removed', 'success');
-        }
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'remove_thesis_item',
+          thesisItem,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        showNotify('Thesis profile info is successfuly removed', 'success');
+      } catch (e) {
+        ProfileService.LOG.error('removeThesisItem: {}', e);
       }
     } catch (err) {
       showNotify((err as Error).message, 'error');
@@ -923,20 +876,18 @@ export class ProfileService {
   }
 
   static async removePaperItem(paperItem: PaperItem, session: ISessionItem) {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'remove_paper_item',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          },
-          params: paperItem
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          showNotify('Paper profile info is successfuly removed', 'success');
-        }
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'remove_paper_item',
+          paperItem,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        showNotify('Paper profile info is successfuly removed', 'success');
+      } catch (e) {
+        ProfileService.LOG.error('removePaperItem: {}', e);
       }
     } catch (err) {
       showNotify((err as Error).message, 'error');
@@ -947,20 +898,18 @@ export class ProfileService {
     licenseItem: LicenseItem,
     session: ISessionItem
   ) {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'remove_license_item',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          },
-          params: licenseItem
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          showNotify('License profile info is successfuly removed', 'success');
-        }
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'remove_license_item',
+          licenseItem,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        showNotify('License profile info is successfuly removed', 'success');
+      } catch (e) {
+        ProfileService.LOG.error('removeLicenseItem: {}', e);
       }
     } catch (err) {
       showNotify((err as Error).message, 'error');
@@ -971,23 +920,21 @@ export class ProfileService {
     certificationItem: CertificationItem,
     session: ISessionItem
   ) {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'remove_certification_item',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          },
-          params: certificationItem
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          showNotify(
-            'Certification profile info is successfuly removed',
-            'success'
-          );
-        }
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'remove_certification_item',
+          certificationItem,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        showNotify(
+          'Certification profile info is successfuly removed',
+          'success'
+        );
+      } catch (e) {
+        ProfileService.LOG.error('removeCertificationItem: {}', e);
       }
     } catch (err) {
       showNotify((err as Error).message, 'error');
@@ -998,23 +945,21 @@ export class ProfileService {
     gameExpItem: GameExpItem,
     session: ISessionItem
   ) {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'remove_game_exp_item',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          },
-          params: gameExpItem
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          showNotify(
-            'Game experience profile info is successfuly removed',
-            'success'
-          );
-        }
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'remove_game_exp_item',
+          gameExpItem,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        showNotify(
+          'Game experience profile info is successfuly removed',
+          'success'
+        );
+      } catch (e) {
+        ProfileService.LOG.error('removeGameExpItem: {}', e);
       }
     } catch (err) {
       showNotify((err as Error).message, 'error');
@@ -1025,20 +970,18 @@ export class ProfileService {
     experienceItem: ExperienceItem,
     session: ISessionItem
   ) {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'remove_experience_item',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          },
-          params: experienceItem
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          showNotify('Experience info is successfuly removed', 'success');
-        }
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'remove_experience_item',
+          experienceItem,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        showNotify('Experience info is successfuly removed', 'success');
+      } catch (e) {
+        ProfileService.LOG.error('removeExperienceItem: {}', e);
       }
     } catch (err) {
       showNotify((err as Error).message, 'error');
@@ -1049,26 +992,21 @@ export class ProfileService {
     dids: string[],
     limit: number = 0
   ): Promise<IFollowerResponse | undefined> {
-    try {
-      const appHiveClient = await HiveService.getAppHiveClient();
-      if (appHiveClient && dids && dids.length > 0) {
-        let followersResponse: IRunScriptResponse<IFollowerResponse> = await appHiveClient.Scripting.RunScript(
+    const appHiveClient = await HiveService.getApplicationHiveClient();
+    if (appHiveClient && dids && dids.length > 0) {
+      try {
+        let followersResponse: IFollowerResponse = await appHiveClient.Scripting.callScript(
+          'get_followers',
           {
-            name: 'get_followers',
-            params: {
-              did: dids,
-              limit: limit,
-              skip: 0
-            },
-            context: {
-              target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-            }
-          }
+            did: dids,
+            limit: limit,
+            skip: 0
+          },
+          `${process.env.REACT_APP_APPLICATION_DID}`,
+          `${process.env.REACT_APP_APPLICATION_DID}`
         );
-        if (followersResponse.isSuccess) {
-          return followersResponse.response;
-        }
+      } catch (e) {
+        ProfileService.LOG.error('getFollowers: {}', e);
       }
       return;
     } catch (err) {
@@ -1076,23 +1014,22 @@ export class ProfileService {
     }
   }
 
-  static async unfollow(did: string, session: ISessionItem): Promise<any> {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (hiveInstance && did && did !== '') {
-        await hiveInstance.Database.deleteOne('following', {
-          did: did
-        });
+  static async unfollow(
+    did: string,
+    session: ISessionItem
+  ): Promise<IFollowingResponse | undefined> {
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (hiveInstance && did && did !== '') {
+      await hiveInstance.Database.deleteOne('following', {
+        did: did
+      });
 
-        let followersResponse = await this.getFollowers([did]);
-        let followersList: string[] = [];
-        if (
-          followersResponse &&
-          followersResponse.get_followers.items.length > 0
-        ) {
-          // TODO: handle this better
-          followersList = followersResponse.get_followers.items[0].followers;
-        }
+      let followersResponse = await this.getFollowers([did]);
+      let followersList: string[] = [];
+      if (followersResponse && followersResponse.items.length > 0) {
+        // TODO: handle this better
+        followersList = followersResponse.items[0].followers;
+      }
 
         const sDid = session ? session.did : '';
         if (sDid !== '') {
@@ -1100,23 +1037,20 @@ export class ProfileService {
         }
         let uniqueItems = [...new Set(followersList)]; // distinct
 
-        const appHiveClient = await HiveService.getAppHiveClient();
-        if (appHiveClient) {
-          await appHiveClient.Scripting.RunScript({
-            name: 'set_followers',
-            params: {
+      const appHiveClient = await HiveService.getAnonymousHiveClient();
+      if (appHiveClient) {
+        try {
+          await appHiveClient.Scripting.callScript(
+            'set_followers',
+            {
               did: did,
               followers: uniqueItems
             },
-            context: {
-              target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-            }
-          });
-        }
-
-        if (session) {
-          return this.getFollowings(session.did);
+            `${process.env.REACT_APP_APPLICATION_DID}`,
+            `${process.env.REACT_APP_APPLICATION_DID}`
+          );
+        } catch (e) {
+          ProfileService.LOG.error('unfollow: {}', e);
         }
       }
 
@@ -1127,15 +1061,11 @@ export class ProfileService {
   }
 
   static async resetFollowing(session: ISessionItem): Promise<any> {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (!hiveInstance) return;
-      await hiveInstance.Database.deleteCollection('following');
-      await hiveInstance.Database.createCollection('following');
-      return this.getFollowings(session.did);
-    } catch (err) {
-      showNotify((err as Error).message, 'error');
-    }
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (!hiveInstance) return;
+    await hiveInstance.Database.deleteCollection('following');
+    await hiveInstance.Database.createCollection('following');
+    return this.getFollowings(session.did);
   }
 
   static async getFollowings(
@@ -1143,7 +1073,7 @@ export class ProfileService {
     limit: number = 0
   ): Promise<IFollowingResponse | undefined> {
     let response: IFollowingResponse = {
-      get_following: { items: [] }
+      items: []
     };
     try {
       if (targetDid && targetDid !== '') {
@@ -1161,29 +1091,39 @@ export class ProfileService {
         )
           return response;
 
-        const hiveInstance = await HiveService.getReadOnlyUserHiveClient(
-          userResponse.response.get_users_by_dids.items[0].hiveHost
+    if (targetDid && targetDid !== '') {
+      let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
+      let userResponse = await searchServiceLocal.searchUsersByDIDs(
+        [targetDid],
+        1,
+        0
+      );
+      if (
+        !userResponse ||
+        !userResponse.get_users_by_dids ||
+        userResponse.get_users_by_dids.items.length === 0
+      ) {
+        return response;
+      }
+
+      const hiveInstance = await HiveService.getAnonymousHiveClient(
+        userResponse.get_users_by_dids.items[0].hiveHost
+      );
+
+      if (hiveInstance) {
+        let params = {
+          limit: limit,
+          skip: 0
+        };
+        const followingResponse: IFollowingResponse = await hiveInstance.Scripting.callScript(
+          'get_following',
+          params,
+          targetDid,
+          `${process.env.REACT_APP_APPLICATION_ID}`
         );
 
-        if (hiveInstance) {
-          let params = {
-            limit: limit,
-            skip: 0
-          };
-          const followingResponse: IRunScriptResponse<IFollowingResponse> = await hiveInstance.Scripting.RunScript(
-            {
-              name: 'get_following',
-              params: params,
-              context: {
-                target_did: targetDid,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-              }
-            }
-          );
-
-          if (followingResponse.isSuccess) {
-            return followingResponse.response;
-          }
+        if (followingResponse) {
+          return followingResponse;
         }
       }
       return response;
@@ -1193,24 +1133,16 @@ export class ProfileService {
   }
 
   static async addFollowing(did: string, session: ISessionItem): Promise<any> {
-    try {
-      const hiveClient = await HiveService.getSessionInstance(session);
-      if (hiveClient && did && did !== '') {
-        await hiveClient.Database.insertOne(
-          'following',
-          { did: did },
-          undefined
-        );
+    const hiveClient = await HiveService.getHiveClient(session);
+    if (hiveClient && did && did !== '') {
+      await hiveClient.Database.insertOne('following', { did: did }, undefined);
 
         let followersResponse = await this.getFollowers([did]);
 
-        let followersList: string[] = [];
-        if (
-          followersResponse &&
-          followersResponse.get_followers.items.length > 0
-        )
-          // TODO: handle this better
-          followersList = followersResponse.get_followers.items[0].followers;
+      let followersList: string[] = [];
+      if (followersResponse && followersResponse.items.length > 0)
+        // TODO: handle this better
+        followersList = followersResponse.items[0].followers;
 
         const sDid = session ? session.did : '';
         if (sDid !== '') {
@@ -1219,40 +1151,42 @@ export class ProfileService {
 
         let uniqueItems = [...new Set(followersList)]; // distinct
 
-        const appHiveClient = await HiveService.getAppHiveClient();
-        if (appHiveClient) {
-          await appHiveClient.Scripting.RunScript({
-            name: 'set_followers',
-            params: {
+      const appHiveClient = await HiveService.getAnonymousHiveClient();
+      if (appHiveClient) {
+        try {
+          await appHiveClient.Scripting.callScript(
+            'set_followers',
+            {
               did: did,
               followers: uniqueItems
             },
-            context: {
-              target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-            }
-          });
+            `${process.env.REACT_APP_APPLICATION_DID}`,
+            `${process.env.REACT_APP_APPLICATION_DID}`
+          );
+        } catch (e) {
+          ProfileService.LOG.error('addFollowing: {}', e);
         }
+      }
 
         let userService = new UserService(await DidService.getInstance());
         let followingUser = await userService.SearchUserWithDID(did);
 
-        await this.addActivity(
-          {
-            guid: '',
-            did: sDid,
-            message:
-              'You are following <a href="/did/' +
-              did.replaceAll('did:elastos:', '') +
-              '" target="_blank">' +
-              followingUser.name +
-              '</a>',
-            read: false,
-            createdAt: 0,
-            updatedAt: 0
-          },
-          session
-        );
+      await ProfileService.addActivity(
+        {
+          guid: '',
+          did: sDid,
+          message:
+            'You are following <a href="/did/' +
+            did.replaceAll('did:elastos:', '') +
+            '" target="_blank">' +
+            followingUser.name +
+            '</a>',
+          read: false,
+          createdAt: 0,
+          updatedAt: 0
+        },
+        session
+      );
 
         if (session) {
           return this.getFollowings(session.did);
@@ -1264,32 +1198,23 @@ export class ProfileService {
     }
   }
   static async getActivity(session: ISessionItem) {
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
+    const hiveInstance = await HiveService.getHiveClient(session);
 
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const result: IRunScriptResponse<ActivityResponse> = await hiveInstance.Scripting.RunScript(
-          {
-            name: 'get_activity',
-            context: {
-              target_did: session.did,
-              target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-            }
-          }
+    if (session && hiveInstance) {
+      try {
+        const result: ActivityResponse = await hiveInstance.Scripting.callScript(
+          'get_activity',
+          {},
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
         );
         const get_activity_items = getItemsFromData(result, 'get_activity');
         if (get_activity_items.length > 0) {
           return get_activity_items;
         }
+      } catch (e) {
+        ProfileService.LOG.error('getActivity: {}', e);
       }
-      let tmp_activities = JSON.parse(
-        window.localStorage.getItem(
-          `temporary_activities_${session!.did.replace('did:elastos:', '')}`
-        ) || '[]'
-      );
-      return tmp_activities;
-    } catch (err) {
-      showNotify((err as Error).message, 'error');
     }
   }
   static async addActivity(activity: ActivityItem, session: ISessionItem) {
@@ -1297,31 +1222,18 @@ export class ProfileService {
     if (!activity.guid) activity.guid = Guid.create();
     if (!activity.createdAt) activity.createdAt = new Date().getTime();
     if (!activity.updatedAt) activity.updatedAt = new Date().getTime();
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'add_activity',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          },
-          params: activity
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          // showNotify('Activity created', 'success');
-        }
-      } else {
-        let tmp_activities = JSON.parse(
-          window.localStorage.getItem(
-            `temporary_activities_${activity.did.replace('did:elastos:', '')}`
-          ) || '[]'
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'add_activity',
+          activity,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
         );
-        tmp_activities.push(activity);
-        window.localStorage.setItem(
-          `temporary_activities_${activity.did.replace('did:elastos:', '')}`,
-          JSON.stringify(tmp_activities)
-        );
+        // showNotify('Activity created', 'success');
+      } catch (e) {
+        ProfileService.LOG.error('addActivity: {}', e);
       }
     } catch (err) {
       showNotify((err as Error).message, 'error');
@@ -1330,35 +1242,18 @@ export class ProfileService {
 
   static async updateActivity(activity: ActivityItem, session: ISessionItem) {
     activity.updatedAt = new Date().getTime();
-    try {
-      const hiveInstance = await HiveService.getSessionInstance(session);
-      if (session && hiveInstance && hiveInstance.isConnected) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'update_activity',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          },
-          params: activity
-        });
-        if (res.isSuccess && res.response._status === 'OK') {
-          // showNotify('Activity read by you', 'success');
-        }
-      } else {
-        let tmp_activities = JSON.parse(
-          window.localStorage.getItem(
-            `temporary_activities_${activity.did.replace('did:elastos:', '')}`
-          ) || '[]'
+    const hiveInstance = await HiveService.getHiveClient(session);
+    if (session && hiveInstance) {
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'update_activity',
+          activity,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
         );
-        let index = tmp_activities.findIndex(
-          (_activity: any) => _activity.guid.value === activity.guid.value
-        );
-        if (index < 0) return;
-        tmp_activities[index] = activity;
-        window.localStorage.setItem(
-          `temporary_activities_${activity.did.replace('did:elastos:', '')}`,
-          JSON.stringify(tmp_activities)
-        );
+        // showNotify('Activity read by you', 'success');
+      } catch (e) {
+        ProfileService.LOG.error('updateActivity: {}', e);
       }
     } catch (err) {
       showNotify((err as Error).message, 'error');

@@ -1,8 +1,8 @@
-import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/Services/Scripting.Service';
-import { HiveClient } from '@elastosfoundation/elastos-hive-js-sdk';
-
 import { HiveService } from './hive.service';
 import { getItemsFromData } from '../utils/script';
+import { HiveClient } from '@tuum-tech/hive-js-sdk';
+import { Logger } from 'src/shared-base/logger';
+import { TuumTechScriptService } from './script.service';
 
 export interface IUniversitiesResponse {
   _status?: string;
@@ -63,11 +63,13 @@ export const isDID = (str: string): boolean => {
 };
 
 export class SearchService {
+  private static LOG = new Logger('SearchService');
+
   appHiveClient!: HiveClient;
 
   static async getSearchServiceAppOnlyInstance(): Promise<SearchService> {
     let searchService: SearchService = new SearchService();
-    const appHiveClient = await HiveService.getAppHiveClient();
+    const appHiveClient = await HiveService.getApplicationHiveClient();
     if (appHiveClient) {
       searchService.appHiveClient = appHiveClient;
     }
@@ -78,37 +80,32 @@ export class SearchService {
     searchString: string,
     limit: number,
     offset: number
-  ): Promise<IRunScriptResponse<IUniversitiesResponse | undefined>> {
+  ): Promise<IUniversitiesResponse | undefined> {
     let params: any = {
       limit: limit,
       skip: offset
     };
-
-    let universitiesResponse: IRunScriptResponse<IUniversitiesResponse>;
-
-    if (searchString !== null && searchString !== '') {
-      params['name'] = '.*' + searchString + '.*';
-
-      universitiesResponse = await this.appHiveClient.Scripting.RunScript({
-        name: 'get_universities_by_name',
-        params: params,
-        context: {
-          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-        }
-      });
-    } else {
-      universitiesResponse = await this.appHiveClient.Scripting.RunScript({
-        name: 'get_all_universities',
-        params: params,
-        context: {
-          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-        }
-      });
+    try {
+      if (searchString !== null && searchString !== '') {
+        params['name'] = '.*' + searchString + '.*';
+        return await this.appHiveClient.Scripting.callScript(
+          'get_universities_by_name',
+          params,
+          `${process.env.REACT_APP_APPLICATION_DID}`,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+      } else {
+        return await this.appHiveClient.Scripting.callScript(
+          'get_all_universities',
+          params,
+          `${process.env.REACT_APP_APPLICATION_DID}`,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+      }
+    } catch (e) {
+      SearchService.LOG.error('getUniversities: {}', e);
     }
-
-    return universitiesResponse;
+    return;
   }
 
   // ID text strings within Elastos DID is an ID Sidechain address encoded
@@ -138,62 +135,52 @@ export class SearchService {
       skip: offset
     };
 
-    if (searchString != null && searchString !== '') {
-      if (this.isDID(searchString)) {
-        params['did'] = '.*' + searchString + '.*';
-        params['self_did'] = [userSession.did];
-
-        const usersResponse: any = await this.appHiveClient.Scripting.RunScript(
-          {
-            name: 'get_users_by_did',
-            params: params,
-            context: {
-              target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-            }
+    try {
+      if (searchString != null && searchString !== '') {
+        if (this.isDID(searchString)) {
+          params['did'] = '.*' + searchString + '.*';
+          params['self_did'] = [userSession.did];
+          const usersResponse: any = await this.appHiveClient.Scripting.callScript(
+            'get_users_by_did',
+            params,
+            `${process.env.REACT_APP_APPLICATION_DID}`,
+            `${process.env.REACT_APP_APPLICATION_DID}`
+          );
+          if (usersResponse.get_users_by_did) {
+            res.items = usersResponse.get_users_by_did.items;
           }
-        );
-        if (
-          usersResponse &&
-          usersResponse.response &&
-          usersResponse.response.get_users_by_did
-        ) {
-          res.items = usersResponse.response.get_users_by_did.items;
+        } else {
+          params['name'] = '.*' + searchString + '.*';
+          params['self_did'] = [userSession.did];
+          const usersResponse: any = await this.appHiveClient.Scripting.callScript(
+            'get_users_by_name',
+            params,
+            `${process.env.REACT_APP_APPLICATION_DID}`,
+            `${process.env.REACT_APP_APPLICATION_DID}`
+          );
+          if (usersResponse.response.get_users_by_name) {
+            res.items = usersResponse.get_users_by_name.items;
+          }
         }
       } else {
-        params['name'] = '.*' + searchString + '.*';
         params['self_did'] = [userSession.did];
+        params['tutorialStep'] = [4]; // only activated users
 
-        const usersResponse: any = await this.appHiveClient.Scripting.RunScript(
-          {
-            name: 'get_users_by_name',
-            params: params,
-            context: {
-              target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-            }
-          }
+        const usersResponse: any = await TuumTechScriptService.getUsersByTutorialStep(
+          params
         );
-        if (
-          usersResponse &&
-          usersResponse.response &&
-          usersResponse.response.get_users_by_name
-        ) {
-          res.items = usersResponse.response.get_users_by_name.items;
-        }
+        res.items = usersResponse;
       }
     } else {
       // Scenario 1
       params['onBoardingInfoType'] = 1;
       params['onBoardingInfoStep'] = 5;
-      let usersResponse: any = await this.appHiveClient.Scripting.RunScript({
-        name: 'get_users_by_onBoardingInfo',
-        params: params,
-        context: {
-          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-        }
-      });
+      let usersResponse: any = await this.appHiveClient.Scripting.callScript(
+        'get_users_by_onBoardingInfo',
+        params,
+        `${process.env.REACT_APP_APPLICATION_ID}`,
+        `${process.env.REACT_APP_APPLICATION_DID}`
+      );
       if (
         usersResponse &&
         usersResponse.response &&
@@ -207,14 +194,12 @@ export class SearchService {
       // Scenario 2
       params['onBoardingInfoType'] = 2;
       params['onBoardingInfoStep'] = 3;
-      usersResponse = await this.appHiveClient.Scripting.RunScript({
-        name: 'get_users_by_onBoardingInfo',
-        params: params,
-        context: {
-          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-        }
-      });
+      usersResponse = await this.appHiveClient.Scripting.callScript(
+        'get_users_by_onBoardingInfo',
+        params,
+        `${process.env.REACT_APP_APPLICATION_ID}`,
+        `${process.env.REACT_APP_APPLICATION_DID}`
+      );
       if (
         usersResponse &&
         usersResponse.response &&
@@ -246,10 +231,6 @@ export class SearchService {
         );
       }
     }
-    if (res.items.length > 0) {
-      res.items = res.items.filter(item => item.did !== userSession.did);
-    }
-
     return res;
   }
 
@@ -257,34 +238,23 @@ export class SearchService {
     dids: string[],
     limit: number,
     offset: number
-  ): Promise<IRunScriptResponse<ISearchUserResponse>> {
+  ): Promise<IUserResponse | undefined> {
     let params: any = {
       limit: limit,
       skip: offset
     };
 
-    let usersResponse: IRunScriptResponse<ISearchUserResponse>;
+    let usersResponse: IUserResponse = {
+      get_users_by_tutorialStep: { items: [] }
+    };
 
     params['dids'] = dids;
-    usersResponse = await this.appHiveClient.Scripting.RunScript({
-      name: 'get_users_by_dids', // get all users
-      params: params,
-      context: {
-        target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-      }
-    });
-    if (usersResponse.error) {
-      throw usersResponse.error;
+    try {
+      usersResponse = await TuumTechScriptService.getUsersByDids(params);
+    } catch (e) {
+      SearchService.LOG.error('getUsersByDIDs: {}', e);
     }
-    if (usersResponse.isSuccess) {
-      return usersResponse;
-    }
-
-    return {
-      isSuccess: false,
-      response: { get_users_by_dids: { items: [] } }
-    };
+    return usersResponse;
   }
 
   // TODO: duplicated function, need to remove
@@ -292,30 +262,28 @@ export class SearchService {
     dids: string[],
     limit: number,
     offset: number
-  ): Promise<IRunScriptResponse<ISearchUserResponse | undefined>> {
+  ): Promise<ISearchUserResponse | undefined> {
     let params: any = {
       limit: limit,
       skip: offset
     };
 
-    let usersResponse: IRunScriptResponse<ISearchUserResponse> = {
-      isSuccess: false,
-      response: { get_users_by_dids: { items: [] } }
+    let usersResponse: ISearchUserResponse = {
+      get_users_by_dids: { items: [] }
     };
 
     params['dids'] = dids;
-    usersResponse = await this.appHiveClient.Scripting.RunScript({
-      name: 'get_users_by_dids', // get all users
-      params: params,
-      context: {
-        target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-      }
-    });
-    if (usersResponse.isSuccess) {
-      return usersResponse;
+    try {
+      return await this.appHiveClient.Scripting.callScript(
+        'get_users_by_dids', // get all users
+        params,
+        `${process.env.REACT_APP_APPLICATION_DID}`,
+        `${process.env.REACT_APP_APPLICATION_DID}`
+      );
+    } catch (e) {
+      SearchService.LOG.error('searchUsersByDIDs: {}', e);
     }
-    return usersResponse.error;
+    return usersResponse;
   }
 
   async filterUserNameAndDids(
@@ -331,33 +299,27 @@ export class SearchService {
       skip: offset
     };
 
-    if (this.isDID(searchString)) {
-      const filteredDids = dids.filter(item => item.includes(searchString));
-      params['dids'] = filteredDids;
-      const usersResponse: any = await this.appHiveClient.Scripting.RunScript({
-        name: 'get_users_by_dids',
-        params,
-        context: {
-          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-        }
-      });
-      items = getItemsFromData(usersResponse, 'get_users_by_dids');
-    } else {
-      params['name'] = '.*' + searchString + '.*';
-      params['dids'] = dids;
+    try {
+      if (this.isDID(searchString)) {
+        const filteredDids = dids.filter(item => item.includes(searchString));
+        params['dids'] = filteredDids;
 
-      const usersResponse: any = await this.appHiveClient.Scripting.RunScript({
-        name: 'get_users_by_name_and_dids',
-        params: params,
-        context: {
-          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-        }
-      });
-      items = getItemsFromData(usersResponse, 'get_users_by_name_and_dids');
+        items = await TuumTechScriptService.getUsersByDids(params);
+      } else {
+        params['name'] = '.*' + searchString + '.*';
+        params['dids'] = dids;
+
+        const usersResponse: any = await this.appHiveClient.Scripting.callScript(
+          'get_users_by_name_and_dids',
+          params,
+          `${process.env.REACT_APP_APPLICATION_DID}`,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        items = getItemsFromData(usersResponse, 'get_users_by_name_and_dids');
+      }
+    } catch (e) {
+      SearchService.LOG.error('filterUserNameAndDids: {}', e);
     }
-
     return items;
   }
 }

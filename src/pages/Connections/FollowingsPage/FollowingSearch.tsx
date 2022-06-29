@@ -27,7 +27,7 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
   });
 
   const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
-    get_following: { items: [] }
+    items: []
   });
 
   const [followingCount, setFollowingCount] = useState(0);
@@ -67,10 +67,10 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
 
       let dids: string[] = [];
       if (
-        listFollowing.get_following.items &&
-        listFollowing.get_following.items.length
+        listFollowing.items &&
+        listFollowing.items.length
       ) {
-        dids = listFollowing.get_following.items.map(u => u.did);
+        dids = listFollowing.items.map(u => u.did);
       }
 
       try {
@@ -91,7 +91,7 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
   }, [listFollowing, searchQuery]);
 
   const getFollowingCount = (): number => {
-    return listFollowing.get_following.items.length;
+    return listFollowing.items.length;
   };
 
   return (
@@ -108,7 +108,7 @@ const FollowingSearch: React.FC<Props> = ({ userSession }: Props) => {
           ></SearchInput>
           <PeopleCard
             people={filteredUsers}
-            following={listFollowing.get_following}
+            following={listFollowing}
             searchKeyword={searchQuery}
             isSearchKeywordDID={isDID(searchQuery)}
             showHeader={false}

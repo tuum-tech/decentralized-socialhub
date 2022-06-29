@@ -1,12 +1,13 @@
 import _ from 'lodash';
-import { IRunScriptResponse } from '@elastosfoundation/elastos-hive-js-sdk/dist/Services/Scripting.Service';
 import { getItemsFromData } from 'src/utils/script';
-import { TuumTechScriptService } from './script.service';
 import { HiveService } from './hive.service';
 import { UserService } from './user.service';
 import { DidService } from './did.service.new';
 import { showNotify } from 'src/utils/notify';
 import { Guid } from 'guid-typescript';
+import { Logger } from '@tuum-tech/commons.js.tools';
+import { TuumTechScriptService } from './script.service';
+import { ISession } from 'src/context/session.context';
 
 export enum SpaceCategory {
   Personal = 'Personal Group',
@@ -47,37 +48,59 @@ export const defaultSpace: Space = {
   tags: []
 };
 export class SpaceService {
+  private static LOG = new Logger('SpaceService');
+
   static async getAllSpaces(session?: ISessionItem) {
     const c_spaces = await this.getCommunitySpaces(session);
     const p_spaces = await this.getPrivateSpaces(session);
     return p_spaces.concat(c_spaces);
   }
+
   static async getPrivateSpaces(session?: ISessionItem) {
     let spaces: any[] = [];
     let groups: any = {};
-    const appHiveClient = await HiveService.getAppHiveClient();
+    const appHiveClient = await HiveService.getApplicationHiveClient();
     if (appHiveClient) {
-      if (session) {
-        const response = await appHiveClient.Scripting.RunScript({
-          name: 'get_space_by_owner',
-          params: { owner: session.did },
-          context: {
-            target_did: process.env.REACT_APP_APPLICATION_DID,
-            target_app_did: process.env.REACT_APP_APPLICATION_ID
-          }
-        });
-        const items = getItemsFromData(response, 'get_space_by_owner');
-        groups[session.did] = items;
-      } else {
-        const response = await appHiveClient.Scripting.RunScript({
-          name: 'get_all_spaces',
-          context: {
-            target_did: process.env.REACT_APP_APPLICATION_DID,
-            target_app_did: process.env.REACT_APP_APPLICATION_ID
-          }
-        });
-        const items = getItemsFromData(response, 'get_all_spaces');
-        groups = _.groupBy(items, 'owner');
+      try {
+        if (session) {
+          const response = await appHiveClient.Scripting.callScript(
+            'get_space_by_owner',
+            { owner: session.did },
+            `${process.env.REACT_APP_APPLICATION_DID}`,
+            `${process.env.REACT_APP_APPLICATION_DID}`
+          );
+          const items = getItemsFromData(response, 'get_space_by_owner');
+          groups[session.did] = items;
+        } else {
+          const response = await appHiveClient.Scripting.callScript(
+            'get_all_spaces',
+            {},
+            `${process.env.REACT_APP_APPLICATION_DID}`,
+            `${process.env.REACT_APP_APPLICATION_DID}`
+          );
+          const items = getItemsFromData(response, 'get_all_spaces');
+          groups = _.groupBy(items, 'owner');
+        }
+        let didService = await DidService.getInstance();
+        let userService = new UserService(didService);
+        spaces = await Promise.all(
+          Object.keys(groups).map(async (did: any) => {
+            const guids = groups[did].map((x: any) => x.guid);
+            const tuumUser = await userService.SearchUserWithDID(did);
+            const _spaces = await this.getSpaceByIds(tuumUser, guids);
+            return _spaces.map((x: any) => {
+              const y = groups[did].find(
+                (y: any) => y.guid.value === x.guid.value
+              );
+              return {
+                ...x,
+                ...y
+              };
+            });
+          })
+        );
+      } catch (e) {
+        SpaceService.LOG.error('getAllSpaces: {}', e);
       }
       const users = await TuumTechScriptService.searchUserWithDIDs(
         Object.keys(groups)
@@ -103,15 +126,14 @@ export class SpaceService {
   }
   static async getCommunitySpaces(session?: ISessionItem) {
     let spaces = [];
-    const appHiveClient = await HiveService.getAppHiveClient();
+    const appHiveClient = await HiveService.getApplicationHiveClient();
     if (appHiveClient) {
-      const response = await appHiveClient.Scripting.RunScript({
-        name: 'get_community_spaces',
-        context: {
-          target_did: process.env.REACT_APP_APPLICATION_DID,
-          target_app_did: process.env.REACT_APP_APPLICATION_ID
-        }
-      });
+      const response = await appHiveClient.Scripting.callScript(
+        'get_community_spaces',
+        {},
+        `${process.env.REACT_APP_APPLICATION_DID}`,
+        `${process.env.REACT_APP_APPLICATION_DID}`
+      );
       spaces = getItemsFromData(response, 'get_community_spaces');
       /*       spaces = spaces.filter((space: any) =>
         space.owner.includes(
@@ -123,91 +145,84 @@ export class SpaceService {
   }
   static async getSpaceByNames(session: ISessionItem, names: string[]) {
     let spaces = [];
-    const hiveInstance = await HiveService.getSessionInstance(session);
+    const hiveInstance = await HiveService.getHiveClient(session);
     if (session && hiveInstance) {
-      const result: IRunScriptResponse<SpacesResponse> = await hiveInstance.Scripting.RunScript(
-        {
-          name: 'get_space_by_names',
-          params: { names },
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          }
+      try {
+        const result: SpacesResponse = await hiveInstance.Scripting.callScript(
+          'get_space_by_names',
+          { names },
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        const items = getItemsFromData(result, 'get_space_by_names');
+        const guids = items.map((x: any) => x.guid);
+        const appHiveClient = await HiveService.getAnonymousHiveClient();
+        if (appHiveClient) {
+          const response = await appHiveClient.Scripting.callScript(
+            'get_space_by_ids',
+            { guids },
+            `${process.env.REACT_APP_APPLICATION_DID}`,
+            `${process.env.REACT_APP_APPLICATION_DID}`
+          );
+          spaces = getItemsFromData(response, 'get_space_by_ids');
+          return spaces.map((x: any) => {
+            const y = items.find((y: any) => y.guid.value === x.guid.value);
+            return {
+              ...x,
+              ...y
+            };
+          });
         }
-      );
-      const items = getItemsFromData(result, 'get_space_by_names');
-      const guids = items.map((x: any) => x.guid);
-      const appHiveClient = await HiveService.getAppHiveClient();
-      if (appHiveClient) {
-        const response = await appHiveClient.Scripting.RunScript({
-          name: 'get_space_by_ids',
-          params: { guids },
-          context: {
-            target_did: process.env.REACT_APP_APPLICATION_DID,
-            target_app_did: process.env.REACT_APP_APPLICATION_ID
-          }
-        });
-        spaces = getItemsFromData(response, 'get_space_by_ids');
-        return spaces.map((x: any) => {
-          const y = items.find((y: any) => y.guid.value === x.guid.value);
-          return {
-            ...x,
-            ...y
-          };
-        });
+      } catch (e) {
+        SpaceService.LOG.error('getSpaceByNames: {}', e);
       }
     }
     return [];
   }
+
   static async getSpaceByIds(session: ISessionItem, guids: Guid[]) {
-    const hiveInstance = await HiveService.getSessionInstance(session);
-    if (session && hiveInstance) {
-      const result: IRunScriptResponse<SpacesResponse> = await hiveInstance.Scripting.RunScript(
-        {
-          name: 'get_space_by_ids',
-          params: { guids },
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          }
-        }
-      );
-      const spaces = getItemsFromData(result, 'get_space_by_ids');
-      return spaces.map((space: any) => ({
-        ...space,
-        isCommunitySpace: false
-      }));
+    try {
+      const hiveInstance = await HiveService.getHiveClient(session);
+      if (session && hiveInstance) {
+        const result: SpacesResponse = await hiveInstance.Scripting.callScript(
+          'get_space_by_ids',
+          { guids },
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        const spaces = getItemsFromData(result, 'get_space_by_ids');
+        return spaces.map((space: any) => ({
+          ...space,
+          isCommunitySpace: false
+        }));
+      }
+      return [];
+    } catch (e) {
+      SpaceService.LOG.error('getSpaceByIds: {}', e);
     }
-    return [];
   }
   static async getSpaceById(session: ISessionItem, guid: Guid) {
-    const hiveInstance = await HiveService.getSessionInstance(session);
+    const hiveInstance = await HiveService.getHiveClient(session);
     if (session && hiveInstance) {
-      const result: IRunScriptResponse<SpacesResponse> = await hiveInstance.Scripting.RunScript(
-        {
-          name: 'get_space_by_ids',
-          params: { guids: [guid] },
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          }
-        }
+      const result: any = await hiveInstance.Scripting.callScript(
+        'get_space_by_ids',
+        { guids: [guid] },
+        session.did,
+        `${process.env.REACT_APP_APPLICATION_ID}`
       );
       const spaces = getItemsFromData(result, 'get_space_by_ids');
       if (!spaces.length) {
         return null;
       }
 
-      const appHiveClient = await HiveService.getAppHiveClient();
+      const appHiveClient = await HiveService.getApplicationHiveClient();
       if (appHiveClient) {
-        const response = await appHiveClient.Scripting.RunScript({
-          name: 'get_space_by_ids',
-          params: { guids: [guid] },
-          context: {
-            target_did: process.env.REACT_APP_APPLICATION_DID,
-            target_app_did: process.env.REACT_APP_APPLICATION_ID
-          }
-        });
+        const response = await appHiveClient.Scripting.callScript(
+          'get_space_by_ids',
+          { guids: [guid] },
+          `${process.env.REACT_APP_APPLICATION_DID}`,
+          `${process.env.REACT_APP_APPLICATION_ID}`
+        );
         let items = getItemsFromData(response, 'get_space_by_ids');
         if (!items.length) {
           return null;
@@ -219,36 +234,51 @@ export class SpaceService {
     return null;
   }
   static async getCommunitySpaceByNames(names: string[]) {
-    const appHiveClient = await HiveService.getAppHiveClient();
-    if (appHiveClient) {
-      const response = await appHiveClient.Scripting.RunScript({
-        name: 'get_community_space_by_names',
-        params: { names },
-        context: {
-          target_did: process.env.REACT_APP_APPLICATION_DID,
-          target_app_did: process.env.REACT_APP_APPLICATION_ID
-        }
-      });
-      const spaces = getItemsFromData(response, 'get_community_space_by_names');
-      return spaces.map((space: any) => ({ ...space, isCommunitySpace: true }));
+    try {
+      const appHiveClient = await HiveService.getApplicationHiveClient(
+        `${process.env.REACT_APP_HIVE_HOST}`
+      );
+      if (appHiveClient) {
+        const response = await appHiveClient.Scripting.callScript(
+          'get_community_space_by_names',
+          { names },
+          `${process.env.REACT_APP_APPLICATION_DID}`,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        const spaces = getItemsFromData(
+          response,
+          'get_community_space_by_names'
+        );
+        return spaces.map((space: any) => ({
+          ...space,
+          isCommunitySpace: true
+        }));
+      }
+      return [];
+    } catch (e) {
+      SpaceService.LOG.error('getCommunitySpaceByNames: {}', e);
     }
-    return [];
   }
   static async getCommunitySpaceByIds(guids: Guid[]) {
-    const appHiveClient = await HiveService.getAppHiveClient();
-    if (appHiveClient) {
-      const response = await appHiveClient.Scripting.RunScript({
-        name: 'get_community_space_by_ids',
-        params: { guids },
-        context: {
-          target_did: process.env.REACT_APP_APPLICATION_DID,
-          target_app_did: process.env.REACT_APP_APPLICATION_ID
-        }
-      });
-      const spaces = getItemsFromData(response, 'get_community_space_by_ids');
-      return spaces.map((space: any) => ({ ...space, isCommunitySpace: true }));
+    try {
+      const appHiveClient = await HiveService.getAnonymousHiveClient();
+      if (appHiveClient) {
+        const response = await appHiveClient.Scripting.callScript(
+          'get_community_space_by_ids',
+          { guids },
+          `${process.env.REACT_APP_APPLICATION_DID}`,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        const spaces = getItemsFromData(response, 'get_community_space_by_ids');
+        return spaces.map((space: any) => ({
+          ...space,
+          isCommunitySpace: true
+        }));
+      }
+      return [];
+    } catch (e) {
+      SpaceService.LOG.error('getCommunitySpaceByIds: {}', e);
     }
-    return [];
   }
   static async addSpace(
     session: ISessionItem,
@@ -257,31 +287,27 @@ export class SpaceService {
   ) {
     let resp;
     if (CategoriesForPrivateSpace.includes(space.category)) {
-      const hiveInstance = await HiveService.getSessionInstance(session);
+      const hiveInstance = await HiveService.getHiveClient(session);
       if (session && hiveInstance) {
-        const res: any = await hiveInstance.Scripting.RunScript({
-          name: 'add_space',
-          context: {
-            target_did: session.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          },
-          params: space
-        });
+        const res: any = await hiveInstance.Scripting.callScript(
+          'add_space',
+          space,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
         if (res.isSuccess && res.response._status === 'OK') {
-          const appHiveClient = await HiveService.getAppHiveClient();
+          const appHiveClient = await HiveService.getApplicationHiveClient();
           if (appHiveClient) {
-            resp = await appHiveClient.Scripting.RunScript({
-              name: 'add_space',
-              params: {
+            resp = await appHiveClient.Scripting.callScript(
+              'add_space',
+              {
                 guid: (space as any).guid,
                 owner: session.did,
                 followers: [session.did]
               },
-              context: {
-                target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-              }
-            });
+              `${process.env.REACT_APP_APPLICATION_ID}`,
+              `${process.env.REACT_APP_APPLICATION_DID}`
+            );
             if (notify)
               showNotify(
                 'Space details has been successfully saved',
@@ -289,108 +315,113 @@ export class SpaceService {
               );
           }
         }
+      } else {
+        const appHiveClient = await HiveService.getApplicationHiveClient();
+        if (appHiveClient) {
+          await appHiveClient.Scripting.callScript(
+            'add_community_space',
+            space,
+            `${process.env.REACT_APP_APPLICATION_DID}`,
+            `${process.env.REACT_APP_APPLICATION_DID}`
+          );
+          if (notify)
+            showNotify('Space details has been successfuly saved', 'success');
+        }
       }
     } else {
-      const appHiveClient = await HiveService.getAppHiveClient();
+      const appHiveClient = await HiveService.getApplicationHiveClient();
       if (appHiveClient) {
-        resp = await appHiveClient.Scripting.RunScript({
-          name: 'add_community_space',
-          params: space,
-          context: {
-            target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-          }
-        });
+        resp = await appHiveClient.Scripting.callScript(
+          'add_community_space',
+          space,
+          `${process.env.REACT_APP_APPLICATION_ID}`,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
         if (notify)
           showNotify('Space details has been successfully saved', 'success');
       }
     }
     return resp;
   }
+
   static async removeSpace(session: ISessionItem, space: Space) {
-    const hiveInstance = await HiveService.getSessionInstance(session);
+    const hiveInstance = await HiveService.getHiveClient(session);
     if (session && hiveInstance) {
-      const res: any = await hiveInstance.Scripting.RunScript({
-        name: 'remove_space',
-        context: {
-          target_did: session.did,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-        },
-        params: space
-      });
-      if (res.isSuccess && res.response._status === 'OK') {
-        const appHiveClient = await HiveService.getAppHiveClient();
-        if (appHiveClient) {
-          await appHiveClient.Scripting.RunScript({
-            name: 'remove_space',
-            params: space,
-            context: {
-              target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-            }
-          });
-          showNotify('Space has been successfully removed', 'success');
+      try {
+        const res: any = await hiveInstance.Scripting.callScript(
+          'remove_space',
+          space,
+          session.did,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
+        if (res.isSuccess && res.response._status === 'OK') {
+          const appHiveClient = await HiveService.getApplicationHiveClient();
+          if (appHiveClient) {
+            await appHiveClient.Scripting.callScript(
+              'remove_space',
+              { name: space.name, owner: session.did },
+              `${process.env.REACT_APP_APPLICATION_ID}`,
+              `${process.env.REACT_APP_APPLICATION_DID}`
+            );
+          }
+          showNotify('Space has been successfuly removed', 'success');
         }
+      } catch (e) {
+        SpaceService.LOG.error('removeSpace: {}', e);
       }
     }
   }
   static async follow(session: ISessionItem, space: Space) {
     const followers = [...(space.followers || []), session.did];
-    const appHiveClient = await HiveService.getAppHiveClient();
+    const appHiveClient = await HiveService.getAnonymousHiveClient();
     if (appHiveClient) {
       const scriptName = CategoriesForPrivateSpace.includes(space.category)
-        ? 'follow_space'
-        : 'follow_community_space';
-      await appHiveClient.Scripting.RunScript({
-        name: scriptName,
-        params: {
+          ? 'follow_space'
+          : 'follow_community_space';
+      await appHiveClient.Scripting.callScript(
+        scriptName,
+        {
           guid: (space as any).guid,
           followers: [...new Set(followers)]
         },
-        context: {
-          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-        }
-      });
+        `${process.env.REACT_APP_APPLICATION_DID}`,
+        `${process.env.REACT_APP_APPLICATION_DID}`
+      );
     }
   }
   static async unfollow(session: ISessionItem, space: Space) {
     const followers = space.followers?.filter(
       follower => follower !== session.did
     );
-    const appHiveClient = await HiveService.getAppHiveClient();
+    const appHiveClient = await HiveService.getAnonymousHiveClient();
     if (appHiveClient) {
       const scriptName = CategoriesForPrivateSpace.includes(space.category)
-        ? 'follow_space'
-        : 'follow_community_space';
-      await appHiveClient.Scripting.RunScript({
-        name: scriptName,
-        params: {
+          ? 'follow_space'
+          : 'follow_community_space';
+      await appHiveClient.Scripting.callScript(
+        scriptName,
+        {
           guid: (space as any).guid,
           followers: [...new Set(followers)]
         },
-        context: {
-          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-        }
-      });
+        `${process.env.REACT_APP_APPLICATION_DID}`,
+        `${process.env.REACT_APP_APPLICATION_DID}`
+      );
     }
   }
   static async getPostList(sid: string) {
-    const appHiveClient = await HiveService.getAppHiveClient();
+    const appHiveClient = await HiveService.getApplicationHiveClient();
     if (!appHiveClient) return [];
-    const tuumVaultRes = await appHiveClient.Scripting.RunScript({
-      name: 'get_space_posts',
-      params: {
+    const tuumVaultRes = await appHiveClient.Scripting.callScript(
+      'get_space_posts',
+      {
         space_id: sid,
         limit: 200,
         skip: 0
       },
-      context: {
-        target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-      }
-    });
+      `${process.env.REACT_APP_APPLICATION_ID}`,
+      `${process.env.REACT_APP_APPLICATION_DID}`
+    );
     let posts = getItemsFromData(tuumVaultRes, 'get_space_posts');
     return posts;
   }
@@ -411,19 +442,17 @@ export class SpaceService {
     );
     posts = await Promise.all(
       users.map(async (user: any) => {
-        const hiveInstance = await HiveService.getSessionInstance(user);
+        const hiveInstance = await HiveService.getHiveClient(user);
         if (!user || !hiveInstance) {
           return [];
         }
         const guids = groups[user.did].map((x: any) => x.post_id);
-        const userVaultRes: any = await hiveInstance.Scripting.RunScript({
-          name: 'get_space_posts',
-          context: {
-            target_did: user.did,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-          },
-          params: { guids }
-        });
+        const userVaultRes: any = await hiveInstance.Scripting.callScript(
+          'get_space_posts',
+          { guids },
+          user.did,
+          `${process.env.REACT_APP_APPLICATION_ID}`
+        );
         const data: any[] = getItemsFromData(userVaultRes, 'get_space_posts');
         return data.map(({ guid, content, comments }) => {
           const x = groups[user.did].find(
@@ -437,7 +466,7 @@ export class SpaceService {
     return posts;
   }
   static async post(session: ISessionItem, sid: string, content: string) {
-    const hiveInstance = await HiveService.getSessionInstance(session);
+    const hiveInstance = await HiveService.getHiveClient(session);
     if (session && hiveInstance) {
       const post = {
         space_id: sid,
@@ -448,29 +477,25 @@ export class SpaceService {
         content: content,
         comments: {}
       };
-      const res: any = await hiveInstance.Scripting.RunScript({
-        name: 'update_space_post',
-        context: {
-          target_did: session.did,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-        },
-        params: {
+      const res: any = await hiveInstance.Scripting.callScript(
+        'update_space_post',
+        {
           guid: post.post_id,
           content: post.content,
           comments: post.comments
-        }
-      });
+        },
+        session.did,
+        `${process.env.REACT_APP_APPLICATION_ID}`
+      );
       if (res.isSuccess && res.response._status === 'OK') {
-        const appHiveClient = await HiveService.getAppHiveClient();
+        const appHiveClient = await HiveService.getApplicationHiveClient();
         if (appHiveClient) {
-          await appHiveClient.Scripting.RunScript({
-            name: 'update_space_post',
-            params: post,
-            context: {
-              target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-              target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-            }
-          });
+          await appHiveClient.Scripting.callScript(
+            'update_space_post',
+            post,
+            `${process.env.REACT_APP_APPLICATION_ID}`,
+            `${process.env.REACT_APP_APPLICATION_DID}`
+          );
           return post;
         }
       }
@@ -481,7 +506,7 @@ export class SpaceService {
     let didService = await DidService.getInstance();
     let userService = new UserService(didService);
     const tuumUser = await userService.SearchUserWithDID(post.creator);
-    const hiveInstance = await HiveService.getSessionInstance(tuumUser);
+    const hiveInstance = await HiveService.getHiveClient(tuumUser);
     if (!tuumUser || !hiveInstance) return;
     const commentIds = Object.keys(post.comments);
     const newId =
@@ -495,29 +520,25 @@ export class SpaceService {
       modified: new Date().getTime()
     };
     post.comments_visibility[newId] = true;
-    const res: any = await hiveInstance.Scripting.RunScript({
-      name: 'update_space_post',
-      context: {
-        target_did: tuumUser.did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-      },
-      params: {
+    const res: any = await hiveInstance.Scripting.callScript(
+      'update_space_post',
+      {
         guid: post.post_id,
         content: post.content,
         comments: post.comments
-      }
-    });
+      },
+      tuumUser.did,
+      `${process.env.REACT_APP_APPLICATION_ID}`
+    );
     if (res.isSuccess && res.response._status === 'OK') {
-      const appHiveClient = await HiveService.getAppHiveClient();
+      const appHiveClient = await HiveService.getApplicationHiveClient();
       if (appHiveClient) {
-        await appHiveClient.Scripting.RunScript({
-          name: 'update_space_post',
-          params: post,
-          context: {
-            target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-          }
-        });
+        await appHiveClient.Scripting.callScript(
+          'update_space_post',
+          post,
+          `${process.env.REACT_APP_APPLICATION_DID}`,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
         return post;
       }
     }
@@ -527,31 +548,27 @@ export class SpaceService {
     let didService = await DidService.getInstance();
     let userService = new UserService(didService);
     const tuumUser = await userService.SearchUserWithDID(post.creator);
-    const hiveInstance = await HiveService.getSessionInstance(tuumUser);
+    const hiveInstance = await HiveService.getHiveClient(tuumUser);
     if (!tuumUser || !hiveInstance) return;
-    const res: any = await hiveInstance.Scripting.RunScript({
-      name: 'remove_space_post',
-      context: {
-        target_did: tuumUser.did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-      },
-      params: {
+    const res: any = await hiveInstance.Scripting.callScript(
+      'remove_space_post',
+      {
         guid: post.post_id
-      }
-    });
+      },
+      tuumUser.did,
+      `${process.env.REACT_APP_APPLICATION_ID}`
+    );
     if (res.isSuccess && res.response._status === 'OK') {
-      const appHiveClient = await HiveService.getAppHiveClient();
+      const appHiveClient = await HiveService.getApplicationHiveClient();
       if (appHiveClient) {
-        await appHiveClient.Scripting.RunScript({
-          name: 'remove_space_post',
-          params: {
+        await appHiveClient.Scripting.callScript(
+          'remove_space_post',
+          {
             post_id: post.post_id
           },
-          context: {
-            target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-          }
-        });
+          `${process.env.REACT_APP_APPLICATION_DID}`,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
       }
     }
   }
@@ -559,68 +576,60 @@ export class SpaceService {
     let didService = await DidService.getInstance();
     let userService = new UserService(didService);
     const tuumUser = await userService.SearchUserWithDID(post.creator);
-    const hiveInstance = await HiveService.getSessionInstance(tuumUser);
+    const hiveInstance = await HiveService.getHiveClient(tuumUser);
     if (!tuumUser || !hiveInstance) return null;
     delete post.comments[comment_id];
     delete post.comments_visibility[comment_id];
-    const res: any = await hiveInstance.Scripting.RunScript({
-      name: 'update_space_post',
-      context: {
-        target_did: tuumUser.did,
-        target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
-      },
-      params: {
+    const res: any = await hiveInstance.Scripting.callScript(
+      'update_space_post',
+      {
         guid: post.post_id,
         content: post.content,
         comments: post.comments
-      }
-    });
+      },
+      tuumUser.did,
+      `${process.env.REACT_APP_APPLICATION_ID}`
+    );
     if (res.isSuccess && res.response._status === 'OK') {
-      const appHiveClient = await HiveService.getAppHiveClient();
+      const appHiveClient = await HiveService.getApplicationHiveClient();
       if (appHiveClient) {
-        await appHiveClient.Scripting.RunScript({
-          name: 'update_space_post',
-          params: post,
-          context: {
-            target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-            target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-          }
-        });
+        await appHiveClient.Scripting.callScript(
+          'update_space_post',
+          post,
+          `${process.env.REACT_APP_APPLICATION_ID}`,
+          `${process.env.REACT_APP_APPLICATION_DID}`
+        );
         return post;
       }
     }
     return null;
   }
   static async showOrHidePost(post: any) {
-    const appHiveClient = await HiveService.getAppHiveClient();
+    const appHiveClient = await HiveService.getApplicationHiveClient();
     if (appHiveClient) {
       post.visible = !post.visible;
-      await appHiveClient.Scripting.RunScript({
-        name: 'update_space_post',
-        params: post,
-        context: {
-          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-        }
-      });
+      await appHiveClient.Scripting.callScript(
+        'update_space_post',
+        post,
+        `${process.env.REACT_APP_APPLICATION_ID}`,
+        `${process.env.REACT_APP_APPLICATION_DID}`
+      );
       return post;
     }
     return null;
   }
   static async showOrHideComment(post: any, comment_id: string) {
-    const appHiveClient = await HiveService.getAppHiveClient();
+    const appHiveClient = await HiveService.getApplicationHiveClient();
     if (appHiveClient) {
       post.comments_visibility[comment_id] = !post.comments_visibility[
         comment_id
       ];
-      await appHiveClient.Scripting.RunScript({
-        name: 'update_space_post',
-        params: post,
-        context: {
-          target_did: `${process.env.REACT_APP_APPLICATION_ID}`,
-          target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
-        }
-      });
+      await appHiveClient.Scripting.callScript(
+        'update_space_post',
+        post,
+        `${process.env.REACT_APP_APPLICATION_DID}`,
+        `${process.env.REACT_APP_APPLICATION_DID}`
+      );
       return post;
     }
     return null;

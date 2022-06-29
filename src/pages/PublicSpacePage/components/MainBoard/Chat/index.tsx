@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import {
-  IonRow,
-  IonCol,
-} from '@ionic/react';
+import { IonRow, IonCol } from '@ionic/react';
 import { Wrapper } from '../common';
 import {
   CardOverview,

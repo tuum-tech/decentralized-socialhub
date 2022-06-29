@@ -27,10 +27,10 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
     items: []
   });
   const [listFollowers, setListFollowers] = useState<IFollowerResponse>({
-    get_followers: { items: [] }
+    items: []
   });
   const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
-    get_following: { items: [] }
+    items: []
   });
 
   const [followersCount, setFollowersCount] = useState(0);
@@ -65,6 +65,7 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
         try {
           if (userSession && userSession.did) {
             let listDids = [userSession.did];
+            debugger;
             let followers = await ProfileService.getFollowers(listDids);
             setListFollowers(followers as IFollowerResponse);
           }
@@ -74,6 +75,7 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
 
         try {
           if (userSession && userSession.did) {
+            debugger;
             let following = await ProfileService.getFollowings(userSession.did);
             setListFollowing(following as IFollowingResponse);
           }
@@ -91,11 +93,8 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
       }
 
       let dids: string[] = [];
-      if (
-        listFollowers.get_followers.items &&
-        listFollowers.get_followers.items.length
-      ) {
-        dids = listFollowers.get_followers.items[0].followers.map(u => u);
+      if (listFollowers.items && listFollowers.items.length) {
+        dids = listFollowers.items[0].followers.map(u => u);
       }
 
       try {
@@ -118,11 +117,8 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
   const getFollowersCount = (did: string): number => {
     let val: number = 0;
     try {
-      if (
-        listFollowers.get_followers.items !== undefined &&
-        listFollowers.get_followers.items.length > 0
-      ) {
-        listFollowers.get_followers.items.forEach(item => {
+      if (listFollowers.items !== undefined && listFollowers.items.length > 0) {
+        listFollowers.items.forEach(item => {
           if (item.did === did) {
             val = item.followers.length;
           }
@@ -145,7 +141,7 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
           ></SearchInput>
           <PeopleCard
             people={filteredUsers}
-            following={listFollowing.get_following}
+            following={listFollowing}
             searchKeyword={searchQuery}
             isSearchKeywordDID={isDID(searchQuery)}
             showHeader={false}

@@ -263,6 +263,7 @@ const DashboardPage: React.FC<RouteComponentProps> = () => {
             newSession.badges!.didPublishTimes._100times.archived = timestamp;
             message = 'You received 100 times did publish badge';
           }
+
           if (message) {
             await ProfileService.addActivity(
               {

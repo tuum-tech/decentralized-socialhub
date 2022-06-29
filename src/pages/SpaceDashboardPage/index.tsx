@@ -1,7 +1,7 @@
 /**
  * Page
  */
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
 import { down } from 'styled-breakpoints';
@@ -86,7 +86,7 @@ const SpaceDashboardPage: React.FC<PageProps> = (props: PageProps) => {
         setSyncSpace(false);
       })();
     }
-  }, [syncSpace]);
+  }, [setSyncSpace, syncSpace, updateSpace]);
 
   return (
     <>

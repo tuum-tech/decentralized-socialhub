@@ -9,7 +9,7 @@ export type MenuType = {
   tooltip?: string;
   name: string;
   active: boolean;
-  rightContent?: React.ReactNode,
+  rightContent?: React.ReactNode;
   isChild?: boolean;
   handleClick: () => void;
   items?: MenuType[];

@@ -39,6 +39,7 @@ import { HiveService } from 'src/services/hive.service';
 import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
 import { useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom } from 'src/Atoms/Atoms';
+import { HiveClient } from '@tuum-tech/hive-js-sdk';
 import { OnBoardingService } from 'src/services/onboarding.service';
 
 interface PageProps
@@ -115,7 +116,7 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
             }
           }
           if (serviceEndpoint) {
-            let hiveVersion = await HiveService.getHiveVersion(serviceEndpoint);
+            let hiveVersion = await HiveClient.getHiveVersion(serviceEndpoint);
             let isHiveValid = await HiveService.isHiveVersionSupported(
               hiveVersion
             );

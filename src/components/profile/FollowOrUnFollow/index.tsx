@@ -39,14 +39,8 @@ const FollowOrUnFollowButton: React.FC<IProps> = ({
   const loadData = async () => {
     try {
       let following = await ProfileService.getFollowings(signedUser.did);
-      if (
-        following &&
-        following.get_following &&
-        following.get_following.items
-      ) {
-        const followingDids = following.get_following.items.map(
-          (item: any) => item.did
-        );
+      if (following && following.items) {
+        const followingDids = following.items.map((item: any) => item.did);
 
         setText(followingDids.includes(did) ? 'Unfollow' : 'Follow');
       }

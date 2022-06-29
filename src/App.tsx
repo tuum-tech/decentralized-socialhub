@@ -70,7 +70,9 @@ import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
 import { RecoilRoot } from 'recoil';
 import LoadingIndicator from './elements/LoadingIndicator';
+import HiveClientPage from './pages/HiveClientPage';
 import history from './baseplate/history';
+import MigrationPage from './pages/MigrationPage';
 
 const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
 const SettingsPage = React.lazy(() => import('./pages/SettingsPage'));
@@ -245,6 +247,9 @@ const App: React.FC = () => {
                   />
 
                   {/* ====== Public URLs ==== */}
+
+                  <Route path="/hiveClient" component={HiveClientPage} />
+                  <Route path="/migration" component={MigrationPage} />
                   <Route path="/" component={HomePage} exact={true} />
                   <Route path="/did/:did" component={PublicPage} exact={true} />
                   <Route

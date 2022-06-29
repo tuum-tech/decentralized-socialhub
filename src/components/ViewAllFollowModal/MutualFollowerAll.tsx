@@ -164,9 +164,7 @@ const MutualFollowerAllModal = ({
                   userSession
                 );
                 if (res) {
-                  setFollowingDids(
-                    res['get_following']['items'].map((item: any) => item.did)
-                  );
+                  setFollowingDids(res['items'].map((item: any) => item.did));
                   const _mutualFollowerUsers = mutualFollowerUsers.filter(
                     item => item.did !== user.did
                   );

@@ -1,3 +1,5 @@
+import { DidDocumentService } from './diddocument.service';
+import { HiveClient, AppContextParameters } from '@tuum-tech/hive-js-sdk';
 import { ElastosClient } from '@elastosfoundation/elastos-js-sdk';
 import { DID as CNDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import {
@@ -14,64 +16,112 @@ import jwt_decode from 'jwt-decode';
 
 import { DidService } from './did.service.new';
 
+import { CacheManager, Logger } from '@tuum-tech/commons.js.tools';
+
+import { UserDocumentNotPublishedException } from 'src/shared-base/exceptions';
+
+export const appParameters: any = {
+  hiveHost: process.env.REACT_APP_HIVE_HOST as string,
+  resolverUrl: process.env.REACT_APP_HIVE_RESOLVER_URL as string,
+  resolverCache: process.env.REACT_APP_HIVE_CACHE_DIR as string,
+  context: {
+    storePath: process.env.REACT_APP_APPLICATION_STORE_PATH,
+    appDID: process.env.REACT_APP_APPLICATION_DID,
+    appMnemonics: process.env.REACT_APP_APPLICATION_MNEMONICS,
+    appPhrasePass: process.env.REACT_APP_APPLICATION_PASSPHRASE,
+    appStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS,
+    userDID: process.env.REACT_APP_APPLICATION_DID,
+    userMnemonics: process.env.REACT_APP_APPLICATION_MNEMONICS,
+    userPhrasePass: process.env.REACT_APP_APPLICATION_PASSPHRASE,
+    userStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS
+  } as AppContextParameters
+};
+
 export interface IHiveChallenge {
   issuer: string;
   nonce: string;
 }
 export class HiveService {
-  static async getSessionInstance(
-    instance: ISessionItem
-  ): Promise<HiveClient | undefined> {
+  private static LOG = new Logger('HiveService');
+
+  static async getApplicationHiveClient(
+    hiveHost?: string
+  ): Promise<HiveClient | null> {
     try {
-      let didService = await DidService.getInstance();
-      let isUserDocumentPublished = await didService.isDIDPublished(
-        instance.did
-      );
+      if (hiveHost !== undefined && hiveHost !== '') {
+        let hiveClient = CacheManager.get(
+          'ApplicationHiveClient'
+        ) as HiveClient;
 
-      if (!isUserDocumentPublished) {
-        return;
+        if (!hiveClient) {
+          hiveClient = await HiveClient.createInstance(appParameters);
+        }
+        return hiveClient;
       }
+    } catch (e) {
+      HiveService.LOG.error('Cannot authenticate with Hive: {}', e);
+      return null;
+    }
+    return null;
+  }
 
-      let hiveClient = await HiveClient.createInstance(
-        instance.userToken,
-        instance.hiveHost
-      );
+  static async getHiveClient(
+    session: ISessionItem
+  ): Promise<HiveClient | null> {
+    HiveService.LOG.trace('getHiveClient');
+    try {
+      let hiveClientParameters: any = {
+        hiveHost: session.hiveHost,
+        context: {
+          userDID: session.did
+        }
+      } as any;
+      let hiveClient = CacheManager.get('HiveClient') as HiveClient;
 
+      if (!hiveClient) {
+        let isUserDocumentPublished = await DidDocumentService.isDidDocumentPublished(
+          session.did
+        );
+
+        if (!isUserDocumentPublished) {
+          throw new UserDocumentNotPublishedException();
+        }
+
+        hiveClient = await HiveClient.createInstance(hiveClientParameters);
+      }
       return hiveClient;
     } catch (e) {
-      return;
+      HiveService.LOG.error('Cannot authenticate with Hive: {}', e);
+      return null;
     }
   }
 
-  static async isHiveAddressValid(
-    address: string,
-    isEssentialsUser: boolean
-  ): Promise<boolean> {
+  static async getAnonymousHiveClient(
+    hiveHost?: string
+  ): Promise<HiveClient | undefined> {
+    HiveService.LOG.trace('getReadOnlyUserHiveClient');
     try {
-      let challenge = await HiveService.getHiveChallenge(
-        address,
-        isEssentialsUser
-      );
-      let isValid: boolean =
-        challenge.nonce !== undefined && challenge.nonce.length > 0;
-      return isValid;
+      let host = hiveHost ? hiveHost : process.env.REACT_APP_HIVE_HOST;
+      //return await HiveClient.createAnonymousInstance(host!);
+    } catch (e) {
+      HiveService.LOG.error('getReadOnlyUserHiveClient: {}', e);
+    }
+    return;
+  }
+
+  static async isHiveAddressValid(address: string): Promise<boolean> {
+    HiveService.LOG.trace('isHiveAddressValid');
+    try {
+      await HiveClient.getHiveVersion(address);
     } catch (error) {
-      console.log('error: ', error);
+      HiveService.LOG.error('Cannot connect to Hive Node.', error);
       return false;
     }
-  }
-
-  static async getHiveVersion(address: string): Promise<string> {
-    const response = await fetch(`${address}/api/v1/hive/version`, {
-      method: 'GET'
-    });
-
-    const { version } = await response.json();
-
-    return version;
+    return true;
   }
 
   static async isHiveVersionSupported(version: string): Promise<boolean> {
+    HiveService.LOG.trace('isHiveVersionSupported');
     let pattern = /[v\s]*/gi;
     let minVersion = process.env.REACT_APP_HIVE_MIN_VERSION?.replace(
       pattern,
@@ -119,127 +169,11 @@ export class HiveService {
   }
 
   static async isHiveVersionSet(version: string): Promise<boolean> {
+    HiveService.LOG.trace('isHiveVersionSet');
     if (version === `0.0.0`)
       // default if HIVE_VERSION not set
       return false;
 
     return true;
-  }
-
-  static async getAppHiveClient(): Promise<HiveClient | undefined> {
-    try {
-      let host = `${process.env.REACT_APP_TUUM_TECH_HIVE}`;
-      let hiveClient = await HiveClient.createAnonymousInstance(host);
-      return hiveClient;
-    } catch (e) {}
-    return;
-  }
-
-  static async getReadOnlyUserHiveClient(
-    hiveHost: string
-  ): Promise<HiveClient | undefined> {
-    try {
-      let hiveClient = await HiveClient.createAnonymousInstance(hiveHost);
-      return hiveClient;
-    } catch (e) {}
-    return;
-  }
-
-  private static async getHiveOptions(
-    hiveHost: string,
-    isEssentialUser: boolean
-  ): Promise<IOptions> {
-    //TODO: change to appInstance
-    let builder = new OptionsBuilder();
-    let mnemonic = '';
-    let appDid = '';
-    if (isEssentialUser) {
-      // let didAccess = new CNDID.DIDAccess();
-      // let response = await didAccess.getExistingAppInstanceDIDInfo()
-      mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
-      appDid = `${process.env.REACT_APP_APPLICATION_ID}`;
-    } else {
-      mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
-      appDid = `${process.env.REACT_APP_APPLICATION_ID}`;
-    }
-
-    let a = await ElastosClient.did.loadFromMnemonic(mnemonic, '');
-    await builder.setAppInstance(appDid, {
-      did: appDid,
-      privateKey: a.privateKey
-    });
-
-    builder.setHiveHost(hiveHost);
-    return builder.build();
-  }
-
-  private static copyDocument(document: any): any {
-    let newItem: any = {};
-    Object.getOwnPropertyNames(document).forEach(function(key) {
-      newItem[key] = document[key];
-    }, document);
-
-    return newItem;
-  }
-
-  static async getHiveChallenge(
-    hiveHost: string,
-    isEssentialUser: boolean
-  ): Promise<IHiveChallenge> {
-    let mnemonic = `${process.env.REACT_APP_APPLICATION_MNEMONICS}`;
-    let options = await this.getHiveOptions(hiveHost, isEssentialUser);
-    let didService = await DidService.getInstance();
-    let docChallenge: any;
-    if (isEssentialUser) {
-      let didAccess = new CNDID.DIDAccess();
-      await didAccess.getOrCreateAppInstanceDID();
-
-      let response = await didAccess.getExistingAppInstanceDIDInfo();
-      let didStore = await DIDStore.open(response.storeId);
-
-      let document = await didStore.loadDid(response.didString);
-
-      docChallenge = JSON.parse(document.toString(true));
-    } else {
-      let appDid = await didService.loadDid(mnemonic);
-      let appDocument = await didService.getDidDocument(appDid, false);
-      docChallenge = JSON.parse(appDocument.toString(true));
-
-      if (!appDocument.isValid()) {
-        docChallenge.verifiableCredential.forEach((vc: any) => {
-          delete vc.proof.created;
-        });
-
-        let didDocumentFixed = await DIDDocument.parseAsync(
-          JSON.stringify(docChallenge)
-        );
-        if (!didDocumentFixed.isValid) {
-          console.error('doc is not valid');
-        }
-      }
-    }
-
-    let response = await HiveClient.getApplicationChallenge(
-      options,
-      docChallenge
-    );
-
-    let jwt = jwt_decode<any>(response.challenge);
-    return {
-      issuer: jwt.iss,
-      nonce: jwt.nonce
-    };
-  }
-
-  static async getUserHiveToken(
-    hiveHost: string,
-    presentation: VerifiablePresentation,
-    isEssentialUser: boolean
-  ): Promise<string> {
-    let options = await this.getHiveOptions(hiveHost, isEssentialUser);
-    return await HiveClient.getAuthenticationToken(
-      options,
-      JSON.parse(presentation.toString(true))
-    );
   }
 }

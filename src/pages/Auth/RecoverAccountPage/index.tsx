@@ -33,6 +33,7 @@ import { UserType, LocationState, InferMappedProps } from './types';
 import { SubState } from 'src/store/users/types';
 import { DIDURL } from '@elastosfoundation/did-js-sdk/';
 import { HiveService } from 'src/services/hive.service';
+import { HiveClient } from '@tuum-tech/hive-js-sdk';
 import { OnBoardingService } from 'src/services/onboarding.service';
 
 const CreateButton = styled(Link)`
@@ -135,7 +136,7 @@ const RecoverAccountPage: React.FC<PageProps> = ({ eProps, ...props }) => {
                   }
                 }
                 if (serviceEndpoint) {
-                  let hiveVersion = await HiveService.getHiveVersion(
+                  let hiveVersion = await HiveClient.getHiveVersion(
                     serviceEndpoint
                   );
                   let isHiveValid = await HiveService.isHiveVersionSupported(

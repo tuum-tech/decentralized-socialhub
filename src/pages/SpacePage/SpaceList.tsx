@@ -54,7 +54,7 @@ const SpaceList: React.FC = () => {
     }, 5000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [dispatch, refreshSpaces]);
 
   return (
     <>

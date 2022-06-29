@@ -1,4 +1,11 @@
-import { HiveClient } from '@elastosfoundation/elastos-hive-js-sdk';
+import {
+  DeleteExecutable,
+  Executable,
+  FindExecutable,
+  InsertExecutable,
+  UpdateExecutable,
+  HiveClient
+} from '@tuum-tech/hive-js-sdk/';
 import parallel from 'async/parallel';
 
 export class UserVaultScripts {
@@ -6,7 +13,7 @@ export class UserVaultScripts {
   static async Execute(hiveClient: HiveClient) {
     try {
       if (hiveClient && hiveClient.isConnected) {
-        await hiveClient.Payment.CreateFreeVault();
+        await hiveClient.VaultSubscription.subscribe();
       }
     } catch (e) {
       console.log(`Error while creating vault: ${e}`);

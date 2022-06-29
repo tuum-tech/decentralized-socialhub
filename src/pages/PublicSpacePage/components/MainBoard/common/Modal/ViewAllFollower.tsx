@@ -33,7 +33,7 @@ const ViewAllFollower = ({ space, isOpen, onClose }: Props) => {
     }
   }, []);
 
-  const fetchMoreData = async () => {
+  const fetchMoreData = useCallback(async () => {
     const _followers_ = await FollowService.invokeSearch(
       dids,
       searchStr,
@@ -46,13 +46,13 @@ const ViewAllFollower = ({ space, isOpen, onClose }: Props) => {
     } else {
       setHasMore(false);
     }
-  };
+  }, [dids, followers, pageNum, searchStr]);
 
   useEffect(() => {
     (async () => {
       await fetchMoreData();
     })();
-  }, [space]);
+  }, [fetchMoreData, space]);
 
   return (
     <Modal

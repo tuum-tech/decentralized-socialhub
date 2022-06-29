@@ -15,7 +15,7 @@ import style from './PeopleCard.module.scss';
 
 export interface IFollowingResponse {
   _status?: string;
-  get_following: IGetFollowing;
+  items: IFollowingItem[];
 }
 
 interface PeopleItemProps {
@@ -98,7 +98,7 @@ const PeopleCard: React.FC<Props> = ({
     const response = (await ProfileService.getFollowings(
       session.did
     )) as IFollowingResponse;
-    setListFollowing(response.get_following);
+    setListFollowing(response);
   };
 
   useEffect(() => {
@@ -109,7 +109,7 @@ const PeopleCard: React.FC<Props> = ({
       const response = (await ProfileService.getFollowings(
         session.did
       )) as IFollowingResponse;
-      setListFollowing(response.get_following);
+      setListFollowing(response);
     })();
   }, [session]);
 

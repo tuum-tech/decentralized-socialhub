@@ -30,7 +30,7 @@ const PostEditor: React.FC<Props> = ({ onCreate, onClose }: Props) => {
           label=""
           rows={9}
           value={content}
-          onChange={(val) => setContent(val)}
+          onChange={val => setContent(val)}
           placeholder=""
         ></SmallTextareaInput>
       </IonRow>

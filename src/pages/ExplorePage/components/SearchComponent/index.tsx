@@ -33,7 +33,7 @@ const SearchComponent: React.FC<Props> = ({ userSession }: Props) => {
 
   const [filteredUsers, setFilteredUsers] = useState<PeopleDTO>({ items: [] });
   const [listFollowing, setListFollowing] = useState<IFollowingResponse>({
-    get_following: { items: [] }
+    items: []
   });
   const [searchService, setSearchService] = useState(new SearchService());
 
@@ -92,7 +92,7 @@ const SearchComponent: React.FC<Props> = ({ userSession }: Props) => {
     } catch (e) {
       alertError(null, 'Could not load users that you follow');
     }
-    setListFollowing({ get_following: { items: [] } });
+    setListFollowing({ items: [] });
   };
 
   useEffect(() => {
@@ -155,7 +155,7 @@ const SearchComponent: React.FC<Props> = ({ userSession }: Props) => {
           </IonContent>
           <ExploreNav
             people={filteredUsers}
-            following={listFollowing.get_following}
+            following={listFollowing}
             pages={
               filteredUniversities && filteredUniversities.get_universities
             }

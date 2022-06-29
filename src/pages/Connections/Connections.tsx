@@ -32,18 +32,16 @@ const Connections: React.FC<PageProps> = ({ ...props }: PageProps) => {
         if (session && session.did && session.onBoardingCompleted) {
           let followers = await ProfileService.getFollowers([session.did]);
           let following = await ProfileService.getFollowings(session.did);
-          const item = followers?.get_followers.items.find(
-            item => item.did === session.did
-          );
+          const item = followers?.items.find(item => item.did === session.did);
           setFollowersCount(item?.followers.length ?? 0);
-          setFollowingCount(following?.get_following.items.length ?? 0);
+          setFollowingCount(following?.items.length ?? 0);
 
           if (followers && following) {
-            let followingDids = following?.get_following.items.length
-              ? following?.get_following.items.map(item => item.did)
+            let followingDids = following?.items.length
+              ? following?.items.map(item => item.did)
               : [];
-            let followerDids = followers?.get_followers.items.length
-              ? followers?.get_followers.items[0].followers
+            let followerDids = followers?.items.length
+              ? followers?.items[0].followers
               : [];
 
             setMutualFollowerCount(

@@ -6,12 +6,14 @@ import { HiveService } from './hive.service';
 import { DidService } from './did.service.new';
 import { getItemsFromData } from 'src/utils/script';
 import { Guid } from 'guid-typescript';
+import { Logger } from 'src/shared-base/logger';
+import { HiveException } from '@tuum-tech/hive-js-sdk/';
 import { OnBoardingService } from './onboarding.service';
 
 export class TuumTechScriptService {
   private static async runTuumTechScript(script: any) {
     return request(
-      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/tuumvault_router/scripting/run_script`,
+      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v2/tuumvault_router/scripting/run_script`,
       {
         method: 'POST',
         headers: {
@@ -23,6 +25,34 @@ export class TuumTechScriptService {
         body: JSON.stringify(script)
       }
     );
+  }
+
+  public static async getUsersByDids(params: any) {
+    const get_user_by_did_script = {
+      name: 'get_users_by_dids',
+      params: params,
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
+      }
+    };
+    let response: any = await this.runTuumTechScript(get_user_by_did_script);
+    return getItemsFromData(response, 'get_users_by_dids');
+  }
+
+  public static async getUsersByTutorialStep(params: any) {
+    const script = {
+      name: 'get_users_by_tutorialStep',
+      params: params,
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_ID
+      }
+    };
+    const { data }: any = await this.runTuumTechScript(script);
+    if (data.get_users_by_tutorialStep) {
+      return data.get_users_by_tutorialStep.items;
+    }
   }
 
   public static async getAllUsers() {
@@ -38,7 +68,6 @@ export class TuumTechScriptService {
     const users = data.get_all_users.items;
     return users;
   }
-
   private static async getUsersWithRegisteredCredential(
     credential: string,
     credentialType: string
@@ -52,7 +81,7 @@ export class TuumTechScriptService {
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
       }
     };
 
@@ -182,7 +211,7 @@ export class TuumTechScriptService {
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
       }
     };
     let response: any = await this.runTuumTechScript(get_user_by_did_script);
@@ -217,7 +246,7 @@ export class TuumTechScriptService {
       params,
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
       }
     };
     let response: any = await this.runTuumTechScript(update_user_script);
@@ -231,7 +260,7 @@ export class TuumTechScriptService {
       params,
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
       }
     };
     let response: any = await this.runTuumTechScript(update_emailuser_script);
@@ -248,7 +277,7 @@ export class TuumTechScriptService {
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
       }
     };
     let response: any = await this.runTuumTechScript(add_feedback_script);
@@ -330,7 +359,7 @@ export class TuumTechScriptService {
       params,
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
       }
     };
     let response: any = await this.runTuumTechScript(add_user_script);
@@ -343,7 +372,7 @@ export class TuumTechScriptService {
       params,
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
       }
     };
     let response: any = await this.runTuumTechScript(add_comment_script);
@@ -364,7 +393,7 @@ export class TuumTechScriptService {
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
       }
     };
     let response: any = await this.runTuumTechScript(get_user_by_did_script);
@@ -392,7 +421,7 @@ export class TuumTechScriptService {
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
       }
     };
 
@@ -415,7 +444,7 @@ export class TuumTechScriptService {
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
       }
     };
 
@@ -432,7 +461,7 @@ export class TuumTechScriptService {
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
       }
     };
 
@@ -455,7 +484,7 @@ export class TuumTechScriptService {
       },
       context: {
         target_did: process.env.REACT_APP_APPLICATION_DID,
-        target_app_did: process.env.REACT_APP_APPLICATION_ID
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
       }
     };
 
@@ -464,37 +493,62 @@ export class TuumTechScriptService {
     items = items.sort((a: any, b: any) => b.modified.$date - a.modified.$date);
     return items;
   }
+
+  // space scripts
+  public static async getAllSpaces() {
+    const get_spaces_script = {
+      name: 'get_all_spaces',
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
+      }
+    };
+    let response: any = await this.runTuumTechScript(get_spaces_script);
+    let items = getItemsFromData(response, 'get_all_spaces');
+    return items;
+  }
+  public static async addSpace(did: string, name: string) {
+    const add_space_request_script = {
+      name: 'add_space',
+      params: { name, did },
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
+      }
+    };
+
+    await this.runTuumTechScript(add_space_request_script);
+  }
+
+  public static async addSpaceWithParams(params: any) {
+    const add_space_request_script = {
+      name: 'add_space',
+      params: params,
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
+      }
+    };
+
+    return await this.runTuumTechScript(add_space_request_script);
+  }
+
+  public static async removeSpace(did: string, name: string) {
+    const add_space_request_script = {
+      name: 'remove_space',
+      params: { name, did },
+      context: {
+        target_did: process.env.REACT_APP_APPLICATION_DID,
+        target_app_did: process.env.REACT_APP_APPLICATION_DID
+      }
+    };
+
+    await this.runTuumTechScript(add_space_request_script);
+  }
 }
 
 export class UserVaultScriptService {
-  private static async generateUserToken(mnemonics: string, address: string) {
-    let isEssentialUser = mnemonics === undefined || mnemonics === '';
-    let challenge = await HiveService.getHiveChallenge(
-      address,
-      isEssentialUser
-    );
-    let didService = await DidService.getInstance();
-    let presentation;
-    if (mnemonics) {
-      presentation = await didService.generateVerifiablePresentationFromUserMnemonics(
-        mnemonics,
-        '',
-        challenge.issuer,
-        challenge.nonce
-      );
-    } else {
-      presentation = await didService.generateVerifiablePresentationFromEssentialCred(
-        challenge.issuer,
-        challenge.nonce
-      );
-    }
-    const userToken = await HiveService.getUserHiveToken(
-      address,
-      presentation,
-      isEssentialUser
-    );
-    return userToken;
-  }
+  private static LOG = new Logger('UserVaultScriptService');
 
   public static async register(
     user: ISessionItem,
@@ -525,7 +579,7 @@ export class UserVaultScriptService {
       }
 
       try {
-        let hiveInstance = await HiveService.getSessionInstance(newUser);
+        let hiveInstance = await HiveService.getHiveClient(user);
         let timesRetried = 0;
         while (!(hiveInstance && hiveInstance.isConnected)) {
           console.log(
@@ -562,6 +616,7 @@ export class UserVaultScriptService {
         }
       } catch (error) {
         console.log('Could not register: ' + error);
+        // alertError(null, 'Could not register');
       }
     }
     return newUser;
