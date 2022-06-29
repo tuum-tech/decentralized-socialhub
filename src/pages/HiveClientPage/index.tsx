@@ -2,20 +2,30 @@ import React, { useEffect, useState } from 'react';
 import { IonCard, IonCardContent, IonPage } from '@ionic/react';
 import styled from 'styled-components';
 
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-
-import { makeSelectSession } from 'src/store/users/selectors';
-import { setSession } from 'src/store/users/actions';
-import SignedPublicPageHeader from 'src/components/layouts/SignedPublicPageHeader';
-import { HiveClient, AppContextParameters } from '@tuum-tech/hive-js-sdk';
+import {
+  HiveClient,
+  AppContextParameters,
+  AppContext,
+  AppContextProvider
+} from '@tuum-tech/hive-js-sdk';
 import { HiveService } from 'src/services/hive.service';
 //import { AppVaultScripts } from 'src/scripts/appvault.scriptsV2';
+import dayjs from 'dayjs';
 import {
   DID,
   connectivity
 } from '@elastosfoundation/elastos-connectivity-sdk-js';
 import { AppVaultScripts } from 'src/scripts/appvault.scriptsV2';
+import {
+  Claims,
+  JWTParserBuilder,
+  VerifiablePresentation,
+  JWTHeader,
+  VerifiableCredential,
+  DIDDocument
+} from '@elastosfoundation/did-js-sdk/';
+import { DIDAccess } from '@elastosfoundation/elastos-connectivity-sdk-js/typings/did';
+//import { BrowserVault } from './browser_vault';
 
 const HiveClientPage = () => {
   const [ret, setRet] = useState('');
@@ -75,6 +85,9 @@ const HiveClientPage = () => {
           userStorePass: process.env.REACT_APP_APPLICATION_STORE_PASS
         } as AppContextParameters
       };
+
+      // const browser = new BrowserVault();
+      // const vault = browser.
 
       let userHiveClient = await HiveClient.createInstance(userParameters);
       let vaultInfo = await userHiveClient.VaultSubscription.subscribe();

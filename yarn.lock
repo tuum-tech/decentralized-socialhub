@@ -1349,71 +1349,42 @@
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-10.1.0.tgz#f0950bba18819512d42f7197e56c518aa491cf18"
   integrity sha512-ij4wRiunFfaJxjB0BdrYHIH8FxBJpOwNPhhAcunlmPdXudL1WQV1qoP9un6JsEBAgQH+7UXyyjh0g7jTxXK6tg==
 
-"@elastosfoundation/did-js-sdk@^2.1.0", "@elastosfoundation/did-js-sdk@^2.2.5":
+"@elastosfoundation/did-js-sdk@2.2.7":
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/@elastosfoundation/did-js-sdk/-/did-js-sdk-2.2.7.tgz#c78fe814a124494ca5bd062a8b9582949307d424"
+  integrity sha512-FGIT1Nlnih1SULYWteLqYLC6QBZ++I012mHYV6pUF08pt2SOcDdDVY8IkzLFEcvn1s+4Hxxa6MhumaqtbRwXZQ==
+  dependencies:
+    assert "2.0.0"
+    axios "0.21.4"
+    bip32 "2.0.6"
+    bip39 "3.0.4"
+    bn.js "5.2.0"
+    browserfs "1.4.3"
+    bs58 "4.0.1"
+    bs58check "2.1.2"
+    buffer "5.7.1"
+    create-hash "1.2.0"
+    crypto-browserify "3.12.0"
+    dayjs "1.10.7"
+    elliptic "6.5.4"
+    events "3.3.0"
+    jose "4.5.0"
+    js-crypto-key-utils "1.0.4"
+    jszip "3.7.1"
+    lodash "4.17.21"
+    secp256r1 "0.0.3"
+    stream-browserify "3.0.0"
+    string_decoder "1.3.0"
+    typedoc "0.22.11"
+    util "0.12.4"
+
+"@elastosfoundation/did-js-sdk@^2.1.0":
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/@elastosfoundation/did-js-sdk/-/did-js-sdk-2.2.6.tgz#b9d5785da21492e7f00d38075d08d38ec8bc1a52"
   integrity sha512-qglmnu4AdmCUTjL4tVoNY4qsur0KADMS7OxOPArKrvYwPfi5nPJGSkJHj9BhFEzM+wD8Um9OkUuk/SkCmUw3hA==
   dependencies:
     assert "2.0.0"
     axios "0.21.4"
-    bip32 "2.0.6"
-    bip39 "3.0.4"
-    bn.js "5.2.0"
-    browserfs "1.4.3"
-    bs58 "4.0.1"
-    bs58check "2.1.2"
-    buffer "5.7.1"
-    create-hash "1.2.0"
-    crypto-browserify "3.12.0"
-    dayjs "1.10.7"
-    elliptic "6.5.4"
-    events "3.3.0"
-    jose "4.5.0"
-    js-crypto-key-utils "1.0.4"
-    jszip "3.7.1"
-    lodash "4.17.21"
-    secp256r1 "0.0.3"
-    stream-browserify "3.0.0"
-    string_decoder "1.3.0"
-    typedoc "0.22.11"
-    util "0.12.4"
-
-"@elastosfoundation/did-js-sdk@^2.2.4":
-  version "2.2.5"
-  resolved "https://registry.yarnpkg.com/@elastosfoundation/did-js-sdk/-/did-js-sdk-2.2.5.tgz#acdcc1d17ae7b7198479c98c2737b76afd6acd67"
-  integrity sha512-s+FDIbusEbqNtShbYuyPM03u6RcvM+a3MhLaUAI5M3E79F7XFEq8BfuhM/vUOwoF9kFC8p38fZ+cdEvsfbIyLg==
-  dependencies:
-    assert "2.0.0"
-    axios "0.21.4"
-    bip32 "2.0.6"
-    bip39 "3.0.4"
-    bn.js "5.2.0"
-    browserfs "1.4.3"
-    bs58 "4.0.1"
-    bs58check "2.1.2"
-    buffer "5.7.1"
-    create-hash "1.2.0"
-    crypto-browserify "3.12.0"
-    dayjs "1.10.7"
-    elliptic "6.5.4"
-    events "3.3.0"
-    jose "4.5.0"
-    js-crypto-key-utils "1.0.4"
-    jszip "3.7.1"
-    lodash "4.17.21"
-    secp256r1 "0.0.3"
-    stream-browserify "3.0.0"
-    string_decoder "1.3.0"
-    typedoc "0.22.11"
-    util "0.12.4"
-
-"@elastosfoundation/did-js-sdk@^2.2.9":
-  version "2.2.9"
-  resolved "https://registry.yarnpkg.com/@elastosfoundation/did-js-sdk/-/did-js-sdk-2.2.9.tgz#f4f7ab0357f0bcb756e9f235ae9215fcec2d4878"
-  integrity sha512-m1MD1YwbMyRldUbyFIFM0A+5R09LPPtVucE8YA4FCdTnED9bQoJQfEF7Mb1I3cDtr99qaA4MYR7HrkzFliGpNg==
-  dependencies:
-    assert "2.0.0"
-    axios "0.27.2"
     bip32 "2.0.6"
     bip39 "3.0.4"
     bn.js "5.2.0"
@@ -1476,22 +1447,6 @@
     rxjs "^7.5.1"
     web3 "^1.6.1"
     web3-core "^1.6.1"
-
-"@elastosfoundation/hive-js-sdk@^2.7.1":
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/@elastosfoundation/hive-js-sdk/-/hive-js-sdk-2.7.1.tgz#56e8a143ab60bf751c123511538fb82134e88f82"
-  integrity sha512-EJLE6umyGHCJ+Z1zBPoO0lQAXmI0whAlKmOCh1sCDP0XAJyGWsAfGLo2OazMPg/6jHy3JBPr0oyKENf51c4q0g==
-  dependencies:
-    "@elastosfoundation/did-js-sdk" "^2.2.4"
-    "@types/fs-extra" "^9.0.13"
-    axios "^0.24.0"
-    browserfs "^1.4.3"
-    dayjs "^1.10.4"
-    jsrsasign "^10.5.0"
-    jsrsasign-util "^1.0.2"
-    postcss "^8.4.4"
-    pretend "^3.1.0"
-    tslib "^2.3.1"
 
 "@emotion/babel-plugin@^11.7.1":
   version "11.9.2"
@@ -2499,26 +2454,19 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.2.tgz#423c77877d0569db20e1fc80885ac4118314010e"
   integrity sha512-eZxlbI8GZscaGS7kkc/trHTT5xgrjH3/1n2JDwusC9iahPKWMRvRjJSAN5mCXviuTGQ/lHnhvv8Q1YTpnfz9gA==
 
-"@tuum-tech/commons.js.tools@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@tuum-tech/commons.js.tools/-/commons.js.tools-0.0.2.tgz#822e5a7238b653212f964945c494a2c73f22f6f3"
-  integrity sha512-JE2zXCL1DS3Ie1eTmnNbal33X3wC8yxsus6r3OHYXABrn9yl6B8jcGVSOHnRCKe1cdP5txN2G2b2DR1vLyYSng==
-  dependencies:
-    buffer "^6.0.0"
-
-"@tuum-tech/commons.js.tools@^0.0.3":
+"@tuum-tech/commons.js.tools@0.0.3", "@tuum-tech/commons.js.tools@^0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@tuum-tech/commons.js.tools/-/commons.js.tools-0.0.3.tgz#1c2da17fbd4c5dde6f708bbdd12332e138c6190d"
   integrity sha512-jmdD5MDKZrXSsTt3kev137cRTz5oTrC151wZDCSMpBDE/DyOXS4B/JTg1l5GsaVRg7OBCBxDF8ja8axkUxGQUw==
   dependencies:
     buffer "^6.0.0"
 
-"@tuum-tech/hive-js-sdk@^2.7.14":
-  version "2.7.14"
-  resolved "https://registry.yarnpkg.com/@tuum-tech/hive-js-sdk/-/hive-js-sdk-2.7.14.tgz#75a9c67d38b30bdb13eaaa4c8298a9b1f0f26698"
-  integrity sha512-uWuKbQ+ImSG3JVt4FFu+t3/KcTqHeUPDNCAhFmZk8aaGvKkj+pbvL2dAU7h1mxBUvSXgCBiJyYtJEBE8CCQZ4w==
+"@tuum-tech/hive-js-sdk@2.8.2":
+  version "2.8.2"
+  resolved "https://registry.yarnpkg.com/@tuum-tech/hive-js-sdk/-/hive-js-sdk-2.8.2.tgz#f0d882a102b9141a431ef74b01885afa9e934c54"
+  integrity sha512-Hsle7ejNgTu7OsvcuINwYEad9DWMl0XmcBahEwthV0B78Uw86/HJP9LC7Y9HUEBbT1fQ1ms7b2f7tRnM316V4w==
   dependencies:
-    "@elastosfoundation/did-js-sdk" "^2.2.9"
+    "@elastosfoundation/did-js-sdk" "2.2.7"
     "@elastosfoundation/elastos-connectivity-sdk-js" "^1.0.20"
     "@tuum-tech/commons.js.tools" "^0.0.3"
     "@types/fs-extra" "^9.0.13"
@@ -3979,20 +3927,20 @@ axios@0.21.4, axios@^0.21.1:
   dependencies:
     follow-redirects "^1.14.0"
 
-axios@0.27.2, axios@^0.27.2:
-  version "0.27.2"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.27.2.tgz#207658cc8621606e586c85db4b41a750e756d972"
-  integrity sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==
-  dependencies:
-    follow-redirects "^1.14.9"
-    form-data "^4.0.0"
-
 axios@^0.24.0:
   version "0.24.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.24.0.tgz#804e6fa1e4b9c5288501dd9dff56a7a0940d20d6"
   integrity sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==
   dependencies:
     follow-redirects "^1.14.4"
+
+axios@^0.27.2:
+  version "0.27.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.27.2.tgz#207658cc8621606e586c85db4b41a750e756d972"
+  integrity sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==
+  dependencies:
+    follow-redirects "^1.14.9"
+    form-data "^4.0.0"
 
 axobject-query@^2.0.2, axobject-query@^2.2.0:
   version "2.2.0"
@@ -11325,7 +11273,7 @@ nanoid@3.3.1:
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.1.tgz#6347a18cac88af88f58af0b3594b723d5e99bb35"
   integrity sha512-n6Vs/3KGyxPQd6uO0eH4Bv0ojGSUvuLlIHtC3Y0kEO23YRge8H9x1GCzLn28YX0H66pMkxuaeESFq4tKISKwdw==
 
-nanoid@^3.3.1, nanoid@^3.3.4:
+nanoid@^3.3.4:
   version "3.3.4"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.4.tgz#730b67e3cd09e2deacf03c027c81c9d9dbc5e8ab"
   integrity sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==
@@ -13051,15 +12999,6 @@ postcss@^7, postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.17, po
   dependencies:
     picocolors "^0.2.1"
     source-map "^0.6.1"
-
-postcss@^8.4.4:
-  version "8.4.12"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.12.tgz#1e7de78733b28970fa4743f7da6f3763648b1905"
-  integrity sha512-lg6eITwYe9v6Hr5CncVbK70SoioNQIq81nsaG86ev5hAidQvmOeETBqs7jm43K2F5/Ley3ytDtriImV6TpNiSg==
-  dependencies:
-    nanoid "^3.3.1"
-    picocolors "^1.0.0"
-    source-map-js "^1.0.2"
 
 postcss@^8.4.5:
   version "8.4.14"

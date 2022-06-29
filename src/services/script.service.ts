@@ -7,7 +7,7 @@ import { DidService } from './did.service.new';
 import { getItemsFromData } from 'src/utils/script';
 import { Guid } from 'guid-typescript';
 import { Logger } from 'src/shared-base/logger';
-import { HiveException } from '@elastosfoundation/hive-js-sdk/';
+import { HiveException } from '@tuum-tech/hive-js-sdk/';
 export class TuumTechScriptService {
   private static async runTuumTechScript(script: any) {
     return request(

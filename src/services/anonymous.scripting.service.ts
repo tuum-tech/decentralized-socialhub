@@ -2,7 +2,7 @@ import {
   HttpClient,
   ScriptingService,
   ServiceEndpoint
-} from '@elastosfoundation/hive-js-sdk/';
+} from '@tuum-tech/hive-js-sdk/';
 
 export class AnonymousScriptingService extends ScriptingService {
   public constructor(serviceContext: ServiceEndpoint) {
