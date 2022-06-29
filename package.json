@@ -1,15 +1,14 @@
 {
   "name": "profile",
-  "version": "1.26.1",
+  "version": "1.27.0",
   "description": "Profile",
   "dependencies": {
     "@elastosfoundation/did-js-sdk": "2.2.7",
     "@elastosfoundation/elastos-connectivity-sdk-js": "^1.0.20",
     "@elastosfoundation/elastos-js-sdk": "^1.2.12",
-    "@elastosfoundation/essentials-connector-client-browser": "^1.0.37",
+    "@elastosfoundation/essentials-connector-client-browser": "^1.0.38",
     "@react-hook/size": "^2.1.2",
-    "@sentry/react": "^6.12.0",
-    "@sentry/tracing": "^6.12.0",
+    "@reduxjs/toolkit": "^1.8.2",
     "@svgr/webpack": "4.3.3",
     "@tuum-tech/commons.js.tools": "0.0.3",
     "@tuum-tech/hive-js-sdk": "2.8.2",

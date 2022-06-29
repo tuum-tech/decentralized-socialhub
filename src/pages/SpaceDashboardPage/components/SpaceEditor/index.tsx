@@ -1,6 +1,5 @@
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { down } from 'styled-breakpoints';
@@ -8,7 +7,6 @@ import AboutCard from 'src/components/cards/AboutCard';
 import SyncBar from 'src/components/SyncBar';
 import SpaceCoverPhoto from 'src/components/cards/SpaceCoverPhoto';
 import SpaceAvatarChange from 'src/components/cards/SpaceAvatarChange';
-import ProfileBriefCard from 'src/components/cards/ProfileBriefCard';
 import Followers from '../Followers';
 import OverView from '../OverView';
 import PublicFields from '../PublicFields';
@@ -16,7 +14,8 @@ import Admins from '../Admins';
 import DeleteSpace from '../DeleteSpace';
 import SocialLinks from '../SocialLinks';
 import Category from '../Category';
-import { SpaceCategory } from 'src/services/space.service';
+import Tags from '../Tags';
+import { CategoriesForPrivateSpace } from 'src/services/space.service';
 import { removeSpace, updateSpace } from 'src/store/spaces/actions';
 
 const StyledGrid = styled(IonGrid)`
@@ -34,7 +33,6 @@ interface Props {
 
 const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const [userInfo, setUserInfo] = useState<ISessionItem>(session);
   const [loaded, setLoaded] = useState(false);
   const [spaceProfile, setSpaceProfile] = useState<Space>(profile);
@@ -72,8 +70,13 @@ const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
     dispatch(updateSpace(_spaceProfile));
     setSpaceProfile(_spaceProfile);
   };
-  const onUpdateCategory = async (category: string[]) => {
-    const _spaceProfile = { ...spaceProfile, tags: category };
+  const onUpdateTags = async (tags: string[]) => {
+    const _spaceProfile = { ...spaceProfile, tags };
+    dispatch(updateSpace(_spaceProfile, false));
+    setSpaceProfile(_spaceProfile);
+  };
+  const onUpdateCategory = async (category: string) => {
+    const _spaceProfile = { ...spaceProfile, category };
     dispatch(updateSpace(_spaceProfile, false));
     setSpaceProfile(_spaceProfile);
   };
@@ -81,7 +84,7 @@ const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
     const _spaceProfile = { ...spaceProfile, publicFields: fields };
     dispatch(updateSpace(_spaceProfile, false));
     setSpaceProfile(_spaceProfile);
-  }
+  };
   const onRemoveSpace = async () => {
     const result = window.confirm(
       'This will remove all the contents about this space from your user vault. Are you sure?'
@@ -107,12 +110,16 @@ const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
               exploreAll={() => {}}
             />
           )}
-          <PublicFields sessionItem={userInfo} profile={spaceProfile} update={onUpdatePublicFields} />
+          <PublicFields
+            sessionItem={userInfo}
+            profile={spaceProfile}
+            update={onUpdatePublicFields}
+          />
         </IonCol>
         <IonCol sizeMd="8" sizeSm="12">
           <SpaceCoverPhoto space={spaceProfile} onUpload={onUploadCoverPhoto} />
           <SpaceAvatarChange space={spaceProfile} onUpload={onUploadAvatar} />
-          {loaded && userInfo.tutorialStep === 4 ? (
+          {loaded && userInfo.onBoardingCompleted ? (
             <>
               {spaceProfile && (
                 <AboutCard
@@ -126,9 +133,12 @@ const SpaceEditor: React.FC<Props> = ({ session, profile }) => {
             ''
           )}
           <SocialLinks space={spaceProfile} mode="edit" />
-          <Category profile={spaceProfile} update={onUpdateCategory} />
+          {CategoriesForPrivateSpace.includes(spaceProfile.category) && (
+            <Category profile={spaceProfile} update={onUpdateCategory} />
+          )}
+          <Tags profile={spaceProfile} update={onUpdateTags} />
           <Admins profile={spaceProfile} />
-          {spaceProfile.category === SpaceCategory.Personal && (
+          {CategoriesForPrivateSpace.includes(spaceProfile.category) && (
             <DeleteSpace profile={spaceProfile} removeSpace={onRemoveSpace} />
           )}
         </IonCol>

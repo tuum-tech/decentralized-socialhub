@@ -119,7 +119,7 @@ const ExplorePage: React.FC<PageProps> = ({ match }: PageProps) => {
     (async () => {
       setLoading(true);
 
-      if (session.tutorialStep === 4) {
+      if (session.onBoardingCompleted) {
         const pFields = await ProfileService.getPublicFields(did);
         setPublicFields(pFields);
 

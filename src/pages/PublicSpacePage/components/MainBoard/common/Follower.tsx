@@ -12,7 +12,6 @@ import Avatar from 'src/components/Avatar';
 import ViewAllFollower from './Modal/ViewAllFollower';
 import style from './style.module.scss';
 import { getDIDString } from 'src/utils/did';
-import { TuumTechScriptService } from 'src/services/script.service';
 
 interface IProps {
   template?: string;

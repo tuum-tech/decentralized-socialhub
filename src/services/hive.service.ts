@@ -1,5 +1,20 @@
 import { DidDocumentService } from './diddocument.service';
 import { HiveClient, AppContextParameters } from '@tuum-tech/hive-js-sdk';
+import { ElastosClient } from '@elastosfoundation/elastos-js-sdk';
+import { DID as CNDID } from '@elastosfoundation/elastos-connectivity-sdk-js';
+import {
+  DIDDocument,
+  DIDStore,
+  VerifiablePresentation
+} from '@elastosfoundation/did-js-sdk/';
+import {
+  HiveClient,
+  OptionsBuilder,
+  IOptions
+} from '@elastosfoundation/elastos-hive-js-sdk';
+import jwt_decode from 'jwt-decode';
+
+import { DidService } from './did.service.new';
 
 import { CacheManager, Logger } from '@tuum-tech/commons.js.tools';
 

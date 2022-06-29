@@ -14,7 +14,6 @@ import { DidService } from './did.service.new';
 import { SearchService } from './search.service';
 import exp from 'constants';
 import { DidcredsService, CredentialType } from './didcreds.service';
-import { consoleSandbox } from '@sentry/utils';
 
 export class ProfileService {
   private static LOG = new Logger('ProfileService');
@@ -90,13 +89,12 @@ export class ProfileService {
       userResponse.get_users_by_dids.items.length <= 0
     ) {
       return fields;
-    }
+    try {
 
     const hiveInstance = await HiveService.getAnonymousHiveClient(
       userResponse.get_users_by_dids.items[0].hiveHost
     );
-
-    if (hiveInstance) {
+      if (hiveInstance && hiveInstance.isConnected) {
       const res: PublicProfileResponse = await hiveInstance.Scripting.callScript(
         'get_public_fields',
         {},
@@ -104,61 +102,68 @@ export class ProfileService {
         `${process.env.REACT_APP_APPLICATION_DID}`
       );
 
-      fields =
-        (getItemsFromData(res, 'get_public_fields')[0] || {}).fields || [];
+        fields =
+          (getItemsFromData(res, 'get_public_fields')[0] || {}).fields || [];
+      }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
     return fields;
   }
 
   static async updatePublicFields(fields: string[], userSession: ISessionItem) {
-    let userService = new UserService(await DidService.getInstance());
-    const prevFields = await this.getPublicFields(userSession.did);
-    // Is wallet removed
-    if (prevFields.includes('wallet') && !fields.includes('wallet')) {
-      await userService.updateSession({
-        ...userSession,
-        wallets: {}
-      });
-    }
-    // Is wallet added
-    if (!prevFields.includes('wallet') && fields.includes('wallet')) {
-      let wallets: any = {};
-      const key1 = CredentialType.EIDAddress.toLowerCase();
-      const key2 = CredentialType.ESCAddress.toLowerCase();
-      const key3 = CredentialType.ETHAddress.toLowerCase();
-      const address1 = await DidcredsService.getCredentialValue(
-        userSession,
-        key1
-      );
-      const address2 = await DidcredsService.getCredentialValue(
-        userSession,
-        key2
-      );
-      const address3 = await DidcredsService.getCredentialValue(
-        userSession,
-        key3
-      );
-      if (address1) wallets[key1] = address1;
-      if (address2) wallets[key2] = address2;
-      if (address3) wallets[key3] = address3;
-      await userService.updateSession({
-        ...userSession,
-        wallets
-      });
-    }
-    const hiveInstance = await HiveService.getHiveClient(userSession);
-    if (userSession && hiveInstance) {
-      try {
-        const res: any = await hiveInstance.Scripting.callScript(
-          'set_public_fields',
-          { fields, did: userSession.did },
-          userSession.did,
-          `${process.env.REACT_APP_APPLICATION_DID}`
-        );
-        showNotify('Public profile fields are successfuly saved', 'success');
-      } catch (e) {
-        ProfileService.LOG.error('updatePublicFields: {}', e);
+    try {
+      let userService = new UserService(await DidService.getInstance());
+      const prevFields = await this.getPublicFields(userSession.did);
+      // Is wallet removed
+      if (prevFields.includes('wallet') && !fields.includes('wallet')) {
+        await userService.updateSession({
+          ...userSession,
+          wallets: {}
+        });
       }
+      // Is wallet added
+      if (!prevFields.includes('wallet') && fields.includes('wallet')) {
+        let wallets: any = {};
+        // const key1 = CredentialType.EIDAddress.toLowerCase();
+        const key2 = CredentialType.ESCAddress.toLowerCase();
+        const key3 = CredentialType.ETHAddress.toLowerCase();
+        // const address1 = await DidcredsService.getCredentialValue(
+        //   userSession,
+        //   key1
+        // );
+        const address2 = await DidcredsService.getCredentialValue(
+          userSession,
+          key2
+        );
+        const address3 = await DidcredsService.getCredentialValue(
+          userSession,
+          key3
+        );
+        // if (address1) wallets[key1] = address1;
+        if (address2) wallets[key2] = address2;
+        if (address3) wallets[key3] = address3;
+        await userService.updateSession({
+          ...userSession,
+          wallets
+        });
+      }
+      const hiveInstance = await HiveService.getSessionInstance(userSession);
+      if (userSession && hiveInstance) {
+        const res: any = await hiveInstance.Scripting.RunScript({
+          name: 'set_public_fields',
+          context: {
+            target_did: userSession.did,
+            target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+          },
+          params: { fields, did: userSession.did }
+        });
+        if (res.isSuccess && res.response._status === 'OK') {
+          showNotify('Public profile fields are successfuly saved', 'success');
+        }
+      }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -173,6 +178,14 @@ export class ProfileService {
     let emailCredential = {
       email: '',
       verifiers: [] as any[]
+    };
+    let escaddressCredential = {
+      address: '',
+      id: ''
+    };
+    let ethaddressCredential = {
+      address: '',
+      id: ''
     };
     let basicDTO: any = {};
     let versionDTO: Version = {
@@ -214,16 +227,22 @@ export class ProfileService {
       items: [],
       isEnabled: true
     };
-    let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-    let userResponse = await searchServiceLocal.searchUsersByDIDs([did], 1, 0);
-    if (
-      userResponse &&
-      userResponse.get_users_by_dids &&
-      userResponse.get_users_by_dids.items.length > 0
-    ) {
-      const hiveInstance = await HiveService.getAnonymousHiveClient(
-        userResponse.get_users_by_dids.items[0].hiveHost
+    try {
+      let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
+      let userResponse = await searchServiceLocal.searchUsersByDIDs(
+        [did],
+        1,
+        0
       );
+      if (
+        userResponse.isSuccess &&
+        userResponse.response &&
+        userResponse.response.get_users_by_dids &&
+        userResponse.response!.get_users_by_dids.items.length > 0
+      ) {
+        const hiveInstance = await HiveService.getReadOnlyUserHiveClient(
+          userResponse.response!.get_users_by_dids.items[0].hiveHost
+        );
 
       if (hiveInstance) {
         const versionRes: VersionProfileResponse = await hiveInstance.Scripting.callScript(
@@ -334,39 +353,14 @@ export class ProfileService {
             'education',
             userSession
           );
-          if (
-            edItem.verifiers &&
-            edItem.verifiers.length > 0 &&
-            edItem.verifiers[0].did !== userSession.did
-          ) {
-            educationDTO.items.push(edItem);
-          } else {
-            educationDTO.items.push(educationItem);
-          }
-        }
-        /* Calculate verified education credentials ends */
-
-        /* Calculate verified experience credentials starts */
-        for (let experienceItem of experienceItems) {
-          let exItem: ExperienceItem = JSON.parse(
-            JSON.stringify(experienceItem)
+          let educationItems: EducationItem[] = getItemsFromData(
+            edRes,
+            'get_education_profile'
           );
-          exItem.verifiers = await ProfileService.getVerifiers(
-            experienceItem,
-            'experience',
-            userSession
+          let experienceItems: ExperienceItem[] = getItemsFromData(
+            epRes,
+            'get_experience_profile'
           );
-          if (
-            exItem.verifiers &&
-            exItem.verifiers.length > 0 &&
-            exItem.verifiers[0].did !== userSession.did
-          ) {
-            experienceDTO.items.push(exItem);
-          } else {
-            experienceDTO.items.push(experienceItem);
-          }
-        }
-        /* Calculate verified experience credentials ends */
 
         const allVcsRes: BasicProfileResponse = await hiveInstance.Scripting.callScript(
           'get_verifiable_credentials',
@@ -381,27 +375,81 @@ export class ProfileService {
         for (let vcItem of allVcsItems) {
           const item: any = JSON.parse(JSON.stringify(vcItem));
 
-          const vc = item.vc;
-          for (let s in vc.credentialSubject) {
-            const verifier = await ProfileService.getVerifierFromVc(vc);
-            if (s === 'name' && verifier.did !== userSession.did) {
-              nameCredential.verifiers = [verifier];
-            } else if (
-              s === 'email' &&
-              userSession.loginCred?.email &&
-              verifier.did !== userSession.did
+          /* Calculate verified experience credentials starts */
+          for (let experienceItem of experienceItems) {
+            let exItem: ExperienceItem = JSON.parse(
+              JSON.stringify(experienceItem)
+            );
+            exItem.verifiers = await ProfileService.getVerifiers(
+              experienceItem,
+              'experience',
+              userSession
+            );
+            if (
+              exItem.verifiers &&
+              exItem.verifiers.length > 0 &&
+              exItem.verifiers[0].did !== userSession.did
             ) {
-              emailCredential.email = userSession.loginCred.email;
-              emailCredential.verifiers = [verifier];
+              experienceDTO.items.push(exItem);
+            } else {
+              experienceDTO.items.push(experienceItem);
+            }
+          }
+          /* Calculate verified experience credentials ends */
+
+          const allVcsRes: IRunScriptResponse<BasicProfileResponse> = await hiveInstance.Scripting.RunScript(
+            {
+              name: 'get_verifiable_credentials',
+              context: {
+                target_did: did,
+                target_app_did: `${process.env.REACT_APP_APPLICATION_DID}`
+              }
+            }
+          );
+          let allVcsItems: [] = getItemsFromData(
+            allVcsRes,
+            'get_verifiable_credentials'
+          );
+          for (let vcItem of allVcsItems) {
+            const item: any = JSON.parse(JSON.stringify(vcItem));
+
+            const vc = item.vc;
+            for (let s in vc.credentialSubject) {
+              const verifier = await ProfileService.getVerifierFromVc(vc);
+              if (s === 'name' && verifier.did !== userSession.did) {
+                nameCredential.verifiers = [verifier];
+              } else if (
+                s === 'email' &&
+                userSession.loginCred?.email &&
+                verifier.did !== userSession.did
+              ) {
+                emailCredential.email = userSession.loginCred.email;
+                emailCredential.verifiers = [verifier];
+              } else if (
+                s === 'ethaddress' &&
+                verifier.did !== userSession.did
+              ) {
+                ethaddressCredential.address = vc.credentialSubject.ethaddress;
+                ethaddressCredential.id = vc.credentialSubject.id;
+              } else if (
+                s === 'escaddress' &&
+                verifier.did !== userSession.did
+              ) {
+                escaddressCredential.address = vc.credentialSubject.escaddress;
+                escaddressCredential.id = vc.credentialSubject.id;
+              }
             }
           }
         }
       }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
-
     return {
       name: nameCredential,
       email: emailCredential,
+      escaddressCredential,
+      ethaddressCredential,
       basicDTO,
       educationDTO,
       experienceDTO,
@@ -430,6 +478,8 @@ export class ProfileService {
       } catch (e) {
         ProfileService.LOG.error('updateAbout: {}', e);
       }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -456,6 +506,8 @@ export class ProfileService {
       } else {
         showNotify('Error executing script', 'error');
       }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -479,8 +531,8 @@ export class ProfileService {
           await ProfileService.addActivity(
             {
               guid: '',
-              did: session.did,
-              message: 'You received a Experience profile badge',
+              did: session!.did,
+              message: 'You updated experience profile',
               read: false,
               createdAt: 0,
               updatedAt: 0
@@ -488,6 +540,9 @@ export class ProfileService {
 
             session
           );
+        } else {
+          showNotify('Error executing script', 'error');
+          return false;
         }
         await ProfileService.addActivity(
           {
@@ -506,8 +561,11 @@ export class ProfileService {
         showNotify('Error executing script', 'error');
         return false;
       }
+      return true;
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
+      return false;
     }
-    return true;
   }
 
   static async updateEducationProfile(
@@ -530,14 +588,17 @@ export class ProfileService {
           await ProfileService.addActivity(
             {
               guid: '',
-              did: session.did,
-              message: 'You received a Education profile badge',
+              did: session!.did,
+              message: 'You updated education profile',
               read: false,
               createdAt: 0,
               updatedAt: 0
             },
             session
           );
+        } else {
+          showNotify('Error executing script', 'error');
+          return false;
         }
         await ProfileService.addActivity(
           {
@@ -555,8 +616,11 @@ export class ProfileService {
         showNotify('Error executing script', 'error');
         return false;
       }
+      return true;
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
+      return false;
     }
-    return true;
   }
 
   static async updateTeamProfile(teamItem: TeamItem, session: ISessionItem) {
@@ -584,6 +648,8 @@ export class ProfileService {
       } catch (e) {
         ProfileService.LOG.error('updateTeamProfile: {}', e);
       }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -615,6 +681,8 @@ export class ProfileService {
       } catch (e) {
         ProfileService.LOG.error('updateThesisProfile: {}', e);
       }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -643,6 +711,8 @@ export class ProfileService {
       } catch (e) {
         ProfileService.LOG.error('updatePaperProfile: {}', e);
       }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -674,6 +744,8 @@ export class ProfileService {
       } catch (e) {
         ProfileService.LOG.error('updatePaperProfile: {}', e);
       }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -705,6 +777,8 @@ export class ProfileService {
       } catch (e) {
         ProfileService.LOG.error('updateCertificationProfile: {}', e);
       }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -736,6 +810,8 @@ export class ProfileService {
       } catch (e) {
         ProfileService.LOG.error('updateGameExpProfile: {}', e);
       }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -756,6 +832,8 @@ export class ProfileService {
       } catch (e) {
         ProfileService.LOG.error('removeEducationItem: {}', e);
       }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -773,6 +851,8 @@ export class ProfileService {
       } catch (e) {
         ProfileService.LOG.error('removeTeamItem: {}', e);
       }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -790,6 +870,8 @@ export class ProfileService {
       } catch (e) {
         ProfileService.LOG.error('removeThesisItem: {}', e);
       }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -807,6 +889,8 @@ export class ProfileService {
       } catch (e) {
         ProfileService.LOG.error('removePaperItem: {}', e);
       }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -827,6 +911,8 @@ export class ProfileService {
       } catch (e) {
         ProfileService.LOG.error('removeLicenseItem: {}', e);
       }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -850,6 +936,8 @@ export class ProfileService {
       } catch (e) {
         ProfileService.LOG.error('removeCertificationItem: {}', e);
       }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -873,6 +961,8 @@ export class ProfileService {
       } catch (e) {
         ProfileService.LOG.error('removeGameExpItem: {}', e);
       }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -893,6 +983,8 @@ export class ProfileService {
       } catch (e) {
         ProfileService.LOG.error('removeExperienceItem: {}', e);
       }
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -916,8 +1008,10 @@ export class ProfileService {
       } catch (e) {
         ProfileService.LOG.error('getFollowers: {}', e);
       }
+      return;
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
-    return;
   }
 
   static async unfollow(
@@ -937,11 +1031,11 @@ export class ProfileService {
         followersList = followersResponse.items[0].followers;
       }
 
-      const sDid = session ? session.did : '';
-      if (sDid !== '') {
-        followersList = followersList.filter(item => item !== sDid);
-      }
-      let uniqueItems = [...new Set(followersList)]; // distinct
+        const sDid = session ? session.did : '';
+        if (sDid !== '') {
+          followersList = followersList.filter(item => item !== sDid);
+        }
+        let uniqueItems = [...new Set(followersList)]; // distinct
 
       const appHiveClient = await HiveService.getAnonymousHiveClient();
       if (appHiveClient) {
@@ -960,12 +1054,10 @@ export class ProfileService {
         }
       }
 
-      if (session) {
-        return this.getFollowings(session.did);
-      }
+      return;
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
-
-    return;
   }
 
   static async resetFollowing(session: ISessionItem): Promise<any> {
@@ -983,6 +1075,21 @@ export class ProfileService {
     let response: IFollowingResponse = {
       items: []
     };
+    try {
+      if (targetDid && targetDid !== '') {
+        let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
+        let userResponse = await searchServiceLocal.searchUsersByDIDs(
+          [targetDid],
+          1,
+          0
+        );
+        if (
+          !userResponse.isSuccess ||
+          !userResponse.response ||
+          !userResponse.response.get_users_by_dids ||
+          userResponse.response.get_users_by_dids.items.length === 0
+        )
+          return response;
 
     if (targetDid && targetDid !== '') {
       let searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
@@ -1019,8 +1126,10 @@ export class ProfileService {
           return followingResponse;
         }
       }
+      return response;
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
-    return response;
   }
 
   static async addFollowing(did: string, session: ISessionItem): Promise<any> {
@@ -1028,19 +1137,19 @@ export class ProfileService {
     if (hiveClient && did && did !== '') {
       await hiveClient.Database.insertOne('following', { did: did }, undefined);
 
-      let followersResponse = await this.getFollowers([did]);
+        let followersResponse = await this.getFollowers([did]);
 
       let followersList: string[] = [];
       if (followersResponse && followersResponse.items.length > 0)
         // TODO: handle this better
         followersList = followersResponse.items[0].followers;
 
-      const sDid = session ? session.did : '';
-      if (sDid !== '') {
-        followersList.push(sDid);
-      }
+        const sDid = session ? session.did : '';
+        if (sDid !== '') {
+          followersList.push(sDid);
+        }
 
-      let uniqueItems = [...new Set(followersList)]; // distinct
+        let uniqueItems = [...new Set(followersList)]; // distinct
 
       const appHiveClient = await HiveService.getAnonymousHiveClient();
       if (appHiveClient) {
@@ -1059,8 +1168,8 @@ export class ProfileService {
         }
       }
 
-      let userService = new UserService(await DidService.getInstance());
-      let followingUser = await userService.SearchUserWithDID(did);
+        let userService = new UserService(await DidService.getInstance());
+        let followingUser = await userService.SearchUserWithDID(did);
 
       await ProfileService.addActivity(
         {
@@ -1079,11 +1188,14 @@ export class ProfileService {
         session
       );
 
-      if (session) {
-        return this.getFollowings(session.did);
+        if (session) {
+          return this.getFollowings(session.did);
+        }
       }
+      return;
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
-    return;
   }
   static async getActivity(session: ISessionItem) {
     const hiveInstance = await HiveService.getHiveClient(session);
@@ -1104,12 +1216,6 @@ export class ProfileService {
         ProfileService.LOG.error('getActivity: {}', e);
       }
     }
-    let tmp_activities = JSON.parse(
-      window.localStorage.getItem(
-        `temporary_activities_${session!.did.replace('did:elastos:', '')}`
-      ) || '[]'
-    );
-    return tmp_activities;
   }
   static async addActivity(activity: ActivityItem, session: ISessionItem) {
     // Assign new guid to activity
@@ -1129,17 +1235,8 @@ export class ProfileService {
       } catch (e) {
         ProfileService.LOG.error('addActivity: {}', e);
       }
-    } else {
-      let tmp_activities = JSON.parse(
-        window.localStorage.getItem(
-          `temporary_activities_${activity.did.replace('did:elastos:', '')}`
-        ) || '[]'
-      );
-      tmp_activities.push(activity);
-      window.localStorage.setItem(
-        `temporary_activities_${activity.did.replace('did:elastos:', '')}`,
-        JSON.stringify(tmp_activities)
-      );
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 
@@ -1158,21 +1255,8 @@ export class ProfileService {
       } catch (e) {
         ProfileService.LOG.error('updateActivity: {}', e);
       }
-    } else {
-      let tmp_activities = JSON.parse(
-        window.localStorage.getItem(
-          `temporary_activities_${activity.did.replace('did:elastos:', '')}`
-        ) || '[]'
-      );
-      let index = tmp_activities.findIndex(
-        (_activity: any) => _activity.guid.value === activity.guid.value
-      );
-      if (index < 0) return;
-      tmp_activities[index] = activity;
-      window.localStorage.setItem(
-        `temporary_activities_${activity.did.replace('did:elastos:', '')}`,
-        JSON.stringify(tmp_activities)
-      );
+    } catch (err) {
+      showNotify((err as Error).message, 'error');
     }
   }
 }
@@ -1262,5 +1346,13 @@ export const defaultFullProfile = {
   gamerTagDTO: {
     isEnabled: false,
     items: [] as GamerTagItem[]
+  },
+  escaddressCredential: {
+    address: '',
+    id: ''
+  },
+  ethaddressCredential: {
+    address: '',
+    id: ''
   }
 };

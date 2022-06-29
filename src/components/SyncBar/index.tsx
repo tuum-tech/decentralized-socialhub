@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import style from './style.module.scss';
 import { IonButton, IonIcon } from '@ionic/react';
 import { syncOutline, alertCircle } from 'ionicons/icons';
-import { SyncService } from 'src/services/sync.service';
 import { Guid } from 'guid-typescript';
 const ButtonOrange = styled(IonButton)`
   border-radius: 6px;
@@ -44,14 +43,14 @@ const SyncBar: React.FC<SyncBarProps> = ({ session }: SyncBarProps) => {
     } */
     return;
 
-    const timer = setInterval(async () => {
+    /*     const timer = setInterval(async () => {
       // console.log('Verify differences', new Date().toISOString(), id);
-      if (session && session.did !== '' && session.tutorialStep === 4) {
+      if (session && session.did !== '' && session.onBoardingCompleted) {
         let hasDiff = await SyncService.HasDifferences(session);
         setHasDifferences(hasDiff);
       }
     }, 1000 * 60);
-    return () => clearInterval(timer);
+    return () => clearInterval(timer); */
   }, [session, id]);
 
   const divBar = () => {

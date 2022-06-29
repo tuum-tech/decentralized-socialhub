@@ -1,30 +1,22 @@
 import React, { useEffect } from 'react';
 import { StaticContext, RouteComponentProps, useHistory } from 'react-router';
 
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-
-import { makeSelectSession } from 'src/store/users/selectors';
-import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, LocationState } from './types';
-import { SubState } from 'src/store/users/types';
+import { LocationState } from './types';
 
 import { UserService } from 'src/services/user.service';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { AccountType } from 'src/services/user.service';
+import useSession from 'src/hooks/useSession';
 
 import { getUsersWithRegisteredEmail } from './fetchapi';
 import { DidService } from 'src/services/did.service.new';
 
 interface PageProps
-  extends InferMappedProps,
-    RouteComponentProps<{}, StaticContext, LocationState> {}
+  extends RouteComponentProps<{}, StaticContext, LocationState> {}
 
-const GenerateDidPage: React.FC<PageProps> = ({
-  eProps,
-  ...props
-}: PageProps) => {
+const GenerateDidPage: React.FC<PageProps> = (props: PageProps) => {
   const history = useHistory();
+  const { setSession } = useSession();
 
   useEffect(() => {
     (async () => {
@@ -56,12 +48,9 @@ const GenerateDidPage: React.FC<PageProps> = ({
         const session = props.location.state;
         let userService = new UserService(await DidService.getInstance());
 
-        let mnemonic = '';
         if (session.did && !session.did.startsWith('did:elastos:')) {
           session.did = '';
           session.service = AccountType.DID;
-        } else {
-          mnemonic = userService.getTemporaryMnemonicFromDid(session.did);
         }
 
         let sessionItem = await userService.CreateNewUser(
@@ -70,10 +59,11 @@ const GenerateDidPage: React.FC<PageProps> = ({
           session.loginCred,
           session.credential,
           session.did,
-          mnemonic,
+          '',
+          '',
           ''
         );
-        eProps.setSession({ session: sessionItem });
+        setSession(sessionItem);
         history.push('/profile');
       }
     })();
@@ -83,17 +73,4 @@ const GenerateDidPage: React.FC<PageProps> = ({
   return <LoadingIndicator />;
 };
 
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(GenerateDidPage);
+export default GenerateDidPage;

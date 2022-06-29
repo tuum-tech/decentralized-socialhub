@@ -57,9 +57,6 @@ const ProfileEditor: React.FC<Props> = ({
   const [userInfo, setUserInfo] = useState<ISessionItem>(session);
   const [loaded, setloaded] = useState(false);
   const [timer, setTimer] = useState<any>(null);
-  const [didDocument, setDidDocument] = useState<DIDDocument | undefined>(
-    undefined
-  );
 
   const [profile, setProfile] = useRecoilState<ProfileDTO>(FullProfileAtom);
   const [selectedCredential, setSelectedCredential] = useState<
@@ -232,29 +229,21 @@ const ProfileEditor: React.FC<Props> = ({
 
   const startTimer = () => {
     const timer = setTimeout(async () => {
-      // refresh DID document
-      let document = await DidDocumentService.getUserDocument(session);
-      setDidDocument(document);
-
       if (JSON.stringify(session) === JSON.stringify(userInfo)) return;
 
       if (session.userToken) setUserInfo(session);
       startTimer();
-    }, 1000);
+    }, 5000);
     setTimer(timer);
     return () => clearTimeout(timer);
   };
 
   useEffect(() => {
     (async () => {
-      //if (!session.userToken) return;
-      if (session.tutorialStep === 4) {
+      if (!session.userToken) return;
+      if (session.onBoardingCompleted) {
         await retriveProfile();
       }
-
-      let didService = await DidService.getInstance();
-      let doc = await didService.getStoredDocument(new DID(session.did));
-      setDidDocument(doc);
       setloaded(true);
     })();
     if (timer) {
@@ -362,7 +351,7 @@ const ProfileEditor: React.FC<Props> = ({
             }}
           ></BasicCard>
 
-          {!error && loaded && userInfo.tutorialStep === 4 ? (
+          {!error && loaded && userInfo.onBoardingCompleted ? (
             <>
               {profile && profile.basicDTO && (
                 <AboutCard

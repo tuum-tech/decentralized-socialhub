@@ -48,10 +48,10 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
       session.did &&
       (space.followers?.includes(session.did) || hasPermissionToPost)
     );
-  }, [session.did, space.followers, hasPermissionToPost]);
+  }, [space.followers, session.did, hasPermissionToPost]);
   const isAdmin = useMemo(
     () => session.did && space.owner?.includes(session.did),
-    [session.did, space.owner]
+    [space.owner, session.did]
   );
   const handlePost = async (content: any) => {
     setIsModalOpen(false);
@@ -120,7 +120,7 @@ const Home: React.FC<IProps> = ({ space, session }: IProps) => {
         }
         const { data }: any = await getNFTCollectionOwners(space.guid);
         const { owners: members } = data;
-        if (members.includes(wallet)) {
+        if (members && members.includes(wallet)) {
           setHasPermissionToPost(true);
           return;
         }

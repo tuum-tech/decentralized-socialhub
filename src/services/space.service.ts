@@ -11,11 +11,28 @@ import { ISession } from 'src/context/session.context';
 
 export enum SpaceCategory {
   Personal = 'Personal Group',
+  Creator = 'Creator',
+  Business = 'Business',
+  DAO = 'DAO',
+  Personal_NFT = 'Personal NFT Group',
   NFT = 'NFT Collection',
-  Org = 'Organization',
-  Univ = 'University',
+  // Org = 'Organization',
+  // Univ = 'University',
   WTP = 'Welcome to Profile'
 }
+
+export const CategoriesForPrivateSpace = [
+  SpaceCategory.Personal,
+  SpaceCategory.Creator,
+  SpaceCategory.Business,
+  SpaceCategory.DAO,
+  SpaceCategory.Personal_NFT
+];
+
+export const CategoriesForCommunitySpace = [
+  SpaceCategory.NFT,
+  SpaceCategory.WTP
+];
 
 export const defaultSpace: Space = {
   guid: null,
@@ -269,7 +286,7 @@ export class SpaceService {
     notify: boolean = true
   ) {
     let resp;
-    if (space.category === SpaceCategory.Personal) {
+    if (CategoriesForPrivateSpace.includes(space.category)) {
       const hiveInstance = await HiveService.getHiveClient(session);
       if (session && hiveInstance) {
         const res: any = await hiveInstance.Scripting.callScript(
@@ -358,8 +375,7 @@ export class SpaceService {
     const followers = [...(space.followers || []), session.did];
     const appHiveClient = await HiveService.getAnonymousHiveClient();
     if (appHiveClient) {
-      const scriptName =
-        space.category === SpaceCategory.Personal
+      const scriptName = CategoriesForPrivateSpace.includes(space.category)
           ? 'follow_space'
           : 'follow_community_space';
       await appHiveClient.Scripting.callScript(
@@ -379,8 +395,7 @@ export class SpaceService {
     );
     const appHiveClient = await HiveService.getAnonymousHiveClient();
     if (appHiveClient) {
-      const scriptName =
-        space.category === SpaceCategory.Personal
+      const scriptName = CategoriesForPrivateSpace.includes(space.category)
           ? 'follow_space'
           : 'follow_community_space';
       await appHiveClient.Scripting.callScript(

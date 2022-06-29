@@ -41,3 +41,18 @@ export async function getNFTCollectionOwners(
     }
   );
 }
+
+export async function getNFTCollectionValidateForm(
+  forminfo: any
+): Promise<BaseplateResp> {
+  return request(
+    `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/nft_collection_router/validateform?forminfo=${JSON.stringify(forminfo)}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`
+      }
+    }
+  );
+}

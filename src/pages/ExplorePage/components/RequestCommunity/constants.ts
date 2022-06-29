@@ -18,7 +18,11 @@ export const networks = [
     value: 'eth'
   },
   {
-    text: 'Elastos',
+    text: 'Polygon',
+    value: 'polygon'
+  },
+  {
+    text: 'Elastos Smart Contract Chain',
     value: 'ela'
   }
 ];

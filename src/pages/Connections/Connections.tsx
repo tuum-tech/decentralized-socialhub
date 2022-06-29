@@ -4,13 +4,13 @@ import { StaticContext, RouteComponentProps } from 'react-router';
 import MainLayout from 'src/components/layouts/MainLayout';
 import HeaderMenu from 'src/elements-v2/HeaderMenu';
 import { ProfileService } from 'src/services/profile.service';
+import { Header } from 'src/components/layouts/MainLayout/Header';
 import useSession from 'src/hooks/useSession';
 import FollowersSearch from './FollowersPage/FollowersSearch';
 import MutualFollowersSearch from './MutualFollowersPage/FollowersSearch';
 import FollowingSearch from './FollowingsPage/FollowingSearch';
 import ConnectionPageHeader, {
-  ConnectionTabsContainer,
-  Header
+  ConnectionTabsContainer
 } from './ConnectionHeader';
 
 interface PageProps
@@ -29,7 +29,7 @@ const Connections: React.FC<PageProps> = ({ ...props }: PageProps) => {
   useEffect(() => {
     (async () => {
       try {
-        if (session && session.did && session.tutorialStep === 4) {
+        if (session && session.did && session.onBoardingCompleted) {
           let followers = await ProfileService.getFollowers([session.did]);
           let following = await ProfileService.getFollowings(session.did);
           const item = followers?.items.find(item => item.did === session.did);
@@ -40,7 +40,6 @@ const Connections: React.FC<PageProps> = ({ ...props }: PageProps) => {
             let followingDids = following?.items.length
               ? following?.items.map(item => item.did)
               : [];
-            console.log(12312, followingDids);
             let followerDids = followers?.items.length
               ? followers?.items[0].followers
               : [];

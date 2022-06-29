@@ -20,7 +20,7 @@ export enum CredentialType {
   Experience = 'Experience',
   PersonalInfo = 'PersonalInfo',
   ETHAddress = 'ETHAddress',
-  EIDAddress = 'EIDAddress',
+  // EIDAddress = 'EIDAddress',
   ESCAddress = 'ESCAddress'
 }
 

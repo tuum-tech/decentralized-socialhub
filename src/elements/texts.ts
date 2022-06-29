@@ -46,6 +46,21 @@ export const ErrorTxt = styled(Text12)`
   margin-top: 5px;
 `;
 
+export const ErrorText = styled.p<{
+  align?: 'left' | 'center';
+  position?: 'absolute' | 'relative';
+}>`
+  font-size: 13px;
+  line-height: 15px;
+  text-align: ${props => props.align ?? 'left'};
+  padding-left: ${props =>
+    !props.align || props.align === 'left' ? '8px' : '0'};
+  color: red;
+  margin-top: 10px;
+  position: ${props => props.position ?? 'absolute'};
+  width: 100%;
+`;
+
 interface TextLinkProps {
   width?: number;
   color?: string;

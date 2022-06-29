@@ -4,3 +4,4 @@ declare module 'crypto-js';
 declare module 'lodash';
 declare module 'async/parallel';
 declare module 'async/series';
+declare module 'async/queue';

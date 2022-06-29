@@ -10,15 +10,21 @@ import PhoneVerificationDetailContent, {
 
 import { requestUpdateEmailOrPhone } from 'src/components/Auth/fetchapi';
 
-import { ActionBtnCol, Container, ErrorText } from './EmailComp';
 import { DefaultButton } from 'src/elements-v2/buttons';
+import { ErrorText } from 'src/elements/texts';
+import { ActionBtnCol, Container } from './EmailComp';
 
 interface Props {
   phoneUpdated: (phone: string) => void;
   sessionItem: ISessionItem;
+  isEdit?: boolean;
 }
 
-const UpdatePhoneComp: React.FC<Props> = ({ phoneUpdated, sessionItem }) => {
+const PhoneComp: React.FC<Props> = ({
+  phoneUpdated,
+  sessionItem,
+  isEdit = false
+}) => {
   const [showPhoneVerifyModal, setShowPhoneVerifyModal] = useState(false);
   const [phone, setPhone] = useState(sessionItem.loginCred?.phone || '');
   const [loading, setLoading] = useState(false);
@@ -58,7 +64,7 @@ const UpdatePhoneComp: React.FC<Props> = ({ phoneUpdated, sessionItem }) => {
 
   const disableButton = () => {
     return (
-      sessionItem.tutorialStep !== 4 ||
+      !sessionItem.onBoardingCompleted ||
       loading ||
       error !== '' ||
       phone === sessionItem.loginCred?.phone ||
@@ -71,7 +77,7 @@ const UpdatePhoneComp: React.FC<Props> = ({ phoneUpdated, sessionItem }) => {
       <IonRow style={{ width: '100%', paddingLeft: 0, paddingRight: 0 }}>
         <IonCol size="5">
           <SmallTextInput
-            disabled={sessionItem.tutorialStep !== 4 || loading}
+            disabled={!sessionItem.onBoardingCompleted || loading || !isEdit}
             label="Phone Number"
             placeholder="+79149625769"
             name="phoneNumber"
@@ -82,40 +88,42 @@ const UpdatePhoneComp: React.FC<Props> = ({ phoneUpdated, sessionItem }) => {
             }}
           />
         </IonCol>
-        <ActionBtnCol size="auto">
-          <DefaultButton
-            className="mr-2"
-            size="small"
-            variant="outlined"
-            btnColor="primary-gradient"
-            textType="gradient"
-            disabled={disableButton()}
-            onClick={async () => {
-              await sendVerification();
-            }}
-          >
-            {loading ? 'Sending Verification' : 'Send Verification'}
-          </DefaultButton>
-          <DefaultButton
-            size="small"
-            variant="outlined"
-            btnColor="primary-gradient"
-            textType="gradient"
-            disabled={phone === ''}
-            onClick={() => {
-              setPhone('');
-              phoneUpdated('');
-            }}
-          >
-            Clear
-          </DefaultButton>
-        </ActionBtnCol>
+        {!isEdit && (
+          <ActionBtnCol size="auto">
+            <DefaultButton
+              className="mr-2"
+              size="small"
+              variant="outlined"
+              btnColor="primary-gradient"
+              textType="gradient"
+              disabled={disableButton()}
+              onClick={async () => {
+                await sendVerification();
+              }}
+            >
+              {loading ? 'Sending Verification' : 'Send Verification'}
+            </DefaultButton>
+            <DefaultButton
+              size="small"
+              variant="outlined"
+              btnColor="primary-gradient"
+              textType="gradient"
+              disabled={phone === ''}
+              onClick={() => {
+                setPhone('');
+                phoneUpdated('');
+              }}
+            >
+              Clear
+            </DefaultButton>
+          </ActionBtnCol>
+        )}
       </IonRow>
 
       {error !== '' && (
         <IonRow style={{ width: '100%' }}>
           <IonCol size="12" style={{ paddingTop: 0 }}>
-            <ErrorText>{error}</ErrorText>
+            <ErrorText position="relative">{error}</ErrorText>
           </IonCol>
         </IonRow>
       )}
@@ -139,4 +147,4 @@ const UpdatePhoneComp: React.FC<Props> = ({ phoneUpdated, sessionItem }) => {
   );
 };
 
-export default UpdatePhoneComp;
+export default PhoneComp;

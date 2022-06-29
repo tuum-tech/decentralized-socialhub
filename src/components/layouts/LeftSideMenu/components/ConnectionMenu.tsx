@@ -40,7 +40,7 @@ const ConnectionMenu: React.FC<Props> = ({ session }) => {
         name="connections"
         title="Connections"
         tooltip={
-          session.tutorialStep === 4
+          session.onBoardingCompleted
             ? ''
             : 'Please complete the tutorial to access your Connections'
         }

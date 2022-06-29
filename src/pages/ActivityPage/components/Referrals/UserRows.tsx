@@ -1,33 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { IonLabel, IonRow, IonSpinner } from '@ionic/react';
+import { IonLabel, IonRow } from '@ionic/react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
 
-import { SmallLightButton } from 'src/elements/buttons';
-import defaultAvatar from 'src/assets/icon/dp.png';
+import { DefaultButton } from 'src/elements-v2/buttons';
 
-import { UserRow, getStatusColor } from '../MyRequests/UserRows';
+import { UserRow, getStatusColor, InfoCol, ActionCol } from '../common';
 import { getDIDString } from 'src/utils/did';
 import { SearchService } from 'src/services/search.service';
 import { getItemsFromData } from 'src/utils/script';
 import { timeSince } from 'src/utils/time';
+import Avatar from 'src/components/Avatar';
 import style from './style.module.scss';
-import { DefaultButton } from 'src/elements-v2/buttons';
-import RingIcon from 'src/assets/icon/ring.svg';
-
-export const SpaceAvatar = styled.div`
-  width: 44px;
-  height: 42px;
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    max-width: 5.5em;
-    border-radius: 46%;
-    padding: 3px;
-    background: linear-gradient(90deg, #995aff 0%, #dc59bf 100%);
-  }
-`;
 
 interface Props {
   referrals: IReferral[];
@@ -96,42 +79,49 @@ const UserRows: React.FC<Props> = ({
     return getDIDString('/did/' + did, true);
   };
 
-  const rednerUserRow = (r: ISessionItem) => {
+  const renderUserRow = (r: ISessionItem) => {
     return (
       <UserRow key={r.did} className={style['item-row']}>
-        <div className="left">
-          <SpaceAvatar>
-            <img src={r.avatar || defaultAvatar} height="auto" alt="avatar" />
-          </SpaceAvatar>
-        </div>
-        <div className="right">
-          <Link to={getLink(r.did)} target="_blank">
-            <IonLabel className={style['name']}>{r.name}</IonLabel>
-          </Link>
-          <p className="bottom">
-            <IonRow class="ion-justify-content-start">
-              <IonLabel className={style['date']}>
-                {timeSince(r.created?.$date)}
-              </IonLabel>
-              <li
-                style={{
-                  color: getStatusColor(
-                    r?.sign_up_date ? 'completed' : 'pending'
-                  ),
-                  marginLeft: '9px'
-                }}
-                className={style['date']}
-              >
-                {r?.sign_up_date ? 'Completed' : 'Pending'}
-              </li>
-              <li className={style['tab-label']} style={{ marginLeft: '9px' }}>
-                Earned: 0 MTRL
-              </li>
-            </IonRow>
-          </p>
-        </div>
-        {/* TODO */}
-        {/* <DefaultButton
+        <InfoCol>
+          <div className="left">
+            <Avatar did={r.did} width="50px" />
+          </div>
+          <div className="right">
+            <div className="top">
+              <Link to={getLink(r.did)} target="_blank">
+                <IonLabel className={style['name']}>{r.name}</IonLabel>
+              </Link>
+            </div>
+            <p className="bottom">
+              <IonRow class="ion-justify-content-start">
+                <IonLabel className={style['date']}>
+                  {timeSince(r.created?.$date)}
+                </IonLabel>
+                <li
+                  style={{
+                    color: getStatusColor(
+                      r?.sign_up_date ? 'completed' : 'pending'
+                    ),
+                    marginLeft: '9px'
+                  }}
+                  className={style['date']}
+                >
+                  {r?.sign_up_date ? 'Completed' : 'Pending'}
+                </li>
+                <li
+                  className={style['tab-label']}
+                  style={{ marginLeft: '9px' }}
+                >
+                  Earned: 0 MTRL
+                </li>
+              </IonRow>
+            </p>
+          </div>
+        </InfoCol>
+
+        <ActionCol size="auto">
+          {/* TODO */}
+          {/* <DefaultButton
           variant="outlined"
           size="large"
           btnColor="primary-gradient"
@@ -141,24 +131,13 @@ const UserRows: React.FC<Props> = ({
           <img src={RingIcon} alt="ownership" />
           <IonLabel className={style['tab-label']}> Send Reminder</IonLabel>
         </DefaultButton> */}
-        <div style={{ margin: '0 0 0 auto' }}>
-          {loading && (
-            <SmallLightButton>
-              <IonSpinner
-                color="#007bff"
-                style={{
-                  width: '1rem',
-                  height: '1rem'
-                }}
-              />
-            </SmallLightButton>
-          )}
-        </div>
+          {loading && <DefaultButton loading>''</DefaultButton>}
+        </ActionCol>
       </UserRow>
     );
   };
 
-  return <>{filteredUsers.map(r => rednerUserRow(r))}</>;
+  return <>{filteredUsers.map(r => renderUserRow(r))}</>;
 };
 
 export default UserRows;

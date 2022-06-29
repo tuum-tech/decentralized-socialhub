@@ -15,28 +15,8 @@ import ProfileEditor from './components/ProfileEditor';
 import { getDIDString } from 'src/utils/did';
 import MainLayout from 'src/components/layouts/MainLayout';
 import useSession from 'src/hooks/useSession';
-
-const Header = styled.div`
-  width: 100%;
-  height: 83px;
-  background: #fff;
-  padding: 27px 48px 20px;
-
-  display: flex;
-  justify-content: space-between;
-`;
-
-const PageTitle = styled.h2`
-  font-family: 'SF Pro Display';
-  font-size: 28px;
-  font-weight: 600;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1.36;
-  letter-spacing: normal;
-  text-align: left;
-  color: #27272e;
-`;
+import { Header } from 'src/components/layouts/MainLayout/Header';
+import HeaderMenu from 'src/elements-v2/HeaderMenu';
 
 const WarningText = styled.div`
   color: red;
@@ -61,9 +41,9 @@ const ManagerPage: React.FC<RouteComponentProps> = (
 
   return (
     <MainLayout>
-      {isSmUp && (
-        <Header>
-          <PageTitle>Profile Manager</PageTitle>
+      <Header>
+        <HeaderMenu title="Profile Manager" />
+        {isSmUp && (
           <LinkButton
             variant="contained"
             btnColor="primary-gradient"
@@ -77,9 +57,9 @@ const ManagerPage: React.FC<RouteComponentProps> = (
           >
             View Profile
           </LinkButton>
-        </Header>
-      )}
-      {user.tutorialStep !== 4 && (
+        )}
+      </Header>
+      {!user.onBoardingCompleted && (
         <WarningText>
           Please complete the tutorial first before managing your Profile.
         </WarningText>

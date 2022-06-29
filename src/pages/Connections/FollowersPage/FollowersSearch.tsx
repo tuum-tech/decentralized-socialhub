@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import PeopleCard from 'src/components/cards/PeopleCard';
 import { ProfileService } from 'src/services/profile.service';
 import { alertError } from 'src/utils/notify';
-import { SearchService } from 'src/services/search.service';
 import NoConnectionComp from 'src/components/NoConnection';
 import { FollowService } from 'src/services/follow.service';
 import SearchInput from 'src/elements/inputs/SearchInput';
@@ -61,7 +60,7 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
       if (
         userSession &&
         userSession.did !== '' &&
-        userSession.tutorialStep === 4
+        userSession.onBoardingCompleted
       ) {
         try {
           if (userSession && userSession.did) {
@@ -142,9 +141,7 @@ const FollowersSearch: React.FC<Props> = ({ userSession }: Props) => {
           ></SearchInput>
           <PeopleCard
             people={filteredUsers}
-            following={
-              listFollowing && listFollowing ? listFollowing : { items: [] }
-            }
+            following={listFollowing}
             searchKeyword={searchQuery}
             isSearchKeywordDID={isDID(searchQuery)}
             showHeader={false}

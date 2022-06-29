@@ -1,53 +1,49 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {
-  IonCardTitle,
-  IonCardHeader,
-  IonCard,
-  IonCardContent,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonText,
-  IonRadioGroup,
-  IonRadio
-} from '@ionic/react';
+import { IonGrid, IonRow, IonCol, IonRadioGroup, IonRadio } from '@ionic/react';
+import { RadioGroupChangeEventDetail } from '@ionic/core';
 import styled from 'styled-components';
 
 import { UserService } from 'src/services/user.service';
 import { ProfileName } from 'src/elements/texts';
 import Avatar from 'src/components/Avatar';
-import styleWidget from 'src/components/cards/WidgetCards.module.scss';
 import { DidService } from 'src/services/did.service.new';
 import { TemplateService } from 'src/services/template.service';
 import { DefaultButton } from 'src/elements-v2/buttons';
-import {
-  defaultFullProfile,
-  ProfileService
-} from 'src/services/profile.service';
 import TemplateModalContent from './Modal/TemplateModal';
 import styles from './style.module.scss';
 import Modal from 'src/elements-v2/Modal';
+import Card from 'src/elements-v2/Card';
 
 export const Divider = styled.hr`
   width: 100%;
   height: 1px;
   text-align: center;
-  margin-top: 1.5em;
-  margin-bottom: 1.5em;
+  margin-top: 10px;
+  margin-bottom: 10px;
 
   background-color: #f7fafc;
 `;
 
-const Header3 = styled.span`
-  font-family: 'SF Pro Display';
+const TemplateHeader = styled.span`
+  font-family: 'Inter';
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 600;
   font-stretch: normal;
   font-style: normal;
-  line-height: 1.71;
+  line-height: 24px;
   letter-spacing: normal;
   text-align: left;
   color: #1f2d3d;
+`;
+
+const TemplateContent = styled.p`
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 20px;
+
+  color: #7a7a9d;
 `;
 
 const ProfileStatus = styled.span<{ ready: boolean }>`
@@ -80,6 +76,7 @@ const TemplateManagerCard: React.FC<PageProps> = ({
   sessionItem,
   updateSession
 }: PageProps) => {
+  const [loading, setLoading] = useState(false);
   const [myTemplates, setMyTemplates] = useState<Template[]>([]);
   const [myGuid, setMyGuid] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -89,7 +86,7 @@ const TemplateManagerCard: React.FC<PageProps> = ({
 
   useEffect(() => {
     (async () => {
-      if (sessionItem && sessionItem.did && sessionItem.tutorialStep === 4) {
+      if (sessionItem && sessionItem.did && sessionItem.onBoardingCompleted) {
         const mTemplates = await TemplateService.getMyTemplates(
           sessionItem.did
         );
@@ -100,122 +97,112 @@ const TemplateManagerCard: React.FC<PageProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionItem]);
 
-  const handleSave = useCallback(() => {
-    (async () => {
-      if (sessionItem.pageTemplate !== template) {
-        let userService = new UserService(await DidService.getInstance());
-        const newSession = await userService.updateSession(
-          {
-            ...sessionItem,
-            pageTemplate: template
-          },
-          true
-        );
-        await updateSession({ session: newSession });
+  const handleSave = useCallback(
+    (tmpl: string) => {
+      (async () => {
+        if (sessionItem.pageTemplate !== tmpl) {
+          setLoading(true);
+          let userService = new UserService(await DidService.getInstance());
+          const newSession = await userService.updateSession(
+            {
+              ...sessionItem,
+              pageTemplate: tmpl
+            },
+            true
+          );
+          await updateSession({ session: newSession });
+          setLoading(false);
+        }
+      })();
+    },
+    [sessionItem, updateSession]
+  );
+
+  const handleTemplateChange = useCallback(
+    (e: CustomEvent<RadioGroupChangeEventDetail<any>>) => {
+      setTemplate(e.detail.value);
+      if (sessionItem.onBoardingCompleted) {
+        handleSave(e.detail.value);
       }
-    })();
-  }, [sessionItem, template, updateSession]);
+    },
+    [handleSave, sessionItem.tutorialStep]
+  );
+
   const ready =
-    sessionItem.onBoardingCompleted && sessionItem.tutorialStep === 4;
+    sessionItem.onBoardingCompleted;
 
   return (
-    <IonCard className={styleWidget['overview']}>
-      <IonCardHeader>
+    <Card
+      template="default"
+      title="Profile Template Selection"
+      description="You can choose any template you like. The template only applies to the
+    public profile as seen by others. This does not apply to your profile
+    on Dashboard."
+      loading={loading}
+    >
+      <Divider />
+      <IonRadioGroup value={template} onIonChange={handleTemplateChange}>
         <IonGrid>
           <IonRow>
-            <IonCol>
-              <IonCardTitle>Profile Template Selection</IonCardTitle>
+            <IonCol size="auto">
+              <Avatar did={sessionItem.did} />
             </IonCol>
-            <IonCol size="auto" className="ion-no-padding">
-              <DefaultButton
-                size="small"
-                variant="outlined"
-                btnColor="primary-gradient"
-                textType="gradient"
-                disabled={sessionItem.tutorialStep !== 4}
-                onClick={handleSave}
-              >
-                Save
-              </DefaultButton>
+            <IonCol>
+              <IonGrid>
+                <IonRow>
+                  <ProfileName>{sessionItem.name}</ProfileName>
+                </IonRow>
+                <IonRow>
+                  <ProfileStatus ready={ready}>
+                    Profile is {ready ? 'ready' : 'not yet ready'}
+                  </ProfileStatus>
+                </IonRow>
+              </IonGrid>
             </IonCol>
           </IonRow>
+          <Divider />
+
+          {[
+            {
+              value: 'default',
+              title: 'General',
+              intro: 'Anything and Everything'
+            }
+          ]
+            .concat(myTemplates)
+            .map((t: Template) => {
+              return (
+                <div key={t.value}>
+                  <IonRow className="ion-justify-content-between">
+                    <IonCol size="10">
+                      <TemplateHeader>{t.title}</TemplateHeader>
+                      <TemplateContent> {t.intro}</TemplateContent>
+                    </IonCol>
+
+                    <IonCol size="2">
+                      <IonRadio value={t.value}></IonRadio>
+                    </IonCol>
+                  </IonRow>
+                  <Divider />
+                </div>
+              );
+            })}
+
+          <IonRow>
+            <DefaultButton
+              variant="outlined"
+              btnColor="primary-gradient"
+              textType="gradient"
+              size="large"
+              onClick={() => setShowModal(true)}
+              style={{ width: '100%' }}
+              disabled={!sessionItem.onBoardingCompleted}
+            >
+              + Add New Template
+            </DefaultButton>
+          </IonRow>
         </IonGrid>
-      </IonCardHeader>
-      <IonCardContent>
-        <IonText>
-          You can choose any template you like. The template only applies to the
-          public profile as seen by others. This does not apply to your profile
-          on Dashboard.
-        </IonText>
-
-        <Divider />
-        <IonRadioGroup
-          value={template}
-          onIonChange={e => {
-            setTemplate(e.detail.value);
-          }}
-        >
-          <IonGrid>
-            <IonRow>
-              <IonCol size="auto">
-                <Avatar did={sessionItem.did} />
-              </IonCol>
-              <IonCol size="8">
-                <IonGrid>
-                  <IonRow>
-                    <ProfileName>{sessionItem.name}</ProfileName>
-                  </IonRow>
-                  <IonRow>
-                    <ProfileStatus ready={ready}>
-                      Profile is {ready ? 'ready' : 'not yet ready'}
-                    </ProfileStatus>
-                  </IonRow>
-                </IonGrid>
-              </IonCol>
-            </IonRow>
-            <Divider />
-
-            {[
-              {
-                value: 'default',
-                title: 'General',
-                intro: 'Anything and Everything'
-              }
-            ]
-              .concat(myTemplates)
-              .map((t: Template) => {
-                return (
-                  <div key={t.value}>
-                    <IonRow className="ion-justify-content-between">
-                      <IonCol size="10">
-                        <Header3>{t.title}</Header3>
-                        <h4> {t.intro}</h4>
-                      </IonCol>
-
-                      <IonCol size="2">
-                        <IonRadio value={t.value}></IonRadio>
-                      </IonCol>
-                    </IonRow>
-                    <Divider />
-                  </div>
-                );
-              })}
-
-            <IonRow>
-              <DefaultButton
-                variant="outlined"
-                btnColor="primary-gradient"
-                textType="gradient"
-                size="large"
-                onClick={() => setShowModal(true)}
-                style={{ width: '100%' }}
-              >
-                + Add New Template
-              </DefaultButton>
-            </IonRow>
-          </IonGrid>
-        </IonRadioGroup>
-      </IonCardContent>
+      </IonRadioGroup>
 
       <Modal
         title="Profile Templates"
@@ -242,7 +229,7 @@ const TemplateManagerCard: React.FC<PageProps> = ({
           }}
         />
       </Modal>
-    </IonCard>
+    </Card>
   );
 };
 

@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { IonModal } from '@ionic/react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import { useBreakpoint } from 'styled-breakpoints/react-styled';
+import { down } from 'styled-breakpoints';
 
 import Avatar from 'src/components/Avatar';
-
-import { getDIDString } from 'src/utils/did';
-
+import { getDIDString, getShortenedDid } from 'src/utils/did';
 import shieldIcon from '../../assets/icon/shield.svg';
 
 const VerifierModal = styled(IonModal)`
@@ -34,6 +34,12 @@ const Container = styled.div`
   .userRow {
     display: flex;
     align-items: center;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0px 3px 8px -1px rgb(50 50 71 / 5%);
+    filter: drop-shadow(0px 0px 1px rgba(12, 26, 75, 0.24));
+    margin-bottom: 20px;
+    padding: 14px;
 
     cursor: pointer;
 
@@ -52,6 +58,7 @@ interface Props {
 }
 
 const VerificationBadge: React.FC<Props> = ({ users, userSession }) => {
+  const isSmDown = useBreakpoint(down('sm'));
   const [showModal, setShowModal] = useState(false);
   const history = useHistory();
 
@@ -86,7 +93,9 @@ const VerificationBadge: React.FC<Props> = ({ users, userSession }) => {
                   {user.name}
                   {user.did === userSession.did && ' (Self-Proclaimed)'}
                   <br />
-                  <span>{user.did}</span>
+                  <span>
+                    {isSmDown ? getShortenedDid(user.did, 5) : user.did}
+                  </span>
                 </p>
               </div>
             );

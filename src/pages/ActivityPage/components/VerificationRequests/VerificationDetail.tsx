@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { IonTextarea, IonModal } from '@ionic/react';
-import { Link } from 'react-router-dom';
+import { IonTextarea, IonModal, IonRow } from '@ionic/react';
+import { down } from 'styled-breakpoints';
+import { useBreakpoint } from 'styled-breakpoints/react-styled';
 
 // import { DID, DIDDocument } from '@elastosfoundation/did-js-sdk/';
 // import { UserService } from 'src/services/user.service';
@@ -13,14 +14,20 @@ import Expander from 'src/elements/Expander';
 import DidSnippet from 'src/elements/DidSnippet';
 import CloseIcon from 'src/elements/svg/Close';
 import Avatar from 'src/components/Avatar';
-import { InfoTxt, Container } from '../MyRequests/VerificationDetail';
-import { getStatusColor } from '../MyRequests/UserRows';
+import {
+  InfoTxt,
+  Container,
+  InfoMessage,
+  Title
+} from '../MyRequests/VerificationDetail';
+import { getStatusColor } from '../common';
 
 import { VerificationService } from 'src/services/verification.service';
 
 import { timeSince } from 'src/utils/time';
 import { getDIDString } from 'src/utils/did';
 import { getCategoryTitle } from 'src/utils/credential';
+import { DefaultButton, LinkButton } from 'src/elements-v2/buttons';
 
 export const VerificationDetailModal = styled(IonModal)`
   --border-radius: 16px;
@@ -49,19 +56,16 @@ const RowFooter = styled.div`
     }
   }
 `;
-const Title = styled.div`
-  h4 {
-    font-size: 28px;
-    font-weight: 600;
-    line-height: 136.02%;
-  }
-`;
 
 const RowContainer = styled(Container)`
   display: flex;
   flex-direction: row;
   padding: 0px 40px;
   margin: 40px 0px;
+  ${down('sm')} {
+    flex-direction: column;
+    padding: 0px 20px;
+  }
 `;
 
 const ProfileContent = styled.div`
@@ -69,23 +73,44 @@ const ProfileContent = styled.div`
   background: #edf2f7;
   border-radius: 12px 0px 0px 12px;
 
+  ${down('sm')} {
+    width: 100%;
+    flex-direction: row;
+    border-radius: 12px 12px 0px 0px;
+  }
+
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  padding: 20px;
+  padding: 20px 10px;
 
-  .name {
-    margin-top: 15px;
-    font-weight: 600;
-    font-size: 28px;
-    line-height: 136.02%;
+  .profile-info {
     text-align: center;
-    color: #27272e;
+    .name {
+      margin-top: 15px;
+      font-weight: 600;
+      font-size: 28px;
+      line-height: 136.02%;
+      color: #27272e;
+    }
+
+    ${down('sm')} {
+      margin-left: 18px;
+      text-align: left;
+      .name {
+        margin-top: 0;
+      }
+    }
   }
 `;
 const ContentArea = styled.div`
   width: 60%;
+
+  ${down('sm')} {
+    width: 100%;
+  }
+
   background: #fafafa;
   border-radius: 0px 12px 12px 0px;
   padding: 20px;
@@ -97,6 +122,7 @@ const ContentArea = styled.div`
     line-height: 25px;
   }
 `;
+
 interface Props {
   verification: VerificationRequest;
   user: ISessionItem;
@@ -110,6 +136,7 @@ const VerificationDetailContent = ({
   session,
   closeModal
 }: Props) => {
+  const isSmDown = useBreakpoint(down('sm'));
   const [loading, setLoading] = useState(0);
   const [feedbacks, setFeedbacks] = useState('');
   const { records } = verification;
@@ -146,40 +173,70 @@ const VerificationDetailContent = ({
       </RowHeader>
       <RowContainer>
         <ProfileContent>
-          <Avatar did={verification.from_did} />
-          <p className="mb-2 name">{user.name}</p>
-          <DidSnippet
-            did={user.did}
-            dateJoined={user.timestamp}
-            width={'200px'}
-          />
-
-          <Link
-            className="mt-2"
-            to={getDIDString('/did/' + user.did)}
-            target="_blank"
-          >
-            View Profile
-          </Link>
+          <div>
+            <IonRow className="ion-justify-content-center">
+              <Avatar did={verification.from_did} />
+            </IonRow>
+            {isSmDown && (
+              <LinkButton
+                className="mt-2"
+                variant="contained"
+                bgColor="#E2E8F0"
+                textColor="grey"
+                icon="open-outline"
+                size="small"
+                href={getDIDString('/did/' + user.did)}
+                target="_blank"
+                style={{ margin: 'auto', width: 110 }}
+              >
+                View Profile
+              </LinkButton>
+            )}
+          </div>
+          {user && (
+            <div className="profile-info">
+              <p className="mb-2 name">{user.name}</p>
+              <DidSnippet
+                did={user.did}
+                dateJoined={user.timestamp}
+                width={isSmDown ? 'auto' : '200px'}
+              />
+              {!isSmDown && (
+                <LinkButton
+                  className="mt-2"
+                  variant="contained"
+                  bgColor="#E2E8F0"
+                  textColor="grey"
+                  icon="open-outline"
+                  size="small"
+                  href={getDIDString('/did/' + user.did)}
+                  target="_blank"
+                  style={{ margin: 'auto' }}
+                >
+                  View Profile
+                </LinkButton>
+              )}
+            </div>
+          )}
         </ProfileContent>
 
         <ContentArea>
           <h4 className="mt-4">Verification Details</h4>
           <Expander
             title={getCategoryTitle(verification)}
-            cateogiries={records}
+            categories={records}
           />
           {verification.msg && verification.msg !== '' && (
             <div className="mt-4 mb-2">
               <InfoTxt>Message</InfoTxt>
-              <p>{verification.msg}</p>
+              <InfoMessage>{verification.msg}</InfoMessage>
             </div>
           )}
 
           {verification.status !== 'requested' ? (
             <div className="mt-4 mb-2">
               <InfoTxt>Feedbacks</InfoTxt>
-              <p>{verification.feedbacks}</p>
+              <InfoMessage>{verification.feedbacks}</InfoMessage>
             </div>
           ) : (
             <div className="mt-4 mb-2">
@@ -189,7 +246,8 @@ const VerificationDetailContent = ({
                 value={feedbacks}
                 style={{
                   background: '#EDF2F7',
-                  borderRadius: '8px'
+                  borderRadius: '8px',
+                  color: '#425466'
                 }}
                 onIonChange={n => setFeedbacks(n.detail.value!)}
               />
@@ -202,7 +260,7 @@ const VerificationDetailContent = ({
           <div className="buttons">
             <StyledButton
               width={'102px'}
-              height={'36px'}
+              height={'33px'}
               bgColor={'#fff4f4'}
               color={'#ff5a5a'}
               className={'mr-3'}
@@ -210,15 +268,15 @@ const VerificationDetailContent = ({
             >
               Reject{loading === 2 ? 'ing' : ''}
             </StyledButton>
-            <StyledButton
-              width={'182px'}
-              height={'36px'}
+            <DefaultButton
+              variant="contained"
+              btnColor="primary-gradient"
               onClick={async () => await handleAction(true)}
             >
               {loading === 1
                 ? 'Please approve request on Essentials App'
                 : 'Approve Verification'}
-            </StyledButton>
+            </DefaultButton>
           </div>
         )}
       </RowFooter>

@@ -55,13 +55,13 @@ const GridContent = styled(IonGrid)`
 `;
 interface Props {
   title: string;
-  cateogiries: {
+  categories: {
     field: string;
     value: string;
   }[];
 }
 
-const Expander = ({ title, cateogiries }: Props) => {
+const Expander = ({ title, categories }: Props) => {
   const [expanded, setExpanded] = useState(false);
   return (
     <Container>
@@ -73,7 +73,7 @@ const Expander = ({ title, cateogiries }: Props) => {
       >
         <div className={'d-flex'}>
           {title}
-          <CountLabel>{cateogiries.length}</CountLabel>
+          <CountLabel>{categories.length}</CountLabel>
         </div>
         <div>
           {expanded ? (
@@ -85,7 +85,7 @@ const Expander = ({ title, cateogiries }: Props) => {
       </Header>
       {expanded && (
         <GridContent>
-          {cateogiries.map(c => (
+          {categories.map(c => (
             <div key={c.field + c.value} className="content">
               <h4>
                 {c.field.toLowerCase().replace(/^\w|\s\w/g, function(letter) {

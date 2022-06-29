@@ -22,13 +22,9 @@ import { requestVerifyCode } from 'src/components/Auth/fetchapi';
 
 import { DidService } from 'src/services/did.service.new';
 import { UserService } from 'src/services/user.service';
+import useSession from 'src/hooks/useSession';
 
-import { createStructuredSelector } from 'reselect';
-import { setSession } from 'src/store/users/actions';
-import { InferMappedProps, LocationState } from './types';
-import { connect } from 'react-redux';
-import { makeSelectSession } from 'src/store/users/selectors';
-import { SubState } from 'src/store/users/types';
+import { LocationState } from './types';
 
 import FooterLinks, {
   Footer
@@ -56,13 +52,10 @@ const Content = styled(OnBoardLayoutRightContent)`
   }
 `;
 
-type PageProps = InferMappedProps &
-  RouteComponentProps<{}, StaticContext, LocationState>;
+type PageProps = RouteComponentProps<{}, StaticContext, LocationState>;
 
-const EmailVerificationPage: React.FC<PageProps> = ({
-  eProps,
-  ...props
-}: PageProps) => {
+const EmailVerificationPage: React.FC<PageProps> = (props: PageProps) => {
+  const { setSession } = useSession();
   const history = useHistory();
 
   const [code, setCode] = useState('');
@@ -121,11 +114,9 @@ const EmailVerificationPage: React.FC<PageProps> = ({
       };
 
       let userService = new UserService(await DidService.getInstance());
-      let mnemonic = '';
+
       if (session.did && !session.did.startsWith('did:elastos:')) {
         session.did = '';
-      } else {
-        mnemonic = userService.getTemporaryMnemonicFromDid(session.did);
       }
 
       let sessionItem = await userService.CreateNewUser(
@@ -134,12 +125,12 @@ const EmailVerificationPage: React.FC<PageProps> = ({
         session.loginCred,
         session.credential,
         session.did,
-        mnemonic,
+        '',
         '',
         ''
       );
 
-      eProps.setSession({ session: sessionItem });
+      setSession(sessionItem);
       history.push('/profile');
     } else {
       setError('Invalid Code !');
@@ -229,20 +220,4 @@ const EmailVerificationPage: React.FC<PageProps> = ({
   );
 };
 
-export const mapStateToProps = createStructuredSelector<SubState, SubState>({
-  session: makeSelectSession()
-});
-
-export function mapDispatchToProps(dispatch: any) {
-  return {
-    eProps: {
-      setSession: (props: { session: ISessionItem }) =>
-        dispatch(setSession(props))
-    }
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EmailVerificationPage);
+export default EmailVerificationPage;

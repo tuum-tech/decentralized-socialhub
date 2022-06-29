@@ -1,10 +1,16 @@
 import { Guid } from 'guid-typescript';
+import {
+  DIDDocument,
+  DIDURL,
+  RootIdentity,
+  VerifiablePresentation
+} from '@elastosfoundation/did-js-sdk/';
+import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
+import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
 
 import { alertError, showNotify } from 'src/utils/notify';
-
-import { HiveService } from './hive.service';
-
 import { UserVaultScripts } from '../scripts/uservault.script';
+import { HiveService } from './hive.service';
 import {
   TuumTechScriptService,
   UserVaultScriptService
@@ -20,6 +26,8 @@ import { IDidService } from './did.service.new';
 import { CredentialType, DidcredsService } from './didcreds.service';
 import { SpaceService } from './space.service';
 import { DidDocumentService } from './diddocument.service';
+import { DidService } from './did.service.new';
+import { OnBoardingService } from './onboarding.service';
 import { HiveClient } from '@tuum-tech/hive-js-sdk';
 
 const CryptoJS = require('crypto-js');
@@ -196,16 +204,6 @@ export class UserService {
     this.didService.storeDocument(documentWithCredentials);
     this.didService.publishDocument(temporaryDocument);
 
-    window.localStorage.setItem(
-      `temporary_${documentWithCredentials
-        .getSubject()
-        .toString()
-        .replace('did:elastos:', '')}`,
-      JSON.stringify({
-        mnemonic: mnemonics
-      })
-    );
-
     return documentWithCredentials;
   }
 
@@ -217,15 +215,15 @@ export class UserService {
   }
 
   private lockUser(key: string, instance: ISessionItem) {
-    if (!instance.mnemonics || instance.mnemonics === '') {
-      instance.mnemonics =
-        window.localStorage.getItem(
-          `temporary_${instance.did.replace('did:elastos:', '')}`
-        ) || '';
+    // if (!instance.mnemonics || instance.mnemonics === '') {
+    //   instance.mnemonics =
+    //     window.localStorage.getItem(
+    //       `temporary_${instance.did.replace('did:elastos:', '')}`
+    //     ) || '';
 
-      const decodedMnemonic = JSON.parse(instance.mnemonics);
-      instance.mnemonics = decodedMnemonic.mnemonic || '';
-    }
+    //   const decodedMnemonic = JSON.parse(instance.mnemonics);
+    //   instance.mnemonics = decodedMnemonic.mnemonic || '';
+    // }
     let encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(instance),
       instance.passhash
@@ -338,36 +336,15 @@ export class UserService {
     return;
   }
 
-  public async RemovePassword(session: ISessionItem) {
-    let newSessionItem = session;
-
-    newSessionItem.passwordRemoved = true;
-    newSessionItem.passhash = CryptoJS.SHA256(newSessionItem.did + '').toString(
-      CryptoJS.enc.Hex
-    );
-
-    await TuumTechScriptService.updateTuumUser(newSessionItem);
-
-    // remove local storage data
-    window.localStorage.removeItem(
-      `user_${session.did.replace('did:elastos:', '')}`
-    );
-
-    this.lockUser(UserService.key(newSessionItem.did), newSessionItem);
-
-    return newSessionItem;
-  }
-
   public async CreateNewUser(
     name: string,
     accountType: AccountType,
     loginCred: LoginCred,
     credential: string = '',
-    // storePassword: string,
     newDidStr: string,
-    newMnemonicStr: string,
     hiveHostStr: string,
-    avatar = ''
+    avatar = '',
+    newMnemonicStr: string
   ) {
     let did = newDidStr;
     let mnemonics = newMnemonicStr;
@@ -402,6 +379,10 @@ export class UserService {
       didPublishTime: 0,
       onBoardingCompleted: false,
       loginCred: loginCred || {},
+      onBoardingInfo: {
+        type: 1,
+        step: 0
+      },
       badges: {
         account: {
           beginnerTutorial: {
@@ -612,7 +593,7 @@ export class UserService {
     let newSessionItem = sessionItem;
     const userData = await this.SearchUserWithDID(sessionItem.did);
     if (userData && userData.code) {
-      newSessionItem.code = userData.code;
+      newSessionItem = { ...newSessionItem, code: userData.code };
 
       // workaround the fact that session is not updated inside tutorial
       if (userData.userToken) {
@@ -621,7 +602,6 @@ export class UserService {
     }
     const res: any = await TuumTechScriptService.updateTuumUser(newSessionItem);
     this.lockUser(UserService.key(sessionItem.did), newSessionItem);
-
     if (notifyUser && res.meta.code === 200 && res.data._status === 'OK') {
       showNotify('User info is successfuly saved', 'success');
     }
@@ -646,7 +626,10 @@ export class UserService {
     return true;
   }
 
-  public async LockWithDIDAndPwd(sessionItem: ISessionItem) {
+  public async LockWithDIDAndPwd(
+    sessionItem: ISessionItem,
+    serviceEndpoint: string
+  ) {
     let newSessionItem = sessionItem;
     if (
       !newSessionItem.passhash ||
@@ -662,15 +645,16 @@ export class UserService {
       newSessionItem.onBoardingCompleted = res.onBoardingCompleted;
       newSessionItem.tutorialStep = res.tutorialStep;
       newSessionItem.referrals = res.referrals || [];
+      newSessionItem.wallets = res.wallets || {};
     }
 
     this.lockUser(UserService.key(newSessionItem.did), newSessionItem);
     window.localStorage.setItem('isLoggedIn', 'true');
 
-    if (newSessionItem) {
-      return await UserVaultScriptService.register(newSessionItem);
-    }
-    return newSessionItem;
+    return await UserVaultScriptService.register(
+      newSessionItem,
+      serviceEndpoint
+    );
   }
 
   public async UnLockWithDIDAndPwd(
@@ -690,10 +674,12 @@ export class UserService {
     } else if (instance) {
       instance.onBoardingCompleted = res.onBoardingCompleted;
       instance.tutorialStep = res.tutorialStep;
+      instance.referrals = res.referrals || [];
+      instance.wallets = res.wallets || {};
       this.lockUser(UserService.key(instance.did), instance);
 
       window.localStorage.setItem('isLoggedIn', 'true');
-      return await UserVaultScriptService.register(instance);
+      return await UserVaultScriptService.register(instance, instance.hiveHost);
     }
     return null;
   }
@@ -734,5 +720,104 @@ export class UserService {
       `userdiddocument_${useSession.did.replace('did:elastos:', '')}`
     );
     UserService.logout();
+  }
+
+  public static async checkAfterEssentialSignin(
+    did: string,
+    mnemonic: string,
+    name: string
+  ) {
+    // const didService = await DidService.getInstance();
+    // let didDocument = await didService.getDidDocument(did, false);
+    // if (didDocument.services && didDocument.services.size > 0) {
+    //   let serviceEndpoint = '';
+    //   let hiveUrl = new DIDURL(did + '#hivevault');
+    //   if (didDocument.services?.has(hiveUrl)) {
+    //     serviceEndpoint = didDocument.services.get(hiveUrl).serviceEndpoint;
+    //   } else {
+    //     hiveUrl = new DIDURL(did + '#HiveVault');
+    //     if (didDocument.services?.has(hiveUrl)) {
+    //       serviceEndpoint = didDocument.services.get(hiveUrl).serviceEndpoint;
+    //     }
+    //   }
+    //   if (serviceEndpoint) {
+    //     let hiveVersion = await HiveService.getHiveVersion(serviceEndpoint);
+    //     let isHiveValid = await HiveService.isHiveVersionSupported(hiveVersion);
+    //     if (!isHiveValid) {
+    //       return {
+    //         error: `Hive version ${hiveVersion} not supported. The minimal supported version is ${process.env.REACT_APP_HIVE_MIN_VERSION} and maximun is ${process.env.REACT_APP_HIVE_MAX_VERSION}`
+    //       };
+    //     }
+    //   } else {
+    //     return {
+    //       error:
+    //         'This DID has no Hive Node set. Please set the hive node first using Elastos Essentials App'
+    //     };
+    //   }
+    // } else {
+    //   return {
+    //     error:
+    //       'This DID has no Hive Node set. Please set the hive node first using Elastos Essentials App'
+    //   };
+    // }
+    // // return '';
+    // const res = await this.SearchUserWithDID(did);
+    // window.localStorage.setItem(
+    //   `temporary_${did.replace('did:elastos:', '')}`,
+    //   JSON.stringify({
+    //     mnemonic: mnemonic
+    //   })
+    // );
+    // if (res) {
+    //   const recoverCheckRes = await OnBoardingService.checkRecoverLogin(res);
+    //   if (!recoverCheckRes.canLogin) {
+    //     return 'You already completed the onboarding. You can only login with Essential.';
+    //   }
+    //   let session = await this.LockWithDIDAndPwd(recoverCheckRes.session);
+    //   session.isEssentialUser = true;
+    //   // eProps.setSession({ session });
+    //   // window.localStorage.setItem('isLoggedIn', 'true');
+    //   // history.push('/profile');
+    //   return {
+    //     error: '',
+    //     redirect: '/profile',
+    //     session
+    //   };
+    // } else {
+    //   // history.push({
+    //   //   pathname: '/create-profile-with-did',
+    //   //   state: {
+    //   //     did,
+    //   //     mnemonic,
+    //   //     user: {
+    //   //       name: name,
+    //   //       loginCred: {}
+    //   //     }
+    //   //   }
+    //   // });
+    // }
+    // // if (res) {
+    // //   showNotify(
+    // //     "Please approve Profile's multiple requests on Esssentials App.",
+    // //     'warning'
+    // //   );
+    // //   const session = await userService.LockWithDIDAndPwd(res);
+    // //   session.isEssentialUser = true;
+    // //   eProps.setSession({ session });
+    // //   window.localStorage.setItem('isLoggedIn', 'true');
+    // //   history.push('/profile');
+    // // } else {
+    // //   history.push({
+    // //     pathname: '/create-profile-with-did',
+    // //     state: {
+    // //       did,
+    // //       mnemonic,
+    // //       user: {
+    // //         name: name,
+    // //         loginCred: {}
+    // //       }
+    // //     }
+    // //   });
+    // // }
   }
 }

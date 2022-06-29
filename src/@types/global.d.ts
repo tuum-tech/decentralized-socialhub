@@ -266,11 +266,18 @@ interface ProfileDTO {
   gameExpDTO: GameExpDTO;
   gamerTagDTO: GamerTagDTO;
   versionDTO: Version;
+  escaddressCredential: Wallet;
+  ethaddressCredential: Wallet;
 }
 
 interface IReferral {
   did: string;
   sign_up_date?: string;
+}
+
+interface IOnboardingInfo {
+  type: number; // 0: create new, 1: login with essentials, 2: recover account
+  step: number;
 }
 
 interface ISessionItem {
@@ -299,9 +306,10 @@ interface ISessionItem {
   referrals?: IReferral[];
   passwordRemoved?: boolean;
   wallets?: any;
+  latestVersion?: string;
   created?: { $date: number };
   sign_up_date?: string;
-  latestVersion?: string;
+  onBoardingInfo?: IOnboardingInfo;
 }
 
 interface LoginCred {
@@ -572,7 +580,8 @@ interface IGithubCommentItem {
 interface NFTSpaceDetail {
   network: string;
   address: string;
-  ref: string;
+  isOpenseaCollection: boolean;
+  collectionSlug: string;
 }
 interface OrgSpaceDetail {}
 interface UnivSpaceDetail {}
@@ -584,6 +593,7 @@ interface SpaceDTO {
   items: Space[];
 }
 interface Space {
+  sid?: number;
   name: string;
   guid: Guid | null;
   slug: string;
@@ -605,4 +615,9 @@ interface Version {
   profileVersion?: string;
   releaseNotes?: string[];
   videoUpdateUrl?: string;
+}
+
+interface Wallet {
+  address: string;
+  id: string;
 }

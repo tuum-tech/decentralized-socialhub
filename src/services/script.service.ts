@@ -8,6 +8,8 @@ import { getItemsFromData } from 'src/utils/script';
 import { Guid } from 'guid-typescript';
 import { Logger } from 'src/shared-base/logger';
 import { HiveException } from '@tuum-tech/hive-js-sdk/';
+import { OnBoardingService } from './onboarding.service';
+
 export class TuumTechScriptService {
   private static async runTuumTechScript(script: any) {
     return request(
@@ -548,7 +550,10 @@ export class TuumTechScriptService {
 export class UserVaultScriptService {
   private static LOG = new Logger('UserVaultScriptService');
 
-  public static async register(user: ISessionItem): Promise<ISessionItem> {
+  public static async register(
+    user: ISessionItem,
+    serviceEndpointFromBlockchain: string
+  ): Promise<ISessionItem> {
     //if (!user) return;
 
     let newUser = user;
@@ -569,29 +574,46 @@ export class UserVaultScriptService {
 
     if (items.length > 0) {
       const userInfo = items[0];
-      if (
-        !userInfo.tutorialStep ||
-        userInfo.tutorialStep !== 4 ||
-        !userInfo.onBoardingCompleted
-      ) {
-        // Backup mnemonic from locked user info
-        userInfo.mnemonics = newUser.mnemonics;
+      if (!OnBoardingService.isOnBoardingCompleted(userInfo.onBoardingInfo)) {
         return userInfo;
       }
 
       try {
-        let hiveClient = await HiveService.getHiveClient(user);
-        if (!hiveClient)
-          throw new HiveException('Unable to create Hive client');
-
-        if (!newUser.userToken) {
-          newUser.userToken = (await hiveClient.getAccessToken()) as string;
+        let hiveInstance = await HiveService.getHiveClient(user);
+        let timesRetried = 0;
+        while (!(hiveInstance && hiveInstance.isConnected)) {
+          console.log(
+            `Failed to connect to Hive. Retrying ${timesRetried} out of 5 times`
+          );
+          if (
+            !newUser.hiveHost ||
+            serviceEndpointFromBlockchain !== newUser.hiveHost
+          ) {
+            newUser.hiveHost = serviceEndpointFromBlockchain;
+          }
+          newUser.userToken = await this.generateUserToken(
+            newUser.mnemonics,
+            serviceEndpointFromBlockchain
+          );
+          hiveInstance = await HiveService.getSessionInstance(newUser);
+          await new Promise(f => setTimeout(f, 1000));
+          if (timesRetried === 5) {
+            break;
+          }
+          timesRetried++;
         }
-        let userService = new UserService(await DidService.getInstance());
-        await userService.updateSession(newUser);
-        await TuumTechScriptService.updateTuumUser(newUser);
-        let hiveInstance = await HiveService.getHiveClient(newUser);
-        await UserVaultScripts.Execute(hiveClient);
+        if (hiveInstance && hiveInstance.isConnected) {
+          console.log('Hive is successfully connected');
+          let userService = new UserService(await DidService.getInstance());
+          await userService.updateSession(newUser);
+          await TuumTechScriptService.updateTuumUser(newUser);
+
+          await UserVaultScripts.Execute(hiveInstance!);
+        } else {
+          console.log(
+            'Error connecting to Hive. Some things may not work as expected after you log in'
+          );
+        }
       } catch (error) {
         console.log('Could not register: ' + error);
         // alertError(null, 'Could not register');

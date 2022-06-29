@@ -4,7 +4,6 @@ import { setTimeout, clearTimeout } from 'timers';
 import { IonContent, IonSearchbar } from '@ionic/react';
 
 import SpacePageHeader, {
-  Header,
   SpaceTabsContainer
 } from './components/SpacePageHeader';
 import SpaceListView from 'src/components/Space/SpaceListView';
@@ -15,6 +14,7 @@ import useSession from 'src/hooks/useSession';
 import { selectSpaces, selectSpacesLoading } from 'src/store/spaces/selectors';
 import { fetchSpaces } from 'src/store/spaces/actions';
 import HeaderMenu from 'src/elements-v2/HeaderMenu';
+import { Header } from 'src/components/layouts/MainLayout/Header';
 import style from './style.module.scss';
 
 const SpaceList: React.FC = () => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { makeSelectSession } from 'src/store/users/selectors';
@@ -29,7 +29,7 @@ import { ThemeButton, ThemeTransparentButton } from 'src/elements/buttons';
 import Navbar from 'src/components/layouts/NavBar';
 import { alertError, showNotify } from 'src/utils/notify';
 import { DidService } from 'src/services/did.service.new';
-import { UserService } from 'src/services/user.service';
+import { AccountType, UserService } from 'src/services/user.service';
 
 import leftBg from 'src/assets/new/auth/signin_left_bg.png';
 import style from './style.module.scss';
@@ -40,6 +40,7 @@ import { DIDURL, VerifiablePresentation } from '@elastosfoundation/did-js-sdk/';
 import { useSetRecoilState } from 'recoil';
 import { DIDDocumentAtom } from 'src/Atoms/Atoms';
 import { HiveClient } from '@tuum-tech/hive-js-sdk';
+import { OnBoardingService } from 'src/services/onboarding.service';
 
 interface PageProps
   extends InferMappedProps,
@@ -48,6 +49,16 @@ interface PageProps
 const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
   const history = useHistory();
   const setDidDocument = useSetRecoilState(DIDDocumentAtom);
+
+  useEffect(() => {
+    (async () => {
+      let connector: EssentialsConnector = connectivity.getActiveConnector() as EssentialsConnector;
+      if (connector && connector.hasWalletConnectSession()) {
+        connector.disconnectWalletConnect();
+      }
+    })();
+  }, []);
+
   const getPresentation = async (): Promise<
     VerifiablePresentation | undefined
   > => {
@@ -84,17 +95,16 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
       let name = nameCredential!.getSubject().getProperty('name');
       let owner = nameCredential!.getId().getDid();
       let did = 'did:elastos:' + owner.getMethodSpecificId();
-      let mnemonic = '';
 
       let resolvedDocument = await owner.resolve();
       await didService.storeDocument(resolvedDocument);
       setDidDocument(resolvedDocument.toString(true));
 
+      let serviceEndpoint = '';
       let isDidPublished = await didService.isDIDPublished(did);
       if (isDidPublished) {
         let didDocument = await didService.getDidDocument(did, false);
         if (didDocument.services && didDocument.services.size > 0) {
-          let serviceEndpoint = '';
           let hiveUrl = new DIDURL(did + '#hivevault');
           if (didDocument.services?.has(hiveUrl)) {
             serviceEndpoint = didDocument.services.get(hiveUrl).serviceEndpoint;
@@ -133,34 +143,46 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
 
         let userService = new UserService(didService);
         const res = await userService.SearchUserWithDID(did);
-        window.localStorage.setItem(
-          `temporary_${did.replace('did:elastos:', '')}`,
-          JSON.stringify({
-            mnemonic: mnemonic
-          })
-        );
-        console.log('hello - signinpage: ', res, name);
         if (res) {
-          showNotify(
-            "Please approve Profile's multiple requests on Esssentials App.",
-            'warning'
+          const session = await userService.LockWithDIDAndPwd(
+            res,
+            serviceEndpoint
           );
-          const session = await userService.LockWithDIDAndPwd(res);
-          session.isEssentialUser = true;
+          
+          if(!OnBoardingService.isOnBoardingCompleted(session.onBoardingInfo)){
+            session.onBoardingInfo = {
+              type: 2,
+              step: 0
+            };
+          }
           eProps.setSession({ session });
           history.push('/profile');
         } else {
-          history.push({
-            pathname: '/create-profile-with-did',
-            state: {
+          if(didDocument.credentials && didDocument.credentials.size > 0) {
+            let userService = new UserService(await DidService.getInstance());
+            let sessionItem = await userService.CreateNewUser(
+              name,
+              AccountType.DID,
+              {},
+              '',
               did,
-              mnemonic,
-              user: {
-                name: name,
-                loginCred: {}
-              }
-            }
-          });
+              serviceEndpoint,
+              '',
+              ''
+            );
+            sessionItem.onBoardingInfo = {
+              type: 2,
+              step: 0
+            };
+            eProps.setSession({ session: sessionItem });
+            history.push('/profile');
+          } else {
+            alertError(
+              null,
+              `This account has registered essential app. But this is not published yet.`
+            );
+            return;
+          }
         }
       } else {
         showNotify('Did is not published on the blockchain yet', 'error');

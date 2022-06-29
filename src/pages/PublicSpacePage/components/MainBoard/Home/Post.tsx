@@ -10,13 +10,11 @@ import Avatar from 'src/components/Avatar';
 import {
   SubMenu,
   Item
-} from 'src/pages/ActivityPage/components/ActivityTimeline';
+} from 'src/pages/ActivityPage/components/ActivityTimeline/ActivityRow';
 import { HorDOMSpace16 } from '../../Highlight/About';
 import { CustomModal } from './index';
 import Comment from './Comment';
 import CommentEditor from './CommentEditor';
-import img_nft_item from 'src/assets/space/nft_item.jpg';
-import icon_emoti from 'src/assets/space/emoti.svg';
 import icon_comment from 'src/assets/space/comment.svg';
 import style from './Post.module.scss';
 import { UserService } from 'src/services/user.service';
@@ -152,7 +150,7 @@ const Post: React.FC<IProps> = ({
           <div className={style['action']}>
             {(hasPermissionToComment || isAuthor) && (
               <span onClick={() => setIsModalOpen(true)}>
-                <img src={icon_comment} />
+                <img alt="comment icon" src={icon_comment} />
                 Comment
               </span>
             )}

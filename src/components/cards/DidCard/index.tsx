@@ -98,7 +98,7 @@ const DidCard: React.FC<Props> = ({
             </span>
           </div>
 
-          {type === 'user' && tutorialStep === 4 && (
+          {type === 'user' && session.onBoardingCompleted && (
             <>
               {isFollowing ? (
                 <DefaultButton

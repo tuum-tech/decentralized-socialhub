@@ -48,7 +48,7 @@ const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
         !sessionItem ||
         sessionItem.did === '' ||
         loaded ||
-        sessionItem.tutorialStep !== 4
+        !sessionItem.onBoardingCompleted
       )
         return;
       const orgFields = await ProfileService.getPublicFields(sessionItem.did);
@@ -87,7 +87,7 @@ const PublicFields: React.FC<IProps> = ({ sessionItem }: IProps) => {
             variant="outlined"
             btnColor="primary-gradient"
             textType="gradient"
-            disabled={sessionItem.tutorialStep !== 4}
+            disabled={!sessionItem.onBoardingCompleted}
             onClick={handleEdit}
           >
             Edit

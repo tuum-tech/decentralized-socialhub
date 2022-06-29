@@ -1,22 +1,41 @@
+import { IonCol } from '@ionic/react';
 import React from 'react';
 import styled from 'styled-components';
 
-interface TopInfoCardContainerProps {
+const StyledCol = styled(IonCol)`
+  cursor: pointer;
+  &:hover {
+    div {
+      background: #f3f3f3;
+    }
+  }
+`;
+
+export const ClickableCol = (props: any) => (
+  <StyledCol sizeXs="12" sizeSm="auto" {...props} />
+);
+
+interface TopInfoCardProps {
+  img: string;
+  title: string;
+  count: number;
   bgColor?: string;
 }
 
-const TopInfoCardContainer = styled.div<TopInfoCardContainerProps>`
-  background: #ffffff;
+const TopInfoCardContainer = styled.div`
+  background: #edf2f7;
   border-radius: 16px;
   width: 100%;
   display: flex;
-  align-items: center;
   padding: 28px 24px;
 
   .left {
     display: block;
     border-radius: 10px;
-    background-color: ${props => (props.bgColor ? props.bgColor : '#1D1D1B')};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     width: 38px;
     height: 38px;
   }
@@ -39,28 +58,24 @@ const TopInfoCardContainer = styled.div<TopInfoCardContainerProps>`
   }
 `;
 
-interface TopInfoCardProps {
-  img: string;
-  title: string;
-  text: string;
-  bgColor: string;
-}
-
-const TopInfoCard: React.FC<TopInfoCardProps> = ({
+export const TopInfoCard: React.FC<TopInfoCardProps> = ({
   img,
   title,
-  text,
+  count,
   bgColor
-}) => {
-  return (
-    <TopInfoCardContainer bgColor={bgColor}>
-      <div className="left"></div>
-      <div className="right">
-        <p className="title">Total Requests</p>
-        <p className="text"> 1.2K</p>
-      </div>
-    </TopInfoCardContainer>
-  );
-};
-
-export default TopInfoCard;
+}) => (
+  <TopInfoCardContainer>
+    <div
+      className="left"
+      style={{
+        background: bgColor || '#1D1D1B'
+      }}
+    >
+      <img src={img} alt="info" />
+    </div>
+    <div className="right">
+      <p className="title">{title}</p>
+      <p className="text"> {count}</p>
+    </div>
+  </TopInfoCardContainer>
+);

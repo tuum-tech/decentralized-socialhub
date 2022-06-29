@@ -228,7 +228,11 @@ const Detail: React.FC<DetailProp> = ({
             </span>
             <span className="category">
               {githubIssue.labels.map((label: any) => {
-                return <Category label={label.name}>{label.name}</Category>;
+                return (
+                  <Category key={label.id} label={label.name}>
+                    {label.name}
+                  </Category>
+                );
               })}
             </span>
             <span className="vote">

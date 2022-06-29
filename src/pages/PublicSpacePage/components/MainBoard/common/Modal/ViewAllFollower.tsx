@@ -9,7 +9,6 @@ import modal_style from './style.module.scss';
 import common_style from '../style.module.scss';
 import { getDIDString } from 'src/utils/did';
 import Modal from 'src/elements-v2/Modal';
-import { TuumTechScriptService } from 'src/services/script.service';
 
 interface Props {
   space: any;

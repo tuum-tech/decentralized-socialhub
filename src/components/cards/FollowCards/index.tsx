@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { SearchService } from 'src/services/search.service';
 import { FollowType } from 'src/services/user.service';
-import { getItemsFromData } from 'src/utils/script';
 import { getDIDString } from 'src/utils/did';
 
+import { getUsersByDid as getUsersByDidAction } from 'src/store/users/actions';
+import { selectAllUsers } from 'src/store/users/selectors';
 import FollowCard from './FollowCard';
 
 interface Props {
@@ -30,48 +31,26 @@ const FollowCards: React.FC<Props> = ({
   showMutualFollowerCard = true,
   template = 'default'
 }: Props) => {
-  const [followingUsers, setFollowingUsers] = useState<any[]>([]);
-  const [followerUsers, setFollowerUsers] = useState<any[]>([]);
-  const [mutualFollowerUsers, setMutualFollowerUsers] = useState<any[]>([]);
+  const dispatch = useDispatch();
+  const users = useSelector(selectAllUsers);
+
+  const getUsersByDid = useCallback(
+    (ids, limit, offset) => {
+      dispatch(getUsersByDidAction(ids, limit, offset));
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
-    let mounted = true;
-    (async () => {
-      const searchServiceLocal = await SearchService.getSearchServiceAppOnlyInstance();
-      let followings: any = await searchServiceLocal.getUsersByDIDs(
-        followingDids,
-        5,
-        0
-      );
-      followings = getItemsFromData(followings, 'get_users_by_dids');
-      if (mounted) {
-        setFollowingUsers(followings);
-      }
-
-      let followers: any = await searchServiceLocal.getUsersByDIDs(
-        followerDids,
-        5,
-        0
-      );
-      followers = getItemsFromData(followers, 'get_users_by_dids');
-      if (mounted) {
-        setFollowerUsers(followers);
-      }
-
-      let mutualFollowers: any = await searchServiceLocal.getUsersByDIDs(
-        mutualDids,
-        5,
-        0
-      );
-      mutualFollowers = getItemsFromData(mutualFollowers, 'get_users_by_dids');
-      if (mounted) {
-        setMutualFollowerUsers(mutualFollowers);
-      }
-    })();
-
-    return () => {
-      mounted = false;
-    };
+    getUsersByDid(
+      [
+        ...followingDids.slice(0, 5),
+        ...followerDids.slice(0, 5),
+        ...mutualDids.slice(0, 5)
+      ],
+      15,
+      0
+    );
   }, [followerDids, followingDids, mutualDids]);
 
   return (
@@ -79,11 +58,7 @@ const FollowCards: React.FC<Props> = ({
       {followingDids.length > 0 && showFollowingCard && (
         <FollowCard
           title={`Following (${followingDids.length})`}
-          users={
-            followingUsers.length > 5
-              ? followingUsers.slice(0, 5)
-              : followingUsers
-          }
+          users={users.filter(user => followingDids.includes(user.did))}
           getLinkFunc={(did: string) => getDIDString('/did/' + did)}
           viewAllClicked={() => viewAll(FollowType.Following)}
           template={template}
@@ -92,9 +67,7 @@ const FollowCards: React.FC<Props> = ({
       {followerDids.length > 0 && showFollowerCard && (
         <FollowCard
           title={`Follower (${followerDids.length})`}
-          users={
-            followerUsers.length > 5 ? followerUsers.slice(0, 5) : followerUsers
-          }
+          users={users.filter(user => followerDids.includes(user.did))}
           getLinkFunc={(did: string) => getDIDString('/did/' + did)}
           viewAllClicked={() => viewAll(FollowType.Follower)}
           template={template}
@@ -103,11 +76,7 @@ const FollowCards: React.FC<Props> = ({
       {mutualDids.length > 0 && showMutualFollowerCard && (
         <FollowCard
           title={`Mutual Follower (${mutualDids.length})`}
-          users={
-            mutualFollowerUsers.length > 5
-              ? mutualFollowerUsers.slice(0, 5)
-              : mutualFollowerUsers
-          }
+          users={users.filter(user => mutualDids.includes(user.did))}
           getLinkFunc={(did: string) => getDIDString('/did/' + did)}
           viewAllClicked={() => viewAll(FollowType.MutualFollower)}
           template={template}

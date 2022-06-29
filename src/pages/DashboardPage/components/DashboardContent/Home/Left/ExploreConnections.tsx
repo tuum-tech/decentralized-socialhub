@@ -17,7 +17,7 @@ const ExploreConnections: React.FC<Props> = ({ did, session }) => {
     let mounted = true;
     (async () => {
       let fUserDids: string[] = [];
-      if (session && session.tutorialStep === 4) {
+      if (session && session.onBoardingCompleted) {
         let followings = await ProfileService.getFollowings(session.did);
         if (followings && followings.items && followings.items.length > 0) {
           fUserDids = followings.items.map(item => item.did);

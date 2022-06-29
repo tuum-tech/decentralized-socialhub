@@ -14,11 +14,12 @@ import SpaceAvatarChange from 'src/components/cards/SpaceAvatarChange';
 import {
   defaultSpace,
   SpaceCategory,
+  CategoriesForPrivateSpace,
   SpaceService
 } from 'src/services/space.service';
 import useSession from 'src/hooks/useSession';
 import { showNotify } from 'src/utils/notify';
-import { Header } from './SpacePageHeader';
+import { Header } from 'src/components/layouts/MainLayout/Header';
 import HeaderMenu from 'src/elements-v2/HeaderMenu';
 import { selectSpaces } from 'src/store/spaces/selectors';
 import { fetchSpaces } from 'src/store/spaces/actions';
@@ -37,9 +38,10 @@ const CreateSpace: React.FC = () => {
       }) ?? [],
     [session, spaces]
   );
-  const spaceCategories = [
-    { value: SpaceCategory.Personal, text: 'Personal Group' }
-  ];
+  const spaceCategories = CategoriesForPrivateSpace.map(category => ({
+    value: category,
+    text: category
+  }));
   const [form, setForm] = useState<any>(defaultSpace);
   const onSelectCategory = (value: string) => {
     setForm({ ...form, category: value });

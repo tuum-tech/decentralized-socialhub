@@ -159,7 +159,7 @@ const DidSnippet: React.FC<IProp> = ({
     year: 'numeric'
   });
 
-  const shortenedDid = useMemo(() => getShortenedDid(did, 4), [did]);
+  const shortenedDid = useMemo(() => getShortenedDid(did, 5), [did]);
 
   return (
     <ProfileDesignation>

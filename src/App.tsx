@@ -3,7 +3,6 @@ import React, { Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { IonApp, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import * as Sentry from '@sentry/react';
 
 import { Web3ReactProvider } from '@web3-react/core';
 import Web3 from 'web3';
@@ -49,9 +48,6 @@ import {
   CreateWhyPage,
   GenerateDidPage,
   SignInPage,
-  SignQRPage,
-  ForgotPasswordPage,
-  CreateProfileWithDidPage,
   RecoverAccountPage,
   EmailVerificationPage
 } from './pages/Auth';
@@ -62,7 +58,7 @@ import ManagerPage from './pages/ManagerPage';
 import ActivityPage from './pages/ActivityPage';
 import SpacePage from './pages/SpacePage';
 import PublicSpacePage from './pages/PublicSpacePage';
-import SyncPage from './pages/SyncPage';
+/* import SyncPage from './pages/SyncPage'; */
 
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -132,6 +128,11 @@ const App: React.FC = () => {
                   />
                   <ProtectedRoute
                     path="/profile"
+                    component={DashboardPage}
+                    exact={true}
+                  />
+                  <ProtectedRoute
+                    path="/profile/:active"
                     component={DashboardPage}
                     exact={true}
                   />
@@ -209,13 +210,6 @@ const App: React.FC = () => {
                     component={RecoverAccountPage}
                     exact={true}
                   />
-
-                  {/* ok */}
-                  <ProtectedRoute
-                    path="/sign-qr"
-                    component={SignQRPage}
-                    exact={true}
-                  />
                   {/* ok */}
                   <ProtectedRoute
                     path="/associated-profile"
@@ -235,17 +229,7 @@ const App: React.FC = () => {
                     exact={true}
                   />
                   {/* to test */}
-                  <ProtectedRoute
-                    path="/create-profile-with-did"
-                    component={CreateProfileWithDidPage}
-                    exact={true}
-                  />
 
-                  <ProtectedRoute
-                    path="/forgot-password"
-                    component={ForgotPasswordPage}
-                    exact={true}
-                  />
                   <ProtectedRoute
                     path="/support-forum/:num"
                     component={SupportForum}
@@ -294,4 +278,4 @@ const App: React.FC = () => {
   );
 };
 
-export default Sentry.withProfiler(App);
+export default App;

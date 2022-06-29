@@ -1,5 +1,8 @@
 import React from 'react';
-import { SubState, ActionType, defaultUserInfo } from 'src/store/users/types';
+import { SubState, defaultUserInfo } from 'src/store/users/types';
+
+export { defaultUserInfo }; 
+export type { SubState };
 
 export type MenuType = {
   title: string | React.ReactNode;
