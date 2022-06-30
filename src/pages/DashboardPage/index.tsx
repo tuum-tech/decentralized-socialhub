@@ -61,8 +61,11 @@ const DashboardPage: React.FC<RouteComponentProps> = () => {
   const [publishStatus, setPublishStatus] = useState(RequestStatus.NotFound);
   const [onBoardVisible, setOnBoardVisible] = useState(false);
 
-  const { followings: followingDids = [], followers: followerDids = [] } =
-    useSelector(state => selectProfileById(state, session.did)) || {};
+  const {
+    followings: followingDids = [],
+    followers: followerDids = [],
+    profileDTO = null
+  } = useSelector(state => selectProfileById(state, session.did)) || {};
   const mutualDids = useMemo(
     () => followingDids.filter((did: any) => followerDids.indexOf(did) !== -1),
     [followingDids, followerDids]
@@ -84,6 +87,13 @@ const DashboardPage: React.FC<RouteComponentProps> = () => {
   const getFollowers = useCallback(() => {
     dispatch(profileSlice.actions.getFollowerDids());
   }, [dispatch]);
+
+  const getFullProfile = useCallback(
+    (did: string, userSession: ISessionItem) => {
+      dispatch(profileSlice.actions.getFullProfile({ did, userSession }));
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     (async () => {
@@ -175,22 +185,25 @@ const DashboardPage: React.FC<RouteComponentProps> = () => {
 
   const retrieveProfile = async () => {
     setLoadingText('Please wait a moment...');
-    let profile: ProfileDTO = await ProfileService.getFullProfile(
-      session.did,
-      session
-    );
-    if (profile) {
-      profile.experienceDTO.isEnabled = true;
-      profile.educationDTO.isEnabled = true;
-      handleCheckVersion(profile.versionDTO?.latestVersion);
-      setFullProfile(profile);
-    }
 
+    getFullProfile(session.did, session);
     getFollowings();
     getFollowers();
 
     setLoadingText('');
   };
+
+  useEffect(() => {
+    if (profileDTO) {
+      const profile = {
+        ...profileDTO,
+        experienceDTO: { ...profileDTO.experienceDTO, isEnabled: true },
+        educationDTO: { ...profileDTO.educationDTO, isEnabled: true }
+      };
+      handleCheckVersion(profile.versionDTO?.latestVersion);
+      setFullProfile(profile);
+    }
+  }, [profileDTO, setFullProfile]);
 
   useEffect(() => {
     (async () => {
