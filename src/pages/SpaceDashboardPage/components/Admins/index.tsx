@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useCallback, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { IonRow, IonCol } from '@ionic/react';
 import styled from 'styled-components';
-import { SearchService } from 'src/services/search.service';
-import { getItemsFromData } from 'src/utils/script';
 import Avatar from 'src/components/Avatar';
 import Card from 'src/elements-v2/Card';
+import { getUsersByDid as getUsersByDidAction } from 'src/store/users/actions';
+import { selectAllUsers } from 'src/store/users/selectors';
 
 const Name = styled('h1')`
   font-size: 16px !important;
@@ -27,23 +28,27 @@ interface IProps {
 }
 
 const Admins: React.FC<IProps> = ({ profile }: IProps) => {
-  const [admins, setAdmins] = useState([]);
+  const dispatch = useDispatch();
+  const owners = useMemo(
+    () => (typeof profile.owner === 'string' ? [profile.owner] : profile.owner),
+    [profile.owner]
+  );
+  const users = useSelector(selectAllUsers);
+  const admins = useMemo(
+    () => users.filter(user => owners.includes(user.did)),
+    [owners, users]
+  );
+
+  const getUsersByDid = useCallback(
+    (ids, limit, offset) => {
+      dispatch(getUsersByDidAction(ids, limit, offset));
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
-    const owners =
-      typeof profile.owner === 'string' ? [profile.owner] : profile.owner;
-
-    (async () => {
-      let searchServiceLocal: SearchService = await SearchService.getSearchServiceAppOnlyInstance();
-      let response: any = await searchServiceLocal.getUsersByDIDs(
-        owners,
-        200,
-        0
-      );
-      const users = getItemsFromData(response, 'get_users_by_dids');
-      setAdmins(users);
-    })();
-  }, [profile.owner]);
+    getUsersByDid(owners, 200, 0);
+  }, [getUsersByDid, owners]);
 
   return (
     <Card template="default" title="Admins">
