@@ -172,6 +172,7 @@ export class ProfileService {
     did: string,
     userSession: ISessionItem
   ): Promise<ProfileDTO> {
+    const template = userSession.pageTemplate;
     let nameCredential = {
       name: userSession.name,
       verifiers: [] as any[]
@@ -282,73 +283,83 @@ export class ProfileService {
             basicDTO = gbPData[0];
           }
 
-          const tpRes: IRunScriptResponse<TeamProfileResponse> = await hiveInstance.Scripting.RunScript(
-            {
-              name: 'get_team_profile',
-              context: {
-                target_did: did,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+          if (template === 'soccer') {
+            const tpRes: IRunScriptResponse<TeamProfileResponse> = await hiveInstance.Scripting.RunScript(
+              {
+                name: 'get_team_profile',
+                context: {
+                  target_did: did,
+                  target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+                }
               }
-            }
-          );
-          teamDTO.items = getItemsFromData(tpRes, 'get_team_profile');
+            );
+            teamDTO.items = getItemsFromData(tpRes, 'get_team_profile');
+          }
 
-          const thpRes: IRunScriptResponse<ThesisProfileResponse> = await hiveInstance.Scripting.RunScript(
-            {
-              name: 'get_thesis_profile',
-              context: {
-                target_did: did,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+          if (template === 'education') {
+            const thpRes: IRunScriptResponse<ThesisProfileResponse> = await hiveInstance.Scripting.RunScript(
+              {
+                name: 'get_thesis_profile',
+                context: {
+                  target_did: did,
+                  target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+                }
               }
-            }
-          );
-          thesisDTO.items = getItemsFromData(thpRes, 'get_thesis_profile');
+            );
+            thesisDTO.items = getItemsFromData(thpRes, 'get_thesis_profile');
 
-          const p2Res: IRunScriptResponse<PaperProfileResponse> = await hiveInstance.Scripting.RunScript(
-            {
-              name: 'get_paper_profile',
-              context: {
-                target_did: did,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            const p2Res: IRunScriptResponse<PaperProfileResponse> = await hiveInstance.Scripting.RunScript(
+              {
+                name: 'get_paper_profile',
+                context: {
+                  target_did: did,
+                  target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+                }
               }
-            }
-          );
-          thesisDTO.items = getItemsFromData(p2Res, 'get_paper_profile');
+            );
+            paperDTO.items = getItemsFromData(p2Res, 'get_paper_profile');
 
-          const lpRes: IRunScriptResponse<LicenseProfileResponse> = await hiveInstance.Scripting.RunScript(
-            {
-              name: 'get_license_profile',
-              context: {
-                target_did: did,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            const lpRes: IRunScriptResponse<LicenseProfileResponse> = await hiveInstance.Scripting.RunScript(
+              {
+                name: 'get_license_profile',
+                context: {
+                  target_did: did,
+                  target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+                }
               }
-            }
-          );
-          licenseDTO.items = getItemsFromData(lpRes, 'get_license_profile');
+            );
+            licenseDTO.items = getItemsFromData(lpRes, 'get_license_profile');
 
-          const cpRes: IRunScriptResponse<CertificationProfileResponse> = await hiveInstance.Scripting.RunScript(
-            {
-              name: 'get_certification_profile',
-              context: {
-                target_did: did,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            const cpRes: IRunScriptResponse<CertificationProfileResponse> = await hiveInstance.Scripting.RunScript(
+              {
+                name: 'get_certification_profile',
+                context: {
+                  target_did: did,
+                  target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+                }
               }
-            }
-          );
-          certificationDTO.items = getItemsFromData(
-            cpRes,
-            'get_certification_profile'
-          );
-          const gexpRes: IRunScriptResponse<GameExpProfileResponse> = await hiveInstance.Scripting.RunScript(
-            {
-              name: 'get_game_exp_profile',
-              context: {
-                target_did: did,
-                target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+            );
+            certificationDTO.items = getItemsFromData(
+              cpRes,
+              'get_certification_profile'
+            );
+          }
+
+          if (template === 'gamer') {
+            const gexpRes: IRunScriptResponse<GameExpProfileResponse> = await hiveInstance.Scripting.RunScript(
+              {
+                name: 'get_game_exp_profile',
+                context: {
+                  target_did: did,
+                  target_app_did: `${process.env.REACT_APP_APPLICATION_ID}`
+                }
               }
-            }
-          );
-          gameExpDTO.items = getItemsFromData(gexpRes, 'get_game_exp_profile');
+            );
+            gameExpDTO.items = getItemsFromData(
+              gexpRes,
+              'get_game_exp_profile'
+            );
+          }
 
           const edRes: IRunScriptResponse<EducationProfileResponse> = await hiveInstance.Scripting.RunScript(
             {

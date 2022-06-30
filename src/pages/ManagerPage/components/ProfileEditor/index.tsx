@@ -4,7 +4,9 @@ import {
   VerifiableCredential
 } from '@elastosfoundation/did-js-sdk/';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import AboutCard from 'src/components/cards/AboutCard';
 import AvatarChangeCard from 'src/components/cards/AvatarChangeCard';
 import CoverPhoto from 'src/components/cards/CoverPhoto';
@@ -41,6 +43,8 @@ import EssentialsModalContent, {
 } from 'src/pages/ActivityPage/components/MyRequests/EssentialsRequestModal';
 import { useRecoilState } from 'recoil';
 import { FullProfileAtom } from 'src/Atoms/Atoms';
+import { profileSlice } from 'src/store/profile/reducer';
+import { selectProfileById } from 'src/store/profile/selectors';
 
 interface Props {
   session: ISessionItem;
@@ -53,12 +57,15 @@ const ProfileEditor: React.FC<Props> = ({
   badgeUrl,
   updateSession
 }) => {
+  const dispatch = useDispatch();
   const [error, setError] = useState(false);
   const [userInfo, setUserInfo] = useState<ISessionItem>(session);
   const [loaded, setloaded] = useState(false);
   const [timer, setTimer] = useState<any>(null);
 
   const [profile, setProfile] = useRecoilState<ProfileDTO>(FullProfileAtom);
+  const { profileDTO = null } =
+    useSelector(state => selectProfileById(state, session.did)) || {};
   const [selectedCredential, setSelectedCredential] = useState<
     string | undefined
   >(undefined);
@@ -111,29 +118,35 @@ const ProfileEditor: React.FC<Props> = ({
       phone.title
     ].includes(badgeUrl.badge);
 
+  const getFullProfile = useCallback(
+    (did: string, userSession: ISessionItem) => {
+      dispatch(profileSlice.actions.getFullProfile({ did, userSession }));
+    },
+    [dispatch]
+  );
+
+  useEffect(() => {
+    if (profileDTO) {
+      const p = {
+        ...profileDTO,
+        basicDTO: { ...profileDTO.basicDTO, isEnabled: true },
+        experienceDTO: { ...profileDTO.experienceDTO, isEnabled: true },
+        educationDTO: { ...profileDTO.educationDTO, isEnabled: true },
+        teamDTO: { ...profileDTO.teamDTO, isEnabled: true },
+        thesisDTO: { ...profileDTO.thesisDTO, isEnabled: true },
+        paperDTO: { ...profileDTO.paperDTO, isEnabled: true },
+        licenseDTO: { ...profileDTO.licenseDTO, isEnabled: true },
+        certificationDTO: { ...profileDTO.certificationDTO, isEnabled: true },
+        gameExpDTO: { ...profileDTO.gameExpDTO, isEnabled: true },
+        gamerTagDTO: { ...profileDTO.gamerTagDTO, isEnabled: true }
+      };
+      setProfile(p);
+    }
+  }, [profileDTO, setProfile]);
+
   const retriveProfile = async () => {
     if (!session.userToken) return;
-    try {
-      let res: ProfileDTO | undefined = await ProfileService.getFullProfile(
-        session.did,
-        session
-      );
-      if (res) {
-        res.basicDTO.isEnabled = true;
-        res.experienceDTO.isEnabled = true;
-        res.educationDTO.isEnabled = true;
-        res.teamDTO.isEnabled = true;
-        res.thesisDTO.isEnabled = true;
-        res.paperDTO.isEnabled = true;
-        res.licenseDTO.isEnabled = true;
-        res.certificationDTO.isEnabled = true;
-        res.gameExpDTO.isEnabled = true;
-        res.gamerTagDTO.isEnabled = true;
-        setProfile(res);
-      }
-    } catch (e) {
-      setError(true);
-    }
+    getFullProfile(session.did, session);
   };
 
   const updateExperienceProfile = async (

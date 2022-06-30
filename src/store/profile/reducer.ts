@@ -8,6 +8,7 @@ export const profileAdapter = createEntityAdapter<{
   did: string;
   followings?: string[];
   followers?: string[];
+  profileDTO?: ProfileDTO;
 }>({
   // Assume IDs are stored in a field other than `profile.did`
   selectId: profile => profile.did,
@@ -55,6 +56,24 @@ export const profileSlice = createSlice({
       state.loading = false;
     },
     getFollowerDidsFailure: (state, action: PayloadAction<{ error: any }>) => {
+      state.loading = false;
+      state.error = action.payload.error;
+    },
+    getFullProfile: (
+      state,
+      action: PayloadAction<{ did: string; userSession: ISessionItem }>
+    ) => {
+      state.loading = true;
+      state.error = null;
+    },
+    getFullProfileSuccess: (
+      state,
+      action: PayloadAction<{ did: string; profileDTO: ProfileDTO }>
+    ) => {
+      profileAdapter.upsertOne(state, action.payload);
+      state.loading = false;
+    },
+    getFullProfileFailure: (state, action: PayloadAction<{ error: any }>) => {
       state.loading = false;
       state.error = action.payload.error;
     }
