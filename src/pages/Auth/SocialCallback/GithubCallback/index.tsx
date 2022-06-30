@@ -110,27 +110,12 @@ const GithubCallback: React.FC<PageProps> = ({
 
             window.close();
           } else {
-            let prevUsers = await getUsersWithRegisteredGithub(github);
-            if (prevUsers.length > 0) {
-              history.push({
-                pathname: '/associated-profile',
-                state: {
-                  users: prevUsers,
-                  name: github,
-                  loginCred: {
-                    github: github
-                  },
-                  service: AccountType.Github
-                }
-              });
-            } else {
-              setCredentials({
-                name: github,
-                loginCred: {
-                  github: github
-                }
-              });
-            }
+            setCredentials({
+              name: github,
+              loginCred: {
+                github: github
+              }
+            });
           }
         }
       }

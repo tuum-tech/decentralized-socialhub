@@ -1,3 +1,4 @@
+import Moralis from 'moralis/types';
 import { AccountType } from 'src/services/user.service';
 
 export type LocationState = {
@@ -15,6 +16,7 @@ export type LocationState = {
     | AccountType.Github
     | AccountType.Discord
     | AccountType.Email;
+  userAttributes: Moralis.Attributes;
 };
 
 export type UserSessionProp = {

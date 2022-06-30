@@ -18,7 +18,6 @@ import { UserService } from 'src/services/user.service';
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 import useSession from 'src/hooks/useSession';
 
-import FieldDivider from '../components/FieldDivider';
 import style from './style.module.scss';
 import createLeftBg from 'src/assets/new/auth/create_left_bg.png';
 
@@ -26,7 +25,6 @@ import FooterLinks, {
   Footer
 } from 'src/components/layouts/OnBoardLayout/FooterLinks';
 
-import EmailUserCreate from './components/EmailUserCreate';
 import SocialLoginForm from './components/SocialLoginForm';
 
 const MobileContent = styled.div`
@@ -126,17 +124,6 @@ const CreateProfilePage: React.FC = () => {
           <Text16 style={{ marginBottom: '54px' }}>
             It's free and easy to get set up.
           </Text16>
-
-          <EmailUserCreate
-            onSuccess={(name: string, email: string) => {
-              history.push({
-                pathname: '/email-verification',
-                state: { name, email }
-              });
-            }}
-          />
-
-          <FieldDivider text="or connect with" />
 
           <SocialLoginForm />
 

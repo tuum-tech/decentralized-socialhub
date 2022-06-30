@@ -116,27 +116,12 @@ const DiscordCallback: React.FC<PageProps> = ({
 
             window.close();
           } else {
-            let prevUsers = await getUsersWithRegisteredDiscord(discord);
-            if (prevUsers.length > 0) {
-              history.push({
-                pathname: '/associated-profile',
-                state: {
-                  users: prevUsers,
-                  name: discord,
-                  loginCred: {
-                    discord: discord
-                  },
-                  service: AccountType.Discord
-                }
-              });
-            } else {
-              setCredentials({
-                name: discord,
-                loginCred: {
-                  discord: discord
-                }
-              });
-            }
+            setCredentials({
+              name: discord,
+              loginCred: {
+                discord: discord
+              }
+            });
           }
         }
       }

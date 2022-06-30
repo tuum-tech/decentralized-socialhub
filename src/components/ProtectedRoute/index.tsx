@@ -20,7 +20,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     '/unlock-user',
     '/generate-did',
     '/sign-in',
-    '/associated-profile',
     '/create-why',
     '/create-profile',
     '/verify/email',

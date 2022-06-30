@@ -5,6 +5,7 @@ import twitter from '../../assets/icon/twitter.png';
 import linkedin from '../../assets/icon/linkedin.png';
 import google from '../../assets/icon/google.png';
 import facebook from '../../assets/icon/facebook.png';
+import shield from '../../assets/icon/shield.png';
 
 interface Props {
   direction?: string;
@@ -39,15 +40,19 @@ const SocialBtn = styled.div`
   .facebook {
     width: 14px;
   }
+  .web3auth {
+    width: 14px;
+  }
 `;
 
-const SocialButton: React.FC<Props> = ({ type = 'linkedin', onClick }) => {
+const SocialButton: React.FC<Props> = ({ type = 'web3auth', onClick }) => {
   return (
     <SocialBtn onClick={onClick}>
       {type === 'linkedin' && <img src={linkedin} alt="linkedin" />}
       {type === 'twitter' && <img src={twitter} alt="twitter" />}
       {type === 'google' && <img src={google} alt="google" />}
       {type === 'facebook' && <img src={facebook} alt="facebook" />}
+      {type === 'web3auth' && <img src={shield} alt="web3auth" />}
     </SocialBtn>
   );
 };

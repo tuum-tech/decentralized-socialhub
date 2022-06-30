@@ -1,69 +1,153 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { IonCol, IonGrid, IonRow } from '@ionic/react';
 
-import { SocialButton } from 'src/elements/buttons';
-import TwitterApi from 'src/shared-base/api/twitter-api';
-import {
-  requestGoogleLogin,
-  requestLinkedinLogin,
-  requestFacebookLogin
-} from '../fetchapi';
+import { ThemeButton } from 'src/elements/buttons';
+import TextInput from 'src/elements/inputs/TextInput';
+import { Text16 } from 'src/elements/texts';
+
+import { useHistory } from 'react-router-dom';
 
 import style from '../style.module.scss';
+import Moralis from 'moralis';
+import { useMoralis } from 'react-moralis';
+import { AccountType } from 'src/services/user.service';
+
+const Container = styled(IonGrid)`
+  margin-left: -16px;
+  margin-right: -16px;
+  padding: 0;
+  display: block;
+`;
+
+const ErrorText = styled(Text16)`
+  text-align: center;
+  color: red;
+  margin-top: 8px;
+`;
+
+const DisplayText = styled(Text16)`
+  text-align: center;
+  color: green;
+  margin-top: 8px;
+`;
 
 interface Props {}
 
 const SocialLoginForm: React.FC<Props> = () => {
-  const sociallogin = async (socialType: string) => {
-    if (socialType === 'twitter') {
-      type MyType = { meta: string; data: { request_token: string } };
-      // gets the linkedin auth endpoint
-      const response = (await TwitterApi.GetRequestToken()) as MyType;
+  const [name, setName] = useState('');
+  const [error, setError] = useState('');
+  const [displayText, setDisplayText] = useState('');
+  const [loading, setLoading] = useState(false);
 
-      // redirects
-      window.location.replace(
-        `https://api.twitter.com/oauth/authorize?oauth_token=${response.data.request_token}`
-      );
+  const { authenticate, isAuthenticated, authError, user } = useMoralis();
+
+  const history = useHistory();
+
+  const handleWeb3AuthLogin = async () => {
+    if (!name) {
+      setError('You should fill out your name');
       return;
+    } else {
+      setError('');
     }
 
-    type MyType = { meta: string; data: string };
-    let url: MyType = {} as MyType;
+    setLoading(true);
+    setDisplayText('Authenticating');
 
-    if (socialType === 'google') {
-      // gets the linkedin auth endpoint
-      url = (await requestGoogleLogin()) as MyType;
-    } else if (socialType === 'facebook') {
-      // gets the linkedin auth endpoint
-      url = (await requestFacebookLogin()) as MyType;
-    } else if (socialType === 'linkedin') {
-      // gets the linkedin auth endpoint
-      url = (await requestLinkedinLogin()) as MyType;
+    if (!isAuthenticated) {
+      let authResponse = await authenticate({
+        provider: 'web3Auth',
+        clientId: process.env.REACT_APP_WEB3AUTH_CLIENTID,
+        loginMethodsOrder: [
+          'google',
+          'facebook',
+          'twitter',
+          'linkedin',
+          'github',
+          'reddit',
+          'discord',
+          'twitch',
+          'apple',
+          'line',
+          'kakao',
+          'weibo',
+          'wechat',
+          'email_passwordless'
+        ],
+        theme: 'light'
+      });
+      Moralis.User.become(authResponse?.attributes.sessionToken).then(
+        function(u) {
+          console.log('User is now logged in: ', u.attributes);
+          history.push({
+            pathname: '/generate-did',
+            state: {
+              name: name,
+              service: AccountType.DID,
+              loginCred: {},
+              userAttributes: u.attributes
+            }
+          });
+        },
+        function(error: any) {
+          console.log('User could not log in: ', error.toString());
+          setError(error.toString());
+          setLoading(false);
+        }
+      );
+    } else {
+      console.log('User is already logged in: ', user?.attributes);
+      if (user) {
+        history.push({
+          pathname: '/generate-did',
+          state: {
+            name: name,
+            service: AccountType.DID,
+            loginCred: {},
+            userAttributes: user.attributes
+          }
+        });
+      }
     }
-
-    if (url) {
-      window.location.href = url.data; // redirects
-    }
+    setLoading(false);
   };
 
   return (
-    <div className={style['social-btn-group']}>
-      <SocialButton
-        type="linkedin"
-        onClick={async () => await sociallogin('linkedin')}
-      />
-      <SocialButton
-        type="google"
-        onClick={async () => await sociallogin('google')}
-      />
-      <SocialButton
-        type="twitter"
-        onClick={async () => await sociallogin('twitter')}
-      />
-      <SocialButton
-        type="facebook"
-        onClick={async () => await sociallogin('facebook')}
-      />
-    </div>
+    <Container>
+      <IonRow class="ion-padding-horizontal">
+        <IonCol>
+          <TextInput
+            value={name}
+            label="Name"
+            onChange={n => setName(n)}
+            placeholder="Enter your Full name"
+            hasError={error !== '' && name === ''}
+          />
+        </IonCol>
+      </IonRow>
+
+      <IonRow class="ion-padding-horizontal">
+        <IonCol>
+          {error !== '' && <ErrorText>{error}</ErrorText>}
+          {displayText !== '' && <DisplayText>{displayText}</DisplayText>}
+        </IonCol>
+      </IonRow>
+
+      <IonRow class="ion-padding-horizontal">
+        <IonCol>
+          <ThemeButton
+            style={{
+              marginTop: '35px'
+            }}
+            text={loading ? 'Creating your profile now' : 'Create new Profile'}
+            onClick={async () => {
+              await handleWeb3AuthLogin();
+            }}
+          />
+        </IonCol>
+      </IonRow>
+    </Container>
   );
 };
 

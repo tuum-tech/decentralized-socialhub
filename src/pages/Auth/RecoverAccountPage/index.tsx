@@ -74,7 +74,7 @@ const RecoverAccountPage: React.FC<PageProps> = ({ eProps, ...props }) => {
   }, []);
 
   return (
-    <OnBoardLayout className={style['did-signin']}>
+    <OnBoardLayout>
       {loading && <LoadingIndicator loadingText="Signing Now..." />}
 
       {showHelp && <PassPhraseHelp close={() => setShowHelp(false)} />}
@@ -190,19 +190,25 @@ const RecoverAccountPage: React.FC<PageProps> = ({ eProps, ...props }) => {
                   const newSession = {
                     ...session,
                     onBoardingInfo: onBoardingInfo
-                  }
+                  };
                   eProps.setSession({ session: newSession });
                   history.push('/profile');
                 }
-
               } else {
-                if(didDocument.credentials && didDocument.credentials.size > 0) {
-                  let nameCredential = didDocument.getCredentials().find((c: any) => {
-                    return c.getId().getFragment() === 'name';
-                  });
+                if (
+                  didDocument.credentials &&
+                  didDocument.credentials.size > 0
+                ) {
+                  let nameCredential = didDocument
+                    .getCredentials()
+                    .find((c: any) => {
+                      return c.getId().getFragment() === 'name';
+                    });
                   let name = nameCredential!.getSubject().getProperty('name');
                   // let name = didDocument.getCredential(did)
-                  let userService = new UserService(await DidService.getInstance());
+                  let userService = new UserService(
+                    await DidService.getInstance()
+                  );
                   let sessionItem = await userService.CreateNewUser(
                     name,
                     AccountType.DID,

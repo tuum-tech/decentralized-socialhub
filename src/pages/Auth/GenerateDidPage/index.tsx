@@ -8,7 +8,6 @@ import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { AccountType } from 'src/services/user.service';
 import useSession from 'src/hooks/useSession';
 
-import { getUsersWithRegisteredEmail } from './fetchapi';
 import { DidService } from 'src/services/did.service.new';
 
 interface PageProps
@@ -21,30 +20,8 @@ const GenerateDidPage: React.FC<PageProps> = (props: PageProps) => {
   useEffect(() => {
     (async () => {
       if (props.location.state && props.location.state.service) {
-        const { service } = props.location.state;
-        if (
-          service !== AccountType.Email &&
-          service !== AccountType.DID &&
-          props.location.state.loginCred.email
-        ) {
-          const pUsers = await getUsersWithRegisteredEmail(
-            props.location.state.loginCred.email
-          );
-          if (pUsers.length > 0) {
-            history.push({
-              pathname: '/associated-profile',
-              state: {
-                users: pUsers,
-                name: props.location.state.name,
-                loginCred: props.location.state.loginCred,
-                service: props.location.state.service,
-                credential: props.location.state.credential
-              }
-            });
-          }
-        }
+        const { userAttributes } = props.location.state;
 
-        //
         const session = props.location.state;
         let userService = new UserService(await DidService.getInstance());
 
@@ -52,6 +29,8 @@ const GenerateDidPage: React.FC<PageProps> = (props: PageProps) => {
           session.did = '';
           session.service = AccountType.DID;
         }
+
+        console.log('Moralis User Attributes: ', session.userAttributes);
 
         let sessionItem = await userService.CreateNewUser(
           session.name,

@@ -124,29 +124,12 @@ const FacebookCallback: React.FC<PageProps> = ({
 
             window.close();
           } else {
-            let prevUsers = await getUsersWithRegisteredFacebook(
-              facebookId.name
-            );
-            if (prevUsers.length > 0) {
-              history.push({
-                pathname: '/associated-profile',
-                state: {
-                  users: prevUsers,
-                  name: facebookId.name,
-                  loginCred: {
-                    facebook: facebookId.name
-                  },
-                  service: AccountType.Facebook
-                }
-              });
-            } else {
-              setCredentials({
-                name: facebookId.name,
-                loginCred: {
-                  facebook: facebookId.name
-                }
-              });
-            }
+            setCredentials({
+              name: facebookId.name,
+              loginCred: {
+                facebook: facebookId.name
+              }
+            });
           }
         }
       }

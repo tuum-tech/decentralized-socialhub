@@ -128,27 +128,14 @@ const GoogleCallback: React.FC<PageProps> = ({
 
             window.close();
           } else {
-            let prevUsers = await getUsersWithRegisteredGoogle(googleId.email);
             const loginCred = {
               email: googleId.email,
               google: googleId.name
             };
-            if (prevUsers.length > 0) {
-              history.push({
-                pathname: '/associated-profile',
-                state: {
-                  users: prevUsers,
-                  name: googleId.name,
-                  service: AccountType.Google,
-                  loginCred
-                }
-              });
-            } else {
-              setCredentials({
-                name: googleId.name,
-                loginCred
-              });
-            }
+            setCredentials({
+              name: googleId.name,
+              loginCred
+            });
           }
         }
       }

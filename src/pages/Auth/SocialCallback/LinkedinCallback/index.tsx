@@ -135,29 +135,12 @@ const LinkedinCallback: React.FC<PageProps> = ({
 
             window.close();
           } else {
-            let prevUsers = await getUsersWithRegisteredLinkedin(
-              firstName + '' + lastName
-            );
-            if (prevUsers.length > 0) {
-              history.push({
-                pathname: '/associated-profile',
-                state: {
-                  users: prevUsers,
-                  name: firstName + ' ' + lastName,
-                  loginCred: {
-                    linkedin: firstName + '' + lastName
-                  },
-                  service: AccountType.Linkedin
-                }
-              });
-            } else {
-              setCredentials({
-                name: firstName + ' ' + lastName,
-                loginCred: {
-                  linkedin: firstName + '' + lastName
-                }
-              });
-            }
+            setCredentials({
+              name: firstName + ' ' + lastName,
+              loginCred: {
+                linkedin: firstName + '' + lastName
+              }
+            });
           }
         }
       }

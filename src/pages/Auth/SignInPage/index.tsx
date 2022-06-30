@@ -147,8 +147,10 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
             res,
             serviceEndpoint
           );
-          
-          if(!OnBoardingService.isOnBoardingCompleted(session.onBoardingInfo)){
+
+          if (
+            !OnBoardingService.isOnBoardingCompleted(session.onBoardingInfo)
+          ) {
             session.onBoardingInfo = {
               type: 2,
               step: 0
@@ -157,7 +159,7 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
           eProps.setSession({ session });
           history.push('/profile');
         } else {
-          if(didDocument.credentials && didDocument.credentials.size > 0) {
+          if (didDocument.credentials && didDocument.credentials.size > 0) {
             let userService = new UserService(await DidService.getInstance());
             let sessionItem = await userService.CreateNewUser(
               name,
@@ -192,7 +194,7 @@ const SignInPage: React.FC<PageProps> = ({ eProps, ...props }) => {
   };
 
   return (
-    <OnBoardLayout className={style['did-signin']}>
+    <OnBoardLayout>
       <NavContainer>
         <Navbar navItemClicked={(item: string) => {}} />
       </NavContainer>

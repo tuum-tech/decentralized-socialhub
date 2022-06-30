@@ -130,29 +130,12 @@ const TwitterCallback: React.FC<PageProps> = ({
 
             window.close();
           } else {
-            let prevUsers = await getUsersWithRegisteredTwitter(
-              items[1].toString()
-            );
-            if (prevUsers.length > 0) {
-              history.push({
-                pathname: '/associated-profile',
-                state: {
-                  users: prevUsers,
-                  name: items[0].toString(),
-                  service: AccountType.Twitter,
-                  loginCred: {
-                    twitter: items[1].toString()
-                  }
-                }
-              });
-            } else {
-              setCredentials({
-                name,
-                loginCred: {
-                  twitter: items[1].toString()
-                }
-              });
-            }
+            setCredentials({
+              name,
+              loginCred: {
+                twitter: items[1].toString()
+              }
+            });
           }
         }
       }
