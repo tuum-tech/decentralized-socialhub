@@ -16,7 +16,7 @@ import TextInput from 'src/elements/inputs/TextInput';
 import { Title40, Text12, Text18, Text16 } from 'src/elements/texts';
 import { ThemeButton } from 'src/elements/buttons';
 
-import { requestUpdateEmailOrPhone } from 'src/components/Auth/fetchapi';
+import { requestUpdateEmail } from 'src/components/Auth/fetchapi';
 import { AccountType } from 'src/services/user.service';
 import { requestVerifyCode } from 'src/components/Auth/fetchapi';
 
@@ -96,8 +96,7 @@ const EmailVerificationPage: React.FC<PageProps> = (props: PageProps) => {
     setBtnText('Verifing your code now.');
     let response = (await requestVerifyCode(
       code,
-      user.email,
-      ''
+      user.email
     )) as IVerifyCodeResponse;
 
     let status = response.data.return_code;
@@ -142,10 +141,9 @@ const EmailVerificationPage: React.FC<PageProps> = (props: PageProps) => {
   const resendVerificationCode = async () => {
     setBtnText('Resending verification code');
 
-    let response = (await requestUpdateEmailOrPhone(
+    let response = (await requestUpdateEmail(
       'temporary_' + user.name + user.email,
-      user.email,
-      ''
+      user.email
     )) as IUpdateEmailResponse;
 
     if (response && response.data && response.data.status === 'success') {

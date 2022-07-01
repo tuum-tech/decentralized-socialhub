@@ -103,12 +103,19 @@ const DashboardHome: React.FC<Props> = ({
           accomplishedList: [
             session.onBoardingCompleted ? 'Tutorial Completed' : '',
             session.loginCred &&
-            (session.loginCred.linkedin ||
-              session.loginCred.twitter ||
-              session.loginCred.google ||
+            (session.loginCred.google ||
               session.loginCred.facebook ||
+              session.loginCred.twitter ||
+              session.loginCred.linkedin ||
               session.loginCred.github ||
-              session.loginCred.discord)
+              session.loginCred.reddit ||
+              session.loginCred.discord ||
+              session.loginCred.twitch ||
+              session.loginCred.apple ||
+              session.loginCred.line ||
+              session.loginCred.kakao ||
+              session.loginCred.weibo ||
+              session.loginCred.wechat)
               ? 'Social Media Authenticated'
               : ''
           ].filter(a => a !== '')
@@ -141,12 +148,19 @@ const DashboardHome: React.FC<Props> = ({
               code: 'socialMediaAuthenticated',
               value:
                 session.loginCred &&
-                (session.loginCred.linkedin ||
-                  session.loginCred.twitter ||
-                  session.loginCred.google ||
+                (session.loginCred.google ||
                   session.loginCred.facebook ||
+                  session.loginCred.twitter ||
+                  session.loginCred.linkedin ||
                   session.loginCred.github ||
-                  session.loginCred.discord)
+                  session.loginCred.reddit ||
+                  session.loginCred.discord ||
+                  session.loginCred.twitch ||
+                  session.loginCred.apple ||
+                  session.loginCred.line ||
+                  session.loginCred.kakao ||
+                  session.loginCred.weibo ||
+                  session.loginCred.wechat)
                   ? true
                   : false
             }
@@ -233,16 +247,20 @@ const DashboardHome: React.FC<Props> = ({
   const hasSocialProfiles = hasCredentials(didDocument as DIDDocument);
 
   /* Verification starts */
-  const isCredVerified = async (key: string, profileValue: string) => {
-    let {
-      isVerified,
-      isValid
-    }: VCType = await containingVerifiableCredentialDetails(
-      key,
-      didDocument as DIDDocument
-    );
+  const isCredVerified = async (loginType: string, loginValue: string = '') => {
+    let result = false;
+    if (loginValue) {
+      let {
+        isVerified,
+        isValid
+      }: VCType = await containingVerifiableCredentialDetails(
+        loginType,
+        didDocument as DIDDocument
+      );
 
-    return isVerified && isValid;
+      result = isVerified && isValid;
+    }
+    return result;
   };
 
   useEffect(() => {
@@ -258,59 +276,55 @@ const DashboardHome: React.FC<Props> = ({
         verified['email'] = false;
       }
 
-      if (session.loginCred?.twitter) {
-        verified['twitter'] = await isCredVerified(
-          'twitter',
-          session.loginCred.twitter
-        );
-      } else {
-        verified['twitter'] = false;
-      }
-
-      if (session.loginCred?.google) {
-        verified['google'] = await isCredVerified(
-          'google',
-          session.loginCred.google
-        );
-      } else {
-        verified['google'] = false;
-      }
-
-      if (session.loginCred?.facebook) {
-        verified['facebook'] = await isCredVerified(
-          'facebook',
-          session.loginCred.facebook
-        );
-      } else {
-        verified['facebook'] = false;
-      }
-
-      if (session.loginCred?.linkedin) {
-        verified['linkedin'] = await isCredVerified(
-          'linkedin',
-          session.loginCred.linkedin
-        );
-      } else {
-        verified['linkedin'] = false;
-      }
-
-      if (session.loginCred?.github) {
-        verified['github'] = await isCredVerified(
-          'github',
-          session.loginCred.github
-        );
-      } else {
-        verified['github'] = false;
-      }
-
-      if (session.loginCred?.discord) {
-        verified['discord'] = await isCredVerified(
-          'discord',
-          session.loginCred.discord
-        );
-      } else {
-        verified['discord'] = false;
-      }
+      verified['google'] = await isCredVerified(
+        'google',
+        session.loginCred?.google
+      );
+      verified['facebook'] = await isCredVerified(
+        'facebook',
+        session.loginCred?.facebook
+      );
+      verified['twitter'] = await isCredVerified(
+        'twitter',
+        session.loginCred?.twitter
+      );
+      verified['linkedin'] = await isCredVerified(
+        'linkedin',
+        session.loginCred?.linkedin
+      );
+      verified['github'] = await isCredVerified(
+        'github',
+        session.loginCred?.github
+      );
+      verified['reddit'] = await isCredVerified(
+        'reddit',
+        session.loginCred?.reddit
+      );
+      verified['discord'] = await isCredVerified(
+        'discord',
+        session.loginCred?.discord
+      );
+      verified['twitch'] = await isCredVerified(
+        'twitch',
+        session.loginCred?.twitch
+      );
+      verified['apple'] = await isCredVerified(
+        'apple',
+        session.loginCred?.apple
+      );
+      verified['line'] = await isCredVerified('line', session.loginCred?.line);
+      verified['kakao'] = await isCredVerified(
+        'kakao',
+        session.loginCred?.kakao
+      );
+      verified['weibo'] = await isCredVerified(
+        'weibo',
+        session.loginCred?.weibo
+      );
+      verified['wechat'] = await isCredVerified(
+        'wechat',
+        session.loginCred?.wechat
+      );
 
       /* Calculate verified education credentials starts */
       profile.educationDTO.items.map(async (x, i) => {
@@ -468,7 +482,7 @@ const DashboardHome: React.FC<Props> = ({
                 activeTab('badges');
               }}
             />
-            { session.onBoardingCompleted && (
+            {session.onBoardingCompleted && (
               <ProfileBriefCard
                 category={'request'}
                 title={'Request Verification'}

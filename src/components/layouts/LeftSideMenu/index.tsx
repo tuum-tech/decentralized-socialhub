@@ -19,6 +19,8 @@ import MenuItem from './components/MenuItem';
 import Badge from 'src/elements-v2/Badge';
 import useSession from 'src/hooks/useSession';
 
+import { useMoralis } from 'react-moralis';
+
 const Container = styled.div`
   ${down('sm')} {
     display: none;
@@ -26,6 +28,7 @@ const Container = styled.div`
 `;
 
 const LeftSideMenu: React.FC = () => {
+  const { logout } = useMoralis();
   const history = useHistory();
   const { session } = useSession();
   const [showSupportModal, setShowSupportModal] = useState(false);
@@ -168,7 +171,8 @@ const LeftSideMenu: React.FC = () => {
           title="Sign Out"
           active={false}
           handleClick={() => {
-            UserService.logout();
+            UserService.logoutUser();
+            logout();
           }}
         />
       </IonList>

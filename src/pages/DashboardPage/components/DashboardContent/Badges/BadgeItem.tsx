@@ -22,14 +22,20 @@ const titles = {
   'Add Basic Profile': 'Add About me',
   'Add Education Profile': 'Add Education',
   'Add Experience Profile': 'Add Experience',
-  'Linkedin Verification': 'Add Linkedin',
+  'Google Verification': 'Add Google',
   'Facebook Verification': 'Add Facebook',
   'Twitter Verification': 'Add Twitter',
-  'Google Verification': 'Add Google',
+  'Linkedin Verification': 'Add Linkedin',
   'Github Verification': 'Add Github',
+  'Reddit Verification': 'Add Reddit',
   'Discord Verification': 'Add Discord',
-  'Email Verification': 'Add Email',
-  'Phone Verification': 'Add Phone'
+  'Twitch Verification': 'Add Twitch',
+  'Apple Verification': 'Add Apple',
+  'Line Verification': 'Add Line',
+  'Kakao Verification': 'Add Kakao',
+  'Weibo Verification': 'Add Weibo',
+  'Wechat Verification': 'Add Wechat',
+  'Email Verification': 'Add Email'
 };
 
 const BadgeItem: React.FC<Props> = ({

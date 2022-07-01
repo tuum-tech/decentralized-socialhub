@@ -6,6 +6,8 @@ import DashboardHeader from 'src/pages/DashboardPage/components/DashboardHeader'
 import { UserService } from 'src/services/user.service';
 import MenuItem from '../LeftSideMenu/components/MenuItem';
 
+import { useMoralis } from 'react-moralis';
+
 interface IProps {
   onHide: () => void;
   sessionItem: ISessionItem;
@@ -19,6 +21,8 @@ const PopoverMenu: React.FC<IProps> = ({
   publishStatus,
   history
 }: IProps) => {
+  const { logout } = useMoralis();
+
   const changeRoute = (route: string): void => {
     history.push(route);
     onHide();
@@ -57,7 +61,8 @@ const PopoverMenu: React.FC<IProps> = ({
           title="Sign Out"
           active={false}
           handleClick={() => {
-            UserService.logout();
+            UserService.logoutUser();
+            logout();
           }}
         />
       </IonList>

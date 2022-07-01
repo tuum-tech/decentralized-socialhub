@@ -7,19 +7,26 @@ import request, { BaseplateResp } from 'src/baseplate/request';
 import { HiveService } from './hive.service';
 
 export enum CredentialType {
-  Linkedin = 'Linkedin',
-  Facebook = 'Facebook',
   Google = 'Google',
+  Facebook = 'Facebook',
   Twitter = 'Twitter',
+  Linkedin = 'Linkedin',
   Github = 'Github',
+  Reddit = 'Reddit',
   Discord = 'Discord',
+  Twitch = 'Twitch',
+  Apple = 'Apple',
+  Line = 'Line',
+  Kakao = 'Kakao',
+  Weibo = 'Weibo',
+  Wechat = 'Wechat',
   Email = 'Email',
-  DID = 'Did',
+
   Education = 'Education',
   Experience = 'Experience',
   PersonalInfo = 'PersonalInfo',
+
   ETHAddress = 'ETHAddress',
-  // EIDAddress = 'EIDAddress',
   ESCAddress = 'ESCAddress'
 }
 
@@ -57,61 +64,9 @@ export class DidcredsService {
     return await VerifiableCredential.parse(json.data.verifiable_credential);
   }
 
-  static async requestLinkedinLogin(): Promise<BaseplateResp> {
-    return request(
-      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/linkedin_request`,
-      {
-        headers: {
-          'content-type': 'text/plain',
-          Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
-          Accept: 'application/json'
-        }
-      }
-    );
-  }
-
   static async requestGoogleLogin(): Promise<BaseplateResp> {
     return request(
       `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/google_request`,
-      {
-        headers: {
-          'content-type': 'text/plain',
-          Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
-          Accept: 'application/json'
-        }
-      }
-    );
-  }
-
-  static async requestFacebookLogin(): Promise<BaseplateResp> {
-    return request(
-      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/facebook_request`,
-      {
-        headers: {
-          'content-type': 'text/plain',
-          Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
-          Accept: 'application/json'
-        }
-      }
-    );
-  }
-
-  static async requestGithubLogin(): Promise<BaseplateResp> {
-    return request(
-      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/github_request`,
-      {
-        headers: {
-          'content-type': 'text/plain',
-          Authorization: `${process.env.REACT_APP_PROFILE_API_SERVICE_KEY}`,
-          Accept: 'application/json'
-        }
-      }
-    );
-  }
-
-  static async requestDiscordLogin(): Promise<BaseplateResp> {
-    return request(
-      `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/auth/discord_request`,
       {
         headers: {
           'content-type': 'text/plain',

@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { IonContent, IonIcon, IonItem, IonLabel, IonList } from '@ionic/react';
 import { UserService } from 'src/services/user.service';
 
+import { useMoralis } from 'react-moralis';
+
 import style from './style.module.scss';
 
 interface Props {
@@ -10,6 +12,7 @@ interface Props {
 }
 
 const SettingsNavbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
+  const { logout } = useMoralis();
   const [active, setActive] = useState(tab);
   const history = useHistory();
 
@@ -123,7 +126,8 @@ const SettingsNavbar: React.FC<Props> = ({ tab = 'dashboard' }) => {
           <IonItem
             className={style['item-link']}
             onClick={() => {
-              UserService.logout();
+              UserService.logoutUser();
+              logout();
             }}
           >
             <IonIcon

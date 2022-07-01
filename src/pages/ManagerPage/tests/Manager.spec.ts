@@ -8,9 +8,6 @@ describe('Manager Page Functionalities', () => {
   it('Email compare and update works', () => {
     assertManager.equal(true, true);
   });
-  it('Phone update and compare works', () => {
-    assertManager.equal(true, true);
-  });
 
   it('Profile editing works', () => {
     assertManager.equal(true, true);

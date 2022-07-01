@@ -26,11 +26,11 @@
     }
   },
   "socialVerify": {
-    "linkedin": {
-      "title": "Linkedin Verification",
-      "description": "Authenticate and link your Linkedin account",
-      "enbl_icon": "assets/badges/enbl_linkedin_verify.svg",
-      "dsabl_icon": "assets/badges/dsabl_linkedin_verify.svg"
+    "google": {
+      "title": "Google Verification",
+      "description": "Authenticate and link your Google account",
+      "enbl_icon": "assets/badges/enbl_google_verify.svg",
+      "dsabl_icon": "assets/badges/dsabl_google_verify.svg"
     },
     "facebook": {
       "title": "Facebook Verification",
@@ -44,15 +44,21 @@
       "enbl_icon": "assets/badges/enbl_twitter_verify.svg",
       "dsabl_icon": "assets/badges/dsabl_twitter_verify.svg"
     },
-    "google": {
-      "title": "Google Verification",
-      "description": "Authenticate and link your Google account",
-      "enbl_icon": "assets/badges/enbl_google_verify.svg",
-      "dsabl_icon": "assets/badges/dsabl_google_verify.svg"
+    "linkedin": {
+      "title": "Linkedin Verification",
+      "description": "Authenticate and link your Linkedin account",
+      "enbl_icon": "assets/badges/enbl_linkedin_verify.svg",
+      "dsabl_icon": "assets/badges/dsabl_linkedin_verify.svg"
     },
     "github": {
       "title": "Github Verification",
       "description": "Authenticate and link your Github account",
+      "enbl_icon": "assets/badges/enbl_google_verify.svg",
+      "dsabl_icon": "assets/badges/dsabl_google_verify.svg"
+    },
+    "reddit": {
+      "title": "Reddit Verification",
+      "description": "Authenticate and link your Reddit account",
       "enbl_icon": "assets/badges/enbl_google_verify.svg",
       "dsabl_icon": "assets/badges/dsabl_google_verify.svg"
     },
@@ -62,17 +68,47 @@
       "enbl_icon": "assets/badges/enbl_google_verify.svg",
       "dsabl_icon": "assets/badges/dsabl_google_verify.svg"
     },
+    "twitch": {
+      "title": "Twitch Verification",
+      "description": "Authenticate and link your Twitch account",
+      "enbl_icon": "assets/badges/enbl_google_verify.svg",
+      "dsabl_icon": "assets/badges/dsabl_google_verify.svg"
+    },
+    "apple": {
+      "title": "Apple Verification",
+      "description": "Authenticate and link your Apple account",
+      "enbl_icon": "assets/badges/enbl_google_verify.svg",
+      "dsabl_icon": "assets/badges/dsabl_google_verify.svg"
+    },
+    "line": {
+      "title": "Line Verification",
+      "description": "Authenticate and link your Line account",
+      "enbl_icon": "assets/badges/enbl_google_verify.svg",
+      "dsabl_icon": "assets/badges/dsabl_google_verify.svg"
+    },
+    "kakao": {
+      "title": "Kakao Verification",
+      "description": "Authenticate and link your Kakao account",
+      "enbl_icon": "assets/badges/enbl_google_verify.svg",
+      "dsabl_icon": "assets/badges/dsabl_google_verify.svg"
+    },
+    "weibo": {
+      "title": "Weibo Verification",
+      "description": "Authenticate and link your Weibo account",
+      "enbl_icon": "assets/badges/enbl_google_verify.svg",
+      "dsabl_icon": "assets/badges/dsabl_google_verify.svg"
+    },
+    "wechat": {
+      "title": "Wechat Verification",
+      "description": "Authenticate and link your Wechat account",
+      "enbl_icon": "assets/badges/enbl_google_verify.svg",
+      "dsabl_icon": "assets/badges/dsabl_google_verify.svg"
+    },
     "email": {
       "title": "Email Verification",
       "description": "Authenticate and link your Email account",
       "enbl_icon": "assets/badges/enbl_email_verify.svg",
       "dsabl_icon": "assets/badges/dsabl_email_verify.svg"
-    },
-    "phone": {
-      "title": "Phone Verification",
-      "description": "Authenticate and link your Phone no",
-      "enbl_icon": "assets/badges/enbl_phone_verify.svg",
-      "dsabl_icon": "assets/badges/dsabl_phone_verify.svg"
     }
   },
   "didPublishTimes": {

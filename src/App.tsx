@@ -38,16 +38,10 @@ import TermsPage from './pages/TermsPage';
 import SupportForum from './pages/SupportForum';
 import {
   GoogleCallback,
-  TwitterCallback,
-  LinkedinCallback,
-  FacebookCallback,
-  GithubCallback,
-  DiscordCallback,
   CreateProfilePage,
   GenerateDidPage,
   SignInPage,
-  RecoverAccountPage,
-  EmailVerificationPage
+  RecoverAccountPage
 } from './pages/Auth';
 
 import HomePage from './pages/HomePage';
@@ -177,31 +171,7 @@ const App: React.FC = () => {
                   /> */}
 
                     {/* // login workflow */}
-                    <Route
-                      path="/twitter_callback"
-                      component={TwitterCallback}
-                    />
-                    <Route
-                      path="/linkedin_callback"
-                      component={LinkedinCallback}
-                    />
                     <Route path="/google_callback" component={GoogleCallback} />
-                    <Route
-                      path="/facebook_callback"
-                      component={FacebookCallback}
-                    />
-                    <Route path="/github_callback" component={GithubCallback} />
-                    <Route
-                      path="/discord_callback"
-                      component={DiscordCallback}
-                    />
-
-                    {/* ok */}
-                    <ProtectedRoute
-                      path="/email-verification"
-                      component={EmailVerificationPage}
-                      exact={true}
-                    />
 
                     {/* to test */}
                     <ProtectedRoute

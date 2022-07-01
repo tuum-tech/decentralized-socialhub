@@ -12,17 +12,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   ...routeProps
 }) => {
   const authRoutes = [
-    '/twitter_callback',
-    '/linkedin_callback',
-    '/google_callback',
-    '/facebook_callback',
-    '/email-verification',
     '/unlock-user',
     '/generate-did',
     '/sign-in',
     '/create-why',
     '/create-profile',
-    '/verify/email',
     'recover-account'
   ];
 

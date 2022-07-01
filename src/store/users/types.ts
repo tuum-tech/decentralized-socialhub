@@ -11,7 +11,6 @@ export const defaultUserInfo: ISessionItem = {
   userToken: '',
   accountType: 'DID',
   did: '',
-  // email: '',
   name: '',
   isDIDPublished: false,
   didPublishTime: 0,
@@ -32,14 +31,20 @@ export const defaultBadges: IBadges = {
     experienceProfile: { archived: false }
   },
   socialVerify: {
-    linkedin: { archived: false },
+    google: { archived: false },
     facebook: { archived: false },
     twitter: { archived: false },
-    google: { archived: false },
+    linkedin: { archived: false },
     github: { archived: false },
+    reddit: { archived: false },
     discord: { archived: false },
-    email: { archived: false },
-    phone: { archived: false }
+    twitch: { archived: false },
+    apple: { archived: false },
+    line: { archived: false },
+    kakao: { archived: false },
+    weibo: { archived: false },
+    wechat: { archived: false },
+    email: { archived: false }
   },
   didPublishTimes: {
     _1times: { archived: false },

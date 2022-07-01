@@ -69,14 +69,20 @@ const ProfileEditor: React.FC<Props> = ({
   const {
     account: { basicProfile, educationProfile, experienceProfile },
     socialVerify: {
-      linkedin,
+      google,
       facebook,
       twitter,
-      google,
+      linkedin,
       github,
+      reddit,
       discord,
-      email,
-      phone
+      twitch,
+      apple,
+      line,
+      kakao,
+      weibo,
+      wechat,
+      email
     }
   } = badgeDetails;
 
@@ -101,14 +107,20 @@ const ProfileEditor: React.FC<Props> = ({
   const handleSocialRouteParam = () =>
     badgeUrl?.badge &&
     [
-      linkedin.title,
+      google.title,
       facebook.title,
       twitter.title,
-      google.title,
+      linkedin.title,
       github.title,
+      reddit.title,
       discord.title,
-      email.title,
-      phone.title
+      twitch.title,
+      apple.title,
+      line.title,
+      kakao.title,
+      weibo.title,
+      wechat.title,
+      email.title
     ].includes(badgeUrl.badge);
 
   const retriveProfile = async () => {
@@ -288,9 +300,6 @@ const ProfileEditor: React.FC<Props> = ({
               const newName = newUserInfo.name!;
               const oldName = userInfo.name!;
 
-              const newPhone = newUserInfo.loginCred?.phone;
-              const oldPhone = userInfo.loginCred?.phone;
-
               let didService = await DidService.getInstance();
               let doc = await didService.getStoredDocument(
                 new DID(session.did)
@@ -318,30 +327,6 @@ const ProfileEditor: React.FC<Props> = ({
                 await DidcredsService.addOrUpdateCredentialToVault(
                   session,
                   vcName
-                );
-              }
-
-              if (newPhone !== oldPhone) {
-                let vcPhone: VerifiableCredential;
-                if (userInfo.isEssentialUser) {
-                  setShowRequestEssentials(true);
-                  vcPhone = await didService.newSelfVerifiableCredentialFromEssentials(
-                    userInfo.did,
-                    'phone',
-                    newPhone
-                  );
-                  setShowRequestEssentials(false);
-                } else {
-                  vcPhone = await didService.newSelfVerifiableCredential(
-                    doc,
-                    'phone',
-                    newPhone
-                  );
-                }
-
-                await DidcredsService.addOrUpdateCredentialToVault(
-                  session,
-                  vcPhone
                 );
               }
 

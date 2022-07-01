@@ -33,22 +33,45 @@ interface Props {
 }
 
 const getIcon = (type: string) => {
-  if (type === 'linkedin') {
-    return linkedinIcon;
+  if (type === 'google') {
+    return googleIcon;
   }
+
   if (type === 'facebook') {
     return facebookIcon;
   }
   if (type === 'twitter') {
     return twitterIcon;
   }
-  if (type === 'google') {
-    return googleIcon;
+  if (type === 'linkedin') {
+    return linkedinIcon;
   }
+
   if (type === 'github') {
     return githubIcon;
   }
+  if (type === 'reddit') {
+    return discordIcon;
+  }
   if (type === 'discord') {
+    return discordIcon;
+  }
+  if (type === 'twitch') {
+    return discordIcon;
+  }
+  if (type === 'apple') {
+    return discordIcon;
+  }
+  if (type === 'line') {
+    return discordIcon;
+  }
+  if (type === 'kakao') {
+    return discordIcon;
+  }
+  if (type === 'weibo') {
+    return discordIcon;
+  }
+  if (type === 'wechat') {
     return discordIcon;
   }
 };
@@ -62,12 +85,19 @@ const Socials: React.FC<Props> = ({ cb }) => {
   useEffect(() => {
     (async () => {
       let _socials = [
-        'linkedin',
+        'google',
         'facebook',
         'twitter',
-        'google',
+        'linkedin',
         'github',
-        'discord'
+        'reddit',
+        'discord',
+        'twitch',
+        'apple',
+        'line',
+        'kakao',
+        'weibo',
+        'wechat'
       ];
 
       let socialDetails = [];

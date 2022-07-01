@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import SmallTextInput from 'src/elements/inputs/SmallTextInput';
 import EmailComp from './EmailComp';
-import PhoneComp from './PhoneComp';
 import VerificationRequestDecorator from 'src/pages/ActivityPage/components/VerificationRequests/VerificationRequestDecorator';
 import { DefaultButton } from 'src/elements-v2/buttons';
 
@@ -123,16 +122,6 @@ const BasicCardConent = ({
           isEdit={isEdit}
         />
       </VerificationRequestDecorator>
-      <PhoneComp
-        sessionItem={sessionItem}
-        phoneUpdated={(newPhon: string) => {
-          setCurrentBasicDTO({
-            ...currentBasicDTO,
-            loginCred: { ...currentBasicDTO.loginCred, phone: newPhon }
-          });
-        }}
-        isEdit={isEdit}
-      />
 
       {isEdit && (
         <IonRow className="ion-justify-content-start pt-5">

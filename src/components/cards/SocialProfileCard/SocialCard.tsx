@@ -52,6 +52,18 @@ const SocialProfilesCard: React.FC<Props> = ({
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
   const socialCredentials = [
     {
+      name: 'google',
+      display: 'Google',
+      credential: undefined,
+      icon: googleIcon
+    },
+    {
+      name: 'facebook',
+      display: 'Facebook',
+      credential: undefined,
+      icon: facebookIcon
+    },
+    {
       name: 'twitter',
       display: 'Twitter',
       credential: undefined,
@@ -63,18 +75,7 @@ const SocialProfilesCard: React.FC<Props> = ({
       credential: undefined,
       icon: linkedinIcon
     },
-    {
-      name: 'facebook',
-      display: 'Facebook',
-      credential: undefined,
-      icon: facebookIcon
-    },
-    {
-      name: 'google',
-      display: 'Google',
-      credential: undefined,
-      icon: googleIcon
-    },
+
     {
       name: 'github',
       display: 'Github',
@@ -82,8 +83,50 @@ const SocialProfilesCard: React.FC<Props> = ({
       icon: githubIcon
     },
     {
+      name: 'reddit',
+      display: 'Reddit',
+      credential: undefined,
+      icon: discordIcon
+    },
+    {
       name: 'discord',
       display: 'Discord',
+      credential: undefined,
+      icon: discordIcon
+    },
+    {
+      name: 'twitch',
+      display: 'Twitch',
+      credential: undefined,
+      icon: discordIcon
+    },
+    {
+      name: 'apple',
+      display: 'Apple',
+      credential: undefined,
+      icon: discordIcon
+    },
+    {
+      name: 'line',
+      display: 'Line',
+      credential: undefined,
+      icon: discordIcon
+    },
+    {
+      name: 'kakao',
+      display: 'Kakao',
+      credential: undefined,
+      icon: discordIcon
+    },
+    {
+      name: 'weibo',
+      display: 'Weibo',
+      credential: undefined,
+      icon: discordIcon
+    },
+    {
+      name: 'wechat',
+      display: 'Wechat',
       credential: undefined,
       icon: discordIcon
     }
@@ -213,22 +256,7 @@ const SocialProfilesCard: React.FC<Props> = ({
     type MyType = { meta: string; data: string };
     let url: MyType = {} as MyType;
 
-    if (socialType === 'google') {
-      // gets the google auth endpoint
-      url = (await DidcredsService.requestGoogleLogin()) as MyType;
-    } else if (socialType === 'facebook') {
-      // gets the facebook auth endpoint
-      url = (await DidcredsService.requestFacebookLogin()) as MyType;
-    } else if (socialType === 'linkedin') {
-      // gets the linkedin auth endpoint
-      url = (await DidcredsService.requestLinkedinLogin()) as MyType;
-    } else if (socialType === 'github') {
-      // gets the github auth endpoint
-      url = (await DidcredsService.requestGithubLogin()) as MyType;
-    } else if (socialType === 'discord') {
-      // gets the discord auth endpoint
-      url = (await DidcredsService.requestDiscordLogin()) as MyType;
-    }
+    url = (await DidcredsService.requestGoogleLogin()) as MyType;
 
     if (url) {
       popupCenter(url.data, 'Login', 548, 725);
@@ -240,12 +268,19 @@ const SocialProfilesCard: React.FC<Props> = ({
     credential: VerifiableCredential
   ): string => {
     let value = credential.getSubject().getProperty(service) as string;
+    if (service === 'google') return `mailto://${value}`;
+    if (service === 'facebook') return `https://facebook.com/${value}`;
     if (service === 'twitter') return `https://twitter.com/${value}`;
     if (service === 'linkedin') return `https://linkedin.com/in/${value}`;
-    if (service === 'facebook') return `https://facebook.com/${value}`;
-    if (service === 'google') return `mailto://${value}`;
     if (service === 'github') return `https://github.com/${value}`;
+    if (service === 'reddit') return `https://github.com/${value}`;
     if (service === 'discord') return `https://discordapp.com/users/${value}`;
+    if (service === 'twitch') return `https://github.com/${value}`;
+    if (service === 'apple') return `https://github.com/${value}`;
+    if (service === 'line') return `https://github.com/${value}`;
+    if (service === 'kakao') return `https://github.com/${value}`;
+    if (service === 'weibo') return `https://github.com/${value}`;
+    if (service === 'wechat') return `https://github.com/${value}`;
     return '';
   };
 
@@ -254,13 +289,19 @@ const SocialProfilesCard: React.FC<Props> = ({
     credential: VerifiableCredential
   ): string => {
     let value = credential.subject.getProperty(service);
-
-    if (service === 'twitter') return value;
-    if (service === 'linkedin') return `linkedin.com/in/${value}`;
-    if (service === 'facebook') return `facebook.com/${value}`;
     if (service === 'google') return `${value}`;
+    if (service === 'facebook') return `${value}`;
+    if (service === 'twitter') return `${value}`;
+    if (service === 'linkedin') return `${value}`;
     if (service === 'github') return `${value}`;
+    if (service === 'reddit') return `${value}`;
     if (service === 'discord') return `${value}`;
+    if (service === 'twitch') return `${value}`;
+    if (service === 'apple') return `${value}`;
+    if (service === 'line') return `${value}`;
+    if (service === 'kakao') return `${value}`;
+    if (service === 'weibo') return `${value}`;
+    if (service === 'wechat') return `${value}`;
     return '';
   };
 
@@ -305,9 +346,30 @@ const SocialProfilesCard: React.FC<Props> = ({
     } else if (key === 'github' && newLoginCred.github) {
       delete newLoginCred.github;
       newLoginBadges.socialVerify.github.archived = false;
+    } else if (key === 'reddit' && newLoginCred.reddit) {
+      newLoginBadges.socialVerify.reddit.archived = false;
+      delete newLoginCred.reddit;
     } else if (key === 'discord' && newLoginCred.discord) {
       newLoginBadges.socialVerify.discord.archived = false;
       delete newLoginCred.discord;
+    } else if (key === 'twitch' && newLoginCred.twitch) {
+      newLoginBadges.socialVerify.twitch.archived = false;
+      delete newLoginCred.twitch;
+    } else if (key === 'apple' && newLoginCred.apple) {
+      newLoginBadges.socialVerify.apple.archived = false;
+      delete newLoginCred.apple;
+    } else if (key === 'line' && newLoginCred.line) {
+      newLoginBadges.socialVerify.line.archived = false;
+      delete newLoginCred.line;
+    } else if (key === 'kakao' && newLoginCred.kakao) {
+      newLoginBadges.socialVerify.kakao.archived = false;
+      delete newLoginCred.kakao;
+    } else if (key === 'weibo' && newLoginCred.weibo) {
+      newLoginBadges.socialVerify.weibo.archived = false;
+      delete newLoginCred.weibo;
+    } else if (key === 'wechat' && newLoginCred.wechat) {
+      newLoginBadges.socialVerify.wechat.archived = false;
+      delete newLoginCred.wechat;
     }
     const newUserSession = {
       ...sessionItem,
@@ -369,34 +431,20 @@ const SocialProfilesCard: React.FC<Props> = ({
                             credentialItem.name[0].toUpperCase()
                           )}
                         </p>
-                        {(credentialItem.name === 'facebook' ||
-                          credentialItem.name === 'linkedin') && (
-                          <span className="social-profile-id">
-                            {parseValueFromService(
-                              credentialItem.name,
-                              credentialItem.credential
-                            )}
-                          </span>
-                        )}
-                        {(credentialItem.name === 'google' ||
-                          credentialItem.name === 'twitter' ||
-                          credentialItem.name === 'github' ||
-                          credentialItem.name === 'discord') && (
-                          <a
-                            href={getUrlFromService(
-                              credentialItem.name,
-                              credentialItem.credential
-                            )}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="social-profile-id"
-                          >
-                            {parseValueFromService(
-                              credentialItem.name,
-                              credentialItem.credential
-                            )}
-                          </a>
-                        )}
+                        <a
+                          href={getUrlFromService(
+                            credentialItem.name,
+                            credentialItem.credential
+                          )}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="social-profile-id"
+                        >
+                          {parseValueFromService(
+                            credentialItem.name,
+                            credentialItem.credential
+                          )}
+                        </a>
                       </div>
                     </ProfileItem>
                   </IonCol>

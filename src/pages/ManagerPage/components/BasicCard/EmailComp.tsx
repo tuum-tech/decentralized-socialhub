@@ -9,7 +9,7 @@ import SmallTextInput from 'src/elements/inputs/SmallTextInput';
 import EmailVerificationDetailContent, {
   EmailVerificationDetailModal
 } from 'src/components/Auth/Email';
-import { requestUpdateEmailOrPhone } from 'src/components/Auth/fetchapi';
+import { requestUpdateEmail } from 'src/components/Auth/fetchapi';
 
 import { validateEmail } from 'src/utils/validation';
 import { DefaultButton } from 'src/elements-v2/buttons';
@@ -72,10 +72,9 @@ const EmailComp: React.FC<Props> = ({
   const sendVerification = async () => {
     setLoading(true);
 
-    let response = (await requestUpdateEmailOrPhone(
+    let response = (await requestUpdateEmail(
       sessionItem.did,
-      email,
-      sessionItem.loginCred?.phone || ''
+      email
     )) as IUpdateEmailResponse;
 
     if (response && response.data && response.data.status === 'success') {

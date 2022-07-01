@@ -37,9 +37,8 @@ export class SyncService {
     'Linkedin',
     'Discord',
     'Github',
-    'Phone',
     'ETHAddress',
-    'ESCAddress',
+    'ESCAddress'
     // 'EIDAddress'
   ];
 
@@ -84,11 +83,7 @@ export class SyncService {
   }
 
   static async TempInitializeSignedUsers(sessionItem: ISessionItem) {
-    if (
-      !sessionItem ||
-      !sessionItem.onBoardingCompleted
-    )
-      return;
+    if (!sessionItem || !sessionItem.onBoardingCompleted) return;
 
     let vaultVcs = await this.GetVerifiableCredentialsFromVault(sessionItem);
 
@@ -131,11 +126,11 @@ export class SyncService {
         (syncItem.BlockchainCredential !== undefined &&
           syncItem.VaultCredential !== undefined &&
           syncItem.BlockchainCredential.getSubject().getProperties()[
-          field.toLowerCase()
+            field.toLowerCase()
           ] ===
-          syncItem.VaultCredential.getSubject().getProperties()[
-          field.toLowerCase()
-          ])
+            syncItem.VaultCredential.getSubject().getProperties()[
+              field.toLowerCase()
+            ])
       )
         return;
 
@@ -370,10 +365,6 @@ export class SyncService {
             newSessionItem.loginCred!.discord = '';
             break;
 
-          case 'phone':
-            newSessionItem.loginCred!.phone = '';
-            break;
-
           case 'education':
             let subjectEducationExc = item.VaultCredential?.getSubject().getProperty(
               item.VaultCredential.getId()
@@ -485,10 +476,6 @@ export class SyncService {
             break;
           case 'discord':
             newSessionItem.loginCred!.discord = value;
-            break;
-
-          case 'phone':
-            newSessionItem.loginCred!.phone = value;
             break;
 
           case 'education':

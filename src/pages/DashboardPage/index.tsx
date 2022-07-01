@@ -55,7 +55,6 @@ const DashboardPage: React.FC<RouteComponentProps> = () => {
   const [didDocument, setDidDocument] = useRecoilState(DIDDocumentAtom);
   const setFullProfile = useSetRecoilState<ProfileDTO>(FullProfileAtom);
 
-  //const [session, setSession] = useRecoilState(SessionAtom);
   const [currentTab, setCurrentTab] = useState('home');
 
   const [publishStatus, setPublishStatus] = useState(RequestStatus.NotFound);
@@ -206,7 +205,7 @@ const DashboardPage: React.FC<RouteComponentProps> = () => {
         if (session.onBoardingCompleted && !willExpire) {
           setWillExpire(true);
           setTimeout(() => {
-            UserService.logout();
+            UserService.logoutUser();
           }, ExporeTime);
         }
       }

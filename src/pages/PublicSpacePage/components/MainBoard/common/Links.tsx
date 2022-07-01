@@ -37,27 +37,15 @@ const Links: React.FC<IProps> = ({ template = 'default', space }: IProps) => {
       </CardHeaderContent>
       <CardContentContainer>
         <IonRow>
-          {links['linkedin'] && (
+          {links['google'] && (
             <IonCol className={style.link} size="12">
               <div className={style.logo}>
-                <img src={icon_linkedin} alt="linkedin icon" />
+                <img src={icon_google} alt="google icon" />
                 <img src={icon_shield} alt="shield icon" />
               </div>
               <div className={style.name}>
-                <h1>Linkedin</h1>
-                <h2>{links['linkedin']}</h2>
-              </div>
-            </IonCol>
-          )}
-          {links['twitter'] && (
-            <IonCol className={style.link} size="12">
-              <div className={style.logo}>
-                <img src={icon_twitter} alt="twitter icon" />
-                <img src={icon_shield} alt="shield icon" />
-              </div>
-              <div className={style.name}>
-                <h1>Twitter</h1>
-                <h2>{links['twitter']}</h2>
+                <h1>Google</h1>
+                <h2>{links['google']}</h2>
               </div>
             </IonCol>
           )}
@@ -73,15 +61,27 @@ const Links: React.FC<IProps> = ({ template = 'default', space }: IProps) => {
               </div>
             </IonCol>
           )}
-          {links['google'] && (
+          {links['twitter'] && (
             <IonCol className={style.link} size="12">
               <div className={style.logo}>
-                <img src={icon_google} alt="google icon" />
+                <img src={icon_twitter} alt="twitter icon" />
                 <img src={icon_shield} alt="shield icon" />
               </div>
               <div className={style.name}>
-                <h1>Google</h1>
-                <h2>{links['google']}</h2>
+                <h1>Twitter</h1>
+                <h2>{links['twitter']}</h2>
+              </div>
+            </IonCol>
+          )}
+          {links['linkedin'] && (
+            <IonCol className={style.link} size="12">
+              <div className={style.logo}>
+                <img src={icon_linkedin} alt="linkedin icon" />
+                <img src={icon_shield} alt="shield icon" />
+              </div>
+              <div className={style.name}>
+                <h1>Linkedin</h1>
+                <h2>{links['linkedin']}</h2>
               </div>
             </IonCol>
           )}
@@ -92,8 +92,20 @@ const Links: React.FC<IProps> = ({ template = 'default', space }: IProps) => {
                 <img src={icon_shield} alt="shield icon" />
               </div>
               <div className={style.name}>
-                <h1>Google</h1>
+                <h1>Github</h1>
                 <h2>{links['github']}</h2>
+              </div>
+            </IonCol>
+          )}
+          {links['reddit'] && (
+            <IonCol className={style.link} size="12">
+              <div className={style.logo}>
+                <img src={icon_discord} alt="reddit icon" />
+                <img src={icon_shield} alt="shield icon" />
+              </div>
+              <div className={style.name}>
+                <h1>Reddit</h1>
+                <h2>{links['reddit']}</h2>
               </div>
             </IonCol>
           )}
@@ -104,8 +116,80 @@ const Links: React.FC<IProps> = ({ template = 'default', space }: IProps) => {
                 <img src={icon_shield} alt="shield icon" />
               </div>
               <div className={style.name}>
-                <h1>Google</h1>
+                <h1>Discord</h1>
                 <h2>{links['discord']}</h2>
+              </div>
+            </IonCol>
+          )}
+          {links['twitch'] && (
+            <IonCol className={style.link} size="12">
+              <div className={style.logo}>
+                <img src={icon_discord} alt="twitch icon" />
+                <img src={icon_shield} alt="shield icon" />
+              </div>
+              <div className={style.name}>
+                <h1>Twitch</h1>
+                <h2>{links['twitch']}</h2>
+              </div>
+            </IonCol>
+          )}
+          {links['apple'] && (
+            <IonCol className={style.link} size="12">
+              <div className={style.logo}>
+                <img src={icon_discord} alt="apple icon" />
+                <img src={icon_shield} alt="shield icon" />
+              </div>
+              <div className={style.name}>
+                <h1>Apple</h1>
+                <h2>{links['apple']}</h2>
+              </div>
+            </IonCol>
+          )}
+          {links['line'] && (
+            <IonCol className={style.link} size="12">
+              <div className={style.logo}>
+                <img src={icon_discord} alt="line icon" />
+                <img src={icon_shield} alt="shield icon" />
+              </div>
+              <div className={style.name}>
+                <h1>Line</h1>
+                <h2>{links['line']}</h2>
+              </div>
+            </IonCol>
+          )}
+          {links['kakao'] && (
+            <IonCol className={style.link} size="12">
+              <div className={style.logo}>
+                <img src={icon_discord} alt="kakao icon" />
+                <img src={icon_shield} alt="shield icon" />
+              </div>
+              <div className={style.name}>
+                <h1>Kakao</h1>
+                <h2>{links['kakao']}</h2>
+              </div>
+            </IonCol>
+          )}
+          {links['weibo'] && (
+            <IonCol className={style.link} size="12">
+              <div className={style.logo}>
+                <img src={icon_discord} alt="weibo icon" />
+                <img src={icon_shield} alt="shield icon" />
+              </div>
+              <div className={style.name}>
+                <h1>Weibo</h1>
+                <h2>{links['weibo']}</h2>
+              </div>
+            </IonCol>
+          )}
+          {links['wechat'] && (
+            <IonCol className={style.link} size="12">
+              <div className={style.logo}>
+                <img src={icon_discord} alt="wechat icon" />
+                <img src={icon_shield} alt="shield icon" />
+              </div>
+              <div className={style.name}>
+                <h1>Wechat</h1>
+                <h2>{links['wechat']}</h2>
               </div>
             </IonCol>
           )}

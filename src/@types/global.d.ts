@@ -301,7 +301,6 @@ interface ISessionItem {
   code?: string;
   status?: string;
   pageTemplate?: string;
-  phone?: string;
   timestamp: number;
   referrals?: IReferral[];
   passwordRemoved?: boolean;
@@ -313,14 +312,20 @@ interface ISessionItem {
 }
 
 interface LoginCred {
-  linkedin?: string;
   google?: string;
-  twitter?: string;
   facebook?: string;
+  twitter?: string;
+  linkedin?: string;
   github?: string;
+  reddit?: string;
   discord?: string;
+  twitch?: string;
+  apple?: string;
+  line?: string;
+  kakao?: string;
+  weibo?: string;
+  wechat?: string;
   email?: string;
-  phone?: string;
 }
 
 interface PeopleItem {
@@ -399,14 +404,20 @@ interface AccountBadgeItem {
 }
 
 interface SocialBadgeItem {
-  linkedin: BadgeArchiveModel;
+  google: BadgeArchiveModel;
   facebook: BadgeArchiveModel;
   twitter: BadgeArchiveModel;
-  google: BadgeArchiveModel;
+  linkedin: BadgeArchiveModel;
   github: BadgeArchiveModel;
+  reddit: BadgeArchiveModel;
   discord: BadgeArchiveModel;
+  twitch: BadgeArchiveModel;
+  apple: BadgeArchiveModel;
+  line: BadgeArchiveModel;
+  kakao: BadgeArchiveModel;
+  weibo: BadgeArchiveModel;
+  wechat: BadgeArchiveModel;
   email: BadgeArchiveModel;
-  phone: BadgeArchiveModel;
 }
 interface DIDBadgeItem {
   _1times: BadgeArchiveModel;

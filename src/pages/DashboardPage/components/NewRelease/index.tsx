@@ -35,7 +35,7 @@ const Component: React.FC<ComponentProps> = ({
           contents.videoUpdateUrl ?? '',
           newSession
         );
-      UserService.logout();
+      UserService.logoutUser();
     } catch (err) {
       console.log('update version err ===>', err);
     }

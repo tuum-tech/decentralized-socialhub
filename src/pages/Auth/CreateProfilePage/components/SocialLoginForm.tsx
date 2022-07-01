@@ -8,8 +8,6 @@ import { Text16 } from 'src/elements/texts';
 
 import { useHistory } from 'react-router-dom';
 
-import style from '../style.module.scss';
-import Moralis from 'moralis';
 import { useMoralis } from 'react-moralis';
 import { AccountType } from 'src/services/user.service';
 
@@ -40,7 +38,7 @@ const SocialLoginForm: React.FC<Props> = () => {
   const [displayText, setDisplayText] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { authenticate, isAuthenticated, authError, user } = useMoralis();
+  const { Moralis, authenticate, isAuthenticated, user } = useMoralis();
 
   const history = useHistory();
 
@@ -51,6 +49,8 @@ const SocialLoginForm: React.FC<Props> = () => {
     } else {
       setError('');
     }
+
+    console.log('isAuthenticated:', isAuthenticated);
 
     setLoading(true);
     setDisplayText('Authenticating');
@@ -80,12 +80,11 @@ const SocialLoginForm: React.FC<Props> = () => {
       Moralis.User.become(authResponse?.attributes.sessionToken).then(
         function(u) {
           console.log('User is now logged in: ', u.attributes);
+
           history.push({
             pathname: '/generate-did',
             state: {
               name: name,
-              service: AccountType.DID,
-              loginCred: {},
               userAttributes: u.attributes
             }
           });
@@ -103,8 +102,6 @@ const SocialLoginForm: React.FC<Props> = () => {
           pathname: '/generate-did',
           state: {
             name: name,
-            service: AccountType.DID,
-            loginCred: {},
             userAttributes: user.attributes
           }
         });

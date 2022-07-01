@@ -67,7 +67,7 @@ const Header: React.FC<Props> = ({ userSession }: Props) => {
                 >
                   View Public Profile
                 </Item>
-                <Item onClick={() => UserService.logout()}>Sign out</Item>
+                <Item onClick={() => UserService.logoutUser()}>Sign out</Item>
               </SubMenu>
             )}
           </Menu>

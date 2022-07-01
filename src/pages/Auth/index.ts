@@ -1,9 +1,4 @@
-import TwitterCallback from './SocialCallback/TwitterCallback';
 import GoogleCallback from './SocialCallback/GoogleCallback';
-import LinkedinCallback from './SocialCallback/LinkedinCallback';
-import FacebookCallback from './SocialCallback/FacebookCallback';
-import GithubCallback from './SocialCallback/GithubCallback';
-import DiscordCallback from './SocialCallback/DiscordCallback';
 import CreateProfilePage from './CreateProfilePage/Loadable';
 import GenerateDidPage from './GenerateDidPage/Loadable';
 import SignInPage from './SignInPage/Loadable';
@@ -12,14 +7,8 @@ import EmailVerificationPage from './EmailVerificationPage/Loadable';
 
 export {
   GoogleCallback,
-  TwitterCallback,
-  LinkedinCallback,
-  FacebookCallback,
-  GithubCallback,
-  DiscordCallback,
   CreateProfilePage,
   GenerateDidPage,
   SignInPage,
-  RecoverAccountPage,
-  EmailVerificationPage
+  RecoverAccountPage
 };

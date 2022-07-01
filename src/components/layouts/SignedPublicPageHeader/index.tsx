@@ -14,11 +14,14 @@ import narrow from 'src/assets/icon/narrow.svg';
 
 import style from './style.module.scss';
 
+import { useMoralis } from 'react-moralis';
+
 interface Props {
   userSession: ISessionItem | null;
 }
 
 const SignedPublicPageHeader: React.FC<Props> = ({ userSession }: Props) => {
+  const { logout } = useMoralis();
   const history = useHistory();
   const [publishStatus, setPublishStatus] = useState<boolean>(false);
   const [collapse, setCollapse] = useState<boolean>(false);
@@ -68,7 +71,14 @@ const SignedPublicPageHeader: React.FC<Props> = ({ userSession }: Props) => {
                 >
                   View Public Profile
                 </Item>
-                <Item onClick={() => UserService.logout()}>Sign out</Item>
+                <Item
+                  onClick={() => {
+                    UserService.logoutUser();
+                    logout();
+                  }}
+                >
+                  Sign out
+                </Item>
               </SubMenu>
             )}
           </Menu>

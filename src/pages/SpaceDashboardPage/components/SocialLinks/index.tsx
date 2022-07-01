@@ -111,16 +111,16 @@ const SocialProfilesCard: React.FC<Props> = ({
       url = (await DidcredsService.requestGoogleLogin()) as MyType;
     } else if (socialType === 'facebook') {
       // gets the facebook auth endpoint
-      url = (await DidcredsService.requestFacebookLogin()) as MyType;
+      url = (await DidcredsService.requestGoogleLogin()) as MyType;
     } else if (socialType === 'linkedin') {
       // gets the linkedin auth endpoint
-      url = (await DidcredsService.requestLinkedinLogin()) as MyType;
+      url = (await DidcredsService.requestGoogleLogin()) as MyType;
     } else if (socialType === 'github') {
       // gets the github auth endpoint
-      url = (await DidcredsService.requestGithubLogin()) as MyType;
+      url = (await DidcredsService.requestGoogleLogin()) as MyType;
     } else if (socialType === 'discord') {
       // gets the discord auth endpoint
-      url = (await DidcredsService.requestDiscordLogin()) as MyType;
+      url = (await DidcredsService.requestGoogleLogin()) as MyType;
     }
 
     if (url) {
@@ -135,13 +135,20 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const getUrlFromService = (service: string, credential: string): string => {
+    if (service === 'google') return `mailto://${credential}`;
+    if (service === 'facebook') return `https://facebook.com/${credential}`;
     if (service === 'twitter') return `https://twitter.com/${credential}`;
     if (service === 'linkedin') return `https://linkedin.com/in/${credential}`;
-    if (service === 'facebook') return `https://facebook.com/${credential}`;
-    if (service === 'google') return `mailto://${credential}`;
     if (service === 'github') return `https://github.com/${credential}`;
+    if (service === 'reddit') return `https://github.com/${credential}`;
     if (service === 'discord')
       return `https://discordapp.com/users/${credential}`;
+    if (service === 'twitch') return `https://github.com/${credential}`;
+    if (service === 'apple') return `https://github.com/${credential}`;
+    if (service === 'line') return `https://github.com/${credential}`;
+    if (service === 'kakao') return `https://github.com/${credential}`;
+    if (service === 'weibo') return `https://github.com/${credential}`;
+    if (service === 'wechat') return `https://github.com/${credential}`;
     return '';
   };
 
@@ -149,12 +156,19 @@ const SocialProfilesCard: React.FC<Props> = ({
     service: string,
     credential: string
   ): string => {
-    if (service === 'twitter') return credential;
-    if (service === 'linkedin') return `linkedin.com/in/${credential}`;
-    if (service === 'facebook') return `facebook.com/${credential}`;
     if (service === 'google') return `${credential}`;
+    if (service === 'facebook') return `${credential}`;
+    if (service === 'twitter') return credential;
+    if (service === 'linkedin') return `${credential}`;
     if (service === 'github') return `${credential}`;
+    if (service === 'reddit') return `${credential}`;
     if (service === 'discord') return `${credential}`;
+    if (service === 'twitch') return `${credential}`;
+    if (service === 'apple') return `${credential}`;
+    if (service === 'line') return `${credential}`;
+    if (service === 'kakao') return `${credential}`;
+    if (service === 'weibo') return `${credential}`;
+    if (service === 'wechat') return `${credential}`;
     return '';
   };
 
@@ -190,15 +204,24 @@ const SocialProfilesCard: React.FC<Props> = ({
           <p className="social-profile-network">
             {key.replace(/^./, key[0].toUpperCase())}
           </p>
-          {(key === 'facebook' || key === 'linkedin') && (
+          {/*           {(key === 'facebook' || key === 'linkedin') && (
             <span className="social-profile-id">
               {parseValueFromService(key, vc)}
             </span>
-          )}
+          )} */}
           {(key === 'google' ||
+            key === 'facebook' ||
             key === 'twitter' ||
+            key === 'linkedin' ||
             key === 'github' ||
-            key === 'discord') && (
+            key === 'reddit' ||
+            key === 'discord' ||
+            key === 'twitch' ||
+            key === 'apple' ||
+            key === 'line' ||
+            key === 'kakao' ||
+            key === 'weibo' ||
+            key === 'wechat') && (
             <a
               href={getUrlFromService(key, vc)}
               target="_blank"

@@ -5,16 +5,24 @@ export type LocationState = {
   from: Location;
   did: string;
   name: string;
+  avatar: string;
   loginCred: LoginCred;
   credential: string;
   service:
     | AccountType.DID
-    | AccountType.Linkedin
-    | AccountType.Facebook
     | AccountType.Google
+    | AccountType.Facebook
     | AccountType.Twitter
+    | AccountType.Linkedin
     | AccountType.Github
+    | AccountType.Reddit
     | AccountType.Discord
+    | AccountType.Twitch
+    | AccountType.Apple
+    | AccountType.Line
+    | AccountType.Kakao
+    | AccountType.Weibo
+    | AccountType.Wechat
     | AccountType.Email;
   userAttributes: Moralis.Attributes;
 };

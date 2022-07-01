@@ -2,8 +2,7 @@ import { Guid } from 'guid-typescript';
 import {
   DIDDocument,
   DIDURL,
-  RootIdentity,
-  VerifiablePresentation
+  RootIdentity
 } from '@elastosfoundation/did-js-sdk/';
 import { EssentialsConnector } from '@elastosfoundation/essentials-connector-client-browser';
 import { connectivity } from '@elastosfoundation/elastos-connectivity-sdk-js';
@@ -20,19 +19,24 @@ import { IDidService } from './did.service.new';
 import { CredentialType, DidcredsService } from './didcreds.service';
 import { SpaceService } from './space.service';
 import { DidDocumentService } from './diddocument.service';
-import { DidService } from './did.service.new';
-import { OnBoardingService } from './onboarding.service';
 
 const CryptoJS = require('crypto-js');
 
 export enum AccountType {
   DID = 'DID',
-  Linkedin = 'Linkedin',
-  Facebook = 'Facebook',
   Google = 'Google',
-  Github = 'Github',
-  Discord = 'Discord',
+  Facebook = 'Facebook',
   Twitter = 'Twitter',
+  Linkedin = 'Linkedin',
+  Github = 'Github',
+  Reddit = 'Reddit',
+  Discord = 'Discord',
+  Twitch = 'Twitch',
+  Apple = 'Apple',
+  Line = 'Line',
+  Kakao = 'Kakao',
+  Weibo = 'Weibo',
+  Wechat = 'Wechat',
   Email = 'Email'
 }
 
@@ -119,8 +123,6 @@ export class UserService {
   };
 
   private async generateTemporaryDocument(
-    service: AccountType,
-    credential: string,
     mnemonics: string,
     name: string,
     loginCred: LoginCred
@@ -133,13 +135,8 @@ export class UserService {
     );
 
     let documentWithCredentials: DIDDocument = await this.addCredentialIfInexistant(
-      loginCred.email,
-      temporaryDocument,
-      CredentialType.Email
-    );
-    documentWithCredentials = await this.addCredentialIfInexistant(
       loginCred.google,
-      documentWithCredentials,
+      temporaryDocument,
       CredentialType.Google
     );
     documentWithCredentials = await this.addCredentialIfInexistant(
@@ -148,14 +145,14 @@ export class UserService {
       CredentialType.Facebook
     );
     documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.twitter,
+      documentWithCredentials,
+      CredentialType.Twitter
+    );
+    documentWithCredentials = await this.addCredentialIfInexistant(
       loginCred.linkedin,
       documentWithCredentials,
       CredentialType.Linkedin
-    );
-    documentWithCredentials = await this.addCredentialIfInexistant(
-      loginCred.discord,
-      documentWithCredentials,
-      CredentialType.Discord
     );
     documentWithCredentials = await this.addCredentialIfInexistant(
       loginCred.github,
@@ -163,9 +160,44 @@ export class UserService {
       CredentialType.Github
     );
     documentWithCredentials = await this.addCredentialIfInexistant(
-      loginCred.twitter,
+      loginCred.reddit,
       documentWithCredentials,
-      CredentialType.Twitter
+      CredentialType.Reddit
+    );
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.discord,
+      documentWithCredentials,
+      CredentialType.Discord
+    );
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.twitch,
+      documentWithCredentials,
+      CredentialType.Twitch
+    );
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.line,
+      documentWithCredentials,
+      CredentialType.Line
+    );
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.kakao,
+      documentWithCredentials,
+      CredentialType.Kakao
+    );
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.weibo,
+      documentWithCredentials,
+      CredentialType.Weibo
+    );
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.wechat,
+      documentWithCredentials,
+      CredentialType.Wechat
+    );
+    documentWithCredentials = await this.addCredentialIfInexistant(
+      loginCred.email,
+      documentWithCredentials,
+      CredentialType.Email
     );
 
     // Add hive to the documents
@@ -198,13 +230,6 @@ export class UserService {
     this.didService.publishDocument(temporaryDocument);
 
     return documentWithCredentials;
-  }
-
-  public getTemporaryMnemonicFromDid(did: string) {
-    if (!did || did === '') return '';
-    let key = `temporary_${did.replace('did:elastos:', '')}`;
-    let response: any = JSON.parse(window.localStorage.getItem(key) || 'null');
-    return response?.mnemonic || '';
   }
 
   private lockUser(key: string, instance: ISessionItem) {
@@ -335,7 +360,7 @@ export class UserService {
     credential: string = '',
     newDidStr: string,
     hiveHostStr: string,
-    avatar = '',
+    avatar: string = '',
     newMnemonicStr: string
   ) {
     let did = newDidStr;
@@ -344,8 +369,6 @@ export class UserService {
     if (!did || did === '') {
       mnemonics = await this.didService.generateNewMnemonics();
       const newDocument = await this.generateTemporaryDocument(
-        accountType,
-        credential,
         mnemonics,
         name,
         loginCred
@@ -391,7 +414,7 @@ export class UserService {
           }
         },
         socialVerify: {
-          linkedin: {
+          google: {
             archived: false
           },
           facebook: {
@@ -400,19 +423,37 @@ export class UserService {
           twitter: {
             archived: false
           },
-          google: {
+          linkedin: {
             archived: false
           },
           github: {
             archived: false
           },
+          reddit: {
+            archived: false
+          },
           discord: {
             archived: false
           },
-          email: {
+          twitch: {
             archived: false
           },
-          phone: {
+          apple: {
+            archived: false
+          },
+          line: {
+            archived: false
+          },
+          kakao: {
+            archived: false
+          },
+          weibo: {
+            archived: false
+          },
+          wechat: {
+            archived: false
+          },
+          email: {
             archived: false
           }
         },
@@ -699,8 +740,9 @@ export class UserService {
     return instance.did === did;
   }
 
-  public static logout() {
+  public static logoutUser() {
     window.localStorage.removeItem('isLoggedIn');
+    window.localStorage.removeItem('openlogin_store');
     window.localStorage.removeItem('persist:root');
 
     let connector: EssentialsConnector = connectivity.getActiveConnector() as EssentialsConnector;
@@ -722,105 +764,6 @@ export class UserService {
     window.localStorage.removeItem(
       `userdiddocument_${useSession.did.replace('did:elastos:', '')}`
     );
-    UserService.logout();
-  }
-
-  public static async checkAfterEssentialSignin(
-    did: string,
-    mnemonic: string,
-    name: string
-  ) {
-    // const didService = await DidService.getInstance();
-    // let didDocument = await didService.getDidDocument(did, false);
-    // if (didDocument.services && didDocument.services.size > 0) {
-    //   let serviceEndpoint = '';
-    //   let hiveUrl = new DIDURL(did + '#hivevault');
-    //   if (didDocument.services?.has(hiveUrl)) {
-    //     serviceEndpoint = didDocument.services.get(hiveUrl).serviceEndpoint;
-    //   } else {
-    //     hiveUrl = new DIDURL(did + '#HiveVault');
-    //     if (didDocument.services?.has(hiveUrl)) {
-    //       serviceEndpoint = didDocument.services.get(hiveUrl).serviceEndpoint;
-    //     }
-    //   }
-    //   if (serviceEndpoint) {
-    //     let hiveVersion = await HiveService.getHiveVersion(serviceEndpoint);
-    //     let isHiveValid = await HiveService.isHiveVersionSupported(hiveVersion);
-    //     if (!isHiveValid) {
-    //       return {
-    //         error: `Hive version ${hiveVersion} not supported. The minimal supported version is ${process.env.REACT_APP_HIVE_MIN_VERSION} and maximun is ${process.env.REACT_APP_HIVE_MAX_VERSION}`
-    //       };
-    //     }
-    //   } else {
-    //     return {
-    //       error:
-    //         'This DID has no Hive Node set. Please set the hive node first using Elastos Essentials App'
-    //     };
-    //   }
-    // } else {
-    //   return {
-    //     error:
-    //       'This DID has no Hive Node set. Please set the hive node first using Elastos Essentials App'
-    //   };
-    // }
-    // // return '';
-    // const res = await this.SearchUserWithDID(did);
-    // window.localStorage.setItem(
-    //   `temporary_${did.replace('did:elastos:', '')}`,
-    //   JSON.stringify({
-    //     mnemonic: mnemonic
-    //   })
-    // );
-    // if (res) {
-    //   const recoverCheckRes = await OnBoardingService.checkRecoverLogin(res);
-    //   if (!recoverCheckRes.canLogin) {
-    //     return 'You already completed the onboarding. You can only login with Essential.';
-    //   }
-    //   let session = await this.LockWithDIDAndPwd(recoverCheckRes.session);
-    //   session.isEssentialUser = true;
-    //   // eProps.setSession({ session });
-    //   // window.localStorage.setItem('isLoggedIn', 'true');
-    //   // history.push('/profile');
-    //   return {
-    //     error: '',
-    //     redirect: '/profile',
-    //     session
-    //   };
-    // } else {
-    //   // history.push({
-    //   //   pathname: '/create-profile-with-did',
-    //   //   state: {
-    //   //     did,
-    //   //     mnemonic,
-    //   //     user: {
-    //   //       name: name,
-    //   //       loginCred: {}
-    //   //     }
-    //   //   }
-    //   // });
-    // }
-    // // if (res) {
-    // //   showNotify(
-    // //     "Please approve Profile's multiple requests on Esssentials App.",
-    // //     'warning'
-    // //   );
-    // //   const session = await userService.LockWithDIDAndPwd(res);
-    // //   session.isEssentialUser = true;
-    // //   eProps.setSession({ session });
-    // //   window.localStorage.setItem('isLoggedIn', 'true');
-    // //   history.push('/profile');
-    // // } else {
-    // //   history.push({
-    // //     pathname: '/create-profile-with-did',
-    // //     state: {
-    // //       did,
-    // //       mnemonic,
-    // //       user: {
-    // //         name: name,
-    // //         loginCred: {}
-    // //       }
-    // //     }
-    // //   });
-    // // }
+    UserService.logoutUser();
   }
 }

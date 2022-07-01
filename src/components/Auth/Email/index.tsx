@@ -53,8 +53,7 @@ const EmailVerificationDetailContent: React.FC<Props> = ({
     setLoading(true);
     let response = (await requestVerifyCode(
       code,
-      email,
-      ''
+      email
     )) as IVerifyCodeResponse;
 
     let status = response.data.return_code;

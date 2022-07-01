@@ -56,16 +56,6 @@ export class VerificationService {
       requests = requests.concat([data]);
     }
 
-    // phone
-    if (session.phone && session.phone !== '') {
-      const data: VerificationData = this.generateGeneralVerificatoinData(
-        'phone',
-        'phone',
-        session.phone
-      );
-      requests = requests.concat([data]);
-    }
-
     const educationData: VerificationData[] = this.generateEducationVerificationData(
       educationDTO.items
     );
@@ -79,11 +69,7 @@ export class VerificationService {
     return requests;
   }
 
-  public generatePersonalInfoVerificaiotnData(
-    name: string,
-    email: string,
-    phone: string
-  ) {
+  public generatePersonalInfoVerificaiotnData(name: string, email: string) {
     const category = 'PersonalInfo';
     const records = [];
     if (name !== '') {
@@ -96,12 +82,6 @@ export class VerificationService {
       records.push({
         field: 'email',
         value: email
-      });
-    }
-    if (phone !== '') {
-      records.push({
-        field: 'phone',
-        value: phone
       });
     }
 

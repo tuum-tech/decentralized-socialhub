@@ -49,17 +49,13 @@ describe('User Creation based on Email', () => {
       .catch(done);
   });
 
-  it('Should request update email or phone', done => {
+  it('Should request update email', done => {
     const getStub = sinon
-      .stub(createAccountEmail, 'requestUpdateEmailOrPhone')
+      .stub(createAccountEmail, 'requestUpdateEmail')
       .resolves({ status: 'success' });
 
     createAccountEmail
-      .requestUpdateEmailOrPhone(
-        'temporary_email@gmail.com',
-        'email@gmail.com',
-        ''
-      )
+      .requestUpdateEmail('temporary_email@gmail.com', 'email@gmail.com', '')
       .then((res: any) => {
         expect(res.status).to.be.eq('success');
         expect(getStub).to.have.been.calledWith(

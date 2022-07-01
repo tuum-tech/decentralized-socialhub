@@ -25,8 +25,7 @@ export function requestCreateEmailUser(
 
 export function requestVerifyCode(
   code: string,
-  email: string,
-  phone: string
+  email: string
 ): Promise<BaseplateResp> {
   return request(
     `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/credential/verify`,
@@ -39,17 +38,15 @@ export function requestVerifyCode(
       },
       body: JSON.stringify({
         code,
-        email,
-        phone
+        email
       })
     }
   );
 }
 
-export function requestUpdateEmailOrPhone(
+export function requestUpdateEmail(
   did: string,
-  email: string,
-  phone: string
+  email: string
 ): Promise<BaseplateResp> {
   return request(
     `${process.env.REACT_APP_PROFILE_API_SERVICE_URL}/v1/credential/update`,
@@ -62,8 +59,7 @@ export function requestUpdateEmailOrPhone(
       },
       body: JSON.stringify({
         did,
-        email,
-        phone
+        email
       })
     }
   );

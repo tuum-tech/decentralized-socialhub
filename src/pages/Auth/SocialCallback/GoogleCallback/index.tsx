@@ -22,11 +22,7 @@ import {
   SubState
 } from './types';
 
-import {
-  requestGoogleId,
-  requestGoogleToken,
-  getUsersWithRegisteredGoogle
-} from './fetchapi';
+import { requestGoogleId, requestGoogleToken } from './fetchapi';
 
 import LoadingIndicator from 'src/elements/LoadingIndicator';
 import { AccountType, UserService } from 'src/services/user.service';
