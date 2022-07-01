@@ -18,7 +18,6 @@ const DashboardBadges: React.FC<Props> = ({ sessionItem }) => {
 
   useEffect(() => {
     setBadges(sessionItem.badges as IBadges);
-    console.log('here first: ', badges);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionItem]);
 

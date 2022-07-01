@@ -241,22 +241,14 @@ const SocialProfilesCard: React.FC<Props> = ({
   };
 
   const sociallogin = async (socialType: string) => {
-    if (socialType === 'twitter') {
-      type MyType = { meta: string; data: { request_token: string } };
-      const response = (await TwitterApi.GetRequestToken()) as MyType;
-      popupCenter(
-        `https://api.twitter.com/oauth/authorize?oauth_token=${response.data.request_token}`,
-        'Login',
-        548,
-        325
-      );
-      return;
-    }
-
     type MyType = { meta: string; data: string };
     let url: MyType = {} as MyType;
 
-    url = (await DidcredsService.requestGoogleLogin()) as MyType;
+    if (socialType === 'google') {
+      url = (await DidcredsService.requestGoogleLogin()) as MyType;
+    } else if (socialType === 'twitter') {
+      url = (await DidcredsService.requestGoogleLogin()) as MyType;
+    }
 
     if (url) {
       popupCenter(url.data, 'Login', 548, 725);

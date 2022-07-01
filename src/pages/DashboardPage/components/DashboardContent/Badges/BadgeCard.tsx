@@ -66,7 +66,6 @@ const BadgeCard: React.FC<Props> = ({ badgeCategory }) => {
         break;
     }
     let items = (badges as any)[badgeCategory];
-    console.log('here: ', items);
     setBadgeItems(items);
     let _totalBadgeCount = Object.keys(items).length;
     let _completedBadgeCount = Object.keys(items).filter(

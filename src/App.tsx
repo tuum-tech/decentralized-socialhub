@@ -37,7 +37,6 @@ import ChooseVaultPage from './pages/ChooseVaultPage';
 import TermsPage from './pages/TermsPage';
 import SupportForum from './pages/SupportForum';
 import {
-  GoogleCallback,
   CreateProfilePage,
   GenerateDidPage,
   SignInPage,
@@ -169,9 +168,6 @@ const App: React.FC = () => {
                     component={SyncPage}
                     exact={true}
                   /> */}
-
-                    {/* // login workflow */}
-                    <Route path="/google_callback" component={GoogleCallback} />
 
                     {/* to test */}
                     <ProtectedRoute
