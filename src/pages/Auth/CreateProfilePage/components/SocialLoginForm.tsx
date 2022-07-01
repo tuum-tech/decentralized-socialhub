@@ -9,7 +9,6 @@ import { Text16 } from 'src/elements/texts';
 import { useHistory } from 'react-router-dom';
 
 import { useMoralis } from 'react-moralis';
-import { AccountType } from 'src/services/user.service';
 
 const Container = styled(IonGrid)`
   margin-left: -16px;

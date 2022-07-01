@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { IonCol, IonGrid, IonRow } from '@ionic/react';
 import TwitterApi from 'src/shared-base/api/twitter-api';
-import { DidcredsService } from 'src/services/didcreds.service';
+import { CredentialType, DidcredsService } from 'src/services/didcreds.service';
 import { UserService } from 'src/services/user.service';
 
 import style from './SocialCard.module.scss';
@@ -31,6 +31,9 @@ import { BadgesAtom, DIDDocumentAtom, CallbackFromAtom } from 'src/Atoms/Atoms';
 import { VerificationService } from 'src/services/verification.service';
 import Card from 'src/elements-v2/Card';
 import Modal from 'src/elements-v2/Modal';
+import { useMoralis } from 'react-moralis';
+import { ProfileService } from 'src/services/profile.service';
+import { ThemeButton } from 'src/elements/buttons';
 
 interface Props {
   sessionItem: ISessionItem;
@@ -45,6 +48,7 @@ const SocialProfilesCard: React.FC<Props> = ({
   mode = 'view',
   openModal = false
 }) => {
+  const { Moralis, authenticate, logout, isAuthenticated } = useMoralis();
   const modalRef = useRef(null);
   const setBadges = useSetRecoilState(BadgesAtom);
   const setCallbackFrom = useSetRecoilState(CallbackFromAtom);
@@ -197,62 +201,75 @@ const SocialProfilesCard: React.FC<Props> = ({
     template = sessionItem.pageTemplate;
   }
 
-  const popupCenter = (url: string, title: string, w: number, h: number) => {
-    const dualScreenLeft =
-      window.screenLeft !== undefined ? window.screenLeft : window.screenX;
-    const dualScreenTop =
-      window.screenTop !== undefined ? window.screenTop : window.screenY;
+  const sociallogin = async () => {
+    let authResponse = await authenticate({
+      provider: 'web3Auth',
+      clientId: process.env.REACT_APP_WEB3AUTH_CLIENTID,
+      loginMethodsOrder: [
+        'google',
+        'facebook',
+        'twitter',
+        'linkedin',
+        'github',
+        'reddit',
+        'discord',
+        'twitch',
+        'apple',
+        'line',
+        'kakao',
+        'weibo',
+        'wechat',
+        'email_passwordless'
+      ],
+      theme: 'light'
+    });
+    Moralis.User.become(authResponse?.attributes.sessionToken).then(
+      async function(u) {
+        console.log('New user is registered on Moralis: ', u.attributes);
 
-    const width = window.innerWidth
-      ? window.innerWidth
-      : document.documentElement.clientWidth
-      ? document.documentElement.clientWidth
-      : window.screen.width;
-    const height = window.innerHeight
-      ? window.innerHeight
-      : document.documentElement.clientHeight
-      ? document.documentElement.clientHeight
-      : window.screen.height;
+        const { loginCred } = UserService.getDataFromOpenLoginStore();
+        let verifiableCredential = await DidcredsService.generateVerifiableCredential(
+          sessionItem.did,
+          CredentialType.Twitter,
+          loginCred.twitter
+        );
 
-    const systemZoom = width / window.screen.availWidth;
-    const left = (width - w) / 2 / systemZoom + dualScreenLeft;
-    const top = (height - h) / 2 / systemZoom + dualScreenTop;
+        await DidcredsService.addOrUpdateCredentialToVault(
+          sessionItem,
+          verifiableCredential
+        );
 
-    let popupwindow = window.open(
-      url,
-      title,
-      `
-      scrollbars=yes,
-      width=${w / systemZoom}, 
-      height=${h / systemZoom}, 
-      top=${top}, 
-      left=${left}
-      `
-    );
+        if (sessionItem.isEssentialUser) {
+          const vService = new VerificationService();
+          await vService.importCredential(verifiableCredential);
+        }
 
-    setInterval(async function() {
-      if (popupwindow!.closed) {
-        //clearInterval(timer);
-
-        //if (sessionItem.isEssentialUser) await forceUpdateDidDocument();
-        await getCredentials(sessionItem);
+        let newSession = JSON.parse(JSON.stringify(sessionItem));
+        newSession.loginCred!.twitter! = loginCred.twitter;
+        if (!newSession.badges!.socialVerify!.twitter.archived) {
+          newSession.badges!.socialVerify!.twitter.archived = new Date().getTime();
+          await ProfileService.addActivity(
+            {
+              guid: '',
+              did: newSession.did,
+              message: 'You received a Twitter verfication badge',
+              read: false,
+              createdAt: 0,
+              updatedAt: 0
+            },
+            newSession
+          );
+        }
+        let userService = new UserService(await DidService.getInstance());
+        setSession({
+          session: await userService.updateSession(newSession)
+        });
+        await getCredentials(newSession);
+      },
+      function(error: any) {
+        console.log(`User could not be authenticated: ${error.toString()}`);
       }
-    }, 1000);
-  };
-
-  const sociallogin = async (socialType: string) => {
-    type MyType = { meta: string; data: string };
-    let url: MyType = {} as MyType;
-
-    if (socialType === 'google') {
-      url = (await DidcredsService.requestGoogleLogin()) as MyType;
-    } else if (socialType === 'twitter') {
-      url = (await DidcredsService.requestGoogleLogin()) as MyType;
-    }
-
-    if (url) {
-      popupCenter(url.data, 'Login', 548, 725);
-    }
+    );
   };
 
   const getUrlFromService = (
@@ -449,32 +466,26 @@ const SocialProfilesCard: React.FC<Props> = ({
       </Card>
 
       <Modal title="Manage Links" ref={modalRef} noButton>
+        <IonRow class="ion-padding-horizontal">
+          <IonCol>
+            <ThemeButton
+              style={{
+                marginTop: '35px'
+              }}
+              text="Add more profiles"
+              onClick={async () => {
+                await sociallogin();
+              }}
+            />
+          </IonCol>
+        </IonRow>
         {credentials?.map(credentialItem => {
           let credential = credentialItem.credential;
 
           return (
             <IonRow key={`creds${credentialItem.name}`} no-padding>
               <IonCol class="ion-no-padding">
-                {credential === undefined ? (
-                  <div className={style['manage-links-item']}>
-                    <ManagerLogo src={credentialItem.icon} />
-                    <ManagerButton
-                      variant="outlined"
-                      btnColor="primary-gradient"
-                      textType="gradient"
-                      size="small"
-                      onClick={() => {
-                        setCallbackFrom(null);
-                        sociallogin(credentialItem.name);
-                      }}
-                    >
-                      Add
-                    </ManagerButton>
-                    <span className={style['manage-links-header']}>
-                      {credentialItem.display}
-                    </span>
-                  </div>
-                ) : (
+                {credential !== undefined && (
                   <div className={style['manage-links-item']}>
                     <ManagerLogo src={credentialItem.icon} />
                     <ManagerButton
