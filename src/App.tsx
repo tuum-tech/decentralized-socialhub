@@ -113,8 +113,7 @@ const App: React.FC = () => {
               <Suspense fallback={<LoadingIndicator />}>
                 <IonRouterOutlet>
                   {/* ====== Private URLs that are log in required ==== */}
-
-                  <ProtectedRoute
+                  {/* <ProtectedRoute
                     path="/publish"
                     component={PublishIdentityPage}
                     exact={true}
@@ -140,7 +139,6 @@ const App: React.FC = () => {
                     component={ExplorePage}
                     exact={false}
                   />
-                  {/* in a progress */}
                   <ProtectedRoute path="/spaces" component={SpacePage} />
 
                   <ProtectedRoute
@@ -163,14 +161,14 @@ const App: React.FC = () => {
                     component={ActivityPage}
                     exact={true}
                   />
-                  {/* TODO: Uncomment this once Sync works again
+                  // TODO: Uncomment this once Sync works again
                   <ProtectedRoute
                     path="/sync"
                     component={SyncPage}
                     exact={true}
-                  /> */}
+                  />
 
-                  {/* // login workflow */}
+                  // login workflow 
                   <Route path="/twitter_callback" component={TwitterCallback} />
                   <Route
                     path="/linkedin_callback"
@@ -184,20 +182,17 @@ const App: React.FC = () => {
                   <Route path="/github_callback" component={GithubCallback} />
                   <Route path="/discord_callback" component={DiscordCallback} />
 
-                  {/* ok */}
                   <ProtectedRoute
                     path="/email-verification"
                     component={EmailVerificationPage}
                     exact={true}
                   />
 
-                  {/* to test */}
                   <ProtectedRoute
                     path="/generate-did"
                     component={GenerateDidPage}
                     exact={true}
                   />
-                  {/* to test */}
                   <ProtectedRoute
                     path="/sign-in"
                     component={SignInPage}
@@ -208,25 +203,21 @@ const App: React.FC = () => {
                     component={RecoverAccountPage}
                     exact={true}
                   />
-                  {/* ok */}
                   <ProtectedRoute
                     path="/associated-profile"
                     component={AssociatedProfilePage}
                     exact={true}
                   />
-                  {/* to ckeck */}
                   <ProtectedRoute
                     path="/create-why"
                     component={CreateWhyPage}
                     exact={true}
                   />
-                  {/* to test */}
                   <ProtectedRoute
                     path="/create-profile"
                     component={CreateProfilePage}
                     exact={true}
                   />
-                  {/* to test */}
 
                   <ProtectedRoute
                     path="/support-forum/:num"
@@ -237,7 +228,7 @@ const App: React.FC = () => {
                     path="/support-forum"
                     component={SupportForum}
                     exact={true}
-                  />
+                  />*/}
                   <Route
                     path="/terms-of-use"
                     component={TermsPage}
@@ -246,7 +237,7 @@ const App: React.FC = () => {
 
                   {/* ====== Public URLs ==== */}
                   <Route path="/" component={HomePage} exact={true} />
-                  <Route path="/did/:did" component={PublicPage} exact={true} />
+                  {/* <Route path="/did/:did" component={PublicPage} exact={true} />
                   <Route
                     path="/did/:did/spaces/:name"
                     component={PublicSpacePage}
@@ -261,7 +252,7 @@ const App: React.FC = () => {
                     path="/community-spaces/:name"
                     component={PublicSpacePage}
                     exact={true}
-                  />
+                  /> */}
                   <Route component={DefaultPage} />
                 </IonRouterOutlet>
               </Suspense>
