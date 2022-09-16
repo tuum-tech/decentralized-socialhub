@@ -9624,10 +9624,10 @@ jose@4.5.0:
   resolved "https://registry.yarnpkg.com/jose/-/jose-4.5.0.tgz#92829d8cf846351eb55aaaf94f252fb1d191f2d5"
   integrity sha512-GFcVFQwYQKbQTUOo2JlpFGXTkgBw26uzDsRMD2q1WgSKNSnpKS9Ug7bdQ8dS+p4sZHNH6iRPu6WK2jLIjspaMA==
 
-jose@^3.19.0, jose@^3.2.0:
-  version "3.20.3"
-  resolved "https://registry.yarnpkg.com/jose/-/jose-3.20.3.tgz#a074f684b07e49b35c075d97561883e3c637abf2"
-  integrity sha512-Z4a5Nl4pmGivdSgaq+a5EbNjrvSO4vtBTmVy5C3HNxWfJ92aG8DTNZrQywowxyOlSqdX/BmCPAy/ieElXDM3pw==
+jose@^3.2.0, jose@^3.20.4:
+  version "3.20.4"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-3.20.4.tgz#f5b6559cf2625efca098e472257525c6f3d302be"
+  integrity sha512-PRnyOQwWGD3EZnnSpKOOLqQ0RT9chbB8f8AzY4bEHY0I2FCtrcp1ojG0nBgAMn2MtuPpE3wOwIhhW0G7AGzbLw==
 
 jquery@>=1.12.0:
   version "3.6.0"
